@@ -1,7 +1,7 @@
 @echo off
 rem ====== projects ======
 
-set projects=Asv.Mavlink Asv.Mavlink.Shell Asv.Mavlink.Payload Asv.Mavlink.Vehicle
+set projects=Asv.Mavlink Asv.Mavlink.Payload Asv.Mavlink.Vehicle
 
 rem ====== projects ======
 
