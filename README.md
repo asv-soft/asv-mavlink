@@ -9,7 +9,7 @@ You can control vehicles, that support [MAVLink](https://mavlink.io/en/) protoco
 
 Generate C# code for packet serialization\deserialization
 ```bash
-Asv.Mavlink.Shell.exe" gen -t=all.xml -i=messages -o=src/Asv.Mavlink/Connection/Dialects -e=cs src/Asv.Mavlink.Shell/Resources/csharp.tpl
+Asv.Mavlink.Shell.exe gen -t=all.xml -i=messages -o=src/Asv.Mavlink/Connection/Dialects -e=cs src/Asv.Mavlink.Shell/Resources/csharp.tpl
 ```
 You can create your own code generator for any language by writing template file (.tpl) with [liquid](https://shopify.github.io/liquid/) syntax
 
@@ -17,9 +17,9 @@ You can create your own code generator for any language by writing template file
 
 Example packet statistic:
 ```sh
-Asv.Mavlink.Shell.exe mavlink --cs=tcp://127.0.0.1:576
+Asv.Mavlink.Shell.exe mavlink --cs=tcp://127.0.0.1:5760
 ```
-![screenshot-1](img/screenshot-1.png)
+![screenshot-1](tools/img/screenshot-1.png)
 
 
 ## Versioning

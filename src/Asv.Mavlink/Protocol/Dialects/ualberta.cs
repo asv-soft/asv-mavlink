@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2018 Alexey Voloshkevich Cursir ltd. (https://github.com/asvol)
+// Copyright (c) 2018 Alexey (https://github.com/asvol)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -50,27 +50,27 @@ namespace Asv.Mavlink.V2.Ualberta
         /// Raw input pulse widts sent to output
         /// MODE_MANUAL_DIRECT
         /// </summary>
-        ModeManualDirect = 1,
+        ModeManualDirect = 0,
         /// <summary>
         /// Inputs are normalized using calibration, the converted back to raw pulse widths for output
         /// MODE_MANUAL_SCALED
         /// </summary>
-        ModeManualScaled = 2,
+        ModeManualScaled = 1,
         /// <summary>
         ///  dfsdfs
         /// MODE_AUTO_PID_ATT
         /// </summary>
-        ModeAutoPidAtt = 3,
+        ModeAutoPidAtt = 2,
         /// <summary>
         ///  dfsfds
         /// MODE_AUTO_PID_VEL
         /// </summary>
-        ModeAutoPidVel = 4,
+        ModeAutoPidVel = 3,
         /// <summary>
         ///  dfsdfsdfs
         /// MODE_AUTO_PID_POS
         /// </summary>
-        ModeAutoPidPos = 5,
+        ModeAutoPidPos = 4,
     }
 
     /// <summary>
@@ -82,22 +82,22 @@ namespace Asv.Mavlink.V2.Ualberta
         /// <summary>
         /// NAV_AHRS_INIT
         /// </summary>
-        NavAhrsInit = 1,
+        NavAhrsInit = 0,
         /// <summary>
         /// AHRS mode
         /// NAV_AHRS
         /// </summary>
-        NavAhrs = 2,
+        NavAhrs = 1,
         /// <summary>
         /// INS/GPS initialization mode
         /// NAV_INS_GPS_INIT
         /// </summary>
-        NavInsGpsInit = 3,
+        NavInsGpsInit = 2,
         /// <summary>
         /// INS/GPS mode
         /// NAV_INS_GPS
         /// </summary>
-        NavInsGps = 4,
+        NavInsGps = 3,
     }
 
     /// <summary>
@@ -110,17 +110,17 @@ namespace Asv.Mavlink.V2.Ualberta
         ///  sdf
         /// PILOT_MANUAL
         /// </summary>
-        PilotManual = 1,
+        PilotManual = 0,
         /// <summary>
         ///  dfs
         /// PILOT_AUTO
         /// </summary>
-        PilotAuto = 2,
+        PilotAuto = 1,
         /// <summary>
         ///  Rotomotion mode 
         /// PILOT_ROTO
         /// </summary>
-        PilotRoto = 3,
+        PilotRoto = 2,
     }
 
 
@@ -155,6 +155,7 @@ namespace Asv.Mavlink.V2.Ualberta
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Usec = BinSerialize.ReadULong(ref buffer);index+=8;
             Accel0 = BinSerialize.ReadFloat(ref buffer);index+=4;
             Accel1 = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -184,6 +185,7 @@ namespace Asv.Mavlink.V2.Ualberta
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Usec = BitConverter.ToUInt64(buffer,index);index+=8;
             Accel0 = BitConverter.ToSingle(buffer, index);index+=4;
             Accel1 = BitConverter.ToSingle(buffer, index);index+=4;
@@ -463,6 +465,7 @@ namespace Asv.Mavlink.V2.Ualberta
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Mode = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             NavMode = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             Pilot = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -484,6 +487,7 @@ namespace Asv.Mavlink.V2.Ualberta
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Mode = (byte)buffer[index++];
             NavMode = (byte)buffer[index++];
             Pilot = (byte)buffer[index++];

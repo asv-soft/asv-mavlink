@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2018 Alexey Voloshkevich Cursir ltd. (https://github.com/asvol)
+// Copyright (c) 2018 Alexey (https://github.com/asvol)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,8 @@
 
 using System;
 using System.Text;
-using Asv.IO;
 using Asv.Mavlink.V2.Common;
+using Asv.IO;
 
 namespace Asv.Mavlink.V2.Uavionix
 {
@@ -495,6 +495,7 @@ namespace Asv.Mavlink.V2.Uavionix
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Utctime = BinSerialize.ReadUInt(ref buffer);index+=4;
             Gpslat = BinSerialize.ReadInt(ref buffer);index+=4;
             Gpslon = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -542,6 +543,7 @@ namespace Asv.Mavlink.V2.Uavionix
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Utctime = BitConverter.ToUInt32(buffer,index);index+=4;
             Gpslat = BitConverter.ToInt32(buffer,index);index+=4;
             Gpslon = BitConverter.ToInt32(buffer,index);index+=4;
@@ -690,6 +692,7 @@ namespace Asv.Mavlink.V2.Uavionix
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Rfhealth = (UavionixAdsbRfHealth)BinSerialize.ReadByte(ref buffer);index+=1;
 
         }
@@ -707,6 +710,7 @@ namespace Asv.Mavlink.V2.Uavionix
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Rfhealth = (UavionixAdsbRfHealth)buffer[index++];
         }
 

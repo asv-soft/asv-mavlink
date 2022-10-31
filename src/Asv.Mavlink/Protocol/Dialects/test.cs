@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2018 Alexey Voloshkevich Cursir ltd. (https://github.com/asvol)
+// Copyright (c) 2018 Alexey (https://github.com/asvol)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -50,7 +50,7 @@ namespace Asv.Mavlink.V2.Test
     /// </summary>
     public class TestTypesPacket: PacketV2<TestTypesPayload>
     {
-	    public const int PacketMessageId = 17000;
+	    public const int PacketMessageId = 0;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 103;
 

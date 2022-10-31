@@ -1,50 +1,41 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-	  <TargetFrameworks>net461;net5.0;net6.0;</TargetFrameworks>
-	  <Version>1.0.0</Version>
-	  <LangVersion>9.0</LangVersion>
-	  <Authors>https://github.com/asvol</Authors>
-	  <Company>https://github.com/asvol</Company>
-	  <Copyright>https://github.com/asvol</Copyright>
-	  <PackageProjectUrl>https://github.com/asvol/asv-mavlink</PackageProjectUrl>
-	  <RepositoryUrl>https://github.com/asvol/asv-mavlink</RepositoryUrl>
-	  <PackageTags />
-	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Description>Mavlink library for .NET Framework 4.6.1, .NET5.0, .NET 6.0, Mono for vehicle control Px4, Ardupilot </Description>
+    <TargetFrameworks>net461;net5.0;net6.0;</TargetFrameworks>
+    <Version>1.0.0</Version>
+    <LangVersion>9.0</LangVersion>
+    <Authors>https://github.com/asvol</Authors>
+    <Company>https://github.com/asvol</Company>
+    <Copyright>https://github.com/asvol</Copyright>
+    <PackageProjectUrl>https://github.com/asvol/asv-mavlink</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/asvol/asv-mavlink</RepositoryUrl>
+    <PackageTags />
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Mavlink library for .NET Framework 4.6.1, .NET5.0, .NET 6.0, Mono for vehicle control Px4, Ardupilot </Description>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net5.0|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net461|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net461|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5.0|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Asv.IO" Version="1.2.1" />
     <PackageReference Include="Geodesy" Version="4.1.0" />
     <PackageReference Include="NLog" Version="5.0.4" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="RS.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -52,12 +43,13 @@
       <DependentUpon>RS.resx</DependentUpon>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Update="RS.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RS.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
+  <ItemGroup>
+    <Folder Include="Protocol\Dialects\" />
+  </ItemGroup>
 </Project>

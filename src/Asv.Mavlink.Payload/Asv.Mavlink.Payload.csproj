@@ -1,27 +1,23 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-	  <TargetFrameworks>net461;net5.0;net6.0;</TargetFrameworks>
-	  <Version>1.0.0</Version>
-	  <LangVersion>9.0</LangVersion>
-	  <Authors>https://github.com/asvol</Authors>
-	  <Company>https://github.com/asvol</Company>
-	  <Copyright>https://github.com/asvol</Copyright>
-	  <PackageProjectUrl>https://github.com/asvol/asv-mavlink</PackageProjectUrl>
-	  <RepositoryUrl>https://github.com/asvol/asv-mavlink</RepositoryUrl>
-	  <PackageTags />
-	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Description>Mavlink library for .NET Framework 4.6.1, .NET5.0, .NET 6.0, Mono for vehicle control Px4, Ardupilot</Description>
+    <TargetFrameworks>net461;net5.0;net6.0;</TargetFrameworks>
+    <Version>1.0.0</Version>
+    <LangVersion>9.0</LangVersion>
+    <Authors>https://github.com/asvol</Authors>
+    <Company>https://github.com/asvol</Company>
+    <Copyright>https://github.com/asvol</Copyright>
+    <PackageProjectUrl>https://github.com/asvol/asv-mavlink</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/asvol/asv-mavlink</RepositoryUrl>
+    <PackageTags />
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Mavlink library for .NET Framework 4.6.1, .NET5.0, .NET 6.0, Mono for vehicle control Px4, Ardupilot</Description>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Asv.Cfg" Version="1.2.1" />
     <PackageReference Include="DynamicData" Version="7.10.2" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Asv.Mavlink.Vehicle\Asv.Mavlink.Vehicle.csproj" />
     <ProjectReference Include="..\Asv.Mavlink\Asv.Mavlink.csproj" />
   </ItemGroup>
-
 </Project>

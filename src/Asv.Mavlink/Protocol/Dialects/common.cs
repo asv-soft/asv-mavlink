@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2018 Alexey Voloshkevich Cursir ltd. (https://github.com/asvol)
+// Copyright (c) 2018 Alexey (https://github.com/asvol)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@
 using System;
 using System.Text;
 using Asv.IO;
-using Asv.Mavlink.V2.Minimal;
 
 namespace Asv.Mavlink.V2.Common
 {
@@ -34,6 +33,7 @@ namespace Asv.Mavlink.V2.Common
     {
         public static void RegisterCommonDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
         {
+            src.Register(()=>new HeartbeatPacket());
             src.Register(()=>new SysStatusPacket());
             src.Register(()=>new SystemTimePacket());
             src.Register(()=>new PingPacket());
@@ -74,6 +74,7 @@ namespace Asv.Mavlink.V2.Common
             src.Register(()=>new GpsGlobalOriginPacket());
             src.Register(()=>new ParamMapRcPacket());
             src.Register(()=>new MissionRequestIntPacket());
+            src.Register(()=>new MissionChangedPacket());
             src.Register(()=>new SafetySetAllowedAreaPacket());
             src.Register(()=>new SafetyAllowedAreaPacket());
             src.Register(()=>new AttitudeQuaternionCovPacket());
@@ -90,7 +91,6 @@ namespace Asv.Mavlink.V2.Common
             src.Register(()=>new CommandIntPacket());
             src.Register(()=>new CommandLongPacket());
             src.Register(()=>new CommandAckPacket());
-            src.Register(()=>new CommandCancelPacket());
             src.Register(()=>new ManualSetpointPacket());
             src.Register(()=>new SetAttitudeTargetPacket());
             src.Register(()=>new AttitudeTargetPacket());
@@ -152,9 +152,6 @@ namespace Asv.Mavlink.V2.Common
             src.Register(()=>new BatteryStatusPacket());
             src.Register(()=>new AutopilotVersionPacket());
             src.Register(()=>new LandingTargetPacket());
-            src.Register(()=>new FenceStatusPacket());
-            src.Register(()=>new MagCalReportPacket());
-            src.Register(()=>new EfiStatusPacket());
             src.Register(()=>new EstimatorStatusPacket());
             src.Register(()=>new WindCovPacket());
             src.Register(()=>new GpsInputPacket());
@@ -190,22 +187,8 @@ namespace Asv.Mavlink.V2.Common
             src.Register(()=>new LoggingAckPacket());
             src.Register(()=>new VideoStreamInformationPacket());
             src.Register(()=>new VideoStreamStatusPacket());
-            src.Register(()=>new CameraFovStatusPacket());
-            src.Register(()=>new CameraTrackingImageStatusPacket());
-            src.Register(()=>new CameraTrackingGeoStatusPacket());
-            src.Register(()=>new GimbalManagerInformationPacket());
-            src.Register(()=>new GimbalManagerStatusPacket());
-            src.Register(()=>new GimbalManagerSetAttitudePacket());
-            src.Register(()=>new GimbalDeviceInformationPacket());
-            src.Register(()=>new GimbalDeviceSetAttitudePacket());
-            src.Register(()=>new GimbalDeviceAttitudeStatusPacket());
-            src.Register(()=>new AutopilotStateForGimbalDevicePacket());
-            src.Register(()=>new GimbalManagerSetPitchyawPacket());
-            src.Register(()=>new GimbalManagerSetManualControlPacket());
-            src.Register(()=>new EscInfoPacket());
-            src.Register(()=>new EscStatusPacket());
             src.Register(()=>new WifiConfigApPacket());
-            src.Register(()=>new AisVesselPacket());
+            src.Register(()=>new ProtocolVersionPacket());
             src.Register(()=>new UavcanNodeStatusPacket());
             src.Register(()=>new UavcanNodeInfoPacket());
             src.Register(()=>new ParamExtRequestReadPacket());
@@ -218,39 +201,300 @@ namespace Asv.Mavlink.V2.Common
             src.Register(()=>new TrajectoryRepresentationWaypointsPacket());
             src.Register(()=>new TrajectoryRepresentationBezierPacket());
             src.Register(()=>new CellularStatusPacket());
-            src.Register(()=>new IsbdLinkStatusPacket());
-            src.Register(()=>new CellularConfigPacket());
-            src.Register(()=>new RawRpmPacket());
             src.Register(()=>new UtmGlobalPositionPacket());
             src.Register(()=>new DebugFloatArrayPacket());
             src.Register(()=>new OrbitExecutionStatusPacket());
+            src.Register(()=>new StatustextLongPacket());
             src.Register(()=>new SmartBatteryInfoPacket());
-            src.Register(()=>new GeneratorStatusPacket());
+            src.Register(()=>new SmartBatteryStatusPacket());
             src.Register(()=>new ActuatorOutputStatusPacket());
             src.Register(()=>new TimeEstimateToTargetPacket());
-            src.Register(()=>new TunnelPacket());
-            src.Register(()=>new OnboardComputerStatusPacket());
-            src.Register(()=>new ComponentInformationPacket());
-            src.Register(()=>new PlayTuneV2Packet());
-            src.Register(()=>new SupportedTunesPacket());
-            src.Register(()=>new EventPacket());
-            src.Register(()=>new CurrentEventSequencePacket());
-            src.Register(()=>new RequestEventPacket());
-            src.Register(()=>new ResponseEventErrorPacket());
             src.Register(()=>new WheelDistancePacket());
-            src.Register(()=>new WinchStatusPacket());
-            src.Register(()=>new OpenDroneIdBasicIdPacket());
-            src.Register(()=>new OpenDroneIdLocationPacket());
-            src.Register(()=>new OpenDroneIdAuthenticationPacket());
-            src.Register(()=>new OpenDroneIdSelfIdPacket());
-            src.Register(()=>new OpenDroneIdSystemPacket());
-            src.Register(()=>new OpenDroneIdOperatorIdPacket());
-            src.Register(()=>new OpenDroneIdMessagePackPacket());
-            src.Register(()=>new HygrometerSensorPacket());
         }
     }
 
 #region Enums
+
+    /// <summary>
+    /// Micro air vehicle / autopilot classes. This identifies the individual model.
+    ///  MAV_AUTOPILOT
+    /// </summary>
+    public enum MavAutopilot:uint
+    {
+        /// <summary>
+        /// Generic autopilot, full support for everything
+        /// MAV_AUTOPILOT_GENERIC
+        /// </summary>
+        MavAutopilotGeneric = 0,
+        /// <summary>
+        /// Reserved for future use.
+        /// MAV_AUTOPILOT_RESERVED
+        /// </summary>
+        MavAutopilotReserved = 1,
+        /// <summary>
+        /// SLUGS autopilot, http://slugsuav.soe.ucsc.edu
+        /// MAV_AUTOPILOT_SLUGS
+        /// </summary>
+        MavAutopilotSlugs = 2,
+        /// <summary>
+        /// ArduPilot - Plane/Copter/Rover/Sub/Tracker, http://ardupilot.org
+        /// MAV_AUTOPILOT_ARDUPILOTMEGA
+        /// </summary>
+        MavAutopilotArdupilotmega = 3,
+        /// <summary>
+        /// OpenPilot, http://openpilot.org
+        /// MAV_AUTOPILOT_OPENPILOT
+        /// </summary>
+        MavAutopilotOpenpilot = 4,
+        /// <summary>
+        /// Generic autopilot only supporting simple waypoints
+        /// MAV_AUTOPILOT_GENERIC_WAYPOINTS_ONLY
+        /// </summary>
+        MavAutopilotGenericWaypointsOnly = 5,
+        /// <summary>
+        /// Generic autopilot supporting waypoints and other simple navigation commands
+        /// MAV_AUTOPILOT_GENERIC_WAYPOINTS_AND_SIMPLE_NAVIGATION_ONLY
+        /// </summary>
+        MavAutopilotGenericWaypointsAndSimpleNavigationOnly = 6,
+        /// <summary>
+        /// Generic autopilot supporting the full mission command set
+        /// MAV_AUTOPILOT_GENERIC_MISSION_FULL
+        /// </summary>
+        MavAutopilotGenericMissionFull = 7,
+        /// <summary>
+        /// No valid autopilot, e.g. a GCS or other MAVLink component
+        /// MAV_AUTOPILOT_INVALID
+        /// </summary>
+        MavAutopilotInvalid = 8,
+        /// <summary>
+        /// PPZ UAV - http://nongnu.org/paparazzi
+        /// MAV_AUTOPILOT_PPZ
+        /// </summary>
+        MavAutopilotPpz = 9,
+        /// <summary>
+        /// UAV Dev Board
+        /// MAV_AUTOPILOT_UDB
+        /// </summary>
+        MavAutopilotUdb = 10,
+        /// <summary>
+        /// FlexiPilot
+        /// MAV_AUTOPILOT_FP
+        /// </summary>
+        MavAutopilotFp = 11,
+        /// <summary>
+        /// PX4 Autopilot - http://px4.io/
+        /// MAV_AUTOPILOT_PX4
+        /// </summary>
+        MavAutopilotPx4 = 12,
+        /// <summary>
+        /// SMACCMPilot - http://smaccmpilot.org
+        /// MAV_AUTOPILOT_SMACCMPILOT
+        /// </summary>
+        MavAutopilotSmaccmpilot = 13,
+        /// <summary>
+        /// AutoQuad -- http://autoquad.org
+        /// MAV_AUTOPILOT_AUTOQUAD
+        /// </summary>
+        MavAutopilotAutoquad = 14,
+        /// <summary>
+        /// Armazila -- http://armazila.com
+        /// MAV_AUTOPILOT_ARMAZILA
+        /// </summary>
+        MavAutopilotArmazila = 15,
+        /// <summary>
+        /// Aerob -- http://aerob.ru
+        /// MAV_AUTOPILOT_AEROB
+        /// </summary>
+        MavAutopilotAerob = 16,
+        /// <summary>
+        /// ASLUAV autopilot -- http://www.asl.ethz.ch
+        /// MAV_AUTOPILOT_ASLUAV
+        /// </summary>
+        MavAutopilotAsluav = 17,
+        /// <summary>
+        /// SmartAP Autopilot - http://sky-drones.com
+        /// MAV_AUTOPILOT_SMARTAP
+        /// </summary>
+        MavAutopilotSmartap = 18,
+        /// <summary>
+        /// AirRails - http://uaventure.com
+        /// MAV_AUTOPILOT_AIRRAILS
+        /// </summary>
+        MavAutopilotAirrails = 19,
+    }
+
+    /// <summary>
+    /// MAVLINK system type. All components in a system should report this type in their HEARTBEAT.
+    ///  MAV_TYPE
+    /// </summary>
+    public enum MavType:uint
+    {
+        /// <summary>
+        /// Generic micro air vehicle.
+        /// MAV_TYPE_GENERIC
+        /// </summary>
+        MavTypeGeneric = 0,
+        /// <summary>
+        /// Fixed wing aircraft.
+        /// MAV_TYPE_FIXED_WING
+        /// </summary>
+        MavTypeFixedWing = 1,
+        /// <summary>
+        /// Quadrotor
+        /// MAV_TYPE_QUADROTOR
+        /// </summary>
+        MavTypeQuadrotor = 2,
+        /// <summary>
+        /// Coaxial helicopter
+        /// MAV_TYPE_COAXIAL
+        /// </summary>
+        MavTypeCoaxial = 3,
+        /// <summary>
+        /// Normal helicopter with tail rotor.
+        /// MAV_TYPE_HELICOPTER
+        /// </summary>
+        MavTypeHelicopter = 4,
+        /// <summary>
+        /// Ground installation
+        /// MAV_TYPE_ANTENNA_TRACKER
+        /// </summary>
+        MavTypeAntennaTracker = 5,
+        /// <summary>
+        /// Operator control unit / ground control station
+        /// MAV_TYPE_GCS
+        /// </summary>
+        MavTypeGcs = 6,
+        /// <summary>
+        /// Airship, controlled
+        /// MAV_TYPE_AIRSHIP
+        /// </summary>
+        MavTypeAirship = 7,
+        /// <summary>
+        /// Free balloon, uncontrolled
+        /// MAV_TYPE_FREE_BALLOON
+        /// </summary>
+        MavTypeFreeBalloon = 8,
+        /// <summary>
+        /// Rocket
+        /// MAV_TYPE_ROCKET
+        /// </summary>
+        MavTypeRocket = 9,
+        /// <summary>
+        /// Ground rover
+        /// MAV_TYPE_GROUND_ROVER
+        /// </summary>
+        MavTypeGroundRover = 10,
+        /// <summary>
+        /// Surface vessel, boat, ship
+        /// MAV_TYPE_SURFACE_BOAT
+        /// </summary>
+        MavTypeSurfaceBoat = 11,
+        /// <summary>
+        /// Submarine
+        /// MAV_TYPE_SUBMARINE
+        /// </summary>
+        MavTypeSubmarine = 12,
+        /// <summary>
+        /// Hexarotor
+        /// MAV_TYPE_HEXAROTOR
+        /// </summary>
+        MavTypeHexarotor = 13,
+        /// <summary>
+        /// Octorotor
+        /// MAV_TYPE_OCTOROTOR
+        /// </summary>
+        MavTypeOctorotor = 14,
+        /// <summary>
+        /// Tricopter
+        /// MAV_TYPE_TRICOPTER
+        /// </summary>
+        MavTypeTricopter = 15,
+        /// <summary>
+        /// Flapping wing
+        /// MAV_TYPE_FLAPPING_WING
+        /// </summary>
+        MavTypeFlappingWing = 16,
+        /// <summary>
+        /// Kite
+        /// MAV_TYPE_KITE
+        /// </summary>
+        MavTypeKite = 17,
+        /// <summary>
+        /// Onboard companion controller
+        /// MAV_TYPE_ONBOARD_CONTROLLER
+        /// </summary>
+        MavTypeOnboardController = 18,
+        /// <summary>
+        /// Two-rotor VTOL using control surfaces in vertical operation in addition. Tailsitter.
+        /// MAV_TYPE_VTOL_DUOROTOR
+        /// </summary>
+        MavTypeVtolDuorotor = 19,
+        /// <summary>
+        /// Quad-rotor VTOL using a V-shaped quad config in vertical operation. Tailsitter.
+        /// MAV_TYPE_VTOL_QUADROTOR
+        /// </summary>
+        MavTypeVtolQuadrotor = 20,
+        /// <summary>
+        /// Tiltrotor VTOL
+        /// MAV_TYPE_VTOL_TILTROTOR
+        /// </summary>
+        MavTypeVtolTiltrotor = 21,
+        /// <summary>
+        /// VTOL reserved 2
+        /// MAV_TYPE_VTOL_RESERVED2
+        /// </summary>
+        MavTypeVtolReserved2 = 22,
+        /// <summary>
+        /// VTOL reserved 3
+        /// MAV_TYPE_VTOL_RESERVED3
+        /// </summary>
+        MavTypeVtolReserved3 = 23,
+        /// <summary>
+        /// VTOL reserved 4
+        /// MAV_TYPE_VTOL_RESERVED4
+        /// </summary>
+        MavTypeVtolReserved4 = 24,
+        /// <summary>
+        /// VTOL reserved 5
+        /// MAV_TYPE_VTOL_RESERVED5
+        /// </summary>
+        MavTypeVtolReserved5 = 25,
+        /// <summary>
+        /// Gimbal (standalone)
+        /// MAV_TYPE_GIMBAL
+        /// </summary>
+        MavTypeGimbal = 26,
+        /// <summary>
+        /// ADSB system (standalone)
+        /// MAV_TYPE_ADSB
+        /// </summary>
+        MavTypeAdsb = 27,
+        /// <summary>
+        /// Steerable, nonrigid airfoil
+        /// MAV_TYPE_PARAFOIL
+        /// </summary>
+        MavTypeParafoil = 28,
+        /// <summary>
+        /// Dodecarotor
+        /// MAV_TYPE_DODECAROTOR
+        /// </summary>
+        MavTypeDodecarotor = 29,
+        /// <summary>
+        /// Camera (standalone)
+        /// MAV_TYPE_CAMERA
+        /// </summary>
+        MavTypeCamera = 30,
+        /// <summary>
+        /// Charging station
+        /// MAV_TYPE_CHARGING_STATION
+        /// </summary>
+        MavTypeChargingStation = 31,
+        /// <summary>
+        /// FLARM collision avoidance system (standalone)
+        /// MAV_TYPE_FLARM
+        /// </summary>
+        MavTypeFlarm = 32,
+    }
 
     /// <summary>
     /// These values define the type of firmware release.  These values indicate the first version or release of this type.  For example the first alpha release would be 64, the second would be 65.
@@ -364,6 +608,102 @@ namespace Asv.Mavlink.V2.Common
     }
 
     /// <summary>
+    /// These flags encode the MAV mode.
+    ///  MAV_MODE_FLAG
+    /// </summary>
+    public enum MavModeFlag:uint
+    {
+        /// <summary>
+        /// 0b10000000 MAV safety set to armed. Motors are enabled / running / can start. Ready to fly. Additional note: this flag is to be ignore when sent in the command MAV_CMD_DO_SET_MODE and MAV_CMD_COMPONENT_ARM_DISARM shall be used instead. The flag can still be used to report the armed state.
+        /// MAV_MODE_FLAG_SAFETY_ARMED
+        /// </summary>
+        MavModeFlagSafetyArmed = 128,
+        /// <summary>
+        /// 0b01000000 remote control input is enabled.
+        /// MAV_MODE_FLAG_MANUAL_INPUT_ENABLED
+        /// </summary>
+        MavModeFlagManualInputEnabled = 64,
+        /// <summary>
+        /// 0b00100000 hardware in the loop simulation. All motors / actuators are blocked, but internal software is full operational.
+        /// MAV_MODE_FLAG_HIL_ENABLED
+        /// </summary>
+        MavModeFlagHilEnabled = 32,
+        /// <summary>
+        /// 0b00010000 system stabilizes electronically its attitude (and optionally position). It needs however further control inputs to move around.
+        /// MAV_MODE_FLAG_STABILIZE_ENABLED
+        /// </summary>
+        MavModeFlagStabilizeEnabled = 16,
+        /// <summary>
+        /// 0b00001000 guided mode enabled, system flies waypoints / mission items.
+        /// MAV_MODE_FLAG_GUIDED_ENABLED
+        /// </summary>
+        MavModeFlagGuidedEnabled = 8,
+        /// <summary>
+        /// 0b00000100 autonomous mode enabled, system finds its own goal positions. Guided flag can be set or not, depends on the actual implementation.
+        /// MAV_MODE_FLAG_AUTO_ENABLED
+        /// </summary>
+        MavModeFlagAutoEnabled = 4,
+        /// <summary>
+        /// 0b00000010 system has a test mode enabled. This flag is intended for temporary system tests and should not be used for stable implementations.
+        /// MAV_MODE_FLAG_TEST_ENABLED
+        /// </summary>
+        MavModeFlagTestEnabled = 2,
+        /// <summary>
+        /// 0b00000001 Reserved for future use.
+        /// MAV_MODE_FLAG_CUSTOM_MODE_ENABLED
+        /// </summary>
+        MavModeFlagCustomModeEnabled = 1,
+    }
+
+    /// <summary>
+    /// These values encode the bit positions of the decode position. These values can be used to read the value of a flag bit by combining the base_mode variable with AND with the flag position value. The result will be either 0 or 1, depending on if the flag is set or not.
+    ///  MAV_MODE_FLAG_DECODE_POSITION
+    /// </summary>
+    public enum MavModeFlagDecodePosition:uint
+    {
+        /// <summary>
+        /// First bit:  10000000
+        /// MAV_MODE_FLAG_DECODE_POSITION_SAFETY
+        /// </summary>
+        MavModeFlagDecodePositionSafety = 128,
+        /// <summary>
+        /// Second bit: 01000000
+        /// MAV_MODE_FLAG_DECODE_POSITION_MANUAL
+        /// </summary>
+        MavModeFlagDecodePositionManual = 64,
+        /// <summary>
+        /// Third bit:  00100000
+        /// MAV_MODE_FLAG_DECODE_POSITION_HIL
+        /// </summary>
+        MavModeFlagDecodePositionHil = 32,
+        /// <summary>
+        /// Fourth bit: 00010000
+        /// MAV_MODE_FLAG_DECODE_POSITION_STABILIZE
+        /// </summary>
+        MavModeFlagDecodePositionStabilize = 16,
+        /// <summary>
+        /// Fifth bit:  00001000
+        /// MAV_MODE_FLAG_DECODE_POSITION_GUIDED
+        /// </summary>
+        MavModeFlagDecodePositionGuided = 8,
+        /// <summary>
+        /// Sixth bit:   00000100
+        /// MAV_MODE_FLAG_DECODE_POSITION_AUTO
+        /// </summary>
+        MavModeFlagDecodePositionAuto = 4,
+        /// <summary>
+        /// Seventh bit: 00000010
+        /// MAV_MODE_FLAG_DECODE_POSITION_TEST
+        /// </summary>
+        MavModeFlagDecodePositionTest = 2,
+        /// <summary>
+        /// Eighth bit: 00000001
+        /// MAV_MODE_FLAG_DECODE_POSITION_CUSTOM_MODE
+        /// </summary>
+        MavModeFlagDecodePositionCustomMode = 1,
+    }
+
+    /// <summary>
     /// Actions that may be specified in MAV_CMD_OVERRIDE_GOTO to override mission execution.
     ///  MAV_GOTO
     /// </summary>
@@ -453,6 +793,273 @@ namespace Asv.Mavlink.V2.Common
         /// MAV_MODE_TEST_ARMED
         /// </summary>
         MavModeTestArmed = 194,
+    }
+
+    /// <summary>
+    ///  MAV_STATE
+    /// </summary>
+    public enum MavState:uint
+    {
+        /// <summary>
+        /// Uninitialized system, state is unknown.
+        /// MAV_STATE_UNINIT
+        /// </summary>
+        MavStateUninit = 0,
+        /// <summary>
+        /// System is booting up.
+        /// MAV_STATE_BOOT
+        /// </summary>
+        MavStateBoot = 1,
+        /// <summary>
+        /// System is calibrating and not flight-ready.
+        /// MAV_STATE_CALIBRATING
+        /// </summary>
+        MavStateCalibrating = 2,
+        /// <summary>
+        /// System is grounded and on standby. It can be launched any time.
+        /// MAV_STATE_STANDBY
+        /// </summary>
+        MavStateStandby = 3,
+        /// <summary>
+        /// System is active and might be already airborne. Motors are engaged.
+        /// MAV_STATE_ACTIVE
+        /// </summary>
+        MavStateActive = 4,
+        /// <summary>
+        /// System is in a non-normal flight mode. It can however still navigate.
+        /// MAV_STATE_CRITICAL
+        /// </summary>
+        MavStateCritical = 5,
+        /// <summary>
+        /// System is in a non-normal flight mode. It lost control over parts or over the whole airframe. It is in mayday and going down.
+        /// MAV_STATE_EMERGENCY
+        /// </summary>
+        MavStateEmergency = 6,
+        /// <summary>
+        /// System just initialized its power-down sequence, will shut down now.
+        /// MAV_STATE_POWEROFF
+        /// </summary>
+        MavStatePoweroff = 7,
+        /// <summary>
+        /// System is terminating itself.
+        /// MAV_STATE_FLIGHT_TERMINATION
+        /// </summary>
+        MavStateFlightTermination = 8,
+    }
+
+    /// <summary>
+    /// Component ids (values) for the different types and instances of onboard hardware/software that might make up a MAVLink system (autopilot, cameras, servos, GPS systems, avoidance systems etc.).
+    ///       Components must use the appropriate ID in their source address when sending messages. Components can also use IDs to determine if they are the intended recipient of an incoming message. The MAV_COMP_ID_ALL value is used to indicate messages that must be processed by all components.
+    ///       When creating new entries, components that can have multiple instances (e.g. cameras, servos etc.) should be allocated sequential values. An appropriate number of values should be left free after these components to allow the number of instances to be expanded.
+    ///  MAV_COMPONENT
+    /// </summary>
+    public enum MavComponent:uint
+    {
+        /// <summary>
+        /// Used to broadcast messages to all components of the receiving system. Components should attempt to process messages with this component ID and forward to components on any other interfaces.
+        /// MAV_COMP_ID_ALL
+        /// </summary>
+        MavCompIdAll = 0,
+        /// <summary>
+        /// System flight controller component ("autopilot"). Only one autopilot is expected in a particular system.
+        /// MAV_COMP_ID_AUTOPILOT1
+        /// </summary>
+        MavCompIdAutopilot1 = 1,
+        /// <summary>
+        /// Camera #1.
+        /// MAV_COMP_ID_CAMERA
+        /// </summary>
+        MavCompIdCamera = 100,
+        /// <summary>
+        /// Camera #2.
+        /// MAV_COMP_ID_CAMERA2
+        /// </summary>
+        MavCompIdCamera2 = 101,
+        /// <summary>
+        /// Camera #3.
+        /// MAV_COMP_ID_CAMERA3
+        /// </summary>
+        MavCompIdCamera3 = 102,
+        /// <summary>
+        /// Camera #4.
+        /// MAV_COMP_ID_CAMERA4
+        /// </summary>
+        MavCompIdCamera4 = 103,
+        /// <summary>
+        /// Camera #5.
+        /// MAV_COMP_ID_CAMERA5
+        /// </summary>
+        MavCompIdCamera5 = 104,
+        /// <summary>
+        /// Camera #6.
+        /// MAV_COMP_ID_CAMERA6
+        /// </summary>
+        MavCompIdCamera6 = 105,
+        /// <summary>
+        /// Servo #1.
+        /// MAV_COMP_ID_SERVO1
+        /// </summary>
+        MavCompIdServo1 = 140,
+        /// <summary>
+        /// Servo #2.
+        /// MAV_COMP_ID_SERVO2
+        /// </summary>
+        MavCompIdServo2 = 141,
+        /// <summary>
+        /// Servo #3.
+        /// MAV_COMP_ID_SERVO3
+        /// </summary>
+        MavCompIdServo3 = 142,
+        /// <summary>
+        /// Servo #4.
+        /// MAV_COMP_ID_SERVO4
+        /// </summary>
+        MavCompIdServo4 = 143,
+        /// <summary>
+        /// Servo #5.
+        /// MAV_COMP_ID_SERVO5
+        /// </summary>
+        MavCompIdServo5 = 144,
+        /// <summary>
+        /// Servo #6.
+        /// MAV_COMP_ID_SERVO6
+        /// </summary>
+        MavCompIdServo6 = 145,
+        /// <summary>
+        /// Servo #7.
+        /// MAV_COMP_ID_SERVO7
+        /// </summary>
+        MavCompIdServo7 = 146,
+        /// <summary>
+        /// Servo #8.
+        /// MAV_COMP_ID_SERVO8
+        /// </summary>
+        MavCompIdServo8 = 147,
+        /// <summary>
+        /// Servo #9.
+        /// MAV_COMP_ID_SERVO9
+        /// </summary>
+        MavCompIdServo9 = 148,
+        /// <summary>
+        /// Servo #10.
+        /// MAV_COMP_ID_SERVO10
+        /// </summary>
+        MavCompIdServo10 = 149,
+        /// <summary>
+        /// Servo #11.
+        /// MAV_COMP_ID_SERVO11
+        /// </summary>
+        MavCompIdServo11 = 150,
+        /// <summary>
+        /// Servo #12.
+        /// MAV_COMP_ID_SERVO12
+        /// </summary>
+        MavCompIdServo12 = 151,
+        /// <summary>
+        /// Servo #13.
+        /// MAV_COMP_ID_SERVO13
+        /// </summary>
+        MavCompIdServo13 = 152,
+        /// <summary>
+        /// Servo #14.
+        /// MAV_COMP_ID_SERVO14
+        /// </summary>
+        MavCompIdServo14 = 153,
+        /// <summary>
+        /// Gimbal component.
+        /// MAV_COMP_ID_GIMBAL
+        /// </summary>
+        MavCompIdGimbal = 154,
+        /// <summary>
+        /// Logging component.
+        /// MAV_COMP_ID_LOG
+        /// </summary>
+        MavCompIdLog = 155,
+        /// <summary>
+        /// Automatic Dependent Surveillance-Broadcast (ADS-B) component.
+        /// MAV_COMP_ID_ADSB
+        /// </summary>
+        MavCompIdAdsb = 156,
+        /// <summary>
+        /// On Screen Display (OSD) devices for video links.
+        /// MAV_COMP_ID_OSD
+        /// </summary>
+        MavCompIdOsd = 157,
+        /// <summary>
+        /// Generic autopilot peripheral component ID. Meant for devices that do not implement the parameter microservice.
+        /// MAV_COMP_ID_PERIPHERAL
+        /// </summary>
+        MavCompIdPeripheral = 158,
+        /// <summary>
+        /// Gimbal ID for QX1.
+        /// MAV_COMP_ID_QX1_GIMBAL
+        /// </summary>
+        MavCompIdQx1Gimbal = 159,
+        /// <summary>
+        /// FLARM collision alert component.
+        /// MAV_COMP_ID_FLARM
+        /// </summary>
+        MavCompIdFlarm = 160,
+        /// <summary>
+        /// Component that can generate/supply a mission flight plan (e.g. GCS or developer API).
+        /// MAV_COMP_ID_MISSIONPLANNER
+        /// </summary>
+        MavCompIdMissionplanner = 190,
+        /// <summary>
+        /// Component that finds an optimal path between points based on a certain constraint (e.g. minimum snap, shortest path, cost, etc.).
+        /// MAV_COMP_ID_PATHPLANNER
+        /// </summary>
+        MavCompIdPathplanner = 195,
+        /// <summary>
+        /// Component that plans a collision free path between two points.
+        /// MAV_COMP_ID_OBSTACLE_AVOIDANCE
+        /// </summary>
+        MavCompIdObstacleAvoidance = 196,
+        /// <summary>
+        /// Component that provides position estimates using VIO techniques.
+        /// MAV_COMP_ID_VISUAL_INERTIAL_ODOMETRY
+        /// </summary>
+        MavCompIdVisualInertialOdometry = 197,
+        /// <summary>
+        /// Inertial Measurement Unit (IMU) #1.
+        /// MAV_COMP_ID_IMU
+        /// </summary>
+        MavCompIdImu = 200,
+        /// <summary>
+        /// Inertial Measurement Unit (IMU) #2.
+        /// MAV_COMP_ID_IMU_2
+        /// </summary>
+        MavCompIdImu2 = 201,
+        /// <summary>
+        /// Inertial Measurement Unit (IMU) #3.
+        /// MAV_COMP_ID_IMU_3
+        /// </summary>
+        MavCompIdImu3 = 202,
+        /// <summary>
+        /// GPS #1.
+        /// MAV_COMP_ID_GPS
+        /// </summary>
+        MavCompIdGps = 220,
+        /// <summary>
+        /// GPS #2.
+        /// MAV_COMP_ID_GPS2
+        /// </summary>
+        MavCompIdGps2 = 221,
+        /// <summary>
+        /// Component to bridge MAVLink to UDP (i.e. from a UART).
+        /// MAV_COMP_ID_UDP_BRIDGE
+        /// </summary>
+        MavCompIdUdpBridge = 240,
+        /// <summary>
+        /// Component to bridge to UART (i.e. from UDP).
+        /// MAV_COMP_ID_UART_BRIDGE
+        /// </summary>
+        MavCompIdUartBridge = 241,
+        /// <summary>
+        /// Component for handling system messages (e.g. to ARM, takeoff, etc.).
+        /// MAV_COMP_ID_SYSTEM_CONTROL
+        /// </summary>
+        MavCompIdSystemControl = 250,
     }
 
     /// <summary>
@@ -601,58 +1208,9 @@ namespace Asv.Mavlink.V2.Common
         /// MAV_SYS_STATUS_SENSOR_SATCOM
         /// </summary>
         MavSysStatusSensorSatcom = 134217728,
-        /// <summary>
-        /// 0x10000000 pre-arm check status. Always healthy when armed
-        /// MAV_SYS_STATUS_PREARM_CHECK
-        /// </summary>
-        MavSysStatusPrearmCheck = 268435456,
-        /// <summary>
-        /// 0x20000000 Avoidance/collision prevention
-        /// MAV_SYS_STATUS_OBSTACLE_AVOIDANCE
-        /// </summary>
-        MavSysStatusObstacleAvoidance = 536870912,
-        /// <summary>
-        /// 0x40000000 propulsion (actuator, esc, motor or propellor)
-        /// MAV_SYS_STATUS_SENSOR_PROPULSION
-        /// </summary>
-        MavSysStatusSensorPropulsion = 1073741824,
-        /// <summary>
-        /// 0x80000000 Extended bit-field are used for further sensor status bits (needs to be set in onboard_control_sensors_present only)
-        /// MAV_SYS_STATUS_EXTENSION_USED
-        /// </summary>
-        MavSysStatusExtensionUsed = 2147483648,
     }
 
     /// <summary>
-    /// These encode the sensors whose status is sent as part of the SYS_STATUS message in the extended fields.
-    ///  MAV_SYS_STATUS_SENSOR_EXTENDED
-    /// </summary>
-    public enum MavSysStatusSensorExtended:uint
-    {
-        /// <summary>
-        /// 0x01 Recovery system (parachute, balloon, retracts etc)
-        /// MAV_SYS_STATUS_RECOVERY_SYSTEM
-        /// </summary>
-        MavSysStatusRecoverySystem = 1,
-    }
-
-    /// <summary>
-    /// Co-ordinate frames used by MAVLink. Not all frames are supported by all commands, messages, or vehicles.
-    ///       
-    ///       Global frames use the following naming conventions:
-    ///       - "GLOBAL": Global co-ordinate frame with WGS84 latitude/longitude and altitude positive over mean sea level (MSL) by default. 
-    ///         The following modifiers may be used with "GLOBAL":
-    ///         - "RELATIVE_ALT": Altitude is relative to the vehicle home position rather than MSL.
-    ///         - "TERRAIN_ALT": Altitude is relative to ground level rather than MSL.
-    ///         - "INT": Latitude/longitude (in degrees) are scaled by multiplying by 1E7.
-    /// 
-    ///       Local frames use the following naming conventions:
-    ///       - "LOCAL": Origin of local frame is fixed relative to earth. Unless otherwise specified this origin is the origin of the vehicle position-estimator ("EKF").
-    ///       - "BODY": Origin of local frame travels with the vehicle. NOTE, "BODY" does NOT indicate alignment of frame axis with vehicle attitude.
-    ///       - "OFFSET": Deprecated synonym for "BODY" (origin travels with the vehicle). Not to be used for new frames.
-    /// 
-    ///       Some deprecated frames do not follow these conventions (e.g. MAV_FRAME_BODY_NED and MAV_FRAME_BODY_OFFSET_NED).
-    ///  
     ///  MAV_FRAME
     /// </summary>
     public enum MavFrame:uint
@@ -663,7 +1221,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavFrameGlobal = 0,
         /// <summary>
-        /// NED local tangent frame (x: North, y: East, z: Down) with origin fixed relative to earth.
+        /// Local coordinate frame, Z-down (x: north, y: east, z: down).
         /// MAV_FRAME_LOCAL_NED
         /// </summary>
         MavFrameLocalNed = 1,
@@ -678,32 +1236,32 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavFrameGlobalRelativeAlt = 3,
         /// <summary>
-        /// ENU local tangent frame (x: East, y: North, z: Up) with origin fixed relative to earth.
+        /// Local coordinate frame, Z-up (x: east, y: north, z: up).
         /// MAV_FRAME_LOCAL_ENU
         /// </summary>
         MavFrameLocalEnu = 4,
         /// <summary>
-        /// Global (WGS84) coordinate frame (scaled) + MSL altitude. First value / x: latitude in degrees*1E7, second value / y: longitude in degrees*1E7, third value / z: positive altitude over mean sea level (MSL).
+        /// Global (WGS84) coordinate frame (scaled) + MSL altitude. First value / x: latitude in degrees*1.0e-7, second value / y: longitude in degrees*1.0e-7, third value / z: positive altitude over mean sea level (MSL).
         /// MAV_FRAME_GLOBAL_INT
         /// </summary>
         MavFrameGlobalInt = 5,
         /// <summary>
-        /// Global (WGS84) coordinate frame (scaled) + altitude relative to the home position. First value / x: latitude in degrees*1E7, second value / y: longitude in degrees*1E7, third value / z: positive altitude with 0 being at the altitude of the home location.
+        /// Global (WGS84) coordinate frame (scaled) + altitude relative to the home position. First value / x: latitude in degrees*10e-7, second value / y: longitude in degrees*10e-7, third value / z: positive altitude with 0 being at the altitude of the home location.
         /// MAV_FRAME_GLOBAL_RELATIVE_ALT_INT
         /// </summary>
         MavFrameGlobalRelativeAltInt = 6,
         /// <summary>
-        /// NED local tangent frame (x: North, y: East, z: Down) with origin that travels with the vehicle.
+        /// Offset to the current local frame. Anything expressed in this frame should be added to the current local frame position.
         /// MAV_FRAME_LOCAL_OFFSET_NED
         /// </summary>
         MavFrameLocalOffsetNed = 7,
         /// <summary>
-        /// Same as MAV_FRAME_LOCAL_NED when used to represent position values. Same as MAV_FRAME_BODY_FRD when used with velocity/accelaration values.
+        /// Setpoint in body NED frame. This makes sense if all position control is externalized - e.g. useful to command 2 m/s^2 acceleration to the right.
         /// MAV_FRAME_BODY_NED
         /// </summary>
         MavFrameBodyNed = 8,
         /// <summary>
-        /// This is the same as MAV_FRAME_BODY_FRD.
+        /// Offset in body NED frame. This makes sense if adding setpoints to the current flight path, to avoid an obstacle - e.g. useful to command 2 m/s^2 acceleration to the east.
         /// MAV_FRAME_BODY_OFFSET_NED
         /// </summary>
         MavFrameBodyOffsetNed = 9,
@@ -713,60 +1271,50 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavFrameGlobalTerrainAlt = 10,
         /// <summary>
-        /// Global (WGS84) coordinate frame (scaled) with AGL altitude (at the waypoint coordinate). First value / x: latitude in degrees*1E7, second value / y: longitude in degrees*1E7, third value / z: positive altitude in meters with 0 being at ground level in terrain model.
+        /// Global (WGS84) coordinate frame (scaled) with AGL altitude (at the waypoint coordinate). First value / x: latitude in degrees*10e-7, second value / y: longitude in degrees*10e-7, third value / z: positive altitude in meters with 0 being at ground level in terrain model.
         /// MAV_FRAME_GLOBAL_TERRAIN_ALT_INT
         /// </summary>
         MavFrameGlobalTerrainAltInt = 11,
         /// <summary>
-        /// FRD local tangent frame (x: Forward, y: Right, z: Down) with origin that travels with vehicle. The forward axis is aligned to the front of the vehicle in the horizontal plane.
+        /// Body fixed frame of reference, Z-down (x: forward, y: right, z: down).
         /// MAV_FRAME_BODY_FRD
         /// </summary>
         MavFrameBodyFrd = 12,
         /// <summary>
-        /// MAV_FRAME_BODY_FLU - Body fixed frame of reference, Z-up (x: Forward, y: Left, z: Up).
-        /// MAV_FRAME_RESERVED_13
+        /// Body fixed frame of reference, Z-up (x: forward, y: left, z: up).
+        /// MAV_FRAME_BODY_FLU
         /// </summary>
-        MavFrameReserved13 = 13,
+        MavFrameBodyFlu = 13,
         /// <summary>
-        /// MAV_FRAME_MOCAP_NED - Odometry local coordinate frame of data given by a motion capture system, Z-down (x: North, y: East, z: Down).
-        /// MAV_FRAME_RESERVED_14
+        /// Odometry local coordinate frame of data given by a motion capture system, Z-down (x: north, y: east, z: down).
+        /// MAV_FRAME_MOCAP_NED
         /// </summary>
-        MavFrameReserved14 = 14,
+        MavFrameMocapNed = 14,
         /// <summary>
-        /// MAV_FRAME_MOCAP_ENU - Odometry local coordinate frame of data given by a motion capture system, Z-up (x: East, y: North, z: Up).
-        /// MAV_FRAME_RESERVED_15
+        /// Odometry local coordinate frame of data given by a motion capture system, Z-up (x: east, y: north, z: up).
+        /// MAV_FRAME_MOCAP_ENU
         /// </summary>
-        MavFrameReserved15 = 15,
+        MavFrameMocapEnu = 15,
         /// <summary>
-        /// MAV_FRAME_VISION_NED - Odometry local coordinate frame of data given by a vision estimation system, Z-down (x: North, y: East, z: Down).
-        /// MAV_FRAME_RESERVED_16
+        /// Odometry local coordinate frame of data given by a vision estimation system, Z-down (x: north, y: east, z: down).
+        /// MAV_FRAME_VISION_NED
         /// </summary>
-        MavFrameReserved16 = 16,
+        MavFrameVisionNed = 16,
         /// <summary>
-        /// MAV_FRAME_VISION_ENU - Odometry local coordinate frame of data given by a vision estimation system, Z-up (x: East, y: North, z: Up).
-        /// MAV_FRAME_RESERVED_17
+        /// Odometry local coordinate frame of data given by a vision estimation system, Z-up (x: east, y: north, z: up).
+        /// MAV_FRAME_VISION_ENU
         /// </summary>
-        MavFrameReserved17 = 17,
+        MavFrameVisionEnu = 17,
         /// <summary>
-        /// MAV_FRAME_ESTIM_NED - Odometry local coordinate frame of data given by an estimator running onboard the vehicle, Z-down (x: North, y: East, z: Down).
-        /// MAV_FRAME_RESERVED_18
+        /// Odometry local coordinate frame of data given by an estimator running onboard the vehicle, Z-down (x: north, y: east, z: down).
+        /// MAV_FRAME_ESTIM_NED
         /// </summary>
-        MavFrameReserved18 = 18,
+        MavFrameEstimNed = 18,
         /// <summary>
-        /// MAV_FRAME_ESTIM_ENU - Odometry local coordinate frame of data given by an estimator running onboard the vehicle, Z-up (x: East, y: North, z: Up).
-        /// MAV_FRAME_RESERVED_19
+        /// Odometry local coordinate frame of data given by an estimator running onboard the vehicle, Z-up (x: east, y: noth, z: up).
+        /// MAV_FRAME_ESTIM_ENU
         /// </summary>
-        MavFrameReserved19 = 19,
-        /// <summary>
-        /// FRD local tangent frame (x: Forward, y: Right, z: Down) with origin fixed relative to earth. The forward axis is aligned to the front of the vehicle in the horizontal plane.
-        /// MAV_FRAME_LOCAL_FRD
-        /// </summary>
-        MavFrameLocalFrd = 20,
-        /// <summary>
-        /// FLU local tangent frame (x: Forward, y: Left, z: Up) with origin fixed relative to earth. The forward axis is aligned to the front of the vehicle in the horizontal plane.
-        /// MAV_FRAME_LOCAL_FLU
-        /// </summary>
-        MavFrameLocalFlu = 21,
+        MavFrameEstimEnu = 19,
     }
 
     /// <summary>
@@ -807,18 +1355,17 @@ namespace Asv.Mavlink.V2.Common
     }
 
     /// <summary>
-    /// Actions following geofence breach.
     ///  FENCE_ACTION
     /// </summary>
     public enum FenceAction:uint
     {
         /// <summary>
-        /// Disable fenced mode. If used in a plan this would mean the next fence is disabled.
+        /// Disable fenced mode
         /// FENCE_ACTION_NONE
         /// </summary>
         FenceActionNone = 0,
         /// <summary>
-        /// Fly to geofence MAV_CMD_NAV_FENCE_RETURN_POINT in GUIDED mode. Note: This action is only supported by ArduPlane, and may not be supported in all versions.
+        /// Switched to guided mode to return point (fence point 0)
         /// FENCE_ACTION_GUIDED
         /// </summary>
         FenceActionGuided = 1,
@@ -828,30 +1375,15 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         FenceActionReport = 2,
         /// <summary>
-        /// Fly to geofence MAV_CMD_NAV_FENCE_RETURN_POINT with manual throttle control in GUIDED mode. Note: This action is only supported by ArduPlane, and may not be supported in all versions.
+        /// Switched to guided mode to return point (fence point 0) with manual throttle control
         /// FENCE_ACTION_GUIDED_THR_PASS
         /// </summary>
         FenceActionGuidedThrPass = 3,
         /// <summary>
-        /// Return/RTL mode.
+        /// Switch to RTL (return to launch) mode and head for the return point.
         /// FENCE_ACTION_RTL
         /// </summary>
         FenceActionRtl = 4,
-        /// <summary>
-        /// Hold at current location.
-        /// FENCE_ACTION_HOLD
-        /// </summary>
-        FenceActionHold = 5,
-        /// <summary>
-        /// Termination failsafe. Motors are shut down (some flight stacks may trigger other failsafe actions).
-        /// FENCE_ACTION_TERMINATE
-        /// </summary>
-        FenceActionTerminate = 6,
-        /// <summary>
-        /// Land at current location.
-        /// FENCE_ACTION_LAND
-        /// </summary>
-        FenceActionLand = 7,
     }
 
     /// <summary>
@@ -882,30 +1414,7 @@ namespace Asv.Mavlink.V2.Common
     }
 
     /// <summary>
-    /// Actions being taken to mitigate/prevent fence breach
-    ///  FENCE_MITIGATE
-    /// </summary>
-    public enum FenceMitigate:uint
-    {
-        /// <summary>
-        /// Unknown
-        /// FENCE_MITIGATE_UNKNOWN
-        /// </summary>
-        FenceMitigateUnknown = 0,
-        /// <summary>
-        /// No actions being taken
-        /// FENCE_MITIGATE_NONE
-        /// </summary>
-        FenceMitigateNone = 1,
-        /// <summary>
-        /// Velocity limiting active to prevent breach
-        /// FENCE_MITIGATE_VEL_LIMIT
-        /// </summary>
-        FenceMitigateVelLimit = 2,
-    }
-
-    /// <summary>
-    /// Enumeration of possible mount operation modes. This message is used by obsolete/deprecated gimbal messages.
+    /// Enumeration of possible mount operation modes
     ///  MAV_MOUNT_MODE
     /// </summary>
     public enum MavMountMode:uint
@@ -935,352 +1444,6 @@ namespace Asv.Mavlink.V2.Common
         /// MAV_MOUNT_MODE_GPS_POINT
         /// </summary>
         MavMountModeGpsPoint = 4,
-        /// <summary>
-        /// Gimbal tracks system with specified system ID
-        /// MAV_MOUNT_MODE_SYSID_TARGET
-        /// </summary>
-        MavMountModeSysidTarget = 5,
-        /// <summary>
-        /// Gimbal tracks home location
-        /// MAV_MOUNT_MODE_HOME_LOCATION
-        /// </summary>
-        MavMountModeHomeLocation = 6,
-    }
-
-    /// <summary>
-    /// Gimbal device (low level) capability flags (bitmap)
-    ///  GIMBAL_DEVICE_CAP_FLAGS
-    /// </summary>
-    public enum GimbalDeviceCapFlags:uint
-    {
-        /// <summary>
-        /// Gimbal device supports a retracted position
-        /// GIMBAL_DEVICE_CAP_FLAGS_HAS_RETRACT
-        /// </summary>
-        GimbalDeviceCapFlagsHasRetract = 1,
-        /// <summary>
-        /// Gimbal device supports a horizontal, forward looking position, stabilized
-        /// GIMBAL_DEVICE_CAP_FLAGS_HAS_NEUTRAL
-        /// </summary>
-        GimbalDeviceCapFlagsHasNeutral = 2,
-        /// <summary>
-        /// Gimbal device supports rotating around roll axis.
-        /// GIMBAL_DEVICE_CAP_FLAGS_HAS_ROLL_AXIS
-        /// </summary>
-        GimbalDeviceCapFlagsHasRollAxis = 4,
-        /// <summary>
-        /// Gimbal device supports to follow a roll angle relative to the vehicle
-        /// GIMBAL_DEVICE_CAP_FLAGS_HAS_ROLL_FOLLOW
-        /// </summary>
-        GimbalDeviceCapFlagsHasRollFollow = 8,
-        /// <summary>
-        /// Gimbal device supports locking to an roll angle (generally that's the default with roll stabilized)
-        /// GIMBAL_DEVICE_CAP_FLAGS_HAS_ROLL_LOCK
-        /// </summary>
-        GimbalDeviceCapFlagsHasRollLock = 16,
-        /// <summary>
-        /// Gimbal device supports rotating around pitch axis.
-        /// GIMBAL_DEVICE_CAP_FLAGS_HAS_PITCH_AXIS
-        /// </summary>
-        GimbalDeviceCapFlagsHasPitchAxis = 32,
-        /// <summary>
-        /// Gimbal device supports to follow a pitch angle relative to the vehicle
-        /// GIMBAL_DEVICE_CAP_FLAGS_HAS_PITCH_FOLLOW
-        /// </summary>
-        GimbalDeviceCapFlagsHasPitchFollow = 64,
-        /// <summary>
-        /// Gimbal device supports locking to an pitch angle (generally that's the default with pitch stabilized)
-        /// GIMBAL_DEVICE_CAP_FLAGS_HAS_PITCH_LOCK
-        /// </summary>
-        GimbalDeviceCapFlagsHasPitchLock = 128,
-        /// <summary>
-        /// Gimbal device supports rotating around yaw axis.
-        /// GIMBAL_DEVICE_CAP_FLAGS_HAS_YAW_AXIS
-        /// </summary>
-        GimbalDeviceCapFlagsHasYawAxis = 256,
-        /// <summary>
-        /// Gimbal device supports to follow a yaw angle relative to the vehicle (generally that's the default)
-        /// GIMBAL_DEVICE_CAP_FLAGS_HAS_YAW_FOLLOW
-        /// </summary>
-        GimbalDeviceCapFlagsHasYawFollow = 512,
-        /// <summary>
-        /// Gimbal device supports locking to an absolute heading (often this is an option available)
-        /// GIMBAL_DEVICE_CAP_FLAGS_HAS_YAW_LOCK
-        /// </summary>
-        GimbalDeviceCapFlagsHasYawLock = 1024,
-        /// <summary>
-        /// Gimbal device supports yawing/panning infinetely (e.g. using slip disk).
-        /// GIMBAL_DEVICE_CAP_FLAGS_SUPPORTS_INFINITE_YAW
-        /// </summary>
-        GimbalDeviceCapFlagsSupportsInfiniteYaw = 2048,
-    }
-
-    /// <summary>
-    /// Gimbal manager high level capability flags (bitmap). The first 16 bits are identical to the GIMBAL_DEVICE_CAP_FLAGS. However, the gimbal manager does not need to copy the flags from the gimbal but can also enhance the capabilities and thus add flags.
-    ///  GIMBAL_MANAGER_CAP_FLAGS
-    /// </summary>
-    public enum GimbalManagerCapFlags:uint
-    {
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_CAP_FLAGS_HAS_RETRACT.
-        /// GIMBAL_MANAGER_CAP_FLAGS_HAS_RETRACT
-        /// </summary>
-        GimbalManagerCapFlagsHasRetract = 1,
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_CAP_FLAGS_HAS_NEUTRAL.
-        /// GIMBAL_MANAGER_CAP_FLAGS_HAS_NEUTRAL
-        /// </summary>
-        GimbalManagerCapFlagsHasNeutral = 2,
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_CAP_FLAGS_HAS_ROLL_AXIS.
-        /// GIMBAL_MANAGER_CAP_FLAGS_HAS_ROLL_AXIS
-        /// </summary>
-        GimbalManagerCapFlagsHasRollAxis = 4,
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_CAP_FLAGS_HAS_ROLL_FOLLOW.
-        /// GIMBAL_MANAGER_CAP_FLAGS_HAS_ROLL_FOLLOW
-        /// </summary>
-        GimbalManagerCapFlagsHasRollFollow = 8,
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_CAP_FLAGS_HAS_ROLL_LOCK.
-        /// GIMBAL_MANAGER_CAP_FLAGS_HAS_ROLL_LOCK
-        /// </summary>
-        GimbalManagerCapFlagsHasRollLock = 16,
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_CAP_FLAGS_HAS_PITCH_AXIS.
-        /// GIMBAL_MANAGER_CAP_FLAGS_HAS_PITCH_AXIS
-        /// </summary>
-        GimbalManagerCapFlagsHasPitchAxis = 32,
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_CAP_FLAGS_HAS_PITCH_FOLLOW.
-        /// GIMBAL_MANAGER_CAP_FLAGS_HAS_PITCH_FOLLOW
-        /// </summary>
-        GimbalManagerCapFlagsHasPitchFollow = 64,
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_CAP_FLAGS_HAS_PITCH_LOCK.
-        /// GIMBAL_MANAGER_CAP_FLAGS_HAS_PITCH_LOCK
-        /// </summary>
-        GimbalManagerCapFlagsHasPitchLock = 128,
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_CAP_FLAGS_HAS_YAW_AXIS.
-        /// GIMBAL_MANAGER_CAP_FLAGS_HAS_YAW_AXIS
-        /// </summary>
-        GimbalManagerCapFlagsHasYawAxis = 256,
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_CAP_FLAGS_HAS_YAW_FOLLOW.
-        /// GIMBAL_MANAGER_CAP_FLAGS_HAS_YAW_FOLLOW
-        /// </summary>
-        GimbalManagerCapFlagsHasYawFollow = 512,
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_CAP_FLAGS_HAS_YAW_LOCK.
-        /// GIMBAL_MANAGER_CAP_FLAGS_HAS_YAW_LOCK
-        /// </summary>
-        GimbalManagerCapFlagsHasYawLock = 1024,
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_CAP_FLAGS_SUPPORTS_INFINITE_YAW.
-        /// GIMBAL_MANAGER_CAP_FLAGS_SUPPORTS_INFINITE_YAW
-        /// </summary>
-        GimbalManagerCapFlagsSupportsInfiniteYaw = 2048,
-        /// <summary>
-        /// Gimbal manager supports to point to a local position.
-        /// GIMBAL_MANAGER_CAP_FLAGS_CAN_POINT_LOCATION_LOCAL
-        /// </summary>
-        GimbalManagerCapFlagsCanPointLocationLocal = 65536,
-        /// <summary>
-        /// Gimbal manager supports to point to a global latitude, longitude, altitude position.
-        /// GIMBAL_MANAGER_CAP_FLAGS_CAN_POINT_LOCATION_GLOBAL
-        /// </summary>
-        GimbalManagerCapFlagsCanPointLocationGlobal = 131072,
-    }
-
-    /// <summary>
-    /// Flags for gimbal device (lower level) operation.
-    ///  GIMBAL_DEVICE_FLAGS
-    /// </summary>
-    public enum GimbalDeviceFlags:uint
-    {
-        /// <summary>
-        /// Set to retracted safe position (no stabilization), takes presedence over all other flags.
-        /// GIMBAL_DEVICE_FLAGS_RETRACT
-        /// </summary>
-        GimbalDeviceFlagsRetract = 1,
-        /// <summary>
-        /// Set to neutral/default position, taking precedence over all other flags except RETRACT. Neutral is commonly forward-facing and horizontal (pitch=yaw=0) but may be any orientation.
-        /// GIMBAL_DEVICE_FLAGS_NEUTRAL
-        /// </summary>
-        GimbalDeviceFlagsNeutral = 2,
-        /// <summary>
-        /// Lock roll angle to absolute angle relative to horizon (not relative to drone). This is generally the default with a stabilizing gimbal.
-        /// GIMBAL_DEVICE_FLAGS_ROLL_LOCK
-        /// </summary>
-        GimbalDeviceFlagsRollLock = 4,
-        /// <summary>
-        /// Lock pitch angle to absolute angle relative to horizon (not relative to drone). This is generally the default.
-        /// GIMBAL_DEVICE_FLAGS_PITCH_LOCK
-        /// </summary>
-        GimbalDeviceFlagsPitchLock = 8,
-        /// <summary>
-        /// Lock yaw angle to absolute angle relative to North (not relative to drone). If this flag is set, the quaternion is in the Earth frame with the x-axis pointing North (yaw absolute). If this flag is not set, the quaternion frame is in the Earth frame rotated so that the x-axis is pointing forward (yaw relative to vehicle).
-        /// GIMBAL_DEVICE_FLAGS_YAW_LOCK
-        /// </summary>
-        GimbalDeviceFlagsYawLock = 16,
-    }
-
-    /// <summary>
-    /// Flags for high level gimbal manager operation The first 16 bits are identical to the GIMBAL_DEVICE_FLAGS.
-    ///  GIMBAL_MANAGER_FLAGS
-    /// </summary>
-    public enum GimbalManagerFlags:uint
-    {
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_FLAGS_RETRACT
-        /// GIMBAL_MANAGER_FLAGS_RETRACT
-        /// </summary>
-        GimbalManagerFlagsRetract = 1,
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_FLAGS_NEUTRAL
-        /// GIMBAL_MANAGER_FLAGS_NEUTRAL
-        /// </summary>
-        GimbalManagerFlagsNeutral = 2,
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_FLAGS_ROLL_LOCK
-        /// GIMBAL_MANAGER_FLAGS_ROLL_LOCK
-        /// </summary>
-        GimbalManagerFlagsRollLock = 4,
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_FLAGS_PITCH_LOCK
-        /// GIMBAL_MANAGER_FLAGS_PITCH_LOCK
-        /// </summary>
-        GimbalManagerFlagsPitchLock = 8,
-        /// <summary>
-        /// Based on GIMBAL_DEVICE_FLAGS_YAW_LOCK
-        /// GIMBAL_MANAGER_FLAGS_YAW_LOCK
-        /// </summary>
-        GimbalManagerFlagsYawLock = 16,
-    }
-
-    /// <summary>
-    /// Gimbal device (low level) error flags (bitmap, 0 means no error)
-    ///  GIMBAL_DEVICE_ERROR_FLAGS
-    /// </summary>
-    public enum GimbalDeviceErrorFlags:uint
-    {
-        /// <summary>
-        /// Gimbal device is limited by hardware roll limit.
-        /// GIMBAL_DEVICE_ERROR_FLAGS_AT_ROLL_LIMIT
-        /// </summary>
-        GimbalDeviceErrorFlagsAtRollLimit = 1,
-        /// <summary>
-        /// Gimbal device is limited by hardware pitch limit.
-        /// GIMBAL_DEVICE_ERROR_FLAGS_AT_PITCH_LIMIT
-        /// </summary>
-        GimbalDeviceErrorFlagsAtPitchLimit = 2,
-        /// <summary>
-        /// Gimbal device is limited by hardware yaw limit.
-        /// GIMBAL_DEVICE_ERROR_FLAGS_AT_YAW_LIMIT
-        /// </summary>
-        GimbalDeviceErrorFlagsAtYawLimit = 4,
-        /// <summary>
-        /// There is an error with the gimbal encoders.
-        /// GIMBAL_DEVICE_ERROR_FLAGS_ENCODER_ERROR
-        /// </summary>
-        GimbalDeviceErrorFlagsEncoderError = 8,
-        /// <summary>
-        /// There is an error with the gimbal power source.
-        /// GIMBAL_DEVICE_ERROR_FLAGS_POWER_ERROR
-        /// </summary>
-        GimbalDeviceErrorFlagsPowerError = 16,
-        /// <summary>
-        /// There is an error with the gimbal motor's.
-        /// GIMBAL_DEVICE_ERROR_FLAGS_MOTOR_ERROR
-        /// </summary>
-        GimbalDeviceErrorFlagsMotorError = 32,
-        /// <summary>
-        /// There is an error with the gimbal's software.
-        /// GIMBAL_DEVICE_ERROR_FLAGS_SOFTWARE_ERROR
-        /// </summary>
-        GimbalDeviceErrorFlagsSoftwareError = 64,
-        /// <summary>
-        /// There is an error with the gimbal's communication.
-        /// GIMBAL_DEVICE_ERROR_FLAGS_COMMS_ERROR
-        /// </summary>
-        GimbalDeviceErrorFlagsCommsError = 128,
-        /// <summary>
-        /// Gimbal is currently calibrating.
-        /// GIMBAL_DEVICE_ERROR_FLAGS_CALIBRATION_RUNNING
-        /// </summary>
-        GimbalDeviceErrorFlagsCalibrationRunning = 256,
-    }
-
-    /// <summary>
-    /// Gripper actions.
-    ///  GRIPPER_ACTIONS
-    /// </summary>
-    public enum GripperActions:uint
-    {
-        /// <summary>
-        /// Gripper release cargo.
-        /// GRIPPER_ACTION_RELEASE
-        /// </summary>
-        GripperActionRelease = 0,
-        /// <summary>
-        /// Gripper grab onto cargo.
-        /// GRIPPER_ACTION_GRAB
-        /// </summary>
-        GripperActionGrab = 1,
-    }
-
-    /// <summary>
-    /// Winch actions.
-    ///  WINCH_ACTIONS
-    /// </summary>
-    public enum WinchActions:uint
-    {
-        /// <summary>
-        /// Allow motor to freewheel.
-        /// WINCH_RELAXED
-        /// </summary>
-        WinchRelaxed = 0,
-        /// <summary>
-        /// Wind or unwind specified length of line, optionally using specified rate.
-        /// WINCH_RELATIVE_LENGTH_CONTROL
-        /// </summary>
-        WinchRelativeLengthControl = 1,
-        /// <summary>
-        /// Wind or unwind line at specified rate.
-        /// WINCH_RATE_CONTROL
-        /// </summary>
-        WinchRateControl = 2,
-        /// <summary>
-        /// Perform the locking sequence to relieve motor while in the fully retracted position. Only action and instance command parameters are used, others are ignored.
-        /// WINCH_LOCK
-        /// </summary>
-        WinchLock = 3,
-        /// <summary>
-        /// Sequence of drop, slow down, touch down, reel up, lock. Only action and instance command parameters are used, others are ignored.
-        /// WINCH_DELIVER
-        /// </summary>
-        WinchDeliver = 4,
-        /// <summary>
-        /// Engage motor and hold current position. Only action and instance command parameters are used, others are ignored.
-        /// WINCH_HOLD
-        /// </summary>
-        WinchHold = 5,
-        /// <summary>
-        /// Return the reel to the fully retracted position. Only action and instance command parameters are used, others are ignored.
-        /// WINCH_RETRACT
-        /// </summary>
-        WinchRetract = 6,
-        /// <summary>
-        /// Load the reel with line. The winch will calculate the total loaded length and stop when the tension exceeds a threshold. Only action and instance command parameters are used, others are ignored.
-        /// WINCH_LOAD_LINE
-        /// </summary>
-        WinchLoadLine = 7,
-        /// <summary>
-        /// Spool out the entire length of the line. Only action and instance command parameters are used, others are ignored.
-        /// WINCH_ABANDON_LINE
-        /// </summary>
-        WinchAbandonLine = 8,
     }
 
     /// <summary>
@@ -1345,92 +1508,6 @@ namespace Asv.Mavlink.V2.Common
     }
 
     /// <summary>
-    /// Indicates the ESC connection type.
-    ///  ESC_CONNECTION_TYPE
-    /// </summary>
-    public enum EscConnectionType:uint
-    {
-        /// <summary>
-        /// Traditional PPM ESC.
-        /// ESC_CONNECTION_TYPE_PPM
-        /// </summary>
-        EscConnectionTypePpm = 0,
-        /// <summary>
-        /// Serial Bus connected ESC.
-        /// ESC_CONNECTION_TYPE_SERIAL
-        /// </summary>
-        EscConnectionTypeSerial = 1,
-        /// <summary>
-        /// One Shot PPM ESC.
-        /// ESC_CONNECTION_TYPE_ONESHOT
-        /// </summary>
-        EscConnectionTypeOneshot = 2,
-        /// <summary>
-        /// I2C ESC.
-        /// ESC_CONNECTION_TYPE_I2C
-        /// </summary>
-        EscConnectionTypeI2c = 3,
-        /// <summary>
-        /// CAN-Bus ESC.
-        /// ESC_CONNECTION_TYPE_CAN
-        /// </summary>
-        EscConnectionTypeCan = 4,
-        /// <summary>
-        /// DShot ESC.
-        /// ESC_CONNECTION_TYPE_DSHOT
-        /// </summary>
-        EscConnectionTypeDshot = 5,
-    }
-
-    /// <summary>
-    /// Flags to report ESC failures.
-    ///  ESC_FAILURE_FLAGS
-    /// </summary>
-    public enum EscFailureFlags:uint
-    {
-        /// <summary>
-        /// No ESC failure.
-        /// ESC_FAILURE_NONE
-        /// </summary>
-        EscFailureNone = 0,
-        /// <summary>
-        /// Over current failure.
-        /// ESC_FAILURE_OVER_CURRENT
-        /// </summary>
-        EscFailureOverCurrent = 1,
-        /// <summary>
-        /// Over voltage failure.
-        /// ESC_FAILURE_OVER_VOLTAGE
-        /// </summary>
-        EscFailureOverVoltage = 2,
-        /// <summary>
-        /// Over temperature failure.
-        /// ESC_FAILURE_OVER_TEMPERATURE
-        /// </summary>
-        EscFailureOverTemperature = 4,
-        /// <summary>
-        /// Over RPM failure.
-        /// ESC_FAILURE_OVER_RPM
-        /// </summary>
-        EscFailureOverRpm = 8,
-        /// <summary>
-        /// Inconsistent command failure i.e. out of bounds.
-        /// ESC_FAILURE_INCONSISTENT_CMD
-        /// </summary>
-        EscFailureInconsistentCmd = 16,
-        /// <summary>
-        /// Motor stuck failure.
-        /// ESC_FAILURE_MOTOR_STUCK
-        /// </summary>
-        EscFailureMotorStuck = 32,
-        /// <summary>
-        /// Generic ESC failure.
-        /// ESC_FAILURE_GENERIC
-        /// </summary>
-        EscFailureGeneric = 64,
-    }
-
-    /// <summary>
     /// Flags to indicate the status of camera storage.
     ///  STORAGE_STATUS
     /// </summary>
@@ -1459,497 +1536,7 @@ namespace Asv.Mavlink.V2.Common
     }
 
     /// <summary>
-    /// Flags to indicate the type of storage.
-    ///  STORAGE_TYPE
-    /// </summary>
-    public enum StorageType:uint
-    {
-        /// <summary>
-        /// Storage type is not known.
-        /// STORAGE_TYPE_UNKNOWN
-        /// </summary>
-        StorageTypeUnknown = 0,
-        /// <summary>
-        /// Storage type is USB device.
-        /// STORAGE_TYPE_USB_STICK
-        /// </summary>
-        StorageTypeUsbStick = 1,
-        /// <summary>
-        /// Storage type is SD card.
-        /// STORAGE_TYPE_SD
-        /// </summary>
-        StorageTypeSd = 2,
-        /// <summary>
-        /// Storage type is microSD card.
-        /// STORAGE_TYPE_MICROSD
-        /// </summary>
-        StorageTypeMicrosd = 3,
-        /// <summary>
-        /// Storage type is CFast.
-        /// STORAGE_TYPE_CF
-        /// </summary>
-        StorageTypeCf = 4,
-        /// <summary>
-        /// Storage type is CFexpress.
-        /// STORAGE_TYPE_CFE
-        /// </summary>
-        StorageTypeCfe = 5,
-        /// <summary>
-        /// Storage type is XQD.
-        /// STORAGE_TYPE_XQD
-        /// </summary>
-        StorageTypeXqd = 6,
-        /// <summary>
-        /// Storage type is HD mass storage type.
-        /// STORAGE_TYPE_HD
-        /// </summary>
-        StorageTypeHd = 7,
-        /// <summary>
-        /// Storage type is other, not listed type.
-        /// STORAGE_TYPE_OTHER
-        /// </summary>
-        StorageTypeOther = 254,
-    }
-
-    /// <summary>
-    /// Flags to indicate usage for a particular storage (see STORAGE_INFORMATION.storage_usage and MAV_CMD_SET_STORAGE_USAGE).
-    ///  STORAGE_USAGE_FLAG
-    /// </summary>
-    public enum StorageUsageFlag:uint
-    {
-        /// <summary>
-        /// Always set to 1 (indicates STORAGE_INFORMATION.storage_usage is supported).
-        /// STORAGE_USAGE_FLAG_SET
-        /// </summary>
-        StorageUsageFlagSet = 1,
-        /// <summary>
-        /// Storage for saving photos.
-        /// STORAGE_USAGE_FLAG_PHOTO
-        /// </summary>
-        StorageUsageFlagPhoto = 2,
-        /// <summary>
-        /// Storage for saving videos.
-        /// STORAGE_USAGE_FLAG_VIDEO
-        /// </summary>
-        StorageUsageFlagVideo = 4,
-        /// <summary>
-        /// Storage for saving logs.
-        /// STORAGE_USAGE_FLAG_LOGS
-        /// </summary>
-        StorageUsageFlagLogs = 8,
-    }
-
-    /// <summary>
-    /// Yaw behaviour during orbit flight.
-    ///  ORBIT_YAW_BEHAVIOUR
-    /// </summary>
-    public enum OrbitYawBehaviour:uint
-    {
-        /// <summary>
-        /// Vehicle front points to the center (default).
-        /// ORBIT_YAW_BEHAVIOUR_HOLD_FRONT_TO_CIRCLE_CENTER
-        /// </summary>
-        OrbitYawBehaviourHoldFrontToCircleCenter = 0,
-        /// <summary>
-        /// Vehicle front holds heading when message received.
-        /// ORBIT_YAW_BEHAVIOUR_HOLD_INITIAL_HEADING
-        /// </summary>
-        OrbitYawBehaviourHoldInitialHeading = 1,
-        /// <summary>
-        /// Yaw uncontrolled.
-        /// ORBIT_YAW_BEHAVIOUR_UNCONTROLLED
-        /// </summary>
-        OrbitYawBehaviourUncontrolled = 2,
-        /// <summary>
-        /// Vehicle front follows flight path (tangential to circle).
-        /// ORBIT_YAW_BEHAVIOUR_HOLD_FRONT_TANGENT_TO_CIRCLE
-        /// </summary>
-        OrbitYawBehaviourHoldFrontTangentToCircle = 3,
-        /// <summary>
-        /// Yaw controlled by RC input.
-        /// ORBIT_YAW_BEHAVIOUR_RC_CONTROLLED
-        /// </summary>
-        OrbitYawBehaviourRcControlled = 4,
-    }
-
-    /// <summary>
-    /// Possible responses from a WIFI_CONFIG_AP message.
-    ///  WIFI_CONFIG_AP_RESPONSE
-    /// </summary>
-    public enum WifiConfigApResponse:uint
-    {
-        /// <summary>
-        /// Undefined response. Likely an indicative of a system that doesn't support this request.
-        /// WIFI_CONFIG_AP_RESPONSE_UNDEFINED
-        /// </summary>
-        WifiConfigApResponseUndefined = 0,
-        /// <summary>
-        /// Changes accepted.
-        /// WIFI_CONFIG_AP_RESPONSE_ACCEPTED
-        /// </summary>
-        WifiConfigApResponseAccepted = 1,
-        /// <summary>
-        /// Changes rejected.
-        /// WIFI_CONFIG_AP_RESPONSE_REJECTED
-        /// </summary>
-        WifiConfigApResponseRejected = 2,
-        /// <summary>
-        /// Invalid Mode.
-        /// WIFI_CONFIG_AP_RESPONSE_MODE_ERROR
-        /// </summary>
-        WifiConfigApResponseModeError = 3,
-        /// <summary>
-        /// Invalid SSID.
-        /// WIFI_CONFIG_AP_RESPONSE_SSID_ERROR
-        /// </summary>
-        WifiConfigApResponseSsidError = 4,
-        /// <summary>
-        /// Invalid Password.
-        /// WIFI_CONFIG_AP_RESPONSE_PASSWORD_ERROR
-        /// </summary>
-        WifiConfigApResponsePasswordError = 5,
-    }
-
-    /// <summary>
-    /// Possible responses from a CELLULAR_CONFIG message.
-    ///  CELLULAR_CONFIG_RESPONSE
-    /// </summary>
-    public enum CellularConfigResponse:uint
-    {
-        /// <summary>
-        /// Changes accepted.
-        /// CELLULAR_CONFIG_RESPONSE_ACCEPTED
-        /// </summary>
-        CellularConfigResponseAccepted = 0,
-        /// <summary>
-        /// Invalid APN.
-        /// CELLULAR_CONFIG_RESPONSE_APN_ERROR
-        /// </summary>
-        CellularConfigResponseApnError = 1,
-        /// <summary>
-        /// Invalid PIN.
-        /// CELLULAR_CONFIG_RESPONSE_PIN_ERROR
-        /// </summary>
-        CellularConfigResponsePinError = 2,
-        /// <summary>
-        /// Changes rejected.
-        /// CELLULAR_CONFIG_RESPONSE_REJECTED
-        /// </summary>
-        CellularConfigResponseRejected = 3,
-        /// <summary>
-        /// PUK is required to unblock SIM card.
-        /// CELLULAR_CONFIG_BLOCKED_PUK_REQUIRED
-        /// </summary>
-        CellularConfigBlockedPukRequired = 4,
-    }
-
-    /// <summary>
-    /// WiFi Mode.
-    ///  WIFI_CONFIG_AP_MODE
-    /// </summary>
-    public enum WifiConfigApMode:uint
-    {
-        /// <summary>
-        /// WiFi mode is undefined.
-        /// WIFI_CONFIG_AP_MODE_UNDEFINED
-        /// </summary>
-        WifiConfigApModeUndefined = 0,
-        /// <summary>
-        /// WiFi configured as an access point.
-        /// WIFI_CONFIG_AP_MODE_AP
-        /// </summary>
-        WifiConfigApModeAp = 1,
-        /// <summary>
-        /// WiFi configured as a station connected to an existing local WiFi network.
-        /// WIFI_CONFIG_AP_MODE_STATION
-        /// </summary>
-        WifiConfigApModeStation = 2,
-        /// <summary>
-        /// WiFi disabled.
-        /// WIFI_CONFIG_AP_MODE_DISABLED
-        /// </summary>
-        WifiConfigApModeDisabled = 3,
-    }
-
-    /// <summary>
-    /// Supported component metadata types. These are used in the "general" metadata file returned by COMPONENT_INFORMATION to provide information about supported metadata types. The types are not used directly in MAVLink messages.
-    ///  COMP_METADATA_TYPE
-    /// </summary>
-    public enum CompMetadataType:uint
-    {
-        /// <summary>
-        /// General information about the component. General metadata includes information about other COMP_METADATA_TYPEs supported by the component. This type must be supported and must be downloadable from vehicle.
-        /// COMP_METADATA_TYPE_GENERAL
-        /// </summary>
-        CompMetadataTypeGeneral = 0,
-        /// <summary>
-        /// Parameter meta data.
-        /// COMP_METADATA_TYPE_PARAMETER
-        /// </summary>
-        CompMetadataTypeParameter = 1,
-        /// <summary>
-        /// Meta data that specifies which commands and command parameters the vehicle supports. (WIP)
-        /// COMP_METADATA_TYPE_COMMANDS
-        /// </summary>
-        CompMetadataTypeCommands = 2,
-        /// <summary>
-        /// Meta data that specifies external non-MAVLink peripherals.
-        /// COMP_METADATA_TYPE_PERIPHERALS
-        /// </summary>
-        CompMetadataTypePeripherals = 3,
-        /// <summary>
-        /// Meta data for the events interface.
-        /// COMP_METADATA_TYPE_EVENTS
-        /// </summary>
-        CompMetadataTypeEvents = 4,
-        /// <summary>
-        /// Meta data for actuator configuration (motors, servos and vehicle geometry) and testing.
-        /// COMP_METADATA_TYPE_ACTUATORS
-        /// </summary>
-        CompMetadataTypeActuators = 5,
-    }
-
-    /// <summary>
-    /// Actuator configuration, used to change a setting on an actuator. Component information metadata can be used to know which outputs support which commands.
-    ///  ACTUATOR_CONFIGURATION
-    /// </summary>
-    public enum ActuatorConfiguration:uint
-    {
-        /// <summary>
-        /// Do nothing.
-        /// ACTUATOR_CONFIGURATION_NONE
-        /// </summary>
-        ActuatorConfigurationNone = 0,
-        /// <summary>
-        /// Command the actuator to beep now.
-        /// ACTUATOR_CONFIGURATION_BEEP
-        /// </summary>
-        ActuatorConfigurationBeep = 1,
-        /// <summary>
-        /// Permanently set the actuator (ESC) to 3D mode (reversible thrust).
-        /// ACTUATOR_CONFIGURATION_3D_MODE_ON
-        /// </summary>
-        ActuatorConfiguration3dModeOn = 2,
-        /// <summary>
-        /// Permanently set the actuator (ESC) to non 3D mode (non-reversible thrust).
-        /// ACTUATOR_CONFIGURATION_3D_MODE_OFF
-        /// </summary>
-        ActuatorConfiguration3dModeOff = 3,
-        /// <summary>
-        /// Permanently set the actuator (ESC) to spin direction 1 (which can be clockwise or counter-clockwise).
-        /// ACTUATOR_CONFIGURATION_SPIN_DIRECTION1
-        /// </summary>
-        ActuatorConfigurationSpinDirection1 = 4,
-        /// <summary>
-        /// Permanently set the actuator (ESC) to spin direction 2 (opposite of direction 1).
-        /// ACTUATOR_CONFIGURATION_SPIN_DIRECTION2
-        /// </summary>
-        ActuatorConfigurationSpinDirection2 = 5,
-    }
-
-    /// <summary>
-    /// Actuator output function. Values greater or equal to 1000 are autopilot-specific.
-    ///  ACTUATOR_OUTPUT_FUNCTION
-    /// </summary>
-    public enum ActuatorOutputFunction:uint
-    {
-        /// <summary>
-        /// No function (disabled).
-        /// ACTUATOR_OUTPUT_FUNCTION_NONE
-        /// </summary>
-        ActuatorOutputFunctionNone = 0,
-        /// <summary>
-        /// Motor 1
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR1
-        /// </summary>
-        ActuatorOutputFunctionMotor1 = 1,
-        /// <summary>
-        /// Motor 2
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR2
-        /// </summary>
-        ActuatorOutputFunctionMotor2 = 2,
-        /// <summary>
-        /// Motor 3
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR3
-        /// </summary>
-        ActuatorOutputFunctionMotor3 = 3,
-        /// <summary>
-        /// Motor 4
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR4
-        /// </summary>
-        ActuatorOutputFunctionMotor4 = 4,
-        /// <summary>
-        /// Motor 5
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR5
-        /// </summary>
-        ActuatorOutputFunctionMotor5 = 5,
-        /// <summary>
-        /// Motor 6
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR6
-        /// </summary>
-        ActuatorOutputFunctionMotor6 = 6,
-        /// <summary>
-        /// Motor 7
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR7
-        /// </summary>
-        ActuatorOutputFunctionMotor7 = 7,
-        /// <summary>
-        /// Motor 8
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR8
-        /// </summary>
-        ActuatorOutputFunctionMotor8 = 8,
-        /// <summary>
-        /// Motor 9
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR9
-        /// </summary>
-        ActuatorOutputFunctionMotor9 = 9,
-        /// <summary>
-        /// Motor 10
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR10
-        /// </summary>
-        ActuatorOutputFunctionMotor10 = 10,
-        /// <summary>
-        /// Motor 11
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR11
-        /// </summary>
-        ActuatorOutputFunctionMotor11 = 11,
-        /// <summary>
-        /// Motor 12
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR12
-        /// </summary>
-        ActuatorOutputFunctionMotor12 = 12,
-        /// <summary>
-        /// Motor 13
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR13
-        /// </summary>
-        ActuatorOutputFunctionMotor13 = 13,
-        /// <summary>
-        /// Motor 14
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR14
-        /// </summary>
-        ActuatorOutputFunctionMotor14 = 14,
-        /// <summary>
-        /// Motor 15
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR15
-        /// </summary>
-        ActuatorOutputFunctionMotor15 = 15,
-        /// <summary>
-        /// Motor 16
-        /// ACTUATOR_OUTPUT_FUNCTION_MOTOR16
-        /// </summary>
-        ActuatorOutputFunctionMotor16 = 16,
-        /// <summary>
-        /// Servo 1
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO1
-        /// </summary>
-        ActuatorOutputFunctionServo1 = 33,
-        /// <summary>
-        /// Servo 2
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO2
-        /// </summary>
-        ActuatorOutputFunctionServo2 = 34,
-        /// <summary>
-        /// Servo 3
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO3
-        /// </summary>
-        ActuatorOutputFunctionServo3 = 35,
-        /// <summary>
-        /// Servo 4
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO4
-        /// </summary>
-        ActuatorOutputFunctionServo4 = 36,
-        /// <summary>
-        /// Servo 5
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO5
-        /// </summary>
-        ActuatorOutputFunctionServo5 = 37,
-        /// <summary>
-        /// Servo 6
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO6
-        /// </summary>
-        ActuatorOutputFunctionServo6 = 38,
-        /// <summary>
-        /// Servo 7
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO7
-        /// </summary>
-        ActuatorOutputFunctionServo7 = 39,
-        /// <summary>
-        /// Servo 8
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO8
-        /// </summary>
-        ActuatorOutputFunctionServo8 = 40,
-        /// <summary>
-        /// Servo 9
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO9
-        /// </summary>
-        ActuatorOutputFunctionServo9 = 41,
-        /// <summary>
-        /// Servo 10
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO10
-        /// </summary>
-        ActuatorOutputFunctionServo10 = 42,
-        /// <summary>
-        /// Servo 11
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO11
-        /// </summary>
-        ActuatorOutputFunctionServo11 = 43,
-        /// <summary>
-        /// Servo 12
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO12
-        /// </summary>
-        ActuatorOutputFunctionServo12 = 44,
-        /// <summary>
-        /// Servo 13
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO13
-        /// </summary>
-        ActuatorOutputFunctionServo13 = 45,
-        /// <summary>
-        /// Servo 14
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO14
-        /// </summary>
-        ActuatorOutputFunctionServo14 = 46,
-        /// <summary>
-        /// Servo 15
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO15
-        /// </summary>
-        ActuatorOutputFunctionServo15 = 47,
-        /// <summary>
-        /// Servo 16
-        /// ACTUATOR_OUTPUT_FUNCTION_SERVO16
-        /// </summary>
-        ActuatorOutputFunctionServo16 = 48,
-    }
-
-    /// <summary>
-    /// Enable axes that will be tuned via autotuning. Used in MAV_CMD_DO_AUTOTUNE_ENABLE.
-    ///  AUTOTUNE_AXIS
-    /// </summary>
-    public enum AutotuneAxis:uint
-    {
-        /// <summary>
-        /// Flight stack tunes axis according to its default settings.
-        /// AUTOTUNE_AXIS_DEFAULT
-        /// </summary>
-        AutotuneAxisDefault = 0,
-        /// <summary>
-        /// Autotune roll axis.
-        /// AUTOTUNE_AXIS_ROLL
-        /// </summary>
-        AutotuneAxisRoll = 1,
-        /// <summary>
-        /// Autotune pitch axis.
-        /// AUTOTUNE_AXIS_PITCH
-        /// </summary>
-        AutotuneAxisPitch = 2,
-        /// <summary>
-        /// Autotune yaw axis.
-        /// AUTOTUNE_AXIS_YAW
-        /// </summary>
-        AutotuneAxisYaw = 4,
-    }
-
-    /// <summary>
-    /// Commands to be executed by the MAV. They can be executed on user request, or as part of a mission script. If the action is used in a mission, the parameter mapping to the waypoint/mission message is as follows: Param 1, Param 2, Param 3, Param 4, X: Param 5, Y:Param 6, Z:Param 7. This command list is similar what ARINC 424 is for commercial aircraft: A data format how to interpret waypoint/mission data. NaN and INT32_MAX may be used in float/integer params (respectively) to indicate optional/default values (e.g. to use the component's current yaw or latitude rather than a specific value). See https://mavlink.io/en/guide/xml_schema.html#MAV_CMD for information about the structure of the MAV_CMD entries
+    /// Commands to be executed by the MAV. They can be executed on user request, or as part of a mission script. If the action is used in a mission, the parameter mapping to the waypoint/mission message is as follows: Param 1, Param 2, Param 3, Param 4, X: Param 5, Y:Param 6, Z:Param 7. This command list is similar what ARINC 424 is for commercial aircraft: A data format how to interpret waypoint/mission data. See https://mavlink.io/en/guide/xml_schema.html#MAV_CMD for information about the structure of the MAV_CMD entries
     ///  MAV_CMD
     /// </summary>
     public enum MavCmd:uint
@@ -1959,7 +1546,7 @@ namespace Asv.Mavlink.V2.Common
         /// Param 1 - Hold time. (ignored by fixed wing, time to stay at waypoint for rotary wing)
         /// Param 2 - Acceptance radius (if the sphere with this radius is hit, the waypoint counts as reached)
         /// Param 3 - 0 to pass through the WP, if > 0 radius to pass by WP. Positive value for clockwise orbit, negative value for counter-clockwise orbit. Allows trajectory control.
-        /// Param 4 - Desired yaw angle at waypoint (rotary wing). NaN to use the current system yaw heading mode (e.g. yaw towards next waypoint, yaw to home, etc.).
+        /// Param 4 - Desired yaw angle at waypoint (rotary wing). NaN for unchanged.
         /// Param 5 - Latitude
         /// Param 6 - Longitude
         /// Param 7 - Altitude
@@ -1970,8 +1557,8 @@ namespace Asv.Mavlink.V2.Common
         /// Loiter around this waypoint an unlimited amount of time
         /// Param 1 - Empty
         /// Param 2 - Empty
-        /// Param 3 - Loiter radius around waypoint for forward-only moving vehicles (not multicopters). If positive loiter clockwise, else counter-clockwise
-        /// Param 4 - Desired yaw angle. NaN to use the current system yaw heading mode (e.g. yaw towards next waypoint, yaw to home, etc.).
+        /// Param 3 - Radius around waypoint. If positive loiter clockwise, else counter-clockwise
+        /// Param 4 - Desired yaw angle. NaN for unchanged.
         /// Param 5 - Latitude
         /// Param 6 - Longitude
         /// Param 7 - Altitude
@@ -1981,9 +1568,9 @@ namespace Asv.Mavlink.V2.Common
         /// <summary>
         /// Loiter around this waypoint for X turns
         /// Param 1 - Number of turns.
-        /// Param 2 - Leave loiter circle only once heading towards the next waypoint (0 = False)
-        /// Param 3 - Loiter radius around waypoint for forward-only moving vehicles (not multicopters). If positive loiter clockwise, else counter-clockwise
-        /// Param 4 - Loiter circle exit location and/or path to next waypoint ("xtrack") for forward-only moving vehicles (not multicopters). 0 for the vehicle to converge towards the center xtrack when it leaves the loiter (the line between the centers of the current and next waypoint), 1 to converge to the direct line between the location that the vehicle exits the loiter radius and the next waypoint. Otherwise the angle (in degrees) between the tangent of the loiter circle and the center xtrack at which the vehicle must leave the loiter (and converge to the center xtrack). NaN to use the current system default xtrack behaviour.
+        /// Param 2 - Empty
+        /// Param 3 - Radius around waypoint. If positive loiter clockwise, else counter-clockwise
+        /// Param 4 - Forward moving aircraft this sets exit xtrack location: 0 for center of loiter wp, 1 for exit location. Else, this is desired yaw angle. NaN for unchanged.
         /// Param 5 - Latitude
         /// Param 6 - Longitude
         /// Param 7 - Altitude
@@ -1991,11 +1578,11 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdNavLoiterTurns = 18,
         /// <summary>
-        /// Loiter at the specified latitude, longitude and altitude for a certain amount of time. Multicopter vehicles stop at the point (within a vehicle-specific acceptance radius). Forward-only moving vehicles (e.g. fixed-wing) circle the point with the specified radius/direction. If the Heading Required parameter (2) is non-zero forward moving aircraft will only leave the loiter circle once heading towards the next waypoint.
-        /// Param 1 - Loiter time (only starts once Lat, Lon and Alt is reached).
-        /// Param 2 - Leave loiter circle only once heading towards the next waypoint (0 = False)
-        /// Param 3 - Loiter radius around waypoint for forward-only moving vehicles (not multicopters). If positive loiter clockwise, else counter-clockwise.
-        /// Param 4 - Loiter circle exit location and/or path to next waypoint ("xtrack") for forward-only moving vehicles (not multicopters). 0 for the vehicle to converge towards the center xtrack when it leaves the loiter (the line between the centers of the current and next waypoint), 1 to converge to the direct line between the location that the vehicle exits the loiter radius and the next waypoint. Otherwise the angle (in degrees) between the tangent of the loiter circle and the center xtrack at which the vehicle must leave the loiter (and converge to the center xtrack). NaN to use the current system default xtrack behaviour.
+        /// Loiter around this waypoint for X seconds
+        /// Param 1 - Loiter time.
+        /// Param 2 - Empty
+        /// Param 3 - Radius around waypoint. If positive loiter clockwise, else counter-clockwise.
+        /// Param 4 - Forward moving aircraft this sets exit xtrack location: 0 for center of loiter wp, 1 for exit location. Else, this is desired yaw angle.  NaN for unchanged.
         /// Param 5 - Latitude
         /// Param 6 - Longitude
         /// Param 7 - Altitude
@@ -2019,7 +1606,7 @@ namespace Asv.Mavlink.V2.Common
         /// Param 1 - Minimum target altitude if landing is aborted (0 = undefined/use system default).
         /// Param 2 - Precision land mode.
         /// Param 3 - Empty.
-        /// Param 4 - Desired yaw angle. NaN to use the current system yaw heading mode (e.g. yaw towards next waypoint, yaw to home, etc.).
+        /// Param 4 - Desired yaw angle. NaN for unchanged.
         /// Param 5 - Latitude.
         /// Param 6 - Longitude.
         /// Param 7 - Landing altitude (ground level in current frame).
@@ -2027,11 +1614,11 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdNavLand = 21,
         /// <summary>
-        /// Takeoff from ground / hand. Vehicles that support multiple takeoff modes (e.g. VTOL quadplane) should take off using the currently configured mode.
+        /// Takeoff from ground / hand
         /// Param 1 - Minimum pitch (if airspeed sensor present), desired pitch without sensor
         /// Param 2 - Empty
         /// Param 3 - Empty
-        /// Param 4 - Yaw angle (if magnetometer present), ignored without magnetometer. NaN to use the current system yaw heading mode (e.g. yaw towards next waypoint, yaw to home, etc.).
+        /// Param 4 - Yaw angle (if magnetometer present), ignored without magnetometer. NaN for unchanged.
         /// Param 5 - Latitude
         /// Param 6 - Longitude
         /// Param 7 - Altitude
@@ -2087,11 +1674,11 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdNavContinueAndChangeAlt = 30,
         /// <summary>
-        /// Begin loiter at the specified Latitude and Longitude.  If Lat=Lon=0, then loiter at the current position.  Don't consider the navigation command complete (don't leave loiter) until the altitude has been reached. Additionally, if the Heading Required parameter is non-zero the aircraft will not leave the loiter until heading toward the next waypoint.
-        /// Param 1 - Leave loiter circle only once heading towards the next waypoint (0 = False)
-        /// Param 2 - Loiter radius around waypoint for forward-only moving vehicles (not multicopters). If positive loiter clockwise, negative counter-clockwise, 0 means no change to standard loiter.
+        /// Begin loiter at the specified Latitude and Longitude.  If Lat=Lon=0, then loiter at the current position.  Don't consider the navigation command complete (don't leave loiter) until the altitude has been reached.  Additionally, if the Heading Required parameter is non-zero the  aircraft will not leave the loiter until heading toward the next waypoint.
+        /// Param 1 - Heading Required (0 = False)
+        /// Param 2 - Radius. If positive loiter clockwise, negative counter-clockwise, 0 means no change to standard loiter.
         /// Param 3 - Empty
-        /// Param 4 - Loiter circle exit location and/or path to next waypoint ("xtrack") for forward-only moving vehicles (not multicopters). 0 for the vehicle to converge towards the center xtrack when it leaves the loiter (the line between the centers of the current and next waypoint), 1 to converge to the direct line between the location that the vehicle exits the loiter radius and the next waypoint. Otherwise the angle (in degrees) between the tangent of the loiter circle and the center xtrack at which the vehicle must leave the loiter (and converge to the center xtrack). NaN to use the current system default xtrack behaviour.
+        /// Param 4 - Forward moving aircraft this sets exit xtrack location: 0 for center of loiter wp, 1 for exit location
         /// Param 5 - Latitude
         /// Param 6 - Longitude
         /// Param 7 - Altitude
@@ -2099,13 +1686,13 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdNavLoiterToAlt = 31,
         /// <summary>
-        /// Begin following a target
+        /// Being following a target
         /// Param 1 - System ID (of the FOLLOW_TARGET beacon). Send 0 to disable follow-me and return to the default position hold mode.
-        /// Param 2 - Reserved
-        /// Param 3 - Reserved
+        /// Param 2 - RESERVED
+        /// Param 3 - RESERVED
         /// Param 4 - Altitude mode: 0: Keep current altitude, 1: keep altitude difference to target, 2: go to a fixed altitude above home.
         /// Param 5 - Altitude above home. (used if mode=2)
-        /// Param 6 - Reserved
+        /// Param 6 - RESERVED
         /// Param 7 - Time to land in which the MAV should go to the default position hold mode after a message RX timeout.
         /// MAV_CMD_DO_FOLLOW
         /// </summary>
@@ -2123,19 +1710,19 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdDoFollowReposition = 33,
         /// <summary>
-        /// Start orbiting on the circumference of a circle defined by the parameters. Setting values to NaN/INT32_MAX (as appropriate) results in using defaults.
-        /// Param 1 - Radius of the circle. Positive: orbit clockwise. Negative: orbit counter-clockwise. NaN: Use vehicle default radius, or current radius if already orbiting.
-        /// Param 2 - Tangential Velocity. NaN: Use vehicle default velocity, or current velocity if already orbiting.
-        /// Param 3 - Yaw behavior of the vehicle.
-        /// Param 4 - Orbit around the centre point for this many radians (i.e. for a three-quarter orbit set 270*Pi/180). 0: Orbit forever. NaN: Use vehicle default, or current value if already orbiting.
-        /// Param 5 - Center point latitude (if no MAV_FRAME specified) / X coordinate according to MAV_FRAME. INT32_MAX (or NaN if sent in COMMAND_LONG): Use current vehicle position, or current center if already orbiting.
-        /// Param 6 - Center point longitude (if no MAV_FRAME specified) / Y coordinate according to MAV_FRAME. INT32_MAX (or NaN if sent in COMMAND_LONG): Use current vehicle position, or current center if already orbiting.
-        /// Param 7 - Center point altitude (MSL) (if no MAV_FRAME specified) / Z coordinate according to MAV_FRAME. NaN: Use current vehicle altitude.
+        /// Start orbiting on the circumference of a circle defined by the parameters. Setting any value NaN results in using defaults.
+        /// Param 1 - Radius of the circle. positive: Orbit clockwise. negative: Orbit counter-clockwise.
+        /// Param 2 - Tangential Velocity. NaN: Vehicle configuration default.
+        /// Param 3 - Yaw behavior of the vehicle. 0: vehicle front points to the center (default). 1: Hold last heading. 2: Leave yaw uncontrolled.
+        /// Param 4 - Reserved (e.g. for dynamic center beacon options)
+        /// Param 5 - Center point latitude (if no MAV_FRAME specified) / X coordinate according to MAV_FRAME. NaN: Use current vehicle position or current center if already orbiting.
+        /// Param 6 - Center point longitude (if no MAV_FRAME specified) / Y coordinate according to MAV_FRAME. NaN: Use current vehicle position or current center if already orbiting.
+        /// Param 7 - Center point altitude (MSL) (if no MAV_FRAME specified) / Z coordinate according to MAV_FRAME. NaN: Use current vehicle position or current center if already orbiting.
         /// MAV_CMD_DO_ORBIT
         /// </summary>
         MavCmdDoOrbit = 34,
         /// <summary>
-        /// Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicle's control system to control the vehicle attitude and the attitude of various sensors such as cameras.
+        /// Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras.
         /// Param 1 - Region of interest mode.
         /// Param 2 - Waypoint index/ target ID. (see MAV_ROI enum)
         /// Param 3 - ROI index (allows a vehicle to manage multiple ROI's)
@@ -2171,11 +1758,11 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdNavSplineWaypoint = 82,
         /// <summary>
-        /// Takeoff from ground using VTOL mode, and transition to forward flight with specified heading. The command should be ignored by vehicles that dont support both VTOL and fixed-wing flight (multicopters, boats,etc.).
+        /// Takeoff from ground using VTOL mode, and transition to forward flight with specified heading.
         /// Param 1 - Empty
         /// Param 2 - Front transition heading.
         /// Param 3 - Empty
-        /// Param 4 - Yaw angle. NaN to use the current system yaw heading mode (e.g. yaw towards next waypoint, yaw to home, etc.).
+        /// Param 4 - Yaw angle. NaN for unchanged.
         /// Param 5 - Latitude
         /// Param 6 - Longitude
         /// Param 7 - Altitude
@@ -2184,13 +1771,13 @@ namespace Asv.Mavlink.V2.Common
         MavCmdNavVtolTakeoff = 84,
         /// <summary>
         /// Land using VTOL mode
-        /// Param 1 - Landing behaviour.
+        /// Param 1 - Empty
         /// Param 2 - Empty
         /// Param 3 - Approach altitude (with the same reference as the Altitude field). NaN if unspecified.
-        /// Param 4 - Yaw angle. NaN to use the current system yaw heading mode (e.g. yaw towards next waypoint, yaw to home, etc.).
+        /// Param 4 - Yaw angle. NaN for unchanged.
         /// Param 5 - Latitude
         /// Param 6 - Longitude
-        /// Param 7 - Altitude (ground level) relative to the current coordinate frame. NaN to use system default landing altitude (ignore value).
+        /// Param 7 - Altitude (ground level)
         /// MAV_CMD_NAV_VTOL_LAND
         /// </summary>
         MavCmdNavVtolLand = 85,
@@ -2211,7 +1798,7 @@ namespace Asv.Mavlink.V2.Common
         /// Param 1 - Delay (-1 to enable time-of-day fields)
         /// Param 2 - hour (24h format, UTC, -1 to ignore)
         /// Param 3 - minute (24h format, UTC, -1 to ignore)
-        /// Param 4 - second (24h format, UTC, -1 to ignore)
+        /// Param 4 - second (24h format, UTC)
         /// Param 5 - Empty
         /// Param 6 - Empty
         /// Param 7 - Empty
@@ -2255,14 +1842,14 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdConditionDelay = 112,
         /// <summary>
-        /// Ascend/descend to target altitude at specified rate. Delay mission state machine until desired altitude reached.
+        /// Ascend/descend at rate.  Delay mission state machine until desired altitude reached.
         /// Param 1 - Descent / Ascend rate.
         /// Param 2 - Empty
         /// Param 3 - Empty
         /// Param 4 - Empty
         /// Param 5 - Empty
         /// Param 6 - Empty
-        /// Param 7 - Target Altitude
+        /// Param 7 - Finish Altitude
         /// MAV_CMD_CONDITION_CHANGE_ALT
         /// </summary>
         MavCmdConditionChangeAlt = 113,
@@ -2343,7 +1930,7 @@ namespace Asv.Mavlink.V2.Common
         /// Param 1 - Use current (1=use current location, 0=use specified location)
         /// Param 2 - Empty
         /// Param 3 - Empty
-        /// Param 4 - Yaw angle. NaN to use default heading
+        /// Param 4 - Empty
         /// Param 5 - Latitude
         /// Param 6 - Longitude
         /// Param 7 - Altitude
@@ -2435,18 +2022,6 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdDoChangeAltitude = 186,
         /// <summary>
-        /// Sets actuators (e.g. servos) to a desired value. The actuator numbers are mapped to specific outputs (e.g. on any MAIN or AUX PWM or UAVCAN) using a flight-stack specific mechanism (i.e. a parameter).
-        /// Param 1 - Actuator 1 value, scaled from [-1 to 1]. NaN to ignore.
-        /// Param 2 - Actuator 2 value, scaled from [-1 to 1]. NaN to ignore.
-        /// Param 3 - Actuator 3 value, scaled from [-1 to 1]. NaN to ignore.
-        /// Param 4 - Actuator 4 value, scaled from [-1 to 1]. NaN to ignore.
-        /// Param 5 - Actuator 5 value, scaled from [-1 to 1]. NaN to ignore.
-        /// Param 6 - Actuator 6 value, scaled from [-1 to 1]. NaN to ignore.
-        /// Param 7 - Index of actuator set (i.e if set to 1, Actuator 1 becomes Actuator 7)
-        /// MAV_CMD_DO_SET_ACTUATOR
-        /// </summary>
-        MavCmdDoSetActuator = 187,
-        /// <summary>
         /// Mission command to perform a landing. This is used as a marker in a mission to tell the autopilot where a sequence of mission items that represents a landing starts. It may also be sent via a COMMAND_LONG to trigger a landing, in which case the nearest (geographically) landing sequence in the mission will be used. The Latitude/Longitude is optional, and may be set to 0 if not needed. If specified then it will be used to help find the closest landing sequence.
         /// Param 1 - Empty
         /// Param 2 - Empty
@@ -2487,10 +2062,10 @@ namespace Asv.Mavlink.V2.Common
         /// Param 1 - Ground speed, less than 0 (-1) for default
         /// Param 2 - Bitmask of option flags.
         /// Param 3 - Reserved
-        /// Param 4 - Yaw heading. NaN to use the current system yaw heading mode (e.g. yaw towards next waypoint, yaw to home, etc.). For planes indicates loiter direction (0: clockwise, 1: counter clockwise)
-        /// Param 5 - Latitude
-        /// Param 6 - Longitude
-        /// Param 7 - Altitude
+        /// Param 4 - Yaw heading, NaN for unchanged. For planes indicates loiter direction (0: clockwise, 1: counter clockwise)
+        /// Param 5 - Latitude (deg * 1E7)
+        /// Param 6 - Longitude (deg * 1E7)
+        /// Param 7 - Altitude (meters)
         /// MAV_CMD_DO_REPOSITION
         /// </summary>
         MavCmdDoReposition = 192,
@@ -2519,32 +2094,32 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdDoSetReverse = 194,
         /// <summary>
-        /// Sets the region of interest (ROI) to a location. This can then be used by the vehicle's control system to control the vehicle attitude and the attitude of various sensors such as cameras. This command can be sent to a gimbal manager but not to a gimbal device. A gimbal is not to react to this message.
-        /// Param 1 - Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).
+        /// Sets the region of interest (ROI) to a location. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras.
+        /// Param 1 - Empty
         /// Param 2 - Empty
         /// Param 3 - Empty
         /// Param 4 - Empty
-        /// Param 5 - Latitude of ROI location
-        /// Param 6 - Longitude of ROI location
-        /// Param 7 - Altitude of ROI location
+        /// Param 5 - Latitude
+        /// Param 6 - Longitude
+        /// Param 7 - Altitude
         /// MAV_CMD_DO_SET_ROI_LOCATION
         /// </summary>
         MavCmdDoSetRoiLocation = 195,
         /// <summary>
-        /// Sets the region of interest (ROI) to be toward next waypoint, with optional pitch/roll/yaw offset. This can then be used by the vehicle's control system to control the vehicle attitude and the attitude of various sensors such as cameras. This command can be sent to a gimbal manager but not to a gimbal device. A gimbal device is not to react to this message.
-        /// Param 1 - Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).
+        /// Sets the region of interest (ROI) to be toward next waypoint, with optional pitch/roll/yaw offset. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras.
+        /// Param 1 - Empty
         /// Param 2 - Empty
         /// Param 3 - Empty
         /// Param 4 - Empty
-        /// Param 5 - Pitch offset from next waypoint, positive pitching up
-        /// Param 6 - Roll offset from next waypoint, positive rolling to the right
-        /// Param 7 - Yaw offset from next waypoint, positive yawing to the right
+        /// Param 5 - pitch offset from next waypoint
+        /// Param 6 - roll offset from next waypoint
+        /// Param 7 - yaw offset from next waypoint
         /// MAV_CMD_DO_SET_ROI_WPNEXT_OFFSET
         /// </summary>
         MavCmdDoSetRoiWpnextOffset = 196,
         /// <summary>
-        /// Cancels any previous ROI command returning the vehicle/sensors to default flight characteristics. This can then be used by the vehicle's control system to control the vehicle attitude and the attitude of various sensors such as cameras. This command can be sent to a gimbal manager but not to a gimbal device. A gimbal device is not to react to this message. After this command the gimbal manager should go back to manual input if available, and otherwise assume a neutral position.
-        /// Param 1 - Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).
+        /// Cancels any previous ROI command returning the vehicle/sensors to default flight characteristics. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras.
+        /// Param 1 - Empty
         /// Param 2 - Empty
         /// Param 3 - Empty
         /// Param 4 - Empty
@@ -2554,13 +2129,6 @@ namespace Asv.Mavlink.V2.Common
         /// MAV_CMD_DO_SET_ROI_NONE
         /// </summary>
         MavCmdDoSetRoiNone = 197,
-        /// <summary>
-        /// Mount tracks system with specified system ID. Determination of target vehicle position may be done with GLOBAL_POSITION_INT or any other means. This command can be sent to a gimbal manager but not to a gimbal device. A gimbal device is not to react to this message.
-        /// Param 1 - System ID
-        /// Param 2 - Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).
-        /// MAV_CMD_DO_SET_ROI_SYSID
-        /// </summary>
-        MavCmdDoSetRoiSysid = 198,
         /// <summary>
         /// Control onboard camera system.
         /// Param 1 - Camera ID (-1 for all)
@@ -2574,7 +2142,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdDoControlVideo = 200,
         /// <summary>
-        /// Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicle's control system to control the vehicle attitude and the attitude of various sensors such as cameras.
+        /// Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras.
         /// Param 1 - Region of interest mode.
         /// Param 2 - Waypoint index/ target ID (depends on param 1).
         /// Param 3 - Region of interest index. (allows a vehicle to manage multiple ROI's)
@@ -2627,8 +2195,8 @@ namespace Asv.Mavlink.V2.Common
         /// Param 2 - roll depending on mount mode (degrees or degrees/second depending on roll input).
         /// Param 3 - yaw depending on mount mode (degrees or degrees/second depending on yaw input).
         /// Param 4 - altitude depending on mount mode.
-        /// Param 5 - latitude, set if appropriate mount mode.
-        /// Param 6 - longitude, set if appropriate mount mode.
+        /// Param 5 - latitude in degrees * 1E7, set if appropriate mount mode.
+        /// Param 6 - longitude in degrees * 1E7, set if appropriate mount mode.
         /// Param 7 - Mount mode.
         /// MAV_CMD_DO_MOUNT_CONTROL
         /// </summary>
@@ -2658,8 +2226,8 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdDoFenceEnable = 207,
         /// <summary>
-        /// Mission item/command to release a parachute or enable/disable auto release.
-        /// Param 1 - Action
+        /// Mission command to trigger a parachute
+        /// Param 1 - action
         /// Param 2 - Empty
         /// Param 3 - Empty
         /// Param 4 - Empty
@@ -2670,12 +2238,12 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdDoParachute = 208,
         /// <summary>
-        /// Command to perform motor test.
-        /// Param 1 - Motor instance number (from 1 to max number of motors on the vehicle).
-        /// Param 2 - Throttle type (whether the Throttle Value in param3 is a percentage, PWM value, etc.)
-        /// Param 3 - Throttle value.
-        /// Param 4 - Timeout between tests that are run in sequence.
-        /// Param 5 - Motor count. Number of motors to test in sequence: 0/1=one motor, 2= two motors, etc. The Timeout (param4) is used between tests.
+        /// Mission command to perform motor test.
+        /// Param 1 - Motor instance number. (from 1 to max number of motors on the vehicle)
+        /// Param 2 - Throttle type.
+        /// Param 3 - Throttle.
+        /// Param 4 - Timeout.
+        /// Param 5 - Motor count. (number of motors to test to test in sequence, waiting for the timeout above between them; 0=1 motor, 1=1 motor, 2=2 motors...)
         /// Param 6 - Motor test order.
         /// Param 7 - Empty
         /// MAV_CMD_DO_MOTOR_TEST
@@ -2693,30 +2261,6 @@ namespace Asv.Mavlink.V2.Common
         /// MAV_CMD_DO_INVERTED_FLIGHT
         /// </summary>
         MavCmdDoInvertedFlight = 210,
-        /// <summary>
-        /// Mission command to operate a gripper.
-        /// Param 1 - Gripper instance number.
-        /// Param 2 - Gripper action to perform.
-        /// Param 3 - Empty
-        /// Param 4 - Empty
-        /// Param 5 - Empty
-        /// Param 6 - Empty
-        /// Param 7 - Empty
-        /// MAV_CMD_DO_GRIPPER
-        /// </summary>
-        MavCmdDoGripper = 211,
-        /// <summary>
-        /// Enable/disable autotune.
-        /// Param 1 - Enable (1: enable, 0:disable).
-        /// Param 2 - Specify which axis are autotuned. 0 indicates autopilot default settings.
-        /// Param 3 - Empty.
-        /// Param 4 - Empty.
-        /// Param 5 - Empty.
-        /// Param 6 - Empty.
-        /// Param 7 - Empty.
-        /// MAV_CMD_DO_AUTOTUNE_ENABLE
-        /// </summary>
-        MavCmdDoAutotuneEnable = 212,
         /// <summary>
         /// Sets a desired vehicle turn angle and speed change.
         /// Param 1 - Yaw angle to adjust steering by.
@@ -2840,8 +2384,8 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdPreflightSetSensorOffsets = 242,
         /// <summary>
-        /// Trigger UAVCAN configuration (actuator ID assignment and direction mapping). Note that this maps to the legacy UAVCAN v0 function UAVCAN_ENUMERATE, which is intended to be executed just once during initial vehicle configuration (it is not a normal pre-flight command and has been poorly named).
-        /// Param 1 - 1: Trigger actuator ID assignment and direction mapping. 0: Cancel command.
+        /// Trigger UAVCAN config. This command will be only accepted if in pre-flight mode.
+        /// Param 1 - 1: Trigger actuator ID assignment and direction mapping.
         /// Param 2 - Reserved
         /// Param 3 - Reserved
         /// Param 4 - Reserved
@@ -2853,7 +2397,7 @@ namespace Asv.Mavlink.V2.Common
         MavCmdPreflightUavcan = 243,
         /// <summary>
         /// Request storage of different parameter values and logs. This command will be only accepted if in pre-flight mode.
-        /// Param 1 - Parameter storage: 0: READ FROM FLASH/EEPROM, 1: WRITE CURRENT TO FLASH/EEPROM, 2: Reset to defaults, 3: Reset sensor calibration parameter data to factory default (or firmware default if not available)
+        /// Param 1 - Parameter storage: 0: READ FROM FLASH/EEPROM, 1: WRITE CURRENT TO FLASH/EEPROM, 2: Reset to defaults
         /// Param 2 - Mission storage: 0: READ FROM FLASH/EEPROM, 1: WRITE CURRENT TO FLASH/EEPROM, 2: Reset to defaults
         /// Param 3 - Onboard logging: 0: Ignore, 1: Start default rate logging, -1: Stop logging, > 1: logging rate (e.g. set to 1000 for 1000 Hz logging)
         /// Param 4 - Reserved
@@ -2867,10 +2411,10 @@ namespace Asv.Mavlink.V2.Common
         /// Request the reboot or shutdown of system components.
         /// Param 1 - 0: Do nothing for autopilot, 1: Reboot autopilot, 2: Shutdown autopilot, 3: Reboot autopilot and keep it in the bootloader until upgraded.
         /// Param 2 - 0: Do nothing for onboard computer, 1: Reboot onboard computer, 2: Shutdown onboard computer, 3: Reboot onboard computer and keep it in the bootloader until upgraded.
-        /// Param 3 - 0: Do nothing for component, 1: Reboot component, 2: Shutdown component, 3: Reboot component and keep it in the bootloader until upgraded
-        /// Param 4 - MAVLink Component ID targeted in param3 (0 for all components).
-        /// Param 5 - Reserved (set to 0)
-        /// Param 6 - Reserved (set to 0)
+        /// Param 3 - WIP: 0: Do nothing for camera, 1: Reboot onboard camera, 2: Shutdown onboard camera, 3: Reboot onboard camera and keep it in the bootloader until upgraded
+        /// Param 4 - WIP: 0: Do nothing for mount (e.g. gimbal), 1: Reboot mount, 2: Shutdown mount, 3: Reboot mount and keep it in the bootloader until upgraded
+        /// Param 5 - Reserved, send 0
+        /// Param 6 - Reserved, send 0
         /// Param 7 - WIP: ID (e.g. camera ID -1 for all IDs)
         /// MAV_CMD_PREFLIGHT_REBOOT_SHUTDOWN
         /// </summary>
@@ -2881,24 +2425,12 @@ namespace Asv.Mavlink.V2.Common
         /// Param 2 - MAV_GOTO_HOLD_AT_CURRENT_POSITION: hold at current position, MAV_GOTO_HOLD_AT_SPECIFIED_POSITION: hold at specified position.
         /// Param 3 - Coordinate frame of hold point.
         /// Param 4 - Desired yaw angle.
-        /// Param 5 - Latitude/X position.
-        /// Param 6 - Longitude/Y position.
-        /// Param 7 - Altitude/Z position.
+        /// Param 5 - Latitude / X position.
+        /// Param 6 - Longitude / Y position.
+        /// Param 7 - Altitude / Z position.
         /// MAV_CMD_OVERRIDE_GOTO
         /// </summary>
         MavCmdOverrideGoto = 252,
-        /// <summary>
-        /// Mission command to set a Camera Auto Mount Pivoting Oblique Survey (Replaces CAM_TRIGG_DIST for this purpose). The camera is triggered each time this distance is exceeded, then the mount moves to the next position. Params 4~6 set-up the angle limits and number of positions for oblique survey, where mount-enabled vehicles automatically roll the camera between shots to emulate an oblique camera setup (providing an increased HFOV). This command can also be used to set the shutter integration time for the camera.
-        /// Param 1 - Camera trigger distance. 0 to stop triggering.
-        /// Param 2 - Camera shutter integration time. 0 to ignore
-        /// Param 3 - The minimum interval in which the camera is capable of taking subsequent pictures repeatedly. 0 to ignore.
-        /// Param 4 - Total number of roll positions at which the camera will capture photos (images captures spread evenly across the limits defined by param5).
-        /// Param 5 - Angle limits that the camera can be rolled to left and right of center.
-        /// Param 6 - Fixed pitch angle that the camera will hold in oblique mode if the mount is actuated in the pitch axis.
-        /// Param 7 - Empty
-        /// MAV_CMD_OBLIQUE_SURVEY
-        /// </summary>
-        MavCmdObliqueSurvey = 260,
         /// <summary>
         /// start running a mission
         /// Param 1 - first_item: the first mission item to run
@@ -2907,47 +2439,11 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdMissionStart = 300,
         /// <summary>
-        /// Actuator testing command. This is similar to MAV_CMD_DO_MOTOR_TEST but operates on the level of output functions, i.e. it is possible to test Motor1 independent from which output it is configured on. Autopilots typically refuse this command while armed.
-        /// Param 1 - Output value: 1 means maximum positive output, 0 to center servos or minimum motor thrust (expected to spin), -1 for maximum negative (if not supported by the motors, i.e. motor is not reversible, smaller than 0 maps to NaN). And NaN maps to disarmed (stop the motors).
-        /// Param 2 - Timeout after which the test command expires and the output is restored to the previous value. A timeout has to be set for safety reasons. A timeout of 0 means to restore the previous value immediately.
-        /// Param 3 - 
-        /// Param 4 - 
-        /// Param 5 - Actuator Output function
-        /// Param 6 - 
-        /// Param 7 - 
-        /// MAV_CMD_ACTUATOR_TEST
-        /// </summary>
-        MavCmdActuatorTest = 310,
-        /// <summary>
-        /// Actuator configuration command.
-        /// Param 1 - Actuator configuration action
-        /// Param 2 - 
-        /// Param 3 - 
-        /// Param 4 - 
-        /// Param 5 - Actuator Output function
-        /// Param 6 - 
-        /// Param 7 - 
-        /// MAV_CMD_CONFIGURE_ACTUATOR
-        /// </summary>
-        MavCmdConfigureActuator = 311,
-        /// <summary>
         /// Arms / Disarms a component
         /// Param 1 - 0: disarm, 1: arm
-        /// Param 2 - 0: arm-disarm unless prevented by safety checks (i.e. when landed), 21196: force arming/disarming (e.g. allow arming to override preflight checks and disarming in flight)
         /// MAV_CMD_COMPONENT_ARM_DISARM
         /// </summary>
         MavCmdComponentArmDisarm = 400,
-        /// <summary>
-        /// Instructs system to run pre-arm checks. This command should return MAV_RESULT_TEMPORARILY_REJECTED in the case the system is armed, otherwise MAV_RESULT_ACCEPTED. Note that the return value from executing this command does not indicate whether the vehicle is armable or not, just whether the system has successfully run/is currently running the checks.  The result of the checks is reflected in the SYS_STATUS message.
-        /// MAV_CMD_RUN_PREARM_CHECKS
-        /// </summary>
-        MavCmdRunPrearmChecks = 401,
-        /// <summary>
-        /// Turns illuminators ON/OFF. An illuminator is a light source that is used for lighting up dark areas external to the sytstem: e.g. a torch or searchlight (as opposed to a light source for illuminating the system itself, e.g. an indicator light).
-        /// Param 1 - 0: Illuminators OFF, 1: Illuminators ON
-        /// MAV_CMD_ILLUMINATOR_ON_OFF
-        /// </summary>
-        MavCmdIlluminatorOnOff = 405,
         /// <summary>
         /// Request the home position from the vehicle.
         /// Param 1 - Reserved
@@ -2961,14 +2457,6 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdGetHomePosition = 410,
         /// <summary>
-        /// Inject artificial failure for testing purposes. Note that autopilots should implement an additional protection before accepting this command such as a specific param setting.
-        /// Param 1 - The unit which is affected by the failure.
-        /// Param 2 - The type how the failure manifests itself.
-        /// Param 3 - Instance affected by failure (0 to signal all).
-        /// MAV_CMD_INJECT_FAILURE
-        /// </summary>
-        MavCmdInjectFailure = 420,
-        /// <summary>
         /// Starts receiver pairing.
         /// Param 1 - 0:Spektrum.
         /// Param 2 - RC type.
@@ -2976,40 +2464,34 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdStartRxPair = 500,
         /// <summary>
-        /// Request the interval between messages for a particular MAVLink message ID. The receiver should ACK the command and then emit its response in a MESSAGE_INTERVAL message.
+        /// Request the interval between messages for a particular MAVLink message ID
         /// Param 1 - The MAVLink message ID
         /// MAV_CMD_GET_MESSAGE_INTERVAL
         /// </summary>
         MavCmdGetMessageInterval = 510,
         /// <summary>
-        /// Set the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM.
+        /// Set the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM
         /// Param 1 - The MAVLink message ID
         /// Param 2 - The interval between two messages. Set to -1 to disable and 0 to request default rate.
-        /// Param 7 - Target address of message stream (if message has target address fields). 0: Flight-stack default (recommended), 1: address of requestor, 2: broadcast.
         /// MAV_CMD_SET_MESSAGE_INTERVAL
         /// </summary>
         MavCmdSetMessageInterval = 511,
         /// <summary>
         /// Request the target system(s) emit a single instance of a specified message (i.e. a "one-shot" version of MAV_CMD_SET_MESSAGE_INTERVAL).
         /// Param 1 - The MAVLink message ID of the requested message.
-        /// Param 2 - Use for index ID, if required. Otherwise, the use of this parameter (if any) must be defined in the requested message. By default assumed not used (0).
-        /// Param 3 - The use of this parameter (if any), must be defined in the requested message. By default assumed not used (0).
-        /// Param 4 - The use of this parameter (if any), must be defined in the requested message. By default assumed not used (0).
-        /// Param 5 - The use of this parameter (if any), must be defined in the requested message. By default assumed not used (0).
-        /// Param 6 - The use of this parameter (if any), must be defined in the requested message. By default assumed not used (0).
-        /// Param 7 - Target address for requested message (if message has target address fields). 0: Flight-stack default, 1: address of requestor, 2: broadcast.
+        /// Param 2 - Index id (if appropriate). The use of this parameter (if any), must be defined in the requested message.
         /// MAV_CMD_REQUEST_MESSAGE
         /// </summary>
         MavCmdRequestMessage = 512,
         /// <summary>
-        /// Request MAVLink protocol version compatibility. All receivers should ACK the command and then emit their capabilities in an PROTOCOL_VERSION message
+        /// Request MAVLink protocol version compatibility
         /// Param 1 - 1: Request supported protocol versions by all nodes on the network
         /// Param 2 - Reserved (all remaining params)
         /// MAV_CMD_REQUEST_PROTOCOL_VERSION
         /// </summary>
         MavCmdRequestProtocolVersion = 519,
         /// <summary>
-        /// Request autopilot capabilities. The receiver should ACK the command and then emit its capabilities in an AUTOPILOT_VERSION message
+        /// Request autopilot capabilities
         /// Param 1 - 1: Request autopilot version
         /// Param 2 - Reserved (all remaining params)
         /// MAV_CMD_REQUEST_AUTOPILOT_CAPABILITIES
@@ -3040,9 +2522,8 @@ namespace Asv.Mavlink.V2.Common
         /// <summary>
         /// Format a storage medium. Once format is complete, a STORAGE_INFORMATION message is sent. Use the command's target_component to target a specific component's storage.
         /// Param 1 - Storage ID (1 for first, 2 for second, etc.)
-        /// Param 2 - Format storage (and reset image log). 0: No action 1: Format storage
-        /// Param 3 - Reset Image Log (without formatting storage medium). This will reset CAMERA_CAPTURE_STATUS.image_count and CAMERA_IMAGE_CAPTURED.image_index. 0: No action 1: Reset Image Log
-        /// Param 4 - Reserved (all remaining params)
+        /// Param 2 - 0: No action 1: Format storage
+        /// Param 3 - Reserved (all remaining params)
         /// MAV_CMD_STORAGE_FORMAT
         /// </summary>
         MavCmdStorageFormat = 526,
@@ -3071,43 +2552,26 @@ namespace Asv.Mavlink.V2.Common
         /// Set camera running mode. Use NaN for reserved values. GCS will send a MAV_CMD_REQUEST_VIDEO_STREAM_STATUS command after a mode change if the camera supports video streaming.
         /// Param 1 - Reserved (Set to 0)
         /// Param 2 - Camera mode
-        /// Param 3 - 
-        /// Param 4 - 
-        /// Param 7 - 
+        /// Param 3 - Reserved (all remaining params)
         /// MAV_CMD_SET_CAMERA_MODE
         /// </summary>
         MavCmdSetCameraMode = 530,
         /// <summary>
-        /// Set camera zoom. Camera must respond with a CAMERA_SETTINGS message (on success).
+        /// Set camera zoom. Camera must respond with a CAMERA_SETTINGS message (on success). Use NaN for reserved values.
         /// Param 1 - Zoom type
         /// Param 2 - Zoom value. The range of valid values depend on the zoom type.
-        /// Param 3 - 
-        /// Param 4 - 
-        /// Param 7 - 
+        /// Param 3 - Reserved (all remaining params)
         /// MAV_CMD_SET_CAMERA_ZOOM
         /// </summary>
         MavCmdSetCameraZoom = 531,
         /// <summary>
-        /// Set camera focus. Camera must respond with a CAMERA_SETTINGS message (on success).
+        /// Set camera focus. Camera must respond with a CAMERA_SETTINGS message (on success). Use NaN for reserved values.
         /// Param 1 - Focus type
         /// Param 2 - Focus value
-        /// Param 3 - 
-        /// Param 4 - 
-        /// Param 7 - 
+        /// Param 3 - Reserved (all remaining params)
         /// MAV_CMD_SET_CAMERA_FOCUS
         /// </summary>
         MavCmdSetCameraFocus = 532,
-        /// <summary>
-        /// Set that a particular storage is the preferred location for saving photos, videos, and/or other media (e.g. to set that an SD card is used for storing videos).
-        ///           There can only be one preferred save location for each particular media type: setting a media usage flag will clear/reset that same flag if set on any other storage.
-        ///           If no flag is set the system should use its default storage.
-        ///           A target system can choose to always use default storage, in which case it should ACK the command with MAV_RESULT_UNSUPPORTED.
-        ///           A target system can choose to not allow a particular storage to be set as preferred storage, in which case it should ACK the command with MAV_RESULT_DENIED.
-        /// Param 1 - Storage ID (1 for first, 2 for second, etc.)
-        /// Param 2 - Usage flags
-        /// MAV_CMD_SET_STORAGE_USAGE
-        /// </summary>
-        MavCmdSetStorageUsage = 533,
         /// <summary>
         /// Tagged jump target. Can be jumped to with MAV_CMD_DO_JUMP_TAG.
         /// Param 1 - Tag.
@@ -3122,55 +2586,26 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdDoJumpTag = 601,
         /// <summary>
-        /// High level setpoint to be sent to a gimbal manager to set a gimbal attitude. It is possible to set combinations of the values below. E.g. an angle as well as a desired angular rate can be used to get to this angle at a certain angular rate, or an angular rate only will result in continuous turning. NaN is to be used to signal unset. Note: a gimbal is never to react to this command but only the gimbal manager.
-        /// Param 1 - Pitch angle (positive to pitch up, relative to vehicle for FOLLOW mode, relative to world horizon for LOCK mode).
-        /// Param 2 - Yaw angle (positive to yaw to the right, relative to vehicle for FOLLOW mode, absolute to North for LOCK mode).
-        /// Param 3 - Pitch rate (positive to pitch up).
-        /// Param 4 - Yaw rate (positive to yaw to the right).
-        /// Param 5 - Gimbal manager flags to use.
-        /// Param 7 - Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).
-        /// MAV_CMD_DO_GIMBAL_MANAGER_PITCHYAW
-        /// </summary>
-        MavCmdDoGimbalManagerPitchyaw = 1000,
-        /// <summary>
-        /// Gimbal configuration to set which sysid/compid is in primary and secondary control.
-        /// Param 1 - Sysid for primary control (0: no one in control, -1: leave unchanged, -2: set itself in control (for missions where the own sysid is still unknown), -3: remove control if currently in control).
-        /// Param 2 - Compid for primary control (0: no one in control, -1: leave unchanged, -2: set itself in control (for missions where the own sysid is still unknown), -3: remove control if currently in control).
-        /// Param 3 - Sysid for secondary control (0: no one in control, -1: leave unchanged, -2: set itself in control (for missions where the own sysid is still unknown), -3: remove control if currently in control).
-        /// Param 4 - Compid for secondary control (0: no one in control, -1: leave unchanged, -2: set itself in control (for missions where the own sysid is still unknown), -3: remove control if currently in control).
-        /// Param 7 - Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).
-        /// MAV_CMD_DO_GIMBAL_MANAGER_CONFIGURE
-        /// </summary>
-        MavCmdDoGimbalManagerConfigure = 1001,
-        /// <summary>
         /// Start image capture sequence. Sends CAMERA_IMAGE_CAPTURED after each capture. Use NaN for reserved values.
         /// Param 1 - Reserved (Set to 0)
         /// Param 2 - Desired elapsed time between two consecutive pictures (in seconds). Minimum values depend on hardware (typically greater than 2 seconds).
         /// Param 3 - Total number of images to capture. 0 to capture forever/until MAV_CMD_IMAGE_STOP_CAPTURE.
-        /// Param 4 - Capture sequence number starting from 1. This is only valid for single-capture (param3 == 1), otherwise set to 0. Increment the capture ID for each capture command to prevent double captures when a command is re-transmitted.
-        /// Param 5 - 
-        /// Param 6 - 
-        /// Param 7 - 
+        /// Param 4 - Capture sequence number starting from 1. This is only valid for single-capture (param3 == 1). Increment the capture ID for each capture command to prevent double captures when a command is re-transmitted. Use 0 to ignore it.
+        /// Param 5 - Reserved (all remaining params)
         /// MAV_CMD_IMAGE_START_CAPTURE
         /// </summary>
         MavCmdImageStartCapture = 2000,
         /// <summary>
         /// Stop image capture sequence Use NaN for reserved values.
         /// Param 1 - Reserved (Set to 0)
-        /// Param 2 - 
-        /// Param 3 - 
-        /// Param 4 - 
-        /// Param 7 - 
+        /// Param 2 - Reserved (all remaining params)
         /// MAV_CMD_IMAGE_STOP_CAPTURE
         /// </summary>
         MavCmdImageStopCapture = 2001,
         /// <summary>
-        /// Re-request a CAMERA_IMAGE_CAPTURED message.
-        /// Param 1 - Sequence number for missing CAMERA_IMAGE_CAPTURED message
-        /// Param 2 - 
-        /// Param 3 - 
-        /// Param 4 - 
-        /// Param 7 - 
+        /// Re-request a CAMERA_IMAGE_CAPTURE message. Use NaN for reserved values.
+        /// Param 1 - Sequence number for missing CAMERA_IMAGE_CAPTURE message
+        /// Param 2 - Reserved (all remaining params)
         /// MAV_CMD_REQUEST_CAMERA_IMAGE_CAPTURE
         /// </summary>
         MavCmdRequestCameraImageCapture = 2002,
@@ -3183,72 +2618,45 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdDoTriggerControl = 2003,
         /// <summary>
-        /// If the camera supports point visual tracking (CAMERA_CAP_FLAGS_HAS_TRACKING_POINT is set), this command allows to initiate the tracking.
-        /// Param 1 - Point to track x value (normalized 0..1, 0 is left, 1 is right).
-        /// Param 2 - Point to track y value (normalized 0..1, 0 is top, 1 is bottom).
-        /// Param 3 - Point radius (normalized 0..1, 0 is image left, 1 is image right).
-        /// MAV_CMD_CAMERA_TRACK_POINT
-        /// </summary>
-        MavCmdCameraTrackPoint = 2004,
-        /// <summary>
-        /// If the camera supports rectangle visual tracking (CAMERA_CAP_FLAGS_HAS_TRACKING_RECTANGLE is set), this command allows to initiate the tracking.
-        /// Param 1 - Top left corner of rectangle x value (normalized 0..1, 0 is left, 1 is right).
-        /// Param 2 - Top left corner of rectangle y value (normalized 0..1, 0 is top, 1 is bottom).
-        /// Param 3 - Bottom right corner of rectangle x value (normalized 0..1, 0 is left, 1 is right).
-        /// Param 4 - Bottom right corner of rectangle y value (normalized 0..1, 0 is top, 1 is bottom).
-        /// MAV_CMD_CAMERA_TRACK_RECTANGLE
-        /// </summary>
-        MavCmdCameraTrackRectangle = 2005,
-        /// <summary>
-        /// Stops ongoing tracking.
-        /// MAV_CMD_CAMERA_STOP_TRACKING
-        /// </summary>
-        MavCmdCameraStopTracking = 2010,
-        /// <summary>
-        /// Starts video capture (recording).
+        /// Starts video capture (recording). Use NaN for reserved values.
         /// Param 1 - Video Stream ID (0 for all streams)
         /// Param 2 - Frequency CAMERA_CAPTURE_STATUS messages should be sent while recording (0 for no messages, otherwise frequency)
-        /// Param 3 - 
-        /// Param 4 - 
-        /// Param 5 - 
-        /// Param 6 - 
-        /// Param 7 - 
+        /// Param 3 - Reserved (all remaining params)
         /// MAV_CMD_VIDEO_START_CAPTURE
         /// </summary>
         MavCmdVideoStartCapture = 2500,
         /// <summary>
-        /// Stop the current video capture (recording).
+        /// Stop the current video capture (recording). Use NaN for reserved values.
         /// Param 1 - Video Stream ID (0 for all streams)
-        /// Param 2 - 
-        /// Param 3 - 
-        /// Param 4 - 
-        /// Param 5 - 
-        /// Param 6 - 
-        /// Param 7 - 
+        /// Param 2 - Reserved (all remaining params)
         /// MAV_CMD_VIDEO_STOP_CAPTURE
         /// </summary>
         MavCmdVideoStopCapture = 2501,
         /// <summary>
         /// Start video streaming
         /// Param 1 - Video Stream ID (0 for all streams, 1 for first, 2 for second, etc.)
+        /// Param 2 - Reserved
         /// MAV_CMD_VIDEO_START_STREAMING
         /// </summary>
         MavCmdVideoStartStreaming = 2502,
         /// <summary>
         /// Stop the given video stream
         /// Param 1 - Video Stream ID (0 for all streams, 1 for first, 2 for second, etc.)
+        /// Param 2 - Reserved
         /// MAV_CMD_VIDEO_STOP_STREAMING
         /// </summary>
         MavCmdVideoStopStreaming = 2503,
         /// <summary>
         /// Request video stream information (VIDEO_STREAM_INFORMATION)
         /// Param 1 - Video Stream ID (0 for all streams, 1 for first, 2 for second, etc.)
+        /// Param 2 - Reserved (all remaining params)
         /// MAV_CMD_REQUEST_VIDEO_STREAM_INFORMATION
         /// </summary>
         MavCmdRequestVideoStreamInformation = 2504,
         /// <summary>
         /// Request video stream status (VIDEO_STREAM_STATUS)
         /// Param 1 - Video Stream ID (0 for all streams, 1 for first, 2 for second, etc.)
+        /// Param 2 - Reserved (all remaining params)
         /// MAV_CMD_REQUEST_VIDEO_STREAM_STATUS
         /// </summary>
         MavCmdRequestVideoStreamStatus = 2505,
@@ -3280,11 +2688,11 @@ namespace Asv.Mavlink.V2.Common
         /// 
         /// Param 1 - Landing gear ID (default: 0, -1 for all)
         /// Param 2 - Landing gear position (Down: 0, Up: 1, NaN for no change)
-        /// Param 3 - 
-        /// Param 4 - 
-        /// Param 5 - 
-        /// Param 6 - 
-        /// Param 7 - 
+        /// Param 3 - Reserved, set to NaN
+        /// Param 4 - Reserved, set to NaN
+        /// Param 5 - Reserved, set to NaN
+        /// Param 6 - Reserved, set to NaN
+        /// Param 7 - Reserved, set to NaN
         /// MAV_CMD_AIRFRAME_CONFIGURATION
         /// </summary>
         MavCmdAirframeConfiguration = 2520,
@@ -3311,8 +2719,7 @@ namespace Asv.Mavlink.V2.Common
         MavCmdPanoramaCreate = 2800,
         /// <summary>
         /// Request VTOL transition
-        /// Param 1 - The target VTOL state. For normal transitions, only MAV_VTOL_STATE_MC and MAV_VTOL_STATE_FW can be used.
-        /// Param 2 - Force immediate transition to the specified MAV_VTOL_STATE. 1: Force immediate, 0: normal transition. Can be used, for example, to trigger an emergency "Quadchute". Caution: Can be dangerous/damage vehicle, depending on autopilot implementation of this command.
+        /// Param 1 - The target VTOL state. Only MAV_VTOL_STATE_MC and MAV_VTOL_STATE_FW can be used.
         /// MAV_CMD_DO_VTOL_TRANSITION
         /// </summary>
         MavCmdDoVtolTransition = 3000,
@@ -3336,8 +2743,8 @@ namespace Asv.Mavlink.V2.Common
         /// Param 2 - User defined
         /// Param 3 - User defined
         /// Param 4 - User defined
-        /// Param 5 - Target latitude of center of circle in CIRCLE_MODE
-        /// Param 6 - Target longitude of center of circle in CIRCLE_MODE
+        /// Param 5 - Unscaled target latitude of center of circle in CIRCLE_MODE
+        /// Param 6 - Unscaled target longitude of center of circle in CIRCLE_MODE
         /// MAV_CMD_SET_GUIDED_SUBMODE_CIRCLE
         /// </summary>
         MavCmdSetGuidedSubmodeCircle = 4001,
@@ -3354,7 +2761,8 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdConditionGate = 4501,
         /// <summary>
-        /// Fence return point (there can only be one such point in a geofence definition). If rally points are supported they should be used instead.
+        /// Fence return point. There can only be one fence return point.
+        ///         
         /// Param 1 - Reserved
         /// Param 2 - Reserved
         /// Param 3 - Reserved
@@ -3369,7 +2777,7 @@ namespace Asv.Mavlink.V2.Common
         /// Fence vertex for an inclusion polygon (the polygon must not be self-intersecting). The vehicle must stay within this area. Minimum of 3 vertices required.
         ///         
         /// Param 1 - Polygon vertex count
-        /// Param 2 - Vehicle must be inside ALL inclusion zones in a single group, vehicle must be inside at least one group, must be the same for all points in each polygon
+        /// Param 2 - Reserved
         /// Param 3 - Reserved
         /// Param 4 - Reserved
         /// Param 5 - Latitude
@@ -3395,7 +2803,7 @@ namespace Asv.Mavlink.V2.Common
         /// Circular fence area. The vehicle must stay inside this area.
         ///         
         /// Param 1 - Radius.
-        /// Param 2 - Vehicle must be inside ALL inclusion zones in a single group, vehicle must be inside at least one group
+        /// Param 2 - Reserved
         /// Param 3 - Reserved
         /// Param 4 - Reserved
         /// Param 5 - Latitude
@@ -3443,26 +2851,14 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdUavcanGetNodeInfo = 5200,
         /// <summary>
-        /// Trigger the start of an ADSB-out IDENT. This should only be used when requested to do so by an Air Traffic Controller in controlled airspace. This starts the IDENT which is then typically held for 18 seconds by the hardware per the Mode A, C, and S transponder spec.
-        /// Param 1 - Reserved (set to 0)
-        /// Param 2 - Reserved (set to 0)
-        /// Param 3 - Reserved (set to 0)
-        /// Param 4 - Reserved (set to 0)
-        /// Param 5 - Reserved (set to 0)
-        /// Param 6 - Reserved (set to 0)
-        /// Param 7 - Reserved (set to 0)
-        /// MAV_CMD_DO_ADSB_OUT_IDENT
-        /// </summary>
-        MavCmdDoAdsbOutIdent = 10001,
-        /// <summary>
         /// Deploy payload on a Lat / Lon / Alt position. This includes the navigation to reach the required release position and velocity.
         /// Param 1 - Operation mode. 0: prepare single payload deploy (overwriting previous requests), but do not execute it. 1: execute payload deploy immediately (rejecting further deploy commands during execution, but allowing abort). 2: add payload deploy to existing deployment list.
         /// Param 2 - Desired approach vector in compass heading. A negative value indicates the system can define the approach vector at will.
         /// Param 3 - Desired ground speed at release time. This can be overridden by the airframe in case it needs to meet minimum airspeed. A negative value indicates the system can define the ground speed at will.
         /// Param 4 - Minimum altitude clearance to the release position. A negative value indicates the system can define the clearance at will.
-        /// Param 5 - Latitude. Note, if used in MISSION_ITEM (deprecated) the units are degrees (unscaled)
-        /// Param 6 - Longitude. Note, if used in MISSION_ITEM (deprecated) the units are degrees (unscaled)
-        /// Param 7 - Altitude (MSL)
+        /// Param 5 - Latitude unscaled for MISSION_ITEM or in 1e7 degrees for MISSION_ITEM_INT
+        /// Param 6 - Longitude unscaled for MISSION_ITEM or in 1e7 degrees for MISSION_ITEM_INT
+        /// Param 7 - Altitude (MSL), in meters
         /// MAV_CMD_PAYLOAD_PREPARE_DEPLOY
         /// </summary>
         MavCmdPayloadPrepareDeploy = 30001,
@@ -3479,30 +2875,6 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavCmdPayloadControlDeploy = 30002,
         /// <summary>
-        /// Magnetometer calibration based on provided known yaw. This allows for fast calibration using WMM field tables in the vehicle, given only the known yaw of the vehicle. If Latitude and longitude are both zero then use the current vehicle location.
-        /// Param 1 - Yaw of vehicle in earth frame.
-        /// Param 2 - CompassMask, 0 for all.
-        /// Param 3 - Latitude.
-        /// Param 4 - Longitude.
-        /// Param 5 - Empty.
-        /// Param 6 - Empty.
-        /// Param 7 - Empty.
-        /// MAV_CMD_FIXED_MAG_CAL_YAW
-        /// </summary>
-        MavCmdFixedMagCalYaw = 42006,
-        /// <summary>
-        /// Command to operate winch.
-        /// Param 1 - Winch instance number.
-        /// Param 2 - Action to perform.
-        /// Param 3 - Length of line to release (negative to wind).
-        /// Param 4 - Release rate (negative to wind).
-        /// Param 5 - Empty.
-        /// Param 6 - Empty.
-        /// Param 7 - Empty.
-        /// MAV_CMD_DO_WINCH
-        /// </summary>
-        MavCmdDoWinch = 42600,
-        /// <summary>
         /// User defined waypoint item. Ground Station will show the Vehicle as flying through this item.
         /// Param 1 - User defined
         /// Param 2 - User defined
@@ -3510,7 +2882,7 @@ namespace Asv.Mavlink.V2.Common
         /// Param 4 - User defined
         /// Param 5 - Latitude unscaled
         /// Param 6 - Longitude unscaled
-        /// Param 7 - Altitude (MSL)
+        /// Param 7 - Altitude (MSL), in meters
         /// MAV_CMD_WAYPOINT_USER_1
         /// </summary>
         MavCmdWaypointUser1 = 31000,
@@ -3522,7 +2894,7 @@ namespace Asv.Mavlink.V2.Common
         /// Param 4 - User defined
         /// Param 5 - Latitude unscaled
         /// Param 6 - Longitude unscaled
-        /// Param 7 - Altitude (MSL)
+        /// Param 7 - Altitude (MSL), in meters
         /// MAV_CMD_WAYPOINT_USER_2
         /// </summary>
         MavCmdWaypointUser2 = 31001,
@@ -3534,7 +2906,7 @@ namespace Asv.Mavlink.V2.Common
         /// Param 4 - User defined
         /// Param 5 - Latitude unscaled
         /// Param 6 - Longitude unscaled
-        /// Param 7 - Altitude (MSL)
+        /// Param 7 - Altitude (MSL), in meters
         /// MAV_CMD_WAYPOINT_USER_3
         /// </summary>
         MavCmdWaypointUser3 = 31002,
@@ -3546,7 +2918,7 @@ namespace Asv.Mavlink.V2.Common
         /// Param 4 - User defined
         /// Param 5 - Latitude unscaled
         /// Param 6 - Longitude unscaled
-        /// Param 7 - Altitude (MSL)
+        /// Param 7 - Altitude (MSL), in meters
         /// MAV_CMD_WAYPOINT_USER_4
         /// </summary>
         MavCmdWaypointUser4 = 31003,
@@ -3558,7 +2930,7 @@ namespace Asv.Mavlink.V2.Common
         /// Param 4 - User defined
         /// Param 5 - Latitude unscaled
         /// Param 6 - Longitude unscaled
-        /// Param 7 - Altitude (MSL)
+        /// Param 7 - Altitude (MSL), in meters
         /// MAV_CMD_WAYPOINT_USER_5
         /// </summary>
         MavCmdWaypointUser5 = 31004,
@@ -3570,7 +2942,7 @@ namespace Asv.Mavlink.V2.Common
         /// Param 4 - User defined
         /// Param 5 - Latitude unscaled
         /// Param 6 - Longitude unscaled
-        /// Param 7 - Altitude (MSL)
+        /// Param 7 - Altitude (MSL), in meters
         /// MAV_CMD_SPATIAL_USER_1
         /// </summary>
         MavCmdSpatialUser1 = 31005,
@@ -3582,7 +2954,7 @@ namespace Asv.Mavlink.V2.Common
         /// Param 4 - User defined
         /// Param 5 - Latitude unscaled
         /// Param 6 - Longitude unscaled
-        /// Param 7 - Altitude (MSL)
+        /// Param 7 - Altitude (MSL), in meters
         /// MAV_CMD_SPATIAL_USER_2
         /// </summary>
         MavCmdSpatialUser2 = 31006,
@@ -3594,7 +2966,7 @@ namespace Asv.Mavlink.V2.Common
         /// Param 4 - User defined
         /// Param 5 - Latitude unscaled
         /// Param 6 - Longitude unscaled
-        /// Param 7 - Altitude (MSL)
+        /// Param 7 - Altitude (MSL), in meters
         /// MAV_CMD_SPATIAL_USER_3
         /// </summary>
         MavCmdSpatialUser3 = 31007,
@@ -3606,7 +2978,7 @@ namespace Asv.Mavlink.V2.Common
         /// Param 4 - User defined
         /// Param 5 - Latitude unscaled
         /// Param 6 - Longitude unscaled
-        /// Param 7 - Altitude (MSL)
+        /// Param 7 - Altitude (MSL), in meters
         /// MAV_CMD_SPATIAL_USER_4
         /// </summary>
         MavCmdSpatialUser4 = 31008,
@@ -3618,7 +2990,7 @@ namespace Asv.Mavlink.V2.Common
         /// Param 4 - User defined
         /// Param 5 - Latitude unscaled
         /// Param 6 - Longitude unscaled
-        /// Param 7 - Altitude (MSL)
+        /// Param 7 - Altitude (MSL), in meters
         /// MAV_CMD_SPATIAL_USER_5
         /// </summary>
         MavCmdSpatialUser5 = 31009,
@@ -3718,7 +3090,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavDataStreamRawController = 4,
         /// <summary>
-        /// Enable LOCAL_POSITION, GLOBAL_POSITION_INT messages.
+        /// Enable LOCAL_POSITION, GLOBAL_POSITION/GLOBAL_POSITION_INT messages.
         /// MAV_DATA_STREAM_POSITION
         /// </summary>
         MavDataStreamPosition = 6,
@@ -3949,46 +3321,41 @@ namespace Asv.Mavlink.V2.Common
     }
 
     /// <summary>
-    /// Result from a MAVLink command (MAV_CMD)
+    /// result from a mavlink command
     ///  MAV_RESULT
     /// </summary>
     public enum MavResult:uint
     {
         /// <summary>
-        /// Command is valid (is supported and has valid parameters), and was executed.
+        /// Command ACCEPTED and EXECUTED
         /// MAV_RESULT_ACCEPTED
         /// </summary>
         MavResultAccepted = 0,
         /// <summary>
-        /// Command is valid, but cannot be executed at this time. This is used to indicate a problem that should be fixed just by waiting (e.g. a state machine is busy, can't arm because have not got GPS lock, etc.). Retrying later should work.
+        /// Command TEMPORARY REJECTED/DENIED
         /// MAV_RESULT_TEMPORARILY_REJECTED
         /// </summary>
         MavResultTemporarilyRejected = 1,
         /// <summary>
-        /// Command is invalid (is supported but has invalid parameters). Retrying same command and parameters will not work.
+        /// Command PERMANENTLY DENIED
         /// MAV_RESULT_DENIED
         /// </summary>
         MavResultDenied = 2,
         /// <summary>
-        /// Command is not supported (unknown).
+        /// Command UNKNOWN/UNSUPPORTED
         /// MAV_RESULT_UNSUPPORTED
         /// </summary>
         MavResultUnsupported = 3,
         /// <summary>
-        /// Command is valid, but execution has failed. This is used to indicate any non-temporary or unexpected problem, i.e. any problem that must be fixed before the command can succeed/be retried. For example, attempting to write a file when out of memory, attempting to arm when sensors are not calibrated, etc.
+        /// Command executed, but failed
         /// MAV_RESULT_FAILED
         /// </summary>
         MavResultFailed = 4,
         /// <summary>
-        /// Command is valid and is being executed. This will be followed by further progress updates, i.e. the component may send further COMMAND_ACK messages with result MAV_RESULT_IN_PROGRESS (at a rate decided by the implementation), and must terminate by sending a COMMAND_ACK message with final result of the operation. The COMMAND_ACK.progress field can be used to indicate the progress of the operation.
+        /// WIP: Command being executed
         /// MAV_RESULT_IN_PROGRESS
         /// </summary>
         MavResultInProgress = 5,
-        /// <summary>
-        /// Command has been cancelled (as a result of receiving a COMMAND_CANCEL message).
-        /// MAV_RESULT_CANCELLED
-        /// </summary>
-        MavResultCancelled = 6,
     }
 
     /// <summary>
@@ -4018,7 +3385,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavMissionUnsupported = 3,
         /// <summary>
-        /// Mission items exceed storage space.
+        /// Mission item exceeds storage space.
         /// MAV_MISSION_NO_SPACE
         /// </summary>
         MavMissionNoSpace = 4,
@@ -4196,56 +3563,6 @@ namespace Asv.Mavlink.V2.Common
         /// SERIAL_CONTROL_DEV_SHELL
         /// </summary>
         SerialControlDevShell = 10,
-        /// <summary>
-        /// SERIAL0
-        /// SERIAL_CONTROL_SERIAL0
-        /// </summary>
-        SerialControlSerial0 = 100,
-        /// <summary>
-        /// SERIAL1
-        /// SERIAL_CONTROL_SERIAL1
-        /// </summary>
-        SerialControlSerial1 = 101,
-        /// <summary>
-        /// SERIAL2
-        /// SERIAL_CONTROL_SERIAL2
-        /// </summary>
-        SerialControlSerial2 = 102,
-        /// <summary>
-        /// SERIAL3
-        /// SERIAL_CONTROL_SERIAL3
-        /// </summary>
-        SerialControlSerial3 = 103,
-        /// <summary>
-        /// SERIAL4
-        /// SERIAL_CONTROL_SERIAL4
-        /// </summary>
-        SerialControlSerial4 = 104,
-        /// <summary>
-        /// SERIAL5
-        /// SERIAL_CONTROL_SERIAL5
-        /// </summary>
-        SerialControlSerial5 = 105,
-        /// <summary>
-        /// SERIAL6
-        /// SERIAL_CONTROL_SERIAL6
-        /// </summary>
-        SerialControlSerial6 = 106,
-        /// <summary>
-        /// SERIAL7
-        /// SERIAL_CONTROL_SERIAL7
-        /// </summary>
-        SerialControlSerial7 = 107,
-        /// <summary>
-        /// SERIAL8
-        /// SERIAL_CONTROL_SERIAL8
-        /// </summary>
-        SerialControlSerial8 = 108,
-        /// <summary>
-        /// SERIAL9
-        /// SERIAL_CONTROL_SERIAL9
-        /// </summary>
-        SerialControlSerial9 = 109,
     }
 
     /// <summary>
@@ -4539,9 +3856,7 @@ namespace Asv.Mavlink.V2.Common
     public enum MavProtocolCapability:uint
     {
         /// <summary>
-        /// Autopilot supports the MISSION_ITEM float message type.
-        ///           Note that MISSION_ITEM is deprecated, and autopilots should use MISSION_INT instead.
-        ///         
+        /// Autopilot supports MISSION float message type.
         /// MAV_PROTOCOL_CAPABILITY_MISSION_FLOAT
         /// </summary>
         MavProtocolCapabilityMissionFloat = 1,
@@ -4551,9 +3866,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavProtocolCapabilityParamFloat = 2,
         /// <summary>
-        /// Autopilot supports MISSION_ITEM_INT scaled integer message type.
-        ///           Note that this flag must always be set if missions are supported, because missions must always use MISSION_ITEM_INT (rather than MISSION_ITEM, which is deprecated).
-        ///         
+        /// Autopilot supports MISSION_INT scaled integer message type.
         /// MAV_PROTOCOL_CAPABILITY_MISSION_INT
         /// </summary>
         MavProtocolCapabilityMissionInt = 4,
@@ -4563,10 +3876,10 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavProtocolCapabilityCommandInt = 8,
         /// <summary>
-        /// Reserved for future use.
-        /// MAV_PROTOCOL_CAPABILITY_RESERVED1
+        /// Autopilot supports the new param union message type.
+        /// MAV_PROTOCOL_CAPABILITY_PARAM_UNION
         /// </summary>
-        MavProtocolCapabilityReserved1 = 16,
+        MavProtocolCapabilityParamUnion = 16,
         /// <summary>
         /// Autopilot supports the new FILE_TRANSFER_PROTOCOL message type.
         /// MAV_PROTOCOL_CAPABILITY_FTP
@@ -4584,8 +3897,7 @@ namespace Asv.Mavlink.V2.Common
         MavProtocolCapabilitySetPositionTargetLocalNed = 128,
         /// <summary>
         /// Autopilot supports commanding position and velocity targets in global scaled integers.
-        /// MAV_PROTOCOL_CAPABILITY_
-        /// 
+        /// MAV_PROTOCOL_CAPABILITY_SET_POSITION_TARGET_GLOBAL_INT
         /// </summary>
         MavProtocolCapabilitySetPositionTargetGlobalInt = 256,
         /// <summary>
@@ -4624,10 +3936,10 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavProtocolCapabilityMissionRally = 32768,
         /// <summary>
-        /// Reserved for future use.
-        /// MAV_PROTOCOL_CAPABILITY_RESERVED2
+        /// Autopilot supports the flight information protocol.
+        /// MAV_PROTOCOL_CAPABILITY_FLIGHT_INFORMATION
         /// </summary>
-        MavProtocolCapabilityReserved2 = 65536,
+        MavProtocolCapabilityFlightInformation = 65536,
     }
 
     /// <summary>
@@ -4665,11 +3977,6 @@ namespace Asv.Mavlink.V2.Common
     public enum MavEstimatorType:uint
     {
         /// <summary>
-        /// Unknown type of the estimator.
-        /// MAV_ESTIMATOR_TYPE_UNKNOWN
-        /// </summary>
-        MavEstimatorTypeUnknown = 0,
-        /// <summary>
         /// This is a naive estimator without any real covariance feedback.
         /// MAV_ESTIMATOR_TYPE_NAIVE
         /// </summary>
@@ -4694,21 +4001,6 @@ namespace Asv.Mavlink.V2.Common
         /// MAV_ESTIMATOR_TYPE_GPS_INS
         /// </summary>
         MavEstimatorTypeGpsIns = 5,
-        /// <summary>
-        /// Estimate from external motion capturing system.
-        /// MAV_ESTIMATOR_TYPE_MOCAP
-        /// </summary>
-        MavEstimatorTypeMocap = 6,
-        /// <summary>
-        /// Estimator based on lidar sensor input.
-        /// MAV_ESTIMATOR_TYPE_LIDAR
-        /// </summary>
-        MavEstimatorTypeLidar = 7,
-        /// <summary>
-        /// Estimator on autopilot.
-        /// MAV_ESTIMATOR_TYPE_AUTOPILOT
-        /// </summary>
-        MavEstimatorTypeAutopilot = 8,
     }
 
     /// <summary>
@@ -4809,12 +4101,12 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         MavBatteryChargeStateEmergency = 4,
         /// <summary>
-        /// Battery failed, damage unavoidable. Possible causes (faults) are listed in MAV_BATTERY_FAULT.
+        /// Battery failed, damage unavoidable.
         /// MAV_BATTERY_CHARGE_STATE_FAILED
         /// </summary>
         MavBatteryChargeStateFailed = 5,
         /// <summary>
-        /// Battery is diagnosed to be defective or an error occurred, usage is discouraged / prohibited. Possible causes (faults) are listed in MAV_BATTERY_FAULT.
+        /// Battery is diagnosed to be defective or an error occurred, usage is discouraged / prohibited.
         /// MAV_BATTERY_CHARGE_STATE_UNHEALTHY
         /// </summary>
         MavBatteryChargeStateUnhealthy = 6,
@@ -4826,202 +4118,41 @@ namespace Asv.Mavlink.V2.Common
     }
 
     /// <summary>
-    /// Battery mode. Note, the normal operation mode (i.e. when flying) should be reported as MAV_BATTERY_MODE_UNKNOWN to allow message trimming in normal flight.
-    ///  MAV_BATTERY_MODE
+    /// Smart battery supply status/fault flags (bitmask) for health indication.
+    ///  MAV_SMART_BATTERY_FAULT
     /// </summary>
-    public enum MavBatteryMode:uint
-    {
-        /// <summary>
-        /// Battery mode not supported/unknown battery mode/normal operation.
-        /// MAV_BATTERY_MODE_UNKNOWN
-        /// </summary>
-        MavBatteryModeUnknown = 0,
-        /// <summary>
-        /// Battery is auto discharging (towards storage level).
-        /// MAV_BATTERY_MODE_AUTO_DISCHARGING
-        /// </summary>
-        MavBatteryModeAutoDischarging = 1,
-        /// <summary>
-        /// Battery in hot-swap mode (current limited to prevent spikes that might damage sensitive electrical circuits).
-        /// MAV_BATTERY_MODE_HOT_SWAP
-        /// </summary>
-        MavBatteryModeHotSwap = 2,
-    }
-
-    /// <summary>
-    /// Smart battery supply status/fault flags (bitmask) for health indication. The battery must also report either MAV_BATTERY_CHARGE_STATE_FAILED or MAV_BATTERY_CHARGE_STATE_UNHEALTHY if any of these are set.
-    ///  MAV_BATTERY_FAULT
-    /// </summary>
-    public enum MavBatteryFault:uint
+    public enum MavSmartBatteryFault:uint
     {
         /// <summary>
         /// Battery has deep discharged.
-        /// MAV_BATTERY_FAULT_DEEP_DISCHARGE
+        /// MAV_SMART_BATTERY_FAULT_DEEP_DISCHARGE
         /// </summary>
-        MavBatteryFaultDeepDischarge = 1,
+        MavSmartBatteryFaultDeepDischarge = 1,
         /// <summary>
         /// Voltage spikes.
-        /// MAV_BATTERY_FAULT_SPIKES
+        /// MAV_SMART_BATTERY_FAULT_SPIKES
         /// </summary>
-        MavBatteryFaultSpikes = 2,
+        MavSmartBatteryFaultSpikes = 2,
         /// <summary>
-        /// One or more cells have failed. Battery should also report MAV_BATTERY_CHARGE_STATE_FAILE (and should not be used).
-        /// MAV_BATTERY_FAULT_CELL_FAIL
+        /// Single cell has failed.
+        /// MAV_SMART_BATTERY_FAULT_SINGLE_CELL_FAIL
         /// </summary>
-        MavBatteryFaultCellFail = 4,
+        MavSmartBatteryFaultSingleCellFail = 4,
         /// <summary>
         /// Over-current fault.
-        /// MAV_BATTERY_FAULT_OVER_CURRENT
+        /// MAV_SMART_BATTERY_FAULT_OVER_CURRENT
         /// </summary>
-        MavBatteryFaultOverCurrent = 8,
+        MavSmartBatteryFaultOverCurrent = 8,
         /// <summary>
         /// Over-temperature fault.
-        /// MAV_BATTERY_FAULT_OVER_TEMPERATURE
+        /// MAV_SMART_BATTERY_FAULT_OVER_TEMPERATURE
         /// </summary>
-        MavBatteryFaultOverTemperature = 16,
+        MavSmartBatteryFaultOverTemperature = 16,
         /// <summary>
         /// Under-temperature fault.
-        /// MAV_BATTERY_FAULT_UNDER_TEMPERATURE
+        /// MAV_SMART_BATTERY_FAULT_UNDER_TEMPERATURE
         /// </summary>
-        MavBatteryFaultUnderTemperature = 32,
-        /// <summary>
-        /// Vehicle voltage is not compatible with this battery (batteries on same power rail should have similar voltage).
-        /// MAV_BATTERY_FAULT_INCOMPATIBLE_VOLTAGE
-        /// </summary>
-        MavBatteryFaultIncompatibleVoltage = 64,
-        /// <summary>
-        /// Battery firmware is not compatible with current autopilot firmware.
-        /// MAV_BATTERY_FAULT_INCOMPATIBLE_FIRMWARE
-        /// </summary>
-        MavBatteryFaultIncompatibleFirmware = 128,
-        /// <summary>
-        /// Battery is not compatible due to cell configuration (e.g. 5s1p when vehicle requires 6s).
-        /// BATTERY_FAULT_INCOMPATIBLE_CELLS_CONFIGURATION
-        /// </summary>
-        BatteryFaultIncompatibleCellsConfiguration = 256,
-    }
-
-    /// <summary>
-    /// Flags to report status/failure cases for a power generator (used in GENERATOR_STATUS). Note that FAULTS are conditions that cause the generator to fail. Warnings are conditions that require attention before the next use (they indicate the system is not operating properly).
-    ///  MAV_GENERATOR_STATUS_FLAG
-    /// </summary>
-    public enum MavGeneratorStatusFlag:uint
-    {
-        /// <summary>
-        /// Generator is off.
-        /// MAV_GENERATOR_STATUS_FLAG_OFF
-        /// </summary>
-        MavGeneratorStatusFlagOff = 1,
-        /// <summary>
-        /// Generator is ready to start generating power.
-        /// MAV_GENERATOR_STATUS_FLAG_READY
-        /// </summary>
-        MavGeneratorStatusFlagReady = 2,
-        /// <summary>
-        /// Generator is generating power.
-        /// MAV_GENERATOR_STATUS_FLAG_GENERATING
-        /// </summary>
-        MavGeneratorStatusFlagGenerating = 4,
-        /// <summary>
-        /// Generator is charging the batteries (generating enough power to charge and provide the load).
-        /// MAV_GENERATOR_STATUS_FLAG_CHARGING
-        /// </summary>
-        MavGeneratorStatusFlagCharging = 8,
-        /// <summary>
-        /// Generator is operating at a reduced maximum power.
-        /// MAV_GENERATOR_STATUS_FLAG_REDUCED_POWER
-        /// </summary>
-        MavGeneratorStatusFlagReducedPower = 16,
-        /// <summary>
-        /// Generator is providing the maximum output.
-        /// MAV_GENERATOR_STATUS_FLAG_MAXPOWER
-        /// </summary>
-        MavGeneratorStatusFlagMaxpower = 32,
-        /// <summary>
-        /// Generator is near the maximum operating temperature, cooling is insufficient.
-        /// MAV_GENERATOR_STATUS_FLAG_OVERTEMP_WARNING
-        /// </summary>
-        MavGeneratorStatusFlagOvertempWarning = 64,
-        /// <summary>
-        /// Generator hit the maximum operating temperature and shutdown.
-        /// MAV_GENERATOR_STATUS_FLAG_OVERTEMP_FAULT
-        /// </summary>
-        MavGeneratorStatusFlagOvertempFault = 128,
-        /// <summary>
-        /// Power electronics are near the maximum operating temperature, cooling is insufficient.
-        /// MAV_GENERATOR_STATUS_FLAG_ELECTRONICS_OVERTEMP_WARNING
-        /// </summary>
-        MavGeneratorStatusFlagElectronicsOvertempWarning = 256,
-        /// <summary>
-        /// Power electronics hit the maximum operating temperature and shutdown.
-        /// MAV_GENERATOR_STATUS_FLAG_ELECTRONICS_OVERTEMP_FAULT
-        /// </summary>
-        MavGeneratorStatusFlagElectronicsOvertempFault = 512,
-        /// <summary>
-        /// Power electronics experienced a fault and shutdown.
-        /// MAV_GENERATOR_STATUS_FLAG_ELECTRONICS_FAULT
-        /// </summary>
-        MavGeneratorStatusFlagElectronicsFault = 1024,
-        /// <summary>
-        /// The power source supplying the generator failed e.g. mechanical generator stopped, tether is no longer providing power, solar cell is in shade, hydrogen reaction no longer happening.
-        /// MAV_GENERATOR_STATUS_FLAG_POWERSOURCE_FAULT
-        /// </summary>
-        MavGeneratorStatusFlagPowersourceFault = 2048,
-        /// <summary>
-        /// Generator controller having communication problems.
-        /// MAV_GENERATOR_STATUS_FLAG_COMMUNICATION_WARNING
-        /// </summary>
-        MavGeneratorStatusFlagCommunicationWarning = 4096,
-        /// <summary>
-        /// Power electronic or generator cooling system error.
-        /// MAV_GENERATOR_STATUS_FLAG_COOLING_WARNING
-        /// </summary>
-        MavGeneratorStatusFlagCoolingWarning = 8192,
-        /// <summary>
-        /// Generator controller power rail experienced a fault.
-        /// MAV_GENERATOR_STATUS_FLAG_POWER_RAIL_FAULT
-        /// </summary>
-        MavGeneratorStatusFlagPowerRailFault = 16384,
-        /// <summary>
-        /// Generator controller exceeded the overcurrent threshold and shutdown to prevent damage.
-        /// MAV_GENERATOR_STATUS_FLAG_OVERCURRENT_FAULT
-        /// </summary>
-        MavGeneratorStatusFlagOvercurrentFault = 32768,
-        /// <summary>
-        /// Generator controller detected a high current going into the batteries and shutdown to prevent battery damage.
-        /// MAV_GENERATOR_STATUS_FLAG_BATTERY_OVERCHARGE_CURRENT_FAULT
-        /// </summary>
-        MavGeneratorStatusFlagBatteryOverchargeCurrentFault = 65536,
-        /// <summary>
-        /// Generator controller exceeded it's overvoltage threshold and shutdown to prevent it exceeding the voltage rating.
-        /// MAV_GENERATOR_STATUS_FLAG_OVERVOLTAGE_FAULT
-        /// </summary>
-        MavGeneratorStatusFlagOvervoltageFault = 131072,
-        /// <summary>
-        /// Batteries are under voltage (generator will not start).
-        /// MAV_GENERATOR_STATUS_FLAG_BATTERY_UNDERVOLT_FAULT
-        /// </summary>
-        MavGeneratorStatusFlagBatteryUndervoltFault = 262144,
-        /// <summary>
-        /// Generator start is inhibited by e.g. a safety switch.
-        /// MAV_GENERATOR_STATUS_FLAG_START_INHIBITED
-        /// </summary>
-        MavGeneratorStatusFlagStartInhibited = 524288,
-        /// <summary>
-        /// Generator requires maintenance.
-        /// MAV_GENERATOR_STATUS_FLAG_MAINTENANCE_REQUIRED
-        /// </summary>
-        MavGeneratorStatusFlagMaintenanceRequired = 1048576,
-        /// <summary>
-        /// Generator is not ready to generate yet.
-        /// MAV_GENERATOR_STATUS_FLAG_WARMING_UP
-        /// </summary>
-        MavGeneratorStatusFlagWarmingUp = 2097152,
-        /// <summary>
-        /// Generator is idle.
-        /// MAV_GENERATOR_STATUS_FLAG_IDLE
-        /// </summary>
-        MavGeneratorStatusFlagIdle = 4194304,
+        MavSmartBatteryFaultUnderTemperature = 32,
     }
 
     /// <summary>
@@ -5230,18 +4361,6 @@ namespace Asv.Mavlink.V2.Common
         /// ADSB_FLAGS_SIMULATED
         /// </summary>
         AdsbFlagsSimulated = 64,
-        /// <summary>
-        /// ADSB_FLAGS_VERTICAL_VELOCITY_VALID
-        /// </summary>
-        AdsbFlagsVerticalVelocityValid = 128,
-        /// <summary>
-        /// ADSB_FLAGS_BARO_VALID
-        /// </summary>
-        AdsbFlagsBaroValid = 256,
-        /// <summary>
-        /// ADSB_FLAGS_SOURCE_UAT
-        /// </summary>
-        AdsbFlagsSourceUat = 32768,
     }
 
     /// <summary>
@@ -5258,7 +4377,7 @@ namespace Asv.Mavlink.V2.Common
     }
 
     /// <summary>
-    /// Flags in ESTIMATOR_STATUS message
+    /// Flags in EKF_STATUS message
     ///  ESTIMATOR_STATUS_FLAGS
     /// </summary>
     public enum EstimatorStatusFlags:uint
@@ -5326,51 +4445,49 @@ namespace Asv.Mavlink.V2.Common
     }
 
     /// <summary>
-    /// Sequence that motors are tested when using MAV_CMD_DO_MOTOR_TEST.
     ///  MOTOR_TEST_ORDER
     /// </summary>
     public enum MotorTestOrder:uint
     {
         /// <summary>
-        /// Default autopilot motor test method.
+        /// default autopilot motor test method
         /// MOTOR_TEST_ORDER_DEFAULT
         /// </summary>
         MotorTestOrderDefault = 0,
         /// <summary>
-        /// Motor numbers are specified as their index in a predefined vehicle-specific sequence.
+        /// motor numbers are specified as their index in a predefined vehicle-specific sequence
         /// MOTOR_TEST_ORDER_SEQUENCE
         /// </summary>
         MotorTestOrderSequence = 1,
         /// <summary>
-        /// Motor numbers are specified as the output as labeled on the board.
+        /// motor numbers are specified as the output as labeled on the board
         /// MOTOR_TEST_ORDER_BOARD
         /// </summary>
         MotorTestOrderBoard = 2,
     }
 
     /// <summary>
-    /// Defines how throttle value is represented in MAV_CMD_DO_MOTOR_TEST.
     ///  MOTOR_TEST_THROTTLE_TYPE
     /// </summary>
     public enum MotorTestThrottleType:uint
     {
         /// <summary>
-        /// Throttle as a percentage (0 ~ 100)
+        /// throttle as a percentage from 0 ~ 100
         /// MOTOR_TEST_THROTTLE_PERCENT
         /// </summary>
         MotorTestThrottlePercent = 0,
         /// <summary>
-        /// Throttle as an absolute PWM value (normally in range of 1000~2000).
+        /// throttle as an absolute PWM value (normally in range of 1000~2000)
         /// MOTOR_TEST_THROTTLE_PWM
         /// </summary>
         MotorTestThrottlePwm = 1,
         /// <summary>
-        /// Throttle pass-through from pilot's transmitter.
+        /// throttle pass-through from pilot's transmitter
         /// MOTOR_TEST_THROTTLE_PILOT
         /// </summary>
         MotorTestThrottlePilot = 2,
         /// <summary>
-        /// Per-motor compass calibration test.
+        /// per-motor compass calibration test
         /// MOTOR_TEST_COMPASS_CAL
         /// </summary>
         MotorTestCompassCal = 3,
@@ -5572,7 +4689,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         RtkBaselineCoordinateSystemEcef = 0,
         /// <summary>
-        /// RTK basestation centered, north, east, down
+        /// North, East, Down
         /// RTK_BASELINE_COORDINATE_SYSTEM_NED
         /// </summary>
         RtkBaselineCoordinateSystemNed = 1,
@@ -5686,25 +4803,10 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         CameraCapFlagsHasBasicFocus = 128,
         /// <summary>
-        /// Camera has video streaming capabilities (request VIDEO_STREAM_INFORMATION with MAV_CMD_REQUEST_MESSAGE for video streaming info)
+        /// Camera has video streaming capabilities (use MAV_CMD_REQUEST_VIDEO_STREAM_INFORMATION for video streaming info)
         /// CAMERA_CAP_FLAGS_HAS_VIDEO_STREAM
         /// </summary>
         CameraCapFlagsHasVideoStream = 256,
-        /// <summary>
-        /// Camera supports tracking of a point on the camera view.
-        /// CAMERA_CAP_FLAGS_HAS_TRACKING_POINT
-        /// </summary>
-        CameraCapFlagsHasTrackingPoint = 512,
-        /// <summary>
-        /// Camera supports tracking of a selection rectangle on the camera view.
-        /// CAMERA_CAP_FLAGS_HAS_TRACKING_RECTANGLE
-        /// </summary>
-        CameraCapFlagsHasTrackingRectangle = 1024,
-        /// <summary>
-        /// Camera supports tracking geo status (CAMERA_TRACKING_GEO_STATUS).
-        /// CAMERA_CAP_FLAGS_HAS_TRACKING_GEO_STATUS
-        /// </summary>
-        CameraCapFlagsHasTrackingGeoStatus = 2048,
     }
 
     /// <summary>
@@ -5754,80 +4856,6 @@ namespace Asv.Mavlink.V2.Common
     }
 
     /// <summary>
-    /// Camera tracking status flags
-    ///  CAMERA_TRACKING_STATUS_FLAGS
-    /// </summary>
-    public enum CameraTrackingStatusFlags:uint
-    {
-        /// <summary>
-        /// Camera is not tracking
-        /// CAMERA_TRACKING_STATUS_FLAGS_IDLE
-        /// </summary>
-        CameraTrackingStatusFlagsIdle = 0,
-        /// <summary>
-        /// Camera is tracking
-        /// CAMERA_TRACKING_STATUS_FLAGS_ACTIVE
-        /// </summary>
-        CameraTrackingStatusFlagsActive = 1,
-        /// <summary>
-        /// Camera tracking in error state
-        /// CAMERA_TRACKING_STATUS_FLAGS_ERROR
-        /// </summary>
-        CameraTrackingStatusFlagsError = 2,
-    }
-
-    /// <summary>
-    /// Camera tracking modes
-    ///  CAMERA_TRACKING_MODE
-    /// </summary>
-    public enum CameraTrackingMode:uint
-    {
-        /// <summary>
-        /// Not tracking
-        /// CAMERA_TRACKING_MODE_NONE
-        /// </summary>
-        CameraTrackingModeNone = 0,
-        /// <summary>
-        /// Target is a point
-        /// CAMERA_TRACKING_MODE_POINT
-        /// </summary>
-        CameraTrackingModePoint = 1,
-        /// <summary>
-        /// Target is a rectangle
-        /// CAMERA_TRACKING_MODE_RECTANGLE
-        /// </summary>
-        CameraTrackingModeRectangle = 2,
-    }
-
-    /// <summary>
-    /// Camera tracking target data (shows where tracked target is within image)
-    ///  CAMERA_TRACKING_TARGET_DATA
-    /// </summary>
-    public enum CameraTrackingTargetData:uint
-    {
-        /// <summary>
-        /// No target data
-        /// CAMERA_TRACKING_TARGET_DATA_NONE
-        /// </summary>
-        CameraTrackingTargetDataNone = 0,
-        /// <summary>
-        /// Target data embedded in image data (proprietary)
-        /// CAMERA_TRACKING_TARGET_DATA_EMBEDDED
-        /// </summary>
-        CameraTrackingTargetDataEmbedded = 1,
-        /// <summary>
-        /// Target data rendered in image
-        /// CAMERA_TRACKING_TARGET_DATA_RENDERED
-        /// </summary>
-        CameraTrackingTargetDataRendered = 2,
-        /// <summary>
-        /// Target data within status message (Point or Rectangle)
-        /// CAMERA_TRACKING_TARGET_DATA_IN_STATUS
-        /// </summary>
-        CameraTrackingTargetDataInStatus = 4,
-    }
-
-    /// <summary>
     /// Zoom types for MAV_CMD_SET_CAMERA_ZOOM
     ///  CAMERA_ZOOM_TYPE
     /// </summary>
@@ -5848,11 +4876,6 @@ namespace Asv.Mavlink.V2.Common
         /// ZOOM_TYPE_RANGE
         /// </summary>
         ZoomTypeRange = 2,
-        /// <summary>
-        /// Zoom value/variable focal length in milimetres. Note that there is no message to get the valid zoom range of the camera, so this can type can only be used for cameras where the zoom range is known (implying that this cannot reliably be used in a GCS for an arbitrary camera)
-        /// ZOOM_TYPE_FOCAL_LENGTH
-        /// </summary>
-        ZoomTypeFocalLength = 3,
     }
 
     /// <summary>
@@ -5872,34 +4895,14 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         FocusTypeContinuous = 1,
         /// <summary>
-        /// Focus value as proportion of full camera focus range (a value between 0.0 and 100.0)
+        /// Zoom value as proportion of full camera range (a value between 0.0 and 100.0)
         /// FOCUS_TYPE_RANGE
         /// </summary>
         FocusTypeRange = 2,
-        /// <summary>
-        /// Focus value in metres. Note that there is no message to get the valid focus range of the camera, so this can type can only be used for cameras where the range is known (implying that this cannot reliably be used in a GCS for an arbitrary camera).
-        /// FOCUS_TYPE_METERS
-        /// </summary>
-        FocusTypeMeters = 3,
-        /// <summary>
-        /// Focus automatically.
-        /// FOCUS_TYPE_AUTO
-        /// </summary>
-        FocusTypeAuto = 4,
-        /// <summary>
-        /// Single auto focus. Mainly used for still pictures. Usually abbreviated as AF-S.
-        /// FOCUS_TYPE_AUTO_SINGLE
-        /// </summary>
-        FocusTypeAutoSingle = 5,
-        /// <summary>
-        /// Continuous auto focus. Mainly used for dynamic scenes. Abbreviated as AF-C.
-        /// FOCUS_TYPE_AUTO_CONTINUOUS
-        /// </summary>
-        FocusTypeAutoContinuous = 6,
     }
 
     /// <summary>
-    /// Result from PARAM_EXT_SET message (or a PARAM_SET within a transaction).
+    /// Result from a PARAM_EXT_SET message.
     ///  PARAM_ACK
     /// </summary>
     public enum ParamAck:uint
@@ -5920,7 +4923,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         ParamAckFailed = 2,
         /// <summary>
-        /// Parameter value received but not yet set/accepted. A subsequent PARAM_ACK_TRANSACTION or PARAM_EXT_ACK with the final result will follow once operation is completed. This is returned immediately for parameters that take longer to set, indicating taht the the parameter was recieved and does not need to be resent.
+        /// Parameter value received but not yet validated or set. A subsequent PARAM_EXT_ACK will follow once operation is completed with the actual result. These are for parameters that may take longer to set. Instead of waiting for an ACK and potentially timing out, you will immediately receive this response to let you know it was received.
         /// PARAM_ACK_IN_PROGRESS
         /// </summary>
         ParamAckInProgress = 3,
@@ -6073,44 +5076,6 @@ namespace Asv.Mavlink.V2.Common
     }
 
     /// <summary>
-    /// Bitmap to indicate which dimensions should be ignored by the vehicle: a value of 0b00000000 indicates that none of the setpoint dimensions should be ignored.
-    ///  ATTITUDE_TARGET_TYPEMASK
-    /// </summary>
-    public enum AttitudeTargetTypemask:uint
-    {
-        /// <summary>
-        /// Ignore body roll rate
-        /// ATTITUDE_TARGET_TYPEMASK_BODY_ROLL_RATE_IGNORE
-        /// </summary>
-        AttitudeTargetTypemaskBodyRollRateIgnore = 1,
-        /// <summary>
-        /// Ignore body pitch rate
-        /// ATTITUDE_TARGET_TYPEMASK_BODY_PITCH_RATE_IGNORE
-        /// </summary>
-        AttitudeTargetTypemaskBodyPitchRateIgnore = 2,
-        /// <summary>
-        /// Ignore body yaw rate
-        /// ATTITUDE_TARGET_TYPEMASK_BODY_YAW_RATE_IGNORE
-        /// </summary>
-        AttitudeTargetTypemaskBodyYawRateIgnore = 4,
-        /// <summary>
-        /// Use 3D body thrust setpoint instead of throttle
-        /// ATTITUDE_TARGET_TYPEMASK_THRUST_BODY_SET
-        /// </summary>
-        AttitudeTargetTypemaskThrustBodySet = 32,
-        /// <summary>
-        /// Ignore throttle
-        /// ATTITUDE_TARGET_TYPEMASK_THROTTLE_IGNORE
-        /// </summary>
-        AttitudeTargetTypemaskThrottleIgnore = 64,
-        /// <summary>
-        /// Ignore attitude
-        /// ATTITUDE_TARGET_TYPEMASK_ATTITUDE_IGNORE
-        /// </summary>
-        AttitudeTargetTypemaskAttitudeIgnore = 128,
-    }
-
-    /// <summary>
     /// Airborne status of UAS.
     ///  UTM_FLIGHT_STATE
     /// </summary>
@@ -6192,107 +5157,6 @@ namespace Asv.Mavlink.V2.Common
     }
 
     /// <summary>
-    /// These flags encode the cellular network status
-    ///  CELLULAR_STATUS_FLAG
-    /// </summary>
-    public enum CellularStatusFlag:uint
-    {
-        /// <summary>
-        /// State unknown or not reportable.
-        /// CELLULAR_STATUS_FLAG_UNKNOWN
-        /// </summary>
-        CellularStatusFlagUnknown = 0,
-        /// <summary>
-        /// Modem is unusable
-        /// CELLULAR_STATUS_FLAG_FAILED
-        /// </summary>
-        CellularStatusFlagFailed = 1,
-        /// <summary>
-        /// Modem is being initialized
-        /// CELLULAR_STATUS_FLAG_INITIALIZING
-        /// </summary>
-        CellularStatusFlagInitializing = 2,
-        /// <summary>
-        /// Modem is locked
-        /// CELLULAR_STATUS_FLAG_LOCKED
-        /// </summary>
-        CellularStatusFlagLocked = 3,
-        /// <summary>
-        /// Modem is not enabled and is powered down
-        /// CELLULAR_STATUS_FLAG_DISABLED
-        /// </summary>
-        CellularStatusFlagDisabled = 4,
-        /// <summary>
-        /// Modem is currently transitioning to the CELLULAR_STATUS_FLAG_DISABLED state
-        /// CELLULAR_STATUS_FLAG_DISABLING
-        /// </summary>
-        CellularStatusFlagDisabling = 5,
-        /// <summary>
-        /// Modem is currently transitioning to the CELLULAR_STATUS_FLAG_ENABLED state
-        /// CELLULAR_STATUS_FLAG_ENABLING
-        /// </summary>
-        CellularStatusFlagEnabling = 6,
-        /// <summary>
-        /// Modem is enabled and powered on but not registered with a network provider and not available for data connections
-        /// CELLULAR_STATUS_FLAG_ENABLED
-        /// </summary>
-        CellularStatusFlagEnabled = 7,
-        /// <summary>
-        /// Modem is searching for a network provider to register
-        /// CELLULAR_STATUS_FLAG_SEARCHING
-        /// </summary>
-        CellularStatusFlagSearching = 8,
-        /// <summary>
-        /// Modem is registered with a network provider, and data connections and messaging may be available for use
-        /// CELLULAR_STATUS_FLAG_REGISTERED
-        /// </summary>
-        CellularStatusFlagRegistered = 9,
-        /// <summary>
-        /// Modem is disconnecting and deactivating the last active packet data bearer. This state will not be entered if more than one packet data bearer is active and one of the active bearers is deactivated
-        /// CELLULAR_STATUS_FLAG_DISCONNECTING
-        /// </summary>
-        CellularStatusFlagDisconnecting = 10,
-        /// <summary>
-        /// Modem is activating and connecting the first packet data bearer. Subsequent bearer activations when another bearer is already active do not cause this state to be entered
-        /// CELLULAR_STATUS_FLAG_CONNECTING
-        /// </summary>
-        CellularStatusFlagConnecting = 11,
-        /// <summary>
-        /// One or more packet data bearers is active and connected
-        /// CELLULAR_STATUS_FLAG_CONNECTED
-        /// </summary>
-        CellularStatusFlagConnected = 12,
-    }
-
-    /// <summary>
-    /// These flags are used to diagnose the failure state of CELLULAR_STATUS
-    ///  CELLULAR_NETWORK_FAILED_REASON
-    /// </summary>
-    public enum CellularNetworkFailedReason:uint
-    {
-        /// <summary>
-        /// No error
-        /// CELLULAR_NETWORK_FAILED_REASON_NONE
-        /// </summary>
-        CellularNetworkFailedReasonNone = 0,
-        /// <summary>
-        /// Error state is unknown
-        /// CELLULAR_NETWORK_FAILED_REASON_UNKNOWN
-        /// </summary>
-        CellularNetworkFailedReasonUnknown = 1,
-        /// <summary>
-        /// SIM is required for the modem but missing
-        /// CELLULAR_NETWORK_FAILED_REASON_SIM_MISSING
-        /// </summary>
-        CellularNetworkFailedReasonSimMissing = 2,
-        /// <summary>
-        /// SIM is available, but not usuable for connection
-        /// CELLULAR_NETWORK_FAILED_REASON_SIM_ERROR
-        /// </summary>
-        CellularNetworkFailedReasonSimError = 3,
-    }
-
-    /// <summary>
     /// Cellular network radio type
     ///  CELLULAR_NETWORK_RADIO_TYPE
     /// </summary>
@@ -6321,6 +5185,19 @@ namespace Asv.Mavlink.V2.Common
     }
 
     /// <summary>
+    /// These flags encode the cellular network status
+    ///  CELLULAR_NETWORK_STATUS_FLAG
+    /// </summary>
+    public enum CellularNetworkStatusFlag:uint
+    {
+        /// <summary>
+        /// Roaming is active
+        /// CELLULAR_NETWORK_STATUS_FLAG_ROAMING
+        /// </summary>
+        CellularNetworkStatusFlagRoaming = 1,
+    }
+
+    /// <summary>
     /// Precision land modes (used in MAV_CMD_NAV_LAND).
     ///  PRECISION_LAND_MODE
     /// </summary>
@@ -6344,1668 +5221,25 @@ namespace Asv.Mavlink.V2.Common
     }
 
     /// <summary>
-    /// Parachute actions. Trigger release and enable/disable auto-release.
     ///  PARACHUTE_ACTION
     /// </summary>
     public enum ParachuteAction:uint
     {
         /// <summary>
-        /// Disable auto-release of parachute (i.e. release triggered by crash detectors).
+        /// Disable parachute release.
         /// PARACHUTE_DISABLE
         /// </summary>
         ParachuteDisable = 0,
         /// <summary>
-        /// Enable auto-release of parachute.
+        /// Enable parachute release.
         /// PARACHUTE_ENABLE
         /// </summary>
         ParachuteEnable = 1,
         /// <summary>
-        /// Release parachute and kill motors.
+        /// Release parachute.
         /// PARACHUTE_RELEASE
         /// </summary>
         ParachuteRelease = 2,
-    }
-
-    /// <summary>
-    ///  MAV_TUNNEL_PAYLOAD_TYPE
-    /// </summary>
-    public enum MavTunnelPayloadType:uint
-    {
-        /// <summary>
-        /// Encoding of payload unknown.
-        /// MAV_TUNNEL_PAYLOAD_TYPE_UNKNOWN
-        /// </summary>
-        MavTunnelPayloadTypeUnknown = 0,
-        /// <summary>
-        /// Registered for STorM32 gimbal controller.
-        /// MAV_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED0
-        /// </summary>
-        MavTunnelPayloadTypeStorm32Reserved0 = 200,
-        /// <summary>
-        /// Registered for STorM32 gimbal controller.
-        /// MAV_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED1
-        /// </summary>
-        MavTunnelPayloadTypeStorm32Reserved1 = 201,
-        /// <summary>
-        /// Registered for STorM32 gimbal controller.
-        /// MAV_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED2
-        /// </summary>
-        MavTunnelPayloadTypeStorm32Reserved2 = 202,
-        /// <summary>
-        /// Registered for STorM32 gimbal controller.
-        /// MAV_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED3
-        /// </summary>
-        MavTunnelPayloadTypeStorm32Reserved3 = 203,
-        /// <summary>
-        /// Registered for STorM32 gimbal controller.
-        /// MAV_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED4
-        /// </summary>
-        MavTunnelPayloadTypeStorm32Reserved4 = 204,
-        /// <summary>
-        /// Registered for STorM32 gimbal controller.
-        /// MAV_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED5
-        /// </summary>
-        MavTunnelPayloadTypeStorm32Reserved5 = 205,
-        /// <summary>
-        /// Registered for STorM32 gimbal controller.
-        /// MAV_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED6
-        /// </summary>
-        MavTunnelPayloadTypeStorm32Reserved6 = 206,
-        /// <summary>
-        /// Registered for STorM32 gimbal controller.
-        /// MAV_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED7
-        /// </summary>
-        MavTunnelPayloadTypeStorm32Reserved7 = 207,
-        /// <summary>
-        /// Registered for STorM32 gimbal controller.
-        /// MAV_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED8
-        /// </summary>
-        MavTunnelPayloadTypeStorm32Reserved8 = 208,
-        /// <summary>
-        /// Registered for STorM32 gimbal controller.
-        /// MAV_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED9
-        /// </summary>
-        MavTunnelPayloadTypeStorm32Reserved9 = 209,
-    }
-
-    /// <summary>
-    ///  MAV_ODID_ID_TYPE
-    /// </summary>
-    public enum MavOdidIdType:uint
-    {
-        /// <summary>
-        /// No type defined.
-        /// MAV_ODID_ID_TYPE_NONE
-        /// </summary>
-        MavOdidIdTypeNone = 0,
-        /// <summary>
-        /// Manufacturer Serial Number (ANSI/CTA-2063 format).
-        /// MAV_ODID_ID_TYPE_SERIAL_NUMBER
-        /// </summary>
-        MavOdidIdTypeSerialNumber = 1,
-        /// <summary>
-        /// CAA (Civil Aviation Authority) registered ID. Format: [ICAO Country Code].[CAA Assigned ID].
-        /// MAV_ODID_ID_TYPE_CAA_REGISTRATION_ID
-        /// </summary>
-        MavOdidIdTypeCaaRegistrationId = 2,
-        /// <summary>
-        /// UTM (Unmanned Traffic Management) assigned UUID (RFC4122).
-        /// MAV_ODID_ID_TYPE_UTM_ASSIGNED_UUID
-        /// </summary>
-        MavOdidIdTypeUtmAssignedUuid = 3,
-        /// <summary>
-        /// A 20 byte ID for a specific flight/session. The exact ID type is indicated by the first byte of uas_id and these type values are managed by ICAO.
-        /// MAV_ODID_ID_TYPE_SPECIFIC_SESSION_ID
-        /// </summary>
-        MavOdidIdTypeSpecificSessionId = 4,
-    }
-
-    /// <summary>
-    ///  MAV_ODID_UA_TYPE
-    /// </summary>
-    public enum MavOdidUaType:uint
-    {
-        /// <summary>
-        /// No UA (Unmanned Aircraft) type defined.
-        /// MAV_ODID_UA_TYPE_NONE
-        /// </summary>
-        MavOdidUaTypeNone = 0,
-        /// <summary>
-        /// Aeroplane/Airplane. Fixed wing.
-        /// MAV_ODID_UA_TYPE_AEROPLANE
-        /// </summary>
-        MavOdidUaTypeAeroplane = 1,
-        /// <summary>
-        /// Helicopter or multirotor.
-        /// MAV_ODID_UA_TYPE_HELICOPTER_OR_MULTIROTOR
-        /// </summary>
-        MavOdidUaTypeHelicopterOrMultirotor = 2,
-        /// <summary>
-        /// Gyroplane.
-        /// MAV_ODID_UA_TYPE_GYROPLANE
-        /// </summary>
-        MavOdidUaTypeGyroplane = 3,
-        /// <summary>
-        /// VTOL (Vertical Take-Off and Landing). Fixed wing aircraft that can take off vertically.
-        /// MAV_ODID_UA_TYPE_HYBRID_LIFT
-        /// </summary>
-        MavOdidUaTypeHybridLift = 4,
-        /// <summary>
-        /// Ornithopter.
-        /// MAV_ODID_UA_TYPE_ORNITHOPTER
-        /// </summary>
-        MavOdidUaTypeOrnithopter = 5,
-        /// <summary>
-        /// Glider.
-        /// MAV_ODID_UA_TYPE_GLIDER
-        /// </summary>
-        MavOdidUaTypeGlider = 6,
-        /// <summary>
-        /// Kite.
-        /// MAV_ODID_UA_TYPE_KITE
-        /// </summary>
-        MavOdidUaTypeKite = 7,
-        /// <summary>
-        /// Free Balloon.
-        /// MAV_ODID_UA_TYPE_FREE_BALLOON
-        /// </summary>
-        MavOdidUaTypeFreeBalloon = 8,
-        /// <summary>
-        /// Captive Balloon.
-        /// MAV_ODID_UA_TYPE_CAPTIVE_BALLOON
-        /// </summary>
-        MavOdidUaTypeCaptiveBalloon = 9,
-        /// <summary>
-        /// Airship. E.g. a blimp.
-        /// MAV_ODID_UA_TYPE_AIRSHIP
-        /// </summary>
-        MavOdidUaTypeAirship = 10,
-        /// <summary>
-        /// Free Fall/Parachute (unpowered).
-        /// MAV_ODID_UA_TYPE_FREE_FALL_PARACHUTE
-        /// </summary>
-        MavOdidUaTypeFreeFallParachute = 11,
-        /// <summary>
-        /// Rocket.
-        /// MAV_ODID_UA_TYPE_ROCKET
-        /// </summary>
-        MavOdidUaTypeRocket = 12,
-        /// <summary>
-        /// Tethered powered aircraft.
-        /// MAV_ODID_UA_TYPE_TETHERED_POWERED_AIRCRAFT
-        /// </summary>
-        MavOdidUaTypeTetheredPoweredAircraft = 13,
-        /// <summary>
-        /// Ground Obstacle.
-        /// MAV_ODID_UA_TYPE_GROUND_OBSTACLE
-        /// </summary>
-        MavOdidUaTypeGroundObstacle = 14,
-        /// <summary>
-        /// Other type of aircraft not listed earlier.
-        /// MAV_ODID_UA_TYPE_OTHER
-        /// </summary>
-        MavOdidUaTypeOther = 15,
-    }
-
-    /// <summary>
-    ///  MAV_ODID_STATUS
-    /// </summary>
-    public enum MavOdidStatus:uint
-    {
-        /// <summary>
-        /// The status of the (UA) Unmanned Aircraft is undefined.
-        /// MAV_ODID_STATUS_UNDECLARED
-        /// </summary>
-        MavOdidStatusUndeclared = 0,
-        /// <summary>
-        /// The UA is on the ground.
-        /// MAV_ODID_STATUS_GROUND
-        /// </summary>
-        MavOdidStatusGround = 1,
-        /// <summary>
-        /// The UA is in the air.
-        /// MAV_ODID_STATUS_AIRBORNE
-        /// </summary>
-        MavOdidStatusAirborne = 2,
-        /// <summary>
-        /// The UA is having an emergency.
-        /// MAV_ODID_STATUS_EMERGENCY
-        /// </summary>
-        MavOdidStatusEmergency = 3,
-    }
-
-    /// <summary>
-    ///  MAV_ODID_HEIGHT_REF
-    /// </summary>
-    public enum MavOdidHeightRef:uint
-    {
-        /// <summary>
-        /// The height field is relative to the take-off location.
-        /// MAV_ODID_HEIGHT_REF_OVER_TAKEOFF
-        /// </summary>
-        MavOdidHeightRefOverTakeoff = 0,
-        /// <summary>
-        /// The height field is relative to ground.
-        /// MAV_ODID_HEIGHT_REF_OVER_GROUND
-        /// </summary>
-        MavOdidHeightRefOverGround = 1,
-    }
-
-    /// <summary>
-    ///  MAV_ODID_HOR_ACC
-    /// </summary>
-    public enum MavOdidHorAcc:uint
-    {
-        /// <summary>
-        /// The horizontal accuracy is unknown.
-        /// MAV_ODID_HOR_ACC_UNKNOWN
-        /// </summary>
-        MavOdidHorAccUnknown = 0,
-        /// <summary>
-        /// The horizontal accuracy is smaller than 10 Nautical Miles. 18.52 km.
-        /// MAV_ODID_HOR_ACC_10NM
-        /// </summary>
-        MavOdidHorAcc10nm = 1,
-        /// <summary>
-        /// The horizontal accuracy is smaller than 4 Nautical Miles. 7.408 km.
-        /// MAV_ODID_HOR_ACC_4NM
-        /// </summary>
-        MavOdidHorAcc4nm = 2,
-        /// <summary>
-        /// The horizontal accuracy is smaller than 2 Nautical Miles. 3.704 km.
-        /// MAV_ODID_HOR_ACC_2NM
-        /// </summary>
-        MavOdidHorAcc2nm = 3,
-        /// <summary>
-        /// The horizontal accuracy is smaller than 1 Nautical Miles. 1.852 km.
-        /// MAV_ODID_HOR_ACC_1NM
-        /// </summary>
-        MavOdidHorAcc1nm = 4,
-        /// <summary>
-        /// The horizontal accuracy is smaller than 0.5 Nautical Miles. 926 m.
-        /// MAV_ODID_HOR_ACC_0_5NM
-        /// </summary>
-        MavOdidHorAcc05nm = 5,
-        /// <summary>
-        /// The horizontal accuracy is smaller than 0.3 Nautical Miles. 555.6 m.
-        /// MAV_ODID_HOR_ACC_0_3NM
-        /// </summary>
-        MavOdidHorAcc03nm = 6,
-        /// <summary>
-        /// The horizontal accuracy is smaller than 0.1 Nautical Miles. 185.2 m.
-        /// MAV_ODID_HOR_ACC_0_1NM
-        /// </summary>
-        MavOdidHorAcc01nm = 7,
-        /// <summary>
-        /// The horizontal accuracy is smaller than 0.05 Nautical Miles. 92.6 m.
-        /// MAV_ODID_HOR_ACC_0_05NM
-        /// </summary>
-        MavOdidHorAcc005nm = 8,
-        /// <summary>
-        /// The horizontal accuracy is smaller than 30 meter.
-        /// MAV_ODID_HOR_ACC_30_METER
-        /// </summary>
-        MavOdidHorAcc30Meter = 9,
-        /// <summary>
-        /// The horizontal accuracy is smaller than 10 meter.
-        /// MAV_ODID_HOR_ACC_10_METER
-        /// </summary>
-        MavOdidHorAcc10Meter = 10,
-        /// <summary>
-        /// The horizontal accuracy is smaller than 3 meter.
-        /// MAV_ODID_HOR_ACC_3_METER
-        /// </summary>
-        MavOdidHorAcc3Meter = 11,
-        /// <summary>
-        /// The horizontal accuracy is smaller than 1 meter.
-        /// MAV_ODID_HOR_ACC_1_METER
-        /// </summary>
-        MavOdidHorAcc1Meter = 12,
-    }
-
-    /// <summary>
-    ///  MAV_ODID_VER_ACC
-    /// </summary>
-    public enum MavOdidVerAcc:uint
-    {
-        /// <summary>
-        /// The vertical accuracy is unknown.
-        /// MAV_ODID_VER_ACC_UNKNOWN
-        /// </summary>
-        MavOdidVerAccUnknown = 0,
-        /// <summary>
-        /// The vertical accuracy is smaller than 150 meter.
-        /// MAV_ODID_VER_ACC_150_METER
-        /// </summary>
-        MavOdidVerAcc150Meter = 1,
-        /// <summary>
-        /// The vertical accuracy is smaller than 45 meter.
-        /// MAV_ODID_VER_ACC_45_METER
-        /// </summary>
-        MavOdidVerAcc45Meter = 2,
-        /// <summary>
-        /// The vertical accuracy is smaller than 25 meter.
-        /// MAV_ODID_VER_ACC_25_METER
-        /// </summary>
-        MavOdidVerAcc25Meter = 3,
-        /// <summary>
-        /// The vertical accuracy is smaller than 10 meter.
-        /// MAV_ODID_VER_ACC_10_METER
-        /// </summary>
-        MavOdidVerAcc10Meter = 4,
-        /// <summary>
-        /// The vertical accuracy is smaller than 3 meter.
-        /// MAV_ODID_VER_ACC_3_METER
-        /// </summary>
-        MavOdidVerAcc3Meter = 5,
-        /// <summary>
-        /// The vertical accuracy is smaller than 1 meter.
-        /// MAV_ODID_VER_ACC_1_METER
-        /// </summary>
-        MavOdidVerAcc1Meter = 6,
-    }
-
-    /// <summary>
-    ///  MAV_ODID_SPEED_ACC
-    /// </summary>
-    public enum MavOdidSpeedAcc:uint
-    {
-        /// <summary>
-        /// The speed accuracy is unknown.
-        /// MAV_ODID_SPEED_ACC_UNKNOWN
-        /// </summary>
-        MavOdidSpeedAccUnknown = 0,
-        /// <summary>
-        /// The speed accuracy is smaller than 10 meters per second.
-        /// MAV_ODID_SPEED_ACC_10_METERS_PER_SECOND
-        /// </summary>
-        MavOdidSpeedAcc10MetersPerSecond = 1,
-        /// <summary>
-        /// The speed accuracy is smaller than 3 meters per second.
-        /// MAV_ODID_SPEED_ACC_3_METERS_PER_SECOND
-        /// </summary>
-        MavOdidSpeedAcc3MetersPerSecond = 2,
-        /// <summary>
-        /// The speed accuracy is smaller than 1 meters per second.
-        /// MAV_ODID_SPEED_ACC_1_METERS_PER_SECOND
-        /// </summary>
-        MavOdidSpeedAcc1MetersPerSecond = 3,
-        /// <summary>
-        /// The speed accuracy is smaller than 0.3 meters per second.
-        /// MAV_ODID_SPEED_ACC_0_3_METERS_PER_SECOND
-        /// </summary>
-        MavOdidSpeedAcc03MetersPerSecond = 4,
-    }
-
-    /// <summary>
-    ///  MAV_ODID_TIME_ACC
-    /// </summary>
-    public enum MavOdidTimeAcc:uint
-    {
-        /// <summary>
-        /// The timestamp accuracy is unknown.
-        /// MAV_ODID_TIME_ACC_UNKNOWN
-        /// </summary>
-        MavOdidTimeAccUnknown = 0,
-        /// <summary>
-        /// The timestamp accuracy is smaller than or equal to 0.1 second.
-        /// MAV_ODID_TIME_ACC_0_1_SECOND
-        /// </summary>
-        MavOdidTimeAcc01Second = 1,
-        /// <summary>
-        /// The timestamp accuracy is smaller than or equal to 0.2 second.
-        /// MAV_ODID_TIME_ACC_0_2_SECOND
-        /// </summary>
-        MavOdidTimeAcc02Second = 2,
-        /// <summary>
-        /// The timestamp accuracy is smaller than or equal to 0.3 second.
-        /// MAV_ODID_TIME_ACC_0_3_SECOND
-        /// </summary>
-        MavOdidTimeAcc03Second = 3,
-        /// <summary>
-        /// The timestamp accuracy is smaller than or equal to 0.4 second.
-        /// MAV_ODID_TIME_ACC_0_4_SECOND
-        /// </summary>
-        MavOdidTimeAcc04Second = 4,
-        /// <summary>
-        /// The timestamp accuracy is smaller than or equal to 0.5 second.
-        /// MAV_ODID_TIME_ACC_0_5_SECOND
-        /// </summary>
-        MavOdidTimeAcc05Second = 5,
-        /// <summary>
-        /// The timestamp accuracy is smaller than or equal to 0.6 second.
-        /// MAV_ODID_TIME_ACC_0_6_SECOND
-        /// </summary>
-        MavOdidTimeAcc06Second = 6,
-        /// <summary>
-        /// The timestamp accuracy is smaller than or equal to 0.7 second.
-        /// MAV_ODID_TIME_ACC_0_7_SECOND
-        /// </summary>
-        MavOdidTimeAcc07Second = 7,
-        /// <summary>
-        /// The timestamp accuracy is smaller than or equal to 0.8 second.
-        /// MAV_ODID_TIME_ACC_0_8_SECOND
-        /// </summary>
-        MavOdidTimeAcc08Second = 8,
-        /// <summary>
-        /// The timestamp accuracy is smaller than or equal to 0.9 second.
-        /// MAV_ODID_TIME_ACC_0_9_SECOND
-        /// </summary>
-        MavOdidTimeAcc09Second = 9,
-        /// <summary>
-        /// The timestamp accuracy is smaller than or equal to 1.0 second.
-        /// MAV_ODID_TIME_ACC_1_0_SECOND
-        /// </summary>
-        MavOdidTimeAcc10Second = 10,
-        /// <summary>
-        /// The timestamp accuracy is smaller than or equal to 1.1 second.
-        /// MAV_ODID_TIME_ACC_1_1_SECOND
-        /// </summary>
-        MavOdidTimeAcc11Second = 11,
-        /// <summary>
-        /// The timestamp accuracy is smaller than or equal to 1.2 second.
-        /// MAV_ODID_TIME_ACC_1_2_SECOND
-        /// </summary>
-        MavOdidTimeAcc12Second = 12,
-        /// <summary>
-        /// The timestamp accuracy is smaller than or equal to 1.3 second.
-        /// MAV_ODID_TIME_ACC_1_3_SECOND
-        /// </summary>
-        MavOdidTimeAcc13Second = 13,
-        /// <summary>
-        /// The timestamp accuracy is smaller than or equal to 1.4 second.
-        /// MAV_ODID_TIME_ACC_1_4_SECOND
-        /// </summary>
-        MavOdidTimeAcc14Second = 14,
-        /// <summary>
-        /// The timestamp accuracy is smaller than or equal to 1.5 second.
-        /// MAV_ODID_TIME_ACC_1_5_SECOND
-        /// </summary>
-        MavOdidTimeAcc15Second = 15,
-    }
-
-    /// <summary>
-    ///  MAV_ODID_AUTH_TYPE
-    /// </summary>
-    public enum MavOdidAuthType:uint
-    {
-        /// <summary>
-        /// No authentication type is specified.
-        /// MAV_ODID_AUTH_TYPE_NONE
-        /// </summary>
-        MavOdidAuthTypeNone = 0,
-        /// <summary>
-        /// Signature for the UAS (Unmanned Aircraft System) ID.
-        /// MAV_ODID_AUTH_TYPE_UAS_ID_SIGNATURE
-        /// </summary>
-        MavOdidAuthTypeUasIdSignature = 1,
-        /// <summary>
-        /// Signature for the Operator ID.
-        /// MAV_ODID_AUTH_TYPE_OPERATOR_ID_SIGNATURE
-        /// </summary>
-        MavOdidAuthTypeOperatorIdSignature = 2,
-        /// <summary>
-        /// Signature for the entire message set.
-        /// MAV_ODID_AUTH_TYPE_MESSAGE_SET_SIGNATURE
-        /// </summary>
-        MavOdidAuthTypeMessageSetSignature = 3,
-        /// <summary>
-        /// Authentication is provided by Network Remote ID.
-        /// MAV_ODID_AUTH_TYPE_NETWORK_REMOTE_ID
-        /// </summary>
-        MavOdidAuthTypeNetworkRemoteId = 4,
-        /// <summary>
-        /// The exact authentication type is indicated by the first byte of authentication_data and these type values are managed by ICAO.
-        /// MAV_ODID_AUTH_TYPE_SPECIFIC_AUTHENTICATION
-        /// </summary>
-        MavOdidAuthTypeSpecificAuthentication = 5,
-    }
-
-    /// <summary>
-    ///  MAV_ODID_DESC_TYPE
-    /// </summary>
-    public enum MavOdidDescType:uint
-    {
-        /// <summary>
-        /// Free-form text description of the purpose of the flight.
-        /// MAV_ODID_DESC_TYPE_TEXT
-        /// </summary>
-        MavOdidDescTypeText = 0,
-    }
-
-    /// <summary>
-    ///  MAV_ODID_OPERATOR_LOCATION_TYPE
-    /// </summary>
-    public enum MavOdidOperatorLocationType:uint
-    {
-        /// <summary>
-        /// The location of the operator is the same as the take-off location.
-        /// MAV_ODID_OPERATOR_LOCATION_TYPE_TAKEOFF
-        /// </summary>
-        MavOdidOperatorLocationTypeTakeoff = 0,
-        /// <summary>
-        /// The location of the operator is based on live GNSS data.
-        /// MAV_ODID_OPERATOR_LOCATION_TYPE_LIVE_GNSS
-        /// </summary>
-        MavOdidOperatorLocationTypeLiveGnss = 1,
-        /// <summary>
-        /// The location of the operator is a fixed location.
-        /// MAV_ODID_OPERATOR_LOCATION_TYPE_FIXED
-        /// </summary>
-        MavOdidOperatorLocationTypeFixed = 2,
-    }
-
-    /// <summary>
-    ///  MAV_ODID_CLASSIFICATION_TYPE
-    /// </summary>
-    public enum MavOdidClassificationType:uint
-    {
-        /// <summary>
-        /// The classification type for the UA is undeclared.
-        /// MAV_ODID_CLASSIFICATION_TYPE_UNDECLARED
-        /// </summary>
-        MavOdidClassificationTypeUndeclared = 0,
-        /// <summary>
-        /// The classification type for the UA follows EU (European Union) specifications.
-        /// MAV_ODID_CLASSIFICATION_TYPE_EU
-        /// </summary>
-        MavOdidClassificationTypeEu = 1,
-    }
-
-    /// <summary>
-    ///  MAV_ODID_CATEGORY_EU
-    /// </summary>
-    public enum MavOdidCategoryEu:uint
-    {
-        /// <summary>
-        /// The category for the UA, according to the EU specification, is undeclared.
-        /// MAV_ODID_CATEGORY_EU_UNDECLARED
-        /// </summary>
-        MavOdidCategoryEuUndeclared = 0,
-        /// <summary>
-        /// The category for the UA, according to the EU specification, is the Open category.
-        /// MAV_ODID_CATEGORY_EU_OPEN
-        /// </summary>
-        MavOdidCategoryEuOpen = 1,
-        /// <summary>
-        /// The category for the UA, according to the EU specification, is the Specific category.
-        /// MAV_ODID_CATEGORY_EU_SPECIFIC
-        /// </summary>
-        MavOdidCategoryEuSpecific = 2,
-        /// <summary>
-        /// The category for the UA, according to the EU specification, is the Certified category.
-        /// MAV_ODID_CATEGORY_EU_CERTIFIED
-        /// </summary>
-        MavOdidCategoryEuCertified = 3,
-    }
-
-    /// <summary>
-    ///  MAV_ODID_CLASS_EU
-    /// </summary>
-    public enum MavOdidClassEu:uint
-    {
-        /// <summary>
-        /// The class for the UA, according to the EU specification, is undeclared.
-        /// MAV_ODID_CLASS_EU_UNDECLARED
-        /// </summary>
-        MavOdidClassEuUndeclared = 0,
-        /// <summary>
-        /// The class for the UA, according to the EU specification, is Class 0.
-        /// MAV_ODID_CLASS_EU_CLASS_0
-        /// </summary>
-        MavOdidClassEuClass0 = 1,
-        /// <summary>
-        /// The class for the UA, according to the EU specification, is Class 1.
-        /// MAV_ODID_CLASS_EU_CLASS_1
-        /// </summary>
-        MavOdidClassEuClass1 = 2,
-        /// <summary>
-        /// The class for the UA, according to the EU specification, is Class 2.
-        /// MAV_ODID_CLASS_EU_CLASS_2
-        /// </summary>
-        MavOdidClassEuClass2 = 3,
-        /// <summary>
-        /// The class for the UA, according to the EU specification, is Class 3.
-        /// MAV_ODID_CLASS_EU_CLASS_3
-        /// </summary>
-        MavOdidClassEuClass3 = 4,
-        /// <summary>
-        /// The class for the UA, according to the EU specification, is Class 4.
-        /// MAV_ODID_CLASS_EU_CLASS_4
-        /// </summary>
-        MavOdidClassEuClass4 = 5,
-        /// <summary>
-        /// The class for the UA, according to the EU specification, is Class 5.
-        /// MAV_ODID_CLASS_EU_CLASS_5
-        /// </summary>
-        MavOdidClassEuClass5 = 6,
-        /// <summary>
-        /// The class for the UA, according to the EU specification, is Class 6.
-        /// MAV_ODID_CLASS_EU_CLASS_6
-        /// </summary>
-        MavOdidClassEuClass6 = 7,
-    }
-
-    /// <summary>
-    ///  MAV_ODID_OPERATOR_ID_TYPE
-    /// </summary>
-    public enum MavOdidOperatorIdType:uint
-    {
-        /// <summary>
-        /// CAA (Civil Aviation Authority) registered operator ID.
-        /// MAV_ODID_OPERATOR_ID_TYPE_CAA
-        /// </summary>
-        MavOdidOperatorIdTypeCaa = 0,
-    }
-
-    /// <summary>
-    /// Tune formats (used for vehicle buzzer/tone generation).
-    ///  TUNE_FORMAT
-    /// </summary>
-    public enum TuneFormat:uint
-    {
-        /// <summary>
-        /// Format is QBasic 1.1 Play: https://www.qbasic.net/en/reference/qb11/Statement/PLAY-006.htm.
-        /// TUNE_FORMAT_QBASIC1_1
-        /// </summary>
-        TuneFormatQbasic11 = 1,
-        /// <summary>
-        /// Format is Modern Music Markup Language (MML): https://en.wikipedia.org/wiki/Music_Macro_Language#Modern_MML.
-        /// TUNE_FORMAT_MML_MODERN
-        /// </summary>
-        TuneFormatMmlModern = 2,
-    }
-
-    /// <summary>
-    /// Type of AIS vessel, enum duplicated from AIS standard, https://gpsd.gitlab.io/gpsd/AIVDM.html
-    ///  AIS_TYPE
-    /// </summary>
-    public enum AisType:uint
-    {
-        /// <summary>
-        /// Not available (default).
-        /// AIS_TYPE_UNKNOWN
-        /// </summary>
-        AisTypeUnknown = 0,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_1
-        /// </summary>
-        AisTypeReserved1 = 1,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_2
-        /// </summary>
-        AisTypeReserved2 = 2,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_3
-        /// </summary>
-        AisTypeReserved3 = 3,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_4
-        /// </summary>
-        AisTypeReserved4 = 4,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_5
-        /// </summary>
-        AisTypeReserved5 = 5,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_6
-        /// </summary>
-        AisTypeReserved6 = 6,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_7
-        /// </summary>
-        AisTypeReserved7 = 7,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_8
-        /// </summary>
-        AisTypeReserved8 = 8,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_9
-        /// </summary>
-        AisTypeReserved9 = 9,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_10
-        /// </summary>
-        AisTypeReserved10 = 10,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_11
-        /// </summary>
-        AisTypeReserved11 = 11,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_12
-        /// </summary>
-        AisTypeReserved12 = 12,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_13
-        /// </summary>
-        AisTypeReserved13 = 13,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_14
-        /// </summary>
-        AisTypeReserved14 = 14,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_15
-        /// </summary>
-        AisTypeReserved15 = 15,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_16
-        /// </summary>
-        AisTypeReserved16 = 16,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_17
-        /// </summary>
-        AisTypeReserved17 = 17,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_18
-        /// </summary>
-        AisTypeReserved18 = 18,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_19
-        /// </summary>
-        AisTypeReserved19 = 19,
-        /// <summary>
-        /// Wing In Ground effect.
-        /// AIS_TYPE_WIG
-        /// </summary>
-        AisTypeWig = 20,
-        /// <summary>
-        /// AIS_TYPE_WIG_HAZARDOUS_A
-        /// </summary>
-        AisTypeWigHazardousA = 21,
-        /// <summary>
-        /// AIS_TYPE_WIG_HAZARDOUS_B
-        /// </summary>
-        AisTypeWigHazardousB = 22,
-        /// <summary>
-        /// AIS_TYPE_WIG_HAZARDOUS_C
-        /// </summary>
-        AisTypeWigHazardousC = 23,
-        /// <summary>
-        /// AIS_TYPE_WIG_HAZARDOUS_D
-        /// </summary>
-        AisTypeWigHazardousD = 24,
-        /// <summary>
-        /// AIS_TYPE_WIG_RESERVED_1
-        /// </summary>
-        AisTypeWigReserved1 = 25,
-        /// <summary>
-        /// AIS_TYPE_WIG_RESERVED_2
-        /// </summary>
-        AisTypeWigReserved2 = 26,
-        /// <summary>
-        /// AIS_TYPE_WIG_RESERVED_3
-        /// </summary>
-        AisTypeWigReserved3 = 27,
-        /// <summary>
-        /// AIS_TYPE_WIG_RESERVED_4
-        /// </summary>
-        AisTypeWigReserved4 = 28,
-        /// <summary>
-        /// AIS_TYPE_WIG_RESERVED_5
-        /// </summary>
-        AisTypeWigReserved5 = 29,
-        /// <summary>
-        /// AIS_TYPE_FISHING
-        /// </summary>
-        AisTypeFishing = 30,
-        /// <summary>
-        /// AIS_TYPE_TOWING
-        /// </summary>
-        AisTypeTowing = 31,
-        /// <summary>
-        /// Towing: length exceeds 200m or breadth exceeds 25m.
-        /// AIS_TYPE_TOWING_LARGE
-        /// </summary>
-        AisTypeTowingLarge = 32,
-        /// <summary>
-        /// Dredging or other underwater ops.
-        /// AIS_TYPE_DREDGING
-        /// </summary>
-        AisTypeDredging = 33,
-        /// <summary>
-        /// AIS_TYPE_DIVING
-        /// </summary>
-        AisTypeDiving = 34,
-        /// <summary>
-        /// AIS_TYPE_MILITARY
-        /// </summary>
-        AisTypeMilitary = 35,
-        /// <summary>
-        /// AIS_TYPE_SAILING
-        /// </summary>
-        AisTypeSailing = 36,
-        /// <summary>
-        /// AIS_TYPE_PLEASURE
-        /// </summary>
-        AisTypePleasure = 37,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_20
-        /// </summary>
-        AisTypeReserved20 = 38,
-        /// <summary>
-        /// AIS_TYPE_RESERVED_21
-        /// </summary>
-        AisTypeReserved21 = 39,
-        /// <summary>
-        /// High Speed Craft.
-        /// AIS_TYPE_HSC
-        /// </summary>
-        AisTypeHsc = 40,
-        /// <summary>
-        /// AIS_TYPE_HSC_HAZARDOUS_A
-        /// </summary>
-        AisTypeHscHazardousA = 41,
-        /// <summary>
-        /// AIS_TYPE_HSC_HAZARDOUS_B
-        /// </summary>
-        AisTypeHscHazardousB = 42,
-        /// <summary>
-        /// AIS_TYPE_HSC_HAZARDOUS_C
-        /// </summary>
-        AisTypeHscHazardousC = 43,
-        /// <summary>
-        /// AIS_TYPE_HSC_HAZARDOUS_D
-        /// </summary>
-        AisTypeHscHazardousD = 44,
-        /// <summary>
-        /// AIS_TYPE_HSC_RESERVED_1
-        /// </summary>
-        AisTypeHscReserved1 = 45,
-        /// <summary>
-        /// AIS_TYPE_HSC_RESERVED_2
-        /// </summary>
-        AisTypeHscReserved2 = 46,
-        /// <summary>
-        /// AIS_TYPE_HSC_RESERVED_3
-        /// </summary>
-        AisTypeHscReserved3 = 47,
-        /// <summary>
-        /// AIS_TYPE_HSC_RESERVED_4
-        /// </summary>
-        AisTypeHscReserved4 = 48,
-        /// <summary>
-        /// AIS_TYPE_HSC_UNKNOWN
-        /// </summary>
-        AisTypeHscUnknown = 49,
-        /// <summary>
-        /// AIS_TYPE_PILOT
-        /// </summary>
-        AisTypePilot = 50,
-        /// <summary>
-        /// Search And Rescue vessel.
-        /// AIS_TYPE_SAR
-        /// </summary>
-        AisTypeSar = 51,
-        /// <summary>
-        /// AIS_TYPE_TUG
-        /// </summary>
-        AisTypeTug = 52,
-        /// <summary>
-        /// AIS_TYPE_PORT_TENDER
-        /// </summary>
-        AisTypePortTender = 53,
-        /// <summary>
-        /// Anti-pollution equipment.
-        /// AIS_TYPE_ANTI_POLLUTION
-        /// </summary>
-        AisTypeAntiPollution = 54,
-        /// <summary>
-        /// AIS_TYPE_LAW_ENFORCEMENT
-        /// </summary>
-        AisTypeLawEnforcement = 55,
-        /// <summary>
-        /// AIS_TYPE_SPARE_LOCAL_1
-        /// </summary>
-        AisTypeSpareLocal1 = 56,
-        /// <summary>
-        /// AIS_TYPE_SPARE_LOCAL_2
-        /// </summary>
-        AisTypeSpareLocal2 = 57,
-        /// <summary>
-        /// AIS_TYPE_MEDICAL_TRANSPORT
-        /// </summary>
-        AisTypeMedicalTransport = 58,
-        /// <summary>
-        /// Noncombatant ship according to RR Resolution No. 18.
-        /// AIS_TYPE_NONECOMBATANT
-        /// </summary>
-        AisTypeNonecombatant = 59,
-        /// <summary>
-        /// AIS_TYPE_PASSENGER
-        /// </summary>
-        AisTypePassenger = 60,
-        /// <summary>
-        /// AIS_TYPE_PASSENGER_HAZARDOUS_A
-        /// </summary>
-        AisTypePassengerHazardousA = 61,
-        /// <summary>
-        /// AIS_TYPE_PASSENGER_HAZARDOUS_B
-        /// </summary>
-        AisTypePassengerHazardousB = 62,
-        /// <summary>
-        /// AIS_TYPE_AIS_TYPE_PASSENGER_HAZARDOUS_C
-        /// </summary>
-        AisTypeAisTypePassengerHazardousC = 63,
-        /// <summary>
-        /// AIS_TYPE_PASSENGER_HAZARDOUS_D
-        /// </summary>
-        AisTypePassengerHazardousD = 64,
-        /// <summary>
-        /// AIS_TYPE_PASSENGER_RESERVED_1
-        /// </summary>
-        AisTypePassengerReserved1 = 65,
-        /// <summary>
-        /// AIS_TYPE_PASSENGER_RESERVED_2
-        /// </summary>
-        AisTypePassengerReserved2 = 66,
-        /// <summary>
-        /// AIS_TYPE_PASSENGER_RESERVED_3
-        /// </summary>
-        AisTypePassengerReserved3 = 67,
-        /// <summary>
-        /// AIS_TYPE_AIS_TYPE_PASSENGER_RESERVED_4
-        /// </summary>
-        AisTypeAisTypePassengerReserved4 = 68,
-        /// <summary>
-        /// AIS_TYPE_PASSENGER_UNKNOWN
-        /// </summary>
-        AisTypePassengerUnknown = 69,
-        /// <summary>
-        /// AIS_TYPE_CARGO
-        /// </summary>
-        AisTypeCargo = 70,
-        /// <summary>
-        /// AIS_TYPE_CARGO_HAZARDOUS_A
-        /// </summary>
-        AisTypeCargoHazardousA = 71,
-        /// <summary>
-        /// AIS_TYPE_CARGO_HAZARDOUS_B
-        /// </summary>
-        AisTypeCargoHazardousB = 72,
-        /// <summary>
-        /// AIS_TYPE_CARGO_HAZARDOUS_C
-        /// </summary>
-        AisTypeCargoHazardousC = 73,
-        /// <summary>
-        /// AIS_TYPE_CARGO_HAZARDOUS_D
-        /// </summary>
-        AisTypeCargoHazardousD = 74,
-        /// <summary>
-        /// AIS_TYPE_CARGO_RESERVED_1
-        /// </summary>
-        AisTypeCargoReserved1 = 75,
-        /// <summary>
-        /// AIS_TYPE_CARGO_RESERVED_2
-        /// </summary>
-        AisTypeCargoReserved2 = 76,
-        /// <summary>
-        /// AIS_TYPE_CARGO_RESERVED_3
-        /// </summary>
-        AisTypeCargoReserved3 = 77,
-        /// <summary>
-        /// AIS_TYPE_CARGO_RESERVED_4
-        /// </summary>
-        AisTypeCargoReserved4 = 78,
-        /// <summary>
-        /// AIS_TYPE_CARGO_UNKNOWN
-        /// </summary>
-        AisTypeCargoUnknown = 79,
-        /// <summary>
-        /// AIS_TYPE_TANKER
-        /// </summary>
-        AisTypeTanker = 80,
-        /// <summary>
-        /// AIS_TYPE_TANKER_HAZARDOUS_A
-        /// </summary>
-        AisTypeTankerHazardousA = 81,
-        /// <summary>
-        /// AIS_TYPE_TANKER_HAZARDOUS_B
-        /// </summary>
-        AisTypeTankerHazardousB = 82,
-        /// <summary>
-        /// AIS_TYPE_TANKER_HAZARDOUS_C
-        /// </summary>
-        AisTypeTankerHazardousC = 83,
-        /// <summary>
-        /// AIS_TYPE_TANKER_HAZARDOUS_D
-        /// </summary>
-        AisTypeTankerHazardousD = 84,
-        /// <summary>
-        /// AIS_TYPE_TANKER_RESERVED_1
-        /// </summary>
-        AisTypeTankerReserved1 = 85,
-        /// <summary>
-        /// AIS_TYPE_TANKER_RESERVED_2
-        /// </summary>
-        AisTypeTankerReserved2 = 86,
-        /// <summary>
-        /// AIS_TYPE_TANKER_RESERVED_3
-        /// </summary>
-        AisTypeTankerReserved3 = 87,
-        /// <summary>
-        /// AIS_TYPE_TANKER_RESERVED_4
-        /// </summary>
-        AisTypeTankerReserved4 = 88,
-        /// <summary>
-        /// AIS_TYPE_TANKER_UNKNOWN
-        /// </summary>
-        AisTypeTankerUnknown = 89,
-        /// <summary>
-        /// AIS_TYPE_OTHER
-        /// </summary>
-        AisTypeOther = 90,
-        /// <summary>
-        /// AIS_TYPE_OTHER_HAZARDOUS_A
-        /// </summary>
-        AisTypeOtherHazardousA = 91,
-        /// <summary>
-        /// AIS_TYPE_OTHER_HAZARDOUS_B
-        /// </summary>
-        AisTypeOtherHazardousB = 92,
-        /// <summary>
-        /// AIS_TYPE_OTHER_HAZARDOUS_C
-        /// </summary>
-        AisTypeOtherHazardousC = 93,
-        /// <summary>
-        /// AIS_TYPE_OTHER_HAZARDOUS_D
-        /// </summary>
-        AisTypeOtherHazardousD = 94,
-        /// <summary>
-        /// AIS_TYPE_OTHER_RESERVED_1
-        /// </summary>
-        AisTypeOtherReserved1 = 95,
-        /// <summary>
-        /// AIS_TYPE_OTHER_RESERVED_2
-        /// </summary>
-        AisTypeOtherReserved2 = 96,
-        /// <summary>
-        /// AIS_TYPE_OTHER_RESERVED_3
-        /// </summary>
-        AisTypeOtherReserved3 = 97,
-        /// <summary>
-        /// AIS_TYPE_OTHER_RESERVED_4
-        /// </summary>
-        AisTypeOtherReserved4 = 98,
-        /// <summary>
-        /// AIS_TYPE_OTHER_UNKNOWN
-        /// </summary>
-        AisTypeOtherUnknown = 99,
-    }
-
-    /// <summary>
-    /// Navigational status of AIS vessel, enum duplicated from AIS standard, https://gpsd.gitlab.io/gpsd/AIVDM.html
-    ///  AIS_NAV_STATUS
-    /// </summary>
-    public enum AisNavStatus:uint
-    {
-        /// <summary>
-        /// Under way using engine.
-        /// UNDER_WAY
-        /// </summary>
-        UnderWay = 0,
-        /// <summary>
-        /// AIS_NAV_ANCHORED
-        /// </summary>
-        AisNavAnchored = 1,
-        /// <summary>
-        /// AIS_NAV_UN_COMMANDED
-        /// </summary>
-        AisNavUnCommanded = 2,
-        /// <summary>
-        /// AIS_NAV_RESTRICTED_MANOEUVERABILITY
-        /// </summary>
-        AisNavRestrictedManoeuverability = 3,
-        /// <summary>
-        /// AIS_NAV_DRAUGHT_CONSTRAINED
-        /// </summary>
-        AisNavDraughtConstrained = 4,
-        /// <summary>
-        /// AIS_NAV_MOORED
-        /// </summary>
-        AisNavMoored = 5,
-        /// <summary>
-        /// AIS_NAV_AGROUND
-        /// </summary>
-        AisNavAground = 6,
-        /// <summary>
-        /// AIS_NAV_FISHING
-        /// </summary>
-        AisNavFishing = 7,
-        /// <summary>
-        /// AIS_NAV_SAILING
-        /// </summary>
-        AisNavSailing = 8,
-        /// <summary>
-        /// AIS_NAV_RESERVED_HSC
-        /// </summary>
-        AisNavReservedHsc = 9,
-        /// <summary>
-        /// AIS_NAV_RESERVED_WIG
-        /// </summary>
-        AisNavReservedWig = 10,
-        /// <summary>
-        /// AIS_NAV_RESERVED_1
-        /// </summary>
-        AisNavReserved1 = 11,
-        /// <summary>
-        /// AIS_NAV_RESERVED_2
-        /// </summary>
-        AisNavReserved2 = 12,
-        /// <summary>
-        /// AIS_NAV_RESERVED_3
-        /// </summary>
-        AisNavReserved3 = 13,
-        /// <summary>
-        /// Search And Rescue Transponder.
-        /// AIS_NAV_AIS_SART
-        /// </summary>
-        AisNavAisSart = 14,
-        /// <summary>
-        /// Not available (default).
-        /// AIS_NAV_UNKNOWN
-        /// </summary>
-        AisNavUnknown = 15,
-    }
-
-    /// <summary>
-    /// These flags are used in the AIS_VESSEL.fields bitmask to indicate validity of data in the other message fields. When set, the data is valid.
-    ///  AIS_FLAGS
-    /// </summary>
-    public enum AisFlags:uint
-    {
-        /// <summary>
-        /// 1 = Position accuracy less than 10m, 0 = position accuracy greater than 10m.
-        /// AIS_FLAGS_POSITION_ACCURACY
-        /// </summary>
-        AisFlagsPositionAccuracy = 1,
-        /// <summary>
-        /// AIS_FLAGS_VALID_COG
-        /// </summary>
-        AisFlagsValidCog = 2,
-        /// <summary>
-        /// AIS_FLAGS_VALID_VELOCITY
-        /// </summary>
-        AisFlagsValidVelocity = 4,
-        /// <summary>
-        /// 1 = Velocity over 52.5765m/s (102.2 knots)
-        /// AIS_FLAGS_HIGH_VELOCITY
-        /// </summary>
-        AisFlagsHighVelocity = 8,
-        /// <summary>
-        /// AIS_FLAGS_VALID_TURN_RATE
-        /// </summary>
-        AisFlagsValidTurnRate = 16,
-        /// <summary>
-        /// Only the sign of the returned turn rate value is valid, either greater than 5deg/30s or less than -5deg/30s
-        /// AIS_FLAGS_TURN_RATE_SIGN_ONLY
-        /// </summary>
-        AisFlagsTurnRateSignOnly = 32,
-        /// <summary>
-        /// AIS_FLAGS_VALID_DIMENSIONS
-        /// </summary>
-        AisFlagsValidDimensions = 64,
-        /// <summary>
-        /// Distance to bow is larger than 511m
-        /// AIS_FLAGS_LARGE_BOW_DIMENSION
-        /// </summary>
-        AisFlagsLargeBowDimension = 128,
-        /// <summary>
-        /// Distance to stern is larger than 511m
-        /// AIS_FLAGS_LARGE_STERN_DIMENSION
-        /// </summary>
-        AisFlagsLargeSternDimension = 256,
-        /// <summary>
-        /// Distance to port side is larger than 63m
-        /// AIS_FLAGS_LARGE_PORT_DIMENSION
-        /// </summary>
-        AisFlagsLargePortDimension = 512,
-        /// <summary>
-        /// Distance to starboard side is larger than 63m
-        /// AIS_FLAGS_LARGE_STARBOARD_DIMENSION
-        /// </summary>
-        AisFlagsLargeStarboardDimension = 1024,
-        /// <summary>
-        /// AIS_FLAGS_VALID_CALLSIGN
-        /// </summary>
-        AisFlagsValidCallsign = 2048,
-        /// <summary>
-        /// AIS_FLAGS_VALID_NAME
-        /// </summary>
-        AisFlagsValidName = 4096,
-    }
-
-    /// <summary>
-    /// List of possible units where failures can be injected.
-    ///  FAILURE_UNIT
-    /// </summary>
-    public enum FailureUnit:uint
-    {
-        /// <summary>
-        /// FAILURE_UNIT_SENSOR_GYRO
-        /// </summary>
-        FailureUnitSensorGyro = 0,
-        /// <summary>
-        /// FAILURE_UNIT_SENSOR_ACCEL
-        /// </summary>
-        FailureUnitSensorAccel = 1,
-        /// <summary>
-        /// FAILURE_UNIT_SENSOR_MAG
-        /// </summary>
-        FailureUnitSensorMag = 2,
-        /// <summary>
-        /// FAILURE_UNIT_SENSOR_BARO
-        /// </summary>
-        FailureUnitSensorBaro = 3,
-        /// <summary>
-        /// FAILURE_UNIT_SENSOR_GPS
-        /// </summary>
-        FailureUnitSensorGps = 4,
-        /// <summary>
-        /// FAILURE_UNIT_SENSOR_OPTICAL_FLOW
-        /// </summary>
-        FailureUnitSensorOpticalFlow = 5,
-        /// <summary>
-        /// FAILURE_UNIT_SENSOR_VIO
-        /// </summary>
-        FailureUnitSensorVio = 6,
-        /// <summary>
-        /// FAILURE_UNIT_SENSOR_DISTANCE_SENSOR
-        /// </summary>
-        FailureUnitSensorDistanceSensor = 7,
-        /// <summary>
-        /// FAILURE_UNIT_SENSOR_AIRSPEED
-        /// </summary>
-        FailureUnitSensorAirspeed = 8,
-        /// <summary>
-        /// FAILURE_UNIT_SYSTEM_BATTERY
-        /// </summary>
-        FailureUnitSystemBattery = 100,
-        /// <summary>
-        /// FAILURE_UNIT_SYSTEM_MOTOR
-        /// </summary>
-        FailureUnitSystemMotor = 101,
-        /// <summary>
-        /// FAILURE_UNIT_SYSTEM_SERVO
-        /// </summary>
-        FailureUnitSystemServo = 102,
-        /// <summary>
-        /// FAILURE_UNIT_SYSTEM_AVOIDANCE
-        /// </summary>
-        FailureUnitSystemAvoidance = 103,
-        /// <summary>
-        /// FAILURE_UNIT_SYSTEM_RC_SIGNAL
-        /// </summary>
-        FailureUnitSystemRcSignal = 104,
-        /// <summary>
-        /// FAILURE_UNIT_SYSTEM_MAVLINK_SIGNAL
-        /// </summary>
-        FailureUnitSystemMavlinkSignal = 105,
-    }
-
-    /// <summary>
-    /// List of possible failure type to inject.
-    ///  FAILURE_TYPE
-    /// </summary>
-    public enum FailureType:uint
-    {
-        /// <summary>
-        /// No failure injected, used to reset a previous failure.
-        /// FAILURE_TYPE_OK
-        /// </summary>
-        FailureTypeOk = 0,
-        /// <summary>
-        /// Sets unit off, so completely non-responsive.
-        /// FAILURE_TYPE_OFF
-        /// </summary>
-        FailureTypeOff = 1,
-        /// <summary>
-        /// Unit is stuck e.g. keeps reporting the same value.
-        /// FAILURE_TYPE_STUCK
-        /// </summary>
-        FailureTypeStuck = 2,
-        /// <summary>
-        /// Unit is reporting complete garbage.
-        /// FAILURE_TYPE_GARBAGE
-        /// </summary>
-        FailureTypeGarbage = 3,
-        /// <summary>
-        /// Unit is consistently wrong.
-        /// FAILURE_TYPE_WRONG
-        /// </summary>
-        FailureTypeWrong = 4,
-        /// <summary>
-        /// Unit is slow, so e.g. reporting at slower than expected rate.
-        /// FAILURE_TYPE_SLOW
-        /// </summary>
-        FailureTypeSlow = 5,
-        /// <summary>
-        /// Data of unit is delayed in time.
-        /// FAILURE_TYPE_DELAYED
-        /// </summary>
-        FailureTypeDelayed = 6,
-        /// <summary>
-        /// Unit is sometimes working, sometimes not.
-        /// FAILURE_TYPE_INTERMITTENT
-        /// </summary>
-        FailureTypeIntermittent = 7,
-    }
-
-    /// <summary>
-    ///  NAV_VTOL_LAND_OPTIONS
-    /// </summary>
-    public enum NavVtolLandOptions:uint
-    {
-        /// <summary>
-        /// Default autopilot landing behaviour.
-        /// NAV_VTOL_LAND_OPTIONS_DEFAULT
-        /// </summary>
-        NavVtolLandOptionsDefault = 0,
-        /// <summary>
-        /// Descend in fixed wing mode, transitioning to multicopter mode for vertical landing when close to the ground.
-        ///           The fixed wing descent pattern is at the discretion of the vehicle (e.g. transition altitude, loiter direction, radius, and speed, etc.).
-        ///         
-        /// NAV_VTOL_LAND_OPTIONS_FW_DESCENT
-        /// </summary>
-        NavVtolLandOptionsFwDescent = 1,
-        /// <summary>
-        /// Land in multicopter mode on reaching the landing co-ordinates (the whole landing is by "hover descent").
-        /// NAV_VTOL_LAND_OPTIONS_HOVER_DESCENT
-        /// </summary>
-        NavVtolLandOptionsHoverDescent = 2,
-    }
-
-    /// <summary>
-    /// Winch status flags used in WINCH_STATUS
-    ///  MAV_WINCH_STATUS_FLAG
-    /// </summary>
-    public enum MavWinchStatusFlag:uint
-    {
-        /// <summary>
-        /// Winch is healthy
-        /// MAV_WINCH_STATUS_HEALTHY
-        /// </summary>
-        MavWinchStatusHealthy = 1,
-        /// <summary>
-        /// Winch line is fully retracted
-        /// MAV_WINCH_STATUS_FULLY_RETRACTED
-        /// </summary>
-        MavWinchStatusFullyRetracted = 2,
-        /// <summary>
-        /// Winch motor is moving
-        /// MAV_WINCH_STATUS_MOVING
-        /// </summary>
-        MavWinchStatusMoving = 4,
-        /// <summary>
-        /// Winch clutch is engaged allowing motor to move freely.
-        /// MAV_WINCH_STATUS_CLUTCH_ENGAGED
-        /// </summary>
-        MavWinchStatusClutchEngaged = 8,
-        /// <summary>
-        /// Winch is locked by locking mechanism.
-        /// MAV_WINCH_STATUS_LOCKED
-        /// </summary>
-        MavWinchStatusLocked = 16,
-        /// <summary>
-        /// Winch is gravity dropping payload.
-        /// MAV_WINCH_STATUS_DROPPING
-        /// </summary>
-        MavWinchStatusDropping = 32,
-        /// <summary>
-        /// Winch is arresting payload descent.
-        /// MAV_WINCH_STATUS_ARRESTING
-        /// </summary>
-        MavWinchStatusArresting = 64,
-        /// <summary>
-        /// Winch is using torque measurements to sense the ground.
-        /// MAV_WINCH_STATUS_GROUND_SENSE
-        /// </summary>
-        MavWinchStatusGroundSense = 128,
-        /// <summary>
-        /// Winch is returning to the fully retracted position.
-        /// MAV_WINCH_STATUS_RETRACTING
-        /// </summary>
-        MavWinchStatusRetracting = 256,
-        /// <summary>
-        /// Winch is redelivering the payload. This is a failover state if the line tension goes above a threshold during RETRACTING.
-        /// MAV_WINCH_STATUS_REDELIVER
-        /// </summary>
-        MavWinchStatusRedeliver = 512,
-        /// <summary>
-        /// Winch is abandoning the line and possibly payload. Winch unspools the entire calculated line length. This is a failover state from REDELIVER if the number of attemps exceeds a threshold.
-        /// MAV_WINCH_STATUS_ABANDON_LINE
-        /// </summary>
-        MavWinchStatusAbandonLine = 1024,
-    }
-
-    /// <summary>
-    ///  MAG_CAL_STATUS
-    /// </summary>
-    public enum MagCalStatus:uint
-    {
-        /// <summary>
-        /// MAG_CAL_NOT_STARTED
-        /// </summary>
-        MagCalNotStarted = 0,
-        /// <summary>
-        /// MAG_CAL_WAITING_TO_START
-        /// </summary>
-        MagCalWaitingToStart = 1,
-        /// <summary>
-        /// MAG_CAL_RUNNING_STEP_ONE
-        /// </summary>
-        MagCalRunningStepOne = 2,
-        /// <summary>
-        /// MAG_CAL_RUNNING_STEP_TWO
-        /// </summary>
-        MagCalRunningStepTwo = 3,
-        /// <summary>
-        /// MAG_CAL_SUCCESS
-        /// </summary>
-        MagCalSuccess = 4,
-        /// <summary>
-        /// MAG_CAL_FAILED
-        /// </summary>
-        MagCalFailed = 5,
-        /// <summary>
-        /// MAG_CAL_BAD_ORIENTATION
-        /// </summary>
-        MagCalBadOrientation = 6,
-        /// <summary>
-        /// MAG_CAL_BAD_RADIUS
-        /// </summary>
-        MagCalBadRadius = 7,
-    }
-
-    /// <summary>
-    /// Reason for an event error response.
-    ///  MAV_EVENT_ERROR_REASON
-    /// </summary>
-    public enum MavEventErrorReason:uint
-    {
-        /// <summary>
-        /// The requested event is not available (anymore).
-        /// MAV_EVENT_ERROR_REASON_UNAVAILABLE
-        /// </summary>
-        MavEventErrorReasonUnavailable = 0,
-    }
-
-    /// <summary>
-    /// Flags for CURRENT_EVENT_SEQUENCE.
-    ///  MAV_EVENT_CURRENT_SEQUENCE_FLAGS
-    /// </summary>
-    public enum MavEventCurrentSequenceFlags:uint
-    {
-        /// <summary>
-        /// A sequence reset has happened (e.g. vehicle reboot).
-        /// MAV_EVENT_CURRENT_SEQUENCE_FLAGS_RESET
-        /// </summary>
-        MavEventCurrentSequenceFlagsReset = 1,
-    }
-
-    /// <summary>
-    /// Flags in the HIL_SENSOR message indicate which fields have updated since the last message
-    ///  HIL_SENSOR_UPDATED_FLAGS
-    /// </summary>
-    public enum HilSensorUpdatedFlags:uint
-    {
-        /// <summary>
-        /// None of the fields in HIL_SENSOR have been updated
-        /// HIL_SENSOR_UPDATED_NONE
-        /// </summary>
-        HilSensorUpdatedNone = 0,
-        /// <summary>
-        /// The value in the xacc field has been updated
-        /// HIL_SENSOR_UPDATED_XACC
-        /// </summary>
-        HilSensorUpdatedXacc = 1,
-        /// <summary>
-        /// The value in the yacc field has been updated
-        /// HIL_SENSOR_UPDATED_YACC
-        /// </summary>
-        HilSensorUpdatedYacc = 2,
-        /// <summary>
-        /// The value in the zacc field has been updated
-        /// HIL_SENSOR_UPDATED_ZACC
-        /// </summary>
-        HilSensorUpdatedZacc = 4,
-        /// <summary>
-        /// The value in the xgyro field has been updated
-        /// HIL_SENSOR_UPDATED_XGYRO
-        /// </summary>
-        HilSensorUpdatedXgyro = 8,
-        /// <summary>
-        /// The value in the ygyro field has been updated
-        /// HIL_SENSOR_UPDATED_YGYRO
-        /// </summary>
-        HilSensorUpdatedYgyro = 16,
-        /// <summary>
-        /// The value in the zgyro field has been updated
-        /// HIL_SENSOR_UPDATED_ZGYRO
-        /// </summary>
-        HilSensorUpdatedZgyro = 32,
-        /// <summary>
-        /// The value in the xmag field has been updated
-        /// HIL_SENSOR_UPDATED_XMAG
-        /// </summary>
-        HilSensorUpdatedXmag = 64,
-        /// <summary>
-        /// The value in the ymag field has been updated
-        /// HIL_SENSOR_UPDATED_YMAG
-        /// </summary>
-        HilSensorUpdatedYmag = 128,
-        /// <summary>
-        /// The value in the zmag field has been updated
-        /// HIL_SENSOR_UPDATED_ZMAG
-        /// </summary>
-        HilSensorUpdatedZmag = 256,
-        /// <summary>
-        /// The value in the abs_pressure field has been updated
-        /// HIL_SENSOR_UPDATED_ABS_PRESSURE
-        /// </summary>
-        HilSensorUpdatedAbsPressure = 512,
-        /// <summary>
-        /// The value in the diff_pressure field has been updated
-        /// HIL_SENSOR_UPDATED_DIFF_PRESSURE
-        /// </summary>
-        HilSensorUpdatedDiffPressure = 1024,
-        /// <summary>
-        /// The value in the pressure_alt field has been updated
-        /// HIL_SENSOR_UPDATED_PRESSURE_ALT
-        /// </summary>
-        HilSensorUpdatedPressureAlt = 2048,
-        /// <summary>
-        /// The value in the temperature field has been updated
-        /// HIL_SENSOR_UPDATED_TEMPERATURE
-        /// </summary>
-        HilSensorUpdatedTemperature = 4096,
-        /// <summary>
-        /// Full reset of attitude/position/velocities/etc was performed in sim (Bit 31).
-        /// HIL_SENSOR_UPDATED_RESET
-        /// </summary>
-        HilSensorUpdatedReset = 2147483648,
-    }
-
-    /// <summary>
-    /// Flags in the HIGHRES_IMU message indicate which fields have updated since the last message
-    ///  HIGHRES_IMU_UPDATED_FLAGS
-    /// </summary>
-    public enum HighresImuUpdatedFlags:uint
-    {
-        /// <summary>
-        /// None of the fields in HIGHRES_IMU have been updated
-        /// HIGHRES_IMU_UPDATED_NONE
-        /// </summary>
-        HighresImuUpdatedNone = 0,
-        /// <summary>
-        /// The value in the xacc field has been updated
-        /// HIGHRES_IMU_UPDATED_XACC
-        /// </summary>
-        HighresImuUpdatedXacc = 1,
-        /// <summary>
-        /// The value in the yacc field has been updated
-        /// HIGHRES_IMU_UPDATED_YACC
-        /// </summary>
-        HighresImuUpdatedYacc = 2,
-        /// <summary>
-        /// The value in the zacc field has been updated since
-        /// HIGHRES_IMU_UPDATED_ZACC
-        /// </summary>
-        HighresImuUpdatedZacc = 4,
-        /// <summary>
-        /// The value in the xgyro field has been updated
-        /// HIGHRES_IMU_UPDATED_XGYRO
-        /// </summary>
-        HighresImuUpdatedXgyro = 8,
-        /// <summary>
-        /// The value in the ygyro field has been updated
-        /// HIGHRES_IMU_UPDATED_YGYRO
-        /// </summary>
-        HighresImuUpdatedYgyro = 16,
-        /// <summary>
-        /// The value in the zgyro field has been updated
-        /// HIGHRES_IMU_UPDATED_ZGYRO
-        /// </summary>
-        HighresImuUpdatedZgyro = 32,
-        /// <summary>
-        /// The value in the xmag field has been updated
-        /// HIGHRES_IMU_UPDATED_XMAG
-        /// </summary>
-        HighresImuUpdatedXmag = 64,
-        /// <summary>
-        /// The value in the ymag field has been updated
-        /// HIGHRES_IMU_UPDATED_YMAG
-        /// </summary>
-        HighresImuUpdatedYmag = 128,
-        /// <summary>
-        /// The value in the zmag field has been updated
-        /// HIGHRES_IMU_UPDATED_ZMAG
-        /// </summary>
-        HighresImuUpdatedZmag = 256,
-        /// <summary>
-        /// The value in the abs_pressure field has been updated
-        /// HIGHRES_IMU_UPDATED_ABS_PRESSURE
-        /// </summary>
-        HighresImuUpdatedAbsPressure = 512,
-        /// <summary>
-        /// The value in the diff_pressure field has been updated
-        /// HIGHRES_IMU_UPDATED_DIFF_PRESSURE
-        /// </summary>
-        HighresImuUpdatedDiffPressure = 1024,
-        /// <summary>
-        /// The value in the pressure_alt field has been updated
-        /// HIGHRES_IMU_UPDATED_PRESSURE_ALT
-        /// </summary>
-        HighresImuUpdatedPressureAlt = 2048,
-        /// <summary>
-        /// The value in the temperature field has been updated
-        /// HIGHRES_IMU_UPDATED_TEMPERATURE
-        /// </summary>
-        HighresImuUpdatedTemperature = 4096,
-        /// <summary>
-        /// All fields in HIGHRES_IMU have been updated.
-        /// HIGHRES_IMU_UPDATED_ALL
-        /// </summary>
-        HighresImuUpdatedAll = 65535,
     }
 
 
@@ -8013,6 +5247,113 @@ namespace Asv.Mavlink.V2.Common
 
 #region Messages
 
+    /// <summary>
+    /// The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). This microservice is documented at https://mavlink.io/en/services/heartbeat.html
+    ///  HEARTBEAT
+    /// </summary>
+    public class HeartbeatPacket: PacketV2<HeartbeatPayload>
+    {
+	    public const int PacketMessageId = 0;
+        public override int MessageId => PacketMessageId;
+        public override byte GetCrcEtra() => 50;
+
+        public override HeartbeatPayload Payload { get; } = new HeartbeatPayload();
+
+        public override string Name => "HEARTBEAT";
+    }
+
+    /// <summary>
+    ///  HEARTBEAT
+    /// </summary>
+    public class HeartbeatPayload : IPayload
+    {
+        public byte GetMaxByteSize() => 9; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        {
+            var index = 0;
+            var endIndex = payloadSize;
+            var arraySize = 0;
+            CustomMode = BinSerialize.ReadUInt(ref buffer);index+=4;
+            Type = (MavType)BinSerialize.ReadByte(ref buffer);index+=1;
+            Autopilot = (MavAutopilot)BinSerialize.ReadByte(ref buffer);index+=1;
+            BaseMode = (MavModeFlag)BinSerialize.ReadByte(ref buffer);index+=1;
+            SystemStatus = (MavState)BinSerialize.ReadByte(ref buffer);index+=1;
+            MavlinkVersion = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+
+        }
+
+        public int Serialize(ref Span<byte> buffer)
+        {
+            var index = 0;
+            BinSerialize.WriteUInt(ref buffer,CustomMode);index+=4;
+            BinSerialize.WriteByte(ref buffer,(byte)Type);index+=1;
+            BinSerialize.WriteByte(ref buffer,(byte)Autopilot);index+=1;
+            BinSerialize.WriteByte(ref buffer,(byte)BaseMode);index+=1;
+            BinSerialize.WriteByte(ref buffer,(byte)SystemStatus);index+=1;
+            BinSerialize.WriteByte(ref buffer,(byte)MavlinkVersion);index+=1;
+            return index; // /*PayloadByteSize*/9;
+        }
+
+
+
+        public void Deserialize(byte[] buffer, int offset, int payloadSize)
+        {
+            var index = offset;
+            var endIndex = offset + payloadSize;
+            var arraySize = 0;
+            CustomMode = BitConverter.ToUInt32(buffer,index);index+=4;
+            Type = (MavType)buffer[index++];
+            Autopilot = (MavAutopilot)buffer[index++];
+            BaseMode = (MavModeFlag)buffer[index++];
+            SystemStatus = (MavState)buffer[index++];
+            MavlinkVersion = (byte)buffer[index++];
+        }
+
+        public int Serialize(byte[] buffer, int index)
+        {
+		var start = index;
+            BitConverter.GetBytes(CustomMode).CopyTo(buffer, index);index+=4;
+            buffer[index] = (byte)Type;index+=1;
+            buffer[index] = (byte)Autopilot;index+=1;
+            buffer[index] = (byte)BaseMode;index+=1;
+            buffer[index] = (byte)SystemStatus;index+=1;
+            BitConverter.GetBytes(MavlinkVersion).CopyTo(buffer, index);index+=1;
+            return index - start; // /*PayloadByteSize*/9;
+        }
+
+        /// <summary>
+        /// A bitfield for use for autopilot-specific flags
+        /// OriginName: custom_mode, Units: , IsExtended: false
+        /// </summary>
+        public uint CustomMode { get; set; }
+        /// <summary>
+        /// Type of the system (quadrotor, helicopter, etc.). Components use the same type as their associated system.
+        /// OriginName: type, Units: , IsExtended: false
+        /// </summary>
+        public MavType Type { get; set; }
+        /// <summary>
+        /// Autopilot type / class.
+        /// OriginName: autopilot, Units: , IsExtended: false
+        /// </summary>
+        public MavAutopilot Autopilot { get; set; }
+        /// <summary>
+        /// System mode bitmap.
+        /// OriginName: base_mode, Units: , IsExtended: false
+        /// </summary>
+        public MavModeFlag BaseMode { get; set; }
+        /// <summary>
+        /// System status flag.
+        /// OriginName: system_status, Units: , IsExtended: false
+        /// </summary>
+        public MavState SystemStatus { get; set; }
+        /// <summary>
+        /// MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version
+        /// OriginName: mavlink_version, Units: , IsExtended: false
+        /// </summary>
+        public byte MavlinkVersion { get; set; }
+    }
     /// <summary>
     /// The general system state. If the system is following the MAVLink standard, the system state is mainly defined by three orthogonal states/modes: The system mode, which is either LOCKED (motors shut down and locked), MANUAL (system under RC control), GUIDED (system with autonomous position control, position setpoint controlled manually) or AUTO (system guided by path/waypoint planner). The NAV_MODE defined the current flight state: LIFTOFF (often an open-loop maneuver), LANDING, WAYPOINTS or VECTOR. This represents the internal navigation state machine. The system status shows whether the system is currently active or not and if an emergency occurred. During the CRITICAL and EMERGENCY states the MAV is still considered to be active, but should start emergency procedures autonomously. After a failure occurred it should first move from active to critical to allow manual intervention and then move to emergency after a certain timeout.
     ///  SYS_STATUS
@@ -8033,13 +5374,14 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SysStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 43; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 43; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 31; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 31; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             OnboardControlSensorsPresent = (MavSysStatusSensor)BinSerialize.ReadUInt(ref buffer);index+=4;
             OnboardControlSensorsEnabled = (MavSysStatusSensor)BinSerialize.ReadUInt(ref buffer);index+=4;
             OnboardControlSensorsHealth = (MavSysStatusSensor)BinSerialize.ReadUInt(ref buffer);index+=4;
@@ -8053,15 +5395,6 @@ namespace Asv.Mavlink.V2.Common
             ErrorsCount3 = BinSerialize.ReadUShort(ref buffer);index+=2;
             ErrorsCount4 = BinSerialize.ReadUShort(ref buffer);index+=2;
             BatteryRemaining = (sbyte)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'OnboardControlSensorsPresentExtended' can be empty
-            if (index >= endIndex) return;
-            OnboardControlSensorsPresentExtended = (MavSysStatusSensorExtended)BinSerialize.ReadUInt(ref buffer);index+=4;
-            // extended field 'OnboardControlSensorsEnabledExtended' can be empty
-            if (index >= endIndex) return;
-            OnboardControlSensorsEnabledExtended = (MavSysStatusSensorExtended)BinSerialize.ReadUInt(ref buffer);index+=4;
-            // extended field 'OnboardControlSensorsHealthExtended' can be empty
-            if (index >= endIndex) return;
-            OnboardControlSensorsHealthExtended = (MavSysStatusSensorExtended)BinSerialize.ReadUInt(ref buffer);index+=4;
 
         }
 
@@ -8081,10 +5414,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteUShort(ref buffer,ErrorsCount3);index+=2;
             BinSerialize.WriteUShort(ref buffer,ErrorsCount4);index+=2;
             BinSerialize.WriteByte(ref buffer,(byte)BatteryRemaining);index+=1;
-            BinSerialize.WriteUInt(ref buffer,(uint)OnboardControlSensorsPresentExtended);index+=4;
-            BinSerialize.WriteUInt(ref buffer,(uint)OnboardControlSensorsEnabledExtended);index+=4;
-            BinSerialize.WriteUInt(ref buffer,(uint)OnboardControlSensorsHealthExtended);index+=4;
-            return index; // /*PayloadByteSize*/43;
+            return index; // /*PayloadByteSize*/31;
         }
 
 
@@ -8093,6 +5423,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             OnboardControlSensorsPresent = (MavSysStatusSensor)BitConverter.ToUInt32(buffer,index);index+=4;
             OnboardControlSensorsEnabled = (MavSysStatusSensor)BitConverter.ToUInt32(buffer,index);index+=4;
             OnboardControlSensorsHealth = (MavSysStatusSensor)BitConverter.ToUInt32(buffer,index);index+=4;
@@ -8106,15 +5437,6 @@ namespace Asv.Mavlink.V2.Common
             ErrorsCount3 = BitConverter.ToUInt16(buffer,index);index+=2;
             ErrorsCount4 = BitConverter.ToUInt16(buffer,index);index+=2;
             BatteryRemaining = (sbyte)buffer[index++];
-            // extended field 'OnboardControlSensorsPresentExtended' can be empty
-            if (index >= endIndex) return;
-            OnboardControlSensorsPresentExtended = (MavSysStatusSensorExtended)BitConverter.ToUInt32(buffer,index);index+=4;
-            // extended field 'OnboardControlSensorsEnabledExtended' can be empty
-            if (index >= endIndex) return;
-            OnboardControlSensorsEnabledExtended = (MavSysStatusSensorExtended)BitConverter.ToUInt32(buffer,index);index+=4;
-            // extended field 'OnboardControlSensorsHealthExtended' can be empty
-            if (index >= endIndex) return;
-            OnboardControlSensorsHealthExtended = (MavSysStatusSensorExtended)BitConverter.ToUInt32(buffer,index);index+=4;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -8133,10 +5455,7 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(ErrorsCount3).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(ErrorsCount4).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(BatteryRemaining).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes((uint)OnboardControlSensorsPresentExtended).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes((uint)OnboardControlSensorsEnabledExtended).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes((uint)OnboardControlSensorsHealthExtended).CopyTo(buffer, index);index+=4;
-            return index - start; // /*PayloadByteSize*/43;
+            return index - start; // /*PayloadByteSize*/31;
         }
 
         /// <summary>
@@ -8160,12 +5479,12 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public ushort Load { get; set; }
         /// <summary>
-        /// Battery voltage, UINT16_MAX: Voltage not sent by autopilot
+        /// Battery voltage
         /// OriginName: voltage_battery, Units: mV, IsExtended: false
         /// </summary>
         public ushort VoltageBattery { get; set; }
         /// <summary>
-        /// Battery current, -1: Current not sent by autopilot
+        /// Battery current, -1: autopilot does not measure the current
         /// OriginName: current_battery, Units: cA, IsExtended: false
         /// </summary>
         public short CurrentBattery { get; set; }
@@ -8200,25 +5519,10 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public ushort ErrorsCount4 { get; set; }
         /// <summary>
-        /// Battery energy remaining, -1: Battery remaining energy not sent by autopilot
+        /// Remaining battery energy, -1: autopilot estimate the remaining battery
         /// OriginName: battery_remaining, Units: %, IsExtended: false
         /// </summary>
         public sbyte BatteryRemaining { get; set; }
-        /// <summary>
-        /// Bitmap showing which onboard controllers and sensors are present. Value of 0: not present. Value of 1: present.
-        /// OriginName: onboard_control_sensors_present_extended, Units: , IsExtended: true
-        /// </summary>
-        public MavSysStatusSensorExtended OnboardControlSensorsPresentExtended { get; set; }
-        /// <summary>
-        /// Bitmap showing which onboard controllers and sensors are enabled:  Value of 0: not enabled. Value of 1: enabled.
-        /// OriginName: onboard_control_sensors_enabled_extended, Units: , IsExtended: true
-        /// </summary>
-        public MavSysStatusSensorExtended OnboardControlSensorsEnabledExtended { get; set; }
-        /// <summary>
-        /// Bitmap showing which onboard controllers and sensors have an error (or are operational). Value of 0: error. Value of 1: healthy.
-        /// OriginName: onboard_control_sensors_health_extended, Units: , IsExtended: true
-        /// </summary>
-        public MavSysStatusSensorExtended OnboardControlSensorsHealthExtended { get; set; }
     }
     /// <summary>
     /// The system time is the time of the master clock, typically the computer clock of the main onboard computer.
@@ -8247,6 +5551,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
 
@@ -8266,6 +5571,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUnixUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
         }
@@ -8316,6 +5622,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             Seq = BinSerialize.ReadUInt(ref buffer);index+=4;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -8339,6 +5646,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             Seq = BitConverter.ToUInt32(buffer,index);index+=4;
             TargetSystem = (byte)buffer[index++];
@@ -8356,7 +5664,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -8516,6 +5824,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             GcsSystemId = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             ControlRequest = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             Ack = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -8537,6 +5846,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             GcsSystemId = (byte)buffer[index++];
             ControlRequest = (byte)buffer[index++];
             Ack = (byte)buffer[index++];
@@ -8680,6 +5990,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             TxRate = BinSerialize.ReadUInt(ref buffer);index+=4;
             RxRate = BinSerialize.ReadUInt(ref buffer);index+=4;
@@ -8717,6 +6028,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             TxRate = BitConverter.ToUInt32(buffer,index);index+=4;
             RxRate = BitConverter.ToUInt32(buffer,index);index+=4;
@@ -8753,13 +6065,13 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public ulong Timestamp { get; set; }
         /// <summary>
-        /// Transmit rate
-        /// OriginName: tx_rate, Units: bytes/s, IsExtended: false
+        /// Transmit rate in bytes/s
+        /// OriginName: tx_rate, Units: , IsExtended: false
         /// </summary>
         public uint TxRate { get; set; }
         /// <summary>
-        /// Receive rate
-        /// OriginName: rx_rate, Units: bytes/s, IsExtended: false
+        /// Receive rate in bytes/s
+        /// OriginName: rx_rate, Units: , IsExtended: false
         /// </summary>
         public uint RxRate { get; set; }
         /// <summary>
@@ -8778,18 +6090,18 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public uint MessagesLost { get; set; }
         /// <summary>
-        /// Number of bytes that could not be parsed correctly.
-        /// OriginName: rx_parse_err, Units: bytes, IsExtended: false
+        /// Number of bytes that could not be parsed correctly
+        /// OriginName: rx_parse_err, Units: , IsExtended: false
         /// </summary>
         public ushort RxParseErr { get; set; }
         /// <summary>
         /// Transmit buffer overflows. This number wraps around as it reaches UINT16_MAX
-        /// OriginName: tx_overflows, Units: bytes, IsExtended: false
+        /// OriginName: tx_overflows, Units: , IsExtended: false
         /// </summary>
         public ushort TxOverflows { get; set; }
         /// <summary>
         /// Receive buffer overflows. This number wraps around as it reaches UINT16_MAX
-        /// OriginName: rx_overflows, Units: bytes, IsExtended: false
+        /// OriginName: rx_overflows, Units: , IsExtended: false
         /// </summary>
         public ushort RxOverflows { get; set; }
         /// <summary>
@@ -8830,6 +6142,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             CustomMode = BinSerialize.ReadUInt(ref buffer);index+=4;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             BaseMode = (MavMode)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -8851,6 +6164,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             CustomMode = BitConverter.ToUInt32(buffer,index);index+=4;
             TargetSystem = (byte)buffer[index++];
             BaseMode = (MavMode)buffer[index++];
@@ -9021,6 +6335,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
 
@@ -9040,6 +6355,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
         }
@@ -9186,9 +6502,7 @@ namespace Asv.Mavlink.V2.Common
         public MavParamType ParamType { get; set; }
     }
     /// <summary>
-    /// Set a parameter value (write new value to permanent storage).
-    ///         The receiving component should acknowledge the new parameter value by broadcasting a PARAM_VALUE message (broadcasting ensures that multiple GCS all have an up-to-date list of all parameters). If the sending GCS did not receive a PARAM_VALUE within its timeout time, it should re-send the PARAM_SET message. The parameter microservice is documented at https://mavlink.io/en/services/parameter.html.
-    ///         PARAM_SET may also be called within the context of a transaction (started with MAV_CMD_PARAM_TRANSACTION). Within a transaction the receiving component should respond with PARAM_ACK_TRANSACTION to the setter component (instead of broadcasting PARAM_VALUE), and PARAM_SET should be re-sent if this is ACK not received.
+    /// Set a parameter value (write new value to permanent storage). IMPORTANT: The receiving component should acknowledge the new parameter value by sending a PARAM_VALUE message to all communication partners. This will also ensure that multiple GCS all have an up-to-date list of all parameters. If the sending GCS did not receive a PARAM_VALUE message within its timeout time, it should re-send the PARAM_SET message. The parameter microservice is documented at https://mavlink.io/en/services/parameter.html
     ///  PARAM_SET
     /// </summary>
     public class ParamSetPacket: PacketV2<ParamSetPayload>
@@ -9311,7 +6625,7 @@ namespace Asv.Mavlink.V2.Common
     }
     /// <summary>
     /// The global position, as returned by the Global Positioning System (GPS). This is
-    ///                 NOT the global position estimate of the system, but rather a RAW sensor value. See message GLOBAL_POSITION_INT for the global position estimate.
+    ///                 NOT the global position estimate of the system, but rather a RAW sensor value. See message GLOBAL_POSITION for the global position estimate.
     ///  GPS_RAW_INT
     /// </summary>
     public class GpsRawIntPacket: PacketV2<GpsRawIntPayload>
@@ -9330,13 +6644,14 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class GpsRawIntPayload : IPayload
     {
-        public byte GetMaxByteSize() => 52; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 52; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 50; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 50; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             Lat = BinSerialize.ReadInt(ref buffer);index+=4;
             Lon = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -9362,9 +6677,6 @@ namespace Asv.Mavlink.V2.Common
             // extended field 'HdgAcc' can be empty
             if (index >= endIndex) return;
             HdgAcc = BinSerialize.ReadUInt(ref buffer);index+=4;
-            // extended field 'Yaw' can be empty
-            if (index >= endIndex) return;
-            Yaw = BinSerialize.ReadUShort(ref buffer);index+=2;
 
         }
 
@@ -9386,8 +6698,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteUInt(ref buffer,VAcc);index+=4;
             BinSerialize.WriteUInt(ref buffer,VelAcc);index+=4;
             BinSerialize.WriteUInt(ref buffer,HdgAcc);index+=4;
-            BinSerialize.WriteUShort(ref buffer,Yaw);index+=2;
-            return index; // /*PayloadByteSize*/52;
+            return index; // /*PayloadByteSize*/50;
         }
 
 
@@ -9396,6 +6707,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             Lat = BitConverter.ToInt32(buffer,index);index+=4;
             Lon = BitConverter.ToInt32(buffer,index);index+=4;
@@ -9421,9 +6733,6 @@ namespace Asv.Mavlink.V2.Common
             // extended field 'HdgAcc' can be empty
             if (index >= endIndex) return;
             HdgAcc = BitConverter.ToUInt32(buffer,index);index+=4;
-            // extended field 'Yaw' can be empty
-            if (index >= endIndex) return;
-            Yaw = BitConverter.ToUInt16(buffer,index);index+=2;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -9444,12 +6753,11 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(VAcc).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(VelAcc).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(HdgAcc).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Yaw).CopyTo(buffer, index);index+=2;
-            return index - start; // /*PayloadByteSize*/52;
+            return index - start; // /*PayloadByteSize*/50;
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -9469,12 +6777,12 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public int Alt { get; set; }
         /// <summary>
-        /// GPS HDOP horizontal dilution of position (unitless * 100). If unknown, set to: UINT16_MAX
+        /// GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX
         /// OriginName: eph, Units: , IsExtended: false
         /// </summary>
         public ushort Eph { get; set; }
         /// <summary>
-        /// GPS VDOP vertical dilution of position (unitless * 100). If unknown, set to: UINT16_MAX
+        /// GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX
         /// OriginName: epv, Units: , IsExtended: false
         /// </summary>
         public ushort Epv { get; set; }
@@ -9494,7 +6802,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public GpsFixType FixType { get; set; }
         /// <summary>
-        /// Number of satellites visible. If unknown, set to UINT8_MAX
+        /// Number of satellites visible. If unknown, set to 255
         /// OriginName: satellites_visible, Units: , IsExtended: false
         /// </summary>
         public byte SatellitesVisible { get; set; }
@@ -9504,17 +6812,17 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public int AltEllipsoid { get; set; }
         /// <summary>
-        /// Position uncertainty.
+        /// Position uncertainty. Positive for up.
         /// OriginName: h_acc, Units: mm, IsExtended: true
         /// </summary>
         public uint HAcc { get; set; }
         /// <summary>
-        /// Altitude uncertainty.
+        /// Altitude uncertainty. Positive for up.
         /// OriginName: v_acc, Units: mm, IsExtended: true
         /// </summary>
         public uint VAcc { get; set; }
         /// <summary>
-        /// Speed uncertainty.
+        /// Speed uncertainty. Positive for up.
         /// OriginName: vel_acc, Units: mm, IsExtended: true
         /// </summary>
         public uint VelAcc { get; set; }
@@ -9523,14 +6831,9 @@ namespace Asv.Mavlink.V2.Common
         /// OriginName: hdg_acc, Units: degE5, IsExtended: true
         /// </summary>
         public uint HdgAcc { get; set; }
-        /// <summary>
-        /// Yaw in earth frame from north. Use 0 if this GPS does not provide yaw. Use UINT16_MAX if this GPS is configured to provide yaw and is currently unable to provide it. Use 36000 for north.
-        /// OriginName: yaw, Units: cdeg, IsExtended: true
-        /// </summary>
-        public ushort Yaw { get; set; }
     }
     /// <summary>
-    /// The positioning status, as reported by GPS. This message is intended to display status information about each satellite visible to the receiver. See message GLOBAL_POSITION_INT for the global position estimate. This message can contain information for up to 20 satellites.
+    /// The positioning status, as reported by GPS. This message is intended to display status information about each satellite visible to the receiver. See message GLOBAL_POSITION for the global position estimate. This message can contain information for up to 20 satellites.
     ///  GPS_STATUS
     /// </summary>
     public class GpsStatusPacket: PacketV2<GpsStatusPayload>
@@ -9729,13 +7032,14 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ScaledImuPayload : IPayload
     {
-        public byte GetMaxByteSize() => 24; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 22; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             Xacc = BinSerialize.ReadShort(ref buffer);index+=2;
             Yacc = BinSerialize.ReadShort(ref buffer);index+=2;
@@ -9746,9 +7050,6 @@ namespace Asv.Mavlink.V2.Common
             Xmag = BinSerialize.ReadShort(ref buffer);index+=2;
             Ymag = BinSerialize.ReadShort(ref buffer);index+=2;
             Zmag = BinSerialize.ReadShort(ref buffer);index+=2;
-            // extended field 'Temperature' can be empty
-            if (index >= endIndex) return;
-            Temperature = BinSerialize.ReadShort(ref buffer);index+=2;
 
         }
 
@@ -9765,8 +7066,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteShort(ref buffer,Xmag);index+=2;
             BinSerialize.WriteShort(ref buffer,Ymag);index+=2;
             BinSerialize.WriteShort(ref buffer,Zmag);index+=2;
-            BinSerialize.WriteShort(ref buffer,Temperature);index+=2;
-            return index; // /*PayloadByteSize*/24;
+            return index; // /*PayloadByteSize*/22;
         }
 
 
@@ -9775,6 +7075,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             Xacc = BitConverter.ToInt16(buffer,index);index+=2;
             Yacc = BitConverter.ToInt16(buffer,index);index+=2;
@@ -9785,9 +7086,6 @@ namespace Asv.Mavlink.V2.Common
             Xmag = BitConverter.ToInt16(buffer,index);index+=2;
             Ymag = BitConverter.ToInt16(buffer,index);index+=2;
             Zmag = BitConverter.ToInt16(buffer,index);index+=2;
-            // extended field 'Temperature' can be empty
-            if (index >= endIndex) return;
-            Temperature = BitConverter.ToInt16(buffer,index);index+=2;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -9803,8 +7101,7 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(Xmag).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(Ymag).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(Zmag).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Temperature).CopyTo(buffer, index);index+=2;
-            return index - start; // /*PayloadByteSize*/24;
+            return index - start; // /*PayloadByteSize*/22;
         }
 
         /// <summary>
@@ -9844,27 +7141,22 @@ namespace Asv.Mavlink.V2.Common
         public short Zgyro { get; set; }
         /// <summary>
         /// X Magnetic field
-        /// OriginName: xmag, Units: mgauss, IsExtended: false
+        /// OriginName: xmag, Units: mT, IsExtended: false
         /// </summary>
         public short Xmag { get; set; }
         /// <summary>
         /// Y Magnetic field
-        /// OriginName: ymag, Units: mgauss, IsExtended: false
+        /// OriginName: ymag, Units: mT, IsExtended: false
         /// </summary>
         public short Ymag { get; set; }
         /// <summary>
         /// Z Magnetic field
-        /// OriginName: zmag, Units: mgauss, IsExtended: false
+        /// OriginName: zmag, Units: mT, IsExtended: false
         /// </summary>
         public short Zmag { get; set; }
-        /// <summary>
-        /// Temperature, 0: IMU does not provide temperature values. If the IMU is at 0C it must send 1 (0.01C).
-        /// OriginName: temperature, Units: cdegC, IsExtended: true
-        /// </summary>
-        public short Temperature { get; set; }
     }
     /// <summary>
-    /// The RAW IMU readings for a 9DOF sensor, which is identified by the id (default IMU1). This message should always contain the true raw values without any scaling to allow data capture and system debugging.
+    /// The RAW IMU readings for the usual 9DOF sensor setup. This message should always contain the true raw values without any scaling to allow data capture and system debugging.
     ///  RAW_IMU
     /// </summary>
     public class RawImuPacket: PacketV2<RawImuPayload>
@@ -9883,13 +7175,14 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class RawImuPayload : IPayload
     {
-        public byte GetMaxByteSize() => 29; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 29; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 26; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             Xacc = BinSerialize.ReadShort(ref buffer);index+=2;
             Yacc = BinSerialize.ReadShort(ref buffer);index+=2;
@@ -9900,12 +7193,6 @@ namespace Asv.Mavlink.V2.Common
             Xmag = BinSerialize.ReadShort(ref buffer);index+=2;
             Ymag = BinSerialize.ReadShort(ref buffer);index+=2;
             Zmag = BinSerialize.ReadShort(ref buffer);index+=2;
-            // extended field 'Id' can be empty
-            if (index >= endIndex) return;
-            Id = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'Temperature' can be empty
-            if (index >= endIndex) return;
-            Temperature = BinSerialize.ReadShort(ref buffer);index+=2;
 
         }
 
@@ -9922,9 +7209,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteShort(ref buffer,Xmag);index+=2;
             BinSerialize.WriteShort(ref buffer,Ymag);index+=2;
             BinSerialize.WriteShort(ref buffer,Zmag);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)Id);index+=1;
-            BinSerialize.WriteShort(ref buffer,Temperature);index+=2;
-            return index; // /*PayloadByteSize*/29;
+            return index; // /*PayloadByteSize*/26;
         }
 
 
@@ -9933,6 +7218,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             Xacc = BitConverter.ToInt16(buffer,index);index+=2;
             Yacc = BitConverter.ToInt16(buffer,index);index+=2;
@@ -9943,12 +7229,6 @@ namespace Asv.Mavlink.V2.Common
             Xmag = BitConverter.ToInt16(buffer,index);index+=2;
             Ymag = BitConverter.ToInt16(buffer,index);index+=2;
             Zmag = BitConverter.ToInt16(buffer,index);index+=2;
-            // extended field 'Id' can be empty
-            if (index >= endIndex) return;
-            Id = (byte)buffer[index++];
-            // extended field 'Temperature' can be empty
-            if (index >= endIndex) return;
-            Temperature = BitConverter.ToInt16(buffer,index);index+=2;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -9964,13 +7244,11 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(Xmag).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(Ymag).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(Zmag).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Id).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Temperature).CopyTo(buffer, index);index+=2;
-            return index - start; // /*PayloadByteSize*/29;
+            return index - start; // /*PayloadByteSize*/26;
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -10019,16 +7297,6 @@ namespace Asv.Mavlink.V2.Common
         /// OriginName: zmag, Units: , IsExtended: false
         /// </summary>
         public short Zmag { get; set; }
-        /// <summary>
-        /// Id. Ids are numbered from 0 and map to IMUs numbered from 1 (e.g. IMU1 will have a message with id=0)
-        /// OriginName: id, Units: , IsExtended: true
-        /// </summary>
-        public byte Id { get; set; }
-        /// <summary>
-        /// Temperature, 0: IMU does not provide temperature values. If the IMU is at 0C it must send 1 (0.01C).
-        /// OriginName: temperature, Units: cdegC, IsExtended: true
-        /// </summary>
-        public short Temperature { get; set; }
     }
     /// <summary>
     /// The RAW pressure readings for the typical setup of one absolute pressure and one differential pressure sensor. The sensor values should be the raw, UNSCALED ADC values.
@@ -10057,6 +7325,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             PressAbs = BinSerialize.ReadShort(ref buffer);index+=2;
             PressDiff1 = BinSerialize.ReadShort(ref buffer);index+=2;
@@ -10082,6 +7351,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             PressAbs = BitConverter.ToInt16(buffer,index);index+=2;
             PressDiff1 = BitConverter.ToInt16(buffer,index);index+=2;
@@ -10101,7 +7371,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -10146,20 +7416,18 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ScaledPressurePayload : IPayload
     {
-        public byte GetMaxByteSize() => 16; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 14; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             PressAbs = BinSerialize.ReadFloat(ref buffer);index+=4;
             PressDiff = BinSerialize.ReadFloat(ref buffer);index+=4;
             Temperature = BinSerialize.ReadShort(ref buffer);index+=2;
-            // extended field 'TemperaturePressDiff' can be empty
-            if (index >= endIndex) return;
-            TemperaturePressDiff = BinSerialize.ReadShort(ref buffer);index+=2;
 
         }
 
@@ -10170,8 +7438,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteFloat(ref buffer,PressAbs);index+=4;
             BinSerialize.WriteFloat(ref buffer,PressDiff);index+=4;
             BinSerialize.WriteShort(ref buffer,Temperature);index+=2;
-            BinSerialize.WriteShort(ref buffer,TemperaturePressDiff);index+=2;
-            return index; // /*PayloadByteSize*/16;
+            return index; // /*PayloadByteSize*/14;
         }
 
 
@@ -10180,13 +7447,11 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             PressAbs = BitConverter.ToSingle(buffer, index);index+=4;
             PressDiff = BitConverter.ToSingle(buffer, index);index+=4;
             Temperature = BitConverter.ToInt16(buffer,index);index+=2;
-            // extended field 'TemperaturePressDiff' can be empty
-            if (index >= endIndex) return;
-            TemperaturePressDiff = BitConverter.ToInt16(buffer,index);index+=2;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -10196,8 +7461,7 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(PressAbs).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(PressDiff).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(Temperature).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(TemperaturePressDiff).CopyTo(buffer, index);index+=2;
-            return index - start; // /*PayloadByteSize*/16;
+            return index - start; // /*PayloadByteSize*/14;
         }
 
         /// <summary>
@@ -10216,15 +7480,10 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public float PressDiff { get; set; }
         /// <summary>
-        /// Absolute pressure temperature
+        /// Temperature
         /// OriginName: temperature, Units: cdegC, IsExtended: false
         /// </summary>
         public short Temperature { get; set; }
-        /// <summary>
-        /// Differential pressure temperature (0, if not available). Report values of 0 (or 1) as 1 cdegC.
-        /// OriginName: temperature_press_diff, Units: cdegC, IsExtended: true
-        /// </summary>
-        public short TemperaturePressDiff { get; set; }
     }
     /// <summary>
     /// The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right).
@@ -10253,6 +7512,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             Roll = BinSerialize.ReadFloat(ref buffer);index+=4;
             Pitch = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -10282,6 +7542,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             Roll = BitConverter.ToSingle(buffer, index);index+=4;
             Pitch = BitConverter.ToSingle(buffer, index);index+=4;
@@ -10360,8 +7621,8 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class AttitudeQuaternionPayload : IPayload
     {
-        public byte GetMaxByteSize() => 48; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 48; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 32; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
@@ -10376,13 +7637,6 @@ namespace Asv.Mavlink.V2.Common
             Rollspeed = BinSerialize.ReadFloat(ref buffer);index+=4;
             Pitchspeed = BinSerialize.ReadFloat(ref buffer);index+=4;
             Yawspeed = BinSerialize.ReadFloat(ref buffer);index+=4;
-            // extended field 'ReprOffsetQ' can be empty
-            if (index >= endIndex) return;
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                ReprOffsetQ[i] = BinSerialize.ReadFloat(ref buffer);index+=4;
-            }
 
         }
 
@@ -10397,11 +7651,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteFloat(ref buffer,Rollspeed);index+=4;
             BinSerialize.WriteFloat(ref buffer,Pitchspeed);index+=4;
             BinSerialize.WriteFloat(ref buffer,Yawspeed);index+=4;
-            for(var i=0;i<ReprOffsetQ.Length;i++)
-            {
-                BinSerialize.WriteFloat(ref buffer,ReprOffsetQ[i]);index+=4;
-            }
-            return index; // /*PayloadByteSize*/48;
+            return index; // /*PayloadByteSize*/32;
         }
 
 
@@ -10419,13 +7669,6 @@ namespace Asv.Mavlink.V2.Common
             Rollspeed = BitConverter.ToSingle(buffer, index);index+=4;
             Pitchspeed = BitConverter.ToSingle(buffer, index);index+=4;
             Yawspeed = BitConverter.ToSingle(buffer, index);index+=4;
-            // extended field 'ReprOffsetQ' can be empty
-            if (index >= endIndex) return;
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                ReprOffsetQ[i] = BitConverter.ToSingle(buffer, index);index+=4;
-            }
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -10439,11 +7682,7 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(Rollspeed).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(Pitchspeed).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(Yawspeed).CopyTo(buffer, index);index+=4;
-            for(var i=0;i<ReprOffsetQ.Length;i++)
-            {
-                BitConverter.GetBytes(ReprOffsetQ[i]).CopyTo(buffer, index);index+=4;
-            }
-            return index - start; // /*PayloadByteSize*/48;
+            return index - start; // /*PayloadByteSize*/32;
         }
 
         /// <summary>
@@ -10486,11 +7725,6 @@ namespace Asv.Mavlink.V2.Common
         /// OriginName: yawspeed, Units: rad/s, IsExtended: false
         /// </summary>
         public float Yawspeed { get; set; }
-        /// <summary>
-        /// Rotation offset by which the attitude quaternion and angular speed vector should be rotated for user display (quaternion with [w, x, y, z] order, zero-rotation is [1, 0, 0, 0], send [0, 0, 0, 0] if field not supported). This field is intended for systems in which the reference attitude may change during flight. For example, tailsitters VTOLs rotate their reference attitude by 90 degrees between hover mode and fixed wing mode, thus repr_offset_q is equal to [1, 0, 0, 0] in hover mode and equal to [0.7071, 0, 0.7071, 0] in fixed wing mode.
-        /// OriginName: repr_offset_q, Units: , IsExtended: true
-        /// </summary>
-        public float[] ReprOffsetQ { get; } = new float[4];
     }
     /// <summary>
     /// The filtered local position (e.g. fused computer vision and accelerometers). Coordinate frame is right-handed, Z-axis down (aeronautical frame, NED / north-east-down convention)
@@ -10519,6 +7753,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             X = BinSerialize.ReadFloat(ref buffer);index+=4;
             Y = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -10548,6 +7783,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             X = BitConverter.ToSingle(buffer, index);index+=4;
             Y = BitConverter.ToSingle(buffer, index);index+=4;
@@ -10634,6 +7870,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             Lat = BinSerialize.ReadInt(ref buffer);index+=4;
             Lon = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -10667,6 +7904,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             Lat = BitConverter.ToInt32(buffer,index);index+=4;
             Lon = BitConverter.ToInt32(buffer,index);index+=4;
@@ -10766,6 +8004,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             Chan1Scaled = BinSerialize.ReadShort(ref buffer);index+=2;
             Chan2Scaled = BinSerialize.ReadShort(ref buffer);index+=2;
@@ -10803,6 +8042,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             Chan1Scaled = BitConverter.ToInt16(buffer,index);index+=2;
             Chan2Scaled = BitConverter.ToInt16(buffer,index);index+=2;
@@ -10884,7 +8124,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public byte Port { get; set; }
         /// <summary>
-        /// Receive signal strength indicator in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.
+        /// Receive signal strength indicator in device-dependent units/scale. Values: [0-254], 255: invalid/unknown.
         /// OriginName: rssi, Units: , IsExtended: false
         /// </summary>
         public byte Rssi { get; set; }
@@ -10916,6 +8156,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             Chan1Raw = BinSerialize.ReadUShort(ref buffer);index+=2;
             Chan2Raw = BinSerialize.ReadUShort(ref buffer);index+=2;
@@ -10953,6 +8194,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             Chan1Raw = BitConverter.ToUInt16(buffer,index);index+=2;
             Chan2Raw = BitConverter.ToUInt16(buffer,index);index+=2;
@@ -11034,13 +8276,13 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public byte Port { get; set; }
         /// <summary>
-        /// Receive signal strength indicator in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.
+        /// Receive signal strength indicator in device-dependent units/scale. Values: [0-254], 255: invalid/unknown.
         /// OriginName: rssi, Units: , IsExtended: false
         /// </summary>
         public byte Rssi { get; set; }
     }
     /// <summary>
-    /// Superseded by ACTUATOR_OUTPUT_STATUS. The RAW values of the servo outputs (for RC input from the remote, use the RC_CHANNELS messages). The standard PPM modulation is as follows: 1000 microseconds: 0%, 2000 microseconds: 100%.
+    /// The RAW values of the servo outputs (for RC input from the remote, use the RC_CHANNELS messages). The standard PPM modulation is as follows: 1000 microseconds: 0%, 2000 microseconds: 100%.
     ///  SERVO_OUTPUT_RAW
     /// </summary>
     public class ServoOutputRawPacket: PacketV2<ServoOutputRawPayload>
@@ -11066,6 +8308,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadUInt(ref buffer);index+=4;
             Servo1Raw = BinSerialize.ReadUShort(ref buffer);index+=2;
             Servo2Raw = BinSerialize.ReadUShort(ref buffer);index+=2;
@@ -11133,6 +8376,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt32(buffer,index);index+=4;
             Servo1Raw = BitConverter.ToUInt16(buffer,index);index+=2;
             Servo2Raw = BitConverter.ToUInt16(buffer,index);index+=2;
@@ -11194,7 +8438,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public uint TimeUsec { get; set; }
@@ -11311,6 +8555,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             StartIndex = BinSerialize.ReadShort(ref buffer);index+=2;
             EndIndex = BinSerialize.ReadShort(ref buffer);index+=2;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -11338,6 +8583,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             StartIndex = BitConverter.ToInt16(buffer,index);index+=2;
             EndIndex = BitConverter.ToInt16(buffer,index);index+=2;
             TargetSystem = (byte)buffer[index++];
@@ -11411,6 +8657,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             StartIndex = BinSerialize.ReadShort(ref buffer);index+=2;
             EndIndex = BinSerialize.ReadShort(ref buffer);index+=2;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -11438,6 +8685,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             StartIndex = BitConverter.ToInt16(buffer,index);index+=2;
             EndIndex = BitConverter.ToInt16(buffer,index);index+=2;
             TargetSystem = (byte)buffer[index++];
@@ -11486,7 +8734,7 @@ namespace Asv.Mavlink.V2.Common
     }
     /// <summary>
     /// Message encoding a mission item. This message is emitted to announce
-    ///                 the presence of a mission item and to set a mission item on the system. The mission item can be either in x, y, z meters (type: LOCAL) or x:lat, y:lon, z:altitude. Local frame is Z-down, right handed (NED), global frame is Z-up, right handed (ENU). NaN may be used to indicate an optional/default value (e.g. to use the system's current latitude or yaw rather than a specific value). See also https://mavlink.io/en/services/mission.html.
+    ///                 the presence of a mission item and to set a mission item on the system. The mission item can be either in x, y, z meters (type: LOCAL) or x:lat, y:lon, z:altitude. Local frame is Z-down, right handed (NED), global frame is Z-up, right handed (ENU). See also https://mavlink.io/en/services/mission.html.
     ///  MISSION_ITEM
     /// </summary>
     public class MissionItemPacket: PacketV2<MissionItemPayload>
@@ -11512,6 +8760,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Param1 = BinSerialize.ReadFloat(ref buffer);index+=4;
             Param2 = BinSerialize.ReadFloat(ref buffer);index+=4;
             Param3 = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -11559,6 +8808,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Param1 = BitConverter.ToSingle(buffer, index);index+=4;
             Param2 = BitConverter.ToSingle(buffer, index);index+=4;
             Param3 = BitConverter.ToSingle(buffer, index);index+=4;
@@ -11702,6 +8952,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Seq = BinSerialize.ReadUShort(ref buffer);index+=2;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -11727,6 +8978,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Seq = BitConverter.ToUInt16(buffer,index);index+=2;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
@@ -11793,6 +9045,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Seq = BinSerialize.ReadUShort(ref buffer);index+=2;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -11814,6 +9067,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Seq = BitConverter.ToUInt16(buffer,index);index+=2;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
@@ -11871,6 +9125,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Seq = BinSerialize.ReadUShort(ref buffer);index+=2;
 
         }
@@ -11888,6 +9143,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Seq = BitConverter.ToUInt16(buffer,index);index+=2;
         }
 
@@ -11931,6 +9187,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             // extended field 'MissionType' can be empty
@@ -11954,6 +9211,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
             // extended field 'MissionType' can be empty
@@ -12013,6 +9271,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Count = BinSerialize.ReadUShort(ref buffer);index+=2;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -12038,6 +9297,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Count = BitConverter.ToUInt16(buffer,index);index+=2;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
@@ -12104,6 +9364,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             // extended field 'MissionType' can be empty
@@ -12127,6 +9388,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
             // extended field 'MissionType' can be empty
@@ -12186,6 +9448,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Seq = BinSerialize.ReadUShort(ref buffer);index+=2;
 
         }
@@ -12203,6 +9466,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Seq = BitConverter.ToUInt16(buffer,index);index+=2;
         }
 
@@ -12246,6 +9510,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             Type = (MavMissionResult)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -12271,6 +9536,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
             Type = (MavMissionResult)buffer[index++];
@@ -12311,7 +9577,7 @@ namespace Asv.Mavlink.V2.Common
         public MavMissionType MissionType { get; set; }
     }
     /// <summary>
-    /// Sets the GPS co-ordinates of the vehicle local origin (0,0,0) position. Vehicle should emit GPS_GLOBAL_ORIGIN irrespective of whether the origin is changed. This enables transform between the local coordinate frame and the global (GPS) coordinate frame, which may be necessary when (for example) indoor and outdoor settings are connected and the MAV should move from in- to outdoor.
+    /// As local waypoints exist, the global waypoint reference allows to transform between the local coordinate frame and the global (GPS) coordinate frame. This can be necessary when e.g. in- and outdoor settings are connected and the MAV should move from in- to outdoor.
     ///  SET_GPS_GLOBAL_ORIGIN
     /// </summary>
     public class SetGpsGlobalOriginPacket: PacketV2<SetGpsGlobalOriginPayload>
@@ -12337,6 +9603,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Latitude = BinSerialize.ReadInt(ref buffer);index+=4;
             Longitude = BinSerialize.ReadInt(ref buffer);index+=4;
             Altitude = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -12364,6 +9631,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Latitude = BitConverter.ToInt32(buffer,index);index+=4;
             Longitude = BitConverter.ToInt32(buffer,index);index+=4;
             Altitude = BitConverter.ToInt32(buffer,index);index+=4;
@@ -12405,13 +9673,13 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public byte TargetSystem { get; set; }
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: true
         /// </summary>
         public ulong TimeUsec { get; set; }
     }
     /// <summary>
-    /// Publishes the GPS co-ordinates of the vehicle local origin (0,0,0) position. Emitted whenever a new GPS-Local position mapping is requested or set - e.g. following SET_GPS_GLOBAL_ORIGIN message.
+    /// Once the MAV sets a new GPS-Local correspondence, this message announces the origin (0,0,0) position
     ///  GPS_GLOBAL_ORIGIN
     /// </summary>
     public class GpsGlobalOriginPacket: PacketV2<GpsGlobalOriginPayload>
@@ -12437,6 +9705,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Latitude = BinSerialize.ReadInt(ref buffer);index+=4;
             Longitude = BinSerialize.ReadInt(ref buffer);index+=4;
             Altitude = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -12462,6 +9731,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Latitude = BitConverter.ToInt32(buffer,index);index+=4;
             Longitude = BitConverter.ToInt32(buffer,index);index+=4;
             Altitude = BitConverter.ToInt32(buffer,index);index+=4;
@@ -12496,7 +9766,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public int Altitude { get; set; }
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: true
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -12686,6 +9956,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Seq = BinSerialize.ReadUShort(ref buffer);index+=2;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -12711,6 +9982,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Seq = BitConverter.ToUInt16(buffer,index);index+=2;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
@@ -12751,6 +10023,104 @@ namespace Asv.Mavlink.V2.Common
         public MavMissionType MissionType { get; set; }
     }
     /// <summary>
+    /// A broadcast message to notify any ground station or SDK if a mission, geofence or safe points have changed on the vehicle.
+    ///  MISSION_CHANGED
+    /// </summary>
+    public class MissionChangedPacket: PacketV2<MissionChangedPayload>
+    {
+	    public const int PacketMessageId = 52;
+        public override int MessageId => PacketMessageId;
+        public override byte GetCrcEtra() => 132;
+
+        public override MissionChangedPayload Payload { get; } = new MissionChangedPayload();
+
+        public override string Name => "MISSION_CHANGED";
+    }
+
+    /// <summary>
+    ///  MISSION_CHANGED
+    /// </summary>
+    public class MissionChangedPayload : IPayload
+    {
+        public byte GetMaxByteSize() => 7; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        {
+            var index = 0;
+            var endIndex = payloadSize;
+            var arraySize = 0;
+            StartIndex = BinSerialize.ReadShort(ref buffer);index+=2;
+            EndIndex = BinSerialize.ReadShort(ref buffer);index+=2;
+            OriginSysid = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            OriginCompid = (MavComponent)BinSerialize.ReadByte(ref buffer);index+=1;
+            MissionType = (MavMissionType)BinSerialize.ReadByte(ref buffer);index+=1;
+
+        }
+
+        public int Serialize(ref Span<byte> buffer)
+        {
+            var index = 0;
+            BinSerialize.WriteShort(ref buffer,StartIndex);index+=2;
+            BinSerialize.WriteShort(ref buffer,EndIndex);index+=2;
+            BinSerialize.WriteByte(ref buffer,(byte)OriginSysid);index+=1;
+            BinSerialize.WriteByte(ref buffer,(byte)OriginCompid);index+=1;
+            BinSerialize.WriteByte(ref buffer,(byte)MissionType);index+=1;
+            return index; // /*PayloadByteSize*/7;
+        }
+
+
+
+        public void Deserialize(byte[] buffer, int offset, int payloadSize)
+        {
+            var index = offset;
+            var endIndex = offset + payloadSize;
+            var arraySize = 0;
+            StartIndex = BitConverter.ToInt16(buffer,index);index+=2;
+            EndIndex = BitConverter.ToInt16(buffer,index);index+=2;
+            OriginSysid = (byte)buffer[index++];
+            OriginCompid = (MavComponent)buffer[index++];
+            MissionType = (MavMissionType)buffer[index++];
+        }
+
+        public int Serialize(byte[] buffer, int index)
+        {
+		var start = index;
+            BitConverter.GetBytes(StartIndex).CopyTo(buffer, index);index+=2;
+            BitConverter.GetBytes(EndIndex).CopyTo(buffer, index);index+=2;
+            BitConverter.GetBytes(OriginSysid).CopyTo(buffer, index);index+=1;
+            buffer[index] = (byte)OriginCompid;index+=1;
+            buffer[index] = (byte)MissionType;index+=1;
+            return index - start; // /*PayloadByteSize*/7;
+        }
+
+        /// <summary>
+        /// Start index for partial mission change (-1 for all items).
+        /// OriginName: start_index, Units: , IsExtended: false
+        /// </summary>
+        public short StartIndex { get; set; }
+        /// <summary>
+        /// End index of a partial mission change. -1 is a synonym for the last mission item (i.e. selects all items from start_index). Ignore field if start_index=-1.
+        /// OriginName: end_index, Units: , IsExtended: false
+        /// </summary>
+        public short EndIndex { get; set; }
+        /// <summary>
+        /// System ID of the author of the new mission.
+        /// OriginName: origin_sysid, Units: , IsExtended: false
+        /// </summary>
+        public byte OriginSysid { get; set; }
+        /// <summary>
+        /// Compnent ID of the author of the new mission.
+        /// OriginName: origin_compid, Units: , IsExtended: false
+        /// </summary>
+        public MavComponent OriginCompid { get; set; }
+        /// <summary>
+        /// Mission type.
+        /// OriginName: mission_type, Units: , IsExtended: false
+        /// </summary>
+        public MavMissionType MissionType { get; set; }
+    }
+    /// <summary>
     /// Set a safety zone (volume), which is defined by two corners of a cube. This message can be used to tell the MAV which setpoints/waypoints to accept and which to reject. Safety areas are often enforced by national or competition regulations.
     ///  SAFETY_SET_ALLOWED_AREA
     /// </summary>
@@ -12777,6 +10147,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             P1x = BinSerialize.ReadFloat(ref buffer);index+=4;
             P1y = BinSerialize.ReadFloat(ref buffer);index+=4;
             P1z = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -12810,6 +10181,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             P1x = BitConverter.ToSingle(buffer, index);index+=4;
             P1y = BitConverter.ToSingle(buffer, index);index+=4;
             P1z = BitConverter.ToSingle(buffer, index);index+=4;
@@ -12909,6 +10281,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             P1x = BinSerialize.ReadFloat(ref buffer);index+=4;
             P1y = BinSerialize.ReadFloat(ref buffer);index+=4;
             P1z = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -12938,6 +10311,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             P1x = BitConverter.ToSingle(buffer, index);index+=4;
             P1y = BitConverter.ToSingle(buffer, index);index+=4;
             P1z = BitConverter.ToSingle(buffer, index);index+=4;
@@ -13103,7 +10477,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -13135,7 +10509,7 @@ namespace Asv.Mavlink.V2.Common
         public byte GetCovarianceMaxItemsCount() => 9;
     }
     /// <summary>
-    /// The state of the navigation and position controller.
+    /// The state of the fixed wing navigation and position controller.
     ///  NAV_CONTROLLER_OUTPUT
     /// </summary>
     public class NavControllerOutputPacket: PacketV2<NavControllerOutputPayload>
@@ -13161,6 +10535,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             NavRoll = BinSerialize.ReadFloat(ref buffer);index+=4;
             NavPitch = BinSerialize.ReadFloat(ref buffer);index+=4;
             AltError = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -13192,6 +10567,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             NavRoll = BitConverter.ToSingle(buffer, index);index+=4;
             NavPitch = BitConverter.ToSingle(buffer, index);index+=4;
             AltError = BitConverter.ToSingle(buffer, index);index+=4;
@@ -13366,7 +10742,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -13534,7 +10910,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -13622,6 +10998,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             Chan1Raw = BinSerialize.ReadUShort(ref buffer);index+=2;
             Chan2Raw = BinSerialize.ReadUShort(ref buffer);index+=2;
@@ -13679,6 +11056,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             Chan1Raw = BitConverter.ToUInt16(buffer,index);index+=2;
             Chan2Raw = BitConverter.ToUInt16(buffer,index);index+=2;
@@ -13830,7 +11208,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public byte Chancount { get; set; }
         /// <summary>
-        /// Receive signal strength indicator in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.
+        /// Receive signal strength indicator in device-dependent units/scale. Values: [0-254], 255: invalid/unknown.
         /// OriginName: rssi, Units: , IsExtended: false
         /// </summary>
         public byte Rssi { get; set; }
@@ -13862,6 +11240,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             ReqMessageRate = BinSerialize.ReadUShort(ref buffer);index+=2;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -13887,6 +11266,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             ReqMessageRate = BitConverter.ToUInt16(buffer,index);index+=2;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
@@ -13958,6 +11338,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             MessageRate = BinSerialize.ReadUShort(ref buffer);index+=2;
             StreamId = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             OnOff = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -13979,6 +11360,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             MessageRate = BitConverter.ToUInt16(buffer,index);index+=2;
             StreamId = (byte)buffer[index++];
             OnOff = (byte)buffer[index++];
@@ -14010,7 +11392,7 @@ namespace Asv.Mavlink.V2.Common
         public byte OnOff { get; set; }
     }
     /// <summary>
-    /// This message provides an API for manually controlling the vehicle using standard joystick axes nomenclature, along with a joystick-like input device. Unused axes can be disabled and buttons states are transmitted as individual on/off bits of a bitmask
+    /// This message provides an API for manually controlling the vehicle using standard joystick axes nomenclature, along with a joystick-like input device. Unused axes can be disabled an buttons are also transmit as boolean values of their 
     ///  MANUAL_CONTROL
     /// </summary>
     public class ManualControlPacket: PacketV2<ManualControlPayload>
@@ -14029,31 +11411,20 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ManualControlPayload : IPayload
     {
-        public byte GetMaxByteSize() => 18; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 11; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 11; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             X = BinSerialize.ReadShort(ref buffer);index+=2;
             Y = BinSerialize.ReadShort(ref buffer);index+=2;
             Z = BinSerialize.ReadShort(ref buffer);index+=2;
             R = BinSerialize.ReadShort(ref buffer);index+=2;
             Buttons = BinSerialize.ReadUShort(ref buffer);index+=2;
             Target = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'Buttons2' can be empty
-            if (index >= endIndex) return;
-            Buttons2 = BinSerialize.ReadUShort(ref buffer);index+=2;
-            // extended field 'EnabledExtensions' can be empty
-            if (index >= endIndex) return;
-            EnabledExtensions = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'S' can be empty
-            if (index >= endIndex) return;
-            S = BinSerialize.ReadShort(ref buffer);index+=2;
-            // extended field 'T' can be empty
-            if (index >= endIndex) return;
-            T = BinSerialize.ReadShort(ref buffer);index+=2;
 
         }
 
@@ -14066,11 +11437,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteShort(ref buffer,R);index+=2;
             BinSerialize.WriteUShort(ref buffer,Buttons);index+=2;
             BinSerialize.WriteByte(ref buffer,(byte)Target);index+=1;
-            BinSerialize.WriteUShort(ref buffer,Buttons2);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)EnabledExtensions);index+=1;
-            BinSerialize.WriteShort(ref buffer,S);index+=2;
-            BinSerialize.WriteShort(ref buffer,T);index+=2;
-            return index; // /*PayloadByteSize*/18;
+            return index; // /*PayloadByteSize*/11;
         }
 
 
@@ -14079,24 +11446,13 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             X = BitConverter.ToInt16(buffer,index);index+=2;
             Y = BitConverter.ToInt16(buffer,index);index+=2;
             Z = BitConverter.ToInt16(buffer,index);index+=2;
             R = BitConverter.ToInt16(buffer,index);index+=2;
             Buttons = BitConverter.ToUInt16(buffer,index);index+=2;
             Target = (byte)buffer[index++];
-            // extended field 'Buttons2' can be empty
-            if (index >= endIndex) return;
-            Buttons2 = BitConverter.ToUInt16(buffer,index);index+=2;
-            // extended field 'EnabledExtensions' can be empty
-            if (index >= endIndex) return;
-            EnabledExtensions = (byte)buffer[index++];
-            // extended field 'S' can be empty
-            if (index >= endIndex) return;
-            S = BitConverter.ToInt16(buffer,index);index+=2;
-            // extended field 'T' can be empty
-            if (index >= endIndex) return;
-            T = BitConverter.ToInt16(buffer,index);index+=2;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -14108,11 +11464,7 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(R).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(Buttons).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(Target).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Buttons2).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(EnabledExtensions).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(S).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(T).CopyTo(buffer, index);index+=2;
-            return index - start; // /*PayloadByteSize*/18;
+            return index - start; // /*PayloadByteSize*/11;
         }
 
         /// <summary>
@@ -14136,7 +11488,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public short R { get; set; }
         /// <summary>
-        /// A bitfield corresponding to the joystick buttons' 0-15 current state, 1 for pressed, 0 for released. The lowest bit corresponds to Button 1.
+        /// A bitfield corresponding to the joystick buttons' current state, 1 for pressed, 0 for released. The lowest bit corresponds to Button 1.
         /// OriginName: buttons, Units: , IsExtended: false
         /// </summary>
         public ushort Buttons { get; set; }
@@ -14145,29 +11497,9 @@ namespace Asv.Mavlink.V2.Common
         /// OriginName: target, Units: , IsExtended: false
         /// </summary>
         public byte Target { get; set; }
-        /// <summary>
-        /// A bitfield corresponding to the joystick buttons' 16-31 current state, 1 for pressed, 0 for released. The lowest bit corresponds to Button 16.
-        /// OriginName: buttons2, Units: , IsExtended: true
-        /// </summary>
-        public ushort Buttons2 { get; set; }
-        /// <summary>
-        /// Set bits to 1 to indicate which of the following extension fields contain valid data: bit 0: pitch, bit 1: roll.
-        /// OriginName: enabled_extensions, Units: , IsExtended: true
-        /// </summary>
-        public byte EnabledExtensions { get; set; }
-        /// <summary>
-        /// Pitch-only-axis, normalized to the range [-1000,1000]. Generally corresponds to pitch on vehicles with additional degrees of freedom. Valid if bit 0 of enabled_extensions field is set. Set to 0 if invalid.
-        /// OriginName: s, Units: , IsExtended: true
-        /// </summary>
-        public short S { get; set; }
-        /// <summary>
-        /// Roll-only-axis, normalized to the range [-1000,1000]. Generally corresponds to roll on vehicles with additional degrees of freedom. Valid if bit 1 of enabled_extensions field is set. Set to 0 if invalid.
-        /// OriginName: t, Units: , IsExtended: true
-        /// </summary>
-        public short T { get; set; }
     }
     /// <summary>
-    /// The RAW values of the RC channels sent to the MAV to override info received from the RC radio. The standard PPM modulation is as follows: 1000 microseconds: 0%, 2000 microseconds: 100%. Individual receivers/transmitters might violate this specification.  Note carefully the semantic differences between the first 8 channels and the subsequent channels
+    /// The RAW values of the RC channels sent to the MAV to override info received from the RC radio. A value of UINT16_MAX means no change to that channel. A value of 0 means control of that channel should be released back to the RC radio. The standard PPM modulation is as follows: 1000 microseconds: 0%, 2000 microseconds: 100%. Individual receivers/transmitters might violate this specification.
     ///  RC_CHANNELS_OVERRIDE
     /// </summary>
     public class RcChannelsOverridePacket: PacketV2<RcChannelsOverridePayload>
@@ -14193,6 +11525,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Chan1Raw = BinSerialize.ReadUShort(ref buffer);index+=2;
             Chan2Raw = BinSerialize.ReadUShort(ref buffer);index+=2;
             Chan3Raw = BinSerialize.ReadUShort(ref buffer);index+=2;
@@ -14268,6 +11601,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Chan1Raw = BitConverter.ToUInt16(buffer,index);index+=2;
             Chan2Raw = BitConverter.ToUInt16(buffer,index);index+=2;
             Chan3Raw = BitConverter.ToUInt16(buffer,index);index+=2;
@@ -14337,42 +11671,42 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// RC channel 1 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.
+        /// RC channel 1 value. A value of UINT16_MAX means to ignore this field.
         /// OriginName: chan1_raw, Units: us, IsExtended: false
         /// </summary>
         public ushort Chan1Raw { get; set; }
         /// <summary>
-        /// RC channel 2 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.
+        /// RC channel 2 value. A value of UINT16_MAX means to ignore this field.
         /// OriginName: chan2_raw, Units: us, IsExtended: false
         /// </summary>
         public ushort Chan2Raw { get; set; }
         /// <summary>
-        /// RC channel 3 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.
+        /// RC channel 3 value. A value of UINT16_MAX means to ignore this field.
         /// OriginName: chan3_raw, Units: us, IsExtended: false
         /// </summary>
         public ushort Chan3Raw { get; set; }
         /// <summary>
-        /// RC channel 4 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.
+        /// RC channel 4 value. A value of UINT16_MAX means to ignore this field.
         /// OriginName: chan4_raw, Units: us, IsExtended: false
         /// </summary>
         public ushort Chan4Raw { get; set; }
         /// <summary>
-        /// RC channel 5 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.
+        /// RC channel 5 value. A value of UINT16_MAX means to ignore this field.
         /// OriginName: chan5_raw, Units: us, IsExtended: false
         /// </summary>
         public ushort Chan5Raw { get; set; }
         /// <summary>
-        /// RC channel 6 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.
+        /// RC channel 6 value. A value of UINT16_MAX means to ignore this field.
         /// OriginName: chan6_raw, Units: us, IsExtended: false
         /// </summary>
         public ushort Chan6Raw { get; set; }
         /// <summary>
-        /// RC channel 7 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.
+        /// RC channel 7 value. A value of UINT16_MAX means to ignore this field.
         /// OriginName: chan7_raw, Units: us, IsExtended: false
         /// </summary>
         public ushort Chan7Raw { get; set; }
         /// <summary>
-        /// RC channel 8 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.
+        /// RC channel 8 value. A value of UINT16_MAX means to ignore this field.
         /// OriginName: chan8_raw, Units: us, IsExtended: false
         /// </summary>
         public ushort Chan8Raw { get; set; }
@@ -14387,59 +11721,59 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public byte TargetComponent { get; set; }
         /// <summary>
-        /// RC channel 9 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.
+        /// RC channel 9 value. A value of 0 or UINT16_MAX means to ignore this field.
         /// OriginName: chan9_raw, Units: us, IsExtended: true
         /// </summary>
         public ushort Chan9Raw { get; set; }
         /// <summary>
-        /// RC channel 10 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.
+        /// RC channel 10 value. A value of 0 or UINT16_MAX means to ignore this field.
         /// OriginName: chan10_raw, Units: us, IsExtended: true
         /// </summary>
         public ushort Chan10Raw { get; set; }
         /// <summary>
-        /// RC channel 11 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.
+        /// RC channel 11 value. A value of 0 or UINT16_MAX means to ignore this field.
         /// OriginName: chan11_raw, Units: us, IsExtended: true
         /// </summary>
         public ushort Chan11Raw { get; set; }
         /// <summary>
-        /// RC channel 12 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.
+        /// RC channel 12 value. A value of 0 or UINT16_MAX means to ignore this field.
         /// OriginName: chan12_raw, Units: us, IsExtended: true
         /// </summary>
         public ushort Chan12Raw { get; set; }
         /// <summary>
-        /// RC channel 13 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.
+        /// RC channel 13 value. A value of 0 or UINT16_MAX means to ignore this field.
         /// OriginName: chan13_raw, Units: us, IsExtended: true
         /// </summary>
         public ushort Chan13Raw { get; set; }
         /// <summary>
-        /// RC channel 14 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.
+        /// RC channel 14 value. A value of 0 or UINT16_MAX means to ignore this field.
         /// OriginName: chan14_raw, Units: us, IsExtended: true
         /// </summary>
         public ushort Chan14Raw { get; set; }
         /// <summary>
-        /// RC channel 15 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.
+        /// RC channel 15 value. A value of 0 or UINT16_MAX means to ignore this field.
         /// OriginName: chan15_raw, Units: us, IsExtended: true
         /// </summary>
         public ushort Chan15Raw { get; set; }
         /// <summary>
-        /// RC channel 16 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.
+        /// RC channel 16 value. A value of 0 or UINT16_MAX means to ignore this field.
         /// OriginName: chan16_raw, Units: us, IsExtended: true
         /// </summary>
         public ushort Chan16Raw { get; set; }
         /// <summary>
-        /// RC channel 17 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.
+        /// RC channel 17 value. A value of 0 or UINT16_MAX means to ignore this field.
         /// OriginName: chan17_raw, Units: us, IsExtended: true
         /// </summary>
         public ushort Chan17Raw { get; set; }
         /// <summary>
-        /// RC channel 18 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.
+        /// RC channel 18 value. A value of 0 or UINT16_MAX means to ignore this field.
         /// OriginName: chan18_raw, Units: us, IsExtended: true
         /// </summary>
         public ushort Chan18Raw { get; set; }
     }
     /// <summary>
     /// Message encoding a mission item. This message is emitted to announce
-    ///                 the presence of a mission item and to set a mission item on the system. The mission item can be either in x, y, z meters (type: LOCAL) or x:lat, y:lon, z:altitude. Local frame is Z-down, right handed (NED), global frame is Z-up, right handed (ENU). NaN or INT32_MAX may be used in float/integer params (respectively) to indicate optional/default values (e.g. to use the component's current latitude, yaw rather than a specific value). See also https://mavlink.io/en/services/mission.html.
+    ///                 the presence of a mission item and to set a mission item on the system. The mission item can be either in x, y, z meters (type: LOCAL) or x:lat, y:lon, z:altitude. Local frame is Z-down, right handed (NED), global frame is Z-up, right handed (ENU). See also https://mavlink.io/en/services/mission.html.
     ///  MISSION_ITEM_INT
     /// </summary>
     public class MissionItemIntPacket: PacketV2<MissionItemIntPayload>
@@ -14465,6 +11799,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Param1 = BinSerialize.ReadFloat(ref buffer);index+=4;
             Param2 = BinSerialize.ReadFloat(ref buffer);index+=4;
             Param3 = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -14512,6 +11847,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Param1 = BitConverter.ToSingle(buffer, index);index+=4;
             Param2 = BitConverter.ToSingle(buffer, index);index+=4;
             Param3 = BitConverter.ToSingle(buffer, index);index+=4;
@@ -14655,6 +11991,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Airspeed = BinSerialize.ReadFloat(ref buffer);index+=4;
             Groundspeed = BinSerialize.ReadFloat(ref buffer);index+=4;
             Alt = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -14682,6 +12019,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Airspeed = BitConverter.ToSingle(buffer, index);index+=4;
             Groundspeed = BitConverter.ToSingle(buffer, index);index+=4;
             Alt = BitConverter.ToSingle(buffer, index);index+=4;
@@ -14703,7 +12041,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Vehicle speed in form appropriate for vehicle type. For standard aircraft this is typically calibrated airspeed (CAS) or indicated airspeed (IAS) - either of which can be used by a pilot to estimate stall speed.
+        /// Current indicated airspeed (IAS).
         /// OriginName: airspeed, Units: m/s, IsExtended: false
         /// </summary>
         public float Airspeed { get; set; }
@@ -14734,7 +12072,7 @@ namespace Asv.Mavlink.V2.Common
         public ushort Throttle { get; set; }
     }
     /// <summary>
-    /// Message encoding a command with parameters as scaled integers. Scaling depends on the actual command value. NaN or INT32_MAX may be used in float/integer params (respectively) to indicate optional/default values (e.g. to use the component's current latitude, yaw rather than a specific value). The command microservice is documented at https://mavlink.io/en/services/command.html
+    /// Message encoding a command with parameters as scaled integers. Scaling depends on the actual command value. The command microservice is documented at https://mavlink.io/en/services/command.html
     ///  COMMAND_INT
     /// </summary>
     public class CommandIntPacket: PacketV2<CommandIntPayload>
@@ -14760,6 +12098,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Param1 = BinSerialize.ReadFloat(ref buffer);index+=4;
             Param2 = BinSerialize.ReadFloat(ref buffer);index+=4;
             Param3 = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -14801,6 +12140,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Param1 = BitConverter.ToSingle(buffer, index);index+=4;
             Param2 = BitConverter.ToSingle(buffer, index);index+=4;
             Param3 = BitConverter.ToSingle(buffer, index);index+=4;
@@ -14891,12 +12231,12 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public MavFrame Frame { get; set; }
         /// <summary>
-        /// Not used.
+        /// false:0, true:1
         /// OriginName: current, Units: , IsExtended: false
         /// </summary>
         public byte Current { get; set; }
         /// <summary>
-        /// Not used (set 0).
+        /// autocontinue to next wp
         /// OriginName: autocontinue, Units: , IsExtended: false
         /// </summary>
         public byte Autocontinue { get; set; }
@@ -14928,6 +12268,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Param1 = BinSerialize.ReadFloat(ref buffer);index+=4;
             Param2 = BinSerialize.ReadFloat(ref buffer);index+=4;
             Param3 = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -14965,6 +12306,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Param1 = BitConverter.ToSingle(buffer, index);index+=4;
             Param2 = BitConverter.ToSingle(buffer, index);index+=4;
             Param3 = BitConverter.ToSingle(buffer, index);index+=4;
@@ -15078,6 +12420,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Command = (MavCmd)BinSerialize.ReadUShort(ref buffer);index+=2;
             Result = (MavResult)BinSerialize.ReadByte(ref buffer);index+=1;
             // extended field 'Progress' can be empty
@@ -15113,6 +12456,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Command = (MavCmd)BitConverter.ToUInt16(buffer,index);index+=2;
             Result = (MavResult)buffer[index++];
             // extended field 'Progress' can be empty
@@ -15152,101 +12496,23 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public MavResult Result { get; set; }
         /// <summary>
-        /// Also used as result_param1, it can be set with an enum containing the errors reasons of why the command was denied, or the progress percentage when result is MAV_RESULT_IN_PROGRESS (UINT8_MAX if the progress is unknown).
+        /// WIP: Also used as result_param1, it can be set with a enum containing the errors reasons of why the command was denied or the progress percentage or 255 if unknown the progress when result is MAV_RESULT_IN_PROGRESS.
         /// OriginName: progress, Units: , IsExtended: true
         /// </summary>
         public byte Progress { get; set; }
         /// <summary>
-        /// Additional parameter of the result, example: which parameter of MAV_CMD_NAV_WAYPOINT caused it to be denied.
+        /// WIP: Additional parameter of the result, example: which parameter of MAV_CMD_NAV_WAYPOINT caused it to be denied.
         /// OriginName: result_param2, Units: , IsExtended: true
         /// </summary>
         public int ResultParam2 { get; set; }
         /// <summary>
-        /// System ID of the target recipient. This is the ID of the system that sent the command for which this COMMAND_ACK is an acknowledgement.
+        /// WIP: System which requested the command to be executed
         /// OriginName: target_system, Units: , IsExtended: true
         /// </summary>
         public byte TargetSystem { get; set; }
         /// <summary>
-        /// Component ID of the target recipient. This is the ID of the system that sent the command for which this COMMAND_ACK is an acknowledgement.
+        /// WIP: Component which requested the command to be executed
         /// OriginName: target_component, Units: , IsExtended: true
-        /// </summary>
-        public byte TargetComponent { get; set; }
-    }
-    /// <summary>
-    /// Cancel a long running command. The target system should respond with a COMMAND_ACK to the original command with result=MAV_RESULT_CANCELLED if the long running process was cancelled. If it has already completed, the cancel action can be ignored. The cancel action can be retried until some sort of acknowledgement to the original command has been received. The command microservice is documented at https://mavlink.io/en/services/command.html
-    ///  COMMAND_CANCEL
-    /// </summary>
-    public class CommandCancelPacket: PacketV2<CommandCancelPayload>
-    {
-	    public const int PacketMessageId = 80;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 14;
-
-        public override CommandCancelPayload Payload { get; } = new CommandCancelPayload();
-
-        public override string Name => "COMMAND_CANCEL";
-    }
-
-    /// <summary>
-    ///  COMMAND_CANCEL
-    /// </summary>
-    public class CommandCancelPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 4; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            Command = (MavCmd)BinSerialize.ReadUShort(ref buffer);index+=2;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUShort(ref buffer,(ushort)Command);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            return index; // /*PayloadByteSize*/4;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            Command = (MavCmd)BitConverter.ToUInt16(buffer,index);index+=2;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes((ushort)Command).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/4;
-        }
-
-        /// <summary>
-        /// Command ID (of command to cancel).
-        /// OriginName: command, Units: , IsExtended: false
-        /// </summary>
-        public MavCmd Command { get; set; }
-        /// <summary>
-        /// System executing long running command. Should not be broadcast (0).
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component executing long running command.
-        /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
         public byte TargetComponent { get; set; }
     }
@@ -15277,6 +12543,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             Roll = BinSerialize.ReadFloat(ref buffer);index+=4;
             Pitch = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -15306,6 +12573,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             Roll = BitConverter.ToSingle(buffer, index);index+=4;
             Pitch = BitConverter.ToSingle(buffer, index);index+=4;
@@ -15384,8 +12652,8 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SetAttitudeTargetPayload : IPayload
     {
-        public byte GetMaxByteSize() => 51; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 51; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 39; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 39; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
@@ -15393,7 +12661,7 @@ namespace Asv.Mavlink.V2.Common
             var endIndex = payloadSize;
             var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/51 - payloadSize - /*ExtendedFieldsLength*/12)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/39 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
             Q = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -15405,14 +12673,7 @@ namespace Asv.Mavlink.V2.Common
             Thrust = BinSerialize.ReadFloat(ref buffer);index+=4;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TypeMask = (AttitudeTargetTypemask)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'ThrustBody' can be empty
-            if (index >= endIndex) return;
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                ThrustBody[i] = BinSerialize.ReadFloat(ref buffer);index+=4;
-            }
+            TypeMask = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
 
         }
 
@@ -15431,11 +12692,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
             BinSerialize.WriteByte(ref buffer,(byte)TypeMask);index+=1;
-            for(var i=0;i<ThrustBody.Length;i++)
-            {
-                BinSerialize.WriteFloat(ref buffer,ThrustBody[i]);index+=4;
-            }
-            return index; // /*PayloadByteSize*/51;
+            return index; // /*PayloadByteSize*/39;
         }
 
 
@@ -15446,7 +12703,7 @@ namespace Asv.Mavlink.V2.Common
             var endIndex = offset + payloadSize;
             var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/51 - payloadSize - /*ExtendedFieldsLength*/12)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/39 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
             Q = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -15458,14 +12715,7 @@ namespace Asv.Mavlink.V2.Common
             Thrust = BitConverter.ToSingle(buffer, index);index+=4;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
-            TypeMask = (AttitudeTargetTypemask)buffer[index++];
-            // extended field 'ThrustBody' can be empty
-            if (index >= endIndex) return;
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                ThrustBody[i] = BitConverter.ToSingle(buffer, index);index+=4;
-            }
+            TypeMask = (byte)buffer[index++];
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -15482,12 +12732,8 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(Thrust).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
             BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            buffer[index] = (byte)TypeMask;index+=1;
-            for(var i=0;i<ThrustBody.Length;i++)
-            {
-                BitConverter.GetBytes(ThrustBody[i]).CopyTo(buffer, index);index+=4;
-            }
-            return index - start; // /*PayloadByteSize*/51;
+            BitConverter.GetBytes(TypeMask).CopyTo(buffer, index);index+=1;
+            return index - start; // /*PayloadByteSize*/39;
         }
 
         /// <summary>
@@ -15532,15 +12778,10 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public byte TargetComponent { get; set; }
         /// <summary>
-        /// Bitmap to indicate which dimensions should be ignored by the vehicle.
+        /// Mappings: If any of these bits are set, the corresponding input should be ignored: bit 1: body roll rate, bit 2: body pitch rate, bit 3: body yaw rate. bit 4-bit 6: reserved, bit 7: throttle, bit 8: attitude
         /// OriginName: type_mask, Units: , IsExtended: false
         /// </summary>
-        public AttitudeTargetTypemask TypeMask { get; set; }
-        /// <summary>
-        /// 3D thrust setpoint in the body NED frame, normalized to -1 .. 1
-        /// OriginName: thrust_body, Units: , IsExtended: true
-        /// </summary>
-        public float[] ThrustBody { get; } = new float[3];
+        public byte TypeMask { get; set; }
     }
     /// <summary>
     /// Reports the current commanded attitude of the vehicle as specified by the autopilot. This should match the commands sent in a SET_ATTITUDE_TARGET message if the vehicle is being controlled this way.
@@ -15581,7 +12822,7 @@ namespace Asv.Mavlink.V2.Common
             BodyPitchRate = BinSerialize.ReadFloat(ref buffer);index+=4;
             BodyYawRate = BinSerialize.ReadFloat(ref buffer);index+=4;
             Thrust = BinSerialize.ReadFloat(ref buffer);index+=4;
-            TypeMask = (AttitudeTargetTypemask)BinSerialize.ReadByte(ref buffer);index+=1;
+            TypeMask = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
 
         }
 
@@ -15619,7 +12860,7 @@ namespace Asv.Mavlink.V2.Common
             BodyPitchRate = BitConverter.ToSingle(buffer, index);index+=4;
             BodyYawRate = BitConverter.ToSingle(buffer, index);index+=4;
             Thrust = BitConverter.ToSingle(buffer, index);index+=4;
-            TypeMask = (AttitudeTargetTypemask)buffer[index++];
+            TypeMask = (byte)buffer[index++];
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -15634,7 +12875,7 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(BodyPitchRate).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(BodyYawRate).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(Thrust).CopyTo(buffer, index);index+=4;
-            buffer[index] = (byte)TypeMask;index+=1;
+            BitConverter.GetBytes(TypeMask).CopyTo(buffer, index);index+=1;
             return index - start; // /*PayloadByteSize*/37;
         }
 
@@ -15670,10 +12911,10 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public float Thrust { get; set; }
         /// <summary>
-        /// Bitmap to indicate which dimensions should be ignored by the vehicle.
+        /// Mappings: If any of these bits are set, the corresponding input should be ignored: bit 1: body roll rate, bit 2: body pitch rate, bit 3: body yaw rate. bit 4-bit 7: reserved, bit 8: attitude
         /// OriginName: type_mask, Units: , IsExtended: false
         /// </summary>
-        public AttitudeTargetTypemask TypeMask { get; set; }
+        public byte TypeMask { get; set; }
     }
     /// <summary>
     /// Sets a desired vehicle position in a local north-east-down coordinate frame. Used by an external controller to command the vehicle (manual controller or other system).
@@ -15702,6 +12943,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             X = BinSerialize.ReadFloat(ref buffer);index+=4;
             Y = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -15749,6 +12991,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             X = BitConverter.ToSingle(buffer, index);index+=4;
             Y = BitConverter.ToSingle(buffer, index);index+=4;
@@ -15897,6 +13140,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             X = BinSerialize.ReadFloat(ref buffer);index+=4;
             Y = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -15940,6 +13184,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             X = BitConverter.ToSingle(buffer, index);index+=4;
             Y = BitConverter.ToSingle(buffer, index);index+=4;
@@ -16074,6 +13319,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             LatInt = BinSerialize.ReadInt(ref buffer);index+=4;
             LonInt = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -16121,6 +13367,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             LatInt = BitConverter.ToInt32(buffer,index);index+=4;
             LonInt = BitConverter.ToInt32(buffer,index);index+=4;
@@ -16269,6 +13516,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             LatInt = BinSerialize.ReadInt(ref buffer);index+=4;
             LonInt = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -16312,6 +13560,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             LatInt = BitConverter.ToInt32(buffer,index);index+=4;
             LonInt = BitConverter.ToInt32(buffer,index);index+=4;
@@ -16446,6 +13695,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             X = BinSerialize.ReadFloat(ref buffer);index+=4;
             Y = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -16475,6 +13725,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             X = BitConverter.ToSingle(buffer, index);index+=4;
             Y = BitConverter.ToSingle(buffer, index);index+=4;
@@ -16560,6 +13811,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             Roll = BinSerialize.ReadFloat(ref buffer);index+=4;
             Pitch = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -16607,6 +13859,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             Roll = BitConverter.ToSingle(buffer, index);index+=4;
             Pitch = BitConverter.ToSingle(buffer, index);index+=4;
@@ -16648,7 +13901,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -16755,6 +14008,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             RollAilerons = BinSerialize.ReadFloat(ref buffer);index+=4;
             PitchElevator = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -16792,6 +14046,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             RollAilerons = BitConverter.ToSingle(buffer, index);index+=4;
             PitchElevator = BitConverter.ToSingle(buffer, index);index+=4;
@@ -16823,7 +14078,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -16905,6 +14160,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             Chan1Raw = BinSerialize.ReadUShort(ref buffer);index+=2;
             Chan2Raw = BinSerialize.ReadUShort(ref buffer);index+=2;
@@ -16948,6 +14204,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             Chan1Raw = BitConverter.ToUInt16(buffer,index);index+=2;
             Chan2Raw = BitConverter.ToUInt16(buffer,index);index+=2;
@@ -16985,7 +14242,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -17050,7 +14307,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public ushort Chan12Raw { get; set; }
         /// <summary>
-        /// Receive signal strength indicator in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.
+        /// Receive signal strength indicator in device-dependent units/scale. Values: [0-254], 255: invalid/unknown.
         /// OriginName: rssi, Units: , IsExtended: false
         /// </summary>
         public byte Rssi { get; set; }
@@ -17140,12 +14397,12 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
         /// <summary>
-        /// Flags as bitfield, 1: indicate simulation using lockstep.
+        /// Flags as bitfield, reserved for future use.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
         public ulong Flags { get; set; }
@@ -17188,6 +14445,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             FlowCompMX = BinSerialize.ReadFloat(ref buffer);index+=4;
             FlowCompMY = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -17227,6 +14485,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             FlowCompMX = BitConverter.ToSingle(buffer, index);index+=4;
             FlowCompMY = BitConverter.ToSingle(buffer, index);index+=4;
@@ -17260,18 +14519,18 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
         /// <summary>
         /// Flow in x-sensor direction, angular-speed compensated
-        /// OriginName: flow_comp_m_x, Units: m/s, IsExtended: false
+        /// OriginName: flow_comp_m_x, Units: m, IsExtended: false
         /// </summary>
         public float FlowCompMX { get; set; }
         /// <summary>
         /// Flow in y-sensor direction, angular-speed compensated
-        /// OriginName: flow_comp_m_y, Units: m/s, IsExtended: false
+        /// OriginName: flow_comp_m_y, Units: m, IsExtended: false
         /// </summary>
         public float FlowCompMY { get; set; }
         /// <summary>
@@ -17467,7 +14726,7 @@ namespace Asv.Mavlink.V2.Common
         public byte ResetCounter { get; set; }
     }
     /// <summary>
-    /// Local position/attitude estimate from a vision source.
+    /// Global position/attitude estimate from a vision source.
     ///  VISION_POSITION_ESTIMATE
     /// </summary>
     public class VisionPositionEstimatePacket: PacketV2<VisionPositionEstimatePayload>
@@ -17582,17 +14841,17 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public ulong Usec { get; set; }
         /// <summary>
-        /// Local X position
+        /// Global X position
         /// OriginName: x, Units: m, IsExtended: false
         /// </summary>
         public float X { get; set; }
         /// <summary>
-        /// Local Y position
+        /// Global Y position
         /// OriginName: y, Units: m, IsExtended: false
         /// </summary>
         public float Y { get; set; }
         /// <summary>
-        /// Local Z position
+        /// Global Z position
         /// OriginName: z, Units: m, IsExtended: false
         /// </summary>
         public float Z { get; set; }
@@ -17914,13 +15173,14 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HighresImuPayload : IPayload
     {
-        public byte GetMaxByteSize() => 63; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 63; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 62; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 62; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             Xacc = BinSerialize.ReadFloat(ref buffer);index+=4;
             Yacc = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -17935,10 +15195,7 @@ namespace Asv.Mavlink.V2.Common
             DiffPressure = BinSerialize.ReadFloat(ref buffer);index+=4;
             PressureAlt = BinSerialize.ReadFloat(ref buffer);index+=4;
             Temperature = BinSerialize.ReadFloat(ref buffer);index+=4;
-            FieldsUpdated = (HighresImuUpdatedFlags)BinSerialize.ReadUShort(ref buffer);index+=2;
-            // extended field 'Id' can be empty
-            if (index >= endIndex) return;
-            Id = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            FieldsUpdated = BinSerialize.ReadUShort(ref buffer);index+=2;
 
         }
 
@@ -17959,9 +15216,8 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteFloat(ref buffer,DiffPressure);index+=4;
             BinSerialize.WriteFloat(ref buffer,PressureAlt);index+=4;
             BinSerialize.WriteFloat(ref buffer,Temperature);index+=4;
-            BinSerialize.WriteUShort(ref buffer,(ushort)FieldsUpdated);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)Id);index+=1;
-            return index; // /*PayloadByteSize*/63;
+            BinSerialize.WriteUShort(ref buffer,FieldsUpdated);index+=2;
+            return index; // /*PayloadByteSize*/62;
         }
 
 
@@ -17970,6 +15226,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             Xacc = BitConverter.ToSingle(buffer, index);index+=4;
             Yacc = BitConverter.ToSingle(buffer, index);index+=4;
@@ -17984,10 +15241,7 @@ namespace Asv.Mavlink.V2.Common
             DiffPressure = BitConverter.ToSingle(buffer, index);index+=4;
             PressureAlt = BitConverter.ToSingle(buffer, index);index+=4;
             Temperature = BitConverter.ToSingle(buffer, index);index+=4;
-            FieldsUpdated = (HighresImuUpdatedFlags)BitConverter.ToUInt16(buffer,index);index+=2;
-            // extended field 'Id' can be empty
-            if (index >= endIndex) return;
-            Id = (byte)buffer[index++];
+            FieldsUpdated = BitConverter.ToUInt16(buffer,index);index+=2;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -18007,13 +15261,12 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(DiffPressure).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(PressureAlt).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(Temperature).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes((ushort)FieldsUpdated).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Id).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/63;
+            BitConverter.GetBytes(FieldsUpdated).CopyTo(buffer, index);index+=2;
+            return index - start; // /*PayloadByteSize*/62;
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -18064,12 +15317,12 @@ namespace Asv.Mavlink.V2.Common
         public float Zmag { get; set; }
         /// <summary>
         /// Absolute pressure
-        /// OriginName: abs_pressure, Units: hPa, IsExtended: false
+        /// OriginName: abs_pressure, Units: mbar, IsExtended: false
         /// </summary>
         public float AbsPressure { get; set; }
         /// <summary>
         /// Differential pressure
-        /// OriginName: diff_pressure, Units: hPa, IsExtended: false
+        /// OriginName: diff_pressure, Units: mbar, IsExtended: false
         /// </summary>
         public float DiffPressure { get; set; }
         /// <summary>
@@ -18083,15 +15336,10 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public float Temperature { get; set; }
         /// <summary>
-        /// Bitmap for fields that have updated since last message
+        /// Bitmap for fields that have updated since last message, bit 0 = xacc, bit 12: temperature
         /// OriginName: fields_updated, Units: , IsExtended: false
         /// </summary>
-        public HighresImuUpdatedFlags FieldsUpdated { get; set; }
-        /// <summary>
-        /// Id. Ids are numbered from 0 and map to IMUs numbered from 1 (e.g. IMU1 will have a message with id=0)
-        /// OriginName: id, Units: , IsExtended: true
-        /// </summary>
-        public byte Id { get; set; }
+        public ushort FieldsUpdated { get; set; }
     }
     /// <summary>
     /// Optical flow from an angular rate flow sensor (e.g. PX4FLOW or mouse sensor)
@@ -18120,6 +15368,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             IntegrationTimeUs = BinSerialize.ReadUInt(ref buffer);index+=4;
             IntegratedX = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -18159,6 +15408,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             IntegrationTimeUs = BitConverter.ToUInt32(buffer,index);index+=4;
             IntegratedX = BitConverter.ToSingle(buffer, index);index+=4;
@@ -18192,7 +15442,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -18272,13 +15522,14 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HilSensorPayload : IPayload
     {
-        public byte GetMaxByteSize() => 65; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 65; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 64; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 64; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             Xacc = BinSerialize.ReadFloat(ref buffer);index+=4;
             Yacc = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -18293,10 +15544,7 @@ namespace Asv.Mavlink.V2.Common
             DiffPressure = BinSerialize.ReadFloat(ref buffer);index+=4;
             PressureAlt = BinSerialize.ReadFloat(ref buffer);index+=4;
             Temperature = BinSerialize.ReadFloat(ref buffer);index+=4;
-            FieldsUpdated = (HilSensorUpdatedFlags)BinSerialize.ReadUInt(ref buffer);index+=4;
-            // extended field 'Id' can be empty
-            if (index >= endIndex) return;
-            Id = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            FieldsUpdated = BinSerialize.ReadUInt(ref buffer);index+=4;
 
         }
 
@@ -18317,9 +15565,8 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteFloat(ref buffer,DiffPressure);index+=4;
             BinSerialize.WriteFloat(ref buffer,PressureAlt);index+=4;
             BinSerialize.WriteFloat(ref buffer,Temperature);index+=4;
-            BinSerialize.WriteUInt(ref buffer,(uint)FieldsUpdated);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)Id);index+=1;
-            return index; // /*PayloadByteSize*/65;
+            BinSerialize.WriteUInt(ref buffer,FieldsUpdated);index+=4;
+            return index; // /*PayloadByteSize*/64;
         }
 
 
@@ -18328,6 +15575,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             Xacc = BitConverter.ToSingle(buffer, index);index+=4;
             Yacc = BitConverter.ToSingle(buffer, index);index+=4;
@@ -18342,10 +15590,7 @@ namespace Asv.Mavlink.V2.Common
             DiffPressure = BitConverter.ToSingle(buffer, index);index+=4;
             PressureAlt = BitConverter.ToSingle(buffer, index);index+=4;
             Temperature = BitConverter.ToSingle(buffer, index);index+=4;
-            FieldsUpdated = (HilSensorUpdatedFlags)BitConverter.ToUInt32(buffer,index);index+=4;
-            // extended field 'Id' can be empty
-            if (index >= endIndex) return;
-            Id = (byte)buffer[index++];
+            FieldsUpdated = BitConverter.ToUInt32(buffer,index);index+=4;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -18365,13 +15610,12 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(DiffPressure).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(PressureAlt).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(Temperature).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes((uint)FieldsUpdated).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Id).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/65;
+            BitConverter.GetBytes(FieldsUpdated).CopyTo(buffer, index);index+=4;
+            return index - start; // /*PayloadByteSize*/64;
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -18422,12 +15666,12 @@ namespace Asv.Mavlink.V2.Common
         public float Zmag { get; set; }
         /// <summary>
         /// Absolute pressure
-        /// OriginName: abs_pressure, Units: hPa, IsExtended: false
+        /// OriginName: abs_pressure, Units: mbar, IsExtended: false
         /// </summary>
         public float AbsPressure { get; set; }
         /// <summary>
         /// Differential pressure (airspeed)
-        /// OriginName: diff_pressure, Units: hPa, IsExtended: false
+        /// OriginName: diff_pressure, Units: mbar, IsExtended: false
         /// </summary>
         public float DiffPressure { get; set; }
         /// <summary>
@@ -18441,15 +15685,10 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public float Temperature { get; set; }
         /// <summary>
-        /// Bitmap for fields that have updated since last message
+        /// Bitmap for fields that have updated since last message, bit 0 = xacc, bit 12: temperature, bit 31: full reset of attitude/position/velocities/etc was performed in sim.
         /// OriginName: fields_updated, Units: , IsExtended: false
         /// </summary>
-        public HilSensorUpdatedFlags FieldsUpdated { get; set; }
-        /// <summary>
-        /// Sensor ID (zero indexed). Used for multiple sensor inputs
-        /// OriginName: id, Units: , IsExtended: true
-        /// </summary>
-        public byte Id { get; set; }
+        public uint FieldsUpdated { get; set; }
     }
     /// <summary>
     /// Status of simulation environment, if used
@@ -18478,6 +15717,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Q1 = BinSerialize.ReadFloat(ref buffer);index+=4;
             Q2 = BinSerialize.ReadFloat(ref buffer);index+=4;
             Q3 = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -18535,6 +15775,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Q1 = BitConverter.ToSingle(buffer, index);index+=4;
             Q2 = BitConverter.ToSingle(buffer, index);index+=4;
             Q3 = BitConverter.ToSingle(buffer, index);index+=4;
@@ -18676,17 +15917,17 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public float StdDevVert { get; set; }
         /// <summary>
-        /// True velocity in north direction in earth-fixed NED frame
+        /// True velocity in NORTH direction in earth-fixed NED frame
         /// OriginName: vn, Units: m/s, IsExtended: false
         /// </summary>
         public float Vn { get; set; }
         /// <summary>
-        /// True velocity in east direction in earth-fixed NED frame
+        /// True velocity in EAST direction in earth-fixed NED frame
         /// OriginName: ve, Units: m/s, IsExtended: false
         /// </summary>
         public float Ve { get; set; }
         /// <summary>
-        /// True velocity in down direction in earth-fixed NED frame
+        /// True velocity in DOWN direction in earth-fixed NED frame
         /// OriginName: vd, Units: m/s, IsExtended: false
         /// </summary>
         public float Vd { get; set; }
@@ -18718,6 +15959,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Rxerrors = BinSerialize.ReadUShort(ref buffer);index+=2;
             Fixed = BinSerialize.ReadUShort(ref buffer);index+=2;
             Rssi = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -18747,6 +15989,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Rxerrors = BitConverter.ToUInt16(buffer,index);index+=2;
             Fixed = BitConverter.ToUInt16(buffer,index);index+=2;
             Rssi = (byte)buffer[index++];
@@ -18780,12 +16023,12 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public ushort Fixed { get; set; }
         /// <summary>
-        /// Local (message sender) recieved signal strength indication in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.
+        /// Local (message sender) recieved signal strength indication in device-dependent units/scale. Values: [0-254], 255: invalid/unknown.
         /// OriginName: rssi, Units: , IsExtended: false
         /// </summary>
         public byte Rssi { get; set; }
         /// <summary>
-        /// Remote (message receiver) signal strength indication in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.
+        /// Remote (message receiver) signal strength indication in device-dependent units/scale. Values: [0-254], 255: invalid/unknown.
         /// OriginName: remrssi, Units: , IsExtended: false
         /// </summary>
         public byte Remrssi { get; set; }
@@ -18795,12 +16038,12 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public byte Txbuf { get; set; }
         /// <summary>
-        /// Local background noise level. These are device dependent RSSI values (scale as approx 2x dB on SiK radios). Values: [0-254], UINT8_MAX: invalid/unknown.
+        /// Local background noise level. These are device dependent RSSI values (scale as approx 2x dB on SiK radios). Values: [0-254], 255: invalid/unknown.
         /// OriginName: noise, Units: , IsExtended: false
         /// </summary>
         public byte Noise { get; set; }
         /// <summary>
-        /// Remote background noise level. These are device dependent RSSI values (scale as approx 2x dB on SiK radios). Values: [0-254], UINT8_MAX: invalid/unknown.
+        /// Remote background noise level. These are device dependent RSSI values (scale as approx 2x dB on SiK radios). Values: [0-254], 255: invalid/unknown.
         /// OriginName: remnoise, Units: , IsExtended: false
         /// </summary>
         public byte Remnoise { get; set; }
@@ -18938,6 +16181,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Tc1 = BinSerialize.ReadLong(ref buffer);index+=8;
             Ts1 = BinSerialize.ReadLong(ref buffer);index+=8;
 
@@ -18957,6 +16201,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Tc1 = BitConverter.ToInt64(buffer,index);index+=8;
             Ts1 = BitConverter.ToInt64(buffer,index);index+=8;
         }
@@ -19007,6 +16252,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             Seq = BinSerialize.ReadUInt(ref buffer);index+=4;
 
@@ -19026,6 +16272,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             Seq = BitConverter.ToUInt32(buffer,index);index+=4;
         }
@@ -19039,7 +16286,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp for image frame (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp for image frame (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -19051,7 +16298,7 @@ namespace Asv.Mavlink.V2.Common
     }
     /// <summary>
     /// The global position, as returned by the Global Positioning System (GPS). This is
-    ///                  NOT the global position estimate of the sytem, but rather a RAW sensor value. See message GLOBAL_POSITION_INT for the global position estimate.
+    ///                  NOT the global position estimate of the sytem, but rather a RAW sensor value. See message GLOBAL_POSITION for the global position estimate.
     ///  HIL_GPS
     /// </summary>
     public class HilGpsPacket: PacketV2<HilGpsPayload>
@@ -19070,13 +16317,14 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HilGpsPayload : IPayload
     {
-        public byte GetMaxByteSize() => 39; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 39; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 36; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 36; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             Lat = BinSerialize.ReadInt(ref buffer);index+=4;
             Lon = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -19090,12 +16338,6 @@ namespace Asv.Mavlink.V2.Common
             Cog = BinSerialize.ReadUShort(ref buffer);index+=2;
             FixType = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             SatellitesVisible = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'Id' can be empty
-            if (index >= endIndex) return;
-            Id = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'Yaw' can be empty
-            if (index >= endIndex) return;
-            Yaw = BinSerialize.ReadUShort(ref buffer);index+=2;
 
         }
 
@@ -19115,9 +16357,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteUShort(ref buffer,Cog);index+=2;
             BinSerialize.WriteByte(ref buffer,(byte)FixType);index+=1;
             BinSerialize.WriteByte(ref buffer,(byte)SatellitesVisible);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Id);index+=1;
-            BinSerialize.WriteUShort(ref buffer,Yaw);index+=2;
-            return index; // /*PayloadByteSize*/39;
+            return index; // /*PayloadByteSize*/36;
         }
 
 
@@ -19126,6 +16366,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             Lat = BitConverter.ToInt32(buffer,index);index+=4;
             Lon = BitConverter.ToInt32(buffer,index);index+=4;
@@ -19139,12 +16380,6 @@ namespace Asv.Mavlink.V2.Common
             Cog = BitConverter.ToUInt16(buffer,index);index+=2;
             FixType = (byte)buffer[index++];
             SatellitesVisible = (byte)buffer[index++];
-            // extended field 'Id' can be empty
-            if (index >= endIndex) return;
-            Id = (byte)buffer[index++];
-            // extended field 'Yaw' can be empty
-            if (index >= endIndex) return;
-            Yaw = BitConverter.ToUInt16(buffer,index);index+=2;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -19163,13 +16398,11 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(Cog).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(FixType).CopyTo(buffer, index);index+=1;
             BitConverter.GetBytes(SatellitesVisible).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Id).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Yaw).CopyTo(buffer, index);index+=2;
-            return index - start; // /*PayloadByteSize*/39;
+            return index - start; // /*PayloadByteSize*/36;
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -19189,37 +16422,37 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public int Alt { get; set; }
         /// <summary>
-        /// GPS HDOP horizontal dilution of position (unitless * 100). If unknown, set to: UINT16_MAX
-        /// OriginName: eph, Units: , IsExtended: false
+        /// GPS HDOP horizontal dilution of position. If unknown, set to: 65535
+        /// OriginName: eph, Units: cm, IsExtended: false
         /// </summary>
         public ushort Eph { get; set; }
         /// <summary>
-        /// GPS VDOP vertical dilution of position (unitless * 100). If unknown, set to: UINT16_MAX
-        /// OriginName: epv, Units: , IsExtended: false
+        /// GPS VDOP vertical dilution of position. If unknown, set to: 65535
+        /// OriginName: epv, Units: cm, IsExtended: false
         /// </summary>
         public ushort Epv { get; set; }
         /// <summary>
-        /// GPS ground speed. If unknown, set to: UINT16_MAX
+        /// GPS ground speed. If unknown, set to: 65535
         /// OriginName: vel, Units: cm/s, IsExtended: false
         /// </summary>
         public ushort Vel { get; set; }
         /// <summary>
-        /// GPS velocity in north direction in earth-fixed NED frame
+        /// GPS velocity in NORTH direction in earth-fixed NED frame
         /// OriginName: vn, Units: cm/s, IsExtended: false
         /// </summary>
         public short Vn { get; set; }
         /// <summary>
-        /// GPS velocity in east direction in earth-fixed NED frame
+        /// GPS velocity in EAST direction in earth-fixed NED frame
         /// OriginName: ve, Units: cm/s, IsExtended: false
         /// </summary>
         public short Ve { get; set; }
         /// <summary>
-        /// GPS velocity in down direction in earth-fixed NED frame
+        /// GPS velocity in DOWN direction in earth-fixed NED frame
         /// OriginName: vd, Units: cm/s, IsExtended: false
         /// </summary>
         public short Vd { get; set; }
         /// <summary>
-        /// Course over ground (NOT heading, but direction of movement), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX
+        /// Course over ground (NOT heading, but direction of movement), 0.0..359.99 degrees. If unknown, set to: 65535
         /// OriginName: cog, Units: cdeg, IsExtended: false
         /// </summary>
         public ushort Cog { get; set; }
@@ -19229,20 +16462,10 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public byte FixType { get; set; }
         /// <summary>
-        /// Number of satellites visible. If unknown, set to UINT8_MAX
+        /// Number of satellites visible. If unknown, set to 255
         /// OriginName: satellites_visible, Units: , IsExtended: false
         /// </summary>
         public byte SatellitesVisible { get; set; }
-        /// <summary>
-        /// GPS ID (zero indexed). Used for multiple GPS inputs
-        /// OriginName: id, Units: , IsExtended: true
-        /// </summary>
-        public byte Id { get; set; }
-        /// <summary>
-        /// Yaw of vehicle relative to Earth's North, zero means not available, use 36000 for north
-        /// OriginName: yaw, Units: cdeg, IsExtended: true
-        /// </summary>
-        public ushort Yaw { get; set; }
     }
     /// <summary>
     /// Simulated optical flow from a flow sensor (e.g. PX4FLOW or optical mouse sensor)
@@ -19271,6 +16494,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             IntegrationTimeUs = BinSerialize.ReadUInt(ref buffer);index+=4;
             IntegratedX = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -19310,6 +16534,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             IntegrationTimeUs = BitConverter.ToUInt32(buffer,index);index+=4;
             IntegratedX = BitConverter.ToSingle(buffer, index);index+=4;
@@ -19343,7 +16568,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -19536,7 +16761,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -19637,13 +16862,14 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ScaledImu2Payload : IPayload
     {
-        public byte GetMaxByteSize() => 24; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 22; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             Xacc = BinSerialize.ReadShort(ref buffer);index+=2;
             Yacc = BinSerialize.ReadShort(ref buffer);index+=2;
@@ -19654,9 +16880,6 @@ namespace Asv.Mavlink.V2.Common
             Xmag = BinSerialize.ReadShort(ref buffer);index+=2;
             Ymag = BinSerialize.ReadShort(ref buffer);index+=2;
             Zmag = BinSerialize.ReadShort(ref buffer);index+=2;
-            // extended field 'Temperature' can be empty
-            if (index >= endIndex) return;
-            Temperature = BinSerialize.ReadShort(ref buffer);index+=2;
 
         }
 
@@ -19673,8 +16896,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteShort(ref buffer,Xmag);index+=2;
             BinSerialize.WriteShort(ref buffer,Ymag);index+=2;
             BinSerialize.WriteShort(ref buffer,Zmag);index+=2;
-            BinSerialize.WriteShort(ref buffer,Temperature);index+=2;
-            return index; // /*PayloadByteSize*/24;
+            return index; // /*PayloadByteSize*/22;
         }
 
 
@@ -19683,6 +16905,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             Xacc = BitConverter.ToInt16(buffer,index);index+=2;
             Yacc = BitConverter.ToInt16(buffer,index);index+=2;
@@ -19693,9 +16916,6 @@ namespace Asv.Mavlink.V2.Common
             Xmag = BitConverter.ToInt16(buffer,index);index+=2;
             Ymag = BitConverter.ToInt16(buffer,index);index+=2;
             Zmag = BitConverter.ToInt16(buffer,index);index+=2;
-            // extended field 'Temperature' can be empty
-            if (index >= endIndex) return;
-            Temperature = BitConverter.ToInt16(buffer,index);index+=2;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -19711,8 +16931,7 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(Xmag).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(Ymag).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(Zmag).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Temperature).CopyTo(buffer, index);index+=2;
-            return index - start; // /*PayloadByteSize*/24;
+            return index - start; // /*PayloadByteSize*/22;
         }
 
         /// <summary>
@@ -19752,27 +16971,22 @@ namespace Asv.Mavlink.V2.Common
         public short Zgyro { get; set; }
         /// <summary>
         /// X Magnetic field
-        /// OriginName: xmag, Units: mgauss, IsExtended: false
+        /// OriginName: xmag, Units: mT, IsExtended: false
         /// </summary>
         public short Xmag { get; set; }
         /// <summary>
         /// Y Magnetic field
-        /// OriginName: ymag, Units: mgauss, IsExtended: false
+        /// OriginName: ymag, Units: mT, IsExtended: false
         /// </summary>
         public short Ymag { get; set; }
         /// <summary>
         /// Z Magnetic field
-        /// OriginName: zmag, Units: mgauss, IsExtended: false
+        /// OriginName: zmag, Units: mT, IsExtended: false
         /// </summary>
         public short Zmag { get; set; }
-        /// <summary>
-        /// Temperature, 0: IMU does not provide temperature values. If the IMU is at 0C it must send 1 (0.01C).
-        /// OriginName: temperature, Units: cdegC, IsExtended: true
-        /// </summary>
-        public short Temperature { get; set; }
     }
     /// <summary>
-    /// Request a list of available logs. On some systems calling this may stop on-board logging until LOG_REQUEST_END is called. If there are no log files available this request shall be answered with one LOG_ENTRY message with id = 0 and num_logs = 0.
+    /// Request a list of available logs. On some systems calling this may stop on-board logging until LOG_REQUEST_END is called.
     ///  LOG_REQUEST_LIST
     /// </summary>
     public class LogRequestListPacket: PacketV2<LogRequestListPayload>
@@ -19798,6 +17012,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Start = BinSerialize.ReadUShort(ref buffer);index+=2;
             End = BinSerialize.ReadUShort(ref buffer);index+=2;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -19821,6 +17036,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Start = BitConverter.ToUInt16(buffer,index);index+=2;
             End = BitConverter.ToUInt16(buffer,index);index+=2;
             TargetSystem = (byte)buffer[index++];
@@ -19885,6 +17101,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUtc = BinSerialize.ReadUInt(ref buffer);index+=4;
             Size = BinSerialize.ReadUInt(ref buffer);index+=4;
             Id = BinSerialize.ReadUShort(ref buffer);index+=2;
@@ -19910,6 +17127,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUtc = BitConverter.ToUInt32(buffer,index);index+=4;
             Size = BitConverter.ToUInt32(buffer,index);index+=4;
             Id = BitConverter.ToUInt16(buffer,index);index+=2;
@@ -19981,6 +17199,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Ofs = BinSerialize.ReadUInt(ref buffer);index+=4;
             Count = BinSerialize.ReadUInt(ref buffer);index+=4;
             Id = BinSerialize.ReadUShort(ref buffer);index+=2;
@@ -20006,6 +17225,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Ofs = BitConverter.ToUInt32(buffer,index);index+=4;
             Count = BitConverter.ToUInt32(buffer,index);index+=4;
             Id = BitConverter.ToUInt16(buffer,index);index+=2;
@@ -20183,6 +17403,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
 
@@ -20202,6 +17423,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
         }
@@ -20252,6 +17474,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
 
@@ -20271,6 +17494,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
         }
@@ -20420,13 +17644,14 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class Gps2RawPayload : IPayload
     {
-        public byte GetMaxByteSize() => 57; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 57; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 35; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 35; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             Lat = BinSerialize.ReadInt(ref buffer);index+=4;
             Lon = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -20439,24 +17664,6 @@ namespace Asv.Mavlink.V2.Common
             FixType = (GpsFixType)BinSerialize.ReadByte(ref buffer);index+=1;
             SatellitesVisible = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             DgpsNumch = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'Yaw' can be empty
-            if (index >= endIndex) return;
-            Yaw = BinSerialize.ReadUShort(ref buffer);index+=2;
-            // extended field 'AltEllipsoid' can be empty
-            if (index >= endIndex) return;
-            AltEllipsoid = BinSerialize.ReadInt(ref buffer);index+=4;
-            // extended field 'HAcc' can be empty
-            if (index >= endIndex) return;
-            HAcc = BinSerialize.ReadUInt(ref buffer);index+=4;
-            // extended field 'VAcc' can be empty
-            if (index >= endIndex) return;
-            VAcc = BinSerialize.ReadUInt(ref buffer);index+=4;
-            // extended field 'VelAcc' can be empty
-            if (index >= endIndex) return;
-            VelAcc = BinSerialize.ReadUInt(ref buffer);index+=4;
-            // extended field 'HdgAcc' can be empty
-            if (index >= endIndex) return;
-            HdgAcc = BinSerialize.ReadUInt(ref buffer);index+=4;
 
         }
 
@@ -20475,13 +17682,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteByte(ref buffer,(byte)FixType);index+=1;
             BinSerialize.WriteByte(ref buffer,(byte)SatellitesVisible);index+=1;
             BinSerialize.WriteByte(ref buffer,(byte)DgpsNumch);index+=1;
-            BinSerialize.WriteUShort(ref buffer,Yaw);index+=2;
-            BinSerialize.WriteInt(ref buffer,AltEllipsoid);index+=4;
-            BinSerialize.WriteUInt(ref buffer,HAcc);index+=4;
-            BinSerialize.WriteUInt(ref buffer,VAcc);index+=4;
-            BinSerialize.WriteUInt(ref buffer,VelAcc);index+=4;
-            BinSerialize.WriteUInt(ref buffer,HdgAcc);index+=4;
-            return index; // /*PayloadByteSize*/57;
+            return index; // /*PayloadByteSize*/35;
         }
 
 
@@ -20490,6 +17691,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             Lat = BitConverter.ToInt32(buffer,index);index+=4;
             Lon = BitConverter.ToInt32(buffer,index);index+=4;
@@ -20502,24 +17704,6 @@ namespace Asv.Mavlink.V2.Common
             FixType = (GpsFixType)buffer[index++];
             SatellitesVisible = (byte)buffer[index++];
             DgpsNumch = (byte)buffer[index++];
-            // extended field 'Yaw' can be empty
-            if (index >= endIndex) return;
-            Yaw = BitConverter.ToUInt16(buffer,index);index+=2;
-            // extended field 'AltEllipsoid' can be empty
-            if (index >= endIndex) return;
-            AltEllipsoid = BitConverter.ToInt32(buffer,index);index+=4;
-            // extended field 'HAcc' can be empty
-            if (index >= endIndex) return;
-            HAcc = BitConverter.ToUInt32(buffer,index);index+=4;
-            // extended field 'VAcc' can be empty
-            if (index >= endIndex) return;
-            VAcc = BitConverter.ToUInt32(buffer,index);index+=4;
-            // extended field 'VelAcc' can be empty
-            if (index >= endIndex) return;
-            VelAcc = BitConverter.ToUInt32(buffer,index);index+=4;
-            // extended field 'HdgAcc' can be empty
-            if (index >= endIndex) return;
-            HdgAcc = BitConverter.ToUInt32(buffer,index);index+=4;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -20537,17 +17721,11 @@ namespace Asv.Mavlink.V2.Common
             buffer[index] = (byte)FixType;index+=1;
             BitConverter.GetBytes(SatellitesVisible).CopyTo(buffer, index);index+=1;
             BitConverter.GetBytes(DgpsNumch).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Yaw).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(AltEllipsoid).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(HAcc).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(VAcc).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(VelAcc).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(HdgAcc).CopyTo(buffer, index);index+=4;
-            return index - start; // /*PayloadByteSize*/57;
+            return index - start; // /*PayloadByteSize*/35;
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -20572,13 +17750,13 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public uint DgpsAge { get; set; }
         /// <summary>
-        /// GPS HDOP horizontal dilution of position (unitless * 100). If unknown, set to: UINT16_MAX
-        /// OriginName: eph, Units: , IsExtended: false
+        /// GPS HDOP horizontal dilution of position. If unknown, set to: UINT16_MAX
+        /// OriginName: eph, Units: cm, IsExtended: false
         /// </summary>
         public ushort Eph { get; set; }
         /// <summary>
-        /// GPS VDOP vertical dilution of position (unitless * 100). If unknown, set to: UINT16_MAX
-        /// OriginName: epv, Units: , IsExtended: false
+        /// GPS VDOP vertical dilution of position. If unknown, set to: UINT16_MAX
+        /// OriginName: epv, Units: cm, IsExtended: false
         /// </summary>
         public ushort Epv { get; set; }
         /// <summary>
@@ -20597,7 +17775,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public GpsFixType FixType { get; set; }
         /// <summary>
-        /// Number of satellites visible. If unknown, set to UINT8_MAX
+        /// Number of satellites visible. If unknown, set to 255
         /// OriginName: satellites_visible, Units: , IsExtended: false
         /// </summary>
         public byte SatellitesVisible { get; set; }
@@ -20606,36 +17784,6 @@ namespace Asv.Mavlink.V2.Common
         /// OriginName: dgps_numch, Units: , IsExtended: false
         /// </summary>
         public byte DgpsNumch { get; set; }
-        /// <summary>
-        /// Yaw in earth frame from north. Use 0 if this GPS does not provide yaw. Use UINT16_MAX if this GPS is configured to provide yaw and is currently unable to provide it. Use 36000 for north.
-        /// OriginName: yaw, Units: cdeg, IsExtended: true
-        /// </summary>
-        public ushort Yaw { get; set; }
-        /// <summary>
-        /// Altitude (above WGS84, EGM96 ellipsoid). Positive for up.
-        /// OriginName: alt_ellipsoid, Units: mm, IsExtended: true
-        /// </summary>
-        public int AltEllipsoid { get; set; }
-        /// <summary>
-        /// Position uncertainty.
-        /// OriginName: h_acc, Units: mm, IsExtended: true
-        /// </summary>
-        public uint HAcc { get; set; }
-        /// <summary>
-        /// Altitude uncertainty.
-        /// OriginName: v_acc, Units: mm, IsExtended: true
-        /// </summary>
-        public uint VAcc { get; set; }
-        /// <summary>
-        /// Speed uncertainty.
-        /// OriginName: vel_acc, Units: mm, IsExtended: true
-        /// </summary>
-        public uint VelAcc { get; set; }
-        /// <summary>
-        /// Heading / track uncertainty
-        /// OriginName: hdg_acc, Units: degE5, IsExtended: true
-        /// </summary>
-        public uint HdgAcc { get; set; }
     }
     /// <summary>
     /// Power supply status
@@ -20664,6 +17812,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Vcc = BinSerialize.ReadUShort(ref buffer);index+=2;
             Vservo = BinSerialize.ReadUShort(ref buffer);index+=2;
             Flags = (MavPowerStatus)BinSerialize.ReadUShort(ref buffer);index+=2;
@@ -20685,6 +17834,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Vcc = BitConverter.ToUInt16(buffer,index);index+=2;
             Vservo = BitConverter.ToUInt16(buffer,index);index+=2;
             Flags = (MavPowerStatus)BitConverter.ToUInt16(buffer,index);index+=2;
@@ -20735,8 +17885,8 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SerialControlPayload : IPayload
     {
-        public byte GetMaxByteSize() => 81; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 81; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 79; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 79; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
@@ -20748,18 +17898,12 @@ namespace Asv.Mavlink.V2.Common
             Device = (SerialControlDev)BinSerialize.ReadByte(ref buffer);index+=1;
             Flags = (SerialControlFlag)BinSerialize.ReadByte(ref buffer);index+=1;
             Count = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = /*ArrayLength*/70 - Math.Max(0,((/*PayloadByteSize*/81 - payloadSize - /*ExtendedFieldsLength*/2)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/70 - Math.Max(0,((/*PayloadByteSize*/79 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             }
-            // extended field 'TargetSystem' can be empty
-            if (index >= endIndex) return;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'TargetComponent' can be empty
-            if (index >= endIndex) return;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
 
         }
 
@@ -20775,9 +17919,7 @@ namespace Asv.Mavlink.V2.Common
             {
                 BinSerialize.WriteByte(ref buffer,(byte)Data[i]);index+=1;
             }
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            return index; // /*PayloadByteSize*/81;
+            return index; // /*PayloadByteSize*/79;
         }
 
 
@@ -20792,18 +17934,12 @@ namespace Asv.Mavlink.V2.Common
             Device = (SerialControlDev)buffer[index++];
             Flags = (SerialControlFlag)buffer[index++];
             Count = (byte)buffer[index++];
-            arraySize = /*ArrayLength*/70 - Math.Max(0,((/*PayloadByteSize*/81 - payloadSize - /*ExtendedFieldsLength*/2)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/70 - Math.Max(0,((/*PayloadByteSize*/79 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)buffer[index++];
             }
-            // extended field 'TargetSystem' can be empty
-            if (index >= endIndex) return;
-            TargetSystem = (byte)buffer[index++];
-            // extended field 'TargetComponent' can be empty
-            if (index >= endIndex) return;
-            TargetComponent = (byte)buffer[index++];
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -20818,9 +17954,7 @@ namespace Asv.Mavlink.V2.Common
             {
                 buffer[index] = (byte)Data[i];index+=1;
             }
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/81;
+            return index - start; // /*PayloadByteSize*/79;
         }
 
         /// <summary>
@@ -20854,16 +17988,6 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public byte[] Data { get; set; } = new byte[70];
         public byte GetDataMaxItemsCount() => 70;
-        /// <summary>
-        /// System ID
-        /// OriginName: target_system, Units: , IsExtended: true
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID
-        /// OriginName: target_component, Units: , IsExtended: true
-        /// </summary>
-        public byte TargetComponent { get; set; }
     }
     /// <summary>
     /// RTK GPS data. Gives information on the relative baseline calculation the GPS is reporting
@@ -20892,6 +18016,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeLastBaselineMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             Tow = BinSerialize.ReadUInt(ref buffer);index+=4;
             BaselineAMm = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -20933,6 +18058,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeLastBaselineMs = BitConverter.ToUInt32(buffer,index);index+=4;
             Tow = BitConverter.ToUInt32(buffer,index);index+=4;
             BaselineAMm = BitConverter.ToInt32(buffer,index);index+=4;
@@ -21060,6 +18186,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeLastBaselineMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             Tow = BinSerialize.ReadUInt(ref buffer);index+=4;
             BaselineAMm = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -21101,6 +18228,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeLastBaselineMs = BitConverter.ToUInt32(buffer,index);index+=4;
             Tow = BitConverter.ToUInt32(buffer,index);index+=4;
             BaselineAMm = BitConverter.ToInt32(buffer,index);index+=4;
@@ -21221,13 +18349,14 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ScaledImu3Payload : IPayload
     {
-        public byte GetMaxByteSize() => 24; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 22; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             Xacc = BinSerialize.ReadShort(ref buffer);index+=2;
             Yacc = BinSerialize.ReadShort(ref buffer);index+=2;
@@ -21238,9 +18367,6 @@ namespace Asv.Mavlink.V2.Common
             Xmag = BinSerialize.ReadShort(ref buffer);index+=2;
             Ymag = BinSerialize.ReadShort(ref buffer);index+=2;
             Zmag = BinSerialize.ReadShort(ref buffer);index+=2;
-            // extended field 'Temperature' can be empty
-            if (index >= endIndex) return;
-            Temperature = BinSerialize.ReadShort(ref buffer);index+=2;
 
         }
 
@@ -21257,8 +18383,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteShort(ref buffer,Xmag);index+=2;
             BinSerialize.WriteShort(ref buffer,Ymag);index+=2;
             BinSerialize.WriteShort(ref buffer,Zmag);index+=2;
-            BinSerialize.WriteShort(ref buffer,Temperature);index+=2;
-            return index; // /*PayloadByteSize*/24;
+            return index; // /*PayloadByteSize*/22;
         }
 
 
@@ -21267,6 +18392,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             Xacc = BitConverter.ToInt16(buffer,index);index+=2;
             Yacc = BitConverter.ToInt16(buffer,index);index+=2;
@@ -21277,9 +18403,6 @@ namespace Asv.Mavlink.V2.Common
             Xmag = BitConverter.ToInt16(buffer,index);index+=2;
             Ymag = BitConverter.ToInt16(buffer,index);index+=2;
             Zmag = BitConverter.ToInt16(buffer,index);index+=2;
-            // extended field 'Temperature' can be empty
-            if (index >= endIndex) return;
-            Temperature = BitConverter.ToInt16(buffer,index);index+=2;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -21295,8 +18418,7 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(Xmag).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(Ymag).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(Zmag).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Temperature).CopyTo(buffer, index);index+=2;
-            return index - start; // /*PayloadByteSize*/24;
+            return index - start; // /*PayloadByteSize*/22;
         }
 
         /// <summary>
@@ -21336,24 +18458,19 @@ namespace Asv.Mavlink.V2.Common
         public short Zgyro { get; set; }
         /// <summary>
         /// X Magnetic field
-        /// OriginName: xmag, Units: mgauss, IsExtended: false
+        /// OriginName: xmag, Units: mT, IsExtended: false
         /// </summary>
         public short Xmag { get; set; }
         /// <summary>
         /// Y Magnetic field
-        /// OriginName: ymag, Units: mgauss, IsExtended: false
+        /// OriginName: ymag, Units: mT, IsExtended: false
         /// </summary>
         public short Ymag { get; set; }
         /// <summary>
         /// Z Magnetic field
-        /// OriginName: zmag, Units: mgauss, IsExtended: false
+        /// OriginName: zmag, Units: mT, IsExtended: false
         /// </summary>
         public short Zmag { get; set; }
-        /// <summary>
-        /// Temperature, 0: IMU does not provide temperature values. If the IMU is at 0C it must send 1 (0.01C).
-        /// OriginName: temperature, Units: cdegC, IsExtended: true
-        /// </summary>
-        public short Temperature { get; set; }
     }
     /// <summary>
     /// Handshake message to initiate, control and stop image streaming when using the Image Transmission Protocol: https://mavlink.io/en/services/image_transmission.html.
@@ -21382,6 +18499,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Size = BinSerialize.ReadUInt(ref buffer);index+=4;
             Width = BinSerialize.ReadUShort(ref buffer);index+=2;
             Height = BinSerialize.ReadUShort(ref buffer);index+=2;
@@ -21411,6 +18529,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Size = BitConverter.ToUInt32(buffer,index);index+=4;
             Width = BitConverter.ToUInt16(buffer,index);index+=2;
             Height = BitConverter.ToUInt16(buffer,index);index+=2;
@@ -21577,8 +18696,8 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class DistanceSensorPayload : IPayload
     {
-        public byte GetMaxByteSize() => 39; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 39; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 38; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
@@ -21606,9 +18725,6 @@ namespace Asv.Mavlink.V2.Common
             {
                 Quaternion[i] = BinSerialize.ReadFloat(ref buffer);index+=4;
             }
-            // extended field 'SignalQuality' can be empty
-            if (index >= endIndex) return;
-            SignalQuality = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
 
         }
 
@@ -21629,8 +18745,7 @@ namespace Asv.Mavlink.V2.Common
             {
                 BinSerialize.WriteFloat(ref buffer,Quaternion[i]);index+=4;
             }
-            BinSerialize.WriteByte(ref buffer,(byte)SignalQuality);index+=1;
-            return index; // /*PayloadByteSize*/39;
+            return index; // /*PayloadByteSize*/38;
         }
 
 
@@ -21661,9 +18776,6 @@ namespace Asv.Mavlink.V2.Common
             {
                 Quaternion[i] = BitConverter.ToSingle(buffer, index);index+=4;
             }
-            // extended field 'SignalQuality' can be empty
-            if (index >= endIndex) return;
-            SignalQuality = (byte)buffer[index++];
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -21683,8 +18795,7 @@ namespace Asv.Mavlink.V2.Common
             {
                 BitConverter.GetBytes(Quaternion[i]).CopyTo(buffer, index);index+=4;
             }
-            BitConverter.GetBytes(SignalQuality).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/39;
+            return index - start; // /*PayloadByteSize*/38;
         }
 
         /// <summary>
@@ -21723,7 +18834,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public MavSensorOrientation Orientation { get; set; }
         /// <summary>
-        /// Measurement variance. Max standard deviation is 6cm. UINT8_MAX if unknown.
+        /// Measurement variance. Max standard deviation is 6cm. 255 if unknown.
         /// OriginName: covariance, Units: cm^2, IsExtended: false
         /// </summary>
         public byte Covariance { get; set; }
@@ -21742,14 +18853,9 @@ namespace Asv.Mavlink.V2.Common
         /// OriginName: quaternion, Units: , IsExtended: true
         /// </summary>
         public float[] Quaternion { get; } = new float[4];
-        /// <summary>
-        /// Signal quality of the sensor. Specific to each sensor type, representing the relation of the signal strength with the target reflectivity, distance, size or aspect, but normalised as a percentage. 0 = unknown/unset signal quality, 1 = invalid signal, 100 = perfect signal.
-        /// OriginName: signal_quality, Units: %, IsExtended: true
-        /// </summary>
-        public byte SignalQuality { get; set; }
     }
     /// <summary>
-    /// Request for terrain data and terrain status. See terrain protocol docs: https://mavlink.io/en/services/terrain.html
+    /// Request for terrain data and terrain status
     ///  TERRAIN_REQUEST
     /// </summary>
     public class TerrainRequestPacket: PacketV2<TerrainRequestPayload>
@@ -21775,6 +18881,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Mask = BinSerialize.ReadULong(ref buffer);index+=8;
             Lat = BinSerialize.ReadInt(ref buffer);index+=4;
             Lon = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -21798,6 +18905,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Mask = BitConverter.ToUInt64(buffer,index);index+=8;
             Lat = BitConverter.ToInt32(buffer,index);index+=4;
             Lon = BitConverter.ToInt32(buffer,index);index+=4;
@@ -21836,7 +18944,7 @@ namespace Asv.Mavlink.V2.Common
         public ushort GridSpacing { get; set; }
     }
     /// <summary>
-    /// Terrain data sent from GCS. The lat/lon and grid_spacing must be the same as a lat/lon from a TERRAIN_REQUEST. See terrain protocol docs: https://mavlink.io/en/services/terrain.html
+    /// Terrain data sent from GCS. The lat/lon and grid_spacing must be the same as a lat/lon from a TERRAIN_REQUEST
     ///  TERRAIN_DATA
     /// </summary>
     public class TerrainDataPacket: PacketV2<TerrainDataPayload>
@@ -21951,7 +19059,7 @@ namespace Asv.Mavlink.V2.Common
         public byte Gridbit { get; set; }
     }
     /// <summary>
-    /// Request that the vehicle report terrain height at the given location (expected response is a TERRAIN_REPORT). Used by GCS to check if vehicle has all terrain data needed for a mission.
+    /// Request that the vehicle report terrain height at the given location. Used by GCS to check if vehicle has all terrain data needed for a mission.
     ///  TERRAIN_CHECK
     /// </summary>
     public class TerrainCheckPacket: PacketV2<TerrainCheckPayload>
@@ -21977,6 +19085,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Lat = BinSerialize.ReadInt(ref buffer);index+=4;
             Lon = BinSerialize.ReadInt(ref buffer);index+=4;
 
@@ -21996,6 +19105,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Lat = BitConverter.ToInt32(buffer,index);index+=4;
             Lon = BitConverter.ToInt32(buffer,index);index+=4;
         }
@@ -22020,7 +19130,7 @@ namespace Asv.Mavlink.V2.Common
         public int Lon { get; set; }
     }
     /// <summary>
-    /// Streamed from drone to report progress of terrain map download (initiated by TERRAIN_REQUEST), or sent as a response to a TERRAIN_CHECK request. See terrain protocol docs: https://mavlink.io/en/services/terrain.html
+    /// Response from a TERRAIN_CHECK request
     ///  TERRAIN_REPORT
     /// </summary>
     public class TerrainReportPacket: PacketV2<TerrainReportPayload>
@@ -22046,6 +19156,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Lat = BinSerialize.ReadInt(ref buffer);index+=4;
             Lon = BinSerialize.ReadInt(ref buffer);index+=4;
             TerrainHeight = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -22075,6 +19186,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Lat = BitConverter.ToInt32(buffer,index);index+=4;
             Lon = BitConverter.ToInt32(buffer,index);index+=4;
             TerrainHeight = BitConverter.ToSingle(buffer, index);index+=4;
@@ -22153,20 +19265,18 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ScaledPressure2Payload : IPayload
     {
-        public byte GetMaxByteSize() => 16; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 14; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             PressAbs = BinSerialize.ReadFloat(ref buffer);index+=4;
             PressDiff = BinSerialize.ReadFloat(ref buffer);index+=4;
             Temperature = BinSerialize.ReadShort(ref buffer);index+=2;
-            // extended field 'TemperaturePressDiff' can be empty
-            if (index >= endIndex) return;
-            TemperaturePressDiff = BinSerialize.ReadShort(ref buffer);index+=2;
 
         }
 
@@ -22177,8 +19287,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteFloat(ref buffer,PressAbs);index+=4;
             BinSerialize.WriteFloat(ref buffer,PressDiff);index+=4;
             BinSerialize.WriteShort(ref buffer,Temperature);index+=2;
-            BinSerialize.WriteShort(ref buffer,TemperaturePressDiff);index+=2;
-            return index; // /*PayloadByteSize*/16;
+            return index; // /*PayloadByteSize*/14;
         }
 
 
@@ -22187,13 +19296,11 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             PressAbs = BitConverter.ToSingle(buffer, index);index+=4;
             PressDiff = BitConverter.ToSingle(buffer, index);index+=4;
             Temperature = BitConverter.ToInt16(buffer,index);index+=2;
-            // extended field 'TemperaturePressDiff' can be empty
-            if (index >= endIndex) return;
-            TemperaturePressDiff = BitConverter.ToInt16(buffer,index);index+=2;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -22203,8 +19310,7 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(PressAbs).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(PressDiff).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(Temperature).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(TemperaturePressDiff).CopyTo(buffer, index);index+=2;
-            return index - start; // /*PayloadByteSize*/16;
+            return index - start; // /*PayloadByteSize*/14;
         }
 
         /// <summary>
@@ -22223,15 +19329,10 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public float PressDiff { get; set; }
         /// <summary>
-        /// Absolute pressure temperature
+        /// Temperature measurement
         /// OriginName: temperature, Units: cdegC, IsExtended: false
         /// </summary>
         public short Temperature { get; set; }
-        /// <summary>
-        /// Differential pressure temperature (0, if not available). Report values of 0 (or 1) as 1 cdegC.
-        /// OriginName: temperature_press_diff, Units: cdegC, IsExtended: true
-        /// </summary>
-        public short TemperaturePressDiff { get; set; }
     }
     /// <summary>
     /// Motion capture attitude and position
@@ -22344,7 +19445,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -22464,7 +19565,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -22571,7 +19672,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -22614,6 +19715,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             AltitudeMonotonic = BinSerialize.ReadFloat(ref buffer);index+=4;
             AltitudeAmsl = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -22643,6 +19745,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             AltitudeMonotonic = BitConverter.ToSingle(buffer, index);index+=4;
             AltitudeAmsl = BitConverter.ToSingle(buffer, index);index+=4;
@@ -22666,7 +19769,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -22850,20 +19953,18 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ScaledPressure3Payload : IPayload
     {
-        public byte GetMaxByteSize() => 16; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 14; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             PressAbs = BinSerialize.ReadFloat(ref buffer);index+=4;
             PressDiff = BinSerialize.ReadFloat(ref buffer);index+=4;
             Temperature = BinSerialize.ReadShort(ref buffer);index+=2;
-            // extended field 'TemperaturePressDiff' can be empty
-            if (index >= endIndex) return;
-            TemperaturePressDiff = BinSerialize.ReadShort(ref buffer);index+=2;
 
         }
 
@@ -22874,8 +19975,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteFloat(ref buffer,PressAbs);index+=4;
             BinSerialize.WriteFloat(ref buffer,PressDiff);index+=4;
             BinSerialize.WriteShort(ref buffer,Temperature);index+=2;
-            BinSerialize.WriteShort(ref buffer,TemperaturePressDiff);index+=2;
-            return index; // /*PayloadByteSize*/16;
+            return index; // /*PayloadByteSize*/14;
         }
 
 
@@ -22884,13 +19984,11 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             PressAbs = BitConverter.ToSingle(buffer, index);index+=4;
             PressDiff = BitConverter.ToSingle(buffer, index);index+=4;
             Temperature = BitConverter.ToInt16(buffer,index);index+=2;
-            // extended field 'TemperaturePressDiff' can be empty
-            if (index >= endIndex) return;
-            TemperaturePressDiff = BitConverter.ToInt16(buffer,index);index+=2;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -22900,8 +19998,7 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(PressAbs).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(PressDiff).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(Temperature).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(TemperaturePressDiff).CopyTo(buffer, index);index+=2;
-            return index - start; // /*PayloadByteSize*/16;
+            return index - start; // /*PayloadByteSize*/14;
         }
 
         /// <summary>
@@ -22920,15 +20017,10 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public float PressDiff { get; set; }
         /// <summary>
-        /// Absolute pressure temperature
+        /// Temperature measurement
         /// OriginName: temperature, Units: cdegC, IsExtended: false
         /// </summary>
         public short Temperature { get; set; }
-        /// <summary>
-        /// Differential pressure temperature (0, if not available). Report values of 0 (or 1) as 1 cdegC.
-        /// OriginName: temperature_press_diff, Units: cdegC, IsExtended: true
-        /// </summary>
-        public short TemperaturePressDiff { get; set; }
     }
     /// <summary>
     /// Current motion information from a designated system
@@ -23134,7 +20226,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public float[] Acc { get; } = new float[3];
         /// <summary>
-        /// (0 0 0 0 for unknown)
+        /// (1 0 0 0 for unknown)
         /// OriginName: attitude_q, Units: , IsExtended: false
         /// </summary>
         public float[] AttitudeQ { get; set; } = new float[4];
@@ -23320,7 +20412,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -23407,7 +20499,7 @@ namespace Asv.Mavlink.V2.Common
         public float YawRate { get; set; }
     }
     /// <summary>
-    /// Battery information. Updates GCS with flight controller battery status. Smart batteries also use this message, but may additionally send SMART_BATTERY_INFO.
+    /// Battery information. Updates GCS with flight controller battery status. Use SMART_BATTERY_* messages instead for smart batteries.
     ///  BATTERY_STATUS
     /// </summary>
     public class BatteryStatusPacket: PacketV2<BatteryStatusPayload>
@@ -23426,8 +20518,8 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class BatteryStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 54; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 54; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 41; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
@@ -23437,7 +20529,7 @@ namespace Asv.Mavlink.V2.Common
             CurrentConsumed = BinSerialize.ReadInt(ref buffer);index+=4;
             EnergyConsumed = BinSerialize.ReadInt(ref buffer);index+=4;
             Temperature = BinSerialize.ReadShort(ref buffer);index+=2;
-            arraySize = /*ArrayLength*/10 - Math.Max(0,((/*PayloadByteSize*/54 - payloadSize - /*ExtendedFieldsLength*/18)/2 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/10 - Math.Max(0,((/*PayloadByteSize*/41 - payloadSize - /*ExtendedFieldsLength*/5)/2 /*FieldTypeByteSize*/));
             Voltages = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -23454,19 +20546,6 @@ namespace Asv.Mavlink.V2.Common
             // extended field 'ChargeState' can be empty
             if (index >= endIndex) return;
             ChargeState = (MavBatteryChargeState)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'VoltagesExt' can be empty
-            if (index >= endIndex) return;
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                VoltagesExt[i] = BinSerialize.ReadUShort(ref buffer);index+=2;
-            }
-            // extended field 'Mode' can be empty
-            if (index >= endIndex) return;
-            Mode = (MavBatteryMode)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'FaultBitmask' can be empty
-            if (index >= endIndex) return;
-            FaultBitmask = (MavBatteryFault)BinSerialize.ReadUInt(ref buffer);index+=4;
 
         }
 
@@ -23487,13 +20566,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteByte(ref buffer,(byte)BatteryRemaining);index+=1;
             BinSerialize.WriteInt(ref buffer,TimeRemaining);index+=4;
             BinSerialize.WriteByte(ref buffer,(byte)ChargeState);index+=1;
-            for(var i=0;i<VoltagesExt.Length;i++)
-            {
-                BinSerialize.WriteUShort(ref buffer,VoltagesExt[i]);index+=2;
-            }
-            BinSerialize.WriteByte(ref buffer,(byte)Mode);index+=1;
-            BinSerialize.WriteUInt(ref buffer,(uint)FaultBitmask);index+=4;
-            return index; // /*PayloadByteSize*/54;
+            return index; // /*PayloadByteSize*/41;
         }
 
 
@@ -23506,7 +20579,7 @@ namespace Asv.Mavlink.V2.Common
             CurrentConsumed = BitConverter.ToInt32(buffer,index);index+=4;
             EnergyConsumed = BitConverter.ToInt32(buffer,index);index+=4;
             Temperature = BitConverter.ToInt16(buffer,index);index+=2;
-            arraySize = /*ArrayLength*/10 - Math.Max(0,((/*PayloadByteSize*/54 - payloadSize - /*ExtendedFieldsLength*/18)/2 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/10 - Math.Max(0,((/*PayloadByteSize*/41 - payloadSize - /*ExtendedFieldsLength*/5)/2 /*FieldTypeByteSize*/));
             Voltages = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -23523,19 +20596,6 @@ namespace Asv.Mavlink.V2.Common
             // extended field 'ChargeState' can be empty
             if (index >= endIndex) return;
             ChargeState = (MavBatteryChargeState)buffer[index++];
-            // extended field 'VoltagesExt' can be empty
-            if (index >= endIndex) return;
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                VoltagesExt[i] = BitConverter.ToUInt16(buffer,index);index+=2;
-            }
-            // extended field 'Mode' can be empty
-            if (index >= endIndex) return;
-            Mode = (MavBatteryMode)buffer[index++];
-            // extended field 'FaultBitmask' can be empty
-            if (index >= endIndex) return;
-            FaultBitmask = (MavBatteryFault)BitConverter.ToUInt32(buffer,index);index+=4;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -23555,13 +20615,7 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(BatteryRemaining).CopyTo(buffer, index);index+=1;
             BitConverter.GetBytes(TimeRemaining).CopyTo(buffer, index);index+=4;
             buffer[index] = (byte)ChargeState;index+=1;
-            for(var i=0;i<VoltagesExt.Length;i++)
-            {
-                BitConverter.GetBytes(VoltagesExt[i]).CopyTo(buffer, index);index+=2;
-            }
-            buffer[index] = (byte)Mode;index+=1;
-            BitConverter.GetBytes((uint)FaultBitmask).CopyTo(buffer, index);index+=4;
-            return index - start; // /*PayloadByteSize*/54;
+            return index - start; // /*PayloadByteSize*/41;
         }
 
         /// <summary>
@@ -23580,7 +20634,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public short Temperature { get; set; }
         /// <summary>
-        /// Battery voltage of cells 1 to 10 (see voltages_ext for cells 11-14). Cells in this field above the valid cell count for this battery should have the UINT16_MAX value. If individual cell voltages are unknown or not measured for this battery, then the overall battery voltage should be filled in cell 0, with all others set to UINT16_MAX. If the voltage of the battery is greater than (UINT16_MAX - 1), then cell 0 should be set to (UINT16_MAX - 1), and cell 1 to the remaining voltage. This can be extended to multiple cells if the total voltage is greater than 2 * (UINT16_MAX - 1).
+        /// Battery voltage of cells. Cells above the valid cell count for this battery should have the UINT16_MAX value.
         /// OriginName: voltages, Units: mV, IsExtended: false
         /// </summary>
         public ushort[] Voltages { get; set; } = new ushort[10];
@@ -23620,24 +20674,9 @@ namespace Asv.Mavlink.V2.Common
         /// OriginName: charge_state, Units: , IsExtended: true
         /// </summary>
         public MavBatteryChargeState ChargeState { get; set; }
-        /// <summary>
-        /// Battery voltages for cells 11 to 14. Cells above the valid cell count for this battery should have a value of 0, where zero indicates not supported (note, this is different than for the voltages field and allows empty byte truncation). If the measured value is 0 then 1 should be sent instead.
-        /// OriginName: voltages_ext, Units: mV, IsExtended: true
-        /// </summary>
-        public ushort[] VoltagesExt { get; } = new ushort[4];
-        /// <summary>
-        /// Battery mode. Default (0) is that battery mode reporting is not supported or battery is in normal-use mode.
-        /// OriginName: mode, Units: , IsExtended: true
-        /// </summary>
-        public MavBatteryMode Mode { get; set; }
-        /// <summary>
-        /// Fault/health indications. These should be set when charge_state is MAV_BATTERY_CHARGE_STATE_FAILED or MAV_BATTERY_CHARGE_STATE_UNHEALTHY (if not, fault reporting is not supported).
-        /// OriginName: fault_bitmask, Units: , IsExtended: true
-        /// </summary>
-        public MavBatteryFault FaultBitmask { get; set; }
     }
     /// <summary>
-    /// Version and capability of autopilot software. This should be emitted in response to a request with MAV_CMD_REQUEST_MESSAGE.
+    /// Version and capability of autopilot software
     ///  AUTOPILOT_VERSION
     /// </summary>
     public class AutopilotVersionPacket: PacketV2<AutopilotVersionPayload>
@@ -23824,7 +20863,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public uint OsSwVersion { get; set; }
         /// <summary>
-        /// HW / board version (last 8 bits should be silicon ID, if any). The first 16 bits of this field specify https://github.com/PX4/PX4-Bootloader/blob/master/board_types.txt
+        /// HW / board version (last 8 bytes should be silicon ID, if any)
         /// OriginName: board_version, Units: , IsExtended: false
         /// </summary>
         public uint BoardVersion { get; set; }
@@ -24007,7 +21046,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -24078,539 +21117,6 @@ namespace Asv.Mavlink.V2.Common
         public byte PositionValid { get; set; }
     }
     /// <summary>
-    /// Status of geo-fencing. Sent in extended status stream when fencing enabled.
-    ///  FENCE_STATUS
-    /// </summary>
-    public class FenceStatusPacket: PacketV2<FenceStatusPayload>
-    {
-	    public const int PacketMessageId = 162;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 189;
-
-        public override FenceStatusPayload Payload { get; } = new FenceStatusPayload();
-
-        public override string Name => "FENCE_STATUS";
-    }
-
-    /// <summary>
-    ///  FENCE_STATUS
-    /// </summary>
-    public class FenceStatusPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 9; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            BreachTime = BinSerialize.ReadUInt(ref buffer);index+=4;
-            BreachCount = BinSerialize.ReadUShort(ref buffer);index+=2;
-            BreachStatus = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            BreachType = (FenceBreach)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'BreachMitigation' can be empty
-            if (index >= endIndex) return;
-            BreachMitigation = (FenceMitigate)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,BreachTime);index+=4;
-            BinSerialize.WriteUShort(ref buffer,BreachCount);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)BreachStatus);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)BreachType);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)BreachMitigation);index+=1;
-            return index; // /*PayloadByteSize*/9;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            BreachTime = BitConverter.ToUInt32(buffer,index);index+=4;
-            BreachCount = BitConverter.ToUInt16(buffer,index);index+=2;
-            BreachStatus = (byte)buffer[index++];
-            BreachType = (FenceBreach)buffer[index++];
-            // extended field 'BreachMitigation' can be empty
-            if (index >= endIndex) return;
-            BreachMitigation = (FenceMitigate)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(BreachTime).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(BreachCount).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(BreachStatus).CopyTo(buffer, index);index+=1;
-            buffer[index] = (byte)BreachType;index+=1;
-            buffer[index] = (byte)BreachMitigation;index+=1;
-            return index - start; // /*PayloadByteSize*/9;
-        }
-
-        /// <summary>
-        /// Time (since boot) of last breach.
-        /// OriginName: breach_time, Units: ms, IsExtended: false
-        /// </summary>
-        public uint BreachTime { get; set; }
-        /// <summary>
-        /// Number of fence breaches.
-        /// OriginName: breach_count, Units: , IsExtended: false
-        /// </summary>
-        public ushort BreachCount { get; set; }
-        /// <summary>
-        /// Breach status (0 if currently inside fence, 1 if outside).
-        /// OriginName: breach_status, Units: , IsExtended: false
-        /// </summary>
-        public byte BreachStatus { get; set; }
-        /// <summary>
-        /// Last breach type.
-        /// OriginName: breach_type, Units: , IsExtended: false
-        /// </summary>
-        public FenceBreach BreachType { get; set; }
-        /// <summary>
-        /// Active action to prevent fence breach
-        /// OriginName: breach_mitigation, Units: , IsExtended: true
-        /// </summary>
-        public FenceMitigate BreachMitigation { get; set; }
-    }
-    /// <summary>
-    /// Reports results of completed compass calibration. Sent until MAG_CAL_ACK received.
-    ///  MAG_CAL_REPORT
-    /// </summary>
-    public class MagCalReportPacket: PacketV2<MagCalReportPayload>
-    {
-	    public const int PacketMessageId = 192;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 36;
-
-        public override MagCalReportPayload Payload { get; } = new MagCalReportPayload();
-
-        public override string Name => "MAG_CAL_REPORT";
-    }
-
-    /// <summary>
-    ///  MAG_CAL_REPORT
-    /// </summary>
-    public class MagCalReportPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 54; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 54; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            Fitness = BinSerialize.ReadFloat(ref buffer);index+=4;
-            OfsX = BinSerialize.ReadFloat(ref buffer);index+=4;
-            OfsY = BinSerialize.ReadFloat(ref buffer);index+=4;
-            OfsZ = BinSerialize.ReadFloat(ref buffer);index+=4;
-            DiagX = BinSerialize.ReadFloat(ref buffer);index+=4;
-            DiagY = BinSerialize.ReadFloat(ref buffer);index+=4;
-            DiagZ = BinSerialize.ReadFloat(ref buffer);index+=4;
-            OffdiagX = BinSerialize.ReadFloat(ref buffer);index+=4;
-            OffdiagY = BinSerialize.ReadFloat(ref buffer);index+=4;
-            OffdiagZ = BinSerialize.ReadFloat(ref buffer);index+=4;
-            CompassId = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            CalMask = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            CalStatus = (MagCalStatus)BinSerialize.ReadByte(ref buffer);index+=1;
-            Autosaved = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'OrientationConfidence' can be empty
-            if (index >= endIndex) return;
-            OrientationConfidence = BinSerialize.ReadFloat(ref buffer);index+=4;
-            // extended field 'OldOrientation' can be empty
-            if (index >= endIndex) return;
-            OldOrientation = (MavSensorOrientation)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'NewOrientation' can be empty
-            if (index >= endIndex) return;
-            NewOrientation = (MavSensorOrientation)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'ScaleFactor' can be empty
-            if (index >= endIndex) return;
-            ScaleFactor = BinSerialize.ReadFloat(ref buffer);index+=4;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteFloat(ref buffer,Fitness);index+=4;
-            BinSerialize.WriteFloat(ref buffer,OfsX);index+=4;
-            BinSerialize.WriteFloat(ref buffer,OfsY);index+=4;
-            BinSerialize.WriteFloat(ref buffer,OfsZ);index+=4;
-            BinSerialize.WriteFloat(ref buffer,DiagX);index+=4;
-            BinSerialize.WriteFloat(ref buffer,DiagY);index+=4;
-            BinSerialize.WriteFloat(ref buffer,DiagZ);index+=4;
-            BinSerialize.WriteFloat(ref buffer,OffdiagX);index+=4;
-            BinSerialize.WriteFloat(ref buffer,OffdiagY);index+=4;
-            BinSerialize.WriteFloat(ref buffer,OffdiagZ);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)CompassId);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)CalMask);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)CalStatus);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Autosaved);index+=1;
-            BinSerialize.WriteFloat(ref buffer,OrientationConfidence);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)OldOrientation);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)NewOrientation);index+=1;
-            BinSerialize.WriteFloat(ref buffer,ScaleFactor);index+=4;
-            return index; // /*PayloadByteSize*/54;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            Fitness = BitConverter.ToSingle(buffer, index);index+=4;
-            OfsX = BitConverter.ToSingle(buffer, index);index+=4;
-            OfsY = BitConverter.ToSingle(buffer, index);index+=4;
-            OfsZ = BitConverter.ToSingle(buffer, index);index+=4;
-            DiagX = BitConverter.ToSingle(buffer, index);index+=4;
-            DiagY = BitConverter.ToSingle(buffer, index);index+=4;
-            DiagZ = BitConverter.ToSingle(buffer, index);index+=4;
-            OffdiagX = BitConverter.ToSingle(buffer, index);index+=4;
-            OffdiagY = BitConverter.ToSingle(buffer, index);index+=4;
-            OffdiagZ = BitConverter.ToSingle(buffer, index);index+=4;
-            CompassId = (byte)buffer[index++];
-            CalMask = (byte)buffer[index++];
-            CalStatus = (MagCalStatus)buffer[index++];
-            Autosaved = (byte)buffer[index++];
-            // extended field 'OrientationConfidence' can be empty
-            if (index >= endIndex) return;
-            OrientationConfidence = BitConverter.ToSingle(buffer, index);index+=4;
-            // extended field 'OldOrientation' can be empty
-            if (index >= endIndex) return;
-            OldOrientation = (MavSensorOrientation)buffer[index++];
-            // extended field 'NewOrientation' can be empty
-            if (index >= endIndex) return;
-            NewOrientation = (MavSensorOrientation)buffer[index++];
-            // extended field 'ScaleFactor' can be empty
-            if (index >= endIndex) return;
-            ScaleFactor = BitConverter.ToSingle(buffer, index);index+=4;
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Fitness).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(OfsX).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(OfsY).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(OfsZ).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(DiagX).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(DiagY).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(DiagZ).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(OffdiagX).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(OffdiagY).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(OffdiagZ).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(CompassId).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(CalMask).CopyTo(buffer, index);index+=1;
-            buffer[index] = (byte)CalStatus;index+=1;
-            BitConverter.GetBytes(Autosaved).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(OrientationConfidence).CopyTo(buffer, index);index+=4;
-            buffer[index] = (byte)OldOrientation;index+=1;
-            buffer[index] = (byte)NewOrientation;index+=1;
-            BitConverter.GetBytes(ScaleFactor).CopyTo(buffer, index);index+=4;
-            return index - start; // /*PayloadByteSize*/54;
-        }
-
-        /// <summary>
-        /// RMS milligauss residuals.
-        /// OriginName: fitness, Units: mgauss, IsExtended: false
-        /// </summary>
-        public float Fitness { get; set; }
-        /// <summary>
-        /// X offset.
-        /// OriginName: ofs_x, Units: , IsExtended: false
-        /// </summary>
-        public float OfsX { get; set; }
-        /// <summary>
-        /// Y offset.
-        /// OriginName: ofs_y, Units: , IsExtended: false
-        /// </summary>
-        public float OfsY { get; set; }
-        /// <summary>
-        /// Z offset.
-        /// OriginName: ofs_z, Units: , IsExtended: false
-        /// </summary>
-        public float OfsZ { get; set; }
-        /// <summary>
-        /// X diagonal (matrix 11).
-        /// OriginName: diag_x, Units: , IsExtended: false
-        /// </summary>
-        public float DiagX { get; set; }
-        /// <summary>
-        /// Y diagonal (matrix 22).
-        /// OriginName: diag_y, Units: , IsExtended: false
-        /// </summary>
-        public float DiagY { get; set; }
-        /// <summary>
-        /// Z diagonal (matrix 33).
-        /// OriginName: diag_z, Units: , IsExtended: false
-        /// </summary>
-        public float DiagZ { get; set; }
-        /// <summary>
-        /// X off-diagonal (matrix 12 and 21).
-        /// OriginName: offdiag_x, Units: , IsExtended: false
-        /// </summary>
-        public float OffdiagX { get; set; }
-        /// <summary>
-        /// Y off-diagonal (matrix 13 and 31).
-        /// OriginName: offdiag_y, Units: , IsExtended: false
-        /// </summary>
-        public float OffdiagY { get; set; }
-        /// <summary>
-        /// Z off-diagonal (matrix 32 and 23).
-        /// OriginName: offdiag_z, Units: , IsExtended: false
-        /// </summary>
-        public float OffdiagZ { get; set; }
-        /// <summary>
-        /// Compass being calibrated.
-        /// OriginName: compass_id, Units: , IsExtended: false
-        /// </summary>
-        public byte CompassId { get; set; }
-        /// <summary>
-        /// Bitmask of compasses being calibrated.
-        /// OriginName: cal_mask, Units: , IsExtended: false
-        /// </summary>
-        public byte CalMask { get; set; }
-        /// <summary>
-        /// Calibration Status.
-        /// OriginName: cal_status, Units: , IsExtended: false
-        /// </summary>
-        public MagCalStatus CalStatus { get; set; }
-        /// <summary>
-        /// 0=requires a MAV_CMD_DO_ACCEPT_MAG_CAL, 1=saved to parameters.
-        /// OriginName: autosaved, Units: , IsExtended: false
-        /// </summary>
-        public byte Autosaved { get; set; }
-        /// <summary>
-        /// Confidence in orientation (higher is better).
-        /// OriginName: orientation_confidence, Units: , IsExtended: true
-        /// </summary>
-        public float OrientationConfidence { get; set; }
-        /// <summary>
-        /// orientation before calibration.
-        /// OriginName: old_orientation, Units: , IsExtended: true
-        /// </summary>
-        public MavSensorOrientation OldOrientation { get; set; }
-        /// <summary>
-        /// orientation after calibration.
-        /// OriginName: new_orientation, Units: , IsExtended: true
-        /// </summary>
-        public MavSensorOrientation NewOrientation { get; set; }
-        /// <summary>
-        /// field radius correction factor
-        /// OriginName: scale_factor, Units: , IsExtended: true
-        /// </summary>
-        public float ScaleFactor { get; set; }
-    }
-    /// <summary>
-    /// EFI status output
-    ///  EFI_STATUS
-    /// </summary>
-    public class EfiStatusPacket: PacketV2<EfiStatusPayload>
-    {
-	    public const int PacketMessageId = 225;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 208;
-
-        public override EfiStatusPayload Payload { get; } = new EfiStatusPayload();
-
-        public override string Name => "EFI_STATUS";
-    }
-
-    /// <summary>
-    ///  EFI_STATUS
-    /// </summary>
-    public class EfiStatusPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 65; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 65; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            EcuIndex = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Rpm = BinSerialize.ReadFloat(ref buffer);index+=4;
-            FuelConsumed = BinSerialize.ReadFloat(ref buffer);index+=4;
-            FuelFlow = BinSerialize.ReadFloat(ref buffer);index+=4;
-            EngineLoad = BinSerialize.ReadFloat(ref buffer);index+=4;
-            ThrottlePosition = BinSerialize.ReadFloat(ref buffer);index+=4;
-            SparkDwellTime = BinSerialize.ReadFloat(ref buffer);index+=4;
-            BarometricPressure = BinSerialize.ReadFloat(ref buffer);index+=4;
-            IntakeManifoldPressure = BinSerialize.ReadFloat(ref buffer);index+=4;
-            IntakeManifoldTemperature = BinSerialize.ReadFloat(ref buffer);index+=4;
-            CylinderHeadTemperature = BinSerialize.ReadFloat(ref buffer);index+=4;
-            IgnitionTiming = BinSerialize.ReadFloat(ref buffer);index+=4;
-            InjectionTime = BinSerialize.ReadFloat(ref buffer);index+=4;
-            ExhaustGasTemperature = BinSerialize.ReadFloat(ref buffer);index+=4;
-            ThrottleOut = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PtCompensation = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Health = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteFloat(ref buffer,EcuIndex);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Rpm);index+=4;
-            BinSerialize.WriteFloat(ref buffer,FuelConsumed);index+=4;
-            BinSerialize.WriteFloat(ref buffer,FuelFlow);index+=4;
-            BinSerialize.WriteFloat(ref buffer,EngineLoad);index+=4;
-            BinSerialize.WriteFloat(ref buffer,ThrottlePosition);index+=4;
-            BinSerialize.WriteFloat(ref buffer,SparkDwellTime);index+=4;
-            BinSerialize.WriteFloat(ref buffer,BarometricPressure);index+=4;
-            BinSerialize.WriteFloat(ref buffer,IntakeManifoldPressure);index+=4;
-            BinSerialize.WriteFloat(ref buffer,IntakeManifoldTemperature);index+=4;
-            BinSerialize.WriteFloat(ref buffer,CylinderHeadTemperature);index+=4;
-            BinSerialize.WriteFloat(ref buffer,IgnitionTiming);index+=4;
-            BinSerialize.WriteFloat(ref buffer,InjectionTime);index+=4;
-            BinSerialize.WriteFloat(ref buffer,ExhaustGasTemperature);index+=4;
-            BinSerialize.WriteFloat(ref buffer,ThrottleOut);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PtCompensation);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)Health);index+=1;
-            return index; // /*PayloadByteSize*/65;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            EcuIndex = BitConverter.ToSingle(buffer, index);index+=4;
-            Rpm = BitConverter.ToSingle(buffer, index);index+=4;
-            FuelConsumed = BitConverter.ToSingle(buffer, index);index+=4;
-            FuelFlow = BitConverter.ToSingle(buffer, index);index+=4;
-            EngineLoad = BitConverter.ToSingle(buffer, index);index+=4;
-            ThrottlePosition = BitConverter.ToSingle(buffer, index);index+=4;
-            SparkDwellTime = BitConverter.ToSingle(buffer, index);index+=4;
-            BarometricPressure = BitConverter.ToSingle(buffer, index);index+=4;
-            IntakeManifoldPressure = BitConverter.ToSingle(buffer, index);index+=4;
-            IntakeManifoldTemperature = BitConverter.ToSingle(buffer, index);index+=4;
-            CylinderHeadTemperature = BitConverter.ToSingle(buffer, index);index+=4;
-            IgnitionTiming = BitConverter.ToSingle(buffer, index);index+=4;
-            InjectionTime = BitConverter.ToSingle(buffer, index);index+=4;
-            ExhaustGasTemperature = BitConverter.ToSingle(buffer, index);index+=4;
-            ThrottleOut = BitConverter.ToSingle(buffer, index);index+=4;
-            PtCompensation = BitConverter.ToSingle(buffer, index);index+=4;
-            Health = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(EcuIndex).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Rpm).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(FuelConsumed).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(FuelFlow).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(EngineLoad).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(ThrottlePosition).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(SparkDwellTime).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(BarometricPressure).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(IntakeManifoldPressure).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(IntakeManifoldTemperature).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(CylinderHeadTemperature).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(IgnitionTiming).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(InjectionTime).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(ExhaustGasTemperature).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(ThrottleOut).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PtCompensation).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Health).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/65;
-        }
-
-        /// <summary>
-        /// ECU index
-        /// OriginName: ecu_index, Units: , IsExtended: false
-        /// </summary>
-        public float EcuIndex { get; set; }
-        /// <summary>
-        /// RPM
-        /// OriginName: rpm, Units: , IsExtended: false
-        /// </summary>
-        public float Rpm { get; set; }
-        /// <summary>
-        /// Fuel consumed
-        /// OriginName: fuel_consumed, Units: cm^3, IsExtended: false
-        /// </summary>
-        public float FuelConsumed { get; set; }
-        /// <summary>
-        /// Fuel flow rate
-        /// OriginName: fuel_flow, Units: cm^3/min, IsExtended: false
-        /// </summary>
-        public float FuelFlow { get; set; }
-        /// <summary>
-        /// Engine load
-        /// OriginName: engine_load, Units: %, IsExtended: false
-        /// </summary>
-        public float EngineLoad { get; set; }
-        /// <summary>
-        /// Throttle position
-        /// OriginName: throttle_position, Units: %, IsExtended: false
-        /// </summary>
-        public float ThrottlePosition { get; set; }
-        /// <summary>
-        /// Spark dwell time
-        /// OriginName: spark_dwell_time, Units: ms, IsExtended: false
-        /// </summary>
-        public float SparkDwellTime { get; set; }
-        /// <summary>
-        /// Barometric pressure
-        /// OriginName: barometric_pressure, Units: kPa, IsExtended: false
-        /// </summary>
-        public float BarometricPressure { get; set; }
-        /// <summary>
-        /// Intake manifold pressure(
-        /// OriginName: intake_manifold_pressure, Units: kPa, IsExtended: false
-        /// </summary>
-        public float IntakeManifoldPressure { get; set; }
-        /// <summary>
-        /// Intake manifold temperature
-        /// OriginName: intake_manifold_temperature, Units: degC, IsExtended: false
-        /// </summary>
-        public float IntakeManifoldTemperature { get; set; }
-        /// <summary>
-        /// Cylinder head temperature
-        /// OriginName: cylinder_head_temperature, Units: degC, IsExtended: false
-        /// </summary>
-        public float CylinderHeadTemperature { get; set; }
-        /// <summary>
-        /// Ignition timing (Crank angle degrees)
-        /// OriginName: ignition_timing, Units: deg, IsExtended: false
-        /// </summary>
-        public float IgnitionTiming { get; set; }
-        /// <summary>
-        /// Injection time
-        /// OriginName: injection_time, Units: ms, IsExtended: false
-        /// </summary>
-        public float InjectionTime { get; set; }
-        /// <summary>
-        /// Exhaust gas temperature
-        /// OriginName: exhaust_gas_temperature, Units: degC, IsExtended: false
-        /// </summary>
-        public float ExhaustGasTemperature { get; set; }
-        /// <summary>
-        /// Output throttle
-        /// OriginName: throttle_out, Units: %, IsExtended: false
-        /// </summary>
-        public float ThrottleOut { get; set; }
-        /// <summary>
-        /// Pressure/temperature compensation
-        /// OriginName: pt_compensation, Units: , IsExtended: false
-        /// </summary>
-        public float PtCompensation { get; set; }
-        /// <summary>
-        /// EFI health status
-        /// OriginName: health, Units: , IsExtended: false
-        /// </summary>
-        public byte Health { get; set; }
-    }
-    /// <summary>
     /// Estimator status message including flags, innovation test ratios and estimated accuracies. The flags message is an integer bitmask containing information on which EKF outputs are valid. See the ESTIMATOR_STATUS_FLAGS enum definition for further information. The innovation test ratios show the magnitude of the sensor innovation divided by the innovation check threshold. Under normal operation the innovation test ratios should be below 0.5 with occasional values up to 1.0. Values greater than 1.0 should be rare under normal operation and indicate that a measurement has been rejected by the filter. The user should be notified if an innovation test ratio greater than 1.0 is recorded. Notifications for values in the range between 0.5 and 1.0 should be optional and controllable by the user.
     ///  ESTIMATOR_STATUS
     /// </summary>
@@ -24637,6 +21143,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             VelRatio = BinSerialize.ReadFloat(ref buffer);index+=4;
             PosHorizRatio = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -24672,6 +21179,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             VelRatio = BitConverter.ToSingle(buffer, index);index+=4;
             PosHorizRatio = BitConverter.ToSingle(buffer, index);index+=4;
@@ -24701,7 +21209,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -24778,6 +21286,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             WindX = BinSerialize.ReadFloat(ref buffer);index+=4;
             WindY = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -24811,6 +21320,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             WindX = BitConverter.ToSingle(buffer, index);index+=4;
             WindY = BitConverter.ToSingle(buffer, index);index+=4;
@@ -24838,7 +21348,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -24903,13 +21413,14 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class GpsInputPayload : IPayload
     {
-        public byte GetMaxByteSize() => 65; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 65; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 63; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 63; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             TimeWeekMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             Lat = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -24928,9 +21439,6 @@ namespace Asv.Mavlink.V2.Common
             GpsId = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             FixType = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             SatellitesVisible = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'Yaw' can be empty
-            if (index >= endIndex) return;
-            Yaw = BinSerialize.ReadUShort(ref buffer);index+=2;
 
         }
 
@@ -24955,8 +21463,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteByte(ref buffer,(byte)GpsId);index+=1;
             BinSerialize.WriteByte(ref buffer,(byte)FixType);index+=1;
             BinSerialize.WriteByte(ref buffer,(byte)SatellitesVisible);index+=1;
-            BinSerialize.WriteUShort(ref buffer,Yaw);index+=2;
-            return index; // /*PayloadByteSize*/65;
+            return index; // /*PayloadByteSize*/63;
         }
 
 
@@ -24965,6 +21472,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             TimeWeekMs = BitConverter.ToUInt32(buffer,index);index+=4;
             Lat = BitConverter.ToInt32(buffer,index);index+=4;
@@ -24983,9 +21491,6 @@ namespace Asv.Mavlink.V2.Common
             GpsId = (byte)buffer[index++];
             FixType = (byte)buffer[index++];
             SatellitesVisible = (byte)buffer[index++];
-            // extended field 'Yaw' can be empty
-            if (index >= endIndex) return;
-            Yaw = BitConverter.ToUInt16(buffer,index);index+=2;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -25009,12 +21514,11 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(GpsId).CopyTo(buffer, index);index+=1;
             BitConverter.GetBytes(FixType).CopyTo(buffer, index);index+=1;
             BitConverter.GetBytes(SatellitesVisible).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Yaw).CopyTo(buffer, index);index+=2;
-            return index - start; // /*PayloadByteSize*/65;
+            return index - start; // /*PayloadByteSize*/63;
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -25039,27 +21543,27 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public float Alt { get; set; }
         /// <summary>
-        /// GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX
-        /// OriginName: hdop, Units: , IsExtended: false
+        /// GPS HDOP horizontal dilution of position
+        /// OriginName: hdop, Units: m, IsExtended: false
         /// </summary>
         public float Hdop { get; set; }
         /// <summary>
-        /// GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX
-        /// OriginName: vdop, Units: , IsExtended: false
+        /// GPS VDOP vertical dilution of position
+        /// OriginName: vdop, Units: m, IsExtended: false
         /// </summary>
         public float Vdop { get; set; }
         /// <summary>
-        /// GPS velocity in north direction in earth-fixed NED frame
+        /// GPS velocity in NORTH direction in earth-fixed NED frame
         /// OriginName: vn, Units: m/s, IsExtended: false
         /// </summary>
         public float Vn { get; set; }
         /// <summary>
-        /// GPS velocity in east direction in earth-fixed NED frame
+        /// GPS velocity in EAST direction in earth-fixed NED frame
         /// OriginName: ve, Units: m/s, IsExtended: false
         /// </summary>
         public float Ve { get; set; }
         /// <summary>
-        /// GPS velocity in down direction in earth-fixed NED frame
+        /// GPS velocity in DOWN direction in earth-fixed NED frame
         /// OriginName: vd, Units: m/s, IsExtended: false
         /// </summary>
         public float Vd { get; set; }
@@ -25103,11 +21607,6 @@ namespace Asv.Mavlink.V2.Common
         /// OriginName: satellites_visible, Units: , IsExtended: false
         /// </summary>
         public byte SatellitesVisible { get; set; }
-        /// <summary>
-        /// Yaw of vehicle relative to Earth's North, zero means not available, use 36000 for north
-        /// OriginName: yaw, Units: cdeg, IsExtended: true
-        /// </summary>
-        public ushort Yaw { get; set; }
     }
     /// <summary>
     /// RTCM message for injecting into the onboard GPS (used for DGPS)
@@ -25233,6 +21732,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             CustomMode = BinSerialize.ReadUInt(ref buffer);index+=4;
             Latitude = BinSerialize.ReadInt(ref buffer);index+=4;
             Longitude = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -25296,6 +21796,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             CustomMode = BitConverter.ToUInt32(buffer,index);index+=4;
             Latitude = BitConverter.ToInt32(buffer,index);index+=4;
             Longitude = BitConverter.ToInt32(buffer,index);index+=4;
@@ -25438,7 +21939,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public sbyte ClimbRate { get; set; }
         /// <summary>
-        /// Number of satellites visible. If unknown, set to UINT8_MAX
+        /// Number of satellites visible. If unknown, set to 255
         /// OriginName: gps_nsat, Units: , IsExtended: false
         /// </summary>
         public byte GpsNsat { get; set; }
@@ -25500,6 +22001,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadUInt(ref buffer);index+=4;
             Latitude = BinSerialize.ReadInt(ref buffer);index+=4;
             Longitude = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -25569,6 +22071,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt32(buffer,index);index+=4;
             Latitude = BitConverter.ToInt32(buffer,index);index+=4;
             Longitude = BitConverter.ToInt32(buffer,index);index+=4;
@@ -25682,7 +22185,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public MavType Type { get; set; }
         /// <summary>
-        /// Autopilot type / class. Use MAV_AUTOPILOT_INVALID for components that are not flight controllers.
+        /// Autopilot type / class.
         /// OriginName: autopilot, Units: , IsExtended: false
         /// </summary>
         public MavAutopilot Autopilot { get; set; }
@@ -25747,7 +22250,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public sbyte ClimbRate { get; set; }
         /// <summary>
-        /// Battery level (-1 if field not provided).
+        /// Battery (percentage, -1 for DNU)
         /// OriginName: battery, Units: %, IsExtended: false
         /// </summary>
         public sbyte Battery { get; set; }
@@ -25794,6 +22297,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             VibrationX = BinSerialize.ReadFloat(ref buffer);index+=4;
             VibrationY = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -25823,6 +22327,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             VibrationX = BitConverter.ToSingle(buffer, index);index+=4;
             VibrationY = BitConverter.ToSingle(buffer, index);index+=4;
@@ -25846,7 +22351,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -25882,7 +22387,7 @@ namespace Asv.Mavlink.V2.Common
         public uint Clipping2 { get; set; }
     }
     /// <summary>
-    /// This message can be requested by sending the MAV_CMD_GET_HOME_POSITION command. The position the system will return to and land on. The position is set automatically by the system during the takeoff in case it was not explicitly set by the operator before or after. The global and local positions encode the position in the respective coordinate frames, while the q parameter encodes the orientation of the surface. Under normal conditions it describes the heading and terrain slope, which can be used by the aircraft to adjust the approach. The approach 3D vector describes the point to which the system should fly in normal flight mode and then perform a landing sequence along the vector.
+    /// This message can be requested by sending the MAV_CMD_GET_HOME_POSITION command. The position the system will return to and land on. The position is set automatically by the system during the takeoff in case it was not explicitly set by the operator before or after. The position the system will return to and land on. The global and local positions encode the position in the respective coordinate frames, while the q parameter encodes the orientation of the surface. Under normal conditions it describes the heading and terrain slope, which can be used by the aircraft to adjust the approach. The approach 3D vector describes the point to which the system should fly in normal flight mode and then perform a landing sequence along the vector.
     ///  HOME_POSITION
     /// </summary>
     public class HomePositionPacket: PacketV2<HomePositionPayload>
@@ -26049,7 +22554,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public float ApproachZ { get; set; }
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: true
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -26231,13 +22736,13 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public byte TargetSystem { get; set; }
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: true
         /// </summary>
         public ulong TimeUsec { get; set; }
     }
     /// <summary>
-    /// The interval between messages for a particular MAVLink message ID. This message is the response to the MAV_CMD_GET_MESSAGE_INTERVAL command. This interface replaces DATA_STREAM.
+    /// The interval between messages for a particular MAVLink message ID. This interface replaces DATA_STREAM
     ///  MESSAGE_INTERVAL
     /// </summary>
     public class MessageIntervalPacket: PacketV2<MessageIntervalPayload>
@@ -26263,6 +22768,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             IntervalUs = BinSerialize.ReadInt(ref buffer);index+=4;
             MessageId = BinSerialize.ReadUShort(ref buffer);index+=2;
 
@@ -26282,6 +22788,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             IntervalUs = BitConverter.ToInt32(buffer,index);index+=4;
             MessageId = BitConverter.ToUInt16(buffer,index);index+=2;
         }
@@ -26332,6 +22839,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             VtolState = (MavVtolState)BinSerialize.ReadByte(ref buffer);index+=1;
             LandedState = (MavLandedState)BinSerialize.ReadByte(ref buffer);index+=1;
 
@@ -26351,6 +22859,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             VtolState = (MavVtolState)buffer[index++];
             LandedState = (MavLandedState)buffer[index++];
         }
@@ -26595,6 +23104,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Id = BinSerialize.ReadUInt(ref buffer);index+=4;
             TimeToMinimumDelta = BinSerialize.ReadFloat(ref buffer);index+=4;
             AltitudeMinimumDelta = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -26624,6 +23134,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Id = BitConverter.ToUInt32(buffer,index);index+=4;
             TimeToMinimumDelta = BitConverter.ToSingle(buffer, index);index+=4;
             AltitudeMinimumDelta = BitConverter.ToSingle(buffer, index);index+=4;
@@ -26771,7 +23282,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// A code that identifies the software component that understands this message (analogous to USB device classes or mime type strings). If this code is less than 32768, it is considered a 'registered' protocol extension and the corresponding entry should be added to https://github.com/mavlink/mavlink/definition_files/extension_message_ids.xml. Software creators can register blocks of message IDs as needed (useful for GCS specific metadata, etc...). Message_types greater than 32767 are considered local experiments and should not be checked in to any widely distributed codebase.
+        /// A code that identifies the software component that understands this message (analogous to USB device classes or mime type strings).  If this code is less than 32768, it is considered a 'registered' protocol extension and the corresponding entry should be added to https://github.com/mavlink/mavlink/extension-message-ids.xml.  Software creators can register blocks of message IDs as needed (useful for GCS specific metadata, etc...). Message_types greater than 32767 are considered local experiments and should not be checked in to any widely distributed codebase.
         /// OriginName: message_type, Units: , IsExtended: false
         /// </summary>
         public ushort MessageType { get; set; }
@@ -26791,7 +23302,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public byte TargetComponent { get; set; }
         /// <summary>
-        /// Variable length payload. The length must be encoded in the payload as part of the message_type protocol, e.g. by including the length as payload data, or by terminating the payload data with a non-zero marker. This is required in order to reconstruct zero-terminated payloads that are (or otherwise would be) trimmed by MAVLink 2 empty-byte truncation. The entire content of the payload block is opaque unless you understand the encoding message_type. The particular encoding used can be extension specific and might not always be documented as part of the MAVLink specification.
+        /// Variable length payload. The length is defined by the remaining message length when subtracting the header and other fields.  The entire content of this block is opaque unless you understand any the encoding message_type.  The particular encoding used can be extension specific and might not always be documented as part of the mavlink specification.
         /// OriginName: payload, Units: , IsExtended: false
         /// </summary>
         public byte[] Payload { get; set; } = new byte[249];
@@ -26999,7 +23510,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -27253,8 +23764,8 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class StatustextPayload : IPayload
     {
-        public byte GetMaxByteSize() => 54; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 54; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 51; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 51; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
@@ -27262,7 +23773,7 @@ namespace Asv.Mavlink.V2.Common
             var endIndex = payloadSize;
             var arraySize = 0;
             Severity = (MavSeverity)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = /*ArrayLength*/50 - Math.Max(0,((/*PayloadByteSize*/54 - payloadSize - /*ExtendedFieldsLength*/3)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/50 - Math.Max(0,((/*PayloadByteSize*/51 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Text = new char[arraySize];
             unsafe
             {
@@ -27274,12 +23785,6 @@ namespace Asv.Mavlink.V2.Common
             }
             buffer = buffer.Slice(arraySize);
             index+=arraySize;
-            // extended field 'Id' can be empty
-            if (index >= endIndex) return;
-            Id = BinSerialize.ReadUShort(ref buffer);index+=2;
-            // extended field 'ChunkSeq' can be empty
-            if (index >= endIndex) return;
-            ChunkSeq = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
 
         }
 
@@ -27297,9 +23802,7 @@ namespace Asv.Mavlink.V2.Common
             }
             buffer = buffer.Slice(Text.Length);
             index+=Text.Length;
-            BinSerialize.WriteUShort(ref buffer,Id);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)ChunkSeq);index+=1;
-            return index; // /*PayloadByteSize*/54;
+            return index; // /*PayloadByteSize*/51;
         }
 
 
@@ -27310,16 +23813,10 @@ namespace Asv.Mavlink.V2.Common
             var endIndex = offset + payloadSize;
             var arraySize = 0;
             Severity = (MavSeverity)buffer[index++];
-            arraySize = /*ArrayLength*/50 - Math.Max(0,((/*PayloadByteSize*/54 - payloadSize - /*ExtendedFieldsLength*/3)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/50 - Math.Max(0,((/*PayloadByteSize*/51 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Text = new char[arraySize];
             Encoding.ASCII.GetChars(buffer, index,arraySize,Text,0);
             index+=arraySize;
-            // extended field 'Id' can be empty
-            if (index >= endIndex) return;
-            Id = BitConverter.ToUInt16(buffer,index);index+=2;
-            // extended field 'ChunkSeq' can be empty
-            if (index >= endIndex) return;
-            ChunkSeq = (byte)buffer[index++];
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -27327,9 +23824,7 @@ namespace Asv.Mavlink.V2.Common
 		var start = index;
             buffer[index] = (byte)Severity;index+=1;
             index+=Encoding.ASCII.GetBytes(Text,0,Text.Length,buffer,index);
-            BitConverter.GetBytes(Id).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(ChunkSeq).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/54;
+            return index - start; // /*PayloadByteSize*/51;
         }
 
         /// <summary>
@@ -27343,16 +23838,6 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public char[] Text { get; set; } = new char[50];
         public byte GetTextMaxItemsCount() => 50;
-        /// <summary>
-        /// Unique (opaque) identifier for this statustext message.  May be used to reassemble a logical long-statustext message from a sequence of chunks.  A value of zero indicates this is the only chunk in the sequence and the message can be emitted immediately.
-        /// OriginName: id, Units: , IsExtended: true
-        /// </summary>
-        public ushort Id { get; set; }
-        /// <summary>
-        /// This chunk's sequence number; indexing is from zero.  Any null character in the text field is taken to mean this was the last chunk.
-        /// OriginName: chunk_seq, Units: , IsExtended: true
-        /// </summary>
-        public byte ChunkSeq { get; set; }
     }
     /// <summary>
     /// Send a debug value. The index is used to discriminate between values. These values show up in the plot of QGroundControl as DEBUG N.
@@ -27381,6 +23866,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             Value = BinSerialize.ReadFloat(ref buffer);index+=4;
             Ind = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -27402,6 +23888,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             Value = BitConverter.ToSingle(buffer, index);index+=4;
             Ind = (byte)buffer[index++];
@@ -27565,6 +24052,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             LastChangeMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             State = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -27586,6 +24074,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             LastChangeMs = BitConverter.ToUInt32(buffer,index);index+=4;
             State = (byte)buffer[index++];
@@ -27617,7 +24106,7 @@ namespace Asv.Mavlink.V2.Common
         public byte State { get; set; }
     }
     /// <summary>
-    /// Control vehicle tone generation (buzzer).
+    /// Control vehicle tone generation (buzzer)
     ///  PLAY_TUNE
     /// </summary>
     public class PlayTunePacket: PacketV2<PlayTunePayload>
@@ -27755,7 +24244,7 @@ namespace Asv.Mavlink.V2.Common
         public char[] Tune2 { get; } = new char[200];
     }
     /// <summary>
-    /// Information about a camera. Can be requested with a MAV_CMD_REQUEST_MESSAGE command.
+    /// Information about a camera
     ///  CAMERA_INFORMATION
     /// </summary>
     public class CameraInformationPacket: PacketV2<CameraInformationPayload>
@@ -27915,7 +24404,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public uint TimeBootMs { get; set; }
         /// <summary>
-        /// Version of the camera firmware, encoded as: (Dev & 0xff) << 24 | (Patch & 0xff) << 16 | (Minor & 0xff) << 8 | (Major & 0xff)
+        /// Version of the camera firmware (v << 24 & 0xff = Dev, v << 16 & 0xff = Patch, v << 8 & 0xff = Minor, v & 0xff = Major)
         /// OriginName: firmware_version, Units: , IsExtended: false
         /// </summary>
         public uint FirmwareVersion { get; set; }
@@ -27970,14 +24459,14 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public byte LensId { get; set; }
         /// <summary>
-        /// Camera definition URI (if any, otherwise only basic functions will be available). HTTP- (http://) and MAVLink FTP- (mavlinkftp://) formatted URIs are allowed (and both must be supported by any GCS that implements the Camera Protocol). The definition file may be xz compressed, which will be indicated by the file extension .xml.xz (a GCS that implements the protocol must support decompressing the file).
+        /// Camera definition URI (if any, otherwise only basic functions will be available).
         /// OriginName: cam_definition_uri, Units: , IsExtended: false
         /// </summary>
         public char[] CamDefinitionUri { get; set; } = new char[140];
         public byte GetCamDefinitionUriMaxItemsCount() => 140;
     }
     /// <summary>
-    /// Settings of a camera. Can be requested with a MAV_CMD_REQUEST_MESSAGE command.
+    /// Settings of a camera, can be requested using MAV_CMD_REQUEST_CAMERA_SETTINGS.
     ///  CAMERA_SETTINGS
     /// </summary>
     public class CameraSettingsPacket: PacketV2<CameraSettingsPayload>
@@ -28003,6 +24492,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             ModeId = (CameraMode)BinSerialize.ReadByte(ref buffer);index+=1;
             // extended field 'Zoomlevel' can be empty
@@ -28030,6 +24520,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             ModeId = (CameraMode)buffer[index++];
             // extended field 'Zoomlevel' can be empty
@@ -28072,7 +24563,7 @@ namespace Asv.Mavlink.V2.Common
         public float Focuslevel { get; set; }
     }
     /// <summary>
-    /// Information about a storage medium. This message is sent in response to a request with MAV_CMD_REQUEST_MESSAGE and whenever the status of the storage changes (STORAGE_STATUS). Use MAV_CMD_REQUEST_MESSAGE.param2 to indicate the index/id of requested storage: 0 for all, 1 for first, 2 for second, etc.
+    /// Information about a storage medium. This message is sent in response to a request and whenever the status of the storage changes (STORAGE_STATUS).
     ///  STORAGE_INFORMATION
     /// </summary>
     public class StorageInformationPacket: PacketV2<StorageInformationPayload>
@@ -28091,8 +24582,8 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class StorageInformationPayload : IPayload
     {
-        public byte GetMaxByteSize() => 61; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 61; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 27; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
@@ -28108,25 +24599,6 @@ namespace Asv.Mavlink.V2.Common
             StorageId = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             StorageCount = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             Status = (StorageStatus)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'Type' can be empty
-            if (index >= endIndex) return;
-            Type = (StorageType)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'Name' can be empty
-            if (index >= endIndex) return;
-            arraySize = 32;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Name)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Name.Length);
-                }
-            }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-            // extended field 'StorageUsage' can be empty
-            if (index >= endIndex) return;
-            StorageUsage = (StorageUsageFlag)BinSerialize.ReadByte(ref buffer);index+=1;
 
         }
 
@@ -28142,19 +24614,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteByte(ref buffer,(byte)StorageId);index+=1;
             BinSerialize.WriteByte(ref buffer,(byte)StorageCount);index+=1;
             BinSerialize.WriteByte(ref buffer,(byte)Status);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Type);index+=1;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Name)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, Name.Length, bytePointer, Name.Length);
-                }
-            }
-            buffer = buffer.Slice(Name.Length);
-            index+=Name.Length;
-            BinSerialize.WriteByte(ref buffer,(byte)StorageUsage);index+=1;
-            return index; // /*PayloadByteSize*/61;
+            return index; // /*PayloadByteSize*/27;
         }
 
 
@@ -28173,17 +24633,6 @@ namespace Asv.Mavlink.V2.Common
             StorageId = (byte)buffer[index++];
             StorageCount = (byte)buffer[index++];
             Status = (StorageStatus)buffer[index++];
-            // extended field 'Type' can be empty
-            if (index >= endIndex) return;
-            Type = (StorageType)buffer[index++];
-            // extended field 'Name' can be empty
-            if (index >= endIndex) return;
-            arraySize = 32;
-            Encoding.ASCII.GetChars(buffer, index,arraySize,Name,0);
-            index+=arraySize;
-            // extended field 'StorageUsage' can be empty
-            if (index >= endIndex) return;
-            StorageUsage = (StorageUsageFlag)buffer[index++];
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -28198,10 +24647,7 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(StorageId).CopyTo(buffer, index);index+=1;
             BitConverter.GetBytes(StorageCount).CopyTo(buffer, index);index+=1;
             buffer[index] = (byte)Status;index+=1;
-            buffer[index] = (byte)Type;index+=1;
-            index+=Encoding.ASCII.GetBytes(Name,0,Name.Length,buffer,index);
-            buffer[index] = (byte)StorageUsage;index+=1;
-            return index - start; // /*PayloadByteSize*/61;
+            return index - start; // /*PayloadByteSize*/27;
         }
 
         /// <summary>
@@ -28249,27 +24695,9 @@ namespace Asv.Mavlink.V2.Common
         /// OriginName: status, Units: , IsExtended: false
         /// </summary>
         public StorageStatus Status { get; set; }
-        /// <summary>
-        /// Type of storage
-        /// OriginName: type, Units: , IsExtended: true
-        /// </summary>
-        public StorageType Type { get; set; }
-        /// <summary>
-        /// Textual storage name to be used in UI (microSD 1, Internal Memory, etc.) This is a NULL terminated string. If it is exactly 32 characters long, add a terminating NULL. If this string is empty, the generic type is shown to the user.
-        /// OriginName: name, Units: , IsExtended: true
-        /// </summary>
-        public char[] Name { get; } = new char[32];
-        /// <summary>
-        /// Flags indicating whether this instance is preferred storage for photos, videos, etc.
-        ///         Note: Implementations should initially set the flags on the system-default storage id used for saving media (if possible/supported).
-        ///         This setting can then be overridden using MAV_CMD_SET_STORAGE_USAGE.
-        ///         If the media usage flags are not set, a GCS may assume storage ID 1 is the default storage for all media types.
-        /// OriginName: storage_usage, Units: , IsExtended: true
-        /// </summary>
-        public StorageUsageFlag StorageUsage { get; set; }
     }
     /// <summary>
-    /// Information about the status of a capture. Can be requested with a MAV_CMD_REQUEST_MESSAGE command.
+    /// Information about the status of a capture.
     ///  CAMERA_CAPTURE_STATUS
     /// </summary>
     public class CameraCaptureStatusPacket: PacketV2<CameraCaptureStatusPayload>
@@ -28288,22 +24716,20 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class CameraCaptureStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 22; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 18; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             ImageInterval = BinSerialize.ReadFloat(ref buffer);index+=4;
             RecordingTimeMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             AvailableCapacity = BinSerialize.ReadFloat(ref buffer);index+=4;
             ImageStatus = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             VideoStatus = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'ImageCount' can be empty
-            if (index >= endIndex) return;
-            ImageCount = BinSerialize.ReadInt(ref buffer);index+=4;
 
         }
 
@@ -28316,8 +24742,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteFloat(ref buffer,AvailableCapacity);index+=4;
             BinSerialize.WriteByte(ref buffer,(byte)ImageStatus);index+=1;
             BinSerialize.WriteByte(ref buffer,(byte)VideoStatus);index+=1;
-            BinSerialize.WriteInt(ref buffer,ImageCount);index+=4;
-            return index; // /*PayloadByteSize*/22;
+            return index; // /*PayloadByteSize*/18;
         }
 
 
@@ -28326,15 +24751,13 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             ImageInterval = BitConverter.ToSingle(buffer, index);index+=4;
             RecordingTimeMs = BitConverter.ToUInt32(buffer,index);index+=4;
             AvailableCapacity = BitConverter.ToSingle(buffer, index);index+=4;
             ImageStatus = (byte)buffer[index++];
             VideoStatus = (byte)buffer[index++];
-            // extended field 'ImageCount' can be empty
-            if (index >= endIndex) return;
-            ImageCount = BitConverter.ToInt32(buffer,index);index+=4;
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -28346,8 +24769,7 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(AvailableCapacity).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(ImageStatus).CopyTo(buffer, index);index+=1;
             BitConverter.GetBytes(VideoStatus).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(ImageCount).CopyTo(buffer, index);index+=4;
-            return index - start; // /*PayloadByteSize*/22;
+            return index - start; // /*PayloadByteSize*/18;
         }
 
         /// <summary>
@@ -28361,7 +24783,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public float ImageInterval { get; set; }
         /// <summary>
-        /// Elapsed time since recording started (0: Not supported/available). A GCS should compute recording time and use non-zero values of this field to correct any discrepancy.
+        /// Time since recording started
         /// OriginName: recording_time_ms, Units: ms, IsExtended: false
         /// </summary>
         public uint RecordingTimeMs { get; set; }
@@ -28380,20 +24802,9 @@ namespace Asv.Mavlink.V2.Common
         /// OriginName: video_status, Units: , IsExtended: false
         /// </summary>
         public byte VideoStatus { get; set; }
-        /// <summary>
-        /// Total number of images captured ('forever', or until reset using MAV_CMD_STORAGE_FORMAT).
-        /// OriginName: image_count, Units: , IsExtended: true
-        /// </summary>
-        public int ImageCount { get; set; }
     }
     /// <summary>
-    /// Information about a captured image. This is emitted every time a message is captured.
-    ///         MAV_CMD_REQUEST_MESSAGE can be used to (re)request this message for a specific sequence number or range of sequence numbers:
-    ///         MAV_CMD_REQUEST_MESSAGE.param2 indicates the sequence number the first image to send, or set to -1 to send the message for all sequence numbers.
-    ///         MAV_CMD_REQUEST_MESSAGE.param3 is used to specify a range of messages to send:
-    ///         set to 0 (default) to send just the the message for the sequence number in param 2,
-    ///         set to -1 to send the message for the sequence number in param 2 and all the following sequence numbers, 
-    ///         set to the sequence number of the final message in the range.
+    /// Information about a captured image
     ///  CAMERA_IMAGE_CAPTURED
     /// </summary>
     public class CameraImageCapturedPacket: PacketV2<CameraImageCapturedPayload>
@@ -28556,17 +24967,17 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public int RelativeAlt { get; set; }
         /// <summary>
-        /// Quaternion of camera orientation (w, x, y, z order, zero-rotation is 1, 0, 0, 0)
+        /// Quaternion of camera orientation (w, x, y, z order, zero-rotation is 0, 0, 0, 0)
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
         public float[] Q { get; } = new float[4];
         /// <summary>
-        /// Zero based index of this image (i.e. a new image will have index CAMERA_CAPTURE_STATUS.image count -1)
+        /// Zero based index of this image (image count since armed -1)
         /// OriginName: image_index, Units: , IsExtended: false
         /// </summary>
         public int ImageIndex { get; set; }
         /// <summary>
-        /// Deprecated/unused. Component IDs are used to differentiate multiple cameras.
+        /// Camera ID (1 for first, 2 for second, etc.)
         /// OriginName: camera_id, Units: , IsExtended: false
         /// </summary>
         public byte CameraId { get; set; }
@@ -28584,8 +24995,6 @@ namespace Asv.Mavlink.V2.Common
     }
     /// <summary>
     /// Information about flight since last arming.
-    ///         This can be requested using MAV_CMD_REQUEST_MESSAGE.
-    ///       
     ///  FLIGHT_INFORMATION
     /// </summary>
     public class FlightInformationPacket: PacketV2<FlightInformationPayload>
@@ -28611,6 +25020,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             ArmingTimeUtc = BinSerialize.ReadULong(ref buffer);index+=8;
             TakeoffTimeUtc = BinSerialize.ReadULong(ref buffer);index+=8;
             FlightUuid = BinSerialize.ReadULong(ref buffer);index+=8;
@@ -28634,6 +25044,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             ArmingTimeUtc = BitConverter.ToUInt64(buffer,index);index+=8;
             TakeoffTimeUtc = BitConverter.ToUInt64(buffer,index);index+=8;
             FlightUuid = BitConverter.ToUInt64(buffer,index);index+=8;
@@ -28698,6 +25109,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
             Roll = BinSerialize.ReadFloat(ref buffer);index+=4;
             Pitch = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -28725,6 +25137,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
             Roll = BitConverter.ToSingle(buffer, index);index+=4;
             Pitch = BitConverter.ToSingle(buffer, index);index+=4;
@@ -28761,12 +25174,12 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public float Pitch { get; set; }
         /// <summary>
-        /// Yaw relative to vehicle (set to NaN for invalid).
+        /// Yaw relative to vehicle(set to NaN for invalid).
         /// OriginName: yaw, Units: deg, IsExtended: false
         /// </summary>
         public float Yaw { get; set; }
         /// <summary>
-        /// Yaw in absolute frame relative to Earth's North, north is 0 (set to NaN for invalid).
+        /// Yaw in absolute frame, North is 0 (set to NaN for invalid).
         /// OriginName: yaw_absolute, Units: deg, IsExtended: true
         /// </summary>
         public float YawAbsolute { get; set; }
@@ -28884,7 +25297,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public byte Length { get; set; }
         /// <summary>
-        /// offset into data where first message starts. This can be used for recovery, when a previous message got lost (set to UINT8_MAX if no start exists).
+        /// offset into data where first message starts. This can be used for recovery, when a previous message got lost (set to 255 if no start exists).
         /// OriginName: first_message_offset, Units: bytes, IsExtended: false
         /// </summary>
         public byte FirstMessageOffset { get; set; }
@@ -29008,7 +25421,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public byte Length { get; set; }
         /// <summary>
-        /// offset into data where first message starts. This can be used for recovery, when a previous message got lost (set to UINT8_MAX if no start exists).
+        /// offset into data where first message starts. This can be used for recovery, when a previous message got lost (set to 255 if no start exists).
         /// OriginName: first_message_offset, Units: bytes, IsExtended: false
         /// </summary>
         public byte FirstMessageOffset { get; set; }
@@ -29046,6 +25459,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Sequence = BinSerialize.ReadUShort(ref buffer);index+=2;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -29067,6 +25481,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Sequence = BitConverter.ToUInt16(buffer,index);index+=2;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
@@ -29098,7 +25513,7 @@ namespace Asv.Mavlink.V2.Common
         public byte TargetComponent { get; set; }
     }
     /// <summary>
-    /// Information about video stream. It may be requested using MAV_CMD_REQUEST_MESSAGE, where param2 indicates the video stream id: 0 for all streams, 1 for first, 2 for second, etc.
+    /// Information about video stream
     ///  VIDEO_STREAM_INFORMATION
     /// </summary>
     public class VideoStreamInformationPacket: PacketV2<VideoStreamInformationPayload>
@@ -29304,7 +25719,7 @@ namespace Asv.Mavlink.V2.Common
         public byte GetUriMaxItemsCount() => 160;
     }
     /// <summary>
-    /// Information about the status of a video stream. It may be requested using MAV_CMD_REQUEST_MESSAGE.
+    /// Information about the status of a video stream.
     ///  VIDEO_STREAM_STATUS
     /// </summary>
     public class VideoStreamStatusPacket: PacketV2<VideoStreamStatusPayload>
@@ -29330,6 +25745,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Framerate = BinSerialize.ReadFloat(ref buffer);index+=4;
             Bitrate = BinSerialize.ReadUInt(ref buffer);index+=4;
             Flags = (VideoStreamStatusFlags)BinSerialize.ReadUShort(ref buffer);index+=2;
@@ -29361,6 +25777,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Framerate = BitConverter.ToSingle(buffer, index);index+=4;
             Bitrate = BitConverter.ToUInt32(buffer,index);index+=4;
             Flags = (VideoStreamStatusFlags)BitConverter.ToUInt16(buffer,index);index+=2;
@@ -29427,2150 +25844,7 @@ namespace Asv.Mavlink.V2.Common
         public byte StreamId { get; set; }
     }
     /// <summary>
-    /// Information about the field of view of a camera. Can be requested with a MAV_CMD_REQUEST_MESSAGE command.
-    ///  CAMERA_FOV_STATUS
-    /// </summary>
-    public class CameraFovStatusPacket: PacketV2<CameraFovStatusPayload>
-    {
-	    public const int PacketMessageId = 271;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 22;
-
-        public override CameraFovStatusPayload Payload { get; } = new CameraFovStatusPayload();
-
-        public override string Name => "CAMERA_FOV_STATUS";
-    }
-
-    /// <summary>
-    ///  CAMERA_FOV_STATUS
-    /// </summary>
-    public class CameraFovStatusPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 52; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 52; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
-            LatCamera = BinSerialize.ReadInt(ref buffer);index+=4;
-            LonCamera = BinSerialize.ReadInt(ref buffer);index+=4;
-            AltCamera = BinSerialize.ReadInt(ref buffer);index+=4;
-            LatImage = BinSerialize.ReadInt(ref buffer);index+=4;
-            LonImage = BinSerialize.ReadInt(ref buffer);index+=4;
-            AltImage = BinSerialize.ReadInt(ref buffer);index+=4;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/52 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            Q = new float[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Q[i] = BinSerialize.ReadFloat(ref buffer);index+=4;
-            }
-            Hfov = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Vfov = BinSerialize.ReadFloat(ref buffer);index+=4;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,TimeBootMs);index+=4;
-            BinSerialize.WriteInt(ref buffer,LatCamera);index+=4;
-            BinSerialize.WriteInt(ref buffer,LonCamera);index+=4;
-            BinSerialize.WriteInt(ref buffer,AltCamera);index+=4;
-            BinSerialize.WriteInt(ref buffer,LatImage);index+=4;
-            BinSerialize.WriteInt(ref buffer,LonImage);index+=4;
-            BinSerialize.WriteInt(ref buffer,AltImage);index+=4;
-            for(var i=0;i<Q.Length;i++)
-            {
-                BinSerialize.WriteFloat(ref buffer,Q[i]);index+=4;
-            }
-            BinSerialize.WriteFloat(ref buffer,Hfov);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Vfov);index+=4;
-            return index; // /*PayloadByteSize*/52;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
-            LatCamera = BitConverter.ToInt32(buffer,index);index+=4;
-            LonCamera = BitConverter.ToInt32(buffer,index);index+=4;
-            AltCamera = BitConverter.ToInt32(buffer,index);index+=4;
-            LatImage = BitConverter.ToInt32(buffer,index);index+=4;
-            LonImage = BitConverter.ToInt32(buffer,index);index+=4;
-            AltImage = BitConverter.ToInt32(buffer,index);index+=4;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/52 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            Q = new float[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Q[i] = BitConverter.ToSingle(buffer, index);index+=4;
-            }
-            Hfov = BitConverter.ToSingle(buffer, index);index+=4;
-            Vfov = BitConverter.ToSingle(buffer, index);index+=4;
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(TimeBootMs).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(LatCamera).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(LonCamera).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(AltCamera).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(LatImage).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(LonImage).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(AltImage).CopyTo(buffer, index);index+=4;
-            for(var i=0;i<Q.Length;i++)
-            {
-                BitConverter.GetBytes(Q[i]).CopyTo(buffer, index);index+=4;
-            }
-            BitConverter.GetBytes(Hfov).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Vfov).CopyTo(buffer, index);index+=4;
-            return index - start; // /*PayloadByteSize*/52;
-        }
-
-        /// <summary>
-        /// Timestamp (time since system boot).
-        /// OriginName: time_boot_ms, Units: ms, IsExtended: false
-        /// </summary>
-        public uint TimeBootMs { get; set; }
-        /// <summary>
-        /// Latitude of camera (INT32_MAX if unknown).
-        /// OriginName: lat_camera, Units: degE7, IsExtended: false
-        /// </summary>
-        public int LatCamera { get; set; }
-        /// <summary>
-        /// Longitude of camera (INT32_MAX if unknown).
-        /// OriginName: lon_camera, Units: degE7, IsExtended: false
-        /// </summary>
-        public int LonCamera { get; set; }
-        /// <summary>
-        /// Altitude (MSL) of camera (INT32_MAX if unknown).
-        /// OriginName: alt_camera, Units: mm, IsExtended: false
-        /// </summary>
-        public int AltCamera { get; set; }
-        /// <summary>
-        /// Latitude of center of image (INT32_MAX if unknown, INT32_MIN if at infinity, not intersecting with horizon).
-        /// OriginName: lat_image, Units: degE7, IsExtended: false
-        /// </summary>
-        public int LatImage { get; set; }
-        /// <summary>
-        /// Longitude of center of image (INT32_MAX if unknown, INT32_MIN if at infinity, not intersecting with horizon).
-        /// OriginName: lon_image, Units: degE7, IsExtended: false
-        /// </summary>
-        public int LonImage { get; set; }
-        /// <summary>
-        /// Altitude (MSL) of center of image (INT32_MAX if unknown, INT32_MIN if at infinity, not intersecting with horizon).
-        /// OriginName: alt_image, Units: mm, IsExtended: false
-        /// </summary>
-        public int AltImage { get; set; }
-        /// <summary>
-        /// Quaternion of camera orientation (w, x, y, z order, zero-rotation is 1, 0, 0, 0)
-        /// OriginName: q, Units: , IsExtended: false
-        /// </summary>
-        public float[] Q { get; set; } = new float[4];
-        public byte GetQMaxItemsCount() => 4;
-        /// <summary>
-        /// Horizontal field of view (NaN if unknown).
-        /// OriginName: hfov, Units: deg, IsExtended: false
-        /// </summary>
-        public float Hfov { get; set; }
-        /// <summary>
-        /// Vertical field of view (NaN if unknown).
-        /// OriginName: vfov, Units: deg, IsExtended: false
-        /// </summary>
-        public float Vfov { get; set; }
-    }
-    /// <summary>
-    /// Camera tracking status, sent while in active tracking. Use MAV_CMD_SET_MESSAGE_INTERVAL to define message interval.
-    ///  CAMERA_TRACKING_IMAGE_STATUS
-    /// </summary>
-    public class CameraTrackingImageStatusPacket: PacketV2<CameraTrackingImageStatusPayload>
-    {
-	    public const int PacketMessageId = 275;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 126;
-
-        public override CameraTrackingImageStatusPayload Payload { get; } = new CameraTrackingImageStatusPayload();
-
-        public override string Name => "CAMERA_TRACKING_IMAGE_STATUS";
-    }
-
-    /// <summary>
-    ///  CAMERA_TRACKING_IMAGE_STATUS
-    /// </summary>
-    public class CameraTrackingImageStatusPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 31; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 31; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            PointX = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PointY = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Radius = BinSerialize.ReadFloat(ref buffer);index+=4;
-            RecTopX = BinSerialize.ReadFloat(ref buffer);index+=4;
-            RecTopY = BinSerialize.ReadFloat(ref buffer);index+=4;
-            RecBottomX = BinSerialize.ReadFloat(ref buffer);index+=4;
-            RecBottomY = BinSerialize.ReadFloat(ref buffer);index+=4;
-            TrackingStatus = (CameraTrackingStatusFlags)BinSerialize.ReadByte(ref buffer);index+=1;
-            TrackingMode = (CameraTrackingMode)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetData = (CameraTrackingTargetData)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteFloat(ref buffer,PointX);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PointY);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Radius);index+=4;
-            BinSerialize.WriteFloat(ref buffer,RecTopX);index+=4;
-            BinSerialize.WriteFloat(ref buffer,RecTopY);index+=4;
-            BinSerialize.WriteFloat(ref buffer,RecBottomX);index+=4;
-            BinSerialize.WriteFloat(ref buffer,RecBottomY);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)TrackingStatus);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TrackingMode);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetData);index+=1;
-            return index; // /*PayloadByteSize*/31;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            PointX = BitConverter.ToSingle(buffer, index);index+=4;
-            PointY = BitConverter.ToSingle(buffer, index);index+=4;
-            Radius = BitConverter.ToSingle(buffer, index);index+=4;
-            RecTopX = BitConverter.ToSingle(buffer, index);index+=4;
-            RecTopY = BitConverter.ToSingle(buffer, index);index+=4;
-            RecBottomX = BitConverter.ToSingle(buffer, index);index+=4;
-            RecBottomY = BitConverter.ToSingle(buffer, index);index+=4;
-            TrackingStatus = (CameraTrackingStatusFlags)buffer[index++];
-            TrackingMode = (CameraTrackingMode)buffer[index++];
-            TargetData = (CameraTrackingTargetData)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(PointX).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PointY).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Radius).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(RecTopX).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(RecTopY).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(RecBottomX).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(RecBottomY).CopyTo(buffer, index);index+=4;
-            buffer[index] = (byte)TrackingStatus;index+=1;
-            buffer[index] = (byte)TrackingMode;index+=1;
-            buffer[index] = (byte)TargetData;index+=1;
-            return index - start; // /*PayloadByteSize*/31;
-        }
-
-        /// <summary>
-        /// Current tracked point x value if CAMERA_TRACKING_MODE_POINT (normalized 0..1, 0 is left, 1 is right), NAN if unknown
-        /// OriginName: point_x, Units: , IsExtended: false
-        /// </summary>
-        public float PointX { get; set; }
-        /// <summary>
-        /// Current tracked point y value if CAMERA_TRACKING_MODE_POINT (normalized 0..1, 0 is top, 1 is bottom), NAN if unknown
-        /// OriginName: point_y, Units: , IsExtended: false
-        /// </summary>
-        public float PointY { get; set; }
-        /// <summary>
-        /// Current tracked radius if CAMERA_TRACKING_MODE_POINT (normalized 0..1, 0 is image left, 1 is image right), NAN if unknown
-        /// OriginName: radius, Units: , IsExtended: false
-        /// </summary>
-        public float Radius { get; set; }
-        /// <summary>
-        /// Current tracked rectangle top x value if CAMERA_TRACKING_MODE_RECTANGLE (normalized 0..1, 0 is left, 1 is right), NAN if unknown
-        /// OriginName: rec_top_x, Units: , IsExtended: false
-        /// </summary>
-        public float RecTopX { get; set; }
-        /// <summary>
-        /// Current tracked rectangle top y value if CAMERA_TRACKING_MODE_RECTANGLE (normalized 0..1, 0 is top, 1 is bottom), NAN if unknown
-        /// OriginName: rec_top_y, Units: , IsExtended: false
-        /// </summary>
-        public float RecTopY { get; set; }
-        /// <summary>
-        /// Current tracked rectangle bottom x value if CAMERA_TRACKING_MODE_RECTANGLE (normalized 0..1, 0 is left, 1 is right), NAN if unknown
-        /// OriginName: rec_bottom_x, Units: , IsExtended: false
-        /// </summary>
-        public float RecBottomX { get; set; }
-        /// <summary>
-        /// Current tracked rectangle bottom y value if CAMERA_TRACKING_MODE_RECTANGLE (normalized 0..1, 0 is top, 1 is bottom), NAN if unknown
-        /// OriginName: rec_bottom_y, Units: , IsExtended: false
-        /// </summary>
-        public float RecBottomY { get; set; }
-        /// <summary>
-        /// Current tracking status
-        /// OriginName: tracking_status, Units: , IsExtended: false
-        /// </summary>
-        public CameraTrackingStatusFlags TrackingStatus { get; set; }
-        /// <summary>
-        /// Current tracking mode
-        /// OriginName: tracking_mode, Units: , IsExtended: false
-        /// </summary>
-        public CameraTrackingMode TrackingMode { get; set; }
-        /// <summary>
-        /// Defines location of target data
-        /// OriginName: target_data, Units: , IsExtended: false
-        /// </summary>
-        public CameraTrackingTargetData TargetData { get; set; }
-    }
-    /// <summary>
-    /// Camera tracking status, sent while in active tracking. Use MAV_CMD_SET_MESSAGE_INTERVAL to define message interval.
-    ///  CAMERA_TRACKING_GEO_STATUS
-    /// </summary>
-    public class CameraTrackingGeoStatusPacket: PacketV2<CameraTrackingGeoStatusPayload>
-    {
-	    public const int PacketMessageId = 276;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 18;
-
-        public override CameraTrackingGeoStatusPayload Payload { get; } = new CameraTrackingGeoStatusPayload();
-
-        public override string Name => "CAMERA_TRACKING_GEO_STATUS";
-    }
-
-    /// <summary>
-    ///  CAMERA_TRACKING_GEO_STATUS
-    /// </summary>
-    public class CameraTrackingGeoStatusPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 49; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 49; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            Lat = BinSerialize.ReadInt(ref buffer);index+=4;
-            Lon = BinSerialize.ReadInt(ref buffer);index+=4;
-            Alt = BinSerialize.ReadFloat(ref buffer);index+=4;
-            HAcc = BinSerialize.ReadFloat(ref buffer);index+=4;
-            VAcc = BinSerialize.ReadFloat(ref buffer);index+=4;
-            VelN = BinSerialize.ReadFloat(ref buffer);index+=4;
-            VelE = BinSerialize.ReadFloat(ref buffer);index+=4;
-            VelD = BinSerialize.ReadFloat(ref buffer);index+=4;
-            VelAcc = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Dist = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Hdg = BinSerialize.ReadFloat(ref buffer);index+=4;
-            HdgAcc = BinSerialize.ReadFloat(ref buffer);index+=4;
-            TrackingStatus = (CameraTrackingStatusFlags)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteInt(ref buffer,Lat);index+=4;
-            BinSerialize.WriteInt(ref buffer,Lon);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Alt);index+=4;
-            BinSerialize.WriteFloat(ref buffer,HAcc);index+=4;
-            BinSerialize.WriteFloat(ref buffer,VAcc);index+=4;
-            BinSerialize.WriteFloat(ref buffer,VelN);index+=4;
-            BinSerialize.WriteFloat(ref buffer,VelE);index+=4;
-            BinSerialize.WriteFloat(ref buffer,VelD);index+=4;
-            BinSerialize.WriteFloat(ref buffer,VelAcc);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Dist);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Hdg);index+=4;
-            BinSerialize.WriteFloat(ref buffer,HdgAcc);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)TrackingStatus);index+=1;
-            return index; // /*PayloadByteSize*/49;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            Lat = BitConverter.ToInt32(buffer,index);index+=4;
-            Lon = BitConverter.ToInt32(buffer,index);index+=4;
-            Alt = BitConverter.ToSingle(buffer, index);index+=4;
-            HAcc = BitConverter.ToSingle(buffer, index);index+=4;
-            VAcc = BitConverter.ToSingle(buffer, index);index+=4;
-            VelN = BitConverter.ToSingle(buffer, index);index+=4;
-            VelE = BitConverter.ToSingle(buffer, index);index+=4;
-            VelD = BitConverter.ToSingle(buffer, index);index+=4;
-            VelAcc = BitConverter.ToSingle(buffer, index);index+=4;
-            Dist = BitConverter.ToSingle(buffer, index);index+=4;
-            Hdg = BitConverter.ToSingle(buffer, index);index+=4;
-            HdgAcc = BitConverter.ToSingle(buffer, index);index+=4;
-            TrackingStatus = (CameraTrackingStatusFlags)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Lat).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Lon).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Alt).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(HAcc).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(VAcc).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(VelN).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(VelE).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(VelD).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(VelAcc).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Dist).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Hdg).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(HdgAcc).CopyTo(buffer, index);index+=4;
-            buffer[index] = (byte)TrackingStatus;index+=1;
-            return index - start; // /*PayloadByteSize*/49;
-        }
-
-        /// <summary>
-        /// Latitude of tracked object
-        /// OriginName: lat, Units: degE7, IsExtended: false
-        /// </summary>
-        public int Lat { get; set; }
-        /// <summary>
-        /// Longitude of tracked object
-        /// OriginName: lon, Units: degE7, IsExtended: false
-        /// </summary>
-        public int Lon { get; set; }
-        /// <summary>
-        /// Altitude of tracked object(AMSL, WGS84)
-        /// OriginName: alt, Units: m, IsExtended: false
-        /// </summary>
-        public float Alt { get; set; }
-        /// <summary>
-        /// Horizontal accuracy. NAN if unknown
-        /// OriginName: h_acc, Units: m, IsExtended: false
-        /// </summary>
-        public float HAcc { get; set; }
-        /// <summary>
-        /// Vertical accuracy. NAN if unknown
-        /// OriginName: v_acc, Units: m, IsExtended: false
-        /// </summary>
-        public float VAcc { get; set; }
-        /// <summary>
-        /// North velocity of tracked object. NAN if unknown
-        /// OriginName: vel_n, Units: m/s, IsExtended: false
-        /// </summary>
-        public float VelN { get; set; }
-        /// <summary>
-        /// East velocity of tracked object. NAN if unknown
-        /// OriginName: vel_e, Units: m/s, IsExtended: false
-        /// </summary>
-        public float VelE { get; set; }
-        /// <summary>
-        /// Down velocity of tracked object. NAN if unknown
-        /// OriginName: vel_d, Units: m/s, IsExtended: false
-        /// </summary>
-        public float VelD { get; set; }
-        /// <summary>
-        /// Velocity accuracy. NAN if unknown
-        /// OriginName: vel_acc, Units: m/s, IsExtended: false
-        /// </summary>
-        public float VelAcc { get; set; }
-        /// <summary>
-        /// Distance between camera and tracked object. NAN if unknown
-        /// OriginName: dist, Units: m, IsExtended: false
-        /// </summary>
-        public float Dist { get; set; }
-        /// <summary>
-        /// Heading in radians, in NED. NAN if unknown
-        /// OriginName: hdg, Units: rad, IsExtended: false
-        /// </summary>
-        public float Hdg { get; set; }
-        /// <summary>
-        /// Accuracy of heading, in NED. NAN if unknown
-        /// OriginName: hdg_acc, Units: rad, IsExtended: false
-        /// </summary>
-        public float HdgAcc { get; set; }
-        /// <summary>
-        /// Current tracking status
-        /// OriginName: tracking_status, Units: , IsExtended: false
-        /// </summary>
-        public CameraTrackingStatusFlags TrackingStatus { get; set; }
-    }
-    /// <summary>
-    /// Information about a high level gimbal manager. This message should be requested by a ground station using MAV_CMD_REQUEST_MESSAGE.
-    ///  GIMBAL_MANAGER_INFORMATION
-    /// </summary>
-    public class GimbalManagerInformationPacket: PacketV2<GimbalManagerInformationPayload>
-    {
-	    public const int PacketMessageId = 280;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 70;
-
-        public override GimbalManagerInformationPayload Payload { get; } = new GimbalManagerInformationPayload();
-
-        public override string Name => "GIMBAL_MANAGER_INFORMATION";
-    }
-
-    /// <summary>
-    ///  GIMBAL_MANAGER_INFORMATION
-    /// </summary>
-    public class GimbalManagerInformationPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 33; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
-            CapFlags = (GimbalManagerCapFlags)BinSerialize.ReadUInt(ref buffer);index+=4;
-            RollMin = BinSerialize.ReadFloat(ref buffer);index+=4;
-            RollMax = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PitchMin = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PitchMax = BinSerialize.ReadFloat(ref buffer);index+=4;
-            YawMin = BinSerialize.ReadFloat(ref buffer);index+=4;
-            YawMax = BinSerialize.ReadFloat(ref buffer);index+=4;
-            GimbalDeviceId = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,TimeBootMs);index+=4;
-            BinSerialize.WriteUInt(ref buffer,(uint)CapFlags);index+=4;
-            BinSerialize.WriteFloat(ref buffer,RollMin);index+=4;
-            BinSerialize.WriteFloat(ref buffer,RollMax);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PitchMin);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PitchMax);index+=4;
-            BinSerialize.WriteFloat(ref buffer,YawMin);index+=4;
-            BinSerialize.WriteFloat(ref buffer,YawMax);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)GimbalDeviceId);index+=1;
-            return index; // /*PayloadByteSize*/33;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
-            CapFlags = (GimbalManagerCapFlags)BitConverter.ToUInt32(buffer,index);index+=4;
-            RollMin = BitConverter.ToSingle(buffer, index);index+=4;
-            RollMax = BitConverter.ToSingle(buffer, index);index+=4;
-            PitchMin = BitConverter.ToSingle(buffer, index);index+=4;
-            PitchMax = BitConverter.ToSingle(buffer, index);index+=4;
-            YawMin = BitConverter.ToSingle(buffer, index);index+=4;
-            YawMax = BitConverter.ToSingle(buffer, index);index+=4;
-            GimbalDeviceId = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(TimeBootMs).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes((uint)CapFlags).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(RollMin).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(RollMax).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PitchMin).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PitchMax).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(YawMin).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(YawMax).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(GimbalDeviceId).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/33;
-        }
-
-        /// <summary>
-        /// Timestamp (time since system boot).
-        /// OriginName: time_boot_ms, Units: ms, IsExtended: false
-        /// </summary>
-        public uint TimeBootMs { get; set; }
-        /// <summary>
-        /// Bitmap of gimbal capability flags.
-        /// OriginName: cap_flags, Units: , IsExtended: false
-        /// </summary>
-        public GimbalManagerCapFlags CapFlags { get; set; }
-        /// <summary>
-        /// Minimum hardware roll angle (positive: rolling to the right, negative: rolling to the left)
-        /// OriginName: roll_min, Units: rad, IsExtended: false
-        /// </summary>
-        public float RollMin { get; set; }
-        /// <summary>
-        /// Maximum hardware roll angle (positive: rolling to the right, negative: rolling to the left)
-        /// OriginName: roll_max, Units: rad, IsExtended: false
-        /// </summary>
-        public float RollMax { get; set; }
-        /// <summary>
-        /// Minimum pitch angle (positive: up, negative: down)
-        /// OriginName: pitch_min, Units: rad, IsExtended: false
-        /// </summary>
-        public float PitchMin { get; set; }
-        /// <summary>
-        /// Maximum pitch angle (positive: up, negative: down)
-        /// OriginName: pitch_max, Units: rad, IsExtended: false
-        /// </summary>
-        public float PitchMax { get; set; }
-        /// <summary>
-        /// Minimum yaw angle (positive: to the right, negative: to the left)
-        /// OriginName: yaw_min, Units: rad, IsExtended: false
-        /// </summary>
-        public float YawMin { get; set; }
-        /// <summary>
-        /// Maximum yaw angle (positive: to the right, negative: to the left)
-        /// OriginName: yaw_max, Units: rad, IsExtended: false
-        /// </summary>
-        public float YawMax { get; set; }
-        /// <summary>
-        /// Gimbal device ID that this gimbal manager is responsible for.
-        /// OriginName: gimbal_device_id, Units: , IsExtended: false
-        /// </summary>
-        public byte GimbalDeviceId { get; set; }
-    }
-    /// <summary>
-    /// Current status about a high level gimbal manager. This message should be broadcast at a low regular rate (e.g. 5Hz).
-    ///  GIMBAL_MANAGER_STATUS
-    /// </summary>
-    public class GimbalManagerStatusPacket: PacketV2<GimbalManagerStatusPayload>
-    {
-	    public const int PacketMessageId = 281;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 48;
-
-        public override GimbalManagerStatusPayload Payload { get; } = new GimbalManagerStatusPayload();
-
-        public override string Name => "GIMBAL_MANAGER_STATUS";
-    }
-
-    /// <summary>
-    ///  GIMBAL_MANAGER_STATUS
-    /// </summary>
-    public class GimbalManagerStatusPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 13; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 13; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
-            Flags = (GimbalManagerFlags)BinSerialize.ReadUInt(ref buffer);index+=4;
-            GimbalDeviceId = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            PrimaryControlSysid = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            PrimaryControlCompid = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            SecondaryControlSysid = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            SecondaryControlCompid = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,TimeBootMs);index+=4;
-            BinSerialize.WriteUInt(ref buffer,(uint)Flags);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)GimbalDeviceId);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)PrimaryControlSysid);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)PrimaryControlCompid);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)SecondaryControlSysid);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)SecondaryControlCompid);index+=1;
-            return index; // /*PayloadByteSize*/13;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
-            Flags = (GimbalManagerFlags)BitConverter.ToUInt32(buffer,index);index+=4;
-            GimbalDeviceId = (byte)buffer[index++];
-            PrimaryControlSysid = (byte)buffer[index++];
-            PrimaryControlCompid = (byte)buffer[index++];
-            SecondaryControlSysid = (byte)buffer[index++];
-            SecondaryControlCompid = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(TimeBootMs).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes((uint)Flags).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(GimbalDeviceId).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(PrimaryControlSysid).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(PrimaryControlCompid).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(SecondaryControlSysid).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(SecondaryControlCompid).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/13;
-        }
-
-        /// <summary>
-        /// Timestamp (time since system boot).
-        /// OriginName: time_boot_ms, Units: ms, IsExtended: false
-        /// </summary>
-        public uint TimeBootMs { get; set; }
-        /// <summary>
-        /// High level gimbal manager flags currently applied.
-        /// OriginName: flags, Units: , IsExtended: false
-        /// </summary>
-        public GimbalManagerFlags Flags { get; set; }
-        /// <summary>
-        /// Gimbal device ID that this gimbal manager is responsible for.
-        /// OriginName: gimbal_device_id, Units: , IsExtended: false
-        /// </summary>
-        public byte GimbalDeviceId { get; set; }
-        /// <summary>
-        /// System ID of MAVLink component with primary control, 0 for none.
-        /// OriginName: primary_control_sysid, Units: , IsExtended: false
-        /// </summary>
-        public byte PrimaryControlSysid { get; set; }
-        /// <summary>
-        /// Component ID of MAVLink component with primary control, 0 for none.
-        /// OriginName: primary_control_compid, Units: , IsExtended: false
-        /// </summary>
-        public byte PrimaryControlCompid { get; set; }
-        /// <summary>
-        /// System ID of MAVLink component with secondary control, 0 for none.
-        /// OriginName: secondary_control_sysid, Units: , IsExtended: false
-        /// </summary>
-        public byte SecondaryControlSysid { get; set; }
-        /// <summary>
-        /// Component ID of MAVLink component with secondary control, 0 for none.
-        /// OriginName: secondary_control_compid, Units: , IsExtended: false
-        /// </summary>
-        public byte SecondaryControlCompid { get; set; }
-    }
-    /// <summary>
-    /// High level message to control a gimbal's attitude. This message is to be sent to the gimbal manager (e.g. from a ground station). Angles and rates can be set to NaN according to use case.
-    ///  GIMBAL_MANAGER_SET_ATTITUDE
-    /// </summary>
-    public class GimbalManagerSetAttitudePacket: PacketV2<GimbalManagerSetAttitudePayload>
-    {
-	    public const int PacketMessageId = 282;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 123;
-
-        public override GimbalManagerSetAttitudePayload Payload { get; } = new GimbalManagerSetAttitudePayload();
-
-        public override string Name => "GIMBAL_MANAGER_SET_ATTITUDE";
-    }
-
-    /// <summary>
-    ///  GIMBAL_MANAGER_SET_ATTITUDE
-    /// </summary>
-    public class GimbalManagerSetAttitudePayload : IPayload
-    {
-        public byte GetMaxByteSize() => 35; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 35; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Flags = (GimbalManagerFlags)BinSerialize.ReadUInt(ref buffer);index+=4;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/35 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            Q = new float[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Q[i] = BinSerialize.ReadFloat(ref buffer);index+=4;
-            }
-            AngularVelocityX = BinSerialize.ReadFloat(ref buffer);index+=4;
-            AngularVelocityY = BinSerialize.ReadFloat(ref buffer);index+=4;
-            AngularVelocityZ = BinSerialize.ReadFloat(ref buffer);index+=4;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            GimbalDeviceId = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,(uint)Flags);index+=4;
-            for(var i=0;i<Q.Length;i++)
-            {
-                BinSerialize.WriteFloat(ref buffer,Q[i]);index+=4;
-            }
-            BinSerialize.WriteFloat(ref buffer,AngularVelocityX);index+=4;
-            BinSerialize.WriteFloat(ref buffer,AngularVelocityY);index+=4;
-            BinSerialize.WriteFloat(ref buffer,AngularVelocityZ);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)GimbalDeviceId);index+=1;
-            return index; // /*PayloadByteSize*/35;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Flags = (GimbalManagerFlags)BitConverter.ToUInt32(buffer,index);index+=4;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/35 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            Q = new float[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Q[i] = BitConverter.ToSingle(buffer, index);index+=4;
-            }
-            AngularVelocityX = BitConverter.ToSingle(buffer, index);index+=4;
-            AngularVelocityY = BitConverter.ToSingle(buffer, index);index+=4;
-            AngularVelocityZ = BitConverter.ToSingle(buffer, index);index+=4;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            GimbalDeviceId = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes((uint)Flags).CopyTo(buffer, index);index+=4;
-            for(var i=0;i<Q.Length;i++)
-            {
-                BitConverter.GetBytes(Q[i]).CopyTo(buffer, index);index+=4;
-            }
-            BitConverter.GetBytes(AngularVelocityX).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(AngularVelocityY).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(AngularVelocityZ).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(GimbalDeviceId).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/35;
-        }
-
-        /// <summary>
-        /// High level gimbal manager flags to use.
-        /// OriginName: flags, Units: , IsExtended: false
-        /// </summary>
-        public GimbalManagerFlags Flags { get; set; }
-        /// <summary>
-        /// Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation, the frame is depends on whether the flag GIMBAL_MANAGER_FLAGS_YAW_LOCK is set)
-        /// OriginName: q, Units: , IsExtended: false
-        /// </summary>
-        public float[] Q { get; set; } = new float[4];
-        public byte GetQMaxItemsCount() => 4;
-        /// <summary>
-        /// X component of angular velocity, positive is rolling to the right, NaN to be ignored.
-        /// OriginName: angular_velocity_x, Units: rad/s, IsExtended: false
-        /// </summary>
-        public float AngularVelocityX { get; set; }
-        /// <summary>
-        /// Y component of angular velocity, positive is pitching up, NaN to be ignored.
-        /// OriginName: angular_velocity_y, Units: rad/s, IsExtended: false
-        /// </summary>
-        public float AngularVelocityY { get; set; }
-        /// <summary>
-        /// Z component of angular velocity, positive is yawing to the right, NaN to be ignored.
-        /// OriginName: angular_velocity_z, Units: rad/s, IsExtended: false
-        /// </summary>
-        public float AngularVelocityZ { get; set; }
-        /// <summary>
-        /// System ID
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-        /// <summary>
-        /// Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).
-        /// OriginName: gimbal_device_id, Units: , IsExtended: false
-        /// </summary>
-        public byte GimbalDeviceId { get; set; }
-    }
-    /// <summary>
-    /// Information about a low level gimbal. This message should be requested by the gimbal manager or a ground station using MAV_CMD_REQUEST_MESSAGE. The maximum angles and rates are the limits by hardware. However, the limits by software used are likely different/smaller and dependent on mode/settings/etc..
-    ///  GIMBAL_DEVICE_INFORMATION
-    /// </summary>
-    public class GimbalDeviceInformationPacket: PacketV2<GimbalDeviceInformationPayload>
-    {
-	    public const int PacketMessageId = 283;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 74;
-
-        public override GimbalDeviceInformationPayload Payload { get; } = new GimbalDeviceInformationPayload();
-
-        public override string Name => "GIMBAL_DEVICE_INFORMATION";
-    }
-
-    /// <summary>
-    ///  GIMBAL_DEVICE_INFORMATION
-    /// </summary>
-    public class GimbalDeviceInformationPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 144; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 144; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Uid = BinSerialize.ReadULong(ref buffer);index+=8;
-            TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
-            FirmwareVersion = BinSerialize.ReadUInt(ref buffer);index+=4;
-            HardwareVersion = BinSerialize.ReadUInt(ref buffer);index+=4;
-            RollMin = BinSerialize.ReadFloat(ref buffer);index+=4;
-            RollMax = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PitchMin = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PitchMax = BinSerialize.ReadFloat(ref buffer);index+=4;
-            YawMin = BinSerialize.ReadFloat(ref buffer);index+=4;
-            YawMax = BinSerialize.ReadFloat(ref buffer);index+=4;
-            CapFlags = (GimbalDeviceCapFlags)BinSerialize.ReadUShort(ref buffer);index+=2;
-            CustomCapFlags = BinSerialize.ReadUShort(ref buffer);index+=2;
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/144 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            VendorName = new char[arraySize];
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = VendorName)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, VendorName.Length);
-                }
-            }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-            arraySize = 32;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = ModelName)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, ModelName.Length);
-                }
-            }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-            arraySize = 32;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = CustomName)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, CustomName.Length);
-                }
-            }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,Uid);index+=8;
-            BinSerialize.WriteUInt(ref buffer,TimeBootMs);index+=4;
-            BinSerialize.WriteUInt(ref buffer,FirmwareVersion);index+=4;
-            BinSerialize.WriteUInt(ref buffer,HardwareVersion);index+=4;
-            BinSerialize.WriteFloat(ref buffer,RollMin);index+=4;
-            BinSerialize.WriteFloat(ref buffer,RollMax);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PitchMin);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PitchMax);index+=4;
-            BinSerialize.WriteFloat(ref buffer,YawMin);index+=4;
-            BinSerialize.WriteFloat(ref buffer,YawMax);index+=4;
-            BinSerialize.WriteUShort(ref buffer,(ushort)CapFlags);index+=2;
-            BinSerialize.WriteUShort(ref buffer,CustomCapFlags);index+=2;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = VendorName)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, VendorName.Length, bytePointer, VendorName.Length);
-                }
-            }
-            buffer = buffer.Slice(VendorName.Length);
-            index+=VendorName.Length;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = ModelName)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, ModelName.Length, bytePointer, ModelName.Length);
-                }
-            }
-            buffer = buffer.Slice(ModelName.Length);
-            index+=ModelName.Length;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = CustomName)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, CustomName.Length, bytePointer, CustomName.Length);
-                }
-            }
-            buffer = buffer.Slice(CustomName.Length);
-            index+=CustomName.Length;
-            return index; // /*PayloadByteSize*/144;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Uid = BitConverter.ToUInt64(buffer,index);index+=8;
-            TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
-            FirmwareVersion = BitConverter.ToUInt32(buffer,index);index+=4;
-            HardwareVersion = BitConverter.ToUInt32(buffer,index);index+=4;
-            RollMin = BitConverter.ToSingle(buffer, index);index+=4;
-            RollMax = BitConverter.ToSingle(buffer, index);index+=4;
-            PitchMin = BitConverter.ToSingle(buffer, index);index+=4;
-            PitchMax = BitConverter.ToSingle(buffer, index);index+=4;
-            YawMin = BitConverter.ToSingle(buffer, index);index+=4;
-            YawMax = BitConverter.ToSingle(buffer, index);index+=4;
-            CapFlags = (GimbalDeviceCapFlags)BitConverter.ToUInt16(buffer,index);index+=2;
-            CustomCapFlags = BitConverter.ToUInt16(buffer,index);index+=2;
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/144 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            VendorName = new char[arraySize];
-            Encoding.ASCII.GetChars(buffer, index,arraySize,VendorName,0);
-            index+=arraySize;
-            arraySize = 32;
-            Encoding.ASCII.GetChars(buffer, index,arraySize,ModelName,0);
-            index+=arraySize;
-            arraySize = 32;
-            Encoding.ASCII.GetChars(buffer, index,arraySize,CustomName,0);
-            index+=arraySize;
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Uid).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(TimeBootMs).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(FirmwareVersion).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(HardwareVersion).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(RollMin).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(RollMax).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PitchMin).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PitchMax).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(YawMin).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(YawMax).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes((ushort)CapFlags).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(CustomCapFlags).CopyTo(buffer, index);index+=2;
-            index+=Encoding.ASCII.GetBytes(VendorName,0,VendorName.Length,buffer,index);
-            index+=Encoding.ASCII.GetBytes(ModelName,0,ModelName.Length,buffer,index);
-            index+=Encoding.ASCII.GetBytes(CustomName,0,CustomName.Length,buffer,index);
-            return index - start; // /*PayloadByteSize*/144;
-        }
-
-        /// <summary>
-        /// UID of gimbal hardware (0 if unknown).
-        /// OriginName: uid, Units: , IsExtended: false
-        /// </summary>
-        public ulong Uid { get; set; }
-        /// <summary>
-        /// Timestamp (time since system boot).
-        /// OriginName: time_boot_ms, Units: ms, IsExtended: false
-        /// </summary>
-        public uint TimeBootMs { get; set; }
-        /// <summary>
-        /// Version of the gimbal firmware, encoded as: (Dev & 0xff) << 24 | (Patch & 0xff) << 16 | (Minor & 0xff) << 8 | (Major & 0xff).
-        /// OriginName: firmware_version, Units: , IsExtended: false
-        /// </summary>
-        public uint FirmwareVersion { get; set; }
-        /// <summary>
-        /// Version of the gimbal hardware, encoded as: (Dev & 0xff) << 24 | (Patch & 0xff) << 16 | (Minor & 0xff) << 8 | (Major & 0xff).
-        /// OriginName: hardware_version, Units: , IsExtended: false
-        /// </summary>
-        public uint HardwareVersion { get; set; }
-        /// <summary>
-        /// Minimum hardware roll angle (positive: rolling to the right, negative: rolling to the left)
-        /// OriginName: roll_min, Units: rad, IsExtended: false
-        /// </summary>
-        public float RollMin { get; set; }
-        /// <summary>
-        /// Maximum hardware roll angle (positive: rolling to the right, negative: rolling to the left)
-        /// OriginName: roll_max, Units: rad, IsExtended: false
-        /// </summary>
-        public float RollMax { get; set; }
-        /// <summary>
-        /// Minimum hardware pitch angle (positive: up, negative: down)
-        /// OriginName: pitch_min, Units: rad, IsExtended: false
-        /// </summary>
-        public float PitchMin { get; set; }
-        /// <summary>
-        /// Maximum hardware pitch angle (positive: up, negative: down)
-        /// OriginName: pitch_max, Units: rad, IsExtended: false
-        /// </summary>
-        public float PitchMax { get; set; }
-        /// <summary>
-        /// Minimum hardware yaw angle (positive: to the right, negative: to the left)
-        /// OriginName: yaw_min, Units: rad, IsExtended: false
-        /// </summary>
-        public float YawMin { get; set; }
-        /// <summary>
-        /// Maximum hardware yaw angle (positive: to the right, negative: to the left)
-        /// OriginName: yaw_max, Units: rad, IsExtended: false
-        /// </summary>
-        public float YawMax { get; set; }
-        /// <summary>
-        /// Bitmap of gimbal capability flags.
-        /// OriginName: cap_flags, Units: , IsExtended: false
-        /// </summary>
-        public GimbalDeviceCapFlags CapFlags { get; set; }
-        /// <summary>
-        /// Bitmap for use for gimbal-specific capability flags.
-        /// OriginName: custom_cap_flags, Units: , IsExtended: false
-        /// </summary>
-        public ushort CustomCapFlags { get; set; }
-        /// <summary>
-        /// Name of the gimbal vendor.
-        /// OriginName: vendor_name, Units: , IsExtended: false
-        /// </summary>
-        public char[] VendorName { get; set; } = new char[32];
-        public byte GetVendorNameMaxItemsCount() => 32;
-        /// <summary>
-        /// Name of the gimbal model.
-        /// OriginName: model_name, Units: , IsExtended: false
-        /// </summary>
-        public char[] ModelName { get; } = new char[32];
-        /// <summary>
-        /// Custom name of the gimbal given to it by the user.
-        /// OriginName: custom_name, Units: , IsExtended: false
-        /// </summary>
-        public char[] CustomName { get; } = new char[32];
-    }
-    /// <summary>
-    /// Low level message to control a gimbal device's attitude. This message is to be sent from the gimbal manager to the gimbal device component. Angles and rates can be set to NaN according to use case.
-    ///  GIMBAL_DEVICE_SET_ATTITUDE
-    /// </summary>
-    public class GimbalDeviceSetAttitudePacket: PacketV2<GimbalDeviceSetAttitudePayload>
-    {
-	    public const int PacketMessageId = 284;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 99;
-
-        public override GimbalDeviceSetAttitudePayload Payload { get; } = new GimbalDeviceSetAttitudePayload();
-
-        public override string Name => "GIMBAL_DEVICE_SET_ATTITUDE";
-    }
-
-    /// <summary>
-    ///  GIMBAL_DEVICE_SET_ATTITUDE
-    /// </summary>
-    public class GimbalDeviceSetAttitudePayload : IPayload
-    {
-        public byte GetMaxByteSize() => 32; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/32 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            Q = new float[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Q[i] = BinSerialize.ReadFloat(ref buffer);index+=4;
-            }
-            AngularVelocityX = BinSerialize.ReadFloat(ref buffer);index+=4;
-            AngularVelocityY = BinSerialize.ReadFloat(ref buffer);index+=4;
-            AngularVelocityZ = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Flags = (GimbalDeviceFlags)BinSerialize.ReadUShort(ref buffer);index+=2;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            for(var i=0;i<Q.Length;i++)
-            {
-                BinSerialize.WriteFloat(ref buffer,Q[i]);index+=4;
-            }
-            BinSerialize.WriteFloat(ref buffer,AngularVelocityX);index+=4;
-            BinSerialize.WriteFloat(ref buffer,AngularVelocityY);index+=4;
-            BinSerialize.WriteFloat(ref buffer,AngularVelocityZ);index+=4;
-            BinSerialize.WriteUShort(ref buffer,(ushort)Flags);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            return index; // /*PayloadByteSize*/32;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/32 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            Q = new float[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Q[i] = BitConverter.ToSingle(buffer, index);index+=4;
-            }
-            AngularVelocityX = BitConverter.ToSingle(buffer, index);index+=4;
-            AngularVelocityY = BitConverter.ToSingle(buffer, index);index+=4;
-            AngularVelocityZ = BitConverter.ToSingle(buffer, index);index+=4;
-            Flags = (GimbalDeviceFlags)BitConverter.ToUInt16(buffer,index);index+=2;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            for(var i=0;i<Q.Length;i++)
-            {
-                BitConverter.GetBytes(Q[i]).CopyTo(buffer, index);index+=4;
-            }
-            BitConverter.GetBytes(AngularVelocityX).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(AngularVelocityY).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(AngularVelocityZ).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes((ushort)Flags).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/32;
-        }
-
-        /// <summary>
-        /// Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation, the frame is depends on whether the flag GIMBAL_DEVICE_FLAGS_YAW_LOCK is set, set all fields to NaN if only angular velocity should be used)
-        /// OriginName: q, Units: , IsExtended: false
-        /// </summary>
-        public float[] Q { get; set; } = new float[4];
-        public byte GetQMaxItemsCount() => 4;
-        /// <summary>
-        /// X component of angular velocity, positive is rolling to the right, NaN to be ignored.
-        /// OriginName: angular_velocity_x, Units: rad/s, IsExtended: false
-        /// </summary>
-        public float AngularVelocityX { get; set; }
-        /// <summary>
-        /// Y component of angular velocity, positive is pitching up, NaN to be ignored.
-        /// OriginName: angular_velocity_y, Units: rad/s, IsExtended: false
-        /// </summary>
-        public float AngularVelocityY { get; set; }
-        /// <summary>
-        /// Z component of angular velocity, positive is yawing to the right, NaN to be ignored.
-        /// OriginName: angular_velocity_z, Units: rad/s, IsExtended: false
-        /// </summary>
-        public float AngularVelocityZ { get; set; }
-        /// <summary>
-        /// Low level gimbal flags.
-        /// OriginName: flags, Units: , IsExtended: false
-        /// </summary>
-        public GimbalDeviceFlags Flags { get; set; }
-        /// <summary>
-        /// System ID
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-    }
-    /// <summary>
-    /// Message reporting the status of a gimbal device. This message should be broadcasted by a gimbal device component. The angles encoded in the quaternion are relative to absolute North if the flag GIMBAL_DEVICE_FLAGS_YAW_LOCK is set (roll: positive is rolling to the right, pitch: positive is pitching up, yaw is turn to the right) or relative to the vehicle heading if the flag is not set. This message should be broadcast at a low regular rate (e.g. 10Hz).
-    ///  GIMBAL_DEVICE_ATTITUDE_STATUS
-    /// </summary>
-    public class GimbalDeviceAttitudeStatusPacket: PacketV2<GimbalDeviceAttitudeStatusPayload>
-    {
-	    public const int PacketMessageId = 285;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 137;
-
-        public override GimbalDeviceAttitudeStatusPayload Payload { get; } = new GimbalDeviceAttitudeStatusPayload();
-
-        public override string Name => "GIMBAL_DEVICE_ATTITUDE_STATUS";
-    }
-
-    /// <summary>
-    ///  GIMBAL_DEVICE_ATTITUDE_STATUS
-    /// </summary>
-    public class GimbalDeviceAttitudeStatusPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 40; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 40; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/40 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            Q = new float[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Q[i] = BinSerialize.ReadFloat(ref buffer);index+=4;
-            }
-            AngularVelocityX = BinSerialize.ReadFloat(ref buffer);index+=4;
-            AngularVelocityY = BinSerialize.ReadFloat(ref buffer);index+=4;
-            AngularVelocityZ = BinSerialize.ReadFloat(ref buffer);index+=4;
-            FailureFlags = (GimbalDeviceErrorFlags)BinSerialize.ReadUInt(ref buffer);index+=4;
-            Flags = (GimbalDeviceFlags)BinSerialize.ReadUShort(ref buffer);index+=2;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,TimeBootMs);index+=4;
-            for(var i=0;i<Q.Length;i++)
-            {
-                BinSerialize.WriteFloat(ref buffer,Q[i]);index+=4;
-            }
-            BinSerialize.WriteFloat(ref buffer,AngularVelocityX);index+=4;
-            BinSerialize.WriteFloat(ref buffer,AngularVelocityY);index+=4;
-            BinSerialize.WriteFloat(ref buffer,AngularVelocityZ);index+=4;
-            BinSerialize.WriteUInt(ref buffer,(uint)FailureFlags);index+=4;
-            BinSerialize.WriteUShort(ref buffer,(ushort)Flags);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            return index; // /*PayloadByteSize*/40;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/40 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            Q = new float[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Q[i] = BitConverter.ToSingle(buffer, index);index+=4;
-            }
-            AngularVelocityX = BitConverter.ToSingle(buffer, index);index+=4;
-            AngularVelocityY = BitConverter.ToSingle(buffer, index);index+=4;
-            AngularVelocityZ = BitConverter.ToSingle(buffer, index);index+=4;
-            FailureFlags = (GimbalDeviceErrorFlags)BitConverter.ToUInt32(buffer,index);index+=4;
-            Flags = (GimbalDeviceFlags)BitConverter.ToUInt16(buffer,index);index+=2;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(TimeBootMs).CopyTo(buffer, index);index+=4;
-            for(var i=0;i<Q.Length;i++)
-            {
-                BitConverter.GetBytes(Q[i]).CopyTo(buffer, index);index+=4;
-            }
-            BitConverter.GetBytes(AngularVelocityX).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(AngularVelocityY).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(AngularVelocityZ).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes((uint)FailureFlags).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes((ushort)Flags).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/40;
-        }
-
-        /// <summary>
-        /// Timestamp (time since system boot).
-        /// OriginName: time_boot_ms, Units: ms, IsExtended: false
-        /// </summary>
-        public uint TimeBootMs { get; set; }
-        /// <summary>
-        /// Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation, the frame is depends on whether the flag GIMBAL_DEVICE_FLAGS_YAW_LOCK is set)
-        /// OriginName: q, Units: , IsExtended: false
-        /// </summary>
-        public float[] Q { get; set; } = new float[4];
-        public byte GetQMaxItemsCount() => 4;
-        /// <summary>
-        /// X component of angular velocity (NaN if unknown)
-        /// OriginName: angular_velocity_x, Units: rad/s, IsExtended: false
-        /// </summary>
-        public float AngularVelocityX { get; set; }
-        /// <summary>
-        /// Y component of angular velocity (NaN if unknown)
-        /// OriginName: angular_velocity_y, Units: rad/s, IsExtended: false
-        /// </summary>
-        public float AngularVelocityY { get; set; }
-        /// <summary>
-        /// Z component of angular velocity (NaN if unknown)
-        /// OriginName: angular_velocity_z, Units: rad/s, IsExtended: false
-        /// </summary>
-        public float AngularVelocityZ { get; set; }
-        /// <summary>
-        /// Failure flags (0 for no failure)
-        /// OriginName: failure_flags, Units: , IsExtended: false
-        /// </summary>
-        public GimbalDeviceErrorFlags FailureFlags { get; set; }
-        /// <summary>
-        /// Current gimbal flags set.
-        /// OriginName: flags, Units: , IsExtended: false
-        /// </summary>
-        public GimbalDeviceFlags Flags { get; set; }
-        /// <summary>
-        /// System ID
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-    }
-    /// <summary>
-    /// Low level message containing autopilot state relevant for a gimbal device. This message is to be sent from the gimbal manager to the gimbal device component. The data of this message server for the gimbal's estimator corrections in particular horizon compensation, as well as the autopilot's control intention e.g. feed forward angular control in z-axis.
-    ///  AUTOPILOT_STATE_FOR_GIMBAL_DEVICE
-    /// </summary>
-    public class AutopilotStateForGimbalDevicePacket: PacketV2<AutopilotStateForGimbalDevicePayload>
-    {
-	    public const int PacketMessageId = 286;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 210;
-
-        public override AutopilotStateForGimbalDevicePayload Payload { get; } = new AutopilotStateForGimbalDevicePayload();
-
-        public override string Name => "AUTOPILOT_STATE_FOR_GIMBAL_DEVICE";
-    }
-
-    /// <summary>
-    ///  AUTOPILOT_STATE_FOR_GIMBAL_DEVICE
-    /// </summary>
-    public class AutopilotStateForGimbalDevicePayload : IPayload
-    {
-        public byte GetMaxByteSize() => 53; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 53; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            TimeBootUs = BinSerialize.ReadULong(ref buffer);index+=8;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/53 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            Q = new float[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Q[i] = BinSerialize.ReadFloat(ref buffer);index+=4;
-            }
-            QEstimatedDelayUs = BinSerialize.ReadUInt(ref buffer);index+=4;
-            Vx = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Vy = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Vz = BinSerialize.ReadFloat(ref buffer);index+=4;
-            VEstimatedDelayUs = BinSerialize.ReadUInt(ref buffer);index+=4;
-            FeedForwardAngularVelocityZ = BinSerialize.ReadFloat(ref buffer);index+=4;
-            EstimatorStatus = (EstimatorStatusFlags)BinSerialize.ReadUShort(ref buffer);index+=2;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            LandedState = (MavLandedState)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,TimeBootUs);index+=8;
-            for(var i=0;i<Q.Length;i++)
-            {
-                BinSerialize.WriteFloat(ref buffer,Q[i]);index+=4;
-            }
-            BinSerialize.WriteUInt(ref buffer,QEstimatedDelayUs);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Vx);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Vy);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Vz);index+=4;
-            BinSerialize.WriteUInt(ref buffer,VEstimatedDelayUs);index+=4;
-            BinSerialize.WriteFloat(ref buffer,FeedForwardAngularVelocityZ);index+=4;
-            BinSerialize.WriteUShort(ref buffer,(ushort)EstimatorStatus);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)LandedState);index+=1;
-            return index; // /*PayloadByteSize*/53;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            TimeBootUs = BitConverter.ToUInt64(buffer,index);index+=8;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/53 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            Q = new float[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Q[i] = BitConverter.ToSingle(buffer, index);index+=4;
-            }
-            QEstimatedDelayUs = BitConverter.ToUInt32(buffer,index);index+=4;
-            Vx = BitConverter.ToSingle(buffer, index);index+=4;
-            Vy = BitConverter.ToSingle(buffer, index);index+=4;
-            Vz = BitConverter.ToSingle(buffer, index);index+=4;
-            VEstimatedDelayUs = BitConverter.ToUInt32(buffer,index);index+=4;
-            FeedForwardAngularVelocityZ = BitConverter.ToSingle(buffer, index);index+=4;
-            EstimatorStatus = (EstimatorStatusFlags)BitConverter.ToUInt16(buffer,index);index+=2;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            LandedState = (MavLandedState)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(TimeBootUs).CopyTo(buffer, index);index+=8;
-            for(var i=0;i<Q.Length;i++)
-            {
-                BitConverter.GetBytes(Q[i]).CopyTo(buffer, index);index+=4;
-            }
-            BitConverter.GetBytes(QEstimatedDelayUs).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Vx).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Vy).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Vz).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(VEstimatedDelayUs).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(FeedForwardAngularVelocityZ).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes((ushort)EstimatorStatus).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            buffer[index] = (byte)LandedState;index+=1;
-            return index - start; // /*PayloadByteSize*/53;
-        }
-
-        /// <summary>
-        /// Timestamp (time since system boot).
-        /// OriginName: time_boot_us, Units: us, IsExtended: false
-        /// </summary>
-        public ulong TimeBootUs { get; set; }
-        /// <summary>
-        /// Quaternion components of autopilot attitude: w, x, y, z (1 0 0 0 is the null-rotation, Hamilton convention).
-        /// OriginName: q, Units: , IsExtended: false
-        /// </summary>
-        public float[] Q { get; set; } = new float[4];
-        public byte GetQMaxItemsCount() => 4;
-        /// <summary>
-        /// Estimated delay of the attitude data.
-        /// OriginName: q_estimated_delay_us, Units: us, IsExtended: false
-        /// </summary>
-        public uint QEstimatedDelayUs { get; set; }
-        /// <summary>
-        /// X Speed in NED (North, East, Down).
-        /// OriginName: vx, Units: m/s, IsExtended: false
-        /// </summary>
-        public float Vx { get; set; }
-        /// <summary>
-        /// Y Speed in NED (North, East, Down).
-        /// OriginName: vy, Units: m/s, IsExtended: false
-        /// </summary>
-        public float Vy { get; set; }
-        /// <summary>
-        /// Z Speed in NED (North, East, Down).
-        /// OriginName: vz, Units: m/s, IsExtended: false
-        /// </summary>
-        public float Vz { get; set; }
-        /// <summary>
-        /// Estimated delay of the speed data.
-        /// OriginName: v_estimated_delay_us, Units: us, IsExtended: false
-        /// </summary>
-        public uint VEstimatedDelayUs { get; set; }
-        /// <summary>
-        /// Feed forward Z component of angular velocity, positive is yawing to the right, NaN to be ignored. This is to indicate if the autopilot is actively yawing.
-        /// OriginName: feed_forward_angular_velocity_z, Units: rad/s, IsExtended: false
-        /// </summary>
-        public float FeedForwardAngularVelocityZ { get; set; }
-        /// <summary>
-        /// Bitmap indicating which estimator outputs are valid.
-        /// OriginName: estimator_status, Units: , IsExtended: false
-        /// </summary>
-        public EstimatorStatusFlags EstimatorStatus { get; set; }
-        /// <summary>
-        /// System ID
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-        /// <summary>
-        /// The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown.
-        /// OriginName: landed_state, Units: , IsExtended: false
-        /// </summary>
-        public MavLandedState LandedState { get; set; }
-    }
-    /// <summary>
-    /// High level message to control a gimbal's pitch and yaw angles. This message is to be sent to the gimbal manager (e.g. from a ground station). Angles and rates can be set to NaN according to use case.
-    ///  GIMBAL_MANAGER_SET_PITCHYAW
-    /// </summary>
-    public class GimbalManagerSetPitchyawPacket: PacketV2<GimbalManagerSetPitchyawPayload>
-    {
-	    public const int PacketMessageId = 287;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 1;
-
-        public override GimbalManagerSetPitchyawPayload Payload { get; } = new GimbalManagerSetPitchyawPayload();
-
-        public override string Name => "GIMBAL_MANAGER_SET_PITCHYAW";
-    }
-
-    /// <summary>
-    ///  GIMBAL_MANAGER_SET_PITCHYAW
-    /// </summary>
-    public class GimbalManagerSetPitchyawPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 23; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 23; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            Flags = (GimbalManagerFlags)BinSerialize.ReadUInt(ref buffer);index+=4;
-            Pitch = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Yaw = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PitchRate = BinSerialize.ReadFloat(ref buffer);index+=4;
-            YawRate = BinSerialize.ReadFloat(ref buffer);index+=4;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            GimbalDeviceId = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,(uint)Flags);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Pitch);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Yaw);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PitchRate);index+=4;
-            BinSerialize.WriteFloat(ref buffer,YawRate);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)GimbalDeviceId);index+=1;
-            return index; // /*PayloadByteSize*/23;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            Flags = (GimbalManagerFlags)BitConverter.ToUInt32(buffer,index);index+=4;
-            Pitch = BitConverter.ToSingle(buffer, index);index+=4;
-            Yaw = BitConverter.ToSingle(buffer, index);index+=4;
-            PitchRate = BitConverter.ToSingle(buffer, index);index+=4;
-            YawRate = BitConverter.ToSingle(buffer, index);index+=4;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            GimbalDeviceId = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes((uint)Flags).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Pitch).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Yaw).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PitchRate).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(YawRate).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(GimbalDeviceId).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/23;
-        }
-
-        /// <summary>
-        /// High level gimbal manager flags to use.
-        /// OriginName: flags, Units: , IsExtended: false
-        /// </summary>
-        public GimbalManagerFlags Flags { get; set; }
-        /// <summary>
-        /// Pitch angle (positive: up, negative: down, NaN to be ignored).
-        /// OriginName: pitch, Units: rad, IsExtended: false
-        /// </summary>
-        public float Pitch { get; set; }
-        /// <summary>
-        /// Yaw angle (positive: to the right, negative: to the left, NaN to be ignored).
-        /// OriginName: yaw, Units: rad, IsExtended: false
-        /// </summary>
-        public float Yaw { get; set; }
-        /// <summary>
-        /// Pitch angular rate (positive: up, negative: down, NaN to be ignored).
-        /// OriginName: pitch_rate, Units: rad/s, IsExtended: false
-        /// </summary>
-        public float PitchRate { get; set; }
-        /// <summary>
-        /// Yaw angular rate (positive: to the right, negative: to the left, NaN to be ignored).
-        /// OriginName: yaw_rate, Units: rad/s, IsExtended: false
-        /// </summary>
-        public float YawRate { get; set; }
-        /// <summary>
-        /// System ID
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-        /// <summary>
-        /// Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).
-        /// OriginName: gimbal_device_id, Units: , IsExtended: false
-        /// </summary>
-        public byte GimbalDeviceId { get; set; }
-    }
-    /// <summary>
-    /// High level message to control a gimbal manually. The angles or angular rates are unitless; the actual rates will depend on internal gimbal manager settings/configuration (e.g. set by parameters). This message is to be sent to the gimbal manager (e.g. from a ground station). Angles and rates can be set to NaN according to use case.
-    ///  GIMBAL_MANAGER_SET_MANUAL_CONTROL
-    /// </summary>
-    public class GimbalManagerSetManualControlPacket: PacketV2<GimbalManagerSetManualControlPayload>
-    {
-	    public const int PacketMessageId = 288;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 20;
-
-        public override GimbalManagerSetManualControlPayload Payload { get; } = new GimbalManagerSetManualControlPayload();
-
-        public override string Name => "GIMBAL_MANAGER_SET_MANUAL_CONTROL";
-    }
-
-    /// <summary>
-    ///  GIMBAL_MANAGER_SET_MANUAL_CONTROL
-    /// </summary>
-    public class GimbalManagerSetManualControlPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 23; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 23; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            Flags = (GimbalManagerFlags)BinSerialize.ReadUInt(ref buffer);index+=4;
-            Pitch = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Yaw = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PitchRate = BinSerialize.ReadFloat(ref buffer);index+=4;
-            YawRate = BinSerialize.ReadFloat(ref buffer);index+=4;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            GimbalDeviceId = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,(uint)Flags);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Pitch);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Yaw);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PitchRate);index+=4;
-            BinSerialize.WriteFloat(ref buffer,YawRate);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)GimbalDeviceId);index+=1;
-            return index; // /*PayloadByteSize*/23;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            Flags = (GimbalManagerFlags)BitConverter.ToUInt32(buffer,index);index+=4;
-            Pitch = BitConverter.ToSingle(buffer, index);index+=4;
-            Yaw = BitConverter.ToSingle(buffer, index);index+=4;
-            PitchRate = BitConverter.ToSingle(buffer, index);index+=4;
-            YawRate = BitConverter.ToSingle(buffer, index);index+=4;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            GimbalDeviceId = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes((uint)Flags).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Pitch).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Yaw).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PitchRate).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(YawRate).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(GimbalDeviceId).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/23;
-        }
-
-        /// <summary>
-        /// High level gimbal manager flags.
-        /// OriginName: flags, Units: , IsExtended: false
-        /// </summary>
-        public GimbalManagerFlags Flags { get; set; }
-        /// <summary>
-        /// Pitch angle unitless (-1..1, positive: up, negative: down, NaN to be ignored).
-        /// OriginName: pitch, Units: , IsExtended: false
-        /// </summary>
-        public float Pitch { get; set; }
-        /// <summary>
-        /// Yaw angle unitless (-1..1, positive: to the right, negative: to the left, NaN to be ignored).
-        /// OriginName: yaw, Units: , IsExtended: false
-        /// </summary>
-        public float Yaw { get; set; }
-        /// <summary>
-        /// Pitch angular rate unitless (-1..1, positive: up, negative: down, NaN to be ignored).
-        /// OriginName: pitch_rate, Units: , IsExtended: false
-        /// </summary>
-        public float PitchRate { get; set; }
-        /// <summary>
-        /// Yaw angular rate unitless (-1..1, positive: to the right, negative: to the left, NaN to be ignored).
-        /// OriginName: yaw_rate, Units: , IsExtended: false
-        /// </summary>
-        public float YawRate { get; set; }
-        /// <summary>
-        /// System ID
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-        /// <summary>
-        /// Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).
-        /// OriginName: gimbal_device_id, Units: , IsExtended: false
-        /// </summary>
-        public byte GimbalDeviceId { get; set; }
-    }
-    /// <summary>
-    /// ESC information for lower rate streaming. Recommended streaming rate 1Hz. See ESC_STATUS for higher-rate ESC data.
-    ///  ESC_INFO
-    /// </summary>
-    public class EscInfoPacket: PacketV2<EscInfoPayload>
-    {
-	    public const int PacketMessageId = 290;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 251;
-
-        public override EscInfoPayload Payload { get; } = new EscInfoPayload();
-
-        public override string Name => "ESC_INFO";
-    }
-
-    /// <summary>
-    ///  ESC_INFO
-    /// </summary>
-    public class EscInfoPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 46; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 46; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/46 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            ErrorCount = new uint[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                ErrorCount[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
-            }
-            Counter = BinSerialize.ReadUShort(ref buffer);index+=2;
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                FailureFlags[i] = (EscFailureFlags)BinSerialize.ReadUShort(ref buffer);index+=2;
-            }
-
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                Temperature[i] = BinSerialize.ReadShort(ref buffer);index+=2;
-            }
-            Index = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            Count = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            ConnectionType = (EscConnectionType)BinSerialize.ReadByte(ref buffer);index+=1;
-            Info = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,TimeUsec);index+=8;
-            for(var i=0;i<ErrorCount.Length;i++)
-            {
-                BinSerialize.WriteUInt(ref buffer,ErrorCount[i]);index+=4;
-            }
-            BinSerialize.WriteUShort(ref buffer,Counter);index+=2;
-            for(var i=0;i<FailureFlags.Length;i++)
-            {
-                BinSerialize.WriteUShort(ref buffer,(ushort)FailureFlags[i]);index+=2;
-            }
-            for(var i=0;i<Temperature.Length;i++)
-            {
-                BinSerialize.WriteShort(ref buffer,Temperature[i]);index+=2;
-            }
-            BinSerialize.WriteByte(ref buffer,(byte)Index);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Count);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)ConnectionType);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Info);index+=1;
-            return index; // /*PayloadByteSize*/46;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/46 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            ErrorCount = new uint[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                ErrorCount[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-            Counter = BitConverter.ToUInt16(buffer,index);index+=2;
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                FailureFlags[i] = (EscFailureFlags)BitConverter.ToUInt16(buffer,index);index+=2;
-            }
-
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                Temperature[i] = BitConverter.ToInt16(buffer,index);index+=2;
-            }
-            Index = (byte)buffer[index++];
-            Count = (byte)buffer[index++];
-            ConnectionType = (EscConnectionType)buffer[index++];
-            Info = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(TimeUsec).CopyTo(buffer, index);index+=8;
-            for(var i=0;i<ErrorCount.Length;i++)
-            {
-                BitConverter.GetBytes(ErrorCount[i]).CopyTo(buffer, index);index+=4;
-            }
-            BitConverter.GetBytes(Counter).CopyTo(buffer, index);index+=2;
-            for(var i=0;i<FailureFlags.Length;i++)
-            {
-                BitConverter.GetBytes((ushort)FailureFlags[i]).CopyTo(buffer, index);index+=2;
-            }
-            for(var i=0;i<Temperature.Length;i++)
-            {
-                BitConverter.GetBytes(Temperature[i]).CopyTo(buffer, index);index+=2;
-            }
-            BitConverter.GetBytes(Index).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Count).CopyTo(buffer, index);index+=1;
-            buffer[index] = (byte)ConnectionType;index+=1;
-            BitConverter.GetBytes(Info).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/46;
-        }
-
-        /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
-        /// OriginName: time_usec, Units: us, IsExtended: false
-        /// </summary>
-        public ulong TimeUsec { get; set; }
-        /// <summary>
-        /// Number of reported errors by each ESC since boot.
-        /// OriginName: error_count, Units: , IsExtended: false
-        /// </summary>
-        public uint[] ErrorCount { get; set; } = new uint[4];
-        public byte GetErrorCountMaxItemsCount() => 4;
-        /// <summary>
-        /// Counter of data packets received.
-        /// OriginName: counter, Units: , IsExtended: false
-        /// </summary>
-        public ushort Counter { get; set; }
-        /// <summary>
-        /// Bitmap of ESC failure flags.
-        /// OriginName: failure_flags, Units: , IsExtended: false
-        /// </summary>
-        public EscFailureFlags[] FailureFlags { get; } = new EscFailureFlags[4];
-        /// <summary>
-        /// Temperature of each ESC. INT16_MAX: if data not supplied by ESC.
-        /// OriginName: temperature, Units: cdegC, IsExtended: false
-        /// </summary>
-        public short[] Temperature { get; } = new short[4];
-        /// <summary>
-        /// Index of the first ESC in this message. minValue = 0, maxValue = 60, increment = 4.
-        /// OriginName: index, Units: , IsExtended: false
-        /// </summary>
-        public byte Index { get; set; }
-        /// <summary>
-        /// Total number of ESCs in all messages of this type. Message fields with an index higher than this should be ignored because they contain invalid data.
-        /// OriginName: count, Units: , IsExtended: false
-        /// </summary>
-        public byte Count { get; set; }
-        /// <summary>
-        /// Connection type protocol for all ESC.
-        /// OriginName: connection_type, Units: , IsExtended: false
-        /// </summary>
-        public EscConnectionType ConnectionType { get; set; }
-        /// <summary>
-        /// Information regarding online/offline status of each ESC.
-        /// OriginName: info, Units: , IsExtended: false
-        /// </summary>
-        public byte Info { get; set; }
-    }
-    /// <summary>
-    /// ESC information for higher rate streaming. Recommended streaming rate is ~10 Hz. Information that changes more slowly is sent in ESC_INFO. It should typically only be streamed on high-bandwidth links (i.e. to a companion computer).
-    ///  ESC_STATUS
-    /// </summary>
-    public class EscStatusPacket: PacketV2<EscStatusPayload>
-    {
-	    public const int PacketMessageId = 291;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 10;
-
-        public override EscStatusPayload Payload { get; } = new EscStatusPayload();
-
-        public override string Name => "ESC_STATUS";
-    }
-
-    /// <summary>
-    ///  ESC_STATUS
-    /// </summary>
-    public class EscStatusPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 57; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 57; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/57 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            Rpm = new int[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Rpm[i] = BinSerialize.ReadInt(ref buffer);index+=4;
-            }
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                Voltage[i] = BinSerialize.ReadFloat(ref buffer);index+=4;
-            }
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                Current[i] = BinSerialize.ReadFloat(ref buffer);index+=4;
-            }
-            Index = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,TimeUsec);index+=8;
-            for(var i=0;i<Rpm.Length;i++)
-            {
-                BinSerialize.WriteInt(ref buffer,Rpm[i]);index+=4;
-            }
-            for(var i=0;i<Voltage.Length;i++)
-            {
-                BinSerialize.WriteFloat(ref buffer,Voltage[i]);index+=4;
-            }
-            for(var i=0;i<Current.Length;i++)
-            {
-                BinSerialize.WriteFloat(ref buffer,Current[i]);index+=4;
-            }
-            BinSerialize.WriteByte(ref buffer,(byte)Index);index+=1;
-            return index; // /*PayloadByteSize*/57;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/57 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            Rpm = new int[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Rpm[i] = BitConverter.ToInt32(buffer,index);index+=4;
-            }
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                Voltage[i] = BitConverter.ToSingle(buffer, index);index+=4;
-            }
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                Current[i] = BitConverter.ToSingle(buffer, index);index+=4;
-            }
-            Index = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(TimeUsec).CopyTo(buffer, index);index+=8;
-            for(var i=0;i<Rpm.Length;i++)
-            {
-                BitConverter.GetBytes(Rpm[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<Voltage.Length;i++)
-            {
-                BitConverter.GetBytes(Voltage[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<Current.Length;i++)
-            {
-                BitConverter.GetBytes(Current[i]).CopyTo(buffer, index);index+=4;
-            }
-            BitConverter.GetBytes(Index).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/57;
-        }
-
-        /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
-        /// OriginName: time_usec, Units: us, IsExtended: false
-        /// </summary>
-        public ulong TimeUsec { get; set; }
-        /// <summary>
-        /// Reported motor RPM from each ESC (negative for reverse rotation).
-        /// OriginName: rpm, Units: rpm, IsExtended: false
-        /// </summary>
-        public int[] Rpm { get; set; } = new int[4];
-        public byte GetRpmMaxItemsCount() => 4;
-        /// <summary>
-        /// Voltage measured from each ESC.
-        /// OriginName: voltage, Units: V, IsExtended: false
-        /// </summary>
-        public float[] Voltage { get; } = new float[4];
-        /// <summary>
-        /// Current measured from each ESC.
-        /// OriginName: current, Units: A, IsExtended: false
-        /// </summary>
-        public float[] Current { get; } = new float[4];
-        /// <summary>
-        /// Index of the first ESC in this message. minValue = 0, maxValue = 60, increment = 4.
-        /// OriginName: index, Units: , IsExtended: false
-        /// </summary>
-        public byte Index { get; set; }
-    }
-    /// <summary>
-    /// Configure WiFi AP SSID, password, and mode. This message is re-emitted as an acknowledgement by the AP. The message may also be explicitly requested using MAV_CMD_REQUEST_MESSAGE
+    /// Configure AP SSID and Password.
     ///  WIFI_CONFIG_AP
     /// </summary>
     public class WifiConfigApPacket: PacketV2<WifiConfigApPayload>
@@ -31589,8 +25863,8 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class WifiConfigApPayload : IPayload
     {
-        public byte GetMaxByteSize() => 98; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 98; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 96; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 96; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
@@ -31608,7 +25882,7 @@ namespace Asv.Mavlink.V2.Common
             }
             buffer = buffer.Slice(arraySize);
             index+=arraySize;
-            arraySize = /*ArrayLength*/64 - Math.Max(0,((/*PayloadByteSize*/98 - payloadSize - /*ExtendedFieldsLength*/2)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/64 - Math.Max(0,((/*PayloadByteSize*/96 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Password = new char[arraySize];
             unsafe
             {
@@ -31620,12 +25894,6 @@ namespace Asv.Mavlink.V2.Common
             }
             buffer = buffer.Slice(arraySize);
             index+=arraySize;
-            // extended field 'Mode' can be empty
-            if (index >= endIndex) return;
-            Mode = (WifiConfigApMode)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'Response' can be empty
-            if (index >= endIndex) return;
-            Response = (WifiConfigApResponse)BinSerialize.ReadByte(ref buffer);index+=1;
 
         }
 
@@ -31652,9 +25920,7 @@ namespace Asv.Mavlink.V2.Common
             }
             buffer = buffer.Slice(Password.Length);
             index+=Password.Length;
-            BinSerialize.WriteByte(ref buffer,(byte)Mode);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Response);index+=1;
-            return index; // /*PayloadByteSize*/98;
+            return index; // /*PayloadByteSize*/96;
         }
 
 
@@ -31667,16 +25933,10 @@ namespace Asv.Mavlink.V2.Common
             arraySize = 32;
             Encoding.ASCII.GetChars(buffer, index,arraySize,Ssid,0);
             index+=arraySize;
-            arraySize = /*ArrayLength*/64 - Math.Max(0,((/*PayloadByteSize*/98 - payloadSize - /*ExtendedFieldsLength*/2)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/64 - Math.Max(0,((/*PayloadByteSize*/96 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Password = new char[arraySize];
             Encoding.ASCII.GetChars(buffer, index,arraySize,Password,0);
             index+=arraySize;
-            // extended field 'Mode' can be empty
-            if (index >= endIndex) return;
-            Mode = (WifiConfigApMode)buffer[index++];
-            // extended field 'Response' can be empty
-            if (index >= endIndex) return;
-            Response = (WifiConfigApResponse)buffer[index++];
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -31684,141 +25944,81 @@ namespace Asv.Mavlink.V2.Common
 		var start = index;
             index+=Encoding.ASCII.GetBytes(Ssid,0,Ssid.Length,buffer,index);
             index+=Encoding.ASCII.GetBytes(Password,0,Password.Length,buffer,index);
-            buffer[index] = (byte)Mode;index+=1;
-            buffer[index] = (byte)Response;index+=1;
-            return index - start; // /*PayloadByteSize*/98;
+            return index - start; // /*PayloadByteSize*/96;
         }
 
         /// <summary>
-        /// Name of Wi-Fi network (SSID). Blank to leave it unchanged when setting. Current SSID when sent back as a response.
+        /// Name of Wi-Fi network (SSID). Leave it blank to leave it unchanged.
         /// OriginName: ssid, Units: , IsExtended: false
         /// </summary>
         public char[] Ssid { get; } = new char[32];
         /// <summary>
-        /// Password. Blank for an open AP. MD5 hash when message is sent back as a response.
+        /// Password. Leave it blank for an open AP.
         /// OriginName: password, Units: , IsExtended: false
         /// </summary>
         public char[] Password { get; set; } = new char[64];
         public byte GetPasswordMaxItemsCount() => 64;
-        /// <summary>
-        /// WiFi Mode.
-        /// OriginName: mode, Units: , IsExtended: true
-        /// </summary>
-        public WifiConfigApMode Mode { get; set; }
-        /// <summary>
-        /// Message acceptance response (sent back to GS).
-        /// OriginName: response, Units: , IsExtended: true
-        /// </summary>
-        public WifiConfigApResponse Response { get; set; }
     }
     /// <summary>
-    /// The location and information of an AIS vessel
-    ///  AIS_VESSEL
+    /// Version and capability of protocol version. This message is the response to REQUEST_PROTOCOL_VERSION and is used as part of the handshaking to establish which MAVLink version should be used on the network. Every node should respond to REQUEST_PROTOCOL_VERSION to enable the handshaking. Library implementers should consider adding this into the default decoding state machine to allow the protocol core to respond directly.
+    ///  PROTOCOL_VERSION
     /// </summary>
-    public class AisVesselPacket: PacketV2<AisVesselPayload>
+    public class ProtocolVersionPacket: PacketV2<ProtocolVersionPayload>
     {
-	    public const int PacketMessageId = 301;
+	    public const int PacketMessageId = 300;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 243;
+        public override byte GetCrcEtra() => 217;
 
-        public override AisVesselPayload Payload { get; } = new AisVesselPayload();
+        public override ProtocolVersionPayload Payload { get; } = new ProtocolVersionPayload();
 
-        public override string Name => "AIS_VESSEL";
+        public override string Name => "PROTOCOL_VERSION";
     }
 
     /// <summary>
-    ///  AIS_VESSEL
+    ///  PROTOCOL_VERSION
     /// </summary>
-    public class AisVesselPayload : IPayload
+    public class ProtocolVersionPayload : IPayload
     {
-        public byte GetMaxByteSize() => 58; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 58; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 22; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
             var arraySize = 0;
-            Mmsi = BinSerialize.ReadUInt(ref buffer);index+=4;
-            Lat = BinSerialize.ReadInt(ref buffer);index+=4;
-            Lon = BinSerialize.ReadInt(ref buffer);index+=4;
-            Cog = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Heading = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Velocity = BinSerialize.ReadUShort(ref buffer);index+=2;
-            DimensionBow = BinSerialize.ReadUShort(ref buffer);index+=2;
-            DimensionStern = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Tslc = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Flags = (AisFlags)BinSerialize.ReadUShort(ref buffer);index+=2;
-            TurnRate = (sbyte)BinSerialize.ReadByte(ref buffer);index+=1;
-            NavigationalStatus = (AisNavStatus)BinSerialize.ReadByte(ref buffer);index+=1;
-            Type = (AisType)BinSerialize.ReadByte(ref buffer);index+=1;
-            DimensionPort = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            DimensionStarboard = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = 7;
-            unsafe
+            Version = BinSerialize.ReadUShort(ref buffer);index+=2;
+            MinVersion = BinSerialize.ReadUShort(ref buffer);index+=2;
+            MaxVersion = BinSerialize.ReadUShort(ref buffer);index+=2;
+            arraySize = /*ArrayLength*/8 - Math.Max(0,((/*PayloadByteSize*/22 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            SpecVersionHash = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Callsign)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Callsign.Length);
-                }
+                SpecVersionHash[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/58 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Name = new char[arraySize];
-            unsafe
+            arraySize = 8;
+            for(var i=0;i<arraySize;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Name)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Name.Length);
-                }
+                LibraryVersionHash[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
 
         }
 
         public int Serialize(ref Span<byte> buffer)
         {
             var index = 0;
-            BinSerialize.WriteUInt(ref buffer,Mmsi);index+=4;
-            BinSerialize.WriteInt(ref buffer,Lat);index+=4;
-            BinSerialize.WriteInt(ref buffer,Lon);index+=4;
-            BinSerialize.WriteUShort(ref buffer,Cog);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Heading);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Velocity);index+=2;
-            BinSerialize.WriteUShort(ref buffer,DimensionBow);index+=2;
-            BinSerialize.WriteUShort(ref buffer,DimensionStern);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Tslc);index+=2;
-            BinSerialize.WriteUShort(ref buffer,(ushort)Flags);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)TurnRate);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)NavigationalStatus);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Type);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)DimensionPort);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)DimensionStarboard);index+=1;
-            unsafe
+            BinSerialize.WriteUShort(ref buffer,Version);index+=2;
+            BinSerialize.WriteUShort(ref buffer,MinVersion);index+=2;
+            BinSerialize.WriteUShort(ref buffer,MaxVersion);index+=2;
+            for(var i=0;i<SpecVersionHash.Length;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Callsign)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, Callsign.Length, bytePointer, Callsign.Length);
-                }
+                BinSerialize.WriteByte(ref buffer,(byte)SpecVersionHash[i]);index+=1;
             }
-            buffer = buffer.Slice(Callsign.Length);
-            index+=Callsign.Length;
-            unsafe
+            for(var i=0;i<LibraryVersionHash.Length;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Name)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, Name.Length, bytePointer, Name.Length);
-                }
+                BinSerialize.WriteByte(ref buffer,(byte)LibraryVersionHash[i]);index+=1;
             }
-            buffer = buffer.Slice(Name.Length);
-            index+=Name.Length;
-            return index; // /*PayloadByteSize*/58;
+            return index; // /*PayloadByteSize*/22;
         }
 
 
@@ -31828,139 +26028,65 @@ namespace Asv.Mavlink.V2.Common
             var index = offset;
             var endIndex = offset + payloadSize;
             var arraySize = 0;
-            Mmsi = BitConverter.ToUInt32(buffer,index);index+=4;
-            Lat = BitConverter.ToInt32(buffer,index);index+=4;
-            Lon = BitConverter.ToInt32(buffer,index);index+=4;
-            Cog = BitConverter.ToUInt16(buffer,index);index+=2;
-            Heading = BitConverter.ToUInt16(buffer,index);index+=2;
-            Velocity = BitConverter.ToUInt16(buffer,index);index+=2;
-            DimensionBow = BitConverter.ToUInt16(buffer,index);index+=2;
-            DimensionStern = BitConverter.ToUInt16(buffer,index);index+=2;
-            Tslc = BitConverter.ToUInt16(buffer,index);index+=2;
-            Flags = (AisFlags)BitConverter.ToUInt16(buffer,index);index+=2;
-            TurnRate = (sbyte)buffer[index++];
-            NavigationalStatus = (AisNavStatus)buffer[index++];
-            Type = (AisType)buffer[index++];
-            DimensionPort = (byte)buffer[index++];
-            DimensionStarboard = (byte)buffer[index++];
-            arraySize = 7;
-            Encoding.ASCII.GetChars(buffer, index,arraySize,Callsign,0);
-            index+=arraySize;
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/58 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Name = new char[arraySize];
-            Encoding.ASCII.GetChars(buffer, index,arraySize,Name,0);
-            index+=arraySize;
+            Version = BitConverter.ToUInt16(buffer,index);index+=2;
+            MinVersion = BitConverter.ToUInt16(buffer,index);index+=2;
+            MaxVersion = BitConverter.ToUInt16(buffer,index);index+=2;
+            arraySize = /*ArrayLength*/8 - Math.Max(0,((/*PayloadByteSize*/22 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            SpecVersionHash = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
+            {
+                SpecVersionHash[i] = (byte)buffer[index++];
+            }
+            arraySize = 8;
+            for(var i=0;i<arraySize;i++)
+            {
+                LibraryVersionHash[i] = (byte)buffer[index++];
+            }
         }
 
         public int Serialize(byte[] buffer, int index)
         {
 		var start = index;
-            BitConverter.GetBytes(Mmsi).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Lat).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Lon).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Cog).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Heading).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Velocity).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(DimensionBow).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(DimensionStern).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Tslc).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes((ushort)Flags).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(TurnRate).CopyTo(buffer, index);index+=1;
-            buffer[index] = (byte)NavigationalStatus;index+=1;
-            buffer[index] = (byte)Type;index+=1;
-            BitConverter.GetBytes(DimensionPort).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(DimensionStarboard).CopyTo(buffer, index);index+=1;
-            index+=Encoding.ASCII.GetBytes(Callsign,0,Callsign.Length,buffer,index);
-            index+=Encoding.ASCII.GetBytes(Name,0,Name.Length,buffer,index);
-            return index - start; // /*PayloadByteSize*/58;
+            BitConverter.GetBytes(Version).CopyTo(buffer, index);index+=2;
+            BitConverter.GetBytes(MinVersion).CopyTo(buffer, index);index+=2;
+            BitConverter.GetBytes(MaxVersion).CopyTo(buffer, index);index+=2;
+            for(var i=0;i<SpecVersionHash.Length;i++)
+            {
+                buffer[index] = (byte)SpecVersionHash[i];index+=1;
+            }
+            for(var i=0;i<LibraryVersionHash.Length;i++)
+            {
+                buffer[index] = (byte)LibraryVersionHash[i];index+=1;
+            }
+            return index - start; // /*PayloadByteSize*/22;
         }
 
         /// <summary>
-        /// Mobile Marine Service Identifier, 9 decimal digits
-        /// OriginName: MMSI, Units: , IsExtended: false
+        /// Currently active MAVLink version number * 100: v1.0 is 100, v2.0 is 200, etc.
+        /// OriginName: version, Units: , IsExtended: false
         /// </summary>
-        public uint Mmsi { get; set; }
+        public ushort Version { get; set; }
         /// <summary>
-        /// Latitude
-        /// OriginName: lat, Units: degE7, IsExtended: false
+        /// Minimum MAVLink version supported
+        /// OriginName: min_version, Units: , IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public ushort MinVersion { get; set; }
         /// <summary>
-        /// Longitude
-        /// OriginName: lon, Units: degE7, IsExtended: false
+        /// Maximum MAVLink version supported (set to the same value as version by default)
+        /// OriginName: max_version, Units: , IsExtended: false
         /// </summary>
-        public int Lon { get; set; }
+        public ushort MaxVersion { get; set; }
         /// <summary>
-        /// Course over ground
-        /// OriginName: COG, Units: cdeg, IsExtended: false
+        /// The first 8 bytes (not characters printed in hex!) of the git hash.
+        /// OriginName: spec_version_hash, Units: , IsExtended: false
         /// </summary>
-        public ushort Cog { get; set; }
+        public byte[] SpecVersionHash { get; set; } = new byte[8];
+        public byte GetSpecVersionHashMaxItemsCount() => 8;
         /// <summary>
-        /// True heading
-        /// OriginName: heading, Units: cdeg, IsExtended: false
+        /// The first 8 bytes (not characters printed in hex!) of the git hash.
+        /// OriginName: library_version_hash, Units: , IsExtended: false
         /// </summary>
-        public ushort Heading { get; set; }
-        /// <summary>
-        /// Speed over ground
-        /// OriginName: velocity, Units: cm/s, IsExtended: false
-        /// </summary>
-        public ushort Velocity { get; set; }
-        /// <summary>
-        /// Distance from lat/lon location to bow
-        /// OriginName: dimension_bow, Units: m, IsExtended: false
-        /// </summary>
-        public ushort DimensionBow { get; set; }
-        /// <summary>
-        /// Distance from lat/lon location to stern
-        /// OriginName: dimension_stern, Units: m, IsExtended: false
-        /// </summary>
-        public ushort DimensionStern { get; set; }
-        /// <summary>
-        /// Time since last communication in seconds
-        /// OriginName: tslc, Units: s, IsExtended: false
-        /// </summary>
-        public ushort Tslc { get; set; }
-        /// <summary>
-        /// Bitmask to indicate various statuses including valid data fields
-        /// OriginName: flags, Units: , IsExtended: false
-        /// </summary>
-        public AisFlags Flags { get; set; }
-        /// <summary>
-        /// Turn rate
-        /// OriginName: turn_rate, Units: cdeg/s, IsExtended: false
-        /// </summary>
-        public sbyte TurnRate { get; set; }
-        /// <summary>
-        /// Navigational status
-        /// OriginName: navigational_status, Units: , IsExtended: false
-        /// </summary>
-        public AisNavStatus NavigationalStatus { get; set; }
-        /// <summary>
-        /// Type of vessels
-        /// OriginName: type, Units: , IsExtended: false
-        /// </summary>
-        public AisType Type { get; set; }
-        /// <summary>
-        /// Distance from lat/lon location to port side
-        /// OriginName: dimension_port, Units: m, IsExtended: false
-        /// </summary>
-        public byte DimensionPort { get; set; }
-        /// <summary>
-        /// Distance from lat/lon location to starboard side
-        /// OriginName: dimension_starboard, Units: m, IsExtended: false
-        /// </summary>
-        public byte DimensionStarboard { get; set; }
-        /// <summary>
-        /// The vessel callsign
-        /// OriginName: callsign, Units: , IsExtended: false
-        /// </summary>
-        public char[] Callsign { get; } = new char[7];
-        /// <summary>
-        /// The vessel name
-        /// OriginName: name, Units: , IsExtended: false
-        /// </summary>
-        public char[] Name { get; set; } = new char[20];
-        public byte GetNameMaxItemsCount() => 20;
+        public byte[] LibraryVersionHash { get; } = new byte[8];
     }
     /// <summary>
     /// General status information of an UAVCAN node. Please refer to the definition of the UAVCAN message "uavcan.protocol.NodeStatus" for the background information. The UAVCAN specification is available at http://uavcan.org.
@@ -31989,6 +26115,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             UptimeSec = BinSerialize.ReadUInt(ref buffer);index+=4;
             VendorSpecificStatusCode = BinSerialize.ReadUShort(ref buffer);index+=2;
@@ -32016,6 +26143,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             UptimeSec = BitConverter.ToUInt32(buffer,index);index+=4;
             VendorSpecificStatusCode = BitConverter.ToUInt16(buffer,index);index+=2;
@@ -32037,7 +26165,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -32193,7 +26321,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -32203,7 +26331,7 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public uint UptimeSec { get; set; }
         /// <summary>
-        /// Version control system (VCS) revision identifier (e.g. git short commit hash). 0 if unknown.
+        /// Version control system (VCS) revision identifier (e.g. git short commit hash). Zero if unknown.
         /// OriginName: sw_vcs_commit, Units: , IsExtended: false
         /// </summary>
         public uint SwVcsCommit { get; set; }
@@ -32240,7 +26368,7 @@ namespace Asv.Mavlink.V2.Common
         public byte SwVersionMinor { get; set; }
     }
     /// <summary>
-    /// Request to read the value of a parameter with either the param_id string id or param_index. PARAM_EXT_VALUE should be emitted in response.
+    /// Request to read the value of a parameter with the either the param_id string id or param_index.
     ///  PARAM_EXT_REQUEST_READ
     /// </summary>
     public class ParamExtRequestReadPacket: PacketV2<ParamExtRequestReadPayload>
@@ -32353,7 +26481,7 @@ namespace Asv.Mavlink.V2.Common
         public byte GetParamIdMaxItemsCount() => 16;
     }
     /// <summary>
-    /// Request all parameters of this component. All parameters should be emitted in response as PARAM_EXT_VALUE.
+    /// Request all parameters of this component. After this request, all parameters are emitted.
     ///  PARAM_EXT_REQUEST_LIST
     /// </summary>
     public class ParamExtRequestListPacket: PacketV2<ParamExtRequestListPayload>
@@ -32379,6 +26507,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
 
@@ -32398,6 +26527,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
         }
@@ -32861,8 +26991,8 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ObstacleDistancePayload : IPayload
     {
-        public byte GetMaxByteSize() => 167; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 167; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 166; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 166; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
@@ -32870,7 +27000,7 @@ namespace Asv.Mavlink.V2.Common
             var endIndex = payloadSize;
             var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
-            arraySize = /*ArrayLength*/72 - Math.Max(0,((/*PayloadByteSize*/167 - payloadSize - /*ExtendedFieldsLength*/9)/2 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/72 - Math.Max(0,((/*PayloadByteSize*/166 - payloadSize - /*ExtendedFieldsLength*/8)/2 /*FieldTypeByteSize*/));
             Distances = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -32886,9 +27016,6 @@ namespace Asv.Mavlink.V2.Common
             // extended field 'AngleOffset' can be empty
             if (index >= endIndex) return;
             AngleOffset = BinSerialize.ReadFloat(ref buffer);index+=4;
-            // extended field 'Frame' can be empty
-            if (index >= endIndex) return;
-            Frame = (MavFrame)BinSerialize.ReadByte(ref buffer);index+=1;
 
         }
 
@@ -32906,8 +27033,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteByte(ref buffer,(byte)Increment);index+=1;
             BinSerialize.WriteFloat(ref buffer,IncrementF);index+=4;
             BinSerialize.WriteFloat(ref buffer,AngleOffset);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)Frame);index+=1;
-            return index; // /*PayloadByteSize*/167;
+            return index; // /*PayloadByteSize*/166;
         }
 
 
@@ -32918,7 +27044,7 @@ namespace Asv.Mavlink.V2.Common
             var endIndex = offset + payloadSize;
             var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
-            arraySize = /*ArrayLength*/72 - Math.Max(0,((/*PayloadByteSize*/167 - payloadSize - /*ExtendedFieldsLength*/9)/2 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/72 - Math.Max(0,((/*PayloadByteSize*/166 - payloadSize - /*ExtendedFieldsLength*/8)/2 /*FieldTypeByteSize*/));
             Distances = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -32934,9 +27060,6 @@ namespace Asv.Mavlink.V2.Common
             // extended field 'AngleOffset' can be empty
             if (index >= endIndex) return;
             AngleOffset = BitConverter.ToSingle(buffer, index);index+=4;
-            // extended field 'Frame' can be empty
-            if (index >= endIndex) return;
-            Frame = (MavFrame)buffer[index++];
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -32953,17 +27076,16 @@ namespace Asv.Mavlink.V2.Common
             BitConverter.GetBytes(Increment).CopyTo(buffer, index);index+=1;
             BitConverter.GetBytes(IncrementF).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(AngleOffset).CopyTo(buffer, index);index+=4;
-            buffer[index] = (byte)Frame;index+=1;
-            return index - start; // /*PayloadByteSize*/167;
+            return index - start; // /*PayloadByteSize*/166;
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
         /// <summary>
-        /// Distance of obstacles around the vehicle with index 0 corresponding to north + angle_offset, unless otherwise specified in the frame. A value of 0 is valid and means that the obstacle is practically touching the sensor. A value of max_distance +1 means no obstacle is present. A value of UINT16_MAX for unknown/not used. In a array element, one unit corresponds to 1cm.
+        /// Distance of obstacles around the UAV with index 0 corresponding to local forward + angle_offset. A value of 0 means that the obstacle is right in front of the sensor. A value of max_distance +1 means no obstacle is present. A value of UINT16_MAX for unknown/not used. In a array element, one unit corresponds to 1cm.
         /// OriginName: distances, Units: cm, IsExtended: false
         /// </summary>
         public ushort[] Distances { get; set; } = new ushort[72];
@@ -32984,25 +27106,20 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public MavDistanceSensor SensorType { get; set; }
         /// <summary>
-        /// Angular width in degrees of each array element. Increment direction is clockwise. This field is ignored if increment_f is non-zero.
+        /// Angular width in degrees of each array element. (Ignored if increment_f greater than 0).
         /// OriginName: increment, Units: deg, IsExtended: false
         /// </summary>
         public byte Increment { get; set; }
         /// <summary>
-        /// Angular width in degrees of each array element as a float. If non-zero then this value is used instead of the uint8_t increment field. Positive is clockwise direction, negative is counter-clockwise.
+        /// Angular width in degrees of each array element as a float. If greater than 0 then this value is used instead of the uint8_t increment field.
         /// OriginName: increment_f, Units: deg, IsExtended: true
         /// </summary>
         public float IncrementF { get; set; }
         /// <summary>
-        /// Relative angle offset of the 0-index element in the distances array. Value of 0 corresponds to forward. Positive is clockwise direction, negative is counter-clockwise.
+        /// Relative angle offset of the 0-index element in the distances array. Value of 0 corresponds to forward. Positive values are offsets to the right.
         /// OriginName: angle_offset, Units: deg, IsExtended: true
         /// </summary>
         public float AngleOffset { get; set; }
-        /// <summary>
-        /// Coordinate frame of reference for the yaw rotation and offset of the sensor data. Defaults to MAV_FRAME_GLOBAL, which is north aligned. For body-mounted sensors use MAV_FRAME_BODY_FRD, which is vehicle front aligned.
-        /// OriginName: frame, Units: , IsExtended: true
-        /// </summary>
-        public MavFrame Frame { get; set; }
     }
     /// <summary>
     /// Odometry message to communicate odometry information with an external interface. Fits ROS REP 147 standard for aerial vehicles (http://www.ros.org/reps/rep-0147.html).
@@ -33024,8 +27141,8 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class OdometryPayload : IPayload
     {
-        public byte GetMaxByteSize() => 232; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 232; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 231; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 231; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
@@ -33047,7 +27164,7 @@ namespace Asv.Mavlink.V2.Common
             Rollspeed = BinSerialize.ReadFloat(ref buffer);index+=4;
             Pitchspeed = BinSerialize.ReadFloat(ref buffer);index+=4;
             Yawspeed = BinSerialize.ReadFloat(ref buffer);index+=4;
-            arraySize = /*ArrayLength*/21 - Math.Max(0,((/*PayloadByteSize*/232 - payloadSize - /*ExtendedFieldsLength*/2)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/21 - Math.Max(0,((/*PayloadByteSize*/231 - payloadSize - /*ExtendedFieldsLength*/1)/4 /*FieldTypeByteSize*/));
             PoseCovariance = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -33063,9 +27180,6 @@ namespace Asv.Mavlink.V2.Common
             // extended field 'ResetCounter' can be empty
             if (index >= endIndex) return;
             ResetCounter = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'EstimatorType' can be empty
-            if (index >= endIndex) return;
-            EstimatorType = (MavEstimatorType)BinSerialize.ReadByte(ref buffer);index+=1;
 
         }
 
@@ -33097,8 +27211,7 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteByte(ref buffer,(byte)FrameId);index+=1;
             BinSerialize.WriteByte(ref buffer,(byte)ChildFrameId);index+=1;
             BinSerialize.WriteByte(ref buffer,(byte)ResetCounter);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)EstimatorType);index+=1;
-            return index; // /*PayloadByteSize*/232;
+            return index; // /*PayloadByteSize*/231;
         }
 
 
@@ -33123,7 +27236,7 @@ namespace Asv.Mavlink.V2.Common
             Rollspeed = BitConverter.ToSingle(buffer, index);index+=4;
             Pitchspeed = BitConverter.ToSingle(buffer, index);index+=4;
             Yawspeed = BitConverter.ToSingle(buffer, index);index+=4;
-            arraySize = /*ArrayLength*/21 - Math.Max(0,((/*PayloadByteSize*/232 - payloadSize - /*ExtendedFieldsLength*/2)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/21 - Math.Max(0,((/*PayloadByteSize*/231 - payloadSize - /*ExtendedFieldsLength*/1)/4 /*FieldTypeByteSize*/));
             PoseCovariance = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -33139,9 +27252,6 @@ namespace Asv.Mavlink.V2.Common
             // extended field 'ResetCounter' can be empty
             if (index >= endIndex) return;
             ResetCounter = (byte)buffer[index++];
-            // extended field 'EstimatorType' can be empty
-            if (index >= endIndex) return;
-            EstimatorType = (MavEstimatorType)buffer[index++];
         }
 
         public int Serialize(byte[] buffer, int index)
@@ -33172,12 +27282,11 @@ namespace Asv.Mavlink.V2.Common
             buffer[index] = (byte)FrameId;index+=1;
             buffer[index] = (byte)ChildFrameId;index+=1;
             BitConverter.GetBytes(ResetCounter).CopyTo(buffer, index);index+=1;
-            buffer[index] = (byte)EstimatorType;index+=1;
-            return index - start; // /*PayloadByteSize*/232;
+            return index - start; // /*PayloadByteSize*/231;
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -33257,21 +27366,16 @@ namespace Asv.Mavlink.V2.Common
         /// OriginName: reset_counter, Units: , IsExtended: true
         /// </summary>
         public byte ResetCounter { get; set; }
-        /// <summary>
-        /// Type of estimator that is providing the odometry.
-        /// OriginName: estimator_type, Units: , IsExtended: true
-        /// </summary>
-        public MavEstimatorType EstimatorType { get; set; }
     }
     /// <summary>
-    /// Describe a trajectory using an array of up-to 5 waypoints in the local frame (MAV_FRAME_LOCAL_NED).
+    /// Describe a trajectory using an array of up-to 5 waypoints in the local frame.
     ///  TRAJECTORY_REPRESENTATION_WAYPOINTS
     /// </summary>
     public class TrajectoryRepresentationWaypointsPacket: PacketV2<TrajectoryRepresentationWaypointsPayload>
     {
 	    public const int PacketMessageId = 332;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 236;
+        public override byte GetCrcEtra() => 91;
 
         public override TrajectoryRepresentationWaypointsPayload Payload { get; } = new TrajectoryRepresentationWaypointsPayload();
 
@@ -33283,8 +27387,8 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class TrajectoryRepresentationWaypointsPayload : IPayload
     {
-        public byte GetMaxByteSize() => 239; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 239; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 229; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 229; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
@@ -33292,7 +27396,7 @@ namespace Asv.Mavlink.V2.Common
             var endIndex = payloadSize;
             var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
-            arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/239 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/229 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
             PosX = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -33348,12 +27452,6 @@ namespace Asv.Mavlink.V2.Common
             {
                 VelYaw[i] = BinSerialize.ReadFloat(ref buffer);index+=4;
             }
-            arraySize = 5;
-            for(var i=0;i<arraySize;i++)
-            {
-                Command[i] = (MavCmd)BinSerialize.ReadUShort(ref buffer);index+=2;
-            }
-
             ValidPoints = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
 
         }
@@ -33406,12 +27504,8 @@ namespace Asv.Mavlink.V2.Common
             {
                 BinSerialize.WriteFloat(ref buffer,VelYaw[i]);index+=4;
             }
-            for(var i=0;i<Command.Length;i++)
-            {
-                BinSerialize.WriteUShort(ref buffer,(ushort)Command[i]);index+=2;
-            }
             BinSerialize.WriteByte(ref buffer,(byte)ValidPoints);index+=1;
-            return index; // /*PayloadByteSize*/239;
+            return index; // /*PayloadByteSize*/229;
         }
 
 
@@ -33422,7 +27516,7 @@ namespace Asv.Mavlink.V2.Common
             var endIndex = offset + payloadSize;
             var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
-            arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/239 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/229 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
             PosX = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -33478,12 +27572,6 @@ namespace Asv.Mavlink.V2.Common
             {
                 VelYaw[i] = BitConverter.ToSingle(buffer, index);index+=4;
             }
-            arraySize = 5;
-            for(var i=0;i<arraySize;i++)
-            {
-                Command[i] = (MavCmd)BitConverter.ToUInt16(buffer,index);index+=2;
-            }
-
             ValidPoints = (byte)buffer[index++];
         }
 
@@ -33535,16 +27623,12 @@ namespace Asv.Mavlink.V2.Common
             {
                 BitConverter.GetBytes(VelYaw[i]).CopyTo(buffer, index);index+=4;
             }
-            for(var i=0;i<Command.Length;i++)
-            {
-                BitConverter.GetBytes((ushort)Command[i]).CopyTo(buffer, index);index+=2;
-            }
             BitConverter.GetBytes(ValidPoints).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/239;
+            return index - start; // /*PayloadByteSize*/229;
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -33605,18 +27689,13 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public float[] VelYaw { get; } = new float[5];
         /// <summary>
-        /// MAV_CMD command id of waypoint, set to UINT16_MAX if not being used.
-        /// OriginName: command, Units: , IsExtended: false
-        /// </summary>
-        public MavCmd[] Command { get; } = new MavCmd[5];
-        /// <summary>
         /// Number of valid points (up-to 5 waypoints are possible)
         /// OriginName: valid_points, Units: , IsExtended: false
         /// </summary>
         public byte ValidPoints { get; set; }
     }
     /// <summary>
-    /// Describe a trajectory using an array of up-to 5 bezier control points in the local frame (MAV_FRAME_LOCAL_NED).
+    /// Describe a trajectory using an array of up-to 5 bezier points in the local frame.
     ///  TRAJECTORY_REPRESENTATION_BEZIER
     /// </summary>
     public class TrajectoryRepresentationBezierPacket: PacketV2<TrajectoryRepresentationBezierPayload>
@@ -33768,38 +27847,38 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
         /// <summary>
-        /// X-coordinate of bezier control points. Set to NaN if not being used
+        /// X-coordinate of starting bezier point, set to NaN if not being used
         /// OriginName: pos_x, Units: m, IsExtended: false
         /// </summary>
         public float[] PosX { get; set; } = new float[5];
         public byte GetPosXMaxItemsCount() => 5;
         /// <summary>
-        /// Y-coordinate of bezier control points. Set to NaN if not being used
+        /// Y-coordinate of starting bezier point, set to NaN if not being used
         /// OriginName: pos_y, Units: m, IsExtended: false
         /// </summary>
         public float[] PosY { get; } = new float[5];
         /// <summary>
-        /// Z-coordinate of bezier control points. Set to NaN if not being used
+        /// Z-coordinate of starting bezier point, set to NaN if not being used
         /// OriginName: pos_z, Units: m, IsExtended: false
         /// </summary>
         public float[] PosZ { get; } = new float[5];
         /// <summary>
-        /// Bezier time horizon. Set to NaN if velocity/acceleration should not be incorporated
+        /// Bezier time horizon, set to NaN if velocity/acceleration should not be incorporated
         /// OriginName: delta, Units: s, IsExtended: false
         /// </summary>
         public float[] Delta { get; } = new float[5];
         /// <summary>
-        /// Yaw. Set to NaN for unchanged
+        /// Yaw, set to NaN for unchanged
         /// OriginName: pos_yaw, Units: rad, IsExtended: false
         /// </summary>
         public float[] PosYaw { get; } = new float[5];
         /// <summary>
-        /// Number of valid control points (up-to 5 points are possible)
+        /// Number of valid points (up-to 5 waypoints are possible)
         /// OriginName: valid_points, Units: , IsExtended: false
         /// </summary>
         public byte ValidPoints { get; set; }
@@ -33812,7 +27891,7 @@ namespace Asv.Mavlink.V2.Common
     {
 	    public const int PacketMessageId = 334;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 72;
+        public override byte GetCrcEtra() => 135;
 
         public override CellularStatusPayload Payload { get; } = new CellularStatusPayload();
 
@@ -33824,18 +27903,19 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class CellularStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 10; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 10; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 14; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
+            Cid = BinSerialize.ReadUInt(ref buffer);index+=4;
+            Status = (CellularNetworkStatusFlag)BinSerialize.ReadUShort(ref buffer);index+=2;
             Mcc = BinSerialize.ReadUShort(ref buffer);index+=2;
             Mnc = BinSerialize.ReadUShort(ref buffer);index+=2;
             Lac = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Status = (CellularStatusFlag)BinSerialize.ReadByte(ref buffer);index+=1;
-            FailureReason = (CellularNetworkFailedReason)BinSerialize.ReadByte(ref buffer);index+=1;
             Type = (CellularNetworkRadioType)BinSerialize.ReadByte(ref buffer);index+=1;
             Quality = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
 
@@ -33844,14 +27924,14 @@ namespace Asv.Mavlink.V2.Common
         public int Serialize(ref Span<byte> buffer)
         {
             var index = 0;
+            BinSerialize.WriteUInt(ref buffer,Cid);index+=4;
+            BinSerialize.WriteUShort(ref buffer,(ushort)Status);index+=2;
             BinSerialize.WriteUShort(ref buffer,Mcc);index+=2;
             BinSerialize.WriteUShort(ref buffer,Mnc);index+=2;
             BinSerialize.WriteUShort(ref buffer,Lac);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)Status);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)FailureReason);index+=1;
             BinSerialize.WriteByte(ref buffer,(byte)Type);index+=1;
             BinSerialize.WriteByte(ref buffer,(byte)Quality);index+=1;
-            return index; // /*PayloadByteSize*/10;
+            return index; // /*PayloadByteSize*/14;
         }
 
 
@@ -33860,11 +27940,12 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
+            Cid = BitConverter.ToUInt32(buffer,index);index+=4;
+            Status = (CellularNetworkStatusFlag)BitConverter.ToUInt16(buffer,index);index+=2;
             Mcc = BitConverter.ToUInt16(buffer,index);index+=2;
             Mnc = BitConverter.ToUInt16(buffer,index);index+=2;
             Lac = BitConverter.ToUInt16(buffer,index);index+=2;
-            Status = (CellularStatusFlag)buffer[index++];
-            FailureReason = (CellularNetworkFailedReason)buffer[index++];
             Type = (CellularNetworkRadioType)buffer[index++];
             Quality = (byte)buffer[index++];
         }
@@ -33872,457 +27953,51 @@ namespace Asv.Mavlink.V2.Common
         public int Serialize(byte[] buffer, int index)
         {
 		var start = index;
+            BitConverter.GetBytes(Cid).CopyTo(buffer, index);index+=4;
+            BitConverter.GetBytes((ushort)Status).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(Mcc).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(Mnc).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(Lac).CopyTo(buffer, index);index+=2;
-            buffer[index] = (byte)Status;index+=1;
-            buffer[index] = (byte)FailureReason;index+=1;
             buffer[index] = (byte)Type;index+=1;
             BitConverter.GetBytes(Quality).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/10;
+            return index - start; // /*PayloadByteSize*/14;
         }
 
         /// <summary>
-        /// Mobile country code. If unknown, set to UINT16_MAX
+        /// Cell ID. If unknown, set to: UINT32_MAX
+        /// OriginName: cid, Units: , IsExtended: false
+        /// </summary>
+        public uint Cid { get; set; }
+        /// <summary>
+        /// Status bitmap
+        /// OriginName: status, Units: , IsExtended: false
+        /// </summary>
+        public CellularNetworkStatusFlag Status { get; set; }
+        /// <summary>
+        /// Mobile country code. If unknown, set to: UINT16_MAX
         /// OriginName: mcc, Units: , IsExtended: false
         /// </summary>
         public ushort Mcc { get; set; }
         /// <summary>
-        /// Mobile network code. If unknown, set to UINT16_MAX
+        /// Mobile network code. If unknown, set to: UINT16_MAX
         /// OriginName: mnc, Units: , IsExtended: false
         /// </summary>
         public ushort Mnc { get; set; }
         /// <summary>
-        /// Location area code. If unknown, set to 0
+        /// Location area code. If unknown, set to: 0
         /// OriginName: lac, Units: , IsExtended: false
         /// </summary>
         public ushort Lac { get; set; }
-        /// <summary>
-        /// Cellular modem status
-        /// OriginName: status, Units: , IsExtended: false
-        /// </summary>
-        public CellularStatusFlag Status { get; set; }
-        /// <summary>
-        /// Failure reason when status in in CELLUAR_STATUS_FAILED
-        /// OriginName: failure_reason, Units: , IsExtended: false
-        /// </summary>
-        public CellularNetworkFailedReason FailureReason { get; set; }
         /// <summary>
         /// Cellular network radio type: gsm, cdma, lte...
         /// OriginName: type, Units: , IsExtended: false
         /// </summary>
         public CellularNetworkRadioType Type { get; set; }
         /// <summary>
-        /// Signal quality in percent. If unknown, set to UINT8_MAX
+        /// Cellular network RSSI/RSRP in dBm, absolute value
         /// OriginName: quality, Units: , IsExtended: false
         /// </summary>
         public byte Quality { get; set; }
-    }
-    /// <summary>
-    /// Status of the Iridium SBD link.
-    ///  ISBD_LINK_STATUS
-    /// </summary>
-    public class IsbdLinkStatusPacket: PacketV2<IsbdLinkStatusPayload>
-    {
-	    public const int PacketMessageId = 335;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 225;
-
-        public override IsbdLinkStatusPayload Payload { get; } = new IsbdLinkStatusPayload();
-
-        public override string Name => "ISBD_LINK_STATUS";
-    }
-
-    /// <summary>
-    ///  ISBD_LINK_STATUS
-    /// </summary>
-    public class IsbdLinkStatusPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 24; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
-            LastHeartbeat = BinSerialize.ReadULong(ref buffer);index+=8;
-            FailedSessions = BinSerialize.ReadUShort(ref buffer);index+=2;
-            SuccessfulSessions = BinSerialize.ReadUShort(ref buffer);index+=2;
-            SignalQuality = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            RingPending = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TxSessionPending = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            RxSessionPending = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,Timestamp);index+=8;
-            BinSerialize.WriteULong(ref buffer,LastHeartbeat);index+=8;
-            BinSerialize.WriteUShort(ref buffer,FailedSessions);index+=2;
-            BinSerialize.WriteUShort(ref buffer,SuccessfulSessions);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)SignalQuality);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)RingPending);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TxSessionPending);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)RxSessionPending);index+=1;
-            return index; // /*PayloadByteSize*/24;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
-            LastHeartbeat = BitConverter.ToUInt64(buffer,index);index+=8;
-            FailedSessions = BitConverter.ToUInt16(buffer,index);index+=2;
-            SuccessfulSessions = BitConverter.ToUInt16(buffer,index);index+=2;
-            SignalQuality = (byte)buffer[index++];
-            RingPending = (byte)buffer[index++];
-            TxSessionPending = (byte)buffer[index++];
-            RxSessionPending = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Timestamp).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(LastHeartbeat).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(FailedSessions).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(SuccessfulSessions).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(SignalQuality).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(RingPending).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TxSessionPending).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(RxSessionPending).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/24;
-        }
-
-        /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-        /// OriginName: timestamp, Units: us, IsExtended: false
-        /// </summary>
-        public ulong Timestamp { get; set; }
-        /// <summary>
-        /// Timestamp of the last successful sbd session. The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-        /// OriginName: last_heartbeat, Units: us, IsExtended: false
-        /// </summary>
-        public ulong LastHeartbeat { get; set; }
-        /// <summary>
-        /// Number of failed SBD sessions.
-        /// OriginName: failed_sessions, Units: , IsExtended: false
-        /// </summary>
-        public ushort FailedSessions { get; set; }
-        /// <summary>
-        /// Number of successful SBD sessions.
-        /// OriginName: successful_sessions, Units: , IsExtended: false
-        /// </summary>
-        public ushort SuccessfulSessions { get; set; }
-        /// <summary>
-        /// Signal quality equal to the number of bars displayed on the ISU signal strength indicator. Range is 0 to 5, where 0 indicates no signal and 5 indicates maximum signal strength.
-        /// OriginName: signal_quality, Units: , IsExtended: false
-        /// </summary>
-        public byte SignalQuality { get; set; }
-        /// <summary>
-        /// 1: Ring call pending, 0: No call pending.
-        /// OriginName: ring_pending, Units: , IsExtended: false
-        /// </summary>
-        public byte RingPending { get; set; }
-        /// <summary>
-        /// 1: Transmission session pending, 0: No transmission session pending.
-        /// OriginName: tx_session_pending, Units: , IsExtended: false
-        /// </summary>
-        public byte TxSessionPending { get; set; }
-        /// <summary>
-        /// 1: Receiving session pending, 0: No receiving session pending.
-        /// OriginName: rx_session_pending, Units: , IsExtended: false
-        /// </summary>
-        public byte RxSessionPending { get; set; }
-    }
-    /// <summary>
-    /// Configure cellular modems.
-    ///         This message is re-emitted as an acknowledgement by the modem.
-    ///         The message may also be explicitly requested using MAV_CMD_REQUEST_MESSAGE.
-    ///  CELLULAR_CONFIG
-    /// </summary>
-    public class CellularConfigPacket: PacketV2<CellularConfigPayload>
-    {
-	    public const int PacketMessageId = 336;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 245;
-
-        public override CellularConfigPayload Payload { get; } = new CellularConfigPayload();
-
-        public override string Name => "CELLULAR_CONFIG";
-    }
-
-    /// <summary>
-    ///  CELLULAR_CONFIG
-    /// </summary>
-    public class CellularConfigPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 84; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 84; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            EnableLte = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            EnablePin = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = 16;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Pin)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Pin.Length);
-                }
-            }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-            arraySize = 16;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = NewPin)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, NewPin.Length);
-                }
-            }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/84 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Apn = new char[arraySize];
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Apn)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Apn.Length);
-                }
-            }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-            arraySize = 16;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Puk)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Puk.Length);
-                }
-            }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-            Roaming = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            Response = (CellularConfigResponse)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteByte(ref buffer,(byte)EnableLte);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)EnablePin);index+=1;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Pin)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, Pin.Length, bytePointer, Pin.Length);
-                }
-            }
-            buffer = buffer.Slice(Pin.Length);
-            index+=Pin.Length;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = NewPin)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, NewPin.Length, bytePointer, NewPin.Length);
-                }
-            }
-            buffer = buffer.Slice(NewPin.Length);
-            index+=NewPin.Length;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Apn)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, Apn.Length, bytePointer, Apn.Length);
-                }
-            }
-            buffer = buffer.Slice(Apn.Length);
-            index+=Apn.Length;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Puk)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, Puk.Length, bytePointer, Puk.Length);
-                }
-            }
-            buffer = buffer.Slice(Puk.Length);
-            index+=Puk.Length;
-            BinSerialize.WriteByte(ref buffer,(byte)Roaming);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Response);index+=1;
-            return index; // /*PayloadByteSize*/84;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            EnableLte = (byte)buffer[index++];
-            EnablePin = (byte)buffer[index++];
-            arraySize = 16;
-            Encoding.ASCII.GetChars(buffer, index,arraySize,Pin,0);
-            index+=arraySize;
-            arraySize = 16;
-            Encoding.ASCII.GetChars(buffer, index,arraySize,NewPin,0);
-            index+=arraySize;
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/84 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Apn = new char[arraySize];
-            Encoding.ASCII.GetChars(buffer, index,arraySize,Apn,0);
-            index+=arraySize;
-            arraySize = 16;
-            Encoding.ASCII.GetChars(buffer, index,arraySize,Puk,0);
-            index+=arraySize;
-            Roaming = (byte)buffer[index++];
-            Response = (CellularConfigResponse)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(EnableLte).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(EnablePin).CopyTo(buffer, index);index+=1;
-            index+=Encoding.ASCII.GetBytes(Pin,0,Pin.Length,buffer,index);
-            index+=Encoding.ASCII.GetBytes(NewPin,0,NewPin.Length,buffer,index);
-            index+=Encoding.ASCII.GetBytes(Apn,0,Apn.Length,buffer,index);
-            index+=Encoding.ASCII.GetBytes(Puk,0,Puk.Length,buffer,index);
-            BitConverter.GetBytes(Roaming).CopyTo(buffer, index);index+=1;
-            buffer[index] = (byte)Response;index+=1;
-            return index - start; // /*PayloadByteSize*/84;
-        }
-
-        /// <summary>
-        /// Enable/disable LTE. 0: setting unchanged, 1: disabled, 2: enabled. Current setting when sent back as a response.
-        /// OriginName: enable_lte, Units: , IsExtended: false
-        /// </summary>
-        public byte EnableLte { get; set; }
-        /// <summary>
-        /// Enable/disable PIN on the SIM card. 0: setting unchanged, 1: disabled, 2: enabled. Current setting when sent back as a response.
-        /// OriginName: enable_pin, Units: , IsExtended: false
-        /// </summary>
-        public byte EnablePin { get; set; }
-        /// <summary>
-        /// PIN sent to the SIM card. Blank when PIN is disabled. Empty when message is sent back as a response.
-        /// OriginName: pin, Units: , IsExtended: false
-        /// </summary>
-        public char[] Pin { get; } = new char[16];
-        /// <summary>
-        /// New PIN when changing the PIN. Blank to leave it unchanged. Empty when message is sent back as a response.
-        /// OriginName: new_pin, Units: , IsExtended: false
-        /// </summary>
-        public char[] NewPin { get; } = new char[16];
-        /// <summary>
-        /// Name of the cellular APN. Blank to leave it unchanged. Current APN when sent back as a response.
-        /// OriginName: apn, Units: , IsExtended: false
-        /// </summary>
-        public char[] Apn { get; set; } = new char[32];
-        public byte GetApnMaxItemsCount() => 32;
-        /// <summary>
-        /// Required PUK code in case the user failed to authenticate 3 times with the PIN. Empty when message is sent back as a response.
-        /// OriginName: puk, Units: , IsExtended: false
-        /// </summary>
-        public char[] Puk { get; } = new char[16];
-        /// <summary>
-        /// Enable/disable roaming. 0: setting unchanged, 1: disabled, 2: enabled. Current setting when sent back as a response.
-        /// OriginName: roaming, Units: , IsExtended: false
-        /// </summary>
-        public byte Roaming { get; set; }
-        /// <summary>
-        /// Message acceptance response (sent back to GS).
-        /// OriginName: response, Units: , IsExtended: false
-        /// </summary>
-        public CellularConfigResponse Response { get; set; }
-    }
-    /// <summary>
-    /// RPM sensor data message.
-    ///  RAW_RPM
-    /// </summary>
-    public class RawRpmPacket: PacketV2<RawRpmPayload>
-    {
-	    public const int PacketMessageId = 339;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 199;
-
-        public override RawRpmPayload Payload { get; } = new RawRpmPayload();
-
-        public override string Name => "RAW_RPM";
-    }
-
-    /// <summary>
-    ///  RAW_RPM
-    /// </summary>
-    public class RawRpmPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 5; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            Frequency = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Index = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteFloat(ref buffer,Frequency);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)Index);index+=1;
-            return index; // /*PayloadByteSize*/5;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            Frequency = BitConverter.ToSingle(buffer, index);index+=4;
-            Index = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Frequency).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Index).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/5;
-        }
-
-        /// <summary>
-        /// Indicated rate
-        /// OriginName: frequency, Units: rpm, IsExtended: false
-        /// </summary>
-        public float Frequency { get; set; }
-        /// <summary>
-        /// Index of this RPM sensor (0-indexed)
-        /// OriginName: index, Units: , IsExtended: false
-        /// </summary>
-        public byte Index { get; set; }
     }
     /// <summary>
     /// The global position resulting from GPS and sensor fusion.
@@ -34666,7 +28341,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -34714,6 +28389,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             Radius = BinSerialize.ReadFloat(ref buffer);index+=4;
             X = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -34741,6 +28417,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             Radius = BitConverter.ToSingle(buffer, index);index+=4;
             X = BitConverter.ToInt32(buffer,index);index+=4;
@@ -34762,7 +28439,7 @@ namespace Asv.Mavlink.V2.Common
         }
 
         /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
+        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUsec { get; set; }
@@ -34793,14 +28470,109 @@ namespace Asv.Mavlink.V2.Common
         public MavFrame Frame { get; set; }
     }
     /// <summary>
-    /// Smart Battery information (static/infrequent update). Use for updates from: smart battery to flight stack, flight stack to GCS. Use BATTERY_STATUS for smart battery frequent updates.
+    /// Status text message (use only for important status and error messages). The full message payload can be used for status text, but we recommend that updates be kept concise. Note: The message is intended as a less restrictive replacement for STATUSTEXT.
+    ///  STATUSTEXT_LONG
+    /// </summary>
+    public class StatustextLongPacket: PacketV2<StatustextLongPayload>
+    {
+	    public const int PacketMessageId = 365;
+        public override int MessageId => PacketMessageId;
+        public override byte GetCrcEtra() => 36;
+
+        public override StatustextLongPayload Payload { get; } = new StatustextLongPayload();
+
+        public override string Name => "STATUSTEXT_LONG";
+    }
+
+    /// <summary>
+    ///  STATUSTEXT_LONG
+    /// </summary>
+    public class StatustextLongPayload : IPayload
+    {
+        public byte GetMaxByteSize() => 255; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 255; // of byte sized of fields (exclude extended)
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        {
+            var index = 0;
+            var endIndex = payloadSize;
+            var arraySize = 0;
+            Severity = (MavSeverity)BinSerialize.ReadByte(ref buffer);index+=1;
+            arraySize = /*ArrayLength*/254 - Math.Max(0,((/*PayloadByteSize*/255 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            Text = new char[arraySize];
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = Text)
+                {
+                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Text.Length);
+                }
+            }
+            buffer = buffer.Slice(arraySize);
+            index+=arraySize;
+
+        }
+
+        public int Serialize(ref Span<byte> buffer)
+        {
+            var index = 0;
+            BinSerialize.WriteByte(ref buffer,(byte)Severity);index+=1;
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = Text)
+                {
+                    Encoding.ASCII.GetBytes(charPointer, Text.Length, bytePointer, Text.Length);
+                }
+            }
+            buffer = buffer.Slice(Text.Length);
+            index+=Text.Length;
+            return index; // /*PayloadByteSize*/255;
+        }
+
+
+
+        public void Deserialize(byte[] buffer, int offset, int payloadSize)
+        {
+            var index = offset;
+            var endIndex = offset + payloadSize;
+            var arraySize = 0;
+            Severity = (MavSeverity)buffer[index++];
+            arraySize = /*ArrayLength*/254 - Math.Max(0,((/*PayloadByteSize*/255 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            Text = new char[arraySize];
+            Encoding.ASCII.GetChars(buffer, index,arraySize,Text,0);
+            index+=arraySize;
+        }
+
+        public int Serialize(byte[] buffer, int index)
+        {
+		var start = index;
+            buffer[index] = (byte)Severity;index+=1;
+            index+=Encoding.ASCII.GetBytes(Text,0,Text.Length,buffer,index);
+            return index - start; // /*PayloadByteSize*/255;
+        }
+
+        /// <summary>
+        /// Severity of status. Relies on the definitions within RFC-5424.
+        /// OriginName: severity, Units: , IsExtended: false
+        /// </summary>
+        public MavSeverity Severity { get; set; }
+        /// <summary>
+        /// Status text message, without null termination character.
+        /// OriginName: text, Units: , IsExtended: false
+        /// </summary>
+        public char[] Text { get; set; } = new char[254];
+        public byte GetTextMaxItemsCount() => 254;
+    }
+    /// <summary>
+    /// Smart Battery information (static/infrequent update). Use for updates from: smart battery to flight stack, flight stack to GCS. Use instead of BATTERY_STATUS for smart batteries.
     ///  SMART_BATTERY_INFO
     /// </summary>
     public class SmartBatteryInfoPacket: PacketV2<SmartBatteryInfoPayload>
     {
 	    public const int PacketMessageId = 370;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 75;
+        public override byte GetCrcEtra() => 98;
 
         public override SmartBatteryInfoPayload Payload { get; } = new SmartBatteryInfoPayload();
 
@@ -34812,8 +28584,8 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SmartBatteryInfoPayload : IPayload
     {
-        public byte GetMaxByteSize() => 109; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 109; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 73; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 73; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
@@ -34822,26 +28594,14 @@ namespace Asv.Mavlink.V2.Common
             var arraySize = 0;
             CapacityFullSpecification = BinSerialize.ReadInt(ref buffer);index+=4;
             CapacityFull = BinSerialize.ReadInt(ref buffer);index+=4;
+            SerialNumber = BinSerialize.ReadInt(ref buffer);index+=4;
             CycleCount = BinSerialize.ReadUShort(ref buffer);index+=2;
             Weight = BinSerialize.ReadUShort(ref buffer);index+=2;
             DischargeMinimumVoltage = BinSerialize.ReadUShort(ref buffer);index+=2;
             ChargingMinimumVoltage = BinSerialize.ReadUShort(ref buffer);index+=2;
             RestingMinimumVoltage = BinSerialize.ReadUShort(ref buffer);index+=2;
             Id = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            BatteryFunction = (MavBatteryFunction)BinSerialize.ReadByte(ref buffer);index+=1;
-            Type = (MavBatteryType)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = 16;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = SerialNumber)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, SerialNumber.Length);
-                }
-            }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-            arraySize = /*ArrayLength*/50 - Math.Max(0,((/*PayloadByteSize*/109 - payloadSize - /*ExtendedFieldsLength*/22)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/50 - Math.Max(0,((/*PayloadByteSize*/73 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             DeviceName = new char[arraySize];
             unsafe
             {
@@ -34849,31 +28609,6 @@ namespace Asv.Mavlink.V2.Common
                 fixed (char* charPointer = DeviceName)
                 {
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, DeviceName.Length);
-                }
-            }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-            // extended field 'ChargingMaximumVoltage' can be empty
-            if (index >= endIndex) return;
-            ChargingMaximumVoltage = BinSerialize.ReadUShort(ref buffer);index+=2;
-            // extended field 'CellsInSeries' can be empty
-            if (index >= endIndex) return;
-            CellsInSeries = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            // extended field 'DischargeMaximumCurrent' can be empty
-            if (index >= endIndex) return;
-            DischargeMaximumCurrent = BinSerialize.ReadUInt(ref buffer);index+=4;
-            // extended field 'DischargeMaximumBurstCurrent' can be empty
-            if (index >= endIndex) return;
-            DischargeMaximumBurstCurrent = BinSerialize.ReadUInt(ref buffer);index+=4;
-            // extended field 'ManufactureDate' can be empty
-            if (index >= endIndex) return;
-            arraySize = 11;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = ManufactureDate)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, ManufactureDate.Length);
                 }
             }
             buffer = buffer.Slice(arraySize);
@@ -34886,24 +28621,13 @@ namespace Asv.Mavlink.V2.Common
             var index = 0;
             BinSerialize.WriteInt(ref buffer,CapacityFullSpecification);index+=4;
             BinSerialize.WriteInt(ref buffer,CapacityFull);index+=4;
+            BinSerialize.WriteInt(ref buffer,SerialNumber);index+=4;
             BinSerialize.WriteUShort(ref buffer,CycleCount);index+=2;
             BinSerialize.WriteUShort(ref buffer,Weight);index+=2;
             BinSerialize.WriteUShort(ref buffer,DischargeMinimumVoltage);index+=2;
             BinSerialize.WriteUShort(ref buffer,ChargingMinimumVoltage);index+=2;
             BinSerialize.WriteUShort(ref buffer,RestingMinimumVoltage);index+=2;
             BinSerialize.WriteByte(ref buffer,(byte)Id);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)BatteryFunction);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Type);index+=1;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = SerialNumber)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, SerialNumber.Length, bytePointer, SerialNumber.Length);
-                }
-            }
-            buffer = buffer.Slice(SerialNumber.Length);
-            index+=SerialNumber.Length;
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -34914,21 +28638,7 @@ namespace Asv.Mavlink.V2.Common
             }
             buffer = buffer.Slice(DeviceName.Length);
             index+=DeviceName.Length;
-            BinSerialize.WriteUShort(ref buffer,ChargingMaximumVoltage);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)CellsInSeries);index+=1;
-            BinSerialize.WriteUInt(ref buffer,DischargeMaximumCurrent);index+=4;
-            BinSerialize.WriteUInt(ref buffer,DischargeMaximumBurstCurrent);index+=4;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = ManufactureDate)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, ManufactureDate.Length, bytePointer, ManufactureDate.Length);
-                }
-            }
-            buffer = buffer.Slice(ManufactureDate.Length);
-            index+=ManufactureDate.Length;
-            return index; // /*PayloadByteSize*/109;
+            return index; // /*PayloadByteSize*/73;
         }
 
 
@@ -34940,37 +28650,16 @@ namespace Asv.Mavlink.V2.Common
             var arraySize = 0;
             CapacityFullSpecification = BitConverter.ToInt32(buffer,index);index+=4;
             CapacityFull = BitConverter.ToInt32(buffer,index);index+=4;
+            SerialNumber = BitConverter.ToInt32(buffer,index);index+=4;
             CycleCount = BitConverter.ToUInt16(buffer,index);index+=2;
             Weight = BitConverter.ToUInt16(buffer,index);index+=2;
             DischargeMinimumVoltage = BitConverter.ToUInt16(buffer,index);index+=2;
             ChargingMinimumVoltage = BitConverter.ToUInt16(buffer,index);index+=2;
             RestingMinimumVoltage = BitConverter.ToUInt16(buffer,index);index+=2;
             Id = (byte)buffer[index++];
-            BatteryFunction = (MavBatteryFunction)buffer[index++];
-            Type = (MavBatteryType)buffer[index++];
-            arraySize = 16;
-            Encoding.ASCII.GetChars(buffer, index,arraySize,SerialNumber,0);
-            index+=arraySize;
-            arraySize = /*ArrayLength*/50 - Math.Max(0,((/*PayloadByteSize*/109 - payloadSize - /*ExtendedFieldsLength*/22)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/50 - Math.Max(0,((/*PayloadByteSize*/73 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             DeviceName = new char[arraySize];
             Encoding.ASCII.GetChars(buffer, index,arraySize,DeviceName,0);
-            index+=arraySize;
-            // extended field 'ChargingMaximumVoltage' can be empty
-            if (index >= endIndex) return;
-            ChargingMaximumVoltage = BitConverter.ToUInt16(buffer,index);index+=2;
-            // extended field 'CellsInSeries' can be empty
-            if (index >= endIndex) return;
-            CellsInSeries = (byte)buffer[index++];
-            // extended field 'DischargeMaximumCurrent' can be empty
-            if (index >= endIndex) return;
-            DischargeMaximumCurrent = BitConverter.ToUInt32(buffer,index);index+=4;
-            // extended field 'DischargeMaximumBurstCurrent' can be empty
-            if (index >= endIndex) return;
-            DischargeMaximumBurstCurrent = BitConverter.ToUInt32(buffer,index);index+=4;
-            // extended field 'ManufactureDate' can be empty
-            if (index >= endIndex) return;
-            arraySize = 11;
-            Encoding.ASCII.GetChars(buffer, index,arraySize,ManufactureDate,0);
             index+=arraySize;
         }
 
@@ -34979,22 +28668,15 @@ namespace Asv.Mavlink.V2.Common
 		var start = index;
             BitConverter.GetBytes(CapacityFullSpecification).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(CapacityFull).CopyTo(buffer, index);index+=4;
+            BitConverter.GetBytes(SerialNumber).CopyTo(buffer, index);index+=4;
             BitConverter.GetBytes(CycleCount).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(Weight).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(DischargeMinimumVoltage).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(ChargingMinimumVoltage).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(RestingMinimumVoltage).CopyTo(buffer, index);index+=2;
             BitConverter.GetBytes(Id).CopyTo(buffer, index);index+=1;
-            buffer[index] = (byte)BatteryFunction;index+=1;
-            buffer[index] = (byte)Type;index+=1;
-            index+=Encoding.ASCII.GetBytes(SerialNumber,0,SerialNumber.Length,buffer,index);
             index+=Encoding.ASCII.GetBytes(DeviceName,0,DeviceName.Length,buffer,index);
-            BitConverter.GetBytes(ChargingMaximumVoltage).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(CellsInSeries).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(DischargeMaximumCurrent).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(DischargeMaximumBurstCurrent).CopyTo(buffer, index);index+=4;
-            index+=Encoding.ASCII.GetBytes(ManufactureDate,0,ManufactureDate.Length,buffer,index);
-            return index - start; // /*PayloadByteSize*/109;
+            return index - start; // /*PayloadByteSize*/73;
         }
 
         /// <summary>
@@ -35008,7 +28690,12 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public int CapacityFull { get; set; }
         /// <summary>
-        /// Charge/discharge cycle count. UINT16_MAX: field not provided.
+        /// Serial number. -1: field not provided.
+        /// OriginName: serial_number, Units: , IsExtended: false
+        /// </summary>
+        public int SerialNumber { get; set; }
+        /// <summary>
+        /// Charge/discharge cycle count. -1: field not provided.
         /// OriginName: cycle_count, Units: , IsExtended: false
         /// </summary>
         public ushort CycleCount { get; set; }
@@ -35038,108 +28725,71 @@ namespace Asv.Mavlink.V2.Common
         /// </summary>
         public byte Id { get; set; }
         /// <summary>
-        /// Function of the battery
-        /// OriginName: battery_function, Units: , IsExtended: false
-        /// </summary>
-        public MavBatteryFunction BatteryFunction { get; set; }
-        /// <summary>
-        /// Type (chemistry) of the battery
-        /// OriginName: type, Units: , IsExtended: false
-        /// </summary>
-        public MavBatteryType Type { get; set; }
-        /// <summary>
-        /// Serial number in ASCII characters, 0 terminated. All 0: field not provided.
-        /// OriginName: serial_number, Units: , IsExtended: false
-        /// </summary>
-        public char[] SerialNumber { get; } = new char[16];
-        /// <summary>
-        /// Static device name in ASCII characters, 0 terminated. All 0: field not provided. Encode as manufacturer name then product name separated using an underscore.
+        /// Static device name. Encode as manufacturer and product names separated using an underscore.
         /// OriginName: device_name, Units: , IsExtended: false
         /// </summary>
         public char[] DeviceName { get; set; } = new char[50];
         public byte GetDeviceNameMaxItemsCount() => 50;
-        /// <summary>
-        /// Maximum per-cell voltage when charged. 0: field not provided.
-        /// OriginName: charging_maximum_voltage, Units: mV, IsExtended: true
-        /// </summary>
-        public ushort ChargingMaximumVoltage { get; set; }
-        /// <summary>
-        /// Number of battery cells in series. 0: field not provided.
-        /// OriginName: cells_in_series, Units: , IsExtended: true
-        /// </summary>
-        public byte CellsInSeries { get; set; }
-        /// <summary>
-        /// Maximum pack discharge current. 0: field not provided.
-        /// OriginName: discharge_maximum_current, Units: mA, IsExtended: true
-        /// </summary>
-        public uint DischargeMaximumCurrent { get; set; }
-        /// <summary>
-        /// Maximum pack discharge burst current. 0: field not provided.
-        /// OriginName: discharge_maximum_burst_current, Units: mA, IsExtended: true
-        /// </summary>
-        public uint DischargeMaximumBurstCurrent { get; set; }
-        /// <summary>
-        /// Manufacture date (DD/MM/YYYY) in ASCII characters, 0 terminated. All 0: field not provided.
-        /// OriginName: manufacture_date, Units: , IsExtended: true
-        /// </summary>
-        public char[] ManufactureDate { get; } = new char[11];
     }
     /// <summary>
-    /// Telemetry of power generation system. Alternator or mechanical generator.
-    ///  GENERATOR_STATUS
+    /// Smart Battery information (dynamic). Use for updates from: smart battery to flight stack, flight stack to GCS. Use instead of BATTERY_STATUS for smart batteries.
+    ///  SMART_BATTERY_STATUS
     /// </summary>
-    public class GeneratorStatusPacket: PacketV2<GeneratorStatusPayload>
+    public class SmartBatteryStatusPacket: PacketV2<SmartBatteryStatusPayload>
     {
-	    public const int PacketMessageId = 373;
+	    public const int PacketMessageId = 371;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 117;
+        public override byte GetCrcEtra() => 161;
 
-        public override GeneratorStatusPayload Payload { get; } = new GeneratorStatusPayload();
+        public override SmartBatteryStatusPayload Payload { get; } = new SmartBatteryStatusPayload();
 
-        public override string Name => "GENERATOR_STATUS";
+        public override string Name => "SMART_BATTERY_STATUS";
     }
 
     /// <summary>
-    ///  GENERATOR_STATUS
+    ///  SMART_BATTERY_STATUS
     /// </summary>
-    public class GeneratorStatusPayload : IPayload
+    public class SmartBatteryStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 42; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 50; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 50; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
         {
             var index = 0;
             var endIndex = payloadSize;
-            Status = (MavGeneratorStatusFlag)BinSerialize.ReadULong(ref buffer);index+=8;
-            BatteryCurrent = BinSerialize.ReadFloat(ref buffer);index+=4;
-            LoadCurrent = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PowerGenerated = BinSerialize.ReadFloat(ref buffer);index+=4;
-            BusVoltage = BinSerialize.ReadFloat(ref buffer);index+=4;
-            BatCurrentSetpoint = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Runtime = BinSerialize.ReadUInt(ref buffer);index+=4;
-            TimeUntilMaintenance = BinSerialize.ReadInt(ref buffer);index+=4;
-            GeneratorSpeed = BinSerialize.ReadUShort(ref buffer);index+=2;
-            RectifierTemperature = BinSerialize.ReadShort(ref buffer);index+=2;
-            GeneratorTemperature = BinSerialize.ReadShort(ref buffer);index+=2;
+            var arraySize = 0;
+            FaultBitmask = (MavSmartBatteryFault)BinSerialize.ReadInt(ref buffer);index+=4;
+            TimeRemaining = BinSerialize.ReadInt(ref buffer);index+=4;
+            Id = BinSerialize.ReadUShort(ref buffer);index+=2;
+            CapacityRemaining = BinSerialize.ReadShort(ref buffer);index+=2;
+            Current = BinSerialize.ReadShort(ref buffer);index+=2;
+            Temperature = BinSerialize.ReadShort(ref buffer);index+=2;
+            CellOffset = BinSerialize.ReadUShort(ref buffer);index+=2;
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/50 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
+            Voltages = new ushort[arraySize];
+            for(var i=0;i<arraySize;i++)
+            {
+                Voltages[i] = BinSerialize.ReadUShort(ref buffer);index+=2;
+            }
 
         }
 
         public int Serialize(ref Span<byte> buffer)
         {
             var index = 0;
-            BinSerialize.WriteULong(ref buffer,(ulong)Status);index+=8;
-            BinSerialize.WriteFloat(ref buffer,BatteryCurrent);index+=4;
-            BinSerialize.WriteFloat(ref buffer,LoadCurrent);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PowerGenerated);index+=4;
-            BinSerialize.WriteFloat(ref buffer,BusVoltage);index+=4;
-            BinSerialize.WriteFloat(ref buffer,BatCurrentSetpoint);index+=4;
-            BinSerialize.WriteUInt(ref buffer,Runtime);index+=4;
-            BinSerialize.WriteInt(ref buffer,TimeUntilMaintenance);index+=4;
-            BinSerialize.WriteUShort(ref buffer,GeneratorSpeed);index+=2;
-            BinSerialize.WriteShort(ref buffer,RectifierTemperature);index+=2;
-            BinSerialize.WriteShort(ref buffer,GeneratorTemperature);index+=2;
-            return index; // /*PayloadByteSize*/42;
+            BinSerialize.WriteInt(ref buffer,(int)FaultBitmask);index+=4;
+            BinSerialize.WriteInt(ref buffer,TimeRemaining);index+=4;
+            BinSerialize.WriteUShort(ref buffer,Id);index+=2;
+            BinSerialize.WriteShort(ref buffer,CapacityRemaining);index+=2;
+            BinSerialize.WriteShort(ref buffer,Current);index+=2;
+            BinSerialize.WriteShort(ref buffer,Temperature);index+=2;
+            BinSerialize.WriteUShort(ref buffer,CellOffset);index+=2;
+            for(var i=0;i<Voltages.Length;i++)
+            {
+                BinSerialize.WriteUShort(ref buffer,Voltages[i]);index+=2;
+            }
+            return index; // /*PayloadByteSize*/50;
         }
 
 
@@ -35148,94 +28798,83 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            Status = (MavGeneratorStatusFlag)BitConverter.ToUInt64(buffer,index);index+=8;
-            BatteryCurrent = BitConverter.ToSingle(buffer, index);index+=4;
-            LoadCurrent = BitConverter.ToSingle(buffer, index);index+=4;
-            PowerGenerated = BitConverter.ToSingle(buffer, index);index+=4;
-            BusVoltage = BitConverter.ToSingle(buffer, index);index+=4;
-            BatCurrentSetpoint = BitConverter.ToSingle(buffer, index);index+=4;
-            Runtime = BitConverter.ToUInt32(buffer,index);index+=4;
-            TimeUntilMaintenance = BitConverter.ToInt32(buffer,index);index+=4;
-            GeneratorSpeed = BitConverter.ToUInt16(buffer,index);index+=2;
-            RectifierTemperature = BitConverter.ToInt16(buffer,index);index+=2;
-            GeneratorTemperature = BitConverter.ToInt16(buffer,index);index+=2;
+            var arraySize = 0;
+            FaultBitmask = (MavSmartBatteryFault)BitConverter.ToInt32(buffer,index);index+=4;
+            TimeRemaining = BitConverter.ToInt32(buffer,index);index+=4;
+            Id = BitConverter.ToUInt16(buffer,index);index+=2;
+            CapacityRemaining = BitConverter.ToInt16(buffer,index);index+=2;
+            Current = BitConverter.ToInt16(buffer,index);index+=2;
+            Temperature = BitConverter.ToInt16(buffer,index);index+=2;
+            CellOffset = BitConverter.ToUInt16(buffer,index);index+=2;
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/50 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
+            Voltages = new ushort[arraySize];
+            for(var i=0;i<arraySize;i++)
+            {
+                Voltages[i] = BitConverter.ToUInt16(buffer,index);index+=2;
+            }
         }
 
         public int Serialize(byte[] buffer, int index)
         {
 		var start = index;
-            BitConverter.GetBytes((ulong)Status).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(BatteryCurrent).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(LoadCurrent).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PowerGenerated).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(BusVoltage).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(BatCurrentSetpoint).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Runtime).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(TimeUntilMaintenance).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(GeneratorSpeed).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(RectifierTemperature).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(GeneratorTemperature).CopyTo(buffer, index);index+=2;
-            return index - start; // /*PayloadByteSize*/42;
+            BitConverter.GetBytes((int)FaultBitmask).CopyTo(buffer, index);index+=4;
+            BitConverter.GetBytes(TimeRemaining).CopyTo(buffer, index);index+=4;
+            BitConverter.GetBytes(Id).CopyTo(buffer, index);index+=2;
+            BitConverter.GetBytes(CapacityRemaining).CopyTo(buffer, index);index+=2;
+            BitConverter.GetBytes(Current).CopyTo(buffer, index);index+=2;
+            BitConverter.GetBytes(Temperature).CopyTo(buffer, index);index+=2;
+            BitConverter.GetBytes(CellOffset).CopyTo(buffer, index);index+=2;
+            for(var i=0;i<Voltages.Length;i++)
+            {
+                BitConverter.GetBytes(Voltages[i]).CopyTo(buffer, index);index+=2;
+            }
+            return index - start; // /*PayloadByteSize*/50;
         }
 
         /// <summary>
-        /// Status flags.
-        /// OriginName: status, Units: , IsExtended: false
+        /// Fault/health indications.
+        /// OriginName: fault_bitmask, Units: , IsExtended: false
         /// </summary>
-        public MavGeneratorStatusFlag Status { get; set; }
+        public MavSmartBatteryFault FaultBitmask { get; set; }
         /// <summary>
-        /// Current into/out of battery. Positive for out. Negative for in. NaN: field not provided.
-        /// OriginName: battery_current, Units: A, IsExtended: false
+        /// Estimated remaining battery time. -1: field not provided.
+        /// OriginName: time_remaining, Units: s, IsExtended: false
         /// </summary>
-        public float BatteryCurrent { get; set; }
+        public int TimeRemaining { get; set; }
         /// <summary>
-        /// Current going to the UAV. If battery current not available this is the DC current from the generator. Positive for out. Negative for in. NaN: field not provided
-        /// OriginName: load_current, Units: A, IsExtended: false
+        /// Battery ID
+        /// OriginName: id, Units: , IsExtended: false
         /// </summary>
-        public float LoadCurrent { get; set; }
+        public ushort Id { get; set; }
         /// <summary>
-        /// The power being generated. NaN: field not provided
-        /// OriginName: power_generated, Units: W, IsExtended: false
+        /// Remaining battery energy. Values: [0-100], -1: field not provided.
+        /// OriginName: capacity_remaining, Units: %, IsExtended: false
         /// </summary>
-        public float PowerGenerated { get; set; }
+        public short CapacityRemaining { get; set; }
         /// <summary>
-        /// Voltage of the bus seen at the generator, or battery bus if battery bus is controlled by generator and at a different voltage to main bus.
-        /// OriginName: bus_voltage, Units: V, IsExtended: false
+        /// Battery current (through all cells/loads). Positive if discharging, negative if charging. UINT16_MAX: field not provided.
+        /// OriginName: current, Units: cA, IsExtended: false
         /// </summary>
-        public float BusVoltage { get; set; }
+        public short Current { get; set; }
         /// <summary>
-        /// The target battery current. Positive for out. Negative for in. NaN: field not provided
-        /// OriginName: bat_current_setpoint, Units: A, IsExtended: false
+        /// Battery temperature. -1: field not provided.
+        /// OriginName: temperature, Units: cdegC, IsExtended: false
         /// </summary>
-        public float BatCurrentSetpoint { get; set; }
+        public short Temperature { get; set; }
         /// <summary>
-        /// Seconds this generator has run since it was rebooted. UINT32_MAX: field not provided.
-        /// OriginName: runtime, Units: s, IsExtended: false
+        /// The cell number of the first index in the 'voltages' array field. Using this field allows you to specify cell voltages for batteries with more than 16 cells.
+        /// OriginName: cell_offset, Units: , IsExtended: false
         /// </summary>
-        public uint Runtime { get; set; }
+        public ushort CellOffset { get; set; }
         /// <summary>
-        /// Seconds until this generator requires maintenance.  A negative value indicates maintenance is past-due. INT32_MAX: field not provided.
-        /// OriginName: time_until_maintenance, Units: s, IsExtended: false
+        /// Individual cell voltages. Batteries with more 16 cells can use the cell_offset field to specify the cell offset for the array specified in the current message . Index values above the valid cell count for this battery should have the UINT16_MAX value.
+        /// OriginName: voltages, Units: mV, IsExtended: false
         /// </summary>
-        public int TimeUntilMaintenance { get; set; }
-        /// <summary>
-        /// Speed of electrical generator or alternator. UINT16_MAX: field not provided.
-        /// OriginName: generator_speed, Units: rpm, IsExtended: false
-        /// </summary>
-        public ushort GeneratorSpeed { get; set; }
-        /// <summary>
-        /// The temperature of the rectifier or power converter. INT16_MAX: field not provided.
-        /// OriginName: rectifier_temperature, Units: degC, IsExtended: false
-        /// </summary>
-        public short RectifierTemperature { get; set; }
-        /// <summary>
-        /// The temperature of the mechanical motor, fuel cell core or generator. INT16_MAX: field not provided.
-        /// OriginName: generator_temperature, Units: degC, IsExtended: false
-        /// </summary>
-        public short GeneratorTemperature { get; set; }
+        public ushort[] Voltages { get; set; } = new ushort[16];
+        public byte GetVoltagesMaxItemsCount() => 16;
     }
     /// <summary>
-    /// The raw values of the actuator outputs (e.g. on Pixhawk, from MAIN, AUX ports). This message supersedes SERVO_OUTPUT_RAW.
+    /// The raw values of the actuator outputs.
     ///  ACTUATOR_OUTPUT_STATUS
     /// </summary>
     public class ActuatorOutputStatusPacket: PacketV2<ActuatorOutputStatusPayload>
@@ -35358,6 +28997,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             SafeReturn = BinSerialize.ReadInt(ref buffer);index+=4;
             Land = BinSerialize.ReadInt(ref buffer);index+=4;
             MissionNextItem = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -35383,6 +29023,7 @@ namespace Asv.Mavlink.V2.Common
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             SafeReturn = BitConverter.ToInt32(buffer,index);index+=4;
             Land = BitConverter.ToInt32(buffer,index);index+=4;
             MissionNextItem = BitConverter.ToInt32(buffer,index);index+=4;
@@ -35426,1272 +29067,6 @@ namespace Asv.Mavlink.V2.Common
         /// OriginName: commanded_action, Units: s, IsExtended: false
         /// </summary>
         public int CommandedAction { get; set; }
-    }
-    /// <summary>
-    /// Message for transporting "arbitrary" variable-length data from one component to another (broadcast is not forbidden, but discouraged). The encoding of the data is usually extension specific, i.e. determined by the source, and is usually not documented as part of the MAVLink specification.
-    ///  TUNNEL
-    /// </summary>
-    public class TunnelPacket: PacketV2<TunnelPayload>
-    {
-	    public const int PacketMessageId = 385;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 147;
-
-        public override TunnelPayload Payload { get; } = new TunnelPayload();
-
-        public override string Name => "TUNNEL";
-    }
-
-    /// <summary>
-    ///  TUNNEL
-    /// </summary>
-    public class TunnelPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 133; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 133; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            PayloadType = (MavTunnelPayloadType)BinSerialize.ReadUShort(ref buffer);index+=2;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            PayloadLength = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = /*ArrayLength*/128 - Math.Max(0,((/*PayloadByteSize*/133 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Payload = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Payload[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUShort(ref buffer,(ushort)PayloadType);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)PayloadLength);index+=1;
-            for(var i=0;i<Payload.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)Payload[i]);index+=1;
-            }
-            return index; // /*PayloadByteSize*/133;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            PayloadType = (MavTunnelPayloadType)BitConverter.ToUInt16(buffer,index);index+=2;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            PayloadLength = (byte)buffer[index++];
-            arraySize = /*ArrayLength*/128 - Math.Max(0,((/*PayloadByteSize*/133 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Payload = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Payload[i] = (byte)buffer[index++];
-            }
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes((ushort)PayloadType).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(PayloadLength).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<Payload.Length;i++)
-            {
-                buffer[index] = (byte)Payload[i];index+=1;
-            }
-            return index - start; // /*PayloadByteSize*/133;
-        }
-
-        /// <summary>
-        /// A code that identifies the content of the payload (0 for unknown, which is the default). If this code is less than 32768, it is a 'registered' payload type and the corresponding code should be added to the MAV_TUNNEL_PAYLOAD_TYPE enum. Software creators can register blocks of types as needed. Codes greater than 32767 are considered local experiments and should not be checked in to any widely distributed codebase.
-        /// OriginName: payload_type, Units: , IsExtended: false
-        /// </summary>
-        public MavTunnelPayloadType PayloadType { get; set; }
-        /// <summary>
-        /// System ID (can be 0 for broadcast, but this is discouraged)
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID (can be 0 for broadcast, but this is discouraged)
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-        /// <summary>
-        /// Length of the data transported in payload
-        /// OriginName: payload_length, Units: , IsExtended: false
-        /// </summary>
-        public byte PayloadLength { get; set; }
-        /// <summary>
-        /// Variable length payload. The payload length is defined by payload_length. The entire content of this block is opaque unless you understand the encoding specified by payload_type.
-        /// OriginName: payload, Units: , IsExtended: false
-        /// </summary>
-        public byte[] Payload { get; set; } = new byte[128];
-        public byte GetPayloadMaxItemsCount() => 128;
-    }
-    /// <summary>
-    /// Hardware status sent by an onboard computer.
-    ///  ONBOARD_COMPUTER_STATUS
-    /// </summary>
-    public class OnboardComputerStatusPacket: PacketV2<OnboardComputerStatusPayload>
-    {
-	    public const int PacketMessageId = 390;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 156;
-
-        public override OnboardComputerStatusPayload Payload { get; } = new OnboardComputerStatusPayload();
-
-        public override string Name => "ONBOARD_COMPUTER_STATUS";
-    }
-
-    /// <summary>
-    ///  ONBOARD_COMPUTER_STATUS
-    /// </summary>
-    public class OnboardComputerStatusPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 238; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 238; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
-            Uptime = BinSerialize.ReadUInt(ref buffer);index+=4;
-            RamUsage = BinSerialize.ReadUInt(ref buffer);index+=4;
-            RamTotal = BinSerialize.ReadUInt(ref buffer);index+=4;
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                StorageType[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
-            }
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                StorageUsage[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
-            }
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                StorageTotal[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
-            }
-            arraySize = /*ArrayLength*/6 - Math.Max(0,((/*PayloadByteSize*/238 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            LinkType = new uint[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                LinkType[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
-            }
-            arraySize = 6;
-            for(var i=0;i<arraySize;i++)
-            {
-                LinkTxRate[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
-            }
-            arraySize = 6;
-            for(var i=0;i<arraySize;i++)
-            {
-                LinkRxRate[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
-            }
-            arraySize = 6;
-            for(var i=0;i<arraySize;i++)
-            {
-                LinkTxMax[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
-            }
-            arraySize = 6;
-            for(var i=0;i<arraySize;i++)
-            {
-                LinkRxMax[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
-            }
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                FanSpeed[i] = BinSerialize.ReadShort(ref buffer);index+=2;
-            }
-            Type = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = 8;
-            for(var i=0;i<arraySize;i++)
-            {
-                CpuCores[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-            arraySize = 10;
-            for(var i=0;i<arraySize;i++)
-            {
-                CpuCombined[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                GpuCores[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-            arraySize = 10;
-            for(var i=0;i<arraySize;i++)
-            {
-                GpuCombined[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-            TemperatureBoard = (sbyte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = 8;
-            for(var i=0;i<arraySize;i++)
-            {
-                TemperatureCore[i] = (sbyte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,TimeUsec);index+=8;
-            BinSerialize.WriteUInt(ref buffer,Uptime);index+=4;
-            BinSerialize.WriteUInt(ref buffer,RamUsage);index+=4;
-            BinSerialize.WriteUInt(ref buffer,RamTotal);index+=4;
-            for(var i=0;i<StorageType.Length;i++)
-            {
-                BinSerialize.WriteUInt(ref buffer,StorageType[i]);index+=4;
-            }
-            for(var i=0;i<StorageUsage.Length;i++)
-            {
-                BinSerialize.WriteUInt(ref buffer,StorageUsage[i]);index+=4;
-            }
-            for(var i=0;i<StorageTotal.Length;i++)
-            {
-                BinSerialize.WriteUInt(ref buffer,StorageTotal[i]);index+=4;
-            }
-            for(var i=0;i<LinkType.Length;i++)
-            {
-                BinSerialize.WriteUInt(ref buffer,LinkType[i]);index+=4;
-            }
-            for(var i=0;i<LinkTxRate.Length;i++)
-            {
-                BinSerialize.WriteUInt(ref buffer,LinkTxRate[i]);index+=4;
-            }
-            for(var i=0;i<LinkRxRate.Length;i++)
-            {
-                BinSerialize.WriteUInt(ref buffer,LinkRxRate[i]);index+=4;
-            }
-            for(var i=0;i<LinkTxMax.Length;i++)
-            {
-                BinSerialize.WriteUInt(ref buffer,LinkTxMax[i]);index+=4;
-            }
-            for(var i=0;i<LinkRxMax.Length;i++)
-            {
-                BinSerialize.WriteUInt(ref buffer,LinkRxMax[i]);index+=4;
-            }
-            for(var i=0;i<FanSpeed.Length;i++)
-            {
-                BinSerialize.WriteShort(ref buffer,FanSpeed[i]);index+=2;
-            }
-            BinSerialize.WriteByte(ref buffer,(byte)Type);index+=1;
-            for(var i=0;i<CpuCores.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)CpuCores[i]);index+=1;
-            }
-            for(var i=0;i<CpuCombined.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)CpuCombined[i]);index+=1;
-            }
-            for(var i=0;i<GpuCores.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)GpuCores[i]);index+=1;
-            }
-            for(var i=0;i<GpuCombined.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)GpuCombined[i]);index+=1;
-            }
-            BinSerialize.WriteByte(ref buffer,(byte)TemperatureBoard);index+=1;
-            for(var i=0;i<TemperatureCore.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)TemperatureCore[i]);index+=1;
-            }
-            return index; // /*PayloadByteSize*/238;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
-            Uptime = BitConverter.ToUInt32(buffer,index);index+=4;
-            RamUsage = BitConverter.ToUInt32(buffer,index);index+=4;
-            RamTotal = BitConverter.ToUInt32(buffer,index);index+=4;
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                StorageType[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                StorageUsage[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                StorageTotal[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-            arraySize = /*ArrayLength*/6 - Math.Max(0,((/*PayloadByteSize*/238 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            LinkType = new uint[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                LinkType[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-            arraySize = 6;
-            for(var i=0;i<arraySize;i++)
-            {
-                LinkTxRate[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-            arraySize = 6;
-            for(var i=0;i<arraySize;i++)
-            {
-                LinkRxRate[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-            arraySize = 6;
-            for(var i=0;i<arraySize;i++)
-            {
-                LinkTxMax[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-            arraySize = 6;
-            for(var i=0;i<arraySize;i++)
-            {
-                LinkRxMax[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                FanSpeed[i] = BitConverter.ToInt16(buffer,index);index+=2;
-            }
-            Type = (byte)buffer[index++];
-            arraySize = 8;
-            for(var i=0;i<arraySize;i++)
-            {
-                CpuCores[i] = (byte)buffer[index++];
-            }
-            arraySize = 10;
-            for(var i=0;i<arraySize;i++)
-            {
-                CpuCombined[i] = (byte)buffer[index++];
-            }
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                GpuCores[i] = (byte)buffer[index++];
-            }
-            arraySize = 10;
-            for(var i=0;i<arraySize;i++)
-            {
-                GpuCombined[i] = (byte)buffer[index++];
-            }
-            TemperatureBoard = (sbyte)buffer[index++];
-            arraySize = 8;
-            for(var i=0;i<arraySize;i++)
-            {
-                TemperatureCore[i] = (sbyte)buffer[index++];
-            }
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(TimeUsec).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(Uptime).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(RamUsage).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(RamTotal).CopyTo(buffer, index);index+=4;
-            for(var i=0;i<StorageType.Length;i++)
-            {
-                BitConverter.GetBytes(StorageType[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<StorageUsage.Length;i++)
-            {
-                BitConverter.GetBytes(StorageUsage[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<StorageTotal.Length;i++)
-            {
-                BitConverter.GetBytes(StorageTotal[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<LinkType.Length;i++)
-            {
-                BitConverter.GetBytes(LinkType[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<LinkTxRate.Length;i++)
-            {
-                BitConverter.GetBytes(LinkTxRate[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<LinkRxRate.Length;i++)
-            {
-                BitConverter.GetBytes(LinkRxRate[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<LinkTxMax.Length;i++)
-            {
-                BitConverter.GetBytes(LinkTxMax[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<LinkRxMax.Length;i++)
-            {
-                BitConverter.GetBytes(LinkRxMax[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<FanSpeed.Length;i++)
-            {
-                BitConverter.GetBytes(FanSpeed[i]).CopyTo(buffer, index);index+=2;
-            }
-            BitConverter.GetBytes(Type).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<CpuCores.Length;i++)
-            {
-                buffer[index] = (byte)CpuCores[i];index+=1;
-            }
-            for(var i=0;i<CpuCombined.Length;i++)
-            {
-                buffer[index] = (byte)CpuCombined[i];index+=1;
-            }
-            for(var i=0;i<GpuCores.Length;i++)
-            {
-                buffer[index] = (byte)GpuCores[i];index+=1;
-            }
-            for(var i=0;i<GpuCombined.Length;i++)
-            {
-                buffer[index] = (byte)GpuCombined[i];index+=1;
-            }
-            BitConverter.GetBytes(TemperatureBoard).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<TemperatureCore.Length;i++)
-            {
-                buffer[index] = (byte)TemperatureCore[i];index+=1;
-            }
-            return index - start; // /*PayloadByteSize*/238;
-        }
-
-        /// <summary>
-        /// Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
-        /// OriginName: time_usec, Units: us, IsExtended: false
-        /// </summary>
-        public ulong TimeUsec { get; set; }
-        /// <summary>
-        /// Time since system boot.
-        /// OriginName: uptime, Units: ms, IsExtended: false
-        /// </summary>
-        public uint Uptime { get; set; }
-        /// <summary>
-        /// Amount of used RAM on the component system. A value of UINT32_MAX implies the field is unused.
-        /// OriginName: ram_usage, Units: MiB, IsExtended: false
-        /// </summary>
-        public uint RamUsage { get; set; }
-        /// <summary>
-        /// Total amount of RAM on the component system. A value of UINT32_MAX implies the field is unused.
-        /// OriginName: ram_total, Units: MiB, IsExtended: false
-        /// </summary>
-        public uint RamTotal { get; set; }
-        /// <summary>
-        /// Storage type: 0: HDD, 1: SSD, 2: EMMC, 3: SD card (non-removable), 4: SD card (removable). A value of UINT32_MAX implies the field is unused.
-        /// OriginName: storage_type, Units: , IsExtended: false
-        /// </summary>
-        public uint[] StorageType { get; } = new uint[4];
-        /// <summary>
-        /// Amount of used storage space on the component system. A value of UINT32_MAX implies the field is unused.
-        /// OriginName: storage_usage, Units: MiB, IsExtended: false
-        /// </summary>
-        public uint[] StorageUsage { get; } = new uint[4];
-        /// <summary>
-        /// Total amount of storage space on the component system. A value of UINT32_MAX implies the field is unused.
-        /// OriginName: storage_total, Units: MiB, IsExtended: false
-        /// </summary>
-        public uint[] StorageTotal { get; } = new uint[4];
-        /// <summary>
-        /// Link type: 0-9: UART, 10-19: Wired network, 20-29: Wifi, 30-39: Point-to-point proprietary, 40-49: Mesh proprietary
-        /// OriginName: link_type, Units: , IsExtended: false
-        /// </summary>
-        public uint[] LinkType { get; set; } = new uint[6];
-        public byte GetLinkTypeMaxItemsCount() => 6;
-        /// <summary>
-        /// Network traffic from the component system. A value of UINT32_MAX implies the field is unused.
-        /// OriginName: link_tx_rate, Units: KiB/s, IsExtended: false
-        /// </summary>
-        public uint[] LinkTxRate { get; } = new uint[6];
-        /// <summary>
-        /// Network traffic to the component system. A value of UINT32_MAX implies the field is unused.
-        /// OriginName: link_rx_rate, Units: KiB/s, IsExtended: false
-        /// </summary>
-        public uint[] LinkRxRate { get; } = new uint[6];
-        /// <summary>
-        /// Network capacity from the component system. A value of UINT32_MAX implies the field is unused.
-        /// OriginName: link_tx_max, Units: KiB/s, IsExtended: false
-        /// </summary>
-        public uint[] LinkTxMax { get; } = new uint[6];
-        /// <summary>
-        /// Network capacity to the component system. A value of UINT32_MAX implies the field is unused.
-        /// OriginName: link_rx_max, Units: KiB/s, IsExtended: false
-        /// </summary>
-        public uint[] LinkRxMax { get; } = new uint[6];
-        /// <summary>
-        /// Fan speeds. A value of INT16_MAX implies the field is unused.
-        /// OriginName: fan_speed, Units: rpm, IsExtended: false
-        /// </summary>
-        public short[] FanSpeed { get; } = new short[4];
-        /// <summary>
-        /// Type of the onboard computer: 0: Mission computer primary, 1: Mission computer backup 1, 2: Mission computer backup 2, 3: Compute node, 4-5: Compute spares, 6-9: Payload computers.
-        /// OriginName: type, Units: , IsExtended: false
-        /// </summary>
-        public byte Type { get; set; }
-        /// <summary>
-        /// CPU usage on the component in percent (100 - idle). A value of UINT8_MAX implies the field is unused.
-        /// OriginName: cpu_cores, Units: , IsExtended: false
-        /// </summary>
-        public byte[] CpuCores { get; } = new byte[8];
-        /// <summary>
-        /// Combined CPU usage as the last 10 slices of 100 MS (a histogram). This allows to identify spikes in load that max out the system, but only for a short amount of time. A value of UINT8_MAX implies the field is unused.
-        /// OriginName: cpu_combined, Units: , IsExtended: false
-        /// </summary>
-        public byte[] CpuCombined { get; } = new byte[10];
-        /// <summary>
-        /// GPU usage on the component in percent (100 - idle). A value of UINT8_MAX implies the field is unused.
-        /// OriginName: gpu_cores, Units: , IsExtended: false
-        /// </summary>
-        public byte[] GpuCores { get; } = new byte[4];
-        /// <summary>
-        /// Combined GPU usage as the last 10 slices of 100 MS (a histogram). This allows to identify spikes in load that max out the system, but only for a short amount of time. A value of UINT8_MAX implies the field is unused.
-        /// OriginName: gpu_combined, Units: , IsExtended: false
-        /// </summary>
-        public byte[] GpuCombined { get; } = new byte[10];
-        /// <summary>
-        /// Temperature of the board. A value of INT8_MAX implies the field is unused.
-        /// OriginName: temperature_board, Units: degC, IsExtended: false
-        /// </summary>
-        public sbyte TemperatureBoard { get; set; }
-        /// <summary>
-        /// Temperature of the CPU core. A value of INT8_MAX implies the field is unused.
-        /// OriginName: temperature_core, Units: degC, IsExtended: false
-        /// </summary>
-        public sbyte[] TemperatureCore { get; } = new sbyte[8];
-    }
-    /// <summary>
-    /// Information about a component. For camera components instead use CAMERA_INFORMATION, and for autopilots additionally use AUTOPILOT_VERSION. Components including GCSes should consider supporting requests of this message via MAV_CMD_REQUEST_MESSAGE.
-    ///  COMPONENT_INFORMATION
-    /// </summary>
-    public class ComponentInformationPacket: PacketV2<ComponentInformationPayload>
-    {
-	    public const int PacketMessageId = 395;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 0;
-
-        public override ComponentInformationPayload Payload { get; } = new ComponentInformationPayload();
-
-        public override string Name => "COMPONENT_INFORMATION";
-    }
-
-    /// <summary>
-    ///  COMPONENT_INFORMATION
-    /// </summary>
-    public class ComponentInformationPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 212; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 212; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            TimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
-            GeneralMetadataFileCrc = BinSerialize.ReadUInt(ref buffer);index+=4;
-            PeripheralsMetadataFileCrc = BinSerialize.ReadUInt(ref buffer);index+=4;
-            arraySize = /*ArrayLength*/100 - Math.Max(0,((/*PayloadByteSize*/212 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            GeneralMetadataUri = new char[arraySize];
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = GeneralMetadataUri)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, GeneralMetadataUri.Length);
-                }
-            }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-            arraySize = 100;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = PeripheralsMetadataUri)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, PeripheralsMetadataUri.Length);
-                }
-            }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,TimeBootMs);index+=4;
-            BinSerialize.WriteUInt(ref buffer,GeneralMetadataFileCrc);index+=4;
-            BinSerialize.WriteUInt(ref buffer,PeripheralsMetadataFileCrc);index+=4;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = GeneralMetadataUri)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, GeneralMetadataUri.Length, bytePointer, GeneralMetadataUri.Length);
-                }
-            }
-            buffer = buffer.Slice(GeneralMetadataUri.Length);
-            index+=GeneralMetadataUri.Length;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = PeripheralsMetadataUri)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, PeripheralsMetadataUri.Length, bytePointer, PeripheralsMetadataUri.Length);
-                }
-            }
-            buffer = buffer.Slice(PeripheralsMetadataUri.Length);
-            index+=PeripheralsMetadataUri.Length;
-            return index; // /*PayloadByteSize*/212;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            TimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
-            GeneralMetadataFileCrc = BitConverter.ToUInt32(buffer,index);index+=4;
-            PeripheralsMetadataFileCrc = BitConverter.ToUInt32(buffer,index);index+=4;
-            arraySize = /*ArrayLength*/100 - Math.Max(0,((/*PayloadByteSize*/212 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            GeneralMetadataUri = new char[arraySize];
-            Encoding.ASCII.GetChars(buffer, index,arraySize,GeneralMetadataUri,0);
-            index+=arraySize;
-            arraySize = 100;
-            Encoding.ASCII.GetChars(buffer, index,arraySize,PeripheralsMetadataUri,0);
-            index+=arraySize;
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(TimeBootMs).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(GeneralMetadataFileCrc).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PeripheralsMetadataFileCrc).CopyTo(buffer, index);index+=4;
-            index+=Encoding.ASCII.GetBytes(GeneralMetadataUri,0,GeneralMetadataUri.Length,buffer,index);
-            index+=Encoding.ASCII.GetBytes(PeripheralsMetadataUri,0,PeripheralsMetadataUri.Length,buffer,index);
-            return index - start; // /*PayloadByteSize*/212;
-        }
-
-        /// <summary>
-        /// Timestamp (time since system boot).
-        /// OriginName: time_boot_ms, Units: ms, IsExtended: false
-        /// </summary>
-        public uint TimeBootMs { get; set; }
-        /// <summary>
-        /// CRC32 of the TYPE_GENERAL file (can be used by a GCS for file caching). The general metadata file contains URLs to other files of different type according to COMP_METADATA_TYPE.
-        /// OriginName: general_metadata_file_crc, Units: , IsExtended: false
-        /// </summary>
-        public uint GeneralMetadataFileCrc { get; set; }
-        /// <summary>
-        /// CRC32 of the TYPE_PERIPHERALS file (can be used by a GCS for file caching).
-        /// OriginName: peripherals_metadata_file_crc, Units: , IsExtended: false
-        /// </summary>
-        public uint PeripheralsMetadataFileCrc { get; set; }
-        /// <summary>
-        /// Component definition URI for TYPE_GENERAL. This must be a MAVLink FTP URI and the file might be compressed with xz.
-        /// OriginName: general_metadata_uri, Units: , IsExtended: false
-        /// </summary>
-        public char[] GeneralMetadataUri { get; set; } = new char[100];
-        public byte GetGeneralMetadataUriMaxItemsCount() => 100;
-        /// <summary>
-        /// (Optional) Component definition URI for TYPE_PERIPHERALS. This must be a MAVLink FTP URI and the file might be compressed with xz. Peripherals are listed as a separate URL and not included in the general metadata file because it will likely be generated at runtime while the general (and other referenced files) might be generated at compile time.
-        /// OriginName: peripherals_metadata_uri, Units: , IsExtended: false
-        /// </summary>
-        public char[] PeripheralsMetadataUri { get; } = new char[100];
-    }
-    /// <summary>
-    /// Play vehicle tone/tune (buzzer). Supersedes message PLAY_TUNE.
-    ///  PLAY_TUNE_V2
-    /// </summary>
-    public class PlayTuneV2Packet: PacketV2<PlayTuneV2Payload>
-    {
-	    public const int PacketMessageId = 400;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 110;
-
-        public override PlayTuneV2Payload Payload { get; } = new PlayTuneV2Payload();
-
-        public override string Name => "PLAY_TUNE_V2";
-    }
-
-    /// <summary>
-    ///  PLAY_TUNE_V2
-    /// </summary>
-    public class PlayTuneV2Payload : IPayload
-    {
-        public byte GetMaxByteSize() => 254; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 254; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Format = (TuneFormat)BinSerialize.ReadUInt(ref buffer);index+=4;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = /*ArrayLength*/248 - Math.Max(0,((/*PayloadByteSize*/254 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Tune = new char[arraySize];
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Tune)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Tune.Length);
-                }
-            }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,(uint)Format);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Tune)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, Tune.Length, bytePointer, Tune.Length);
-                }
-            }
-            buffer = buffer.Slice(Tune.Length);
-            index+=Tune.Length;
-            return index; // /*PayloadByteSize*/254;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Format = (TuneFormat)BitConverter.ToUInt32(buffer,index);index+=4;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            arraySize = /*ArrayLength*/248 - Math.Max(0,((/*PayloadByteSize*/254 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Tune = new char[arraySize];
-            Encoding.ASCII.GetChars(buffer, index,arraySize,Tune,0);
-            index+=arraySize;
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes((uint)Format).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            index+=Encoding.ASCII.GetBytes(Tune,0,Tune.Length,buffer,index);
-            return index - start; // /*PayloadByteSize*/254;
-        }
-
-        /// <summary>
-        /// Tune format
-        /// OriginName: format, Units: , IsExtended: false
-        /// </summary>
-        public TuneFormat Format { get; set; }
-        /// <summary>
-        /// System ID
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-        /// <summary>
-        /// Tune definition as a NULL-terminated string.
-        /// OriginName: tune, Units: , IsExtended: false
-        /// </summary>
-        public char[] Tune { get; set; } = new char[248];
-        public byte GetTuneMaxItemsCount() => 248;
-    }
-    /// <summary>
-    /// Tune formats supported by vehicle. This should be emitted as response to MAV_CMD_REQUEST_MESSAGE.
-    ///  SUPPORTED_TUNES
-    /// </summary>
-    public class SupportedTunesPacket: PacketV2<SupportedTunesPayload>
-    {
-	    public const int PacketMessageId = 401;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 183;
-
-        public override SupportedTunesPayload Payload { get; } = new SupportedTunesPayload();
-
-        public override string Name => "SUPPORTED_TUNES";
-    }
-
-    /// <summary>
-    ///  SUPPORTED_TUNES
-    /// </summary>
-    public class SupportedTunesPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 6; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            Format = (TuneFormat)BinSerialize.ReadUInt(ref buffer);index+=4;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,(uint)Format);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            return index; // /*PayloadByteSize*/6;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            Format = (TuneFormat)BitConverter.ToUInt32(buffer,index);index+=4;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes((uint)Format).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/6;
-        }
-
-        /// <summary>
-        /// Bitfield of supported tune formats.
-        /// OriginName: format, Units: , IsExtended: false
-        /// </summary>
-        public TuneFormat Format { get; set; }
-        /// <summary>
-        /// System ID
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-    }
-    /// <summary>
-    /// Event message. Each new event from a particular component gets a new sequence number. The same message might be sent multiple times if (re-)requested. Most events are broadcast, some can be specific to a target component (as receivers keep track of the sequence for missed events, all events need to be broadcast. Thus we use destination_component instead of target_component).
-    ///  EVENT
-    /// </summary>
-    public class EventPacket: PacketV2<EventPayload>
-    {
-	    public const int PacketMessageId = 410;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 160;
-
-        public override EventPayload Payload { get; } = new EventPayload();
-
-        public override string Name => "EVENT";
-    }
-
-    /// <summary>
-    ///  EVENT
-    /// </summary>
-    public class EventPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 53; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 53; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Id = BinSerialize.ReadUInt(ref buffer);index+=4;
-            EventTimeBootMs = BinSerialize.ReadUInt(ref buffer);index+=4;
-            Sequence = BinSerialize.ReadUShort(ref buffer);index+=2;
-            DestinationComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            DestinationSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            LogLevels = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = /*ArrayLength*/40 - Math.Max(0,((/*PayloadByteSize*/53 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Arguments = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Arguments[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,Id);index+=4;
-            BinSerialize.WriteUInt(ref buffer,EventTimeBootMs);index+=4;
-            BinSerialize.WriteUShort(ref buffer,Sequence);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)DestinationComponent);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)DestinationSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)LogLevels);index+=1;
-            for(var i=0;i<Arguments.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)Arguments[i]);index+=1;
-            }
-            return index; // /*PayloadByteSize*/53;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Id = BitConverter.ToUInt32(buffer,index);index+=4;
-            EventTimeBootMs = BitConverter.ToUInt32(buffer,index);index+=4;
-            Sequence = BitConverter.ToUInt16(buffer,index);index+=2;
-            DestinationComponent = (byte)buffer[index++];
-            DestinationSystem = (byte)buffer[index++];
-            LogLevels = (byte)buffer[index++];
-            arraySize = /*ArrayLength*/40 - Math.Max(0,((/*PayloadByteSize*/53 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Arguments = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Arguments[i] = (byte)buffer[index++];
-            }
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Id).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(EventTimeBootMs).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Sequence).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(DestinationComponent).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(DestinationSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(LogLevels).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<Arguments.Length;i++)
-            {
-                buffer[index] = (byte)Arguments[i];index+=1;
-            }
-            return index - start; // /*PayloadByteSize*/53;
-        }
-
-        /// <summary>
-        /// Event ID (as defined in the component metadata)
-        /// OriginName: id, Units: , IsExtended: false
-        /// </summary>
-        public uint Id { get; set; }
-        /// <summary>
-        /// Timestamp (time since system boot when the event happened).
-        /// OriginName: event_time_boot_ms, Units: ms, IsExtended: false
-        /// </summary>
-        public uint EventTimeBootMs { get; set; }
-        /// <summary>
-        /// Sequence number.
-        /// OriginName: sequence, Units: , IsExtended: false
-        /// </summary>
-        public ushort Sequence { get; set; }
-        /// <summary>
-        /// Component ID
-        /// OriginName: destination_component, Units: , IsExtended: false
-        /// </summary>
-        public byte DestinationComponent { get; set; }
-        /// <summary>
-        /// System ID
-        /// OriginName: destination_system, Units: , IsExtended: false
-        /// </summary>
-        public byte DestinationSystem { get; set; }
-        /// <summary>
-        /// Log levels: 4 bits MSB: internal (for logging purposes), 4 bits LSB: external. Levels: Emergency = 0, Alert = 1, Critical = 2, Error = 3, Warning = 4, Notice = 5, Info = 6, Debug = 7, Protocol = 8, Disabled = 9
-        /// OriginName: log_levels, Units: , IsExtended: false
-        /// </summary>
-        public byte LogLevels { get; set; }
-        /// <summary>
-        /// Arguments (depend on event ID).
-        /// OriginName: arguments, Units: , IsExtended: false
-        /// </summary>
-        public byte[] Arguments { get; set; } = new byte[40];
-        public byte GetArgumentsMaxItemsCount() => 40;
-    }
-    /// <summary>
-    /// Regular broadcast for the current latest event sequence number for a component. This is used to check for dropped events.
-    ///  CURRENT_EVENT_SEQUENCE
-    /// </summary>
-    public class CurrentEventSequencePacket: PacketV2<CurrentEventSequencePayload>
-    {
-	    public const int PacketMessageId = 411;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 106;
-
-        public override CurrentEventSequencePayload Payload { get; } = new CurrentEventSequencePayload();
-
-        public override string Name => "CURRENT_EVENT_SEQUENCE";
-    }
-
-    /// <summary>
-    ///  CURRENT_EVENT_SEQUENCE
-    /// </summary>
-    public class CurrentEventSequencePayload : IPayload
-    {
-        public byte GetMaxByteSize() => 3; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            Sequence = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Flags = (MavEventCurrentSequenceFlags)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUShort(ref buffer,Sequence);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)Flags);index+=1;
-            return index; // /*PayloadByteSize*/3;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            Sequence = BitConverter.ToUInt16(buffer,index);index+=2;
-            Flags = (MavEventCurrentSequenceFlags)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Sequence).CopyTo(buffer, index);index+=2;
-            buffer[index] = (byte)Flags;index+=1;
-            return index - start; // /*PayloadByteSize*/3;
-        }
-
-        /// <summary>
-        /// Sequence number.
-        /// OriginName: sequence, Units: , IsExtended: false
-        /// </summary>
-        public ushort Sequence { get; set; }
-        /// <summary>
-        /// Flag bitset.
-        /// OriginName: flags, Units: , IsExtended: false
-        /// </summary>
-        public MavEventCurrentSequenceFlags Flags { get; set; }
-    }
-    /// <summary>
-    /// Request one or more events to be (re-)sent. If first_sequence==last_sequence, only a single event is requested. Note that first_sequence can be larger than last_sequence (because the sequence number can wrap). Each sequence will trigger an EVENT or EVENT_ERROR response.
-    ///  REQUEST_EVENT
-    /// </summary>
-    public class RequestEventPacket: PacketV2<RequestEventPayload>
-    {
-	    public const int PacketMessageId = 412;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 33;
-
-        public override RequestEventPayload Payload { get; } = new RequestEventPayload();
-
-        public override string Name => "REQUEST_EVENT";
-    }
-
-    /// <summary>
-    ///  REQUEST_EVENT
-    /// </summary>
-    public class RequestEventPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 6; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            FirstSequence = BinSerialize.ReadUShort(ref buffer);index+=2;
-            LastSequence = BinSerialize.ReadUShort(ref buffer);index+=2;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUShort(ref buffer,FirstSequence);index+=2;
-            BinSerialize.WriteUShort(ref buffer,LastSequence);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            return index; // /*PayloadByteSize*/6;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            FirstSequence = BitConverter.ToUInt16(buffer,index);index+=2;
-            LastSequence = BitConverter.ToUInt16(buffer,index);index+=2;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(FirstSequence).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(LastSequence).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/6;
-        }
-
-        /// <summary>
-        /// First sequence number of the requested event.
-        /// OriginName: first_sequence, Units: , IsExtended: false
-        /// </summary>
-        public ushort FirstSequence { get; set; }
-        /// <summary>
-        /// Last sequence number of the requested event.
-        /// OriginName: last_sequence, Units: , IsExtended: false
-        /// </summary>
-        public ushort LastSequence { get; set; }
-        /// <summary>
-        /// System ID
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-    }
-    /// <summary>
-    /// Response to a REQUEST_EVENT in case of an error (e.g. the event is not available anymore).
-    ///  RESPONSE_EVENT_ERROR
-    /// </summary>
-    public class ResponseEventErrorPacket: PacketV2<ResponseEventErrorPayload>
-    {
-	    public const int PacketMessageId = 413;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 77;
-
-        public override ResponseEventErrorPayload Payload { get; } = new ResponseEventErrorPayload();
-
-        public override string Name => "RESPONSE_EVENT_ERROR";
-    }
-
-    /// <summary>
-    ///  RESPONSE_EVENT_ERROR
-    /// </summary>
-    public class ResponseEventErrorPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 7; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            Sequence = BinSerialize.ReadUShort(ref buffer);index+=2;
-            SequenceOldestAvailable = BinSerialize.ReadUShort(ref buffer);index+=2;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            Reason = (MavEventErrorReason)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUShort(ref buffer,Sequence);index+=2;
-            BinSerialize.WriteUShort(ref buffer,SequenceOldestAvailable);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Reason);index+=1;
-            return index; // /*PayloadByteSize*/7;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            Sequence = BitConverter.ToUInt16(buffer,index);index+=2;
-            SequenceOldestAvailable = BitConverter.ToUInt16(buffer,index);index+=2;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            Reason = (MavEventErrorReason)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Sequence).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(SequenceOldestAvailable).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            buffer[index] = (byte)Reason;index+=1;
-            return index - start; // /*PayloadByteSize*/7;
-        }
-
-        /// <summary>
-        /// Sequence number.
-        /// OriginName: sequence, Units: , IsExtended: false
-        /// </summary>
-        public ushort Sequence { get; set; }
-        /// <summary>
-        /// Oldest Sequence number that is still available after the sequence set in REQUEST_EVENT.
-        /// OriginName: sequence_oldest_available, Units: , IsExtended: false
-        /// </summary>
-        public ushort SequenceOldestAvailable { get; set; }
-        /// <summary>
-        /// System ID
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-        /// <summary>
-        /// Error reason.
-        /// OriginName: reason, Units: , IsExtended: false
-        /// </summary>
-        public MavEventErrorReason Reason { get; set; }
     }
     /// <summary>
     /// Cumulative distance traveled for each reported wheel.
@@ -36789,1357 +29164,6 @@ namespace Asv.Mavlink.V2.Common
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
         public byte Count { get; set; }
-    }
-    /// <summary>
-    /// Winch status.
-    ///  WINCH_STATUS
-    /// </summary>
-    public class WinchStatusPacket: PacketV2<WinchStatusPayload>
-    {
-	    public const int PacketMessageId = 9005;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 117;
-
-        public override WinchStatusPayload Payload { get; } = new WinchStatusPayload();
-
-        public override string Name => "WINCH_STATUS";
-    }
-
-    /// <summary>
-    ///  WINCH_STATUS
-    /// </summary>
-    public class WinchStatusPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 34; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 34; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
-            LineLength = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Speed = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Tension = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Voltage = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Current = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Status = (MavWinchStatusFlag)BinSerialize.ReadUInt(ref buffer);index+=4;
-            Temperature = BinSerialize.ReadShort(ref buffer);index+=2;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,TimeUsec);index+=8;
-            BinSerialize.WriteFloat(ref buffer,LineLength);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Speed);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Tension);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Voltage);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Current);index+=4;
-            BinSerialize.WriteUInt(ref buffer,(uint)Status);index+=4;
-            BinSerialize.WriteShort(ref buffer,Temperature);index+=2;
-            return index; // /*PayloadByteSize*/34;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
-            LineLength = BitConverter.ToSingle(buffer, index);index+=4;
-            Speed = BitConverter.ToSingle(buffer, index);index+=4;
-            Tension = BitConverter.ToSingle(buffer, index);index+=4;
-            Voltage = BitConverter.ToSingle(buffer, index);index+=4;
-            Current = BitConverter.ToSingle(buffer, index);index+=4;
-            Status = (MavWinchStatusFlag)BitConverter.ToUInt32(buffer,index);index+=4;
-            Temperature = BitConverter.ToInt16(buffer,index);index+=2;
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(TimeUsec).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(LineLength).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Speed).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Tension).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Voltage).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Current).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes((uint)Status).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Temperature).CopyTo(buffer, index);index+=2;
-            return index - start; // /*PayloadByteSize*/34;
-        }
-
-        /// <summary>
-        /// Timestamp (synced to UNIX time or since system boot).
-        /// OriginName: time_usec, Units: us, IsExtended: false
-        /// </summary>
-        public ulong TimeUsec { get; set; }
-        /// <summary>
-        /// Length of line released. NaN if unknown
-        /// OriginName: line_length, Units: m, IsExtended: false
-        /// </summary>
-        public float LineLength { get; set; }
-        /// <summary>
-        /// Speed line is being released or retracted. Positive values if being released, negative values if being retracted, NaN if unknown
-        /// OriginName: speed, Units: m/s, IsExtended: false
-        /// </summary>
-        public float Speed { get; set; }
-        /// <summary>
-        /// Tension on the line. NaN if unknown
-        /// OriginName: tension, Units: kg, IsExtended: false
-        /// </summary>
-        public float Tension { get; set; }
-        /// <summary>
-        /// Voltage of the battery supplying the winch. NaN if unknown
-        /// OriginName: voltage, Units: V, IsExtended: false
-        /// </summary>
-        public float Voltage { get; set; }
-        /// <summary>
-        /// Current draw from the winch. NaN if unknown
-        /// OriginName: current, Units: A, IsExtended: false
-        /// </summary>
-        public float Current { get; set; }
-        /// <summary>
-        /// Status flags
-        /// OriginName: status, Units: , IsExtended: false
-        /// </summary>
-        public MavWinchStatusFlag Status { get; set; }
-        /// <summary>
-        /// Temperature of the motor. INT16_MAX if unknown
-        /// OriginName: temperature, Units: degC, IsExtended: false
-        /// </summary>
-        public short Temperature { get; set; }
-    }
-    /// <summary>
-    /// Data for filling the OpenDroneID Basic ID message. This and the below messages are primarily meant for feeding data to/from an OpenDroneID implementation. E.g. https://github.com/opendroneid/opendroneid-core-c. These messages are compatible with the ASTM Remote ID standard at https://www.astm.org/Standards/F3411.htm and the ASD-STAN Direct Remote ID standard. The usage of these messages is documented at https://mavlink.io/en/services/opendroneid.html.
-    ///  OPEN_DRONE_ID_BASIC_ID
-    /// </summary>
-    public class OpenDroneIdBasicIdPacket: PacketV2<OpenDroneIdBasicIdPayload>
-    {
-	    public const int PacketMessageId = 12900;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 114;
-
-        public override OpenDroneIdBasicIdPayload Payload { get; } = new OpenDroneIdBasicIdPayload();
-
-        public override string Name => "OPEN_DRONE_ID_BASIC_ID";
-    }
-
-    /// <summary>
-    ///  OPEN_DRONE_ID_BASIC_ID
-    /// </summary>
-    public class OpenDroneIdBasicIdPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 44; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            IdOrMac = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                IdOrMac[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-            IdType = (MavOdidIdType)BinSerialize.ReadByte(ref buffer);index+=1;
-            UaType = (MavOdidUaType)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = 20;
-            for(var i=0;i<arraySize;i++)
-            {
-                UasId[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            for(var i=0;i<IdOrMac.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)IdOrMac[i]);index+=1;
-            }
-            BinSerialize.WriteByte(ref buffer,(byte)IdType);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)UaType);index+=1;
-            for(var i=0;i<UasId.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)UasId[i]);index+=1;
-            }
-            return index; // /*PayloadByteSize*/44;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            IdOrMac = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                IdOrMac[i] = (byte)buffer[index++];
-            }
-            IdType = (MavOdidIdType)buffer[index++];
-            UaType = (MavOdidUaType)buffer[index++];
-            arraySize = 20;
-            for(var i=0;i<arraySize;i++)
-            {
-                UasId[i] = (byte)buffer[index++];
-            }
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<IdOrMac.Length;i++)
-            {
-                buffer[index] = (byte)IdOrMac[i];index+=1;
-            }
-            buffer[index] = (byte)IdType;index+=1;
-            buffer[index] = (byte)UaType;index+=1;
-            for(var i=0;i<UasId.Length;i++)
-            {
-                buffer[index] = (byte)UasId[i];index+=1;
-            }
-            return index - start; // /*PayloadByteSize*/44;
-        }
-
-        /// <summary>
-        /// System ID (0 for broadcast).
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID (0 for broadcast).
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-        /// <summary>
-        /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. 
-        /// OriginName: id_or_mac, Units: , IsExtended: false
-        /// </summary>
-        public byte[] IdOrMac { get; set; } = new byte[20];
-        public byte GetIdOrMacMaxItemsCount() => 20;
-        /// <summary>
-        /// Indicates the format for the uas_id field of this message.
-        /// OriginName: id_type, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidIdType IdType { get; set; }
-        /// <summary>
-        /// Indicates the type of UA (Unmanned Aircraft).
-        /// OriginName: ua_type, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidUaType UaType { get; set; }
-        /// <summary>
-        /// UAS (Unmanned Aircraft System) ID following the format specified by id_type. Shall be filled with nulls in the unused portion of the field.
-        /// OriginName: uas_id, Units: , IsExtended: false
-        /// </summary>
-        public byte[] UasId { get; } = new byte[20];
-    }
-    /// <summary>
-    /// Data for filling the OpenDroneID Location message. The float data types are 32-bit IEEE 754. The Location message provides the location, altitude, direction and speed of the aircraft.
-    ///  OPEN_DRONE_ID_LOCATION
-    /// </summary>
-    public class OpenDroneIdLocationPacket: PacketV2<OpenDroneIdLocationPayload>
-    {
-	    public const int PacketMessageId = 12901;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 254;
-
-        public override OpenDroneIdLocationPayload Payload { get; } = new OpenDroneIdLocationPayload();
-
-        public override string Name => "OPEN_DRONE_ID_LOCATION";
-    }
-
-    /// <summary>
-    ///  OPEN_DRONE_ID_LOCATION
-    /// </summary>
-    public class OpenDroneIdLocationPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 59; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 59; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Latitude = BinSerialize.ReadInt(ref buffer);index+=4;
-            Longitude = BinSerialize.ReadInt(ref buffer);index+=4;
-            AltitudeBarometric = BinSerialize.ReadFloat(ref buffer);index+=4;
-            AltitudeGeodetic = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Height = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Timestamp = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Direction = BinSerialize.ReadUShort(ref buffer);index+=2;
-            SpeedHorizontal = BinSerialize.ReadUShort(ref buffer);index+=2;
-            SpeedVertical = BinSerialize.ReadShort(ref buffer);index+=2;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/59 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            IdOrMac = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                IdOrMac[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-            Status = (MavOdidStatus)BinSerialize.ReadByte(ref buffer);index+=1;
-            HeightReference = (MavOdidHeightRef)BinSerialize.ReadByte(ref buffer);index+=1;
-            HorizontalAccuracy = (MavOdidHorAcc)BinSerialize.ReadByte(ref buffer);index+=1;
-            VerticalAccuracy = (MavOdidVerAcc)BinSerialize.ReadByte(ref buffer);index+=1;
-            BarometerAccuracy = (MavOdidVerAcc)BinSerialize.ReadByte(ref buffer);index+=1;
-            SpeedAccuracy = (MavOdidSpeedAcc)BinSerialize.ReadByte(ref buffer);index+=1;
-            TimestampAccuracy = (MavOdidTimeAcc)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteInt(ref buffer,Latitude);index+=4;
-            BinSerialize.WriteInt(ref buffer,Longitude);index+=4;
-            BinSerialize.WriteFloat(ref buffer,AltitudeBarometric);index+=4;
-            BinSerialize.WriteFloat(ref buffer,AltitudeGeodetic);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Height);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Timestamp);index+=4;
-            BinSerialize.WriteUShort(ref buffer,Direction);index+=2;
-            BinSerialize.WriteUShort(ref buffer,SpeedHorizontal);index+=2;
-            BinSerialize.WriteShort(ref buffer,SpeedVertical);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            for(var i=0;i<IdOrMac.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)IdOrMac[i]);index+=1;
-            }
-            BinSerialize.WriteByte(ref buffer,(byte)Status);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)HeightReference);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)HorizontalAccuracy);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)VerticalAccuracy);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)BarometerAccuracy);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)SpeedAccuracy);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TimestampAccuracy);index+=1;
-            return index; // /*PayloadByteSize*/59;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Latitude = BitConverter.ToInt32(buffer,index);index+=4;
-            Longitude = BitConverter.ToInt32(buffer,index);index+=4;
-            AltitudeBarometric = BitConverter.ToSingle(buffer, index);index+=4;
-            AltitudeGeodetic = BitConverter.ToSingle(buffer, index);index+=4;
-            Height = BitConverter.ToSingle(buffer, index);index+=4;
-            Timestamp = BitConverter.ToSingle(buffer, index);index+=4;
-            Direction = BitConverter.ToUInt16(buffer,index);index+=2;
-            SpeedHorizontal = BitConverter.ToUInt16(buffer,index);index+=2;
-            SpeedVertical = BitConverter.ToInt16(buffer,index);index+=2;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/59 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            IdOrMac = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                IdOrMac[i] = (byte)buffer[index++];
-            }
-            Status = (MavOdidStatus)buffer[index++];
-            HeightReference = (MavOdidHeightRef)buffer[index++];
-            HorizontalAccuracy = (MavOdidHorAcc)buffer[index++];
-            VerticalAccuracy = (MavOdidVerAcc)buffer[index++];
-            BarometerAccuracy = (MavOdidVerAcc)buffer[index++];
-            SpeedAccuracy = (MavOdidSpeedAcc)buffer[index++];
-            TimestampAccuracy = (MavOdidTimeAcc)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Latitude).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Longitude).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(AltitudeBarometric).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(AltitudeGeodetic).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Height).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Timestamp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Direction).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(SpeedHorizontal).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(SpeedVertical).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<IdOrMac.Length;i++)
-            {
-                buffer[index] = (byte)IdOrMac[i];index+=1;
-            }
-            buffer[index] = (byte)Status;index+=1;
-            buffer[index] = (byte)HeightReference;index+=1;
-            buffer[index] = (byte)HorizontalAccuracy;index+=1;
-            buffer[index] = (byte)VerticalAccuracy;index+=1;
-            buffer[index] = (byte)BarometerAccuracy;index+=1;
-            buffer[index] = (byte)SpeedAccuracy;index+=1;
-            buffer[index] = (byte)TimestampAccuracy;index+=1;
-            return index - start; // /*PayloadByteSize*/59;
-        }
-
-        /// <summary>
-        /// Current latitude of the unmanned aircraft. If unknown: 0 (both Lat/Lon).
-        /// OriginName: latitude, Units: degE7, IsExtended: false
-        /// </summary>
-        public int Latitude { get; set; }
-        /// <summary>
-        /// Current longitude of the unmanned aircraft. If unknown: 0 (both Lat/Lon).
-        /// OriginName: longitude, Units: degE7, IsExtended: false
-        /// </summary>
-        public int Longitude { get; set; }
-        /// <summary>
-        /// The altitude calculated from the barometric pressue. Reference is against 29.92inHg or 1013.2mb. If unknown: -1000 m.
-        /// OriginName: altitude_barometric, Units: m, IsExtended: false
-        /// </summary>
-        public float AltitudeBarometric { get; set; }
-        /// <summary>
-        /// The geodetic altitude as defined by WGS84. If unknown: -1000 m.
-        /// OriginName: altitude_geodetic, Units: m, IsExtended: false
-        /// </summary>
-        public float AltitudeGeodetic { get; set; }
-        /// <summary>
-        /// The current height of the unmanned aircraft above the take-off location or the ground as indicated by height_reference. If unknown: -1000 m.
-        /// OriginName: height, Units: m, IsExtended: false
-        /// </summary>
-        public float Height { get; set; }
-        /// <summary>
-        /// Seconds after the full hour with reference to UTC time. Typically the GPS outputs a time-of-week value in milliseconds. First convert that to UTC and then convert for this field using ((float) (time_week_ms % (60*60*1000))) / 1000. If unknown: 0xFFFF.
-        /// OriginName: timestamp, Units: s, IsExtended: false
-        /// </summary>
-        public float Timestamp { get; set; }
-        /// <summary>
-        /// Direction over ground (not heading, but direction of movement) measured clockwise from true North: 0 - 35999 centi-degrees. If unknown: 36100 centi-degrees.
-        /// OriginName: direction, Units: cdeg, IsExtended: false
-        /// </summary>
-        public ushort Direction { get; set; }
-        /// <summary>
-        /// Ground speed. Positive only. If unknown: 25500 cm/s. If speed is larger than 25425 cm/s, use 25425 cm/s.
-        /// OriginName: speed_horizontal, Units: cm/s, IsExtended: false
-        /// </summary>
-        public ushort SpeedHorizontal { get; set; }
-        /// <summary>
-        /// The vertical speed. Up is positive. If unknown: 6300 cm/s. If speed is larger than 6200 cm/s, use 6200 cm/s. If lower than -6200 cm/s, use -6200 cm/s.
-        /// OriginName: speed_vertical, Units: cm/s, IsExtended: false
-        /// </summary>
-        public short SpeedVertical { get; set; }
-        /// <summary>
-        /// System ID (0 for broadcast).
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID (0 for broadcast).
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-        /// <summary>
-        /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. 
-        /// OriginName: id_or_mac, Units: , IsExtended: false
-        /// </summary>
-        public byte[] IdOrMac { get; set; } = new byte[20];
-        public byte GetIdOrMacMaxItemsCount() => 20;
-        /// <summary>
-        /// Indicates whether the unmanned aircraft is on the ground or in the air.
-        /// OriginName: status, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidStatus Status { get; set; }
-        /// <summary>
-        /// Indicates the reference point for the height field.
-        /// OriginName: height_reference, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidHeightRef HeightReference { get; set; }
-        /// <summary>
-        /// The accuracy of the horizontal position.
-        /// OriginName: horizontal_accuracy, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidHorAcc HorizontalAccuracy { get; set; }
-        /// <summary>
-        /// The accuracy of the vertical position.
-        /// OriginName: vertical_accuracy, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidVerAcc VerticalAccuracy { get; set; }
-        /// <summary>
-        /// The accuracy of the barometric altitude.
-        /// OriginName: barometer_accuracy, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidVerAcc BarometerAccuracy { get; set; }
-        /// <summary>
-        /// The accuracy of the horizontal and vertical speed.
-        /// OriginName: speed_accuracy, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidSpeedAcc SpeedAccuracy { get; set; }
-        /// <summary>
-        /// The accuracy of the timestamps.
-        /// OriginName: timestamp_accuracy, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidTimeAcc TimestampAccuracy { get; set; }
-    }
-    /// <summary>
-    /// Data for filling the OpenDroneID Authentication message. The Authentication Message defines a field that can provide a means of authenticity for the identity of the UAS (Unmanned Aircraft System). The Authentication message can have two different formats. Five data pages are supported. For data page 0, the fields PageCount, Length and TimeStamp are present and AuthData is only 17 bytes. For data page 1 through 15, PageCount, Length and TimeStamp are not present and the size of AuthData is 23 bytes.
-    ///  OPEN_DRONE_ID_AUTHENTICATION
-    /// </summary>
-    public class OpenDroneIdAuthenticationPacket: PacketV2<OpenDroneIdAuthenticationPayload>
-    {
-	    public const int PacketMessageId = 12902;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 140;
-
-        public override OpenDroneIdAuthenticationPayload Payload { get; } = new OpenDroneIdAuthenticationPayload();
-
-        public override string Name => "OPEN_DRONE_ID_AUTHENTICATION";
-    }
-
-    /// <summary>
-    ///  OPEN_DRONE_ID_AUTHENTICATION
-    /// </summary>
-    public class OpenDroneIdAuthenticationPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 53; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 53; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Timestamp = BinSerialize.ReadUInt(ref buffer);index+=4;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = 20;
-            for(var i=0;i<arraySize;i++)
-            {
-                IdOrMac[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-            AuthenticationType = (MavOdidAuthType)BinSerialize.ReadByte(ref buffer);index+=1;
-            DataPage = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            LastPageIndex = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            Length = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = /*ArrayLength*/23 - Math.Max(0,((/*PayloadByteSize*/53 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            AuthenticationData = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                AuthenticationData[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,Timestamp);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            for(var i=0;i<IdOrMac.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)IdOrMac[i]);index+=1;
-            }
-            BinSerialize.WriteByte(ref buffer,(byte)AuthenticationType);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)DataPage);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)LastPageIndex);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Length);index+=1;
-            for(var i=0;i<AuthenticationData.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)AuthenticationData[i]);index+=1;
-            }
-            return index; // /*PayloadByteSize*/53;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Timestamp = BitConverter.ToUInt32(buffer,index);index+=4;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            arraySize = 20;
-            for(var i=0;i<arraySize;i++)
-            {
-                IdOrMac[i] = (byte)buffer[index++];
-            }
-            AuthenticationType = (MavOdidAuthType)buffer[index++];
-            DataPage = (byte)buffer[index++];
-            LastPageIndex = (byte)buffer[index++];
-            Length = (byte)buffer[index++];
-            arraySize = /*ArrayLength*/23 - Math.Max(0,((/*PayloadByteSize*/53 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            AuthenticationData = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                AuthenticationData[i] = (byte)buffer[index++];
-            }
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Timestamp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<IdOrMac.Length;i++)
-            {
-                buffer[index] = (byte)IdOrMac[i];index+=1;
-            }
-            buffer[index] = (byte)AuthenticationType;index+=1;
-            BitConverter.GetBytes(DataPage).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(LastPageIndex).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Length).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<AuthenticationData.Length;i++)
-            {
-                buffer[index] = (byte)AuthenticationData[i];index+=1;
-            }
-            return index - start; // /*PayloadByteSize*/53;
-        }
-
-        /// <summary>
-        /// This field is only present for page 0. 32 bit Unix Timestamp in seconds since 00:00:00 01/01/2019.
-        /// OriginName: timestamp, Units: s, IsExtended: false
-        /// </summary>
-        public uint Timestamp { get; set; }
-        /// <summary>
-        /// System ID (0 for broadcast).
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID (0 for broadcast).
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-        /// <summary>
-        /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. 
-        /// OriginName: id_or_mac, Units: , IsExtended: false
-        /// </summary>
-        public byte[] IdOrMac { get; } = new byte[20];
-        /// <summary>
-        /// Indicates the type of authentication.
-        /// OriginName: authentication_type, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidAuthType AuthenticationType { get; set; }
-        /// <summary>
-        /// Allowed range is 0 - 15.
-        /// OriginName: data_page, Units: , IsExtended: false
-        /// </summary>
-        public byte DataPage { get; set; }
-        /// <summary>
-        /// This field is only present for page 0. Allowed range is 0 - 15. See the description of struct ODID_Auth_data at https://github.com/opendroneid/opendroneid-core-c/blob/master/libopendroneid/opendroneid.h.
-        /// OriginName: last_page_index, Units: , IsExtended: false
-        /// </summary>
-        public byte LastPageIndex { get; set; }
-        /// <summary>
-        /// This field is only present for page 0. Total bytes of authentication_data from all data pages. See the description of struct ODID_Auth_data at https://github.com/opendroneid/opendroneid-core-c/blob/master/libopendroneid/opendroneid.h.
-        /// OriginName: length, Units: bytes, IsExtended: false
-        /// </summary>
-        public byte Length { get; set; }
-        /// <summary>
-        /// Opaque authentication data. For page 0, the size is only 17 bytes. For other pages, the size is 23 bytes. Shall be filled with nulls in the unused portion of the field.
-        /// OriginName: authentication_data, Units: , IsExtended: false
-        /// </summary>
-        public byte[] AuthenticationData { get; set; } = new byte[23];
-        public byte GetAuthenticationDataMaxItemsCount() => 23;
-    }
-    /// <summary>
-    /// Data for filling the OpenDroneID Self ID message. The Self ID Message is an opportunity for the operator to (optionally) declare their identity and purpose of the flight. This message can provide additional information that could reduce the threat profile of a UA (Unmanned Aircraft) flying in a particular area or manner.
-    ///  OPEN_DRONE_ID_SELF_ID
-    /// </summary>
-    public class OpenDroneIdSelfIdPacket: PacketV2<OpenDroneIdSelfIdPayload>
-    {
-	    public const int PacketMessageId = 12903;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 249;
-
-        public override OpenDroneIdSelfIdPayload Payload { get; } = new OpenDroneIdSelfIdPayload();
-
-        public override string Name => "OPEN_DRONE_ID_SELF_ID";
-    }
-
-    /// <summary>
-    ///  OPEN_DRONE_ID_SELF_ID
-    /// </summary>
-    public class OpenDroneIdSelfIdPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 46; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 46; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = 20;
-            for(var i=0;i<arraySize;i++)
-            {
-                IdOrMac[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-            DescriptionType = (MavOdidDescType)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = /*ArrayLength*/23 - Math.Max(0,((/*PayloadByteSize*/46 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Description = new char[arraySize];
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Description)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Description.Length);
-                }
-            }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            for(var i=0;i<IdOrMac.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)IdOrMac[i]);index+=1;
-            }
-            BinSerialize.WriteByte(ref buffer,(byte)DescriptionType);index+=1;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = Description)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, Description.Length, bytePointer, Description.Length);
-                }
-            }
-            buffer = buffer.Slice(Description.Length);
-            index+=Description.Length;
-            return index; // /*PayloadByteSize*/46;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            arraySize = 20;
-            for(var i=0;i<arraySize;i++)
-            {
-                IdOrMac[i] = (byte)buffer[index++];
-            }
-            DescriptionType = (MavOdidDescType)buffer[index++];
-            arraySize = /*ArrayLength*/23 - Math.Max(0,((/*PayloadByteSize*/46 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Description = new char[arraySize];
-            Encoding.ASCII.GetChars(buffer, index,arraySize,Description,0);
-            index+=arraySize;
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<IdOrMac.Length;i++)
-            {
-                buffer[index] = (byte)IdOrMac[i];index+=1;
-            }
-            buffer[index] = (byte)DescriptionType;index+=1;
-            index+=Encoding.ASCII.GetBytes(Description,0,Description.Length,buffer,index);
-            return index - start; // /*PayloadByteSize*/46;
-        }
-
-        /// <summary>
-        /// System ID (0 for broadcast).
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID (0 for broadcast).
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-        /// <summary>
-        /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. 
-        /// OriginName: id_or_mac, Units: , IsExtended: false
-        /// </summary>
-        public byte[] IdOrMac { get; } = new byte[20];
-        /// <summary>
-        /// Indicates the type of the description field.
-        /// OriginName: description_type, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidDescType DescriptionType { get; set; }
-        /// <summary>
-        /// Text description or numeric value expressed as ASCII characters. Shall be filled with nulls in the unused portion of the field.
-        /// OriginName: description, Units: , IsExtended: false
-        /// </summary>
-        public char[] Description { get; set; } = new char[23];
-        public byte GetDescriptionMaxItemsCount() => 23;
-    }
-    /// <summary>
-    /// Data for filling the OpenDroneID System message. The System Message contains general system information including the operator location and possible aircraft group information.
-    ///  OPEN_DRONE_ID_SYSTEM
-    /// </summary>
-    public class OpenDroneIdSystemPacket: PacketV2<OpenDroneIdSystemPayload>
-    {
-	    public const int PacketMessageId = 12904;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 150;
-
-        public override OpenDroneIdSystemPayload Payload { get; } = new OpenDroneIdSystemPayload();
-
-        public override string Name => "OPEN_DRONE_ID_SYSTEM";
-    }
-
-    /// <summary>
-    ///  OPEN_DRONE_ID_SYSTEM
-    /// </summary>
-    public class OpenDroneIdSystemPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 50; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 50; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            OperatorLatitude = BinSerialize.ReadInt(ref buffer);index+=4;
-            OperatorLongitude = BinSerialize.ReadInt(ref buffer);index+=4;
-            AreaCeiling = BinSerialize.ReadFloat(ref buffer);index+=4;
-            AreaFloor = BinSerialize.ReadFloat(ref buffer);index+=4;
-            OperatorAltitudeGeo = BinSerialize.ReadFloat(ref buffer);index+=4;
-            AreaCount = BinSerialize.ReadUShort(ref buffer);index+=2;
-            AreaRadius = BinSerialize.ReadUShort(ref buffer);index+=2;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/50 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            IdOrMac = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                IdOrMac[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-            OperatorLocationType = (MavOdidOperatorLocationType)BinSerialize.ReadByte(ref buffer);index+=1;
-            ClassificationType = (MavOdidClassificationType)BinSerialize.ReadByte(ref buffer);index+=1;
-            CategoryEu = (MavOdidCategoryEu)BinSerialize.ReadByte(ref buffer);index+=1;
-            ClassEu = (MavOdidClassEu)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteInt(ref buffer,OperatorLatitude);index+=4;
-            BinSerialize.WriteInt(ref buffer,OperatorLongitude);index+=4;
-            BinSerialize.WriteFloat(ref buffer,AreaCeiling);index+=4;
-            BinSerialize.WriteFloat(ref buffer,AreaFloor);index+=4;
-            BinSerialize.WriteFloat(ref buffer,OperatorAltitudeGeo);index+=4;
-            BinSerialize.WriteUShort(ref buffer,AreaCount);index+=2;
-            BinSerialize.WriteUShort(ref buffer,AreaRadius);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            for(var i=0;i<IdOrMac.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)IdOrMac[i]);index+=1;
-            }
-            BinSerialize.WriteByte(ref buffer,(byte)OperatorLocationType);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)ClassificationType);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)CategoryEu);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)ClassEu);index+=1;
-            return index; // /*PayloadByteSize*/50;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            OperatorLatitude = BitConverter.ToInt32(buffer,index);index+=4;
-            OperatorLongitude = BitConverter.ToInt32(buffer,index);index+=4;
-            AreaCeiling = BitConverter.ToSingle(buffer, index);index+=4;
-            AreaFloor = BitConverter.ToSingle(buffer, index);index+=4;
-            OperatorAltitudeGeo = BitConverter.ToSingle(buffer, index);index+=4;
-            AreaCount = BitConverter.ToUInt16(buffer,index);index+=2;
-            AreaRadius = BitConverter.ToUInt16(buffer,index);index+=2;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/50 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            IdOrMac = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                IdOrMac[i] = (byte)buffer[index++];
-            }
-            OperatorLocationType = (MavOdidOperatorLocationType)buffer[index++];
-            ClassificationType = (MavOdidClassificationType)buffer[index++];
-            CategoryEu = (MavOdidCategoryEu)buffer[index++];
-            ClassEu = (MavOdidClassEu)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(OperatorLatitude).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(OperatorLongitude).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(AreaCeiling).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(AreaFloor).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(OperatorAltitudeGeo).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(AreaCount).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(AreaRadius).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<IdOrMac.Length;i++)
-            {
-                buffer[index] = (byte)IdOrMac[i];index+=1;
-            }
-            buffer[index] = (byte)OperatorLocationType;index+=1;
-            buffer[index] = (byte)ClassificationType;index+=1;
-            buffer[index] = (byte)CategoryEu;index+=1;
-            buffer[index] = (byte)ClassEu;index+=1;
-            return index - start; // /*PayloadByteSize*/50;
-        }
-
-        /// <summary>
-        /// Latitude of the operator. If unknown: 0 (both Lat/Lon).
-        /// OriginName: operator_latitude, Units: degE7, IsExtended: false
-        /// </summary>
-        public int OperatorLatitude { get; set; }
-        /// <summary>
-        /// Longitude of the operator. If unknown: 0 (both Lat/Lon).
-        /// OriginName: operator_longitude, Units: degE7, IsExtended: false
-        /// </summary>
-        public int OperatorLongitude { get; set; }
-        /// <summary>
-        /// Area Operations Ceiling relative to WGS84. If unknown: -1000 m.
-        /// OriginName: area_ceiling, Units: m, IsExtended: false
-        /// </summary>
-        public float AreaCeiling { get; set; }
-        /// <summary>
-        /// Area Operations Floor relative to WGS84. If unknown: -1000 m.
-        /// OriginName: area_floor, Units: m, IsExtended: false
-        /// </summary>
-        public float AreaFloor { get; set; }
-        /// <summary>
-        /// Geodetic altitude of the operator relative to WGS84. If unknown: -1000 m.
-        /// OriginName: operator_altitude_geo, Units: m, IsExtended: false
-        /// </summary>
-        public float OperatorAltitudeGeo { get; set; }
-        /// <summary>
-        /// Number of aircraft in the area, group or formation (default 1).
-        /// OriginName: area_count, Units: , IsExtended: false
-        /// </summary>
-        public ushort AreaCount { get; set; }
-        /// <summary>
-        /// Radius of the cylindrical area of the group or formation (default 0).
-        /// OriginName: area_radius, Units: m, IsExtended: false
-        /// </summary>
-        public ushort AreaRadius { get; set; }
-        /// <summary>
-        /// System ID (0 for broadcast).
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID (0 for broadcast).
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-        /// <summary>
-        /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. 
-        /// OriginName: id_or_mac, Units: , IsExtended: false
-        /// </summary>
-        public byte[] IdOrMac { get; set; } = new byte[20];
-        public byte GetIdOrMacMaxItemsCount() => 20;
-        /// <summary>
-        /// Specifies the operator location type.
-        /// OriginName: operator_location_type, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidOperatorLocationType OperatorLocationType { get; set; }
-        /// <summary>
-        /// Specifies the classification type of the UA.
-        /// OriginName: classification_type, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidClassificationType ClassificationType { get; set; }
-        /// <summary>
-        /// When classification_type is MAV_ODID_CLASSIFICATION_TYPE_EU, specifies the category of the UA.
-        /// OriginName: category_eu, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidCategoryEu CategoryEu { get; set; }
-        /// <summary>
-        /// When classification_type is MAV_ODID_CLASSIFICATION_TYPE_EU, specifies the class of the UA.
-        /// OriginName: class_eu, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidClassEu ClassEu { get; set; }
-    }
-    /// <summary>
-    /// Data for filling the OpenDroneID Operator ID message, which contains the CAA (Civil Aviation Authority) issued operator ID.
-    ///  OPEN_DRONE_ID_OPERATOR_ID
-    /// </summary>
-    public class OpenDroneIdOperatorIdPacket: PacketV2<OpenDroneIdOperatorIdPayload>
-    {
-	    public const int PacketMessageId = 12905;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 49;
-
-        public override OpenDroneIdOperatorIdPayload Payload { get; } = new OpenDroneIdOperatorIdPayload();
-
-        public override string Name => "OPEN_DRONE_ID_OPERATOR_ID";
-    }
-
-    /// <summary>
-    ///  OPEN_DRONE_ID_OPERATOR_ID
-    /// </summary>
-    public class OpenDroneIdOperatorIdPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 43; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 43; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/43 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            IdOrMac = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                IdOrMac[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-            OperatorIdType = (MavOdidOperatorIdType)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = 20;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = OperatorId)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, OperatorId.Length);
-                }
-            }
-            buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            for(var i=0;i<IdOrMac.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)IdOrMac[i]);index+=1;
-            }
-            BinSerialize.WriteByte(ref buffer,(byte)OperatorIdType);index+=1;
-            unsafe
-            {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = OperatorId)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, OperatorId.Length, bytePointer, OperatorId.Length);
-                }
-            }
-            buffer = buffer.Slice(OperatorId.Length);
-            index+=OperatorId.Length;
-            return index; // /*PayloadByteSize*/43;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/43 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            IdOrMac = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                IdOrMac[i] = (byte)buffer[index++];
-            }
-            OperatorIdType = (MavOdidOperatorIdType)buffer[index++];
-            arraySize = 20;
-            Encoding.ASCII.GetChars(buffer, index,arraySize,OperatorId,0);
-            index+=arraySize;
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<IdOrMac.Length;i++)
-            {
-                buffer[index] = (byte)IdOrMac[i];index+=1;
-            }
-            buffer[index] = (byte)OperatorIdType;index+=1;
-            index+=Encoding.ASCII.GetBytes(OperatorId,0,OperatorId.Length,buffer,index);
-            return index - start; // /*PayloadByteSize*/43;
-        }
-
-        /// <summary>
-        /// System ID (0 for broadcast).
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID (0 for broadcast).
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-        /// <summary>
-        /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. 
-        /// OriginName: id_or_mac, Units: , IsExtended: false
-        /// </summary>
-        public byte[] IdOrMac { get; set; } = new byte[20];
-        public byte GetIdOrMacMaxItemsCount() => 20;
-        /// <summary>
-        /// Indicates the type of the operator_id field.
-        /// OriginName: operator_id_type, Units: , IsExtended: false
-        /// </summary>
-        public MavOdidOperatorIdType OperatorIdType { get; set; }
-        /// <summary>
-        /// Text description or numeric value expressed as ASCII characters. Shall be filled with nulls in the unused portion of the field.
-        /// OriginName: operator_id, Units: , IsExtended: false
-        /// </summary>
-        public char[] OperatorId { get; } = new char[20];
-    }
-    /// <summary>
-    /// An OpenDroneID message pack is a container for multiple encoded OpenDroneID messages (i.e. not in the format given for the above messages descriptions but after encoding into the compressed OpenDroneID byte format). Used e.g. when transmitting on Bluetooth 5.0 Long Range/Extended Advertising or on WiFi Neighbor Aware Networking.
-    ///  OPEN_DRONE_ID_MESSAGE_PACK
-    /// </summary>
-    public class OpenDroneIdMessagePackPacket: PacketV2<OpenDroneIdMessagePackPayload>
-    {
-	    public const int PacketMessageId = 12915;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 94;
-
-        public override OpenDroneIdMessagePackPayload Payload { get; } = new OpenDroneIdMessagePackPayload();
-
-        public override string Name => "OPEN_DRONE_ID_MESSAGE_PACK";
-    }
-
-    /// <summary>
-    ///  OPEN_DRONE_ID_MESSAGE_PACK
-    /// </summary>
-    public class OpenDroneIdMessagePackPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 249; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 249; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = 20;
-            for(var i=0;i<arraySize;i++)
-            {
-                IdOrMac[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-            SingleMessageSize = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            MsgPackSize = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            arraySize = /*ArrayLength*/225 - Math.Max(0,((/*PayloadByteSize*/249 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Messages = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Messages[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            }
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            for(var i=0;i<IdOrMac.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)IdOrMac[i]);index+=1;
-            }
-            BinSerialize.WriteByte(ref buffer,(byte)SingleMessageSize);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)MsgPackSize);index+=1;
-            for(var i=0;i<Messages.Length;i++)
-            {
-                BinSerialize.WriteByte(ref buffer,(byte)Messages[i]);index+=1;
-            }
-            return index; // /*PayloadByteSize*/249;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            arraySize = 20;
-            for(var i=0;i<arraySize;i++)
-            {
-                IdOrMac[i] = (byte)buffer[index++];
-            }
-            SingleMessageSize = (byte)buffer[index++];
-            MsgPackSize = (byte)buffer[index++];
-            arraySize = /*ArrayLength*/225 - Math.Max(0,((/*PayloadByteSize*/249 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Messages = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Messages[i] = (byte)buffer[index++];
-            }
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<IdOrMac.Length;i++)
-            {
-                buffer[index] = (byte)IdOrMac[i];index+=1;
-            }
-            BitConverter.GetBytes(SingleMessageSize).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(MsgPackSize).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<Messages.Length;i++)
-            {
-                buffer[index] = (byte)Messages[i];index+=1;
-            }
-            return index - start; // /*PayloadByteSize*/249;
-        }
-
-        /// <summary>
-        /// System ID (0 for broadcast).
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID (0 for broadcast).
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-        /// <summary>
-        /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. 
-        /// OriginName: id_or_mac, Units: , IsExtended: false
-        /// </summary>
-        public byte[] IdOrMac { get; } = new byte[20];
-        /// <summary>
-        /// This field must currently always be equal to 25 (bytes), since all encoded OpenDroneID messages are specificed to have this length.
-        /// OriginName: single_message_size, Units: bytes, IsExtended: false
-        /// </summary>
-        public byte SingleMessageSize { get; set; }
-        /// <summary>
-        /// Number of encoded messages in the pack (not the number of bytes). Allowed range is 1 - 9.
-        /// OriginName: msg_pack_size, Units: , IsExtended: false
-        /// </summary>
-        public byte MsgPackSize { get; set; }
-        /// <summary>
-        /// Concatenation of encoded OpenDroneID messages. Shall be filled with nulls in the unused portion of the field.
-        /// OriginName: messages, Units: , IsExtended: false
-        /// </summary>
-        public byte[] Messages { get; set; } = new byte[225];
-        public byte GetMessagesMaxItemsCount() => 225;
-    }
-    /// <summary>
-    /// Temperature and humidity from hygrometer.
-    ///  HYGROMETER_SENSOR
-    /// </summary>
-    public class HygrometerSensorPacket: PacketV2<HygrometerSensorPayload>
-    {
-	    public const int PacketMessageId = 12920;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 20;
-
-        public override HygrometerSensorPayload Payload { get; } = new HygrometerSensorPayload();
-
-        public override string Name => "HYGROMETER_SENSOR";
-    }
-
-    /// <summary>
-    ///  HYGROMETER_SENSOR
-    /// </summary>
-    public class HygrometerSensorPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 5; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            Temperature = BinSerialize.ReadShort(ref buffer);index+=2;
-            Humidity = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Id = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteShort(ref buffer,Temperature);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Humidity);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)Id);index+=1;
-            return index; // /*PayloadByteSize*/5;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            Temperature = BitConverter.ToInt16(buffer,index);index+=2;
-            Humidity = BitConverter.ToUInt16(buffer,index);index+=2;
-            Id = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Temperature).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Humidity).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Id).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/5;
-        }
-
-        /// <summary>
-        /// Temperature
-        /// OriginName: temperature, Units: cdegC, IsExtended: false
-        /// </summary>
-        public short Temperature { get; set; }
-        /// <summary>
-        /// Humidity
-        /// OriginName: humidity, Units: c%, IsExtended: false
-        /// </summary>
-        public ushort Humidity { get; set; }
-        /// <summary>
-        /// Hygrometer ID
-        /// OriginName: id, Units: , IsExtended: false
-        /// </summary>
-        public byte Id { get; set; }
     }
 
 

@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2018 Alexey Voloshkevich (https://github.com/asvol)
+// Copyright (c) 2018 Alexey (https://github.com/asvol)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@
 using System;
 using System.Text;
 using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.{{ Namespace }}

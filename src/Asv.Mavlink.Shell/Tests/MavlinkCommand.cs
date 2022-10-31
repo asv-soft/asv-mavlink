@@ -7,7 +7,6 @@ using Asv.Mavlink.Client;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Icarous;
-using Asv.Mavlink.V2.Minimal;
 using Asv.Mavlink.V2.Uavionix;
 using ManyConsole;
 
@@ -36,7 +35,7 @@ namespace Asv.Mavlink.Shell
             Task.Factory.StartNew(KeyListen);
             var conn = new MavlinkV2Connection(_connectionString, _=>
             {
-                _.RegisterMinimalDialect();
+                // _.RegisterMinimalDialect();
                 _.RegisterCommonDialect();
                 _.RegisterArdupilotmegaDialect();
                 _.RegisterIcarousDialect();

@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2018 Alexey Voloshkevich Cursir ltd. (https://github.com/asvol)
+// Copyright (c) 2018 Alexey (https://github.com/asvol)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,8 @@
 // This code was generate by tool Asv.Mavlink.Shell version 1.0.0
 
 using System;
-using Asv.IO;
 using Asv.Mavlink.V2.Common;
+using Asv.IO;
 
 namespace Asv.Mavlink.V2.Asluav
 {
@@ -49,7 +49,6 @@ namespace Asv.Mavlink.V2.Asluav
             src.Register(()=>new SensPowerBoardPacket());
             src.Register(()=>new GsmLinkStatusPacket());
             src.Register(()=>new SatcomLinkStatusPacket());
-            src.Register(()=>new SensorAirflowAnglesPacket());
         }
     }
 
@@ -146,7 +145,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class CommandIntStampedPacket: PacketV2<CommandIntStampedPayload>
     {
-	    public const int PacketMessageId = 223;
+	    public const int PacketMessageId = 78;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 119;
 
@@ -167,6 +166,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             VehicleTimestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             UtcTime = BinSerialize.ReadUInt(ref buffer);index+=4;
             Param1 = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -212,6 +212,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             VehicleTimestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             UtcTime = BitConverter.ToUInt32(buffer,index);index+=4;
             Param1 = BitConverter.ToSingle(buffer, index);index+=4;
@@ -332,7 +333,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class CommandLongStampedPacket: PacketV2<CommandLongStampedPayload>
     {
-	    public const int PacketMessageId = 224;
+	    public const int PacketMessageId = 79;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 102;
 
@@ -353,6 +354,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             VehicleTimestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             UtcTime = BinSerialize.ReadUInt(ref buffer);index+=4;
             Param1 = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -394,6 +396,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             VehicleTimestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             UtcTime = BitConverter.ToUInt32(buffer,index);index+=4;
             Param1 = BitConverter.ToSingle(buffer, index);index+=4;
@@ -500,7 +503,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensPowerPacket: PacketV2<SensPowerPayload>
     {
-	    public const int PacketMessageId = 8002;
+	    public const int PacketMessageId = 201;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 218;
 
@@ -521,6 +524,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Adc121VspbVolt = BinSerialize.ReadFloat(ref buffer);index+=4;
             Adc121CspbAmp = BinSerialize.ReadFloat(ref buffer);index+=4;
             Adc121Cs1Amp = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -544,6 +548,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Adc121VspbVolt = BitConverter.ToSingle(buffer, index);index+=4;
             Adc121CspbAmp = BitConverter.ToSingle(buffer, index);index+=4;
             Adc121Cs1Amp = BitConverter.ToSingle(buffer, index);index+=4;
@@ -587,7 +592,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensMpptPacket: PacketV2<SensMpptPayload>
     {
-	    public const int PacketMessageId = 8003;
+	    public const int PacketMessageId = 202;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 231;
 
@@ -608,6 +613,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             MpptTimestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             Mppt1Volt = BinSerialize.ReadFloat(ref buffer);index+=4;
             Mppt1Amp = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -649,6 +655,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             MpptTimestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             Mppt1Volt = BitConverter.ToSingle(buffer, index);index+=4;
             Mppt1Amp = BitConverter.ToSingle(buffer, index);index+=4;
@@ -755,7 +762,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class AslctrlDataPacket: PacketV2<AslctrlDataPayload>
     {
-	    public const int PacketMessageId = 8004;
+	    public const int PacketMessageId = 203;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 172;
 
@@ -776,6 +783,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             H = BinSerialize.ReadFloat(ref buffer);index+=4;
             Href = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -841,6 +849,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             H = BitConverter.ToSingle(buffer, index);index+=4;
             Href = BitConverter.ToSingle(buffer, index);index+=4;
@@ -1031,7 +1040,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class AslctrlDebugPacket: PacketV2<AslctrlDebugPayload>
     {
-	    public const int PacketMessageId = 8005;
+	    public const int PacketMessageId = 204;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 251;
 
@@ -1052,6 +1061,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             I321 = BinSerialize.ReadUInt(ref buffer);index+=4;
             F1 = BinSerialize.ReadFloat(ref buffer);index+=4;
             F2 = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -1089,6 +1099,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             I321 = BitConverter.ToUInt32(buffer,index);index+=4;
             F1 = BitConverter.ToSingle(buffer, index);index+=4;
             F2 = BitConverter.ToSingle(buffer, index);index+=4;
@@ -1181,7 +1192,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class AsluavStatusPacket: PacketV2<AsluavStatusPayload>
     {
-	    public const int PacketMessageId = 8006;
+	    public const int PacketMessageId = 205;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 97;
 
@@ -1287,7 +1298,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class EkfExtPacket: PacketV2<EkfExtPayload>
     {
-	    public const int PacketMessageId = 8007;
+	    public const int PacketMessageId = 206;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 64;
 
@@ -1308,6 +1319,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             Windspeed = BinSerialize.ReadFloat(ref buffer);index+=4;
             Winddir = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -1337,6 +1349,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             Windspeed = BitConverter.ToSingle(buffer, index);index+=4;
             Winddir = BitConverter.ToSingle(buffer, index);index+=4;
@@ -1401,7 +1414,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class AslObctrlPacket: PacketV2<AslObctrlPayload>
     {
-	    public const int PacketMessageId = 8008;
+	    public const int PacketMessageId = 207;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 234;
 
@@ -1422,6 +1435,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             Uelev = BinSerialize.ReadFloat(ref buffer);index+=4;
             Uthrot = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -1453,6 +1467,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             Uelev = BitConverter.ToSingle(buffer, index);index+=4;
             Uthrot = BitConverter.ToSingle(buffer, index);index+=4;
@@ -1524,7 +1539,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensAtmosPacket: PacketV2<SensAtmosPayload>
     {
-	    public const int PacketMessageId = 8009;
+	    public const int PacketMessageId = 208;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 144;
 
@@ -1545,6 +1560,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             Tempambient = BinSerialize.ReadFloat(ref buffer);index+=4;
             Humidity = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -1566,6 +1582,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             Tempambient = BitConverter.ToSingle(buffer, index);index+=4;
             Humidity = BitConverter.ToSingle(buffer, index);index+=4;
@@ -1602,7 +1619,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensBatmonPacket: PacketV2<SensBatmonPayload>
     {
-	    public const int PacketMessageId = 8010;
+	    public const int PacketMessageId = 209;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 155;
 
@@ -1623,6 +1640,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             BatmonTimestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             Temperature = BinSerialize.ReadFloat(ref buffer);index+=4;
             Safetystatus = BinSerialize.ReadUInt(ref buffer);index+=4;
@@ -1668,6 +1686,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             BatmonTimestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             Temperature = BitConverter.ToSingle(buffer, index);index+=4;
             Safetystatus = BitConverter.ToUInt32(buffer,index);index+=4;
@@ -1788,7 +1807,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class FwSoaringDataPacket: PacketV2<FwSoaringDataPayload>
     {
-	    public const int PacketMessageId = 8011;
+	    public const int PacketMessageId = 210;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 20;
 
@@ -1809,6 +1828,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             Timestampmodechanged = BinSerialize.ReadULong(ref buffer);index+=8;
             Xw = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -1874,6 +1894,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             Timestampmodechanged = BitConverter.ToUInt64(buffer,index);index+=8;
             Xw = BitConverter.ToSingle(buffer, index);index+=4;
@@ -2064,7 +2085,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensorpodStatusPacket: PacketV2<SensorpodStatusPayload>
     {
-	    public const int PacketMessageId = 8012;
+	    public const int PacketMessageId = 211;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 54;
 
@@ -2085,6 +2106,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             FreeSpace = BinSerialize.ReadUShort(ref buffer);index+=2;
             VisensorRate1 = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -2116,6 +2138,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             FreeSpace = BitConverter.ToUInt16(buffer,index);index+=2;
             VisensorRate1 = (byte)buffer[index++];
@@ -2187,7 +2210,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensPowerBoardPacket: PacketV2<SensPowerBoardPayload>
     {
-	    public const int PacketMessageId = 8013;
+	    public const int PacketMessageId = 212;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 222;
 
@@ -2208,6 +2231,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             PwrBrdSystemVolt = BinSerialize.ReadFloat(ref buffer);index+=4;
             PwrBrdServoVolt = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -2247,6 +2271,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             PwrBrdSystemVolt = BitConverter.ToSingle(buffer, index);index+=4;
             PwrBrdServoVolt = BitConverter.ToSingle(buffer, index);index+=4;
@@ -2346,7 +2371,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class GsmLinkStatusPacket: PacketV2<GsmLinkStatusPayload>
     {
-	    public const int PacketMessageId = 8014;
+	    public const int PacketMessageId = 213;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 200;
 
@@ -2367,6 +2392,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             GsmModemType = (GsmModemType)BinSerialize.ReadByte(ref buffer);index+=1;
             GsmLinkType = (GsmLinkType)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -2396,6 +2422,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             GsmModemType = (GsmModemType)buffer[index++];
             GsmLinkType = (GsmLinkType)buffer[index++];
@@ -2460,7 +2487,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SatcomLinkStatusPacket: PacketV2<SatcomLinkStatusPayload>
     {
-	    public const int PacketMessageId = 8015;
+	    public const int PacketMessageId = 214;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 23;
 
@@ -2481,6 +2508,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             LastHeartbeat = BinSerialize.ReadULong(ref buffer);index+=8;
             FailedSessions = BinSerialize.ReadUShort(ref buffer);index+=2;
@@ -2512,6 +2540,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             LastHeartbeat = BitConverter.ToUInt64(buffer,index);index+=8;
             FailedSessions = BitConverter.ToUInt16(buffer,index);index+=2;
@@ -2576,102 +2605,6 @@ namespace Asv.Mavlink.V2.Asluav
         /// OriginName: rx_session_pending, Units: , IsExtended: false
         /// </summary>
         public byte RxSessionPending { get; set; }
-    }
-    /// <summary>
-    /// Calibrated airflow angle measurements
-    ///  SENSOR_AIRFLOW_ANGLES
-    /// </summary>
-    public class SensorAirflowAnglesPacket: PacketV2<SensorAirflowAnglesPayload>
-    {
-	    public const int PacketMessageId = 8016;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 149;
-
-        public override SensorAirflowAnglesPayload Payload { get; } = new SensorAirflowAnglesPayload();
-
-        public override string Name => "SENSOR_AIRFLOW_ANGLES";
-    }
-
-    /// <summary>
-    ///  SENSOR_AIRFLOW_ANGLES
-    /// </summary>
-    public class SensorAirflowAnglesPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 18; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
-        {
-            var index = 0;
-            var endIndex = payloadSize;
-            Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
-            Angleofattack = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Sideslip = BinSerialize.ReadFloat(ref buffer);index+=4;
-            AngleofattackValid = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            SideslipValid = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-
-        }
-
-        public int Serialize(ref Span<byte> buffer)
-        {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,Timestamp);index+=8;
-            BinSerialize.WriteFloat(ref buffer,Angleofattack);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Sideslip);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)AngleofattackValid);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)SideslipValid);index+=1;
-            return index; // /*PayloadByteSize*/18;
-        }
-
-
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
-            Angleofattack = BitConverter.ToSingle(buffer, index);index+=4;
-            Sideslip = BitConverter.ToSingle(buffer, index);index+=4;
-            AngleofattackValid = (byte)buffer[index++];
-            SideslipValid = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Timestamp).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(Angleofattack).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Sideslip).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(AngleofattackValid).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(SideslipValid).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/18;
-        }
-
-        /// <summary>
-        /// Timestamp
-        /// OriginName: timestamp, Units: us, IsExtended: false
-        /// </summary>
-        public ulong Timestamp { get; set; }
-        /// <summary>
-        /// Angle of attack
-        /// OriginName: angleofattack, Units: deg, IsExtended: false
-        /// </summary>
-        public float Angleofattack { get; set; }
-        /// <summary>
-        /// Sideslip angle
-        /// OriginName: sideslip, Units: deg, IsExtended: false
-        /// </summary>
-        public float Sideslip { get; set; }
-        /// <summary>
-        /// Angle of attack measurement valid
-        /// OriginName: angleofattack_valid, Units: , IsExtended: false
-        /// </summary>
-        public byte AngleofattackValid { get; set; }
-        /// <summary>
-        /// Sideslip angle measurement valid
-        /// OriginName: sideslip_valid, Units: , IsExtended: false
-        /// </summary>
-        public byte SideslipValid { get; set; }
     }
 
 

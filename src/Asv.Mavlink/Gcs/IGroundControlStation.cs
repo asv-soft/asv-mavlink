@@ -1,6 +1,6 @@
 using System;
 using Asv.IO;
-using Asv.Mavlink.V2.Minimal;
+using Asv.Mavlink.V2.Common;
 using IDisposable = System.IDisposable;
 
 namespace Asv.Mavlink

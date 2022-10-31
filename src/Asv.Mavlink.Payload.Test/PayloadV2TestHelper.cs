@@ -14,7 +14,6 @@ using Asv.Mavlink.Server;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Icarous;
-using Asv.Mavlink.V2.Minimal;
 using Asv.Mavlink.V2.Uavionix;
 
 namespace Asv.Mavlink.Payload.Test
@@ -40,7 +39,7 @@ namespace Asv.Mavlink.Payload.Test
 
             var serverConnection = new MavlinkV2Connection(serverPort, _ =>
             {
-                _.RegisterMinimalDialect();
+                // _.RegisterMinimalDialect();
                 _.RegisterCommonDialect();
                 _.RegisterArdupilotmegaDialect();
                 _.RegisterIcarousDialect();
@@ -59,7 +58,7 @@ namespace Asv.Mavlink.Payload.Test
             clientPort.Enable();
             var clientConnection = new MavlinkV2Connection(clientPort, _ =>
             {
-                _.RegisterMinimalDialect();
+                // _.RegisterMinimalDialect();
                 _.RegisterCommonDialect();
                 _.RegisterArdupilotmegaDialect();
                 _.RegisterIcarousDialect();
@@ -103,7 +102,7 @@ namespace Asv.Mavlink.Payload.Test
 
             var serverConnection = new MavlinkV2Connection(serverPort, _ =>
             {
-                _.RegisterMinimalDialect();
+                // _.RegisterMinimalDialect();
                 _.RegisterCommonDialect();
                 _.RegisterArdupilotmegaDialect();
                 _.RegisterIcarousDialect();
@@ -126,7 +125,7 @@ namespace Asv.Mavlink.Payload.Test
 
             var serverConnection = new MavlinkV2Connection(serverPort, _ =>
             {
-                _.RegisterMinimalDialect();
+                // _.RegisterMinimalDialect();
                 _.RegisterCommonDialect();
                 _.RegisterArdupilotmegaDialect();
                 _.RegisterIcarousDialect();

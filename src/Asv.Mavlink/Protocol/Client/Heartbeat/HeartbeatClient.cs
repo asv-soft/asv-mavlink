@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using Asv.Common;
-using Asv.Mavlink.V2.Minimal;
+using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink.Client
 {

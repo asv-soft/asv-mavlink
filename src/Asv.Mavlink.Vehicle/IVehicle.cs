@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.Client;
 using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Minimal;
 using DynamicData;
 using Geodesy;
 

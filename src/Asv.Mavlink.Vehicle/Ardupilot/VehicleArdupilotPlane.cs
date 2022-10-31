@@ -8,7 +8,6 @@ using Asv.Common;
 using Asv.Mavlink.Client;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Minimal;
 using Asv.Mavlink.Vehicle;
 using Geodesy;
 using NLog;

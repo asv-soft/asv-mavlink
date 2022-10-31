@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Server;
-using Asv.Mavlink.V2.Minimal;
+using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink.Payload
 {
