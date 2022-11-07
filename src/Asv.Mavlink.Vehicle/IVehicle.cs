@@ -6,7 +6,6 @@ using Asv.Common;
 using Asv.Mavlink.Client;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
-using Geodesy;
 
 namespace Asv.Mavlink
 {
@@ -37,7 +36,7 @@ namespace Asv.Mavlink
         /// <summary>
         /// The filtered global position (e.g. fused GPS and accelerometers). 
         /// </summary>
-        IRxValue<GlobalPosition> GlobalPosition { get; }
+        IRxValue<GeoPoint> GlobalPosition { get; }
 
         IRxValue<GpsInfo> GpsInfo { get; }
         IRxValue<double> GpsGroundVelocity { get; }
@@ -47,7 +46,7 @@ namespace Asv.Mavlink
 
         IRxValue<double> AltitudeAboveHome { get; }
 
-        IRxValue<GlobalPosition?> Home { get; }
+        IRxValue<GeoPoint?> Home { get; }
         IRxValue<double?> HomeDistance { get; }
         Task RequestHome(CancellationToken cancel);
 
@@ -82,19 +81,19 @@ namespace Asv.Mavlink
 
         Task TakeOff(double altitude, CancellationToken cancel);
 
-        IRxValue<GlobalPosition?> GoToTarget { get; }
-        Task GoToGlob(GlobalPosition location, CancellationToken cancel, double? yawDeg = null);
-        Task GoToGlobAndWait(GlobalPosition location, IProgress<double> progress, double precisionMet, CancellationToken cancel);
-        Task GoToGlobAndWaitWithoutAltitude(GlobalPosition location, IProgress<double> progress, double precisionMet, CancellationToken cancel);
+        IRxValue<GeoPoint?> GoToTarget { get; }
+        Task GoToGlob(GeoPoint location, CancellationToken cancel, double? yawDeg = null);
+        Task GoToGlobAndWait(GeoPoint location, IProgress<double> progress, double precisionMet, CancellationToken cancel);
+        Task GoToGlobAndWaitWithoutAltitude(GeoPoint location, IProgress<double> progress, double precisionMet, CancellationToken cancel);
 
-        Task FlyByLineGlob(GlobalPosition start, GlobalPosition stop, double precisionMet, CancellationToken cancel, Action firstPointComplete = null);
+        Task FlyByLineGlob(GeoPoint start, GeoPoint stop, double precisionMet, CancellationToken cancel, Action firstPointComplete = null);
         Task DoLand(CancellationToken cancel);
         Task DoRtl(CancellationToken cancel);
 
         #region Region of Interest
 
-        Task SetRoi(GlobalPosition location, CancellationToken cancel);
-        IRxValue<GlobalPosition?> Roi { get; }
+        Task SetRoi(GeoPoint location, CancellationToken cancel);
+        IRxValue<GeoPoint?> Roi { get; }
         Task ClearRoi(CancellationToken cancel);
 
         #endregion

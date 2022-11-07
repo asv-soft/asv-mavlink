@@ -2,8 +2,8 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using Geodesy;
 using NLog;
 
 namespace Asv.Mavlink.Vehicle
@@ -33,8 +33,8 @@ namespace Asv.Mavlink.Vehicle
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private static async Task<bool> IsFlightDetected(this IVehicle vehicle, GlobalPosition startLocation,
-            GlobalPosition targetLocation, int attemptsCount, bool isWithoutAltitude, double precisionMet, Action<string> logger,
+        private static async Task<bool> IsFlightDetected(this IVehicle vehicle, GeoPoint startLocation,
+            GeoPoint targetLocation, int attemptsCount, bool isWithoutAltitude, double precisionMet, Action<string> logger,
             CancellationToken cancel)
         {
             logger = logger ?? (_ => { });
@@ -65,7 +65,7 @@ namespace Asv.Mavlink.Vehicle
             return isFlying;
         }
 
-        private static async Task GoToGlobAndWaitWithConfirmBase(this IVehicle vehicle, GlobalPosition location,
+        private static async Task GoToGlobAndWaitWithConfirmBase(this IVehicle vehicle, GeoPoint location,
             IProgress<double> progress, double precisionMet, CancellationToken cancel, bool isWithoutAltitude = false,
             int attemptsCount = DefaultAttemptsCount, Action<string> logger = null)
         {
@@ -143,13 +143,13 @@ namespace Asv.Mavlink.Vehicle
             progress.Report(1);
         }
 
-        public static Task GoToGlobAndWaitWithConfirm(this IVehicle vehicle, GlobalPosition location, IProgress<double> progress, double precisionMet, CancellationToken cancel, int attemptsCount = DefaultAttemptsCount, Action<string> logger = null)
+        public static Task GoToGlobAndWaitWithConfirm(this IVehicle vehicle, GeoPoint location, IProgress<double> progress, double precisionMet, CancellationToken cancel, int attemptsCount = DefaultAttemptsCount, Action<string> logger = null)
         {
             return GoToGlobAndWaitWithConfirmBase(vehicle, location, progress, precisionMet, cancel, false,
                 attemptsCount, logger);
         }
 
-        public static Task GoToGlobAndWaitWithoutAltitudeWithConfirm(this IVehicle vehicle, GlobalPosition location, IProgress<double> progress, double precisionMet, CancellationToken cancel, int attemptsCount = DefaultAttemptsCount, Action<string> logger = null)
+        public static Task GoToGlobAndWaitWithoutAltitudeWithConfirm(this IVehicle vehicle, GeoPoint location, IProgress<double> progress, double precisionMet, CancellationToken cancel, int attemptsCount = DefaultAttemptsCount, Action<string> logger = null)
         {
             return GoToGlobAndWaitWithConfirmBase(vehicle, location, progress, precisionMet, cancel, true,
                 attemptsCount, logger);
@@ -160,7 +160,7 @@ namespace Asv.Mavlink.Vehicle
             return vehicle.ArmDisarm(false, cancel, true);
         }
 
-        public static MissionItem AddSplineMissionItem(this IVehicle vehicle, GlobalPosition point)
+        public static MissionItem AddSplineMissionItem(this IVehicle vehicle, GeoPoint point)
         {
             var item = vehicle.AddMissionItem();
             item.Location.OnNext(point);
@@ -175,7 +175,7 @@ namespace Asv.Mavlink.Vehicle
             item.Param4.OnNext(0);
             return item;
         }
-        public static MissionItem AddNavMissionItem(this IVehicle vehicle, GlobalPosition point)
+        public static MissionItem AddNavMissionItem(this IVehicle vehicle, GeoPoint point)
         {
             var item = vehicle.AddMissionItem();
             item.Location.OnNext(point);

@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Common;
 using Asv.Mavlink.Client;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.Vehicle;
-using Geodesy;
 using NLog;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
 
@@ -39,14 +39,14 @@ namespace Asv.Mavlink
             }
         }
 
-        public override async Task SetRoi(GlobalPosition location, CancellationToken cancel)
+        public override async Task SetRoi(GeoPoint location, CancellationToken cancel)
         {
             _roi.OnNext(location);
             try
             {
                 // just send, because ARDUPILOT does not send mavcmd ack
                 await Mavlink.Commands.SendCommandLong(MavCmd.MavCmdDoSetRoiLocation, 0, 0, 0, 0, 0, 0, 0, CancellationToken.None).ConfigureAwait(false);
-                await Mavlink.Commands.SendCommandLong(MavCmd.MavCmdDoSetRoi, (int)MavRoi.MavRoiLocation, 0, 0, 0, (float)location.Latitude.Degrees, (float)location.Longitude.Degrees, (float)location.Elevation, CancellationToken.None).ConfigureAwait(false);
+                await Mavlink.Commands.SendCommandLong(MavCmd.MavCmdDoSetRoi, (int)MavRoi.MavRoiLocation, 0, 0, 0, (float)location.Latitude, (float)location.Longitude, (float)location.Altitude, CancellationToken.None).ConfigureAwait(false);
             }
             catch (Exception)
             {

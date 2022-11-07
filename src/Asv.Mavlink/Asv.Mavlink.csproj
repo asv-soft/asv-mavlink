@@ -31,9 +31,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Asv.IO" Version="1.2.1" />
-    <PackageReference Include="Geodesy" Version="4.1.0" />
-    <PackageReference Include="NLog" Version="5.0.4" />
+    <PackageReference Include="Asv.Common" Version="1.2.2" />
+    <PackageReference Include="Asv.IO" Version="1.2.2" />
+    <PackageReference Include="NLog" Version="5.0.5" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>

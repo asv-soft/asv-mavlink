@@ -1,4 +1,5 @@
 using System;
+using Asv.Common;
 using Geodesy;
 
 namespace Asv.Mavlink.Vehicle
@@ -7,14 +8,62 @@ namespace Asv.Mavlink.Vehicle
     {
         private static readonly GeodeticCalculator Calculator = new(Ellipsoid.WGS84);
 
-        public static GlobalPosition SetAltitude(this GlobalPosition src, double elevaltion)
+        public static GeoPoint SetAltitude(this GeoPoint src, double elevaltion)
         {
-            return new GlobalPosition(src.Coordinates, elevaltion);
+            return new GeoPoint(src.Latitude,src.Longitude, elevaltion);
         }
 
-        public static double Distance(this GlobalPosition x, GlobalPosition y)
+        /// <summary>
+        /// Calculates the great circle distance in meters between two points.
+        /// </summary>
+        /// <param name="point1">The location of the first point.</param>
+        /// <param name="point2">The location of the second point.</param>
+        /// <returns>The great circle distance in meters.</returns>
+        /// <remarks>The antemeridian is not considered.</remarks>
+        /// <exception cref="ArgumentNullException">point1 or point2 is null.</exception>
+        public static double Distance(GeoPoint point1, GeoPoint point2)
         {
-            return Calculator.CalculateGeodeticMeasurement(x, y).EllipsoidalDistance;
+            return Distance(point1.Latitude, point1.Longitude, point1.Altitude, point2.Latitude, point2.Longitude, point2.Altitude);
+        }
+
+        /// <summary>
+        /// Calculates the great circle distance in meters between two points on
+        /// the Earth's surface.
+        /// </summary>
+        /// <param name="latitude1">The latitude of the first point.</param>
+        /// <param name="longitude1">The longitude of the first point.</param>
+        /// <param name="latitude2">The latitude of the second point.</param>
+        /// <param name="longitude2">The longitude of the second point.</param>
+        /// <returns>The great circle distance in meters.</returns>
+        /// <remarks>The antemeridian is not considered.</remarks>
+        public static double Distance(double latitude1, double longitude1, double latitude2, double longitude2)
+        {
+            var measurement = Calculator.CalculateGeodeticMeasurement(
+                new GlobalPosition(new GlobalCoordinates(new Angle(latitude1), new Angle(longitude1))),
+                new GlobalPosition(new GlobalCoordinates(new Angle(latitude2), new Angle(longitude2))));
+
+            return measurement.EllipsoidalDistance;
+        }
+
+        /// <summary>
+        /// Calculates the great circle distance in meters between two points in
+        /// all three dimensions.
+        /// </summary>
+        /// <param name="latitude1">The latitude of the first point.</param>
+        /// <param name="longitude1">The longitude of the first point.</param>
+        /// <param name="altitude1">The altitude of the first point.</param>
+        /// <param name="latitude2">The latitude of the second point.</param>
+        /// <param name="longitude2">The longitude of the second point.</param>
+        /// <param name="altitude2">The altitude of the second point.</param>
+        /// <returns>The great circle distance in meters.</returns>
+        /// <remarks>The antemeridian is not considered.</remarks>
+        public static double Distance(double latitude1, double longitude1, double altitude1, double latitude2, double longitude2, double altitude2)
+        {
+            var measurement = Calculator.CalculateGeodeticMeasurement(
+                new GlobalPosition(new GlobalCoordinates(new Angle(latitude1), new Angle(longitude1)), altitude1),
+                new GlobalPosition(new GlobalCoordinates(new Angle(latitude2), new Angle(longitude2)), altitude2));
+
+            return measurement.PointToPointDistance;
         }
 
         /// <summary>Converts the specified value in radians to degrees.</summary>
@@ -25,7 +74,7 @@ namespace Asv.Mavlink.Vehicle
             return radians * 180.0 / Math.PI;
         }
 
-        public static double DistanceTo(this GlobalPosition a, GlobalPosition b)
+        public static double DistanceTo(this GeoPoint a, GeoPoint b)
         {
             return GeoMath.Distance(a, b);
         }
@@ -38,7 +87,7 @@ namespace Asv.Mavlink.Vehicle
             return degrees * Math.PI / 180.0;
         }
 
-        public static double Azimuth(this GlobalPosition a, GlobalPosition b)
+        public static double Azimuth(this GeoPoint a, GeoPoint b)
         {
             var measurement = Calculator.CalculateGeodeticMeasurement(
                 new GlobalPosition(new GlobalCoordinates(a.Latitude, a.Longitude)),
@@ -71,9 +120,9 @@ namespace Asv.Mavlink.Vehicle
             return measurement.Azimuth.Degrees;
         }
 
-        public static GlobalPosition RadialPoint(this GlobalPosition point, double distance, double radialDeg)
+        public static GeoPoint RadialPoint(this GeoPoint point, double distance, double radialDeg)
         {
-            return GeoMath.RadialPoint(point.Latitude.Degrees, point.Longitude.Degrees, point.Elevation, distance, radialDeg);
+            return GeoMath.RadialPoint(point.Latitude, point.Longitude, point.Altitude, distance, radialDeg);
         }
 
         /// <summary>
@@ -91,13 +140,13 @@ namespace Asv.Mavlink.Vehicle
         /// calculated point.
         /// </returns>
         /// <remarks>The antemeridian is not considered.</remarks>
-        public static GlobalPosition RadialPoint(double latitude, double longitude, double altitude, double distance, double radialDeg)
+        public static GeoPoint RadialPoint(double latitude, double longitude, double altitude, double distance, double radialDeg)
         {
             radialDeg = !double.IsNaN(radialDeg) ? radialDeg : 0;
             var coordinates = Calculator.CalculateEndingGlobalCoordinates(
                 new GlobalCoordinates(new Angle(latitude), new Angle(longitude)), new Angle(radialDeg), distance);
 
-            return new GlobalPosition(new GlobalCoordinates(coordinates.Latitude.Degrees, coordinates.Longitude.Degrees), altitude);
+            return new GeoPoint(coordinates.Latitude.Degrees, coordinates.Longitude.Degrees, altitude);
         }
 
         /// <summary>

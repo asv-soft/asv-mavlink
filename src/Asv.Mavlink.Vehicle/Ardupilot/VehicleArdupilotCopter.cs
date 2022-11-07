@@ -10,7 +10,6 @@ using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.Client;
 using Asv.Mavlink.Vehicle;
-using Geodesy;
 using NLog;
 
 namespace Asv.Mavlink
@@ -111,22 +110,22 @@ namespace Asv.Mavlink
 
         #region GoTo
 
-        public Task GoToRel(GlobalPosition location, CancellationToken cancel, double? yawDeg = null)
+        public Task GoToRel(GeoPoint location, CancellationToken cancel, double? yawDeg = null)
         {
             return GoTo(location, MavFrame.MavFrameGlobalRelativeAltInt, cancel, yawDeg);
         }
 
-        private async Task GoTo(GlobalPosition location, MavFrame frame, CancellationToken cancel, double? yawDeg = null, double? vx = null, double? vy = null, double? vz = null)
+        private async Task GoTo(GeoPoint location, MavFrame frame, CancellationToken cancel, double? yawDeg = null, double? vx = null, double? vy = null, double? vz = null)
         {
             await EnsureInGuidedMode(cancel).ConfigureAwait(false);
             
 
             var yaw = yawDeg.HasValue ? (float?)GeoMath.DegreesToRadians(yawDeg.Value) : null;
-            await Mavlink.Common.SetPositionTargetGlobalInt(0, frame, cancel, (int)(location.Latitude.Degrees * 10000000), (int)(location.Longitude.Degrees * 10000000), (float)location.Elevation, yaw: yaw).ConfigureAwait(false);
+            await Mavlink.Common.SetPositionTargetGlobalInt(0, frame, cancel, (int)(location.Latitude * 10000000), (int)(location.Longitude * 10000000), (float)location.Altitude, yaw: yaw).ConfigureAwait(false);
 
         }
 
-        protected override Task InternalGoToGlob(GlobalPosition location, CancellationToken cancel, double? yawDeg)
+        protected override Task InternalGoToGlob(GeoPoint location, CancellationToken cancel, double? yawDeg)
         {
             return GoTo(location, MavFrame.MavFrameGlobalInt, cancel, yawDeg);
         }
@@ -148,7 +147,7 @@ namespace Asv.Mavlink
             }
         }
 
-        public override async Task FlyByLineGlob(GlobalPosition start, GlobalPosition stop, double precisionMet, CancellationToken cancel, Action firstPointComplete = null)
+        public override async Task FlyByLineGlob(GeoPoint start, GeoPoint stop, double precisionMet, CancellationToken cancel, Action firstPointComplete = null)
         {
             await GoToGlobAndWait(start, CallbackProgress<double>.Default, precisionMet, cancel).ConfigureAwait(false);
             firstPointComplete?.Invoke();

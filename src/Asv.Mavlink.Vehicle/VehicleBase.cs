@@ -12,7 +12,6 @@ using Asv.Mavlink.Client;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.Vehicle;
 using DynamicData;
-using Geodesy;
 using NLog;
 
 namespace Asv.Mavlink
@@ -291,10 +290,10 @@ namespace Asv.Mavlink
 
         #region ROI
 
-        public virtual async Task SetRoi(GlobalPosition location, CancellationToken cancel)
+        public virtual async Task SetRoi(GeoPoint location, CancellationToken cancel)
         {
             Logger.Info($"=> SetRoi(location:{location.ToString()})");
-            var res = await _mavlink.Commands.CommandLong(MavCmd.MavCmdDoSetRoi, (int)MavRoi.MavRoiLocation, 0, 0, 0, (float)location.Latitude.Degrees, (float)location.Longitude.Degrees, (float)location.Elevation, 3, CancellationToken.None).ConfigureAwait(false);
+            var res = await _mavlink.Commands.CommandLong(MavCmd.MavCmdDoSetRoi, (int)MavRoi.MavRoiLocation, 0, 0, 0, (float)location.Latitude, (float)location.Longitude, (float)location.Altitude, 3, CancellationToken.None).ConfigureAwait(false);
             Logger.Info($"<= SetRoi(location:{location.ToString()}): '{res.Result}'(porgress:{res.Progress};resultParam2:{res.ResultParam2})");
             ValidateCommandResult(res);
             _roi.OnNext(location);
@@ -305,8 +304,8 @@ namespace Asv.Mavlink
             Disposable.Add(_roi);
         }
 
-        protected readonly RxValue<GlobalPosition?> _roi = new();
-        public IRxValue<GlobalPosition?> Roi => _roi;
+        protected readonly RxValue<GeoPoint?> _roi = new();
+        public IRxValue<GeoPoint?> Roi => _roi;
 
         public virtual async Task ClearRoi(CancellationToken cancel)
         {
@@ -344,12 +343,12 @@ namespace Asv.Mavlink
 
         private readonly RxValue<GpsInfo>  _gpsInfo = new();
         private readonly RxValue<double> _gVelocity = new();
-        private readonly RxValue<GlobalPosition> _globalPosition = new();
+        private readonly RxValue<GeoPoint> _globalPosition = new();
 
         private readonly RxValue<GpsInfo> _gps2Info = new();
         private readonly RxValue<double> _g2Velocity = new();
 
-        public IRxValue<GlobalPosition> GlobalPosition => _globalPosition;
+        public IRxValue<GeoPoint> GlobalPosition => _globalPosition;
 
         public IRxValue<GpsInfo> GpsInfo => _gpsInfo;
         public IRxValue<double> GpsGroundVelocity => _gVelocity;
@@ -362,7 +361,7 @@ namespace Asv.Mavlink
         protected virtual void InitGps()
         {
             
-            _mavlink.Rtt.RawGlobalPositionInt.Select(_ => new GlobalPosition(new GlobalCoordinates(_.Lat / 10000000D, _.Lon / 10000000D), _.Alt / 1000D)).Subscribe(_globalPosition).DisposeItWith(Disposable);
+            _mavlink.Rtt.RawGlobalPositionInt.Select(_ => new GeoPoint(_.Lat / 10000000D, _.Lon / 10000000D, _.Alt / 1000D)).Subscribe(_globalPosition).DisposeItWith(Disposable);
             Disposable.Add(_globalPosition);
 
 
@@ -383,14 +382,14 @@ namespace Asv.Mavlink
 
         #region Home
 
-        private readonly RxValue<GlobalPosition?> _home = new();
+        private readonly RxValue<GeoPoint?> _home = new();
         private readonly RxValue<double?> _homeDistance = new();
-        public IRxValue<GlobalPosition?> Home => _home;
+        public IRxValue<GeoPoint?> Home => _home;
         public IRxValue<double?> HomeDistance => _homeDistance;
         protected virtual void InitHome()
         {
             _mavlink.Rtt.RawHome
-                .Select(_ => (GlobalPosition?) new GlobalPosition(new GlobalCoordinates(_.Latitude / 10000000D, _.Longitude / 10000000D), _.Altitude / 1000D))
+                .Select(_ => (GeoPoint?) new GeoPoint(_.Latitude / 10000000D, _.Longitude / 10000000D, _.Altitude / 1000D))
                 .Subscribe(_home).DisposeItWith(Disposable);
             Disposable.Add(_homeDistance);
 
@@ -506,7 +505,7 @@ namespace Asv.Mavlink
 
         #region GoTo
 
-        public async Task GoToGlob(GlobalPosition location, CancellationToken cancel, double? yawDeg = null)
+        public async Task GoToGlob(GeoPoint location, CancellationToken cancel, double? yawDeg = null)
         {
             await EnsureInGuidedMode(cancel).ConfigureAwait(false);
           
@@ -514,9 +513,9 @@ namespace Asv.Mavlink
             //_goToTarget.OnNext(location);
         }
 
-        protected abstract Task InternalGoToGlob(GlobalPosition location,CancellationToken cancel, double? yawDeg);
+        protected abstract Task InternalGoToGlob(GeoPoint location,CancellationToken cancel, double? yawDeg);
 
-        public async Task GoToGlobAndWait(GlobalPosition location, IProgress<double> progress, double precisionMet, CancellationToken cancel)
+        public async Task GoToGlobAndWait(GeoPoint location, IProgress<double> progress, double precisionMet, CancellationToken cancel)
         {
             await GoToGlob(location, cancel).ConfigureAwait(false);
             progress = progress ?? new Progress<double>();
@@ -552,7 +551,7 @@ namespace Asv.Mavlink
             progress.Report(1);
         }
 
-        public async Task GoToGlobAndWaitWithoutAltitude(GlobalPosition location, IProgress<double> progress, double precisionMet, CancellationToken cancel)
+        public async Task GoToGlobAndWaitWithoutAltitude(GeoPoint location, IProgress<double> progress, double precisionMet, CancellationToken cancel)
         {
             await GoToGlob(location, cancel).ConfigureAwait(false);
             progress = progress ?? new Progress<double>();
@@ -592,20 +591,20 @@ namespace Asv.Mavlink
             progress.Report(1);
         }
 
-        public abstract Task FlyByLineGlob(GlobalPosition start, GlobalPosition stop, double precisionMet, CancellationToken cancel, Action firstPointComplete = null);
+        public abstract Task FlyByLineGlob(GeoPoint start, GeoPoint stop, double precisionMet, CancellationToken cancel, Action firstPointComplete = null);
         public abstract Task DoLand(CancellationToken cancel);
         
 
         public abstract Task DoRtl(CancellationToken cancel);
 
 
-        private readonly RxValue<GlobalPosition?> _goToTarget = new();
-        public IRxValue<GlobalPosition?> GoToTarget => _goToTarget;
+        private readonly RxValue<GeoPoint?> _goToTarget = new();
+        public IRxValue<GeoPoint?> GoToTarget => _goToTarget;
 
         private void InitGoTo()
         {
             _mavlink.Rtt.RawPositionTargetGlobalInt.Where(_ => _.CoordinateFrame == MavFrame.MavFrameGlobal)
-                .Select(_ =>(GlobalPosition?) new GlobalPosition(new GlobalCoordinates(_.LatInt / 10000000.0, _.LonInt / 10000000.0), _.Alt))
+                .Select(_ =>(GeoPoint?) new GeoPoint(_.LatInt / 10000000.0, _.LonInt / 10000000.0, _.Alt))
                 .Subscribe(_goToTarget);
             
             Disposable.Add(_goToTarget);

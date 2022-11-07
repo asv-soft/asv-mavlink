@@ -9,7 +9,6 @@ using Asv.Mavlink.Client;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.Vehicle;
-using Geodesy;
 using NLog;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
 
@@ -125,7 +124,7 @@ namespace Asv.Mavlink
             }
         }
 
-        protected override async Task InternalGoToGlob(GlobalPosition location, CancellationToken cancel, double? yawDeg)
+        protected override async Task InternalGoToGlob(GeoPoint location, CancellationToken cancel, double? yawDeg)
         {
             if (!Home.Value.HasValue) // we have no Home position and can't calculate relative altitude
             {
@@ -138,12 +137,12 @@ namespace Asv.Mavlink
                 }
             }
 
-            var rel = location.Elevation - this.Home.Value.Value.Elevation;
+            var rel = location.Altitude - this.Home.Value.Value.Altitude;
 
 
             await Mavlink.Mission.WriteMissionItem(0,MavFrame.MavFrameGlobalRelativeAlt, MavCmd.MavCmdNavLoiterUnlim, true,
                 true, 0, 0, 100,
-                0, (float) location.Latitude.Degrees, (float) location.Longitude.Degrees, (float) rel,
+                0, (float) location.Latitude, (float) location.Longitude, (float) rel,
                 MavMissionType.MavMissionTypeMission, 3, cancel).ConfigureAwait(false);
                 //            await Mavlink.Mission.MissionItem(MavFrame.MavFrameGlobalRelativeAlt, MavCmd.MavCmdNavWaypoint, true,
                 //                    true, 0, 0, 0,
@@ -205,7 +204,7 @@ namespace Asv.Mavlink
             return azimuth <= to && azimuth >= from;
         }
 
-        private async Task<double> GoToPointUntilReachAzimuth(GlobalPosition point, double azimuth, double precisionMet, double precisionDegr, CancellationToken cancel, int attemptsCnt = 1)
+        private async Task<double> GoToPointUntilReachAzimuth(GeoPoint point, double azimuth, double precisionMet, double precisionDegr, CancellationToken cancel, int attemptsCnt = 1)
         {
             _logger.Info($"GoTo point {point}");
             await GoToGlobAndWait(point, CallbackProgress<double>.Default, precisionMet, cancel).ConfigureAwait(false);
@@ -230,7 +229,7 @@ namespace Asv.Mavlink
             return 0;
         }
 
-        public override async Task FlyByLineGlob(GlobalPosition start, GlobalPosition stop, double precisionMet, CancellationToken cancel, Action firstPointComplete = null)
+        public override async Task FlyByLineGlob(GeoPoint start, GeoPoint stop, double precisionMet, CancellationToken cancel, Action firstPointComplete = null)
         {
             const int ApproachAngle = 90;
             const int PrePointDistanceParts = 2;
@@ -252,19 +251,19 @@ namespace Asv.Mavlink
 
             var startPrePoint0 = start0.RadialPoint(PrePointDistanceParts * realLoiterRadius, reverseAzimuth);
             var pointDistanceFromGround = GeoMath.Distance(start0, stop0);
-            var angle = Math.Abs(pointDistanceFromGround) > 0.001 ? GeoMath.RadiansToDegrees(Math.Atan(Math.Abs((start.Elevation) - (stop.Elevation)) / pointDistanceFromGround)) : 0.0;
+            var angle = Math.Abs(pointDistanceFromGround) > 0.001 ? GeoMath.RadiansToDegrees(Math.Atan(Math.Abs((start.Altitude) - (stop.Altitude)) / pointDistanceFromGround)) : 0.0;
 
             var height = GeoMath.HeightFromGroundRange(GeoMath.Distance(stop0, startPrePoint0), angle);
 
-            if ((start.Elevation) - (stop.Elevation) < 0)
-                height = (stop.Elevation) - height;
+            if ((start.Altitude) - (stop.Altitude) < 0)
+                height = (stop.Altitude) - height;
             else
-                height = (stop.Elevation) + height;
+                height = (stop.Altitude) + height;
 
             //TODO if (height <= 0) нужно что-то делать!!!
             if (height <= 0)
             {
-                _logger.Info($"Impossible fly by line from altitude {start.Elevation}м to altitude {stop.Elevation}m");
+                _logger.Info($"Impossible fly by line from altitude {start.Altitude}м to altitude {stop.Altitude}m");
                 return;
             }
 

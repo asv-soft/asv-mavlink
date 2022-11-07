@@ -3,7 +3,6 @@ using System.Reactive;
 using System.Reactive.Subjects;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using Geodesy;
 
 namespace Asv.Mavlink
 {
@@ -15,12 +14,12 @@ namespace Asv.Mavlink
         public MissionItem(MissionItemIntPayload item)
         {
             Payload = item;
-            Location = new RxValue<GlobalPosition>(new GlobalPosition(new GlobalCoordinates(item.X / 10_000_000.0, item.Y / 10_000_000.0), item.Z)).DisposeItWith(Disposable);
+            Location = new RxValue<GeoPoint>(new GeoPoint(item.X / 10_000_000.0, item.Y / 10_000_000.0, item.Z)).DisposeItWith(Disposable);
             Location.Subscribe(_ =>
             {
-                Payload.X = (int)(_.Latitude.Degrees * 10_000_000.0);
-                Payload.Y = (int)(_.Longitude.Degrees * 10_000_000.0);
-                Payload.Z = (float)_.Elevation;
+                Payload.X = (int)(_.Latitude * 10_000_000.0);
+                Payload.Y = (int)(_.Longitude * 10_000_000.0);
+                Payload.Z = (float)_.Altitude;
                 _onChanged.OnNext(Unit.Default);
             }).DisposeItWith(Disposable);
 
@@ -56,7 +55,7 @@ namespace Asv.Mavlink
 
         public ushort Index => Payload.Seq;
 
-        public IRxEditableValue<GlobalPosition> Location { get; }
+        public IRxEditableValue<GeoPoint> Location { get; }
         public IRxEditableValue<bool> Autocontinue { get; }
         public IRxEditableValue<MavCmd> Command { get; }
         public IRxEditableValue<bool> Current { get; }
