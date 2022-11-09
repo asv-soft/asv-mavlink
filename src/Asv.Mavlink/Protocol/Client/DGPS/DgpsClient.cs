@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
@@ -13,7 +14,8 @@ namespace Asv.Mavlink.Client
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private int _seqNumber;
 
-        public DgpsClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq):base(connection,identity,seq,"DGPS")
+        public DgpsClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
+            IPacketSequenceCalculator seq, IScheduler scheduler):base(connection,identity,seq,"DGPS", scheduler)
         {
         
         }

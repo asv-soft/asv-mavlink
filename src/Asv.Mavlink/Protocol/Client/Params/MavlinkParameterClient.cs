@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -27,8 +28,9 @@ namespace Asv.Mavlink.Client
         private readonly RxValue<int?> _paramsCount = new();
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public MavlinkParameterClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq, VehicleParameterProtocolConfig config):
-            base(connection,identity,seq,"PARAMS")
+        public MavlinkParameterClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
+            IPacketSequenceCalculator seq, VehicleParameterProtocolConfig config, IScheduler scheduler):
+            base(connection,identity,seq,"PARAMS", scheduler)
             
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));

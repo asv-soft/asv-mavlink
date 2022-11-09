@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,18 +14,21 @@ namespace Asv.Mavlink.Client
         private readonly MavlinkClientIdentity _identity;
         private readonly IPacketSequenceCalculator _seq;
         private readonly string _ifcLogName;
+        private readonly IScheduler _scheduler;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private string _locTargetName;
         private string _logLocalName;
         private string _logSend;
         private string _logRecv;
 
-        protected MavlinkMicroserviceClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq, string ifcLogName)
+        protected MavlinkMicroserviceClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
+            IPacketSequenceCalculator seq, string ifcLogName, IScheduler scheduler)
         {
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
             _identity = identity ?? throw new ArgumentNullException(nameof(identity));
             _seq = seq ?? throw new ArgumentNullException(nameof(seq));
             _ifcLogName = ifcLogName;
+            _scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
         }
 
         protected string LogTargetName => _locTargetName ??= $"{Identity.TargetSystemId}:{Identity.TargetSystemId}";
@@ -53,7 +57,7 @@ namespace Asv.Mavlink.Client
             return FilterVehiclePackets.Where(_ => _.MessageId == id).Cast<TPacket>().Where(filter);
         }
 
-        protected IObservable<IPacketV2<IPayload>> FilterVehiclePackets => _connection.Where(FilterVehicle).Publish().RefCount();
+        protected IObservable<IPacketV2<IPayload>> FilterVehiclePackets => _connection.Where(FilterVehicle).ObserveOn(_scheduler).Publish().RefCount();
 
         protected MavlinkClientIdentity Identity => _identity;
         protected IPacketSequenceCalculator Sequence => _seq;
@@ -140,7 +144,7 @@ namespace Asv.Mavlink.Client
             }
 
             if (result != null) return resultGetter(result);
-            var msg = $"{LogSend} Timeout to execute '{name}' with '{attemptCount}' attempts (timeout {timeoutMs} ms )";
+            var msg = $"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'";
             Logger.Error(msg);
             throw new TimeoutException(msg);
         }

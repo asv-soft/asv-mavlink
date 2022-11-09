@@ -1,3 +1,4 @@
+using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
@@ -9,7 +10,8 @@ namespace Asv.Mavlink.Client
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public MavlinkCommon(IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq):base(connection,identity,seq,"COMMON")
+        public MavlinkCommon(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
+            IPacketSequenceCalculator seq, IScheduler scheduler):base(connection,identity,seq,"COMMON", scheduler)
         {
         }
 

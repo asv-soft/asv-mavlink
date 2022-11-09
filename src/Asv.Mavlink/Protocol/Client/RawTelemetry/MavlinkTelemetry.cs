@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using Asv.Common;
 using Asv.Mavlink.Client;
@@ -26,7 +27,7 @@ namespace Asv.Mavlink
         private readonly RxValue<RadioStatusPayload> _radioStatus = new();
 
         public MavlinkTelemetry(IMavlinkV2Connection connection, MavlinkClientIdentity config,
-            IPacketSequenceCalculator seq):base(connection,config,seq,"RTT")
+            IPacketSequenceCalculator seq, IScheduler scheduler):base(connection,config,seq,"RTT", scheduler)
         {
             HandleSystemStatus();
             HandleGps();

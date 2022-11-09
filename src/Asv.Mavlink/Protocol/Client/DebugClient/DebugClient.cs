@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using Asv.Common;
@@ -13,7 +14,8 @@ namespace Asv.Mavlink.Client
         private readonly RxValue<DebugFloatArrayPayload> _debugFloatArray = new();
         private readonly CancellationTokenSource _disposeCancel = new();
 
-        public DebugClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq):base(connection, identity, seq,"DEBUG")
+        public DebugClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
+            IPacketSequenceCalculator seq, IScheduler scheduler):base(connection, identity, seq,"DEBUG", scheduler)
         {
             Filter<DebugFloatArrayPacket>()
                 .Select(_ => _.Payload)

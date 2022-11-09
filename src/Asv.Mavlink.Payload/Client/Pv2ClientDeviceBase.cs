@@ -34,7 +34,7 @@ namespace Asv.Mavlink.Payload
 
         public Pv2ClientDeviceBase(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
             IPacketSequenceCalculator sequence, IPv2CfgDescriptionStore store, IPv2RttDescriptionStore rttStore, IPv2BaseDescriptionStore workModeStore,
-            Pv2DeviceBaseConfig cfg, bool disposeConnection = false)
+            Pv2DeviceBaseConfig cfg, bool disposeConnection = false, IScheduler scheduler = null)
         {
             if (connection == null) throw new ArgumentNullException(nameof(connection));
             if (identity == null) throw new ArgumentNullException(nameof(identity));
@@ -44,7 +44,7 @@ namespace Asv.Mavlink.Payload
             var workModeStore1 = workModeStore ?? throw new ArgumentNullException(nameof(workModeStore));
             _cfg = cfg ?? throw new ArgumentNullException(nameof(cfg));
             if (disposeConnection) Disposable.Add(connection);
-            _client = new MavlinkClient(connection, identity, _cfg.MavlinkClientConfig, sequence, disposeConnection).DisposeItWith(Disposable);
+            _client = new MavlinkClient(connection, identity, _cfg.MavlinkClientConfig, sequence, disposeConnection, scheduler).DisposeItWith(Disposable);
             InitRawStatus();
             _payloadClient = new PayloadV2Client(_client, _cfg.NetworkId).DisposeItWith(Disposable);
             _params = new Pv2ClientParamsInterface(_payloadClient, store, _cfg.Params).DisposeItWith(Disposable);

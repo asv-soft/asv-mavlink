@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,14 +24,15 @@ namespace Asv.Mavlink
         private readonly RxValue<ushort> _missionCurrent;
         private readonly RxValue<ushort> _missionReached;
 
-        public MissionClient(IMavlinkV2Connection mavlink, MavlinkClientIdentity identity, IPacketSequenceCalculator seq, MissionClientConfig config) : base(mavlink, identity, seq, "MISSION")
+        public MissionClient(IMavlinkV2Connection mavlink, MavlinkClientIdentity identity,
+            IPacketSequenceCalculator seq, MissionClientConfig config, IScheduler scheduler) : base(mavlink, identity, seq, "MISSION",scheduler)
         {
             _config = config;
             _missionCurrent = new RxValue<ushort>().DisposeItWith(Disposable);
             _missionReached = new RxValue<ushort>().DisposeItWith(Disposable);
-            mavlink.FilterVehicle(identity).Filter<MissionCurrentPacket>().Select(_ => _.Payload.Seq).Subscribe(_missionCurrent)
+            Filter<MissionCurrentPacket>().Select(_ => _.Payload.Seq).Subscribe(_missionCurrent)
                 .DisposeItWith(Disposable);
-            mavlink.FilterVehicle(identity).Filter<MissionItemReachedPacket>().Select(_ => _.Payload.Seq).Subscribe(_missionReached)
+            Filter<MissionItemReachedPacket>().Select(_ => _.Payload.Seq).Subscribe(_missionReached)
                 .DisposeItWith(Disposable);
         }
 

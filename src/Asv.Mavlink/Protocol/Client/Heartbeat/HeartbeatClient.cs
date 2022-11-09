@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using Asv.Common;
@@ -19,7 +20,8 @@ namespace Asv.Mavlink.Client
         private int _packetCounter;
         private int _prev;
 
-        public HeartbeatClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq, int heartBeatTimeoutMs = 2000):base(connection,identity, seq,"HEARTBEAT")
+        public HeartbeatClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
+            IPacketSequenceCalculator seq, IScheduler scheduler, int heartBeatTimeoutMs = 2000):base(connection,identity, seq,"HEARTBEAT", scheduler)
         {
             _heartBeatTimeoutMs = heartBeatTimeoutMs;
             FilterVehiclePackets

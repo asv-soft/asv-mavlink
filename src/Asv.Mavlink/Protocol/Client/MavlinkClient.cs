@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Concurrency;
 using Asv.Common;
 using NLog;
 
@@ -41,46 +42,47 @@ namespace Asv.Mavlink.Client
         private IV2ExtensionClient _v2Ext;
         private readonly IPacketSequenceCalculator _seq;
 
-
-        public MavlinkClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, MavlinkClientConfig config, IPacketSequenceCalculator sequence = null, bool disposeConnection = true)
+        public MavlinkClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, MavlinkClientConfig config, IPacketSequenceCalculator sequence = null, bool disposeConnection = true, IScheduler scheduler = null)
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
+
             _seq = sequence ?? new PacketSequenceCalculator();
             Identity = identity;
             _mavlinkConnection = connection ?? throw new ArgumentNullException(nameof(connection));
-            
 
-            _rtt = new MavlinkTelemetry(_mavlinkConnection, identity, _seq);
+            scheduler ??= Scheduler.Default;
+
+            _rtt = new MavlinkTelemetry(_mavlinkConnection, identity, _seq, scheduler);
             Disposable.Add(_rtt);
 
-            _params = new MavlinkParameterClient(_mavlinkConnection, identity, _seq, new VehicleParameterProtocolConfig {ReadWriteTimeoutMs = config.ReadParamTimeoutMs,TimeoutToReadAllParamsMs = config.TimeoutToReadAllParamsMs});
+            _params = new MavlinkParameterClient(_mavlinkConnection, identity, _seq, new VehicleParameterProtocolConfig {ReadWriteTimeoutMs = config.ReadParamTimeoutMs,TimeoutToReadAllParamsMs = config.TimeoutToReadAllParamsMs}, scheduler);
             Disposable.Add(_params);
 
-            _mavlinkCommands = new MavlinkCommandClient(_mavlinkConnection, identity, _seq,new CommandProtocolConfig { CommandTimeoutMs = config.CommandTimeoutMs});
+            _mavlinkCommands = new MavlinkCommandClient(_mavlinkConnection, identity, _seq,new CommandProtocolConfig { CommandTimeoutMs = config.CommandTimeoutMs}, scheduler);
             Disposable.Add(_mavlinkCommands);
 
-            _mission = new MissionClient(_mavlinkConnection,identity, _seq, new MissionClientConfig{ CommandTimeoutMs = config.CommandTimeoutMs});
+            _mission = new MissionClient(_mavlinkConnection,identity, _seq, new MissionClientConfig{ CommandTimeoutMs = config.CommandTimeoutMs}, scheduler);
             Disposable.Add(_mission);
 
-            _mavlinkOffboard = new MavlinkOffboardMode(_mavlinkConnection,identity, _seq);
+            _mavlinkOffboard = new MavlinkOffboardMode(_mavlinkConnection,identity, _seq, scheduler);
             Disposable.Add(_mavlinkOffboard);
 
-            _mode = new MavlinkCommon(_mavlinkConnection,identity,_seq);
+            _mode = new MavlinkCommon(_mavlinkConnection,identity,_seq, scheduler);
             Disposable.Add(_mode);
 
-            _debugs = new DebugClient(_mavlinkConnection, identity,_seq);
+            _debugs = new DebugClient(_mavlinkConnection, identity,_seq, scheduler);
             Disposable.Add(_debugs);
 
-            _heartbeat = new HeartbeatClient(_mavlinkConnection,identity,_seq);
+            _heartbeat = new HeartbeatClient(_mavlinkConnection,identity,_seq, scheduler);
             Disposable.Add(_heartbeat);
 
-            _logging = new LoggingClient(_mavlinkConnection,identity, _seq);
+            _logging = new LoggingClient(_mavlinkConnection,identity, _seq, scheduler);
             Disposable.Add(_logging);
 
-            _v2Ext = new V2ExtensionClient(_mavlinkConnection, _seq, identity);
+            _v2Ext = new V2ExtensionClient(_mavlinkConnection, _seq, identity, scheduler);
             Disposable.Add(_v2Ext);
 
-            _rtk = new DgpsClient(_mavlinkConnection, identity,_seq);
+            _rtk = new DgpsClient(_mavlinkConnection, identity,_seq, scheduler);
             Disposable.Add(_rtt);
 
             if (disposeConnection)
