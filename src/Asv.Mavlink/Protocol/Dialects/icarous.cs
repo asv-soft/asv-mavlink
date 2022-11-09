@@ -121,7 +121,6 @@ namespace Asv.Mavlink.V2.Icarous
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Status = (IcarousFmsState)BinSerialize.ReadByte(ref buffer);index+=1;
 
         }
@@ -139,7 +138,6 @@ namespace Asv.Mavlink.V2.Icarous
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Status = (IcarousFmsState)buffer[index++];
         }
 
@@ -183,7 +181,6 @@ namespace Asv.Mavlink.V2.Icarous
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Min1 = BinSerialize.ReadFloat(ref buffer);index+=4;
             Max1 = BinSerialize.ReadFloat(ref buffer);index+=4;
             Min2 = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -231,7 +228,6 @@ namespace Asv.Mavlink.V2.Icarous
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Min1 = BitConverter.ToSingle(buffer, index);index+=4;
             Max1 = BitConverter.ToSingle(buffer, index);index+=4;
             Min2 = BitConverter.ToSingle(buffer, index);index+=4;

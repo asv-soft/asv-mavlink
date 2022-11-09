@@ -495,7 +495,6 @@ namespace Asv.Mavlink.V2.Uavionix
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Utctime = BinSerialize.ReadUInt(ref buffer);index+=4;
             Gpslat = BinSerialize.ReadInt(ref buffer);index+=4;
             Gpslon = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -543,7 +542,6 @@ namespace Asv.Mavlink.V2.Uavionix
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Utctime = BitConverter.ToUInt32(buffer,index);index+=4;
             Gpslat = BitConverter.ToInt32(buffer,index);index+=4;
             Gpslon = BitConverter.ToInt32(buffer,index);index+=4;
@@ -692,7 +690,6 @@ namespace Asv.Mavlink.V2.Uavionix
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Rfhealth = (UavionixAdsbRfHealth)BinSerialize.ReadByte(ref buffer);index+=1;
 
         }
@@ -710,7 +707,6 @@ namespace Asv.Mavlink.V2.Uavionix
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Rfhealth = (UavionixAdsbRfHealth)buffer[index++];
         }
 

@@ -2005,7 +2005,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             MagDeclination = BinSerialize.ReadFloat(ref buffer);index+=4;
             RawPress = BinSerialize.ReadInt(ref buffer);index+=4;
             RawTemp = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -2045,7 +2044,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             MagDeclination = BitConverter.ToSingle(buffer, index);index+=4;
             RawPress = BitConverter.ToInt32(buffer,index);index+=4;
             RawTemp = BitConverter.ToInt32(buffer,index);index+=4;
@@ -2166,7 +2164,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             MagOfsX = BinSerialize.ReadShort(ref buffer);index+=2;
             MagOfsY = BinSerialize.ReadShort(ref buffer);index+=2;
             MagOfsZ = BinSerialize.ReadShort(ref buffer);index+=2;
@@ -2192,7 +2189,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             MagOfsX = BitConverter.ToInt16(buffer,index);index+=2;
             MagOfsY = BitConverter.ToInt16(buffer,index);index+=2;
             MagOfsZ = BitConverter.ToInt16(buffer,index);index+=2;
@@ -2264,7 +2260,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Brkval = BinSerialize.ReadUShort(ref buffer);index+=2;
             Freemem = BinSerialize.ReadUShort(ref buffer);index+=2;
             // extended field 'Freemem32' can be empty
@@ -2288,7 +2283,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Brkval = BitConverter.ToUInt16(buffer,index);index+=2;
             Freemem = BitConverter.ToUInt16(buffer,index);index+=2;
             // extended field 'Freemem32' can be empty
@@ -2348,7 +2342,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Adc1 = BinSerialize.ReadUShort(ref buffer);index+=2;
             Adc2 = BinSerialize.ReadUShort(ref buffer);index+=2;
             Adc3 = BinSerialize.ReadUShort(ref buffer);index+=2;
@@ -2376,7 +2369,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Adc1 = BitConverter.ToUInt16(buffer,index);index+=2;
             Adc2 = BitConverter.ToUInt16(buffer,index);index+=2;
             Adc3 = BitConverter.ToUInt16(buffer,index);index+=2;
@@ -2455,7 +2447,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             ExtraValue = BinSerialize.ReadFloat(ref buffer);index+=4;
             ShutterSpeed = BinSerialize.ReadUShort(ref buffer);index+=2;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -2493,7 +2484,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             ExtraValue = BitConverter.ToSingle(buffer, index);index+=4;
             ShutterSpeed = BitConverter.ToUInt16(buffer,index);index+=2;
             TargetSystem = (byte)buffer[index++];
@@ -2607,7 +2597,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             ExtraValue = BinSerialize.ReadFloat(ref buffer);index+=4;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -2643,7 +2632,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             ExtraValue = BitConverter.ToSingle(buffer, index);index+=4;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
@@ -2750,7 +2738,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             MountMode = (MavMountMode)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -2778,7 +2765,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
             MountMode = (MavMountMode)buffer[index++];
@@ -2857,7 +2843,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             InputA = BinSerialize.ReadInt(ref buffer);index+=4;
             InputB = BinSerialize.ReadInt(ref buffer);index+=4;
             InputC = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -2885,7 +2870,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             InputA = BitConverter.ToInt32(buffer,index);index+=4;
             InputB = BitConverter.ToInt32(buffer,index);index+=4;
             InputC = BitConverter.ToInt32(buffer,index);index+=4;
@@ -2964,7 +2948,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             PointingA = BinSerialize.ReadInt(ref buffer);index+=4;
             PointingB = BinSerialize.ReadInt(ref buffer);index+=4;
             PointingC = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -2990,7 +2973,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             PointingA = BitConverter.ToInt32(buffer,index);index+=4;
             PointingB = BitConverter.ToInt32(buffer,index);index+=4;
             PointingC = BitConverter.ToInt32(buffer,index);index+=4;
@@ -3062,7 +3044,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Lat = BinSerialize.ReadFloat(ref buffer);index+=4;
             Lng = BinSerialize.ReadFloat(ref buffer);index+=4;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -3090,7 +3071,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Lat = BitConverter.ToSingle(buffer, index);index+=4;
             Lng = BitConverter.ToSingle(buffer, index);index+=4;
             TargetSystem = (byte)buffer[index++];
@@ -3169,7 +3149,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             Idx = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -3191,7 +3170,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
             Idx = (byte)buffer[index++];
@@ -3249,7 +3227,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             BreachTime = BinSerialize.ReadUInt(ref buffer);index+=4;
             BreachCount = BinSerialize.ReadUShort(ref buffer);index+=2;
             BreachStatus = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -3273,7 +3250,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             BreachTime = BitConverter.ToUInt32(buffer,index);index+=4;
             BreachCount = BitConverter.ToUInt16(buffer,index);index+=2;
             BreachStatus = (byte)buffer[index++];
@@ -3338,7 +3314,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Omegaix = BinSerialize.ReadFloat(ref buffer);index+=4;
             Omegaiy = BinSerialize.ReadFloat(ref buffer);index+=4;
             Omegaiz = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -3368,7 +3343,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Omegaix = BitConverter.ToSingle(buffer, index);index+=4;
             Omegaiy = BitConverter.ToSingle(buffer, index);index+=4;
             Omegaiz = BitConverter.ToSingle(buffer, index);index+=4;
@@ -3454,7 +3428,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Roll = BinSerialize.ReadFloat(ref buffer);index+=4;
             Pitch = BinSerialize.ReadFloat(ref buffer);index+=4;
             Yaw = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -3492,7 +3465,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Roll = BitConverter.ToSingle(buffer, index);index+=4;
             Pitch = BitConverter.ToSingle(buffer, index);index+=4;
             Yaw = BitConverter.ToSingle(buffer, index);index+=4;
@@ -3606,7 +3578,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Vcc = BinSerialize.ReadUShort(ref buffer);index+=2;
             I2cerr = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
 
@@ -3626,7 +3597,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Vcc = BitConverter.ToUInt16(buffer,index);index+=2;
             I2cerr = (byte)buffer[index++];
         }
@@ -3677,7 +3647,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Rxerrors = BinSerialize.ReadUShort(ref buffer);index+=2;
             Fixed = BinSerialize.ReadUShort(ref buffer);index+=2;
             Rssi = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -3707,7 +3676,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Rxerrors = BitConverter.ToUInt16(buffer,index);index+=2;
             Fixed = BitConverter.ToUInt16(buffer,index);index+=2;
             Rssi = (byte)buffer[index++];
@@ -3793,7 +3761,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             LastTrigger = BinSerialize.ReadUInt(ref buffer);index+=4;
             LastAction = BinSerialize.ReadUInt(ref buffer);index+=4;
             LastRecovery = BinSerialize.ReadUInt(ref buffer);index+=4;
@@ -3827,7 +3794,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             LastTrigger = BitConverter.ToUInt32(buffer,index);index+=4;
             LastAction = BitConverter.ToUInt32(buffer,index);index+=4;
             LastRecovery = BitConverter.ToUInt32(buffer,index);index+=4;
@@ -3927,7 +3893,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Direction = BinSerialize.ReadFloat(ref buffer);index+=4;
             Speed = BinSerialize.ReadFloat(ref buffer);index+=4;
             SpeedZ = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -3949,7 +3914,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Direction = BitConverter.ToSingle(buffer, index);index+=4;
             Speed = BitConverter.ToSingle(buffer, index);index+=4;
             SpeedZ = BitConverter.ToSingle(buffer, index);index+=4;
@@ -4395,7 +4359,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Distance = BinSerialize.ReadFloat(ref buffer);index+=4;
             Voltage = BinSerialize.ReadFloat(ref buffer);index+=4;
 
@@ -4415,7 +4378,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Distance = BitConverter.ToSingle(buffer, index);index+=4;
             Voltage = BitConverter.ToSingle(buffer, index);index+=4;
         }
@@ -4466,7 +4428,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Vx = BinSerialize.ReadFloat(ref buffer);index+=4;
             Vy = BinSerialize.ReadFloat(ref buffer);index+=4;
             Vz = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -4506,7 +4467,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Vx = BitConverter.ToSingle(buffer, index);index+=4;
             Vy = BitConverter.ToSingle(buffer, index);index+=4;
             Vz = BitConverter.ToSingle(buffer, index);index+=4;
@@ -4627,7 +4587,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Lat = BinSerialize.ReadInt(ref buffer);index+=4;
             Lng = BinSerialize.ReadInt(ref buffer);index+=4;
             Alt = BinSerialize.ReadShort(ref buffer);index+=2;
@@ -4663,7 +4622,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Lat = BitConverter.ToInt32(buffer,index);index+=4;
             Lng = BitConverter.ToInt32(buffer,index);index+=4;
             Alt = BitConverter.ToInt16(buffer,index);index+=2;
@@ -4770,7 +4728,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             Idx = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -4792,7 +4749,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
             Idx = (byte)buffer[index++];
@@ -4850,7 +4806,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Current = BinSerialize.ReadFloat(ref buffer);index+=4;
             Compensationx = BinSerialize.ReadFloat(ref buffer);index+=4;
             Compensationy = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -4878,7 +4833,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Current = BitConverter.ToSingle(buffer, index);index+=4;
             Compensationx = BitConverter.ToSingle(buffer, index);index+=4;
             Compensationy = BitConverter.ToSingle(buffer, index);index+=4;
@@ -4957,7 +4911,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Roll = BinSerialize.ReadFloat(ref buffer);index+=4;
             Pitch = BinSerialize.ReadFloat(ref buffer);index+=4;
             Yaw = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -4985,7 +4938,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Roll = BitConverter.ToSingle(buffer, index);index+=4;
             Pitch = BitConverter.ToSingle(buffer, index);index+=4;
             Yaw = BitConverter.ToSingle(buffer, index);index+=4;
@@ -5064,7 +5016,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             P1 = BinSerialize.ReadFloat(ref buffer);index+=4;
             P2 = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -5098,7 +5049,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             P1 = BitConverter.ToSingle(buffer, index);index+=4;
             P2 = BitConverter.ToSingle(buffer, index);index+=4;
@@ -5198,7 +5148,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             Lat = BinSerialize.ReadInt(ref buffer);index+=4;
             Lng = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -5244,7 +5193,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             Lat = BitConverter.ToInt32(buffer,index);index+=4;
             Lng = BitConverter.ToInt32(buffer,index);index+=4;
@@ -5381,7 +5329,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Voltage = BinSerialize.ReadUShort(ref buffer);index+=2;
             CurrentBattery = BinSerialize.ReadShort(ref buffer);index+=2;
 
@@ -5401,7 +5348,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Voltage = BitConverter.ToUInt16(buffer,index);index+=2;
             CurrentBattery = BitConverter.ToInt16(buffer,index);index+=2;
         }
@@ -5452,7 +5398,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Roll = BinSerialize.ReadFloat(ref buffer);index+=4;
             Pitch = BinSerialize.ReadFloat(ref buffer);index+=4;
             Yaw = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -5488,7 +5433,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Roll = BitConverter.ToSingle(buffer, index);index+=4;
             Pitch = BitConverter.ToSingle(buffer, index);index+=4;
             Yaw = BitConverter.ToSingle(buffer, index);index+=4;
@@ -5595,7 +5539,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
 
@@ -5615,7 +5558,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
         }
@@ -5772,7 +5714,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Seqno = BinSerialize.ReadUInt(ref buffer);index+=4;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -5796,7 +5737,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Seqno = BitConverter.ToUInt32(buffer,index);index+=4;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
@@ -6136,7 +6076,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Fitness = BinSerialize.ReadFloat(ref buffer);index+=4;
             OfsX = BinSerialize.ReadFloat(ref buffer);index+=4;
             OfsY = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -6192,7 +6131,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Fitness = BitConverter.ToSingle(buffer, index);index+=4;
             OfsX = BitConverter.ToSingle(buffer, index);index+=4;
             OfsY = BitConverter.ToSingle(buffer, index);index+=4;
@@ -6354,7 +6292,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             VelocityVariance = BinSerialize.ReadFloat(ref buffer);index+=4;
             PosHorizVariance = BinSerialize.ReadFloat(ref buffer);index+=4;
             PosVertVariance = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -6386,7 +6323,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             VelocityVariance = BitConverter.ToSingle(buffer, index);index+=4;
             PosHorizVariance = BitConverter.ToSingle(buffer, index);index+=4;
             PosVertVariance = BitConverter.ToSingle(buffer, index);index+=4;
@@ -6474,7 +6410,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Desired = BinSerialize.ReadFloat(ref buffer);index+=4;
             Achieved = BinSerialize.ReadFloat(ref buffer);index+=4;
             Ff = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -6504,7 +6439,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Desired = BitConverter.ToSingle(buffer, index);index+=4;
             Achieved = BitConverter.ToSingle(buffer, index);index+=4;
             Ff = BitConverter.ToSingle(buffer, index);index+=4;
@@ -6590,7 +6524,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             LandingLat = BinSerialize.ReadInt(ref buffer);index+=4;
             LandingLon = BinSerialize.ReadInt(ref buffer);index+=4;
             PathLat = BinSerialize.ReadInt(ref buffer);index+=4;
@@ -6626,7 +6559,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             LandingLat = BitConverter.ToInt32(buffer,index);index+=4;
             LandingLon = BitConverter.ToInt32(buffer,index);index+=4;
             PathLat = BitConverter.ToInt32(buffer,index);index+=4;
@@ -6733,7 +6665,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             DeltaTime = BinSerialize.ReadFloat(ref buffer);index+=4;
             DeltaAngleX = BinSerialize.ReadFloat(ref buffer);index+=4;
             DeltaAngleY = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -6773,7 +6704,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             DeltaTime = BitConverter.ToSingle(buffer, index);index+=4;
             DeltaAngleX = BitConverter.ToSingle(buffer, index);index+=4;
             DeltaAngleY = BitConverter.ToSingle(buffer, index);index+=4;
@@ -6894,7 +6824,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             DemandedRateX = BinSerialize.ReadFloat(ref buffer);index+=4;
             DemandedRateY = BinSerialize.ReadFloat(ref buffer);index+=4;
             DemandedRateZ = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -6920,7 +6849,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             DemandedRateX = BitConverter.ToSingle(buffer, index);index+=4;
             DemandedRateY = BitConverter.ToSingle(buffer, index);index+=4;
             DemandedRateZ = BitConverter.ToSingle(buffer, index);index+=4;
@@ -6992,7 +6920,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             RlTorqueCmd = BinSerialize.ReadShort(ref buffer);index+=2;
             ElTorqueCmd = BinSerialize.ReadShort(ref buffer);index+=2;
             AzTorqueCmd = BinSerialize.ReadShort(ref buffer);index+=2;
@@ -7018,7 +6945,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             RlTorqueCmd = BitConverter.ToInt16(buffer,index);index+=2;
             ElTorqueCmd = BitConverter.ToInt16(buffer,index);index+=2;
             AzTorqueCmd = BitConverter.ToInt16(buffer,index);index+=2;
@@ -7090,7 +7016,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Status = (GoproHeartbeatStatus)BinSerialize.ReadByte(ref buffer);index+=1;
             CaptureMode = (GoproCaptureMode)BinSerialize.ReadByte(ref buffer);index+=1;
             Flags = (GoproHeartbeatFlags)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -7112,7 +7037,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Status = (GoproHeartbeatStatus)buffer[index++];
             CaptureMode = (GoproCaptureMode)buffer[index++];
             Flags = (GoproHeartbeatFlags)buffer[index++];
@@ -7170,7 +7094,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             CmdId = (GoproCommand)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -7192,7 +7115,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             TargetSystem = (byte)buffer[index++];
             TargetComponent = (byte)buffer[index++];
             CmdId = (GoproCommand)buffer[index++];
@@ -7453,7 +7375,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             CmdId = (GoproCommand)BinSerialize.ReadByte(ref buffer);index+=1;
             Status = (GoproRequestStatus)BinSerialize.ReadByte(ref buffer);index+=1;
 
@@ -7473,7 +7394,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             CmdId = (GoproCommand)buffer[index++];
             Status = (GoproRequestStatus)buffer[index++];
         }
@@ -7524,7 +7444,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Rpm1 = BinSerialize.ReadFloat(ref buffer);index+=4;
             Rpm2 = BinSerialize.ReadFloat(ref buffer);index+=4;
 
@@ -7544,7 +7463,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Rpm1 = BitConverter.ToSingle(buffer, index);index+=4;
             Rpm2 = BitConverter.ToSingle(buffer, index);index+=4;
         }
@@ -8049,7 +7967,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             RequestId = BinSerialize.ReadUInt(ref buffer);index+=4;
             Result = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
 
@@ -8069,7 +7986,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             RequestId = BitConverter.ToUInt32(buffer,index);index+=4;
             Result = (byte)buffer[index++];
         }
@@ -8120,7 +8036,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             Desired = BinSerialize.ReadFloat(ref buffer);index+=4;
             Achieved = BinSerialize.ReadFloat(ref buffer);index+=4;
             Error = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -8162,7 +8077,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             Desired = BitConverter.ToSingle(buffer, index);index+=4;
             Achieved = BitConverter.ToSingle(buffer, index);index+=4;
             Error = BitConverter.ToSingle(buffer, index);index+=4;
@@ -8419,7 +8333,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = 0;
             var endIndex = payloadSize;
-            var arraySize = 0;
             TimeUsec = BinSerialize.ReadULong(ref buffer);index+=8;
             Aoa = BinSerialize.ReadFloat(ref buffer);index+=4;
             Ssa = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -8441,7 +8354,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         {
             var index = offset;
             var endIndex = offset + payloadSize;
-            var arraySize = 0;
             TimeUsec = BitConverter.ToUInt64(buffer,index);index+=8;
             Aoa = BitConverter.ToSingle(buffer, index);index+=4;
             Ssa = BitConverter.ToSingle(buffer, index);index+=4;
