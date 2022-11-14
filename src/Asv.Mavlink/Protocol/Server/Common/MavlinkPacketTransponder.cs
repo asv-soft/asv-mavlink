@@ -55,7 +55,6 @@ namespace Asv.Mavlink
 
             try
             {
-
                 await _dataLock.AcquireReaderLock(DisposeCancel);
                 ((IPacketV2<IPayload>) _packet).Sequence = _seq.GetNextSequenceNumber();
                 await _connection.Send((IPacketV2<IPayload>) _packet, DisposeCancel).ConfigureAwait(false);

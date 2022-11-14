@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net461;net5.0;net6.0;</TargetFrameworks>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <LangVersion>9.0</LangVersion>
     <Authors>https://github.com/asvol</Authors>
     <Company>https://github.com/asvol</Company>
@@ -31,8 +31,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Asv.Common" Version="1.3.0" />
-    <PackageReference Include="Asv.IO" Version="1.3.0" />
+    <PackageReference Include="Asv.Common" Version="1.4.0" />
+    <PackageReference Include="Asv.IO" Version="1.4.0" />
     <PackageReference Include="NLog" Version="5.0.5" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
