@@ -3,6 +3,7 @@ namespace Asv.Mavlink
     public interface IPacketV2<out TPayload>:IPacket<TPayload>
         where TPayload:IPayload
     {
+        object Tag { get; set; }
         /// <summary>
         /// CrcEtra
         /// </summary>

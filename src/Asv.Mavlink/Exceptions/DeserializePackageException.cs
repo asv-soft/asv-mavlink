@@ -4,6 +4,8 @@ namespace Asv.Mavlink
 {
     public class DeserializePackageException:MavlinkException
     {
+        public string SourceName { get; set; }
+
         public int MessageId { get; }
 
         public DeserializePackageException(int messageId,string message, Exception innerException):base(message,innerException)
