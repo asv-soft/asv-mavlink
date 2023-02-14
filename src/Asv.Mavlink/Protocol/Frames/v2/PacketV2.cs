@@ -6,8 +6,9 @@ namespace Asv.Mavlink
 {
     public abstract class PacketV2<TPayload> : IPacketV2<TPayload> where TPayload : IPayload
     {
-        private readonly Signature _signature = new Signature();
+        private readonly Signature _signature = new();
         public byte Magic => PacketV2Helper.MagicMarkerV2;
+        public object Tag { get; set; }
         public abstract byte GetCrcEtra();
         public abstract int MessageId { get; }
         public byte IncompatFlags { get; set; }
