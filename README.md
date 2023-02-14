@@ -19,7 +19,7 @@ Example packet statistic:
 ```sh
 Asv.Mavlink.Shell.exe mavlink --cs=tcp://127.0.0.1:5760
 ```
-![screenshot-1](tools/img/screenshot-1.png)
+![screenshot-1](img/screenshot-1.png)
 
 
 ## Versioning
