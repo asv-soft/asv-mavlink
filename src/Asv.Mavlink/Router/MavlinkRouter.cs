@@ -16,32 +16,7 @@ using NLog;
 namespace Asv.Mavlink
 {
 
-    public class MavlinkPortConfig
-    {
-        public string ConnectionString { get; set; }
-        public string Name { get; set; }
-        public bool IsEnabled { get; set; }
-    }
-
-    public class MavlinkPortInfo
-    {
-        public Guid Id { get; internal set; }
-        public string Name { get; internal set; }
-        public string ConnectionString { get; internal set; }
-        public PortState State { get; internal set; }
-        public long RxBytes { get; internal set; }
-        public long TxBytes { get; internal set; }
-        public long RxPackets { get; internal set; }
-        public long TxPackets { get; internal set; }
-        public long SkipPackets { get; internal set; }
-        public int DeserializationErrors { get; internal set; }
-        public string Description { get; internal set; }
-        public PortType Type { get; internal set; }
-        public Exception? LastException { get; internal set; }
-        public bool IsEnabled { get; internal set; }
-    }
-
-    public class MavlinkPort:DisposableOnceWithCancel
+    public class MavlinkPort : DisposableOnceWithCancel
     {
         private readonly MavlinkPortConfig _config;
         private int _deserializeError;
@@ -53,7 +28,7 @@ namespace Asv.Mavlink
             Id = id;
             Port = PortFactory.Create(config.ConnectionString, config.IsEnabled).DisposeItWith(Disposable);
             Connection = new MavlinkV2Connection(Port, register).DisposeItWith(Disposable);
-            Connection.DeserializePackageErrors.Subscribe(_=>Interlocked.Increment(ref _deserializeError)).DisposeItWith(Disposable);
+            Connection.DeserializePackageErrors.Subscribe(_ => Interlocked.Increment(ref _deserializeError)).DisposeItWith(Disposable);
         }
 
         public IMavlinkV2Connection Connection { get; }
@@ -91,24 +66,10 @@ namespace Asv.Mavlink
         }
     }
 
-    public interface IMavlinkRouter: IMavlinkV2Connection
-    {
-        Guid AddPort(MavlinkPortConfig settings);
-        IObservable<Guid> OnAddPort { get; }
-        bool RemovePort(Guid id);
-        IObservable<Guid> OnRemovePort { get; }
-        bool SetEnabled(Guid id,bool enabled);
-        Guid[] GetPorts();
-        MavlinkPortInfo? GetInfo(Guid id);
-        MavlinkPortConfig? GetConfig(Guid id);
-        MavlinkPortConfig[] GetConfig();
-        IObservable<Guid> OnConfigChanged { get; }
-    }
-
     public class MavlinkRouter:DisposableOnceWithCancel, IMavlinkRouter, IDataStream
     {
         private readonly Action<IPacketDecoder<IPacketV2<IPayload>>> _register;
-        private readonly ReaderWriterLockSlim _portCollectionSync = new();
+        private readonly ReaderWriterLockSlim _portCollectionSync = new(LockRecursionPolicy.SupportsRecursion);
         private readonly Subject<IPacketV2<IPayload>> _inputPackets;
         private readonly Subject<byte[]> _rawData;
         private readonly List<MavlinkPort> _ports = new(8);

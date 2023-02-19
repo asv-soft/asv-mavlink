@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net461;net5.0;net6.0;</TargetFrameworks>
-    <Version>1.1.4</Version>
+    <Version>1.1.5</Version>
     <LangVersion>9.0</LangVersion>
     <Authors>https://github.com/asvol</Authors>
     <Company>https://github.com/asvol</Company>
