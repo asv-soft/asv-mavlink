@@ -339,7 +339,6 @@ namespace Asv.Mavlink
             var data = ArrayPool<byte>.Shared.Rent(size);
             try
             {
-                _portCollectionSync.EnterReadLock();
                 var span = new Span<byte>(data, 0, size);
                 packet.Serialize(ref span);
                 var packetSize = size - span.Length;
@@ -350,7 +349,6 @@ namespace Asv.Mavlink
             finally
             {
                 ArrayPool<byte>.Shared.Return(data);
-                _portCollectionSync.ExitReadLock();
             }
             
         }
