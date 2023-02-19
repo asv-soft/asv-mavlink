@@ -1,16 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net461;net5.0;net6.0;</TargetFrameworks>
-    <Version>1.1.5</Version>
+    <Version>1.1.6</Version>
     <LangVersion>9.0</LangVersion>
     <Authors>https://github.com/asvol</Authors>
     <Company>https://github.com/asvol</Company>
     <Copyright>https://github.com/asvol</Copyright>
-    <PackageProjectUrl>https://github.com/asvol/asv-mavlink</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/asv-soft/asv-drones</PackageProjectUrl>
     <RepositoryUrl>https://github.com/asvol/asv-mavlink</RepositoryUrl>
-    <PackageTags />
+    <PackageTags>mavlink;drone;PX4;Ardupilot;.net</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Mavlink library for .NET Framework 4.6.1, .NET5.0, .NET 6.0, Mono for vehicle control Px4, Ardupilot </Description>
+    <PackageIcon>file-icon-128.png</PackageIcon>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -52,5 +55,19 @@
   <ItemGroup>
     <Folder Include="Router\" />
     <Folder Include="Protocol\Dialects\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\img\file-icon-128.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 </Project>
