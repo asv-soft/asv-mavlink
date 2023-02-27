@@ -239,7 +239,7 @@ namespace Asv.Mavlink
                 var span = new Span<byte>(data, 0, size);
                 packet.Serialize(ref span);
                 var packetSize = size - span.Length;
-                Interlocked.Increment(ref _txPackets);
+                Interlocked.Add(ref _rxBytes,packetSize);
                 _onSendPacketSubject.OnNext(packet);
                 var portToSend = _ports.Where(_ => _.Port.IsEnabled.Value && _.Port.State.Value == PortState.Connected && packet.Tag != _);
                 Task.WaitAll(portToSend.Select(_ => (Task)_.Port.Send(data, packetSize, DisposeCancel)).ToArray());
@@ -296,6 +296,7 @@ namespace Asv.Mavlink
 
         public Task Send(IPacketV2<IPayload> packet, CancellationToken cancel)
         {
+            Interlocked.Increment(ref _txPackets);
             var size = packet.GetMaxByteSize();
             var data = ArrayPool<byte>.Shared.Rent(size);
             try
@@ -303,7 +304,6 @@ namespace Asv.Mavlink
                 var span = new Span<byte>(data, 0, size);
                 packet.Serialize(ref span);
                 var packetSize = size - span.Length;
-                Interlocked.Increment(ref _txPackets);
                 _onSendPacketSubject.OnNext(packet);
                 return Send(data, packetSize, cancel);
             }
