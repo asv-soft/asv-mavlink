@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net461;net5.0;net6.0;</TargetFrameworks>
     <Version>1.1.10</Version>
@@ -11,7 +11,7 @@
     <PackageTags>mavlink;drone;PX4;Ardupilot;.net</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Mavlink library for .NET Framework 4.6.1, .NET5.0, .NET 6.0, Mono for vehicle control Px4, Ardupilot </Description>
-    <PackageIcon>asv-icon-128.png</PackageIcon>
+    <PackageIcon>asv-mavlink-128.png</PackageIcon>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
@@ -57,7 +57,7 @@
     <Folder Include="Protocol\Dialects\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\img\asv-icon-128.png">
+    <None Include="..\..\img\asv-mavlink-128.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
