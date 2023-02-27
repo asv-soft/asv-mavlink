@@ -17,7 +17,6 @@ namespace Asv.Mavlink.Payload
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public static bool WritePacketsToLogger = false;
         private readonly Dictionary<uint, Action<DeviceIdentity, byte[]>> _dataCallbacks = new();
-        private readonly KeyValuePair<string, object> _diagTagId;
         private readonly byte _networkId;
 
 

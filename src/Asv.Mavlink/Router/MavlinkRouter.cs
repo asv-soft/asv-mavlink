@@ -20,6 +20,7 @@ namespace Asv.Mavlink
     {
         private readonly MavlinkPortConfig _config;
         private int _deserializeError;
+        private long _txPackets;
         public Guid Id { get; }
 
         public MavlinkPort(MavlinkPortConfig config, Action<IPacketDecoder<IPacketV2<IPayload>>> register, Guid id)
@@ -34,6 +35,14 @@ namespace Asv.Mavlink
         public IMavlinkV2Connection Connection { get; }
         public IPort Port { get; }
 
+       
+        internal Task<bool> InternalSendSerializedPacket(byte[] data, int count, CancellationToken cancel)
+        {
+            // we have to manually increment the packet counter because we serialize the packet once into an array of bytes and send
+            Interlocked.Increment(ref _txPackets);
+            return Port.Send(data, count, cancel);
+        }
+
         public MavlinkPortInfo GetInfo()
         {
             return new MavlinkPortInfo
@@ -45,7 +54,8 @@ namespace Asv.Mavlink
                 RxBytes = Port.RxBytes,
                 TxBytes = Port.TxBytes,
                 RxPackets = Connection.RxPackets,
-                TxPackets = Connection.TxPackets,
+                // we have to manually increment the packet counter because we serialize the packet once into an array of bytes and send
+                TxPackets = Interlocked.Read(ref _txPackets),
                 SkipPackets = Connection.SkipPackets,
                 DeserializationErrors = _deserializeError,
                 Description = Port.ToString(),
@@ -235,14 +245,17 @@ namespace Asv.Mavlink
             var data = ArrayPool<byte>.Shared.Rent(size);
             try
             {
+                
                 _portCollectionSync.EnterReadLock();
+                // for optimization we serialize packet once and then send it as byte array
                 var span = new Span<byte>(data, 0, size);
                 packet.Serialize(ref span);
                 var packetSize = size - span.Length;
                 Interlocked.Add(ref _rxBytes,packetSize);
                 _onSendPacketSubject.OnNext(packet);
+                // we need to send the packet to all other ports except the receiving one
                 var portToSend = _ports.Where(_ => _.Port.IsEnabled.Value && _.Port.State.Value == PortState.Connected && packet.Tag != _);
-                Task.WaitAll(portToSend.Select(_ => (Task)_.Port.Send(data, packetSize, DisposeCancel)).ToArray());
+                Task.WaitAll(portToSend.Select(_ => (Task)_.InternalSendSerializedPacket(data, packetSize, DisposeCancel)).ToArray());
             }
             finally
             {
@@ -308,10 +321,11 @@ namespace Asv.Mavlink
         public async Task<bool> Send(byte[] data, int count, CancellationToken cancel)
         {
             Interlocked.Add(ref _txBytes, count);
+            Interlocked.Increment(ref _txPackets);
             try
             {
                 _portCollectionSync.EnterReadLock();
-                var result = await Task.WhenAll(_ports.Where(_ => _.Port.IsEnabled.Value && _.Port.State.Value == PortState.Connected).Select(_ => _.Port.Send(data, count, cancel)));
+                var result = await Task.WhenAll(_ports.Where(_ => _.Port.IsEnabled.Value && _.Port.State.Value == PortState.Connected).Select(_ => _.InternalSendSerializedPacket(data, count, cancel)));
                 return result.All(_ => _);
             }
             finally

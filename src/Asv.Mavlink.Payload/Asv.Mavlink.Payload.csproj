@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net461;net5.0;net6.0;</TargetFrameworks>
-    <Version>1.1.8</Version>
+    <Version>1.1.9</Version>
     <LangVersion>9.0</LangVersion>
     <Authors>https://github.com/asvol</Authors>
     <Company>https://github.com/asvol</Company>
@@ -13,7 +13,7 @@
     <Description>Mavlink library for .NET Framework 4.6.1, .NET5.0, .NET 6.0, Mono for vehicle control Px4, Ardupilot</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Asv.Cfg" Version="1.4.4" />
+    <PackageReference Include="Asv.Cfg" Version="1.4.5" />
     <PackageReference Include="DynamicData" Version="7.10.2" />
   </ItemGroup>
   <ItemGroup>

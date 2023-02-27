@@ -23,18 +23,14 @@ namespace Asv.Mavlink.Payload
     {
         private static readonly TimeSpan DefaultCommandTimeout = TimeSpan.FromMilliseconds(1000);
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private readonly KeyValuePair<string, object> _diagTagId;
         private readonly byte _networkId;
         private readonly Subject<V2ExtensionPacket> _onData = new();
-        private int _inc;
         private uint _requestIdCounter;
 
         public PayloadV2Client(IMavlinkClient client, byte networkId = 0, bool disposeClient = false)
         {
             Client = client;
             _networkId = networkId;
-            _diagTagId = new KeyValuePair<string, object>("ID(SYS,COM,NET)",
-                $"{client.Identity.SystemId}:{client.Identity.ComponentId},{networkId}");
             Client.V2Extension.OnData.Where(CheckPacketTarget).Subscribe(_onData).DisposeItWith(Disposable);
             Disposable.Add(System.Reactive.Disposables.Disposable.Create(() =>
             {
