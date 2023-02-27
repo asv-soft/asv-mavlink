@@ -36,15 +36,21 @@ namespace Asv.Mavlink
 
     public interface IMavlinkRouter: IMavlinkV2Connection
     {
+        long RxBytes { get; }
+        long TxBytes { get; }
+
         Guid AddPort(MavlinkPortConfig settings);
         IObservable<Guid> OnAddPort { get; }
+
         bool RemovePort(Guid id);
         IObservable<Guid> OnRemovePort { get; }
-        bool SetEnabled(Guid id,bool enabled);
+
         Guid[] GetPorts();
+        bool SetEnabled(Guid id, bool enabled);
         MavlinkPortInfo? GetInfo(Guid id);
         MavlinkPortConfig? GetConfig(Guid id);
         MavlinkPortConfig[] GetConfig();
+
         IObservable<Guid> OnConfigChanged { get; }
     }
 }

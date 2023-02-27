@@ -272,23 +272,7 @@ namespace Asv.Mavlink
             return _inputPackets.Subscribe(observer);
         }
 
-        public long RxPackets => Interlocked.Read(ref _rxPackets);
-        public long TxPackets => Interlocked.Read(ref _txPackets);
-        public long SkipPackets
-        {
-            get
-            {
-                try
-                {
-                    _portCollectionSync.EnterReadLock();
-                    return _ports.Sum(_ => _.Connection.SkipPackets);
-                }
-                finally
-                {
-                    _portCollectionSync.ExitReadLock();
-                }
-            }
-        }
+        
 
         public IObservable<DeserializePackageException> DeserializePackageErrors => _deserializeErrors;
 
@@ -338,6 +322,23 @@ namespace Asv.Mavlink
         }
 
         public string Name { get; }
+        public long RxPackets => Interlocked.Read(ref _rxPackets);
+        public long TxPackets => Interlocked.Read(ref _txPackets);
+        public long SkipPackets
+        {
+            get
+            {
+                try
+                {
+                    _portCollectionSync.EnterReadLock();
+                    return _ports.Sum(_ => _.Connection.SkipPackets);
+                }
+                finally
+                {
+                    _portCollectionSync.ExitReadLock();
+                }
+            }
+        }
         public long RxBytes => Interlocked.Read(ref _rxBytes);
         public long TxBytes => Interlocked.Read(ref _txBytes);
 
