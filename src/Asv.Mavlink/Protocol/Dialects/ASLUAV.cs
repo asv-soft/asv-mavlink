@@ -20,9 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 1.0.0
+// This code was generate by tool Asv.Mavlink.Shell version 1.1.1
 
 using System;
+using System.Text;
 using Asv.Mavlink.V2.Common;
 using Asv.IO;
 
@@ -166,6 +167,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             VehicleTimestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             UtcTime = BinSerialize.ReadUInt(ref buffer);index+=4;
             Param1 = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -211,6 +213,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             VehicleTimestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             UtcTime = BitConverter.ToUInt32(buffer,index);index+=4;
             Param1 = BitConverter.ToSingle(buffer, index);index+=4;
@@ -352,6 +355,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             VehicleTimestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             UtcTime = BinSerialize.ReadUInt(ref buffer);index+=4;
             Param1 = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -393,6 +397,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             VehicleTimestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             UtcTime = BitConverter.ToUInt32(buffer,index);index+=4;
             Param1 = BitConverter.ToSingle(buffer, index);index+=4;
@@ -520,6 +525,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Adc121VspbVolt = BinSerialize.ReadFloat(ref buffer);index+=4;
             Adc121CspbAmp = BinSerialize.ReadFloat(ref buffer);index+=4;
             Adc121Cs1Amp = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -543,6 +549,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Adc121VspbVolt = BitConverter.ToSingle(buffer, index);index+=4;
             Adc121CspbAmp = BitConverter.ToSingle(buffer, index);index+=4;
             Adc121Cs1Amp = BitConverter.ToSingle(buffer, index);index+=4;
@@ -607,6 +614,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             MpptTimestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             Mppt1Volt = BinSerialize.ReadFloat(ref buffer);index+=4;
             Mppt1Amp = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -648,6 +656,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             MpptTimestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             Mppt1Volt = BitConverter.ToSingle(buffer, index);index+=4;
             Mppt1Amp = BitConverter.ToSingle(buffer, index);index+=4;
@@ -775,6 +784,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             H = BinSerialize.ReadFloat(ref buffer);index+=4;
             Href = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -840,6 +850,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             H = BitConverter.ToSingle(buffer, index);index+=4;
             Href = BitConverter.ToSingle(buffer, index);index+=4;
@@ -1051,6 +1062,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             I321 = BinSerialize.ReadUInt(ref buffer);index+=4;
             F1 = BinSerialize.ReadFloat(ref buffer);index+=4;
             F2 = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -1088,6 +1100,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             I321 = BitConverter.ToUInt32(buffer,index);index+=4;
             F1 = BitConverter.ToSingle(buffer, index);index+=4;
             F2 = BitConverter.ToSingle(buffer, index);index+=4;
@@ -1307,6 +1320,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             Windspeed = BinSerialize.ReadFloat(ref buffer);index+=4;
             Winddir = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -1336,6 +1350,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             Windspeed = BitConverter.ToSingle(buffer, index);index+=4;
             Winddir = BitConverter.ToSingle(buffer, index);index+=4;
@@ -1421,6 +1436,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             Uelev = BinSerialize.ReadFloat(ref buffer);index+=4;
             Uthrot = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -1452,6 +1468,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             Uelev = BitConverter.ToSingle(buffer, index);index+=4;
             Uthrot = BitConverter.ToSingle(buffer, index);index+=4;
@@ -1544,6 +1561,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             Tempambient = BinSerialize.ReadFloat(ref buffer);index+=4;
             Humidity = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -1565,6 +1583,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             Tempambient = BitConverter.ToSingle(buffer, index);index+=4;
             Humidity = BitConverter.ToSingle(buffer, index);index+=4;
@@ -1622,6 +1641,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             BatmonTimestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             Temperature = BinSerialize.ReadFloat(ref buffer);index+=4;
             Safetystatus = BinSerialize.ReadUInt(ref buffer);index+=4;
@@ -1667,6 +1687,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             BatmonTimestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             Temperature = BitConverter.ToSingle(buffer, index);index+=4;
             Safetystatus = BitConverter.ToUInt32(buffer,index);index+=4;
@@ -1808,6 +1829,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             Timestampmodechanged = BinSerialize.ReadULong(ref buffer);index+=8;
             Xw = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -1873,6 +1895,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             Timestampmodechanged = BitConverter.ToUInt64(buffer,index);index+=8;
             Xw = BitConverter.ToSingle(buffer, index);index+=4;
@@ -2084,6 +2107,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             FreeSpace = BinSerialize.ReadUShort(ref buffer);index+=2;
             VisensorRate1 = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -2115,6 +2139,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             FreeSpace = BitConverter.ToUInt16(buffer,index);index+=2;
             VisensorRate1 = (byte)buffer[index++];
@@ -2207,6 +2232,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             PwrBrdSystemVolt = BinSerialize.ReadFloat(ref buffer);index+=4;
             PwrBrdServoVolt = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -2246,6 +2272,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             PwrBrdSystemVolt = BitConverter.ToSingle(buffer, index);index+=4;
             PwrBrdServoVolt = BitConverter.ToSingle(buffer, index);index+=4;
@@ -2366,6 +2393,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             GsmModemType = (GsmModemType)BinSerialize.ReadByte(ref buffer);index+=1;
             GsmLinkType = (GsmLinkType)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -2395,6 +2423,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             GsmModemType = (GsmModemType)buffer[index++];
             GsmLinkType = (GsmLinkType)buffer[index++];
@@ -2480,6 +2509,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
             LastHeartbeat = BinSerialize.ReadULong(ref buffer);index+=8;
             FailedSessions = BinSerialize.ReadUShort(ref buffer);index+=2;
@@ -2511,6 +2541,7 @@ namespace Asv.Mavlink.V2.Asluav
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
             LastHeartbeat = BitConverter.ToUInt64(buffer,index);index+=8;
             FailedSessions = BitConverter.ToUInt16(buffer,index);index+=2;

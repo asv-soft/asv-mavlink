@@ -18,5 +18,11 @@
   <include>test.xml</include>
   <include>ualberta.xml</include>
   <include>uAvionix.xml</include>
+  <!-- asv_gbs.xml range of IDs:
+    messages: 13000 - 13099
+    commands: 13000 - 13099
+  -->
+  <include>asv_gbs.xml</include>
+ 
   <messages/>
 </mavlink>

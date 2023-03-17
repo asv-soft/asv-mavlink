@@ -20,9 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 1.0.0
+// This code was generate by tool Asv.Mavlink.Shell version 1.1.1
 
 using System;
+using System.Text;
+using Asv.Mavlink.V2.Common;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.Ualberta
@@ -155,6 +157,7 @@ namespace Asv.Mavlink.V2.Ualberta
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Usec = BinSerialize.ReadULong(ref buffer);index+=8;
             Accel0 = BinSerialize.ReadFloat(ref buffer);index+=4;
             Accel1 = BinSerialize.ReadFloat(ref buffer);index+=4;
@@ -184,6 +187,7 @@ namespace Asv.Mavlink.V2.Ualberta
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Usec = BitConverter.ToUInt64(buffer,index);index+=8;
             Accel0 = BitConverter.ToSingle(buffer, index);index+=4;
             Accel1 = BitConverter.ToSingle(buffer, index);index+=4;
@@ -463,6 +467,7 @@ namespace Asv.Mavlink.V2.Ualberta
         {
             var index = 0;
             var endIndex = payloadSize;
+            var arraySize = 0;
             Mode = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             NavMode = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
             Pilot = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
@@ -484,6 +489,7 @@ namespace Asv.Mavlink.V2.Ualberta
         {
             var index = offset;
             var endIndex = offset + payloadSize;
+            var arraySize = 0;
             Mode = (byte)buffer[index++];
             NavMode = (byte)buffer[index++];
             Pilot = (byte)buffer[index++];

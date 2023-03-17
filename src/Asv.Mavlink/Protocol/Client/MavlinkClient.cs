@@ -41,6 +41,7 @@ namespace Asv.Mavlink.Client
         private readonly DgpsClient _rtk;
         private IV2ExtensionClient _v2Ext;
         private readonly IPacketSequenceCalculator _seq;
+        private readonly AsvGbsClient _gbs;
 
         public MavlinkClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, MavlinkClientConfig config, IPacketSequenceCalculator sequence = null, bool disposeConnection = true, IScheduler scheduler = null)
         {
@@ -52,41 +53,44 @@ namespace Asv.Mavlink.Client
 
             scheduler ??= Scheduler.Default;
 
-            _rtt = new MavlinkTelemetry(_mavlinkConnection, identity, _seq, scheduler);
-            Disposable.Add(_rtt);
+            _rtt = new MavlinkTelemetry(_mavlinkConnection, identity, _seq, scheduler)
+                .DisposeItWith(Disposable);;
 
-            _params = new MavlinkParameterClient(_mavlinkConnection, identity, _seq, new VehicleParameterProtocolConfig {ReadWriteTimeoutMs = config.ReadParamTimeoutMs,TimeoutToReadAllParamsMs = config.TimeoutToReadAllParamsMs}, scheduler);
-            Disposable.Add(_params);
+            _params = new MavlinkParameterClient(_mavlinkConnection, identity, _seq, new VehicleParameterProtocolConfig {ReadWriteTimeoutMs = config.ReadParamTimeoutMs,TimeoutToReadAllParamsMs = config.TimeoutToReadAllParamsMs}, scheduler)
+                .DisposeItWith(Disposable);;
 
-            _mavlinkCommands = new MavlinkCommandClient(_mavlinkConnection, identity, _seq,new CommandProtocolConfig { CommandTimeoutMs = config.CommandTimeoutMs}, scheduler);
-            Disposable.Add(_mavlinkCommands);
+            _mavlinkCommands = new MavlinkCommandClient(_mavlinkConnection, identity, _seq,new CommandProtocolConfig { CommandTimeoutMs = config.CommandTimeoutMs}, scheduler)
+                .DisposeItWith(Disposable);;
 
-            _mission = new MissionClient(_mavlinkConnection,identity, _seq, new MissionClientConfig{ CommandTimeoutMs = config.CommandTimeoutMs}, scheduler);
-            Disposable.Add(_mission);
+            _mission = new MissionClient(_mavlinkConnection,identity, _seq, new MissionClientConfig{ CommandTimeoutMs = config.CommandTimeoutMs}, scheduler)
+                .DisposeItWith(Disposable);;
 
-            _mavlinkOffboard = new MavlinkOffboardMode(_mavlinkConnection,identity, _seq, scheduler);
-            Disposable.Add(_mavlinkOffboard);
+            _mavlinkOffboard = new MavlinkOffboardMode(_mavlinkConnection,identity, _seq, scheduler)
+                .DisposeItWith(Disposable);;
 
-            _mode = new MavlinkCommon(_mavlinkConnection,identity,_seq, scheduler);
-            Disposable.Add(_mode);
+            _mode = new MavlinkCommon(_mavlinkConnection,identity,_seq, scheduler)
+                .DisposeItWith(Disposable);;
 
-            _debugs = new DebugClient(_mavlinkConnection, identity,_seq, scheduler);
-            Disposable.Add(_debugs);
+            _debugs = new DebugClient(_mavlinkConnection, identity,_seq, scheduler)
+                .DisposeItWith(Disposable);;
 
-            _heartbeat = new HeartbeatClient(_mavlinkConnection,identity,_seq, scheduler);
-            Disposable.Add(_heartbeat);
+            _heartbeat = new HeartbeatClient(_mavlinkConnection,identity,_seq, scheduler)
+                .DisposeItWith(Disposable);;
 
-            _logging = new LoggingClient(_mavlinkConnection,identity, _seq, scheduler);
-            Disposable.Add(_logging);
+            _logging = new LoggingClient(_mavlinkConnection,identity, _seq, scheduler)
+                .DisposeItWith(Disposable);;
 
-            _v2Ext = new V2ExtensionClient(_mavlinkConnection, _seq, identity, scheduler);
-            Disposable.Add(_v2Ext);
+            _v2Ext = new V2ExtensionClient(_mavlinkConnection, _seq, identity, scheduler)
+                .DisposeItWith(Disposable);;
 
-            _rtk = new DgpsClient(_mavlinkConnection, identity,_seq, scheduler);
-            Disposable.Add(_rtt);
+            _rtk = new DgpsClient(_mavlinkConnection, identity,_seq, scheduler)
+                .DisposeItWith(Disposable);
+            
+            _gbs = new AsvGbsClient(_mavlinkConnection, identity, _seq, scheduler,_mavlinkCommands)
+                .DisposeItWith(Disposable);
 
             if (disposeConnection)
-                Disposable.Add(_mavlinkConnection);
+                _mavlinkConnection.DisposeItWith(Disposable);
         }
 
         protected IMavlinkV2Connection Connection => _mavlinkConnection;
@@ -102,6 +106,7 @@ namespace Asv.Mavlink.Client
         public ILoggingClient Logging => _logging;
         public IV2ExtensionClient V2Extension => _v2Ext;
         public IDgpsClient Rtk => _rtk;
+        public IAsvGbsClient Gbs => _gbs;
         public IMavlinkV2Connection MavlinkV2Connection => _mavlinkConnection;
     }
 }

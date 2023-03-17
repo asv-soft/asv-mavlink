@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<mavlink>
+  <!-- Interface for interaction and configuration                -->
+  <!-- of ground base station with RTK mode support               -->
+  <!-- Asv Soft contact info: https://github.com/asvol            -->
+  <!-- company URL: https://github.com/asv-soft                   -->
+  <!-- email contact: me@asv.me                                   -->
+  <!-- mavlink messages ID range: 13000 - 13099                   -->
+  <!-- mavlink commands ID range: 13000 - 13099                   -->
+  <include>common.xml</include>
+   <!-- ardupilot specific MAV_CMD_* commands -->
+    
+  <enums>
+    <enum name="MAV_CMD">
+      <entry value="13001" name="MAV_CMD_ASV_GBS_RUN_AUTO_MODE">
+        <description>Run in observation mode to determine the current position of GBS and start sending RTK corrections.</description>
+        <param index="1">Minimum observation time (seconds).</param>
+        <param index="2">Minimum position accuracy (m).</param>
+        <param index="3">Empty.</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
+      <entry value="13002" name="MAV_CMD_ASV_GBS_RUN_FIXED_MODE">
+        <description>Run in fixed mode with well known GBS position and start sending RTK corrections.</description>
+        <param index="1">Latitude (int32_t,degE7).</param>
+        <param index="2">Longitude (int32_t,degE7).</param>
+        <param index="3">Altitude (int32_t, mm).</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
+      <entry value="13003" name="MAV_CMD_ASV_GBS_RUN_IDLE_MODE">
+        <description>Cancel all modes and switch to default state. Used to cancel all other modes and disable RTK sending.</description>
+        <param index="1">Empty.</param>
+        <param index="2">Empty.</param>
+        <param index="3">Empty.</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
+    </enum>
+    <enum name="ASV_GBS_STATE">
+      <description>Current GBS mode</description>
+      <entry value="1" name="ASV_GBS_STATE_IDLE_MODE"/>
+      <entry value="2" name="ASV_GBS_STATE_ERROR"/>
+      <entry value="3" name="ASV_GBS_STATE_AUTO_MODE_IN_PROGRESS"/>
+      <entry value="4" name="ASV_GBS_STATE_AUTO_MODE"/>
+      <entry value="3" name="ASV_GBS_STATE_FIXED_MODE_IN_PROGRESS"/>
+      <entry value="4" name="ASV_GBS_STATE_FIXED_MODE"/>
+    </enum>
+    
+  </enums>
+  <messages>
+    <message id="13001" name="ASV_GBS_OUT_STATUS">
+      <description>Ground base station status message. Send with 1 Hz frequency.</description>
+      <field type="uint8_t" name="state" enum="ASV_GBS_STATE">Current state of GBS. See ASV_GBS_STATE enum.</field>
+      <field type="int32_t" name="lat" units="degE7">Latitude of GBS (value / 10000000D).</field>
+      <field type="int32_t" name="lng" units="degE7">Longitude of GBS (value / 10000000D).</field>
+      <field type="int32_t" name="alt" units="mm">Altitude of GBS.</field>
+    </message>
+    
+  </messages>
+</mavlink>
