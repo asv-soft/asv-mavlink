@@ -23,7 +23,7 @@ namespace Asv.Mavlink
                 }
                 var result = await _client.StartAutoMode(args.Param1, args.Param2, cancel);
                 return new CommandLongResult(result);
-            };
+            }; 
             cmd[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunFixedMode] = async (args, cancel) =>
             {
                 if (_client == null)
@@ -51,18 +51,16 @@ namespace Asv.Mavlink
             _transponder.Set(_ => _.State = AsvGbsState.AsvGbsStateIdleMode);
         }
 
-        public void UpdateStatus(Action<AsvGbsOutStatusPayload> changeCallback)
-        {
-            _transponder.Set(changeCallback);
-        }
-
-      
         public void Init(TimeSpan statusRate, IAsvGbsClient localImplementation)
         {
             if (_client != null) throw new Exception($"{nameof(AsvGbsServer)} already init");
             _client = localImplementation ?? throw new ArgumentNullException(nameof(localImplementation));
             _client.DisposeItWith(Disposable);
-            _client.State.Subscribe(_ => _transponder.Set(status => status.State = _)).DisposeItWith(Disposable);
+            _client.State.Subscribe(_ => _transponder.Set(status =>
+            {
+                status.State = _;
+                
+            })).DisposeItWith(Disposable);
             _client.Position.Subscribe(_ => _transponder.Set(status =>
             {
                 status.Lat = (int)(_.Latitude * 10000000D);

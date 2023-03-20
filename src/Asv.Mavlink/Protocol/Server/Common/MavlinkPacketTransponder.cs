@@ -19,7 +19,7 @@ namespace Asv.Mavlink
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly AsyncReaderWriterLock _dataLock = new();
         private int _isSending;
-        private readonly RxValue<PacketTransponderState> _state = new RxValue<PacketTransponderState>();
+        private readonly RxValue<PacketTransponderState> _state = new();
         private TPacket _packet;
 
         public MavlinkPacketTransponder(IMavlinkV2Connection connection, MavlinkServerIdentity identityConfig, IPacketSequenceCalculator seq)
@@ -27,6 +27,13 @@ namespace Asv.Mavlink
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
             _identityConfig = identityConfig ?? throw new ArgumentNullException(nameof(identityConfig));
             _seq = seq ?? throw new ArgumentNullException(nameof(seq));
+            _packet = new TPacket
+            {
+                CompatFlags = 0,
+                IncompatFlags = 0,
+                ComponenId = _identityConfig.ComponentId,
+                SystemId = _identityConfig.SystemId,
+            };
         }
 
         public void Start(TimeSpan rate)
@@ -112,13 +119,6 @@ namespace Asv.Mavlink
             try
             {
                 await _dataLock.AcquireWriterLock();
-                _packet = new TPacket
-                {
-                    CompatFlags = 0,
-                    IncompatFlags = 0,
-                    ComponenId = _identityConfig.ComponentId,
-                    SystemId = _identityConfig.SystemId,
-                };
                 changeCallback(_packet.Payload);
 
             }
