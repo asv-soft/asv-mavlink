@@ -13,5 +13,6 @@ namespace Asv.Mavlink.Server
         IV2ExtensionServer V2Extension { get; }
         IMavlinkV2Connection MavlinkV2Connection { get; }
         IMavlinkParamsServer Params { get; }
+        IAsvGbsServer Gbs { get; }
     }
 }

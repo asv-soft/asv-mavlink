@@ -52,14 +52,14 @@ namespace Asv.Mavlink
             return result.Result;
         }
 
-        public async Task<MavResult> StartFixedMode(GeoPoint geoPoint, CancellationToken cancel)
+        public async Task<MavResult> StartFixedMode(GeoPoint geoPoint, float accuracy, CancellationToken cancel)
         {
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             var result = await _cmd.CommandLong((MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunAutoMode,
                 BitConverter.ToSingle(BitConverter.GetBytes(geoPoint.Latitude),0),
                 BitConverter.ToSingle(BitConverter.GetBytes(geoPoint.Longitude),0),
                 BitConverter.ToSingle(BitConverter.GetBytes(geoPoint.Altitude),0),
-                Single.NaN,
+                (float)accuracy,
                 Single.NaN,
                 Single.NaN,
                 Single.NaN,

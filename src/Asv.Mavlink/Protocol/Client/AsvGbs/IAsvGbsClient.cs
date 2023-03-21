@@ -12,7 +12,7 @@ namespace Asv.Mavlink
         IRxValue<AsvGbsState> State { get; }
         IRxValue<GeoPoint> Position { get; }
         Task<MavResult> StartAutoMode(float duration, float accuracy, CancellationToken cancel);
-        Task<MavResult> StartFixedMode(GeoPoint geoPoint, CancellationToken cancel);
+        Task<MavResult> StartFixedMode(GeoPoint geoPoint, float accuracy, CancellationToken cancel);
         Task<MavResult> StartIdleMode(CancellationToken cancel);
     }
 }

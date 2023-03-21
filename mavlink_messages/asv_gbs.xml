@@ -35,7 +35,7 @@
         <param index="1">Latitude (int32_t,degE7).</param>
         <param index="2">Longitude (int32_t,degE7).</param>
         <param index="3">Altitude (int32_t, mm).</param>
-        <param index="4">Empty.</param>
+        <param index="4">Position accuracy (m).</param>
         <param index="5">Empty.</param>
         <param index="6">Empty.</param>
         <param index="7">Empty.</param>
@@ -53,6 +53,7 @@
     </enum>
     <enum name="ASV_GBS_STATE">
       <description>Current GBS mode</description>
+      <entry value="0" name="ASV_GBS_STATE_LOADING"/>
       <entry value="1" name="ASV_GBS_STATE_IDLE_MODE"/>
       <entry value="2" name="ASV_GBS_STATE_ERROR"/>
       <entry value="3" name="ASV_GBS_STATE_AUTO_MODE_IN_PROGRESS"/>

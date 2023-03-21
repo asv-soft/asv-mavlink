@@ -34,7 +34,7 @@ namespace Asv.Mavlink
                 var lat = BitConverter.ToInt32(BitConverter.GetBytes(args.Param1),0) / 10000000D;
                 var lon = BitConverter.ToInt32(BitConverter.GetBytes(args.Param2),0) / 10000000D;
                 var alt = BitConverter.ToInt32(BitConverter.GetBytes(args.Param3),0) / 1000D;
-                var result = await _client.StartFixedMode(new GeoPoint(lat,lon,alt), cancel);
+                var result = await _client.StartFixedMode(new GeoPoint(lat,lon,alt),0.1f, cancel);
                 return new CommandLongResult(result);
             };
             cmd[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunIdleMode] = async (args, cancel) =>

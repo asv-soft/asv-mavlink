@@ -102,6 +102,10 @@ namespace Asv.Mavlink.V2.AsvGbs
     public enum AsvGbsState:uint
     {
         /// <summary>
+        /// ASV_GBS_STATE_LOADING
+        /// </summary>
+        AsvGbsStateLoading = 0,
+        /// <summary>
         /// ASV_GBS_STATE_IDLE_MODE
         /// </summary>
         AsvGbsStateIdleMode = 1,
@@ -120,11 +124,11 @@ namespace Asv.Mavlink.V2.AsvGbs
         /// <summary>
         /// ASV_GBS_STATE_FIXED_MODE_IN_PROGRESS
         /// </summary>
-        AsvGbsStateFixedModeInProgress = 3,
+        AsvGbsStateFixedModeInProgress = 5,
         /// <summary>
         /// ASV_GBS_STATE_FIXED_MODE
         /// </summary>
-        AsvGbsStateFixedMode = 4,
+        AsvGbsStateFixedMode = 6,
     }
 
 
