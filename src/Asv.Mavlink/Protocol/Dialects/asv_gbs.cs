@@ -74,7 +74,7 @@ namespace Asv.Mavlink.V2.AsvGbs
         /// Param 1 - Latitude (int32_t,degE7).
         /// Param 2 - Longitude (int32_t,degE7).
         /// Param 3 - Altitude (int32_t, mm).
-        /// Param 4 - Empty.
+        /// Param 4 - Position accuracy (m).
         /// Param 5 - Empty.
         /// Param 6 - Empty.
         /// Param 7 - Empty.
