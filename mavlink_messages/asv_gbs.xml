@@ -5,12 +5,20 @@
   <!-- Asv Soft contact info: https://github.com/asvol            -->
   <!-- company URL: https://github.com/asv-soft                   -->
   <!-- email contact: me@asv.me                                   -->
+  <!-- mavlink MAV_TYPE ID: 250                                   -->
+  <!-- mavlink MAV_CMD ID range:  13000 - 13099                   -->
   <!-- mavlink messages ID range: 13000 - 13099                   -->
-  <!-- mavlink commands ID range: 13000 - 13099                   -->
   <include>common.xml</include>
-   <!-- ardupilot specific MAV_CMD_* commands -->
+   
     
   <enums>
+    <!-- Asv Gbs specific MAV_TYPE identity -->
+    <enum name="MAV_TYPE">
+      <entry value="250" name="MAV_TYPE_ASV_GBS">
+        <description>Used to identify RTK ground base station in HEARTBEAT packet.</description>
+      </entry>
+    </enum>
+    <!-- Asv Gbs specific MAV_CMD_* commands -->
     <enum name="MAV_CMD">
       <entry value="13001" name="MAV_CMD_ASV_GBS_RUN_AUTO_MODE">
         <description>Run in observation mode to determine the current position of GBS and start sending RTK corrections.</description>
@@ -49,8 +57,8 @@
       <entry value="2" name="ASV_GBS_STATE_ERROR"/>
       <entry value="3" name="ASV_GBS_STATE_AUTO_MODE_IN_PROGRESS"/>
       <entry value="4" name="ASV_GBS_STATE_AUTO_MODE"/>
-      <entry value="3" name="ASV_GBS_STATE_FIXED_MODE_IN_PROGRESS"/>
-      <entry value="4" name="ASV_GBS_STATE_FIXED_MODE"/>
+      <entry value="5" name="ASV_GBS_STATE_FIXED_MODE_IN_PROGRESS"/>
+      <entry value="6" name="ASV_GBS_STATE_FIXED_MODE"/>
     </enum>
     
   </enums>

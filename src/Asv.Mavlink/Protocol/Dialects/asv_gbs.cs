@@ -41,14 +41,26 @@ namespace Asv.Mavlink.V2.AsvGbs
 #region Enums
 
     /// <summary>
+    ///  MAV_TYPE
+    /// </summary>
+    public enum MavType:uint
+    {
+        /// <summary>
+        /// Used to identify RTK ground base station in HEARTBEAT packet.
+        /// MAV_TYPE_ASV_GBS
+        /// </summary>
+        MavTypeAsvGbs = 250,
+    }
+
+    /// <summary>
     ///  MAV_CMD
     /// </summary>
     public enum MavCmd:uint
     {
         /// <summary>
         /// Run in observation mode to determine the current position of GBS and start sending RTK corrections.
-        /// Param 1 - Minimum observation time (int32_t, seconds).
-        /// Param 2 - Minimum position accuracy (int32_t, mm).
+        /// Param 1 - Minimum observation time (seconds).
+        /// Param 2 - Minimum position accuracy (m).
         /// Param 3 - Empty.
         /// Param 4 - Empty.
         /// Param 5 - Empty.
