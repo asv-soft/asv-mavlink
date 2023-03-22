@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 1.1.1
+// This code was generate by tool Asv.Mavlink.Shell version 1.2.2
 
 using System;
 using System.Text;
@@ -342,13 +342,12 @@ namespace Asv.Mavlink.V2.Uavionix
         public byte GetMaxByteSize() => 20; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
             var arraySize = 0;
-            Icao = BinSerialize.ReadUInt(ref buffer);index+=4;
-            Stallspeed = BinSerialize.ReadUShort(ref buffer);index+=2;
+            var payloadSize = buffer.Length;
+            Icao = BinSerialize.ReadUInt(ref buffer);
+            Stallspeed = BinSerialize.ReadUShort(ref buffer);
             arraySize = /*ArrayLength*/9 - Math.Max(0,((/*PayloadByteSize*/20 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Callsign = new char[arraySize];
             unsafe
@@ -360,20 +359,19 @@ namespace Asv.Mavlink.V2.Uavionix
                 }
             }
             buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-            Emittertype = (AdsbEmitterType)BinSerialize.ReadByte(ref buffer);index+=1;
-            Aircraftsize = (UavionixAdsbOutCfgAircraftSize)BinSerialize.ReadByte(ref buffer);index+=1;
-            Gpsoffsetlat = (UavionixAdsbOutCfgGpsOffsetLat)BinSerialize.ReadByte(ref buffer);index+=1;
-            Gpsoffsetlon = (UavionixAdsbOutCfgGpsOffsetLon)BinSerialize.ReadByte(ref buffer);index+=1;
-            Rfselect = (UavionixAdsbOutRfSelect)BinSerialize.ReadByte(ref buffer);index+=1;
+           
+            Emittertype = (AdsbEmitterType)BinSerialize.ReadByte(ref buffer);
+            Aircraftsize = (UavionixAdsbOutCfgAircraftSize)BinSerialize.ReadByte(ref buffer);
+            Gpsoffsetlat = (UavionixAdsbOutCfgGpsOffsetLat)BinSerialize.ReadByte(ref buffer);
+            Gpsoffsetlon = (UavionixAdsbOutCfgGpsOffsetLon)BinSerialize.ReadByte(ref buffer);
+            Rfselect = (UavionixAdsbOutRfSelect)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,Icao);index+=4;
-            BinSerialize.WriteUShort(ref buffer,Stallspeed);index+=2;
+            BinSerialize.WriteUInt(ref buffer,Icao);
+            BinSerialize.WriteUShort(ref buffer,Stallspeed);
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -383,48 +381,16 @@ namespace Asv.Mavlink.V2.Uavionix
                 }
             }
             buffer = buffer.Slice(Callsign.Length);
-            index+=Callsign.Length;
-            BinSerialize.WriteByte(ref buffer,(byte)Emittertype);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Aircraftsize);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Gpsoffsetlat);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Gpsoffsetlon);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Rfselect);index+=1;
-            return index; // /*PayloadByteSize*/20;
+            
+            BinSerialize.WriteByte(ref buffer,(byte)Emittertype);
+            BinSerialize.WriteByte(ref buffer,(byte)Aircraftsize);
+            BinSerialize.WriteByte(ref buffer,(byte)Gpsoffsetlat);
+            BinSerialize.WriteByte(ref buffer,(byte)Gpsoffsetlon);
+            BinSerialize.WriteByte(ref buffer,(byte)Rfselect);
+            /* PayloadByteSize = 20 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Icao = BitConverter.ToUInt32(buffer,index);index+=4;
-            Stallspeed = BitConverter.ToUInt16(buffer,index);index+=2;
-            arraySize = /*ArrayLength*/9 - Math.Max(0,((/*PayloadByteSize*/20 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Callsign = new char[arraySize];
-            Encoding.ASCII.GetChars(buffer, index,arraySize,Callsign,0);
-            index+=arraySize;
-            Emittertype = (AdsbEmitterType)buffer[index++];
-            Aircraftsize = (UavionixAdsbOutCfgAircraftSize)buffer[index++];
-            Gpsoffsetlat = (UavionixAdsbOutCfgGpsOffsetLat)buffer[index++];
-            Gpsoffsetlon = (UavionixAdsbOutCfgGpsOffsetLon)buffer[index++];
-            Rfselect = (UavionixAdsbOutRfSelect)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Icao).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Stallspeed).CopyTo(buffer, index);index+=2;
-            index+=Encoding.ASCII.GetBytes(Callsign,0,Callsign.Length,buffer,index);
-            buffer[index] = (byte)Emittertype;index+=1;
-            buffer[index] = (byte)Aircraftsize;index+=1;
-            buffer[index] = (byte)Gpsoffsetlat;index+=1;
-            buffer[index] = (byte)Gpsoffsetlon;index+=1;
-            buffer[index] = (byte)Rfselect;index+=1;
-            return index - start; // /*PayloadByteSize*/20;
-        }
 
         /// <summary>
         /// Vehicle address (24 bit)
@@ -491,98 +457,49 @@ namespace Asv.Mavlink.V2.Uavionix
         public byte GetMaxByteSize() => 41; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Utctime = BinSerialize.ReadUInt(ref buffer);index+=4;
-            Gpslat = BinSerialize.ReadInt(ref buffer);index+=4;
-            Gpslon = BinSerialize.ReadInt(ref buffer);index+=4;
-            Gpsalt = BinSerialize.ReadInt(ref buffer);index+=4;
-            Baroaltmsl = BinSerialize.ReadInt(ref buffer);index+=4;
-            Accuracyhor = BinSerialize.ReadUInt(ref buffer);index+=4;
-            Accuracyvert = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Accuracyvel = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Velvert = BinSerialize.ReadShort(ref buffer);index+=2;
-            Velns = BinSerialize.ReadShort(ref buffer);index+=2;
-            Velew = BinSerialize.ReadShort(ref buffer);index+=2;
-            State = (UavionixAdsbOutDynamicState)BinSerialize.ReadUShort(ref buffer);index+=2;
-            Squawk = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Gpsfix = (UavionixAdsbOutDynamicGpsFix)BinSerialize.ReadByte(ref buffer);index+=1;
-            Numsats = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            Emergencystatus = (UavionixAdsbEmergencyStatus)BinSerialize.ReadByte(ref buffer);index+=1;
+            Utctime = BinSerialize.ReadUInt(ref buffer);
+            Gpslat = BinSerialize.ReadInt(ref buffer);
+            Gpslon = BinSerialize.ReadInt(ref buffer);
+            Gpsalt = BinSerialize.ReadInt(ref buffer);
+            Baroaltmsl = BinSerialize.ReadInt(ref buffer);
+            Accuracyhor = BinSerialize.ReadUInt(ref buffer);
+            Accuracyvert = BinSerialize.ReadUShort(ref buffer);
+            Accuracyvel = BinSerialize.ReadUShort(ref buffer);
+            Velvert = BinSerialize.ReadShort(ref buffer);
+            Velns = BinSerialize.ReadShort(ref buffer);
+            Velew = BinSerialize.ReadShort(ref buffer);
+            State = (UavionixAdsbOutDynamicState)BinSerialize.ReadUShort(ref buffer);
+            Squawk = BinSerialize.ReadUShort(ref buffer);
+            Gpsfix = (UavionixAdsbOutDynamicGpsFix)BinSerialize.ReadByte(ref buffer);
+            Numsats = (byte)BinSerialize.ReadByte(ref buffer);
+            Emergencystatus = (UavionixAdsbEmergencyStatus)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,Utctime);index+=4;
-            BinSerialize.WriteInt(ref buffer,Gpslat);index+=4;
-            BinSerialize.WriteInt(ref buffer,Gpslon);index+=4;
-            BinSerialize.WriteInt(ref buffer,Gpsalt);index+=4;
-            BinSerialize.WriteInt(ref buffer,Baroaltmsl);index+=4;
-            BinSerialize.WriteUInt(ref buffer,Accuracyhor);index+=4;
-            BinSerialize.WriteUShort(ref buffer,Accuracyvert);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Accuracyvel);index+=2;
-            BinSerialize.WriteShort(ref buffer,Velvert);index+=2;
-            BinSerialize.WriteShort(ref buffer,Velns);index+=2;
-            BinSerialize.WriteShort(ref buffer,Velew);index+=2;
-            BinSerialize.WriteUShort(ref buffer,(ushort)State);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Squawk);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)Gpsfix);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Numsats);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Emergencystatus);index+=1;
-            return index; // /*PayloadByteSize*/41;
+            BinSerialize.WriteUInt(ref buffer,Utctime);
+            BinSerialize.WriteInt(ref buffer,Gpslat);
+            BinSerialize.WriteInt(ref buffer,Gpslon);
+            BinSerialize.WriteInt(ref buffer,Gpsalt);
+            BinSerialize.WriteInt(ref buffer,Baroaltmsl);
+            BinSerialize.WriteUInt(ref buffer,Accuracyhor);
+            BinSerialize.WriteUShort(ref buffer,Accuracyvert);
+            BinSerialize.WriteUShort(ref buffer,Accuracyvel);
+            BinSerialize.WriteShort(ref buffer,Velvert);
+            BinSerialize.WriteShort(ref buffer,Velns);
+            BinSerialize.WriteShort(ref buffer,Velew);
+            BinSerialize.WriteUShort(ref buffer,(ushort)State);
+            BinSerialize.WriteUShort(ref buffer,Squawk);
+            BinSerialize.WriteByte(ref buffer,(byte)Gpsfix);
+            BinSerialize.WriteByte(ref buffer,(byte)Numsats);
+            BinSerialize.WriteByte(ref buffer,(byte)Emergencystatus);
+            /* PayloadByteSize = 41 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Utctime = BitConverter.ToUInt32(buffer,index);index+=4;
-            Gpslat = BitConverter.ToInt32(buffer,index);index+=4;
-            Gpslon = BitConverter.ToInt32(buffer,index);index+=4;
-            Gpsalt = BitConverter.ToInt32(buffer,index);index+=4;
-            Baroaltmsl = BitConverter.ToInt32(buffer,index);index+=4;
-            Accuracyhor = BitConverter.ToUInt32(buffer,index);index+=4;
-            Accuracyvert = BitConverter.ToUInt16(buffer,index);index+=2;
-            Accuracyvel = BitConverter.ToUInt16(buffer,index);index+=2;
-            Velvert = BitConverter.ToInt16(buffer,index);index+=2;
-            Velns = BitConverter.ToInt16(buffer,index);index+=2;
-            Velew = BitConverter.ToInt16(buffer,index);index+=2;
-            State = (UavionixAdsbOutDynamicState)BitConverter.ToUInt16(buffer,index);index+=2;
-            Squawk = BitConverter.ToUInt16(buffer,index);index+=2;
-            Gpsfix = (UavionixAdsbOutDynamicGpsFix)buffer[index++];
-            Numsats = (byte)buffer[index++];
-            Emergencystatus = (UavionixAdsbEmergencyStatus)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Utctime).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Gpslat).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Gpslon).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Gpsalt).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Baroaltmsl).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Accuracyhor).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Accuracyvert).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Accuracyvel).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Velvert).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Velns).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Velew).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes((ushort)State).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Squawk).CopyTo(buffer, index);index+=2;
-            buffer[index] = (byte)Gpsfix;index+=1;
-            BitConverter.GetBytes(Numsats).CopyTo(buffer, index);index+=1;
-            buffer[index] = (byte)Emergencystatus;index+=1;
-            return index - start; // /*PayloadByteSize*/41;
-        }
 
         /// <summary>
         /// UTC time in seconds since GPS epoch (Jan 6, 1980). If unknown set to UINT32_MAX
@@ -688,38 +605,19 @@ namespace Asv.Mavlink.V2.Uavionix
         public byte GetMaxByteSize() => 1; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 1; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Rfhealth = (UavionixAdsbRfHealth)BinSerialize.ReadByte(ref buffer);index+=1;
+            Rfhealth = (UavionixAdsbRfHealth)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteByte(ref buffer,(byte)Rfhealth);index+=1;
-            return index; // /*PayloadByteSize*/1;
+            BinSerialize.WriteByte(ref buffer,(byte)Rfhealth);
+            /* PayloadByteSize = 1 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Rfhealth = (UavionixAdsbRfHealth)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            buffer[index] = (byte)Rfhealth;index+=1;
-            return index - start; // /*PayloadByteSize*/1;
-        }
 
         /// <summary>
         /// ADS-B transponder messages

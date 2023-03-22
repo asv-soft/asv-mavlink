@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 1.1.1
+// This code was generate by tool Asv.Mavlink.Shell version 1.2.2
 
 using System;
 using System.Text;
@@ -163,94 +163,47 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 47; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 47; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            VehicleTimestamp = BinSerialize.ReadULong(ref buffer);index+=8;
-            UtcTime = BinSerialize.ReadUInt(ref buffer);index+=4;
-            Param1 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Param2 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Param3 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Param4 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            X = BinSerialize.ReadInt(ref buffer);index+=4;
-            Y = BinSerialize.ReadInt(ref buffer);index+=4;
-            Z = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Command = (MavCmd)BinSerialize.ReadUShort(ref buffer);index+=2;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            Frame = (MavFrame)BinSerialize.ReadByte(ref buffer);index+=1;
-            Current = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            Autocontinue = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            VehicleTimestamp = BinSerialize.ReadULong(ref buffer);
+            UtcTime = BinSerialize.ReadUInt(ref buffer);
+            Param1 = BinSerialize.ReadFloat(ref buffer);
+            Param2 = BinSerialize.ReadFloat(ref buffer);
+            Param3 = BinSerialize.ReadFloat(ref buffer);
+            Param4 = BinSerialize.ReadFloat(ref buffer);
+            X = BinSerialize.ReadInt(ref buffer);
+            Y = BinSerialize.ReadInt(ref buffer);
+            Z = BinSerialize.ReadFloat(ref buffer);
+            Command = (MavCmd)BinSerialize.ReadUShort(ref buffer);
+            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
+            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
+            Frame = (MavFrame)BinSerialize.ReadByte(ref buffer);
+            Current = (byte)BinSerialize.ReadByte(ref buffer);
+            Autocontinue = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,VehicleTimestamp);index+=8;
-            BinSerialize.WriteUInt(ref buffer,UtcTime);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Param1);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Param2);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Param3);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Param4);index+=4;
-            BinSerialize.WriteInt(ref buffer,X);index+=4;
-            BinSerialize.WriteInt(ref buffer,Y);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Z);index+=4;
-            BinSerialize.WriteUShort(ref buffer,(ushort)Command);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Frame);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Current);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Autocontinue);index+=1;
-            return index; // /*PayloadByteSize*/47;
+            BinSerialize.WriteULong(ref buffer,VehicleTimestamp);
+            BinSerialize.WriteUInt(ref buffer,UtcTime);
+            BinSerialize.WriteFloat(ref buffer,Param1);
+            BinSerialize.WriteFloat(ref buffer,Param2);
+            BinSerialize.WriteFloat(ref buffer,Param3);
+            BinSerialize.WriteFloat(ref buffer,Param4);
+            BinSerialize.WriteInt(ref buffer,X);
+            BinSerialize.WriteInt(ref buffer,Y);
+            BinSerialize.WriteFloat(ref buffer,Z);
+            BinSerialize.WriteUShort(ref buffer,(ushort)Command);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
+            BinSerialize.WriteByte(ref buffer,(byte)Frame);
+            BinSerialize.WriteByte(ref buffer,(byte)Current);
+            BinSerialize.WriteByte(ref buffer,(byte)Autocontinue);
+            /* PayloadByteSize = 47 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            VehicleTimestamp = BitConverter.ToUInt64(buffer,index);index+=8;
-            UtcTime = BitConverter.ToUInt32(buffer,index);index+=4;
-            Param1 = BitConverter.ToSingle(buffer, index);index+=4;
-            Param2 = BitConverter.ToSingle(buffer, index);index+=4;
-            Param3 = BitConverter.ToSingle(buffer, index);index+=4;
-            Param4 = BitConverter.ToSingle(buffer, index);index+=4;
-            X = BitConverter.ToInt32(buffer,index);index+=4;
-            Y = BitConverter.ToInt32(buffer,index);index+=4;
-            Z = BitConverter.ToSingle(buffer, index);index+=4;
-            Command = (MavCmd)BitConverter.ToUInt16(buffer,index);index+=2;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            Frame = (MavFrame)buffer[index++];
-            Current = (byte)buffer[index++];
-            Autocontinue = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(VehicleTimestamp).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(UtcTime).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Param1).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Param2).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Param3).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Param4).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(X).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Y).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Z).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes((ushort)Command).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            buffer[index] = (byte)Frame;index+=1;
-            BitConverter.GetBytes(Current).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Autocontinue).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/47;
-        }
 
         /// <summary>
         /// Microseconds elapsed since vehicle boot
@@ -351,86 +304,43 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 45; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 45; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            VehicleTimestamp = BinSerialize.ReadULong(ref buffer);index+=8;
-            UtcTime = BinSerialize.ReadUInt(ref buffer);index+=4;
-            Param1 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Param2 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Param3 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Param4 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Param5 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Param6 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Param7 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Command = (MavCmd)BinSerialize.ReadUShort(ref buffer);index+=2;
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            Confirmation = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            VehicleTimestamp = BinSerialize.ReadULong(ref buffer);
+            UtcTime = BinSerialize.ReadUInt(ref buffer);
+            Param1 = BinSerialize.ReadFloat(ref buffer);
+            Param2 = BinSerialize.ReadFloat(ref buffer);
+            Param3 = BinSerialize.ReadFloat(ref buffer);
+            Param4 = BinSerialize.ReadFloat(ref buffer);
+            Param5 = BinSerialize.ReadFloat(ref buffer);
+            Param6 = BinSerialize.ReadFloat(ref buffer);
+            Param7 = BinSerialize.ReadFloat(ref buffer);
+            Command = (MavCmd)BinSerialize.ReadUShort(ref buffer);
+            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
+            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
+            Confirmation = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,VehicleTimestamp);index+=8;
-            BinSerialize.WriteUInt(ref buffer,UtcTime);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Param1);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Param2);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Param3);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Param4);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Param5);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Param6);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Param7);index+=4;
-            BinSerialize.WriteUShort(ref buffer,(ushort)Command);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Confirmation);index+=1;
-            return index; // /*PayloadByteSize*/45;
+            BinSerialize.WriteULong(ref buffer,VehicleTimestamp);
+            BinSerialize.WriteUInt(ref buffer,UtcTime);
+            BinSerialize.WriteFloat(ref buffer,Param1);
+            BinSerialize.WriteFloat(ref buffer,Param2);
+            BinSerialize.WriteFloat(ref buffer,Param3);
+            BinSerialize.WriteFloat(ref buffer,Param4);
+            BinSerialize.WriteFloat(ref buffer,Param5);
+            BinSerialize.WriteFloat(ref buffer,Param6);
+            BinSerialize.WriteFloat(ref buffer,Param7);
+            BinSerialize.WriteUShort(ref buffer,(ushort)Command);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
+            BinSerialize.WriteByte(ref buffer,(byte)Confirmation);
+            /* PayloadByteSize = 45 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            VehicleTimestamp = BitConverter.ToUInt64(buffer,index);index+=8;
-            UtcTime = BitConverter.ToUInt32(buffer,index);index+=4;
-            Param1 = BitConverter.ToSingle(buffer, index);index+=4;
-            Param2 = BitConverter.ToSingle(buffer, index);index+=4;
-            Param3 = BitConverter.ToSingle(buffer, index);index+=4;
-            Param4 = BitConverter.ToSingle(buffer, index);index+=4;
-            Param5 = BitConverter.ToSingle(buffer, index);index+=4;
-            Param6 = BitConverter.ToSingle(buffer, index);index+=4;
-            Param7 = BitConverter.ToSingle(buffer, index);index+=4;
-            Command = (MavCmd)BitConverter.ToUInt16(buffer,index);index+=2;
-            TargetSystem = (byte)buffer[index++];
-            TargetComponent = (byte)buffer[index++];
-            Confirmation = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(VehicleTimestamp).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(UtcTime).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Param1).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Param2).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Param3).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Param4).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Param5).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Param6).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Param7).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes((ushort)Command).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(TargetSystem).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TargetComponent).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Confirmation).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/45;
-        }
 
         /// <summary>
         /// Microseconds elapsed since vehicle boot
@@ -521,50 +431,25 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 16; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Adc121VspbVolt = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Adc121CspbAmp = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Adc121Cs1Amp = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Adc121Cs2Amp = BinSerialize.ReadFloat(ref buffer);index+=4;
+            Adc121VspbVolt = BinSerialize.ReadFloat(ref buffer);
+            Adc121CspbAmp = BinSerialize.ReadFloat(ref buffer);
+            Adc121Cs1Amp = BinSerialize.ReadFloat(ref buffer);
+            Adc121Cs2Amp = BinSerialize.ReadFloat(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteFloat(ref buffer,Adc121VspbVolt);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Adc121CspbAmp);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Adc121Cs1Amp);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Adc121Cs2Amp);index+=4;
-            return index; // /*PayloadByteSize*/16;
+            BinSerialize.WriteFloat(ref buffer,Adc121VspbVolt);
+            BinSerialize.WriteFloat(ref buffer,Adc121CspbAmp);
+            BinSerialize.WriteFloat(ref buffer,Adc121Cs1Amp);
+            BinSerialize.WriteFloat(ref buffer,Adc121Cs2Amp);
+            /* PayloadByteSize = 16 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Adc121VspbVolt = BitConverter.ToSingle(buffer, index);index+=4;
-            Adc121CspbAmp = BitConverter.ToSingle(buffer, index);index+=4;
-            Adc121Cs1Amp = BitConverter.ToSingle(buffer, index);index+=4;
-            Adc121Cs2Amp = BitConverter.ToSingle(buffer, index);index+=4;
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Adc121VspbVolt).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Adc121CspbAmp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Adc121Cs1Amp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Adc121Cs2Amp).CopyTo(buffer, index);index+=4;
-            return index - start; // /*PayloadByteSize*/16;
-        }
 
         /// <summary>
         ///  Power board voltage sensor reading
@@ -610,86 +495,43 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 41; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            MpptTimestamp = BinSerialize.ReadULong(ref buffer);index+=8;
-            Mppt1Volt = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Mppt1Amp = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Mppt2Volt = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Mppt2Amp = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Mppt3Volt = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Mppt3Amp = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Mppt1Pwm = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Mppt2Pwm = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Mppt3Pwm = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Mppt1Status = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            Mppt2Status = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            Mppt3Status = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            MpptTimestamp = BinSerialize.ReadULong(ref buffer);
+            Mppt1Volt = BinSerialize.ReadFloat(ref buffer);
+            Mppt1Amp = BinSerialize.ReadFloat(ref buffer);
+            Mppt2Volt = BinSerialize.ReadFloat(ref buffer);
+            Mppt2Amp = BinSerialize.ReadFloat(ref buffer);
+            Mppt3Volt = BinSerialize.ReadFloat(ref buffer);
+            Mppt3Amp = BinSerialize.ReadFloat(ref buffer);
+            Mppt1Pwm = BinSerialize.ReadUShort(ref buffer);
+            Mppt2Pwm = BinSerialize.ReadUShort(ref buffer);
+            Mppt3Pwm = BinSerialize.ReadUShort(ref buffer);
+            Mppt1Status = (byte)BinSerialize.ReadByte(ref buffer);
+            Mppt2Status = (byte)BinSerialize.ReadByte(ref buffer);
+            Mppt3Status = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,MpptTimestamp);index+=8;
-            BinSerialize.WriteFloat(ref buffer,Mppt1Volt);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Mppt1Amp);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Mppt2Volt);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Mppt2Amp);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Mppt3Volt);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Mppt3Amp);index+=4;
-            BinSerialize.WriteUShort(ref buffer,Mppt1Pwm);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Mppt2Pwm);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Mppt3Pwm);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)Mppt1Status);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Mppt2Status);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Mppt3Status);index+=1;
-            return index; // /*PayloadByteSize*/41;
+            BinSerialize.WriteULong(ref buffer,MpptTimestamp);
+            BinSerialize.WriteFloat(ref buffer,Mppt1Volt);
+            BinSerialize.WriteFloat(ref buffer,Mppt1Amp);
+            BinSerialize.WriteFloat(ref buffer,Mppt2Volt);
+            BinSerialize.WriteFloat(ref buffer,Mppt2Amp);
+            BinSerialize.WriteFloat(ref buffer,Mppt3Volt);
+            BinSerialize.WriteFloat(ref buffer,Mppt3Amp);
+            BinSerialize.WriteUShort(ref buffer,Mppt1Pwm);
+            BinSerialize.WriteUShort(ref buffer,Mppt2Pwm);
+            BinSerialize.WriteUShort(ref buffer,Mppt3Pwm);
+            BinSerialize.WriteByte(ref buffer,(byte)Mppt1Status);
+            BinSerialize.WriteByte(ref buffer,(byte)Mppt2Status);
+            BinSerialize.WriteByte(ref buffer,(byte)Mppt3Status);
+            /* PayloadByteSize = 41 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            MpptTimestamp = BitConverter.ToUInt64(buffer,index);index+=8;
-            Mppt1Volt = BitConverter.ToSingle(buffer, index);index+=4;
-            Mppt1Amp = BitConverter.ToSingle(buffer, index);index+=4;
-            Mppt2Volt = BitConverter.ToSingle(buffer, index);index+=4;
-            Mppt2Amp = BitConverter.ToSingle(buffer, index);index+=4;
-            Mppt3Volt = BitConverter.ToSingle(buffer, index);index+=4;
-            Mppt3Amp = BitConverter.ToSingle(buffer, index);index+=4;
-            Mppt1Pwm = BitConverter.ToUInt16(buffer,index);index+=2;
-            Mppt2Pwm = BitConverter.ToUInt16(buffer,index);index+=2;
-            Mppt3Pwm = BitConverter.ToUInt16(buffer,index);index+=2;
-            Mppt1Status = (byte)buffer[index++];
-            Mppt2Status = (byte)buffer[index++];
-            Mppt3Status = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(MpptTimestamp).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(Mppt1Volt).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Mppt1Amp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Mppt2Volt).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Mppt2Amp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Mppt3Volt).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Mppt3Amp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Mppt1Pwm).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Mppt2Pwm).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Mppt3Pwm).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Mppt1Status).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Mppt2Status).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Mppt3Status).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/41;
-        }
 
         /// <summary>
         ///  MPPT last timestamp 
@@ -780,134 +622,67 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 98; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 98; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
-            H = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Href = BinSerialize.ReadFloat(ref buffer);index+=4;
-            HrefT = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Pitchangle = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Pitchangleref = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Q = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Qref = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Uelev = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Uthrot = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Uthrot2 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Nz = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Airspeedref = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Yawangle = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Yawangleref = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Rollangle = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Rollangleref = BinSerialize.ReadFloat(ref buffer);index+=4;
-            P = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Pref = BinSerialize.ReadFloat(ref buffer);index+=4;
-            R = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Rref = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Uail = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Urud = BinSerialize.ReadFloat(ref buffer);index+=4;
-            AslctrlMode = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            Spoilersengaged = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            Timestamp = BinSerialize.ReadULong(ref buffer);
+            H = BinSerialize.ReadFloat(ref buffer);
+            Href = BinSerialize.ReadFloat(ref buffer);
+            HrefT = BinSerialize.ReadFloat(ref buffer);
+            Pitchangle = BinSerialize.ReadFloat(ref buffer);
+            Pitchangleref = BinSerialize.ReadFloat(ref buffer);
+            Q = BinSerialize.ReadFloat(ref buffer);
+            Qref = BinSerialize.ReadFloat(ref buffer);
+            Uelev = BinSerialize.ReadFloat(ref buffer);
+            Uthrot = BinSerialize.ReadFloat(ref buffer);
+            Uthrot2 = BinSerialize.ReadFloat(ref buffer);
+            Nz = BinSerialize.ReadFloat(ref buffer);
+            Airspeedref = BinSerialize.ReadFloat(ref buffer);
+            Yawangle = BinSerialize.ReadFloat(ref buffer);
+            Yawangleref = BinSerialize.ReadFloat(ref buffer);
+            Rollangle = BinSerialize.ReadFloat(ref buffer);
+            Rollangleref = BinSerialize.ReadFloat(ref buffer);
+            P = BinSerialize.ReadFloat(ref buffer);
+            Pref = BinSerialize.ReadFloat(ref buffer);
+            R = BinSerialize.ReadFloat(ref buffer);
+            Rref = BinSerialize.ReadFloat(ref buffer);
+            Uail = BinSerialize.ReadFloat(ref buffer);
+            Urud = BinSerialize.ReadFloat(ref buffer);
+            AslctrlMode = (byte)BinSerialize.ReadByte(ref buffer);
+            Spoilersengaged = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,Timestamp);index+=8;
-            BinSerialize.WriteFloat(ref buffer,H);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Href);index+=4;
-            BinSerialize.WriteFloat(ref buffer,HrefT);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Pitchangle);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Pitchangleref);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Q);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Qref);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Uelev);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Uthrot);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Uthrot2);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Nz);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Airspeedref);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Yawangle);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Yawangleref);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Rollangle);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Rollangleref);index+=4;
-            BinSerialize.WriteFloat(ref buffer,P);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Pref);index+=4;
-            BinSerialize.WriteFloat(ref buffer,R);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Rref);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Uail);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Urud);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)AslctrlMode);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Spoilersengaged);index+=1;
-            return index; // /*PayloadByteSize*/98;
+            BinSerialize.WriteULong(ref buffer,Timestamp);
+            BinSerialize.WriteFloat(ref buffer,H);
+            BinSerialize.WriteFloat(ref buffer,Href);
+            BinSerialize.WriteFloat(ref buffer,HrefT);
+            BinSerialize.WriteFloat(ref buffer,Pitchangle);
+            BinSerialize.WriteFloat(ref buffer,Pitchangleref);
+            BinSerialize.WriteFloat(ref buffer,Q);
+            BinSerialize.WriteFloat(ref buffer,Qref);
+            BinSerialize.WriteFloat(ref buffer,Uelev);
+            BinSerialize.WriteFloat(ref buffer,Uthrot);
+            BinSerialize.WriteFloat(ref buffer,Uthrot2);
+            BinSerialize.WriteFloat(ref buffer,Nz);
+            BinSerialize.WriteFloat(ref buffer,Airspeedref);
+            BinSerialize.WriteFloat(ref buffer,Yawangle);
+            BinSerialize.WriteFloat(ref buffer,Yawangleref);
+            BinSerialize.WriteFloat(ref buffer,Rollangle);
+            BinSerialize.WriteFloat(ref buffer,Rollangleref);
+            BinSerialize.WriteFloat(ref buffer,P);
+            BinSerialize.WriteFloat(ref buffer,Pref);
+            BinSerialize.WriteFloat(ref buffer,R);
+            BinSerialize.WriteFloat(ref buffer,Rref);
+            BinSerialize.WriteFloat(ref buffer,Uail);
+            BinSerialize.WriteFloat(ref buffer,Urud);
+            BinSerialize.WriteByte(ref buffer,(byte)AslctrlMode);
+            BinSerialize.WriteByte(ref buffer,(byte)Spoilersengaged);
+            /* PayloadByteSize = 98 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
-            H = BitConverter.ToSingle(buffer, index);index+=4;
-            Href = BitConverter.ToSingle(buffer, index);index+=4;
-            HrefT = BitConverter.ToSingle(buffer, index);index+=4;
-            Pitchangle = BitConverter.ToSingle(buffer, index);index+=4;
-            Pitchangleref = BitConverter.ToSingle(buffer, index);index+=4;
-            Q = BitConverter.ToSingle(buffer, index);index+=4;
-            Qref = BitConverter.ToSingle(buffer, index);index+=4;
-            Uelev = BitConverter.ToSingle(buffer, index);index+=4;
-            Uthrot = BitConverter.ToSingle(buffer, index);index+=4;
-            Uthrot2 = BitConverter.ToSingle(buffer, index);index+=4;
-            Nz = BitConverter.ToSingle(buffer, index);index+=4;
-            Airspeedref = BitConverter.ToSingle(buffer, index);index+=4;
-            Yawangle = BitConverter.ToSingle(buffer, index);index+=4;
-            Yawangleref = BitConverter.ToSingle(buffer, index);index+=4;
-            Rollangle = BitConverter.ToSingle(buffer, index);index+=4;
-            Rollangleref = BitConverter.ToSingle(buffer, index);index+=4;
-            P = BitConverter.ToSingle(buffer, index);index+=4;
-            Pref = BitConverter.ToSingle(buffer, index);index+=4;
-            R = BitConverter.ToSingle(buffer, index);index+=4;
-            Rref = BitConverter.ToSingle(buffer, index);index+=4;
-            Uail = BitConverter.ToSingle(buffer, index);index+=4;
-            Urud = BitConverter.ToSingle(buffer, index);index+=4;
-            AslctrlMode = (byte)buffer[index++];
-            Spoilersengaged = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Timestamp).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(H).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Href).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(HrefT).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Pitchangle).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Pitchangleref).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Q).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Qref).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Uelev).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Uthrot).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Uthrot2).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Nz).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Airspeedref).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Yawangle).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Yawangleref).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Rollangle).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Rollangleref).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(P).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Pref).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(R).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Rref).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Uail).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Urud).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(AslctrlMode).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Spoilersengaged).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/98;
-        }
 
         /// <summary>
         ///  Timestamp
@@ -1058,78 +833,39 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 38; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            I321 = BinSerialize.ReadUInt(ref buffer);index+=4;
-            F1 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            F2 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            F3 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            F4 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            F5 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            F6 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            F7 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            F8 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            I81 = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            I82 = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            I321 = BinSerialize.ReadUInt(ref buffer);
+            F1 = BinSerialize.ReadFloat(ref buffer);
+            F2 = BinSerialize.ReadFloat(ref buffer);
+            F3 = BinSerialize.ReadFloat(ref buffer);
+            F4 = BinSerialize.ReadFloat(ref buffer);
+            F5 = BinSerialize.ReadFloat(ref buffer);
+            F6 = BinSerialize.ReadFloat(ref buffer);
+            F7 = BinSerialize.ReadFloat(ref buffer);
+            F8 = BinSerialize.ReadFloat(ref buffer);
+            I81 = (byte)BinSerialize.ReadByte(ref buffer);
+            I82 = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteUInt(ref buffer,I321);index+=4;
-            BinSerialize.WriteFloat(ref buffer,F1);index+=4;
-            BinSerialize.WriteFloat(ref buffer,F2);index+=4;
-            BinSerialize.WriteFloat(ref buffer,F3);index+=4;
-            BinSerialize.WriteFloat(ref buffer,F4);index+=4;
-            BinSerialize.WriteFloat(ref buffer,F5);index+=4;
-            BinSerialize.WriteFloat(ref buffer,F6);index+=4;
-            BinSerialize.WriteFloat(ref buffer,F7);index+=4;
-            BinSerialize.WriteFloat(ref buffer,F8);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)I81);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)I82);index+=1;
-            return index; // /*PayloadByteSize*/38;
+            BinSerialize.WriteUInt(ref buffer,I321);
+            BinSerialize.WriteFloat(ref buffer,F1);
+            BinSerialize.WriteFloat(ref buffer,F2);
+            BinSerialize.WriteFloat(ref buffer,F3);
+            BinSerialize.WriteFloat(ref buffer,F4);
+            BinSerialize.WriteFloat(ref buffer,F5);
+            BinSerialize.WriteFloat(ref buffer,F6);
+            BinSerialize.WriteFloat(ref buffer,F7);
+            BinSerialize.WriteFloat(ref buffer,F8);
+            BinSerialize.WriteByte(ref buffer,(byte)I81);
+            BinSerialize.WriteByte(ref buffer,(byte)I82);
+            /* PayloadByteSize = 38 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            I321 = BitConverter.ToUInt32(buffer,index);index+=4;
-            F1 = BitConverter.ToSingle(buffer, index);index+=4;
-            F2 = BitConverter.ToSingle(buffer, index);index+=4;
-            F3 = BitConverter.ToSingle(buffer, index);index+=4;
-            F4 = BitConverter.ToSingle(buffer, index);index+=4;
-            F5 = BitConverter.ToSingle(buffer, index);index+=4;
-            F6 = BitConverter.ToSingle(buffer, index);index+=4;
-            F7 = BitConverter.ToSingle(buffer, index);index+=4;
-            F8 = BitConverter.ToSingle(buffer, index);index+=4;
-            I81 = (byte)buffer[index++];
-            I82 = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(I321).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(F1).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(F2).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(F3).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(F4).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(F5).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(F6).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(F7).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(F8).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(I81).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(I82).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/38;
-        }
 
         /// <summary>
         ///  Debug data
@@ -1210,66 +946,35 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 14; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
             var arraySize = 0;
-            MotorRpm = BinSerialize.ReadFloat(ref buffer);index+=4;
-            LedStatus = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            SatcomStatus = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            var payloadSize = buffer.Length;
+            MotorRpm = BinSerialize.ReadFloat(ref buffer);
+            LedStatus = (byte)BinSerialize.ReadByte(ref buffer);
+            SatcomStatus = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/8 - Math.Max(0,((/*PayloadByteSize*/14 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             ServoStatus = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
-                ServoStatus[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+                ServoStatus[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteFloat(ref buffer,MotorRpm);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)LedStatus);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)SatcomStatus);index+=1;
+            BinSerialize.WriteFloat(ref buffer,MotorRpm);
+            BinSerialize.WriteByte(ref buffer,(byte)LedStatus);
+            BinSerialize.WriteByte(ref buffer,(byte)SatcomStatus);
             for(var i=0;i<ServoStatus.Length;i++)
             {
-                BinSerialize.WriteByte(ref buffer,(byte)ServoStatus[i]);index+=1;
+                BinSerialize.WriteByte(ref buffer,(byte)ServoStatus[i]);
             }
-            return index; // /*PayloadByteSize*/14;
+            /* PayloadByteSize = 14 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            MotorRpm = BitConverter.ToSingle(buffer, index);index+=4;
-            LedStatus = (byte)buffer[index++];
-            SatcomStatus = (byte)buffer[index++];
-            arraySize = /*ArrayLength*/8 - Math.Max(0,((/*PayloadByteSize*/14 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            ServoStatus = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                ServoStatus[i] = (byte)buffer[index++];
-            }
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(MotorRpm).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(LedStatus).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(SatcomStatus).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<ServoStatus.Length;i++)
-            {
-                buffer[index] = (byte)ServoStatus[i];index+=1;
-            }
-            return index - start; // /*PayloadByteSize*/14;
-        }
 
         /// <summary>
         ///  Motor RPM 
@@ -1316,62 +1021,31 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 32; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
-            Windspeed = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Winddir = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Windz = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Airspeed = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Beta = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Alpha = BinSerialize.ReadFloat(ref buffer);index+=4;
+            Timestamp = BinSerialize.ReadULong(ref buffer);
+            Windspeed = BinSerialize.ReadFloat(ref buffer);
+            Winddir = BinSerialize.ReadFloat(ref buffer);
+            Windz = BinSerialize.ReadFloat(ref buffer);
+            Airspeed = BinSerialize.ReadFloat(ref buffer);
+            Beta = BinSerialize.ReadFloat(ref buffer);
+            Alpha = BinSerialize.ReadFloat(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,Timestamp);index+=8;
-            BinSerialize.WriteFloat(ref buffer,Windspeed);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Winddir);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Windz);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Airspeed);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Beta);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Alpha);index+=4;
-            return index; // /*PayloadByteSize*/32;
+            BinSerialize.WriteULong(ref buffer,Timestamp);
+            BinSerialize.WriteFloat(ref buffer,Windspeed);
+            BinSerialize.WriteFloat(ref buffer,Winddir);
+            BinSerialize.WriteFloat(ref buffer,Windz);
+            BinSerialize.WriteFloat(ref buffer,Airspeed);
+            BinSerialize.WriteFloat(ref buffer,Beta);
+            BinSerialize.WriteFloat(ref buffer,Alpha);
+            /* PayloadByteSize = 32 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
-            Windspeed = BitConverter.ToSingle(buffer, index);index+=4;
-            Winddir = BitConverter.ToSingle(buffer, index);index+=4;
-            Windz = BitConverter.ToSingle(buffer, index);index+=4;
-            Airspeed = BitConverter.ToSingle(buffer, index);index+=4;
-            Beta = BitConverter.ToSingle(buffer, index);index+=4;
-            Alpha = BitConverter.ToSingle(buffer, index);index+=4;
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Timestamp).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(Windspeed).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Winddir).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Windz).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Airspeed).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Beta).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Alpha).CopyTo(buffer, index);index+=4;
-            return index - start; // /*PayloadByteSize*/32;
-        }
 
         /// <summary>
         ///  Time since system start
@@ -1432,66 +1106,33 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 33; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
-            Uelev = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Uthrot = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Uthrot2 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Uaill = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Uailr = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Urud = BinSerialize.ReadFloat(ref buffer);index+=4;
-            ObctrlStatus = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            Timestamp = BinSerialize.ReadULong(ref buffer);
+            Uelev = BinSerialize.ReadFloat(ref buffer);
+            Uthrot = BinSerialize.ReadFloat(ref buffer);
+            Uthrot2 = BinSerialize.ReadFloat(ref buffer);
+            Uaill = BinSerialize.ReadFloat(ref buffer);
+            Uailr = BinSerialize.ReadFloat(ref buffer);
+            Urud = BinSerialize.ReadFloat(ref buffer);
+            ObctrlStatus = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,Timestamp);index+=8;
-            BinSerialize.WriteFloat(ref buffer,Uelev);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Uthrot);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Uthrot2);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Uaill);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Uailr);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Urud);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)ObctrlStatus);index+=1;
-            return index; // /*PayloadByteSize*/33;
+            BinSerialize.WriteULong(ref buffer,Timestamp);
+            BinSerialize.WriteFloat(ref buffer,Uelev);
+            BinSerialize.WriteFloat(ref buffer,Uthrot);
+            BinSerialize.WriteFloat(ref buffer,Uthrot2);
+            BinSerialize.WriteFloat(ref buffer,Uaill);
+            BinSerialize.WriteFloat(ref buffer,Uailr);
+            BinSerialize.WriteFloat(ref buffer,Urud);
+            BinSerialize.WriteByte(ref buffer,(byte)ObctrlStatus);
+            /* PayloadByteSize = 33 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
-            Uelev = BitConverter.ToSingle(buffer, index);index+=4;
-            Uthrot = BitConverter.ToSingle(buffer, index);index+=4;
-            Uthrot2 = BitConverter.ToSingle(buffer, index);index+=4;
-            Uaill = BitConverter.ToSingle(buffer, index);index+=4;
-            Uailr = BitConverter.ToSingle(buffer, index);index+=4;
-            Urud = BitConverter.ToSingle(buffer, index);index+=4;
-            ObctrlStatus = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Timestamp).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(Uelev).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Uthrot).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Uthrot2).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Uaill).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Uailr).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Urud).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(ObctrlStatus).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/33;
-        }
 
         /// <summary>
         ///  Time since system start
@@ -1557,46 +1198,23 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 16; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
-            Tempambient = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Humidity = BinSerialize.ReadFloat(ref buffer);index+=4;
+            Timestamp = BinSerialize.ReadULong(ref buffer);
+            Tempambient = BinSerialize.ReadFloat(ref buffer);
+            Humidity = BinSerialize.ReadFloat(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,Timestamp);index+=8;
-            BinSerialize.WriteFloat(ref buffer,Tempambient);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Humidity);index+=4;
-            return index; // /*PayloadByteSize*/16;
+            BinSerialize.WriteULong(ref buffer,Timestamp);
+            BinSerialize.WriteFloat(ref buffer,Tempambient);
+            BinSerialize.WriteFloat(ref buffer,Humidity);
+            /* PayloadByteSize = 16 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
-            Tempambient = BitConverter.ToSingle(buffer, index);index+=4;
-            Humidity = BitConverter.ToSingle(buffer, index);index+=4;
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Timestamp).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(Tempambient).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Humidity).CopyTo(buffer, index);index+=4;
-            return index - start; // /*PayloadByteSize*/16;
-        }
 
         /// <summary>
         /// Time since system boot
@@ -1637,94 +1255,47 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 41; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            BatmonTimestamp = BinSerialize.ReadULong(ref buffer);index+=8;
-            Temperature = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Safetystatus = BinSerialize.ReadUInt(ref buffer);index+=4;
-            Operationstatus = BinSerialize.ReadUInt(ref buffer);index+=4;
-            Voltage = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Current = BinSerialize.ReadShort(ref buffer);index+=2;
-            Batterystatus = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Serialnumber = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Cellvoltage1 = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Cellvoltage2 = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Cellvoltage3 = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Cellvoltage4 = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Cellvoltage5 = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Cellvoltage6 = BinSerialize.ReadUShort(ref buffer);index+=2;
-            Soc = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            BatmonTimestamp = BinSerialize.ReadULong(ref buffer);
+            Temperature = BinSerialize.ReadFloat(ref buffer);
+            Safetystatus = BinSerialize.ReadUInt(ref buffer);
+            Operationstatus = BinSerialize.ReadUInt(ref buffer);
+            Voltage = BinSerialize.ReadUShort(ref buffer);
+            Current = BinSerialize.ReadShort(ref buffer);
+            Batterystatus = BinSerialize.ReadUShort(ref buffer);
+            Serialnumber = BinSerialize.ReadUShort(ref buffer);
+            Cellvoltage1 = BinSerialize.ReadUShort(ref buffer);
+            Cellvoltage2 = BinSerialize.ReadUShort(ref buffer);
+            Cellvoltage3 = BinSerialize.ReadUShort(ref buffer);
+            Cellvoltage4 = BinSerialize.ReadUShort(ref buffer);
+            Cellvoltage5 = BinSerialize.ReadUShort(ref buffer);
+            Cellvoltage6 = BinSerialize.ReadUShort(ref buffer);
+            Soc = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,BatmonTimestamp);index+=8;
-            BinSerialize.WriteFloat(ref buffer,Temperature);index+=4;
-            BinSerialize.WriteUInt(ref buffer,Safetystatus);index+=4;
-            BinSerialize.WriteUInt(ref buffer,Operationstatus);index+=4;
-            BinSerialize.WriteUShort(ref buffer,Voltage);index+=2;
-            BinSerialize.WriteShort(ref buffer,Current);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Batterystatus);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Serialnumber);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Cellvoltage1);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Cellvoltage2);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Cellvoltage3);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Cellvoltage4);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Cellvoltage5);index+=2;
-            BinSerialize.WriteUShort(ref buffer,Cellvoltage6);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)Soc);index+=1;
-            return index; // /*PayloadByteSize*/41;
+            BinSerialize.WriteULong(ref buffer,BatmonTimestamp);
+            BinSerialize.WriteFloat(ref buffer,Temperature);
+            BinSerialize.WriteUInt(ref buffer,Safetystatus);
+            BinSerialize.WriteUInt(ref buffer,Operationstatus);
+            BinSerialize.WriteUShort(ref buffer,Voltage);
+            BinSerialize.WriteShort(ref buffer,Current);
+            BinSerialize.WriteUShort(ref buffer,Batterystatus);
+            BinSerialize.WriteUShort(ref buffer,Serialnumber);
+            BinSerialize.WriteUShort(ref buffer,Cellvoltage1);
+            BinSerialize.WriteUShort(ref buffer,Cellvoltage2);
+            BinSerialize.WriteUShort(ref buffer,Cellvoltage3);
+            BinSerialize.WriteUShort(ref buffer,Cellvoltage4);
+            BinSerialize.WriteUShort(ref buffer,Cellvoltage5);
+            BinSerialize.WriteUShort(ref buffer,Cellvoltage6);
+            BinSerialize.WriteByte(ref buffer,(byte)Soc);
+            /* PayloadByteSize = 41 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            BatmonTimestamp = BitConverter.ToUInt64(buffer,index);index+=8;
-            Temperature = BitConverter.ToSingle(buffer, index);index+=4;
-            Safetystatus = BitConverter.ToUInt32(buffer,index);index+=4;
-            Operationstatus = BitConverter.ToUInt32(buffer,index);index+=4;
-            Voltage = BitConverter.ToUInt16(buffer,index);index+=2;
-            Current = BitConverter.ToInt16(buffer,index);index+=2;
-            Batterystatus = BitConverter.ToUInt16(buffer,index);index+=2;
-            Serialnumber = BitConverter.ToUInt16(buffer,index);index+=2;
-            Cellvoltage1 = BitConverter.ToUInt16(buffer,index);index+=2;
-            Cellvoltage2 = BitConverter.ToUInt16(buffer,index);index+=2;
-            Cellvoltage3 = BitConverter.ToUInt16(buffer,index);index+=2;
-            Cellvoltage4 = BitConverter.ToUInt16(buffer,index);index+=2;
-            Cellvoltage5 = BitConverter.ToUInt16(buffer,index);index+=2;
-            Cellvoltage6 = BitConverter.ToUInt16(buffer,index);index+=2;
-            Soc = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(BatmonTimestamp).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(Temperature).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Safetystatus).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Operationstatus).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Voltage).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Current).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Batterystatus).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Serialnumber).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Cellvoltage1).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Cellvoltage2).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Cellvoltage3).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Cellvoltage4).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Cellvoltage5).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Cellvoltage6).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(Soc).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/41;
-        }
 
         /// <summary>
         /// Time since system start
@@ -1825,134 +1396,67 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 102; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 102; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
-            Timestampmodechanged = BinSerialize.ReadULong(ref buffer);index+=8;
-            Xw = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Xr = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Xlat = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Xlon = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Varw = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Varr = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Varlat = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Varlon = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Loiterradius = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Loiterdirection = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Disttosoarpoint = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Vsinkexp = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Z1Localupdraftspeed = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Z2Deltaroll = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Z1Exp = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Z2Exp = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Thermalgsnorth = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Thermalgseast = BinSerialize.ReadFloat(ref buffer);index+=4;
-            TseDot = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Debugvar1 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Debugvar2 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Controlmode = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            Valid = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            Timestamp = BinSerialize.ReadULong(ref buffer);
+            Timestampmodechanged = BinSerialize.ReadULong(ref buffer);
+            Xw = BinSerialize.ReadFloat(ref buffer);
+            Xr = BinSerialize.ReadFloat(ref buffer);
+            Xlat = BinSerialize.ReadFloat(ref buffer);
+            Xlon = BinSerialize.ReadFloat(ref buffer);
+            Varw = BinSerialize.ReadFloat(ref buffer);
+            Varr = BinSerialize.ReadFloat(ref buffer);
+            Varlat = BinSerialize.ReadFloat(ref buffer);
+            Varlon = BinSerialize.ReadFloat(ref buffer);
+            Loiterradius = BinSerialize.ReadFloat(ref buffer);
+            Loiterdirection = BinSerialize.ReadFloat(ref buffer);
+            Disttosoarpoint = BinSerialize.ReadFloat(ref buffer);
+            Vsinkexp = BinSerialize.ReadFloat(ref buffer);
+            Z1Localupdraftspeed = BinSerialize.ReadFloat(ref buffer);
+            Z2Deltaroll = BinSerialize.ReadFloat(ref buffer);
+            Z1Exp = BinSerialize.ReadFloat(ref buffer);
+            Z2Exp = BinSerialize.ReadFloat(ref buffer);
+            Thermalgsnorth = BinSerialize.ReadFloat(ref buffer);
+            Thermalgseast = BinSerialize.ReadFloat(ref buffer);
+            TseDot = BinSerialize.ReadFloat(ref buffer);
+            Debugvar1 = BinSerialize.ReadFloat(ref buffer);
+            Debugvar2 = BinSerialize.ReadFloat(ref buffer);
+            Controlmode = (byte)BinSerialize.ReadByte(ref buffer);
+            Valid = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,Timestamp);index+=8;
-            BinSerialize.WriteULong(ref buffer,Timestampmodechanged);index+=8;
-            BinSerialize.WriteFloat(ref buffer,Xw);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Xr);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Xlat);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Xlon);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Varw);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Varr);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Varlat);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Varlon);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Loiterradius);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Loiterdirection);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Disttosoarpoint);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Vsinkexp);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Z1Localupdraftspeed);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Z2Deltaroll);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Z1Exp);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Z2Exp);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Thermalgsnorth);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Thermalgseast);index+=4;
-            BinSerialize.WriteFloat(ref buffer,TseDot);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Debugvar1);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Debugvar2);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)Controlmode);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Valid);index+=1;
-            return index; // /*PayloadByteSize*/102;
+            BinSerialize.WriteULong(ref buffer,Timestamp);
+            BinSerialize.WriteULong(ref buffer,Timestampmodechanged);
+            BinSerialize.WriteFloat(ref buffer,Xw);
+            BinSerialize.WriteFloat(ref buffer,Xr);
+            BinSerialize.WriteFloat(ref buffer,Xlat);
+            BinSerialize.WriteFloat(ref buffer,Xlon);
+            BinSerialize.WriteFloat(ref buffer,Varw);
+            BinSerialize.WriteFloat(ref buffer,Varr);
+            BinSerialize.WriteFloat(ref buffer,Varlat);
+            BinSerialize.WriteFloat(ref buffer,Varlon);
+            BinSerialize.WriteFloat(ref buffer,Loiterradius);
+            BinSerialize.WriteFloat(ref buffer,Loiterdirection);
+            BinSerialize.WriteFloat(ref buffer,Disttosoarpoint);
+            BinSerialize.WriteFloat(ref buffer,Vsinkexp);
+            BinSerialize.WriteFloat(ref buffer,Z1Localupdraftspeed);
+            BinSerialize.WriteFloat(ref buffer,Z2Deltaroll);
+            BinSerialize.WriteFloat(ref buffer,Z1Exp);
+            BinSerialize.WriteFloat(ref buffer,Z2Exp);
+            BinSerialize.WriteFloat(ref buffer,Thermalgsnorth);
+            BinSerialize.WriteFloat(ref buffer,Thermalgseast);
+            BinSerialize.WriteFloat(ref buffer,TseDot);
+            BinSerialize.WriteFloat(ref buffer,Debugvar1);
+            BinSerialize.WriteFloat(ref buffer,Debugvar2);
+            BinSerialize.WriteByte(ref buffer,(byte)Controlmode);
+            BinSerialize.WriteByte(ref buffer,(byte)Valid);
+            /* PayloadByteSize = 102 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
-            Timestampmodechanged = BitConverter.ToUInt64(buffer,index);index+=8;
-            Xw = BitConverter.ToSingle(buffer, index);index+=4;
-            Xr = BitConverter.ToSingle(buffer, index);index+=4;
-            Xlat = BitConverter.ToSingle(buffer, index);index+=4;
-            Xlon = BitConverter.ToSingle(buffer, index);index+=4;
-            Varw = BitConverter.ToSingle(buffer, index);index+=4;
-            Varr = BitConverter.ToSingle(buffer, index);index+=4;
-            Varlat = BitConverter.ToSingle(buffer, index);index+=4;
-            Varlon = BitConverter.ToSingle(buffer, index);index+=4;
-            Loiterradius = BitConverter.ToSingle(buffer, index);index+=4;
-            Loiterdirection = BitConverter.ToSingle(buffer, index);index+=4;
-            Disttosoarpoint = BitConverter.ToSingle(buffer, index);index+=4;
-            Vsinkexp = BitConverter.ToSingle(buffer, index);index+=4;
-            Z1Localupdraftspeed = BitConverter.ToSingle(buffer, index);index+=4;
-            Z2Deltaroll = BitConverter.ToSingle(buffer, index);index+=4;
-            Z1Exp = BitConverter.ToSingle(buffer, index);index+=4;
-            Z2Exp = BitConverter.ToSingle(buffer, index);index+=4;
-            Thermalgsnorth = BitConverter.ToSingle(buffer, index);index+=4;
-            Thermalgseast = BitConverter.ToSingle(buffer, index);index+=4;
-            TseDot = BitConverter.ToSingle(buffer, index);index+=4;
-            Debugvar1 = BitConverter.ToSingle(buffer, index);index+=4;
-            Debugvar2 = BitConverter.ToSingle(buffer, index);index+=4;
-            Controlmode = (byte)buffer[index++];
-            Valid = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Timestamp).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(Timestampmodechanged).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(Xw).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Xr).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Xlat).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Xlon).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Varw).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Varr).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Varlat).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Varlon).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Loiterradius).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Loiterdirection).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Disttosoarpoint).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Vsinkexp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Z1Localupdraftspeed).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Z2Deltaroll).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Z1Exp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Z2Exp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Thermalgsnorth).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Thermalgseast).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(TseDot).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Debugvar1).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Debugvar2).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Controlmode).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Valid).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/102;
-        }
 
         /// <summary>
         /// Timestamp
@@ -2103,66 +1607,33 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 16; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
-            FreeSpace = BinSerialize.ReadUShort(ref buffer);index+=2;
-            VisensorRate1 = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            VisensorRate2 = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            VisensorRate3 = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            VisensorRate4 = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            RecordingNodesCount = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            CpuTemp = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            Timestamp = BinSerialize.ReadULong(ref buffer);
+            FreeSpace = BinSerialize.ReadUShort(ref buffer);
+            VisensorRate1 = (byte)BinSerialize.ReadByte(ref buffer);
+            VisensorRate2 = (byte)BinSerialize.ReadByte(ref buffer);
+            VisensorRate3 = (byte)BinSerialize.ReadByte(ref buffer);
+            VisensorRate4 = (byte)BinSerialize.ReadByte(ref buffer);
+            RecordingNodesCount = (byte)BinSerialize.ReadByte(ref buffer);
+            CpuTemp = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,Timestamp);index+=8;
-            BinSerialize.WriteUShort(ref buffer,FreeSpace);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)VisensorRate1);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)VisensorRate2);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)VisensorRate3);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)VisensorRate4);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)RecordingNodesCount);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)CpuTemp);index+=1;
-            return index; // /*PayloadByteSize*/16;
+            BinSerialize.WriteULong(ref buffer,Timestamp);
+            BinSerialize.WriteUShort(ref buffer,FreeSpace);
+            BinSerialize.WriteByte(ref buffer,(byte)VisensorRate1);
+            BinSerialize.WriteByte(ref buffer,(byte)VisensorRate2);
+            BinSerialize.WriteByte(ref buffer,(byte)VisensorRate3);
+            BinSerialize.WriteByte(ref buffer,(byte)VisensorRate4);
+            BinSerialize.WriteByte(ref buffer,(byte)RecordingNodesCount);
+            BinSerialize.WriteByte(ref buffer,(byte)CpuTemp);
+            /* PayloadByteSize = 16 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
-            FreeSpace = BitConverter.ToUInt16(buffer,index);index+=2;
-            VisensorRate1 = (byte)buffer[index++];
-            VisensorRate2 = (byte)buffer[index++];
-            VisensorRate3 = (byte)buffer[index++];
-            VisensorRate4 = (byte)buffer[index++];
-            RecordingNodesCount = (byte)buffer[index++];
-            CpuTemp = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Timestamp).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(FreeSpace).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(VisensorRate1).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(VisensorRate2).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(VisensorRate3).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(VisensorRate4).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(RecordingNodesCount).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(CpuTemp).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/16;
-        }
 
         /// <summary>
         /// Timestamp in linuxtime (since 1.1.1970)
@@ -2228,82 +1699,41 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 46; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 46; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
-            PwrBrdSystemVolt = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PwrBrdServoVolt = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PwrBrdDigitalVolt = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PwrBrdMotLAmp = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PwrBrdMotRAmp = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PwrBrdAnalogAmp = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PwrBrdDigitalAmp = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PwrBrdExtAmp = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PwrBrdAuxAmp = BinSerialize.ReadFloat(ref buffer);index+=4;
-            PwrBrdStatus = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            PwrBrdLedStatus = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            Timestamp = BinSerialize.ReadULong(ref buffer);
+            PwrBrdSystemVolt = BinSerialize.ReadFloat(ref buffer);
+            PwrBrdServoVolt = BinSerialize.ReadFloat(ref buffer);
+            PwrBrdDigitalVolt = BinSerialize.ReadFloat(ref buffer);
+            PwrBrdMotLAmp = BinSerialize.ReadFloat(ref buffer);
+            PwrBrdMotRAmp = BinSerialize.ReadFloat(ref buffer);
+            PwrBrdAnalogAmp = BinSerialize.ReadFloat(ref buffer);
+            PwrBrdDigitalAmp = BinSerialize.ReadFloat(ref buffer);
+            PwrBrdExtAmp = BinSerialize.ReadFloat(ref buffer);
+            PwrBrdAuxAmp = BinSerialize.ReadFloat(ref buffer);
+            PwrBrdStatus = (byte)BinSerialize.ReadByte(ref buffer);
+            PwrBrdLedStatus = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,Timestamp);index+=8;
-            BinSerialize.WriteFloat(ref buffer,PwrBrdSystemVolt);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PwrBrdServoVolt);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PwrBrdDigitalVolt);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PwrBrdMotLAmp);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PwrBrdMotRAmp);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PwrBrdAnalogAmp);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PwrBrdDigitalAmp);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PwrBrdExtAmp);index+=4;
-            BinSerialize.WriteFloat(ref buffer,PwrBrdAuxAmp);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)PwrBrdStatus);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)PwrBrdLedStatus);index+=1;
-            return index; // /*PayloadByteSize*/46;
+            BinSerialize.WriteULong(ref buffer,Timestamp);
+            BinSerialize.WriteFloat(ref buffer,PwrBrdSystemVolt);
+            BinSerialize.WriteFloat(ref buffer,PwrBrdServoVolt);
+            BinSerialize.WriteFloat(ref buffer,PwrBrdDigitalVolt);
+            BinSerialize.WriteFloat(ref buffer,PwrBrdMotLAmp);
+            BinSerialize.WriteFloat(ref buffer,PwrBrdMotRAmp);
+            BinSerialize.WriteFloat(ref buffer,PwrBrdAnalogAmp);
+            BinSerialize.WriteFloat(ref buffer,PwrBrdDigitalAmp);
+            BinSerialize.WriteFloat(ref buffer,PwrBrdExtAmp);
+            BinSerialize.WriteFloat(ref buffer,PwrBrdAuxAmp);
+            BinSerialize.WriteByte(ref buffer,(byte)PwrBrdStatus);
+            BinSerialize.WriteByte(ref buffer,(byte)PwrBrdLedStatus);
+            /* PayloadByteSize = 46 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
-            PwrBrdSystemVolt = BitConverter.ToSingle(buffer, index);index+=4;
-            PwrBrdServoVolt = BitConverter.ToSingle(buffer, index);index+=4;
-            PwrBrdDigitalVolt = BitConverter.ToSingle(buffer, index);index+=4;
-            PwrBrdMotLAmp = BitConverter.ToSingle(buffer, index);index+=4;
-            PwrBrdMotRAmp = BitConverter.ToSingle(buffer, index);index+=4;
-            PwrBrdAnalogAmp = BitConverter.ToSingle(buffer, index);index+=4;
-            PwrBrdDigitalAmp = BitConverter.ToSingle(buffer, index);index+=4;
-            PwrBrdExtAmp = BitConverter.ToSingle(buffer, index);index+=4;
-            PwrBrdAuxAmp = BitConverter.ToSingle(buffer, index);index+=4;
-            PwrBrdStatus = (byte)buffer[index++];
-            PwrBrdLedStatus = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Timestamp).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(PwrBrdSystemVolt).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PwrBrdServoVolt).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PwrBrdDigitalVolt).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PwrBrdMotLAmp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PwrBrdMotRAmp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PwrBrdAnalogAmp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PwrBrdDigitalAmp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PwrBrdExtAmp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PwrBrdAuxAmp).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(PwrBrdStatus).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(PwrBrdLedStatus).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/46;
-        }
 
         /// <summary>
         /// Timestamp
@@ -2389,62 +1819,31 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 14; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
-            GsmModemType = (GsmModemType)BinSerialize.ReadByte(ref buffer);index+=1;
-            GsmLinkType = (GsmLinkType)BinSerialize.ReadByte(ref buffer);index+=1;
-            Rssi = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            RsrpRscp = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            SinrEcio = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            Rsrq = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            Timestamp = BinSerialize.ReadULong(ref buffer);
+            GsmModemType = (GsmModemType)BinSerialize.ReadByte(ref buffer);
+            GsmLinkType = (GsmLinkType)BinSerialize.ReadByte(ref buffer);
+            Rssi = (byte)BinSerialize.ReadByte(ref buffer);
+            RsrpRscp = (byte)BinSerialize.ReadByte(ref buffer);
+            SinrEcio = (byte)BinSerialize.ReadByte(ref buffer);
+            Rsrq = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,Timestamp);index+=8;
-            BinSerialize.WriteByte(ref buffer,(byte)GsmModemType);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)GsmLinkType);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Rssi);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)RsrpRscp);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)SinrEcio);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Rsrq);index+=1;
-            return index; // /*PayloadByteSize*/14;
+            BinSerialize.WriteULong(ref buffer,Timestamp);
+            BinSerialize.WriteByte(ref buffer,(byte)GsmModemType);
+            BinSerialize.WriteByte(ref buffer,(byte)GsmLinkType);
+            BinSerialize.WriteByte(ref buffer,(byte)Rssi);
+            BinSerialize.WriteByte(ref buffer,(byte)RsrpRscp);
+            BinSerialize.WriteByte(ref buffer,(byte)SinrEcio);
+            BinSerialize.WriteByte(ref buffer,(byte)Rsrq);
+            /* PayloadByteSize = 14 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
-            GsmModemType = (GsmModemType)buffer[index++];
-            GsmLinkType = (GsmLinkType)buffer[index++];
-            Rssi = (byte)buffer[index++];
-            RsrpRscp = (byte)buffer[index++];
-            SinrEcio = (byte)buffer[index++];
-            Rsrq = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Timestamp).CopyTo(buffer, index);index+=8;
-            buffer[index] = (byte)GsmModemType;index+=1;
-            buffer[index] = (byte)GsmLinkType;index+=1;
-            BitConverter.GetBytes(Rssi).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(RsrpRscp).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(SinrEcio).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Rsrq).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/14;
-        }
 
         /// <summary>
         /// Timestamp (of OBC)
@@ -2505,66 +1904,33 @@ namespace Asv.Mavlink.V2.Asluav
         public byte GetMaxByteSize() => 24; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Timestamp = BinSerialize.ReadULong(ref buffer);index+=8;
-            LastHeartbeat = BinSerialize.ReadULong(ref buffer);index+=8;
-            FailedSessions = BinSerialize.ReadUShort(ref buffer);index+=2;
-            SuccessfulSessions = BinSerialize.ReadUShort(ref buffer);index+=2;
-            SignalQuality = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            RingPending = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            TxSessionPending = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            RxSessionPending = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            Timestamp = BinSerialize.ReadULong(ref buffer);
+            LastHeartbeat = BinSerialize.ReadULong(ref buffer);
+            FailedSessions = BinSerialize.ReadUShort(ref buffer);
+            SuccessfulSessions = BinSerialize.ReadUShort(ref buffer);
+            SignalQuality = (byte)BinSerialize.ReadByte(ref buffer);
+            RingPending = (byte)BinSerialize.ReadByte(ref buffer);
+            TxSessionPending = (byte)BinSerialize.ReadByte(ref buffer);
+            RxSessionPending = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,Timestamp);index+=8;
-            BinSerialize.WriteULong(ref buffer,LastHeartbeat);index+=8;
-            BinSerialize.WriteUShort(ref buffer,FailedSessions);index+=2;
-            BinSerialize.WriteUShort(ref buffer,SuccessfulSessions);index+=2;
-            BinSerialize.WriteByte(ref buffer,(byte)SignalQuality);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)RingPending);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)TxSessionPending);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)RxSessionPending);index+=1;
-            return index; // /*PayloadByteSize*/24;
+            BinSerialize.WriteULong(ref buffer,Timestamp);
+            BinSerialize.WriteULong(ref buffer,LastHeartbeat);
+            BinSerialize.WriteUShort(ref buffer,FailedSessions);
+            BinSerialize.WriteUShort(ref buffer,SuccessfulSessions);
+            BinSerialize.WriteByte(ref buffer,(byte)SignalQuality);
+            BinSerialize.WriteByte(ref buffer,(byte)RingPending);
+            BinSerialize.WriteByte(ref buffer,(byte)TxSessionPending);
+            BinSerialize.WriteByte(ref buffer,(byte)RxSessionPending);
+            /* PayloadByteSize = 24 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Timestamp = BitConverter.ToUInt64(buffer,index);index+=8;
-            LastHeartbeat = BitConverter.ToUInt64(buffer,index);index+=8;
-            FailedSessions = BitConverter.ToUInt16(buffer,index);index+=2;
-            SuccessfulSessions = BitConverter.ToUInt16(buffer,index);index+=2;
-            SignalQuality = (byte)buffer[index++];
-            RingPending = (byte)buffer[index++];
-            TxSessionPending = (byte)buffer[index++];
-            RxSessionPending = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Timestamp).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(LastHeartbeat).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(FailedSessions).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(SuccessfulSessions).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(SignalQuality).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(RingPending).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(TxSessionPending).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(RxSessionPending).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/24;
-        }
 
         /// <summary>
         /// Timestamp

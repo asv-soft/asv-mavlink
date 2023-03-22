@@ -56,6 +56,7 @@ namespace Asv.Mavlink.Shell
                                                              Desc = msg.Desc,
                                                              Id = msg.Id,
                                                              CrcExtra = msg.CrcExtra,
+                                                             HasArrayFields = msg.HasArrayFields,
                                                              PayloadByteSize = msg.GetAllFields().Sum(_=>_.FieldByteSize),
                                                              ExtendedFieldsLength = msg.ExtendedFields.Sum(_=>_.FieldByteSize),
                                                              Fields = msg.GetAllFields().Select(field =>

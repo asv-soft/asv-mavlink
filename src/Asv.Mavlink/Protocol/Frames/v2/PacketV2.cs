@@ -32,7 +32,9 @@ namespace Asv.Mavlink
         {
             var fillBuffer = buffer.Slice(0);
             var payloadBuffer = buffer.Slice(10);
-            var payloadSize = Payload.Serialize(ref payloadBuffer);
+            var originLength = payloadBuffer.Length;
+            Payload.Serialize(ref payloadBuffer);
+            var payloadSize = originLength - payloadBuffer.Length;
             // Debug.Assert(payloadSize <= byte.MaxValue, $"Wrong payload serialize size (must be {byte.MaxValue} size)");
 
             BinSerialize.WriteByte(ref fillBuffer, PacketV2Helper.MagicMarkerV2);
@@ -61,26 +63,7 @@ namespace Asv.Mavlink
             
         }
 
-        public int Serialize(byte[] buffer, int offset)
-        {
-            PacketV2Helper.SetStx(buffer, offset);
-            PacketV2Helper.SetIncompatFlags(buffer, offset, IncompatFlags);
-            PacketV2Helper.SetCompatFlags(buffer, offset, CompatFlags);
-            PacketV2Helper.SetSequence(buffer, offset, Sequence);
-            PacketV2Helper.SetSystemId(buffer, offset, SystemId);
-            PacketV2Helper.SetComponenId(buffer, offset, ComponenId);
-            PacketV2Helper.SetMessageId(buffer, offset, MessageId);
-            var index = offset + PacketV2Helper.PaylodStartIndexInFrame;
-            var payloadSize = Payload.Serialize(buffer, index);
-            // Debug.Assert(payloadSize <= byte.MaxValue,$"Wrong payload serialize size (must be {byte.MaxValue} size)");
-            PacketV2Helper.SetPayloadSize(buffer, offset, (byte) payloadSize);
-            PacketV2Helper.SetCrc(buffer, offset, GetCrcEtra());
-            if (Signature.IsPresent)
-            {
-                _signature.Serialize(buffer, offset + payloadSize + PacketV2Helper.PacketV2FrameSize);
-            }
-            return payloadSize + Signature.ByteSize + PacketV2Helper.PacketV2FrameSize;
-        }
+        
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -123,7 +106,7 @@ namespace Asv.Mavlink
                 try
                 {
                     var readOnly = new ReadOnlySpan<byte>(data, 0, originSize);
-                    Payload.Deserialize(ref readOnly, originSize);
+                    Payload.Deserialize(ref readOnly);
                     // Debug.Assert(readOnly.Length == 0);
                 }
                 finally
@@ -135,7 +118,7 @@ namespace Asv.Mavlink
             else
             {
                 var payloadBuffer = buffer.Slice(0, payloadSize);
-                Payload.Deserialize(ref payloadBuffer, payloadSize);
+                Payload.Deserialize(ref payloadBuffer);
                 //Debug.Assert(payloadBuffer.Length == 0);
             }
             
@@ -151,27 +134,6 @@ namespace Asv.Mavlink
             {
                 Signature.Deserialize(ref buffer);
             }
-        }
-
-        public int Deserialize(byte[] buffer, int offset)
-        {
-            PacketV2Helper.VerifyStx(buffer,offset);
-            var payloadSize = PacketV2Helper.GetPayloadSize(buffer, offset);
-            IncompatFlags = PacketV2Helper.GetIncompatFlags(buffer, offset);
-            CompatFlags = PacketV2Helper.GetCompatFlags(buffer, offset);
-            Sequence = PacketV2Helper.GetSequence(buffer, offset);
-            SystemId = PacketV2Helper.GetSystemId(buffer, offset);
-            ComponenId = PacketV2Helper.GetComponenId(buffer, offset);
-            var messageId = PacketV2Helper.GetMessageId(buffer, offset);
-            if (messageId != MessageId)
-                throw new MavlinkException(string.Format(RS.PacketV2_Deserialize_Error_message_id_type, MessageId, messageId));
-            Payload.Deserialize(buffer, offset + PacketV2Helper.PaylodStartIndexInFrame, payloadSize);
-            PacketV2Helper.VerifyCrc(buffer,offset, GetCrcEtra());
-            if (PacketV2Helper.CheckSignaturePresent(buffer, offset))
-            {
-                _signature.Deserialize(buffer, PacketV2Helper.GetSignatureStartIndex(buffer, offset));
-            }
-            return payloadSize + Signature.ByteSize + PacketV2Helper.PacketV2FrameSize;
         }
 
         public override string ToString()

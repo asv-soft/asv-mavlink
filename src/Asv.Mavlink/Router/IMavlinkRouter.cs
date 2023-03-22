@@ -9,16 +9,16 @@ namespace Asv.Mavlink
 {
     public class MavlinkPortConfig
     {
-        public string ConnectionString { get; set; }
-        public string Name { get; set; }
+        public string? ConnectionString { get; set; }
+        public string? Name { get; set; }
         public bool IsEnabled { get; set; }
     }
 
     public class MavlinkPortInfo
     {
         public Guid Id { get; internal set; }
-        public string Name { get; internal set; }
-        public string ConnectionString { get; internal set; }
+        public string? Name { get; internal set; }
+        public string? ConnectionString { get; internal set; }
         public PortState State { get; internal set; }
         public long RxBytes { get; internal set; }
         public long TxBytes { get; internal set; }
@@ -26,10 +26,10 @@ namespace Asv.Mavlink
         public long TxPackets { get; internal set; }
         public long SkipPackets { get; internal set; }
         public int DeserializationErrors { get; internal set; }
-        public string Description { get; internal set; }
+        public string? Description { get; internal set; }
         public PortType Type { get; internal set; }
         public Exception? LastException { get; internal set; }
-        public bool IsEnabled { get; internal set; }
+        public bool? IsEnabled { get; internal set; }
     }
 
     

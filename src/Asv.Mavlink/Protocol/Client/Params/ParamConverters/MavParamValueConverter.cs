@@ -16,13 +16,13 @@ namespace Asv.Mavlink.Client
                 case MavParamType.MavParamTypeUint8:
                     if (!param.IntegerValue.HasValue)
                         throw new Exception(string.Format(RS.Vehicle_ConvertToMavlinkUnionToParamValue_Integer_value_not_assigned_for_param, param.Name, param.Type));
-                    arr = BitConverter.GetBytes((byte)param.IntegerValue);
+                    arr = new []{(byte)param.IntegerValue};
 
                     break;
                 case MavParamType.MavParamTypeInt8:
                     if (!param.IntegerValue.HasValue)
                         throw new Exception(string.Format(RS.Vehicle_ConvertToMavlinkUnionToParamValue_Integer_value_not_assigned_for_param, param.Name, param.Type));
-                    arr = BitConverter.GetBytes((sbyte)param.IntegerValue);
+                    arr = new []{(byte)param.IntegerValue};
                     break;
                 case MavParamType.MavParamTypeUint16:
                     if (!param.IntegerValue.HasValue)

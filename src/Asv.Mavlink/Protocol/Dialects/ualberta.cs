@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 1.1.1
+// This code was generate by tool Asv.Mavlink.Shell version 1.2.2
 
 using System;
 using System.Text;
@@ -153,62 +153,31 @@ namespace Asv.Mavlink.V2.Ualberta
         public byte GetMaxByteSize() => 32; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Usec = BinSerialize.ReadULong(ref buffer);index+=8;
-            Accel0 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Accel1 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Accel2 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Gyro0 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Gyro1 = BinSerialize.ReadFloat(ref buffer);index+=4;
-            Gyro2 = BinSerialize.ReadFloat(ref buffer);index+=4;
+            Usec = BinSerialize.ReadULong(ref buffer);
+            Accel0 = BinSerialize.ReadFloat(ref buffer);
+            Accel1 = BinSerialize.ReadFloat(ref buffer);
+            Accel2 = BinSerialize.ReadFloat(ref buffer);
+            Gyro0 = BinSerialize.ReadFloat(ref buffer);
+            Gyro1 = BinSerialize.ReadFloat(ref buffer);
+            Gyro2 = BinSerialize.ReadFloat(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,Usec);index+=8;
-            BinSerialize.WriteFloat(ref buffer,Accel0);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Accel1);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Accel2);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Gyro0);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Gyro1);index+=4;
-            BinSerialize.WriteFloat(ref buffer,Gyro2);index+=4;
-            return index; // /*PayloadByteSize*/32;
+            BinSerialize.WriteULong(ref buffer,Usec);
+            BinSerialize.WriteFloat(ref buffer,Accel0);
+            BinSerialize.WriteFloat(ref buffer,Accel1);
+            BinSerialize.WriteFloat(ref buffer,Accel2);
+            BinSerialize.WriteFloat(ref buffer,Gyro0);
+            BinSerialize.WriteFloat(ref buffer,Gyro1);
+            BinSerialize.WriteFloat(ref buffer,Gyro2);
+            /* PayloadByteSize = 32 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Usec = BitConverter.ToUInt64(buffer,index);index+=8;
-            Accel0 = BitConverter.ToSingle(buffer, index);index+=4;
-            Accel1 = BitConverter.ToSingle(buffer, index);index+=4;
-            Accel2 = BitConverter.ToSingle(buffer, index);index+=4;
-            Gyro0 = BitConverter.ToSingle(buffer, index);index+=4;
-            Gyro1 = BitConverter.ToSingle(buffer, index);index+=4;
-            Gyro2 = BitConverter.ToSingle(buffer, index);index+=4;
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Usec).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(Accel0).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Accel1).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Accel2).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Gyro0).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Gyro1).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Gyro2).CopyTo(buffer, index);index+=4;
-            return index - start; // /*PayloadByteSize*/32;
-        }
 
         /// <summary>
         /// Timestamp (microseconds)
@@ -269,144 +238,74 @@ namespace Asv.Mavlink.V2.Ualberta
         public byte GetMaxByteSize() => 42; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
             var arraySize = 0;
+            var payloadSize = buffer.Length;
             arraySize = 3;
             for(var i=0;i<arraySize;i++)
             {
-                Aileron[i] = BinSerialize.ReadUShort(ref buffer);index+=2;
+                Aileron[i] = BinSerialize.ReadUShort(ref buffer);
             }
             arraySize = 3;
             for(var i=0;i<arraySize;i++)
             {
-                Elevator[i] = BinSerialize.ReadUShort(ref buffer);index+=2;
+                Elevator[i] = BinSerialize.ReadUShort(ref buffer);
             }
             arraySize = 3;
             for(var i=0;i<arraySize;i++)
             {
-                Rudder[i] = BinSerialize.ReadUShort(ref buffer);index+=2;
+                Rudder[i] = BinSerialize.ReadUShort(ref buffer);
             }
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                Gyro[i] = BinSerialize.ReadUShort(ref buffer);index+=2;
+                Gyro[i] = BinSerialize.ReadUShort(ref buffer);
             }
             arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/42 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
             Pitch = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {
-                Pitch[i] = BinSerialize.ReadUShort(ref buffer);index+=2;
+                Pitch[i] = BinSerialize.ReadUShort(ref buffer);
             }
             arraySize = 5;
             for(var i=0;i<arraySize;i++)
             {
-                Throttle[i] = BinSerialize.ReadUShort(ref buffer);index+=2;
+                Throttle[i] = BinSerialize.ReadUShort(ref buffer);
             }
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
             for(var i=0;i<Aileron.Length;i++)
             {
-                BinSerialize.WriteUShort(ref buffer,Aileron[i]);index+=2;
+                BinSerialize.WriteUShort(ref buffer,Aileron[i]);
             }
             for(var i=0;i<Elevator.Length;i++)
             {
-                BinSerialize.WriteUShort(ref buffer,Elevator[i]);index+=2;
+                BinSerialize.WriteUShort(ref buffer,Elevator[i]);
             }
             for(var i=0;i<Rudder.Length;i++)
             {
-                BinSerialize.WriteUShort(ref buffer,Rudder[i]);index+=2;
+                BinSerialize.WriteUShort(ref buffer,Rudder[i]);
             }
             for(var i=0;i<Gyro.Length;i++)
             {
-                BinSerialize.WriteUShort(ref buffer,Gyro[i]);index+=2;
+                BinSerialize.WriteUShort(ref buffer,Gyro[i]);
             }
             for(var i=0;i<Pitch.Length;i++)
             {
-                BinSerialize.WriteUShort(ref buffer,Pitch[i]);index+=2;
+                BinSerialize.WriteUShort(ref buffer,Pitch[i]);
             }
             for(var i=0;i<Throttle.Length;i++)
             {
-                BinSerialize.WriteUShort(ref buffer,Throttle[i]);index+=2;
+                BinSerialize.WriteUShort(ref buffer,Throttle[i]);
             }
-            return index; // /*PayloadByteSize*/42;
+            /* PayloadByteSize = 42 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                Aileron[i] = BitConverter.ToUInt16(buffer,index);index+=2;
-            }
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                Elevator[i] = BitConverter.ToUInt16(buffer,index);index+=2;
-            }
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                Rudder[i] = BitConverter.ToUInt16(buffer,index);index+=2;
-            }
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                Gyro[i] = BitConverter.ToUInt16(buffer,index);index+=2;
-            }
-            arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/42 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
-            Pitch = new ushort[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                Pitch[i] = BitConverter.ToUInt16(buffer,index);index+=2;
-            }
-            arraySize = 5;
-            for(var i=0;i<arraySize;i++)
-            {
-                Throttle[i] = BitConverter.ToUInt16(buffer,index);index+=2;
-            }
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            for(var i=0;i<Aileron.Length;i++)
-            {
-                BitConverter.GetBytes(Aileron[i]).CopyTo(buffer, index);index+=2;
-            }
-            for(var i=0;i<Elevator.Length;i++)
-            {
-                BitConverter.GetBytes(Elevator[i]).CopyTo(buffer, index);index+=2;
-            }
-            for(var i=0;i<Rudder.Length;i++)
-            {
-                BitConverter.GetBytes(Rudder[i]).CopyTo(buffer, index);index+=2;
-            }
-            for(var i=0;i<Gyro.Length;i++)
-            {
-                BitConverter.GetBytes(Gyro[i]).CopyTo(buffer, index);index+=2;
-            }
-            for(var i=0;i<Pitch.Length;i++)
-            {
-                BitConverter.GetBytes(Pitch[i]).CopyTo(buffer, index);index+=2;
-            }
-            for(var i=0;i<Throttle.Length;i++)
-            {
-                BitConverter.GetBytes(Throttle[i]).CopyTo(buffer, index);index+=2;
-            }
-            return index - start; // /*PayloadByteSize*/42;
-        }
 
         /// <summary>
         /// Aileron setpoints: left, center, right
@@ -463,46 +362,23 @@ namespace Asv.Mavlink.V2.Ualberta
         public byte GetMaxByteSize() => 3; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Mode = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            NavMode = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            Pilot = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            Mode = (byte)BinSerialize.ReadByte(ref buffer);
+            NavMode = (byte)BinSerialize.ReadByte(ref buffer);
+            Pilot = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteByte(ref buffer,(byte)Mode);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)NavMode);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)Pilot);index+=1;
-            return index; // /*PayloadByteSize*/3;
+            BinSerialize.WriteByte(ref buffer,(byte)Mode);
+            BinSerialize.WriteByte(ref buffer,(byte)NavMode);
+            BinSerialize.WriteByte(ref buffer,(byte)Pilot);
+            /* PayloadByteSize = 3 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Mode = (byte)buffer[index++];
-            NavMode = (byte)buffer[index++];
-            Pilot = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Mode).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(NavMode).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(Pilot).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/3;
-        }
 
         /// <summary>
         /// System mode, see UALBERTA_AUTOPILOT_MODE ENUM

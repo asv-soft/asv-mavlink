@@ -37,7 +37,7 @@ namespace Asv.Mavlink.Shell
         {
             _packet = new TestTypesPacket();
             _data = new byte[280];
-            _packet.Serialize(_data, 0);
+           
 
         }
 
@@ -55,10 +55,6 @@ namespace Asv.Mavlink.Shell
             _packet.Serialize(ref span);
         }
 
-        [Benchmark]
-        public int Serialize() => _packet.Serialize(_data, 0);
-
-        [Benchmark]
-        public int Deserialize() => _packet.Deserialize(_data, 0);
+        
     }
 }

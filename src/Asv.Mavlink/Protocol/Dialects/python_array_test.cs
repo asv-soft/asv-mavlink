@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 1.1.1
+// This code was generate by tool Asv.Mavlink.Shell version 1.2.2
 
 using System;
 using System.Text;
@@ -75,112 +75,58 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         public byte GetMaxByteSize() => 33; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
             var arraySize = 0;
+            var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/33 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
             ArU32 = new uint[arraySize];
             for(var i=0;i<arraySize;i++)
             {
-                ArU32[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
+                ArU32[i] = BinSerialize.ReadUInt(ref buffer);
             }
             arraySize = 4;
             for(var i=0;i<arraySize;i++)
             {
-                ArU16[i] = BinSerialize.ReadUShort(ref buffer);index+=2;
+                ArU16[i] = BinSerialize.ReadUShort(ref buffer);
             }
-            V1 = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            V1 = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = 4;
             for(var i=0;i<arraySize;i++)
             {
-                ArI8[i] = (sbyte)BinSerialize.ReadByte(ref buffer);index+=1;
+                ArI8[i] = (sbyte)BinSerialize.ReadByte(ref buffer);
             }
             arraySize = 4;
             for(var i=0;i<arraySize;i++)
             {
-                ArU8[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+                ArU8[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
             for(var i=0;i<ArU32.Length;i++)
             {
-                BinSerialize.WriteUInt(ref buffer,ArU32[i]);index+=4;
+                BinSerialize.WriteUInt(ref buffer,ArU32[i]);
             }
             for(var i=0;i<ArU16.Length;i++)
             {
-                BinSerialize.WriteUShort(ref buffer,ArU16[i]);index+=2;
+                BinSerialize.WriteUShort(ref buffer,ArU16[i]);
             }
-            BinSerialize.WriteByte(ref buffer,(byte)V1);index+=1;
+            BinSerialize.WriteByte(ref buffer,(byte)V1);
             for(var i=0;i<ArI8.Length;i++)
             {
-                BinSerialize.WriteByte(ref buffer,(byte)ArI8[i]);index+=1;
+                BinSerialize.WriteByte(ref buffer,(byte)ArI8[i]);
             }
             for(var i=0;i<ArU8.Length;i++)
             {
-                BinSerialize.WriteByte(ref buffer,(byte)ArU8[i]);index+=1;
+                BinSerialize.WriteByte(ref buffer,(byte)ArU8[i]);
             }
-            return index; // /*PayloadByteSize*/33;
+            /* PayloadByteSize = 33 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/33 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            ArU32 = new uint[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                ArU32[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArU16[i] = BitConverter.ToUInt16(buffer,index);index+=2;
-            }
-            V1 = (byte)buffer[index++];
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArI8[i] = (sbyte)buffer[index++];
-            }
-            arraySize = 4;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArU8[i] = (byte)buffer[index++];
-            }
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            for(var i=0;i<ArU32.Length;i++)
-            {
-                BitConverter.GetBytes(ArU32[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<ArU16.Length;i++)
-            {
-                BitConverter.GetBytes(ArU16[i]).CopyTo(buffer, index);index+=2;
-            }
-            BitConverter.GetBytes(V1).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<ArI8.Length;i++)
-            {
-                buffer[index] = (byte)ArI8[i];index+=1;
-            }
-            for(var i=0;i<ArU8.Length;i++)
-            {
-                buffer[index] = (byte)ArU8[i];index+=1;
-            }
-            return index - start; // /*PayloadByteSize*/33;
-        }
 
         /// <summary>
         /// Value array
@@ -232,54 +178,29 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         public byte GetMaxByteSize() => 16; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
             var arraySize = 0;
+            var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/16 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
             ArU32 = new uint[arraySize];
             for(var i=0;i<arraySize;i++)
             {
-                ArU32[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
+                ArU32[i] = BinSerialize.ReadUInt(ref buffer);
             }
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
             for(var i=0;i<ArU32.Length;i++)
             {
-                BinSerialize.WriteUInt(ref buffer,ArU32[i]);index+=4;
+                BinSerialize.WriteUInt(ref buffer,ArU32[i]);
             }
-            return index; // /*PayloadByteSize*/16;
+            /* PayloadByteSize = 16 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/16 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            ArU32 = new uint[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                ArU32[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            for(var i=0;i<ArU32.Length;i++)
-            {
-                BitConverter.GetBytes(ArU32[i]).CopyTo(buffer, index);index+=4;
-            }
-            return index - start; // /*PayloadByteSize*/16;
-        }
 
         /// <summary>
         /// Value array
@@ -311,58 +232,31 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         public byte GetMaxByteSize() => 17; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 17; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
             var arraySize = 0;
+            var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/17 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
             ArU32 = new uint[arraySize];
             for(var i=0;i<arraySize;i++)
             {
-                ArU32[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
+                ArU32[i] = BinSerialize.ReadUInt(ref buffer);
             }
-            V = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            V = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
             for(var i=0;i<ArU32.Length;i++)
             {
-                BinSerialize.WriteUInt(ref buffer,ArU32[i]);index+=4;
+                BinSerialize.WriteUInt(ref buffer,ArU32[i]);
             }
-            BinSerialize.WriteByte(ref buffer,(byte)V);index+=1;
-            return index; // /*PayloadByteSize*/17;
+            BinSerialize.WriteByte(ref buffer,(byte)V);
+            /* PayloadByteSize = 17 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/17 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            ArU32 = new uint[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                ArU32[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-            V = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            for(var i=0;i<ArU32.Length;i++)
-            {
-                BitConverter.GetBytes(ArU32[i]).CopyTo(buffer, index);index+=4;
-            }
-            BitConverter.GetBytes(V).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/17;
-        }
 
         /// <summary>
         /// Value array
@@ -399,58 +293,31 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         public byte GetMaxByteSize() => 17; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 17; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
             var arraySize = 0;
+            var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/17 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
             ArU32 = new uint[arraySize];
             for(var i=0;i<arraySize;i++)
             {
-                ArU32[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
+                ArU32[i] = BinSerialize.ReadUInt(ref buffer);
             }
-            V = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            V = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
             for(var i=0;i<ArU32.Length;i++)
             {
-                BinSerialize.WriteUInt(ref buffer,ArU32[i]);index+=4;
+                BinSerialize.WriteUInt(ref buffer,ArU32[i]);
             }
-            BinSerialize.WriteByte(ref buffer,(byte)V);index+=1;
-            return index; // /*PayloadByteSize*/17;
+            BinSerialize.WriteByte(ref buffer,(byte)V);
+            /* PayloadByteSize = 17 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/17 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            ArU32 = new uint[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                ArU32[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-            V = (byte)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            for(var i=0;i<ArU32.Length;i++)
-            {
-                BitConverter.GetBytes(ArU32[i]).CopyTo(buffer, index);index+=4;
-            }
-            BitConverter.GetBytes(V).CopyTo(buffer, index);index+=1;
-            return index - start; // /*PayloadByteSize*/17;
-        }
 
         /// <summary>
         /// Value array
@@ -487,11 +354,10 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         public byte GetMaxByteSize() => 10; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 10; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
             var arraySize = 0;
+            var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/10 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             C1 = new char[arraySize];
             unsafe
@@ -503,7 +369,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
                 }
             }
             buffer = buffer.Slice(arraySize);
-            index+=arraySize;
+           
             arraySize = 5;
             unsafe
             {
@@ -514,13 +380,12 @@ namespace Asv.Mavlink.V2.PythonArrayTest
                 }
             }
             buffer = buffer.Slice(arraySize);
-            index+=arraySize;
+           
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -530,7 +395,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
                 }
             }
             buffer = buffer.Slice(C1.Length);
-            index+=C1.Length;
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -540,33 +405,11 @@ namespace Asv.Mavlink.V2.PythonArrayTest
                 }
             }
             buffer = buffer.Slice(C2.Length);
-            index+=C2.Length;
-            return index; // /*PayloadByteSize*/10;
+            
+            /* PayloadByteSize = 10 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/10 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            C1 = new char[arraySize];
-            Encoding.ASCII.GetChars(buffer, index,arraySize,C1,0);
-            index+=arraySize;
-            arraySize = 5;
-            Encoding.ASCII.GetChars(buffer, index,arraySize,C2,0);
-            index+=arraySize;
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            index+=Encoding.ASCII.GetBytes(C1,0,C1.Length,buffer,index);
-            index+=Encoding.ASCII.GetBytes(C2,0,C2.Length,buffer,index);
-            return index - start; // /*PayloadByteSize*/10;
-        }
 
         /// <summary>
         /// Value array
@@ -603,53 +446,52 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         public byte GetMaxByteSize() => 91; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 91; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
             var arraySize = 0;
+            var payloadSize = buffer.Length;
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                ArD[i] = BinSerialize.ReadDouble(ref buffer);index+=8;
+                ArD[i] = BinSerialize.ReadDouble(ref buffer);
             }
-            V3 = BinSerialize.ReadUInt(ref buffer);index+=4;
+            V3 = BinSerialize.ReadUInt(ref buffer);
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                ArU32[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
-            }
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArI32[i] = BinSerialize.ReadInt(ref buffer);index+=4;
+                ArU32[i] = BinSerialize.ReadUInt(ref buffer);
             }
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                ArF[i] = BinSerialize.ReadFloat(ref buffer);index+=4;
-            }
-            V2 = BinSerialize.ReadUShort(ref buffer);index+=2;
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArU16[i] = BinSerialize.ReadUShort(ref buffer);index+=2;
+                ArI32[i] = BinSerialize.ReadInt(ref buffer);
             }
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                ArI16[i] = BinSerialize.ReadShort(ref buffer);index+=2;
+                ArF[i] = BinSerialize.ReadFloat(ref buffer);
             }
-            V1 = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+            V2 = BinSerialize.ReadUShort(ref buffer);
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                ArU8[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+                ArU16[i] = BinSerialize.ReadUShort(ref buffer);
             }
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                ArI8[i] = (sbyte)BinSerialize.ReadByte(ref buffer);index+=1;
+                ArI16[i] = BinSerialize.ReadShort(ref buffer);
+            }
+            V1 = (byte)BinSerialize.ReadByte(ref buffer);
+            arraySize = 2;
+            for(var i=0;i<arraySize;i++)
+            {
+                ArU8[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 2;
+            for(var i=0;i<arraySize;i++)
+            {
+                ArI8[i] = (sbyte)BinSerialize.ReadByte(ref buffer);
             }
             arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/91 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             ArC = new char[arraySize];
@@ -662,47 +504,46 @@ namespace Asv.Mavlink.V2.PythonArrayTest
                 }
             }
             buffer = buffer.Slice(arraySize);
-            index+=arraySize;
+           
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
             for(var i=0;i<ArD.Length;i++)
             {
-                BinSerialize.WriteDouble(ref buffer,ArD[i]);index+=8;
+                BinSerialize.WriteDouble(ref buffer,ArD[i]);
             }
-            BinSerialize.WriteUInt(ref buffer,V3);index+=4;
+            BinSerialize.WriteUInt(ref buffer,V3);
             for(var i=0;i<ArU32.Length;i++)
             {
-                BinSerialize.WriteUInt(ref buffer,ArU32[i]);index+=4;
+                BinSerialize.WriteUInt(ref buffer,ArU32[i]);
             }
             for(var i=0;i<ArI32.Length;i++)
             {
-                BinSerialize.WriteInt(ref buffer,ArI32[i]);index+=4;
+                BinSerialize.WriteInt(ref buffer,ArI32[i]);
             }
             for(var i=0;i<ArF.Length;i++)
             {
-                BinSerialize.WriteFloat(ref buffer,ArF[i]);index+=4;
+                BinSerialize.WriteFloat(ref buffer,ArF[i]);
             }
-            BinSerialize.WriteUShort(ref buffer,V2);index+=2;
+            BinSerialize.WriteUShort(ref buffer,V2);
             for(var i=0;i<ArU16.Length;i++)
             {
-                BinSerialize.WriteUShort(ref buffer,ArU16[i]);index+=2;
+                BinSerialize.WriteUShort(ref buffer,ArU16[i]);
             }
             for(var i=0;i<ArI16.Length;i++)
             {
-                BinSerialize.WriteShort(ref buffer,ArI16[i]);index+=2;
+                BinSerialize.WriteShort(ref buffer,ArI16[i]);
             }
-            BinSerialize.WriteByte(ref buffer,(byte)V1);index+=1;
+            BinSerialize.WriteByte(ref buffer,(byte)V1);
             for(var i=0;i<ArU8.Length;i++)
             {
-                BinSerialize.WriteByte(ref buffer,(byte)ArU8[i]);index+=1;
+                BinSerialize.WriteByte(ref buffer,(byte)ArU8[i]);
             }
             for(var i=0;i<ArI8.Length;i++)
             {
-                BinSerialize.WriteByte(ref buffer,(byte)ArI8[i]);index+=1;
+                BinSerialize.WriteByte(ref buffer,(byte)ArI8[i]);
             }
             unsafe
             {
@@ -713,107 +554,11 @@ namespace Asv.Mavlink.V2.PythonArrayTest
                 }
             }
             buffer = buffer.Slice(ArC.Length);
-            index+=ArC.Length;
-            return index; // /*PayloadByteSize*/91;
+            
+            /* PayloadByteSize = 91 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArD[i] = BitConverter.ToDouble(buffer, index);index+=8;
-            }
-            V3 = BitConverter.ToUInt32(buffer,index);index+=4;
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArU32[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArI32[i] = BitConverter.ToInt32(buffer,index);index+=4;
-            }
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArF[i] = BitConverter.ToSingle(buffer, index);index+=4;
-            }
-            V2 = BitConverter.ToUInt16(buffer,index);index+=2;
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArU16[i] = BitConverter.ToUInt16(buffer,index);index+=2;
-            }
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArI16[i] = BitConverter.ToInt16(buffer,index);index+=2;
-            }
-            V1 = (byte)buffer[index++];
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArU8[i] = (byte)buffer[index++];
-            }
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArI8[i] = (sbyte)buffer[index++];
-            }
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/91 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            ArC = new char[arraySize];
-            Encoding.ASCII.GetChars(buffer, index,arraySize,ArC,0);
-            index+=arraySize;
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            for(var i=0;i<ArD.Length;i++)
-            {
-                BitConverter.GetBytes(ArD[i]).CopyTo(buffer, index);index+=8;
-            }
-            BitConverter.GetBytes(V3).CopyTo(buffer, index);index+=4;
-            for(var i=0;i<ArU32.Length;i++)
-            {
-                BitConverter.GetBytes(ArU32[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<ArI32.Length;i++)
-            {
-                BitConverter.GetBytes(ArI32[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<ArF.Length;i++)
-            {
-                BitConverter.GetBytes(ArF[i]).CopyTo(buffer, index);index+=4;
-            }
-            BitConverter.GetBytes(V2).CopyTo(buffer, index);index+=2;
-            for(var i=0;i<ArU16.Length;i++)
-            {
-                BitConverter.GetBytes(ArU16[i]).CopyTo(buffer, index);index+=2;
-            }
-            for(var i=0;i<ArI16.Length;i++)
-            {
-                BitConverter.GetBytes(ArI16[i]).CopyTo(buffer, index);index+=2;
-            }
-            BitConverter.GetBytes(V1).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<ArU8.Length;i++)
-            {
-                buffer[index] = (byte)ArU8[i];index+=1;
-            }
-            for(var i=0;i<ArI8.Length;i++)
-            {
-                buffer[index] = (byte)ArI8[i];index+=1;
-            }
-            index+=Encoding.ASCII.GetBytes(ArC,0,ArC.Length,buffer,index);
-            return index - start; // /*PayloadByteSize*/91;
-        }
 
         /// <summary>
         /// Value array
@@ -900,50 +645,49 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         public byte GetMaxByteSize() => 84; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 84; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
             var arraySize = 0;
+            var payloadSize = buffer.Length;
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                ArD[i] = BinSerialize.ReadDouble(ref buffer);index+=8;
+                ArD[i] = BinSerialize.ReadDouble(ref buffer);
             }
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                ArF[i] = BinSerialize.ReadFloat(ref buffer);index+=4;
+                ArF[i] = BinSerialize.ReadFloat(ref buffer);
             }
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                ArU32[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
+                ArU32[i] = BinSerialize.ReadUInt(ref buffer);
             }
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                ArI32[i] = BinSerialize.ReadInt(ref buffer);index+=4;
+                ArI32[i] = BinSerialize.ReadInt(ref buffer);
             }
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                ArU16[i] = BinSerialize.ReadUShort(ref buffer);index+=2;
+                ArU16[i] = BinSerialize.ReadUShort(ref buffer);
             }
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                ArI16[i] = BinSerialize.ReadShort(ref buffer);index+=2;
+                ArI16[i] = BinSerialize.ReadShort(ref buffer);
             }
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                ArU8[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+                ArU8[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                ArI8[i] = (sbyte)BinSerialize.ReadByte(ref buffer);index+=1;
+                ArI8[i] = (sbyte)BinSerialize.ReadByte(ref buffer);
             }
             arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/84 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             ArC = new char[arraySize];
@@ -956,44 +700,43 @@ namespace Asv.Mavlink.V2.PythonArrayTest
                 }
             }
             buffer = buffer.Slice(arraySize);
-            index+=arraySize;
+           
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
             for(var i=0;i<ArD.Length;i++)
             {
-                BinSerialize.WriteDouble(ref buffer,ArD[i]);index+=8;
+                BinSerialize.WriteDouble(ref buffer,ArD[i]);
             }
             for(var i=0;i<ArF.Length;i++)
             {
-                BinSerialize.WriteFloat(ref buffer,ArF[i]);index+=4;
+                BinSerialize.WriteFloat(ref buffer,ArF[i]);
             }
             for(var i=0;i<ArU32.Length;i++)
             {
-                BinSerialize.WriteUInt(ref buffer,ArU32[i]);index+=4;
+                BinSerialize.WriteUInt(ref buffer,ArU32[i]);
             }
             for(var i=0;i<ArI32.Length;i++)
             {
-                BinSerialize.WriteInt(ref buffer,ArI32[i]);index+=4;
+                BinSerialize.WriteInt(ref buffer,ArI32[i]);
             }
             for(var i=0;i<ArU16.Length;i++)
             {
-                BinSerialize.WriteUShort(ref buffer,ArU16[i]);index+=2;
+                BinSerialize.WriteUShort(ref buffer,ArU16[i]);
             }
             for(var i=0;i<ArI16.Length;i++)
             {
-                BinSerialize.WriteShort(ref buffer,ArI16[i]);index+=2;
+                BinSerialize.WriteShort(ref buffer,ArI16[i]);
             }
             for(var i=0;i<ArU8.Length;i++)
             {
-                BinSerialize.WriteByte(ref buffer,(byte)ArU8[i]);index+=1;
+                BinSerialize.WriteByte(ref buffer,(byte)ArU8[i]);
             }
             for(var i=0;i<ArI8.Length;i++)
             {
-                BinSerialize.WriteByte(ref buffer,(byte)ArI8[i]);index+=1;
+                BinSerialize.WriteByte(ref buffer,(byte)ArI8[i]);
             }
             unsafe
             {
@@ -1004,101 +747,11 @@ namespace Asv.Mavlink.V2.PythonArrayTest
                 }
             }
             buffer = buffer.Slice(ArC.Length);
-            index+=ArC.Length;
-            return index; // /*PayloadByteSize*/84;
+            
+            /* PayloadByteSize = 84 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArD[i] = BitConverter.ToDouble(buffer, index);index+=8;
-            }
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArF[i] = BitConverter.ToSingle(buffer, index);index+=4;
-            }
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArU32[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArI32[i] = BitConverter.ToInt32(buffer,index);index+=4;
-            }
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArU16[i] = BitConverter.ToUInt16(buffer,index);index+=2;
-            }
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArI16[i] = BitConverter.ToInt16(buffer,index);index+=2;
-            }
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArU8[i] = (byte)buffer[index++];
-            }
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArI8[i] = (sbyte)buffer[index++];
-            }
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/84 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            ArC = new char[arraySize];
-            Encoding.ASCII.GetChars(buffer, index,arraySize,ArC,0);
-            index+=arraySize;
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            for(var i=0;i<ArD.Length;i++)
-            {
-                BitConverter.GetBytes(ArD[i]).CopyTo(buffer, index);index+=8;
-            }
-            for(var i=0;i<ArF.Length;i++)
-            {
-                BitConverter.GetBytes(ArF[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<ArU32.Length;i++)
-            {
-                BitConverter.GetBytes(ArU32[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<ArI32.Length;i++)
-            {
-                BitConverter.GetBytes(ArI32[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<ArU16.Length;i++)
-            {
-                BitConverter.GetBytes(ArU16[i]).CopyTo(buffer, index);index+=2;
-            }
-            for(var i=0;i<ArI16.Length;i++)
-            {
-                BitConverter.GetBytes(ArI16[i]).CopyTo(buffer, index);index+=2;
-            }
-            for(var i=0;i<ArU8.Length;i++)
-            {
-                buffer[index] = (byte)ArU8[i];index+=1;
-            }
-            for(var i=0;i<ArI8.Length;i++)
-            {
-                buffer[index] = (byte)ArI8[i];index+=1;
-            }
-            index+=Encoding.ASCII.GetBytes(ArC,0,ArC.Length,buffer,index);
-            return index - start; // /*PayloadByteSize*/84;
-        }
 
         /// <summary>
         /// Value array
@@ -1170,76 +823,40 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         public byte GetMaxByteSize() => 24; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
             var arraySize = 0;
+            var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/2 - Math.Max(0,((/*PayloadByteSize*/24 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/));
             ArD = new double[arraySize];
             for(var i=0;i<arraySize;i++)
             {
-                ArD[i] = BinSerialize.ReadDouble(ref buffer);index+=8;
+                ArD[i] = BinSerialize.ReadDouble(ref buffer);
             }
-            V3 = BinSerialize.ReadUInt(ref buffer);index+=4;
+            V3 = BinSerialize.ReadUInt(ref buffer);
             arraySize = 2;
             for(var i=0;i<arraySize;i++)
             {
-                ArU16[i] = BinSerialize.ReadUShort(ref buffer);index+=2;
+                ArU16[i] = BinSerialize.ReadUShort(ref buffer);
             }
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
             for(var i=0;i<ArD.Length;i++)
             {
-                BinSerialize.WriteDouble(ref buffer,ArD[i]);index+=8;
+                BinSerialize.WriteDouble(ref buffer,ArD[i]);
             }
-            BinSerialize.WriteUInt(ref buffer,V3);index+=4;
+            BinSerialize.WriteUInt(ref buffer,V3);
             for(var i=0;i<ArU16.Length;i++)
             {
-                BinSerialize.WriteUShort(ref buffer,ArU16[i]);index+=2;
+                BinSerialize.WriteUShort(ref buffer,ArU16[i]);
             }
-            return index; // /*PayloadByteSize*/24;
+            /* PayloadByteSize = 24 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            arraySize = /*ArrayLength*/2 - Math.Max(0,((/*PayloadByteSize*/24 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/));
-            ArD = new double[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                ArD[i] = BitConverter.ToDouble(buffer, index);index+=8;
-            }
-            V3 = BitConverter.ToUInt32(buffer,index);index+=4;
-            arraySize = 2;
-            for(var i=0;i<arraySize;i++)
-            {
-                ArU16[i] = BitConverter.ToUInt16(buffer,index);index+=2;
-            }
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            for(var i=0;i<ArD.Length;i++)
-            {
-                BitConverter.GetBytes(ArD[i]).CopyTo(buffer, index);index+=8;
-            }
-            BitConverter.GetBytes(V3).CopyTo(buffer, index);index+=4;
-            for(var i=0;i<ArU16.Length;i++)
-            {
-                BitConverter.GetBytes(ArU16[i]).CopyTo(buffer, index);index+=2;
-            }
-            return index - start; // /*PayloadByteSize*/24;
-        }
 
         /// <summary>
         /// Value array

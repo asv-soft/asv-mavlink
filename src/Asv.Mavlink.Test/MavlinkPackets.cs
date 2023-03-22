@@ -46,7 +46,8 @@ namespace Asv.Mavlink.Test
                     S8 = 8
                 }
             };
-            _expectedObject.Serialize(_buffer, 0);
+            var span = new Span<byte>(_buffer);
+            _expectedObject.Serialize(ref span);
         }
 
 
@@ -65,7 +66,8 @@ namespace Asv.Mavlink.Test
         public void BufferDeserializeTest()
         {
             var deserialized = new TestTypesPacket();
-            deserialized.Deserialize(_buffer, 0);
+            var span = new ReadOnlySpan<byte>(_buffer);
+            deserialized.Deserialize(ref span);
             _expectedObject.ShouldDeepEqual(deserialized);
 
         }

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 1.1.1
+// This code was generate by tool Asv.Mavlink.Shell version 1.2.2
 
 using System;
 using System.Text;
@@ -68,63 +68,62 @@ namespace Asv.Mavlink.V2.Test
         public byte GetMaxByteSize() => 179; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 179; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
             var arraySize = 0;
-            U64 = BinSerialize.ReadULong(ref buffer);index+=8;
-            S64 = BinSerialize.ReadLong(ref buffer);index+=8;
-            D = BinSerialize.ReadDouble(ref buffer);index+=8;
+            var payloadSize = buffer.Length;
+            U64 = BinSerialize.ReadULong(ref buffer);
+            S64 = BinSerialize.ReadLong(ref buffer);
+            D = BinSerialize.ReadDouble(ref buffer);
             arraySize = /*ArrayLength*/3 - Math.Max(0,((/*PayloadByteSize*/179 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/));
             U64Array = new ulong[arraySize];
             for(var i=0;i<arraySize;i++)
             {
-                U64Array[i] = BinSerialize.ReadULong(ref buffer);index+=8;
+                U64Array[i] = BinSerialize.ReadULong(ref buffer);
             }
             arraySize = 3;
             for(var i=0;i<arraySize;i++)
             {
-                S64Array[i] = BinSerialize.ReadLong(ref buffer);index+=8;
+                S64Array[i] = BinSerialize.ReadLong(ref buffer);
             }
             arraySize = 3;
             for(var i=0;i<arraySize;i++)
             {
-                DArray[i] = BinSerialize.ReadDouble(ref buffer);index+=8;
+                DArray[i] = BinSerialize.ReadDouble(ref buffer);
             }
-            U32 = BinSerialize.ReadUInt(ref buffer);index+=4;
-            S32 = BinSerialize.ReadInt(ref buffer);index+=4;
-            F = BinSerialize.ReadFloat(ref buffer);index+=4;
+            U32 = BinSerialize.ReadUInt(ref buffer);
+            S32 = BinSerialize.ReadInt(ref buffer);
+            F = BinSerialize.ReadFloat(ref buffer);
             arraySize = 3;
             for(var i=0;i<arraySize;i++)
             {
-                U32Array[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
-            }
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                S32Array[i] = BinSerialize.ReadInt(ref buffer);index+=4;
+                U32Array[i] = BinSerialize.ReadUInt(ref buffer);
             }
             arraySize = 3;
             for(var i=0;i<arraySize;i++)
             {
-                FArray[i] = BinSerialize.ReadFloat(ref buffer);index+=4;
-            }
-            U16 = BinSerialize.ReadUShort(ref buffer);index+=2;
-            S16 = BinSerialize.ReadShort(ref buffer);index+=2;
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                U16Array[i] = BinSerialize.ReadUShort(ref buffer);index+=2;
+                S32Array[i] = BinSerialize.ReadInt(ref buffer);
             }
             arraySize = 3;
             for(var i=0;i<arraySize;i++)
             {
-                S16Array[i] = BinSerialize.ReadShort(ref buffer);index+=2;
+                FArray[i] = BinSerialize.ReadFloat(ref buffer);
+            }
+            U16 = BinSerialize.ReadUShort(ref buffer);
+            S16 = BinSerialize.ReadShort(ref buffer);
+            arraySize = 3;
+            for(var i=0;i<arraySize;i++)
+            {
+                U16Array[i] = BinSerialize.ReadUShort(ref buffer);
+            }
+            arraySize = 3;
+            for(var i=0;i<arraySize;i++)
+            {
+                S16Array[i] = BinSerialize.ReadShort(ref buffer);
             }
             C = (char)buffer[0];
             buffer = buffer.Slice(1);
-            index+=1;
+            
             arraySize = 10;
             unsafe
             {
@@ -135,66 +134,65 @@ namespace Asv.Mavlink.V2.Test
                 }
             }
             buffer = buffer.Slice(arraySize);
-            index+=arraySize;
-            U8 = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
-            S8 = (sbyte)BinSerialize.ReadByte(ref buffer);index+=1;
+           
+            U8 = (byte)BinSerialize.ReadByte(ref buffer);
+            S8 = (sbyte)BinSerialize.ReadByte(ref buffer);
             arraySize = 3;
             for(var i=0;i<arraySize;i++)
             {
-                U8Array[i] = (byte)BinSerialize.ReadByte(ref buffer);index+=1;
+                U8Array[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
             arraySize = 3;
             for(var i=0;i<arraySize;i++)
             {
-                S8Array[i] = (sbyte)BinSerialize.ReadByte(ref buffer);index+=1;
+                S8Array[i] = (sbyte)BinSerialize.ReadByte(ref buffer);
             }
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteULong(ref buffer,U64);index+=8;
-            BinSerialize.WriteLong(ref buffer,S64);index+=8;
-            BinSerialize.WriteDouble(ref buffer,D);index+=8;
+            BinSerialize.WriteULong(ref buffer,U64);
+            BinSerialize.WriteLong(ref buffer,S64);
+            BinSerialize.WriteDouble(ref buffer,D);
             for(var i=0;i<U64Array.Length;i++)
             {
-                BinSerialize.WriteULong(ref buffer,U64Array[i]);index+=8;
+                BinSerialize.WriteULong(ref buffer,U64Array[i]);
             }
             for(var i=0;i<S64Array.Length;i++)
             {
-                BinSerialize.WriteLong(ref buffer,S64Array[i]);index+=8;
+                BinSerialize.WriteLong(ref buffer,S64Array[i]);
             }
             for(var i=0;i<DArray.Length;i++)
             {
-                BinSerialize.WriteDouble(ref buffer,DArray[i]);index+=8;
+                BinSerialize.WriteDouble(ref buffer,DArray[i]);
             }
-            BinSerialize.WriteUInt(ref buffer,U32);index+=4;
-            BinSerialize.WriteInt(ref buffer,S32);index+=4;
-            BinSerialize.WriteFloat(ref buffer,F);index+=4;
+            BinSerialize.WriteUInt(ref buffer,U32);
+            BinSerialize.WriteInt(ref buffer,S32);
+            BinSerialize.WriteFloat(ref buffer,F);
             for(var i=0;i<U32Array.Length;i++)
             {
-                BinSerialize.WriteUInt(ref buffer,U32Array[i]);index+=4;
+                BinSerialize.WriteUInt(ref buffer,U32Array[i]);
             }
             for(var i=0;i<S32Array.Length;i++)
             {
-                BinSerialize.WriteInt(ref buffer,S32Array[i]);index+=4;
+                BinSerialize.WriteInt(ref buffer,S32Array[i]);
             }
             for(var i=0;i<FArray.Length;i++)
             {
-                BinSerialize.WriteFloat(ref buffer,FArray[i]);index+=4;
+                BinSerialize.WriteFloat(ref buffer,FArray[i]);
             }
-            BinSerialize.WriteUShort(ref buffer,U16);index+=2;
-            BinSerialize.WriteShort(ref buffer,S16);index+=2;
+            BinSerialize.WriteUShort(ref buffer,U16);
+            BinSerialize.WriteShort(ref buffer,S16);
             for(var i=0;i<U16Array.Length;i++)
             {
-                BinSerialize.WriteUShort(ref buffer,U16Array[i]);index+=2;
+                BinSerialize.WriteUShort(ref buffer,U16Array[i]);
             }
             for(var i=0;i<S16Array.Length;i++)
             {
-                BinSerialize.WriteShort(ref buffer,S16Array[i]);index+=2;
+                BinSerialize.WriteShort(ref buffer,S16Array[i]);
             }
-            BinSerialize.WriteByte(ref buffer,(byte)C);index+=1;
+            BinSerialize.WriteByte(ref buffer,(byte)C);
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -204,152 +202,21 @@ namespace Asv.Mavlink.V2.Test
                 }
             }
             buffer = buffer.Slice(S.Length);
-            index+=S.Length;
-            BinSerialize.WriteByte(ref buffer,(byte)U8);index+=1;
-            BinSerialize.WriteByte(ref buffer,(byte)S8);index+=1;
+            
+            BinSerialize.WriteByte(ref buffer,(byte)U8);
+            BinSerialize.WriteByte(ref buffer,(byte)S8);
             for(var i=0;i<U8Array.Length;i++)
             {
-                BinSerialize.WriteByte(ref buffer,(byte)U8Array[i]);index+=1;
+                BinSerialize.WriteByte(ref buffer,(byte)U8Array[i]);
             }
             for(var i=0;i<S8Array.Length;i++)
             {
-                BinSerialize.WriteByte(ref buffer,(byte)S8Array[i]);index+=1;
+                BinSerialize.WriteByte(ref buffer,(byte)S8Array[i]);
             }
-            return index; // /*PayloadByteSize*/179;
+            /* PayloadByteSize = 179 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            U64 = BitConverter.ToUInt64(buffer,index);index+=8;
-            S64 = BitConverter.ToInt64(buffer,index);index+=8;
-            D = BitConverter.ToDouble(buffer, index);index+=8;
-            arraySize = /*ArrayLength*/3 - Math.Max(0,((/*PayloadByteSize*/179 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/));
-            U64Array = new ulong[arraySize];
-            for(var i=0;i<arraySize;i++)
-            {
-                U64Array[i] = BitConverter.ToUInt64(buffer,index);index+=8;
-            }
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                S64Array[i] = BitConverter.ToInt64(buffer,index);index+=8;
-            }
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                DArray[i] = BitConverter.ToDouble(buffer, index);index+=8;
-            }
-            U32 = BitConverter.ToUInt32(buffer,index);index+=4;
-            S32 = BitConverter.ToInt32(buffer,index);index+=4;
-            F = BitConverter.ToSingle(buffer, index);index+=4;
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                U32Array[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-            }
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                S32Array[i] = BitConverter.ToInt32(buffer,index);index+=4;
-            }
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                FArray[i] = BitConverter.ToSingle(buffer, index);index+=4;
-            }
-            U16 = BitConverter.ToUInt16(buffer,index);index+=2;
-            S16 = BitConverter.ToInt16(buffer,index);index+=2;
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                U16Array[i] = BitConverter.ToUInt16(buffer,index);index+=2;
-            }
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                S16Array[i] = BitConverter.ToInt16(buffer,index);index+=2;
-            }
-            C = Encoding.ASCII.GetChars(buffer,index,1)[0];
-            index+=1;
-            arraySize = 10;
-            Encoding.ASCII.GetChars(buffer, index,arraySize,S,0);
-            index+=arraySize;
-            U8 = (byte)buffer[index++];
-            S8 = (sbyte)buffer[index++];
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                U8Array[i] = (byte)buffer[index++];
-            }
-            arraySize = 3;
-            for(var i=0;i<arraySize;i++)
-            {
-                S8Array[i] = (sbyte)buffer[index++];
-            }
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(U64).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(S64).CopyTo(buffer, index);index+=8;
-            BitConverter.GetBytes(D).CopyTo(buffer, index);index+=8;
-            for(var i=0;i<U64Array.Length;i++)
-            {
-                BitConverter.GetBytes(U64Array[i]).CopyTo(buffer, index);index+=8;
-            }
-            for(var i=0;i<S64Array.Length;i++)
-            {
-                BitConverter.GetBytes(S64Array[i]).CopyTo(buffer, index);index+=8;
-            }
-            for(var i=0;i<DArray.Length;i++)
-            {
-                BitConverter.GetBytes(DArray[i]).CopyTo(buffer, index);index+=8;
-            }
-            BitConverter.GetBytes(U32).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(S32).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(F).CopyTo(buffer, index);index+=4;
-            for(var i=0;i<U32Array.Length;i++)
-            {
-                BitConverter.GetBytes(U32Array[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<S32Array.Length;i++)
-            {
-                BitConverter.GetBytes(S32Array[i]).CopyTo(buffer, index);index+=4;
-            }
-            for(var i=0;i<FArray.Length;i++)
-            {
-                BitConverter.GetBytes(FArray[i]).CopyTo(buffer, index);index+=4;
-            }
-            BitConverter.GetBytes(U16).CopyTo(buffer, index);index+=2;
-            BitConverter.GetBytes(S16).CopyTo(buffer, index);index+=2;
-            for(var i=0;i<U16Array.Length;i++)
-            {
-                BitConverter.GetBytes(U16Array[i]).CopyTo(buffer, index);index+=2;
-            }
-            for(var i=0;i<S16Array.Length;i++)
-            {
-                BitConverter.GetBytes(S16Array[i]).CopyTo(buffer, index);index+=2;
-            }
-            BitConverter.GetBytes(C).CopyTo(buffer, index);index+=1;
-            index+=Encoding.ASCII.GetBytes(S,0,S.Length,buffer,index);
-            BitConverter.GetBytes(U8).CopyTo(buffer, index);index+=1;
-            BitConverter.GetBytes(S8).CopyTo(buffer, index);index+=1;
-            for(var i=0;i<U8Array.Length;i++)
-            {
-                buffer[index] = (byte)U8Array[i];index+=1;
-            }
-            for(var i=0;i<S8Array.Length;i++)
-            {
-                buffer[index] = (byte)S8Array[i];index+=1;
-            }
-            return index - start; // /*PayloadByteSize*/179;
-        }
 
         /// <summary>
         /// uint64_t

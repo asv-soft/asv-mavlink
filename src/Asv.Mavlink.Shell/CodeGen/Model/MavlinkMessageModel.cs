@@ -10,6 +10,8 @@ namespace Asv.Mavlink.Shell
         public string Name { get; set; }
         public IList<MessageFieldModel> Fields { get; set; } = new List<MessageFieldModel>();
         public IList<MessageFieldModel> ExtendedFields { get; set; } = new List<MessageFieldModel>();
+
+        public bool HasArrayFields => Fields.Any(_ => _.IsArray) || ExtendedFields.Any(_=>_.IsArray);
         
         public override string ToString()
         {

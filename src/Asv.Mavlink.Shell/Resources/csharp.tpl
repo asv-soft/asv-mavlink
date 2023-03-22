@@ -97,15 +97,16 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
         public byte GetMaxByteSize() => {{ msg.PayloadByteSize }}; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => {{ msg.PayloadByteSize - msg.ExtendedFieldsLength }}; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
+{%- if msg.HasArrayFields -%}
             var arraySize = 0;
+            var payloadSize = buffer.Length;
+{%- endif -%}
 {%- for field in msg.Fields -%}
             {%- if field.IsExtended -%}
             // extended field '{{ field.CamelCaseName }}' can be empty
-            if (index >= endIndex) return;
+            if (buffer.IsEmpty) return;
             {%- endif -%}
     {%- if field.IsEnum -%}
         {%- if field.IsArray -%}
@@ -119,38 +120,38 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
             {
                 {%- case field.Type -%}
                 {%- when 'sbyte' or 'byte'-%}
-                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BinSerialize.ReadByte(ref buffer);index+=1;
+                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BinSerialize.ReadByte(ref buffer);
                 {%- when 'short' -%}
-                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BinSerialize.ReadShort(ref buffer);index+=2;
+                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BinSerialize.ReadShort(ref buffer);
                 {%- when 'ushort' -%}
-                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BinSerialize.ReadUShort(ref buffer);index+=2;
+                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BinSerialize.ReadUShort(ref buffer);
                 {%- when 'int' -%}
-                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BinSerialize.ReadInt(ref buffer);index+=4;
+                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BinSerialize.ReadInt(ref buffer);
                 {%- when 'uint' -%}
-                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BinSerialize.ReadUInt(ref buffer);index+=4;
+                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BinSerialize.ReadUInt(ref buffer);
                 {%- when 'long' -%}
-                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BinSerialize.ReadLong(ref buffer);index+=8;
+                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BinSerialize.ReadLong(ref buffer);
                 {%- when 'ulong' -%}
-                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BinSerialize.ReadULong(ref buffer);index+=8;
+                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BinSerialize.ReadULong(ref buffer);
                 {%- endcase -%}
             }
 
         {%- else -%}
             {%- case field.Type -%}
             {%- when 'sbyte' or 'byte' -%}
-            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BinSerialize.ReadByte(ref buffer);index+=1;
+            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BinSerialize.ReadByte(ref buffer);
             {%- when 'short' -%}
-            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BinSerialize.ReadShort(ref buffer);index+=2;
+            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BinSerialize.ReadShort(ref buffer);
             {%- when 'ushort' -%}
-            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BinSerialize.ReadUShort(ref buffer);index+=2;
+            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BinSerialize.ReadUShort(ref buffer);
             {%- when 'int' -%}
-            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BinSerialize.ReadInt(ref buffer);index+=4;
+            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BinSerialize.ReadInt(ref buffer);
             {%- when 'uint' -%}
-            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BinSerialize.ReadUInt(ref buffer);index+=4;
+            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BinSerialize.ReadUInt(ref buffer);
             {%- when 'long' -%}
-            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BinSerialize.ReadLong(ref buffer);index+=8;
+            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BinSerialize.ReadLong(ref buffer);
             {%- when 'ulong' -%}
-            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BinSerialize.ReadULong(ref buffer);index+=8;
+            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BinSerialize.ReadULong(ref buffer);
             {%- endcase -%}
         {%- endif -%}
     {%- else -%}
@@ -171,29 +172,29 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
                 }
             }
             buffer = buffer.Slice(arraySize);
-            index+=arraySize;
+           
             {%- else -%}
             for(var i=0;i<arraySize;i++)
             {
                 {%- case field.Type -%}
                 {%- when 'sbyte' or 'byte' -%}
-                {{ field.CamelCaseName }}[i] = ({{ field.Type }})BinSerialize.ReadByte(ref buffer);index+=1;
+                {{ field.CamelCaseName }}[i] = ({{ field.Type }})BinSerialize.ReadByte(ref buffer);
                 {%- when 'short' -%}
-                {{ field.CamelCaseName }}[i] = BinSerialize.ReadShort(ref buffer);index+=2;
+                {{ field.CamelCaseName }}[i] = BinSerialize.ReadShort(ref buffer);
                 {%- when 'ushort' -%}
-                {{ field.CamelCaseName }}[i] = BinSerialize.ReadUShort(ref buffer);index+=2;
+                {{ field.CamelCaseName }}[i] = BinSerialize.ReadUShort(ref buffer);
                 {%- when 'int' -%}
-                {{ field.CamelCaseName }}[i] = BinSerialize.ReadInt(ref buffer);index+=4;
+                {{ field.CamelCaseName }}[i] = BinSerialize.ReadInt(ref buffer);
                 {%- when 'uint' -%}
-                {{ field.CamelCaseName }}[i] = BinSerialize.ReadUInt(ref buffer);index+=4;
+                {{ field.CamelCaseName }}[i] = BinSerialize.ReadUInt(ref buffer);
                 {%- when 'long' -%}
-                {{ field.CamelCaseName }}[i] = BinSerialize.ReadLong(ref buffer);index+=8;
+                {{ field.CamelCaseName }}[i] = BinSerialize.ReadLong(ref buffer);
                 {%- when 'ulong' -%}
-                {{ field.CamelCaseName }}[i] = BinSerialize.ReadULong(ref buffer);index+=8;
+                {{ field.CamelCaseName }}[i] = BinSerialize.ReadULong(ref buffer);
                 {%- when 'float' -%}
-                {{ field.CamelCaseName }}[i] = BinSerialize.ReadFloat(ref buffer);index+=4;
+                {{ field.CamelCaseName }}[i] = BinSerialize.ReadFloat(ref buffer);
                 {%- when 'double' -%}
-                {{ field.CamelCaseName }}[i] = BinSerialize.ReadDouble(ref buffer);index+=8;
+                {{ field.CamelCaseName }}[i] = BinSerialize.ReadDouble(ref buffer);
                 {%- endcase -%}
             }
             {%- endif -%}
@@ -201,27 +202,27 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
             {%- if field.Type == 'char' -%}
             {{ field.CamelCaseName }} = (char)buffer[0];
             buffer = buffer.Slice(1);
-            index+=1;
+            
             {%- else -%}
             {%- case field.Type -%}
             {%- when 'sbyte' or 'byte' -%}
-            {{ field.CamelCaseName }} = ({{ field.Type }})BinSerialize.ReadByte(ref buffer);index+=1;
+            {{ field.CamelCaseName }} = ({{ field.Type }})BinSerialize.ReadByte(ref buffer);
             {%- when 'short' -%}
-            {{ field.CamelCaseName }} = BinSerialize.ReadShort(ref buffer);index+=2;
+            {{ field.CamelCaseName }} = BinSerialize.ReadShort(ref buffer);
             {%- when 'ushort' -%}
-            {{ field.CamelCaseName }} = BinSerialize.ReadUShort(ref buffer);index+=2;
+            {{ field.CamelCaseName }} = BinSerialize.ReadUShort(ref buffer);
             {%- when 'int' -%}
-            {{ field.CamelCaseName }} = BinSerialize.ReadInt(ref buffer);index+=4;
+            {{ field.CamelCaseName }} = BinSerialize.ReadInt(ref buffer);
             {%- when 'uint' -%}
-            {{ field.CamelCaseName }} = BinSerialize.ReadUInt(ref buffer);index+=4;
+            {{ field.CamelCaseName }} = BinSerialize.ReadUInt(ref buffer);
             {%- when 'long' -%}
-            {{ field.CamelCaseName }} = BinSerialize.ReadLong(ref buffer);index+=8;
+            {{ field.CamelCaseName }} = BinSerialize.ReadLong(ref buffer);
             {%- when 'ulong' -%}
-            {{ field.CamelCaseName }} = BinSerialize.ReadULong(ref buffer);index+=8;
+            {{ field.CamelCaseName }} = BinSerialize.ReadULong(ref buffer);
             {%- when 'float' -%}
-            {{ field.CamelCaseName }} = BinSerialize.ReadFloat(ref buffer);index+=4;
+            {{ field.CamelCaseName }} = BinSerialize.ReadFloat(ref buffer);
             {%- when 'double' -%}
-            {{ field.CamelCaseName }} = BinSerialize.ReadDouble(ref buffer);index+=8;
+            {{ field.CamelCaseName }} = BinSerialize.ReadDouble(ref buffer);
             {%- endcase -%}
             {%- endif -%}
         {%- endif -%}
@@ -230,9 +231,8 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
 {%- for field in msg.Fields -%}
     {%- if field.IsEnum -%}
         {%- if field.IsArray -%}
@@ -242,19 +242,19 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
                 {%- when 'char' or 'double' or 'float'-%}
                 ERROR => ENUM as 'char' or 'double' or 'float' ???????
                 {%- when 'sbyte' or 'byte' -%}
-                BinSerialize.WriteByte(ref buffer,(byte){{ field.CamelCaseName }}[i]);index+=1;
+                BinSerialize.WriteByte(ref buffer,(byte){{ field.CamelCaseName }}[i]);
                 {%- when 'short' -%}
-                BinSerialize.WriteShort(ref buffer,(short){{ field.CamelCaseName }}[i]);index+=2;
+                BinSerialize.WriteShort(ref buffer,(short){{ field.CamelCaseName }}[i]);
                 {%- when 'ushort' -%}
-                BinSerialize.WriteUShort(ref buffer,(ushort){{ field.CamelCaseName }}[i]);index+=2;
+                BinSerialize.WriteUShort(ref buffer,(ushort){{ field.CamelCaseName }}[i]);
                 {%- when 'int' -%}
-                BinSerialize.WriteInt(ref buffer,(int){{ field.CamelCaseName }}[i]);index+=4;
+                BinSerialize.WriteInt(ref buffer,(int){{ field.CamelCaseName }}[i]);
                 {%- when 'uint' -%}
-                BinSerialize.WriteUInt(ref buffer,(uint){{ field.CamelCaseName }}[i]);index+=4;
+                BinSerialize.WriteUInt(ref buffer,(uint){{ field.CamelCaseName }}[i]);
                 {%- when 'long' -%}
-                BinSerialize.WriteLong(ref buffer,(long){{ field.CamelCaseName }}[i]);index+=8;
+                BinSerialize.WriteLong(ref buffer,(long){{ field.CamelCaseName }}[i]);
                 {%- when 'ulong' -%}
-                BinSerialize.WriteULong(ref buffer,(ulong){{ field.CamelCaseName }}[i]);index+=8;
+                BinSerialize.WriteULong(ref buffer,(ulong){{ field.CamelCaseName }}[i]);
                 
                 {%- endcase -%}
             }
@@ -263,19 +263,19 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
             {%- when 'char' or 'double' or 'float'-%}
             ERROR => ENUM as 'char' or 'double' or 'float' ???????
             {%- when 'sbyte' or 'byte' -%}
-            BinSerialize.WriteByte(ref buffer,(byte){{ field.CamelCaseName }});index+=1;
+            BinSerialize.WriteByte(ref buffer,(byte){{ field.CamelCaseName }});
             {%- when 'short' -%}
-            BinSerialize.WriteShort(ref buffer,(short){{ field.CamelCaseName }});index+=2;
+            BinSerialize.WriteShort(ref buffer,(short){{ field.CamelCaseName }});
             {%- when 'ushort' -%}
-            BinSerialize.WriteUShort(ref buffer,(ushort){{ field.CamelCaseName }});index+=2;
+            BinSerialize.WriteUShort(ref buffer,(ushort){{ field.CamelCaseName }});
             {%- when 'int' -%}
-            BinSerialize.WriteInt(ref buffer,(int){{ field.CamelCaseName }});index+=4;
+            BinSerialize.WriteInt(ref buffer,(int){{ field.CamelCaseName }});
             {%- when 'uint' -%}
-            BinSerialize.WriteUInt(ref buffer,(uint){{ field.CamelCaseName }});index+=4;
+            BinSerialize.WriteUInt(ref buffer,(uint){{ field.CamelCaseName }});
             {%- when 'long' -%}
-            BinSerialize.WriteLong(ref buffer,(long){{ field.CamelCaseName }});index+=8;
+            BinSerialize.WriteLong(ref buffer,(long){{ field.CamelCaseName }});
             {%- when 'ulong' -%}
-            BinSerialize.WriteULong(ref buffer,(ulong){{ field.CamelCaseName }});index+=8;
+            BinSerialize.WriteULong(ref buffer,(ulong){{ field.CamelCaseName }});
             {%- endcase -%}
         {%- endif -%}
     {%- else -%}
@@ -291,257 +291,83 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
                 }
             }
             buffer = buffer.Slice({{ field.CamelCaseName }}.Length);
-            index+={{ field.CamelCaseName }}.Length;
+            
             {%- when 'sbyte' or 'byte' -%}
             for(var i=0;i<{{ field.CamelCaseName }}.Length;i++)
             {
-                BinSerialize.WriteByte(ref buffer,(byte){{ field.CamelCaseName }}[i]);index+=1;
+                BinSerialize.WriteByte(ref buffer,(byte){{ field.CamelCaseName }}[i]);
             }
             {%- when 'short' -%}
             for(var i=0;i<{{ field.CamelCaseName }}.Length;i++)
             {
-                BinSerialize.WriteShort(ref buffer,{{ field.CamelCaseName }}[i]);index+=2;
+                BinSerialize.WriteShort(ref buffer,{{ field.CamelCaseName }}[i]);
             }
             {%- when 'ushort' -%}
             for(var i=0;i<{{ field.CamelCaseName }}.Length;i++)
             {
-                BinSerialize.WriteUShort(ref buffer,{{ field.CamelCaseName }}[i]);index+=2;
+                BinSerialize.WriteUShort(ref buffer,{{ field.CamelCaseName }}[i]);
             }
             {%- when 'int' -%}
             for(var i=0;i<{{ field.CamelCaseName }}.Length;i++)
             {
-                BinSerialize.WriteInt(ref buffer,{{ field.CamelCaseName }}[i]);index+=4;
+                BinSerialize.WriteInt(ref buffer,{{ field.CamelCaseName }}[i]);
             }
             {%- when 'uint' -%}
             for(var i=0;i<{{ field.CamelCaseName }}.Length;i++)
             {
-                BinSerialize.WriteUInt(ref buffer,{{ field.CamelCaseName }}[i]);index+=4;
+                BinSerialize.WriteUInt(ref buffer,{{ field.CamelCaseName }}[i]);
             }
             {%- when 'long' -%}
             for(var i=0;i<{{ field.CamelCaseName }}.Length;i++)
             {
-                BinSerialize.WriteLong(ref buffer,{{ field.CamelCaseName }}[i]);index+=8;
+                BinSerialize.WriteLong(ref buffer,{{ field.CamelCaseName }}[i]);
             }
             {%- when 'ulong' -%}
             for(var i=0;i<{{ field.CamelCaseName }}.Length;i++)
             {
-                BinSerialize.WriteULong(ref buffer,{{ field.CamelCaseName }}[i]);index+=8;
+                BinSerialize.WriteULong(ref buffer,{{ field.CamelCaseName }}[i]);
             }
             {%- when 'float' -%}
             for(var i=0;i<{{ field.CamelCaseName }}.Length;i++)
             {
-                BinSerialize.WriteFloat(ref buffer,{{ field.CamelCaseName }}[i]);index+=4;
+                BinSerialize.WriteFloat(ref buffer,{{ field.CamelCaseName }}[i]);
             }
             {%- when 'double' -%}
             for(var i=0;i<{{ field.CamelCaseName }}.Length;i++)
             {
-                BinSerialize.WriteDouble(ref buffer,{{ field.CamelCaseName }}[i]);index+=8;
+                BinSerialize.WriteDouble(ref buffer,{{ field.CamelCaseName }}[i]);
             }
             {%- endcase -%}
         {%- else -%}
             {%- case field.Type -%}
             {%- when 'char' -%}
-            BinSerialize.WriteByte(ref buffer,(byte){{ field.CamelCaseName }});index+=1;
+            BinSerialize.WriteByte(ref buffer,(byte){{ field.CamelCaseName }});
             {%- when 'sbyte' or 'byte' -%}
-            BinSerialize.WriteByte(ref buffer,(byte){{ field.CamelCaseName }});index+=1;
+            BinSerialize.WriteByte(ref buffer,(byte){{ field.CamelCaseName }});
             {%- when 'short' -%}
-            BinSerialize.WriteShort(ref buffer,{{ field.CamelCaseName }});index+=2;
+            BinSerialize.WriteShort(ref buffer,{{ field.CamelCaseName }});
             {%- when 'ushort' -%}
-            BinSerialize.WriteUShort(ref buffer,{{ field.CamelCaseName }});index+=2;
+            BinSerialize.WriteUShort(ref buffer,{{ field.CamelCaseName }});
             {%- when 'int' -%}
-            BinSerialize.WriteInt(ref buffer,{{ field.CamelCaseName }});index+=4;
+            BinSerialize.WriteInt(ref buffer,{{ field.CamelCaseName }});
             {%- when 'uint' -%}
-            BinSerialize.WriteUInt(ref buffer,{{ field.CamelCaseName }});index+=4;
+            BinSerialize.WriteUInt(ref buffer,{{ field.CamelCaseName }});
             {%- when 'long' -%}
-            BinSerialize.WriteLong(ref buffer,{{ field.CamelCaseName }});index+=8;
+            BinSerialize.WriteLong(ref buffer,{{ field.CamelCaseName }});
             {%- when 'ulong' -%}
-            BinSerialize.WriteULong(ref buffer,{{ field.CamelCaseName }});index+=8;
+            BinSerialize.WriteULong(ref buffer,{{ field.CamelCaseName }});
             {%- when 'float' -%}
-            BinSerialize.WriteFloat(ref buffer,{{ field.CamelCaseName }});index+=4;
+            BinSerialize.WriteFloat(ref buffer,{{ field.CamelCaseName }});
             {%- when 'double' -%}
-            BinSerialize.WriteDouble(ref buffer,{{ field.CamelCaseName }});index+=8;
+            BinSerialize.WriteDouble(ref buffer,{{ field.CamelCaseName }});
             {%- endcase -%}
         {%- endif -%}
     {%- endif -%}
 {%- endfor -%}
-            return index; // /*PayloadByteSize*/{{ msg.PayloadByteSize }};
+            /* PayloadByteSize = {{ msg.PayloadByteSize }} */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-{%- for field in msg.Fields -%}
-            {%- if field.IsExtended -%}
-            // extended field '{{ field.CamelCaseName }}' can be empty
-            if (index >= endIndex) return;
-            {%- endif -%}
-    {%- if field.IsEnum -%}
-        {%- if field.IsArray -%}
-            {%- if field.IsTheLargestArrayInMessage -%}
-            arraySize = /*ArrayLength*/{{ field.ArrayLength }} - Math.Max(0,((/*PayloadByteSize*/{{ msg.PayloadByteSize }} - payloadSize - /*ExtendedFieldsLength*/{{ msg.ExtendedFieldsLength }})//*FieldTypeByteSize*/{{ field.FieldTypeByteSize }}));
-            {{ field.CamelCaseName }} = new {{ field.Type }}[arraySize];
-            {%- else -%}
-            arraySize = {{ field.ArrayLength }};
-            {%- endif -%}
-            for(var i=0;i<arraySize;i++)
-            {
-                {%- case field.Type -%}
-                {%- when 'sbyte' or 'byte'-%}
-                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})buffer[index++];
-                {%- when 'short' -%}
-                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BitConverter.ToInt16(buffer,index);index+=2;
-                {%- when 'ushort' -%}
-                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BitConverter.ToUInt16(buffer,index);index+=2;
-                {%- when 'int' -%}
-                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BitConverter.ToInt32(buffer,index);index+=4;
-                {%- when 'uint' -%}
-                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BitConverter.ToUInt32(buffer,index);index+=4;
-                {%- when 'long' -%}
-                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BitConverter.ToInt64(buffer,index);index+=8;
-                {%- when 'ulong' -%}
-                {{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})BitConverter.ToUInt64(buffer,index);index+=8;
-                {%- endcase -%}
-            }
-
-        {%- else -%}
-            {%- case field.Type -%}
-            {%- when 'sbyte' or 'byte' -%}
-            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})buffer[index++];
-            {%- when 'short' -%}
-            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BitConverter.ToInt16(buffer,index);index+=2;
-            {%- when 'ushort' -%}
-            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BitConverter.ToUInt16(buffer,index);index+=2;
-            {%- when 'int' -%}
-            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BitConverter.ToInt32(buffer,index);index+=4;
-            {%- when 'uint' -%}
-            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BitConverter.ToUInt32(buffer,index);index+=4;
-            {%- when 'long' -%}
-            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BitConverter.ToInt64(buffer,index);index+=8;
-            {%- when 'ulong' -%}
-            {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})BitConverter.ToUInt64(buffer,index);index+=8;
-            {%- endcase -%}
-        {%- endif -%}
-    {%- else -%}
-        {%- if field.IsArray -%}
-            {%- if field.IsTheLargestArrayInMessage -%}
-            arraySize = /*ArrayLength*/{{ field.ArrayLength }} - Math.Max(0,((/*PayloadByteSize*/{{ msg.PayloadByteSize }} - payloadSize - /*ExtendedFieldsLength*/{{ msg.ExtendedFieldsLength }})/{{ field.FieldTypeByteSize }} /*FieldTypeByteSize*/));
-            {{ field.CamelCaseName }} = new {{ field.Type }}[arraySize];
-            {%- else -%}
-            arraySize = {{ field.ArrayLength }};
-            {%- endif -%}
-            {%- if field.Type == 'char' -%}
-            Encoding.ASCII.GetChars(buffer, index,arraySize,{{ field.CamelCaseName }},0);
-            index+=arraySize;
-            {%- else -%}
-            for(var i=0;i<arraySize;i++)
-            {
-                {%- case field.Type -%}
-                {%- when 'sbyte' or 'byte' -%}
-                {{ field.CamelCaseName }}[i] = ({{ field.Type }})buffer[index++];
-                {%- when 'short' -%}
-                {{ field.CamelCaseName }}[i] = BitConverter.ToInt16(buffer,index);index+=2;
-                {%- when 'ushort' -%}
-                {{ field.CamelCaseName }}[i] = BitConverter.ToUInt16(buffer,index);index+=2;
-                {%- when 'int' -%}
-                {{ field.CamelCaseName }}[i] = BitConverter.ToInt32(buffer,index);index+=4;
-                {%- when 'uint' -%}
-                {{ field.CamelCaseName }}[i] = BitConverter.ToUInt32(buffer,index);index+=4;
-                {%- when 'long' -%}
-                {{ field.CamelCaseName }}[i] = BitConverter.ToInt64(buffer,index);index+=8;
-                {%- when 'ulong' -%}
-                {{ field.CamelCaseName }}[i] = BitConverter.ToUInt64(buffer,index);index+=8;
-                {%- when 'float' -%}
-                {{ field.CamelCaseName }}[i] = BitConverter.ToSingle(buffer, index);index+=4;
-                {%- when 'double' -%}
-                {{ field.CamelCaseName }}[i] = BitConverter.ToDouble(buffer, index);index+=8;
-                {%- endcase -%}
-            }
-            {%- endif -%}
-        {%- else -%}
-            {%- if field.Type == 'char' -%}
-            {{ field.CamelCaseName }} = Encoding.ASCII.GetChars(buffer,index,1)[0];
-            index+=1;
-            {%- else -%}
-            {%- case field.Type -%}
-            {%- when 'sbyte' or 'byte' -%}
-            {{ field.CamelCaseName }} = ({{ field.Type }})buffer[index++];
-            {%- when 'short' -%}
-            {{ field.CamelCaseName }} = BitConverter.ToInt16(buffer,index);index+=2;
-            {%- when 'ushort' -%}
-            {{ field.CamelCaseName }} = BitConverter.ToUInt16(buffer,index);index+=2;
-            {%- when 'int' -%}
-            {{ field.CamelCaseName }} = BitConverter.ToInt32(buffer,index);index+=4;
-            {%- when 'uint' -%}
-            {{ field.CamelCaseName }} = BitConverter.ToUInt32(buffer,index);index+=4;
-            {%- when 'long' -%}
-            {{ field.CamelCaseName }} = BitConverter.ToInt64(buffer,index);index+=8;
-            {%- when 'ulong' -%}
-            {{ field.CamelCaseName }} = BitConverter.ToUInt64(buffer,index);index+=8;
-            {%- when 'float' -%}
-            {{ field.CamelCaseName }} = BitConverter.ToSingle(buffer, index);index+=4;
-            {%- when 'double' -%}
-            {{ field.CamelCaseName }} = BitConverter.ToDouble(buffer, index);index+=8;
-            {%- endcase -%}
-            {%- endif -%}
-        {%- endif -%}
-    {%- endif -%}
-{%- endfor -%}
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-{%- for field in msg.Fields -%}
-    {%- if field.IsEnum -%}
-        {%- if field.IsArray -%}
-            for(var i=0;i<{{ field.CamelCaseName }}.Length;i++)
-            {
-                {%- case field.Type -%}
-                {%- when 'char' or 'double' or 'float'-%}
-                ERROR => ENUM as 'char' or 'double' or 'float' ???????
-                {%- when 'sbyte' or 'byte' -%}
-                buffer[index] = (byte){{ field.CamelCaseName }}[i];index+={{ field.FieldTypeByteSize }};
-                {%- when 'ulong' or 'long' or 'uint' or 'int' or 'ushort' or 'short' -%}
-                BitConverter.GetBytes(({{ field.Type }}){{ field.CamelCaseName }}[i]).CopyTo(buffer, index);index+={{ field.FieldTypeByteSize }};
-                {%- endcase -%}
-            }
-        {%- else -%}
-            {%- case field.Type -%}
-            {%- when 'char' or 'double' or 'float'-%}
-            ERROR => ENUM as 'char' or 'double' or 'float' ???????
-            {%- when 'sbyte' or 'byte' -%}
-            buffer[index] = (byte){{ field.CamelCaseName }};index+={{ field.FieldTypeByteSize }};
-            {%- when 'ulong' or 'long' or 'uint' or 'int' or 'ushort' or 'short'  -%}
-            BitConverter.GetBytes(({{ field.Type }}){{ field.CamelCaseName }}).CopyTo(buffer, index);index+={{ field.FieldTypeByteSize }};
-            {%- endcase -%}
-        {%- endif -%}
-    {%- else -%}
-        {%- if field.IsArray -%}
-            {%- case field.Type -%}
-            {%- when 'char' -%}
-            index+=Encoding.ASCII.GetBytes({{ field.CamelCaseName }},0,{{ field.CamelCaseName }}.Length,buffer,index);
-            {%- when 'sbyte' or 'byte' -%}
-            for(var i=0;i<{{ field.CamelCaseName }}.Length;i++)
-            {
-                buffer[index] = (byte){{ field.CamelCaseName }}[i];index+={{ field.FieldTypeByteSize }};
-            }
-            {%- when 'double' or 'float' or 'ulong' or 'long' or 'uint' or 'int' or 'ushort' or 'short'  -%}
-            for(var i=0;i<{{ field.CamelCaseName }}.Length;i++)
-            {
-                BitConverter.GetBytes({{ field.CamelCaseName }}[i]).CopyTo(buffer, index);index+={{ field.FieldTypeByteSize }};
-            }
-            {%- endcase -%}
-        {%- else -%}
-            BitConverter.GetBytes({{ field.CamelCaseName }}).CopyTo(buffer, index);index+={{ field.FieldTypeByteSize }};
-        {%- endif -%}
-    {%- endif -%}
-{%- endfor -%}
-            return index - start; // /*PayloadByteSize*/{{ msg.PayloadByteSize }};
-        }
 
     {%- for field in msg.Fields -%}
         /// <summary>

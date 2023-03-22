@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 1.1.10
+// This code was generate by tool Asv.Mavlink.Shell version 1.2.2
 
 using System;
 using System.Text;
@@ -159,50 +159,25 @@ namespace Asv.Mavlink.V2.AsvGbs
         public byte GetMaxByteSize() => 13; // Summ of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 13; // of byte sized of fields (exclude extended)
 
-        public void Deserialize(ref ReadOnlySpan<byte> buffer, int payloadSize)
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            var index = 0;
-            var endIndex = payloadSize;
-            var arraySize = 0;
-            Lat = BinSerialize.ReadInt(ref buffer);index+=4;
-            Lng = BinSerialize.ReadInt(ref buffer);index+=4;
-            Alt = BinSerialize.ReadInt(ref buffer);index+=4;
-            State = (AsvGbsState)BinSerialize.ReadByte(ref buffer);index+=1;
+            Lat = BinSerialize.ReadInt(ref buffer);
+            Lng = BinSerialize.ReadInt(ref buffer);
+            Alt = BinSerialize.ReadInt(ref buffer);
+            State = (AsvGbsState)BinSerialize.ReadByte(ref buffer);
 
         }
 
-        public int Serialize(ref Span<byte> buffer)
+        public void Serialize(ref Span<byte> buffer)
         {
-            var index = 0;
-            BinSerialize.WriteInt(ref buffer,Lat);index+=4;
-            BinSerialize.WriteInt(ref buffer,Lng);index+=4;
-            BinSerialize.WriteInt(ref buffer,Alt);index+=4;
-            BinSerialize.WriteByte(ref buffer,(byte)State);index+=1;
-            return index; // /*PayloadByteSize*/13;
+            BinSerialize.WriteInt(ref buffer,Lat);
+            BinSerialize.WriteInt(ref buffer,Lng);
+            BinSerialize.WriteInt(ref buffer,Alt);
+            BinSerialize.WriteByte(ref buffer,(byte)State);
+            /* PayloadByteSize = 13 */;
         }
 
 
-
-        public void Deserialize(byte[] buffer, int offset, int payloadSize)
-        {
-            var index = offset;
-            var endIndex = offset + payloadSize;
-            var arraySize = 0;
-            Lat = BitConverter.ToInt32(buffer,index);index+=4;
-            Lng = BitConverter.ToInt32(buffer,index);index+=4;
-            Alt = BitConverter.ToInt32(buffer,index);index+=4;
-            State = (AsvGbsState)buffer[index++];
-        }
-
-        public int Serialize(byte[] buffer, int index)
-        {
-		var start = index;
-            BitConverter.GetBytes(Lat).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Lng).CopyTo(buffer, index);index+=4;
-            BitConverter.GetBytes(Alt).CopyTo(buffer, index);index+=4;
-            buffer[index] = (byte)State;index+=1;
-            return index - start; // /*PayloadByteSize*/13;
-        }
 
         /// <summary>
         /// Latitude of GBS (value / 10000000D).

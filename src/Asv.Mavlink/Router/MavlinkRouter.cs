@@ -61,7 +61,7 @@ namespace Asv.Mavlink
                 Description = Port.ToString(),
                 LastException = Port.Error.Value,
                 Type = Port.PortType,
-                IsEnabled = Port.IsEnabled.Value,
+                IsEnabled = Port?.IsEnabled.Value,
             };
         }
 

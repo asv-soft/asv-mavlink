@@ -48,7 +48,7 @@ namespace Asv.Mavlink
             };
             _transponder =
                 new MavlinkPacketTransponder<AsvGbsOutStatusPacket, AsvGbsOutStatusPayload>(connection, identity, seq);
-            _transponder.Set(_ => _.State = AsvGbsState.AsvGbsStateIdleMode);
+            _transponder.Set(_ => _.State = AsvGbsState.AsvGbsStateIdleMode).Wait();
         }
 
         public void Init(TimeSpan statusRate, IAsvGbsClient localImplementation)
@@ -60,13 +60,13 @@ namespace Asv.Mavlink
             {
                 status.State = _;
                 
-            })).DisposeItWith(Disposable);
+            }).Wait()).DisposeItWith(Disposable);
             _client.Position.Subscribe(_ => _transponder.Set(status =>
             {
                 status.Lat = (int)(_.Latitude * 10000000D);
                 status.Lng = (int)(_.Longitude * 10000000D);
                 status.Alt = (int)(_.Altitude * 1000D);
-            })).DisposeItWith(Disposable);
+            }).Wait()).DisposeItWith(Disposable);
             _transponder.Start(statusRate);
         }
     }

@@ -23,7 +23,6 @@ namespace Asv.Mavlink.Shell
         private Regex _nameFilter;
         private bool _silentMode;
         private Regex _textFilter;
-        private string _dir;
 
 
         public MavProxy()
