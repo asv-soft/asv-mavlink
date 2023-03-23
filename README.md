@@ -1,6 +1,6 @@
 # asv-mavlink
 
-Mavlink library for .NET Framework 4.6.1, .NET5.0, .NET 6.0, Mono (support MAVLinkV2 packets)
+Mavlink library for .NET 6.0, .NET 7.0 (support MAVLinkV2 packets)
 
 You can control vehicles, that support [MAVLink](https://mavlink.io/en/) protocol.
 
