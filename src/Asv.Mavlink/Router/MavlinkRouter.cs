@@ -322,17 +322,19 @@ namespace Asv.Mavlink
         {
             Interlocked.Add(ref _txBytes, count);
             Interlocked.Increment(ref _txPackets);
+            Task<bool>[] tasks;
             try
             {
                 _portCollectionSync.EnterReadLock();
-                var result = await Task.WhenAll(_ports.Where(_ => _.Port.IsEnabled.Value && _.Port.State.Value == PortState.Connected).Select(_ => _.InternalSendSerializedPacket(data, count, cancel)));
-                return result.All(_ => _);
+                tasks =  _ports.Where(_ => _.Port.IsEnabled.Value && _.Port.State.Value == PortState.Connected)
+                    .Select(_ => _.InternalSendSerializedPacket(data, count, cancel)).ToArray();
             }
             finally
             {
                 _portCollectionSync.ExitReadLock();
             }
-            
+            var result = await Task.WhenAll(tasks);
+            return result.All(_ => _);
         }
 
         public string Name { get; }

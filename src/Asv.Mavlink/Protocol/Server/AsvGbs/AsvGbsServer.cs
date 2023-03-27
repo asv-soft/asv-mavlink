@@ -47,7 +47,7 @@ namespace Asv.Mavlink
                 return new CommandLongResult(result);
             };
             _transponder =
-                new MavlinkPacketTransponder<AsvGbsOutStatusPacket, AsvGbsOutStatusPayload>(connection, identity, seq);
+                new MavlinkPacketTransponder<AsvGbsOutStatusPacket, AsvGbsOutStatusPayload>(connection, identity, seq).DisposeItWith(Disposable);
             _transponder.Set(_ => _.State = AsvGbsState.AsvGbsStateIdleMode).Wait();
         }
 
