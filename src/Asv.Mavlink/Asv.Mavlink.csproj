@@ -59,7 +59,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Router\" />
     <Folder Include="Protocol\Dialects\" />
   </ItemGroup>
   <ItemGroup>
