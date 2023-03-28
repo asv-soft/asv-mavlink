@@ -1,9 +1,6 @@
 ﻿#nullable enable
-using Asv.Common;
 using Asv.IO;
 using System;
-using System.Reactive.Disposables;
-using System.Threading;
 
 namespace Asv.Mavlink
 {

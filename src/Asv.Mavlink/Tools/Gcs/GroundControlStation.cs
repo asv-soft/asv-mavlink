@@ -6,10 +6,7 @@ using System.Reactive.Subjects;
 using System.Threading;
 using Asv.Common;
 using Asv.IO;
-using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Icarous;
-using Asv.Mavlink.V2.Uavionix;
 using Newtonsoft.Json;
 using NLog;
 
@@ -93,14 +90,7 @@ namespace Asv.Mavlink
             _seq = sequenceCalculator ?? new PacketSequenceCalculator();
             _config = config;
             
-            MavlinkV2 = new MavlinkV2Connection(Ports, _ =>
-            {
-                // _.RegisterMinimalDialect();
-                _.RegisterCommonDialect();
-                _.RegisterArdupilotmegaDialect();
-                _.RegisterIcarousDialect();
-                _.RegisterUavionixDialect();
-            }).DisposeItWith(Disposable);
+            MavlinkV2 = MavlinkV2ConnectionFactory.Create(Ports).DisposeItWith(Disposable);
             Ports.DisposeItWith(Disposable);
 
             _foundDeviceSubject.DisposeItWith(Disposable);

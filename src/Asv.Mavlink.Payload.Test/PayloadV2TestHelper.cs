@@ -11,10 +11,7 @@ using Asv.IO;
 using Asv.Mavlink.Client;
 using Asv.Mavlink.Payload.Digits;
 using Asv.Mavlink.Server;
-using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Icarous;
-using Asv.Mavlink.V2.Uavionix;
 
 namespace Asv.Mavlink.Payload.Test
 {
@@ -37,14 +34,7 @@ namespace Asv.Mavlink.Payload.Test
             var serverPort = PortFactory.Create($"tcp://127.0.0.1:{port}?srv=true");
             serverPort.Enable();
 
-            var serverConnection = new MavlinkV2Connection(serverPort, _ =>
-            {
-                // _.RegisterMinimalDialect();
-                _.RegisterCommonDialect();
-                _.RegisterArdupilotmegaDialect();
-                _.RegisterIcarousDialect();
-                _.RegisterUavionixDialect();
-            });
+            var serverConnection = MavlinkV2ConnectionFactory.Create(serverPort);
             var mavlinkServer = new MavlinkServerBase(serverConnection,
                 new MavlinkServerIdentity { ComponentId = compId, SystemId = sysId });
             mavlinkServer.Heartbeat.Set(_ => _.Autopilot = MavAutopilot.MavAutopilotGeneric);
@@ -56,14 +46,7 @@ namespace Asv.Mavlink.Payload.Test
         {
             var clientPort = PortFactory.Create($"tcp://127.0.0.1:{port}");
             clientPort.Enable();
-            var clientConnection = new MavlinkV2Connection(clientPort, _ =>
-            {
-                // _.RegisterMinimalDialect();
-                _.RegisterCommonDialect();
-                _.RegisterArdupilotmegaDialect();
-                _.RegisterIcarousDialect();
-                _.RegisterUavionixDialect();
-            });
+            var clientConnection = MavlinkV2ConnectionFactory.Create(clientPort);
             var mavlinkClient = new MavlinkClient(clientConnection, new MavlinkClientIdentity
             {
                 ComponentId = 255,
@@ -100,14 +83,7 @@ namespace Asv.Mavlink.Payload.Test
             var serverPort = PortFactory.Create($"tcp://127.0.0.1:{port}?srv=true");
             serverPort.Enable();
 
-            var serverConnection = new MavlinkV2Connection(serverPort, _ =>
-            {
-                // _.RegisterMinimalDialect();
-                _.RegisterCommonDialect();
-                _.RegisterArdupilotmegaDialect();
-                _.RegisterIcarousDialect();
-                _.RegisterUavionixDialect();
-            });
+            var serverConnection = MavlinkV2ConnectionFactory.Create(serverPort);
             var config = new InMemoryConfiguration();
             var suffix = "PV3";
             Pv2DeviceParams.SystemId.WriteToConfigValue(config, suffix, sysId);
@@ -123,14 +99,7 @@ namespace Asv.Mavlink.Payload.Test
             var serverPort = PortFactory.Create($"tcp://127.0.0.1:{port}");
             serverPort.Enable();
 
-            var serverConnection = new MavlinkV2Connection(serverPort, _ =>
-            {
-                // _.RegisterMinimalDialect();
-                _.RegisterCommonDialect();
-                _.RegisterArdupilotmegaDialect();
-                _.RegisterIcarousDialect();
-                _.RegisterUavionixDialect();
-            });
+            var serverConnection = MavlinkV2ConnectionFactory.Create(serverPort);
             return new Pv2ClientDeviceBase(serverConnection, new MavlinkClientIdentity
             {
                 ComponentId = comId,

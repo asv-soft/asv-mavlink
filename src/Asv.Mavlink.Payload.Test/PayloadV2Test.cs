@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
-using Asv.Mavlink.Server;
 using Xunit;
 
 namespace Asv.Mavlink.Payload.Test

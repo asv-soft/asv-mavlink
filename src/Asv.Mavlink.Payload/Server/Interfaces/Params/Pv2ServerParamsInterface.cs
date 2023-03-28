@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.Common;
 using Asv.IO;
-using Asv.Mavlink.Server;
 using NLog;
 
 namespace Asv.Mavlink.Payload

@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    <Version>2.0.1</Version>
-    <LangVersion>9.0</LangVersion>
+    <Version>2.0.2</Version>
+    <LangVersion>latest</LangVersion>
     <Authors>https://github.com/asvol</Authors>
     <Company>https://github.com/asvol</Company>
     <Copyright>https://github.com/asvol</Copyright>

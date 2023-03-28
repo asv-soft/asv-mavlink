@@ -23,7 +23,6 @@
 // This code was generate by tool Asv.Mavlink.Shell version 1.2.2
 
 using System;
-using System.Text;
 using Asv.Mavlink.V2.Common;
 using Asv.IO;
 

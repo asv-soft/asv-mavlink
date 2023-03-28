@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.Payload.Digits;
-using Asv.Mavlink.Server;
 using NLog;
 
 namespace Asv.Mavlink.Payload

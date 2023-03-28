@@ -1,4 +1,3 @@
-using System;
 using Asv.Common;
 
 namespace Asv.Mavlink.Server
@@ -33,7 +32,7 @@ namespace Asv.Mavlink.Server
             _logging = new LoggingServer(connection, _seq, identity).DisposeItWith(Disposable);
             _v2Extension = new V2ExtensionServer(connection,_seq,identity).DisposeItWith(Disposable);
             _params = new MavlinkParamsServer(connection, _seq, identity).DisposeItWith(Disposable);
-            _asvGbs = new AsvGbsServer(connection, _seq, identity,_commandLong).DisposeItWith(Disposable);
+            _asvGbs = new AsvGbsServer(connection, _seq, identity).DisposeItWith(Disposable);
             MavlinkV2Connection = connection;
             _identity = identity;
             if (disposeConnection)

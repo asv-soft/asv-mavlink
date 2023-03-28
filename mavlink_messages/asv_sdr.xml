@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<mavlink>
+  <!-- Interface for interaction and configuration                -->
+  <!-- of Software-defined radio payload                          -->
+  <!-- Asv Soft contact info: https://github.com/asvol            -->
+  <!-- company URL: https://github.com/asv-soft                   -->
+  <!-- email contact: me@asv.me                                   -->
+  <!-- mavlink MAV_TYPE: 251                                   -->
+  <!-- mavlink MAV_CMD range:  13100 - 13199                   -->
+  <!-- mavlink messages range: 13100 - 13199                   -->
+  <include>common.xml</include>
+   
+    
+  <enums>
+    <!-- Asv SDR specific MAV_TYPE identity -->
+    <enum name="MAV_TYPE">
+      <entry value="251" name="MAV_TYPE_ASV_SDR_PAYLOAD">
+        <description>Used to identify Software-defined radio payload in HEARTBEAT packet.</description>
+      </entry>
+    </enum>
+    <!-- Asv SDR specific MAV_CMD_* commands -->
+    <enum name="MAV_CMD">
+      <entry value="13051" name="MAV_CMD_ASV_SDR_START_RECORD">
+        <description>Start recording SDR data</description>
+        <param index="1">Empty.</param>
+        <param index="2">Empty.</param>
+        <param index="3">Empty.</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
+    </enum>
+    <enum name="ASV_SDR_CUSTOM_MODE">
+      <description>A mapping of SDR payload modes for custom_mode field of heartbeat</description>
+      <entry value="0" name="ASV_SDR_CUSTOM_MODE_LOADING"/>
+      <entry value="1" name="ASV_SDR_CUSTOM_MODE_IDLE"/>
+      <entry value="2" name="ASV_SDR_CUSTOM_MODE_ERROR"/>
+    </enum>
+    
+  </enums>
+  <messages>
+    <message id="13100" name="ASV_SDR_OUT_STATUS">
+      <description>SDR payload status message. Send with 1 Hz frequency.</description>
+      <field type="int32_t" name="lat" units="degE7">Latitude of GBS (value / 10000000D).</field>
+      <field type="int32_t" name="lng" units="degE7">Longitude of GBS (value / 10000000D).</field>
+      <field type="int32_t" name="alt" units="mm">Altitude of GBS.</field>
+    </message>
+    
+  </messages>
+</mavlink>

@@ -24,7 +24,6 @@
 
 using System;
 using System.Text;
-using Asv.Mavlink.V2.Common;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.PythonArrayTest

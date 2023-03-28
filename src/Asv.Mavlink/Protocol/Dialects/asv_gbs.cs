@@ -20,11 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 1.2.2
+// This code was generate by tool Asv.Mavlink.Shell version 2.0.2
 
 using System;
-using System.Text;
-using Asv.Mavlink.V2.Common;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.AsvGbs
@@ -96,39 +94,39 @@ namespace Asv.Mavlink.V2.AsvGbs
     }
 
     /// <summary>
-    /// Current GBS mode
-    ///  ASV_GBS_STATE
+    /// A mapping of GBS modes for custom_mode field of heartbeat.
+    ///  ASV_GBS_CUSTOM_MODE
     /// </summary>
-    public enum AsvGbsState:uint
+    public enum AsvGbsCustomMode:uint
     {
         /// <summary>
-        /// ASV_GBS_STATE_LOADING
+        /// ASV_GBS_CUSTOM_MODE_LOADING
         /// </summary>
-        AsvGbsStateLoading = 0,
+        AsvGbsCustomModeLoading = 0,
         /// <summary>
-        /// ASV_GBS_STATE_IDLE_MODE
+        /// ASV_GBS_CUSTOM_MODE_IDLE
         /// </summary>
-        AsvGbsStateIdleMode = 1,
+        AsvGbsCustomModeIdle = 1,
         /// <summary>
-        /// ASV_GBS_STATE_ERROR
+        /// ASV_GBS_CUSTOM_MODE_ERROR
         /// </summary>
-        AsvGbsStateError = 2,
+        AsvGbsCustomModeError = 2,
         /// <summary>
-        /// ASV_GBS_STATE_AUTO_MODE_IN_PROGRESS
+        /// ASV_GBS_CUSTOM_MODE_AUTO_IN_PROGRESS
         /// </summary>
-        AsvGbsStateAutoModeInProgress = 3,
+        AsvGbsCustomModeAutoInProgress = 3,
         /// <summary>
-        /// ASV_GBS_STATE_AUTO_MODE
+        /// ASV_GBS_CUSTOM_MODE_AUTO
         /// </summary>
-        AsvGbsStateAutoMode = 4,
+        AsvGbsCustomModeAuto = 4,
         /// <summary>
-        /// ASV_GBS_STATE_FIXED_MODE_IN_PROGRESS
+        /// ASV_GBS_CUSTOM_MODE_FIXED_IN_PROGRESS
         /// </summary>
-        AsvGbsStateFixedModeInProgress = 5,
+        AsvGbsCustomModeFixedInProgress = 5,
         /// <summary>
-        /// ASV_GBS_STATE_FIXED_MODE
+        /// ASV_GBS_CUSTOM_MODE_FIXED
         /// </summary>
-        AsvGbsStateFixedMode = 6,
+        AsvGbsCustomModeFixed = 6,
     }
 
 
@@ -142,9 +140,9 @@ namespace Asv.Mavlink.V2.AsvGbs
     /// </summary>
     public class AsvGbsOutStatusPacket: PacketV2<AsvGbsOutStatusPayload>
     {
-	    public const int PacketMessageId = 13001;
+	    public const int PacketMessageId = 13000;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 180;
+        public override byte GetCrcEtra() => 182;
 
         public override AsvGbsOutStatusPayload Payload { get; } = new AsvGbsOutStatusPayload();
 
@@ -156,15 +154,26 @@ namespace Asv.Mavlink.V2.AsvGbs
     /// </summary>
     public class AsvGbsOutStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 13; // Summ of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 13; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 27; // Summ of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
             Lat = BinSerialize.ReadInt(ref buffer);
             Lng = BinSerialize.ReadInt(ref buffer);
             Alt = BinSerialize.ReadInt(ref buffer);
-            State = (AsvGbsState)BinSerialize.ReadByte(ref buffer);
+            Accuracy = BinSerialize.ReadUShort(ref buffer);
+            Observation = BinSerialize.ReadUShort(ref buffer);
+            DgpsRate = BinSerialize.ReadUShort(ref buffer);
+            VehicleCount = (byte)BinSerialize.ReadByte(ref buffer);
+            SatAll = (byte)BinSerialize.ReadByte(ref buffer);
+            SatGps = (byte)BinSerialize.ReadByte(ref buffer);
+            SatGlo = (byte)BinSerialize.ReadByte(ref buffer);
+            SatBdu = (byte)BinSerialize.ReadByte(ref buffer);
+            SatGal = (byte)BinSerialize.ReadByte(ref buffer);
+            SatQuz = (byte)BinSerialize.ReadByte(ref buffer);
+            SatIme = (byte)BinSerialize.ReadByte(ref buffer);
+            SatSbs = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
@@ -173,8 +182,19 @@ namespace Asv.Mavlink.V2.AsvGbs
             BinSerialize.WriteInt(ref buffer,Lat);
             BinSerialize.WriteInt(ref buffer,Lng);
             BinSerialize.WriteInt(ref buffer,Alt);
-            BinSerialize.WriteByte(ref buffer,(byte)State);
-            /* PayloadByteSize = 13 */;
+            BinSerialize.WriteUShort(ref buffer,Accuracy);
+            BinSerialize.WriteUShort(ref buffer,Observation);
+            BinSerialize.WriteUShort(ref buffer,DgpsRate);
+            BinSerialize.WriteByte(ref buffer,(byte)VehicleCount);
+            BinSerialize.WriteByte(ref buffer,(byte)SatAll);
+            BinSerialize.WriteByte(ref buffer,(byte)SatGps);
+            BinSerialize.WriteByte(ref buffer,(byte)SatGlo);
+            BinSerialize.WriteByte(ref buffer,(byte)SatBdu);
+            BinSerialize.WriteByte(ref buffer,(byte)SatGal);
+            BinSerialize.WriteByte(ref buffer,(byte)SatQuz);
+            BinSerialize.WriteByte(ref buffer,(byte)SatIme);
+            BinSerialize.WriteByte(ref buffer,(byte)SatSbs);
+            /* PayloadByteSize = 27 */;
         }
 
 
@@ -195,10 +215,65 @@ namespace Asv.Mavlink.V2.AsvGbs
         /// </summary>
         public int Alt { get; set; }
         /// <summary>
-        /// Current state of GBS. See ASV_GBS_STATE enum.
-        /// OriginName: state, Units: , IsExtended: false
+        /// Current position accuracy (mm).
+        /// OriginName: accuracy, Units: mm, IsExtended: false
         /// </summary>
-        public AsvGbsState State { get; set; }
+        public ushort Accuracy { get; set; }
+        /// <summary>
+        /// Observation time (seconds).
+        /// OriginName: observation, Units: s, IsExtended: false
+        /// </summary>
+        public ushort Observation { get; set; }
+        /// <summary>
+        /// Rate of GPS_RTCM_DATA data.
+        /// OriginName: dgps_rate, Units: bytes\seconds, IsExtended: false
+        /// </summary>
+        public ushort DgpsRate { get; set; }
+        /// <summary>
+        /// The number of found vehicles to which DGPS corrections are transmitted via GPS_RTCM_DATA packet.
+        /// OriginName: vehicle_count, Units: , IsExtended: false
+        /// </summary>
+        public byte VehicleCount { get; set; }
+        /// <summary>
+        /// All GNSS satellite count.
+        /// OriginName: sat_all, Units: , IsExtended: false
+        /// </summary>
+        public byte SatAll { get; set; }
+        /// <summary>
+        /// GPS satellite count.
+        /// OriginName: sat_gps, Units: , IsExtended: false
+        /// </summary>
+        public byte SatGps { get; set; }
+        /// <summary>
+        /// GLONASS satellite count.
+        /// OriginName: sat_glo, Units: , IsExtended: false
+        /// </summary>
+        public byte SatGlo { get; set; }
+        /// <summary>
+        /// BeiDou satellite count.
+        /// OriginName: sat_bdu, Units: , IsExtended: false
+        /// </summary>
+        public byte SatBdu { get; set; }
+        /// <summary>
+        /// Galileo satellite count.
+        /// OriginName: sat_gal, Units: , IsExtended: false
+        /// </summary>
+        public byte SatGal { get; set; }
+        /// <summary>
+        /// QZSS satellite count.
+        /// OriginName: sat_quz, Units: , IsExtended: false
+        /// </summary>
+        public byte SatQuz { get; set; }
+        /// <summary>
+        /// IMES satellite count.
+        /// OriginName: sat_ime, Units: , IsExtended: false
+        /// </summary>
+        public byte SatIme { get; set; }
+        /// <summary>
+        /// SBAS satellite count.
+        /// OriginName: sat_sbs, Units: , IsExtended: false
+        /// </summary>
+        public byte SatSbs { get; set; }
     }
 
 

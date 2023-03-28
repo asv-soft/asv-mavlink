@@ -86,7 +86,7 @@ namespace Asv.Mavlink.Client
             _rtk = new DgpsClient(_mavlinkConnection, identity,_seq, scheduler)
                 .DisposeItWith(Disposable);
             
-            _gbs = new AsvGbsClient(_mavlinkConnection, identity, _seq, scheduler,_mavlinkCommands)
+            _gbs = new AsvGbsClient(_mavlinkConnection, identity, _seq, scheduler)
                 .DisposeItWith(Disposable);
 
             if (disposeConnection)
