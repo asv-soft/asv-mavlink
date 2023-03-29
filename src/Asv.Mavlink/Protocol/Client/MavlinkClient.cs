@@ -1,9 +1,10 @@
 using System;
 using System.Reactive.Concurrency;
 using Asv.Common;
+using Asv.Mavlink.Client;
 using NLog;
 
-namespace Asv.Mavlink.Client
+namespace Asv.Mavlink
 {
     public class MavlinkClientIdentity
     {
@@ -42,6 +43,7 @@ namespace Asv.Mavlink.Client
         private IV2ExtensionClient _v2Ext;
         private readonly IPacketSequenceCalculator _seq;
         private readonly AsvGbsClient _gbs;
+        private readonly AsvSdrClient _sdr;
 
         public MavlinkClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, MavlinkClientConfig config, IPacketSequenceCalculator sequence = null, bool disposeConnection = true, IScheduler scheduler = null)
         {
@@ -88,11 +90,12 @@ namespace Asv.Mavlink.Client
             
             _gbs = new AsvGbsClient(_mavlinkConnection, identity, _seq, scheduler)
                 .DisposeItWith(Disposable);
-
+            _sdr = new AsvSdrClient(_mavlinkConnection, identity, _seq, scheduler)
+                .DisposeItWith(Disposable);
             if (disposeConnection)
                 _mavlinkConnection.DisposeItWith(Disposable);
         }
-
+        public IMavlinkV2Connection MavlinkV2Connection => _mavlinkConnection;
         protected IMavlinkV2Connection Connection => _mavlinkConnection;
         public MavlinkClientIdentity Identity { get; }
         public IHeartbeatClient Heartbeat => _heartbeat;
@@ -107,6 +110,7 @@ namespace Asv.Mavlink.Client
         public IV2ExtensionClient V2Extension => _v2Ext;
         public IDgpsClient Rtk => _rtk;
         public IAsvGbsClient Gbs => _gbs;
-        public IMavlinkV2Connection MavlinkV2Connection => _mavlinkConnection;
+        public IAsvSdrClient Sdr => _sdr;
+        
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using NLog;
 
-namespace Asv.Mavlink.Client
+namespace Asv.Mavlink
 {
     public abstract class MavlinkMicroserviceClient:DisposableOnceWithCancel
     {

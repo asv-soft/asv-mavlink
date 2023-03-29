@@ -13,7 +13,8 @@ namespace Asv.Mavlink.Server
         private readonly LoggingServer _logging;
         private readonly V2ExtensionServer _v2Extension;
         private readonly MavlinkServerIdentity _identity;
-        private readonly AsvGbsServer _asvGbs;
+        private readonly AsvGbsServer _gbs;
+        private readonly AsvSdrServer _sdr;
 
         public MavlinkServerBase(IMavlinkV2Connection connection, MavlinkServerIdentity identity,IPacketSequenceCalculator sequenceCalculator = null, bool disposeConnection = true)
         {
@@ -32,7 +33,8 @@ namespace Asv.Mavlink.Server
             _logging = new LoggingServer(connection, _seq, identity).DisposeItWith(Disposable);
             _v2Extension = new V2ExtensionServer(connection,_seq,identity).DisposeItWith(Disposable);
             _params = new MavlinkParamsServer(connection, _seq, identity).DisposeItWith(Disposable);
-            _asvGbs = new AsvGbsServer(connection, _seq, identity).DisposeItWith(Disposable);
+            _gbs = new AsvGbsServer(connection, _seq, identity).DisposeItWith(Disposable);
+            _sdr = new AsvSdrServer(connection, _seq, identity).DisposeItWith(Disposable);
             MavlinkV2Connection = connection;
             _identity = identity;
             if (disposeConnection)
@@ -50,6 +52,7 @@ namespace Asv.Mavlink.Server
         public ILoggingServer Logging => _logging;
         public IV2ExtensionServer V2Extension => _v2Extension;
         public IMavlinkV2Connection MavlinkV2Connection { get; }
-        public IAsvGbsServer Gbs => _asvGbs;
+        public IAsvGbsServer Gbs => _gbs;
+        public IAsvSdrServer Sdr => _sdr;
     }
 }

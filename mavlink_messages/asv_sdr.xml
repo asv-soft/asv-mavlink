@@ -36,15 +36,133 @@
       <entry value="0" name="ASV_SDR_CUSTOM_MODE_LOADING"/>
       <entry value="1" name="ASV_SDR_CUSTOM_MODE_IDLE"/>
       <entry value="2" name="ASV_SDR_CUSTOM_MODE_ERROR"/>
+      <entry value="3" name="ASV_SDR_CUSTOM_MODE_ILS"/>
+      <entry value="4" name="ASV_SDR_CUSTOM_MODE_ILS_IN_PROGRESS"/>
+      <entry value="5" name="ASV_SDR_CUSTOM_MODE_VOR"/>
+      <entry value="6" name="ASV_SDR_CUSTOM_MODE_VOR_IN_PROGRESS"/>
     </enum>
     
   </enums>
   <messages>
     <message id="13100" name="ASV_SDR_OUT_STATUS">
       <description>SDR payload status message. Send with 1 Hz frequency.</description>
-      <field type="int32_t" name="lat" units="degE7">Latitude of GBS (value / 10000000D).</field>
-      <field type="int32_t" name="lng" units="degE7">Longitude of GBS (value / 10000000D).</field>
-      <field type="int32_t" name="alt" units="mm">Altitude of GBS.</field>
+      
+    </message>
+
+    <message id="13101" name="ASV_SDR_ILS_RECORD">
+      <description>ILS reciever record data.</description>
+      <field type="uint32_t" name="index" >Record index</field>
+      <!-- The global position, as returned by the GNSS receiver -->
+      <field type="uint8_t" name="gnss_fix_type" enum="GPS_FIX_TYPE">GPS fix type.</field>
+      <field type="int32_t" name="gnss_lat" units="degE7">Latitude (WGS84, EGM96 ellipsoid)</field>
+      <field type="int32_t" name="gnss_lon" units="degE7">Longitude (WGS84, EGM96 ellipsoid)</field>
+      <field type="int32_t" name="gnss_alt" units="mm">Altitude (MSL). Positive for up. Note that virtually all GPS modules provide the MSL altitude in addition to the WGS84 altitude.</field>
+      <field type="uint16_t" name="gnss_eph">GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX</field>
+      <field type="uint16_t" name="gnss_epv">GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX</field>
+      <field type="uint16_t" name="gnss_vel" units="cm/s">GPS ground speed. If unknown, set to: UINT16_MAX</field>
+      <field type="uint8_t" name="gnss_satellites_visible">Number of satellites visible. If unknown, set to 255</field>
+      <field type="int32_t" name="gnss_alt_ellipsoid" units="mm">Altitude (above WGS84, EGM96 ellipsoid). Positive for up.</field>
+      <field type="uint32_t" name="gnss_h_acc" units="mm">Position uncertainty. Positive for up.</field>
+      <field type="uint32_t" name="gnss_v_acc" units="mm">Altitude uncertainty. Positive for up.</field>
+      <field type="uint32_t" name="gnss_vel_acc" units="mm">Speed uncertainty. Positive for up.</field>
+      <!-- The filtered global position (e.g. fused GNSS and accelerometers). The position is in GPS-frame (right-handed, Z-up) -->
+      <field type="int32_t" name="lat" units="degE7">Filtered global position latitude, expressed</field>
+      <field type="int32_t" name="lon" units="degE7">Filtered global position longitude, expressed</field>
+      <field type="int32_t" name="alt" units="mm">Filtered global position altitude (MSL).</field>
+      <field type="int32_t" name="relative_alt" units="mm">Altitude above ground</field>
+      <field type="int16_t" name="vx" units="cm/s">Ground X Speed (Latitude, positive north)</field>
+      <field type="int16_t" name="vy" units="cm/s">Ground Y Speed (Longitude, positive east)</field>
+      <field type="int16_t" name="vz" units="cm/s">Ground Z Speed (Altitude, positive down)</field>
+      <field type="uint16_t" name="hdg" units="cdeg">Vehicle heading (yaw angle), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX</field>
+      <!-- ATTITUDE data -->
+      <field type="float" name="roll" units="rad">Roll angle (-pi..+pi)</field>
+      <field type="float" name="pitch" units="rad">Pitch angle (-pi..+pi)</field>
+      <field type="float" name="yaw" units="rad">Yaw angle (-pi..+pi)</field>
+      <!-- Course measure data -->
+      <field type="int16_t" name="crs_power" units="dBm">Input power of course.</field>
+      <field type="int16_t" name="crs_carrier_offset" units="Hz">Carrier frequency offset of course.</field>
+      <field type="float" name="crs_am_90" units="%">Aplitude modulation of 90Hz of course.</field>
+      <field type="int16_t" name="crs_freq_90" units="Hz">Frequency offset of signal 90 Hz of course.</field>
+      <field type="float" name="crs_am_150" units="%">Aplitude modulation of 150Hz of course.</field>
+      <field type="int16_t" name="crs_freq_150" units="Hz">Frequency offset of signal 150 Hz of course.</field>
+      <!-- Clearance measure data -->
+      <field type="float" name="clr_power" units="dBm">Input power of clearance.</field>
+      <field type="int16_t" name="clr_carrier_offset" units="Hz">Carrier frequency offset of clearance.</field>
+      <field type="float" name="clr_am_90" units="%">Aplitude modulation of 90Hz of clearance.</field>
+      <field type="int16_t" name="clr_freq_90" units="Hz">Frequency offset of signal 90 Hz of clearance.</field>
+      <field type="float" name="clr_am_150" units="% E2">Aplitude modulation of 150Hz of clearance.</field>
+      <field type="int16_t" name="clr_freq_150" units="Hz">Frequency offset of signal 150 Hz of clearance.</field>
+      <!-- Total measure data -->
+      <field type="uint32_t" name="total_freq" units="Hz">Measured frequency.</field>
+      <field type="int16_t" name="total_carrier_offset" units="Hz">Total carrier frequency offset.</field>
+      <field type="float" name="total_power" units="dBm">Total input power.</field>
+      <field type="float" name="total_field_strength" units="uV/m">Total field strength.</field>
+      
+      <field type="float" name="total_am_90" units="%">Total aplitude modulation of 90Hz.</field>
+      <field type="int16_t" name="total_freq_90" units="Hz">Total frequency offset of signal 90 Hz.</field>
+      
+      <field type="float" name="total_am_150" units="%">Total aplitude modulation of 150Hz.</field>
+      <field type="int16_t" name="total_freq_150" units="Hz">Total frequency offset of signal 150 Hz.</field>
+
+      <field type="float" name="phi_90_crs_vs_clr" units="deg"> Phase difference 90 Hz clearance and cource</field>
+      <field type="float" name="phi_150_crs_vs_clr" units="deg">Phase difference 150 Hz clearance and cource.</field>
+
+      <field type="float" name="code_id_am_1020" units="%">Total aplitude modulation of 90Hz.</field>
+      <field type="int16_t" name="code_id_freq_1020" units="Hz">Total frequency offset of signal 90 Hz.</field>
+      <field type="char[4]" name="code_id" units="Letters">Code identification</field>
+
+      <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
+    </message>
+    
+    <message id="13102" name="ASV_SDR_VOR_RECORD">
+      <description>VOR reciever record data.</description>
+      <field type="uint32_t" name="index" >Record index</field>
+      <!-- The global position, as returned by the GNSS receiver -->
+      <field type="uint8_t" name="gnss_fix_type" enum="GPS_FIX_TYPE">GPS fix type.</field>
+      <field type="int32_t" name="gnss_lat" units="degE7">Latitude (WGS84, EGM96 ellipsoid)</field>
+      <field type="int32_t" name="gnss_lon" units="degE7">Longitude (WGS84, EGM96 ellipsoid)</field>
+      <field type="int32_t" name="gnss_alt" units="mm">Altitude (MSL). Positive for up. Note that virtually all GPS modules provide the MSL altitude in addition to the WGS84 altitude.</field>
+      <field type="uint16_t" name="gnss_eph">GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX</field>
+      <field type="uint16_t" name="gnss_epv">GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX</field>
+      <field type="uint16_t" name="gnss_vel" units="cm/s">GPS ground speed. If unknown, set to: UINT16_MAX</field>
+      <field type="uint8_t" name="gnss_satellites_visible">Number of satellites visible. If unknown, set to 255</field>
+      <field type="int32_t" name="gnss_alt_ellipsoid" units="mm">Altitude (above WGS84, EGM96 ellipsoid). Positive for up.</field>
+      <field type="uint32_t" name="gnss_h_acc" units="mm">Position uncertainty. Positive for up.</field>
+      <field type="uint32_t" name="gnss_v_acc" units="mm">Altitude uncertainty. Positive for up.</field>
+      <field type="uint32_t" name="gnss_vel_acc" units="mm">Speed uncertainty. Positive for up.</field>
+      <!-- The filtered global position (e.g. fused GNSS and accelerometers). The position is in GPS-frame (right-handed, Z-up) -->
+      <field type="int32_t" name="lat" units="degE7">Filtered global position latitude, expressed</field>
+      <field type="int32_t" name="lon" units="degE7">Filtered global position longitude, expressed</field>
+      <field type="int32_t" name="alt" units="mm">Filtered global position altitude (MSL).</field>
+      <field type="int32_t" name="relative_alt" units="mm">Altitude above ground</field>
+      <field type="int16_t" name="vx" units="cm/s">Ground X Speed (Latitude, positive north)</field>
+      <field type="int16_t" name="vy" units="cm/s">Ground Y Speed (Longitude, positive east)</field>
+      <field type="int16_t" name="vz" units="cm/s">Ground Z Speed (Altitude, positive down)</field>
+      <field type="uint16_t" name="hdg" units="cdeg">Vehicle heading (yaw angle), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX</field>
+      <!-- ATTITUDE data -->
+      <field type="float" name="roll" units="rad">Roll angle (-pi..+pi)</field>
+      <field type="float" name="pitch" units="rad">Pitch angle (-pi..+pi)</field>
+      <field type="float" name="yaw" units="rad">Yaw angle (-pi..+pi)</field>
+      <!-- Total measure data -->
+      <field type="uint32_t" name="freq" units="Hz">Frequency.</field>
+      <field type="int16_t" name="carrier_offset" units="Hz">Total carrier frequency offset.</field>
+      <field type="float" name="azimuth" units="deg">Measured azimuth.</field>
+      <field type="float" name="power" units="dBm">Total input power.</field>
+      <field type="float" name="field_strength" units="uV/m">Total field strength.</field>
+      
+      <field type="float" name="am_30" units="%">Total aplitude modulation of 30 Hz.</field>
+      <field type="int16_t" name="freq_30" units="Hz">Total frequency offset of signal 30 Hz.</field>
+      
+      <field type="float" name="am_9960" units="%">Total aplitude modulation of 9960 Hz.</field>
+      <field type="int16_t" name="freq_9960" units="Hz">Total frequency offset of signal 9960 Hz.</field>
+
+      <field type="float" name="deviation" units="">Deviation.</field>
+      
+      <field type="float" name="code_id_am_1020" units="%">Total aplitude modulation of 90Hz.</field>
+      <field type="int16_t" name="code_id_freq_1020" units="Hz">Total frequency offset of signal 90 Hz.</field>
+      <field type="char[4]" name="code_id" units="Letters">Code identification</field>
+
+      <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
     </message>
     
   </messages>

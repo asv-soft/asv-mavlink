@@ -24,6 +24,7 @@
 
 using System;
 using System.Text;
+using Asv.Mavlink.V2.Common;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.Common
@@ -5267,7 +5268,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HeartbeatPayload : IPayload
     {
-        public byte GetMaxByteSize() => 9; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -5345,7 +5346,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SysStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 31; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 31; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 31; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -5472,7 +5473,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SystemTimePayload : IPayload
     {
-        public byte GetMaxByteSize() => 12; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -5522,7 +5523,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class PingPayload : IPayload
     {
-        public byte GetMaxByteSize() => 14; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -5586,7 +5587,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ChangeOperatorControlPayload : IPayload
     {
-        public byte GetMaxByteSize() => 28; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -5673,7 +5674,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ChangeOperatorControlAckPayload : IPayload
     {
-        public byte GetMaxByteSize() => 3; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -5730,7 +5731,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class AuthKeyPayload : IPayload
     {
-        public byte GetMaxByteSize() => 32; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 32; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -5796,7 +5797,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class LinkNodeStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 36; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 36; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 36; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -5909,7 +5910,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SetModePayload : IPayload
     {
-        public byte GetMaxByteSize() => 6; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -5966,7 +5967,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ParamRequestReadPayload : IPayload
     {
-        public byte GetMaxByteSize() => 20; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -6053,7 +6054,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ParamRequestListPayload : IPayload
     {
-        public byte GetMaxByteSize() => 2; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -6103,7 +6104,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ParamValuePayload : IPayload
     {
-        public byte GetMaxByteSize() => 25; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 25; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 25; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -6197,7 +6198,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ParamSetPayload : IPayload
     {
-        public byte GetMaxByteSize() => 23; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 23; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 23; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -6292,7 +6293,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class GpsRawIntPayload : IPayload
     {
-        public byte GetMaxByteSize() => 50; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 50; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 50; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -6443,7 +6444,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class GpsStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 101; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 101; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 101; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -6560,7 +6561,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ScaledImuPayload : IPayload
     {
-        public byte GetMaxByteSize() => 22; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -6666,7 +6667,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class RawImuPayload : IPayload
     {
-        public byte GetMaxByteSize() => 26; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 26; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -6772,7 +6773,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class RawPressurePayload : IPayload
     {
-        public byte GetMaxByteSize() => 16; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -6843,7 +6844,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ScaledPressurePayload : IPayload
     {
-        public byte GetMaxByteSize() => 14; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -6907,7 +6908,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class AttitudePayload : IPayload
     {
-        public byte GetMaxByteSize() => 28; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -6992,7 +6993,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class AttitudeQuaternionPayload : IPayload
     {
-        public byte GetMaxByteSize() => 32; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 32; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -7084,7 +7085,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class LocalPositionNedPayload : IPayload
     {
-        public byte GetMaxByteSize() => 28; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -7170,7 +7171,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class GlobalPositionIntPayload : IPayload
     {
-        public byte GetMaxByteSize() => 28; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -7269,7 +7270,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class RcChannelsScaledPayload : IPayload
     {
-        public byte GetMaxByteSize() => 22; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -7382,7 +7383,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class RcChannelsRawPayload : IPayload
     {
-        public byte GetMaxByteSize() => 22; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -7495,7 +7496,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ServoOutputRawPayload : IPayload
     {
-        public byte GetMaxByteSize() => 37; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 37; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 37; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -7673,7 +7674,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MissionRequestPartialListPayload : IPayload
     {
-        public byte GetMaxByteSize() => 7; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -7746,7 +7747,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MissionWritePartialListPayload : IPayload
     {
-        public byte GetMaxByteSize() => 7; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -7820,7 +7821,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MissionItemPayload : IPayload
     {
-        public byte GetMaxByteSize() => 38; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 38; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -7963,7 +7964,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MissionRequestPayload : IPayload
     {
-        public byte GetMaxByteSize() => 5; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -8029,7 +8030,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MissionSetCurrentPayload : IPayload
     {
-        public byte GetMaxByteSize() => 4; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -8086,7 +8087,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MissionCurrentPayload : IPayload
     {
-        public byte GetMaxByteSize() => 2; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -8129,7 +8130,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MissionRequestListPayload : IPayload
     {
-        public byte GetMaxByteSize() => 3; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -8188,7 +8189,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MissionCountPayload : IPayload
     {
-        public byte GetMaxByteSize() => 5; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -8254,7 +8255,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MissionClearAllPayload : IPayload
     {
-        public byte GetMaxByteSize() => 3; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -8313,7 +8314,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MissionItemReachedPayload : IPayload
     {
-        public byte GetMaxByteSize() => 2; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -8356,7 +8357,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MissionAckPayload : IPayload
     {
-        public byte GetMaxByteSize() => 4; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -8422,7 +8423,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SetGpsGlobalOriginPayload : IPayload
     {
-        public byte GetMaxByteSize() => 21; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 21; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 21; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -8495,7 +8496,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class GpsGlobalOriginPayload : IPayload
     {
-        public byte GetMaxByteSize() => 20; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -8561,7 +8562,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ParamMapRcPayload : IPayload
     {
-        public byte GetMaxByteSize() => 37; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 37; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 37; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -8683,7 +8684,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MissionRequestIntPayload : IPayload
     {
-        public byte GetMaxByteSize() => 5; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -8749,7 +8750,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MissionChangedPayload : IPayload
     {
-        public byte GetMaxByteSize() => 7; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -8820,7 +8821,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SafetySetAllowedAreaPayload : IPayload
     {
-        public byte GetMaxByteSize() => 27; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 27; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -8919,7 +8920,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SafetyAllowedAreaPayload : IPayload
     {
-        public byte GetMaxByteSize() => 25; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 25; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 25; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -9004,7 +9005,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class AttitudeQuaternionCovPayload : IPayload
     {
-        public byte GetMaxByteSize() => 72; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 72; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 72; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -9100,7 +9101,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class NavControllerOutputPayload : IPayload
     {
-        public byte GetMaxByteSize() => 26; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 26; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -9192,7 +9193,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class GlobalPositionIntCovPayload : IPayload
     {
-        public byte GetMaxByteSize() => 181; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 181; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 181; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -9309,7 +9310,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class LocalPositionNedCovPayload : IPayload
     {
-        public byte GetMaxByteSize() => 225; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 225; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 225; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -9440,7 +9441,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class RcChannelsPayload : IPayload
     {
-        public byte GetMaxByteSize() => 42; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -9623,7 +9624,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class RequestDataStreamPayload : IPayload
     {
-        public byte GetMaxByteSize() => 6; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -9694,7 +9695,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class DataStreamPayload : IPayload
     {
-        public byte GetMaxByteSize() => 4; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -9751,7 +9752,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ManualControlPayload : IPayload
     {
-        public byte GetMaxByteSize() => 11; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 11; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 11; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -9829,7 +9830,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class RcChannelsOverridePayload : IPayload
     {
-        public byte GetMaxByteSize() => 38; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 38; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -10026,7 +10027,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MissionItemIntPayload : IPayload
     {
-        public byte GetMaxByteSize() => 38; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 38; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -10169,7 +10170,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class VfrHudPayload : IPayload
     {
-        public byte GetMaxByteSize() => 20; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -10247,7 +10248,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class CommandIntPayload : IPayload
     {
-        public byte GetMaxByteSize() => 35; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 35; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 35; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -10374,7 +10375,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class CommandLongPayload : IPayload
     {
-        public byte GetMaxByteSize() => 33; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -10487,7 +10488,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class CommandAckPayload : IPayload
     {
-        public byte GetMaxByteSize() => 10; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 10; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 10; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -10573,7 +10574,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ManualSetpointPayload : IPayload
     {
-        public byte GetMaxByteSize() => 22; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -10658,7 +10659,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SetAttitudeTargetPayload : IPayload
     {
-        public byte GetMaxByteSize() => 39; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 39; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 39; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -10768,7 +10769,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class AttitudeTargetPayload : IPayload
     {
-        public byte GetMaxByteSize() => 37; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 37; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 37; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -10864,7 +10865,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SetPositionTargetLocalNedPayload : IPayload
     {
-        public byte GetMaxByteSize() => 53; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 53; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 53; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -11012,7 +11013,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class PositionTargetLocalNedPayload : IPayload
     {
-        public byte GetMaxByteSize() => 51; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 51; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 51; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -11146,7 +11147,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SetPositionTargetGlobalIntPayload : IPayload
     {
-        public byte GetMaxByteSize() => 53; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 53; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 53; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -11294,7 +11295,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class PositionTargetGlobalIntPayload : IPayload
     {
-        public byte GetMaxByteSize() => 51; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 51; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 51; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -11428,7 +11429,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class LocalPositionNedSystemGlobalOffsetPayload : IPayload
     {
-        public byte GetMaxByteSize() => 28; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -11513,7 +11514,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HilStatePayload : IPayload
     {
-        public byte GetMaxByteSize() => 56; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 56; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 56; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -11661,7 +11662,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HilControlsPayload : IPayload
     {
-        public byte GetMaxByteSize() => 42; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -11774,7 +11775,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HilRcInputsRawPayload : IPayload
     {
-        public byte GetMaxByteSize() => 33; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -11908,7 +11909,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HilActuatorControlsPayload : IPayload
     {
-        public byte GetMaxByteSize() => 81; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 81; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 81; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -11983,7 +11984,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class OpticalFlowPayload : IPayload
     {
-        public byte GetMaxByteSize() => 34; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 34; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 34; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -12093,7 +12094,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class GlobalVisionPositionEstimatePayload : IPayload
     {
-        public byte GetMaxByteSize() => 117; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 117; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 117; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -12205,7 +12206,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class VisionPositionEstimatePayload : IPayload
     {
-        public byte GetMaxByteSize() => 117; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 117; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 117; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -12317,7 +12318,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class VisionSpeedEstimatePayload : IPayload
     {
-        public byte GetMaxByteSize() => 57; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 57; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 57; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -12408,7 +12409,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ViconPositionEstimatePayload : IPayload
     {
-        public byte GetMaxByteSize() => 116; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 116; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 116; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -12511,7 +12512,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HighresImuPayload : IPayload
     {
-        public byte GetMaxByteSize() => 62; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 62; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 62; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -12652,7 +12653,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class OpticalFlowRadPayload : IPayload
     {
-        public byte GetMaxByteSize() => 44; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -12772,7 +12773,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HilSensorPayload : IPayload
     {
-        public byte GetMaxByteSize() => 64; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 64; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 64; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -12913,7 +12914,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SimStatePayload : IPayload
     {
-        public byte GetMaxByteSize() => 84; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 84; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 84; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -13096,7 +13097,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class RadioStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 9; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -13181,7 +13182,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class FileTransferProtocolPayload : IPayload
     {
-        public byte GetMaxByteSize() => 254; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 254; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 254; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -13256,7 +13257,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class TimesyncPayload : IPayload
     {
-        public byte GetMaxByteSize() => 16; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -13306,7 +13307,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class CameraTriggerPayload : IPayload
     {
-        public byte GetMaxByteSize() => 12; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -13357,7 +13358,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HilGpsPayload : IPayload
     {
-        public byte GetMaxByteSize() => 36; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 36; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 36; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -13484,7 +13485,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HilOpticalFlowPayload : IPayload
     {
-        public byte GetMaxByteSize() => 44; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -13604,7 +13605,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HilStateQuaternionPayload : IPayload
     {
-        public byte GetMaxByteSize() => 64; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 64; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 64; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -13763,7 +13764,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ScaledImu2Payload : IPayload
     {
-        public byte GetMaxByteSize() => 22; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -13869,7 +13870,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class LogRequestListPayload : IPayload
     {
-        public byte GetMaxByteSize() => 6; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -13933,7 +13934,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class LogEntryPayload : IPayload
     {
-        public byte GetMaxByteSize() => 14; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -14004,7 +14005,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class LogRequestDataPayload : IPayload
     {
-        public byte GetMaxByteSize() => 12; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -14075,7 +14076,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class LogDataPayload : IPayload
     {
-        public byte GetMaxByteSize() => 97; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 97; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 97; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -14150,7 +14151,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class LogErasePayload : IPayload
     {
-        public byte GetMaxByteSize() => 2; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -14200,7 +14201,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class LogRequestEndPayload : IPayload
     {
-        public byte GetMaxByteSize() => 2; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -14250,7 +14251,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class GpsInjectDataPayload : IPayload
     {
-        public byte GetMaxByteSize() => 113; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 113; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 113; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -14325,7 +14326,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class Gps2RawPayload : IPayload
     {
-        public byte GetMaxByteSize() => 35; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 35; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 35; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -14445,7 +14446,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class PowerStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 6; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -14502,7 +14503,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SerialControlPayload : IPayload
     {
-        public byte GetMaxByteSize() => 79; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 79; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 79; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -14591,7 +14592,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class GpsRtkPayload : IPayload
     {
-        public byte GetMaxByteSize() => 35; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 35; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 35; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -14718,7 +14719,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class Gps2RtkPayload : IPayload
     {
-        public byte GetMaxByteSize() => 35; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 35; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 35; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -14845,7 +14846,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ScaledImu3Payload : IPayload
     {
-        public byte GetMaxByteSize() => 22; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -14951,7 +14952,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class DataTransmissionHandshakePayload : IPayload
     {
-        public byte GetMaxByteSize() => 13; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 13; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 13; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -15036,7 +15037,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class EncapsulatedDataPayload : IPayload
     {
-        public byte GetMaxByteSize() => 255; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 255; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 255; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -15097,7 +15098,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class DistanceSensorPayload : IPayload
     {
-        public byte GetMaxByteSize() => 38; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 38; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -15225,7 +15226,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class TerrainRequestPayload : IPayload
     {
-        public byte GetMaxByteSize() => 18; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 18; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -15289,7 +15290,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class TerrainDataPayload : IPayload
     {
-        public byte GetMaxByteSize() => 43; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 43; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 43; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -15371,7 +15372,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class TerrainCheckPayload : IPayload
     {
-        public byte GetMaxByteSize() => 8; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -15421,7 +15422,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class TerrainReportPayload : IPayload
     {
-        public byte GetMaxByteSize() => 22; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -15506,7 +15507,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ScaledPressure2Payload : IPayload
     {
-        public byte GetMaxByteSize() => 14; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -15570,7 +15571,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class AttPosMocapPayload : IPayload
     {
-        public byte GetMaxByteSize() => 120; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 120; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 120; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -15668,7 +15669,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SetActuatorControlTargetPayload : IPayload
     {
-        public byte GetMaxByteSize() => 43; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 43; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 43; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -15750,7 +15751,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ActuatorControlTargetPayload : IPayload
     {
-        public byte GetMaxByteSize() => 41; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 41; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -15818,7 +15819,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class AltitudePayload : IPayload
     {
-        public byte GetMaxByteSize() => 32; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 32; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -15903,7 +15904,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ResourceRequestPayload : IPayload
     {
-        public byte GetMaxByteSize() => 243; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 243; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 243; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -15992,7 +15993,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ScaledPressure3Payload : IPayload
     {
-        public byte GetMaxByteSize() => 14; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -16056,7 +16057,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class FollowTargetPayload : IPayload
     {
-        public byte GetMaxByteSize() => 93; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 93; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 93; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -16208,7 +16209,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ControlSystemStatePayload : IPayload
     {
-        public byte GetMaxByteSize() => 100; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 100; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 100; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -16388,7 +16389,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class BatteryStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 41; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 41; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -16516,7 +16517,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class AutopilotVersionPayload : IPayload
     {
-        public byte GetMaxByteSize() => 78; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 78; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 78; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -16670,7 +16671,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class LandingTargetPayload : IPayload
     {
-        public byte GetMaxByteSize() => 60; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 60; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 60; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -16825,7 +16826,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class EstimatorStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 42; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -16931,7 +16932,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class WindCovPayload : IPayload
     {
-        public byte GetMaxByteSize() => 40; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 40; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 40; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -17030,7 +17031,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class GpsInputPayload : IPayload
     {
-        public byte GetMaxByteSize() => 63; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 63; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 63; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -17192,7 +17193,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class GpsRtcmDataPayload : IPayload
     {
-        public byte GetMaxByteSize() => 182; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 182; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 182; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -17260,7 +17261,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HighLatencyPayload : IPayload
     {
-        public byte GetMaxByteSize() => 40; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 40; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 40; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -17464,7 +17465,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HighLatency2Payload : IPayload
     {
-        public byte GetMaxByteSize() => 42; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -17689,7 +17690,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class VibrationPayload : IPayload
     {
-        public byte GetMaxByteSize() => 32; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 32; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -17774,7 +17775,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class HomePositionPayload : IPayload
     {
-        public byte GetMaxByteSize() => 60; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 60; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 60; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -17900,7 +17901,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SetHomePositionPayload : IPayload
     {
-        public byte GetMaxByteSize() => 61; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 61; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 61; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -18033,7 +18034,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MessageIntervalPayload : IPayload
     {
-        public byte GetMaxByteSize() => 6; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -18083,7 +18084,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ExtendedSysStatePayload : IPayload
     {
-        public byte GetMaxByteSize() => 2; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -18133,7 +18134,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class AdsbVehiclePayload : IPayload
     {
-        public byte GetMaxByteSize() => 38; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 38; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -18283,7 +18284,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class CollisionPayload : IPayload
     {
-        public byte GetMaxByteSize() => 19; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 19; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 19; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -18368,7 +18369,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class V2ExtensionPayload : IPayload
     {
-        public byte GetMaxByteSize() => 254; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 254; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 254; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -18450,7 +18451,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MemoryVectPayload : IPayload
     {
-        public byte GetMaxByteSize() => 36; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 36; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 36; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -18525,7 +18526,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class DebugVectPayload : IPayload
     {
-        public byte GetMaxByteSize() => 30; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 30; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 30; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -18619,7 +18620,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class NamedValueFloatPayload : IPayload
     {
-        public byte GetMaxByteSize() => 18; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 18; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -18699,7 +18700,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class NamedValueIntPayload : IPayload
     {
-        public byte GetMaxByteSize() => 18; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 18; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -18779,7 +18780,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class StatustextPayload : IPayload
     {
-        public byte GetMaxByteSize() => 51; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 51; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 51; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -18852,7 +18853,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class DebugPayload : IPayload
     {
-        public byte GetMaxByteSize() => 9; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -18909,7 +18910,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SetupSigningPayload : IPayload
     {
-        public byte GetMaxByteSize() => 42; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -18984,7 +18985,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ButtonChangePayload : IPayload
     {
-        public byte GetMaxByteSize() => 9; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -19041,7 +19042,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class PlayTunePayload : IPayload
     {
-        public byte GetMaxByteSize() => 232; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 232; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 232; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -19149,7 +19150,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class CameraInformationPayload : IPayload
     {
-        public byte GetMaxByteSize() => 235; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 235; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 235; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -19313,7 +19314,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class CameraSettingsPayload : IPayload
     {
-        public byte GetMaxByteSize() => 13; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 13; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 13; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -19381,7 +19382,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class StorageInformationPayload : IPayload
     {
-        public byte GetMaxByteSize() => 27; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 27; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -19480,7 +19481,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class CameraCaptureStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 18; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 18; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -19558,7 +19559,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class CameraImageCapturedPayload : IPayload
     {
-        public byte GetMaxByteSize() => 255; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 255; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 255; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -19701,7 +19702,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class FlightInformationPayload : IPayload
     {
-        public byte GetMaxByteSize() => 28; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -19765,7 +19766,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class MountOrientationPayload : IPayload
     {
-        public byte GetMaxByteSize() => 20; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -19838,7 +19839,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class LoggingDataPayload : IPayload
     {
-        public byte GetMaxByteSize() => 255; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 255; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 255; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -19927,7 +19928,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class LoggingDataAckedPayload : IPayload
     {
-        public byte GetMaxByteSize() => 255; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 255; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 255; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -20016,7 +20017,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class LoggingAckPayload : IPayload
     {
-        public byte GetMaxByteSize() => 4; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -20073,7 +20074,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class VideoStreamInformationPayload : IPayload
     {
-        public byte GetMaxByteSize() => 213; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 213; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 213; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -20235,7 +20236,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class VideoStreamStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 19; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 19; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 19; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -20327,7 +20328,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class WifiConfigApPayload : IPayload
     {
-        public byte GetMaxByteSize() => 96; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 96; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 96; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -20419,7 +20420,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ProtocolVersionPayload : IPayload
     {
-        public byte GetMaxByteSize() => 22; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -20508,7 +20509,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class UavcanNodeStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 17; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 17; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 17; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -20586,7 +20587,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class UavcanNodeInfoPayload : IPayload
     {
-        public byte GetMaxByteSize() => 116; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 116; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 116; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -20715,7 +20716,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ParamExtRequestReadPayload : IPayload
     {
-        public byte GetMaxByteSize() => 20; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -20802,7 +20803,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ParamExtRequestListPayload : IPayload
     {
-        public byte GetMaxByteSize() => 2; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -20852,7 +20853,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ParamExtValuePayload : IPayload
     {
-        public byte GetMaxByteSize() => 149; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 149; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 149; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -20965,7 +20966,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ParamExtSetPayload : IPayload
     {
-        public byte GetMaxByteSize() => 147; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 147; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 147; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -21078,7 +21079,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ParamExtAckPayload : IPayload
     {
-        public byte GetMaxByteSize() => 146; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 146; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 146; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -21184,7 +21185,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ObstacleDistancePayload : IPayload
     {
-        public byte GetMaxByteSize() => 166; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 166; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 166; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -21291,7 +21292,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class OdometryPayload : IPayload
     {
-        public byte GetMaxByteSize() => 231; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 231; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 231; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -21466,7 +21467,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class TrajectoryRepresentationWaypointsPayload : IPayload
     {
-        public byte GetMaxByteSize() => 229; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 229; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 229; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -21674,7 +21675,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class TrajectoryRepresentationBezierPayload : IPayload
     {
-        public byte GetMaxByteSize() => 109; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 109; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 109; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -21798,7 +21799,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class CellularStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 14; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -21883,7 +21884,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class UtmGlobalPositionPayload : IPayload
     {
-        public byte GetMaxByteSize() => 70; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 70; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 70; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -22056,7 +22057,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class DebugFloatArrayPayload : IPayload
     {
-        public byte GetMaxByteSize() => 252; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 252; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 252; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -22152,7 +22153,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class OrbitExecutionStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 25; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 25; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 25; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -22230,7 +22231,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class StatustextLongPayload : IPayload
     {
-        public byte GetMaxByteSize() => 255; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 255; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 255; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -22303,7 +22304,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SmartBatteryInfoPayload : IPayload
     {
-        public byte GetMaxByteSize() => 73; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 73; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 73; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -22432,7 +22433,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class SmartBatteryStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 50; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 50; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 50; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -22535,7 +22536,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class ActuatorOutputStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 140; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 140; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 140; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -22603,7 +22604,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class TimeEstimateToTargetPayload : IPayload
     {
-        public byte GetMaxByteSize() => 20; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -22674,7 +22675,7 @@ namespace Asv.Mavlink.V2.Common
     /// </summary>
     public class WheelDistancePayload : IPayload
     {
-        public byte GetMaxByteSize() => 137; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 137; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 137; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)

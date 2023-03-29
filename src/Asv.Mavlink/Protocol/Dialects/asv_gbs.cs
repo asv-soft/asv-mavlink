@@ -23,6 +23,8 @@
 // This code was generate by tool Asv.Mavlink.Shell version 2.0.2
 
 using System;
+using System.Text;
+using Asv.Mavlink.V2.Common;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.AsvGbs
@@ -154,7 +156,7 @@ namespace Asv.Mavlink.V2.AsvGbs
     /// </summary>
     public class AsvGbsOutStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 27; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 27; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)

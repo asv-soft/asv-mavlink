@@ -94,7 +94,7 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
     /// </summary>
     public class {{ msg.CamelCaseName }}Payload : IPayload
     {
-        public byte GetMaxByteSize() => {{ msg.PayloadByteSize }}; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => {{ msg.PayloadByteSize }}; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => {{ msg.PayloadByteSize - msg.ExtendedFieldsLength }}; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
