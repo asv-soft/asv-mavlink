@@ -20,8 +20,29 @@
     </enum>
     <!-- Asv SDR specific MAV_CMD_* commands -->
     <enum name="MAV_CMD">
-      <entry value="13051" name="MAV_CMD_ASV_SDR_START_RECORD">
-        <description>Start recording SDR data</description>
+
+      <entry value="13100" name="MAV_CMD_ASV_SDR_SET_MODE">
+        <description>Start one of ASV_SDR_CUSTOM_MODE</description>
+        <param index="1">Mode (uint32_t, see ASV_SDR_CUSTOM_MODE).</param>
+        <param index="2">Frequency in Hz, ignored for IDLE mode (uint32).</param>
+        <param index="3">Stream rate for sending record data in Hz, ignored for IDLE mode (float).</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
+      <entry value="13101" name="MAV_CMD_ASV_SDR_START_RECORD">
+        <description>Start recoring data with unique name (max 28 chars)</description>
+        <param index="1">Record unique name: 0-3 chars (char[4]).</param>
+        <param index="2">Record unique name: 4-7 chars (char[4]).</param>
+        <param index="3">Record unique name: 8-11 chars (char[4]).</param>
+        <param index="4">Record unique name: 12-15 chars (char[4]).</param>
+        <param index="5">Record unique name: 16-19 chars (char[4]).</param>
+        <param index="6">Record unique name: 20-23 chars (char[4]).</param>
+        <param index="7">Record unique name: 24-27 chars (char[4]).</param>
+      </entry>
+      <entry value="13102" name="MAV_CMD_ASV_SDR_STOP_RECORD">
+        <description>Stop recoring data</description>
         <param index="1">Empty.</param>
         <param index="2">Empty.</param>
         <param index="3">Empty.</param>
@@ -30,28 +51,150 @@
         <param index="6">Empty.</param>
         <param index="7">Empty.</param>
       </entry>
+      <entry value="13103" name="MAV_CMD_ASV_SDR_SET_RECORD_TAG">
+        <description>Set custom tag to record. Used to store additional data for records.</description>
+        <param index="1">Record index (uint16), ASV_SDR_RECORD_TAG_FLAG (uint8) and ASV_SDR_RECORD_TAG_TYPE (uint8).</param>
+        <param index="2">Tag name: 0-3 chars (char[4]).</param>
+        <param index="3">Tag name: 4-7 chars (char[4]).</param>
+        <param index="4">Tag name: 8-11 chars (char[4]).</param>
+        <param index="5">Tag name: 12-15 chars (char[4]).</param>
+        <param index="6">Tag value data 0-3 bytes depends on the type of tag.</param>
+        <param index="7">Tag value data 4-7 bytes depends on the type of tag.</param>
+      </entry>
+    </enum>
+    <enum name="ASV_SDR_RECORD_TAG_FLAG">
+      <description>Specifies the flags of a record tag in MAV_CMD_ASV_SDR_SET_RECORD_TAG commad (unit8_t).</description>
+      <entry value="1" name="ASV_SDR_RECORD_TAG_FLAG_FOR_CURRENT">
+        <description>If the flag is set, the tag will be set for the current record. Record index in MAV_CMD_ASV_SDR_SET_RECORD_TAG will be ignored.</description>
+      </entry>
+      
+    </enum>
+    <enum name="ASV_SDR_RECORD_TAG_TYPE">
+      <description>Specifies the datatype of a record tag (unit8_t).</description>
+      <entry value="1" name="ASV_SDR_RECORD_TAG_TYPE_UINT8">
+        <description>8-bit unsigned integer</description>
+      </entry>
+      <entry value="2" name="ASV_SDR_RECORD_TAG_TYPE_INT8">
+        <description>8-bit signed integer</description>
+      </entry>
+      <entry value="3" name="ASV_SDR_RECORD_TAG_TYPE_UINT16">
+        <description>16-bit unsigned integer</description>
+      </entry>
+      <entry value="4" name="ASV_SDR_RECORD_TAG_TYPE_INT16">
+        <description>16-bit signed integer</description>
+      </entry>
+      <entry value="5" name="ASV_SDR_RECORD_TAG_TYPE_UINT32">
+        <description>32-bit unsigned integer</description>
+      </entry>
+      <entry value="6" name="ASV_SDR_RECORD_TAG_TYPE_INT32">
+        <description>32-bit signed integer</description>
+      </entry>
+      <entry value="7" name="ASV_SDR_RECORD_TAG_TYPE_UINT64">
+        <description>64-bit unsigned integer</description>
+      </entry>
+      <entry value="8" name="ASV_SDR_RECORD_TAG_TYPE_INT64">
+        <description>64-bit signed integer</description>
+      </entry>
+      <entry value="9" name="ASV_SDR_RECORD_TAG_TYPE_REAL32">
+        <description>32-bit floating-point</description>
+      </entry>
+      <entry value="10" name="ASV_SDR_RECORD_TAG_TYPE_REAL64">
+        <description>64-bit floating-point</description>
+      </entry>
+      <entry value="11" name="ASV_SDR_RECORD_TAG_TYPE_CUSTOM">
+        <description>Custom Type</description>
+      </entry>
     </enum>
     <enum name="ASV_SDR_CUSTOM_MODE">
       <description>A mapping of SDR payload modes for custom_mode field of heartbeat</description>
-      <entry value="0" name="ASV_SDR_CUSTOM_MODE_LOADING"/>
-      <entry value="1" name="ASV_SDR_CUSTOM_MODE_IDLE"/>
-      <entry value="2" name="ASV_SDR_CUSTOM_MODE_ERROR"/>
-      <entry value="3" name="ASV_SDR_CUSTOM_MODE_ILS"/>
-      <entry value="4" name="ASV_SDR_CUSTOM_MODE_ILS_IN_PROGRESS"/>
-      <entry value="5" name="ASV_SDR_CUSTOM_MODE_VOR"/>
-      <entry value="6" name="ASV_SDR_CUSTOM_MODE_VOR_IN_PROGRESS"/>
+      <entry value="0" name="ASV_SDR_CUSTOM_MODE_IDLE">
+        <description>Default mode. Do nothing.</description>
+      </entry>
+      <entry value="1" name="ASV_SDR_CUSTOM_MODE_LLZ">
+        <description>Localizer measure mode. In this mode shuld send and record ASV_SDR_ILS_RECORD_DATA</description>
+      </entry>
+      <entry value="2" name="ASV_SDR_CUSTOM_MODE_GP">
+        <description>Glide Path measure mode. In this mode shuld send and record ASV_SDR_ILS_RECORD_DATA</description>
+      </entry>
+      <entry value="3" name="ASV_SDR_CUSTOM_MODE_VOR">
+        <description>VOR measure mode. In this mode shuld send and record ASV_SDR_ILS_RECORD_DATA</description>
+      </entry>
+<!--      <entry value="3" name="ASV_SDR_CUSTOM_MODE_DME"/>-->
+<!--      <entry value="4" name="ASV_SDR_CUSTOM_MODE_MARKER"/>-->
+      
+<!--      <entry value="6" name="ASV_SDR_CUSTOM_MODE_RDF"/>-->
+<!--      <entry value="7" name="ASV_SDR_CUSTOM_MODE_GBAS"/>-->
+<!--      <entry value="8" name="ASV_SDR_CUSTOM_MODE_SPECTRUM"/>-->
     </enum>
-    
+    <enum name="ASV_SDR_SUPPORT_MODE_FLAG">
+      <description>These flags encode supported mode</description>
+      <entry value="1" name="ASV_SDR_SUPPORT_MODE_LLZ"/>
+      <entry value="2" name="ASV_SDR_SUPPORT_MODE_GP"/>
+<!--      <entry value="4" name="ASV_SDR_SUPPORT_MODE_DME"/>-->
+<!--      <entry value="8" name="ASV_SDR_SUPPORT_MODE_MARKER"/>-->
+<!--      <entry value="16" name="ASV_SDR_SUPPORT_MODE_VOR"/>-->
+<!--      <entry value="32" name="ASV_SDR_SUPPORT_MODE_RDF"/>-->
+<!--      <entry value="64" name="ASV_SDR_SUPPORT_MODE_GBAS"/>-->
+<!--      <entry value="128" name="ASV_SDR_SUPPORT_MODE_SPECTRUM"/>-->
+    </enum>
+   
   </enums>
   <messages>
     <message id="13100" name="ASV_SDR_OUT_STATUS">
       <description>SDR payload status message. Send with 1 Hz frequency.</description>
-      
+      <field type="uint64_t" name="supported_modes" enum="ASV_SDR_SUPPORT_MODE_FLAG">Supported ASV_SDR_CUSTOM_MODE.</field>
+      <field type="uint16_t" name="record_count">Records count in storage.</field>
+      <field type="uint32_t" name="size" units="bytes">Total records size in bytes.</field>
     </message>
-
-    <message id="13101" name="ASV_SDR_ILS_RECORD">
+    <message id="13101" name="ASV_SDR_RECORD_INFO_REQUEST_LIST">
+      <description>Request the overall list of record info items from the system/component.</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+    </message>
+    <message id="13102" name="ASV_SDR_RECORD_INFO_REQUEST_READ">
+      <description>Request to read info with either record_index from the system/component.</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+      <field type="uint16_t" name="record_index">Record index in storage.</field>
+    </message>
+    <message id="13103" name="ASV_SDR_RECORD_INFO">
+      <description>SDR payload record info.</description>
+      <field type="uint16_t" name="record_index">Record index in storage.</field>
+      <field type="char[28]" name="record_name">Tag name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
+      <field type="uint32_t" name="record_type" enum="ASV_SDR_RECORD_TYPE">Record type.</field>
+      <field type="uint32_t" name="record_data_type">Record data type (message id, e.g. 13120 for ASV_SDR_ILS_RECORD_DATA).</field>
+      <field type="uint64_t" name="time_unix_usec" units="us">Created timestamp (UNIX epoch time).</field>
+      <field type="uint32_t" name="data_count">Data items count</field>
+      <field type="uint16_t" name="tag_count">Record tag items count</field>
+      <field type="uint32_t" name="size" units="bytes">Total data size of record with all data items and tags.</field>
+    </message>
+    <message id="13104" name="ASV_SDR_RECORD_TAG_REQUEST_LIST">
+      <description>Request the overall list of record tag items from the system/component.</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+      <field type="uint16_t" name="record_index">Record index in storage.</field>
+    </message>
+    <message id="13105" name="ASV_SDR_RECORD_TAG_REQUEST_READ">
+      <description>Request to read info with either record_index from the system/component.</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+      <field type="uint16_t" name="record_index">Record index in storage.</field>
+      <field type="uint16_t" name="tag_index">Record tag items count</field>
+    </message>
+    <message id="13106" name="ASV_SDR_RECORD_TAG">
+      <description>Request to read info with either record_index from the system/component.</description>
+      <field type="uint16_t" name="tag_index">Record tag items count</field>
+      <field type="uint16_t" name="record_index">Record index in storage.</field>
+      <field type="char[16]" name="tag_name">Tag name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string</field>
+      <field type="uint8_t" name="tag_type" enum="ASV_SDR_RECORD_TAG_TYPE">Record index in storage.</field>
+      <field type="uint64_t" name="tag_value">Tag value, depends on the type of tag.</field>
+    </message>
+    
+    <message id="13120" name="ASV_SDR_ILS_RECORD_DATA">
       <description>ILS reciever record data.</description>
-      <field type="uint32_t" name="index" >Record index</field>
+      <field type="uint32_t" name="data_index">Data index in record</field>
+      <field type="uint16_t" name="record_index">Record index in storage.</field>
+      <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
       <!-- The global position, as returned by the GNSS receiver -->
       <field type="uint8_t" name="gnss_fix_type" enum="GPS_FIX_TYPE">GPS fix type.</field>
       <field type="int32_t" name="gnss_lat" units="degE7">Latitude (WGS84, EGM96 ellipsoid)</field>
@@ -114,9 +257,11 @@
       <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
     </message>
     
-    <message id="13102" name="ASV_SDR_VOR_RECORD">
+    <message id="13121" name="ASV_SDR_VOR_RECORD">
       <description>VOR reciever record data.</description>
-      <field type="uint32_t" name="index" >Record index</field>
+      <field type="uint32_t" name="index">Index in storage</field>
+      <field type="uint32_t" name="record_id">Record ID</field>
+      <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
       <!-- The global position, as returned by the GNSS receiver -->
       <field type="uint8_t" name="gnss_fix_type" enum="GPS_FIX_TYPE">GPS fix type.</field>
       <field type="int32_t" name="gnss_lat" units="degE7">Latitude (WGS84, EGM96 ellipsoid)</field>
