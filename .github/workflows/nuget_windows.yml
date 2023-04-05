@@ -9,7 +9,7 @@ env:
   PATH_TO_PROJECTS: ${{ github.workspace }}\src
   PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace}}\output\
   NUGET_SOURCE_URL: 'https://api.nuget.org/v3/index.json'
-  GITHUB_PACKAGES_URL: 'https://nuget.pkg.github.com/asvol/index.json'
+  GITHUB_PACKAGES_URL: 'https://nuget.pkg.github.com/asv-soft/index.json'
 
 jobs:
   deploy:
