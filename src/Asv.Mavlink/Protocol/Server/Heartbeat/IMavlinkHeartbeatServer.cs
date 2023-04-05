@@ -7,6 +7,6 @@ namespace Asv.Mavlink
     public interface IMavlinkHeartbeatServer:IDisposable
     {
         void Start();
-        Task Set(Action<HeartbeatPayload> changeCallback);
+        void Set(Action<HeartbeatPayload> changeCallback);
     }
 }

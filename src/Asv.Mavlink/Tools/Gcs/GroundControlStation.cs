@@ -18,6 +18,7 @@ namespace Asv.Mavlink
         public byte ComponentId { get; set; } = 254;
     }
 
+    [Obsolete("Use MavlinkRouter instead")]
     public class GroundControlStation : DisposableOnceWithCancel, IGroundControlStation
     {
         private readonly GroundControlStationIdentity _config;
@@ -102,7 +103,7 @@ namespace Asv.Mavlink
             {
                 _transponder = new MavlinkPacketTransponder<HeartbeatPacket, HeartbeatPayload>(MavlinkV2, new MavlinkServerIdentity { ComponentId = _config.ComponentId, SystemId = _config.SystemId }, _seq)
                     .DisposeItWith(Disposable);
-                _transponder.Set(_=>
+                _transponder.Set(_ =>
                 {
                     _.Autopilot = MavAutopilot.MavAutopilotInvalid;
                     _.BaseMode = 0;
@@ -110,7 +111,7 @@ namespace Asv.Mavlink
                     _.MavlinkVersion = 3;
                     _.SystemStatus = MavState.MavStateActive;
                     _.Type = MavType.MavTypeGcs;
-                }).Wait();
+                });
                 _transponder.Start(TimeSpan.FromMilliseconds(sendHeartBeatMs));
             }
 

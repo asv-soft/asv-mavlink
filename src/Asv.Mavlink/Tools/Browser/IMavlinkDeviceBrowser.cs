@@ -56,11 +56,26 @@ namespace Asv.Mavlink
     }
 
 
+    /// <summary>
+    /// Device browser in mavlink network
+    /// </summary>
     public interface IMavlinkDeviceBrowser
     {
+        /// <summary>
+        /// Current found devices
+        /// </summary>
         IMavlinkDevice[] Devices { get; }
+        /// <summary>
+        /// Event when new device found
+        /// </summary>
         IObservable<IMavlinkDevice> OnFoundDevice { get; }
+        /// <summary>
+        /// Event when device lost
+        /// </summary>
         IObservable<IMavlinkDevice> OnLostDevice { get; }
+        /// <summary>
+        /// Current device timeout
+        /// </summary>
         IRxEditableValue<TimeSpan> DeviceTimeout { get; }
     }
 

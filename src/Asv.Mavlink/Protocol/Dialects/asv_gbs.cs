@@ -144,7 +144,7 @@ namespace Asv.Mavlink.V2.AsvGbs
     {
 	    public const int PacketMessageId = 13000;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 182;
+        public override byte GetCrcEtra() => 67;
 
         public override AsvGbsOutStatusPayload Payload { get; } = new AsvGbsOutStatusPayload();
 
@@ -173,7 +173,7 @@ namespace Asv.Mavlink.V2.AsvGbs
             SatGlo = (byte)BinSerialize.ReadByte(ref buffer);
             SatBdu = (byte)BinSerialize.ReadByte(ref buffer);
             SatGal = (byte)BinSerialize.ReadByte(ref buffer);
-            SatQuz = (byte)BinSerialize.ReadByte(ref buffer);
+            SatQzs = (byte)BinSerialize.ReadByte(ref buffer);
             SatIme = (byte)BinSerialize.ReadByte(ref buffer);
             SatSbs = (byte)BinSerialize.ReadByte(ref buffer);
 
@@ -193,7 +193,7 @@ namespace Asv.Mavlink.V2.AsvGbs
             BinSerialize.WriteByte(ref buffer,(byte)SatGlo);
             BinSerialize.WriteByte(ref buffer,(byte)SatBdu);
             BinSerialize.WriteByte(ref buffer,(byte)SatGal);
-            BinSerialize.WriteByte(ref buffer,(byte)SatQuz);
+            BinSerialize.WriteByte(ref buffer,(byte)SatQzs);
             BinSerialize.WriteByte(ref buffer,(byte)SatIme);
             BinSerialize.WriteByte(ref buffer,(byte)SatSbs);
             /* PayloadByteSize = 27 */;
@@ -263,9 +263,9 @@ namespace Asv.Mavlink.V2.AsvGbs
         public byte SatGal { get; set; }
         /// <summary>
         /// QZSS satellite count.
-        /// OriginName: sat_quz, Units: , IsExtended: false
+        /// OriginName: sat_qzs, Units: , IsExtended: false
         /// </summary>
-        public byte SatQuz { get; set; }
+        public byte SatQzs { get; set; }
         /// <summary>
         /// IMES satellite count.
         /// OriginName: sat_ime, Units: , IsExtended: false

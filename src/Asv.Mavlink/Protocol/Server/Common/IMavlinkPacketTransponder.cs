@@ -19,6 +19,6 @@ namespace Asv.Mavlink
         bool IsStarted { get; }
         IRxValue<PacketTransponderState> State { get; }
         void Stop();
-        Task Set(Action<TPayload> changeCallback);
+        void Set(Action<TPayload> changeCallback);
     }
 }

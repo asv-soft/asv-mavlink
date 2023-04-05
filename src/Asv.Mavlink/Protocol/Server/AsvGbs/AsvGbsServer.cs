@@ -25,9 +25,9 @@ namespace Asv.Mavlink
             _transponder.Start(statusRate);
         }
 
-        public Task Set(Action<AsvGbsOutStatusPayload> changeCallback)
+        public void Set(Action<AsvGbsOutStatusPayload> changeCallback)
         {
-            return _transponder.Set(changeCallback);
+            _transponder.Set(changeCallback);
         }
     }
 }

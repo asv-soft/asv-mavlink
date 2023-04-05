@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Linq;
 using Asv.Common;
 using Asv.Mavlink.Server;
 using Asv.Mavlink.V2.Common;
@@ -34,12 +35,72 @@ public class GbsServerDevice:DisposableOnceWithCancel, IGbsServerDevice
             status.Lat = (int)(_.Latitude * 10000000D);
             status.Lng = (int)(_.Longitude * 10000000D);
             status.Alt = (int)(_.Altitude * 1000D);
-        }).Wait()).DisposeItWith(Disposable);
+        })).DisposeItWith(Disposable);
+        
+        _interfaceImplementation.VehicleCount.DistinctUntilChanged().Subscribe(_ => Server.Gbs.Set(status =>
+        {
+            status.VehicleCount = _;
+        })).DisposeItWith(Disposable);
+        
+        _interfaceImplementation.AccuracyMeter.Select(_=>(ushort)Math.Round(_*100,0)).DistinctUntilChanged().Subscribe(_ => Server.Gbs.Set(status =>
+        {
+            status.Accuracy = _;
+        })).DisposeItWith(Disposable);
+        
+        _interfaceImplementation.ObservationSec.DistinctUntilChanged().Subscribe(_ => Server.Gbs.Set(status =>
+        {
+            status.Observation = _;
+        })).DisposeItWith(Disposable);
+        
+        _interfaceImplementation.DgpsRate.DistinctUntilChanged().Subscribe(_ => Server.Gbs.Set(status =>
+        {
+            status.DgpsRate = _;
+        })).DisposeItWith(Disposable);
+
+        #region Sattelites statistics
+
+        _interfaceImplementation.AllSatellites.DistinctUntilChanged().Subscribe(_ => Server.Gbs.Set(status =>
+        {
+            status.SatAll = _;
+        })).DisposeItWith(Disposable);
+        _interfaceImplementation.GalSatellites.DistinctUntilChanged().Subscribe(_ => Server.Gbs.Set(status =>
+        {
+            status.SatGal = _;
+        })).DisposeItWith(Disposable);
+        
+        _interfaceImplementation.BeidouSatellites.DistinctUntilChanged().Subscribe(_ => Server.Gbs.Set(status =>
+        {
+            status.SatBdu = _;
+        })).DisposeItWith(Disposable);
+        
+        _interfaceImplementation.GlonassSatellites.DistinctUntilChanged().Subscribe(_ => Server.Gbs.Set(status =>
+        {
+            status.SatGlo = _;
+        })).DisposeItWith(Disposable);
+        _interfaceImplementation.GpsSatellites.DistinctUntilChanged().Subscribe(_ => Server.Gbs.Set(status =>
+        {
+            status.SatGps = _;
+        })).DisposeItWith(Disposable);
+        _interfaceImplementation.QzssSatellites.DistinctUntilChanged().Subscribe(_ => Server.Gbs.Set(status =>
+        {
+            status.SatQzs = _;
+        })).DisposeItWith(Disposable);
+        _interfaceImplementation.SbasSatellites.DistinctUntilChanged().Subscribe(_ => Server.Gbs.Set(status =>
+        {
+            status.SatSbs = _;
+        })).DisposeItWith(Disposable);
+        _interfaceImplementation.ImesSatellites.DistinctUntilChanged().Subscribe(_ => Server.Gbs.Set(status =>
+        {
+            status.SatIme = _;
+        })).DisposeItWith(Disposable);
+        
+
+        #endregion
 
         _interfaceImplementation.CustomMode.Subscribe(mode => Server.Heartbeat.Set(_ =>
         {
             _.CustomMode = (uint)mode;
-        }).Wait()).DisposeItWith(Disposable);
+        })).DisposeItWith(Disposable);
         
         Server.Gbs.Start(TimeSpan.FromMilliseconds(statusRateMs));
         

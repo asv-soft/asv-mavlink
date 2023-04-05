@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Authors>https://github.com/asvol</Authors>
+        <Description>Mavlink library for .NET 6.0, .NET 7.0 for controlling SDR payload</Description>
+        <Copyright>https://github.com/asvol</Copyright>
+        <PackageProjectUrl>https://github.com/asv-soft/asv-mavlink</PackageProjectUrl>
+        <PackageLicenseUrl></PackageLicenseUrl>
+        <PackageIcon>asv-mavlink-128.png</PackageIcon>
+        <RepositoryUrl>https://github.com/asv-soft/asv-mavlink</RepositoryUrl>
+        <PackageTags>mavlink;drone;PX4;Ardupilot;.net</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Asv.Mavlink\Asv.Mavlink.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\..\img\asv-mavlink-128.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+        <Link>asv-mavlink-128.png</Link>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="DynamicData" Version="7.10.2" />
+    </ItemGroup>
+
+</Project>

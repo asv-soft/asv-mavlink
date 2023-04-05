@@ -25,14 +25,14 @@ public class SdrServerDevice:DisposableOnceWithCancel, ISdrServerDevice
             _.SystemStatus = MavState.MavStateActive;
             _.BaseMode = MavModeFlag.MavModeFlagCustomModeEnabled;
             _.MavlinkVersion = 3;
-            _.CustomMode = (uint)V2.AsvSdr.AsvSdrCustomMode.AsvSdrCustomModeLoading;
+            _.CustomMode = (uint)V2.AsvSdr.AsvSdrCustomMode.AsvSdrCustomModeIdle;
         });
         Server.Heartbeat.Start();
         
         _interfaceImplementation.CustomMode.Subscribe(mode => Server.Heartbeat.Set(_ =>
         {
             _.CustomMode = (uint)mode;
-        }).Wait()).DisposeItWith(Disposable);
+        })).DisposeItWith(Disposable);
         
         Server.Gbs.Start(TimeSpan.FromMilliseconds(statusRateMs));
         

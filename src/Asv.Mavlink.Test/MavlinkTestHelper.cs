@@ -1,10 +1,8 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
-using Asv.Mavlink.Client;
 using Asv.Mavlink.Server;
 using Asv.Mavlink.V2.Common;
 
@@ -57,7 +55,7 @@ namespace Asv.Mavlink.Test
             client.Heartbeat.Link.Where(_ => _ == LinkState.Connected).FirstAsync().Wait();
         }
        
-        public static async Task<(MavlinkClient,MavlinkServerBase)> CreateServerAndClientDevices()
+        public static (MavlinkClient,MavlinkServerBase) CreateServerAndClientDevices()
         {
             var server = CreateServer(out var port);
             var client = CreateClient(port);

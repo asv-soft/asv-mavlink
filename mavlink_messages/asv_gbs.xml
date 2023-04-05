@@ -82,7 +82,7 @@
       <field type="uint8_t" name="sat_glo">GLONASS satellite count.</field>
       <field type="uint8_t" name="sat_bdu">BeiDou satellite count.</field>
       <field type="uint8_t" name="sat_gal">Galileo satellite count.</field>
-      <field type="uint8_t" name="sat_quz">QZSS satellite count.</field>
+      <field type="uint8_t" name="sat_qzs">QZSS satellite count.</field>
       <field type="uint8_t" name="sat_ime">IMES satellite count.</field>
       <field type="uint8_t" name="sat_sbs">SBAS satellite count.</field>
     </message>

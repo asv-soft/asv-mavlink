@@ -17,7 +17,7 @@ namespace Asv.Mavlink
         private readonly object _sync = new();
         private IDisposable _timerSubscribe;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private readonly AsyncReaderWriterLock _dataLock = new();
+        private readonly ReaderWriterLockSlim _dataLock = new();
         private int _isSending;
         private readonly RxValue<PacketTransponderState> _state = new();
         private TPacket _packet;
@@ -52,7 +52,7 @@ namespace Asv.Mavlink
             }
         }
 
-        private async void OnTick(long l)
+        private void OnTick(long l)
         {
             if (Interlocked.CompareExchange(ref _isSending, 1, 0) == 1)
             {
@@ -62,9 +62,9 @@ namespace Asv.Mavlink
 
             try
             {
-                await _dataLock.AcquireReaderLock(DisposeCancel);
+                _dataLock.EnterReadLock();
                 ((IPacketV2<IPayload>) _packet).Sequence = _seq.GetNextSequenceNumber();
-                await _connection.Send((IPacketV2<IPayload>) _packet, DisposeCancel).ConfigureAwait(false);
+                _connection.Send((IPacketV2<IPayload>)_packet, DisposeCancel).Wait();
                 LogSuccess();
             }
             catch (Exception e)
@@ -74,7 +74,7 @@ namespace Asv.Mavlink
             }
             finally
             {
-                _dataLock.ReleaseReaderLock();
+                _dataLock.ExitReadLock();
                 Interlocked.Exchange(ref _isSending, 0);
             }
         }
@@ -114,13 +114,12 @@ namespace Asv.Mavlink
             }
         }
 
-        public async Task Set(Action<TPayload> changeCallback)
+        public void Set(Action<TPayload> changeCallback)
         {
             try
             {
-                await _dataLock.AcquireWriterLock();
+                _dataLock.EnterWriteLock();
                 changeCallback(_packet.Payload);
-
             }
             catch (Exception e)
             {
@@ -128,7 +127,7 @@ namespace Asv.Mavlink
             }
             finally
             {
-                _dataLock.ReleaseWriterLock();
+                _dataLock.ExitWriteLock();
             }
         }
 

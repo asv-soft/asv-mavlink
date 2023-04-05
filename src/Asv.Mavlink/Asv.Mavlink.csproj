@@ -6,7 +6,7 @@
     <Authors>https://github.com/asvol</Authors>
     <Company>https://github.com/asvol</Company>
     <Copyright>https://github.com/asvol</Copyright>
-    <PackageProjectUrl>https://github.com/asvol/asv-mavlink</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/asv-soft/asv-mavlink</PackageProjectUrl>
     <RepositoryUrl>https://github.com/asvol/asv-mavlink</RepositoryUrl>
     <PackageTags>mavlink;drone;PX4;Ardupilot;.net</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -14,6 +14,7 @@
     <PackageIcon>asv-mavlink-128.png</PackageIcon>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseUrl></PackageLicenseUrl>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

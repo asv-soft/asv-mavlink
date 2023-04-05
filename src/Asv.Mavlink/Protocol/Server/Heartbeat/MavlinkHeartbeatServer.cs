@@ -19,9 +19,9 @@ namespace Asv.Mavlink
             _transponder = new MavlinkPacketTransponder<HeartbeatPacket,HeartbeatPayload>(connection, identity, seq);
         }
 
-        public Task Set(Action<HeartbeatPayload> changeCallback)
+        public void Set(Action<HeartbeatPayload> changeCallback)
         {
-            return _transponder.Set(changeCallback);
+            _transponder.Set(changeCallback);
         }
 
         public void Start()

@@ -31,23 +31,71 @@ namespace Asv.Mavlink
 
     
 
+    /// <summary>
+    /// Used for routing mavlink packets between ports
+    /// </summary>
     public interface IMavlinkRouter: IMavlinkV2Connection
     {
+        /// <summary>
+        /// Total received bytes
+        /// </summary>
         long RxBytes { get; }
+        /// <summary>
+        /// Total transmitted bytes
+        /// </summary>
         long TxBytes { get; }
-
+        /// <summary>
+        /// Add new port
+        /// </summary>
+        /// <param name="settings">Port settings</param>
+        /// <returns></returns>
         Guid AddPort(MavlinkPortConfig settings);
+        /// <summary>
+        /// Event for new port added
+        /// </summary>
         IObservable<Guid> OnAddPort { get; }
-
+        /// <summary>
+        /// Remove port
+        /// </summary>
+        /// <param name="id">Port id</param>
+        /// <returns></returns>
         bool RemovePort(Guid id);
+        /// <summary>
+        /// Event for port removed
+        /// </summary>
         IObservable<Guid> OnRemovePort { get; }
-
+        /// <summary>
+        /// Return all ports
+        /// </summary>
+        /// <returns></returns>
         Guid[] GetPorts();
+        /// <summary>
+        /// Enable/disable port
+        /// </summary>
+        /// <param name="id">Port id</param>
+        /// <param name="enabled">Enable\disable port</param>
+        /// <returns></returns>
         bool SetEnabled(Guid id, bool enabled);
+        /// <summary>
+        /// Return port info
+        /// </summary>
+        /// <param name="id">Port id</param>
+        /// <returns></returns>
         MavlinkPortInfo? GetInfo(Guid id);
+        /// <summary>
+        /// Return specifed ports config for save it to persistent storage
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         MavlinkPortConfig? GetConfig(Guid id);
+        /// <summary>
+        /// Return all ports config for save it to persistent storage
+        /// </summary>
+        /// <returns></returns>
         MavlinkPortConfig[] GetConfig();
-
+        /// <summary>
+        /// Event for port config changed
+        /// </summary>
         IObservable<Guid> OnConfigChanged { get; }
     }
 }
