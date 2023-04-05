@@ -14,6 +14,9 @@
     <PackageIcon>asv-mavlink-128.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DocumentationFile>bin\Release\Asv.Mavlink.Vehicle.xml</DocumentationFile>
+  </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\img\asv-mavlink-128.png">
       <Pack>True</Pack>

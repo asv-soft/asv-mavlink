@@ -15,6 +15,10 @@
         <PackageTags>mavlink;drone;PX4;Ardupilot;.net</PackageTags>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DocumentationFile>bin\Release\Asv.Mavlink.Gbs.xml</DocumentationFile>
+    </PropertyGroup>
+
     <ItemGroup>
       <ProjectReference Include="..\Asv.Mavlink\Asv.Mavlink.csproj" />
     </ItemGroup>
