@@ -21,7 +21,7 @@ public class GbsClientDevice : GbsClientDeviceBase, IGbsClientDevice
         _client.Gbs.Status.Select(_=>_.Observation).Subscribe(InternalObservationSec).DisposeItWith(Disposable);
         _client.Gbs.Status.Select(_=>_.DgpsRate).Subscribe(InternalDgpsRate).DisposeItWith(Disposable);
         _client.Gbs.Status.Select(_ => _.SatAll).Subscribe(InternalAllSatellites).DisposeItWith(Disposable);
-        _client.Gbs.Status.Select(_ => _.SatGal).Subscribe(InternalGpsSatellites).DisposeItWith(Disposable);
+        _client.Gbs.Status.Select(_ => _.SatGal).Subscribe(InternalGalSatellites).DisposeItWith(Disposable);
         _client.Gbs.Status.Select(_ => _.SatBdu).Subscribe(InternalBeidouSatellites).DisposeItWith(Disposable);
         _client.Gbs.Status.Select(_ => _.SatGlo).Subscribe(InternalGlonassSatellites).DisposeItWith(Disposable);
         _client.Gbs.Status.Select(_ => _.SatGps).Subscribe(InternalGpsSatellites).DisposeItWith(Disposable);
