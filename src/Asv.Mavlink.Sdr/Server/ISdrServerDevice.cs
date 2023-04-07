@@ -1,6 +1,6 @@
 using Asv.Mavlink.Server;
 
-namespace Asv.Mavlink;
+namespace Asv.Mavlink.Sdr;
 
 public interface ISdrServerDevice
 {

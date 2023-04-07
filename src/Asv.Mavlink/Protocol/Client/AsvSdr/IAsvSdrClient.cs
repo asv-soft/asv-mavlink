@@ -11,19 +11,20 @@ namespace Asv.Mavlink;
 public interface IAsvSdrClient
 {
     IRxValue<AsvSdrOutStatusPayload> Status { get; }
-    IObservable<AsvSdrStoragePayload> OnStorage { get; }
-    Task<AsvSdrStoragePayload> GetStorage(CancellationToken cancel=default);
     IObservable<AsvSdrRecordPayload> OnRecord { get; }
-    Task<AsvSdrRecordResponseListPayload> GetRecordList(CancellationToken cancel=default);
+    Task<AsvSdrRecordListResponsePayload> GetRecordList(CancellationToken cancel=default);
     Task<AsvSdrRecordPayload> GetRecord(ushort recordIndex, CancellationToken cancel=default);
     IObservable<AsvSdrRecordTagPayload> OnRecordTag { get; }
-    Task<AsvSdrRecordTagResponseListPayload> GetRecordTagList(ushort recordIndex,CancellationToken cancel=default);
+    Task<AsvSdrRecordDeleteResponsePayload> DeleteRecords(ushort startIndex,ushort stopIndex, CancellationToken cancel=default);
+    Task<AsvSdrRecordTagListResponsePayload> GetRecordTagList(ushort recordIndex,CancellationToken cancel=default);
     Task<AsvSdrRecordTagPayload> GetRecordTag(ushort recordIndex,ushort tagIndex, CancellationToken cancel=default);
-    Task<AsvSdrRecordDataResponseListPayload> GetRecordDataList(ushort recordIndex, CancellationToken cancel=default);
+    Task<AsvSdrRecordDataListResponsePayload> GetRecordDataList(ushort recordIndex, CancellationToken cancel=default);
+    Task<AsvSdrRecordTagDeleteResponsePayload> DeleteRecordTags(ushort recordIndex,ushort startIndex,ushort stopIndex, CancellationToken cancel=default);
     IObservable<AsvSdrRecordDataIlsPayload> OnRecordDataIls { get; }
     Task<AsvSdrRecordDataIlsPayload> GetRecordDataIls(ushort recordIndex,uint dataIndex, CancellationToken cancel=default);
     IObservable<AsvSdrRecordDataVorPayload> OnRecordDataVor { get; }
     Task<AsvSdrRecordDataVorPayload> GetRecordDataVor(ushort recordIndex,uint dataIndex, CancellationToken cancel=default);
+    Task<AsvSdrRecordDataDeleteResponsePayload> DeleteRecordData(ushort recordIndex,ushort startIndex,ushort stopIndex, CancellationToken cancel=default);
     
 }
 

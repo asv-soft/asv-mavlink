@@ -23,9 +23,9 @@
       <entry value="13100" name="MAV_CMD_ASV_SDR_SET_MODE">
         <description>Start one of ASV_SDR_CUSTOM_MODE</description>
         <param index="1">Mode (uint32_t, see ASV_SDR_CUSTOM_MODE).</param>
-        <param index="2">Frequency in Hz, ignored for IDLE mode (uint32).</param>
-        <param index="3">Stream rate for sending record data in Hz, ignored for IDLE mode (float).</param>
-        <param index="4">Empty.</param>
+        <param index="2">Frequency in Hz, 0-3 bytes of uint_64, ignored for IDLE mode (uint32).</param>
+        <param index="3">Frequency in Hz, 4-7 bytes of uint_64, ignored for IDLE mode (uint32).</param>
+        <param index="4">Stream rate for sending record data in Hz, ignored for IDLE mode (float).</param>
         <param index="5">Empty.</param>
         <param index="6">Empty.</param>
         <param index="7">Empty.</param>
@@ -52,7 +52,7 @@
       </entry>
       <entry value="13103" name="MAV_CMD_ASV_SDR_SET_RECORD_TAG">
         <description>Set custom tag to record. Used to store additional data for records.</description>
-        <param index="1">Record index (uint16), ASV_SDR_RECORD_TAG_FLAG (uint8) and ASV_SDR_RECORD_TAG_TYPE (uint8).</param>
+        <param index="1">Record index (uint16) , ASV_SDR_RECORD_TAG_FLAG (uint8) and ASV_SDR_RECORD_TAG_TYPE (uint8).</param>
         <param index="2">Tag name: 0-3 chars (char[4]).</param>
         <param index="3">Tag name: 4-7 chars (char[4]).</param>
         <param index="4">Tag name: 8-11 chars (char[4]).</param>
@@ -63,6 +63,9 @@
     </enum>
     <enum name="ASV_SDR_RECORD_TAG_FLAG">
       <description>Specifies the flags of a record tag in MAV_CMD_ASV_SDR_SET_RECORD_TAG command (unit8_t).</description>
+      <entry value="0" name="ASV_SDR_RECORD_TAG_FLAG_NONE">
+        <description>Default value(no flags)</description>
+      </entry>
       <entry value="1" name="ASV_SDR_RECORD_TAG_FLAG_FOR_CURRENT">
         <description>If the flag is set, the tag will be set for the current record. Record index in MAV_CMD_ASV_SDR_SET_RECORD_TAG will be ignored.</description>
       </entry>
@@ -121,16 +124,16 @@
         <description>Specify recording now is started.</description>
       </entry>
     </enum>
-    <enum name="ASV_SDR_REQUEST_LIST_ACK">
-      <description>ACK / NACK / ERROR values as a result of ASV_SDR_*_REQUEST_LIST for item transmission.</description>
+    <enum name="ASV_SDR_REQUEST_ACK">
+      <description>ACK / NACK / ERROR values as a result of ASV_SDR_*_REQUEST_LIST or ASV_SDR_*_DELETE commands.</description>
       <entry name="ASV_SDR_REQUEST_ACK_OK">
-        <description>Request for transmission is ok.</description>
+        <description>Request is ok.</description>
       </entry>
       <entry name="ASV_SDR_REQUEST_ACK_IN_PROGRESS">
-        <description>Transmission already in progress.</description>
+        <description>Command already in progress.</description>
       </entry>
       <entry name="ASV_SDR_REQUEST_ACK_FAIL">
-        <description>Error to transmit items.</description>
+        <description>Command error.</description>
       </entry>
     </enum>
   </enums>
@@ -138,98 +141,145 @@
     <message id="13100" name="ASV_SDR_OUT_STATUS">
       <description>SDR payload status message. Send with 1 Hz frequency.</description>
       <field type="uint64_t" name="supported_modes" enum="ASV_SDR_SUPPORT_MODE_FLAG">Supported ASV_SDR_CUSTOM_MODE.</field>
-      
-    </message>
-    
-    <message id="13101" name="ASV_SDR_STORAGE_REQUEST_READ">
-      <description>Request to read ASV_SDR_STORAGE from the system/component.</description>
-      <field type="uint8_t" name="target_system">System ID.</field>
-      <field type="uint8_t" name="target_component">Component ID.</field>
-    </message>
-    <message id="13102" name="ASV_SDR_STORAGE">
-      <description>SDR payload storage info.</description>
       <field type="uint16_t" name="record_count">Number of records in storage.</field>
       <field type="uint64_t" name="size" units="bytes">Total storage size in bytes.</field>
     </message>
-    <!-- ASV_SDR_RECORD_* -->
-    <message id="13103" name="ASV_SDR_RECORD_REQUEST_LIST">
+    
+    <!-- ASV_SDR_RECORD_* 13101-13110 -->
+    <message id="13101" name="ASV_SDR_RECORD_LIST_REQUEST">
       <description>Request the overall list of ASV_SDR_RECORD info items from the system/component.</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
     </message>
-    <message id="13104" name="ASV_SDR_RECORD_RESPONSE_LIST">
-      <description>Response for ASV_SDR_RECORD_REQUEST_LIST request.</description>
-      <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_LIST_ACK">Result code.</field>
+    <message id="13102" name="ASV_SDR_RECORD_LIST_RESPONSE">
+      <description>Response for ASV_SDR_RECORD_LIST_REQUEST request.</description>
+      <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
       <field type="uint16_t" name="items_count">Number of items for transmition.</field>
     </message>
-    <message id="13105" name="ASV_SDR_RECORD_REQUEST_READ">
+    <message id="13103" name="ASV_SDR_RECORD_READ_REQUEST">
       <description>Request to read ASV_SDR_RECORD with either record_index from the system/component.</description>
       <field type="uint8_t" name="target_system">System ID.</field>
       <field type="uint8_t" name="target_component">Component ID.</field>
       <field type="uint16_t" name="record_index">Record index in storage.</field>
     </message>
-    <message id="13106" name="ASV_SDR_RECORD">
+    <message id="13104" name="ASV_SDR_RECORD">
       <description>SDR payload record info.</description>
       <field type="uint16_t" name="index">Record index in storage.</field>
       <field type="char[28]" name="name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
-      <field type="uint16_t" name="data_type">Record data type (message id, e.g. 13120 for ASV_SDR_RECORD_DATA_ILS).</field>
+      <field type="uint32_t" name="record_mode" enum="ASV_SDR_CUSTOM_MODE">Record mode.</field>
+      <field type="uint64_t" name="frequency" >Frequency in Hz.</field>
+      <field type="uint16_t" name="data_message_id">Record data type (message id, e.g. 13120 for ASV_SDR_RECORD_DATA_ILS).</field>
       <field type="uint64_t" name="state" enum="ASV_SDR_RECORD_STATE_FLAG">Current state.</field>
-      <field type="uint64_t" name="created_unix_usec" units="us">Created timestamp (UNIX epoch time).</field>
+      <field type="uint64_t" name="created_unix_us" units="us">Created timestamp (UNIX epoch time).</field>
+      <field type="uint32_t" name="duration_sec" units="sec">Record duration in sec.</field>
       <field type="uint16_t" name="tag_count">Tag items count.</field>
       <field type="uint32_t" name="data_count">Data items count.</field>
       <field type="uint32_t" name="size" units="bytes">Total data size of record with all data items and tags.</field>
     </message>
-    <!-- ASV_SDR_RECORD_TAG_* -->
-    <message id="13107" name="ASV_SDR_RECORD_TAG_REQUEST_LIST">
+    <message id="13105" name="ASV_SDR_RECORD_DELETE_REQUEST">
+      <description>Request to delete ASV_SDR_RECORD with either record_index from the system/component.</description>
+      <field type="uint8_t" name="target_system">System ID.</field>
+      <field type="uint8_t" name="target_component">Component ID.</field>
+      <field type="uint16_t" name="record_start_index">Record start index in record.</field>
+      <field type="uint16_t" name="record_stop_index">Record stop index in record.</field>
+    </message>
+    <message id="13106" name="ASV_SDR_RECORD_DELETE_RESPONSE">
+      <description>Request to delete ASV_SDR_RECORD with either record_index from the system/component.</description>
+      <field type="uint8_t" name="target_system">System ID.</field>
+      <field type="uint8_t" name="target_component">Component ID.</field>
+      <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
+      <field type="uint16_t" name="record_start_index">Record start index in record.</field>
+      <field type="uint16_t" name="record_stop_index">Record stop index in record.</field>
+    </message>
+    <!-- ASV_SDR_RECORD_TAG_* 13110-13120-->
+    <message id="13110" name="ASV_SDR_RECORD_TAG_LIST_REQUEST">
       <description>Request the overall list of ASV_SDR_RECORD_TAG items from the system/component.</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
       <field type="uint16_t" name="record_index">Record index in storage.</field>
     </message>
-    <message id="13108" name="ASV_SDR_RECORD_TAG_RESPONSE_LIST">
-      <description>Response for ASV_SDR_RECORD_TAG_REQUEST_LIST request.</description>
-      <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_LIST_ACK">Result code.</field>
+    <message id="13111" name="ASV_SDR_RECORD_TAG_LIST_RESPONSE">
+      <description>Response for ASV_SDR_RECORD_TAG_LIST_REQUEST.</description>
+      <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
       <field type="uint16_t" name="items_count">Number of items for transmition.</field>
     </message>
-    <message id="13109" name="ASV_SDR_RECORD_TAG_REQUEST_READ">
-      <description>Request to read ASV_SDR_RECORD_TAG with either record_index from the system/component.</description>
+    <message id="13112" name="ASV_SDR_RECORD_TAG_READ_REQUEST">
+      <description>Request to read ASV_SDR_RECORD_TAG with either record_index and tag_index from the system/component.</description>
       <field type="uint8_t" name="target_system">System ID.</field>
       <field type="uint8_t" name="target_component">Component ID.</field>
       <field type="uint16_t" name="record_index">Record index in storage.</field>
       <field type="uint16_t" name="tag_index">Tag index.</field>
     </message>
-    <message id="13110" name="ASV_SDR_RECORD_TAG">
-      <description>Request to read info with either record_index from the system/component.</description>
+    <message id="13113" name="ASV_SDR_RECORD_TAG">
+      <description>Request to read info with either tag_index and record_index from the system/component.</description>
       <field type="uint16_t" name="tag_index">Record tag items count</field>
       <field type="uint16_t" name="record_index">Record index in storage.</field>
       <field type="char[16]" name="tag_name">Tag name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string</field>
       <field type="uint8_t" name="tag_type" enum="ASV_SDR_RECORD_TAG_TYPE">Record index in storage.</field>
       <field type="uint8_t[8]" name="tag_value">Tag value, depends on the type of tag.</field>
     </message>
-    <!-- ASV_SDR_RECORD_DATA_* -->
-    <message id="13111" name="ASV_SDR_RECORD_DATA_REQUEST_LIST">
+    <message id="13114" name="ASV_SDR_RECORD_TAG_DELETE_REQUEST">
+      <description>Request to delete ASV_SDR_RECORD_TAG with either record_index and tag_index from the system/component.</description>
+      <field type="uint8_t" name="target_system">System ID.</field>
+      <field type="uint8_t" name="target_component">Component ID.</field>
+      <field type="uint16_t" name="record_index">Record index in storage.</field>
+      <field type="uint16_t" name="tag_start_index">Tag start index.</field>
+      <field type="uint16_t" name="tag_stop_index">Tag stop index.</field>
+    </message>
+    <message id="13115" name="ASV_SDR_RECORD_TAG_DELETE_RESPONSE">
+      <description>Response for ASV_SDR_RECORD_TAG_DELETE_REQUEST.</description>
+      <field type="uint8_t" name="target_system">System ID.</field>
+      <field type="uint8_t" name="target_component">Component ID.</field>
+      <field type="uint16_t" name="record_index">Record index in storage.</field>
+      <field type="uint16_t" name="tag_start_index">Tag start index.</field>
+      <field type="uint16_t" name="tag_stop_index">Tag stop index.</field>
+    </message>
+    
+    <!-- ASV_SDR_RECORD_DATA_* 13130-13140-->
+    <message id="13111" name="ASV_SDR_RECORD_DATA_LIST_REQUEST">
       <description>Request the overall list of ASV_SDR_RECORD_DATA_* items from the system/component.</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
       <field type="uint16_t" name="record_index">Record index in storage.</field>
+      <field type="uint32_t" name="data_start_index">Data start index in record.</field>
+      <field type="uint32_t" name="data_stop_index">Data stop index in record.</field>
     </message>
-    <message id="13112" name="ASV_SDR_RECORD_DATA_RESPONSE_LIST">
-      <description>Response for ASV_SDR_RECORD_TAG_REQUEST_LIST request.</description>
-      <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_LIST_ACK">Result code.</field>
+    <message id="13112" name="ASV_SDR_RECORD_DATA_LIST_RESPONSE">
+      <description>Response for ASV_SDR_RECORD_DATA_LIST_REQUEST.</description>
+      <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
       <field type="uint32_t" name="items_count">Number of items for transmition.</field>
       <field type="uint16_t" name="data_type">Record data type (message id, e.g. 13120 for ASV_SDR_RECORD_DATA_ILS).</field>
     </message>
-    <message id="13113" name="ASV_SDR_RECORD_DATA_REQUEST_READ">
-      <description>Request to read data with either record_index from the system/component.</description>
+    <message id="13113" name="ASV_SDR_RECORD_DATA_READ_REQUEST">
+      <description>Request to read data with either record_index and data_index from the system/component.</description>
       <field type="uint8_t" name="target_system">System ID.</field>
       <field type="uint8_t" name="target_component">Component ID.</field>
       <field type="uint16_t" name="record_index">Record index in storage.</field>
       <field type="uint32_t" name="data_index">Data index.</field>
     </message>
     
+    <message id="13114" name="ASV_SDR_RECORD_DATA_DELETE_REQUEST">
+      <description>Request to delete data with either record_index and data_index from the system/component.</description>
+      <field type="uint8_t" name="target_system">System ID.</field>
+      <field type="uint8_t" name="target_component">Component ID.</field>
+      <field type="uint16_t" name="record_index">Record index in storage.</field>
+      <field type="uint32_t" name="start_data_index">Start data index.</field>
+      <field type="uint32_t" name="stop_data_index">Stop data index.</field>
+    </message>
+    <message id="13115" name="ASV_SDR_RECORD_DATA_DELETE_RESPONSE">
+      <description>Response for ASV_SDR_RECORD_DATA_DELETE_REQUEST.</description>
+      <field type="uint8_t" name="target_system">System ID.</field>
+      <field type="uint8_t" name="target_component">Component ID.</field>
+      <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
+      <field type="uint16_t" name="record_index">Record index in storage.</field>
+      <field type="uint32_t" name="start_data_index">Start data index.</field>
+      <field type="uint32_t" name="stop_data_index">Stop data index.</field>
+    </message>
+
+
+    <!-- ASV_SDR_RECORD_DATA_* 13150-13199-->
     
-    
-    <message id="13120" name="ASV_SDR_RECORD_DATA_ILS">
+    <message id="13150" name="ASV_SDR_RECORD_DATA_ILS">
       <description>ILS reciever record data.</description>
       <field type="uint32_t" name="data_index">Data index in record</field>
       <field type="uint16_t" name="record_index">Record index in storage.</field>
@@ -296,7 +346,7 @@
       <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
     </message>
     
-    <message id="13121" name="ASV_SDR_RECORD_DATA_VOR">
+    <message id="13151" name="ASV_SDR_RECORD_DATA_VOR">
       <description>VOR reciever record data.</description>
       <field type="uint32_t" name="data_index">Data index in record</field>
       <field type="uint16_t" name="record_index">Record index in storage.</field>

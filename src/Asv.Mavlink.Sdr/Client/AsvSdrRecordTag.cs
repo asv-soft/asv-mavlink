@@ -1,24 +1,13 @@
-using System;
-using System.Linq;
 using System.Text;
 using Asv.Mavlink.V2.AsvSdr;
 
-namespace Asv.Mavlink;
+namespace Asv.Mavlink.Sdr;
 
-public class AsvSdrRecordTag : ICloneable
+public class AsvSdrRecordTag
 {
-    private const int MaxNameLength = 16;
-    
-    internal AsvSdrRecordTag(AsvSdrRecordTagPayload payload)
-    {
-        Name = GetName(payload);
-        Type = payload.TagType;
-        RawValue = payload.TagValue;
-    }
-    
     private AsvSdrRecordTag(string name,AsvSdrRecordTagType type)
     {
-        if (name.Length > MaxNameLength) throw new ArgumentOutOfRangeException(nameof(name), $"Max length is {MaxNameLength} chars");      
+        if (name.Length > WellKnown.RecordTagNameMaxLength) throw new ArgumentOutOfRangeException(nameof(name), $"Max length is {WellKnown.RecordTagNameMaxLength} chars");      
         Name = name;
         Type = type;
         RawValue = Array.Empty<byte>();
@@ -48,16 +37,4 @@ public class AsvSdrRecordTag : ICloneable
     public byte[] RawValue { get; }
     public string Name { get; }
     public AsvSdrRecordTagType Type { get; }
-        
-    public ulong GetUint64() => BitConverter.ToUInt64(RawValue,0); 
-    public long GetInt64() => BitConverter.ToInt64(RawValue,0);
-    public double GetReal64() => BitConverter.ToDouble(RawValue,0);
-    public string GetString() => new(RawValue.Select(_=>(char)_).Where(_ => _ != '\0').ToArray());
-        
-    private static string GetName(AsvSdrRecordTagPayload payload) => new(payload.TagName.Where(_ => _ != '\0').ToArray());
-    
-    public object Clone()
-    {
-        return MemberwiseClone();
-    }
 }

@@ -1,10 +1,9 @@
-using System;
 using Asv.Common;
 using Asv.Mavlink.Server;
 using Asv.Mavlink.V2.Common;
 using NLog;
 
-namespace Asv.Mavlink;
+namespace Asv.Mavlink.Sdr;
 
 public class SdrServerDevice:DisposableOnceWithCancel, ISdrServerDevice
 {
