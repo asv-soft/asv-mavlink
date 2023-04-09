@@ -1,6 +1,7 @@
 using Asv.IO;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.AsvGbs;
+using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Icarous;
 using Asv.Mavlink.V2.Uavionix;
@@ -26,6 +27,7 @@ namespace Asv.Mavlink
             decoder.RegisterIcarousDialect();
             decoder.RegisterUavionixDialect();
             decoder.RegisterAsvGbsDialect();
+            decoder.RegisterAsvSdrDialect();
         }
     }
 }

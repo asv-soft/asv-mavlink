@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using Asv.Common;
 using Asv.IO;
@@ -21,6 +22,17 @@ namespace Asv.Mavlink.Test
             }
         }
 
+        public static void CreateServerAndClientConnections(out IMavlinkV2Connection server,out  IMavlinkV2Connection client)
+        {
+            var port = GetAvailablePort();
+            var serverPort = PortFactory.Create($"tcp://127.0.0.1:{port}?srv=true");
+            serverPort.Enable();
+            server = MavlinkV2ConnectionFactory.Create(serverPort);
+            var clientPort = PortFactory.Create($"tcp://127.0.0.1:{port}");
+            clientPort.Enable();
+            client = MavlinkV2ConnectionFactory.Create(clientPort);
+        }
+
         public static MavlinkServerBase CreateServer(out int port, byte compId = 1,byte sysId = 1)
         {
             port = GetAvailablePort();
@@ -29,7 +41,7 @@ namespace Asv.Mavlink.Test
 
             var serverConnection = MavlinkV2ConnectionFactory.Create(serverPort);
             var mavlinkServer = new MavlinkServerBase(serverConnection,
-                new MavlinkServerIdentity { ComponentId = compId, SystemId = sysId });
+                new MavlinkServerIdentity { ComponentId = compId, SystemId = sysId },TaskPoolScheduler.Default);
             mavlinkServer.Heartbeat.Set(_ => _.Autopilot = MavAutopilot.MavAutopilotGeneric);
             mavlinkServer.Heartbeat.Start();
             return mavlinkServer;

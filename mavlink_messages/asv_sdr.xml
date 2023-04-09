@@ -228,15 +228,14 @@
     </message>
     <message id="13115" name="ASV_SDR_RECORD_TAG_DELETE_RESPONSE">
       <description>Response for ASV_SDR_RECORD_TAG_DELETE_REQUEST.</description>
-      <field type="uint8_t" name="target_system">System ID.</field>
-      <field type="uint8_t" name="target_component">Component ID.</field>
+      <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
       <field type="uint16_t" name="record_index">Record index in storage.</field>
       <field type="uint16_t" name="tag_start_index">Tag start index.</field>
       <field type="uint16_t" name="tag_stop_index">Tag stop index.</field>
     </message>
     
-    <!-- ASV_SDR_RECORD_DATA_* 13130-13140-->
-    <message id="13111" name="ASV_SDR_RECORD_DATA_LIST_REQUEST">
+    <!-- ASV_SDR_RECORD_DATA_* 13120-13130-->
+    <message id="13120" name="ASV_SDR_RECORD_DATA_LIST_REQUEST">
       <description>Request the overall list of ASV_SDR_RECORD_DATA_* items from the system/component.</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
@@ -244,21 +243,20 @@
       <field type="uint32_t" name="data_start_index">Data start index in record.</field>
       <field type="uint32_t" name="data_stop_index">Data stop index in record.</field>
     </message>
-    <message id="13112" name="ASV_SDR_RECORD_DATA_LIST_RESPONSE">
+    <message id="13121" name="ASV_SDR_RECORD_DATA_LIST_RESPONSE">
       <description>Response for ASV_SDR_RECORD_DATA_LIST_REQUEST.</description>
       <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
       <field type="uint32_t" name="items_count">Number of items for transmition.</field>
       <field type="uint16_t" name="data_type">Record data type (message id, e.g. 13120 for ASV_SDR_RECORD_DATA_ILS).</field>
     </message>
-    <message id="13113" name="ASV_SDR_RECORD_DATA_READ_REQUEST">
+    <message id="13122" name="ASV_SDR_RECORD_DATA_READ_REQUEST">
       <description>Request to read data with either record_index and data_index from the system/component.</description>
       <field type="uint8_t" name="target_system">System ID.</field>
       <field type="uint8_t" name="target_component">Component ID.</field>
       <field type="uint16_t" name="record_index">Record index in storage.</field>
       <field type="uint32_t" name="data_index">Data index.</field>
     </message>
-    
-    <message id="13114" name="ASV_SDR_RECORD_DATA_DELETE_REQUEST">
+    <message id="13123" name="ASV_SDR_RECORD_DATA_DELETE_REQUEST">
       <description>Request to delete data with either record_index and data_index from the system/component.</description>
       <field type="uint8_t" name="target_system">System ID.</field>
       <field type="uint8_t" name="target_component">Component ID.</field>
@@ -266,19 +264,15 @@
       <field type="uint32_t" name="start_data_index">Start data index.</field>
       <field type="uint32_t" name="stop_data_index">Stop data index.</field>
     </message>
-    <message id="13115" name="ASV_SDR_RECORD_DATA_DELETE_RESPONSE">
+    <message id="13124" name="ASV_SDR_RECORD_DATA_DELETE_RESPONSE">
       <description>Response for ASV_SDR_RECORD_DATA_DELETE_REQUEST.</description>
-      <field type="uint8_t" name="target_system">System ID.</field>
-      <field type="uint8_t" name="target_component">Component ID.</field>
       <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
       <field type="uint16_t" name="record_index">Record index in storage.</field>
       <field type="uint32_t" name="start_data_index">Start data index.</field>
       <field type="uint32_t" name="stop_data_index">Stop data index.</field>
     </message>
 
-
-    <!-- ASV_SDR_RECORD_DATA_* 13150-13199-->
-    
+    <!-- ASV_SDR_RECORD_DATA_* 13150-13199 -->
     <message id="13150" name="ASV_SDR_RECORD_DATA_ILS">
       <description>ILS reciever record data.</description>
       <field type="uint32_t" name="data_index">Data index in record</field>

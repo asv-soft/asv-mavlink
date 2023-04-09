@@ -15,19 +15,19 @@ public class GbsClientDevice : GbsClientDeviceBase, IGbsClientDevice
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         
-        _client.Gbs.Status.Select(ConvertLocation).Subscribe(InternalPosition).DisposeItWith(Disposable);
-        _client.Gbs.Status.Select(_=>_.VehicleCount).Subscribe(InternalVehicleCount).DisposeItWith(Disposable);
-        _client.Gbs.Status.Select(_=>Math.Round(_.Accuracy/100.0,2)).Subscribe(InternalAccuracyMeter).DisposeItWith(Disposable);
-        _client.Gbs.Status.Select(_=>_.Observation).Subscribe(InternalObservationSec).DisposeItWith(Disposable);
-        _client.Gbs.Status.Select(_=>_.DgpsRate).Subscribe(InternalDgpsRate).DisposeItWith(Disposable);
-        _client.Gbs.Status.Select(_ => _.SatAll).Subscribe(InternalAllSatellites).DisposeItWith(Disposable);
-        _client.Gbs.Status.Select(_ => _.SatGal).Subscribe(InternalGalSatellites).DisposeItWith(Disposable);
-        _client.Gbs.Status.Select(_ => _.SatBdu).Subscribe(InternalBeidouSatellites).DisposeItWith(Disposable);
-        _client.Gbs.Status.Select(_ => _.SatGlo).Subscribe(InternalGlonassSatellites).DisposeItWith(Disposable);
-        _client.Gbs.Status.Select(_ => _.SatGps).Subscribe(InternalGpsSatellites).DisposeItWith(Disposable);
-        _client.Gbs.Status.Select(_ => _.SatQzs).Subscribe(InternalQzssSatellites).DisposeItWith(Disposable);
-        _client.Gbs.Status.Select(_ => _.SatSbs).Subscribe(InternalSbasSatellites).DisposeItWith(Disposable);
-        _client.Gbs.Status.Select(_ => _.SatIme).Subscribe(InternalImesSatellites).DisposeItWith(Disposable);
+        _client.Gbs.RawStatus.Select(ConvertLocation).Subscribe(InternalPosition).DisposeItWith(Disposable);
+        _client.Gbs.RawStatus.Select(_=>_.VehicleCount).Subscribe(InternalVehicleCount).DisposeItWith(Disposable);
+        _client.Gbs.RawStatus.Select(_=>Math.Round(_.Accuracy/100.0,2)).Subscribe(InternalAccuracyMeter).DisposeItWith(Disposable);
+        _client.Gbs.RawStatus.Select(_=>_.Observation).Subscribe(InternalObservationSec).DisposeItWith(Disposable);
+        _client.Gbs.RawStatus.Select(_=>_.DgpsRate).Subscribe(InternalDgpsRate).DisposeItWith(Disposable);
+        _client.Gbs.RawStatus.Select(_ => _.SatAll).Subscribe(InternalAllSatellites).DisposeItWith(Disposable);
+        _client.Gbs.RawStatus.Select(_ => _.SatGal).Subscribe(InternalGalSatellites).DisposeItWith(Disposable);
+        _client.Gbs.RawStatus.Select(_ => _.SatBdu).Subscribe(InternalBeidouSatellites).DisposeItWith(Disposable);
+        _client.Gbs.RawStatus.Select(_ => _.SatGlo).Subscribe(InternalGlonassSatellites).DisposeItWith(Disposable);
+        _client.Gbs.RawStatus.Select(_ => _.SatGps).Subscribe(InternalGpsSatellites).DisposeItWith(Disposable);
+        _client.Gbs.RawStatus.Select(_ => _.SatQzs).Subscribe(InternalQzssSatellites).DisposeItWith(Disposable);
+        _client.Gbs.RawStatus.Select(_ => _.SatSbs).Subscribe(InternalSbasSatellites).DisposeItWith(Disposable);
+        _client.Gbs.RawStatus.Select(_ => _.SatIme).Subscribe(InternalImesSatellites).DisposeItWith(Disposable);
         _client.Heartbeat.RawHeartbeat
             .Select(_ => (AsvGbsCustomMode)_.CustomMode)
             .Subscribe(InternalCustomMode)

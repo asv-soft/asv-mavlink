@@ -61,7 +61,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Protocol\Dialects\" />
+    <Folder Include="Protocol\Client\Commands\" />
+    <Folder Include="Protocol\Messages\" />
+    <Folder Include="Protocol\Server\CommandLong\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\img\asv-mavlink-128.png">

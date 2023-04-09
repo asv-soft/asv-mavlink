@@ -16,7 +16,7 @@ namespace Asv.Mavlink.Client
             MavlinkClientIdentity identity, IScheduler scheduler):base(connection,identity,seq,"V2EXT", scheduler)
         {
             _identity = identity;
-            Filter<V2ExtensionPacket>().Subscribe(_onData).DisposeItWith(Disposable);
+            InternalFilter<V2ExtensionPacket>().Subscribe(_onData).DisposeItWith(Disposable);
         }
        
         public int MaxDataSize => StaticMaxDataSize;

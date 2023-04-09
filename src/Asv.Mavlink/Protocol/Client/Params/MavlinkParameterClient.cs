@@ -35,7 +35,7 @@ namespace Asv.Mavlink.Client
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             Converter = new MavParamArdupilotValueConverter();
-            Filter<ParamValuePacket>().Subscribe(UpdateParam).DisposeItWith(Disposable);
+            InternalFilter<ParamValuePacket>().Subscribe(UpdateParam).DisposeItWith(Disposable);
         }
 
         public IReadOnlyDictionary<string, MavParam> Params => _params;
@@ -64,7 +64,7 @@ namespace Asv.Mavlink.Client
                 _.Payload.TargetSystem = Identity.TargetSystemId;
             }, cancel).ConfigureAwait(false);
 
-            var samplesBySecond = Filter<ParamValuePacket>().Buffer(TimeSpan.FromSeconds(1)).Next();
+            var samplesBySecond = InternalFilter<ParamValuePacket>().Buffer(TimeSpan.FromSeconds(1)).Next();
 
             
 
@@ -98,7 +98,7 @@ namespace Asv.Mavlink.Client
         public async Task<MavParam> ReadParam(string name, int attemptCount, CancellationToken cancel)
         {
             _logger.Info($"Read param by name '{name}': BEGIN");
-            var packet = GeneratePacket<ParamRequestReadPacket>();
+            var packet = InternalGeneratePacket<ParamRequestReadPacket>();
             packet.Payload.TargetComponent = Identity.TargetComponentId;
             packet.Payload.TargetSystem = Identity.TargetSystemId;
             packet.Payload.ParamId = SetParamName(name);
@@ -118,7 +118,7 @@ namespace Asv.Mavlink.Client
                 {
                     using var subscribe = OnParamUpdated.FirstAsync(_ => _.Name == name)
                         .Subscribe(_=>tcs.TrySetResult(_));
-                    await MavlinkConnection.Send(packet, linkedCancel.Token).ConfigureAwait(false);
+                    await Connection.Send(packet, linkedCancel.Token).ConfigureAwait(false);
                     result = await tcs.Task.ConfigureAwait(false);
                 }
                 catch (TaskCanceledException)
@@ -145,7 +145,7 @@ namespace Asv.Mavlink.Client
         public async Task<MavParam> ReadParam(short index, int attemptCount, CancellationToken cancel)
         {
             _logger.Info($"Begin read param by index '{index}': BEGIN");
-            var packet = GeneratePacket<ParamRequestReadPacket>();
+            var packet = InternalGeneratePacket<ParamRequestReadPacket>();
             packet.Payload.TargetComponent = Identity.TargetComponentId;
             packet.Payload.TargetSystem = Identity.TargetSystemId;
             packet.Payload.ParamId = SetParamName(string.Empty);
@@ -165,7 +165,7 @@ namespace Asv.Mavlink.Client
                 {
                     using var subscribe = OnParamUpdated.FirstAsync(_ => _.Index == index)
                         .Subscribe(_=>tcs.TrySetResult(_));
-                    await MavlinkConnection.Send(packet, linkedCancel.Token).ConfigureAwait(false);
+                    await Connection.Send(packet, linkedCancel.Token).ConfigureAwait(false);
                     result = await tcs.Task.ConfigureAwait(false);
                 }
                 catch (TaskCanceledException)
@@ -193,7 +193,7 @@ namespace Asv.Mavlink.Client
         public async Task<MavParam> WriteParam(MavParam param, int attemptCount, CancellationToken cancel)
         {
             _logger.Info($"Write param '{param}': BEGIN");
-            var packet = GeneratePacket<ParamSetPacket>();
+            var packet = InternalGeneratePacket<ParamSetPacket>();
             packet.Payload.TargetComponent = Identity.TargetComponentId;
             packet.Payload.TargetSystem = Identity.TargetSystemId;
             packet.Payload.ParamId = SetParamName(string.Empty);
@@ -213,7 +213,7 @@ namespace Asv.Mavlink.Client
                 try
                 {
                     using var subscribe = OnParamUpdated.FirstAsync(_ => _.Name == param.Name).Subscribe(_=>tcs.TrySetResult(_));
-                    await MavlinkConnection.Send(packet, linkedCancel.Token).ConfigureAwait(false);
+                    await Connection.Send(packet, linkedCancel.Token).ConfigureAwait(false);
                     result = await tcs.Task.ConfigureAwait(false);
                 }
                 catch (TaskCanceledException)

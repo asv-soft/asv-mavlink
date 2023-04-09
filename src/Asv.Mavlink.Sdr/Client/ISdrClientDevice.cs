@@ -11,6 +11,8 @@ public interface ISdrClientDevice
     IRxValue<AsvSdrCustomMode> CustomMode { get; }
     IRxValue<ushort> RecordsCount { get; }
     IObservable<IChangeSet<SdrClientDeviceRecord,ushort>> Records { get; }
+    Task DeleteRecord(ushort recordIndex, CancellationToken cancel = default);
+    Task DeleteRecords(ushort startIndex,ushort stopIndex, CancellationToken cancel = default);
     Task<bool> UploadRecordList(IProgress<double>? progress = null, CancellationToken cancel = default);
     Task<MavResult> SetMode(AsvSdrCustomMode mode, ulong frequencyHz, float sendDataRate, CancellationToken cancel);
     Task<MavResult> StartRecord(string recordName, CancellationToken cancel);

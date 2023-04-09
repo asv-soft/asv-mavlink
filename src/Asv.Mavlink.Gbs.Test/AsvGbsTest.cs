@@ -41,7 +41,7 @@ namespace Asv.Mavlink.Test
             var clientState = await client.Heartbeat.RawHeartbeat.FirstAsync();
             Assert.Equal((uint)mode,clientState.CustomMode);
 
-            var status = await client.Gbs.Status.FirstAsync();
+            var status = await client.Gbs.RawStatus.FirstAsync();
             Assert.Equal(lat,status.Lat);            
             Assert.Equal(lon,status.Lng);
             Assert.Equal(alt,status.Alt);

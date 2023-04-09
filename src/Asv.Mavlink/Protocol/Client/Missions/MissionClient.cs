@@ -30,9 +30,9 @@ namespace Asv.Mavlink
             _config = config;
             _missionCurrent = new RxValue<ushort>().DisposeItWith(Disposable);
             _missionReached = new RxValue<ushort>().DisposeItWith(Disposable);
-            Filter<MissionCurrentPacket>().Select(_ => _.Payload.Seq).Subscribe(_missionCurrent)
+            InternalFilter<MissionCurrentPacket>().Select(_ => _.Payload.Seq).Subscribe(_missionCurrent)
                 .DisposeItWith(Disposable);
-            Filter<MissionItemReachedPacket>().Select(_ => _.Payload.Seq).Subscribe(_missionReached)
+            InternalFilter<MissionItemReachedPacket>().Select(_ => _.Payload.Seq).Subscribe(_missionReached)
                 .DisposeItWith(Disposable);
         }
 
@@ -66,8 +66,8 @@ namespace Asv.Mavlink
 
         public IRxValue<ushort> MissionReached => _missionReached;
 
-        public IObservable<MissionRequestPayload> OnMissionRequest => Filter<MissionRequestPacket>(_=>true).Select(_=>_.Payload);
-        public IObservable<MissionAckPayload> OnMissionAck => Filter<MissionAckPacket>(_ => true).Select(_ => _.Payload);
+        public IObservable<MissionRequestPayload> OnMissionRequest => InternalFilter<MissionRequestPacket>(_=>true).Select(_=>_.Payload);
+        public IObservable<MissionAckPayload> OnMissionAck => InternalFilter<MissionAckPacket>(_ => true).Select(_ => _.Payload);
 
         public async Task<MissionItemIntPayload> MissionRequestItem(ushort index, int attemptCount, CancellationToken cancel)
         {

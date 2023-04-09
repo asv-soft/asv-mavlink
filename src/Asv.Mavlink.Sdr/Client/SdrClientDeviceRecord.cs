@@ -93,6 +93,32 @@ public class SdrClientDeviceRecord:DisposableOnceWithCancel, ISdrClientDeviceRec
         }
         return _tags.Count == requestAck.ItemsCount;
     }
+    public async Task DeleteTag(ushort recordIndex, CancellationToken cancel)
+    {
+        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+        var requestAck = await _client.Sdr.DeleteRecordTags(Index, recordIndex,recordIndex, cs.Token);
+        if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckInProgress)
+            throw new Exception("Request already in progress");
+        if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
+            throw new Exception("Request fail");
+        _tags.RemoveKey(recordIndex);
+    }
 
+    public async Task DeleteTags(ushort startIndex, ushort stopIndex, CancellationToken cancel = default)
+    {
+        if (startIndex>stopIndex) throw new ArgumentOutOfRangeException(nameof(startIndex));
+        if (startIndex == stopIndex)
+        {
+            await DeleteTag(startIndex, cancel);
+            return;
+        }
+        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+        var requestAck = await _client.Sdr.DeleteRecordTags(Index,startIndex,stopIndex, cs.Token);
+        if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckInProgress)
+            throw new Exception("Request already in progress");
+        if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
+            throw new Exception("Request fail");
+        _tags.RemoveKeys(Enumerable.Range(startIndex,stopIndex-startIndex).Select(_=>(ushort)_));
+    }
     
 }

@@ -17,7 +17,7 @@ namespace Asv.Mavlink.Client
         public DebugClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
             IPacketSequenceCalculator seq, IScheduler scheduler):base(connection, identity, seq,"DEBUG", scheduler)
         {
-            Filter<DebugFloatArrayPacket>()
+            InternalFilter<DebugFloatArrayPacket>()
                 .Select(_ => _.Payload)
                 .Subscribe(_debugFloatArray, _disposeCancel.Token);
             Disposable.Add(_debugFloatArray);
@@ -40,12 +40,12 @@ namespace Asv.Mavlink.Client
             return new KeyValuePair<string, int>(ConvertToKey(_.Payload.Name), _.Payload.Value);
         }
 
-        public IObservable<KeyValuePair<string, float>> NamedFloatValue => Filter<NamedValueFloatPacket>()
+        public IObservable<KeyValuePair<string, float>> NamedFloatValue => InternalFilter<NamedValueFloatPacket>()
             .Select(ConvertValue)
             .Publish()
             .RefCount();
 
-        public IObservable<KeyValuePair<string, int>> NamedIntValue => Filter<NamedValueIntPacket>()
+        public IObservable<KeyValuePair<string, int>> NamedIntValue => InternalFilter<NamedValueIntPacket>()
             .Select(ConvertValue)
             .Publish()
             .RefCount();

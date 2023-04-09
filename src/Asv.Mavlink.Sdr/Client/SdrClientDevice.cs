@@ -60,6 +60,35 @@ public class SdrClientDevice : DisposableOnceWithCancel, ISdrClientDevice
         Records = _records.Connect().DisposeMany().RefCount();
     }
 
+
+    public async Task DeleteRecord(ushort recordIndex, CancellationToken cancel)
+    {
+        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+        var requestAck = await _client.Sdr.DeleteRecords(recordIndex,recordIndex, cs.Token);
+        if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckInProgress)
+            throw new Exception("Request already in progress");
+        if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
+            throw new Exception("Request fail");
+        _records.RemoveKey(recordIndex);
+    }
+
+    public async Task DeleteRecords(ushort startIndex, ushort stopIndex, CancellationToken cancel = default)
+    {
+        if (startIndex>stopIndex) throw new ArgumentOutOfRangeException(nameof(startIndex));
+        if (startIndex == stopIndex)
+        {
+            await DeleteRecord(startIndex, cancel);
+            return;
+        }
+        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+        var requestAck = await _client.Sdr.DeleteRecords(startIndex,stopIndex, cs.Token);
+        if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckInProgress)
+            throw new Exception("Request already in progress");
+        if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
+            throw new Exception("Request fail");
+        _records.RemoveKeys(Enumerable.Range(startIndex,stopIndex-startIndex).Select(_=>(ushort)_));
+    }
+
     public async Task<bool> UploadRecordList(IProgress<double>? progress, CancellationToken cancel)
     {
         var lastUpdate = DateTime.Now;

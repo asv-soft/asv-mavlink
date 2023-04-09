@@ -39,7 +39,7 @@ namespace Asv.Mavlink
                 Disposable.Add(_mavlink);
         }
 
-        public IRxValue<int> PacketRateHz => _mavlink.Heartbeat.PacketRateHz;
+        public IRxValue<double> PacketRateHz => _mavlink.Heartbeat.PacketRateHz;
         public IRxValue<double> LinkQuality => _mavlink.Heartbeat.LinkQuality;
 
         public IMavlinkClient Mavlink => _mavlink;
@@ -146,7 +146,7 @@ namespace Asv.Mavlink
 
                 await ReadSerialNumber(DisposeCancel).ConfigureAwait(false);
 
-                _autopilotVersion.OnNext(await _mavlink.Commands.GetAutopilotVersion(DisposeCancel).ConfigureAwait(false));
+                //_autopilotVersion.OnNext(await _mavlink.Commands.GetAutopilotVersion(DisposeCancel).ConfigureAwait(false)); TODO: fix
 
                 _name.OnNext(await GetCustomName(DisposeCancel).ConfigureAwait(false));
 

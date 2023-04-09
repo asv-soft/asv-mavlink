@@ -104,23 +104,23 @@ public class GbsServerDevice:DisposableOnceWithCancel, IGbsServerDevice
         
         Server.Gbs.Start(TimeSpan.FromMilliseconds(statusRateMs));
         
-        Server.CommandLong[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunAutoMode] = async (args, cancel) =>
+        Server.Command[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunAutoMode] = async (args, cancel) =>
         {
             var result = await _interfaceImplementation.StartAutoMode(args.Param1, args.Param2, cancel);
-            return new CommandLongResult(result);
+            return new CommandResult(result);
         }; 
-        Server.CommandLong[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunFixedMode] = async (args, cancel) =>
+        Server.Command[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunFixedMode] = async (args, cancel) =>
         {
             var lat = BitConverter.ToInt32(BitConverter.GetBytes(args.Param1),0) / 10000000D;
             var lon = BitConverter.ToInt32(BitConverter.GetBytes(args.Param2),0) / 10000000D;
             var alt = BitConverter.ToInt32(BitConverter.GetBytes(args.Param3),0) / 1000D;
             var result = await _interfaceImplementation.StartFixedMode(new GeoPoint(lat,lon,alt),0.1f, cancel);
-            return new CommandLongResult(result);
+            return new CommandResult(result);
         };
-        Server.CommandLong[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunIdleMode] = async (args, cancel) =>
+        Server.Command[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunIdleMode] = async (args, cancel) =>
         {
             var result = await _interfaceImplementation.StartIdleMode(cancel);
-            return new CommandLongResult(result);
+            return new CommandResult(result);
         };
     }
     public IMavlinkServer Server { get; }

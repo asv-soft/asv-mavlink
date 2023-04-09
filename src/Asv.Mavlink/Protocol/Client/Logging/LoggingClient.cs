@@ -16,7 +16,7 @@ namespace Asv.Mavlink.Client
             IPacketSequenceCalculator seq, IScheduler scheduler):base(connection,identity,seq,"LOG", scheduler)
         {
 
-            Filter<LoggingDataPacket>()
+            InternalFilter<LoggingDataPacket>()
                 .Where(_=>_.Payload.TargetSystem == identity.SystemId && _.Payload.TargetComponent == identity.ComponentId)
                 .Select(_=>_.Payload)
                 .Subscribe(_loggingData, _disposeCancel.Token);

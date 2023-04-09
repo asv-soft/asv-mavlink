@@ -19,4 +19,6 @@ public interface ISdrClientDeviceRecord
     IRxValue<TimeSpan> Duration { get; }
     IObservable<IChangeSet<SdrClientDeviceRecordTag, ushort>> Tags { get; }
     Task<bool> UploadTagList(IProgress<double>? progress = null, CancellationToken cancel = default);
+    Task DeleteTags(ushort startIndex, ushort stopIndex, CancellationToken cancel = default);
+    Task DeleteTag(ushort recordIndex, CancellationToken cancel);
 }

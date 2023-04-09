@@ -9,7 +9,7 @@ namespace Asv.Mavlink.Server
         IMavlinkHeartbeatServer Heartbeat { get; }
         IStatusTextServer StatusText { get; }
         IDebugServer Debug { get; }
-        ICommandLongServer CommandLong { get; }
+        ICommandServer Command { get; }
         ILoggingServer Logging { get; }
         IV2ExtensionServer V2Extension { get; }
         IMavlinkParamsServer Params { get; }

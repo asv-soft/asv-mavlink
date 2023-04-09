@@ -1,7 +1,7 @@
 @echo off
 rem ====== projects ======
 
-set projects=Asv.Mavlink Asv.Mavlink.Payload Asv.Mavlink.Vehicle
+set projects=Asv.Mavlink Asv.Mavlink.Vehicle Asv.Mavlink.Vehicle 
 
 rem ====== projects ======
 
@@ -13,7 +13,7 @@ DEL version.txt
 (for %%p in (%projects%) do (
 	cd src\%%p\bin\Release\
 	dotnet nuget push %%p.%VERSION%.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json
-	dotnet nuget push %%p.%VERSION%.nupkg --skip-duplicate --source https://nuget.pkg.github.com/asvol/index.json
+	dotnet nuget push %%p.%VERSION%.nupkg --skip-duplicate --source https://nuget.pkg.github.com/asv-soft/index.json
 	cd ../../../../
 )) 
 

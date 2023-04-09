@@ -62,7 +62,7 @@ namespace Asv.Mavlink
 
         private void HandleRadioStatus()
         {
-            Filter<RadioStatusPacket>()
+            InternalFilter<RadioStatusPacket>()
                 .Select(_ => _.Payload)
                 .Subscribe(_radioStatus).DisposeItWith(Disposable);
             Disposable.Add(_globalPositionInt);
@@ -70,10 +70,10 @@ namespace Asv.Mavlink
 
         private void HandleGlobalPositionInt()
         {
-            Filter<PositionTargetGlobalIntPacket>().Select(_ => _.Payload)
+            InternalFilter<PositionTargetGlobalIntPacket>().Select(_ => _.Payload)
                 .Subscribe(_positionTargetGlobalInt).DisposeItWith(Disposable);
 
-            Filter<GlobalPositionIntPacket>()
+            InternalFilter<GlobalPositionIntPacket>()
                 .Select(_ => _.Payload)
                 .Subscribe(_globalPositionInt).DisposeItWith(Disposable);
 
@@ -84,7 +84,7 @@ namespace Asv.Mavlink
 
         private void HandleHome()
         {
-            Filter<HomePositionPacket>()
+            InternalFilter<HomePositionPacket>()
                 .Select(_ => _.Payload)
                 .Subscribe(_=>_home.OnNext(_)).DisposeItWith(Disposable);
            
@@ -94,7 +94,7 @@ namespace Asv.Mavlink
 
         private void HandleExtendedSysState()
         {
-            Filter<ExtendedSysStatePacket>()
+            InternalFilter<ExtendedSysStatePacket>()
                 .Select(_ => _.Payload)
                 .Subscribe(_extendedSysState).DisposeItWith(Disposable);
             Disposable.Add(_extendedSysState);
@@ -102,7 +102,7 @@ namespace Asv.Mavlink
 
         private void HandleAltitude()
         {
-            Filter<AltitudePacket>()
+            InternalFilter<AltitudePacket>()
                 .Select(_ => _.Payload)
                 .Subscribe(_altitude).DisposeItWith(Disposable);
             Disposable.Add(_altitude);
@@ -110,7 +110,7 @@ namespace Asv.Mavlink
 
         private void HandleBatteryStatus()
         {
-            Filter<BatteryStatusPacket>()
+            InternalFilter<BatteryStatusPacket>()
                 .Select(_ => _.Payload)
                 .Subscribe(_batteryStatus).DisposeItWith(Disposable);
             Disposable.Add(_batteryStatus);
@@ -118,7 +118,7 @@ namespace Asv.Mavlink
 
         private void HandleAttitude()
         {
-            Filter<AttitudePacket>()
+            InternalFilter<AttitudePacket>()
                 .Select(_ => _.Payload)
                 .Subscribe(_attitude).DisposeItWith(Disposable);
             Disposable.Add(_attitude);
@@ -126,7 +126,7 @@ namespace Asv.Mavlink
 
         private void HandleVfrHud()
         {
-            Filter<VfrHudPacket>()
+            InternalFilter<VfrHudPacket>()
                 .Select(_ => _.Payload)
                 .Subscribe(_vfrHud).DisposeItWith(Disposable);
             Disposable.Add(_vfrHud);
@@ -134,7 +134,7 @@ namespace Asv.Mavlink
 
         private void HandleHighresImu()
         {
-            Filter<HighresImuPacket>()
+            InternalFilter<HighresImuPacket>()
                 .Select(_ => _.Payload)
                 .Subscribe(_highresImu).DisposeItWith(Disposable);
             Disposable.Add(_highresImu);
@@ -142,21 +142,21 @@ namespace Asv.Mavlink
 
         private void HandleGps()
         {
-            Filter<GpsRawIntPacket>()
+            InternalFilter<GpsRawIntPacket>()
                 .Select(_ => _.Payload).Subscribe(_gpsRawInt).DisposeItWith(Disposable);
             Disposable.Add(_gpsRawInt);
 
-            Filter<Gps2RawPacket>()
+            InternalFilter<Gps2RawPacket>()
                 .Select(_ => _.Payload).Subscribe(_gps2Raw).DisposeItWith(Disposable);
             Disposable.Add(_gps2Raw);
         }
 
         private void HandleSystemStatus()
         {
-            Filter<SysStatusPacket>()
+            InternalFilter<SysStatusPacket>()
                 .Select(_ => _.Payload)
                 .Subscribe(_sysStatus).DisposeItWith(Disposable);
-            Filter<StatustextPacket>()
+            InternalFilter<StatustextPacket>()
                 .Select(_ => _.Payload)
                 .Subscribe(_statusText).DisposeItWith(Disposable);
 

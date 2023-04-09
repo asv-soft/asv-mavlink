@@ -32,7 +32,7 @@ namespace Asv.Mavlink
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly MavlinkTelemetry _rtt;
         private readonly MavlinkParameterClient _params;
-        private readonly MavlinkCommandClient _mavlinkCommands;
+        private readonly CommandClient _commands;
         private readonly MissionClient _mission;
         private readonly MavlinkOffboardMode _mavlinkOffboard;
         private readonly MavlinkCommon _mode;
@@ -61,7 +61,7 @@ namespace Asv.Mavlink
             _params = new MavlinkParameterClient(_mavlinkConnection, identity, _seq, new VehicleParameterProtocolConfig {ReadWriteTimeoutMs = config.ReadParamTimeoutMs,TimeoutToReadAllParamsMs = config.TimeoutToReadAllParamsMs}, scheduler)
                 .DisposeItWith(Disposable);;
 
-            _mavlinkCommands = new MavlinkCommandClient(_mavlinkConnection, identity, _seq,new CommandProtocolConfig { CommandTimeoutMs = config.CommandTimeoutMs}, scheduler)
+            _commands = new CommandClient(_mavlinkConnection, identity, _seq,new CommandProtocolConfig { CommandTimeoutMs = config.CommandTimeoutMs}, scheduler)
                 .DisposeItWith(Disposable);;
 
             _mission = new MissionClient(_mavlinkConnection,identity, _seq, new MissionClientConfig{ CommandTimeoutMs = config.CommandTimeoutMs}, scheduler)
@@ -76,7 +76,7 @@ namespace Asv.Mavlink
             _debugs = new DebugClient(_mavlinkConnection, identity,_seq, scheduler)
                 .DisposeItWith(Disposable);;
 
-            _heartbeat = new HeartbeatClient(_mavlinkConnection,identity,_seq, scheduler)
+            _heartbeat = new HeartbeatClient(_mavlinkConnection,identity,_seq, scheduler, new HeartbeatClientConfig())
                 .DisposeItWith(Disposable);;
 
             _logging = new LoggingClient(_mavlinkConnection,identity, _seq, scheduler)
@@ -101,7 +101,7 @@ namespace Asv.Mavlink
         public IHeartbeatClient Heartbeat => _heartbeat;
         public IMavlinkTelemetry Rtt => _rtt;
         public IMavlinkParameterClient Params => _params;
-        public IMavlinkCommandClient Commands => _mavlinkCommands;
+        public ICommandClient Commands => _commands;
         public IMissionClient Mission => _mission;
         public IMavlinkOffboardMode Offboard => _mavlinkOffboard;
         public IMavlinkCommon Common => _mode;

@@ -27,7 +27,7 @@ namespace Asv.Mavlink
         void StartListen();
 
         IRxValue<LinkState> Link { get; }
-        IRxValue<int> PacketRateHz { get; }
+        IRxValue<double> PacketRateHz { get; }
         IRxValue<double> LinkQuality { get; }
         IRxValue<RadioLinkStatus> RadioStatus { get; }
 

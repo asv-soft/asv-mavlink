@@ -5,11 +5,7 @@ VisualStudioVersion = 16.0.32228.343
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asv.Mavlink", "Asv.Mavlink\Asv.Mavlink.csproj", "{0AC3C059-92BA-4ACE-AC7B-D84797E3809F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asv.Mavlink.Payload", "Asv.Mavlink.Payload\Asv.Mavlink.Payload.csproj", "{EF65888E-B114-46ED-A3E4-BAC56E164F52}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asv.Mavlink.Test", "Asv.Mavlink.Test\Asv.Mavlink.Test.csproj", "{DAC3BF8E-26A8-4404-AB75-A3FFE8FD0DCB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asv.Mavlink.Payload.Test", "Asv.Mavlink.Payload.Test\Asv.Mavlink.Payload.Test.csproj", "{83662018-5AC2-4077-99EF-B5CB07B72DAA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asv.Mavlink.Shell", "Asv.Mavlink.Shell\Asv.Mavlink.Shell.csproj", "{0D760F93-A62C-482E-A898-511720F4B664}"
 EndProject
@@ -31,18 +27,10 @@ Global
 		{0AC3C059-92BA-4ACE-AC7B-D84797E3809F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AC3C059-92BA-4ACE-AC7B-D84797E3809F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AC3C059-92BA-4ACE-AC7B-D84797E3809F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EF65888E-B114-46ED-A3E4-BAC56E164F52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EF65888E-B114-46ED-A3E4-BAC56E164F52}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EF65888E-B114-46ED-A3E4-BAC56E164F52}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EF65888E-B114-46ED-A3E4-BAC56E164F52}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DAC3BF8E-26A8-4404-AB75-A3FFE8FD0DCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DAC3BF8E-26A8-4404-AB75-A3FFE8FD0DCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAC3BF8E-26A8-4404-AB75-A3FFE8FD0DCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAC3BF8E-26A8-4404-AB75-A3FFE8FD0DCB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{83662018-5AC2-4077-99EF-B5CB07B72DAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{83662018-5AC2-4077-99EF-B5CB07B72DAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{83662018-5AC2-4077-99EF-B5CB07B72DAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{83662018-5AC2-4077-99EF-B5CB07B72DAA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0D760F93-A62C-482E-A898-511720F4B664}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0D760F93-A62C-482E-A898-511720F4B664}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D760F93-A62C-482E-A898-511720F4B664}.Release|Any CPU.ActiveCfg = Release|Any CPU
