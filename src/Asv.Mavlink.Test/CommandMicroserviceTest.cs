@@ -111,8 +111,8 @@ public class CommandMicroserviceTest
         var link = new VirtualLink(_=> ++cnt>3);
         var server = CreateCommandServer(link);
         var client = CreateCommandClient(link);
-        var intList = new CommandIntServerList(server);
-        var longList = new CommandLongServerList(server);
+        var intList = new CommandIntServerEx(server);
+        var longList = new CommandLongServerEx(server);
         var called = false;
         longList[MavCmd.MavCmdUser1] = (from, args, cancel)  =>
         {

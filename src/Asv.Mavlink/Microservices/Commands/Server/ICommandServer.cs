@@ -6,9 +6,8 @@ using Asv.Mavlink.V2.Common;
 namespace Asv.Mavlink
 {
     
-    public interface ICommandServer:IDisposable
+    public interface ICommandServer
     {
-        
         IObservable<CommandLongPacket> OnCommandLong { get; }
         IObservable<CommandIntPacket> OnCommandInt { get; }
         Task SendCommandAck(MavCmd cmd, DeviceIdentity responseTarget, CommandResult result, CancellationToken cancel = default);

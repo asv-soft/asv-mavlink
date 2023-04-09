@@ -1,22 +1,19 @@
 using System;
+using System.Reactive.Concurrency;
 using System.Threading;
 using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink.Server
 {
-    public interface IMavlinkParamsServer
-    {
-        
-    }
-
-    public class MavlinkParamsServer: MavlinkMicroserviceBase, IMavlinkParamsServer
+    public class ParamsServer: MavlinkMicroserviceServer, IParamsServer
     {
         private int _isSending;
 
-        public MavlinkParamsServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq, MavlinkServerIdentity identity)
-            : base(connection, seq, identity)
+        public ParamsServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
+            MavlinkServerIdentity identity, IScheduler scheduler)
+            : base(connection, identity, seq, "PARAM",scheduler)
         {
-            Subscribe<ParamRequestListPacket, ParamRequestListPayload>(OnRequestList);
+            // Subscribe<ParamRequestListPacket, ParamRequestListPayload>(OnRequestList);
             
         }
 

@@ -11,7 +11,7 @@ namespace Asv.Mavlink
         public int HeartbeatRateMs { get; set; } = 1000;
     }
 
-    public class HeartbeatServer: MavlinkMicroserviceServer,IMavlinkHeartbeatServer
+    public class HeartbeatServer: MavlinkMicroserviceServer,IHeartbeatServer
     {
         private readonly MavlinkHeartbeatServerConfig _config;
         private readonly MavlinkPacketTransponder<HeartbeatPacket, HeartbeatPayload> _transponder;

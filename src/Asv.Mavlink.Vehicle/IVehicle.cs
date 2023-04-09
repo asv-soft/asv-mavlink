@@ -75,7 +75,7 @@ namespace Asv.Mavlink
         IRxValue<VehicleMode> Mode { get; }
         Task SetMode(VehicleMode mode, CancellationToken cancel);
 
-        IMavlinkParameterClient Params { get; }
+        IParamsClient Params { get; }
 
         IEnumerable<VehicleParamDescription> GetParamDescription();
 
@@ -362,7 +362,7 @@ namespace Asv.Mavlink
         public int SatellitesVisible { get; }
         public DateTime Time { get; }
         /// <summary>
-        /// HDOP – horizontal dilution of precision
+        /// HDOP ï¿½ horizontal dilution of precision
         /// </summary>
         public double? Hdop { get; }
         public DopStatusEnum HdopStatus => GpsInfoHelper.GetDopStatus(Hdop);

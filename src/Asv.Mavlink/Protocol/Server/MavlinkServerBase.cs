@@ -7,7 +7,7 @@ namespace Asv.Mavlink.Server
     {
         private readonly IPacketSequenceCalculator _seq;
         private readonly StatusTextServer _statusText;
-        private readonly MavlinkParamsServer _params;
+        private readonly ParamsServer _params;
         private readonly HeartbeatServer _heartbeat;
         private readonly DebugServer _debug;
         private readonly CommandServer _command;
@@ -33,7 +33,7 @@ namespace Asv.Mavlink.Server
             _debug = new DebugServer(connection,_seq,identity).DisposeItWith(Disposable);
             _logging = new LoggingServer(connection, _seq, identity).DisposeItWith(Disposable);
             _v2Extension = new V2ExtensionServer(connection,_seq,identity).DisposeItWith(Disposable);
-            _params = new MavlinkParamsServer(connection, _seq, identity).DisposeItWith(Disposable);
+            _params = new ParamsServer(connection, _seq, identity, TODO).DisposeItWith(Disposable);
             _gbs = new AsvGbsServer(connection, _seq, identity).DisposeItWith(Disposable);
             _sdr = new AsvSdrServer(connection, _seq, identity).DisposeItWith(Disposable);
             MavlinkV2Connection = connection;
@@ -45,8 +45,8 @@ namespace Asv.Mavlink.Server
         }
         
         public MavlinkServerIdentity Identity => _identity;
-        public IMavlinkParamsServer Params => _params;
-        public IMavlinkHeartbeatServer Heartbeat => _heartbeat;
+        public IParamsServer Params => _params;
+        public IHeartbeatServer Heartbeat => _heartbeat;
         public IStatusTextServer StatusText => _statusText;
         public IDebugServer Debug => _debug;
         public ICommandServer Command => _command;

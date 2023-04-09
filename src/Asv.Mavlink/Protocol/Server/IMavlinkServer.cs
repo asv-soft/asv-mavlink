@@ -6,13 +6,13 @@ namespace Asv.Mavlink.Server
     {
         IMavlinkV2Connection MavlinkV2Connection { get; }
         MavlinkServerIdentity Identity { get; }
-        IMavlinkHeartbeatServer Heartbeat { get; }
+        IHeartbeatServer Heartbeat { get; }
         IStatusTextServer StatusText { get; }
         IDebugServer Debug { get; }
         ICommandServer Command { get; }
         ILoggingServer Logging { get; }
         IV2ExtensionServer V2Extension { get; }
-        IMavlinkParamsServer Params { get; }
+        IParamsServer Params { get; }
         IAsvGbsServer Gbs { get; }
         IAsvSdrServer Sdr { get; }
     }

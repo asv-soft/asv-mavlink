@@ -4,7 +4,7 @@ using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 
-public interface ICommandServerList<out TArgPacket>
+public interface ICommandServerEx<out TArgPacket>
 {
     CommandDelegate<TArgPacket> this[MavCmd cmd] { set; }
 }

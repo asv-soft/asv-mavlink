@@ -14,22 +14,22 @@ using NLog;
 namespace Asv.Mavlink.Client
 {
 
-    public class VehicleParameterProtocolConfig
+    public class ParamsClientConfig
     {
         public int TimeoutToReadAllParamsMs { get; set; } = (int) TimeSpan.FromSeconds(60).TotalMilliseconds;
         public int ReadWriteTimeoutMs { get; set; } = 10000;
     }
 
-    public class MavlinkParameterClient : MavlinkMicroserviceClient, IMavlinkParameterClient
+    public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
     {
-        public readonly VehicleParameterProtocolConfig _config;
+        public readonly ParamsClientConfig _config;
         private readonly ConcurrentDictionary<string, MavParam> _params = new();
         private readonly Subject<MavParam> _paramUpdated = new();
         private readonly RxValue<int?> _paramsCount = new();
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public MavlinkParameterClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, VehicleParameterProtocolConfig config, IScheduler scheduler):
+        public ParamsClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
+            IPacketSequenceCalculator seq, ParamsClientConfig config, IScheduler scheduler):
             base(connection,identity,seq,"PARAMS", scheduler)
             
         {

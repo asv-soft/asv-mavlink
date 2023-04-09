@@ -31,7 +31,7 @@ namespace Asv.Mavlink
         private readonly IMavlinkV2Connection _mavlinkConnection;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly MavlinkTelemetry _rtt;
-        private readonly MavlinkParameterClient _params;
+        private readonly ParamsClient _params;
         private readonly CommandClient _commands;
         private readonly MissionClient _mission;
         private readonly MavlinkOffboardMode _mavlinkOffboard;
@@ -58,7 +58,7 @@ namespace Asv.Mavlink
             _rtt = new MavlinkTelemetry(_mavlinkConnection, identity, _seq, scheduler)
                 .DisposeItWith(Disposable);;
 
-            _params = new MavlinkParameterClient(_mavlinkConnection, identity, _seq, new VehicleParameterProtocolConfig {ReadWriteTimeoutMs = config.ReadParamTimeoutMs,TimeoutToReadAllParamsMs = config.TimeoutToReadAllParamsMs}, scheduler)
+            _params = new ParamsClient(_mavlinkConnection, identity, _seq, new ParamsClientConfig {ReadWriteTimeoutMs = config.ReadParamTimeoutMs,TimeoutToReadAllParamsMs = config.TimeoutToReadAllParamsMs}, scheduler)
                 .DisposeItWith(Disposable);;
 
             _commands = new CommandClient(_mavlinkConnection, identity, _seq,new CommandProtocolConfig { CommandTimeoutMs = config.CommandTimeoutMs}, scheduler)
@@ -100,7 +100,7 @@ namespace Asv.Mavlink
         public MavlinkClientIdentity Identity { get; }
         public IHeartbeatClient Heartbeat => _heartbeat;
         public IMavlinkTelemetry Rtt => _rtt;
-        public IMavlinkParameterClient Params => _params;
+        public IParamsClient Params => _params;
         public ICommandClient Commands => _commands;
         public IMissionClient Mission => _mission;
         public IMavlinkOffboardMode Offboard => _mavlinkOffboard;

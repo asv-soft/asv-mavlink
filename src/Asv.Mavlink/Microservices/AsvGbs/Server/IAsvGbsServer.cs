@@ -6,7 +6,7 @@ namespace Asv.Mavlink
 {
     public interface IAsvGbsServer
     {
-        void Start(TimeSpan statusRate);
+        void Start();
         void Set(Action<AsvGbsOutStatusPayload> changeCallback);
     }
 }

@@ -7,7 +7,7 @@ using NLog;
 
 namespace Asv.Mavlink;
 
-public abstract class CommandServerListBase<TArgPacket> : DisposableOnceWithCancel, ICommandServerList<TArgPacket>
+public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, ICommandServerEx<TArgPacket>
     where TArgPacket : IPacketV2<IPayload>
 {
     private readonly ICommandServer _server;
@@ -18,7 +18,7 @@ public abstract class CommandServerListBase<TArgPacket> : DisposableOnceWithCanc
     private int _isBusy;
     private int _lastCommand = -1;
 
-    protected CommandServerListBase(ICommandServer server, IObservable<TArgPacket> commandsPipe, Func<TArgPacket,ushort> cmdGetter, Func<TArgPacket,byte> confirmationGetter)
+    protected CommandServerEx(ICommandServer server, IObservable<TArgPacket> commandsPipe, Func<TArgPacket,ushort> cmdGetter, Func<TArgPacket,byte> confirmationGetter)
     {
         _server = server;
         _cmdGetter = cmdGetter;

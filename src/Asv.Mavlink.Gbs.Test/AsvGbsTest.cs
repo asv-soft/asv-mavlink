@@ -33,7 +33,7 @@ namespace Asv.Mavlink.Test
                 _.Lng = lon;
                 _.Alt = alt;
             });
-            server.Gbs.Start(TimeSpan.FromSeconds(1));
+            server.Gbs.Start();
             server.Heartbeat.Start();
             
             MavlinkTestHelper.WaitUntilConnect(client);
@@ -87,8 +87,8 @@ namespace Asv.Mavlink.Test
                     Assert.Equal(accuracy,acc);
                     return result;
                 });
-            var serverDevice = new GbsServerDevice(mock.Object, server);
-            var clientDevice = new GbsClientDevice(client);
+            var serverDevice = new GbsServerDevice(mock.Object, server, TODO);
+            var clientDevice = new GbsClientDevice(client, TODO, TODO, TODO);
             MavlinkTestHelper.WaitUntilConnect(client);
             await Task.Delay(2000);
             

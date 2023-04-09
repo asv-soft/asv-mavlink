@@ -1,10 +1,12 @@
+using System.Threading;
+using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvGbs;
 using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 
-public abstract class GbsClientDeviceBase : DisposableOnceWithCancel, IGbsClientDevice
+public abstract class AsvGbsExBase : DisposableOnceWithCancel
 {
     protected readonly RxValue<AsvGbsCustomMode> InternalCustomMode;
     protected readonly RxValue<GeoPoint> InternalPosition;
@@ -21,7 +23,7 @@ public abstract class GbsClientDeviceBase : DisposableOnceWithCancel, IGbsClient
     protected readonly RxValue<byte> InternalSbasSatellites;
     protected readonly RxValue<byte> InternalImesSatellites;
 
-    protected GbsClientDeviceBase()
+    protected AsvGbsExBase()
     {
         InternalCustomMode = new RxValue<AsvGbsCustomMode>(AsvGbsCustomMode.AsvGbsCustomModeLoading).DisposeItWith(Disposable);
         InternalPosition = new RxValue<GeoPoint>(GeoPoint.Zero).DisposeItWith(Disposable);

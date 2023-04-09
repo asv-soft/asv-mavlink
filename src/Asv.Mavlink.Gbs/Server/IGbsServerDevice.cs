@@ -4,5 +4,9 @@ namespace Asv.Mavlink;
 
 public interface IGbsServerDevice
 {
-    IMavlinkServer Server { get; }
+    void Start();
+    IHeartbeatServer Heartbeat { get; }
+    ICommandServer Command { get; }
+    IAsvGbsServer Gbs { get; }
+    IAsvGbsServerEx GbsEx { get; }
 }

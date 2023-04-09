@@ -61,9 +61,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Protocol\Client\Commands\" />
+    <Folder Include="Microservices\Custom\Server" />
+    <Folder Include="Microservices\Dgps\Server" />
+    <Folder Include="Microservices\Ftp\Server" />
+    <Folder Include="Microservices\Missions\Server" />
+    <Folder Include="Microservices\Offboard\Server" />
+    <Folder Include="Microservices\RawTelemetry\Server" />
     <Folder Include="Protocol\Messages\" />
-    <Folder Include="Protocol\Server\CommandLong\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\img\asv-mavlink-128.png">

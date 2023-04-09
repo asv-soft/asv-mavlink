@@ -216,7 +216,7 @@ namespace Asv.Mavlink
             return _mavlink.Common.SetMode((uint) mode.BaseMode, mode.CustomMode.Value, cancel);
         }
 
-        public IMavlinkParameterClient Params => _mavlink.Params;
+        public IParamsClient Params => _mavlink.Params;
 
         protected abstract VehicleMode Interpret(HeartbeatPayload heartbeat);
 
