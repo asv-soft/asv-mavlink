@@ -28,7 +28,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Asv.Common" Version="1.5.0" />
+    <PackageReference Include="Asv.Common" Version="1.6.0" />
     <PackageReference Include="DynamicData" Version="7.10.2" />
     <PackageReference Include="Geodesy" Version="4.1.0" />
   </ItemGroup>

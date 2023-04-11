@@ -28,7 +28,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Asv.Cfg" Version="1.5.0" />
+    <PackageReference Include="Asv.Cfg" Version="1.6.0" />
     <PackageReference Include="DynamicData" Version="7.10.2" />
   </ItemGroup>
   <ItemGroup>
