@@ -15,7 +15,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DocumentationFile>bin\Release\Asv.Mavlink.Vehicle.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\Asv.Mavlink.Payload.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\img\asv-mavlink-128.png">
@@ -28,24 +28,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Asv.Common" Version="1.6.0" />
+    <PackageReference Include="Asv.Cfg" Version="1.6.0" />
     <PackageReference Include="DynamicData" Version="7.10.2" />
-    <PackageReference Include="Geodesy" Version="4.1.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Asv.Mavlink.Vehicle\Asv.Mavlink.Vehicle.csproj" />
     <ProjectReference Include="..\Asv.Mavlink\Asv.Mavlink.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Files.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Files.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Files.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Files.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
 </Project>
