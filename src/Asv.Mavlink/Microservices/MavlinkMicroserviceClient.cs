@@ -8,6 +8,20 @@ using NLog;
 
 namespace Asv.Mavlink
 {
+    public class MavlinkClientIdentity
+    {
+        public byte SystemId { get; set; } = 254;
+        public byte ComponentId { get; set; } = 254;
+        public byte TargetSystemId { get; set; } = 1;
+        public byte TargetComponentId { get; set; } = 1;
+
+        public override string ToString()
+        {
+            return $"[Client:{SystemId}.{ComponentId}]=>[Server:{TargetSystemId}.{TargetComponentId}]";
+        }
+    }
+    
+    
     public abstract class MavlinkMicroserviceClient:DisposableOnceWithCancel
     {
         private readonly string _ifcLogName;

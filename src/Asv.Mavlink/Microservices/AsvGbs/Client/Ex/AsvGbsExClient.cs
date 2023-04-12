@@ -62,7 +62,7 @@ public class AsvGbsExClient: AsvGbsExBase, IAsvGbsExClient
             Single.NaN,
             Single.NaN,
             Single.NaN,
-            _config.DefaultAttemptCount, cs.Token);
+            _config.DefaultAttemptCount, cs.Token).ConfigureAwait(false);
         return ack.Result;
     }
 
@@ -77,7 +77,7 @@ public class AsvGbsExClient: AsvGbsExBase, IAsvGbsExClient
             Single.NaN,
             Single.NaN,
             Single.NaN,
-            _config.DefaultAttemptCount, cs.Token);
+            _config.DefaultAttemptCount, cs.Token).ConfigureAwait(false);
         return ack.Result;
     }
 
@@ -92,7 +92,7 @@ public class AsvGbsExClient: AsvGbsExBase, IAsvGbsExClient
             Single.NaN,
             Single.NaN,
             Single.NaN,
-            _config.DefaultAttemptCount, cs.Token);
+            _config.DefaultAttemptCount, cs.Token).ConfigureAwait(false);
         return ack.Result;
     }
 }

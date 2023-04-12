@@ -44,6 +44,8 @@
   <ItemGroup>
     <PackageReference Include="Asv.Common" Version="1.6.0" />
     <PackageReference Include="Asv.IO" Version="1.6.0" />
+    <PackageReference Include="DynamicData" Version="7.10.2" />
+    <PackageReference Include="Geodesy" Version="4.1.0" />
     <PackageReference Include="NLog" Version="5.1.2" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
@@ -59,14 +61,24 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RS.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="RS.ru.resx">
+      <DependentUpon>RS.resx</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Microservices\Custom\Server" />
+    <Folder Include="Devices\Base\Server\" />
+    <Folder Include="Devices\Gbs\" />
+    <Folder Include="Devices\Vehicles\Server\" />
+    <Folder Include="Microservices\AsvSdr\Client\Ex\" />
+    <Folder Include="Microservices\AsvSdr\Server\Ex\" />
     <Folder Include="Microservices\Dgps\Server" />
     <Folder Include="Microservices\Ftp\Server" />
-    <Folder Include="Microservices\Missions\Server" />
+    <Folder Include="Microservices\Gnss\Server\" />
+    <Folder Include="Microservices\Missions\Server\Ex\" />
     <Folder Include="Microservices\Offboard\Server" />
-    <Folder Include="Microservices\RawTelemetry\Server" />
+    <Folder Include="Microservices\Params\Client\Ex\" />
+    <Folder Include="Microservices\Position\Server\" />
+    <Folder Include="Microservices\Telemetry\Server\" />
     <Folder Include="Protocol\Messages\" />
   </ItemGroup>
   <ItemGroup>

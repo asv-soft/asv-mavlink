@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
@@ -6,7 +7,8 @@ namespace Asv.Mavlink
 {
     public interface ICommandClient
     {
-        Task<CommandAckPayload> CommandLong(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, int attemptCount, CancellationToken cancel);
+        IObservable<CommandAckPayload> OnCommandAck { get; }
+        Task<CommandAckPayload> CommandLong(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, CancellationToken cancel);
         Task SendCommandLong(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7,  CancellationToken cancel);
 
         /// <summary>
@@ -46,6 +48,22 @@ namespace Asv.Mavlink
         /// <param name="attemptCount"></param>
         /// <param name="cancel"></param>
         /// <returns></returns>
-        Task<CommandAckPayload> CommandInt(MavCmd command, MavFrame frame, bool current, bool autoContinue, float param1, float param2, float param3, float param4, int x, int y, float z, int attemptCount, CancellationToken cancel);
+        Task<CommandAckPayload> CommandInt(MavCmd command, MavFrame frame, bool current, bool autoContinue, float param1, float param2, float param3, float param4, int x, int y, float z, CancellationToken cancel);
+    }
+    
+    public static class CommandClientHelper
+    {
+        public static async Task CommandLongAndCheckResult(this ICommandClient client, MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, CancellationToken cancel)
+        {
+            var result = await client.CommandLong(command, param1, param2, param3, param4, param5, param6, param7, cancel).ConfigureAwait(false);
+            switch (result.Result)
+            {
+                case MavResult.MavResultTemporarilyRejected:
+                case MavResult.MavResultDenied:
+                case MavResult.MavResultUnsupported:
+                case MavResult.MavResultFailed:
+                    throw new CommandException(result);
+            }
+        }
     }
 }

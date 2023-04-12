@@ -9,7 +9,7 @@ namespace Asv.Mavlink.Client
     public class V2ExtensionClient : MavlinkMicroserviceClient, IV2ExtensionClient
     {
         private readonly MavlinkClientIdentity _identity;
-        private readonly RxValue<V2ExtensionPacket> _onData = new RxValue<V2ExtensionPacket>();
+        private readonly RxValue<V2ExtensionPacket> _onData = new();
         public static readonly int StaticMaxDataSize = new V2ExtensionPayload().GetMaxByteSize();
 
         public V2ExtensionClient(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,

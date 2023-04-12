@@ -16,7 +16,7 @@ public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
 
         commands[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunAutoMode] = async (id,args, cancel) =>
         {
-            var result = await gbsImplementation.StartAutoMode(args.Payload.Param1, args.Payload.Param2, cancel);
+            var result = await gbsImplementation.StartAutoMode(args.Payload.Param1, args.Payload.Param2, cancel).ConfigureAwait(false);
             return new CommandResult(result);
         }; 
         commands[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunFixedMode] = async (id,args, cancel) =>
@@ -24,12 +24,12 @@ public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
             var lat = BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param1),0) / 10000000D;
             var lon = BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param2),0) / 10000000D;
             var alt = BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param3),0) / 1000D;
-            var result = await gbsImplementation.StartFixedMode(new GeoPoint(lat,lon,alt),0.1f, cancel);
+            var result = await gbsImplementation.StartFixedMode(new GeoPoint(lat,lon,alt),0.1f, cancel).ConfigureAwait(false);
             return new CommandResult(result);
         };
         commands[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunIdleMode] = async (id,args, cancel) =>
         {
-            var result = await gbsImplementation.StartIdleMode(cancel);
+            var result = await gbsImplementation.StartIdleMode(cancel).ConfigureAwait(false);
             return new CommandResult(result);
         };
 

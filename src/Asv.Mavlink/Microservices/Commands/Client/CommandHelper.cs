@@ -6,11 +6,7 @@ namespace Asv.Mavlink.Client
 {
     public static class CommandHelper
     {
-        public static Task GetHomePosition(this ICommandClient src, CancellationToken cancel)
-        {
-            return src.CommandLong(MavCmd.MavCmdGetHomePosition, float.NaN, float.NaN, float.NaN, float.NaN, float.NaN,
-                float.NaN, float.NaN, 1, cancel);
-        }
+        
 
         // public static Task<AutopilotVersionPayload> GetAutopilotVersion(CancellationToken cancel)
         // {

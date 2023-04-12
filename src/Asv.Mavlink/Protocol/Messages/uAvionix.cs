@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 1.2.2
+// This code was generate by tool Asv.Mavlink.Shell version 2.0.2
 
 using System;
 using System.Text;
@@ -339,7 +339,7 @@ namespace Asv.Mavlink.V2.Uavionix
     /// </summary>
     public class UavionixAdsbOutCfgPayload : IPayload
     {
-        public byte GetMaxByteSize() => 20; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -454,7 +454,7 @@ namespace Asv.Mavlink.V2.Uavionix
     /// </summary>
     public class UavionixAdsbOutDynamicPayload : IPayload
     {
-        public byte GetMaxByteSize() => 41; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 41; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -602,7 +602,7 @@ namespace Asv.Mavlink.V2.Uavionix
     /// </summary>
     public class UavionixAdsbTransceiverHealthReportPayload : IPayload
     {
-        public byte GetMaxByteSize() => 1; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 1; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 1; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)

@@ -3,8 +3,10 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using NLog;
 
 namespace Asv.Mavlink.Client
 {
@@ -17,6 +19,7 @@ namespace Asv.Mavlink.Client
     
     public class HeartbeatClient : MavlinkMicroserviceClient, IHeartbeatClient
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IncrementalRateCounter _rxRate;
         private readonly RxValue<HeartbeatPayload> _heartBeat;
         private readonly RxValue<double> _packetRate;
@@ -33,6 +36,7 @@ namespace Asv.Mavlink.Client
             IPacketSequenceCalculator seq, IScheduler scheduler, HeartbeatClientConfig config):base(connection,identity, seq,"HEARTBEAT", scheduler)
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
+            FullId = (ushort)(identity.TargetComponentId | identity.TargetSystemId << 8);
             _rxRate = new IncrementalRateCounter(config.RateMovingAverageFilter);
             _heartBeatTimeoutMs = TimeSpan.FromMilliseconds(config.HeartbeatTimeoutMs);
             InternalFilteredVehiclePackets
@@ -80,6 +84,7 @@ namespace Asv.Mavlink.Client
             _linkQuality.OnNext(Math.Round(((double)count) / seq,2));
         }
 
+        public ushort FullId { get; }
         public IRxValue<HeartbeatPayload> RawHeartbeat => _heartBeat;
         public IRxValue<double> PacketRateHz => _packetRate;
         public IRxValue<double> LinkQuality => _linkQuality;

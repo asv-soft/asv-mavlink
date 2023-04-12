@@ -20,9 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 1.2.2
+// This code was generate by tool Asv.Mavlink.Shell version 2.0.2
 
 using System;
+using System.Text;
+using Asv.Mavlink.V2.Common;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.Ualberta
@@ -148,7 +150,7 @@ namespace Asv.Mavlink.V2.Ualberta
     /// </summary>
     public class NavFilterBiasPayload : IPayload
     {
-        public byte GetMaxByteSize() => 32; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 32; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -233,7 +235,7 @@ namespace Asv.Mavlink.V2.Ualberta
     /// </summary>
     public class RadioCalibrationPayload : IPayload
     {
-        public byte GetMaxByteSize() => 42; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -357,7 +359,7 @@ namespace Asv.Mavlink.V2.Ualberta
     /// </summary>
     public class UalbertaSysStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 3; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)

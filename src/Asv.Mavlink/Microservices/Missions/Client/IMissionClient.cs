@@ -8,7 +8,7 @@ namespace Asv.Mavlink
 {
     public interface IMissionClient
     {
-
+        MavlinkClientIdentity Identity { get; }
         IRxValue<ushort> MissionCurrent { get; }
         /// <summary>
         /// Drone receives message and attempts to update the current mission sequence number.
@@ -16,22 +16,22 @@ namespace Asv.Mavlink
         /// <param name="missionItemsIndex"></param>
         /// <param name="cancel"></param>
         /// <returns></returns>
-        Task MissionSetCurrent(ushort missionItemsIndex, int attemptCount, CancellationToken cancel);
+        Task MissionSetCurrent(ushort missionItemsIndex, CancellationToken cancel = default);
 
         IRxValue<ushort> MissionReached { get; }
 
         IObservable<MissionRequestPayload> OnMissionRequest { get; }
         IObservable<MissionAckPayload> OnMissionAck { get; }
 
-        Task<MissionItemIntPayload> MissionRequestItem(ushort index, int attemptCount, CancellationToken cancel);
+        Task<MissionItemIntPayload> MissionRequestItem(ushort index, CancellationToken cancel = default);
         /// <summary>
         /// Initiate mission download from a system by requesting the list of mission items.
         /// </summary>
         /// <param name="attemptCount"></param>
         /// <param name="cancel"></param>
         /// <returns></returns>
-        Task<int> MissionRequestCount(int attemptCount, CancellationToken cancel);
-        Task MissionSetCount(ushort count, CancellationToken cancel);
+        Task<int> MissionRequestCount(CancellationToken cancel = default);
+        Task MissionSetCount(ushort count, CancellationToken cancel = default);
 
         /// <summary>
         /// 
@@ -46,12 +46,11 @@ namespace Asv.Mavlink
         /// <param name="param4">PARAM4, see MAV_CMD enum</param>
         /// <returns></returns>
         Task WriteMissionItem(ushort seq, MavFrame frame, MavCmd cmd, bool current, bool autoContinue, float param1, float param2, float param3,
-            float param4, float x, float y, float z, MavMissionType missionType, int attemptCount, CancellationToken cancel);
+            float param4, float x, float y, float z, MavMissionType missionType, CancellationToken cancel = default);
 
-        Task ClearAll(int attemptCount, CancellationToken cancel);
+        Task ClearAll(CancellationToken cancel = default);
 
-
-        Task WriteMissionItem(MissionItem missionItem, CancellationToken cancel);
+        Task WriteMissionItem(MissionItem missionItem, CancellationToken cancel = default);
     }
 
     

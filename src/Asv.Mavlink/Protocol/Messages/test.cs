@@ -20,10 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 1.2.2
+// This code was generate by tool Asv.Mavlink.Shell version 2.0.2
 
 using System;
 using System.Text;
+using Asv.Mavlink.V2.Common;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.Test
@@ -64,7 +65,7 @@ namespace Asv.Mavlink.V2.Test
     /// </summary>
     public class TestTypesPayload : IPayload
     {
-        public byte GetMaxByteSize() => 179; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 179; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 179; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)

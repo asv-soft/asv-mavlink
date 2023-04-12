@@ -20,10 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 1.2.2
+// This code was generate by tool Asv.Mavlink.Shell version 2.0.2
 
 using System;
 using System.Text;
+using Asv.Mavlink.V2.Common;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.PythonArrayTest
@@ -71,7 +72,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest0Payload : IPayload
     {
-        public byte GetMaxByteSize() => 33; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -174,7 +175,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest1Payload : IPayload
     {
-        public byte GetMaxByteSize() => 16; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -228,7 +229,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest3Payload : IPayload
     {
-        public byte GetMaxByteSize() => 17; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 17; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 17; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -289,7 +290,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest4Payload : IPayload
     {
-        public byte GetMaxByteSize() => 17; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 17; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 17; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -350,7 +351,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest5Payload : IPayload
     {
-        public byte GetMaxByteSize() => 10; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 10; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 10; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -442,7 +443,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest6Payload : IPayload
     {
-        public byte GetMaxByteSize() => 91; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 91; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 91; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -641,7 +642,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest7Payload : IPayload
     {
-        public byte GetMaxByteSize() => 84; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 84; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 84; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
@@ -819,7 +820,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest8Payload : IPayload
     {
-        public byte GetMaxByteSize() => 24; // Summ of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)

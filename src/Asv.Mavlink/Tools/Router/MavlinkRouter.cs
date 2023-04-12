@@ -332,7 +332,7 @@ namespace Asv.Mavlink
             {
                 _portCollectionSync.ExitReadLock();
             }
-            var result = await Task.WhenAll(tasks);
+            var result = await Task.WhenAll(tasks).ConfigureAwait(false);
             return result.All(_ => _);
         }
 
