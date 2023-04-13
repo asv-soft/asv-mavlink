@@ -33,20 +33,10 @@ namespace Asv.Mavlink.Shell
         public override int Run(string[] remainingArguments)
         {
             Task.Factory.StartNew(KeyListen);
-            var conn = new MavlinkV2Connection(_connectionString, _=>
-            {
-                // _.RegisterMinimalDialect();
-                _.RegisterCommonDialect();
-                _.RegisterArdupilotmegaDialect();
-                _.RegisterIcarousDialect();
-                _.RegisterUavionixDialect();
-            });
-            var client = new MavlinkClient(conn, new MavlinkClientIdentity(), new MavlinkClientConfig());
+            var conn = MavlinkV2ConnectionFactory.Create(_connectionString);
+            
 
-            client.Common.RequestDataStream((int)MavDataStream.MavDataStreamAll, 1, true, default).Wait();
-            client.Common.RequestDataStream((int)MavDataStream.MavDataStreamExtendedStatus, 1, true, default).Wait();
-            client.Common.RequestDataStream((int)MavDataStream.MavDataStreamPosition, 1, true, default).Wait();
-
+            
             conn.Subscribe(OnPacket);
             conn.DeserializePackageErrors.Subscribe(OnError);
             while (!_cancel.IsCancellationRequested)

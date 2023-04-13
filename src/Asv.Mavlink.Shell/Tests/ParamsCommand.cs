@@ -1,5 +1,7 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -7,6 +9,8 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.Client;
 using Asv.Mavlink.V2.Common;
+using DynamicData;
+using DynamicData.Binding;
 
 namespace Asv.Mavlink.Shell
 {
@@ -17,6 +21,7 @@ namespace Asv.Mavlink.Shell
         private int _pageSize = 30;
         private string _search;
         private int _skip;
+        private ReadOnlyObservableCollection<IParamItem> _list;
 
         public ParamsCommand()
         {
@@ -61,16 +66,18 @@ namespace Asv.Mavlink.Shell
             if (e.Cancel) _cancel.Cancel(false);
         }
 
-        protected override IVehicle CreateVehicle(string cs)
+        protected override IVehicleClient CreateVehicle(string cs)
         {
             Task.Factory.StartNew(_ => KeyListen(), _cancel.Token);
             Console.CancelKeyPress += Console_CancelKeyPress;
-            return new VehicleArdupilotCopter(new MavlinkClient(new MavlinkV2Connection(cs,_=>_.RegisterCommonDialect()), new MavlinkClientIdentity(),new MavlinkClientConfig()  ), new VehicleBaseConfig() );
+            return new ArduCopterClient(MavlinkV2ConnectionFactory.Create(cs), new MavlinkClientIdentity(),new VehicleClientConfig(), new PacketSequenceCalculator(),Scheduler.Default);
         }
 
-        protected override async Task<int> RunAsync(IVehicle vehicle)
+        protected override async Task<int> RunAsync(IVehicleClient vehicle)
         {
-            await vehicle.Params.ReadAllParams(CancellationToken.None, new Progress<double>(_ => Console.WriteLine("Read params progress:" + TextRender.Progress(_, 20))));
+            Vehicle.Params.Items.Filter(_=> _search.IsNullOrWhiteSpace() || _.Name.Contains(_search, StringComparison.InvariantCultureIgnoreCase))
+                .Bind(out _list).Subscribe();
+            await vehicle.Params.ReadAll(new Progress<double>(_ => Console.WriteLine("Read params progress:" + TextRender.Progress(_, 20))));
             
             while (!_cancel.IsCancellationRequested)
             {
@@ -89,11 +96,10 @@ namespace Asv.Mavlink.Shell
             var left = Console.CursorLeft;
             Console.WriteLine();
 
-            var items =Vehicle.Params.Params.Values
-                .Where(_ => _search.IsNullOrWhiteSpace() ||
-                            _.Name.Contains(_search, StringComparison.InvariantCultureIgnoreCase))
-                .OrderBy(_ => _.Name).ToArray();
-            Console.WriteLine($"Show [{_skip} - {_skip + _pageSize}] of {items.Length}. All {Vehicle.Params.Params.Count} items: ");
+            
+            
+            var items =_list.ToArray();
+            Console.WriteLine($"Show [{_skip} - {_skip + _pageSize}] of {items.Length}. All {Vehicle.Params.RemoteCount.Value} items: ");
             TextTable.PrintTableFromObject(Console.WriteLine, new DoubleTextTableBorder(), 1, int.MaxValue, items.Skip(_skip).Take(_pageSize) );
             Console.SetCursorPosition(left,top);
         }

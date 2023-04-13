@@ -15,7 +15,7 @@ namespace Asv.Mavlink
             return new MavlinkV2Connection(dataStream, RegisterDefaultDialects,disposeDataStream);
         }
         
-        public static IMavlinkV2Connection CreateDefault(string connectionString)
+        public static IMavlinkV2Connection Create(string connectionString)
         {
             return new MavlinkV2Connection(connectionString, RegisterDefaultDialects);
         }

@@ -1,8 +1,8 @@
-using Asv.Mavlink.Server;
+using Asv.Mavlink.V2.Common;
 
-namespace Asv.Mavlink.Sdr;
+namespace Asv.Mavlink;
 
 public interface ISdrServerDevice
 {
-    IMavlinkServer Server { get; }
+    ICommandServerEx<CommandLongPacket> CommandLongEx { get; }
 }

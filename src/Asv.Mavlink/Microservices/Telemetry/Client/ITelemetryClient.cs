@@ -25,6 +25,7 @@ namespace Asv.Mavlink
         /// <param name="cancel"></param>
         /// <returns></returns>
         Task RequestDataStream(byte streamId, ushort rateHz, bool startStop, CancellationToken cancel = default);
+        
     }
 
     public class TelemetryClient : MavlinkMicroserviceClient, ITelemetryClient

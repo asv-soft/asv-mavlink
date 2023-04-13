@@ -12,7 +12,6 @@ public class GbsClientDeviceConfig
 {
     public HeartbeatClientConfig Heartbeat { get; set; } = new();
     public CommandProtocolConfig Command { get; set; } = new();
-    public AsvGbsExClientConfig Gbs { get; set; } = new();
 }
 public class GbsClientDevice : DisposableOnceWithCancel, IGbsClientDevice
 {
@@ -24,11 +23,10 @@ public class GbsClientDevice : DisposableOnceWithCancel, IGbsClientDevice
     {
         Heartbeat = new HeartbeatClient(connection, identity, seq, scheduler, config.Heartbeat);
         Command = new CommandClient(connection, identity, seq, config.Command, scheduler).DisposeItWith(Disposable);
-        Gbs = new AsvGbsClient(connection,identity,seq,scheduler).DisposeItWith(Disposable);
-        GbsExClient = new AsvGbsExClient(Gbs,Heartbeat,Command,config.Gbs).DisposeItWith(Disposable);;
+        var gbs = new AsvGbsClient(connection,identity,seq,scheduler).DisposeItWith(Disposable);
+        Gbs = new AsvGbsExClient(gbs,Heartbeat,Command).DisposeItWith(Disposable);;
     }
     public IHeartbeatClient Heartbeat { get; }
     public ICommandClient Command { get; }
-    public IAsvGbsClient Gbs { get; }
-    public IAsvGbsExClient GbsExClient { get; }
+    public IAsvGbsExClient Gbs { get; }
 }

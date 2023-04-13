@@ -10,8 +10,10 @@ public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
     public AsvGbsExServer(IAsvGbsServer server, 
         IHeartbeatServer heartbeatServer, 
         ICommandServerEx<CommandLongPacket> commands, 
-        IAsvGbsExClient gbsImplementation)
+        IAsvGbsCommon gbsImplementation)
     {
+        Base = server;
+
         #region Commands
 
         commands[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunAutoMode] = async (id,args, cancel) =>
@@ -121,6 +123,5 @@ public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
         #endregion
     }
 
-
-    public IAsvGbsServer Bsae { get; }
+    public IAsvGbsServer Base { get; }
 }

@@ -8,9 +8,11 @@ namespace Asv.Mavlink
     public interface ICommandClient
     {
         IObservable<CommandAckPayload> OnCommandAck { get; }
-        Task<CommandAckPayload> CommandLong(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, CancellationToken cancel);
-        Task SendCommandLong(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7,  CancellationToken cancel);
+        Task<CommandAckPayload> CommandLong(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, CancellationToken cancel = default);
 
+        Task<TAnswerPacket> CommandLongAndWaitPacket<TAnswerPacket>(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, CancellationToken cancel = default)
+            where TAnswerPacket : IPacketV2<IPayload>, new();
+        Task SendCommandLong(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7,  CancellationToken cancel = default);
         /// <summary>
         /// Message encoding a command with parameters as scaled integers. Scaling depends on the actual command value.
         ///  Don't wait answer
@@ -30,7 +32,7 @@ namespace Asv.Mavlink
         /// <returns></returns>
         Task SendCommandInt(MavCmd command, MavFrame frame, bool current, bool autocontinue,
             float param1, float param2,
-            float param3, float param4, int x, int y, float z, CancellationToken cancel);
+            float param3, float param4, int x, int y, float z, CancellationToken cancel = default);
         /// <summary>
         /// Message encoding a command with parameters as scaled integers. Scaling depends on the actual command value.
         /// </summary>
@@ -48,22 +50,6 @@ namespace Asv.Mavlink
         /// <param name="attemptCount"></param>
         /// <param name="cancel"></param>
         /// <returns></returns>
-        Task<CommandAckPayload> CommandInt(MavCmd command, MavFrame frame, bool current, bool autoContinue, float param1, float param2, float param3, float param4, int x, int y, float z, CancellationToken cancel);
-    }
-    
-    public static class CommandClientHelper
-    {
-        public static async Task CommandLongAndCheckResult(this ICommandClient client, MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, CancellationToken cancel)
-        {
-            var result = await client.CommandLong(command, param1, param2, param3, param4, param5, param6, param7, cancel).ConfigureAwait(false);
-            switch (result.Result)
-            {
-                case MavResult.MavResultTemporarilyRejected:
-                case MavResult.MavResultDenied:
-                case MavResult.MavResultUnsupported:
-                case MavResult.MavResultFailed:
-                    throw new CommandException(result);
-            }
-        }
+        Task<CommandAckPayload> CommandInt(MavCmd command, MavFrame frame, bool current, bool autoContinue, float param1, float param2, float param3, float param4, int x, int y, float z, CancellationToken cancel = default);
     }
 }

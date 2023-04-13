@@ -15,30 +15,28 @@ public class GbsServerDeviceConfig
 }
 public class GbsServerDevice:DisposableOnceWithCancel, IGbsServerDevice
 {
-    public GbsServerDevice(IMavlinkV2Connection connection,
+    public GbsServerDevice(IAsvGbsCommon impl, IMavlinkV2Connection connection,
         IPacketSequenceCalculator seq, 
         MavlinkServerIdentity identity,
         GbsServerDeviceConfig config,
-        IScheduler scheduler,
-        IAsvGbsExClient gbsExClient)
+        IScheduler scheduler )
     {
         Heartbeat = new HeartbeatServer(connection,seq,identity,config.Heartbeat,scheduler).DisposeItWith(Disposable);
         Command = new CommandServer(connection,seq,identity,scheduler).DisposeItWith(Disposable);
         CommandLongEx = new CommandLongServerEx(Command).DisposeItWith(Disposable);
         CommandIntEx = new CommandIntServerEx(Command).DisposeItWith(Disposable);
-        Gbs = new AsvGbsServer(connection,seq,identity,config.Gbs, scheduler).DisposeItWith(Disposable);
-        GbsEx = new AsvGbsExServer(Gbs,Heartbeat,CommandLongEx,gbsExClient).DisposeItWith(Disposable);
+        var gbs = new AsvGbsServer(connection, seq, identity, config.Gbs, scheduler).DisposeItWith(Disposable);
+        Gbs = new AsvGbsExServer(gbs,Heartbeat,CommandLongEx,impl).DisposeItWith(Disposable);
     }
 
     public void Start()
     {
         Heartbeat.Start();
-        Gbs.Start();
+        Gbs.Base.Start();
     }
     public ICommandServerEx<CommandLongPacket> CommandLongEx { get; }
     public ICommandServerEx<CommandIntPacket> CommandIntEx { get; }
     public IHeartbeatServer Heartbeat { get; }
     public ICommandServer Command { get; }
-    public IAsvGbsServer Gbs { get; }
-    public IAsvGbsServerEx GbsEx { get; }
+    public IAsvGbsServerEx Gbs { get; }
 }

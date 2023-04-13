@@ -9,21 +9,14 @@ using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
 
 namespace Asv.Mavlink;
 
-public class AsvGbsExClientConfig
-{
-    public int DefaultAttemptCount { get; set; } = 5;
-}
-
-public class AsvGbsExClient: AsvGbsExBase, IAsvGbsExClient
+public class AsvGbsExClient: AsvGbsCommon, IAsvGbsExClient
 {
     private readonly ICommandClient _command;
-    private readonly AsvGbsExClientConfig _config;
 
-    public AsvGbsExClient(IAsvGbsClient asvGbs, IHeartbeatClient heartbeat, ICommandClient command,AsvGbsExClientConfig config)
+    public AsvGbsExClient(IAsvGbsClient asvGbs, IHeartbeatClient heartbeat, ICommandClient command)
     {
         if (heartbeat == null) throw new ArgumentNullException(nameof(heartbeat));
         _command = command ?? throw new ArgumentNullException(nameof(command));
-        _config = config ?? throw new ArgumentNullException(nameof(config));
         Base = asvGbs ?? throw new ArgumentNullException(nameof(asvGbs));
         Base.RawStatus.Select(ConvertLocation).Subscribe(InternalPosition).DisposeItWith(Disposable);
         Base.RawStatus.Select(_=>_.VehicleCount).Subscribe(InternalVehicleCount).DisposeItWith(Disposable);
@@ -62,7 +55,7 @@ public class AsvGbsExClient: AsvGbsExBase, IAsvGbsExClient
             Single.NaN,
             Single.NaN,
             Single.NaN,
-            _config.DefaultAttemptCount, cs.Token).ConfigureAwait(false);
+            cs.Token).ConfigureAwait(false);
         return ack.Result;
     }
 
@@ -77,7 +70,7 @@ public class AsvGbsExClient: AsvGbsExBase, IAsvGbsExClient
             Single.NaN,
             Single.NaN,
             Single.NaN,
-            _config.DefaultAttemptCount, cs.Token).ConfigureAwait(false);
+             cs.Token).ConfigureAwait(false);
         return ack.Result;
     }
 
@@ -92,7 +85,7 @@ public class AsvGbsExClient: AsvGbsExBase, IAsvGbsExClient
             Single.NaN,
             Single.NaN,
             Single.NaN,
-            _config.DefaultAttemptCount, cs.Token).ConfigureAwait(false);
+             cs.Token).ConfigureAwait(false);
         return ack.Result;
     }
 }

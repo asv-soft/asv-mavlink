@@ -19,7 +19,7 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
 {
     private readonly ClientDeviceConfig _config;
     private readonly RxValue<InitState> _onInit;
-    private RxValue<string> _name;
+    private readonly RxValue<string> _name;
     private bool _needToRequestAgain;
     private int _isRequestInfoIsInProgressOrAlreadySuccess;
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -31,9 +31,12 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
         IPacketSequenceCalculator seq, 
         IScheduler scheduler)
     {
+        Connection = connection;
         _config = config;
-        Identity = Identity;
-        
+        Identity = identity;
+        Seq = seq;
+        Scheduler = scheduler;
+
         Heartbeat = new HeartbeatClient(connection,identity,seq,scheduler,config.Heartbeat)
             .DisposeItWith(Disposable);
         
@@ -44,7 +47,7 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
             .Subscribe(_ => _needToRequestAgain = true).DisposeItWith(Disposable);
         Heartbeat.Link.DistinctUntilChanged().Where(_ => _needToRequestAgain).Where(_ => _ == LinkState.Connected)
             // only one time
-            .ObserveOn(Scheduler.Default).Subscribe(_ => TryReconnect()).DisposeItWith(Disposable);
+            .ObserveOn(System.Reactive.Concurrency.Scheduler.Default).Subscribe(_ => TryReconnect()).DisposeItWith(Disposable);
 
         _name = new RxValue<string>().DisposeItWith(Disposable);
     }
@@ -82,6 +85,9 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
     
     public IRxValue<string> Name => _name;
     public IHeartbeatClient Heartbeat { get; }
+    public IMavlinkV2Connection Connection { get; }
     public MavlinkClientIdentity Identity { get; }
+    public IPacketSequenceCalculator Seq { get; }
+    public IScheduler Scheduler { get; }
     public IRxValue<InitState> OnInit => _onInit;
 }

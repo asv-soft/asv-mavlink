@@ -1,42 +1,44 @@
 using System;
+using System.Reactive.Concurrency;
 using Asv.Common;
-using Asv.Mavlink.Server;
 using Asv.Mavlink.V2.Common;
 using NLog;
 
-namespace Asv.Mavlink.Sdr;
+namespace Asv.Mavlink;
 
-public class SdrServerDevice:DisposableOnceWithCancel, ISdrServerDevice
+public class SdrServerDeviceConfig : ServerDeviceConfig
 {
-    private readonly ISdrClientDevice _interfaceImplementation;
+    public AsvGbsServerConfig Gbs { get; set; } = new();
+}
+
+public class SdrServerDevice:ServerDevice, ISdrServerDevice
+{
     public static Logger Logger = LogManager.GetCurrentClassLogger();
-    public SdrServerDevice(ISdrClientDevice interfaceImplementation, IMavlinkServer server, int statusRateMs = 1000, bool disposeServer = true)
+
+
+    public SdrServerDevice(IAsvGbsCommon interfaceImplementation, IMavlinkV2Connection connection,
+        IPacketSequenceCalculator seq, MavlinkServerIdentity identity, SdrServerDeviceConfig config, IScheduler scheduler)
+        : base(connection, seq, identity, config, scheduler)
     {
-        _interfaceImplementation = interfaceImplementation ?? throw new ArgumentNullException(nameof(interfaceImplementation));
-        Server = server ?? throw new ArgumentNullException(nameof(server));
-        if (disposeServer)
-        {
-            server.DisposeItWith(Disposable);
-        }
-        Server.Heartbeat.Set(_ =>
-        {
-            _.Autopilot = MavAutopilot.MavAutopilotInvalid;
-            _.Type = (MavType)V2.AsvSdr.MavType.MavTypeAsvSdrPayload;
-            _.SystemStatus = MavState.MavStateActive;
-            _.BaseMode = MavModeFlag.MavModeFlagCustomModeEnabled;
-            _.MavlinkVersion = 3;
-            _.CustomMode = (uint)V2.AsvSdr.AsvSdrCustomMode.AsvSdrCustomModeIdle;
-        });
-        Server.Heartbeat.Start();
+        if (interfaceImplementation == null) throw new ArgumentNullException(nameof(interfaceImplementation));
+        if (config == null) throw new ArgumentNullException(nameof(config));
         
-        _interfaceImplementation.CustomMode.Subscribe(mode => Server.Heartbeat.Set(_ =>
+        var gbs = new AsvGbsServer(connection, seq, identity,config.Gbs, scheduler).DisposeItWith(Disposable);
+        var cmd = new CommandServer(connection, seq, identity, scheduler).DisposeItWith(Disposable);
+        CommandLongEx = new CommandLongServerEx(cmd).DisposeItWith(Disposable);
+        GbsEx = new AsvGbsExServer(gbs, Heartbeat, CommandLongEx, interfaceImplementation).DisposeItWith(Disposable);
+        
+        interfaceImplementation.CustomMode.Subscribe(mode => Heartbeat.Set(_ =>
         {
             _.CustomMode = (uint)mode;
         })).DisposeItWith(Disposable);
-        
-        Server.Gbs.Start();
-        
-        
     }
-    
+
+    public override void Start()
+    {
+        base.Start();
+        GbsEx.Base.Start();
+    }
+    public IAsvGbsServerEx GbsEx { get; }
+    public ICommandServerEx<CommandLongPacket> CommandLongEx { get; }
 }

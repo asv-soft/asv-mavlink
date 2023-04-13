@@ -10,6 +10,5 @@ public interface IGbsClientDevice
 {
     IHeartbeatClient Heartbeat { get; }
     ICommandClient Command { get; }
-    IAsvGbsClient Gbs { get; }
-    IAsvGbsExClient GbsExClient { get; }
+    IAsvGbsExClient Gbs { get; }
 }

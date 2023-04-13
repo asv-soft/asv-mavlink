@@ -78,7 +78,7 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
 
         using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
         var tcs = new TaskCompletionSource<Unit>();
-        using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled());
+        await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled());
         var current = 0;
         _client.OnMissionRequest.Subscribe(req =>
         {

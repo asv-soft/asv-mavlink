@@ -40,7 +40,7 @@ public class CommandMicroserviceTest
             called = true;
             server.SendCommandAckAccepted(_, MavResult.MavResultAccepted).Wait();
         });
-        var result = await client.CommandInt(MavCmd.MavCmdUser1, MavFrame.MavFrameGlobal, true, true, 0, 0, 0, 0, 0, 0, 0,1, CancellationToken.None);
+        var result = await client.CommandInt(MavCmd.MavCmdUser1, MavFrame.MavFrameGlobal, true, true, 0, 0, 0, 0, 0, 0, 0, CancellationToken.None);
         Assert.True(called);
     }
     [Fact]
@@ -56,7 +56,7 @@ public class CommandMicroserviceTest
             called = true;
             server.SendCommandAckAccepted(_, MavResult.MavResultAccepted).Wait();
         });
-        var result = await client.CommandLong(MavCmd.MavCmdUser1, 0, 0, 0, 0, 0, 0, 0, 1, CancellationToken.None);
+        var result = await client.CommandLong(MavCmd.MavCmdUser1, 0, 0, 0, 0, 0, 0, 0,  CancellationToken.None);
         Assert.True(called);
     }
     
@@ -76,7 +76,7 @@ public class CommandMicroserviceTest
             called = true;
             server.SendCommandAckAccepted(_, MavResult.MavResultAccepted).Wait();
         });
-        var result = await client.CommandInt(MavCmd.MavCmdUser1, MavFrame.MavFrameGlobal, true, true, 0, 0, 0, 0, 0, 0, 0,5, CancellationToken.None);
+        var result = await client.CommandInt(MavCmd.MavCmdUser1, MavFrame.MavFrameGlobal, true, true, 0, 0, 0, 0, 0, 0, 0,CancellationToken.None);
         Assert.True(called);
         
             
@@ -97,7 +97,7 @@ public class CommandMicroserviceTest
             called = true;
             server.SendCommandAckAccepted(_, MavResult.MavResultAccepted).Wait();
         });
-        var result = await client.CommandLong(MavCmd.MavCmdUser1, 0, 0, 0, 0, 0, 0, 0, 5, CancellationToken.None);
+        var result = await client.CommandLong(MavCmd.MavCmdUser1, 0, 0, 0, 0, 0, 0, 0, CancellationToken.None);
         Assert.True(called);
         
             
@@ -121,7 +121,7 @@ public class CommandMicroserviceTest
         };
        
         
-        var result = await client.CommandLong(MavCmd.MavCmdUser1, 0, 0, 0, 0, 0, 0, 0, 5, CancellationToken.None);
+        var result = await client.CommandLong(MavCmd.MavCmdUser1, 0, 0, 0, 0, 0, 0, 0, CancellationToken.None);
         Assert.True(called);
 
         called = false;
@@ -130,7 +130,7 @@ public class CommandMicroserviceTest
             called = true;
             return Task.FromResult(new CommandResult(MavResult.MavResultAccepted));
         };
-        result = await client.CommandInt(MavCmd.MavCmdUser1, MavFrame.MavFrameGlobal, true, true, 0, 0, 0, 0, 0, 0, 0,5, CancellationToken.None);
+        result = await client.CommandInt(MavCmd.MavCmdUser1, MavFrame.MavFrameGlobal, true, true, 0, 0, 0, 0, 0, 0, 0,CancellationToken.None);
         Assert.True(called);
             
     }

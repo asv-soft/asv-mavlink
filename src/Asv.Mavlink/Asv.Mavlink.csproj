@@ -55,6 +55,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RS.resx</DependentUpon>
     </Compile>
+    <Compile Update="ParamsDesc.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ParamsDesc.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="RS.resx">
@@ -64,19 +69,20 @@
     <EmbeddedResource Update="RS.ru.resx">
       <DependentUpon>RS.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="ParamsDesc.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ParamsDesc.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Devices\Base\Server\" />
     <Folder Include="Devices\Gbs\" />
     <Folder Include="Devices\Vehicles\Server\" />
-    <Folder Include="Microservices\AsvSdr\Client\Ex\" />
-    <Folder Include="Microservices\AsvSdr\Server\Ex\" />
+    <Folder Include="Microservices\Commands\Client\Ex\" />
     <Folder Include="Microservices\Dgps\Server" />
     <Folder Include="Microservices\Ftp\Server" />
     <Folder Include="Microservices\Gnss\Server\" />
     <Folder Include="Microservices\Missions\Server\Ex\" />
     <Folder Include="Microservices\Offboard\Server" />
-    <Folder Include="Microservices\Params\Client\Ex\" />
     <Folder Include="Microservices\Position\Server\" />
     <Folder Include="Microservices\Telemetry\Server\" />
     <Folder Include="Protocol\Messages\" />
