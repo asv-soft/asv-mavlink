@@ -1,5 +1,3 @@
-using Asv.Mavlink.Client;
-
 namespace Asv.Mavlink;
 
 public interface IVehicleClient:IClientDevice

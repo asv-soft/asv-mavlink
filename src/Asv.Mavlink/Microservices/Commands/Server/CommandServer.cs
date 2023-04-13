@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Concurrent;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
-using NLog;
 
 namespace Asv.Mavlink
 {

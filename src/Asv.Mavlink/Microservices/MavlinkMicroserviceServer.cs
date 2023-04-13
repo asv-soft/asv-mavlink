@@ -4,10 +4,20 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.Client;
 using NLog;
 
 namespace Asv.Mavlink;
+
+public class MavlinkServerIdentity
+{
+    public byte ComponentId { get; set; } = 13;
+    public byte SystemId { get; set; } = 13;
+
+    public override string ToString()
+    {
+        return $"[Server:{SystemId}.{ComponentId}]<==";
+    }
+}
 
 public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
 {

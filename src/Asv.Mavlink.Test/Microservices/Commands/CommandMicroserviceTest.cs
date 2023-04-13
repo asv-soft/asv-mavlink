@@ -16,6 +16,7 @@ public class CommandMicroserviceTest
             new PacketSequenceCalculator(), new CommandProtocolConfig
             {
                 CommandTimeoutMs = 500,
+                CommandAttempt = 5,
             }, TaskPoolScheduler.Default);
         return client;
     }

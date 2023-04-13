@@ -13,55 +13,68 @@ namespace Asv.Mavlink;
 
 public class ParamsClientExConfig:ParameterClientConfig
 {
-    public int ReadListTimeoutMs { get; set; } = 5;
+    public int ReadListTimeoutMs { get; set; } = 5000;
 }
 
 public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
 {
-    private readonly IMavParamValueConverter _converter;
+    private IMavParamValueConverter _converter;
     private readonly ParamsClientExConfig _config;
-    private readonly SourceCache<ParamItem, ushort> _missionSource;
+    private readonly SourceCache<ParamItem, string> _missionSource;
     private readonly RxValue<bool> _isSynced;
-    private readonly ImmutableDictionary<string,ParamDescription> _descriptions;
+    private ImmutableDictionary<string,ParamDescription> _descriptions;
     private readonly RxValue<ushort?> _remoteCount;
     private readonly RxValue<ushort> _localCount;
 
-    public ParamsClientEx(IParamsClient client, IMavParamValueConverter converter,IEnumerable<ParamDescription> existDescription,ParamsClientExConfig config)
+    public ParamsClientEx(IParamsClient client, ParamsClientExConfig config)
     {
-        _converter = converter;
-        _config = config;
+        _config = config ?? throw new ArgumentNullException(nameof(config));
         Base = client;
-        _missionSource = new SourceCache<ParamItem, ushort>(x => x.Index).DisposeItWith(Disposable);
+        _missionSource = new SourceCache<ParamItem, string>(x => x.Name).DisposeItWith(Disposable);
         _isSynced = new RxValue<bool>(false).DisposeItWith(Disposable);
         Items = _missionSource.Connect().DisposeMany().Transform(_=>(IParamItem)_).Publish().RefCount();
-        client.OnParamValue.Subscribe(OnUpdate).DisposeItWith(Disposable);
-        _descriptions = existDescription.ToImmutableDictionary(_ => _.Name);
+        client.OnParamValue.Where(_=>IsInit && _.ParamIndex !=65535).Buffer(TimeSpan.FromMilliseconds(100)).Subscribe(OnUpdate).DisposeItWith(Disposable);
+        
         _remoteCount = new RxValue<ushort?>(null).DisposeItWith(Disposable);
         _localCount = new RxValue<ushort>(0).DisposeItWith(Disposable);
         _missionSource.CountChanged.Select(_=>(ushort)_).Subscribe(_localCount).DisposeItWith(Disposable);
     }
 
+    public bool IsInit { get; set; }
+
+    public void Init(IMavParamValueConverter converter, IEnumerable<ParamDescription> existDescription)
+    {
+        _descriptions = existDescription.ToImmutableDictionary(_ => _.Name);
+        _converter = converter;
+        IsInit = true;
+    }
+
     public IParamsClient Base { get; }
-    private void OnUpdate(ParamValuePayload value)
+    private void OnUpdate(IList<ParamValuePayload> items)
     {
         _missionSource.Edit(_ =>
         {
-            _remoteCount.Value = value.ParamCount;
-            var exist = _.Lookup(value.ParamIndex);
-            if (exist.HasValue)
+            foreach (var value in items)
             {
-                exist.Value.Update(value);
-            }
-            else
-            {
-                if (_descriptions.TryGetValue(MavlinkTypesHelper.GetString(value.ParamId), out var desc) == false)
+                _remoteCount.Value = value.ParamCount;
+                var name = MavlinkTypesHelper.GetString(value.ParamId);
+                var exist = _.Lookup(name);
+                if (exist.HasValue)
                 {
-                    desc = CreateDefaultDescription(value);
+                    exist.Value.Update(value);
                 }
-                var newItem = new ParamItem(Base, _converter, desc, value);
-                _.AddOrUpdate(newItem);
-                newItem.IsSynced.Subscribe(OnSyncedChanged);
+                else
+                {
+                    if (_descriptions.TryGetValue(name, out var desc) == false)
+                    {
+                        desc = CreateDefaultDescription(value);
+                    }
+                    var newItem = new ParamItem(Base, _converter, desc, value);
+                    _.AddOrUpdate(newItem);
+                    newItem.IsSynced.Subscribe(OnSyncedChanged);
+                }
             }
+            
         });
     }
 
@@ -149,7 +162,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
 
     public IRxValue<bool> IsSynced => _isSynced;
 
-    public IObservable<IChangeSet<IParamItem, ushort>> Items { get; }
+    public IObservable<IChangeSet<IParamItem, string>> Items { get; }
     
     public async Task ReadAll(IProgress<double> progress = null, CancellationToken cancel = default)
     {
@@ -159,7 +172,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled());
         var lastUpdate = DateTime.Now;
         ushort? paramsCount = null;
-        using var c2 = Base.OnParamValue.Subscribe(_ =>
+        using var c2 = Base.OnParamValue.Sample(TimeSpan.FromMilliseconds(50)).Subscribe(_ =>
         {
             paramsCount = _.ParamCount;
             if (_missionSource.Count == _.ParamCount)
@@ -177,18 +190,20 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
                     tcs.TrySetResult(false);
                 }
             });
+        await Base.SendRequestList(linkedCancel.Token).ConfigureAwait(false);
         var readAllParams = await tcs.Task.ConfigureAwait(false);
-        if (readAllParams == true) return;
-        if (paramsCount.HasValue == false) throw new Exception("Can't read params: collection is empty or connection error");
-        // read no all params=>try to read one by one
-        c3.Dispose();
-        for (ushort i = 0; i < paramsCount; i++)
-        {
-            if (_missionSource.Lookup(i).HasValue) continue;
-            var result = await Base.Read(i,linkedCancel.Token).ConfigureAwait(false);
-            if (_missionSource.Count == result.ParamCount) return;
-            progress.Report((double)_missionSource.Count / result.ParamCount);
-        }
+        // if (readAllParams == true) return;
+        // if (paramsCount.HasValue == false) throw new Exception("Can't read params: collection is empty or connection error");
+        // // read no all params=>try to read one by one
+        // c3.Dispose();
+        // for (ushort i = 0; i < paramsCount; i++)
+        // {
+        //     if (_missionSource.Lookup(i).HasValue) continue;
+        //     var result = await Base.Read(i,linkedCancel.Token).ConfigureAwait(false);
+        //     if (_missionSource.Count == result.ParamCount) return;
+        //     progress.Report((double)_missionSource.Count / result.ParamCount);
+        // }
+        progress.Report(1);
         _isSynced.OnNext(true);
     }
 

@@ -1,14 +1,11 @@
 using System;
 using System.Buffers;
-using System.Reactive.Concurrency;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
-using Asv.Mavlink.Decoder;
 
 namespace Asv.Mavlink.Test;
 
@@ -25,19 +22,19 @@ public class VirtualLink:DisposableOnceWithCancel
         serverToClientFilter ??= _ => true;
         
         _serverStream = new VirtualDataStream("server").DisposeItWith(Disposable);
-        _server = MavlinkV2ConnectionFactory.Create(_serverStream).DisposeItWith(Disposable);
+        _server = MavlinkV2Connection.Create(_serverStream).DisposeItWith(Disposable);
         _clientStream = new VirtualDataStream("client").DisposeItWith(Disposable);
-        _client = MavlinkV2ConnectionFactory.Create(_clientStream).DisposeItWith(Disposable);
+        _client = MavlinkV2Connection.Create(_clientStream).DisposeItWith(Disposable);
         
         var serverToClient = new PacketV2Decoder().DisposeItWith(Disposable);
-        MavlinkV2ConnectionFactory.RegisterDefaultDialects(serverToClient);
-        _serverStream.TxPipe.SelectMany(_=>_).Subscribe(serverToClient.OnData).DisposeItWith(Disposable);
+        MavlinkV2Connection.RegisterDefaultDialects(serverToClient);
+        _serverStream.TxPipe.Subscribe(serverToClient.OnData).DisposeItWith(Disposable);
         serverToClient.Where(serverToClientFilter).Select(Serialize).Subscribe(_clientStream.RxPipe)
             .DisposeItWith(Disposable);
         
         var clientToServer = new PacketV2Decoder().DisposeItWith(Disposable);
-        MavlinkV2ConnectionFactory.RegisterDefaultDialects(clientToServer);
-        _clientStream.TxPipe.SelectMany(_=>_).Subscribe(clientToServer.OnData).DisposeItWith(Disposable);
+        MavlinkV2Connection.RegisterDefaultDialects(clientToServer);
+        _clientStream.TxPipe.Subscribe(clientToServer.OnData).DisposeItWith(Disposable);
         clientToServer.Where(clientToServerFilter).Select(Serialize).Subscribe(_serverStream.RxPipe)
             .DisposeItWith(Disposable);
         

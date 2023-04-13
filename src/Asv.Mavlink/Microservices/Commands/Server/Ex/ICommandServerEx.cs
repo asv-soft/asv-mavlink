@@ -6,6 +6,7 @@ namespace Asv.Mavlink;
 
 public interface ICommandServerEx<out TArgPacket>
 {
+    ICommandServer Base { get; }
     CommandDelegate<TArgPacket> this[MavCmd cmd] { set; }
 }
 

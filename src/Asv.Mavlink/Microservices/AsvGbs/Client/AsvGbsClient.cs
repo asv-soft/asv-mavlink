@@ -1,7 +1,6 @@
 ﻿using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using Asv.Common;
-using Asv.Mavlink.Client;
 using Asv.Mavlink.V2.AsvGbs;
 
 namespace Asv.Mavlink

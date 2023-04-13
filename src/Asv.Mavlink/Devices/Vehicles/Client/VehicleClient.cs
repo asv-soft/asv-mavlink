@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.Client;
 using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
@@ -16,12 +14,13 @@ public class VehicleClientConfig:ClientDeviceConfig
     public CommandProtocolConfig Command { get; set; } = new();
     
     public MissionClientConfig Missions { get; set; } = new();
-    public ParamsClientExConfig Params { get; set; }
+    public ParamsClientExConfig Params { get; set; } = new();
 }
 
 public abstract class VehicleClient : ClientDevice, IVehicleClient
 {
     private readonly VehicleClientConfig _config;
+    private readonly ParamsClientEx _params;
 
     protected VehicleClient(IMavlinkV2Connection connection,
         MavlinkClientIdentity identity,
@@ -39,6 +38,8 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
         Rtt = new TelemetryClientEx(rtt).DisposeItWith(Disposable);
         var pos = new PositionClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
         Position = new PositionClientEx(pos,Heartbeat,Commands).DisposeItWith(Disposable);
+        _params = new ParamsClientEx(new ParamsClient(Connection, Identity, Seq, _config.Params, Scheduler),
+            _config.Params).DisposeItWith(Disposable);
     }
     
     protected override async Task InternalInit()
@@ -49,14 +50,19 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
         await Position.GetHomePosition(DisposeCancel).ConfigureAwait(false);
         var version = await Commands.GetAutopilotVersion(DisposeCancel).ConfigureAwait(false);
         var paramDesc = await GetParamDescription().ConfigureAwait(false);
-        Params = version.Capabilities.HasFlag(MavProtocolCapability.MavProtocolCapabilityParamUnion) 
-            ?  new ParamsClientEx(new ParamsClient(Connection,Identity,Seq,_config.Params,Scheduler),new MavParamValueConverter(),paramDesc,_config.Params).DisposeItWith(Disposable)
-            :  new ParamsClientEx(new ParamsClient(Connection,Identity,Seq,_config.Params,Scheduler),new MavParamArdupilotValueConverter(),paramDesc,_config.Params).DisposeItWith(Disposable);
+        if (version.Capabilities.HasFlag(MavProtocolCapability.MavProtocolCapabilityParamUnion))
+        {
+            _params.Init(new MavParamValueConverter(), paramDesc);
+        }
+        else
+        {
+            _params.Init(new MavParamArdupilotValueConverter(),paramDesc);
+        }
     }
 
     protected abstract Task<IReadOnlyCollection<ParamDescription>> GetParamDescription();
     public ICommandClient Commands { get; }
-    public IParamsClientEx Params { get; set; }
+    public IParamsClientEx Params => _params;
     public IMissionClientEx Missions { get; }
     public IGnssClientEx Gnss { get; }
     public ITelemetryClientEx Rtt { get; }

@@ -13,16 +13,17 @@ public class HeartbeatMicroserviceTest
     [Fact]
     public async Task TestHeartbeat()
     {
-        MavlinkTestHelper.CreateServerAndClientConnections(out var server, out var client);
+        var link = new VirtualLink();
+        
         var serverHeartbeat = new HeartbeatServer(
-            server, 
+            link.Server, 
             new PacketSequenceCalculator(), 
             new MavlinkServerIdentity{ComponentId = 13, SystemId = 13}, 
             new MavlinkHeartbeatServerConfig(), 
             TaskPoolScheduler.Default);
         
         var clientHeartbeat = new HeartbeatClient(
-            client, 
+            link.Client, 
             new MavlinkClientIdentity{SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13},
             new PacketSequenceCalculator(),
             TaskPoolScheduler.Default,

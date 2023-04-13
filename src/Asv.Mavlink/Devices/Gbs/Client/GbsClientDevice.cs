@@ -1,32 +1,37 @@
 using System.Reactive.Concurrency;
-using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.Client;
-using Asv.Mavlink.V2.AsvGbs;
-using Asv.Mavlink.V2.Common;
-using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
 
 namespace Asv.Mavlink;
 
-public class GbsClientDeviceConfig
+public class GbsClientDeviceConfig:ClientDeviceConfig
 {
-    public HeartbeatClientConfig Heartbeat { get; set; } = new();
     public CommandProtocolConfig Command { get; set; } = new();
 }
-public class GbsClientDevice : DisposableOnceWithCancel, IGbsClientDevice
+public class GbsClientDevice : ClientDevice, IGbsClientDevice
 {
     public GbsClientDevice(IMavlinkV2Connection connection,
         MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq, 
         IScheduler scheduler,
-        GbsClientDeviceConfig config)
+        GbsClientDeviceConfig config) : base(connection, identity,config, seq, scheduler)
     {
-        Heartbeat = new HeartbeatClient(connection, identity, seq, scheduler, config.Heartbeat);
         Command = new CommandClient(connection, identity, seq, config.Command, scheduler).DisposeItWith(Disposable);
         var gbs = new AsvGbsClient(connection,identity,seq,scheduler).DisposeItWith(Disposable);
-        Gbs = new AsvGbsExClient(gbs,Heartbeat,Command).DisposeItWith(Disposable);;
+        Gbs = new AsvGbsExClient(gbs,Heartbeat,Command).DisposeItWith(Disposable);
     }
-    public IHeartbeatClient Heartbeat { get; }
     public ICommandClient Command { get; }
     public IAsvGbsExClient Gbs { get; }
+    protected override Task InternalInit()
+    {
+        return Task.CompletedTask;
+    }
+
+    protected override Task<string> GetCustomName(CancellationToken cancel)
+    {
+        return Task.FromResult("GBS");
+    }
+
+    public override DeviceClass Class => DeviceClass.GbsRtk;
 }

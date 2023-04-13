@@ -18,9 +18,15 @@ public interface IClientDevice
 
 public static class ClientDeviceHelper
 {
-    public static void WaitUntilConnect(IClientDevice client)
+    public static void WaitUntilConnect(this IClientDevice client)
     {
         client.Heartbeat.Link.Where(_ => _ == LinkState.Connected).FirstAsync().Wait();
+    }
+    
+    public static void WaitUntilConnectAndInit(this IVehicleClient client)
+    {
+        client.WaitUntilConnect();
+        client.OnInit.Where(_ => _ == InitState.Complete).FirstAsync().Wait();
     }
 }
 

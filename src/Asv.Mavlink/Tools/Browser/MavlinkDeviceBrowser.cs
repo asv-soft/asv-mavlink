@@ -7,7 +7,6 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using Asv.Common;
-using Asv.Mavlink.Client;
 using Asv.Mavlink.V2.Common;
 using Newtonsoft.Json;
 using NLog;

@@ -1,11 +1,9 @@
-using Asv.Mavlink.Server;
+using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 
-public interface IGbsServerDevice
+public interface IGbsServerDevice:IServerDevice
 {
-    void Start();
-    IHeartbeatServer Heartbeat { get; }
-    ICommandServer Command { get; }
+    ICommandServerEx<CommandLongPacket> CommandLongEx { get; }
     IAsvGbsServerEx Gbs { get; }
 }

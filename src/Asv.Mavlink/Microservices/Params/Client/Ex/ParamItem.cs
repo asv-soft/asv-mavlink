@@ -21,6 +21,7 @@ public class ParamItem: DisposableOnceWithCancel,IParamItem
         _client = client;
         _converter = converter;
         _payload = payload;
+        Description = paramDescriptions;
         Name = MavlinkTypesHelper.GetString(payload.ParamId);
         Type = payload.ParamType;
         Index = payload.ParamIndex;
@@ -28,6 +29,9 @@ public class ParamItem: DisposableOnceWithCancel,IParamItem
         _value = new RxValue<decimal>(converter.ConvertFromMavlinkUnionToParamValue(payload.ParamValue,payload.ParamType)).DisposeItWith(Disposable);
         _value.Where(_=>_isInternalChange).Subscribe(_ => _isSynced.OnNext(false)).DisposeItWith(Disposable);
     }
+    
+    public ParamDescription Description { get; }
+    
     public string Name { get; }
     public MavParamType Type { get; }
     public ushort Index { get; }

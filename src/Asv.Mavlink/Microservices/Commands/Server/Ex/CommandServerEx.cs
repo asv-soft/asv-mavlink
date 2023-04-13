@@ -10,7 +10,6 @@ namespace Asv.Mavlink;
 public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, ICommandServerEx<TArgPacket>
     where TArgPacket : IPacketV2<IPayload>
 {
-    private readonly ICommandServer _server;
     private readonly Func<TArgPacket,ushort> _cmdGetter;
     private readonly Func<TArgPacket,byte> _confirmationGetter;
     private readonly ConcurrentDictionary<ushort, CommandDelegate<TArgPacket>> _registry = new();
@@ -20,12 +19,14 @@ public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, IC
 
     protected CommandServerEx(ICommandServer server, IObservable<TArgPacket> commandsPipe, Func<TArgPacket,ushort> cmdGetter, Func<TArgPacket,byte> confirmationGetter)
     {
-        _server = server;
+        Base = server;
         _cmdGetter = cmdGetter;
         _confirmationGetter = confirmationGetter;
         commandsPipe.Subscribe(OnRequest).DisposeItWith(Disposable);
         Disposable.AddAction(() => _registry.Clear());
     }
+
+    public ICommandServer Base { get; }
 
     public CommandDelegate<TArgPacket> this[MavCmd cmd]
     {
@@ -50,7 +51,7 @@ public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, IC
                     return;
                 }
                 Logger.Warn($"Reject command {pkt}): too busy now");
-                await _server.SendCommandAck((MavCmd)cmd, requester,
+                await Base.SendCommandAck((MavCmd)cmd, requester,
                     new CommandResult(MavResult.MavResultTemporarilyRejected), DisposeCancel).ConfigureAwait(false);
                 return;
             }
@@ -59,19 +60,19 @@ public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, IC
             {
                 Logger.Warn($"Reject unknown command {pkt})");
                 _lastCommand = -1;
-                await _server.SendCommandAck((MavCmd)cmd, requester,
+                await Base.SendCommandAck((MavCmd)cmd, requester,
                     new CommandResult(MavResult.MavResultUnsupported), DisposeCancel).ConfigureAwait(false);
                 return;
             }
 
             var result = await callback(requester,pkt, DisposeCancel).ConfigureAwait(false);
-            await _server.SendCommandAck((MavCmd)cmd, requester, result, DisposeCancel).ConfigureAwait(false);
+            await Base.SendCommandAck((MavCmd)cmd, requester, result, DisposeCancel).ConfigureAwait(false);
         }
         catch (Exception e)
         {
             Logger.Error($"Error to execute command {pkt}:{e.Message}");
             _lastCommand = -1;
-            await _server.SendCommandAck((MavCmd)cmd, requester,
+            await Base.SendCommandAck((MavCmd)cmd, requester,
                 new CommandResult(MavResult.MavResultTemporarilyRejected), DisposeCancel).ConfigureAwait(false);
 
         }

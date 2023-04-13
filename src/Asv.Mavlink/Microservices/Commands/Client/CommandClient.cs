@@ -3,7 +3,6 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.Client;
 using Asv.Mavlink.V2.Common;
 using NLog;
 
@@ -12,7 +11,7 @@ namespace Asv.Mavlink
     public class CommandProtocolConfig
     {
         public int CommandTimeoutMs { get; set; } = 5000;
-        public int CommandAttempt { get; set; } = 3;
+        public int CommandAttempt { get; set; } = 5;
     }
 
     public class CommandClient : MavlinkMicroserviceClient, ICommandClient

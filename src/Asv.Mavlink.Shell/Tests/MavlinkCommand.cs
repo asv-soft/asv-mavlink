@@ -33,7 +33,7 @@ namespace Asv.Mavlink.Shell
         public override int Run(string[] remainingArguments)
         {
             Task.Factory.StartNew(KeyListen);
-            var conn = MavlinkV2ConnectionFactory.Create(_connectionString);
+            var conn = MavlinkV2Connection.Create(_connectionString);
             
 
             

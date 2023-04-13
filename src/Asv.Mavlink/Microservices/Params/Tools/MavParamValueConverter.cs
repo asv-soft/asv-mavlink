@@ -1,5 +1,4 @@
 ﻿using System;
-using Asv.Mavlink.Client;
 using Asv.Mavlink.V2.Common;
 using NLog;
 

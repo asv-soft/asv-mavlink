@@ -12,8 +12,8 @@ namespace Asv.Mavlink
     {
         public byte SystemId { get; set; } = 254;
         public byte ComponentId { get; set; } = 254;
-        public byte TargetSystemId { get; set; } = 1;
-        public byte TargetComponentId { get; set; } = 1;
+        public byte TargetSystemId { get; set; } = 13;
+        public byte TargetComponentId { get; set; } = 13;
 
         public override string ToString()
         {

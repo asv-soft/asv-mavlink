@@ -13,9 +13,9 @@ public class PacketV2Decoder : DisposableOnceWithCancel, IPacketDecoder<IPacketV
     private DecodeStep _decodeStep;
     private int _bufferIndex;
     private int _bufferStopIndex;
-    private readonly Dictionary<int, Func<IPacketV2<IPayload>>> _dict = new Dictionary<int, Func<IPacketV2<IPayload>>>();
-    private readonly Subject<DeserializePackageException> _decodeErrorSubject = new Subject<DeserializePackageException>();
-    private readonly Subject<IPacketV2<IPayload>> _packetSubject = new Subject<IPacketV2<IPayload>>();
+    private readonly Dictionary<int, Func<IPacketV2<IPayload>>> _dict = new();
+    private readonly Subject<DeserializePackageException> _decodeErrorSubject;
+    private readonly Subject<IPacketV2<IPayload>> _packetSubject;
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private readonly object _sync = new object();
 
@@ -31,41 +31,33 @@ public class PacketV2Decoder : DisposableOnceWithCancel, IPacketDecoder<IPacketV
     {
         // the first byte is always STX
         _buffer[0] = PacketV2Helper.MagicMarkerV2;
-        Disposable.Add(_decodeErrorSubject);
-        Disposable.Add(_packetSubject);
+        _decodeErrorSubject = new Subject<DeserializePackageException>().DisposeItWith(Disposable);
+        _packetSubject = new Subject<IPacketV2<IPayload>>().DisposeItWith(Disposable);
     }
 
-    public void OnData(byte value)
+    public void OnData(byte[] buffer)
     {
         lock (_sync)
         {
-            try
+            foreach (var value in buffer)
             {
-
-                switch (_decodeStep)
+                try
                 {
-                    case DecodeStep.Sync:
-                        _decodeStep = SyncStep(value);
-                        break;
-                    case DecodeStep.Length:
-                        _decodeStep = GetLengthStep(value);
-                        break;
-                    case DecodeStep.FillBuffer:
-                        _decodeStep = FillBufferStep(value);
-                        break;
-                    case DecodeStep.FillSignature:
-                        _decodeStep = SignatureStep(value);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    _decodeStep = _decodeStep switch
+                    {
+                        DecodeStep.Sync => SyncStep(value),
+                        DecodeStep.Length => GetLengthStep(value),
+                        DecodeStep.FillBuffer => FillBufferStep(value),
+                        DecodeStep.FillSignature => SignatureStep(value),
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
                 }
-
-            }
-            catch (Exception e)
-            {
-                _logger.Fatal($"Fatal error to decode packet:{e.Message}");
-                _decodeStep = DecodeStep.Sync;
-                Debug.Assert(false, e.Message);
+                catch (Exception e)
+                {
+                    _logger.Fatal($"Fatal error to decode packet:{e.Message}");
+                    _decodeStep = DecodeStep.Sync;
+                    Debug.Assert(false, e.Message);
+                }
             }
         }
     }
@@ -158,8 +150,8 @@ public class PacketV2Decoder : DisposableOnceWithCancel, IPacketDecoder<IPacketV
 
     public void Register(Func<IPacketV2<IPayload>> factory)
     {
-        var testPckt = factory();
-        _dict.Add(testPckt.MessageId,factory);
+        var pkt = factory();
+        _dict.Add(pkt.MessageId,factory);
     }
 
     public IPacketV2<IPayload> Create(int id)

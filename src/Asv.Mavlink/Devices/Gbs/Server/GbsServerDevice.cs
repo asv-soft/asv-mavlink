@@ -1,42 +1,33 @@
-using System;
 using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using Asv.Common;
-using Asv.Mavlink.Server;
 using Asv.Mavlink.V2.Common;
-using NLog;
 
 namespace Asv.Mavlink;
 
-public class GbsServerDeviceConfig
+public class GbsServerDeviceConfig:ServerDeviceConfig
 {
-    public MavlinkHeartbeatServerConfig Heartbeat { get; set; } = new();
     public AsvGbsServerConfig Gbs { get; set; } = new();
 }
-public class GbsServerDevice:DisposableOnceWithCancel, IGbsServerDevice
+public class GbsServerDevice:ServerDevice, IGbsServerDevice
 {
-    public GbsServerDevice(IAsvGbsCommon impl, IMavlinkV2Connection connection,
-        IPacketSequenceCalculator seq, 
+    public GbsServerDevice(IMavlinkV2Connection connection,
         MavlinkServerIdentity identity,
+        IPacketSequenceCalculator seq,
+        IScheduler scheduler,
         GbsServerDeviceConfig config,
-        IScheduler scheduler )
+        IAsvGbsCommon impl) : base(connection, seq, identity, config, scheduler)
     {
-        Heartbeat = new HeartbeatServer(connection,seq,identity,config.Heartbeat,scheduler).DisposeItWith(Disposable);
-        Command = new CommandServer(connection,seq,identity,scheduler).DisposeItWith(Disposable);
-        CommandLongEx = new CommandLongServerEx(Command).DisposeItWith(Disposable);
-        CommandIntEx = new CommandIntServerEx(Command).DisposeItWith(Disposable);
+        var command = new CommandServer(connection,seq,identity,scheduler).DisposeItWith(Disposable);
+        CommandLongEx = new CommandLongServerEx(command).DisposeItWith(Disposable);
         var gbs = new AsvGbsServer(connection, seq, identity, config.Gbs, scheduler).DisposeItWith(Disposable);
         Gbs = new AsvGbsExServer(gbs,Heartbeat,CommandLongEx,impl).DisposeItWith(Disposable);
     }
 
-    public void Start()
+    public override void Start()
     {
-        Heartbeat.Start();
+        base.Start();
         Gbs.Base.Start();
     }
     public ICommandServerEx<CommandLongPacket> CommandLongEx { get; }
-    public ICommandServerEx<CommandIntPacket> CommandIntEx { get; }
-    public IHeartbeatServer Heartbeat { get; }
-    public ICommandServer Command { get; }
     public IAsvGbsServerEx Gbs { get; }
 }

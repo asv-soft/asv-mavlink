@@ -4,7 +4,6 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.Client;
 using NLog;
 
 namespace Asv.Mavlink;
@@ -20,7 +19,7 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
     private readonly ClientDeviceConfig _config;
     private readonly RxValue<InitState> _onInit;
     private readonly RxValue<string> _name;
-    private bool _needToRequestAgain;
+    private bool _needToRequestAgain = true;
     private int _isRequestInfoIsInProgressOrAlreadySuccess;
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     
@@ -45,9 +44,10 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
         Heartbeat.Link.DistinctUntilChanged()
             .Where(_ => _ == LinkState.Disconnected)
             .Subscribe(_ => _needToRequestAgain = true).DisposeItWith(Disposable);
+        
         Heartbeat.Link.DistinctUntilChanged().Where(_ => _needToRequestAgain).Where(_ => _ == LinkState.Connected)
             // only one time
-            .ObserveOn(System.Reactive.Concurrency.Scheduler.Default).Subscribe(_ => TryReconnect()).DisposeItWith(Disposable);
+            .Delay(TimeSpan.FromMilliseconds(100)).Subscribe(_ => TryReconnect()).DisposeItWith(Disposable);
 
         _name = new RxValue<string>().DisposeItWith(Disposable);
     }
