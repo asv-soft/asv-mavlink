@@ -6,10 +6,10 @@ using Asv.Mavlink.V2.Common;
 namespace Asv.Mavlink
 {
     
-    public class MavlinkOffboardMode : MavlinkMicroserviceClient, IMavlinkOffboardMode
+    public class OffboardClient : MavlinkMicroserviceClient, IOffboardClient
     {
-        public MavlinkOffboardMode(IMavlinkV2Connection connection, MavlinkClientIdentity config,
-            IPacketSequenceCalculator seq, IScheduler scheduler):base(connection,config,seq,"OFFBOARD", scheduler)
+        public OffboardClient(IMavlinkV2Connection connection, MavlinkClientIdentity config,
+            IPacketSequenceCalculator seq, IScheduler scheduler):base("OFFBOARD", connection, config, seq, scheduler)
         {
         }
 

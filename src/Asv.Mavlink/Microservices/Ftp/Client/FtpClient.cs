@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reactive.Concurrency;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -293,46 +294,18 @@ namespace Asv.Mavlink.Client.Ftp
         Skip,
     }
   
-    public class FtpClient:IFtpClient
+    public class FtpClient: MavlinkMicroserviceClient, IFtpClient
     {
-        private readonly IMavlinkV2Connection _connection;
-        private readonly MavlinkClientIdentity _identity;
-        private readonly PacketSequenceCalculator _seq;
-
-        public FtpClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, PacketSequenceCalculator seq)
+        public FtpClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq, IScheduler scheduler) : base("FTP", connection, identity, seq, scheduler)
         {
-            _connection = connection;
-            _identity = identity;
-            _seq = seq;
-        }
-
-        public Task SendListDirectory(string path, ushort index, CancellationToken cancel)
-        {
-            var packet = new FileTransferProtocolPacket
-            {
-                ComponenId = _identity.ComponentId,
-                SystemId = _identity.SystemId,
-                Sequence = _seq.GetNextSequenceNumber(),
-                Payload =
-                {
-                    TargetComponent = _identity.TargetComponentId,
-                    TargetSystem = _identity.TargetSystemId,
-                    TargetNetwork = 0,
-                }
-            };
-            var ftp = new FtpMessagePayload
-            {
-                Size = (byte) path.Length,
-                Offset = index,
-                Data = Encoding.ASCII.GetBytes(path)
-            };
             
-            return _connection.Send(packet, cancel);
         }
 
         public Task<FtpFileListItem[]> ListDirectory(string path, int index, CancellationToken cancel)
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }

@@ -11,7 +11,7 @@ namespace Asv.Mavlink.Server
 
         public ParamsServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
             MavlinkServerIdentity identity, IScheduler scheduler)
-            : base(connection, identity, seq, "PARAM",scheduler)
+            : base("PARAM",connection, identity, seq, scheduler)
         {
             // Subscribe<ParamRequestListPacket, ParamRequestListPayload>(OnRequestList);
             

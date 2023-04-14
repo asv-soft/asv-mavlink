@@ -5,7 +5,7 @@ using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink
 {
-    public interface IMavlinkOffboardMode:IDisposable
+    public interface IOffboardClient
     {
         /// <summary>
         /// 
@@ -34,7 +34,7 @@ namespace Asv.Mavlink
 
     public static class OffboardModeHelper
     {
-        public static Task SetPositionTargetLocalNed(this IMavlinkOffboardMode src, uint timeBootMs, MavFrame coordinateFrame, float? x,
+        public static Task SetPositionTargetLocalNed(this IOffboardClient src, uint timeBootMs, MavFrame coordinateFrame, float? x,
             float? y, float? z, float? vx, float? vy, float? vz, float? afx, float? afy, float? afz, float? yaw, float? yawRate,
             CancellationToken cancel)
         {

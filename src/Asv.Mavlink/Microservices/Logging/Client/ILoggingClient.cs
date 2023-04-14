@@ -2,7 +2,7 @@ using System;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 
-namespace Asv.Mavlink.Client
+namespace Asv.Mavlink
 {
     public interface ILoggingClient:IDisposable
     {

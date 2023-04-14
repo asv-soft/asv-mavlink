@@ -7,7 +7,7 @@ namespace Asv.Mavlink
 {
     public interface IAsvSdrServer
     {
-        void Start(TimeSpan statusRate);
+        void Start();
         void Set(Action<AsvSdrOutStatusPayload> changeCallback);
         IObservable<AsvSdrRecordListRequestPayload> OnGetRecordList { get; }
         Task SendRecordList(Action<AsvSdrRecordListResponsePayload> setValueCallback, CancellationToken cancel = default);

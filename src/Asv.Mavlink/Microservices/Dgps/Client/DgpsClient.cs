@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 using NLog;
 
-namespace Asv.Mavlink.Client
+namespace Asv.Mavlink
 {
     public class DgpsClient : MavlinkMicroserviceClient, IDgpsClient
     {
@@ -15,7 +15,7 @@ namespace Asv.Mavlink.Client
         private int _seqNumber;
 
         public DgpsClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, IScheduler scheduler):base(connection,identity,seq,"DGPS", scheduler)
+            IPacketSequenceCalculator seq, IScheduler scheduler):base("DGPS", connection, identity, seq, scheduler)
         {
         
         }

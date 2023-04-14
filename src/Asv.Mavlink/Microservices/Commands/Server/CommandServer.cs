@@ -18,7 +18,7 @@ namespace Asv.Mavlink
 
         public CommandServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
             MavlinkServerIdentity identity, IScheduler rxScheduler)
-            : base(connection, identity, seq, "COMMAND", rxScheduler)
+            : base("COMMAND", connection, identity, seq, rxScheduler)
         {
             _connection = connection;
             _seq = seq;

@@ -1,12 +1,12 @@
 using System;
+using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 
-
-namespace Asv.Mavlink.Server
+namespace Asv.Mavlink
 {
-    public class DebugServer: IDebugServer,IDisposable
+    public class DebugServer: MavlinkMicroserviceServer, IDebugServer
     {
         private readonly IMavlinkV2Connection _connection;
         private readonly IPacketSequenceCalculator _seq;
@@ -16,9 +16,10 @@ namespace Asv.Mavlink.Server
         private readonly int _maxMemoryVectLength = new MemoryVectPayload().Value.Length;
         private readonly int _maxNamedValueKeyLength = new NamedValueFloatPayload().Name.Length;
         private readonly DateTime _bootTime;
-        private readonly CancellationTokenSource _disposableCancel = new CancellationTokenSource();
 
-        public DebugServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq, MavlinkServerIdentity identity)
+        public DebugServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
+            MavlinkServerIdentity identity, IScheduler rxScheduler) 
+            : base("DEBUG", connection, identity, seq, rxScheduler)
         {
             _connection = connection;
             _seq = seq;
@@ -56,13 +57,13 @@ namespace Asv.Mavlink.Server
                 Sequence = _seq.GetNextSequenceNumber(),
                 Payload =
                 {
-                    Name = name.ToCharArray(),
                     TimeUsec = (uint)(DateTime.Now - _bootTime).TotalMilliseconds,
                     ArrayId = arrayId,
                 }
             };
+            MavlinkTypesHelper.SetString(packet.Payload.Name, name);
             data.CopyTo(packet.Payload.Data,0);
-            return _connection.Send(packet, _disposableCancel.Token);
+            return _connection.Send(packet, DisposeCancel);
         }
 
         public Task SendMemoryVect(ushort address, byte version, byte type, sbyte[] value)
@@ -87,7 +88,7 @@ namespace Asv.Mavlink.Server
                 }
             };
             value.CopyTo(packet.Payload.Value, 0);
-            return _connection.Send(packet, _disposableCancel.Token);
+            return _connection.Send(packet, DisposeCancel);
         }
 
         public Task SendNamedValueFloat(string name, float value)
@@ -106,12 +107,12 @@ namespace Asv.Mavlink.Server
                 Sequence = _seq.GetNextSequenceNumber(),
                 Payload =
                 {
-                    Name = name.ToCharArray(),
                     TimeBootMs = (uint)(DateTime.Now - _bootTime).TotalMilliseconds,
                     Value = value,
                 }
             };
-            return _connection.Send(packet, _disposableCancel.Token);
+            MavlinkTypesHelper.SetString(packet.Payload.Name, name);
+            return _connection.Send(packet, DisposeCancel);
         }
 
         public Task SendNamedValueInteger(string name, int value)
@@ -130,18 +131,14 @@ namespace Asv.Mavlink.Server
                 Sequence = _seq.GetNextSequenceNumber(),
                 Payload =
                 {
-                    Name = name.ToCharArray(),
                     TimeBootMs = (uint)(DateTime.Now - _bootTime).TotalMilliseconds,
                     Value = value,
                 }
             };
-            return _connection.Send(packet, _disposableCancel.Token);
+            MavlinkTypesHelper.SetString(packet.Payload.Name, name);
+            return _connection.Send(packet, DisposeCancel);
         }
 
-        public void Dispose()
-        {
-            _disposableCancel.Cancel(false);
-            _disposableCancel.Dispose();
-        }
+       
     }
 }

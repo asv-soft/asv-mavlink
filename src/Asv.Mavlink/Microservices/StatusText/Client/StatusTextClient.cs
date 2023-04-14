@@ -10,7 +10,7 @@ public class StatusTextClient : MavlinkMicroserviceClient, IStatusTextClient
     private readonly RxValue<StatusMessage> _onMessage;
 
     public StatusTextClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq, IScheduler scheduler) : base(connection, identity, seq, "STATUS", scheduler)
+        IPacketSequenceCalculator seq, IScheduler scheduler) : base("STATUS", connection, identity, seq, scheduler)
     {
         Name = new RxValue<string>($"[{identity.TargetSystemId},{identity.TargetComponentId}]").DisposeItWith(Disposable);
         _onMessage = new RxValue<StatusMessage>().DisposeItWith(Disposable);

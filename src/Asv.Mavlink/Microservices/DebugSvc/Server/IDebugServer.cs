@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Asv.Mavlink.Server
+namespace Asv.Mavlink
 {
     public interface IDebugServer
     {

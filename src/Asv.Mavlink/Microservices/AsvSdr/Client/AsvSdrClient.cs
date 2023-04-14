@@ -15,7 +15,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
 
     public AsvSdrClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq, IScheduler scheduler)
-        : base(connection, identity, seq, "SDR", scheduler)
+        : base("SDR", connection, identity, seq, scheduler)
     {
         _identity = identity;
         _status = new RxValue<AsvSdrOutStatusPayload>().DisposeItWith(Disposable);

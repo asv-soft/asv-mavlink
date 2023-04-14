@@ -27,8 +27,9 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
     private string _logSend;
     private string _logRecv;
 
-    protected MavlinkMicroserviceServer(IMavlinkV2Connection connection, MavlinkServerIdentity identity,
-        IPacketSequenceCalculator seq, string ifcLogName, IScheduler rxScheduler)
+    protected MavlinkMicroserviceServer(string ifcLogName, IMavlinkV2Connection connection,
+        MavlinkServerIdentity identity,
+        IPacketSequenceCalculator seq, IScheduler rxScheduler)
     {
         Connection = connection ?? throw new ArgumentNullException(nameof(connection));
         Identity = identity ?? throw new ArgumentNullException(nameof(identity));

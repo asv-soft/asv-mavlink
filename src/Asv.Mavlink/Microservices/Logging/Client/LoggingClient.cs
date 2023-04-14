@@ -5,7 +5,7 @@ using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 
-namespace Asv.Mavlink.Client
+namespace Asv.Mavlink
 {
     public class LoggingClient:MavlinkMicroserviceClient, ILoggingClient
     {
@@ -13,7 +13,7 @@ namespace Asv.Mavlink.Client
         private readonly RxValue<LoggingDataPayload> _loggingData = new();
 
         public LoggingClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, IScheduler scheduler):base(connection,identity,seq,"LOG", scheduler)
+            IPacketSequenceCalculator seq, IScheduler scheduler):base("LOG", connection, identity, seq, scheduler)
         {
 
             InternalFilter<LoggingDataPacket>()

@@ -26,7 +26,7 @@ namespace Asv.Mavlink
         private readonly MavlinkClientIdentity _identity;
 
         public MissionClient(IMavlinkV2Connection mavlink, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, MissionClientConfig config, IScheduler scheduler) : base(mavlink, identity, seq, "MISSION",scheduler)
+            IPacketSequenceCalculator seq, MissionClientConfig config, IScheduler scheduler) : base("MISSION",mavlink, identity, seq, scheduler)
         {
             _identity = identity;
             _config = config;

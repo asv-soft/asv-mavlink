@@ -31,8 +31,9 @@ namespace Asv.Mavlink
         private string _logSend;
         private string _logRecv;
 
-        protected MavlinkMicroserviceClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, string ifcLogName, IScheduler scheduler)
+        protected MavlinkMicroserviceClient(string ifcLogName, IMavlinkV2Connection connection,
+            MavlinkClientIdentity identity,
+            IPacketSequenceCalculator seq, IScheduler scheduler)
         {
             Connection = connection ?? throw new ArgumentNullException(nameof(connection));
             Identity = identity ?? throw new ArgumentNullException(nameof(identity));

@@ -1,55 +1,43 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Threading;
-using Asv.Common;
 using Asv.Mavlink.V2.Common;
 
-namespace Asv.Mavlink.Client
+namespace Asv.Mavlink
 {
     public class DebugClient: MavlinkMicroserviceClient, IDebugClient
     {
-        private readonly RxValue<DebugFloatArrayPayload> _debugFloatArray = new();
-        private readonly CancellationTokenSource _disposeCancel = new();
-
         public DebugClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, IScheduler scheduler):base(connection, identity, seq,"DEBUG", scheduler)
+            IPacketSequenceCalculator seq, IScheduler scheduler):base("DEBUG", connection, identity, seq, scheduler)
         {
-            InternalFilter<DebugFloatArrayPacket>()
+            DebugFloatArray = InternalFilter<DebugFloatArrayPacket>()
                 .Select(_ => _.Payload)
-                .Subscribe(_debugFloatArray, _disposeCancel.Token);
-            Disposable.Add(_debugFloatArray);
+                .Publish()
+                .RefCount();
+            NamedFloatValue = InternalFilter<NamedValueFloatPacket>()
+                .Select(ConvertValue)
+                .Publish()
+                .RefCount();
+            NamedIntValue =  InternalFilter<NamedValueIntPacket>()
+                .Select(ConvertValue)
+                .Publish()
+                .RefCount();
         }
-
-        private static string ConvertToKey(char[] payloadName)
-        {
-            return new string(payloadName.Where(_=>_ != 0).ToArray());
-        }
-
-        
 
         private static KeyValuePair<string, float> ConvertValue(NamedValueFloatPacket _)
         {
-            return new KeyValuePair<string, float>(ConvertToKey(_.Payload.Name), _.Payload.Value);
+            return new KeyValuePair<string, float>(MavlinkTypesHelper.GetString(_.Payload.Name), _.Payload.Value);
         }
 
         private static KeyValuePair<string, int> ConvertValue(NamedValueIntPacket _)
         {
-            return new KeyValuePair<string, int>(ConvertToKey(_.Payload.Name), _.Payload.Value);
+            return new KeyValuePair<string, int>(MavlinkTypesHelper.GetString(_.Payload.Name), _.Payload.Value);
         }
-
-        public IObservable<KeyValuePair<string, float>> NamedFloatValue => InternalFilter<NamedValueFloatPacket>()
-            .Select(ConvertValue)
-            .Publish()
-            .RefCount();
-
-        public IObservable<KeyValuePair<string, int>> NamedIntValue => InternalFilter<NamedValueIntPacket>()
-            .Select(ConvertValue)
-            .Publish()
-            .RefCount();
-        public IRxValue<DebugFloatArrayPayload> DebugFloatArray => _debugFloatArray;
-        
+        public IObservable<KeyValuePair<string, float>> NamedFloatValue { get; } 
+        public IObservable<KeyValuePair<string, int>> NamedIntValue { get; }
+        public IObservable<DebugFloatArrayPayload> DebugFloatArray { get; }
     }
+        
+    
 }

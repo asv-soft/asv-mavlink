@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Asv.Mavlink.Client
+namespace Asv.Mavlink
 {
     public interface IDgpsClient
     {

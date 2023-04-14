@@ -78,11 +78,11 @@
     <Folder Include="Devices\Gbs\" />
     <Folder Include="Devices\Vehicles\Server\" />
     <Folder Include="Microservices\Commands\Client\Ex\" />
-    <Folder Include="Microservices\Dgps\Server" />
-    <Folder Include="Microservices\Ftp\Server" />
+    <Folder Include="Microservices\Dgps\Server\" />
+    <Folder Include="Microservices\Ftp\Server\" />
     <Folder Include="Microservices\Gnss\Server\" />
     <Folder Include="Microservices\Missions\Server\Ex\" />
-    <Folder Include="Microservices\Offboard\Server" />
+    <Folder Include="Microservices\Offboard\Server\" />
     <Folder Include="Microservices\Position\Server\" />
     <Folder Include="Microservices\Telemetry\Server\" />
     <Folder Include="Protocol\Messages\" />

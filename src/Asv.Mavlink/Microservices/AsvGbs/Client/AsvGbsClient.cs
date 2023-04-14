@@ -10,7 +10,7 @@ namespace Asv.Mavlink
         private readonly RxValue<AsvGbsOutStatusPayload> _status;
         public AsvGbsClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
             IPacketSequenceCalculator seq, IScheduler scheduler) 
-            : base(connection,identity,seq,"GBS", scheduler)
+            : base("GBS", connection, identity, seq, scheduler)
         {
             _status = new RxValue<AsvGbsOutStatusPayload>().DisposeItWith(Disposable);
             InternalFilter<AsvGbsOutStatusPacket>().Select(_=>_.Payload).Subscribe(_status).DisposeItWith(Disposable);

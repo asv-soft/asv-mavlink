@@ -38,7 +38,7 @@ namespace Asv.Mavlink
 
         public TelemetryClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
             IPacketSequenceCalculator seq, IScheduler scheduler)
-            : base(connection, identity, seq, "RTT", scheduler)
+            : base("RTT", connection, identity, seq, scheduler)
         {
             _radio = new RxValue<RadioStatusPayload>().DisposeItWith(Disposable);
             InternalFilter<RadioStatusPacket>().Select(_=>_.Payload).Subscribe(_radio).DisposeItWith(Disposable);

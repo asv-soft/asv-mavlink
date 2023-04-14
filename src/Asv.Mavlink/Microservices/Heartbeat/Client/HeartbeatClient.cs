@@ -31,7 +31,7 @@ namespace Asv.Mavlink
         private readonly TimeSpan _heartBeatTimeoutMs;
 
         public HeartbeatClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, IScheduler scheduler, HeartbeatClientConfig config):base(connection,identity, seq,"HEARTBEAT", scheduler)
+            IPacketSequenceCalculator seq, IScheduler scheduler, HeartbeatClientConfig config):base("HEARTBEAT", connection, identity, seq, scheduler)
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
             FullId = (ushort)(identity.TargetComponentId | identity.TargetSystemId << 8);

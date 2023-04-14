@@ -23,7 +23,7 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
     private readonly Subject<ParamValuePayload> _onParamValue;
 
     public ParamsClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq,ParameterClientConfig config, IScheduler scheduler) 
-        : base(connection, identity, seq, "PARAMS", scheduler)
+        : base("PARAMS", connection, identity, seq, scheduler)
     {
         _config = config;
         _onParamValue = new Subject<ParamValuePayload>().DisposeItWith(Disposable);

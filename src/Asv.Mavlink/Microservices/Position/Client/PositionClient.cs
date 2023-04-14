@@ -22,7 +22,7 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
 
     public PositionClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq, IScheduler scheduler)
-        : base(connection, identity, seq, "CTRL", scheduler)
+        : base("CTRL", connection, identity, seq, scheduler)
     {
         _target = new RxValue<PositionTargetGlobalIntPayload>().DisposeItWith(Disposable);
         InternalFilter<PositionTargetGlobalIntPacket>()
