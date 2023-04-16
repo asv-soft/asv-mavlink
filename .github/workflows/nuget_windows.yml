@@ -54,17 +54,8 @@ jobs:
         run: |
           cd src
           dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.${{ steps.version.outputs.version-without-v }}.nupkg -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URL }}
-          dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.Payload.${{ steps.version.outputs.version-without-v }}.nupkg -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URL }}
-          dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.Vehicle.${{ steps.version.outputs.version-without-v }}.nupkg -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URL }}
-          dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.Gbs.${{ steps.version.outputs.version-without-v }}.nupkg -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URL }}
-          dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.Sdr.${{ steps.version.outputs.version-without-v }}.nupkg -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URL }}
-          
 
       - name: Push packages to Github
         run: |
           cd src
           dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.${{ steps.version.outputs.version-without-v }}.nupkg -k ${{ secrets.GIHUB_NUGET_AUTH_TOKEN }} -s ${{ env.GITHUB_PACKAGES_URL }}
-          dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.Payload.${{ steps.version.outputs.version-without-v }}.nupkg -k ${{ secrets.GIHUB_NUGET_AUTH_TOKEN }} -s ${{ env.GITHUB_PACKAGES_URL }}
-          dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.Vehicle.${{ steps.version.outputs.version-without-v }}.nupkg -k ${{ secrets.GIHUB_NUGET_AUTH_TOKEN }} -s ${{ env.GITHUB_PACKAGES_URL }}
-          dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.Gbs.${{ steps.version.outputs.version-without-v }}.nupkg -k ${{ secrets.GIHUB_NUGET_AUTH_TOKEN }} -s ${{ env.GITHUB_PACKAGES_URL }}
-          dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.Sdr.${{ steps.version.outputs.version-without-v }}.nupkg -k ${{ secrets.GIHUB_NUGET_AUTH_TOKEN }} -s ${{ env.GITHUB_PACKAGES_URL }}
