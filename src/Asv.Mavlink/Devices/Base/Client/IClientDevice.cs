@@ -6,6 +6,7 @@ namespace Asv.Mavlink;
 
 public interface IClientDevice
 {
+    ushort FullId { get; }
     IMavlinkV2Connection Connection { get; }
     IPacketSequenceCalculator Seq { get; }
     IScheduler Scheduler { get; }
@@ -13,6 +14,7 @@ public interface IClientDevice
     DeviceClass Class { get; }
     IRxValue<string> Name { get; }
     IHeartbeatClient Heartbeat { get; }
+    IStatusTextClient StatusText { get; }
     IRxValue<InitState> OnInit { get; }
 }
 

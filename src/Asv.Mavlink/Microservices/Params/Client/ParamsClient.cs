@@ -71,10 +71,11 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
 
     public Task Write(string name, MavParamType type, float value, CancellationToken cancel = default)
     {
-        return InternalCall<ParamValuePayload, ParamRequestReadPacket, ParamValuePacket>(_ =>
+        return InternalCall<ParamValuePayload, ParamSetPacket, ParamValuePacket>(_ =>
             {
                 _.Payload.TargetComponent = Identity.TargetComponentId;
                 _.Payload.TargetSystem = Identity.TargetSystemId;
+                _.Payload.ParamValue = value;
                 MavlinkTypesHelper.SetString(_.Payload.ParamId, name);
             }, _ => name.Equals(MavlinkTypesHelper.GetString(_.Payload.ParamId)),
             _ => _.Payload,

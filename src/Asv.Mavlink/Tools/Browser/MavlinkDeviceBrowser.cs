@@ -8,6 +8,7 @@ using System.Reactive.Subjects;
 using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using DynamicData;
 using Newtonsoft.Json;
 using NLog;
 
@@ -86,12 +87,9 @@ namespace Asv.Mavlink
 
     public class MavlinkDeviceBrowser : DisposableOnceWithCancel, IMavlinkDeviceBrowser
     {
-        private readonly ReaderWriterLockSlim _deviceListLock = new();
-        private readonly List<MavlinkDevice> _info = new();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private readonly Subject<IMavlinkDevice> _foundDeviceSubject;
-        private readonly Subject<IMavlinkDevice> _lostDeviceSubject;
         private readonly RxValue<TimeSpan> _deviceTimeout;
+        private readonly SourceCache<MavlinkDevice,ushort> _deviceCache;
 
         public MavlinkDeviceBrowser(IMavlinkV2Connection connection, TimeSpan deviceTimeout)
         {
@@ -103,92 +101,45 @@ namespace Asv.Mavlink
                 .Timer(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3))
                 .Subscribe(RemoveOldDevice)
                 .DisposeItWith(Disposable);
-            _foundDeviceSubject = new Subject<IMavlinkDevice>().DisposeItWith(Disposable);
-            _lostDeviceSubject = new Subject<IMavlinkDevice>().DisposeItWith(Disposable);
+            _deviceCache = new SourceCache<MavlinkDevice, ushort>(x => x.FullId).DisposeItWith(Disposable);
             _deviceTimeout = new RxValue<TimeSpan>(deviceTimeout).DisposeItWith(Disposable);
+            Devices = _deviceCache.Connect().Transform(_ => (IMavlinkDevice)_).RefCount();
         }
 
         private void RemoveOldDevice(long l)
         {
-            _deviceListLock.EnterUpgradeableReadLock();
-            var now = DateTime.Now;
-            var deviceToRemove = _info.Where(_ => (now - _.GetLastHit()) > _deviceTimeout.Value).ToArray();
-            if (deviceToRemove.Length != 0)
+            _deviceCache.Edit(update =>
             {
-                _deviceListLock.EnterWriteLock();
-                foreach (var device in deviceToRemove)
+                var now = DateTime.Now;
+                var itemsToDelete = update.Items.Where(device => (now - device.GetLastHit()) > _deviceTimeout.Value).ToList();
+                foreach (var item in itemsToDelete)
                 {
-                    _info.Remove(device);
-                    Logger.Info($"Delete device {device}");
+                    item.Dispose();
                 }
-                _deviceListLock.ExitWriteLock();
-            }
-            _deviceListLock.ExitUpgradeableReadLock();
-            foreach (var dev in deviceToRemove)
-            {
-                try
-                {
-                    _lostDeviceSubject.OnNext(dev);
-                }
-                catch (Exception e)
-                {
-                    Logger.Error(e, $"Error to publish remove device event '{dev}':{e.Message}");
-                    if (Debugger.IsAttached) Debugger.Break();
-                }
-                
-            }
+                update.RemoveKeys(itemsToDelete.Select(device=>device.FullId));
+            });
         }
 
         private void UpdateDevice(HeartbeatPacket packet)
         {
-            MavlinkDevice newItem = null;
-            _deviceListLock.EnterUpgradeableReadLock();
-            var founded = _info.Find(_ => 
-                _.SystemId == packet.SystemId && 
-                _.ComponentId == packet.ComponenId && 
-                _.Type == packet.Payload.Type && 
-                _.MavlinkVersion == packet.Payload.MavlinkVersion &&
-                _.Autopilot == packet.Payload.Autopilot);
-            if (founded != null)
+            _deviceCache.Edit(update =>
             {
-                founded.Update(packet.Payload);
-            }
-            else
-            {
-                _deviceListLock.EnterWriteLock();
-                newItem = new MavlinkDevice(packet);
-                _info.Add(newItem);
-                _deviceListLock.ExitWriteLock();
-                Logger.Info($"Found new device {JsonConvert.SerializeObject(newItem.ToString())}");
-            }
-            _deviceListLock.ExitUpgradeableReadLock();
-            try
-            {
-                if (newItem != null) _foundDeviceSubject.OnNext(newItem);
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e,$"Error to publish new device event '{newItem}':{e.Message}");
-                if (Debugger.IsAttached) Debugger.Break();
-            }
-            
+                var item = update.Lookup(packet.FullId);
+                if (item.HasValue)
+                {
+                    item.Value.Update(packet.Payload);
+                }
+                else
+                {
+                    var newItem = new MavlinkDevice(packet);
+                    update.AddOrUpdate(newItem);
+                    Logger.Info($"Found new device {JsonConvert.SerializeObject(newItem.ToString())}");
+                }
+            });
         }
-
-        public IObservable<IMavlinkDevice> OnFoundDevice => _foundDeviceSubject;
-
-        public IObservable<IMavlinkDevice> OnLostDevice => _lostDeviceSubject;
-
+        public IObservable<IChangeSet<IMavlinkDevice, ushort>> Devices { get; }
         public IRxEditableValue<TimeSpan> DeviceTimeout => _deviceTimeout;
 
-        public IMavlinkDevice[] Devices
-        {
-            get
-            {
-                _deviceListLock.EnterReadLock();
-                var items = _info.Cast<IMavlinkDevice>().ToArray();
-                _deviceListLock.ExitReadLock();
-                return items;
-            }
-        }
+       
     }
 }

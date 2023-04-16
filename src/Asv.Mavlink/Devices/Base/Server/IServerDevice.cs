@@ -5,9 +5,10 @@ namespace Asv.Mavlink;
 public interface IServerDevice
 {
     void Start();
-    IHeartbeatServer Heartbeat { get; }
     IMavlinkV2Connection Connection { get; }
     IPacketSequenceCalculator Seq { get; }
     IScheduler Scheduler { get; }
     MavlinkServerIdentity Identity { get; }
+    IStatusTextServer StatusText { get; }
+    IHeartbeatServer Heartbeat { get; }
 }

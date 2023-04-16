@@ -48,7 +48,7 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
         Heartbeat.Link.DistinctUntilChanged().Where(_ => _needToRequestAgain).Where(_ => _ == LinkState.Connected)
             // only one time
             .Delay(TimeSpan.FromMilliseconds(100)).Subscribe(_ => TryReconnect()).DisposeItWith(Disposable);
-
+        StatusText = new StatusTextClient(connection,identity,seq,scheduler).DisposeItWith(Disposable);
         _name = new RxValue<string>().DisposeItWith(Disposable);
     }
 
@@ -85,6 +85,8 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
     
     public IRxValue<string> Name => _name;
     public IHeartbeatClient Heartbeat { get; }
+    public IStatusTextClient StatusText { get; }
+    public ushort FullId => Heartbeat.FullId;
     public IMavlinkV2Connection Connection { get; }
     public MavlinkClientIdentity Identity { get; }
     public IPacketSequenceCalculator Seq { get; }

@@ -6,7 +6,7 @@ using System.Threading;
 using Asv.Mavlink.V2.Common;
 using NLog;
 
-namespace Asv.Mavlink.Server
+namespace Asv.Mavlink
 {
     public class StatusTextLoggerConfig
     {

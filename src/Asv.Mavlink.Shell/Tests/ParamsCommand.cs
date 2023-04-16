@@ -7,10 +7,7 @@ using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.Client;
-using Asv.Mavlink.V2.Common;
 using DynamicData;
-using DynamicData.Binding;
 
 namespace Asv.Mavlink.Shell
 {

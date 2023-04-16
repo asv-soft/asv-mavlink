@@ -6,4 +6,6 @@ public interface IGbsServerDevice:IServerDevice
 {
     ICommandServerEx<CommandLongPacket> CommandLongEx { get; }
     IAsvGbsServerEx Gbs { get; }
+    IParamsServerEx Params { get; }
+    
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 
-namespace Asv.Mavlink.Server
+namespace Asv.Mavlink
 {
     public class V2ExtensionServer : IV2ExtensionServer
     {

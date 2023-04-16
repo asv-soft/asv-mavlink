@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Reactive.Concurrency;
+using System.Threading;
+using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvGbs;
+using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink
 {
@@ -33,6 +36,11 @@ namespace Asv.Mavlink
         public void Set(Action<AsvGbsOutStatusPayload> changeCallback)
         {
             _transponder.Set(changeCallback);
+        }
+
+        public Task SendDgps(Action<GpsRtcmDataPacket> changeCallback, CancellationToken cancel = default)
+        {
+            return InternalSend(changeCallback, cancel);
         }
     }
 }

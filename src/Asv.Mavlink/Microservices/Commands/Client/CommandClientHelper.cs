@@ -59,4 +59,9 @@ public static class CommandClientHelper
         var result = await src.RequestMessageOnce<AutopilotVersionPacket>(cancel).ConfigureAwait(false);
         return result.Payload;
     }
+
+    public static Task DoSetMode(this ICommandClient src,uint mode, uint customMode, uint customSubMode, CancellationToken cancel = default)
+    {
+        return src.CommandLongAndCheckResult(MavCmd.MavCmdDoSetMode, mode, customMode, customSubMode, float.NaN, float.NaN, float.NaN, float.NaN, cancel);
+    }
 }

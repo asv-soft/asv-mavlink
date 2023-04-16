@@ -12,6 +12,8 @@ public interface ITelemetryClientEx
     IRxValue<double> BatteryCharge { get; }
     IRxValue<double> BatteryCurrent { get; }
     IRxValue<double> BatteryVoltage { get; }
+    IRxValue<double> CpuLoad { get; }
+    IRxValue<double> DropRateCommunication { get; }
 }
 
 
@@ -21,6 +23,8 @@ public class TelemetryClientEx : DisposableOnceWithCancel, ITelemetryClientEx
     private readonly RxValue<double> _batteryCharge;
     private readonly RxValue<double> _batteryCurrent;
     private readonly RxValue<double> _batteryVoltage;
+    private readonly RxValue<double> _cpuLoad;
+    private readonly RxValue<double> _dropRateComm;
 
     public TelemetryClientEx(ITelemetryClient client)
     {
@@ -32,6 +36,11 @@ public class TelemetryClientEx : DisposableOnceWithCancel, ITelemetryClientEx
         client.SystemStatus.Select(_=>_.CurrentBattery < 0 ? Double.NaN : _.CurrentBattery / 100.0d).Subscribe(_batteryCurrent).DisposeItWith(Disposable);
         _batteryVoltage = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
         client.SystemStatus.Select(_=>_.VoltageBattery / 1000.0d).Subscribe(_batteryVoltage).DisposeItWith(Disposable);
+        
+        _cpuLoad = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
+        client.SystemStatus.Select(_=>_.Load/1000D).Subscribe(_cpuLoad).DisposeItWith(Disposable);
+        _dropRateComm = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
+        client.SystemStatus.Select(_ => _.DropRateComm / 1000D).Subscribe(_dropRateComm).DisposeItWith(Disposable);
     }
 
     public ITelemetryClient Base { get; }
@@ -42,4 +51,7 @@ public class TelemetryClientEx : DisposableOnceWithCancel, ITelemetryClientEx
     public IRxValue<double> BatteryCurrent => _batteryCurrent;
 
     public IRxValue<double> BatteryVoltage => _batteryVoltage;
+
+    public IRxValue<double> CpuLoad => _cpuLoad;
+    public IRxValue<double> DropRateCommunication => _dropRateComm;
 }

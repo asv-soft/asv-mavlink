@@ -16,7 +16,7 @@ public interface IPositionClientEx
     IRxValue<double> RollSpeed { get; }
     IRxValue<double> Yaw { get; }
     IRxValue<double> YawSpeed { get; }
-    IRxValue<GeoPoint?> Current { get; }
+    IRxValue<GeoPoint> Current { get; }
     IRxValue<GeoPoint?> Target { get; }
     IRxValue<GeoPoint?> Home { get; }
     IRxValue<double> AltitudeAboveHome { get; }
@@ -29,5 +29,6 @@ public interface IPositionClientEx
     IRxValue<GeoPoint?> Roi { get; }
     Task SetRoi(GeoPoint location, CancellationToken cancel = default);
     Task ClearRoi(CancellationToken cancel = default);
-    
+    Task SetTarget(GeoPoint point, CancellationToken none);
+    Task TakeOff(double altInMeters, CancellationToken cancel=default);
 }

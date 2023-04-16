@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Reactive.Concurrency;
+using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.Client;
-using Asv.Mavlink.Client.Ftp;
 using Asv.Mavlink.V2.Common;
+using NLog;
 
 namespace Asv.Mavlink;
 
@@ -20,6 +20,7 @@ public class VehicleClientConfig:ClientDeviceConfig
 
 public abstract class VehicleClient : ClientDevice, IVehicleClient
 {
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     private readonly VehicleClientConfig _config;
     private readonly ParamsClientEx _params;
 
@@ -39,11 +40,9 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
         Ftp = new FtpClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
         var gnss = new GnssClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
         Gnss = new GnssClientEx(gnss).DisposeItWith(Disposable);
-        StatusText = new StatusTextClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
         V2Extension = new V2ExtensionClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
         var pos = new PositionClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
         Position = new PositionClientEx(pos,Heartbeat,Commands).DisposeItWith(Disposable);
-        StatusText = new StatusTextClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
         var rtt = new TelemetryClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
         Rtt = new TelemetryClientEx(rtt).DisposeItWith(Disposable);
         Debug = new DebugClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
@@ -78,7 +77,19 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
     public IOffboardClient Offboard { get; }
     public IParamsClientEx Params => _params;
     public IPositionClientEx Position { get; }
-    public IStatusTextClient StatusText { get; }
     public ITelemetryClientEx Rtt { get; }
     public IV2ExtensionClient V2Extension { get; }
+    public abstract Task EnsureInGuidedMode(CancellationToken cancel);
+    public abstract Task<bool> CheckGuidedMode(CancellationToken cancel);
+    public abstract Task GoTo(GeoPoint point, CancellationToken cancel = default);
+    public abstract Task DoLand(CancellationToken cancel = default);
+    public abstract Task DoRtl(CancellationToken cancel = default);
+
+    public async Task TakeOff(double altInMeters, CancellationToken cancel = default)
+    {
+        Logger.Info($"=> TakeOff(altitude:{altInMeters:F2})");
+        await EnsureInGuidedMode(cancel).ConfigureAwait(false);
+        await Position.ArmDisarm(true, cancel).ConfigureAwait(false);
+        await Position.TakeOff(altInMeters,  cancel).ConfigureAwait(false);
+    }
 }

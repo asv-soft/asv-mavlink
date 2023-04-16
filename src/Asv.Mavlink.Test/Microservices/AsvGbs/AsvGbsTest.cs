@@ -29,23 +29,21 @@ namespace Asv.Mavlink.Test
             var link = new VirtualLink();
 
             var mode = AsvGbsCustomMode.AsvGbsCustomModeAuto;
-            var mock = new Mock<IAsvGbsExClient>();
-            mock.Setup(_=>_.AccuracyMeter).Returns(new RxValue<double>(0.15));
-            mock.Setup(_=>_.ObservationSec).Returns(new RxValue<ushort>(1));
-            mock.Setup(_=>_.DgpsRate).Returns(new RxValue<ushort>(2));
-            mock.Setup(_=>_.AllSatellites).Returns(new RxValue<byte>(3));
-            mock.Setup(_=>_.GalSatellites).Returns(new RxValue<byte>(4));
-            mock.Setup(_=>_.BeidouSatellites).Returns(new RxValue<byte>(5));
-            mock.Setup(_=>_.GlonassSatellites).Returns(new RxValue<byte>(6));
-            mock.Setup(_=>_.GpsSatellites).Returns(new RxValue<byte>(7));
-            mock.Setup(_=>_.QzssSatellites).Returns(new RxValue<byte>(8));
-            mock.Setup(_=>_.SbasSatellites).Returns(new RxValue<byte>(9));
-            mock.Setup(_=>_.ImesSatellites).Returns(new RxValue<byte>(10));
-            mock.Setup(_=>_.VehicleCount).Returns(new RxValue<byte>(11));
-            mock.Setup(_=>_.CustomMode).Returns(new RxValue<AsvGbsCustomMode>(mode));
-            mock.Setup(_=>_.Position).Returns(new RxValue<GeoPoint>(new GeoPoint(lat,lon,alt)));
+            IGbsServerDevice serverDevice = new GbsServerDevice(link.Server, new MavlinkServerIdentity(),new PacketSequenceCalculator(),Scheduler.Default,new GbsServerDeviceConfig());
+            serverDevice.Gbs.AccuracyMeter.OnNext(0.15);
+            serverDevice.Gbs.ObservationSec.OnNext(1);
+            serverDevice.Gbs.DgpsRate.OnNext(2);
+            serverDevice.Gbs.AllSatellites.OnNext(3);
+            serverDevice.Gbs.GalSatellites.OnNext(4);
+            serverDevice.Gbs.BeidouSatellites.OnNext(5);
+            serverDevice.Gbs.GlonassSatellites.OnNext(6);
+            serverDevice.Gbs.GpsSatellites.OnNext(7);
+            serverDevice.Gbs.QzssSatellites.OnNext(8);
+            serverDevice.Gbs.SbasSatellites.OnNext(9);
+            serverDevice.Gbs.ImesSatellites.OnNext(10);
+            serverDevice.Gbs.CustomMode.OnNext(mode);
+            serverDevice.Gbs.Position.OnNext(new GeoPoint(lat,lon,alt));
             
-            IGbsServerDevice serverDevice = new GbsServerDevice(link.Server, new MavlinkServerIdentity(),new PacketSequenceCalculator(),Scheduler.Default,new GbsServerDeviceConfig(),mock.Object); 
             IGbsClientDevice clientDevice = new GbsClientDevice(link.Client,new MavlinkClientIdentity(), new PacketSequenceCalculator(),Scheduler.Default, new GbsClientDeviceConfig());
             serverDevice.Heartbeat.Set(_ => _.CustomMode = (uint)mode);
             serverDevice.Gbs.Base.Set(_ =>
@@ -78,39 +76,28 @@ namespace Asv.Mavlink.Test
         public async Task CommandTest(float duration,float accuracy, MavResult result)
         {
             var link = new VirtualLink();
-            
-            var mock = new Mock<IAsvGbsExClient>();
-            mock.Setup(_=>_.AccuracyMeter).Returns(new RxValue<double>(0.15));
-            mock.Setup(_=>_.ObservationSec).Returns(new RxValue<ushort>(1));
-            mock.Setup(_=>_.DgpsRate).Returns(new RxValue<ushort>(2));
-            mock.Setup(_=>_.AllSatellites).Returns(new RxValue<byte>(3));
-            mock.Setup(_=>_.GalSatellites).Returns(new RxValue<byte>(4));
-            mock.Setup(_=>_.BeidouSatellites).Returns(new RxValue<byte>(5));
-            mock.Setup(_=>_.GlonassSatellites).Returns(new RxValue<byte>(6));
-            mock.Setup(_=>_.GpsSatellites).Returns(new RxValue<byte>(7));
-            mock.Setup(_=>_.QzssSatellites).Returns(new RxValue<byte>(8));
-            mock.Setup(_=>_.SbasSatellites).Returns(new RxValue<byte>(9));
-            mock.Setup(_=>_.ImesSatellites).Returns(new RxValue<byte>(10));
-            mock.Setup(_=>_.VehicleCount).Returns(new RxValue<byte>(11));
-            mock.Setup(_=>_.CustomMode).Returns(new RxValue<AsvGbsCustomMode>(AsvGbsCustomMode.AsvGbsCustomModeIdle));
-            mock.Setup(_=>_.Position).Returns(new RxValue<GeoPoint>(GeoPoint.Zero));
-
-            
-            
-            var serverMode = new RxValue<AsvGbsCustomMode>(AsvGbsCustomMode.AsvGbsCustomModeIdle);
-            var serverPos = new RxValue<GeoPoint>(GeoPoint.Zero);
             var called = false;
-            mock.Setup(_ => _.CustomMode).Returns(serverMode);
-            mock.Setup(_ => _.Position).Returns(serverPos);
-            mock.Setup(_ => _.StartAutoMode(It.IsAny<float>(), It.IsAny<float>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((float dur,float acc,CancellationToken cancel)=>
-                {
-                    called = true;
-                    Assert.Equal(duration,dur);
-                    Assert.Equal(accuracy,acc);
-                    return result;
-                });
-            var serverDevice = new GbsServerDevice(link.Server, new MavlinkServerIdentity(),new PacketSequenceCalculator(),Scheduler.Default, new GbsServerDeviceConfig(),mock.Object); 
+            var serverDevice = new GbsServerDevice(link.Server, new MavlinkServerIdentity(),new PacketSequenceCalculator(),Scheduler.Default, new GbsServerDeviceConfig());
+            serverDevice.Gbs.StartAutoMode = async (dur, acc, cancel) =>
+            {
+                called = true;
+                Assert.Equal(duration, dur);
+                Assert.Equal(accuracy, acc);
+                return result;
+            };
+            serverDevice.Gbs.AccuracyMeter.OnNext(0.15);
+            serverDevice.Gbs.ObservationSec.OnNext(1);
+            serverDevice.Gbs.DgpsRate.OnNext(2);
+            serverDevice.Gbs.AllSatellites.OnNext(3);
+            serverDevice.Gbs.GalSatellites.OnNext(4);
+            serverDevice.Gbs.BeidouSatellites.OnNext(5);
+            serverDevice.Gbs.GlonassSatellites.OnNext(6);
+            serverDevice.Gbs.GpsSatellites.OnNext(7);
+            serverDevice.Gbs.QzssSatellites.OnNext(8);
+            serverDevice.Gbs.SbasSatellites.OnNext(9);
+            serverDevice.Gbs.ImesSatellites.OnNext(10);
+            serverDevice.Gbs.CustomMode.OnNext(AsvGbsCustomMode.AsvGbsCustomModeIdle);
+            serverDevice.Gbs.Position.OnNext(GeoPoint.Zero);
             var clientDevice = new GbsClientDevice(link.Client,new MavlinkClientIdentity(), new PacketSequenceCalculator(),Scheduler.Default, new GbsClientDeviceConfig());
             serverDevice.Start();
             clientDevice.WaitUntilConnect();
@@ -132,7 +119,6 @@ namespace Asv.Mavlink.Test
             Assert.Equal(8,clientDevice.Gbs.QzssSatellites.Value);
             Assert.Equal(9,clientDevice.Gbs.SbasSatellites.Value);
             Assert.Equal(10,clientDevice.Gbs.ImesSatellites.Value);
-            Assert.Equal(11,clientDevice.Gbs.VehicleCount.Value);
             
 
         }

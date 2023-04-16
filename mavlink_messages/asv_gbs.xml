@@ -74,7 +74,6 @@
       <field type="uint16_t" name="accuracy" units="mm">Current position accuracy (mm).</field>
       <field type="uint16_t" name="observation" units="s">Observation time (seconds).</field>
       <!-- RTK data statistic -->
-      <field type="uint8_t" name="vehicle_count">The number of found vehicles to which DGPS corrections are transmitted via GPS_RTCM_DATA packet.</field>
       <field type="uint16_t" name="dgps_rate" units="bytes\seconds">Rate of GPS_RTCM_DATA data.</field>
       <!-- Satellite statistic -->
       <field type="uint8_t" name="sat_all">All GNSS satellite count.</field>

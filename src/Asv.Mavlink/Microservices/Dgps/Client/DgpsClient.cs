@@ -12,7 +12,7 @@ namespace Asv.Mavlink
 
         private readonly int _maxMessageLength = new GpsRtcmDataPayload().Data.Length;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private int _seqNumber;
+        private uint _seqNumber;
 
         public DgpsClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
             IPacketSequenceCalculator seq, IScheduler scheduler):base("DGPS", connection, identity, seq, scheduler)
@@ -37,23 +37,24 @@ namespace Asv.Mavlink
 
             for (var i = 0; i < pktCount; i++)
             {
+                var i1 = i;
                 await InternalSend<GpsRtcmDataPacket>(pkt =>
                 {
                     // 1 means message is fragmented
                     pkt.Payload.Flags = (byte)(pktCount > 1 ? 1 : 0);
                     //  next 2 bits are the fragment ID
-                    pkt.Payload.Flags += (byte)((i & 0x3) << 1);
+                    pkt.Payload.Flags += (byte)((i1 & 0x3) << 1);
                     // the remaining 5 bits are used for the sequence ID
-                    pkt.Payload.Flags += (byte)((Interlocked.Increment(ref _seqNumber) & 0x1f) << 3);
+                    var increment = Interlocked.Increment(ref _seqNumber) % 31;
+                    pkt.Payload.Flags += (byte)((increment& 0x1f) << 3);
 
-                    var dataLength = Math.Min(length - i * _maxMessageLength, _maxMessageLength);
+                    var dataLength = Math.Min(length - i1 * _maxMessageLength, _maxMessageLength);
                     var dataArray = new byte[dataLength];
-                    Array.Copy(data, i * _maxMessageLength, dataArray, 0, dataLength);
+                    Array.Copy(data, i1 * _maxMessageLength, dataArray, 0, dataLength);
                     pkt.Payload.Data = dataArray;
 
                     pkt.Payload.Len = (byte)dataLength;
                 }, cancel).ConfigureAwait(false);
-
             }
 
         }

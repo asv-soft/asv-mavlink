@@ -14,23 +14,27 @@ public class ParamItem: DisposableOnceWithCancel,IParamItem
     private readonly ParamValuePayload _payload;
     private readonly RxValue<bool> _isSynced;
     private readonly IRxEditableValue<decimal> _value;
-    private bool _isInternalChange = false;
+    private decimal _remoteValue;
 
     public ParamItem(IParamsClient client, IMavParamValueConverter converter, ParamDescription paramDescriptions, ParamValuePayload payload)
     {
         _client = client;
         _converter = converter;
         _payload = payload;
-        Description = paramDescriptions;
+        Info = paramDescriptions;
         Name = MavlinkTypesHelper.GetString(payload.ParamId);
         Type = payload.ParamType;
         Index = payload.ParamIndex;
         _isSynced = new RxValue<bool>(true).DisposeItWith(Disposable);
-        _value = new RxValue<decimal>(converter.ConvertFromMavlinkUnionToParamValue(payload.ParamValue,payload.ParamType)).DisposeItWith(Disposable);
-        _value.Where(_=>_isInternalChange).Subscribe(_ => _isSynced.OnNext(false)).DisposeItWith(Disposable);
+        _value = new RxValue<decimal>(_remoteValue = converter.ConvertFromMavlinkUnionToParamValue(payload.ParamValue,payload.ParamType)).DisposeItWith(Disposable);
+        _value.Subscribe(_ => _isSynced.OnNext(_remoteValue == _)).DisposeItWith(Disposable);
+        Disposable.AddAction(() =>
+        {
+            
+        });
     }
     
-    public ParamDescription Description { get; }
+    public ParamDescription Info { get; }
     
     public string Name { get; }
     public MavParamType Type { get; }
@@ -39,29 +43,32 @@ public class ParamItem: DisposableOnceWithCancel,IParamItem
     public IRxValue<bool> IsSynced => _isSynced;
     public IRxEditableValue<decimal> Value => _value;
 
-    public Task Read(CancellationToken cancel)
+    public async Task Read(CancellationToken cancel)
     {
-        return _client.Read(Name, cancel);
+        var res = await _client.Read(Name, cancel).ConfigureAwait(false);
+        Update(res);
     }
     
-    public Task Write(CancellationToken cancel)
+    public async Task Write(CancellationToken cancel)
     {
-        return _client.Write(Name, Type, _converter.ConvertToMavlinkUnionToParamValue(_value.Value, Type), cancel);
+        await _client.Write(Name, Type, _converter.ConvertToMavlinkUnionToParamValue(_value.Value, Type), cancel).ConfigureAwait(false);
     }
 
     internal void Update(ParamValuePayload payload)
     {
-        if (payload.ParamIndex != Index) throw new Exception($"Invalid index: want {Index} but got {payload.ParamIndex}");
         var name = MavlinkTypesHelper.GetString(payload.ParamId);
         if (name != Name) throw new Exception($"Invalid index: want {Name} but got {name}");
         try
         {
-            _isInternalChange = true;
-            _value.OnNext(_converter.ConvertFromMavlinkUnionToParamValue(payload.ParamValue, payload.ParamType));
+            _remoteValue = _converter.ConvertFromMavlinkUnionToParamValue(payload.ParamValue, payload.ParamType);
+            _value.OnNext(_remoteValue);
+        }
+        catch (Exception)
+        {
+            
         }
         finally
         {
-            _isInternalChange = false;
         }
         
 

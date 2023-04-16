@@ -1,40 +1,33 @@
 using System;
 using System.Reactive.Concurrency;
 using System.Threading;
+using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 
-namespace Asv.Mavlink.Server
+namespace Asv.Mavlink
 {
     public class ParamsServer: MavlinkMicroserviceServer, IParamsServer
     {
-        private int _isSending;
-
         public ParamsServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
             MavlinkServerIdentity identity, IScheduler scheduler)
             : base("PARAM",connection, identity, seq, scheduler)
         {
-            // Subscribe<ParamRequestListPacket, ParamRequestListPayload>(OnRequestList);
-            
-        }
+            OnParamRequestRead =
+                InternalFilter<ParamRequestReadPacket>(_ => _.Payload.TargetSystem, _ => _.Payload.TargetComponent);
+            OnParamRequestList =
+                InternalFilter<ParamRequestListPacket>(_ => _.Payload.TargetSystem, _ => _.Payload.TargetComponent);
+            OnParamSet =
+                InternalFilter<ParamSetPacket>(_ => _.Payload.TargetSystem, _ => _.Payload.TargetComponent);
 
-        private void OnRequestList(ParamRequestListPacket obj)
+        }
+        
+        public Task SendParamValue(Action<ParamValuePayload> changeCallback, CancellationToken cancel = default)
         {
-            if (Interlocked.CompareExchange(ref _isSending, 1, 0) != 0) return;
-            try
-            {
-
-            }
-            catch (Exception)
-            {
-
-            }
-            finally
-            {
-                Interlocked.Exchange(ref _isSending, 0);
-            }
+            return InternalSend<ParamValuePacket>(_=>changeCallback(_.Payload), cancel);
         }
 
-
-
+        public IObservable<ParamRequestReadPacket> OnParamRequestRead { get; }
+        public IObservable<ParamRequestListPacket> OnParamRequestList { get; }
+        public IObservable<ParamSetPacket> OnParamSet { get; }
     }
 }

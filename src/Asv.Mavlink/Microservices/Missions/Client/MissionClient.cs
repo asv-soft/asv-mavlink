@@ -62,7 +62,7 @@ namespace Asv.Mavlink
             return result;
         }
 
-        public MavlinkClientIdentity Identity => _identity;
+        public new MavlinkClientIdentity Identity => base.Identity;
         public IRxValue<ushort> MissionCurrent => _missionCurrent;
         public IRxValue<ushort> MissionReached => _missionReached;
         public IObservable<MissionRequestPayload> OnMissionRequest => InternalFilter<MissionRequestPacket>(_=>true).Select(_=>_.Payload);

@@ -1,5 +1,7 @@
-using Asv.Mavlink.Client;
-using Asv.Mavlink.Client.Ftp;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Asv.Common;
 
 namespace Asv.Mavlink;
 
@@ -10,16 +12,19 @@ public interface IVehicleClient:IClientDevice
     IDgpsClient Dgps { get; }
     IFtpClient Ftp { get; }
     IGnssClientEx Gnss { get; }
-    IHeartbeatClient Heartbeat { get; }
     ILoggingClient Logging { get; }
     IMissionClientEx Missions { get; }
     IOffboardClient Offboard { get; }
     IParamsClientEx Params { get; }
     IPositionClientEx Position { get; }
-    IStatusTextClient StatusText { get; }
     ITelemetryClientEx Rtt { get; }
     IV2ExtensionClient V2Extension { get; }
-    
+    Task EnsureInGuidedMode(CancellationToken cancel);
+    Task<bool> CheckGuidedMode(CancellationToken cancel);
+    Task GoTo(GeoPoint point, CancellationToken cancel = default);
+    Task DoLand(CancellationToken cancel = default);
+    Task DoRtl(CancellationToken cancel = default);
+    Task TakeOff(double altInMeters, CancellationToken cancel = default);
 }
 
 

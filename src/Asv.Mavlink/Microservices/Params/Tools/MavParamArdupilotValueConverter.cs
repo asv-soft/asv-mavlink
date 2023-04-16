@@ -44,7 +44,7 @@ namespace Asv.Mavlink
                 case MavParamType.MavParamTypeInt16:
                 case MavParamType.MavParamTypeUint32:
                 case MavParamType.MavParamTypeInt32:
-                    return (long)value;
+                    return (decimal)value;
                 case MavParamType.MavParamTypeUint64:
                     throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
                 case MavParamType.MavParamTypeInt64:

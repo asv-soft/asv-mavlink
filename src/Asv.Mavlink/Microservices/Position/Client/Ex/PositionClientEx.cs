@@ -15,7 +15,7 @@ public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
     private readonly ICommandClient _commandClient;
     private readonly RxValue<GeoPoint?> _target;
     private readonly RxValue<GeoPoint?> _home;
-    private readonly RxValue<GeoPoint?> _current;
+    private readonly RxValue<GeoPoint> _current;
     private readonly RxValue<double> _homeDistance;
     private readonly RxValue<double> _targetDistance;
     private readonly RxValue<bool> _isArmed;
@@ -60,8 +60,8 @@ public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
         client.Home.Select(_ => (GeoPoint?)new GeoPoint(_.Latitude / 10000000D, _.Longitude / 10000000D, _.Altitude / 1000D))
             .Subscribe(_home).DisposeItWith(Disposable);
         
-        _current = new RxValue<GeoPoint?>(null).DisposeItWith(Disposable);
-        client.GlobalPosition.Select(_=>(GeoPoint?)new GeoPoint(_.Lat / 10000000D, _.Lon / 10000000D, _.Alt / 1000D))
+        _current = new RxValue<GeoPoint>(GeoPoint.Zero).DisposeItWith(Disposable);
+        client.GlobalPosition.Select(_=>new GeoPoint(_.Lat / 10000000D, _.Lon / 10000000D, _.Alt / 1000D))
             .Subscribe(_current).DisposeItWith(Disposable);
         
         _homeDistance = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
@@ -110,7 +110,7 @@ public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
     public IRxValue<double> Yaw => _yaw;
     public IRxValue<double> YawSpeed => _yawSpeed;
 
-    public IRxValue<GeoPoint?> Current => _current;
+    public IRxValue<GeoPoint> Current => _current;
     public IRxValue<GeoPoint?> Target => _target;
     public IRxValue<GeoPoint?> Home => _home;
     public IRxValue<double> AltitudeAboveHome => _altitudeAboveHome;
@@ -138,6 +138,17 @@ public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
     {
         await _commandClient.CommandLongAndCheckResult(MavCmd.MavCmdDoSetRoiNone, (int)MavRoi.MavRoiLocation, 0, 0, 0, 0, 0, 0, CancellationToken.None).ConfigureAwait(false);
         _roi.OnNext(null);
+    }
+
+    public Task SetTarget(GeoPoint point, CancellationToken cancel)
+    {
+        return Base.SetTargetGlobalInt(0, MavFrame.MavFrameGlobalInt, cancel, (int)(point.Latitude * 10000000),
+            (int)(point.Longitude * 10000000), (float?)point.Altitude);
+    }
+
+    public Task TakeOff(double altInMeters, CancellationToken cancel = default)
+    {
+        return _commandClient.CommandLongAndCheckResult(MavCmd.MavCmdNavTakeoff, 0, 0, 0, 0, 0, 0, (float)altInMeters, cancel);
     }
 
     public Task GetHomePosition(CancellationToken cancel)

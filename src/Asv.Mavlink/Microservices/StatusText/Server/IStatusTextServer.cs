@@ -1,6 +1,6 @@
 using Asv.Mavlink.V2.Common;
 
-namespace Asv.Mavlink.Server
+namespace Asv.Mavlink
 {
     public interface IStatusTextServer
     {

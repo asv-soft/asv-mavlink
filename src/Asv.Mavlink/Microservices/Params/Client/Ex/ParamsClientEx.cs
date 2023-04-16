@@ -32,8 +32,8 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         Base = client;
         _missionSource = new SourceCache<ParamItem, string>(x => x.Name).DisposeItWith(Disposable);
         _isSynced = new RxValue<bool>(false).DisposeItWith(Disposable);
-        Items = _missionSource.Connect().DisposeMany().Transform(_=>(IParamItem)_).Publish().RefCount();
-        client.OnParamValue.Where(_=>IsInit && _.ParamIndex !=65535).Buffer(TimeSpan.FromMilliseconds(100)).Subscribe(OnUpdate).DisposeItWith(Disposable);
+        Items = _missionSource.Connect().Transform(_=>(IParamItem)_).RefCount();
+        client.OnParamValue.Where(_=>IsInit).Buffer(TimeSpan.FromMilliseconds(100)).Subscribe(OnUpdate).DisposeItWith(Disposable);
         
         _remoteCount = new RxValue<ushort?>(null).DisposeItWith(Disposable);
         _localCount = new RxValue<ushort>(0).DisposeItWith(Disposable);
@@ -52,6 +52,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
     public IParamsClient Base { get; }
     private void OnUpdate(IList<ParamValuePayload> items)
     {
+        if (items.Count == 0) return;
         _missionSource.Edit(_ =>
         {
             foreach (var value in items)
@@ -190,6 +191,14 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
                     tcs.TrySetResult(false);
                 }
             });
+        _missionSource.Edit(_ =>
+        {
+            foreach (var item in _.Items)
+            {
+                item.Dispose();
+            }
+            _.Clear();
+        });
         await Base.SendRequestList(linkedCancel.Token).ConfigureAwait(false);
         var readAllParams = await tcs.Task.ConfigureAwait(false);
         // if (readAllParams == true) return;

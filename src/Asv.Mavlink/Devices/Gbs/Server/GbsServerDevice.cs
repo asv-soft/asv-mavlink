@@ -14,13 +14,14 @@ public class GbsServerDevice:ServerDevice, IGbsServerDevice
         MavlinkServerIdentity identity,
         IPacketSequenceCalculator seq,
         IScheduler scheduler,
-        GbsServerDeviceConfig config,
-        IAsvGbsCommon impl) : base(connection, seq, identity, config, scheduler)
+        GbsServerDeviceConfig config) : base(connection, seq, identity, config, scheduler)
     {
         var command = new CommandServer(connection,seq,identity,scheduler).DisposeItWith(Disposable);
         CommandLongEx = new CommandLongServerEx(command).DisposeItWith(Disposable);
         var gbs = new AsvGbsServer(connection, seq, identity, config.Gbs, scheduler).DisposeItWith(Disposable);
-        Gbs = new AsvGbsExServer(gbs,Heartbeat,CommandLongEx,impl).DisposeItWith(Disposable);
+        Gbs = new AsvGbsExServer(gbs,Heartbeat,CommandLongEx).DisposeItWith(Disposable);
+        var paramsBase = new ParamsServer(connection, seq, identity, scheduler).DisposeItWith(Disposable);
+        Params = new ParamsServerEx(paramsBase).DisposeItWith(Disposable);
     }
 
     public override void Start()
@@ -30,4 +31,5 @@ public class GbsServerDevice:ServerDevice, IGbsServerDevice
     }
     public ICommandServerEx<CommandLongPacket> CommandLongEx { get; }
     public IAsvGbsServerEx Gbs { get; }
+    public IParamsServerEx Params { get; }
 }

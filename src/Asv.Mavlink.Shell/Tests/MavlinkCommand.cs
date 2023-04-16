@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.Client;
-using Asv.Mavlink.V2.Ardupilotmega;
-using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Icarous;
-using Asv.Mavlink.V2.Uavionix;
 using ManyConsole;
 
 namespace Asv.Mavlink.Shell

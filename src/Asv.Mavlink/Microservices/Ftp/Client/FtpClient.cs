@@ -1,12 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Reactive.Concurrency;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 
-namespace Asv.Mavlink.Client.Ftp
+namespace Asv.Mavlink
 {
     /// <summary>
     /// TODO: implemet FTP protocol

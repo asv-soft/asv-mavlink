@@ -23,6 +23,8 @@
 // This code was generate by tool Asv.Mavlink.Shell version 2.0.2
 
 using System;
+using System.Text;
+using Asv.Mavlink.V2.Common;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.AsvGbs
@@ -142,7 +144,7 @@ namespace Asv.Mavlink.V2.AsvGbs
     {
 	    public const int PacketMessageId = 13000;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 67;
+        public override byte GetCrcEtra() => 216;
 
         public override AsvGbsOutStatusPayload Payload { get; } = new AsvGbsOutStatusPayload();
 
@@ -154,8 +156,8 @@ namespace Asv.Mavlink.V2.AsvGbs
     /// </summary>
     public class AsvGbsOutStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 27; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 26; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -165,7 +167,6 @@ namespace Asv.Mavlink.V2.AsvGbs
             Accuracy = BinSerialize.ReadUShort(ref buffer);
             Observation = BinSerialize.ReadUShort(ref buffer);
             DgpsRate = BinSerialize.ReadUShort(ref buffer);
-            VehicleCount = (byte)BinSerialize.ReadByte(ref buffer);
             SatAll = (byte)BinSerialize.ReadByte(ref buffer);
             SatGps = (byte)BinSerialize.ReadByte(ref buffer);
             SatGlo = (byte)BinSerialize.ReadByte(ref buffer);
@@ -185,7 +186,6 @@ namespace Asv.Mavlink.V2.AsvGbs
             BinSerialize.WriteUShort(ref buffer,Accuracy);
             BinSerialize.WriteUShort(ref buffer,Observation);
             BinSerialize.WriteUShort(ref buffer,DgpsRate);
-            BinSerialize.WriteByte(ref buffer,(byte)VehicleCount);
             BinSerialize.WriteByte(ref buffer,(byte)SatAll);
             BinSerialize.WriteByte(ref buffer,(byte)SatGps);
             BinSerialize.WriteByte(ref buffer,(byte)SatGlo);
@@ -194,7 +194,7 @@ namespace Asv.Mavlink.V2.AsvGbs
             BinSerialize.WriteByte(ref buffer,(byte)SatQzs);
             BinSerialize.WriteByte(ref buffer,(byte)SatIme);
             BinSerialize.WriteByte(ref buffer,(byte)SatSbs);
-            /* PayloadByteSize = 27 */;
+            /* PayloadByteSize = 26 */;
         }
 
 
@@ -229,11 +229,6 @@ namespace Asv.Mavlink.V2.AsvGbs
         /// OriginName: dgps_rate, Units: bytes\seconds, IsExtended: false
         /// </summary>
         public ushort DgpsRate { get; set; }
-        /// <summary>
-        /// The number of found vehicles to which DGPS corrections are transmitted via GPS_RTCM_DATA packet.
-        /// OriginName: vehicle_count, Units: , IsExtended: false
-        /// </summary>
-        public byte VehicleCount { get; set; }
         /// <summary>
         /// All GNSS satellite count.
         /// OriginName: sat_all, Units: , IsExtended: false
