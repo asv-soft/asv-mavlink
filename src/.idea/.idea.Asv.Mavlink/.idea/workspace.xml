@@ -8,7 +8,62 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9b69b522-a7f0-4766-8b6a-754ce7b8899a" name="Changes" comment="" />
+    <list default="true" id="9b69b522-a7f0-4766-8b6a-754ce7b8899a" name="Changes" comment="Bug fixed">
+      <change afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Params/Server/Ex/ParamsServerEx.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mavlink_messages/asv_gbs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mavlink_messages/asv_gbs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Asv.Mavlink/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Asv.Mavlink/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink.Shell/Tests/MavlinkCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink.Shell/Tests/MavlinkCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink.Shell/Tests/ParamsCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink.Shell/Tests/ParamsCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink.Test/Microservices/AsvGbs/AsvGbsTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink.Test/Microservices/AsvGbs/AsvGbsTest.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink.Test/Microservices/Heartbeat/HeartbeatMicroserviceTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink.Test/Microservices/Heartbeat/HeartbeatMicroserviceTest.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Asv.Mavlink.csproj.DotSettings" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Asv.Mavlink.csproj.DotSettings" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Base/Client/ClientDevice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Base/Client/ClientDevice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Base/Client/IClientDevice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Base/Client/IClientDevice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Base/Server/IServerDevice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Base/Server/IServerDevice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Base/Server/ServerDevice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Base/Server/ServerDevice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Gbs/Client/GbsClientDevice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Gbs/Client/GbsClientDevice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Gbs/Client/IGbsClientDevice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Gbs/Client/IGbsClientDevice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Gbs/Server/GbsServerDevice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Gbs/Server/GbsServerDevice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Gbs/Server/IGbsServerDevice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Gbs/Server/IGbsServerDevice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Sdr/Server/SdrServerDevice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Sdr/Server/SdrServerDevice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/Ardupilot/ArduPlaneClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/Ardupilot/ArduPlaneClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/Ardupilot/ArducopterClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/Ardupilot/ArducopterClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/IVehicleClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/IVehicleClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/VehicleClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/VehicleClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Client/Ex/AsvGbsExClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Client/Ex/AsvGbsExClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Client/Ex/IAsvGbsExClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Client/Ex/IAsvGbsExClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Common/AsvGbsCommon.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Common/IAsvGbsCommon.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Server/AsvGbsServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Server/AsvGbsServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Server/Ex/AsvGbsExServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Server/Ex/AsvGbsExServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Server/Ex/IAsvGbsServerEx.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Server/Ex/IAsvGbsServerEx.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Server/IAsvGbsServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Server/IAsvGbsServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Commands/Client/CommandClientHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Commands/Client/CommandClientHelper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Dgps/Client/DgpsClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Dgps/Client/DgpsClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Ftp/Client/FtpClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Ftp/Client/FtpClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Gnss/Client/GnssClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Gnss/Client/GnssClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Gnss/Client/IGnssClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Gnss/Client/IGnssClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Missions/Client/MissionClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Missions/Client/MissionClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Params/Client/Ex/IParamItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Params/Client/Ex/IParamItem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Params/Client/Ex/ParamItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Params/Client/Ex/ParamItem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Params/Client/Ex/ParamsClientEx.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Params/Client/Ex/ParamsClientEx.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Params/Client/ParamsClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Params/Client/ParamsClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Params/Server/IParamsServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Params/Server/IParamsServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Params/Server/ParamsServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Params/Server/ParamsServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Params/Tools/MavParamArdupilotValueConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Params/Tools/MavParamArdupilotValueConverter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Position/Client/Ex/IPositionClientEx.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Position/Client/Ex/IPositionClientEx.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Position/Client/Ex/PositionClientEx.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Position/Client/Ex/PositionClientEx.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/StatusText/Server/IStatusTextServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/StatusText/Server/IStatusTextServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/StatusText/Server/StatusTextServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/StatusText/Server/StatusTextServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Telemetry/Client/Ex/ITelemetryClientEx.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/Telemetry/Client/Ex/ITelemetryClientEx.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/V2Extention/Server/V2ExtensionServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/V2Extention/Server/V2ExtensionServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Protocol/IPacketSequenceCalculator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Protocol/IPacketSequenceCalculator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Protocol/Messages/asv_gbs.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Protocol/Messages/asv_gbs.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Protocol/Messages/common.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Protocol/Messages/common.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Tools/Browser/IMavlinkDeviceBrowser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Tools/Browser/IMavlinkDeviceBrowser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Tools/Browser/MavlinkDeviceBrowser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Tools/Browser/MavlinkDeviceBrowser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Tools/Router/MavlinkRouter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Tools/Router/MavlinkRouter.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,11 +86,27 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0cbd201b05cb4baea02954c4dfe1daebf800/32/43f21d8d/LinkIndicator.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0cbd201b05cb4baea02954c4dfe1daebf800/41/754b9829/LinkState.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8517f607c12a4b508364c3f896f0fe6f11da8/0b/954f6ea8/Assert.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/0b2b71b9a548475f9db13de2a63308dea234a8/_41dba/IProgress.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/17e74ab61fe0ba52377e6be4626e748b457547f6bc2e4353acda3221accd0/Subject.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1af51483c9bf18871cce649b9f966dd7be686536f998c33bba3c5fc4adea4a0/Task.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/279dd33dc1e16d18a8dfd65e1baf134c72411f7dd1a0bb407b678af493fb7ce/Timer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/507351b7888cf81061f4b115d318593c3eac1222b7dc3f47b9ea58eafd4f0a/PortableThreadPool.WorkerThread.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/55c2f0d9e41e31f2bcc9a03897174345159ff8e943898126b6e81945ad4ba/UInt32.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/74d1dea0891bd9f3515fc4d4fd5570c65da55efb64d7e992e68fd5821ebc24c0/AnonymousSafeObserver.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/816dbaba8a29ece3dd3dc326642858d27d2d19142f9a2109bb04617985ec9/ExecutionContext.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9a6b1457cbcf17db31a383ba49ef9bcc786cf3ef77146d997eee499b27a46d/Object.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/a7ca73b8abb46e7baee92df04a2c3b3718e26976281738ddd74530771aa91f/GlobalCoordinates.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b2c66afceabede0107eef1a7e53aaa548bdf28d878c14952ca578c37f823f/AnonymousObserver.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bd1d5c50194fea68ff3559c160230b0ab50f5acf4ce3061bffd6d62958e2182/ExceptionDispatchInfo.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c17c71b99fd283b69b3ef1472475e17d5bd798c732412b03ad37037b44b185/ThreadPoolWorkQueue.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f9749fe3576a687c3c42f3794cefe8f8d91e62f939c66c0a32dbb3f74255/ManualResetEventSlim.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/fef259e8b828d434941bb3bc6d7788e6e5e2961751a8d78ae71d9ebc54b96b/AsyncMethodBuilderCore.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Client/AsvGbsClient.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Client/IAsvGbsClient.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Server/IAsvGbsServer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Asv.Mavlink/Microservices/Commands/Server/ICommandServer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/asv/prj/asv-mavlink/src/Asv.Mavlink/Protocol/Messages/all.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Asv.Mavlink/Protocol/Messages/common.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -50,27 +121,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;v3/refactoring&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;CustomToolsOptionsPageId&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "C:\\Users\\voloshkevich\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\DecompilerCache",
-      "C:\\Users\\voloshkevich\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\SourcesCache",
-      "C:\\Users\\voloshkevich\\AppData\\Local\\Symbols\\src"
+  &quot;keyToStringList&quot;: {
+    &quot;rider.external.source.directories&quot;: [
+      &quot;C:\\Users\\voloshkevich\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\DecompilerCache&quot;,
+      &quot;C:\\Users\\voloshkevich\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\SourcesCache&quot;,
+      &quot;C:\\Users\\voloshkevich\\AppData\\Local\\Symbols\\src&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.Asv.Mavlink.Shell">
     <configuration name="Asv.Mavlink.Payload.Test" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -120,6 +192,8 @@
       <workItem from="1680876721129" duration="54802000" />
       <workItem from="1681224145339" duration="1444000" />
       <workItem from="1681243254564" duration="889000" />
+      <workItem from="1681385118864" duration="27120000" />
+      <workItem from="1681421662322" duration="88431000" />
     </task>
     <task id="LOCAL-00001" summary="Added Asv.Mavlink.Gbs and Asv.Mavlink.Sdr projects.">
       <created>1680721309165</created>
@@ -163,7 +237,35 @@
       <option name="project" value="LOCAL" />
       <updated>1681243305074</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Separated all mavlink interfaces">
+      <created>1681336386719</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1681336386719</updated>
+    </task>
+    <task id="LOCAL-00008" summary="All projects in one">
+      <created>1681421569738</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1681421569738</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Bug fixed">
+      <created>1681427731703</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1681427731703</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Bug fixed">
+      <created>1681565309078</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1681565309078</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -187,9 +289,56 @@
     <MESSAGE value="Added Asv.Mavlink.Gbs and Asv.Mavlink.Sdr projects." />
     <MESSAGE value="Added XML documentation generator" />
     <MESSAGE value="Added GbsClientDeviceBase" />
-    <MESSAGE value="Bug fixed" />
     <MESSAGE value="asv-sdr interface updated" />
     <MESSAGE value="Asv.Common version updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="Asv.Common version updated" />
+    <MESSAGE value="Separated all mavlink interfaces" />
+    <MESSAGE value="All projects in one" />
+    <MESSAGE value="Bug fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bug fixed" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Asv.Mavlink/Microservices/MavlinkPacketTransponder.cs</url>
+          <line>63</line>
+          <properties documentPath="C:\asv\prj\asv-mavlink\src\Asv.Mavlink\Microservices\MavlinkPacketTransponder.cs" initialLine="64" containingFunctionPresentation="Method 'OnTick'">
+            <startOffsets>
+              <option value="2356" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2382" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Asv.Mavlink/Devices/Gbs/Server/GbsServerDevice.cs</url>
+          <line>18</line>
+          <properties documentPath="C:\asv\prj\asv-mavlink\src\Asv.Mavlink\Devices\Gbs\Server\GbsServerDevice.cs" initialLine="19" containingFunctionPresentation="Constructor 'GbsServerDevice'">
+            <startOffsets>
+              <option value="558" />
+            </startOffsets>
+            <endOffsets>
+              <option value="651" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Server/Ex/AsvGbsExServer.cs</url>
+          <line>22</line>
+          <properties documentPath="C:\asv\prj\asv-mavlink\src\Asv.Mavlink\Microservices\AsvGbs\Server\Ex\AsvGbsExServer.cs" initialLine="14" containingFunctionPresentation="Constructor 'AsvGbsExServer'">
+            <startOffsets>
+              <option value="719" />
+            </startOffsets>
+            <endOffsets>
+              <option value="733" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -34,7 +34,6 @@
     <PackageReference Include="System.Reactive.Linq" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Asv.Mavlink.Vehicle\Asv.Mavlink.Vehicle.csproj" />
     <ProjectReference Include="..\Asv.Mavlink\Asv.Mavlink.csproj" />
   </ItemGroup>
   <ItemGroup>

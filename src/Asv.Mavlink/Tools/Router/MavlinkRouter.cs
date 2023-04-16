@@ -77,6 +77,11 @@ namespace Asv.Mavlink
 
     public class MavlinkRouter:DisposableOnceWithCancel, IMavlinkRouter, IDataStream
     {
+        public static MavlinkRouter CreateDefault()
+        {
+            return new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
+        }
+        
         private readonly Action<IPacketDecoder<IPacketV2<IPayload>>> _register;
         private readonly ReaderWriterLockSlim _portCollectionSync = new(LockRecursionPolicy.SupportsRecursion);
         private readonly Subject<IPacketV2<IPayload>> _inputPackets;
@@ -332,7 +337,7 @@ namespace Asv.Mavlink
             {
                 _portCollectionSync.ExitReadLock();
             }
-            var result = await Task.WhenAll(tasks);
+            var result = await Task.WhenAll(tasks).ConfigureAwait(false);
             return result.All(_ => _);
         }
 

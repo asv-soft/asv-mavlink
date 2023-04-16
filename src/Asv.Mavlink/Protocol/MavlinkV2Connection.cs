@@ -1,17 +1,45 @@
 using System;
 using System.Buffers;
-using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
-using Asv.Mavlink.Decoder;
+using Asv.Mavlink.V2.Ardupilotmega;
+using Asv.Mavlink.V2.AsvGbs;
+using Asv.Mavlink.V2.AsvSdr;
+using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Icarous;
+using Asv.Mavlink.V2.Uavionix;
 
 namespace Asv.Mavlink
 {
     public class MavlinkV2Connection : DisposableOnceWithCancel, IMavlinkV2Connection
     {
+        #region Static
+
+        public static IMavlinkV2Connection Create(IDataStream dataStream, bool disposeDataStream = false)
+        {
+            return new MavlinkV2Connection(dataStream, RegisterDefaultDialects,disposeDataStream);
+        }
+        
+        public static IMavlinkV2Connection Create(string connectionString)
+        {
+            return new MavlinkV2Connection(connectionString, RegisterDefaultDialects);
+        }
+
+        public static void RegisterDefaultDialects(IPacketDecoder<IPacketV2<IPayload>> decoder)
+        {
+            decoder.RegisterCommonDialect();
+            decoder.RegisterArdupilotmegaDialect();
+            decoder.RegisterIcarousDialect();
+            decoder.RegisterUavionixDialect();
+            decoder.RegisterAsvGbsDialect();
+            decoder.RegisterAsvSdrDialect();
+        }
+
+        #endregion
+        
         private readonly PacketV2Decoder _decoder;
         private long _txPackets;
         private long _rxPackets;
@@ -39,7 +67,7 @@ namespace Asv.Mavlink
             _decoder = new PacketV2Decoder().DisposeItWith(Disposable);
             register(_decoder);
             _decoder.DisposeItWith(Disposable);
-            DataStream.SelectMany(_=>_).Subscribe(_=> _decoder.OnData(_)).DisposeItWith(Disposable); 
+            DataStream.Subscribe(_=> _decoder.OnData(_)).DisposeItWith(Disposable); 
             _decoder.Subscribe(_ => Interlocked.Increment(ref _rxPackets)).DisposeItWith(Disposable);
             _sendPacketSubject = new Subject<IPacketV2<IPayload>>().DisposeItWith(Disposable);
 

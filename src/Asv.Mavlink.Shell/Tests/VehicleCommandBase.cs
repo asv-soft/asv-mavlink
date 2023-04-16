@@ -17,14 +17,15 @@ namespace Asv.Mavlink.Shell
         public override int Run(string[] remainingArguments)
         {
             Vehicle = CreateVehicle(_connectionString);
+            Vehicle.WaitUntilConnectAndInit();
             return RunAsync(Vehicle).Result;
         }
 
-        public IVehicle Vehicle { get; private set; }
+        public IVehicleClient Vehicle { get; private set; }
 
-        protected abstract IVehicle CreateVehicle(string cs);
+        protected abstract IVehicleClient CreateVehicle(string cs);
 
-        protected abstract Task<int> RunAsync(IVehicle vehicle);
+        protected abstract Task<int> RunAsync(IVehicleClient vehicle);
         
     }
 

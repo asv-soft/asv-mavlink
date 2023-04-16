@@ -1,0 +1,4 @@
+namespace Asv.Mavlink
+{
+    
+}

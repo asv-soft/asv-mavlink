@@ -2,6 +2,7 @@
 using System.Reactive;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using DynamicData;
 
 namespace Asv.Mavlink
 {
@@ -61,18 +62,7 @@ namespace Asv.Mavlink
     /// </summary>
     public interface IMavlinkDeviceBrowser
     {
-        /// <summary>
-        /// Current found devices
-        /// </summary>
-        IMavlinkDevice[] Devices { get; }
-        /// <summary>
-        /// Event when new device found
-        /// </summary>
-        IObservable<IMavlinkDevice> OnFoundDevice { get; }
-        /// <summary>
-        /// Event when device lost
-        /// </summary>
-        IObservable<IMavlinkDevice> OnLostDevice { get; }
+        IObservable<IChangeSet<IMavlinkDevice,ushort>> Devices { get; }
         /// <summary>
         /// Current device timeout
         /// </summary>
