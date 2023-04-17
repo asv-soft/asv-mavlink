@@ -23,7 +23,7 @@ public class ServerDevice: DisposableOnceWithCancel, IServerDevice
         Scheduler = scheduler;
         Heartbeat =
             new HeartbeatServer(connection, seq, identity, config.Heartbeat, scheduler).DisposeItWith(Disposable);
-        StatusText = new StatusTextServer(connection, seq, identity, config.StatusText).DisposeItWith(Disposable);
+        StatusText = new StatusTextServer(connection, seq, identity, config.StatusText, scheduler).DisposeItWith(Disposable);
     }
     public IMavlinkV2Connection Connection { get; }
     public IPacketSequenceCalculator Seq { get; }

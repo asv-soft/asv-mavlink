@@ -44,10 +44,5 @@ public class HeartbeatMicroserviceTest
         Assert.Equal(123U, clientHeartbeat.RawHeartbeat.Value.CustomMode);
         Assert.Equal(MavState.MavStateActive, clientHeartbeat.RawHeartbeat.Value.SystemStatus);
         Assert.Equal(3, clientHeartbeat.RawHeartbeat.Value.MavlinkVersion);
-
-
     }
-    
-    
-   
 }

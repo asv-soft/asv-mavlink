@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
+using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using NLog;
 
@@ -14,34 +16,31 @@ namespace Asv.Mavlink
         public int MaxSendRateHz { get; set; } = 10;
     }
 
-    public class StatusTextServer : IDisposable, IStatusTextServer
+    public class StatusTextServer : MavlinkMicroserviceServer, IDisposable, IStatusTextServer
     {
         private readonly int _maxMessageSize = new StatustextPayload().Text.Length;
         private readonly IMavlinkV2Connection _connection;
         private readonly IPacketSequenceCalculator _seq;
         private readonly MavlinkServerIdentity _identity;
         private readonly StatusTextLoggerConfig _config;
-        private readonly ConcurrentQueue<KeyValuePair<MavSeverity,string>> _messageQueue = new ConcurrentQueue<KeyValuePair<MavSeverity, string>>();
-        private readonly CancellationTokenSource _disposeCancel = new CancellationTokenSource();
+        private readonly ConcurrentQueue<KeyValuePair<MavSeverity,string>> _messageQueue = new();
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private int _isSending;
-        private volatile int _isDisposed;
 
-        public StatusTextServer(IMavlinkV2Connection connection,IPacketSequenceCalculator seq,MavlinkServerIdentity identity, StatusTextLoggerConfig config)
+        public StatusTextServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
+            MavlinkServerIdentity identity, StatusTextLoggerConfig config, IScheduler scheduler):   
+            base("STATUS",connection,identity,seq,scheduler)
         {
-            if (connection == null) throw new ArgumentNullException(nameof(connection));
-            if (seq == null) throw new ArgumentNullException(nameof(seq));
-            if (config == null) throw new ArgumentNullException(nameof(config));
-            
-            _connection = connection;
-            _seq = seq;
+            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            _seq = seq ?? throw new ArgumentNullException(nameof(seq));
             _identity = identity;
-            _config = config;
+            _config = config ?? throw new ArgumentNullException(nameof(config));
 
             _logger.Debug($"Create status logger for [sys:{identity.SystemId}, com:{identity.ComponentId}] with send rate:{config.MaxSendRateHz} Hz, buffer size: {config.MaxQueueSize}");
 
             Observable.Timer(TimeSpan.FromSeconds(1.0 / _config.MaxSendRateHz),
-                TimeSpan.FromSeconds(1.0 / _config.MaxSendRateHz)).Subscribe(TrySend, _disposeCancel.Token);
+                TimeSpan.FromSeconds(1.0 / _config.MaxSendRateHz)).Subscribe(TrySend)
+                .DisposeItWith(Disposable);
         }
 
         private async void TrySend(long l)
@@ -53,19 +52,12 @@ namespace Asv.Mavlink
                 KeyValuePair<MavSeverity, string> res;
                 if (_messageQueue.TryDequeue(out res))
                 {
-                    await _connection.Send(new StatustextPacket
+                    await InternalSend<StatustextPacket>(_ =>
                     {
-                        ComponenId = _identity.ComponentId,
-                        SystemId = _identity.SystemId,
-                        CompatFlags = 0,
-                        IncompatFlags = 0,
-                        Sequence = _seq.GetNextSequenceNumber(),
-                        Payload =
-                        {
-                            Severity = res.Key,
-                            Text = res.Value.ToCharArray()
-                        }
-                    }, _disposeCancel.Token).ConfigureAwait(false);
+                        _.Payload.Severity = res.Key;
+                        MavlinkTypesHelper.SetString(_.Payload.Text, res.Value);
+                        
+                    },DisposeCancel).ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -108,12 +100,7 @@ namespace Asv.Mavlink
             return Log((severity, message));
         }
 
-        public void Dispose()
-        {
-            if (Interlocked.CompareExchange(ref _isDisposed,1,0) !=0) return;
-            _disposeCancel?.Cancel(false);
-            _disposeCancel?.Dispose();
-        }
+       
     }
 
     
