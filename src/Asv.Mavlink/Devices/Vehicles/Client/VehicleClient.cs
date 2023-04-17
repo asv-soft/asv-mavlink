@@ -81,9 +81,12 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
     public IV2ExtensionClient V2Extension { get; }
     public abstract Task EnsureInGuidedMode(CancellationToken cancel);
     public abstract Task<bool> CheckGuidedMode(CancellationToken cancel);
+    public abstract Task SetAutoMode(CancellationToken cancel = default);
     public abstract Task GoTo(GeoPoint point, CancellationToken cancel = default);
     public abstract Task DoLand(CancellationToken cancel = default);
     public abstract Task DoRtl(CancellationToken cancel = default);
+    
+    
 
     public async Task TakeOff(double altInMeters, CancellationToken cancel = default)
     {

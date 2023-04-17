@@ -24,6 +24,7 @@ public interface IVehicleClient:IClientDevice
     Task GoTo(GeoPoint point, CancellationToken cancel = default);
     Task DoLand(CancellationToken cancel = default);
     Task DoRtl(CancellationToken cancel = default);
+    Task SetAutoMode(CancellationToken cancel = default);
     Task TakeOff(double altInMeters, CancellationToken cancel = default);
 }
 

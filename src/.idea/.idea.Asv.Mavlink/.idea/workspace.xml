@@ -10,10 +10,10 @@
   <component name="ChangeListManager">
     <list default="true" id="9b69b522-a7f0-4766-8b6a-754ce7b8899a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Asv.Mavlink/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Asv.Mavlink/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Asv.Mavlink.Test/Microservices/Heartbeat/HeartbeatMicroserviceTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink.Test/Microservices/Heartbeat/HeartbeatMicroserviceTest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Asv.Mavlink.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Asv.Mavlink.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Base/Server/ServerDevice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Base/Server/ServerDevice.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Microservices/StatusText/Server/StatusTextServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Microservices/StatusText/Server/StatusTextServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/Ardupilot/ArduPlaneClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/Ardupilot/ArduPlaneClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/Ardupilot/ArducopterClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/Ardupilot/ArducopterClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/IVehicleClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/IVehicleClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/VehicleClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Vehicles/Client/VehicleClient.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,12 +53,13 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c17c71b99fd283b69b3ef1472475e17d5bd798c732412b03ad37037b44b185/ThreadPoolWorkQueue.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f9749fe3576a687c3c42f3794cefe8f8d91e62f939c66c0a32dbb3f74255/ManualResetEventSlim.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/fef259e8b828d434941bb3bc6d7788e6e5e2961751a8d78ae71d9ebc54b96b/AsyncMethodBuilderCore.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/asv/prj/asv-mavlink/src/Asv.Mavlink/Devices/Vehicles/Client/Ardupilot/ArducopterClient.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/asv/prj/asv-mavlink/src/Asv.Mavlink.Test/Microservices/Heartbeat/HeartbeatMicroserviceTest.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/asv/prj/asv-mavlink/src/Asv.Mavlink/Devices/Base/Server/ServerDevice.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Client/AsvGbsClient.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Client/IAsvGbsClient.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Server/IAsvGbsServer.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Asv.Mavlink/Microservices/Commands/Server/ICommandServer.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/asv/prj/asv-mavlink/src/Asv.Mavlink/Protocol/Messages/all.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/asv/prj/asv-mavlink/src/Asv.Mavlink/Microservices/StatusText/Server/StatusTextServer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Asv.Mavlink/Protocol/Messages/common.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -148,7 +149,9 @@
       <workItem from="1681421662322" duration="89350000" />
       <workItem from="1681718459162" duration="2565000" />
       <workItem from="1681737272987" duration="649000" />
-      <workItem from="1681755549902" duration="2145000" />
+      <workItem from="1681755549902" duration="2397000" />
+      <workItem from="1681758482166" duration="1218000" />
+      <workItem from="1681762697475" duration="449000" />
     </task>
     <task id="LOCAL-00001" summary="Added Asv.Mavlink.Gbs and Asv.Mavlink.Sdr projects.">
       <created>1680721309165</created>
@@ -227,7 +230,28 @@
       <option name="project" value="LOCAL" />
       <updated>1681680773344</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="StatusTextServer message bug fixed">
+      <created>1681757745177</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1681757745177</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Updated Licence URL">
+      <created>1681758960998</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1681758960998</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Build bug fixed">
+      <created>1681759533842</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1681759533842</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -256,6 +280,9 @@
     <MESSAGE value="Separated all mavlink interfaces" />
     <MESSAGE value="All projects in one" />
     <MESSAGE value="Bug fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bug fixed" />
+    <MESSAGE value="StatusTextServer message bug fixed" />
+    <MESSAGE value="Updated Licence URL" />
+    <MESSAGE value="Build bug fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Build bug fixed" />
   </component>
 </project>

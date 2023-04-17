@@ -27,6 +27,11 @@ public class ArduCopterClient:ArduVehicle
         return Task.FromResult((IReadOnlyCollection<ParamDescription>)new List<ParamDescription>());
     }
 
+    public override Task SetAutoMode(CancellationToken cancel = default)
+    {
+        return Commands.DoSetMode(1, (uint)CopterMode.CopterModeAuto, 0,cancel);
+    }
+
     public override async Task GoTo(GeoPoint point, CancellationToken cancel = default)
     {
         await EnsureInGuidedMode(cancel).ConfigureAwait(false);
@@ -44,9 +49,6 @@ public class ArduCopterClient:ArduVehicle
         await EnsureInGuidedMode(cancel).ConfigureAwait(false);
         await Commands.DoSetMode(1, (uint)CopterMode.CopterModeRtl, 0, cancel).ConfigureAwait(false);
     }
-
-    
-
     public override Task<bool> CheckGuidedMode(CancellationToken cancel)
     {
         return Task.FromResult(

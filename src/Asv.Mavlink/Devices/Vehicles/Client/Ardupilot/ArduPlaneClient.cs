@@ -46,6 +46,10 @@ public class ArduPlaneClient:ArduVehicle
         throw new System.NotImplementedException();
     }
 
+    public override Task SetAutoMode(CancellationToken cancel = default)
+    {
+        return Commands.DoSetMode(1, (uint)PlaneMode.PlaneModeAuto, 0,cancel);
+    }
     public override Task DoLand(CancellationToken cancel = default)
     {
         throw new System.NotImplementedException();
