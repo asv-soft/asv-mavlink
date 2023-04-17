@@ -1,7 +1,7 @@
 @echo off
 rem ====== projects ======
 
-set projects=Asv.Mavlink Asv.Mavlink.Payload Asv.Mavlink.Vehicle Asv.Mavlink.Shell
+set projects=Asv.Mavlink Asv.Mavlink.Shell
 
 rem ====== projects ======
 
@@ -16,7 +16,7 @@ DEL version.txt
 rem build all projects
 (for %%p in (%projects%) do (
   	echo %%p
-	setversion %VERSION% ./src/%%p/%%p.csproj
+	setversion %VERSION:~1% ./src/%%p/%%p.csproj
 	dotnet restore ./src/%%p/%%p.csproj
 	dotnet build ./src/%%p/%%p.csproj -c Release
 	dotnet pack ./src/%%p/%%p.csproj -c Release
