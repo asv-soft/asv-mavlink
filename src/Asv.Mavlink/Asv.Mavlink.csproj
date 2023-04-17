@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    <Version>3.0.0</Version>
+    <Version>3.0.2</Version>
     <LangVersion>latest</LangVersion>
     <Authors>https://github.com/asvol</Authors>
     <Company>https://github.com/asvol</Company>
@@ -14,7 +14,6 @@
     <PackageIcon>asv-mavlink-128.png</PackageIcon>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseUrl>https://github.com/asv-soft/asv-mavlink/blob/main/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
