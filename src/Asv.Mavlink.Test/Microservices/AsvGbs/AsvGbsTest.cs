@@ -63,8 +63,6 @@ namespace Asv.Mavlink.Test
             Assert.Equal(lat,status.Lat);            
             Assert.Equal(lon,status.Lng);
             Assert.Equal(alt,status.Alt);
-            
-            
         }
 
         
