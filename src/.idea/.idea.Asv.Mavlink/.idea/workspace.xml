@@ -8,12 +8,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9b69b522-a7f0-4766-8b6a-754ce7b8899a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Asv.Mavlink.Test/Devices/Base/BaseDevicesTest.cs" afterDir="false" />
+    <list default="true" id="9b69b522-a7f0-4766-8b6a-754ce7b8899a" name="Changes" comment="Added tests for devices base">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Asv.Mavlink/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Asv.Mavlink/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Asv.Mavlink.Test/MavlinkPackets.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink.Test/MavlinkPackets.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Asv.Mavlink.Test/Microservices/AsvGbs/AsvGbsTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink.Test/Microservices/AsvGbs/AsvGbsTest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Base/Client/ClientDevice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Base/Client/ClientDevice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink.Test/Devices/Base/BaseDevicesTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink.Test/Devices/Base/BaseDevicesTest.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Asv.Mavlink/Devices/Base/Server/ServerDevice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Asv.Mavlink/Devices/Base/Server/ServerDevice.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +33,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock://C:/Projects/CSharp/asv-mavlink/src/Asv.Mavlink.Test/Microservices/AsvGbs/AsvGbsTest.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Client/AsvGbsClient.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Client/IAsvGbsClient.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Asv.Mavlink/Microservices/AsvGbs/Server/IAsvGbsServer.cs" root0="FORCE_HIGHLIGHTING" />
@@ -127,7 +126,7 @@
       <workItem from="1681243254564" duration="889000" />
       <workItem from="1681385118864" duration="27120000" />
       <workItem from="1681421662322" duration="88431000" />
-      <workItem from="1681821479375" duration="21598000" />
+      <workItem from="1681821479375" duration="31114000" />
     </task>
     <task id="LOCAL-00001" summary="Added Asv.Mavlink.Gbs and Asv.Mavlink.Sdr projects.">
       <created>1680721309165</created>
@@ -206,7 +205,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681765736783</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Added tests for devices base">
+      <created>1681903868891</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1681903868891</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -236,7 +242,8 @@
     <MESSAGE value="All projects in one" />
     <MESSAGE value="Bug fixed" />
     <MESSAGE value="Changed packages output path to projects path" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed packages output path to projects path" />
+    <MESSAGE value="Added tests for devices base" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added tests for devices base" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
