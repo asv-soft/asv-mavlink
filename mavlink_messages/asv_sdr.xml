@@ -5,9 +5,9 @@
   <!-- Asv Soft contact info: https://github.com/asvol            -->
   <!-- company URL: https://github.com/asv-soft                   -->
   <!-- email contact: me@asv.me                                   -->
-  <!-- mavlink MAV_TYPE: 251                                   -->
-  <!-- mavlink MAV_CMD range:  13100 - 13199                   -->
-  <!-- mavlink messages range: 13100 - 13199                   -->
+  <!-- mavlink MAV_TYPE: 251                                      -->
+  <!-- mavlink MAV_CMD range:  13100 - 13199                      -->
+  <!-- mavlink messages range: 13100 - 13199                      -->
   <include>common.xml</include>
    
     
@@ -51,8 +51,8 @@
         <param index="7">Empty.</param>
       </entry>
       <entry value="13103" name="MAV_CMD_ASV_SDR_SET_RECORD_TAG">
-        <description>Set custom tag to record. Used to store additional data for records.</description>
-        <param index="1">Record index (uint16) , ASV_SDR_RECORD_TAG_FLAG (uint8) and ASV_SDR_RECORD_TAG_TYPE (uint8).</param>
+        <description>Set custom tag to current record.</description>
+        <param index="1">ASV_SDR_RECORD_TAG_TYPE (uint32).</param>
         <param index="2">Tag name: 0-3 chars (char[4]).</param>
         <param index="3">Tag name: 4-7 chars (char[4]).</param>
         <param index="4">Tag name: 8-11 chars (char[4]).</param>
@@ -61,15 +61,7 @@
         <param index="7">Tag value data 4-7 bytes depends on the type of tag.</param>
       </entry>
     </enum>
-    <enum name="ASV_SDR_RECORD_TAG_FLAG">
-      <description>Specifies the flags of a record tag in MAV_CMD_ASV_SDR_SET_RECORD_TAG command (unit8_t).</description>
-      <entry value="0" name="ASV_SDR_RECORD_TAG_FLAG_NONE">
-        <description>Default value(no flags)</description>
-      </entry>
-      <entry value="1" name="ASV_SDR_RECORD_TAG_FLAG_FOR_CURRENT">
-        <description>If the flag is set, the tag will be set for the current record. Record index in MAV_CMD_ASV_SDR_SET_RECORD_TAG will be ignored.</description>
-      </entry>
-    </enum>
+    
     <enum name="ASV_SDR_RECORD_TAG_TYPE">
       <description>Specifies the datatype of a record tag (unit8_t).</description>
       <entry value="1" name="ASV_SDR_RECORD_TAG_TYPE_UINT64">
@@ -81,36 +73,35 @@
       <entry value="3" name="ASV_SDR_RECORD_TAG_TYPE_REAL64">
         <description>64-bit floating-point</description>
       </entry>
-      <entry value="4" name="ASV_SDR_RECORD_TAG_TYPE_STRING">
+      <entry value="4" name="ASV_SDR_RECORD_TAG_TYPE_STRING8">
         <description>String type terminated by NULL if the length is less than 8 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 8 chars.</description>
       </entry>
     </enum>
     <enum name="ASV_SDR_CUSTOM_MODE">
-      <description>A mapping of SDR payload modes for custom_mode field of heartbeat</description>
+      <description>A mapping of SDR payload modes for custom_mode field of heartbeat. Value of enum must be equal to message id from ASV_SDR_RECORD_DATA_* 13150-13199</description>
       <entry value="0" name="ASV_SDR_CUSTOM_MODE_IDLE">
         <description>Default mode. Do nothing.</description>
       </entry>
-      <entry value="1" name="ASV_SDR_CUSTOM_MODE_LLZ">
-        <description>Localizer measure mode. In this mode shuld send and record ASV_SDR_RECORD_DATA_ILS</description>
+      <entry value="13135" name="ASV_SDR_CUSTOM_MODE_LLZ">
+        <description>Localizer measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_LLZ</description>
       </entry>
-      <entry value="2" name="ASV_SDR_CUSTOM_MODE_GP">
-        <description>Glide Path measure mode. In this mode shuld send and record ASV_SDR_RECORD_DATA_ILS</description>
+      <entry value="13136" name="ASV_SDR_CUSTOM_MODE_GP">
+        <description>Glide Path measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_GP</description>
       </entry>
-      <entry value="3" name="ASV_SDR_CUSTOM_MODE_VOR">
-        <description>VOR measure mode. In this mode shuld send and record ASV_SDR_RECORD_DATA_VOR</description>
+      <entry value="13137" name="ASV_SDR_CUSTOM_MODE_VOR">
+        <description>VOR measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_VOR</description>
       </entry>
-<!--      <entry value="3" name="ASV_SDR_CUSTOM_MODE_DME"/>-->
-<!--      <entry value="4" name="ASV_SDR_CUSTOM_MODE_MARKER"/>-->
-      
-<!--      <entry value="6" name="ASV_SDR_CUSTOM_MODE_RDF"/>-->
-<!--      <entry value="7" name="ASV_SDR_CUSTOM_MODE_GBAS"/>-->
-<!--      <entry value="8" name="ASV_SDR_CUSTOM_MODE_SPECTRUM"/>-->
+<!--      <entry value="13138" name="ASV_SDR_CUSTOM_MODE_DME"/>-->
+<!--      <entry value="13139" name="ASV_SDR_CUSTOM_MODE_MARKER"/>-->
+<!--      <entry value="13140" name="ASV_SDR_CUSTOM_MODE_RDF"/>-->
+<!--      <entry value="13141" name="ASV_SDR_CUSTOM_MODE_GBAS"/>-->
+<!--      <entry value="13142" name="ASV_SDR_CUSTOM_MODE_SPECTRUM"/>-->
     </enum>
-    <enum name="ASV_SDR_SUPPORT_MODE_FLAG">
+    <enum name="ASV_SDR_CUSTOM_MODE_FLAG">
       <description>These flags encode supported mode.</description>
-      <entry value="1" name="ASV_SDR_SUPPORT_MODE_LLZ"/>
-      <entry value="2" name="ASV_SDR_SUPPORT_MODE_GP"/>
-      <entry value="4" name="ASV_SDR_SUPPORT_MODE_VOR"/>
+      <entry value="1" name="ASV_SDR_CUSTOM_MODE_FLAG_LLZ"/>
+      <entry value="2" name="ASV_SDR_CUSTOM_MODE_FLAG_GP"/>
+      <entry value="4" name="ASV_SDR_CUSTOM_MODE_FLAG_VOR"/>
 <!--      <entry value="4" name="ASV_SDR_SUPPORT_MODE_DME"/>-->
 <!--      <entry value="8" name="ASV_SDR_SUPPORT_MODE_MARKER"/>-->
 <!--      <entry value="16" name="ASV_SDR_SUPPORT_MODE_VOR"/>-->
@@ -140,10 +131,10 @@
   <messages>
     <message id="13100" name="ASV_SDR_OUT_STATUS">
       <description>SDR payload status message. Send with 1 Hz frequency.</description>
-      <field type="uint64_t" name="supported_modes" enum="ASV_SDR_SUPPORT_MODE_FLAG">Supported ASV_SDR_CUSTOM_MODE.</field>
+      <field type="uint64_t" name="supported_modes" enum="ASV_SDR_CUSTOM_MODE_FLAG">Supported ASV_SDR_CUSTOM_MODE.</field>
+      <field type="uint32_t" name="record_state" enum="ASV_SDR_RECORD_STATE_FLAG">Current record state ASV_SDR_RECORD_STATE_FLAG.</field>
       <field type="uint16_t" name="record_count">Number of records in storage.</field>
       <field type="uint64_t" name="size" units="bytes">Total storage size in bytes.</field>
-      
     </message>
     
     <!-- ASV_SDR_RECORD_* 13101-13110 -->
@@ -151,24 +142,22 @@
       <description>Request list of ASV_SDR_RECORD from the system/component.</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
-      <field type="uint16_t" name="request_id">Request unique number. This is to allow the response packet to be detected.</field>
-      <field type="uint16_t" name="record_start_index">Record start index.</field>
-      <field type="uint16_t" name="record_stop_index">Record stop index.</field>
+      <field type="uint16_t" name="request_id">Specifies a unique number for this request. This allows the response packet to be identified.</field>
+      <field type="uint16_t" name="skip">Specifies the start index of the records to be sent in the response.</field>
+      <field type="uint16_t" name="count">Specifies the number of records to be sent in the response after the skip index.</field>
     </message>
     <message id="13102" name="ASV_SDR_RECORD_RESPONSE">
       <description>Response for ASV_SDR_RECORD_REQUEST request. If success, device additional send ASV_SDR_RECORD items from start to stop index.</description>
       <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
-      <field type="uint16_t" name="request_id">Request unique number. This is to allow the response packet to be detected. Must be copied from request.</field>
-      <field type="uint16_t" name="items_count">Number of items for transmition (depended from request).</field>
+      <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
+      <field type="uint16_t" name="items_count">Number of items ASV_SDR_RECORD for transmition after this request with success result code (depended from request).</field>
     </message>
     <message id="13103" name="ASV_SDR_RECORD">
       <description>SDR payload record info.</description>
-      <field type="uint16_t" name="index">Record index in storage.</field>
-      <field type="char[28]" name="name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
-      <field type="uint32_t" name="record_mode" enum="ASV_SDR_CUSTOM_MODE">Record mode.</field>
+      <field type="char[28]" name="record_name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
+      <field type="uint32_t" name="record_mode" enum="ASV_SDR_CUSTOM_MODE">Record mode(it is also possible to know the type of data inside the record by cast enum to int).</field>
       <field type="uint64_t" name="frequency" >Frequency in Hz.</field>
-      <field type="uint16_t" name="data_message_id">Record data type (message id, e.g. 13120 for ASV_SDR_RECORD_DATA_ILS).</field>
-      <field type="uint64_t" name="state" enum="ASV_SDR_RECORD_STATE_FLAG">Current state.</field>
+      <field type="uint32_t" name="state" enum="ASV_SDR_RECORD_STATE_FLAG">Current state.</field>
       <field type="uint64_t" name="created_unix_us" units="us">Created timestamp (UNIX epoch time).</field>
       <field type="uint32_t" name="duration_sec" units="sec">Record duration in sec.</field>
       <field type="uint16_t" name="tag_count">Tag items count.</field>
@@ -179,15 +168,14 @@
       <description>Request to delete ASV_SDR_RECORD items from the system/component.</description>
       <field type="uint8_t" name="target_system">System ID.</field>
       <field type="uint8_t" name="target_component">Component ID.</field>
-      <field type="uint16_t" name="request_id">Request unique number. This is to allow the response packet to be detected.</field>
-      <field type="uint16_t" name="record_start_index">Record start index.</field>
-      <field type="uint16_t" name="record_stop_index">Record stop index.</field>
+      <field type="uint16_t" name="request_id">Specifies a unique number for this request. This allows the response packet to be identified.</field>
+      <field type="char[28]" name="record_name">Specifies the unique name of the record to be deleted.</field>
     </message>
     <message id="13105" name="ASV_SDR_RECORD_DELETE_RESPONSE">
       <description>Response for ASV_SDR_RECORD_DELETE_REQUEST.</description>
       <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
-      <field type="uint16_t" name="request_id">Request unique number. This is to allow the response packet to be detected. Must be copied from request.</field>
-      <field type="uint16_t" name="items_count">Number of deleted records.</field>
+      <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
+      <field type="char[28]" name="record_name">Specifies the unique name of the record that was deleted.</field>
     </message>
     <!-- ASV_SDR_RECORD_TAG_* 13110-13120-->
     <message id="13110" name="ASV_SDR_RECORD_TAG_REQUEST">
@@ -195,22 +183,21 @@
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
       <field type="uint16_t" name="request_id">Request unique number. This is to allow the response packet to be detected.</field>
-      <field type="uint16_t" name="record_index">Record index in storage.</field>
-      <field type="uint16_t" name="tag_start_index">Tag start index.</field>
-      <field type="uint16_t" name="tag_stop_index">Tag stop index.</field>
+      <field type="char[28]" name="record_name">Specifies the unique name of the record.</field>
+      <field type="uint16_t" name="skip">Specifies the start index of the tag to be sent in the response.</field>
+      <field type="uint16_t" name="count">Specifies the number of tag to be sent in the response after the skip index.</field>
     </message>
     <message id="13111" name="ASV_SDR_RECORD_TAG_RESPONSE">
       <description>Response for ASV_SDR_RECORD_TAG_REQUEST. If success, device additional send ASV_SDR_RECORD_TAG items from start to stop index.</description>
       <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
-      <field type="uint16_t" name="request_id">Request unique number. This is to allow the response packet to be detected. Must be copied from request.</field>
-      <field type="uint16_t" name="items_count">Number of items for transmition (depended from request).</field>
+      <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
+      <field type="uint16_t" name="items_count">Number of items ASV_SDR_RECORD_TAG for transmition after this request with success result code (depended from request).</field>
     </message>
     
     <message id="13112" name="ASV_SDR_RECORD_TAG">
       <description>Request to read info with either tag_index and record_index from the system/component.</description>
-      <field type="uint16_t" name="tag_index">Record tag index.</field>
-      <field type="uint16_t" name="record_index">Record index in storage.</field>
-      <field type="char[16]" name="tag_name">Tag name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string</field>
+      <field type="char[28]" name="record_name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
+      <field type="char[16]" name="tag_name">Tag unique name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string</field>
       <field type="uint8_t" name="tag_type" enum="ASV_SDR_RECORD_TAG_TYPE">Tag type.</field>
       <field type="uint8_t[8]" name="tag_value">Tag value, depends on the type of tag.</field>
     </message>
@@ -218,16 +205,16 @@
       <description>Request to delete ASV_SDR_RECORD_TAG from the system/component.</description>
       <field type="uint8_t" name="target_system">System ID.</field>
       <field type="uint8_t" name="target_component">Component ID.</field>
-      <field type="uint16_t" name="request_id">Request unique number. This is to allow the response packet to be detected.</field>
-      <field type="uint16_t" name="record_index">Record index in storage.</field>
-      <field type="uint16_t" name="tag_start_index">Tag start index.</field>
-      <field type="uint16_t" name="tag_stop_index">Tag stop index.</field>
+      <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
+      <field type="char[28]" name="record_name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
+      <field type="char[16]" name="tag_name">Tag unique name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string</field>
     </message>
     <message id="13116" name="ASV_SDR_RECORD_TAG_DELETE_RESPONSE">
       <description>Response for ASV_SDR_RECORD_TAG_DELETE_REQUEST.</description>
       <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
-      <field type="uint16_t" name="request_id">Request unique number. This is to allow the response packet to be detected. Must be copied from request.</field>
-      <field type="uint16_t" name="items_count">Number of deleted tags.</field>
+      <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
+      <field type="char[28]" name="record_name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
+      <field type="char[16]" name="tag_name">Tag unique name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string</field>
     </message>
     
     <!-- ASV_SDR_RECORD_DATA_* 13120-13130-->
@@ -235,41 +222,24 @@
       <description>Request list of ASV_SDR_RECORD_DATA_* items from the system/component.</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
-      <field type="uint16_t" name="request_id">Request unique number. This is to allow the response packet to be detected.</field>
-      <field type="uint16_t" name="record_index">Record index in storage.</field>
-      <field type="uint32_t" name="data_start_index">Data start index in record.</field>
-      <field type="uint32_t" name="data_stop_index">Data stop index in record.</field>
+      <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
+      <field type="char[28]" name="record_name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
+      <field type="uint32_t" name="skip">Specifies the start index of the tag to be sent in the response.</field>
+      <field type="uint32_t" name="count">Specifies the number of tag to be sent in the response after the skip index.</field>
     </message>
     <message id="13121" name="ASV_SDR_RECORD_DATA_RESPONSE">
       <description>Response for ASV_SDR_RECORD_DATA_REQUEST. If success, device additional send ASV_SDR_RECORD_DATA_* items from start to stop index.</description>
       <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
-      <field type="uint16_t" name="request_id">Request unique number. This is to allow the response packet to be detected. Must be copied from request.</field>
+      <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
       <field type="uint16_t" name="data_type">Record data type (message id, e.g. 13120 for ASV_SDR_RECORD_DATA_ILS).</field>
-      <field type="uint32_t" name="items_count">Number of items for transmition.</field>
-    </message>
-    <message id="13122" name="ASV_SDR_RECORD_DATA_DELETE_REQUEST">
-      <description>Request to delete data with either record_index and data_index from the system/component.</description>
-      <field type="uint8_t" name="target_system">System ID.</field>
-      <field type="uint8_t" name="target_component">Component ID.</field>
-      <field type="uint16_t" name="request_id">Request unique number. This is to allow the response packet to be detected.</field>
-      <field type="uint16_t" name="record_index">Record index in storage.</field>
-      <field type="uint32_t" name="start_data_index">Start data index.</field>
-      <field type="uint32_t" name="stop_data_index">Stop data index.</field>
-    </message>
-    <message id="13123" name="ASV_SDR_RECORD_DATA_DELETE_RESPONSE">
-      <description>Response for ASV_SDR_RECORD_DATA_DELETE_REQUEST.</description>
-      <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
-      <field type="uint16_t" name="request_id">Request unique number. This is to allow the response packet to be detected. Must be copied from request.</field>
-      <field type="uint16_t" name="record_index">Record index in storage.</field>
-      <field type="uint32_t" name="start_data_index">Start data index.</field>
-      <field type="uint32_t" name="stop_data_index">Stop data index.</field>
+      <field type="uint32_t" name="items_count">Number of items ASV_SDR_RECORD_DATA_* for transmition after this request with success result code (depended from request).</field>
     </message>
 
-    <!-- ASV_SDR_RECORD_DATA_* 13150-13199 -->
-    <message id="13150" name="ASV_SDR_RECORD_DATA_ILS">
-      <description>ILS reciever record data.</description>
+    <!-- ASV_SDR_RECORD_DATA_* 13135-13198 for 64 types of data in future-->
+    <message id="13135" name="ASV_SDR_RECORD_DATA_LLZ">
+      <description>LLZ reciever record data.</description>
       <field type="uint32_t" name="data_index">Data index in record</field>
-      <field type="uint16_t" name="record_index">Record index in storage.</field>
+      <field type="char[28]" name="record_name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
       <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
       <!-- The global position, as returned by the GNSS receiver -->
       <field type="uint8_t" name="gnss_fix_type" enum="GPS_FIX_TYPE">GPS fix type.</field>
@@ -332,8 +302,71 @@
 
       <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
     </message>
+
+    <message id="13136" name="ASV_SDR_RECORD_DATA_GP">
+      <description>GP reciever record data.</description>
+      <field type="uint32_t" name="data_index">Data index in record</field>
+      <field type="char[28]" name="record_name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
+      <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
+      <!-- The global position, as returned by the GNSS receiver -->
+      <field type="uint8_t" name="gnss_fix_type" enum="GPS_FIX_TYPE">GPS fix type.</field>
+      <field type="int32_t" name="gnss_lat" units="degE7">Latitude (WGS84, EGM96 ellipsoid)</field>
+      <field type="int32_t" name="gnss_lon" units="degE7">Longitude (WGS84, EGM96 ellipsoid)</field>
+      <field type="int32_t" name="gnss_alt" units="mm">Altitude (MSL). Positive for up. Note that virtually all GPS modules provide the MSL altitude in addition to the WGS84 altitude.</field>
+      <field type="uint16_t" name="gnss_eph">GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX</field>
+      <field type="uint16_t" name="gnss_epv">GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX</field>
+      <field type="uint16_t" name="gnss_vel" units="cm/s">GPS ground speed. If unknown, set to: UINT16_MAX</field>
+      <field type="uint8_t" name="gnss_satellites_visible">Number of satellites visible. If unknown, set to 255</field>
+      <field type="int32_t" name="gnss_alt_ellipsoid" units="mm">Altitude (above WGS84, EGM96 ellipsoid). Positive for up.</field>
+      <field type="uint32_t" name="gnss_h_acc" units="mm">Position uncertainty. Positive for up.</field>
+      <field type="uint32_t" name="gnss_v_acc" units="mm">Altitude uncertainty. Positive for up.</field>
+      <field type="uint32_t" name="gnss_vel_acc" units="mm">Speed uncertainty. Positive for up.</field>
+      <!-- The filtered global position (e.g. fused GNSS and accelerometers). The position is in GPS-frame (right-handed, Z-up) -->
+      <field type="int32_t" name="lat" units="degE7">Filtered global position latitude, expressed</field>
+      <field type="int32_t" name="lon" units="degE7">Filtered global position longitude, expressed</field>
+      <field type="int32_t" name="alt" units="mm">Filtered global position altitude (MSL).</field>
+      <field type="int32_t" name="relative_alt" units="mm">Altitude above ground</field>
+      <field type="int16_t" name="vx" units="cm/s">Ground X Speed (Latitude, positive north)</field>
+      <field type="int16_t" name="vy" units="cm/s">Ground Y Speed (Longitude, positive east)</field>
+      <field type="int16_t" name="vz" units="cm/s">Ground Z Speed (Altitude, positive down)</field>
+      <field type="uint16_t" name="hdg" units="cdeg">Vehicle heading (yaw angle), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX</field>
+      <!-- ATTITUDE data -->
+      <field type="float" name="roll" units="rad">Roll angle (-pi..+pi)</field>
+      <field type="float" name="pitch" units="rad">Pitch angle (-pi..+pi)</field>
+      <field type="float" name="yaw" units="rad">Yaw angle (-pi..+pi)</field>
+      <!-- Course measure data -->
+      <field type="int16_t" name="crs_power" units="dBm">Input power of course.</field>
+      <field type="int16_t" name="crs_carrier_offset" units="Hz">Carrier frequency offset of course.</field>
+      <field type="float" name="crs_am_90" units="%">Aplitude modulation of 90Hz of course.</field>
+      <field type="int16_t" name="crs_freq_90" units="Hz">Frequency offset of signal 90 Hz of course.</field>
+      <field type="float" name="crs_am_150" units="%">Aplitude modulation of 150Hz of course.</field>
+      <field type="int16_t" name="crs_freq_150" units="Hz">Frequency offset of signal 150 Hz of course.</field>
+      <!-- Clearance measure data -->
+      <field type="float" name="clr_power" units="dBm">Input power of clearance.</field>
+      <field type="int16_t" name="clr_carrier_offset" units="Hz">Carrier frequency offset of clearance.</field>
+      <field type="float" name="clr_am_90" units="%">Aplitude modulation of 90Hz of clearance.</field>
+      <field type="int16_t" name="clr_freq_90" units="Hz">Frequency offset of signal 90 Hz of clearance.</field>
+      <field type="float" name="clr_am_150" units="% E2">Aplitude modulation of 150Hz of clearance.</field>
+      <field type="int16_t" name="clr_freq_150" units="Hz">Frequency offset of signal 150 Hz of clearance.</field>
+      <!-- Total measure data -->
+      <field type="uint32_t" name="total_freq" units="Hz">Measured frequency.</field>
+      <field type="int16_t" name="total_carrier_offset" units="Hz">Total carrier frequency offset.</field>
+      <field type="float" name="total_power" units="dBm">Total input power.</field>
+      <field type="float" name="total_field_strength" units="uV/m">Total field strength.</field>
+
+      <field type="float" name="total_am_90" units="%">Total aplitude modulation of 90Hz.</field>
+      <field type="int16_t" name="total_freq_90" units="Hz">Total frequency offset of signal 90 Hz.</field>
+
+      <field type="float" name="total_am_150" units="%">Total aplitude modulation of 150Hz.</field>
+      <field type="int16_t" name="total_freq_150" units="Hz">Total frequency offset of signal 150 Hz.</field>
+
+      <field type="float" name="phi_90_crs_vs_clr" units="deg"> Phase difference 90 Hz clearance and cource</field>
+      <field type="float" name="phi_150_crs_vs_clr" units="deg">Phase difference 150 Hz clearance and cource.</field>
+
+      <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
+    </message>
     
-    <message id="13151" name="ASV_SDR_RECORD_DATA_VOR">
+    <message id="13137" name="ASV_SDR_RECORD_DATA_VOR">
       <description>VOR reciever record data.</description>
       <field type="uint32_t" name="data_index">Data index in record</field>
       <field type="uint16_t" name="record_index">Record index in storage.</field>

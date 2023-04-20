@@ -11,16 +11,22 @@ namespace Asv.Mavlink;
 public interface IAsvSdrClient
 {
     IRxValue<AsvSdrOutStatusPayload> Status { get; }
-    IObservable<AsvSdrRecordPayload> OnRecord { get; }
+    IObservable<(RecordId,AsvSdrRecordPayload)> OnRecord { get; }
     Task<AsvSdrRecordResponsePayload> GetRecordList(ushort startIndex, ushort stopIndex, CancellationToken cancel=default);
-    IObservable<AsvSdrRecordTagPayload> OnRecordTag { get; }
-    Task<AsvSdrRecordDeleteResponsePayload> DeleteRecords(ushort startIndex,ushort stopIndex, CancellationToken cancel=default);
-    Task<AsvSdrRecordTagResponsePayload> GetRecordTagList(ushort recordIndex,ushort startTagIndex, ushort stopTagIndex,CancellationToken cancel=default);
-    Task<AsvSdrRecordTagDeleteResponsePayload> DeleteRecordTags(ushort recordIndex,ushort startIndex,ushort stopIndex, CancellationToken cancel=default);
-    Task<AsvSdrRecordDataResponsePayload> GetRecordDataList(ushort recordIndex,ushort startDataIndex, ushort stopDataIndex, CancellationToken cancel=default);
-    IObservable<AsvSdrRecordDataIlsPayload> OnRecordDataIls { get; }
-    IObservable<AsvSdrRecordDataVorPayload> OnRecordDataVor { get; }
-    Task<AsvSdrRecordDataDeleteResponsePayload> DeleteRecordData(ushort recordIndex,ushort startDataIndex,ushort stopDataIndex, CancellationToken cancel=default);
+    IObservable<(TagId,AsvSdrRecordTagPayload)> OnRecordTag { get; }
+    IObservable<(RecordId,AsvSdrRecordDeleteResponsePayload)> OnDeleteRecord { get; }
+    Task<AsvSdrRecordDeleteResponsePayload> DeleteRecord(RecordId recordName, CancellationToken cancel = default);
+    Task<AsvSdrRecordTagResponsePayload> GetRecordTagList(RecordId recordName, ushort skip, ushort count, CancellationToken cancel = default);
+    IObservable<(TagId, AsvSdrRecordTagDeleteResponsePayload)> OnDeleteRecordTag { get; }
+    Task<AsvSdrRecordTagDeleteResponsePayload> DeleteRecordTag(TagId tag, CancellationToken cancel = default);
+    Task<AsvSdrRecordDataResponsePayload> GetRecordDataList(RecordId recordName, uint skip, uint count, CancellationToken cancel = default);
+    IObservable<IPacketV2<IPayload>> OnRecordData { get; }
+}
+
+public static class AsvSdrClientExtensions
+{
     
 }
+
+
 

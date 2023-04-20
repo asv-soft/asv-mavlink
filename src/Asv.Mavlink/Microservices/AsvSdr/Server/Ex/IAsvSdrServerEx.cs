@@ -18,8 +18,6 @@ public delegate Task<MavResult> StopRecordDelegate(CancellationToken cancel);
 
 public delegate Task<MavResult> CurrentRecordSetTagDelegate(AsvSdrServerRecordTag tag, CancellationToken cancel);
 
-public delegate Task<MavResult> RecordSetTagDelegate(ushort recordIndex, AsvSdrServerRecordTag tag, CancellationToken cancel);
-
 public interface IAsvSdrServerEx
 {
     IAsvSdrServer Base { get; }
@@ -28,7 +26,6 @@ public interface IAsvSdrServerEx
     StartRecordDelegate StartRecord { set; }
     StopRecordDelegate StopRecord { set; }
     CurrentRecordSetTagDelegate CurrentRecordSetTag { set; }
-    RecordSetTagDelegate RecordSetTag { set; }
     
 }
 
@@ -97,7 +94,8 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
         };
         commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag] = async (id,args, cancel) =>
         {
-            SdrWellKnown.ParseCommandParamValue(args.Payload.Param1,out var recordIndex, out var flags, out var tagType);
+            if (CurrentRecordSetTag == null) return new CommandResult(MavResult.MavResultUnsupported);
+            var tagType = BitConverter.ToUInt32(BitConverter.GetBytes(args.Payload.Param1));
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             var nameArray = new byte[SdrWellKnown.RecordTagNameMaxLength];
             BitConverter.GetBytes(args.Payload.Param2).CopyTo(nameArray,0);
@@ -109,20 +107,8 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
             var valueArray = new byte[SdrWellKnown.RecordTagValueMaxLength];
             BitConverter.GetBytes(args.Payload.Param6).CopyTo(valueArray,0);
             BitConverter.GetBytes(args.Payload.Param7).CopyTo(valueArray,4);
-            var tag = new AsvSdrServerRecordTag(tagType, name, valueArray, flags);
-            if (flags.HasFlag(AsvSdrRecordTagFlag.AsvSdrRecordTagFlagForCurrent))
-            {
-                if (CurrentRecordSetTag == null) return new CommandResult(MavResult.MavResultUnsupported);
-                
-                var result1 = await CurrentRecordSetTag(tag, cs.Token).ConfigureAwait(false);
-                return new CommandResult(result1);
-            }
-            else
-            {
-                if (RecordSetTag == null) return new CommandResult(MavResult.MavResultUnsupported);
-                var result2 = await RecordSetTag(recordIndex,tag, cs.Token).ConfigureAwait(false);
-                return new CommandResult(result2);
-            }
+            var result = await CurrentRecordSetTag(new AsvSdrServerRecordTag((AsvSdrRecordTagType)tagType,name,valueArray), cs.Token).ConfigureAwait(false);
+            return new CommandResult(result);
         };
     }
 
@@ -130,7 +116,6 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
     public StartRecordDelegate StartRecord { get; set; }
     public StopRecordDelegate StopRecord { get; set; }
     public CurrentRecordSetTagDelegate CurrentRecordSetTag { get; set; }
-    public RecordSetTagDelegate RecordSetTag { get;set; }
     public IAsvSdrServer Base { get; }
     public IRxEditableValue<AsvSdrCustomMode> CustomMode { get; }
 }

@@ -9,10 +9,8 @@ namespace Asv.Mavlink;
 
 public interface IAsvSdrClientRecord
 {
-    ushort DataMessageId { get; }
-    ushort Index { get; }
-    string Name { get; }
-    IRxValue<AsvSdrCustomMode> RecordMode { get; }
+    RecordId Id { get; }
+    AsvSdrCustomMode RecordMode { get; }
     IRxValue<ulong> Frequency { get; }
     IRxValue<AsvSdrRecordStateFlag> State { get; }
     IRxValue<DateTime> Created { get; }
@@ -20,8 +18,7 @@ public interface IAsvSdrClientRecord
     IRxValue<uint> DataCount { get; }
     IRxValue<uint> ByteSize { get; }
     IRxValue<TimeSpan> Duration { get; }
-    IObservable<IChangeSet<AsvSdrClientRecordTag, ushort>> Tags { get; }
+    IObservable<IChangeSet<AsvSdrClientRecordTag, TagId>> Tags { get; }
     Task<bool> UploadTagList(IProgress<double> progress = null, CancellationToken cancel = default);
-    Task DeleteTags(ushort startIndex, ushort stopIndex, CancellationToken cancel = default);
-    Task DeleteTag(ushort recordIndex, CancellationToken cancel);
+    Task DeleteTag(TagId id, CancellationToken cancel);
 }
