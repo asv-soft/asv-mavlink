@@ -7,7 +7,7 @@ on:
 
 env:
   PATH_TO_PROJECTS: ${{ github.workspace }}\src
-  PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace}}\output\
+  PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}\output\
   NUGET_SOURCE_URL: 'https://api.nuget.org/v3/index.json'
   GITHUB_PACKAGES_URL: 'https://nuget.pkg.github.com/asv-soft/index.json'
 
@@ -36,7 +36,7 @@ jobs:
       - name: Set project version   
         run: |    
           dotnet tool install -g dotnet-setversion    
-          setversion ${{ steps.version.outputs.version-without-v }} ${{ env.PACKAGE_OUTPUT_DIRECTORY }}\Asv.Mavlink\Asv.Mavlink.csproj    
+          setversion ${{ steps.version.outputs.version-without-v }} ${{ env.PATH_TO_PROJECTS }}\Asv.Mavlink\Asv.Mavlink.csproj    
     
       - name: Restore dependencies    
         run: |    
