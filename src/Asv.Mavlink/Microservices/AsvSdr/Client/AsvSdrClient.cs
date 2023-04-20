@@ -12,6 +12,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
 {
     private readonly MavlinkClientIdentity _identity;
     private readonly RxValue<AsvSdrOutStatusPayload> _status;
+    private uint _requestCounter;
 
     public AsvSdrClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq, IScheduler scheduler)
@@ -26,67 +27,56 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
 
     public IObservable<AsvSdrRecordPayload> OnRecord => InternalFilter<AsvSdrRecordPacket>().Select(_ => _.Payload);
 
-    public Task<AsvSdrRecordListResponsePayload> GetRecordList(CancellationToken cancel = default)
+    public Task<AsvSdrRecordResponsePayload> GetRecordList(ushort startIndex, ushort stopIndex, CancellationToken cancel = default)
     {
-        return InternalCall<AsvSdrRecordListResponsePayload, AsvSdrRecordListRequestPacket, AsvSdrRecordListResponsePacket>(_ =>
+        var id = GenerateRequestIndex();
+        return InternalCall<AsvSdrRecordResponsePayload, AsvSdrRecordRequestPacket, AsvSdrRecordResponsePacket>(_ =>
         {
             _.Payload.TargetComponent = _identity.TargetComponentId;
             _.Payload.TargetSystem = _identity.TargetSystemId;
-        },_=>true,resultGetter:_=>_.Payload,cancel: cancel);
+            _.Payload.RecordStartIndex = startIndex;
+            _.Payload.RecordStopIndex = stopIndex;
+            _.Payload.RequestId = id;
+        },_=>_.Payload.RequestId == id,resultGetter:_=>_.Payload,cancel: cancel);
     }
-    public Task<AsvSdrRecordPayload> GetRecord(ushort recordIndex, CancellationToken cancel = default)
+
+    private ushort GenerateRequestIndex()
     {
-        return InternalCall<AsvSdrRecordPayload, AsvSdrRecordReadRequestPacket, AsvSdrRecordPacket>(_ =>
-        {
-            _.Payload.TargetComponent = _identity.TargetComponentId;
-            _.Payload.TargetSystem = _identity.TargetSystemId;
-            _.Payload.RecordIndex = recordIndex;
-        },_=>_.Payload.Index == recordIndex,resultGetter:_=>_.Payload,cancel: cancel);
+        return (ushort)(Interlocked.Increment(ref _requestCounter)%ushort.MaxValue);
     }
+
     public IObservable<AsvSdrRecordTagPayload> OnRecordTag => InternalFilter<AsvSdrRecordTagPacket>().Select(_ => _.Payload);
     public Task<AsvSdrRecordDeleteResponsePayload> DeleteRecords(ushort startIndex, ushort stopIndex, CancellationToken cancel = default)
     {
+        var id = GenerateRequestIndex();
         return InternalCall<AsvSdrRecordDeleteResponsePayload, AsvSdrRecordDeleteRequestPacket, AsvSdrRecordDeleteResponsePacket>(_ =>
         {
             _.Payload.TargetComponent = _identity.TargetComponentId;
             _.Payload.TargetSystem = _identity.TargetSystemId;
             _.Payload.RecordStartIndex = startIndex;
             _.Payload.RecordStopIndex = stopIndex;
-        },_=> _.Payload.RecordStartIndex == startIndex && _.Payload.RecordStopIndex == stopIndex,resultGetter:_=>_.Payload,cancel: cancel);
-    }
-    public Task<AsvSdrRecordTagListResponsePayload> GetRecordTagList(ushort recordIndex, CancellationToken cancel = default)
-    {
-        return InternalCall<AsvSdrRecordTagListResponsePayload, AsvSdrRecordTagListRequestPacket, AsvSdrRecordTagListResponsePacket>(_ =>
-        {
-            _.Payload.TargetComponent = _identity.TargetComponentId;
-            _.Payload.TargetSystem = _identity.TargetSystemId;
-            _.Payload.RecordIndex = recordIndex;
-        },_=>true,resultGetter:_=>_.Payload,cancel: cancel);
+            _.Payload.RequestId = id;
+        },_=> _.Payload.RequestId == id,resultGetter:_=>_.Payload,cancel: cancel);
     }
 
-    public Task<AsvSdrRecordTagPayload> GetRecordTag(ushort recordIndex, ushort tagIndex, CancellationToken cancel = default)
+    public Task<AsvSdrRecordTagResponsePayload> GetRecordTagList(ushort recordIndex, ushort startTagIndex, ushort stopTagIndex,
+        CancellationToken cancel = default)
     {
-        return InternalCall<AsvSdrRecordTagPayload, AsvSdrRecordTagReadRequestPacket, AsvSdrRecordTagPacket>(_ =>
+        var id = GenerateRequestIndex();
+        return InternalCall<AsvSdrRecordTagResponsePayload, AsvSdrRecordTagRequestPacket, AsvSdrRecordTagResponsePacket>(_ =>
         {
             _.Payload.TargetComponent = _identity.TargetComponentId;
             _.Payload.TargetSystem = _identity.TargetSystemId;
             _.Payload.RecordIndex = recordIndex;
-            _.Payload.TagIndex = tagIndex;
-        },_=>_.Payload.RecordIndex == recordIndex && _.Payload.TagIndex == tagIndex,resultGetter:_=>_.Payload,cancel: cancel);
-    }
-
-    public Task<AsvSdrRecordDataListResponsePayload> GetRecordDataList(ushort recordIndex, CancellationToken cancel = default)
-    {
-        return InternalCall<AsvSdrRecordDataListResponsePayload, AsvSdrRecordDataListRequestPacket, AsvSdrRecordDataListResponsePacket>(_ =>
-        {
-            _.Payload.TargetComponent = _identity.TargetComponentId;
-            _.Payload.TargetSystem = _identity.TargetSystemId;
-            _.Payload.RecordIndex = recordIndex;
-        },_=>true,resultGetter:_=>_.Payload,cancel: cancel);
+            _.Payload.TagStartIndex = startTagIndex;
+            _.Payload.TagStopIndex = stopTagIndex;
+            _.Payload.RequestId = id;
+        },_=>_.Payload.RequestId==id,resultGetter:_=>_.Payload,cancel: cancel);
     }
 
     public Task<AsvSdrRecordTagDeleteResponsePayload> DeleteRecordTags(ushort recordIndex, ushort startIndex, ushort stopIndex, CancellationToken cancel = default)
     {
+        var id = GenerateRequestIndex();
         return InternalCall<AsvSdrRecordTagDeleteResponsePayload, AsvSdrRecordTagDeleteRequestPacket, AsvSdrRecordTagDeleteResponsePacket>(_ =>
         {
             _.Payload.TargetComponent = _identity.TargetComponentId;
@@ -94,36 +84,31 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
             _.Payload.RecordIndex = recordIndex;
             _.Payload.TagStartIndex = startIndex;
             _.Payload.TagStopIndex = stopIndex;
-        },_=>_.Payload.RecordIndex == recordIndex && _.Payload.TagStartIndex == startIndex && _.Payload.TagStopIndex == stopIndex,resultGetter:_=>_.Payload,cancel: cancel);
+            _.Payload.RequestId = id;
+        },_=>_.Payload.RequestId == id,resultGetter:_=>_.Payload,cancel: cancel);
+    }
+
+    public Task<AsvSdrRecordDataResponsePayload> GetRecordDataList(ushort recordIndex, ushort startDataIndex, ushort stopDataIndex,
+        CancellationToken cancel = default)
+    {
+        var id = GenerateRequestIndex();
+        return InternalCall<AsvSdrRecordDataResponsePayload, AsvSdrRecordDataRequestPacket, AsvSdrRecordDataResponsePacket>(_ =>
+        {
+            _.Payload.TargetComponent = _identity.TargetComponentId;
+            _.Payload.TargetSystem = _identity.TargetSystemId;
+            _.Payload.RecordIndex = recordIndex;
+            _.Payload.DataStartIndex = startDataIndex;
+            _.Payload.DataStopIndex = stopDataIndex;
+            _.Payload.RequestId = id;
+        },_=>_.Payload.RequestId == id,resultGetter:_=>_.Payload,cancel: cancel);
     }
 
     public IObservable<AsvSdrRecordDataIlsPayload> OnRecordDataIls => InternalFilter<AsvSdrRecordDataIlsPacket>().Select(_ => _.Payload);
-
-    public Task<AsvSdrRecordDataIlsPayload> GetRecordDataIls(ushort recordIndex, uint dataIndex, CancellationToken cancel = default)
-    {
-        return InternalCall<AsvSdrRecordDataIlsPayload, AsvSdrRecordDataReadRequestPacket, AsvSdrRecordDataIlsPacket>(_ =>
-        {
-            _.Payload.TargetComponent = _identity.TargetComponentId;
-            _.Payload.TargetSystem = _identity.TargetSystemId;
-            _.Payload.RecordIndex = recordIndex;
-            _.Payload.DataIndex = dataIndex;
-        },_=>_.Payload.RecordIndex == recordIndex && _.Payload.DataIndex == dataIndex,resultGetter:_=>_.Payload,cancel: cancel);
-    }
-
     public IObservable<AsvSdrRecordDataVorPayload> OnRecordDataVor => InternalFilter<AsvSdrRecordDataVorPacket>().Select(_ => _.Payload);
-    public Task<AsvSdrRecordDataVorPayload> GetRecordDataVor(ushort recordIndex, uint dataIndex, CancellationToken cancel = default)
-    {
-        return InternalCall<AsvSdrRecordDataVorPayload, AsvSdrRecordDataReadRequestPacket, AsvSdrRecordDataVorPacket>(_ =>
-        {
-            _.Payload.TargetComponent = _identity.TargetComponentId;
-            _.Payload.TargetSystem = _identity.TargetSystemId;
-            _.Payload.RecordIndex = recordIndex;
-            _.Payload.DataIndex = dataIndex;
-        },_=>_.Payload.RecordIndex == recordIndex && _.Payload.DataIndex == dataIndex,resultGetter:_=>_.Payload,cancel: cancel);
-    }
 
     public Task<AsvSdrRecordDataDeleteResponsePayload> DeleteRecordData(ushort recordIndex, ushort startIndex, ushort stopIndex, CancellationToken cancel = default)
     {
+        var id = GenerateRequestIndex();
         return InternalCall<AsvSdrRecordDataDeleteResponsePayload, AsvSdrRecordDataDeleteRequestPacket, AsvSdrRecordDataDeleteResponsePacket>(_ =>
         {
             _.Payload.TargetComponent = _identity.TargetComponentId;
@@ -131,6 +116,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
             _.Payload.RecordIndex = recordIndex;
             _.Payload.StartDataIndex = startIndex;
             _.Payload.StopDataIndex = stopIndex;
-        },_=>_.Payload.RecordIndex == recordIndex && _.Payload.StartDataIndex == startIndex && _.Payload.StopDataIndex == stopIndex,resultGetter:_=>_.Payload,cancel: cancel);
+            _.Payload.RequestId = id;
+        },_=>_.Payload.RequestId == id,resultGetter:_=>_.Payload,cancel: cancel);
     }
 }

@@ -81,7 +81,7 @@ public class AsvSdrClientRecord:DisposableOnceWithCancel, IAsvSdrClientRecord
         using var request = _client.OnRecordTag.Where(_=>_.RecordIndex == Index)
             .Do(_=>lastUpdate = DateTime.Now)
             .Subscribe();
-        var requestAck = await _client.GetRecordTagList(Index,cancel).ConfigureAwait(false);
+        var requestAck = await _client.GetRecordTagList(Index,0,ushort.MaxValue,cancel).ConfigureAwait(false);
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckInProgress)
             throw new Exception("Request already in progress");
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 

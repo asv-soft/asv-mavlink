@@ -9,21 +9,18 @@ namespace Asv.Mavlink
     {
         void Start();
         void Set(Action<AsvSdrOutStatusPayload> changeCallback);
-        IObservable<AsvSdrRecordListRequestPayload> OnGetRecordList { get; }
-        Task SendRecordList(Action<AsvSdrRecordListResponsePayload> setValueCallback, CancellationToken cancel = default);
-        IObservable<AsvSdrRecordReadRequestPayload> OnGetRecord { get; }
+        IObservable<AsvSdrRecordRequestPayload> OnGetRecordList { get; }
+        Task SendRecordList(Action<AsvSdrRecordResponsePayload> setValueCallback, CancellationToken cancel = default);
         Task SendRecord(Action<AsvSdrRecordPayload> setValueCallback, CancellationToken cancel = default);
         IObservable<AsvSdrRecordDeleteRequestPayload> OnRecordDelete { get; }
         Task SendRecordDelete(Action<AsvSdrRecordDeleteResponsePayload> setValueCallback, CancellationToken cancel = default);
-        IObservable<AsvSdrRecordTagListRequestPayload> OnGetRecordTagList { get; }
-        Task SendRecordTagList(Action<AsvSdrRecordTagListResponsePayload> setValueCallback, CancellationToken cancel = default);
-        IObservable<AsvSdrRecordTagReadRequestPayload> OnGetRecordTag { get; }
+        IObservable<AsvSdrRecordTagRequestPayload> OnGetRecordTagList { get; }
+        Task SendRecordTagList(Action<AsvSdrRecordTagResponsePayload> setValueCallback, CancellationToken cancel = default);
         Task SendRecordTag(Action<AsvSdrRecordTagPayload> setValueCallback, CancellationToken cancel = default);
         IObservable<AsvSdrRecordTagDeleteRequestPayload> OnRecordTagDelete { get; }
         Task SendRecordTagDelete(Action<AsvSdrRecordTagDeleteResponsePayload> setValueCallback, CancellationToken cancel = default);
-        IObservable<AsvSdrRecordDataListRequestPayload> OnGetRecordDataList { get; }
-        Task SendRecordDataList(Action<AsvSdrRecordDataListResponsePayload> setValueCallback, CancellationToken cancel = default);
-        IObservable<AsvSdrRecordDataReadRequestPayload> OnGetRecordDataIls { get; }
+        IObservable<AsvSdrRecordDataRequestPayload> OnGetRecordDataList { get; }
+        Task SendRecordDataList(Action<AsvSdrRecordDataResponsePayload> setValueCallback, CancellationToken cancel = default);
         Task SendRecordDataIls(Action<AsvSdrRecordDataIlsPayload> setValueCallback, CancellationToken cancel = default);
         Task SendRecordDataVor(Action<AsvSdrRecordDataVorPayload> setValueCallback, CancellationToken cancel = default);
         IObservable<AsvSdrRecordDataDeleteRequestPayload> OnRecordDataDelete { get; }

@@ -73,7 +73,7 @@ public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, IC
             Logger.Error($"Error to execute command {pkt}:{e.Message}");
             _lastCommand = -1;
             await Base.SendCommandAck((MavCmd)cmd, requester,
-                new CommandResult(MavResult.MavResultTemporarilyRejected), DisposeCancel).ConfigureAwait(false);
+                new CommandResult(MavResult.MavResultFailed), DisposeCancel).ConfigureAwait(false);
 
         }
         finally

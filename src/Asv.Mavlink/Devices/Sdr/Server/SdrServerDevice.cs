@@ -8,7 +8,7 @@ namespace Asv.Mavlink;
 
 public class SdrServerDeviceConfig : ServerDeviceConfig
 {
-    public AsvGbsServerConfig Gbs { get; set; } = new();
+    public AsvSdrServerConfig Sdr { get; set; } = new();
 }
 
 public class SdrServerDevice:ServerDevice, ISdrServerDevice
@@ -22,20 +22,21 @@ public class SdrServerDevice:ServerDevice, ISdrServerDevice
     {
         if (config == null) throw new ArgumentNullException(nameof(config));
         
-        var gbs = new AsvGbsServer(connection, seq, identity,config.Gbs, scheduler).DisposeItWith(Disposable);
+        var sdr = new AsvSdrServer(connection, identity, config.Sdr,seq, scheduler).DisposeItWith(Disposable);
         var cmd = new CommandServer(connection, seq, identity, scheduler).DisposeItWith(Disposable);
         CommandLongEx = new CommandLongServerEx(cmd).DisposeItWith(Disposable);
-        GbsEx = new AsvGbsExServer(gbs, Heartbeat, CommandLongEx).DisposeItWith(Disposable);
-        
-        
+        SdrEx = new AsvSdrServerEx(sdr, Heartbeat, CommandLongEx).DisposeItWith(Disposable);
+        var paramsBase = new ParamsServer(connection, seq, identity, scheduler).DisposeItWith(Disposable);
+        Params = new ParamsServerEx(paramsBase).DisposeItWith(Disposable);
     }
 
     public override void Start()
     {
         base.Start();
-        GbsEx.Base.Start();
+        SdrEx.Base.Start();
     }
     
-    public IAsvGbsServerEx GbsEx { get; }
+    public IAsvSdrServerEx SdrEx { get; }
     public ICommandServerEx<CommandLongPacket> CommandLongEx { get; }
+    public IParamsServerEx Params { get; }
 }

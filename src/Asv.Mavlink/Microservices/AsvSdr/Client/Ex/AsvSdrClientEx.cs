@@ -4,7 +4,6 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.Sdr;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
@@ -60,7 +59,8 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
                 updater.AddOrUpdate(new AsvSdrClientRecord(_,client,config));
             }
         })).DisposeItWith(Disposable);
-        Records = _records.Connect().DisposeMany().RefCount();
+        
+        Records = _records.Connect().RefCount();
     }
     
     public async Task DeleteRecord(ushort recordIndex, CancellationToken cancel)
@@ -91,14 +91,14 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         _records.RemoveKeys(Enumerable.Range(startIndex,stopIndex-startIndex).Select(_=>(ushort)_));
     }
 
-    public async Task<bool> UploadRecordList(IProgress<double> progress, CancellationToken cancel)
+    public async Task<bool> DownloadRecordList(IProgress<double> progress, CancellationToken cancel)
     {
         var lastUpdate = DateTime.Now;
         _records.Clear();
         using var request = Base.OnRecord
             .Do(_=>lastUpdate = DateTime.Now)
             .Subscribe();
-        var requestAck = await Base.GetRecordList(cancel).ConfigureAwait(false);
+        var requestAck = await Base.GetRecordList(0,ushort.MaxValue,cancel).ConfigureAwait(false);
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckInProgress)
             throw new Exception("Request already in progress");
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
@@ -112,13 +112,17 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         return _records.Count == requestAck.ItemsCount;
     }
 
+   
+
+
     public IAsvSdrClient Base { get; }
     public IRxValue<AsvSdrSupportModeFlag> SupportedModes => _supportedModes;
     public IRxValue<AsvSdrCustomMode> CustomMode => _customMode;
     public IRxValue<ushort> RecordsCount => _recordsCount;
     public IObservable<IChangeSet<AsvSdrClientRecord,ushort>> Records { get; }
     
-    public async Task<MavResult> SetMode(AsvSdrCustomMode mode, ulong frequencyHz, float sendDataRate, CancellationToken cancel)
+    public async Task<MavResult> SetMode(AsvSdrCustomMode mode, ulong frequencyHz, float recordRate, uint sendingThinningRatio,
+        CancellationToken cancel)
     {
         var freqArray = BitConverter.GetBytes(frequencyHz);
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
@@ -126,8 +130,8 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
             BitConverter.ToSingle(BitConverter.GetBytes((uint)mode)),
             BitConverter.ToSingle(freqArray,0),
             BitConverter.ToSingle(freqArray,4),
-            sendDataRate,
-            Single.NaN,
+            recordRate,
+            BitConverter.ToSingle(BitConverter.GetBytes(sendingThinningRatio)),
             Single.NaN,
             Single.NaN,
             cs.Token).ConfigureAwait(false);
@@ -136,8 +140,7 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
 
     public async Task<MavResult> StartRecord(string recordName, CancellationToken cancel)
     {
-        if (recordName.IsNullOrWhiteSpace()) throw new Exception("Record name is empty");
-        if (recordName.Length > SdrWellKnown.RecordNameMaxLength) throw new Exception($"Record name is too long. Max length is {SdrWellKnown.RecordNameMaxLength}");
+        SdrWellKnown.CheckRecordName(recordName);
         var nameArray = new byte[SdrWellKnown.RecordNameMaxLength];
         MavlinkTypesHelper.SetString(nameArray,recordName);
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
@@ -148,7 +151,7 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
             BitConverter.ToSingle(nameArray,12),
             BitConverter.ToSingle(nameArray,16),
             BitConverter.ToSingle(nameArray,20),
-            BitConverter.ToSingle(nameArray,27),
+            BitConverter.ToSingle(nameArray,24),
             cs.Token).ConfigureAwait(false);
         return result.Result;
     }
@@ -168,10 +171,9 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         return result.Result;
     }
 
-    public async Task<MavResult> CurrentRecordSetTag(AsvSdrRecordTag tag, CancellationToken cancel)
+    public async Task<MavResult> CurrentRecordSetTag(AsvSdrClientRecordTag tag, CancellationToken cancel)
     {
-        if (tag.Name.IsNullOrWhiteSpace()) throw new Exception("Record name is empty");
-        if (tag.Name.Length > SdrWellKnown.RecordTagNameMaxLength) throw new Exception($"Record tag name is too long. Max length is {SdrWellKnown.RecordTagNameMaxLength}");
+        SdrWellKnown.CheckTagName(tag.Name);
         var nameArray = new byte[SdrWellKnown.RecordTagNameMaxLength];
         MavlinkTypesHelper.SetString(nameArray,tag.Name);
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
@@ -187,10 +189,9 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         return result.Result;
     }
 
-    public async Task<MavResult> RecordSetTag(ushort recordIndex, AsvSdrRecordTag tag, CancellationToken cancel)
+    public async Task<MavResult> RecordSetTag(ushort recordIndex, AsvSdrClientRecordTag tag, CancellationToken cancel)
     {
-        if (tag.Name.IsNullOrWhiteSpace()) throw new Exception("Record name is empty");
-        if (tag.Name.Length > SdrWellKnown.RecordTagNameMaxLength) throw new Exception($"Record tag name is too long. Max length is {SdrWellKnown.RecordTagNameMaxLength}");
+        SdrWellKnown.CheckTagName(tag.Name);
         var nameArray = new byte[SdrWellKnown.RecordTagNameMaxLength];
         MavlinkTypesHelper.SetString(nameArray,tag.Name);
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);

@@ -35,21 +35,18 @@ namespace Asv.Mavlink.V2.AsvSdr
         public static void RegisterAsvSdrDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
         {
             src.Register(()=>new AsvSdrOutStatusPacket());
-            src.Register(()=>new AsvSdrRecordListRequestPacket());
-            src.Register(()=>new AsvSdrRecordListResponsePacket());
-            src.Register(()=>new AsvSdrRecordReadRequestPacket());
+            src.Register(()=>new AsvSdrRecordRequestPacket());
+            src.Register(()=>new AsvSdrRecordResponsePacket());
             src.Register(()=>new AsvSdrRecordPacket());
             src.Register(()=>new AsvSdrRecordDeleteRequestPacket());
             src.Register(()=>new AsvSdrRecordDeleteResponsePacket());
-            src.Register(()=>new AsvSdrRecordTagListRequestPacket());
-            src.Register(()=>new AsvSdrRecordTagListResponsePacket());
-            src.Register(()=>new AsvSdrRecordTagReadRequestPacket());
+            src.Register(()=>new AsvSdrRecordTagRequestPacket());
+            src.Register(()=>new AsvSdrRecordTagResponsePacket());
             src.Register(()=>new AsvSdrRecordTagPacket());
             src.Register(()=>new AsvSdrRecordTagDeleteRequestPacket());
             src.Register(()=>new AsvSdrRecordTagDeleteResponsePacket());
-            src.Register(()=>new AsvSdrRecordDataListRequestPacket());
-            src.Register(()=>new AsvSdrRecordDataListResponsePacket());
-            src.Register(()=>new AsvSdrRecordDataReadRequestPacket());
+            src.Register(()=>new AsvSdrRecordDataRequestPacket());
+            src.Register(()=>new AsvSdrRecordDataResponsePacket());
             src.Register(()=>new AsvSdrRecordDataDeleteRequestPacket());
             src.Register(()=>new AsvSdrRecordDataDeleteResponsePacket());
             src.Register(()=>new AsvSdrRecordDataIlsPacket());
@@ -81,8 +78,8 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// Param 1 - Mode (uint32_t, see ASV_SDR_CUSTOM_MODE).
         /// Param 2 - Frequency in Hz, 0-3 bytes of uint_64, ignored for IDLE mode (uint32).
         /// Param 3 - Frequency in Hz, 4-7 bytes of uint_64, ignored for IDLE mode (uint32).
-        /// Param 4 - Stream rate for sending record data in Hz, ignored for IDLE mode (float).
-        /// Param 5 - Empty.
+        /// Param 4 - Record rate in Hz, ignored for IDLE mode (float).
+        /// Param 5 - Sending data thinning ratio. Each specified amount of recorded data will be skipped before it is sent over the communication channel. (uint32).
         /// Param 6 - Empty.
         /// Param 7 - Empty.
         /// MAV_CMD_ASV_SDR_SET_MODE
@@ -319,30 +316,33 @@ namespace Asv.Mavlink.V2.AsvSdr
         public ushort RecordCount { get; set; }
     }
     /// <summary>
-    /// Request the overall list of ASV_SDR_RECORD info items from the system/component.
-    ///  ASV_SDR_RECORD_LIST_REQUEST
+    /// Request list of ASV_SDR_RECORD from the system/component.
+    ///  ASV_SDR_RECORD_REQUEST
     /// </summary>
-    public class AsvSdrRecordListRequestPacket: PacketV2<AsvSdrRecordListRequestPayload>
+    public class AsvSdrRecordRequestPacket: PacketV2<AsvSdrRecordRequestPayload>
     {
 	    public const int PacketMessageId = 13101;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 25;
+        public override byte GetCrcEtra() => 75;
 
-        public override AsvSdrRecordListRequestPayload Payload { get; } = new AsvSdrRecordListRequestPayload();
+        public override AsvSdrRecordRequestPayload Payload { get; } = new AsvSdrRecordRequestPayload();
 
-        public override string Name => "ASV_SDR_RECORD_LIST_REQUEST";
+        public override string Name => "ASV_SDR_RECORD_REQUEST";
     }
 
     /// <summary>
-    ///  ASV_SDR_RECORD_LIST_REQUEST
+    ///  ASV_SDR_RECORD_REQUEST
     /// </summary>
-    public class AsvSdrRecordListRequestPayload : IPayload
+    public class AsvSdrRecordRequestPayload : IPayload
     {
-        public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
+            RequestId = BinSerialize.ReadUShort(ref buffer);
+            RecordStartIndex = BinSerialize.ReadUShort(ref buffer);
+            RecordStopIndex = BinSerialize.ReadUShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
 
@@ -350,13 +350,31 @@ namespace Asv.Mavlink.V2.AsvSdr
 
         public void Serialize(ref Span<byte> buffer)
         {
+            BinSerialize.WriteUShort(ref buffer,RequestId);
+            BinSerialize.WriteUShort(ref buffer,RecordStartIndex);
+            BinSerialize.WriteUShort(ref buffer,RecordStopIndex);
             BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
-            /* PayloadByteSize = 2 */;
+            /* PayloadByteSize = 8 */;
         }
 
 
 
+        /// <summary>
+        /// Request unique number. This is to allow the response packet to be detected.
+        /// OriginName: request_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RequestId { get; set; }
+        /// <summary>
+        /// Record start index.
+        /// OriginName: record_start_index, Units: , IsExtended: false
+        /// </summary>
+        public ushort RecordStartIndex { get; set; }
+        /// <summary>
+        /// Record stop index.
+        /// OriginName: record_stop_index, Units: , IsExtended: false
+        /// </summary>
+        public ushort RecordStopIndex { get; set; }
         /// <summary>
         /// System ID
         /// OriginName: target_system, Units: , IsExtended: false
@@ -369,30 +387,31 @@ namespace Asv.Mavlink.V2.AsvSdr
         public byte TargetComponent { get; set; }
     }
     /// <summary>
-    /// Response for ASV_SDR_RECORD_LIST_REQUEST request.
-    ///  ASV_SDR_RECORD_LIST_RESPONSE
+    /// Response for ASV_SDR_RECORD_REQUEST request. If success, device additional send ASV_SDR_RECORD items from start to stop index.
+    ///  ASV_SDR_RECORD_RESPONSE
     /// </summary>
-    public class AsvSdrRecordListResponsePacket: PacketV2<AsvSdrRecordListResponsePayload>
+    public class AsvSdrRecordResponsePacket: PacketV2<AsvSdrRecordResponsePayload>
     {
 	    public const int PacketMessageId = 13102;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 0;
+        public override byte GetCrcEtra() => 13;
 
-        public override AsvSdrRecordListResponsePayload Payload { get; } = new AsvSdrRecordListResponsePayload();
+        public override AsvSdrRecordResponsePayload Payload { get; } = new AsvSdrRecordResponsePayload();
 
-        public override string Name => "ASV_SDR_RECORD_LIST_RESPONSE";
+        public override string Name => "ASV_SDR_RECORD_RESPONSE";
     }
 
     /// <summary>
-    ///  ASV_SDR_RECORD_LIST_RESPONSE
+    ///  ASV_SDR_RECORD_RESPONSE
     /// </summary>
-    public class AsvSdrRecordListResponsePayload : IPayload
+    public class AsvSdrRecordResponsePayload : IPayload
     {
-        public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
+            RequestId = BinSerialize.ReadUShort(ref buffer);
             ItemsCount = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvSdrRequestAck)BinSerialize.ReadByte(ref buffer);
 
@@ -400,15 +419,21 @@ namespace Asv.Mavlink.V2.AsvSdr
 
         public void Serialize(ref Span<byte> buffer)
         {
+            BinSerialize.WriteUShort(ref buffer,RequestId);
             BinSerialize.WriteUShort(ref buffer,ItemsCount);
             BinSerialize.WriteByte(ref buffer,(byte)Result);
-            /* PayloadByteSize = 3 */;
+            /* PayloadByteSize = 5 */;
         }
 
 
 
         /// <summary>
-        /// Number of items for transmition.
+        /// Request unique number. This is to allow the response packet to be detected. Must be copied from request.
+        /// OriginName: request_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RequestId { get; set; }
+        /// <summary>
+        /// Number of items for transmition (depended from request).
         /// OriginName: items_count, Units: , IsExtended: false
         /// </summary>
         public ushort ItemsCount { get; set; }
@@ -419,69 +444,12 @@ namespace Asv.Mavlink.V2.AsvSdr
         public AsvSdrRequestAck Result { get; set; }
     }
     /// <summary>
-    /// Request to read ASV_SDR_RECORD with either record_index from the system/component.
-    ///  ASV_SDR_RECORD_READ_REQUEST
-    /// </summary>
-    public class AsvSdrRecordReadRequestPacket: PacketV2<AsvSdrRecordReadRequestPayload>
-    {
-	    public const int PacketMessageId = 13103;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 12;
-
-        public override AsvSdrRecordReadRequestPayload Payload { get; } = new AsvSdrRecordReadRequestPayload();
-
-        public override string Name => "ASV_SDR_RECORD_READ_REQUEST";
-    }
-
-    /// <summary>
-    ///  ASV_SDR_RECORD_READ_REQUEST
-    /// </summary>
-    public class AsvSdrRecordReadRequestPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer)
-        {
-            RecordIndex = BinSerialize.ReadUShort(ref buffer);
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-
-        }
-
-        public void Serialize(ref Span<byte> buffer)
-        {
-            BinSerialize.WriteUShort(ref buffer,RecordIndex);
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
-            /* PayloadByteSize = 4 */;
-        }
-
-
-
-        /// <summary>
-        /// Record index in storage.
-        /// OriginName: record_index, Units: , IsExtended: false
-        /// </summary>
-        public ushort RecordIndex { get; set; }
-        /// <summary>
-        /// System ID.
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID.
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-    }
-    /// <summary>
     /// SDR payload record info.
     ///  ASV_SDR_RECORD
     /// </summary>
     public class AsvSdrRecordPacket: PacketV2<AsvSdrRecordPayload>
     {
-	    public const int PacketMessageId = 13104;
+	    public const int PacketMessageId = 13103;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 177;
 
@@ -612,14 +580,14 @@ namespace Asv.Mavlink.V2.AsvSdr
         public byte GetNameMaxItemsCount() => 28;
     }
     /// <summary>
-    /// Request to delete ASV_SDR_RECORD with either record_index from the system/component.
+    /// Request to delete ASV_SDR_RECORD items from the system/component.
     ///  ASV_SDR_RECORD_DELETE_REQUEST
     /// </summary>
     public class AsvSdrRecordDeleteRequestPacket: PacketV2<AsvSdrRecordDeleteRequestPayload>
     {
-	    public const int PacketMessageId = 13105;
+	    public const int PacketMessageId = 13104;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 134;
+        public override byte GetCrcEtra() => 93;
 
         public override AsvSdrRecordDeleteRequestPayload Payload { get; } = new AsvSdrRecordDeleteRequestPayload();
 
@@ -631,11 +599,12 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDeleteRequestPayload : IPayload
     {
-        public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
+            RequestId = BinSerialize.ReadUShort(ref buffer);
             RecordStartIndex = BinSerialize.ReadUShort(ref buffer);
             RecordStopIndex = BinSerialize.ReadUShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
@@ -645,22 +614,28 @@ namespace Asv.Mavlink.V2.AsvSdr
 
         public void Serialize(ref Span<byte> buffer)
         {
+            BinSerialize.WriteUShort(ref buffer,RequestId);
             BinSerialize.WriteUShort(ref buffer,RecordStartIndex);
             BinSerialize.WriteUShort(ref buffer,RecordStopIndex);
             BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
-            /* PayloadByteSize = 6 */;
+            /* PayloadByteSize = 8 */;
         }
 
 
 
         /// <summary>
-        /// Record start index in record.
+        /// Request unique number. This is to allow the response packet to be detected.
+        /// OriginName: request_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RequestId { get; set; }
+        /// <summary>
+        /// Record start index.
         /// OriginName: record_start_index, Units: , IsExtended: false
         /// </summary>
         public ushort RecordStartIndex { get; set; }
         /// <summary>
-        /// Record stop index in record.
+        /// Record stop index.
         /// OriginName: record_stop_index, Units: , IsExtended: false
         /// </summary>
         public ushort RecordStopIndex { get; set; }
@@ -676,14 +651,14 @@ namespace Asv.Mavlink.V2.AsvSdr
         public byte TargetComponent { get; set; }
     }
     /// <summary>
-    /// Request to delete ASV_SDR_RECORD with either record_index from the system/component.
+    /// Response for ASV_SDR_RECORD_DELETE_REQUEST.
     ///  ASV_SDR_RECORD_DELETE_RESPONSE
     /// </summary>
     public class AsvSdrRecordDeleteResponsePacket: PacketV2<AsvSdrRecordDeleteResponsePayload>
     {
-	    public const int PacketMessageId = 13106;
+	    public const int PacketMessageId = 13105;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 13;
+        public override byte GetCrcEtra() => 113;
 
         public override AsvSdrRecordDeleteResponsePayload Payload { get; } = new AsvSdrRecordDeleteResponsePayload();
 
@@ -695,51 +670,37 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDeleteResponsePayload : IPayload
     {
-        public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            RecordStartIndex = BinSerialize.ReadUShort(ref buffer);
-            RecordStopIndex = BinSerialize.ReadUShort(ref buffer);
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
+            RequestId = BinSerialize.ReadUShort(ref buffer);
+            ItemsCount = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvSdrRequestAck)BinSerialize.ReadByte(ref buffer);
 
         }
 
         public void Serialize(ref Span<byte> buffer)
         {
-            BinSerialize.WriteUShort(ref buffer,RecordStartIndex);
-            BinSerialize.WriteUShort(ref buffer,RecordStopIndex);
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
+            BinSerialize.WriteUShort(ref buffer,RequestId);
+            BinSerialize.WriteUShort(ref buffer,ItemsCount);
             BinSerialize.WriteByte(ref buffer,(byte)Result);
-            /* PayloadByteSize = 7 */;
+            /* PayloadByteSize = 5 */;
         }
 
 
 
         /// <summary>
-        /// Record start index in record.
-        /// OriginName: record_start_index, Units: , IsExtended: false
+        /// Request unique number. This is to allow the response packet to be detected. Must be copied from request.
+        /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public ushort RecordStartIndex { get; set; }
+        public ushort RequestId { get; set; }
         /// <summary>
-        /// Record stop index in record.
-        /// OriginName: record_stop_index, Units: , IsExtended: false
+        /// Number of deleted records.
+        /// OriginName: items_count, Units: , IsExtended: false
         /// </summary>
-        public ushort RecordStopIndex { get; set; }
-        /// <summary>
-        /// System ID.
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID.
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
+        public ushort ItemsCount { get; set; }
         /// <summary>
         /// Result code.
         /// OriginName: result, Units: , IsExtended: false
@@ -747,31 +708,34 @@ namespace Asv.Mavlink.V2.AsvSdr
         public AsvSdrRequestAck Result { get; set; }
     }
     /// <summary>
-    /// Request the overall list of ASV_SDR_RECORD_TAG items from the system/component.
-    ///  ASV_SDR_RECORD_TAG_LIST_REQUEST
+    /// Request list of ASV_SDR_RECORD_TAG from the system/component.
+    ///  ASV_SDR_RECORD_TAG_REQUEST
     /// </summary>
-    public class AsvSdrRecordTagListRequestPacket: PacketV2<AsvSdrRecordTagListRequestPayload>
+    public class AsvSdrRecordTagRequestPacket: PacketV2<AsvSdrRecordTagRequestPayload>
     {
 	    public const int PacketMessageId = 13110;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 40;
+        public override byte GetCrcEtra() => 205;
 
-        public override AsvSdrRecordTagListRequestPayload Payload { get; } = new AsvSdrRecordTagListRequestPayload();
+        public override AsvSdrRecordTagRequestPayload Payload { get; } = new AsvSdrRecordTagRequestPayload();
 
-        public override string Name => "ASV_SDR_RECORD_TAG_LIST_REQUEST";
+        public override string Name => "ASV_SDR_RECORD_TAG_REQUEST";
     }
 
     /// <summary>
-    ///  ASV_SDR_RECORD_TAG_LIST_REQUEST
+    ///  ASV_SDR_RECORD_TAG_REQUEST
     /// </summary>
-    public class AsvSdrRecordTagListRequestPayload : IPayload
+    public class AsvSdrRecordTagRequestPayload : IPayload
     {
-        public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 10; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 10; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
+            RequestId = BinSerialize.ReadUShort(ref buffer);
             RecordIndex = BinSerialize.ReadUShort(ref buffer);
+            TagStartIndex = BinSerialize.ReadUShort(ref buffer);
+            TagStopIndex = BinSerialize.ReadUShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
 
@@ -779,19 +743,37 @@ namespace Asv.Mavlink.V2.AsvSdr
 
         public void Serialize(ref Span<byte> buffer)
         {
+            BinSerialize.WriteUShort(ref buffer,RequestId);
             BinSerialize.WriteUShort(ref buffer,RecordIndex);
+            BinSerialize.WriteUShort(ref buffer,TagStartIndex);
+            BinSerialize.WriteUShort(ref buffer,TagStopIndex);
             BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
-            /* PayloadByteSize = 4 */;
+            /* PayloadByteSize = 10 */;
         }
 
 
 
         /// <summary>
+        /// Request unique number. This is to allow the response packet to be detected.
+        /// OriginName: request_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RequestId { get; set; }
+        /// <summary>
         /// Record index in storage.
         /// OriginName: record_index, Units: , IsExtended: false
         /// </summary>
         public ushort RecordIndex { get; set; }
+        /// <summary>
+        /// Tag start index.
+        /// OriginName: tag_start_index, Units: , IsExtended: false
+        /// </summary>
+        public ushort TagStartIndex { get; set; }
+        /// <summary>
+        /// Tag stop index.
+        /// OriginName: tag_stop_index, Units: , IsExtended: false
+        /// </summary>
+        public ushort TagStopIndex { get; set; }
         /// <summary>
         /// System ID
         /// OriginName: target_system, Units: , IsExtended: false
@@ -804,30 +786,31 @@ namespace Asv.Mavlink.V2.AsvSdr
         public byte TargetComponent { get; set; }
     }
     /// <summary>
-    /// Response for ASV_SDR_RECORD_TAG_LIST_REQUEST.
-    ///  ASV_SDR_RECORD_TAG_LIST_RESPONSE
+    /// Response for ASV_SDR_RECORD_TAG_REQUEST. If success, device additional send ASV_SDR_RECORD_TAG items from start to stop index.
+    ///  ASV_SDR_RECORD_TAG_RESPONSE
     /// </summary>
-    public class AsvSdrRecordTagListResponsePacket: PacketV2<AsvSdrRecordTagListResponsePayload>
+    public class AsvSdrRecordTagResponsePacket: PacketV2<AsvSdrRecordTagResponsePayload>
     {
 	    public const int PacketMessageId = 13111;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 236;
+        public override byte GetCrcEtra() => 187;
 
-        public override AsvSdrRecordTagListResponsePayload Payload { get; } = new AsvSdrRecordTagListResponsePayload();
+        public override AsvSdrRecordTagResponsePayload Payload { get; } = new AsvSdrRecordTagResponsePayload();
 
-        public override string Name => "ASV_SDR_RECORD_TAG_LIST_RESPONSE";
+        public override string Name => "ASV_SDR_RECORD_TAG_RESPONSE";
     }
 
     /// <summary>
-    ///  ASV_SDR_RECORD_TAG_LIST_RESPONSE
+    ///  ASV_SDR_RECORD_TAG_RESPONSE
     /// </summary>
-    public class AsvSdrRecordTagListResponsePayload : IPayload
+    public class AsvSdrRecordTagResponsePayload : IPayload
     {
-        public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
+            RequestId = BinSerialize.ReadUShort(ref buffer);
             ItemsCount = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvSdrRequestAck)BinSerialize.ReadByte(ref buffer);
 
@@ -835,15 +818,21 @@ namespace Asv.Mavlink.V2.AsvSdr
 
         public void Serialize(ref Span<byte> buffer)
         {
+            BinSerialize.WriteUShort(ref buffer,RequestId);
             BinSerialize.WriteUShort(ref buffer,ItemsCount);
             BinSerialize.WriteByte(ref buffer,(byte)Result);
-            /* PayloadByteSize = 3 */;
+            /* PayloadByteSize = 5 */;
         }
 
 
 
         /// <summary>
-        /// Number of items for transmition.
+        /// Request unique number. This is to allow the response packet to be detected. Must be copied from request.
+        /// OriginName: request_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RequestId { get; set; }
+        /// <summary>
+        /// Number of items for transmition (depended from request).
         /// OriginName: items_count, Units: , IsExtended: false
         /// </summary>
         public ushort ItemsCount { get; set; }
@@ -854,76 +843,12 @@ namespace Asv.Mavlink.V2.AsvSdr
         public AsvSdrRequestAck Result { get; set; }
     }
     /// <summary>
-    /// Request to read ASV_SDR_RECORD_TAG with either record_index and tag_index from the system/component.
-    ///  ASV_SDR_RECORD_TAG_READ_REQUEST
-    /// </summary>
-    public class AsvSdrRecordTagReadRequestPacket: PacketV2<AsvSdrRecordTagReadRequestPayload>
-    {
-	    public const int PacketMessageId = 13112;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 177;
-
-        public override AsvSdrRecordTagReadRequestPayload Payload { get; } = new AsvSdrRecordTagReadRequestPayload();
-
-        public override string Name => "ASV_SDR_RECORD_TAG_READ_REQUEST";
-    }
-
-    /// <summary>
-    ///  ASV_SDR_RECORD_TAG_READ_REQUEST
-    /// </summary>
-    public class AsvSdrRecordTagReadRequestPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer)
-        {
-            RecordIndex = BinSerialize.ReadUShort(ref buffer);
-            TagIndex = BinSerialize.ReadUShort(ref buffer);
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-
-        }
-
-        public void Serialize(ref Span<byte> buffer)
-        {
-            BinSerialize.WriteUShort(ref buffer,RecordIndex);
-            BinSerialize.WriteUShort(ref buffer,TagIndex);
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
-            /* PayloadByteSize = 6 */;
-        }
-
-
-
-        /// <summary>
-        /// Record index in storage.
-        /// OriginName: record_index, Units: , IsExtended: false
-        /// </summary>
-        public ushort RecordIndex { get; set; }
-        /// <summary>
-        /// Tag index.
-        /// OriginName: tag_index, Units: , IsExtended: false
-        /// </summary>
-        public ushort TagIndex { get; set; }
-        /// <summary>
-        /// System ID.
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID.
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-    }
-    /// <summary>
     /// Request to read info with either tag_index and record_index from the system/component.
     ///  ASV_SDR_RECORD_TAG
     /// </summary>
     public class AsvSdrRecordTagPacket: PacketV2<AsvSdrRecordTagPayload>
     {
-	    public const int PacketMessageId = 13113;
+	    public const int PacketMessageId = 13112;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 161;
 
@@ -992,7 +917,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 
 
         /// <summary>
-        /// Record tag items count
+        /// Record tag index.
         /// OriginName: tag_index, Units: , IsExtended: false
         /// </summary>
         public ushort TagIndex { get; set; }
@@ -1008,7 +933,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public char[] TagName { get; set; } = new char[16];
         public byte GetTagNameMaxItemsCount() => 16;
         /// <summary>
-        /// Record index in storage.
+        /// Tag type.
         /// OriginName: tag_type, Units: , IsExtended: false
         /// </summary>
         public AsvSdrRecordTagType TagType { get; set; }
@@ -1019,14 +944,14 @@ namespace Asv.Mavlink.V2.AsvSdr
         public byte[] TagValue { get; } = new byte[8];
     }
     /// <summary>
-    /// Request to delete ASV_SDR_RECORD_TAG with either record_index and tag_index from the system/component.
+    /// Request to delete ASV_SDR_RECORD_TAG from the system/component.
     ///  ASV_SDR_RECORD_TAG_DELETE_REQUEST
     /// </summary>
     public class AsvSdrRecordTagDeleteRequestPacket: PacketV2<AsvSdrRecordTagDeleteRequestPayload>
     {
-	    public const int PacketMessageId = 13114;
+	    public const int PacketMessageId = 13113;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 201;
+        public override byte GetCrcEtra() => 190;
 
         public override AsvSdrRecordTagDeleteRequestPayload Payload { get; } = new AsvSdrRecordTagDeleteRequestPayload();
 
@@ -1038,11 +963,12 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordTagDeleteRequestPayload : IPayload
     {
-        public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 10; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 10; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
+            RequestId = BinSerialize.ReadUShort(ref buffer);
             RecordIndex = BinSerialize.ReadUShort(ref buffer);
             TagStartIndex = BinSerialize.ReadUShort(ref buffer);
             TagStopIndex = BinSerialize.ReadUShort(ref buffer);
@@ -1053,16 +979,22 @@ namespace Asv.Mavlink.V2.AsvSdr
 
         public void Serialize(ref Span<byte> buffer)
         {
+            BinSerialize.WriteUShort(ref buffer,RequestId);
             BinSerialize.WriteUShort(ref buffer,RecordIndex);
             BinSerialize.WriteUShort(ref buffer,TagStartIndex);
             BinSerialize.WriteUShort(ref buffer,TagStopIndex);
             BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
-            /* PayloadByteSize = 8 */;
+            /* PayloadByteSize = 10 */;
         }
 
 
 
+        /// <summary>
+        /// Request unique number. This is to allow the response packet to be detected.
+        /// OriginName: request_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RequestId { get; set; }
         /// <summary>
         /// Record index in storage.
         /// OriginName: record_index, Units: , IsExtended: false
@@ -1095,9 +1027,9 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordTagDeleteResponsePacket: PacketV2<AsvSdrRecordTagDeleteResponsePayload>
     {
-	    public const int PacketMessageId = 13115;
+	    public const int PacketMessageId = 13116;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 228;
+        public override byte GetCrcEtra() => 223;
 
         public override AsvSdrRecordTagDeleteResponsePayload Payload { get; } = new AsvSdrRecordTagDeleteResponsePayload();
 
@@ -1109,44 +1041,37 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordTagDeleteResponsePayload : IPayload
     {
-        public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            RecordIndex = BinSerialize.ReadUShort(ref buffer);
-            TagStartIndex = BinSerialize.ReadUShort(ref buffer);
-            TagStopIndex = BinSerialize.ReadUShort(ref buffer);
+            RequestId = BinSerialize.ReadUShort(ref buffer);
+            ItemsCount = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvSdrRequestAck)BinSerialize.ReadByte(ref buffer);
 
         }
 
         public void Serialize(ref Span<byte> buffer)
         {
-            BinSerialize.WriteUShort(ref buffer,RecordIndex);
-            BinSerialize.WriteUShort(ref buffer,TagStartIndex);
-            BinSerialize.WriteUShort(ref buffer,TagStopIndex);
+            BinSerialize.WriteUShort(ref buffer,RequestId);
+            BinSerialize.WriteUShort(ref buffer,ItemsCount);
             BinSerialize.WriteByte(ref buffer,(byte)Result);
-            /* PayloadByteSize = 7 */;
+            /* PayloadByteSize = 5 */;
         }
 
 
 
         /// <summary>
-        /// Record index in storage.
-        /// OriginName: record_index, Units: , IsExtended: false
+        /// Request unique number. This is to allow the response packet to be detected. Must be copied from request.
+        /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public ushort RecordIndex { get; set; }
+        public ushort RequestId { get; set; }
         /// <summary>
-        /// Tag start index.
-        /// OriginName: tag_start_index, Units: , IsExtended: false
+        /// Number of deleted tags.
+        /// OriginName: items_count, Units: , IsExtended: false
         /// </summary>
-        public ushort TagStartIndex { get; set; }
-        /// <summary>
-        /// Tag stop index.
-        /// OriginName: tag_stop_index, Units: , IsExtended: false
-        /// </summary>
-        public ushort TagStopIndex { get; set; }
+        public ushort ItemsCount { get; set; }
         /// <summary>
         /// Result code.
         /// OriginName: result, Units: , IsExtended: false
@@ -1154,32 +1079,33 @@ namespace Asv.Mavlink.V2.AsvSdr
         public AsvSdrRequestAck Result { get; set; }
     }
     /// <summary>
-    /// Request the overall list of ASV_SDR_RECORD_DATA_* items from the system/component.
-    ///  ASV_SDR_RECORD_DATA_LIST_REQUEST
+    /// Request list of ASV_SDR_RECORD_DATA_* items from the system/component.
+    ///  ASV_SDR_RECORD_DATA_REQUEST
     /// </summary>
-    public class AsvSdrRecordDataListRequestPacket: PacketV2<AsvSdrRecordDataListRequestPayload>
+    public class AsvSdrRecordDataRequestPacket: PacketV2<AsvSdrRecordDataRequestPayload>
     {
 	    public const int PacketMessageId = 13120;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 235;
+        public override byte GetCrcEtra() => 112;
 
-        public override AsvSdrRecordDataListRequestPayload Payload { get; } = new AsvSdrRecordDataListRequestPayload();
+        public override AsvSdrRecordDataRequestPayload Payload { get; } = new AsvSdrRecordDataRequestPayload();
 
-        public override string Name => "ASV_SDR_RECORD_DATA_LIST_REQUEST";
+        public override string Name => "ASV_SDR_RECORD_DATA_REQUEST";
     }
 
     /// <summary>
-    ///  ASV_SDR_RECORD_DATA_LIST_REQUEST
+    ///  ASV_SDR_RECORD_DATA_REQUEST
     /// </summary>
-    public class AsvSdrRecordDataListRequestPayload : IPayload
+    public class AsvSdrRecordDataRequestPayload : IPayload
     {
-        public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
             DataStartIndex = BinSerialize.ReadUInt(ref buffer);
             DataStopIndex = BinSerialize.ReadUInt(ref buffer);
+            RequestId = BinSerialize.ReadUShort(ref buffer);
             RecordIndex = BinSerialize.ReadUShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
@@ -1190,10 +1116,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         {
             BinSerialize.WriteUInt(ref buffer,DataStartIndex);
             BinSerialize.WriteUInt(ref buffer,DataStopIndex);
+            BinSerialize.WriteUShort(ref buffer,RequestId);
             BinSerialize.WriteUShort(ref buffer,RecordIndex);
             BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
-            /* PayloadByteSize = 12 */;
+            /* PayloadByteSize = 14 */;
         }
 
 
@@ -1208,6 +1135,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// OriginName: data_stop_index, Units: , IsExtended: false
         /// </summary>
         public uint DataStopIndex { get; set; }
+        /// <summary>
+        /// Request unique number. This is to allow the response packet to be detected.
+        /// OriginName: request_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RequestId { get; set; }
         /// <summary>
         /// Record index in storage.
         /// OriginName: record_index, Units: , IsExtended: false
@@ -1225,31 +1157,32 @@ namespace Asv.Mavlink.V2.AsvSdr
         public byte TargetComponent { get; set; }
     }
     /// <summary>
-    /// Response for ASV_SDR_RECORD_DATA_LIST_REQUEST.
-    ///  ASV_SDR_RECORD_DATA_LIST_RESPONSE
+    /// Response for ASV_SDR_RECORD_DATA_REQUEST. If success, device additional send ASV_SDR_RECORD_DATA_* items from start to stop index.
+    ///  ASV_SDR_RECORD_DATA_RESPONSE
     /// </summary>
-    public class AsvSdrRecordDataListResponsePacket: PacketV2<AsvSdrRecordDataListResponsePayload>
+    public class AsvSdrRecordDataResponsePacket: PacketV2<AsvSdrRecordDataResponsePayload>
     {
 	    public const int PacketMessageId = 13121;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 59;
+        public override byte GetCrcEtra() => 136;
 
-        public override AsvSdrRecordDataListResponsePayload Payload { get; } = new AsvSdrRecordDataListResponsePayload();
+        public override AsvSdrRecordDataResponsePayload Payload { get; } = new AsvSdrRecordDataResponsePayload();
 
-        public override string Name => "ASV_SDR_RECORD_DATA_LIST_RESPONSE";
+        public override string Name => "ASV_SDR_RECORD_DATA_RESPONSE";
     }
 
     /// <summary>
-    ///  ASV_SDR_RECORD_DATA_LIST_RESPONSE
+    ///  ASV_SDR_RECORD_DATA_RESPONSE
     /// </summary>
-    public class AsvSdrRecordDataListResponsePayload : IPayload
+    public class AsvSdrRecordDataResponsePayload : IPayload
     {
-        public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
             ItemsCount = BinSerialize.ReadUInt(ref buffer);
+            RequestId = BinSerialize.ReadUShort(ref buffer);
             DataType = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvSdrRequestAck)BinSerialize.ReadByte(ref buffer);
 
@@ -1258,9 +1191,10 @@ namespace Asv.Mavlink.V2.AsvSdr
         public void Serialize(ref Span<byte> buffer)
         {
             BinSerialize.WriteUInt(ref buffer,ItemsCount);
+            BinSerialize.WriteUShort(ref buffer,RequestId);
             BinSerialize.WriteUShort(ref buffer,DataType);
             BinSerialize.WriteByte(ref buffer,(byte)Result);
-            /* PayloadByteSize = 7 */;
+            /* PayloadByteSize = 9 */;
         }
 
 
@@ -1270,6 +1204,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// OriginName: items_count, Units: , IsExtended: false
         /// </summary>
         public uint ItemsCount { get; set; }
+        /// <summary>
+        /// Request unique number. This is to allow the response packet to be detected. Must be copied from request.
+        /// OriginName: request_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RequestId { get; set; }
         /// <summary>
         /// Record data type (message id, e.g. 13120 for ASV_SDR_RECORD_DATA_ILS).
         /// OriginName: data_type, Units: , IsExtended: false
@@ -1282,78 +1221,14 @@ namespace Asv.Mavlink.V2.AsvSdr
         public AsvSdrRequestAck Result { get; set; }
     }
     /// <summary>
-    /// Request to read data with either record_index and data_index from the system/component.
-    ///  ASV_SDR_RECORD_DATA_READ_REQUEST
-    /// </summary>
-    public class AsvSdrRecordDataReadRequestPacket: PacketV2<AsvSdrRecordDataReadRequestPayload>
-    {
-	    public const int PacketMessageId = 13122;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 67;
-
-        public override AsvSdrRecordDataReadRequestPayload Payload { get; } = new AsvSdrRecordDataReadRequestPayload();
-
-        public override string Name => "ASV_SDR_RECORD_DATA_READ_REQUEST";
-    }
-
-    /// <summary>
-    ///  ASV_SDR_RECORD_DATA_READ_REQUEST
-    /// </summary>
-    public class AsvSdrRecordDataReadRequestPayload : IPayload
-    {
-        public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-
-        public void Deserialize(ref ReadOnlySpan<byte> buffer)
-        {
-            DataIndex = BinSerialize.ReadUInt(ref buffer);
-            RecordIndex = BinSerialize.ReadUShort(ref buffer);
-            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
-            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-
-        }
-
-        public void Serialize(ref Span<byte> buffer)
-        {
-            BinSerialize.WriteUInt(ref buffer,DataIndex);
-            BinSerialize.WriteUShort(ref buffer,RecordIndex);
-            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
-            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
-            /* PayloadByteSize = 8 */;
-        }
-
-
-
-        /// <summary>
-        /// Data index.
-        /// OriginName: data_index, Units: , IsExtended: false
-        /// </summary>
-        public uint DataIndex { get; set; }
-        /// <summary>
-        /// Record index in storage.
-        /// OriginName: record_index, Units: , IsExtended: false
-        /// </summary>
-        public ushort RecordIndex { get; set; }
-        /// <summary>
-        /// System ID.
-        /// OriginName: target_system, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetSystem { get; set; }
-        /// <summary>
-        /// Component ID.
-        /// OriginName: target_component, Units: , IsExtended: false
-        /// </summary>
-        public byte TargetComponent { get; set; }
-    }
-    /// <summary>
     /// Request to delete data with either record_index and data_index from the system/component.
     ///  ASV_SDR_RECORD_DATA_DELETE_REQUEST
     /// </summary>
     public class AsvSdrRecordDataDeleteRequestPacket: PacketV2<AsvSdrRecordDataDeleteRequestPayload>
     {
-	    public const int PacketMessageId = 13123;
+	    public const int PacketMessageId = 13122;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 222;
+        public override byte GetCrcEtra() => 184;
 
         public override AsvSdrRecordDataDeleteRequestPayload Payload { get; } = new AsvSdrRecordDataDeleteRequestPayload();
 
@@ -1365,13 +1240,14 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDataDeleteRequestPayload : IPayload
     {
-        public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
             StartDataIndex = BinSerialize.ReadUInt(ref buffer);
             StopDataIndex = BinSerialize.ReadUInt(ref buffer);
+            RequestId = BinSerialize.ReadUShort(ref buffer);
             RecordIndex = BinSerialize.ReadUShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
@@ -1382,10 +1258,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         {
             BinSerialize.WriteUInt(ref buffer,StartDataIndex);
             BinSerialize.WriteUInt(ref buffer,StopDataIndex);
+            BinSerialize.WriteUShort(ref buffer,RequestId);
             BinSerialize.WriteUShort(ref buffer,RecordIndex);
             BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
-            /* PayloadByteSize = 12 */;
+            /* PayloadByteSize = 14 */;
         }
 
 
@@ -1400,6 +1277,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// OriginName: stop_data_index, Units: , IsExtended: false
         /// </summary>
         public uint StopDataIndex { get; set; }
+        /// <summary>
+        /// Request unique number. This is to allow the response packet to be detected.
+        /// OriginName: request_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RequestId { get; set; }
         /// <summary>
         /// Record index in storage.
         /// OriginName: record_index, Units: , IsExtended: false
@@ -1422,9 +1304,9 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDataDeleteResponsePacket: PacketV2<AsvSdrRecordDataDeleteResponsePayload>
     {
-	    public const int PacketMessageId = 13124;
+	    public const int PacketMessageId = 13123;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 36;
+        public override byte GetCrcEtra() => 184;
 
         public override AsvSdrRecordDataDeleteResponsePayload Payload { get; } = new AsvSdrRecordDataDeleteResponsePayload();
 
@@ -1436,13 +1318,14 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDataDeleteResponsePayload : IPayload
     {
-        public byte GetMaxByteSize() => 11; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 11; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 13; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 13; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
             StartDataIndex = BinSerialize.ReadUInt(ref buffer);
             StopDataIndex = BinSerialize.ReadUInt(ref buffer);
+            RequestId = BinSerialize.ReadUShort(ref buffer);
             RecordIndex = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvSdrRequestAck)BinSerialize.ReadByte(ref buffer);
 
@@ -1452,9 +1335,10 @@ namespace Asv.Mavlink.V2.AsvSdr
         {
             BinSerialize.WriteUInt(ref buffer,StartDataIndex);
             BinSerialize.WriteUInt(ref buffer,StopDataIndex);
+            BinSerialize.WriteUShort(ref buffer,RequestId);
             BinSerialize.WriteUShort(ref buffer,RecordIndex);
             BinSerialize.WriteByte(ref buffer,(byte)Result);
-            /* PayloadByteSize = 11 */;
+            /* PayloadByteSize = 13 */;
         }
 
 
@@ -1469,6 +1353,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// OriginName: stop_data_index, Units: , IsExtended: false
         /// </summary>
         public uint StopDataIndex { get; set; }
+        /// <summary>
+        /// Request unique number. This is to allow the response packet to be detected. Must be copied from request.
+        /// OriginName: request_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RequestId { get; set; }
         /// <summary>
         /// Record index in storage.
         /// OriginName: record_index, Units: , IsExtended: false

@@ -26,21 +26,19 @@ namespace Asv.Mavlink
             _transponder =
                 new MavlinkPacketTransponder<AsvSdrOutStatusPacket, AsvSdrOutStatusPayload>(connection, identity, seq)
                     .DisposeItWith(Disposable);
-            OnGetRecordList = InternalFilter<AsvSdrRecordListRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)
-                .Select(_ => _.Payload).Publish().RefCount();
-            OnGetRecord = InternalFilter<AsvSdrRecordReadRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)
+            OnGetRecordList = InternalFilter<AsvSdrRecordRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)
                 .Select(_ => _.Payload).Publish().RefCount();
             OnRecordDelete = InternalFilter<AsvSdrRecordDeleteRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)
                 .Select(_ => _.Payload).Publish().RefCount();
-            OnGetRecordTagList = InternalFilter<AsvSdrRecordTagListRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)
+            OnGetRecordTagList = InternalFilter<AsvSdrRecordTagRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)
                 .Select(_ => _.Payload).Publish().RefCount();
-            OnGetRecordTag = InternalFilter<AsvSdrRecordTagReadRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)
+            OnGetRecordTag = InternalFilter<AsvSdrRecordTagRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)
                 .Select(_ => _.Payload).Publish().RefCount();
             OnRecordTagDelete = InternalFilter<AsvSdrRecordTagDeleteRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)
                 .Select(_ => _.Payload).Publish().RefCount();
-            OnGetRecordDataList = InternalFilter<AsvSdrRecordDataListRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)
+            OnGetRecordDataList = InternalFilter<AsvSdrRecordDataRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)
                 .Select(_ => _.Payload).Publish().RefCount();
-            OnGetRecordDataIls = InternalFilter<AsvSdrRecordDataReadRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)
+            OnGetRecordDataIls = InternalFilter<AsvSdrRecordDataRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)
                 .Select(_ => _.Payload).Publish().RefCount();
             OnRecordDataDelete = InternalFilter<AsvSdrRecordDataDeleteRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)
                 .Select(_ => _.Payload).Publish().RefCount();
@@ -56,13 +54,14 @@ namespace Asv.Mavlink
             _transponder.Set(changeCallback);
         }
 
-        public IObservable<AsvSdrRecordListRequestPayload> OnGetRecordList { get; }
-        public Task SendRecordList(Action<AsvSdrRecordListResponsePayload> setValueCallback, CancellationToken cancel = default)
+        public IObservable<AsvSdrRecordPayload> OnRecord { get; }
+
+        public IObservable<AsvSdrRecordRequestPayload> OnGetRecordList { get; }
+        public Task SendRecordList(Action<AsvSdrRecordResponsePayload> setValueCallback, CancellationToken cancel = default)
         {
-            return InternalSend<AsvSdrRecordListResponsePacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
+            return InternalSend<AsvSdrRecordResponsePacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
         }
 
-        public IObservable<AsvSdrRecordReadRequestPayload> OnGetRecord { get; }
         public Task SendRecord(Action<AsvSdrRecordPayload> setValueCallback, CancellationToken cancel = default)
         {
             return InternalSend<AsvSdrRecordPacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
@@ -75,13 +74,13 @@ namespace Asv.Mavlink
             return InternalSend<AsvSdrRecordDeleteResponsePacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
         }
 
-        public IObservable<AsvSdrRecordTagListRequestPayload> OnGetRecordTagList { get; }
-        public Task SendRecordTagList(Action<AsvSdrRecordTagListResponsePayload> setValueCallback, CancellationToken cancel = default)
+        public IObservable<AsvSdrRecordTagRequestPayload> OnGetRecordTagList { get; }
+        public Task SendRecordTagList(Action<AsvSdrRecordTagResponsePayload> setValueCallback, CancellationToken cancel = default)
         {
-            return InternalSend<AsvSdrRecordTagListResponsePacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
+            return InternalSend<AsvSdrRecordTagResponsePacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
         }
 
-        public IObservable<AsvSdrRecordTagReadRequestPayload> OnGetRecordTag { get; }
+        public IObservable<AsvSdrRecordTagRequestPayload> OnGetRecordTag { get; }
         public Task SendRecordTag(Action<AsvSdrRecordTagPayload> setValueCallback, CancellationToken cancel = default)
         {
             return InternalSend<AsvSdrRecordTagPacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
@@ -93,13 +92,13 @@ namespace Asv.Mavlink
             return InternalSend<AsvSdrRecordTagDeleteResponsePacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
         }
 
-        public IObservable<AsvSdrRecordDataListRequestPayload> OnGetRecordDataList { get; }
-        public Task SendRecordDataList(Action<AsvSdrRecordDataListResponsePayload> setValueCallback, CancellationToken cancel = default)
+        public IObservable<AsvSdrRecordDataRequestPayload> OnGetRecordDataList { get; }
+        public Task SendRecordDataList(Action<AsvSdrRecordDataResponsePayload> setValueCallback, CancellationToken cancel = default)
         {
-            return InternalSend<AsvSdrRecordDataListResponsePacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
+            return InternalSend<AsvSdrRecordDataResponsePacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
         }
 
-        public IObservable<AsvSdrRecordDataReadRequestPayload> OnGetRecordDataIls { get; }
+        public IObservable<AsvSdrRecordDataRequestPayload> OnGetRecordDataIls { get; }
         public Task SendRecordDataIls(Action<AsvSdrRecordDataIlsPayload> setValueCallback, CancellationToken cancel = default)
         {
             return InternalSend<AsvSdrRecordDataIlsPacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
