@@ -23,7 +23,6 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
     private int _isRequestInfoIsInProgressOrAlreadySuccess;
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     
-
     protected ClientDevice(IMavlinkV2Connection connection,
         MavlinkClientIdentity identity,
         ClientDeviceConfig config,
