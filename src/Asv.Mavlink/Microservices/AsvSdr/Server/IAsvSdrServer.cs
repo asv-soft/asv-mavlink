@@ -21,8 +21,7 @@ namespace Asv.Mavlink
         Task SendRecordTagDeleteResponse(Action<AsvSdrRecordTagDeleteResponsePayload> setValueCallback, CancellationToken cancel = default);
         IObservable<AsvSdrRecordDataRequestPayload> OnRecordDataRequest { get; }
         Task SendRecordDataResponse(Action<AsvSdrRecordDataResponsePayload> setValueCallback, CancellationToken cancel = default);
-        Task SendRecordData<TPacket>(Action<TPacket> setValueCallback, CancellationToken cancel = default)
-            where TPacket :IPacketV2<IPayload>, new();
- 
+        Task SendRecordData(AsvSdrCustomMode mode, Action<IPayload> setValueCallback, CancellationToken cancel = default);
+        IPacketV2<IPayload> CreateRecordData(AsvSdrCustomMode mode);
     }
 }

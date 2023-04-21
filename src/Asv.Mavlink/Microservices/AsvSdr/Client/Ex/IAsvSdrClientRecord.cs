@@ -12,7 +12,6 @@ public interface IAsvSdrClientRecord
     RecordId Id { get; }
     AsvSdrCustomMode RecordMode { get; }
     IRxValue<ulong> Frequency { get; }
-    IRxValue<AsvSdrRecordStateFlag> State { get; }
     IRxValue<DateTime> Created { get; }
     IRxValue<ushort> TagsCount { get; }
     IRxValue<uint> DataCount { get; }

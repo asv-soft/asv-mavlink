@@ -97,11 +97,14 @@ namespace Asv.Mavlink
         private readonly Subject<Guid> _onAddSubject;
         private readonly Subject<Guid> _onRemoveSubject;
         private readonly Subject<Guid> _onConfigChanged = new();
+        private readonly PacketV2Decoder _decoder;
 
         public MavlinkRouter(Action<IPacketDecoder<IPacketV2<IPayload>>> register,string name="MavlinkRouter")
         {
             Name = name;
             _register = register;
+            _decoder = new PacketV2Decoder();
+            register(_decoder);
             _inputPackets = new Subject<IPacketV2<IPayload>>().DisposeItWith(Disposable);
             _rawData = new Subject<byte[]>().DisposeItWith(Disposable);
             _onSendPacketSubject = new Subject<IPacketV2<IPayload>>().DisposeItWith(Disposable);
@@ -316,6 +319,10 @@ namespace Asv.Mavlink
         }
 
         public IDataStream DataStream => this;
+        public IPacketV2<IPayload> CreatePacketByMessageId(int messageId)
+        {
+            return _decoder.Create(messageId);
+        }
 
         public IDisposable Subscribe(IObserver<byte[]> observer)
         {

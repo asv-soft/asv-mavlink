@@ -157,7 +157,6 @@
       <field type="char[28]" name="record_name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
       <field type="uint32_t" name="record_mode" enum="ASV_SDR_CUSTOM_MODE">Record mode(it is also possible to know the type of data inside the record by cast enum to int).</field>
       <field type="uint64_t" name="frequency" >Frequency in Hz.</field>
-      <field type="uint32_t" name="state" enum="ASV_SDR_RECORD_STATE_FLAG">Current state.</field>
       <field type="uint64_t" name="created_unix_us" units="us">Created timestamp (UNIX epoch time).</field>
       <field type="uint32_t" name="duration_sec" units="sec">Record duration in sec.</field>
       <field type="uint16_t" name="tag_count">Tag items count.</field>

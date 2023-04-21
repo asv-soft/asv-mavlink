@@ -25,6 +25,12 @@ public class TagId:IEquatable<TagId>
         TagName = MavlinkTypesHelper.GetString(payload.TagName);
     }
 
+    public TagId(AsvSdrRecordTagDeleteRequestPayload payload)
+    {
+        RecordName = MavlinkTypesHelper.GetString(payload.RecordName);
+        TagName = MavlinkTypesHelper.GetString(payload.TagName);
+    }
+
     public string RecordName { get; }
     public string TagName { get;  }
 

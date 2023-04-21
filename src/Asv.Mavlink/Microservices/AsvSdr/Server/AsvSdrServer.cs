@@ -92,10 +92,18 @@ namespace Asv.Mavlink
             return InternalSend<AsvSdrRecordDataResponsePacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
         }
 
-        public Task SendRecordData<TPacket>(Action<TPacket> setValueCallback, CancellationToken cancel = default) 
-            where TPacket : IPacketV2<IPayload>, new()
+        public Task SendRecordData(AsvSdrCustomMode mode, Action<IPayload> setValueCallback, CancellationToken cancel = default)
         {
-            return InternalSend(setValueCallback, cancel);
+            if (mode == AsvSdrCustomMode.AsvSdrCustomModeIdle)
+                throw new ArgumentException("Can't create message for IDLE mode", nameof(mode));
+            return InternalSend((int)mode,_=>setValueCallback(_.Payload), cancel);
+        }
+
+        public IPacketV2<IPayload> CreateRecordData(AsvSdrCustomMode mode)
+        {
+            if (mode == AsvSdrCustomMode.AsvSdrCustomModeIdle)
+                throw new ArgumentException("Can't create message for IDLE mode", nameof(mode));
+            return InternalGeneratePacket((int)mode,false);
         }
     }
 }

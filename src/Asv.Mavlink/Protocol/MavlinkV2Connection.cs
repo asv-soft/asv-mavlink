@@ -81,6 +81,10 @@ namespace Asv.Mavlink
         public IObservable<DeserializePackageException> DeserializePackageErrors => _decoder.OutError;
         public IObservable<IPacketV2<IPayload>> OnSendPacket => _sendPacketSubject;
         public IDataStream DataStream { get; }
+        public IPacketV2<IPayload> CreatePacketByMessageId(int messageId)
+        {
+            return _decoder.Create(messageId);
+        }
 
         public Task Send(IPacketV2<IPayload> packet, CancellationToken cancel)
         {

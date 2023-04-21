@@ -11,7 +11,6 @@ namespace Asv.Mavlink;
 
 public class AsvSdrClientRecord:DisposableOnceWithCancel, IAsvSdrClientRecord
 {
-    private readonly RxValue<AsvSdrRecordStateFlag> _state;
     private readonly RxValue<DateTime> _created;
     private readonly RxValue<ushort> _tagsCount;
     private readonly RxValue<uint> _dataCount;
@@ -33,8 +32,6 @@ public class AsvSdrClientRecord:DisposableOnceWithCancel, IAsvSdrClientRecord
         _recordMode = new RxValue<AsvSdrCustomMode>(payload.RecordMode)
             .DisposeItWith(Disposable);
         _frequency = new RxValue<ulong>(payload.Frequency)
-            .DisposeItWith(Disposable);
-        _state = new RxValue<AsvSdrRecordStateFlag>(payload.State)
             .DisposeItWith(Disposable);
         _created = new RxValue<DateTime>(MavlinkTypesHelper.FromUnixTimeUs(payload.CreatedUnixUs))
             .DisposeItWith(Disposable);
@@ -74,7 +71,6 @@ public class AsvSdrClientRecord:DisposableOnceWithCancel, IAsvSdrClientRecord
     public AsvSdrCustomMode RecordMode { get; }
     public RecordId Id { get; }
     public IRxValue<ulong> Frequency => _frequency;
-    public IRxValue<AsvSdrRecordStateFlag> State => _state;
     public IRxValue<DateTime> Created => _created;
     public IRxValue<ushort> TagsCount => _tagsCount;
     public IRxValue<uint> DataCount => _dataCount;
@@ -85,7 +81,6 @@ public class AsvSdrClientRecord:DisposableOnceWithCancel, IAsvSdrClientRecord
 
     private void InternalUpdateRecord((RecordId,AsvSdrRecordPayload) value)
     {
-        _state.OnNext(value.Item2.State);
         _created.OnNext(MavlinkTypesHelper.FromUnixTimeUs(value.Item2.CreatedUnixUs));
         _duration.OnNext(TimeSpan.FromSeconds(value.Item2.DurationSec));
         _tagsCount.OnNext(value.Item2.TagCount);

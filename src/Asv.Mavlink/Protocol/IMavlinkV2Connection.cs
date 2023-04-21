@@ -34,6 +34,12 @@ namespace Asv.Mavlink
         /// Base data stream
         /// </summary>
         IDataStream DataStream { get; }
+        /// <summary>
+        /// Create packet by message id
+        /// </summary>
+        /// <param name="messageId"></param>
+        /// <returns></returns>
+        IPacketV2<IPayload> CreatePacketByMessageId(int messageId);
     }
 
     public static class MavlinkV2Helper

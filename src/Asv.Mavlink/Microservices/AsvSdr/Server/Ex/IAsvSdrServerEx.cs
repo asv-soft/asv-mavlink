@@ -16,7 +16,7 @@ public delegate Task<MavResult> StartRecordDelegate(string recordName, Cancellat
 
 public delegate Task<MavResult> StopRecordDelegate(CancellationToken cancel);
 
-public delegate Task<MavResult> CurrentRecordSetTagDelegate(AsvSdrServerRecordTag tag, CancellationToken cancel);
+public delegate Task<MavResult> CurrentRecordSetTagDelegate(ServerRecordTag tag, CancellationToken cancel);
 
 public interface IAsvSdrServerEx
 {
@@ -107,7 +107,7 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
             var valueArray = new byte[SdrWellKnown.RecordTagValueMaxLength];
             BitConverter.GetBytes(args.Payload.Param6).CopyTo(valueArray,0);
             BitConverter.GetBytes(args.Payload.Param7).CopyTo(valueArray,4);
-            var result = await CurrentRecordSetTag(new AsvSdrServerRecordTag((AsvSdrRecordTagType)tagType,name,valueArray), cs.Token).ConfigureAwait(false);
+            var result = await CurrentRecordSetTag(new ServerRecordTag((AsvSdrRecordTagType)tagType,name,valueArray), cs.Token).ConfigureAwait(false);
             return new CommandResult(result);
         };
     }

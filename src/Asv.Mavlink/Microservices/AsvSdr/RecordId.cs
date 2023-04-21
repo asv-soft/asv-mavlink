@@ -21,6 +21,21 @@ public class RecordId:IEquatable<RecordId>
         Name = MavlinkTypesHelper.GetString(payload.RecordName);
     }
 
+    public RecordId(AsvSdrRecordTagRequestPayload payload)
+    {
+        Name = MavlinkTypesHelper.GetString(payload.RecordName);
+    }
+
+    public RecordId(AsvSdrRecordDeleteRequestPayload payload)
+    {
+        Name = MavlinkTypesHelper.GetString(payload.RecordName);
+    }
+
+    public RecordId(AsvSdrRecordDataRequestPayload payload)
+    {
+        Name = MavlinkTypesHelper.GetString(payload.RecordName);
+    }
+
     public string Name { get; }
 
 
