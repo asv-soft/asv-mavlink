@@ -25,7 +25,7 @@ namespace Asv.Mavlink
         /// </summary>
         string Name { get; }
         /// <summary>
-        /// Devices in network could not understand unknown messages (cause https://github.com/mavlink/mavlink/issues/1166) and will not forwarding it.
+        /// Devices on the network cannot understand unknown messages ( cause https://github.com/mavlink/mavlink/issues/1166 ) and will not forward them.
         /// This flag indicates that the message is not standard and we need to wrap this message into a V2_EXTENSION message for the routers to successfully transmit over the network.
         /// </summary>
         bool WrapToV2Extension { get; }

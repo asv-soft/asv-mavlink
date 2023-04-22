@@ -95,6 +95,7 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
         pkt.ComponentId = Identity.ComponentId;
         pkt.SystemId = Identity.SystemId;
         pkt.Sequence = PacketSequence.GetNextSequenceNumber();
+        fillPacket(pkt);
         return Connection.Send(pkt, cancel);
     }
     
