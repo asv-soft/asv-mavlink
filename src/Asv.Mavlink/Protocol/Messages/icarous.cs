@@ -20,9 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 2.0.2
+// This code was generate by tool Asv.Mavlink.Shell version 3.1.0
 
 using System;
+using System.Text;
+using Asv.Mavlink.V2.Common;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.Icarous
@@ -103,6 +105,7 @@ namespace Asv.Mavlink.V2.Icarous
 	    public const int PacketMessageId = 42000;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 227;
+        public override bool WrapToV2Extension => false;
 
         public override IcarousHeartbeatPayload Payload { get; } = new IcarousHeartbeatPayload();
 
@@ -146,6 +149,7 @@ namespace Asv.Mavlink.V2.Icarous
 	    public const int PacketMessageId = 42001;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 239;
+        public override bool WrapToV2Extension => false;
 
         public override IcarousKinematicBandsPayload Payload { get; } = new IcarousKinematicBandsPayload();
 

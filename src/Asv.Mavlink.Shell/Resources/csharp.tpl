@@ -83,6 +83,7 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
 	    public const int PacketMessageId = {{ msg.Id }};
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => {{ msg.CrcExtra }};
+        public override bool WrapToV2Extension => {{ msg.WrapToV2Extension }};
 
         public override {{ msg.CamelCaseName }}Payload Payload { get; } = new {{ msg.CamelCaseName }}Payload();
 

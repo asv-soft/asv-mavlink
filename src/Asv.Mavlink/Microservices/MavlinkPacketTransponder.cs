@@ -30,7 +30,7 @@ namespace Asv.Mavlink
             {
                 CompatFlags = 0,
                 IncompatFlags = 0,
-                ComponenId = _identityConfig.ComponentId,
+                ComponentId = _identityConfig.ComponentId,
                 SystemId = _identityConfig.SystemId,
             };
         }

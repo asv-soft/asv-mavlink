@@ -59,6 +59,7 @@ namespace Asv.Mavlink.Shell
                                                              HasArrayFields = msg.HasArrayFields,
                                                              PayloadByteSize = msg.GetAllFields().Sum(_=>_.FieldByteSize),
                                                              ExtendedFieldsLength = msg.ExtendedFields.Sum(_=>_.FieldByteSize),
+                                                             WrapToV2Extension = msg.WrapToV2Extension,
                                                              Fields = msg.GetAllFields().Select(field =>
                                                                                             new
                                                                                             {

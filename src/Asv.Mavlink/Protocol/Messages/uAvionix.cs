@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 2.0.2
+// This code was generate by tool Asv.Mavlink.Shell version 3.1.0
 
 using System;
 using System.Text;
@@ -328,6 +328,7 @@ namespace Asv.Mavlink.V2.Uavionix
 	    public const int PacketMessageId = 10001;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 209;
+        public override bool WrapToV2Extension => false;
 
         public override UavionixAdsbOutCfgPayload Payload { get; } = new UavionixAdsbOutCfgPayload();
 
@@ -443,6 +444,7 @@ namespace Asv.Mavlink.V2.Uavionix
 	    public const int PacketMessageId = 10002;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 186;
+        public override bool WrapToV2Extension => false;
 
         public override UavionixAdsbOutDynamicPayload Payload { get; } = new UavionixAdsbOutDynamicPayload();
 
@@ -591,6 +593,7 @@ namespace Asv.Mavlink.V2.Uavionix
 	    public const int PacketMessageId = 10003;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 4;
+        public override bool WrapToV2Extension => false;
 
         public override UavionixAdsbTransceiverHealthReportPayload Payload { get; } = new UavionixAdsbTransceiverHealthReportPayload();
 

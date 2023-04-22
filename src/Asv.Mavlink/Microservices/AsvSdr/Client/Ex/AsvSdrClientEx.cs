@@ -23,8 +23,8 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
     private readonly TimeSpan _maxTimeToWaitForResponseForList;
     private readonly RxValue<AsvSdrCustomMode> _customMode;
     private readonly RxValue<ushort> _recordsCount;
-    private readonly RxValue<AsvSdrSupportModeFlag> _supportedModes;
-    private readonly SourceCache<AsvSdrClientRecord,ushort> _records;
+    private readonly RxValue<AsvSdrCustomModeFlag> _supportedModes;
+    private readonly SourceCache<AsvSdrClientRecord,RecordId> _records;
 
     public AsvSdrClientEx(IAsvSdrClient client, IHeartbeatClient heartbeatClient, ICommandClient commandClient, AsvSdrClientExConfig config)
     {
@@ -38,58 +38,49 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
             .Subscribe(_customMode)
             .DisposeItWith(Disposable);
 
-        _recordsCount = new RxValue<ushort>().DisposeItWith(Disposable);
-        _supportedModes = new RxValue<AsvSdrSupportModeFlag>().DisposeItWith(Disposable);
+        _recordsCount = new RxValue<ushort>()
+            .DisposeItWith(Disposable);
+        _supportedModes = new RxValue<AsvSdrCustomModeFlag>()
+            .DisposeItWith(Disposable);
         client.Status.Subscribe(_ =>
         {
             _supportedModes.OnNext(_.SupportedModes);
             _recordsCount.OnNext(_.RecordCount);
         }).DisposeItWith(Disposable);
         
-        _records = new SourceCache<AsvSdrClientRecord, ushort>(x => x.Index).DisposeItWith(Disposable);
+        _records = new SourceCache<AsvSdrClientRecord, RecordId>(x => x.Id)
+            .DisposeItWith(Disposable);
         client.OnRecord.Subscribe(_=>_records.Edit(updater =>
         {
-            var value = updater.Lookup(_.Index);
+            var value = updater.Lookup(_.Item1);
             if (value.HasValue)
             {
-                value.Value.UpdateRecord(_);    
-            }
-            else
-            {
-                updater.AddOrUpdate(new AsvSdrClientRecord(_,client,config));
+                updater.AddOrUpdate(new AsvSdrClientRecord(_.Item1,_.Item2,client,config));
             }
         })).DisposeItWith(Disposable);
+        client.OnDeleteRecord.Subscribe(_=>_records.Edit(updater =>
+        {
+            var value = updater.Lookup(_.Item1);
+            if (!value.HasValue) return;
+            updater.RemoveKey(_.Item1);
+            value.Value.Dispose();
+        })).DisposeItWith(Disposable);
+     
         
-        Records = _records.Connect().RefCount();
+        Records = _records.Connect().Transform(_=>(IAsvSdrClientRecord)_).RefCount();
     }
     
-    public async Task DeleteRecord(ushort recordIndex, CancellationToken cancel)
+    public async Task DeleteRecord(RecordId recordName, CancellationToken cancel)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var requestAck = await Base.DeleteRecords(recordIndex,recordIndex, cs.Token).ConfigureAwait(false);
+        var requestAck = await Base.DeleteRecord(recordName, cs.Token).ConfigureAwait(false);
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckInProgress)
             throw new Exception("Request already in progress");
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
             throw new Exception("Request fail");
-        _records.RemoveKey(recordIndex);
     }
 
-    public async Task DeleteRecords(ushort startIndex, ushort stopIndex, CancellationToken cancel = default)
-    {
-        if (startIndex>stopIndex) throw new ArgumentOutOfRangeException(nameof(startIndex));
-        if (startIndex == stopIndex)
-        {
-            await DeleteRecord(startIndex, cancel).ConfigureAwait(false);
-            return;
-        }
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var requestAck = await Base.DeleteRecords(startIndex,stopIndex, cs.Token).ConfigureAwait(false);
-        if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckInProgress)
-            throw new Exception("Request already in progress");
-        if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
-            throw new Exception("Request fail");
-        _records.RemoveKeys(Enumerable.Range(startIndex,stopIndex-startIndex).Select(_=>(ushort)_));
-    }
+ 
 
     public async Task<bool> DownloadRecordList(IProgress<double> progress, CancellationToken cancel)
     {
@@ -111,15 +102,11 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         }
         return _records.Count == requestAck.ItemsCount;
     }
-
-   
-
-
     public IAsvSdrClient Base { get; }
-    public IRxValue<AsvSdrSupportModeFlag> SupportedModes => _supportedModes;
+    public IRxValue<AsvSdrCustomModeFlag> SupportedModes => _supportedModes;
     public IRxValue<AsvSdrCustomMode> CustomMode => _customMode;
     public IRxValue<ushort> RecordsCount => _recordsCount;
-    public IObservable<IChangeSet<AsvSdrClientRecord,ushort>> Records { get; }
+    public IObservable<IChangeSet<IAsvSdrClientRecord,RecordId>> Records { get; }
     
     public async Task<MavResult> SetMode(AsvSdrCustomMode mode, ulong frequencyHz, float recordRate, uint sendingThinningRatio,
         CancellationToken cancel)
@@ -138,11 +125,10 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         return result.Result;
     }
 
-    public async Task<MavResult> StartRecord(string recordName, CancellationToken cancel)
+    public async Task<MavResult> StartRecord(RecordId recordName, CancellationToken cancel)
     {
-        SdrWellKnown.CheckRecordName(recordName);
         var nameArray = new byte[SdrWellKnown.RecordNameMaxLength];
-        MavlinkTypesHelper.SetString(nameArray,recordName);
+        MavlinkTypesHelper.SetString(nameArray,recordName.Name);
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
         var result = await _commandClient.CommandLong((V2.Common.MavCmd)MavCmd.MavCmdAsvSdrSetMode,
             BitConverter.ToSingle(nameArray,0),
@@ -171,39 +157,24 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         return result.Result;
     }
 
-    public async Task<MavResult> CurrentRecordSetTag(AsvSdrClientRecordTag tag, CancellationToken cancel)
+    public async Task<MavResult> CurrentRecordSetTag(string tagName, AsvSdrRecordTagType type, byte[] rawValue , CancellationToken cancel)
     {
-        SdrWellKnown.CheckTagName(tag.Name);
+        if (rawValue.Length != 8) 
+            throw new ArgumentException("Raw value must be 8 bytes long");
+        SdrWellKnown.CheckTagName(tagName);
         var nameArray = new byte[SdrWellKnown.RecordTagNameMaxLength];
-        MavlinkTypesHelper.SetString(nameArray,tag.Name);
+        MavlinkTypesHelper.SetString(nameArray,tagName);
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
         var result = await _commandClient.CommandLong((V2.Common.MavCmd)MavCmd.MavCmdAsvSdrSetMode,
-            SdrWellKnown.GetCommandParamValue(0,AsvSdrRecordTagFlag.AsvSdrRecordTagFlagForCurrent, tag.Type),
+            BitConverter.ToSingle(BitConverter.GetBytes((uint)type)),
             BitConverter.ToSingle(nameArray,0),
             BitConverter.ToSingle(nameArray,4),
             BitConverter.ToSingle(nameArray,8),
             BitConverter.ToSingle(nameArray,12),
-            BitConverter.ToSingle(tag.RawValue,0),
-            BitConverter.ToSingle(tag.RawValue,4),
+            BitConverter.ToSingle(rawValue,0),
+            BitConverter.ToSingle(rawValue,4),
             cs.Token).ConfigureAwait(false);
         return result.Result;
     }
 
-    public async Task<MavResult> RecordSetTag(ushort recordIndex, AsvSdrClientRecordTag tag, CancellationToken cancel)
-    {
-        SdrWellKnown.CheckTagName(tag.Name);
-        var nameArray = new byte[SdrWellKnown.RecordTagNameMaxLength];
-        MavlinkTypesHelper.SetString(nameArray,tag.Name);
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var result = await _commandClient.CommandLong((V2.Common.MavCmd)MavCmd.MavCmdAsvSdrSetMode,
-            SdrWellKnown.GetCommandParamValue(recordIndex,AsvSdrRecordTagFlag.AsvSdrRecordTagFlagNone, tag.Type),
-            BitConverter.ToSingle(nameArray,0),
-            BitConverter.ToSingle(nameArray,4),
-            BitConverter.ToSingle(nameArray,8),
-            BitConverter.ToSingle(nameArray,12),
-            BitConverter.ToSingle(tag.RawValue,0),
-            BitConverter.ToSingle(tag.RawValue,4),
-            cs.Token).ConfigureAwait(false);
-        return result.Result;
-    }
 }

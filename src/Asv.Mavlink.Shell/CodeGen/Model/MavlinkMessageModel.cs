@@ -12,7 +12,8 @@ namespace Asv.Mavlink.Shell
         public IList<MessageFieldModel> ExtendedFields { get; set; } = new List<MessageFieldModel>();
 
         public bool HasArrayFields => Fields.Any(_ => _.IsArray) || ExtendedFields.Any(_=>_.IsArray);
-        
+        public bool WrapToV2Extension { get; set; }
+
         public override string ToString()
         {
             return $"{Name}[Id:{Id},CrcExtra:{CrcExtra}]";

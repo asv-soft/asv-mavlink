@@ -5,18 +5,15 @@ namespace Asv.Mavlink;
 
 public class AsvSdrClientRecordTag
 {
-    internal AsvSdrClientRecordTag(AsvSdrRecordTagPayload payload)
+    internal AsvSdrClientRecordTag(TagId id, AsvSdrRecordTagPayload payload)
     {
-        Name = MavlinkTypesHelper.GetString(payload.TagName);
+        Id = id;
         Type = payload.TagType;
         RawValue = payload.TagValue;
-        TagIndex = payload.TagIndex;
-        RecordIndex = payload.RecordIndex;
     }
-    public ushort RecordIndex { get; }
-    public ushort TagIndex { get; }
+    public TagId Id { get; }
     public byte[] RawValue { get; }
-    public string Name { get; }
+    
     public AsvSdrRecordTagType Type { get; }
 
     public ulong GetUint64() => BitConverter.ToUInt64(RawValue,0); 

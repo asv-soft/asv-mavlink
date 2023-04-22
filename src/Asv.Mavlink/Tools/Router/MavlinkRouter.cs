@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
+using Asv.Mavlink.V2.Common;
 using NLog;
 
 namespace Asv.Mavlink
@@ -97,12 +98,16 @@ namespace Asv.Mavlink
         private readonly Subject<Guid> _onAddSubject;
         private readonly Subject<Guid> _onRemoveSubject;
         private readonly Subject<Guid> _onConfigChanged = new();
+        private readonly PacketV2Decoder _decoder;
 
         public MavlinkRouter(Action<IPacketDecoder<IPacketV2<IPayload>>> register,string name="MavlinkRouter")
         {
             Name = name;
             _register = register;
+            _decoder = new PacketV2Decoder();
+            register(_decoder);
             _inputPackets = new Subject<IPacketV2<IPayload>>().DisposeItWith(Disposable);
+            _decoder.Subscribe(_inputPackets).DisposeItWith(Disposable);
             _rawData = new Subject<byte[]>().DisposeItWith(Disposable);
             _onSendPacketSubject = new Subject<IPacketV2<IPayload>>().DisposeItWith(Disposable);
             _deserializeErrors = new Subject<DeserializePackageException>().DisposeItWith(Disposable);
@@ -270,7 +275,15 @@ namespace Asv.Mavlink
             packet.Tag = null;
             try
             {
-                _inputPackets.OnNext(packet);
+                if (WrapToV2ExtensionEnabled && packet is V2ExtensionPacket wrapped)
+                {
+                    // decoder will send unwrapped message to _inputPackets
+                    _decoder.OnData(wrapped.Payload.Payload);
+                }
+                else
+                {
+                    _inputPackets.OnNext(packet);
+                }
             }
             catch (Exception e)
             {
@@ -290,32 +303,67 @@ namespace Asv.Mavlink
         }
 
         
-
         public IObservable<DeserializePackageException> DeserializePackageErrors => _deserializeErrors;
 
         public IObservable<IPacketV2<IPayload>> OnSendPacket => _onSendPacketSubject;
 
         public Task Send(IPacketV2<IPayload> packet, CancellationToken cancel)
         {
-            Interlocked.Increment(ref _txPackets);
-            var size = packet.GetMaxByteSize();
-            var data = ArrayPool<byte>.Shared.Rent(size);
-            try
+            if (IsDisposed) return Task.CompletedTask;
+            _onSendPacketSubject.OnNext(packet);
+            return Task.Run(() =>
             {
-                var span = new Span<byte>(data, 0, size);
-                packet.Serialize(ref span);
-                var packetSize = size - span.Length;
-                _onSendPacketSubject.OnNext(packet);
-                return Send(data, packetSize, cancel);
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(data);
-            }
-            
+                if (packet.WrapToV2Extension && WrapToV2ExtensionEnabled)
+                {
+                    var wrappedPacket = new V2ExtensionPacket
+                    {
+                        Tag = packet.Tag,
+                        IncompatFlags = packet.IncompatFlags,
+                        CompatFlags = packet.CompatFlags,
+                        Sequence = packet.Sequence,
+                        SystemId = packet.SystemId,
+                        ComponentId = packet.ComponentId,
+                        Payload =
+                        {
+                            // broadcast
+                            TargetComponent = 0,
+                            TargetSystem = 0,
+                            TargetNetwork = 0,
+                            MessageType = V2ExtensionFeature.V2ExtensionMessageId
+                        }
+                    };
+                    var span = new Span<byte>(wrappedPacket.Payload.Payload);
+                    var size = span.Length;
+                    packet.Serialize(ref span);
+                    size -= span.Length;
+                    var arr = wrappedPacket.Payload.Payload;
+                    Array.Resize(ref arr, size);
+                    wrappedPacket.Payload.Payload = arr;
+                    packet = wrappedPacket;
+                }
+                Interlocked.Increment(ref _txPackets);
+                var data = ArrayPool<byte>.Shared.Rent(packet.GetMaxByteSize());
+                try
+                {
+                    var span = new Span<byte>(data);
+                    var size = span.Length;
+                    packet.Serialize(ref span);
+                    size -= span.Length;
+                    
+                    Send(data, size, cancel).Wait(cancel);
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(data);
+                }
+            }, cancel);
         }
 
         public IDataStream DataStream => this;
+        public IPacketV2<IPayload> CreatePacketByMessageId(int messageId)
+        {
+            return _decoder.Create(messageId);
+        }
 
         public IDisposable Subscribe(IObserver<byte[]> observer)
         {
@@ -342,6 +390,8 @@ namespace Asv.Mavlink
         }
 
         public string Name { get; }
+
+        public bool WrapToV2ExtensionEnabled { get; set; } = false;
         public long RxPackets => Interlocked.Read(ref _rxPackets);
         public long TxPackets => Interlocked.Read(ref _txPackets);
         public long SkipPackets

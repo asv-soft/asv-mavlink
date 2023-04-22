@@ -11,77 +11,92 @@ namespace Asv.Mavlink;
 
 public class AsvSdrClientRecord:DisposableOnceWithCancel, IAsvSdrClientRecord
 {
-    private readonly RxValue<AsvSdrRecordStateFlag> _state;
     private readonly RxValue<DateTime> _created;
     private readonly RxValue<ushort> _tagsCount;
     private readonly RxValue<uint> _dataCount;
     private readonly RxValue<uint> _byteSize;
     private readonly RxValue<TimeSpan> _duration;
-    private readonly SourceCache<AsvSdrClientRecordTag,ushort> _tags;
+    private readonly SourceCache<AsvSdrClientRecordTag,TagId> _tags;
     private readonly TimeSpan _maxTimeToWaitForResponseForList;
     private readonly RxValue<AsvSdrCustomMode> _recordMode;
     private readonly RxValue<ulong> _frequency;
     private readonly IAsvSdrClient _client;
 
-    public AsvSdrClientRecord(AsvSdrRecordPayload payload, IAsvSdrClient client, AsvSdrClientExConfig config )
+    public AsvSdrClientRecord(RecordId id, AsvSdrRecordPayload payload, IAsvSdrClient client, AsvSdrClientExConfig config )
     {
         if (payload == null) throw new ArgumentNullException(nameof(payload));
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        Index = payload.Index;
-        Name = MavlinkTypesHelper.GetString(payload.Name);
-        DataMessageId = payload.DataMessageId;
+        Id = id ?? throw new ArgumentNullException(nameof(id));
+        RecordMode = payload.RecordMode;
 
-        _recordMode = new RxValue<AsvSdrCustomMode>(payload.RecordMode).DisposeItWith(Disposable);
-        _frequency = new RxValue<ulong>(payload.Frequency).DisposeItWith(Disposable);
-        _state = new RxValue<AsvSdrRecordStateFlag>(payload.State).DisposeItWith(Disposable);
-        _created = new RxValue<DateTime>(MavlinkTypesHelper.FromUnixTimeUs(payload.CreatedUnixUs)).DisposeItWith(Disposable);
-        _duration = new RxValue<TimeSpan>(TimeSpan.FromSeconds(payload.DurationSec)).DisposeItWith(Disposable);
+        _recordMode = new RxValue<AsvSdrCustomMode>(payload.RecordMode)
+            .DisposeItWith(Disposable);
+        _frequency = new RxValue<ulong>(payload.Frequency)
+            .DisposeItWith(Disposable);
+        _created = new RxValue<DateTime>(MavlinkTypesHelper.FromUnixTimeUs(payload.CreatedUnixUs))
+            .DisposeItWith(Disposable);
+        _duration = new RxValue<TimeSpan>(TimeSpan.FromSeconds(payload.DurationSec))
+            .DisposeItWith(Disposable);
         _tagsCount = new RxValue<ushort>(payload.TagCount).DisposeItWith(Disposable);
         _dataCount = new RxValue<uint>(payload.DataCount).DisposeItWith(Disposable);
         _byteSize = new RxValue<uint>(payload.Size).DisposeItWith(Disposable);
-        _tags = new SourceCache<AsvSdrClientRecordTag, ushort>(x => x.TagIndex).DisposeItWith(Disposable);
-        
-        client.OnRecordTag.Subscribe(_=>_tags.AddOrUpdate(new AsvSdrClientRecordTag(_))).DisposeItWith(Disposable);
-        Tags = _tags.Connect().DisposeMany().RefCount();
+        _tags = new SourceCache<AsvSdrClientRecordTag, TagId>(x => x.Id)
+            .DisposeItWith(Disposable);
+        client.OnRecord
+            .Where(_ => _.Item1 == Id)
+            .Subscribe(InternalUpdateRecord)
+            .DisposeItWith(Disposable);
+        client.OnRecordTag
+            .Where(_=>Id.IsEqualName(_.Item1.RecordName))
+            .Subscribe(_=> _tags.Edit(updater =>
+            {
+                var item = updater.Lookup(_.Item1);
+                if (item.HasValue == false)
+                {
+                    _tags.AddOrUpdate(new AsvSdrClientRecordTag(_.Item1, _.Item2));    
+                }
+            })).DisposeItWith(Disposable);
+        client.OnDeleteRecordTag
+            .Where(_=>Id.IsEqualName(_.Item1.RecordName))
+            .Subscribe(_=> _tags.Edit(updater =>
+            {
+                var item = updater.Lookup(_.Item1);
+                if (item.HasValue == false) return;
+                _tags.Remove(item.Value);
+            })).DisposeItWith(Disposable);
+        Tags = _tags.Connect().RefCount();
         _maxTimeToWaitForResponseForList = TimeSpan.FromMilliseconds(config.MaxTimeToWaitForResponseForListMs);
         
     }
-    public ushort DataMessageId { get; }
-    public ushort Index { get; }
-    public string Name { get; }
-    public IRxValue<AsvSdrCustomMode> RecordMode => _recordMode;
+    public AsvSdrCustomMode RecordMode { get; }
+    public RecordId Id { get; }
     public IRxValue<ulong> Frequency => _frequency;
-    public IRxValue<AsvSdrRecordStateFlag> State => _state;
     public IRxValue<DateTime> Created => _created;
     public IRxValue<ushort> TagsCount => _tagsCount;
     public IRxValue<uint> DataCount => _dataCount;
     public IRxValue<uint> ByteSize => _byteSize;
     public IRxValue<TimeSpan> Duration => _duration;
     
-    public IObservable<IChangeSet<AsvSdrClientRecordTag,ushort>> Tags { get; }
-    internal void UpdateRecord(AsvSdrRecordPayload payload)
+    public IObservable<IChangeSet<AsvSdrClientRecordTag,TagId>> Tags { get; }
+
+    private void InternalUpdateRecord((RecordId,AsvSdrRecordPayload) value)
     {
-        if (payload == null) throw new ArgumentNullException(nameof(payload));
-        if (payload.Index != Index) throw new ArgumentException("Record index not equal");
-        if (MavlinkTypesHelper.GetString(payload.Name) != Name) throw new ArgumentException($"Record {nameof(Name)} not equal");
-        if (payload.DataMessageId != DataMessageId) throw new ArgumentException($"Record {nameof(DataMessageId)} not equal");
-        
-        _state.OnNext(payload.State);
-        _created.OnNext(MavlinkTypesHelper.FromUnixTimeUs(payload.CreatedUnixUs));
-        _duration.OnNext(TimeSpan.FromSeconds(payload.DurationSec));
-        _tagsCount.OnNext(payload.TagCount);
-        _dataCount.OnNext(payload.DataCount);
-        _byteSize.OnNext(payload.Size);
+        _created.OnNext(MavlinkTypesHelper.FromUnixTimeUs(value.Item2.CreatedUnixUs));
+        _duration.OnNext(TimeSpan.FromSeconds(value.Item2.DurationSec));
+        _tagsCount.OnNext(value.Item2.TagCount);
+        _dataCount.OnNext(value.Item2.DataCount);
+        _byteSize.OnNext(value.Item2.Size);
     }
     
     public async Task<bool> UploadTagList(IProgress<double> progress, CancellationToken cancel)
     {
         var lastUpdate = DateTime.Now;
         _tags.Clear();
-        using var request = _client.OnRecordTag.Where(_=>_.RecordIndex == Index)
+        using var request = _client.OnRecordTag
+            .Where(_=>Id.IsEqualName(_.Item1.RecordName))
             .Do(_=>lastUpdate = DateTime.Now)
             .Subscribe();
-        var requestAck = await _client.GetRecordTagList(Index,0,ushort.MaxValue,cancel).ConfigureAwait(false);
+        var requestAck = await _client.GetRecordTagList(Id,0,ushort.MaxValue,cancel).ConfigureAwait(false);
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckInProgress)
             throw new Exception("Request already in progress");
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
@@ -94,32 +109,17 @@ public class AsvSdrClientRecord:DisposableOnceWithCancel, IAsvSdrClientRecord
         }
         return _tags.Count == requestAck.ItemsCount;
     }
-    public async Task DeleteTag(ushort recordIndex, CancellationToken cancel)
+    public async Task DeleteTag(TagId id, CancellationToken cancel)
     {
+        if (Id.IsEqualName(id.RecordName))
+            throw new Exception("Tag not belong to this record");
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var requestAck = await _client.DeleteRecordTags(Index, recordIndex,recordIndex, cs.Token).ConfigureAwait(false);
+        var requestAck = await _client.DeleteRecordTag(id, cs.Token).ConfigureAwait(false);
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckInProgress)
             throw new Exception("Request already in progress");
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
             throw new Exception("Request fail");
-        _tags.RemoveKey(recordIndex);
     }
 
-    public async Task DeleteTags(ushort startIndex, ushort stopIndex, CancellationToken cancel = default)
-    {
-        if (startIndex>stopIndex) throw new ArgumentOutOfRangeException(nameof(startIndex));
-        if (startIndex == stopIndex)
-        {
-            await DeleteTag(startIndex, cancel).ConfigureAwait(false);
-            return;
-        }
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var requestAck = await _client.DeleteRecordTags(Index,startIndex,stopIndex, cs.Token).ConfigureAwait(false);
-        if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckInProgress)
-            throw new Exception("Request already in progress");
-        if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
-            throw new Exception("Request fail");
-        _tags.RemoveKeys(Enumerable.Range(startIndex,stopIndex-startIndex).Select(_=>(ushort)_));
-    }
-    
+
 }
