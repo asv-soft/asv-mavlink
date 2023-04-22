@@ -12,6 +12,12 @@ namespace Asv.Mavlink
     /// </summary>
     public interface IMavlinkV2Connection:IObservable<IPacketV2<IPayload>>, IDisposable
     {
+        /// <summary>
+        /// Devices in network could not understand unknown messages (cause https://github.com/mavlink/mavlink/issues/1166) and will not forwarding it.
+        /// This flag indicates that the message is not standard and we need to wrap this message into a V2_EXTENSION message for the routers to successfully transmit over the network.
+        /// </summary>
+        bool WrapToV2ExtensionEnabled { get; set; }
+        
         long RxPackets { get; }
         long TxPackets { get; }
         long SkipPackets { get; }
@@ -34,6 +40,12 @@ namespace Asv.Mavlink
         /// Base data stream
         /// </summary>
         IDataStream DataStream { get; }
+        /// <summary>
+        /// Create packet by message id
+        /// </summary>
+        /// <param name="messageId"></param>
+        /// <returns></returns>
+        IPacketV2<IPayload> CreatePacketByMessageId(int messageId);
     }
 
     public static class MavlinkV2Helper
@@ -58,7 +70,7 @@ namespace Asv.Mavlink
             var tcs = new TaskCompletionSource<TAnswerPacket>();
             using var c1 = cancel.Register(()=>tcs.TrySetCanceled());
             filter ??= (_ => true);
-            using var subscribe = src.Where(_ => _.ComponenId == targetComponent && _.SystemId == targetSystem && _.MessageId == p.MessageId)
+            using var subscribe = src.Where(_ => _.ComponentId == targetComponent && _.SystemId == targetSystem && _.MessageId == p.MessageId)
                 .Cast<TAnswerPacket>()
                 .FirstAsync(filter)
                 .Subscribe(_=>tcs.TrySetResult(_));
@@ -72,7 +84,7 @@ namespace Asv.Mavlink
         {
             var packet = new TAnswerPacket
             {
-                ComponenId = componentId,
+                ComponentId = componentId,
                 SystemId = systemId,
                 Sequence = seq.GetNextSequenceNumber(),
                 CompatFlags = 0,

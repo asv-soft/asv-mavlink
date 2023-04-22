@@ -62,21 +62,42 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
         Func<TPacket, byte> targetComponentGetter, Func<TPacket, bool> filter)
         where TPacket : IPacketV2<IPayload>, new()
     {
-        return InternalFilter<TPacket>(targetSystemGetter, targetComponentGetter).FirstAsync(filter);
+        return InternalFilter(targetSystemGetter, targetComponentGetter).FirstAsync(filter);
     }
 
-    protected TPacket InternalGeneratePacket<TPacket>()
+    private TPacket InternalGeneratePacket<TPacket>()
         where TPacket : IPacketV2<IPayload>, new()
     {
         return new TPacket
         {
-            ComponenId = Identity.ComponentId,
+            ComponentId = Identity.ComponentId,
             SystemId = Identity.SystemId,
             Sequence = PacketSequence.GetNextSequenceNumber(),
         };
     }
+    
+    protected IPacketV2<IPayload> InternalGeneratePacket(int messageId, bool incrementSequence = true)
+    {
+        var pkt = Connection.CreatePacketByMessageId(messageId);
+        pkt.ComponentId = Identity.ComponentId;
+        pkt.SystemId = Identity.SystemId;
+        if (incrementSequence)
+        {
+            pkt.Sequence = PacketSequence.GetNextSequenceNumber();
+        }
+        return pkt;
+    }
 
-
+    
+    protected Task InternalSend(int messageId, Action<IPacketV2<IPayload>> fillPacket, CancellationToken cancel = default)
+    {
+        var pkt = Connection.CreatePacketByMessageId(messageId);
+        pkt.ComponentId = Identity.ComponentId;
+        pkt.SystemId = Identity.SystemId;
+        pkt.Sequence = PacketSequence.GetNextSequenceNumber();
+        return Connection.Send(pkt, cancel);
+    }
+    
     protected Task InternalSend<TPacketSend>(Action<TPacketSend> fillPacket, CancellationToken cancel = default)
         where TPacketSend : IPacketV2<IPayload>, new()
     {
@@ -152,4 +173,6 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
         Logger.Error(msg);
         throw new TimeoutException(msg);
     }
+
+   
 }

@@ -24,7 +24,7 @@ namespace Asv.Mavlink
         /// <summary>
         /// ID of the message sender component
         /// </summary>
-        byte ComponenId { get; set; }
+        byte ComponentId { get; set; }
         /// <summary>
         /// Message Id
         /// </summary>

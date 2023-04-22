@@ -33,7 +33,7 @@ namespace Asv.Mavlink
         public static bool FilterVehicle(IPacketV2<IPayload> packetV2, byte targetSystemId, byte targetComponentId)
         {
             if (targetSystemId != 0 && targetSystemId != packetV2.SystemId) return false;
-            if (targetComponentId != 0 && targetComponentId != packetV2.ComponenId) return false;
+            if (targetComponentId != 0 && targetComponentId != packetV2.ComponentId) return false;
             return true;
         }
 

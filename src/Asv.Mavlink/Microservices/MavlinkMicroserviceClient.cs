@@ -72,7 +72,7 @@ namespace Asv.Mavlink
         private bool FilterVehicle(IPacketV2<IPayload> packetV2)
         {
             if (Identity.TargetSystemId != packetV2.SystemId) return false;
-            if (Identity.TargetComponentId != packetV2.ComponenId) return false;
+            if (Identity.TargetComponentId != packetV2.ComponentId) return false;
             return true;
         }
         protected MavlinkClientIdentity Identity { get; }
@@ -89,7 +89,7 @@ namespace Asv.Mavlink
         {
             return new TPacket
             {
-                ComponenId = Identity.ComponentId,
+                ComponentId = Identity.ComponentId,
                 SystemId = Identity.SystemId,
                 Sequence = Sequence.GetNextSequenceNumber(),
             };

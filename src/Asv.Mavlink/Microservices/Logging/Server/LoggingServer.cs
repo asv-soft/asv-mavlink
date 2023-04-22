@@ -41,7 +41,7 @@ namespace Asv.Mavlink.Server
 
             var packet = new LoggingDataPacket
             {
-                ComponenId = _identity.ComponentId,
+                ComponentId = _identity.ComponentId,
                 SystemId = _identity.SystemId,
                 CompatFlags = 0,
                 IncompatFlags = 0,

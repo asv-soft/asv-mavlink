@@ -25,7 +25,7 @@ namespace Asv.Mavlink.Test
                 IncompatFlags = 0,
                 Sequence = 10,
                 SystemId = 255,
-                ComponenId = 255,
+                ComponentId = 255,
                 Payload =
                 {
                     U64 = 1,

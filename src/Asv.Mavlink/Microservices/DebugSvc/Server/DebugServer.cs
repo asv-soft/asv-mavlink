@@ -50,7 +50,7 @@ namespace Asv.Mavlink
 
             var packet = new DebugFloatArrayPacket()
             {
-                ComponenId = _identity.ComponentId,
+                ComponentId = _identity.ComponentId,
                 SystemId = _identity.SystemId,
                 CompatFlags = 0,
                 IncompatFlags = 0,
@@ -75,7 +75,7 @@ namespace Asv.Mavlink
             }
             var packet = new MemoryVectPacket
             {
-                ComponenId = _identity.ComponentId,
+                ComponentId = _identity.ComponentId,
                 SystemId = _identity.SystemId,
                 CompatFlags = 0,
                 IncompatFlags = 0,
@@ -100,7 +100,7 @@ namespace Asv.Mavlink
 
             var packet = new NamedValueFloatPacket
             {
-                ComponenId = _identity.ComponentId,
+                ComponentId = _identity.ComponentId,
                 SystemId = _identity.SystemId,
                 CompatFlags = 0,
                 IncompatFlags = 0,
@@ -124,7 +124,7 @@ namespace Asv.Mavlink
 
             var packet = new NamedValueIntPacket()
             {
-                ComponenId = _identity.ComponentId,
+                ComponentId = _identity.ComponentId,
                 SystemId = _identity.SystemId,
                 CompatFlags = 0,
                 IncompatFlags = 0,

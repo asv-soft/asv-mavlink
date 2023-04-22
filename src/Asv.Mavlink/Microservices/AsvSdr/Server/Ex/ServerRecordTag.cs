@@ -5,20 +5,19 @@ using Asv.Mavlink.V2.AsvSdr;
 
 namespace Asv.Mavlink;
 
-public class AsvSdrServerRecordTag:ISizedSpanSerializable
+public class ServerRecordTag:ISizedSpanSerializable
 {
-    public AsvSdrServerRecordTag(AsvSdrRecordTagType tagType, string name, byte[] valueArray, AsvSdrRecordTagFlag flags)
+    public ServerRecordTag(AsvSdrRecordTagType type, string name, byte[] value)
     {
-        TagType = tagType;
+        Type = type;
         Name = name;
-        ValueArray = valueArray;
-        Flags = flags;
+        Value = value;
     }
-    
-    public AsvSdrRecordTagType TagType { get; }
+
+
+    public AsvSdrRecordTagType Type { get; }
     public string Name { get; }
-    public byte[] ValueArray { get; }
-    public AsvSdrRecordTagFlag Flags { get; }
+    public byte[] Value { get; }
 
     public void Deserialize(ref ReadOnlySpan<byte> buffer)
     {

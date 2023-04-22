@@ -20,10 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 2.0.2
+// This code was generate by tool Asv.Mavlink.Shell version 3.1.0
 
 using System;
 using System.Text;
+using Asv.Mavlink.V2.Common;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.PythonArrayTest
@@ -60,6 +61,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
 	    public const int PacketMessageId = 150;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 26;
+        public override bool WrapToV2Extension => false;
 
         public override ArrayTest0Payload Payload { get; } = new ArrayTest0Payload();
 
@@ -163,6 +165,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
 	    public const int PacketMessageId = 151;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 72;
+        public override bool WrapToV2Extension => false;
 
         public override ArrayTest1Payload Payload { get; } = new ArrayTest1Payload();
 
@@ -217,6 +220,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
 	    public const int PacketMessageId = 153;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 19;
+        public override bool WrapToV2Extension => false;
 
         public override ArrayTest3Payload Payload { get; } = new ArrayTest3Payload();
 
@@ -278,6 +282,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
 	    public const int PacketMessageId = 154;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 89;
+        public override bool WrapToV2Extension => false;
 
         public override ArrayTest4Payload Payload { get; } = new ArrayTest4Payload();
 
@@ -339,6 +344,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
 	    public const int PacketMessageId = 155;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 27;
+        public override bool WrapToV2Extension => false;
 
         public override ArrayTest5Payload Payload { get; } = new ArrayTest5Payload();
 
@@ -431,6 +437,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
 	    public const int PacketMessageId = 156;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 14;
+        public override bool WrapToV2Extension => false;
 
         public override ArrayTest6Payload Payload { get; } = new ArrayTest6Payload();
 
@@ -630,6 +637,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
 	    public const int PacketMessageId = 157;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 187;
+        public override bool WrapToV2Extension => false;
 
         public override ArrayTest7Payload Payload { get; } = new ArrayTest7Payload();
 
@@ -808,6 +816,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
 	    public const int PacketMessageId = 158;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 106;
+        public override bool WrapToV2Extension => false;
 
         public override ArrayTest8Payload Payload { get; } = new ArrayTest8Payload();
 

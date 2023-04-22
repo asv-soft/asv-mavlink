@@ -54,6 +54,7 @@ namespace Asv.Mavlink.Shell
                                       {
                                           Id = int.Parse(rdr.GetAttribute("id")),
                                           Name = rdr.GetAttribute("name"),
+                                          
                                       };
                     protocolEnums.Add(messageItem);
                     ParseMessage(rdr, messageItem);
@@ -73,7 +74,9 @@ namespace Asv.Mavlink.Shell
                 switch (rdr.Name)
                 {
                     case "description":
-                        messageItem.Desc = ConvertDesc(rdr.ReadElementContentAsString());
+                        var content = rdr.ReadElementContentAsString();
+                        messageItem.Desc = ConvertDesc(content);
+                        messageItem.WrapToV2Extension = content.Contains("[!WRAP_TO_V2_EXTENSION_PACKET!]");
                         break;
                     case "field":
                         ParseMessageFields(rdr, messageItem, extendedFields);

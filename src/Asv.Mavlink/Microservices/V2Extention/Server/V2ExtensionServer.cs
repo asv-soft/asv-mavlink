@@ -40,7 +40,7 @@ namespace Asv.Mavlink
             using var linked = CancellationTokenSource.CreateLinkedTokenSource(_disposeCancel.Token, cancel);
             await _connection.Send(new V2ExtensionPacket
             {
-                ComponenId = _identity.ComponentId,
+                ComponentId = _identity.ComponentId,
                 SystemId = _identity.SystemId,
                 CompatFlags = 0,
                 IncompatFlags = 0,

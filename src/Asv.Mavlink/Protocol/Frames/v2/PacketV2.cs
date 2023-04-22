@@ -16,11 +16,13 @@ namespace Asv.Mavlink
         public byte Sequence { get; set; }
         ///
         public byte SystemId { get; set; }
-        public byte ComponenId { get; set; }
-        public ushort FullId => (ushort)(ComponenId | SystemId << 8);
+        public byte ComponentId { get; set; }
+        public ushort FullId => (ushort)(ComponentId | SystemId << 8);
         public abstract TPayload Payload { get; }
         public int Size { get; set; }
         public abstract string Name { get; }
+        
+        public abstract bool WrapToV2Extension { get; }
 
         public ISignature Signature => _signature;
 
@@ -43,7 +45,7 @@ namespace Asv.Mavlink
             BinSerialize.WriteByte(ref fillBuffer, CompatFlags);
             BinSerialize.WriteByte(ref fillBuffer, Sequence);
             BinSerialize.WriteByte(ref fillBuffer, SystemId);
-            BinSerialize.WriteByte(ref fillBuffer, ComponenId);
+            BinSerialize.WriteByte(ref fillBuffer, ComponentId);
             BinSerialize.WriteByte(ref fillBuffer, (byte)((MessageId) & 0xFF));
             BinSerialize.WriteByte(ref fillBuffer, (byte)((MessageId >> 8) & 0xFF));
             BinSerialize.WriteByte(ref fillBuffer, (byte)((MessageId >> 16) & 0xFF));
@@ -78,7 +80,7 @@ namespace Asv.Mavlink
             CompatFlags = BinSerialize.ReadByte(ref buffer);
             Sequence = BinSerialize.ReadByte(ref buffer);
             SystemId = BinSerialize.ReadByte(ref buffer);
-            ComponenId = BinSerialize.ReadByte(ref buffer);
+            ComponentId = BinSerialize.ReadByte(ref buffer);
             int messageId = BinSerialize.ReadByte(ref buffer);
             messageId |= BinSerialize.ReadByte(ref buffer) << 8;
             messageId |= BinSerialize.ReadByte(ref buffer) << 16;
@@ -143,7 +145,7 @@ namespace Asv.Mavlink
                    $"COM:{Convert.ToString(CompatFlags, 2).PadLeft(8, '0')}|" +
                    $"SEQ:{Sequence:000}|" +
                    $"SYS:{SystemId:000}|" +
-                   $"COM:{ComponenId:000}|" +
+                   $"COM:{ComponentId:000}|" +
                    $"MSG:{MessageId:000000}|" +
                    $"{Payload.ToString()})";
         }
