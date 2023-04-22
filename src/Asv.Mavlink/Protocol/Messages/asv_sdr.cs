@@ -61,7 +61,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     public enum MavType:uint
     {
         /// <summary>
-        /// Used to identify Software-defined radio payload in HEARTBEAT packet.
+        /// Used to identify Software-defined radio payload in HEARTBEAT packet.[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// MAV_TYPE_ASV_SDR_PAYLOAD
         /// </summary>
         MavTypeAsvSdrPayload = 251,
@@ -73,7 +73,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     public enum MavCmd:uint
     {
         /// <summary>
-        /// Start one of ASV_SDR_CUSTOM_MODE
+        /// Start one of ASV_SDR_CUSTOM_MODE[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// Param 1 - Mode (uint32_t, see ASV_SDR_CUSTOM_MODE).
         /// Param 2 - Frequency in Hz, 0-3 bytes of uint_64, ignored for IDLE mode (uint32).
         /// Param 3 - Frequency in Hz, 4-7 bytes of uint_64, ignored for IDLE mode (uint32).
@@ -85,7 +85,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         MavCmdAsvSdrSetMode = 13100,
         /// <summary>
-        /// Start recoring data with unique name (max 28 chars)
+        /// Start recoring data with unique name (max 28 chars)[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// Param 1 - Record unique name: 0-3 chars (char[4]).
         /// Param 2 - Record unique name: 4-7 chars (char[4]).
         /// Param 3 - Record unique name: 8-11 chars (char[4]).
@@ -97,7 +97,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         MavCmdAsvSdrStartRecord = 13101,
         /// <summary>
-        /// Stop recoring data
+        /// Stop recoring data[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// Param 1 - Empty.
         /// Param 2 - Empty.
         /// Param 3 - Empty.
@@ -109,7 +109,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         MavCmdAsvSdrStopRecord = 13102,
         /// <summary>
-        /// Set custom tag to current record.
+        /// Set custom tag to current record.[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// Param 1 - ASV_SDR_RECORD_TAG_TYPE (uint32).
         /// Param 2 - Tag name: 0-3 chars (char[4]).
         /// Param 3 - Tag name: 4-7 chars (char[4]).
@@ -123,63 +123,63 @@ namespace Asv.Mavlink.V2.AsvSdr
     }
 
     /// <summary>
-    /// Specifies the datatype of a record tag (unit8_t).
+    /// Specifies the datatype of a record tag (unit8_t).[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_TAG_TYPE
     /// </summary>
     public enum AsvSdrRecordTagType:uint
     {
         /// <summary>
-        /// 64-bit unsigned integer
+        /// 64-bit unsigned integer[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// ASV_SDR_RECORD_TAG_TYPE_UINT64
         /// </summary>
         AsvSdrRecordTagTypeUint64 = 1,
         /// <summary>
-        /// 64-bit signed integer
+        /// 64-bit signed integer[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// ASV_SDR_RECORD_TAG_TYPE_INT64
         /// </summary>
         AsvSdrRecordTagTypeInt64 = 2,
         /// <summary>
-        /// 64-bit floating-point
+        /// 64-bit floating-point[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// ASV_SDR_RECORD_TAG_TYPE_REAL64
         /// </summary>
         AsvSdrRecordTagTypeReal64 = 3,
         /// <summary>
-        /// String type terminated by NULL if the length is less than 8 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 8 chars.
+        /// String type terminated by NULL if the length is less than 8 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 8 chars.[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// ASV_SDR_RECORD_TAG_TYPE_STRING8
         /// </summary>
         AsvSdrRecordTagTypeString8 = 4,
     }
 
     /// <summary>
-    /// A mapping of SDR payload modes for custom_mode field of heartbeat. Value of enum must be equal to message id from ASV_SDR_RECORD_DATA_* 13150-13199
+    /// A mapping of SDR payload modes for custom_mode field of heartbeat. Value of enum must be equal to message id from ASV_SDR_RECORD_DATA_* 13150-13199[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_CUSTOM_MODE
     /// </summary>
     public enum AsvSdrCustomMode:uint
     {
         /// <summary>
-        /// Default mode. Do nothing.
+        /// Default mode. Do nothing.[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// ASV_SDR_CUSTOM_MODE_IDLE
         /// </summary>
         AsvSdrCustomModeIdle = 0,
         /// <summary>
-        /// Localizer measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_LLZ
+        /// Localizer measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_LLZ[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// ASV_SDR_CUSTOM_MODE_LLZ
         /// </summary>
         AsvSdrCustomModeLlz = 13135,
         /// <summary>
-        /// Glide Path measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_GP
+        /// Glide Path measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_GP[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// ASV_SDR_CUSTOM_MODE_GP
         /// </summary>
         AsvSdrCustomModeGp = 13136,
         /// <summary>
-        /// VOR measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_VOR
+        /// VOR measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_VOR[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// ASV_SDR_CUSTOM_MODE_VOR
         /// </summary>
         AsvSdrCustomModeVor = 13137,
     }
 
     /// <summary>
-    /// These flags encode supported mode.
+    /// These flags encode supported mode.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_CUSTOM_MODE_FLAG
     /// </summary>
     public enum AsvSdrCustomModeFlag:uint
@@ -199,36 +199,36 @@ namespace Asv.Mavlink.V2.AsvSdr
     }
 
     /// <summary>
-    /// Specifies the flags of a record (unit64_t).
+    /// Specifies the flags of a record (unit64_t).[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_STATE_FLAG
     /// </summary>
     public enum AsvSdrRecordStateFlag:uint
     {
         /// <summary>
-        /// Specify recording now is started.
+        /// Specify recording now is started.[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// ASV_SDR_RECORD_FLAG_STARTED
         /// </summary>
         AsvSdrRecordFlagStarted = 1,
     }
 
     /// <summary>
-    /// ACK / NACK / ERROR values as a result of ASV_SDR_*_REQUEST_LIST or ASV_SDR_*_DELETE commands.
+    /// ACK / NACK / ERROR values as a result of ASV_SDR_*_REQUEST or ASV_SDR_*_DELETE commands.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_REQUEST_ACK
     /// </summary>
     public enum AsvSdrRequestAck:uint
     {
         /// <summary>
-        /// Request is ok.
+        /// Request is ok.[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// ASV_SDR_REQUEST_ACK_OK
         /// </summary>
         AsvSdrRequestAckOk = 0,
         /// <summary>
-        /// Command already in progress.
+        /// Command already in progress.[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// ASV_SDR_REQUEST_ACK_IN_PROGRESS
         /// </summary>
         AsvSdrRequestAckInProgress = 1,
         /// <summary>
-        /// Command error.
+        /// Command error.[!WRAP_TO_V2_EXTENSION_PACKET!]
         /// ASV_SDR_REQUEST_ACK_FAIL
         /// </summary>
         AsvSdrRequestAckFail = 2,
@@ -240,7 +240,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 #region Messages
 
     /// <summary>
-    /// SDR payload status message. Send with 1 Hz frequency.
+    /// SDR payload status message. Send with 1 Hz frequency [!WRAP_TO_V2_EXTENSION_PACKET!].
     ///  ASV_SDR_OUT_STATUS
     /// </summary>
     public class AsvSdrOutStatusPacket: PacketV2<AsvSdrOutStatusPayload>
@@ -248,6 +248,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 	    public const int PacketMessageId = 13100;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 183;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrOutStatusPayload Payload { get; } = new AsvSdrOutStatusPayload();
 
@@ -304,7 +305,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public ushort RecordCount { get; set; }
     }
     /// <summary>
-    /// Request list of ASV_SDR_RECORD from the system/component.
+    /// Request list of ASV_SDR_RECORD from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_REQUEST
     /// </summary>
     public class AsvSdrRecordRequestPacket: PacketV2<AsvSdrRecordRequestPayload>
@@ -312,6 +313,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 	    public const int PacketMessageId = 13101;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 91;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordRequestPayload Payload { get; } = new AsvSdrRecordRequestPayload();
 
@@ -375,7 +377,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public byte TargetComponent { get; set; }
     }
     /// <summary>
-    /// Response for ASV_SDR_RECORD_REQUEST request. If success, device additional send ASV_SDR_RECORD items from start to stop index.
+    /// Response for ASV_SDR_RECORD_REQUEST request. If success, device additional send ASV_SDR_RECORD items from start to stop index.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_RESPONSE
     /// </summary>
     public class AsvSdrRecordResponsePacket: PacketV2<AsvSdrRecordResponsePayload>
@@ -383,6 +385,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 	    public const int PacketMessageId = 13102;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 13;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordResponsePayload Payload { get; } = new AsvSdrRecordResponsePayload();
 
@@ -432,7 +435,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public AsvSdrRequestAck Result { get; set; }
     }
     /// <summary>
-    /// SDR payload record info.
+    /// SDR payload record info.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD
     /// </summary>
     public class AsvSdrRecordPacket: PacketV2<AsvSdrRecordPayload>
@@ -440,6 +443,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 	    public const int PacketMessageId = 13103;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 32;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordPayload Payload { get; } = new AsvSdrRecordPayload();
 
@@ -547,7 +551,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public byte GetRecordNameMaxItemsCount() => 28;
     }
     /// <summary>
-    /// Request to delete ASV_SDR_RECORD items from the system/component.
+    /// Request to delete ASV_SDR_RECORD items from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_DELETE_REQUEST
     /// </summary>
     public class AsvSdrRecordDeleteRequestPacket: PacketV2<AsvSdrRecordDeleteRequestPayload>
@@ -555,6 +559,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 	    public const int PacketMessageId = 13104;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 215;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDeleteRequestPayload Payload { get; } = new AsvSdrRecordDeleteRequestPayload();
 
@@ -634,7 +639,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public byte GetRecordNameMaxItemsCount() => 28;
     }
     /// <summary>
-    /// Response for ASV_SDR_RECORD_DELETE_REQUEST.
+    /// Response for ASV_SDR_RECORD_DELETE_REQUEST.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_DELETE_RESPONSE
     /// </summary>
     public class AsvSdrRecordDeleteResponsePacket: PacketV2<AsvSdrRecordDeleteResponsePayload>
@@ -642,6 +647,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 	    public const int PacketMessageId = 13105;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 204;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDeleteResponsePayload Payload { get; } = new AsvSdrRecordDeleteResponsePayload();
 
@@ -714,7 +720,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public byte GetRecordNameMaxItemsCount() => 28;
     }
     /// <summary>
-    /// Request list of ASV_SDR_RECORD_TAG from the system/component.
+    /// Request list of ASV_SDR_RECORD_TAG from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_TAG_REQUEST
     /// </summary>
     public class AsvSdrRecordTagRequestPacket: PacketV2<AsvSdrRecordTagRequestPayload>
@@ -722,6 +728,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 	    public const int PacketMessageId = 13110;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 44;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordTagRequestPayload Payload { get; } = new AsvSdrRecordTagRequestPayload();
 
@@ -815,7 +822,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public byte GetRecordNameMaxItemsCount() => 28;
     }
     /// <summary>
-    /// Response for ASV_SDR_RECORD_TAG_REQUEST. If success, device additional send ASV_SDR_RECORD_TAG items from start to stop index.
+    /// Response for ASV_SDR_RECORD_TAG_REQUEST. If success, device additional send ASV_SDR_RECORD_TAG items from start to stop index.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_TAG_RESPONSE
     /// </summary>
     public class AsvSdrRecordTagResponsePacket: PacketV2<AsvSdrRecordTagResponsePayload>
@@ -823,6 +830,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 	    public const int PacketMessageId = 13111;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 187;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordTagResponsePayload Payload { get; } = new AsvSdrRecordTagResponsePayload();
 
@@ -872,7 +880,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public AsvSdrRequestAck Result { get; set; }
     }
     /// <summary>
-    /// Request to read info with either tag_index and record_index from the system/component.
+    /// Request to read info with either tag_index and record_index from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_TAG
     /// </summary>
     public class AsvSdrRecordTagPacket: PacketV2<AsvSdrRecordTagPayload>
@@ -880,6 +888,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 	    public const int PacketMessageId = 13112;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 100;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordTagPayload Payload { get; } = new AsvSdrRecordTagPayload();
 
@@ -985,7 +994,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public byte[] TagValue { get; } = new byte[8];
     }
     /// <summary>
-    /// Request to delete ASV_SDR_RECORD_TAG from the system/component.
+    /// Request to delete ASV_SDR_RECORD_TAG from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_TAG_DELETE_REQUEST
     /// </summary>
     public class AsvSdrRecordTagDeleteRequestPacket: PacketV2<AsvSdrRecordTagDeleteRequestPayload>
@@ -993,6 +1002,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 	    public const int PacketMessageId = 13113;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 134;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordTagDeleteRequestPayload Payload { get; } = new AsvSdrRecordTagDeleteRequestPayload();
 
@@ -1098,7 +1108,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public char[] TagName { get; } = new char[16];
     }
     /// <summary>
-    /// Response for ASV_SDR_RECORD_TAG_DELETE_REQUEST.
+    /// Response for ASV_SDR_RECORD_TAG_DELETE_REQUEST.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_TAG_DELETE_RESPONSE
     /// </summary>
     public class AsvSdrRecordTagDeleteResponsePacket: PacketV2<AsvSdrRecordTagDeleteResponsePayload>
@@ -1106,6 +1116,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 	    public const int PacketMessageId = 13116;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 146;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordTagDeleteResponsePayload Payload { get; } = new AsvSdrRecordTagDeleteResponsePayload();
 
@@ -1204,7 +1215,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public char[] TagName { get; } = new char[16];
     }
     /// <summary>
-    /// Request list of ASV_SDR_RECORD_DATA_* items from the system/component.
+    /// Request list of ASV_SDR_RECORD_DATA_* items from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_DATA_REQUEST
     /// </summary>
     public class AsvSdrRecordDataRequestPacket: PacketV2<AsvSdrRecordDataRequestPayload>
@@ -1212,6 +1223,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 	    public const int PacketMessageId = 13120;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 94;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDataRequestPayload Payload { get; } = new AsvSdrRecordDataRequestPayload();
 
@@ -1305,7 +1317,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public byte GetRecordNameMaxItemsCount() => 28;
     }
     /// <summary>
-    /// Response for ASV_SDR_RECORD_DATA_REQUEST. If success, device additional send ASV_SDR_RECORD_DATA_* items from start to stop index.
+    /// Response for ASV_SDR_RECORD_DATA_REQUEST. If success, device additional send ASV_SDR_RECORD_DATA_* items from start to stop index.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_DATA_RESPONSE
     /// </summary>
     public class AsvSdrRecordDataResponsePacket: PacketV2<AsvSdrRecordDataResponsePayload>
@@ -1313,6 +1325,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 	    public const int PacketMessageId = 13121;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 136;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDataResponsePayload Payload { get; } = new AsvSdrRecordDataResponsePayload();
 
@@ -1369,14 +1382,15 @@ namespace Asv.Mavlink.V2.AsvSdr
         public AsvSdrRequestAck Result { get; set; }
     }
     /// <summary>
-    /// LLZ reciever record data.
+    /// LLZ reciever record data.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_DATA_LLZ
     /// </summary>
     public class AsvSdrRecordDataLlzPacket: PacketV2<AsvSdrRecordDataLlzPayload>
     {
 	    public const int PacketMessageId = 13135;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 110;
+        public override byte GetCrcEtra() => 28;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDataLlzPayload Payload { get; } = new AsvSdrRecordDataLlzPayload();
 
@@ -1388,14 +1402,15 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDataLlzPayload : IPayload
     {
-        public byte GetMaxByteSize() => 192; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 192; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 196; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 196; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
+            TotalFreq = BinSerialize.ReadULong(ref buffer);
             DataIndex = BinSerialize.ReadUInt(ref buffer);
             GnssLat = BinSerialize.ReadInt(ref buffer);
             GnssLon = BinSerialize.ReadInt(ref buffer);
@@ -1416,7 +1431,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             ClrPower = BinSerialize.ReadFloat(ref buffer);
             ClrAm90 = BinSerialize.ReadFloat(ref buffer);
             ClrAm150 = BinSerialize.ReadFloat(ref buffer);
-            TotalFreq = BinSerialize.ReadUInt(ref buffer);
             TotalPower = BinSerialize.ReadFloat(ref buffer);
             TotalFieldStrength = BinSerialize.ReadFloat(ref buffer);
             TotalAm90 = BinSerialize.ReadFloat(ref buffer);
@@ -1443,7 +1457,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             TotalFreq150 = BinSerialize.ReadShort(ref buffer);
             CodeIdFreq1020 = BinSerialize.ReadShort(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/192 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/196 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordName = new char[arraySize];
             unsafe
             {
@@ -1474,6 +1488,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public void Serialize(ref Span<byte> buffer)
         {
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
+            BinSerialize.WriteULong(ref buffer,TotalFreq);
             BinSerialize.WriteUInt(ref buffer,DataIndex);
             BinSerialize.WriteInt(ref buffer,GnssLat);
             BinSerialize.WriteInt(ref buffer,GnssLon);
@@ -1494,7 +1509,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteFloat(ref buffer,ClrPower);
             BinSerialize.WriteFloat(ref buffer,ClrAm90);
             BinSerialize.WriteFloat(ref buffer,ClrAm150);
-            BinSerialize.WriteUInt(ref buffer,TotalFreq);
             BinSerialize.WriteFloat(ref buffer,TotalPower);
             BinSerialize.WriteFloat(ref buffer,TotalFieldStrength);
             BinSerialize.WriteFloat(ref buffer,TotalAm90);
@@ -1543,7 +1557,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             buffer = buffer.Slice(CodeId.Length);
             
-            /* PayloadByteSize = 192 */;
+            /* PayloadByteSize = 196 */;
         }
 
 
@@ -1553,6 +1567,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUnixUsec { get; set; }
+        /// <summary>
+        /// Measured frequency.
+        /// OriginName: total_freq, Units: Hz, IsExtended: false
+        /// </summary>
+        public ulong TotalFreq { get; set; }
         /// <summary>
         /// Data index in record
         /// OriginName: data_index, Units: , IsExtended: false
@@ -1653,11 +1672,6 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// OriginName: clr_am_150, Units: % E2, IsExtended: false
         /// </summary>
         public float ClrAm150 { get; set; }
-        /// <summary>
-        /// Measured frequency.
-        /// OriginName: total_freq, Units: Hz, IsExtended: false
-        /// </summary>
-        public uint TotalFreq { get; set; }
         /// <summary>
         /// Total input power.
         /// OriginName: total_power, Units: dBm, IsExtended: false
@@ -1811,14 +1825,15 @@ namespace Asv.Mavlink.V2.AsvSdr
         public char[] CodeId { get; } = new char[4];
     }
     /// <summary>
-    /// GP reciever record data.
+    /// GP reciever record data.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_DATA_GP
     /// </summary>
     public class AsvSdrRecordDataGpPacket: PacketV2<AsvSdrRecordDataGpPayload>
     {
 	    public const int PacketMessageId = 13136;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 121;
+        public override byte GetCrcEtra() => 244;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDataGpPayload Payload { get; } = new AsvSdrRecordDataGpPayload();
 
@@ -1830,14 +1845,15 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDataGpPayload : IPayload
     {
-        public byte GetMaxByteSize() => 182; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 182; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 186; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 186; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
+            TotalFreq = BinSerialize.ReadULong(ref buffer);
             DataIndex = BinSerialize.ReadUInt(ref buffer);
             GnssLat = BinSerialize.ReadInt(ref buffer);
             GnssLon = BinSerialize.ReadInt(ref buffer);
@@ -1858,7 +1874,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             ClrPower = BinSerialize.ReadFloat(ref buffer);
             ClrAm90 = BinSerialize.ReadFloat(ref buffer);
             ClrAm150 = BinSerialize.ReadFloat(ref buffer);
-            TotalFreq = BinSerialize.ReadUInt(ref buffer);
             TotalPower = BinSerialize.ReadFloat(ref buffer);
             TotalFieldStrength = BinSerialize.ReadFloat(ref buffer);
             TotalAm90 = BinSerialize.ReadFloat(ref buffer);
@@ -1883,7 +1898,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             TotalFreq90 = BinSerialize.ReadShort(ref buffer);
             TotalFreq150 = BinSerialize.ReadShort(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/182 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/186 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordName = new char[arraySize];
             unsafe
             {
@@ -1903,6 +1918,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public void Serialize(ref Span<byte> buffer)
         {
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
+            BinSerialize.WriteULong(ref buffer,TotalFreq);
             BinSerialize.WriteUInt(ref buffer,DataIndex);
             BinSerialize.WriteInt(ref buffer,GnssLat);
             BinSerialize.WriteInt(ref buffer,GnssLon);
@@ -1923,7 +1939,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteFloat(ref buffer,ClrPower);
             BinSerialize.WriteFloat(ref buffer,ClrAm90);
             BinSerialize.WriteFloat(ref buffer,ClrAm150);
-            BinSerialize.WriteUInt(ref buffer,TotalFreq);
             BinSerialize.WriteFloat(ref buffer,TotalPower);
             BinSerialize.WriteFloat(ref buffer,TotalFieldStrength);
             BinSerialize.WriteFloat(ref buffer,TotalAm90);
@@ -1960,7 +1975,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             
             BinSerialize.WriteByte(ref buffer,(byte)GnssFixType);
             BinSerialize.WriteByte(ref buffer,(byte)GnssSatellitesVisible);
-            /* PayloadByteSize = 182 */;
+            /* PayloadByteSize = 186 */;
         }
 
 
@@ -1970,6 +1985,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUnixUsec { get; set; }
+        /// <summary>
+        /// Measured frequency.
+        /// OriginName: total_freq, Units: Hz, IsExtended: false
+        /// </summary>
+        public ulong TotalFreq { get; set; }
         /// <summary>
         /// Data index in record
         /// OriginName: data_index, Units: , IsExtended: false
@@ -2070,11 +2090,6 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// OriginName: clr_am_150, Units: % E2, IsExtended: false
         /// </summary>
         public float ClrAm150 { get; set; }
-        /// <summary>
-        /// Measured frequency.
-        /// OriginName: total_freq, Units: Hz, IsExtended: false
-        /// </summary>
-        public uint TotalFreq { get; set; }
         /// <summary>
         /// Total input power.
         /// OriginName: total_power, Units: dBm, IsExtended: false
@@ -2213,14 +2228,15 @@ namespace Asv.Mavlink.V2.AsvSdr
         public byte GnssSatellitesVisible { get; set; }
     }
     /// <summary>
-    /// VOR reciever record data.
+    /// VOR reciever record data.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_DATA_VOR
     /// </summary>
     public class AsvSdrRecordDataVorPacket: PacketV2<AsvSdrRecordDataVorPayload>
     {
 	    public const int PacketMessageId = 13137;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 230;
+        public override byte GetCrcEtra() => 92;
+        public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDataVorPayload Payload { get; } = new AsvSdrRecordDataVorPayload();
 
@@ -2232,14 +2248,15 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDataVorPayload : IPayload
     {
-        public byte GetMaxByteSize() => 132; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 132; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 136; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 136; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
+            TotalFreq = BinSerialize.ReadULong(ref buffer);
             DataIndex = BinSerialize.ReadUInt(ref buffer);
             GnssLat = BinSerialize.ReadInt(ref buffer);
             GnssLon = BinSerialize.ReadInt(ref buffer);
@@ -2255,7 +2272,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             Roll = BinSerialize.ReadFloat(ref buffer);
             Pitch = BinSerialize.ReadFloat(ref buffer);
             Yaw = BinSerialize.ReadFloat(ref buffer);
-            Freq = BinSerialize.ReadUInt(ref buffer);
             Azimuth = BinSerialize.ReadFloat(ref buffer);
             Power = BinSerialize.ReadFloat(ref buffer);
             FieldStrength = BinSerialize.ReadFloat(ref buffer);
@@ -2278,7 +2294,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             MeasureTime = BinSerialize.ReadShort(ref buffer);
             GnssFixType = (GpsFixType)BinSerialize.ReadByte(ref buffer);
             GnssSatellitesVisible = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/132 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/136 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             CodeId = new char[arraySize];
             unsafe
             {
@@ -2296,6 +2312,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         public void Serialize(ref Span<byte> buffer)
         {
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
+            BinSerialize.WriteULong(ref buffer,TotalFreq);
             BinSerialize.WriteUInt(ref buffer,DataIndex);
             BinSerialize.WriteInt(ref buffer,GnssLat);
             BinSerialize.WriteInt(ref buffer,GnssLon);
@@ -2311,7 +2328,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteFloat(ref buffer,Roll);
             BinSerialize.WriteFloat(ref buffer,Pitch);
             BinSerialize.WriteFloat(ref buffer,Yaw);
-            BinSerialize.WriteUInt(ref buffer,Freq);
             BinSerialize.WriteFloat(ref buffer,Azimuth);
             BinSerialize.WriteFloat(ref buffer,Power);
             BinSerialize.WriteFloat(ref buffer,FieldStrength);
@@ -2344,7 +2360,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             buffer = buffer.Slice(CodeId.Length);
             
-            /* PayloadByteSize = 132 */;
+            /* PayloadByteSize = 136 */;
         }
 
 
@@ -2354,6 +2370,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
         public ulong TimeUnixUsec { get; set; }
+        /// <summary>
+        /// Measured frequency.
+        /// OriginName: total_freq, Units: Hz, IsExtended: false
+        /// </summary>
+        public ulong TotalFreq { get; set; }
         /// <summary>
         /// Data index in record
         /// OriginName: data_index, Units: , IsExtended: false
@@ -2429,11 +2450,6 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// OriginName: yaw, Units: rad, IsExtended: false
         /// </summary>
         public float Yaw { get; set; }
-        /// <summary>
-        /// Frequency.
-        /// OriginName: freq, Units: Hz, IsExtended: false
-        /// </summary>
-        public uint Freq { get; set; }
         /// <summary>
         /// Measured azimuth.
         /// OriginName: azimuth, Units: deg, IsExtended: false

@@ -17,11 +17,11 @@ namespace Asv.Mavlink
     {
         public static Task SendCommandAckAccepted(this ICommandServer server, CommandIntPacket req, MavResult result, CancellationToken cancel = default)
         {
-            return server.SendCommandAck(req.Payload.Command, new DeviceIdentity(req.SystemId,req.ComponenId), new CommandResult(result), cancel);
+            return server.SendCommandAck(req.Payload.Command, new DeviceIdentity(req.SystemId,req.ComponentId), new CommandResult(result), cancel);
         }
         public static Task SendCommandAckAccepted(this ICommandServer server, CommandLongPacket req, MavResult result, CancellationToken cancel = default)
         {
-            return server.SendCommandAck(req.Payload.Command, new DeviceIdentity(req.SystemId,req.ComponenId), new CommandResult(result), cancel);
+            return server.SendCommandAck(req.Payload.Command, new DeviceIdentity(req.SystemId,req.ComponentId), new CommandResult(result), cancel);
         }
     }
     

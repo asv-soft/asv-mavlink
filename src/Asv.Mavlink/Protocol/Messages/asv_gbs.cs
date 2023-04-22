@@ -145,6 +145,7 @@ namespace Asv.Mavlink.V2.AsvGbs
 	    public const int PacketMessageId = 13000;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 216;
+        public override bool WrapToV2Extension => false;
 
         public override AsvGbsOutStatusPayload Payload { get; } = new AsvGbsOutStatusPayload();
 

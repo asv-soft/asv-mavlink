@@ -22,7 +22,7 @@ public class BaseDevicesTest
     }
     
     [Fact]
-    public async Task ClientDeviceIdentityArgumentNullExceptionTest()
+    public Task ClientDeviceIdentityArgumentNullExceptionTest()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -34,10 +34,11 @@ public class BaseDevicesTest
                 new PacketSequenceCalculator(),
                 Scheduler.Default);
         });
+        return Task.CompletedTask;
     }
     
     [Fact]
-    public async Task ClientDeviceConfigArgumentNullExceptionTest()
+    public Task ClientDeviceConfigArgumentNullExceptionTest()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -52,10 +53,11 @@ public class BaseDevicesTest
                 new PacketSequenceCalculator(),
                 Scheduler.Default);
         });
+        return Task.CompletedTask;
     }
     
     [Fact]
-    public async Task ClientDeviceVirtualLinkArgumentNullExceptionTest()
+    public Task ClientDeviceVirtualLinkArgumentNullExceptionTest()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -68,10 +70,11 @@ public class BaseDevicesTest
                 new PacketSequenceCalculator(),
                 Scheduler.Default);
         });
+        return Task.CompletedTask;
     }
     
     [Fact]
-    public async Task ServerDeviceVirtualLinkArgumentNullExceptionTest()
+    public Task ServerDeviceVirtualLinkArgumentNullExceptionTest()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -81,10 +84,11 @@ public class BaseDevicesTest
                 new ServerDeviceConfig(),
                 Scheduler.Default);
         });
+        return Task.CompletedTask;
     }
     
     [Fact]
-    public async Task ServerDeviceSequenceArgumentNullExceptionTest()
+    public Task ServerDeviceSequenceArgumentNullExceptionTest()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -96,10 +100,11 @@ public class BaseDevicesTest
                 new ServerDeviceConfig(),
                 Scheduler.Default);
         });
+        return Task.CompletedTask;
     }
     
     [Fact]
-    public async Task ServerDeviceIdentityArgumentNullExceptionTest()
+    public Task ServerDeviceIdentityArgumentNullExceptionTest()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -111,6 +116,7 @@ public class BaseDevicesTest
                 new ServerDeviceConfig(),
                 Scheduler.Default);
         });
+        return Task.CompletedTask;
     }
     
     // [Fact]
@@ -132,7 +138,7 @@ public class BaseDevicesTest
     // }
     
     [Fact]
-    public async Task ServerDeviceConfigStatusTextArgumentNullExceptionTest()
+    public Task ServerDeviceConfigStatusTextArgumentNullExceptionTest()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -147,10 +153,11 @@ public class BaseDevicesTest
                 },
                 Scheduler.Default);
         });
+        return Task.CompletedTask;
     }
     
     [Fact]
-    public async Task ServerDeviceSchedulerArgumentNullExceptionTest()
+    public void ServerDeviceSchedulerArgumentNullExceptionTest()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -162,10 +169,11 @@ public class BaseDevicesTest
                 new ServerDeviceConfig(),
                 null);
         });
+        
     }
     
     [Fact]
-    public async Task ClientDeviceSequenceArgumentNullExceptionTest()
+    public void ClientDeviceSequenceArgumentNullExceptionTest()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -180,7 +188,7 @@ public class BaseDevicesTest
     }
     
     [Fact]
-    public async Task ClientDeviceSchedulerArgumentNullExceptionTest()
+    public void ClientDeviceSchedulerArgumentNullExceptionTest()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -192,6 +200,7 @@ public class BaseDevicesTest
                 new PacketSequenceCalculator(),
                 null);
         });
+        
     }
     
     [Theory]

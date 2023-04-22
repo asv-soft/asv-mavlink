@@ -25,7 +25,7 @@ namespace Asv.Mavlink
         public MavlinkDevice(HeartbeatPacket packet)
         {
             SystemId = packet.SystemId;
-            ComponentId = packet.ComponenId;
+            ComponentId = packet.ComponentId;
             MavlinkVersion = packet.Payload.MavlinkVersion;
             Autopilot = packet.Payload.Autopilot;
             Type = packet.Payload.Type;

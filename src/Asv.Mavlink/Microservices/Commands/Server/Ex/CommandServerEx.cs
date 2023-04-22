@@ -36,7 +36,7 @@ public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, IC
 
     private async void OnRequest(TArgPacket pkt)
     {
-        var requester = new DeviceIdentity() { ComponentId = pkt.ComponenId, SystemId = pkt.SystemId };
+        var requester = new DeviceIdentity() { ComponentId = pkt.ComponentId, SystemId = pkt.SystemId };
         var cmd = _cmdGetter(pkt);
         
         var confirmation = _confirmationGetter(pkt);

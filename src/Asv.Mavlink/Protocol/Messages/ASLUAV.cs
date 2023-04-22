@@ -20,9 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 2.0.2
+// This code was generate by tool Asv.Mavlink.Shell version 3.1.0
 
 using System;
+using System.Text;
 using Asv.Mavlink.V2.Common;
 using Asv.IO;
 
@@ -148,6 +149,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 78;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 119;
+        public override bool WrapToV2Extension => false;
 
         public override CommandIntStampedPayload Payload { get; } = new CommandIntStampedPayload();
 
@@ -289,6 +291,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 79;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 102;
+        public override bool WrapToV2Extension => false;
 
         public override CommandLongStampedPayload Payload { get; } = new CommandLongStampedPayload();
 
@@ -416,6 +419,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 201;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 218;
+        public override bool WrapToV2Extension => false;
 
         public override SensPowerPayload Payload { get; } = new SensPowerPayload();
 
@@ -480,6 +484,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 202;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 231;
+        public override bool WrapToV2Extension => false;
 
         public override SensMpptPayload Payload { get; } = new SensMpptPayload();
 
@@ -607,6 +612,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 203;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 172;
+        public override bool WrapToV2Extension => false;
 
         public override AslctrlDataPayload Payload { get; } = new AslctrlDataPayload();
 
@@ -818,6 +824,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 204;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 251;
+        public override bool WrapToV2Extension => false;
 
         public override AslctrlDebugPayload Payload { get; } = new AslctrlDebugPayload();
 
@@ -931,6 +938,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 205;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 97;
+        public override bool WrapToV2Extension => false;
 
         public override AsluavStatusPayload Payload { get; } = new AsluavStatusPayload();
 
@@ -1006,6 +1014,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 206;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 64;
+        public override bool WrapToV2Extension => false;
 
         public override EkfExtPayload Payload { get; } = new EkfExtPayload();
 
@@ -1091,6 +1100,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 207;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 234;
+        public override bool WrapToV2Extension => false;
 
         public override AslObctrlPayload Payload { get; } = new AslObctrlPayload();
 
@@ -1183,6 +1193,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 208;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 144;
+        public override bool WrapToV2Extension => false;
 
         public override SensAtmosPayload Payload { get; } = new SensAtmosPayload();
 
@@ -1240,6 +1251,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 209;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 155;
+        public override bool WrapToV2Extension => false;
 
         public override SensBatmonPayload Payload { get; } = new SensBatmonPayload();
 
@@ -1381,6 +1393,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 210;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 20;
+        public override bool WrapToV2Extension => false;
 
         public override FwSoaringDataPayload Payload { get; } = new FwSoaringDataPayload();
 
@@ -1592,6 +1605,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 211;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 54;
+        public override bool WrapToV2Extension => false;
 
         public override SensorpodStatusPayload Payload { get; } = new SensorpodStatusPayload();
 
@@ -1684,6 +1698,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 212;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 222;
+        public override bool WrapToV2Extension => false;
 
         public override SensPowerBoardPayload Payload { get; } = new SensPowerBoardPayload();
 
@@ -1804,6 +1819,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 213;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 200;
+        public override bool WrapToV2Extension => false;
 
         public override GsmLinkStatusPayload Payload { get; } = new GsmLinkStatusPayload();
 
@@ -1889,6 +1905,7 @@ namespace Asv.Mavlink.V2.Asluav
 	    public const int PacketMessageId = 214;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 23;
+        public override bool WrapToV2Extension => false;
 
         public override SatcomLinkStatusPayload Payload { get; } = new SatcomLinkStatusPayload();
 

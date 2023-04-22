@@ -70,7 +70,7 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
     {
         return new TPacket
         {
-            ComponenId = Identity.ComponentId,
+            ComponentId = Identity.ComponentId,
             SystemId = Identity.SystemId,
             Sequence = PacketSequence.GetNextSequenceNumber(),
         };
@@ -79,7 +79,7 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
     protected IPacketV2<IPayload> InternalGeneratePacket(int messageId, bool incrementSequence = true)
     {
         var pkt = Connection.CreatePacketByMessageId(messageId);
-        pkt.ComponenId = Identity.ComponentId;
+        pkt.ComponentId = Identity.ComponentId;
         pkt.SystemId = Identity.SystemId;
         if (incrementSequence)
         {
@@ -92,7 +92,7 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
     protected Task InternalSend(int messageId, Action<IPacketV2<IPayload>> fillPacket, CancellationToken cancel = default)
     {
         var pkt = Connection.CreatePacketByMessageId(messageId);
-        pkt.ComponenId = Identity.ComponentId;
+        pkt.ComponentId = Identity.ComponentId;
         pkt.SystemId = Identity.SystemId;
         pkt.Sequence = PacketSequence.GetNextSequenceNumber();
         return Connection.Send(pkt, cancel);

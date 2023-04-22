@@ -5,6 +5,8 @@ namespace Asv.Mavlink;
 
 public class RecordId:IEquatable<RecordId>
 {
+    public static RecordId Empty { get; } = new("NOT_RECORDED");
+    
     public RecordId(string name)
     {
         SdrWellKnown.CheckRecordName(name);

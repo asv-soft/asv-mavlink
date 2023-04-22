@@ -20,9 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 2.0.2
+// This code was generate by tool Asv.Mavlink.Shell version 3.1.0
 
 using System;
+using System.Text;
+using Asv.Mavlink.V2.Common;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.Ualberta
@@ -137,6 +139,7 @@ namespace Asv.Mavlink.V2.Ualberta
 	    public const int PacketMessageId = 220;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 34;
+        public override bool WrapToV2Extension => false;
 
         public override NavFilterBiasPayload Payload { get; } = new NavFilterBiasPayload();
 
@@ -222,6 +225,7 @@ namespace Asv.Mavlink.V2.Ualberta
 	    public const int PacketMessageId = 221;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 71;
+        public override bool WrapToV2Extension => false;
 
         public override RadioCalibrationPayload Payload { get; } = new RadioCalibrationPayload();
 
@@ -346,6 +350,7 @@ namespace Asv.Mavlink.V2.Ualberta
 	    public const int PacketMessageId = 222;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 15;
+        public override bool WrapToV2Extension => false;
 
         public override UalbertaSysStatusPayload Payload { get; } = new UalbertaSysStatusPayload();
 
