@@ -41,8 +41,8 @@
     <DocumentationFile>bin\Release\Asv.Mavlink.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Asv.Common" Version="1.7.0" />
-    <PackageReference Include="Asv.IO" Version="1.6.1" />
+    <PackageReference Include="Asv.Common" Version="1.7.1" />
+    <PackageReference Include="Asv.IO" Version="1.7.1" />
     <PackageReference Include="DynamicData" Version="7.13.5" />
     <PackageReference Include="Geodesy" Version="4.1.0" />
     <PackageReference Include="NLog" Version="5.1.2" />

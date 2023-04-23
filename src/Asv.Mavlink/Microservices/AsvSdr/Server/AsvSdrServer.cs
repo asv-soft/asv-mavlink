@@ -22,7 +22,7 @@ namespace Asv.Mavlink
             IScheduler rxScheduler) 
             : base("SDR", connection, identity, seq, rxScheduler)
         {
-            _config = config;
+            _config = config ?? throw new ArgumentNullException(nameof(config));
             _transponder =
                 new MavlinkPacketTransponder<AsvSdrOutStatusPacket, AsvSdrOutStatusPayload>(connection, identity, seq)
                     .DisposeItWith(Disposable);
@@ -47,17 +47,20 @@ namespace Asv.Mavlink
 
         public void Set(Action<AsvSdrOutStatusPayload> changeCallback)
         {
+            if (changeCallback == null) throw new ArgumentNullException(nameof(changeCallback));
             _transponder.Set(changeCallback);
         }
 
         public IObservable<AsvSdrRecordRequestPayload> OnRecordRequest { get; }
         public Task SendRecordResponse(Action<AsvSdrRecordResponsePayload> setValueCallback, CancellationToken cancel = default)
         {
+            if (setValueCallback == null) throw new ArgumentNullException(nameof(setValueCallback));
             return InternalSend<AsvSdrRecordResponsePacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
         }
 
         public Task SendRecord(Action<AsvSdrRecordPayload> setValueCallback, CancellationToken cancel = default)
         {
+            if (setValueCallback == null) throw new ArgumentNullException(nameof(setValueCallback));
             return InternalSend<AsvSdrRecordPacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
         }
 
@@ -65,35 +68,41 @@ namespace Asv.Mavlink
     
         public Task SendRecordDeleteResponse(Action<AsvSdrRecordDeleteResponsePayload> setValueCallback, CancellationToken cancel = default)
         {
+            if (setValueCallback == null) throw new ArgumentNullException(nameof(setValueCallback));
             return InternalSend<AsvSdrRecordDeleteResponsePacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
         }
 
         public IObservable<AsvSdrRecordTagRequestPayload> OnRecordTagRequest { get; }
         public Task SendRecordTagResponse(Action<AsvSdrRecordTagResponsePayload> setValueCallback, CancellationToken cancel = default)
         {
+            if (setValueCallback == null) throw new ArgumentNullException(nameof(setValueCallback));
             return InternalSend<AsvSdrRecordTagResponsePacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
         }
 
         public IObservable<AsvSdrRecordTagRequestPayload> OnGetRecordTag { get; }
         public Task SendRecordTag(Action<AsvSdrRecordTagPayload> setValueCallback, CancellationToken cancel = default)
         {
+            if (setValueCallback == null) throw new ArgumentNullException(nameof(setValueCallback));
             return InternalSend<AsvSdrRecordTagPacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
         }
 
         public IObservable<AsvSdrRecordTagDeleteRequestPayload> OnRecordTagDeleteRequest { get; }
         public Task SendRecordTagDeleteResponse(Action<AsvSdrRecordTagDeleteResponsePayload> setValueCallback, CancellationToken cancel = default)
         {
+            if (setValueCallback == null) throw new ArgumentNullException(nameof(setValueCallback));
             return InternalSend<AsvSdrRecordTagDeleteResponsePacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
         }
 
         public IObservable<AsvSdrRecordDataRequestPayload> OnRecordDataRequest { get; }
         public Task SendRecordDataResponse(Action<AsvSdrRecordDataResponsePayload> setValueCallback, CancellationToken cancel = default)
         {
+            if (setValueCallback == null) throw new ArgumentNullException(nameof(setValueCallback));
             return InternalSend<AsvSdrRecordDataResponsePacket>(_ =>{ setValueCallback(_.Payload); }, cancel);
         }
 
         public Task SendRecordData(AsvSdrCustomMode mode, Action<IPayload> setValueCallback, CancellationToken cancel = default)
         {
+            if (setValueCallback == null) throw new ArgumentNullException(nameof(setValueCallback));
             if (mode == AsvSdrCustomMode.AsvSdrCustomModeIdle)
                 throw new ArgumentException("Can't create message for IDLE mode", nameof(mode));
             return InternalSend((int)mode,_=>setValueCallback(_.Payload), cancel);

@@ -12,6 +12,8 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
 {
     public AsvSdrServerEx(IAsvSdrServer server,IHeartbeatServer heartbeat, ICommandServerEx<CommandLongPacket> commands)
     {
+        if (heartbeat == null) throw new ArgumentNullException(nameof(heartbeat));
+        if (commands == null) throw new ArgumentNullException(nameof(commands));
         Base = server ?? throw new ArgumentNullException(nameof(server));
 
         #region Heartbeat

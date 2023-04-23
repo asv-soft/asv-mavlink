@@ -76,12 +76,12 @@ namespace Asv.Mavlink.Test
             var link = new VirtualLink();
             var called = false;
             var serverDevice = new GbsServerDevice(link.Server, new MavlinkServerIdentity(),new PacketSequenceCalculator(),Scheduler.Default, new GbsServerDeviceConfig());
-            serverDevice.Gbs.StartAutoMode = async (dur, acc, cancel) =>
+            serverDevice.Gbs.StartAutoMode = (dur, acc, cancel) =>
             {
                 called = true;
                 Assert.Equal(duration, dur);
                 Assert.Equal(accuracy, acc);
-                return result;
+                return Task.FromResult(result);
             };
             serverDevice.Gbs.AccuracyMeter.OnNext(0.15);
             serverDevice.Gbs.ObservationSec.OnNext(1);
