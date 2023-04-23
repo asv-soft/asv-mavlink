@@ -15,13 +15,13 @@
     <!-- Asv SDR specific MAV_TYPE identity -->
     <enum name="MAV_TYPE">
       <entry value="251" name="MAV_TYPE_ASV_SDR_PAYLOAD">
-        <description>Used to identify Software-defined radio payload in HEARTBEAT packet.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>Used to identify Software-defined radio payload in HEARTBEAT packet.</description>
       </entry>
     </enum>
     <!-- Asv SDR specific MAV_CMD_* commands -->
     <enum name="MAV_CMD">
       <entry value="13100" name="MAV_CMD_ASV_SDR_SET_MODE">
-        <description>Start one of ASV_SDR_CUSTOM_MODE[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>Start one of ASV_SDR_CUSTOM_MODE</description>
         <param index="1">Mode (uint32_t, see ASV_SDR_CUSTOM_MODE).</param>
         <param index="2">Frequency in Hz, 0-3 bytes of uint_64, ignored for IDLE mode (uint32).</param>
         <param index="3">Frequency in Hz, 4-7 bytes of uint_64, ignored for IDLE mode (uint32).</param>
@@ -31,7 +31,7 @@
         <param index="7">Empty.</param>
       </entry>
       <entry value="13101" name="MAV_CMD_ASV_SDR_START_RECORD">
-        <description>Start recoring data with unique name (max 28 chars)[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>Start recoring data with unique name (max 28 chars)</description>
         <param index="1">Record unique name: 0-3 chars (char[4]).</param>
         <param index="2">Record unique name: 4-7 chars (char[4]).</param>
         <param index="3">Record unique name: 8-11 chars (char[4]).</param>
@@ -41,7 +41,7 @@
         <param index="7">Record unique name: 24-27 chars (char[4]).</param>
       </entry>
       <entry value="13102" name="MAV_CMD_ASV_SDR_STOP_RECORD">
-        <description>Stop recoring data[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>Stop recoring data</description>
         <param index="1">Empty.</param>
         <param index="2">Empty.</param>
         <param index="3">Empty.</param>
@@ -51,7 +51,7 @@
         <param index="7">Empty.</param>
       </entry>
       <entry value="13103" name="MAV_CMD_ASV_SDR_SET_RECORD_TAG">
-        <description>Set custom tag to current record.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>Set custom tag to current record.</description>
         <param index="1">ASV_SDR_RECORD_TAG_TYPE (uint32).</param>
         <param index="2">Tag name: 0-3 chars (char[4]).</param>
         <param index="3">Tag name: 4-7 chars (char[4]).</param>
@@ -63,33 +63,33 @@
     </enum>
     
     <enum name="ASV_SDR_RECORD_TAG_TYPE">
-      <description>Specifies the datatype of a record tag (unit8_t).[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <description>Specifies the datatype of a record tag (unit8_t).</description>
       <entry value="1" name="ASV_SDR_RECORD_TAG_TYPE_UINT64">
-        <description>64-bit unsigned integer[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>64-bit unsigned integer</description>
       </entry>
       <entry value="2" name="ASV_SDR_RECORD_TAG_TYPE_INT64">
-        <description>64-bit signed integer[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>64-bit signed integer</description>
       </entry>
       <entry value="3" name="ASV_SDR_RECORD_TAG_TYPE_REAL64">
-        <description>64-bit floating-point[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>64-bit floating-point</description>
       </entry>
       <entry value="4" name="ASV_SDR_RECORD_TAG_TYPE_STRING8">
-        <description>String type terminated by NULL if the length is less than 8 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 8 chars.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>String type terminated by NULL if the length is less than 8 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 8 chars.</description>
       </entry>
     </enum>
     <enum name="ASV_SDR_CUSTOM_MODE">
-      <description>A mapping of SDR payload modes for custom_mode field of heartbeat. Value of enum must be equal to message id from ASV_SDR_RECORD_DATA_* 13150-13199[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <description>A mapping of SDR payload modes for custom_mode field of heartbeat. Value of enum must be equal to message id from ASV_SDR_RECORD_DATA_* 13150-13199</description>
       <entry value="0" name="ASV_SDR_CUSTOM_MODE_IDLE">
-        <description>Default mode. Do nothing.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>Default mode. Do nothing.</description>
       </entry>
       <entry value="13135" name="ASV_SDR_CUSTOM_MODE_LLZ">
-        <description>Localizer measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_LLZ[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>Localizer measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_LLZ</description>
       </entry>
       <entry value="13136" name="ASV_SDR_CUSTOM_MODE_GP">
-        <description>Glide Path measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_GP[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>Glide Path measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_GP</description>
       </entry>
       <entry value="13137" name="ASV_SDR_CUSTOM_MODE_VOR">
-        <description>VOR measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_VOR[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>VOR measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_VOR</description>
       </entry>
 <!--      <entry value="13138" name="ASV_SDR_CUSTOM_MODE_DME"/>-->
 <!--      <entry value="13139" name="ASV_SDR_CUSTOM_MODE_MARKER"/>-->
@@ -104,17 +104,11 @@
       <entry value="4" name="ASV_SDR_CUSTOM_MODE_FLAG_VOR"/>
 <!--      <entry value="4" name="ASV_SDR_SUPPORT_MODE_DME"/>-->
 <!--      <entry value="8" name="ASV_SDR_SUPPORT_MODE_MARKER"/>-->
-<!--      <entry value="16" name="ASV_SDR_SUPPORT_MODE_VOR"/>-->
-<!--      <entry value="32" name="ASV_SDR_SUPPORT_MODE_RDF"/>-->
-<!--      <entry value="64" name="ASV_SDR_SUPPORT_MODE_GBAS"/>-->
-<!--      <entry value="128" name="ASV_SDR_SUPPORT_MODE_SPECTRUM"/>-->
+<!--      <entry value="16" name="ASV_SDR_SUPPORT_MODE_RDF"/>-->
+<!--      <entry value="32" name="ASV_SDR_SUPPORT_MODE_GBAS"/>-->
+<!--      <entry value="64" name="ASV_SDR_SUPPORT_MODE_SPECTRUM"/>-->
     </enum>
-    <enum name="ASV_SDR_RECORD_STATE_FLAG">
-      <description>Specifies the flags of a record (unit64_t).[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
-      <entry value="1" name="ASV_SDR_RECORD_FLAG_STARTED">
-        <description>Specify recording now is started.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
-      </entry>
-    </enum>
+    
     <enum name="ASV_SDR_REQUEST_ACK">
       <description>ACK / NACK / ERROR values as a result of ASV_SDR_*_REQUEST or ASV_SDR_*_DELETE commands.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <entry name="ASV_SDR_REQUEST_ACK_OK">
@@ -132,7 +126,7 @@
     <message id="13100" name="ASV_SDR_OUT_STATUS">
       <description>SDR payload status message. Send with 1 Hz frequency [!WRAP_TO_V2_EXTENSION_PACKET!].</description>
       <field type="uint64_t" name="supported_modes" enum="ASV_SDR_CUSTOM_MODE_FLAG">Supported ASV_SDR_CUSTOM_MODE.</field>
-      <field type="uint32_t" name="record_state" enum="ASV_SDR_RECORD_STATE_FLAG">Current record state ASV_SDR_RECORD_STATE_FLAG.</field>
+      <field type="uint8_t[16]" name="current_record_guid">Record GUID. Also by this field we can understand if the data is currently being recorded (GUID!=0x00) or not (GUID==0x00).</field>
       <field type="uint16_t" name="record_count">Number of records in storage.</field>
       <field type="uint64_t" name="size" units="bytes">Total storage size in bytes.</field>
     </message>
@@ -154,8 +148,9 @@
     </message>
     <message id="13103" name="ASV_SDR_RECORD">
       <description>SDR payload record info.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
-      <field type="char[28]" name="record_name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
-      <field type="uint32_t" name="record_mode" enum="ASV_SDR_CUSTOM_MODE">Record mode(it is also possible to know the type of data inside the record by cast enum to int).</field>
+      <field type="uint8_t[16]" name="record_guid">Record GUID. Generated by payload after the start of recording.</field>
+      <field type="char[28]" name="record_name">Record name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
+      <field type="uint32_t" name="data_type" enum="ASV_SDR_CUSTOM_MODE">Record data type(it is also possible to know the type of data inside the record by cast enum to int).</field>
       <field type="uint64_t" name="frequency" >Frequency in Hz.</field>
       <field type="uint64_t" name="created_unix_us" units="us">Created timestamp (UNIX epoch time).</field>
       <field type="uint32_t" name="duration_sec" units="sec">Record duration in sec.</field>
@@ -168,13 +163,13 @@
       <field type="uint8_t" name="target_system">System ID.</field>
       <field type="uint8_t" name="target_component">Component ID.</field>
       <field type="uint16_t" name="request_id">Specifies a unique number for this request. This allows the response packet to be identified.</field>
-      <field type="char[28]" name="record_name">Specifies the unique name of the record to be deleted.</field>
+      <field type="uint8_t[16]" name="record_guid">Specifies GUID of the record to be deleted.</field>
     </message>
     <message id="13105" name="ASV_SDR_RECORD_DELETE_RESPONSE">
       <description>Response for ASV_SDR_RECORD_DELETE_REQUEST.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
       <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
-      <field type="char[28]" name="record_name">Specifies the unique name of the record that was deleted.</field>
+      <field type="uint8_t[16]" name="record_guid">Specifies the GUID of the record that was deleted.</field>
     </message>
     <!-- ASV_SDR_RECORD_TAG_* 13110-13120-->
     <message id="13110" name="ASV_SDR_RECORD_TAG_REQUEST">
@@ -182,7 +177,7 @@
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
       <field type="uint16_t" name="request_id">Request unique number. This is to allow the response packet to be detected.</field>
-      <field type="char[28]" name="record_name">Specifies the unique name of the record.</field>
+      <field type="uint8_t[16]" name="record_guid">Specifies the GUID of the record.</field>
       <field type="uint16_t" name="skip">Specifies the start index of the tag to be sent in the response.</field>
       <field type="uint16_t" name="count">Specifies the number of tag to be sent in the response after the skip index.</field>
     </message>
@@ -195,8 +190,9 @@
     
     <message id="13112" name="ASV_SDR_RECORD_TAG">
       <description>Request to read info with either tag_index and record_index from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
-      <field type="char[28]" name="record_name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
-      <field type="char[16]" name="tag_name">Tag unique name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string</field>
+      <field type="uint8_t[16]" name="record_guid">Record GUID.</field>
+      <field type="uint8_t[16]" name="tag_guid">Tag GUID.</field>
+      <field type="char[16]" name="tag_name">Tag name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string</field>
       <field type="uint8_t" name="tag_type" enum="ASV_SDR_RECORD_TAG_TYPE">Tag type.</field>
       <field type="uint8_t[8]" name="tag_value">Tag value, depends on the type of tag.</field>
     </message>
@@ -205,15 +201,15 @@
       <field type="uint8_t" name="target_system">System ID.</field>
       <field type="uint8_t" name="target_component">Component ID.</field>
       <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
-      <field type="char[28]" name="record_name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
-      <field type="char[16]" name="tag_name">Tag unique name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string</field>
+      <field type="uint8_t[16]" name="record_guid">Record GUID.</field>
+      <field type="uint8_t[16]" name="tag_guid">Tag GUID.</field>
     </message>
     <message id="13116" name="ASV_SDR_RECORD_TAG_DELETE_RESPONSE">
       <description>Response for ASV_SDR_RECORD_TAG_DELETE_REQUEST.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
       <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
-      <field type="char[28]" name="record_name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
-      <field type="char[16]" name="tag_name">Tag unique name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string</field>
+      <field type="uint8_t[16]" name="record_guid">Record GUID.</field>
+      <field type="uint8_t[16]" name="tag_guid">Tag GUID.</field>
     </message>
     
     <!-- ASV_SDR_RECORD_DATA_* 13120-13130-->
@@ -222,7 +218,7 @@
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
       <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
-      <field type="char[28]" name="record_name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
+      <field type="uint8_t[16]" name="record_guid">Record GUID.</field>
       <field type="uint32_t" name="skip">Specifies the start index of the tag to be sent in the response.</field>
       <field type="uint32_t" name="count">Specifies the number of tag to be sent in the response after the skip index.</field>
     </message>
@@ -230,7 +226,8 @@
       <description>Response for ASV_SDR_RECORD_DATA_REQUEST. If success, device additional send ASV_SDR_RECORD_DATA_* items from start to stop index.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
       <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
-      <field type="uint16_t" name="data_type">Record data type (message id, e.g. 13120 for ASV_SDR_RECORD_DATA_ILS).</field>
+      <field type="uint8_t[16]" name="record_guid">Record GUID.</field>
+      <field type="uint32_t" name="data_type" enum="ASV_SDR_CUSTOM_MODE">Record data type(it is also possible to know the type of data inside the record by cast enum to int).</field>
       <field type="uint32_t" name="items_count">Number of items ASV_SDR_RECORD_DATA_* for transmition after this request with success result code (depended from request).</field>
     </message>
 
@@ -238,7 +235,7 @@
     <message id="13135" name="ASV_SDR_RECORD_DATA_LLZ">
       <description>LLZ reciever record data.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint32_t" name="data_index">Data index in record</field>
-      <field type="char[28]" name="record_name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
+      <field type="uint8_t[16]" name="record_guid">Record GUID.</field>
       <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
       <!-- The global position, as returned by the GNSS receiver -->
       <field type="uint8_t" name="gnss_fix_type" enum="GPS_FIX_TYPE">GPS fix type.</field>
@@ -305,7 +302,7 @@
     <message id="13136" name="ASV_SDR_RECORD_DATA_GP">
       <description>GP reciever record data.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint32_t" name="data_index">Data index in record</field>
-      <field type="char[28]" name="record_name">Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
+      <field type="uint8_t[16]" name="record_guid">Record GUID.</field>
       <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
       <!-- The global position, as returned by the GNSS receiver -->
       <field type="uint8_t" name="gnss_fix_type" enum="GPS_FIX_TYPE">GPS fix type.</field>
@@ -368,7 +365,7 @@
     <message id="13137" name="ASV_SDR_RECORD_DATA_VOR">
       <description>VOR reciever record data.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint32_t" name="data_index">Data index in record</field>
-      <field type="uint16_t" name="record_index">Record index in storage.</field>
+      <field type="uint8_t[16]" name="record_guid">Record GUID.</field>
       <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
       <!-- The global position, as returned by the GNSS receiver -->
       <field type="uint8_t" name="gnss_fix_type" enum="GPS_FIX_TYPE">GPS fix type.</field>

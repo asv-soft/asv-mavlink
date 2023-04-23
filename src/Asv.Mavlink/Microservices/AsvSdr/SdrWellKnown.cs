@@ -9,8 +9,8 @@ public static class SdrWellKnown
 {
     public const int RecordTagValueMaxLength = 8;
     
-    public const int RecordNameMaxLength = 27;
-    private const string RecordNameRegexString = "^[A-Za-z][A-Za-z0-9_\\- +]{2,27}$";
+    public const int RecordNameMaxLength = 28;
+    private const string RecordNameRegexString = "^[A-Za-z][A-Za-z0-9_\\- +]{2,28}$";
     private static readonly Regex RecordNameRegex = new(RecordNameRegexString, RegexOptions.Compiled);
     
     

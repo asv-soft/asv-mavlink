@@ -9,8 +9,9 @@ namespace Asv.Mavlink;
 
 public interface IAsvSdrClientRecord
 {
-    RecordId Id { get; }
-    AsvSdrCustomMode RecordMode { get; }
+    Guid Id { get; }
+    IRxValue<AsvSdrCustomMode> DataType { get; }
+    IRxValue<string> Name { get; }
     IRxValue<ulong> Frequency { get; }
     IRxValue<DateTime> Created { get; }
     IRxValue<ushort> TagsCount { get; }

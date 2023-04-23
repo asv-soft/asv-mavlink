@@ -137,7 +137,7 @@ namespace Asv.Mavlink.V2.AsvGbs
 #region Messages
 
     /// <summary>
-    /// Ground base station status message. Send with 1 Hz frequency.
+    /// Ground base station status message. Send with 1 Hz frequency.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_GBS_OUT_STATUS
     /// </summary>
     public class AsvGbsOutStatusPacket: PacketV2<AsvGbsOutStatusPayload>
@@ -145,7 +145,7 @@ namespace Asv.Mavlink.V2.AsvGbs
 	    public const int PacketMessageId = 13000;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 216;
-        public override bool WrapToV2Extension => false;
+        public override bool WrapToV2Extension => true;
 
         public override AsvGbsOutStatusPayload Payload { get; } = new AsvGbsOutStatusPayload();
 

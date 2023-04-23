@@ -61,7 +61,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     public enum MavType:uint
     {
         /// <summary>
-        /// Used to identify Software-defined radio payload in HEARTBEAT packet.[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// Used to identify Software-defined radio payload in HEARTBEAT packet.
         /// MAV_TYPE_ASV_SDR_PAYLOAD
         /// </summary>
         MavTypeAsvSdrPayload = 251,
@@ -73,7 +73,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     public enum MavCmd:uint
     {
         /// <summary>
-        /// Start one of ASV_SDR_CUSTOM_MODE[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// Start one of ASV_SDR_CUSTOM_MODE
         /// Param 1 - Mode (uint32_t, see ASV_SDR_CUSTOM_MODE).
         /// Param 2 - Frequency in Hz, 0-3 bytes of uint_64, ignored for IDLE mode (uint32).
         /// Param 3 - Frequency in Hz, 4-7 bytes of uint_64, ignored for IDLE mode (uint32).
@@ -85,7 +85,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         MavCmdAsvSdrSetMode = 13100,
         /// <summary>
-        /// Start recoring data with unique name (max 28 chars)[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// Start recoring data with unique name (max 28 chars)
         /// Param 1 - Record unique name: 0-3 chars (char[4]).
         /// Param 2 - Record unique name: 4-7 chars (char[4]).
         /// Param 3 - Record unique name: 8-11 chars (char[4]).
@@ -97,7 +97,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         MavCmdAsvSdrStartRecord = 13101,
         /// <summary>
-        /// Stop recoring data[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// Stop recoring data
         /// Param 1 - Empty.
         /// Param 2 - Empty.
         /// Param 3 - Empty.
@@ -109,7 +109,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         MavCmdAsvSdrStopRecord = 13102,
         /// <summary>
-        /// Set custom tag to current record.[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// Set custom tag to current record.
         /// Param 1 - ASV_SDR_RECORD_TAG_TYPE (uint32).
         /// Param 2 - Tag name: 0-3 chars (char[4]).
         /// Param 3 - Tag name: 4-7 chars (char[4]).
@@ -123,56 +123,56 @@ namespace Asv.Mavlink.V2.AsvSdr
     }
 
     /// <summary>
-    /// Specifies the datatype of a record tag (unit8_t).[!WRAP_TO_V2_EXTENSION_PACKET!]
+    /// Specifies the datatype of a record tag (unit8_t).
     ///  ASV_SDR_RECORD_TAG_TYPE
     /// </summary>
     public enum AsvSdrRecordTagType:uint
     {
         /// <summary>
-        /// 64-bit unsigned integer[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// 64-bit unsigned integer
         /// ASV_SDR_RECORD_TAG_TYPE_UINT64
         /// </summary>
         AsvSdrRecordTagTypeUint64 = 1,
         /// <summary>
-        /// 64-bit signed integer[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// 64-bit signed integer
         /// ASV_SDR_RECORD_TAG_TYPE_INT64
         /// </summary>
         AsvSdrRecordTagTypeInt64 = 2,
         /// <summary>
-        /// 64-bit floating-point[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// 64-bit floating-point
         /// ASV_SDR_RECORD_TAG_TYPE_REAL64
         /// </summary>
         AsvSdrRecordTagTypeReal64 = 3,
         /// <summary>
-        /// String type terminated by NULL if the length is less than 8 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 8 chars.[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// String type terminated by NULL if the length is less than 8 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 8 chars.
         /// ASV_SDR_RECORD_TAG_TYPE_STRING8
         /// </summary>
         AsvSdrRecordTagTypeString8 = 4,
     }
 
     /// <summary>
-    /// A mapping of SDR payload modes for custom_mode field of heartbeat. Value of enum must be equal to message id from ASV_SDR_RECORD_DATA_* 13150-13199[!WRAP_TO_V2_EXTENSION_PACKET!]
+    /// A mapping of SDR payload modes for custom_mode field of heartbeat. Value of enum must be equal to message id from ASV_SDR_RECORD_DATA_* 13150-13199
     ///  ASV_SDR_CUSTOM_MODE
     /// </summary>
     public enum AsvSdrCustomMode:uint
     {
         /// <summary>
-        /// Default mode. Do nothing.[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// Default mode. Do nothing.
         /// ASV_SDR_CUSTOM_MODE_IDLE
         /// </summary>
         AsvSdrCustomModeIdle = 0,
         /// <summary>
-        /// Localizer measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_LLZ[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// Localizer measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_LLZ
         /// ASV_SDR_CUSTOM_MODE_LLZ
         /// </summary>
         AsvSdrCustomModeLlz = 13135,
         /// <summary>
-        /// Glide Path measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_GP[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// Glide Path measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_GP
         /// ASV_SDR_CUSTOM_MODE_GP
         /// </summary>
         AsvSdrCustomModeGp = 13136,
         /// <summary>
-        /// VOR measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_VOR[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// VOR measure mode. In this mode should send and record ASV_SDR_RECORD_DATA_VOR
         /// ASV_SDR_CUSTOM_MODE_VOR
         /// </summary>
         AsvSdrCustomModeVor = 13137,
@@ -196,19 +196,6 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// ASV_SDR_CUSTOM_MODE_FLAG_VOR
         /// </summary>
         AsvSdrCustomModeFlagVor = 4,
-    }
-
-    /// <summary>
-    /// Specifies the flags of a record (unit64_t).[!WRAP_TO_V2_EXTENSION_PACKET!]
-    ///  ASV_SDR_RECORD_STATE_FLAG
-    /// </summary>
-    public enum AsvSdrRecordStateFlag:uint
-    {
-        /// <summary>
-        /// Specify recording now is started.[!WRAP_TO_V2_EXTENSION_PACKET!]
-        /// ASV_SDR_RECORD_FLAG_STARTED
-        /// </summary>
-        AsvSdrRecordFlagStarted = 1,
     }
 
     /// <summary>
@@ -247,7 +234,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13100;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 183;
+        public override byte GetCrcEtra() => 126;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrOutStatusPayload Payload { get; } = new AsvSdrOutStatusPayload();
@@ -260,15 +247,22 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrOutStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 34; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 34; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
+            var arraySize = 0;
+            var payloadSize = buffer.Length;
             SupportedModes = (AsvSdrCustomModeFlag)BinSerialize.ReadULong(ref buffer);
             Size = BinSerialize.ReadULong(ref buffer);
-            RecordState = (AsvSdrRecordStateFlag)BinSerialize.ReadUInt(ref buffer);
             RecordCount = BinSerialize.ReadUShort(ref buffer);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/34 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            CurrentRecordGuid = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
+            {
+                CurrentRecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
 
         }
 
@@ -276,9 +270,12 @@ namespace Asv.Mavlink.V2.AsvSdr
         {
             BinSerialize.WriteULong(ref buffer,(ulong)SupportedModes);
             BinSerialize.WriteULong(ref buffer,Size);
-            BinSerialize.WriteUInt(ref buffer,(uint)RecordState);
             BinSerialize.WriteUShort(ref buffer,RecordCount);
-            /* PayloadByteSize = 22 */;
+            for(var i=0;i<CurrentRecordGuid.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)CurrentRecordGuid[i]);
+            }
+            /* PayloadByteSize = 34 */;
         }
 
 
@@ -294,15 +291,16 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public ulong Size { get; set; }
         /// <summary>
-        /// Current record state ASV_SDR_RECORD_STATE_FLAG.
-        /// OriginName: record_state, Units: , IsExtended: false
-        /// </summary>
-        public AsvSdrRecordStateFlag RecordState { get; set; }
-        /// <summary>
         /// Number of records in storage.
         /// OriginName: record_count, Units: , IsExtended: false
         /// </summary>
         public ushort RecordCount { get; set; }
+        /// <summary>
+        /// Record GUID. Also by this field we can understand if the data is currently being recorded (GUID!=0x00) or not (GUID==0x00).
+        /// OriginName: current_record_guid, Units: , IsExtended: false
+        /// </summary>
+        public byte[] CurrentRecordGuid { get; set; } = new byte[16];
+        public byte GetCurrentRecordGuidMaxItemsCount() => 16;
     }
     /// <summary>
     /// Request list of ASV_SDR_RECORD from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -442,7 +440,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13103;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 32;
+        public override byte GetCrcEtra() => 173;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordPayload Payload { get; } = new AsvSdrRecordPayload();
@@ -455,8 +453,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordPayload : IPayload
     {
-        public byte GetMaxByteSize() => 62; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 62; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 78; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 78; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -464,12 +462,17 @@ namespace Asv.Mavlink.V2.AsvSdr
             var payloadSize = buffer.Length;
             Frequency = BinSerialize.ReadULong(ref buffer);
             CreatedUnixUs = BinSerialize.ReadULong(ref buffer);
-            RecordMode = (AsvSdrCustomMode)BinSerialize.ReadUInt(ref buffer);
+            DataType = (AsvSdrCustomMode)BinSerialize.ReadUInt(ref buffer);
             DurationSec = BinSerialize.ReadUInt(ref buffer);
             DataCount = BinSerialize.ReadUInt(ref buffer);
             Size = BinSerialize.ReadUInt(ref buffer);
             TagCount = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/62 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = 16;
+            for(var i=0;i<arraySize;i++)
+            {
+                RecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/78 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordName = new char[arraySize];
             unsafe
             {
@@ -488,11 +491,15 @@ namespace Asv.Mavlink.V2.AsvSdr
         {
             BinSerialize.WriteULong(ref buffer,Frequency);
             BinSerialize.WriteULong(ref buffer,CreatedUnixUs);
-            BinSerialize.WriteUInt(ref buffer,(uint)RecordMode);
+            BinSerialize.WriteUInt(ref buffer,(uint)DataType);
             BinSerialize.WriteUInt(ref buffer,DurationSec);
             BinSerialize.WriteUInt(ref buffer,DataCount);
             BinSerialize.WriteUInt(ref buffer,Size);
             BinSerialize.WriteUShort(ref buffer,TagCount);
+            for(var i=0;i<RecordGuid.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)RecordGuid[i]);
+            }
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -503,7 +510,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             buffer = buffer.Slice(RecordName.Length);
             
-            /* PayloadByteSize = 62 */;
+            /* PayloadByteSize = 78 */;
         }
 
 
@@ -519,10 +526,10 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public ulong CreatedUnixUs { get; set; }
         /// <summary>
-        /// Record mode(it is also possible to know the type of data inside the record by cast enum to int).
-        /// OriginName: record_mode, Units: , IsExtended: false
+        /// Record data type(it is also possible to know the type of data inside the record by cast enum to int).
+        /// OriginName: data_type, Units: , IsExtended: false
         /// </summary>
-        public AsvSdrCustomMode RecordMode { get; set; }
+        public AsvSdrCustomMode DataType { get; set; }
         /// <summary>
         /// Record duration in sec.
         /// OriginName: duration_sec, Units: sec, IsExtended: false
@@ -544,7 +551,12 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public ushort TagCount { get; set; }
         /// <summary>
-        /// Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.
+        /// Record GUID. Generated by payload after the start of recording.
+        /// OriginName: record_guid, Units: , IsExtended: false
+        /// </summary>
+        public byte[] RecordGuid { get; } = new byte[16];
+        /// <summary>
+        /// Record name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.
         /// OriginName: record_name, Units: , IsExtended: false
         /// </summary>
         public char[] RecordName { get; set; } = new char[28];
@@ -558,7 +570,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13104;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 215;
+        public override byte GetCrcEtra() => 181;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDeleteRequestPayload Payload { get; } = new AsvSdrRecordDeleteRequestPayload();
@@ -571,8 +583,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDeleteRequestPayload : IPayload
     {
-        public byte GetMaxByteSize() => 32; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -581,18 +593,12 @@ namespace Asv.Mavlink.V2.AsvSdr
             RequestId = BinSerialize.ReadUShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/32 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            RecordName = new char[arraySize];
-            unsafe
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/20 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            RecordGuid = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, RecordName.Length);
-                }
+                RecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            buffer = buffer.Slice(arraySize);
-           
 
         }
 
@@ -601,17 +607,11 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteUShort(ref buffer,RequestId);
             BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
-            unsafe
+            for(var i=0;i<RecordGuid.Length;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, RecordName.Length, bytePointer, RecordName.Length);
-                }
+                BinSerialize.WriteByte(ref buffer,(byte)RecordGuid[i]);
             }
-            buffer = buffer.Slice(RecordName.Length);
-            
-            /* PayloadByteSize = 32 */;
+            /* PayloadByteSize = 20 */;
         }
 
 
@@ -632,11 +632,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public byte TargetComponent { get; set; }
         /// <summary>
-        /// Specifies the unique name of the record to be deleted.
-        /// OriginName: record_name, Units: , IsExtended: false
+        /// Specifies GUID of the record to be deleted.
+        /// OriginName: record_guid, Units: , IsExtended: false
         /// </summary>
-        public char[] RecordName { get; set; } = new char[28];
-        public byte GetRecordNameMaxItemsCount() => 28;
+        public byte[] RecordGuid { get; set; } = new byte[16];
+        public byte GetRecordGuidMaxItemsCount() => 16;
     }
     /// <summary>
     /// Response for ASV_SDR_RECORD_DELETE_REQUEST.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -646,7 +646,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13105;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 204;
+        public override byte GetCrcEtra() => 62;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDeleteResponsePayload Payload { get; } = new AsvSdrRecordDeleteResponsePayload();
@@ -659,8 +659,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDeleteResponsePayload : IPayload
     {
-        public byte GetMaxByteSize() => 31; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 31; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 19; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 19; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -668,18 +668,12 @@ namespace Asv.Mavlink.V2.AsvSdr
             var payloadSize = buffer.Length;
             RequestId = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvSdrRequestAck)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/31 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            RecordName = new char[arraySize];
-            unsafe
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/19 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            RecordGuid = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, RecordName.Length);
-                }
+                RecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            buffer = buffer.Slice(arraySize);
-           
 
         }
 
@@ -687,17 +681,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         {
             BinSerialize.WriteUShort(ref buffer,RequestId);
             BinSerialize.WriteByte(ref buffer,(byte)Result);
-            unsafe
+            for(var i=0;i<RecordGuid.Length;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, RecordName.Length, bytePointer, RecordName.Length);
-                }
+                BinSerialize.WriteByte(ref buffer,(byte)RecordGuid[i]);
             }
-            buffer = buffer.Slice(RecordName.Length);
-            
-            /* PayloadByteSize = 31 */;
+            /* PayloadByteSize = 19 */;
         }
 
 
@@ -713,11 +701,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public AsvSdrRequestAck Result { get; set; }
         /// <summary>
-        /// Specifies the unique name of the record that was deleted.
-        /// OriginName: record_name, Units: , IsExtended: false
+        /// Specifies the GUID of the record that was deleted.
+        /// OriginName: record_guid, Units: , IsExtended: false
         /// </summary>
-        public char[] RecordName { get; set; } = new char[28];
-        public byte GetRecordNameMaxItemsCount() => 28;
+        public byte[] RecordGuid { get; set; } = new byte[16];
+        public byte GetRecordGuidMaxItemsCount() => 16;
     }
     /// <summary>
     /// Request list of ASV_SDR_RECORD_TAG from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -727,7 +715,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13110;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 44;
+        public override byte GetCrcEtra() => 53;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordTagRequestPayload Payload { get; } = new AsvSdrRecordTagRequestPayload();
@@ -740,8 +728,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordTagRequestPayload : IPayload
     {
-        public byte GetMaxByteSize() => 36; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 36; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -752,18 +740,12 @@ namespace Asv.Mavlink.V2.AsvSdr
             Count = BinSerialize.ReadUShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/36 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            RecordName = new char[arraySize];
-            unsafe
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/24 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            RecordGuid = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, RecordName.Length);
-                }
+                RecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            buffer = buffer.Slice(arraySize);
-           
 
         }
 
@@ -774,17 +756,11 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteUShort(ref buffer,Count);
             BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
-            unsafe
+            for(var i=0;i<RecordGuid.Length;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, RecordName.Length, bytePointer, RecordName.Length);
-                }
+                BinSerialize.WriteByte(ref buffer,(byte)RecordGuid[i]);
             }
-            buffer = buffer.Slice(RecordName.Length);
-            
-            /* PayloadByteSize = 36 */;
+            /* PayloadByteSize = 24 */;
         }
 
 
@@ -815,11 +791,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public byte TargetComponent { get; set; }
         /// <summary>
-        /// Specifies the unique name of the record.
-        /// OriginName: record_name, Units: , IsExtended: false
+        /// Specifies the GUID of the record.
+        /// OriginName: record_guid, Units: , IsExtended: false
         /// </summary>
-        public char[] RecordName { get; set; } = new char[28];
-        public byte GetRecordNameMaxItemsCount() => 28;
+        public byte[] RecordGuid { get; set; } = new byte[16];
+        public byte GetRecordGuidMaxItemsCount() => 16;
     }
     /// <summary>
     /// Response for ASV_SDR_RECORD_TAG_REQUEST. If success, device additional send ASV_SDR_RECORD_TAG items from start to stop index.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -887,7 +863,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13112;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 100;
+        public override byte GetCrcEtra() => 220;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordTagPayload Payload { get; } = new AsvSdrRecordTagPayload();
@@ -900,25 +876,24 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordTagPayload : IPayload
     {
-        public byte GetMaxByteSize() => 53; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 53; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 57; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 57; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/53 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            RecordName = new char[arraySize];
-            unsafe
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/57 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            RecordGuid = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, RecordName.Length);
-                }
+                RecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            buffer = buffer.Slice(arraySize);
-           
+            arraySize = 16;
+            for(var i=0;i<arraySize;i++)
+            {
+                TagGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
             arraySize = 16;
             unsafe
             {
@@ -941,16 +916,14 @@ namespace Asv.Mavlink.V2.AsvSdr
 
         public void Serialize(ref Span<byte> buffer)
         {
-            unsafe
+            for(var i=0;i<RecordGuid.Length;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, RecordName.Length, bytePointer, RecordName.Length);
-                }
+                BinSerialize.WriteByte(ref buffer,(byte)RecordGuid[i]);
             }
-            buffer = buffer.Slice(RecordName.Length);
-            
+            for(var i=0;i<TagGuid.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)TagGuid[i]);
+            }
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -966,19 +939,24 @@ namespace Asv.Mavlink.V2.AsvSdr
             {
                 BinSerialize.WriteByte(ref buffer,(byte)TagValue[i]);
             }
-            /* PayloadByteSize = 53 */;
+            /* PayloadByteSize = 57 */;
         }
 
 
 
         /// <summary>
-        /// Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.
-        /// OriginName: record_name, Units: , IsExtended: false
+        /// Record GUID.
+        /// OriginName: record_guid, Units: , IsExtended: false
         /// </summary>
-        public char[] RecordName { get; set; } = new char[28];
-        public byte GetRecordNameMaxItemsCount() => 28;
+        public byte[] RecordGuid { get; set; } = new byte[16];
+        public byte GetRecordGuidMaxItemsCount() => 16;
         /// <summary>
-        /// Tag unique name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
+        /// Tag GUID.
+        /// OriginName: tag_guid, Units: , IsExtended: false
+        /// </summary>
+        public byte[] TagGuid { get; } = new byte[16];
+        /// <summary>
+        /// Tag name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
         /// OriginName: tag_name, Units: , IsExtended: false
         /// </summary>
         public char[] TagName { get; } = new char[16];
@@ -1001,7 +979,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13113;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 134;
+        public override byte GetCrcEtra() => 233;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordTagDeleteRequestPayload Payload { get; } = new AsvSdrRecordTagDeleteRequestPayload();
@@ -1014,8 +992,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordTagDeleteRequestPayload : IPayload
     {
-        public byte GetMaxByteSize() => 48; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 48; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 36; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 36; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1024,29 +1002,17 @@ namespace Asv.Mavlink.V2.AsvSdr
             RequestId = BinSerialize.ReadUShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/48 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            RecordName = new char[arraySize];
-            unsafe
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/36 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            RecordGuid = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, RecordName.Length);
-                }
+                RecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            buffer = buffer.Slice(arraySize);
-           
             arraySize = 16;
-            unsafe
+            for(var i=0;i<arraySize;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = TagName)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, TagName.Length);
-                }
+                TagGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            buffer = buffer.Slice(arraySize);
-           
 
         }
 
@@ -1055,27 +1021,15 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteUShort(ref buffer,RequestId);
             BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
-            unsafe
+            for(var i=0;i<RecordGuid.Length;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, RecordName.Length, bytePointer, RecordName.Length);
-                }
+                BinSerialize.WriteByte(ref buffer,(byte)RecordGuid[i]);
             }
-            buffer = buffer.Slice(RecordName.Length);
-            
-            unsafe
+            for(var i=0;i<TagGuid.Length;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = TagName)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, TagName.Length, bytePointer, TagName.Length);
-                }
+                BinSerialize.WriteByte(ref buffer,(byte)TagGuid[i]);
             }
-            buffer = buffer.Slice(TagName.Length);
-            
-            /* PayloadByteSize = 48 */;
+            /* PayloadByteSize = 36 */;
         }
 
 
@@ -1096,16 +1050,16 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public byte TargetComponent { get; set; }
         /// <summary>
-        /// Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.
-        /// OriginName: record_name, Units: , IsExtended: false
+        /// Record GUID.
+        /// OriginName: record_guid, Units: , IsExtended: false
         /// </summary>
-        public char[] RecordName { get; set; } = new char[28];
-        public byte GetRecordNameMaxItemsCount() => 28;
+        public byte[] RecordGuid { get; set; } = new byte[16];
+        public byte GetRecordGuidMaxItemsCount() => 16;
         /// <summary>
-        /// Tag unique name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
-        /// OriginName: tag_name, Units: , IsExtended: false
+        /// Tag GUID.
+        /// OriginName: tag_guid, Units: , IsExtended: false
         /// </summary>
-        public char[] TagName { get; } = new char[16];
+        public byte[] TagGuid { get; } = new byte[16];
     }
     /// <summary>
     /// Response for ASV_SDR_RECORD_TAG_DELETE_REQUEST.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -1115,7 +1069,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13116;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 146;
+        public override byte GetCrcEtra() => 100;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordTagDeleteResponsePayload Payload { get; } = new AsvSdrRecordTagDeleteResponsePayload();
@@ -1128,8 +1082,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordTagDeleteResponsePayload : IPayload
     {
-        public byte GetMaxByteSize() => 47; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 47; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 35; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 35; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1137,29 +1091,17 @@ namespace Asv.Mavlink.V2.AsvSdr
             var payloadSize = buffer.Length;
             RequestId = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvSdrRequestAck)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/47 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            RecordName = new char[arraySize];
-            unsafe
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/35 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            RecordGuid = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, RecordName.Length);
-                }
+                RecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            buffer = buffer.Slice(arraySize);
-           
             arraySize = 16;
-            unsafe
+            for(var i=0;i<arraySize;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = TagName)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, TagName.Length);
-                }
+                TagGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            buffer = buffer.Slice(arraySize);
-           
 
         }
 
@@ -1167,27 +1109,15 @@ namespace Asv.Mavlink.V2.AsvSdr
         {
             BinSerialize.WriteUShort(ref buffer,RequestId);
             BinSerialize.WriteByte(ref buffer,(byte)Result);
-            unsafe
+            for(var i=0;i<RecordGuid.Length;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, RecordName.Length, bytePointer, RecordName.Length);
-                }
+                BinSerialize.WriteByte(ref buffer,(byte)RecordGuid[i]);
             }
-            buffer = buffer.Slice(RecordName.Length);
-            
-            unsafe
+            for(var i=0;i<TagGuid.Length;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = TagName)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, TagName.Length, bytePointer, TagName.Length);
-                }
+                BinSerialize.WriteByte(ref buffer,(byte)TagGuid[i]);
             }
-            buffer = buffer.Slice(TagName.Length);
-            
-            /* PayloadByteSize = 47 */;
+            /* PayloadByteSize = 35 */;
         }
 
 
@@ -1203,16 +1133,16 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public AsvSdrRequestAck Result { get; set; }
         /// <summary>
-        /// Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.
-        /// OriginName: record_name, Units: , IsExtended: false
+        /// Record GUID.
+        /// OriginName: record_guid, Units: , IsExtended: false
         /// </summary>
-        public char[] RecordName { get; set; } = new char[28];
-        public byte GetRecordNameMaxItemsCount() => 28;
+        public byte[] RecordGuid { get; set; } = new byte[16];
+        public byte GetRecordGuidMaxItemsCount() => 16;
         /// <summary>
-        /// Tag unique name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
-        /// OriginName: tag_name, Units: , IsExtended: false
+        /// Tag GUID.
+        /// OriginName: tag_guid, Units: , IsExtended: false
         /// </summary>
-        public char[] TagName { get; } = new char[16];
+        public byte[] TagGuid { get; } = new byte[16];
     }
     /// <summary>
     /// Request list of ASV_SDR_RECORD_DATA_* items from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -1222,7 +1152,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13120;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 94;
+        public override byte GetCrcEtra() => 101;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDataRequestPayload Payload { get; } = new AsvSdrRecordDataRequestPayload();
@@ -1235,8 +1165,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDataRequestPayload : IPayload
     {
-        public byte GetMaxByteSize() => 40; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 40; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1247,18 +1177,12 @@ namespace Asv.Mavlink.V2.AsvSdr
             RequestId = BinSerialize.ReadUShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/40 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            RecordName = new char[arraySize];
-            unsafe
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/28 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            RecordGuid = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, RecordName.Length);
-                }
+                RecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            buffer = buffer.Slice(arraySize);
-           
 
         }
 
@@ -1269,17 +1193,11 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteUShort(ref buffer,RequestId);
             BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
-            unsafe
+            for(var i=0;i<RecordGuid.Length;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, RecordName.Length, bytePointer, RecordName.Length);
-                }
+                BinSerialize.WriteByte(ref buffer,(byte)RecordGuid[i]);
             }
-            buffer = buffer.Slice(RecordName.Length);
-            
-            /* PayloadByteSize = 40 */;
+            /* PayloadByteSize = 28 */;
         }
 
 
@@ -1310,11 +1228,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public byte TargetComponent { get; set; }
         /// <summary>
-        /// Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.
-        /// OriginName: record_name, Units: , IsExtended: false
+        /// Record GUID.
+        /// OriginName: record_guid, Units: , IsExtended: false
         /// </summary>
-        public char[] RecordName { get; set; } = new char[28];
-        public byte GetRecordNameMaxItemsCount() => 28;
+        public byte[] RecordGuid { get; set; } = new byte[16];
+        public byte GetRecordGuidMaxItemsCount() => 16;
     }
     /// <summary>
     /// Response for ASV_SDR_RECORD_DATA_REQUEST. If success, device additional send ASV_SDR_RECORD_DATA_* items from start to stop index.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -1324,7 +1242,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13121;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 136;
+        public override byte GetCrcEtra() => 39;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDataResponsePayload Payload { get; } = new AsvSdrRecordDataResponsePayload();
@@ -1337,29 +1255,46 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDataResponsePayload : IPayload
     {
-        public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 27; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
+            var arraySize = 0;
+            var payloadSize = buffer.Length;
+            DataType = (AsvSdrCustomMode)BinSerialize.ReadUInt(ref buffer);
             ItemsCount = BinSerialize.ReadUInt(ref buffer);
             RequestId = BinSerialize.ReadUShort(ref buffer);
-            DataType = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvSdrRequestAck)BinSerialize.ReadByte(ref buffer);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/27 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            RecordGuid = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
+            {
+                RecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
 
         }
 
         public void Serialize(ref Span<byte> buffer)
         {
+            BinSerialize.WriteUInt(ref buffer,(uint)DataType);
             BinSerialize.WriteUInt(ref buffer,ItemsCount);
             BinSerialize.WriteUShort(ref buffer,RequestId);
-            BinSerialize.WriteUShort(ref buffer,DataType);
             BinSerialize.WriteByte(ref buffer,(byte)Result);
-            /* PayloadByteSize = 9 */;
+            for(var i=0;i<RecordGuid.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)RecordGuid[i]);
+            }
+            /* PayloadByteSize = 27 */;
         }
 
 
 
+        /// <summary>
+        /// Record data type(it is also possible to know the type of data inside the record by cast enum to int).
+        /// OriginName: data_type, Units: , IsExtended: false
+        /// </summary>
+        public AsvSdrCustomMode DataType { get; set; }
         /// <summary>
         /// Number of items ASV_SDR_RECORD_DATA_* for transmition after this request with success result code (depended from request).
         /// OriginName: items_count, Units: , IsExtended: false
@@ -1371,15 +1306,16 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public ushort RequestId { get; set; }
         /// <summary>
-        /// Record data type (message id, e.g. 13120 for ASV_SDR_RECORD_DATA_ILS).
-        /// OriginName: data_type, Units: , IsExtended: false
-        /// </summary>
-        public ushort DataType { get; set; }
-        /// <summary>
         /// Result code.
         /// OriginName: result, Units: , IsExtended: false
         /// </summary>
         public AsvSdrRequestAck Result { get; set; }
+        /// <summary>
+        /// Record GUID.
+        /// OriginName: record_guid, Units: , IsExtended: false
+        /// </summary>
+        public byte[] RecordGuid { get; set; } = new byte[16];
+        public byte GetRecordGuidMaxItemsCount() => 16;
     }
     /// <summary>
     /// LLZ reciever record data.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -1389,7 +1325,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13135;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 28;
+        public override byte GetCrcEtra() => 101;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDataLlzPayload Payload { get; } = new AsvSdrRecordDataLlzPayload();
@@ -1402,8 +1338,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDataLlzPayload : IPayload
     {
-        public byte GetMaxByteSize() => 196; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 196; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 184; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 184; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1457,18 +1393,12 @@ namespace Asv.Mavlink.V2.AsvSdr
             TotalFreq150 = BinSerialize.ReadShort(ref buffer);
             CodeIdFreq1020 = BinSerialize.ReadShort(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/196 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            RecordName = new char[arraySize];
-            unsafe
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/184 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            RecordGuid = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, RecordName.Length);
-                }
+                RecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            buffer = buffer.Slice(arraySize);
-           
             GnssFixType = (GpsFixType)BinSerialize.ReadByte(ref buffer);
             GnssSatellitesVisible = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = 4;
@@ -1535,16 +1465,10 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteShort(ref buffer,TotalFreq150);
             BinSerialize.WriteShort(ref buffer,CodeIdFreq1020);
             BinSerialize.WriteShort(ref buffer,MeasureTime);
-            unsafe
+            for(var i=0;i<RecordGuid.Length;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, RecordName.Length, bytePointer, RecordName.Length);
-                }
+                BinSerialize.WriteByte(ref buffer,(byte)RecordGuid[i]);
             }
-            buffer = buffer.Slice(RecordName.Length);
-            
             BinSerialize.WriteByte(ref buffer,(byte)GnssFixType);
             BinSerialize.WriteByte(ref buffer,(byte)GnssSatellitesVisible);
             unsafe
@@ -1557,7 +1481,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             buffer = buffer.Slice(CodeId.Length);
             
-            /* PayloadByteSize = 196 */;
+            /* PayloadByteSize = 184 */;
         }
 
 
@@ -1803,11 +1727,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public short MeasureTime { get; set; }
         /// <summary>
-        /// Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.
-        /// OriginName: record_name, Units: , IsExtended: false
+        /// Record GUID.
+        /// OriginName: record_guid, Units: , IsExtended: false
         /// </summary>
-        public char[] RecordName { get; set; } = new char[28];
-        public byte GetRecordNameMaxItemsCount() => 28;
+        public byte[] RecordGuid { get; set; } = new byte[16];
+        public byte GetRecordGuidMaxItemsCount() => 16;
         /// <summary>
         /// GPS fix type.
         /// OriginName: gnss_fix_type, Units: , IsExtended: false
@@ -1832,7 +1756,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13136;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 244;
+        public override byte GetCrcEtra() => 215;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDataGpPayload Payload { get; } = new AsvSdrRecordDataGpPayload();
@@ -1845,8 +1769,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDataGpPayload : IPayload
     {
-        public byte GetMaxByteSize() => 186; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 186; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 174; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 174; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1898,18 +1822,12 @@ namespace Asv.Mavlink.V2.AsvSdr
             TotalFreq90 = BinSerialize.ReadShort(ref buffer);
             TotalFreq150 = BinSerialize.ReadShort(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/186 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            RecordName = new char[arraySize];
-            unsafe
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/174 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            RecordGuid = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, RecordName.Length);
-                }
+                RecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            buffer = buffer.Slice(arraySize);
-           
             GnssFixType = (GpsFixType)BinSerialize.ReadByte(ref buffer);
             GnssSatellitesVisible = (byte)BinSerialize.ReadByte(ref buffer);
 
@@ -1963,19 +1881,13 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteShort(ref buffer,TotalFreq90);
             BinSerialize.WriteShort(ref buffer,TotalFreq150);
             BinSerialize.WriteShort(ref buffer,MeasureTime);
-            unsafe
+            for(var i=0;i<RecordGuid.Length;i++)
             {
-                fixed (byte* bytePointer = buffer)
-                fixed (char* charPointer = RecordName)
-                {
-                    Encoding.ASCII.GetBytes(charPointer, RecordName.Length, bytePointer, RecordName.Length);
-                }
+                BinSerialize.WriteByte(ref buffer,(byte)RecordGuid[i]);
             }
-            buffer = buffer.Slice(RecordName.Length);
-            
             BinSerialize.WriteByte(ref buffer,(byte)GnssFixType);
             BinSerialize.WriteByte(ref buffer,(byte)GnssSatellitesVisible);
-            /* PayloadByteSize = 186 */;
+            /* PayloadByteSize = 174 */;
         }
 
 
@@ -2211,11 +2123,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public short MeasureTime { get; set; }
         /// <summary>
-        /// Record unique name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.
-        /// OriginName: record_name, Units: , IsExtended: false
+        /// Record GUID.
+        /// OriginName: record_guid, Units: , IsExtended: false
         /// </summary>
-        public char[] RecordName { get; set; } = new char[28];
-        public byte GetRecordNameMaxItemsCount() => 28;
+        public byte[] RecordGuid { get; set; } = new byte[16];
+        public byte GetRecordGuidMaxItemsCount() => 16;
         /// <summary>
         /// GPS fix type.
         /// OriginName: gnss_fix_type, Units: , IsExtended: false
@@ -2235,7 +2147,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13137;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 92;
+        public override byte GetCrcEtra() => 250;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDataVorPayload Payload { get; } = new AsvSdrRecordDataVorPayload();
@@ -2248,8 +2160,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDataVorPayload : IPayload
     {
-        public byte GetMaxByteSize() => 136; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 136; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 150; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 150; // of byte sized of fields (exclude extended)
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -2279,7 +2191,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             Am9960 = BinSerialize.ReadFloat(ref buffer);
             Deviation = BinSerialize.ReadFloat(ref buffer);
             CodeIdAm1020 = BinSerialize.ReadFloat(ref buffer);
-            RecordIndex = BinSerialize.ReadUShort(ref buffer);
             GnssEph = BinSerialize.ReadUShort(ref buffer);
             GnssEpv = BinSerialize.ReadUShort(ref buffer);
             GnssVel = BinSerialize.ReadUShort(ref buffer);
@@ -2292,10 +2203,15 @@ namespace Asv.Mavlink.V2.AsvSdr
             Freq9960 = BinSerialize.ReadShort(ref buffer);
             CodeIdFreq1020 = BinSerialize.ReadShort(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/150 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            RecordGuid = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
+            {
+                RecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
             GnssFixType = (GpsFixType)BinSerialize.ReadByte(ref buffer);
             GnssSatellitesVisible = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/136 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            CodeId = new char[arraySize];
+            arraySize = 4;
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -2335,7 +2251,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteFloat(ref buffer,Am9960);
             BinSerialize.WriteFloat(ref buffer,Deviation);
             BinSerialize.WriteFloat(ref buffer,CodeIdAm1020);
-            BinSerialize.WriteUShort(ref buffer,RecordIndex);
             BinSerialize.WriteUShort(ref buffer,GnssEph);
             BinSerialize.WriteUShort(ref buffer,GnssEpv);
             BinSerialize.WriteUShort(ref buffer,GnssVel);
@@ -2348,6 +2263,10 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteShort(ref buffer,Freq9960);
             BinSerialize.WriteShort(ref buffer,CodeIdFreq1020);
             BinSerialize.WriteShort(ref buffer,MeasureTime);
+            for(var i=0;i<RecordGuid.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)RecordGuid[i]);
+            }
             BinSerialize.WriteByte(ref buffer,(byte)GnssFixType);
             BinSerialize.WriteByte(ref buffer,(byte)GnssSatellitesVisible);
             unsafe
@@ -2360,7 +2279,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             buffer = buffer.Slice(CodeId.Length);
             
-            /* PayloadByteSize = 136 */;
+            /* PayloadByteSize = 150 */;
         }
 
 
@@ -2486,11 +2405,6 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public float CodeIdAm1020 { get; set; }
         /// <summary>
-        /// Record index in storage.
-        /// OriginName: record_index, Units: , IsExtended: false
-        /// </summary>
-        public ushort RecordIndex { get; set; }
-        /// <summary>
         /// GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX
         /// OriginName: gnss_eph, Units: , IsExtended: false
         /// </summary>
@@ -2551,6 +2465,12 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public short MeasureTime { get; set; }
         /// <summary>
+        /// Record GUID.
+        /// OriginName: record_guid, Units: , IsExtended: false
+        /// </summary>
+        public byte[] RecordGuid { get; set; } = new byte[16];
+        public byte GetRecordGuidMaxItemsCount() => 16;
+        /// <summary>
         /// GPS fix type.
         /// OriginName: gnss_fix_type, Units: , IsExtended: false
         /// </summary>
@@ -2564,8 +2484,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// Code identification
         /// OriginName: code_id, Units: Letters, IsExtended: false
         /// </summary>
-        public char[] CodeId { get; set; } = new char[4];
-        public byte GetCodeIdMaxItemsCount() => 4;
+        public char[] CodeId { get; } = new char[4];
     }
 
 

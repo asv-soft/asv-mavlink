@@ -31,7 +31,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         dataPacketsHashSet.Remove((int)AsvSdrCustomMode.AsvSdrCustomModeIdle); // from IDLE we can't get any data
         
         OnRecord = InternalFilter<AsvSdrRecordPacket>()
-            .Select(_ => (new RecordId(_.Payload), _.Payload))
+            .Select(_ => (new Guid(_.Payload.RecordGuid), _.Payload))
             .Publish().RefCount();
         OnRecordTag = InternalFilter<AsvSdrRecordTagPacket>().Select(_ => (new TagId(_.Payload),_.Payload))
             .Publish().RefCount();
@@ -39,7 +39,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         OnDeleteRecordTag = InternalFilter<AsvSdrRecordTagDeleteResponsePacket>()
             .Select(_ => (new TagId(_.Payload), _.Payload))
             .Publish().RefCount();
-        OnDeleteRecord = InternalFilter<AsvSdrRecordDeleteResponsePacket>().Select(_ => (new RecordId(_.Payload),_.Payload))
+        OnDeleteRecord = InternalFilter<AsvSdrRecordDeleteResponsePacket>().Select(_ => (new Guid(_.Payload.RecordGuid),_.Payload))
             .Publish().RefCount();
         
         OnRecordData = InternalFilteredVehiclePackets.Where(_=>dataPacketsHashSet.Contains(_.MessageId));
@@ -47,7 +47,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
 
     public IRxValue<AsvSdrOutStatusPayload> Status => _status;
 
-    public IObservable<(RecordId, AsvSdrRecordPayload)> OnRecord { get; }
+    public IObservable<(Guid, AsvSdrRecordPayload)> OnRecord { get; }
 
     public Task<AsvSdrRecordResponsePayload> GetRecordList(ushort skip, ushort count, CancellationToken cancel = default)
     {
@@ -68,9 +68,9 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     }
 
     public IObservable<(TagId, AsvSdrRecordTagPayload)> OnRecordTag { get; } 
-    public IObservable<(RecordId, AsvSdrRecordDeleteResponsePayload)> OnDeleteRecord { get; }
+    public IObservable<(Guid, AsvSdrRecordDeleteResponsePayload)> OnDeleteRecord { get; }
     
-    public Task<AsvSdrRecordDeleteResponsePayload> DeleteRecord(RecordId recordName, CancellationToken cancel = default)
+    public Task<AsvSdrRecordDeleteResponsePayload> DeleteRecord(Guid recordId, CancellationToken cancel = default)
     {
         var id = GenerateRequestIndex();
         return InternalCall<AsvSdrRecordDeleteResponsePayload, AsvSdrRecordDeleteRequestPacket, AsvSdrRecordDeleteResponsePacket>(_ =>
@@ -78,18 +78,18 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
             _.Payload.TargetComponent = _identity.TargetComponentId;
             _.Payload.TargetSystem = _identity.TargetSystemId;
             _.Payload.RequestId = id;
-            MavlinkTypesHelper.SetString(_.Payload.RecordName, recordName.Name);
+            recordId.TryWriteBytes(_.Payload.RecordGuid);
         },_=> _.Payload.RequestId == id,resultGetter:_=>_.Payload,cancel: cancel);
     }
 
-    public Task<AsvSdrRecordTagResponsePayload> GetRecordTagList(RecordId recordName, ushort skip, ushort count, CancellationToken cancel = default)
+    public Task<AsvSdrRecordTagResponsePayload> GetRecordTagList(Guid recordId, ushort skip, ushort count, CancellationToken cancel = default)
     {
         var id = GenerateRequestIndex();
         return InternalCall<AsvSdrRecordTagResponsePayload, AsvSdrRecordTagRequestPacket, AsvSdrRecordTagResponsePacket>(_ =>
         {
             _.Payload.TargetComponent = _identity.TargetComponentId;
             _.Payload.TargetSystem = _identity.TargetSystemId;
-            MavlinkTypesHelper.SetString(_.Payload.RecordName, recordName.Name);
+            recordId.TryWriteBytes(_.Payload.RecordGuid);
             _.Payload.Skip = skip;
             _.Payload.Count = count;
             _.Payload.RequestId = id;
@@ -105,20 +105,20 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         {
             _.Payload.TargetComponent = _identity.TargetComponentId;
             _.Payload.TargetSystem = _identity.TargetSystemId;
-            MavlinkTypesHelper.SetString(_.Payload.RecordName, tagId.RecordName);
-            MavlinkTypesHelper.SetString(_.Payload.TagName, tagId.TagName);
+            tagId.RecordGuid.TryWriteBytes(_.Payload.RecordGuid);
+            tagId.TagGuid.TryWriteBytes(_.Payload.TagGuid);
             _.Payload.RequestId = id;
         },_=>_.Payload.RequestId == id,resultGetter:_=>_.Payload,cancel: cancel);
     }
 
-    public Task<AsvSdrRecordDataResponsePayload> GetRecordDataList(RecordId recordId, uint skip, uint count, CancellationToken cancel = default)
+    public Task<AsvSdrRecordDataResponsePayload> GetRecordDataList(Guid recordId, uint skip, uint count, CancellationToken cancel = default)
     {
         var id = GenerateRequestIndex();
         return InternalCall<AsvSdrRecordDataResponsePayload, AsvSdrRecordDataRequestPacket, AsvSdrRecordDataResponsePacket>(_ =>
         {
             _.Payload.TargetComponent = _identity.TargetComponentId;
             _.Payload.TargetSystem = _identity.TargetSystemId;
-            MavlinkTypesHelper.SetString(_.Payload.RecordName, recordId.Name);
+            recordId.TryWriteBytes(_.Payload.RecordGuid);
             _.Payload.Skip = skip;
             _.Payload.Count = count;
             _.Payload.RequestId = id;

@@ -65,7 +65,7 @@
   </enums>
   <messages>
     <message id="13000" name="ASV_GBS_OUT_STATUS">
-      <description>Ground base station status message. Send with 1 Hz frequency.</description>
+      <description>Ground base station status message. Send with 1 Hz frequency.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <!-- GBS location -->
       <field type="int32_t" name="lat" units="degE7">Latitude of GBS (value / 10000000D).</field>
       <field type="int32_t" name="lng" units="degE7">Longitude of GBS (value / 10000000D).</field>

@@ -7,7 +7,7 @@ namespace Asv.Mavlink;
 
 public class ServerRecordTag:ISizedSpanSerializable
 {
-    public ServerRecordTag(AsvSdrRecordTagType type, string name, byte[] value)
+    public ServerRecordTag(Guid id, AsvSdrRecordTagType type, string name, byte[] value)
     {
         Type = type;
         Name = name;

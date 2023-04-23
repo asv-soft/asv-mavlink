@@ -5,40 +5,43 @@ namespace Asv.Mavlink;
 
 public class TagId:IEquatable<TagId>
 {
-    public TagId(string tagName, string recordName)
+    public TagId(Guid tagGuid, Guid recordGuid)
     {
-        SdrWellKnown.CheckTagName(tagName);
-        SdrWellKnown.CheckRecordName(recordName);
-        TagName = tagName;
-        RecordName = recordName;
+        TagGuid = tagGuid;
+        RecordGuid = recordGuid;
     }
 
     internal TagId(AsvSdrRecordTagDeleteResponsePayload payload)
     {
-        RecordName = MavlinkTypesHelper.GetString(payload.RecordName);
-        TagName = MavlinkTypesHelper.GetString(payload.TagName);
+        RecordGuid = new Guid(payload.RecordGuid);
+        TagGuid = new Guid(payload.TagGuid);
     }
 
     internal TagId(AsvSdrRecordTagPayload payload)
     {
-        RecordName = MavlinkTypesHelper.GetString(payload.RecordName);
-        TagName = MavlinkTypesHelper.GetString(payload.TagName);
+        RecordGuid = new Guid(payload.RecordGuid);
+        TagGuid = new Guid(payload.TagGuid);
     }
 
     public TagId(AsvSdrRecordTagDeleteRequestPayload payload)
     {
-        RecordName = MavlinkTypesHelper.GetString(payload.RecordName);
-        TagName = MavlinkTypesHelper.GetString(payload.TagName);
+        RecordGuid = new Guid(payload.RecordGuid);
+        TagGuid = new Guid(payload.TagGuid);
     }
 
-    public string RecordName { get; }
-    public string TagName { get;  }
+    public Guid RecordGuid { get; }
+    public Guid TagGuid { get;  }
+
+    public override string ToString()
+    {
+        return $"TAG:{RecordGuid:N}.{TagGuid:N}";
+    }
 
     public bool Equals(TagId other)
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
-        return string.Equals(RecordName, other.RecordName, StringComparison.InvariantCultureIgnoreCase) && string.Equals(TagName, other.TagName, StringComparison.InvariantCultureIgnoreCase);
+        return RecordGuid.Equals(other.RecordGuid) && TagGuid.Equals(other.TagGuid);
     }
 
     public override bool Equals(object obj)
@@ -51,10 +54,7 @@ public class TagId:IEquatable<TagId>
 
     public override int GetHashCode()
     {
-        var hashCode = new HashCode();
-        hashCode.Add(RecordName, StringComparer.InvariantCultureIgnoreCase);
-        hashCode.Add(TagName, StringComparer.InvariantCultureIgnoreCase);
-        return hashCode.ToHashCode();
+        return HashCode.Combine(RecordGuid, TagGuid);
     }
 
     public static bool operator ==(TagId left, TagId right)
@@ -65,10 +65,5 @@ public class TagId:IEquatable<TagId>
     public static bool operator !=(TagId left, TagId right)
     {
         return !Equals(left, right);
-    }
-
-    public override string ToString()
-    {
-        return $"TAG:{RecordName}.{TagName}";
     }
 }
