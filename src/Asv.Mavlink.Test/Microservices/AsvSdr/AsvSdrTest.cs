@@ -625,8 +625,7 @@ public class AsvSdrTest
 
         serverSdr.Start();
 
-        var recordGuid = new Guid();
-        recordGuid.TryWriteBytes(new byte[] { 2, 4, 6, 8 });
+        var recordGuid = Guid.NewGuid();
         
         var requestId = 0;
         
@@ -679,8 +678,7 @@ public class AsvSdrTest
 
         serverSdr.Start();
         
-        var recordGuid = new Guid();
-        recordGuid.TryWriteBytes(new byte[] { 2, 4, 6, 8 });
+        var recordGuid = Guid.NewGuid();
 
         var requestId = 0;
         
@@ -698,7 +696,7 @@ public class AsvSdrTest
             }
         });
         
-        var recordTagList = await clientSdr.GetRecordTagList(recordGuid,0, 1);
+        var recordTagList = await clientSdr.GetRecordTagList(recordGuid, 0, 1);
 
         Assert.Equal(AsvSdrRequestAck.AsvSdrRequestAckOk ,recordTagList.Result);
         Assert.Equal(requestId, recordTagList.RequestId);
@@ -729,8 +727,7 @@ public class AsvSdrTest
 
         serverSdr.Start();
         
-        var recordGuid = new Guid();
-        recordGuid.TryWriteBytes(new byte[] { 2, 4, 6, 8 });
+        var recordGuid = Guid.NewGuid();
 
         var requestId = 0;
         
@@ -779,12 +776,9 @@ public class AsvSdrTest
 
         serverSdr.Start();
         
-        var recordGuid = new Guid();
-        recordGuid.TryWriteBytes(new byte[] { 2, 4, 6, 8 });
-
-        var tagGuid = new Guid();
-        tagGuid.TryWriteBytes(new byte[] { 1, 3, 5, 7 });
-
+        var recordGuid = Guid.NewGuid();
+        var tagGuid = Guid.NewGuid();
+        
         var requestId = 0;
         
         serverSdr.OnRecordTagDeleteRequest.Subscribe(async _ =>
