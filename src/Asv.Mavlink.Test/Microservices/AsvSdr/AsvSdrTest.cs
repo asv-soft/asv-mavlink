@@ -833,7 +833,7 @@ public class AsvSdrTest
 
         serverSdr.Start();
         
-        var payload = new AsvSdrRecordDataLlzPayload();
+        AsvSdrRecordDataLlzPayload payload = null;
         
         clientSdr.OnRecordData.Subscribe(_ =>
         {
@@ -842,6 +842,8 @@ public class AsvSdrTest
                 payload = llzRecordDataPayload;
             }
         });
+        
+        var guid = Guid.NewGuid();
         
         await serverSdr.SendRecordData(AsvSdrCustomMode.AsvSdrCustomModeLlz, payload =>
         {
@@ -895,12 +897,9 @@ public class AsvSdrTest
                 llzPayload.TotalFreq150 = 46;
                 llzPayload.CodeIdFreq1020 = 47;
                 llzPayload.MeasureTime = 48;
-                llzPayload.RecordGuid = new byte[]
-                {
-                    49, 50, 51, 52
-                };
-                llzPayload.GnssFixType = GpsFixType.GpsFixTypeNoGps;
-                //llzPayload.GnssSatellitesVisible = 54;
+                guid.TryWriteBytes(llzPayload.RecordGuid);
+                llzPayload.GnssFixType = GpsFixType.GpsFixType2dFix;
+                llzPayload.GnssSatellitesVisible = 54;
             }
         });
         
@@ -955,9 +954,9 @@ public class AsvSdrTest
         Assert.Equal(46, payload.TotalFreq150);
         Assert.Equal(47, payload.CodeIdFreq1020);
         Assert.Equal(48, payload.MeasureTime);
-        Assert.Equal(new byte[] { 49, 50, 51, 52 }, payload.RecordGuid.Take(4));
-        Assert.Equal(GpsFixType.GpsFixTypeNoGps, payload.GnssFixType);
-        //Assert.Equal(54, payload.GnssSatellitesVisible);
+        Assert.Equal(guid, new Guid(payload.RecordGuid));
+        Assert.Equal(GpsFixType.GpsFixType2dFix, payload.GnssFixType);
+        Assert.Equal(54, payload.GnssSatellitesVisible);
         #endregion
     }
     
@@ -998,7 +997,7 @@ public class AsvSdrTest
             _.Frequency = 12;
             _.Size = 20;
             _.DataCount = 50;
-            _.RecordName = new[] { 'T', 'E', 'S', 'T' };
+            MavlinkTypesHelper.SetString(_.RecordName, "TEST");
             _.TagCount = 4;
             _.CreatedUnixUs = 40;
             _.DurationSec = 2;
@@ -1010,7 +1009,7 @@ public class AsvSdrTest
         Assert.Equal((ulong)12, record.Frequency);
         Assert.Equal((uint)20, record.Size);
         Assert.Equal((uint)50, record.DataCount);
-        Assert.Equal(new[] { 'T', 'E', 'S', 'T' }, record.RecordName.Take(4));
+        Assert.Equal("TEST", MavlinkTypesHelper.GetString(record.RecordName));
         Assert.Equal(4, record.TagCount);
         Assert.Equal((ulong)40, record.CreatedUnixUs);
         Assert.Equal((uint)2, record.DurationSec);
@@ -1046,16 +1045,16 @@ public class AsvSdrTest
         {
             record = _.Item2;
         });
-        
+        var guid = Guid.NewGuid();
         serverSdr.SendRecordTag(_ =>
         {
-            _.RecordGuid = new byte[] { 1, 2, 3, 4};
-            //_.TagType = AsvSdrRecordTagType.AsvSdrRecordTagTypeReal64;
+             MavlinkTypesHelper.SetGuid(_.RecordGuid, guid);
+            _.TagType = AsvSdrRecordTagType.AsvSdrRecordTagTypeReal64;
         });
 
         await Task.Delay(500);
         
-        Assert.Equal(new byte[] { 1, 2, 3, 4}, record.RecordGuid.Take(4));
-        //Assert.Equal(AsvSdrRecordTagType.AsvSdrRecordTagTypeReal64, record.TagType);
+        Assert.Equal(guid, MavlinkTypesHelper.GetGuid(record.RecordGuid));
+        Assert.Equal(AsvSdrRecordTagType.AsvSdrRecordTagTypeReal64, record.TagType);
     }
 }
