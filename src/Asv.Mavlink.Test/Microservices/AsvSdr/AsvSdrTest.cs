@@ -20,7 +20,7 @@ public class AsvSdrTest
     }
 
     [Fact]
-    public async Task Server_Sdr_Set_Argument_Null_Exception()
+    public void Server_Sdr_Set_Argument_Null_Exception()
     {
         var link = new VirtualLink();
         
@@ -40,7 +40,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Argument_Null_Exception()
+    public void Server_Sdr_Send_Record_Argument_Null_Exception()
     {
         var link = new VirtualLink();
         
@@ -64,7 +64,7 @@ public class AsvSdrTest
     [InlineData(AsvSdrCustomMode.AsvSdrCustomModeGp)]
     [InlineData(AsvSdrCustomMode.AsvSdrCustomModeLlz)]
     [InlineData(AsvSdrCustomMode.AsvSdrCustomModeVor)]
-    public async Task Server_Sdr_Send_Record_Data_Argument_Null_Exception(AsvSdrCustomMode customMode)
+    public void Server_Sdr_Send_Record_Data_Argument_Null_Exception(AsvSdrCustomMode customMode)
     {
         var link = new VirtualLink();
         
@@ -84,7 +84,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Data_Idle_Argument_Exception()
+    public void Server_Sdr_Send_Record_Data_Idle_Argument_Exception()
     {
         var link = new VirtualLink();
         
@@ -104,7 +104,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Create_Record_Data_Idle_Argument_Exception()
+    public void Server_Sdr_Create_Record_Data_Idle_Argument_Exception()
     {
         var link = new VirtualLink();
         
@@ -124,7 +124,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Data_Response_Argument_Null_Exception()
+    public void Server_Sdr_Send_Record_Data_Response_Argument_Null_Exception()
     {
         var link = new VirtualLink();
         
@@ -144,7 +144,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Tag_Delete_Response_Argument_Null_Exception()
+    public void Server_Sdr_Send_Record_Tag_Delete_Response_Argument_Null_Exception()
     {
         var link = new VirtualLink();
         
@@ -164,7 +164,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Tag_Argument_Null_Exception()
+    public void Server_Sdr_Send_Record_Tag_Argument_Null_Exception()
     {
         var link = new VirtualLink();
         
@@ -184,7 +184,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Tag_Response_Argument_Null_Exception()
+    public void Server_Sdr_Send_Record_Tag_Response_Argument_Null_Exception()
     {
         var link = new VirtualLink();
         
@@ -204,7 +204,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Delete_Response_Argument_Null_Exception()
+    public void Server_Sdr_Send_Record_Delete_Response_Argument_Null_Exception()
     {
         var link = new VirtualLink();
         
@@ -224,7 +224,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Response_Argument_Null_Exception()
+    public void Server_Sdr_Send_Record_Response_Argument_Null_Exception()
     {
         var link = new VirtualLink();
         
@@ -244,7 +244,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Response_Fail_Result_Code_Argument_Exception()
+    public void Server_Sdr_Send_Record_Response_Fail_Result_Code_Argument_Exception()
     {
         var link = new VirtualLink();
         
@@ -266,7 +266,7 @@ public class AsvSdrTest
     [Theory]
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckInProgress)]
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
-    public async Task Server_Sdr_Send_Record_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
+    public void Server_Sdr_Send_Record_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
     {
         var link = new VirtualLink();
         
@@ -286,7 +286,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Response_Success_Null_Reference_Exception()
+    public void Server_Sdr_Send_Record_Response_Success_Null_Reference_Exception()
     {
         var link = new VirtualLink();
         
@@ -306,7 +306,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Tag_Response_Fail_Result_Code_Argument_Exception()
+    public void Server_Sdr_Send_Record_Tag_Response_Fail_Result_Code_Argument_Exception()
     {
         var link = new VirtualLink();
         
@@ -328,7 +328,7 @@ public class AsvSdrTest
     [Theory]
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckInProgress)]
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
-    public async Task Server_Sdr_Send_Record_Tag_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
+    public void Server_Sdr_Send_Record_Tag_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
     {
         var link = new VirtualLink();
         
@@ -348,7 +348,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Tag_Response_Success_Null_Reference_Exception()
+    public void Server_Sdr_Send_Record_Tag_Response_Success_Null_Reference_Exception()
     {
         var link = new VirtualLink();
         
@@ -368,7 +368,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Delete_Response_Fail_Result_Code_Argument_Exception()
+    public void Server_Sdr_Send_Record_Delete_Response_Fail_Result_Code_Argument_Exception()
     {
         var link = new VirtualLink();
         
@@ -390,7 +390,7 @@ public class AsvSdrTest
     [Theory]
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckInProgress)]
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
-    public async Task Server_Sdr_Send_Record_Delete_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
+    public void Server_Sdr_Send_Record_Delete_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
     {
         var link = new VirtualLink();
         
@@ -410,7 +410,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Delete_Response_Success_Null_Reference_Exception()
+    public void Server_Sdr_Send_Record_Delete_Response_Success_Null_Reference_Exception()
     {
         var link = new VirtualLink();
         
@@ -430,7 +430,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Tag_Delete_Response_Fail_Result_Code_Argument_Exception()
+    public void Server_Sdr_Send_Record_Tag_Delete_Response_Fail_Result_Code_Argument_Exception()
     {
         var link = new VirtualLink();
         
@@ -452,7 +452,7 @@ public class AsvSdrTest
     [Theory]
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckInProgress)]
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
-    public async Task Server_Sdr_Send_Record_Tag_Delete_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
+    public void Server_Sdr_Send_Record_Tag_Delete_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
     {
         var link = new VirtualLink();
         
@@ -472,7 +472,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Tag_Delete_Response_Success_Null_Reference_Exception()
+    public void Server_Sdr_Send_Record_Tag_Delete_Response_Success_Null_Reference_Exception()
     {
         var link = new VirtualLink();
         
@@ -492,7 +492,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Data_Response_Fail_Result_Code_Argument_Exception()
+    public void Server_Sdr_Send_Record_Data_Response_Fail_Result_Code_Argument_Exception()
     {
         var link = new VirtualLink();
         
@@ -514,7 +514,7 @@ public class AsvSdrTest
     [Theory]
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckInProgress)]
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
-    public async Task Server_Sdr_Send_Record_Data_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
+    public void Server_Sdr_Send_Record_Data_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
     {
         var link = new VirtualLink();
         
@@ -534,7 +534,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Server_Sdr_Send_Record_Data_Response_Success_Null_Reference_Exception()
+    public void Server_Sdr_Send_Record_Data_Response_Success_Null_Reference_Exception()
     {
         var link = new VirtualLink();
         
@@ -789,6 +789,7 @@ public class AsvSdrTest
                 {
                     __.Result = AsvSdrRequestAck.AsvSdrRequestAckOk;
                     __.RecordGuid = recordGuid.ToByteArray();
+                    _.TagGuid.CopyTo(__.TagGuid,0);
                     __.RequestId = _.RequestId;
                     requestId = _.RequestId;
                 });
@@ -985,7 +986,7 @@ public class AsvSdrTest
             record = _.Item2;
         });
         
-        serverSdr.SendRecord( _ =>
+        await serverSdr.SendRecord( _ =>
         {
             _.DataType = AsvSdrCustomMode.AsvSdrCustomModeLlz;
             _.Frequency = 12;
@@ -1040,7 +1041,7 @@ public class AsvSdrTest
             record = _.Item2;
         });
         var guid = Guid.NewGuid();
-        serverSdr.SendRecordTag(_ =>
+        await serverSdr.SendRecordTag(_ =>
         {
              MavlinkTypesHelper.SetGuid(_.RecordGuid, guid);
             _.TagType = AsvSdrRecordTagType.AsvSdrRecordTagTypeReal64;
