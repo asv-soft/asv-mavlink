@@ -153,6 +153,20 @@ namespace Asv.Mavlink.V2.Ualberta
     {
         public byte GetMaxByteSize() => 32; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //Usec
+            sum+=4; //Accel0
+            sum+=4; //Accel1
+            sum+=4; //Accel2
+            sum+=4; //Gyro0
+            sum+=4; //Gyro1
+            sum+=4; //Gyro2
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -177,6 +191,8 @@ namespace Asv.Mavlink.V2.Ualberta
             BinSerialize.WriteFloat(ref buffer,Gyro2);
             /* PayloadByteSize = 32 */;
         }
+        
+        
 
 
 
@@ -239,6 +255,19 @@ namespace Asv.Mavlink.V2.Ualberta
     {
         public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=Aileron.Length * 2; //Aileron
+            sum+=Elevator.Length * 2; //Elevator
+            sum+=Rudder.Length * 2; //Rudder
+            sum+=Gyro.Length * 2; //Gyro
+            sum+=Pitch.Length * 2; //Pitch
+            sum+=Throttle.Length * 2; //Throttle
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -306,6 +335,8 @@ namespace Asv.Mavlink.V2.Ualberta
             }
             /* PayloadByteSize = 42 */;
         }
+        
+        
 
 
 
@@ -364,6 +395,16 @@ namespace Asv.Mavlink.V2.Ualberta
     {
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=1; //Mode
+            sum+=1; //NavMode
+            sum+=1; //Pilot
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -380,6 +421,8 @@ namespace Asv.Mavlink.V2.Ualberta
             BinSerialize.WriteByte(ref buffer,(byte)Pilot);
             /* PayloadByteSize = 3 */;
         }
+        
+        
 
 
 

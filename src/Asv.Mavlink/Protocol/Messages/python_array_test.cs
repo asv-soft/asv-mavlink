@@ -75,6 +75,18 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=ArU32.Length * 4; //ArU32
+            sum+=ArU16.Length * 2; //ArU16
+            sum+=1; //V1
+            sum+=ArI8.Length; //ArI8
+            sum+=ArU8.Length; //ArU8
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -126,6 +138,8 @@ namespace Asv.Mavlink.V2.PythonArrayTest
             }
             /* PayloadByteSize = 33 */;
         }
+        
+        
 
 
 
@@ -179,6 +193,14 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=ArU32.Length * 4; //ArU32
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -201,6 +223,8 @@ namespace Asv.Mavlink.V2.PythonArrayTest
             }
             /* PayloadByteSize = 16 */;
         }
+        
+        
 
 
 
@@ -234,6 +258,15 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 17; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 17; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=ArU32.Length * 4; //ArU32
+            sum+=1; //V
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -258,6 +291,8 @@ namespace Asv.Mavlink.V2.PythonArrayTest
             BinSerialize.WriteByte(ref buffer,(byte)V);
             /* PayloadByteSize = 17 */;
         }
+        
+        
 
 
 
@@ -296,6 +331,15 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 17; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 17; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=ArU32.Length * 4; //ArU32
+            sum+=1; //V
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -320,6 +364,8 @@ namespace Asv.Mavlink.V2.PythonArrayTest
             BinSerialize.WriteByte(ref buffer,(byte)V);
             /* PayloadByteSize = 17 */;
         }
+        
+        
 
 
 
@@ -358,6 +404,15 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 10; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 10; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=C1.Length; //C1
+            sum+=C2.Length; //C2
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -413,6 +468,8 @@ namespace Asv.Mavlink.V2.PythonArrayTest
             
             /* PayloadByteSize = 10 */;
         }
+        
+        
 
 
 
@@ -451,6 +508,25 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 91; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 91; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=ArD.Length * 8; //ArD
+            sum+=4; //V3
+            sum+=ArU32.Length * 4; //ArU32
+            sum+=ArI32.Length * 4; //ArI32
+            sum+=ArF.Length * 4; //ArF
+            sum+=2; //V2
+            sum+=ArU16.Length * 2; //ArU16
+            sum+=ArI16.Length * 2; //ArI16
+            sum+=1; //V1
+            sum+=ArU8.Length; //ArU8
+            sum+=ArI8.Length; //ArI8
+            sum+=ArC.Length; //ArC
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -563,6 +639,8 @@ namespace Asv.Mavlink.V2.PythonArrayTest
             
             /* PayloadByteSize = 91 */;
         }
+        
+        
 
 
 
@@ -651,6 +729,22 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 84; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 84; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=ArD.Length * 8; //ArD
+            sum+=ArF.Length * 4; //ArF
+            sum+=ArU32.Length * 4; //ArU32
+            sum+=ArI32.Length * 4; //ArI32
+            sum+=ArU16.Length * 2; //ArU16
+            sum+=ArI16.Length * 2; //ArI16
+            sum+=ArU8.Length; //ArU8
+            sum+=ArI8.Length; //ArI8
+            sum+=ArC.Length; //ArC
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -757,6 +851,8 @@ namespace Asv.Mavlink.V2.PythonArrayTest
             
             /* PayloadByteSize = 84 */;
         }
+        
+        
 
 
 
@@ -830,6 +926,16 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=ArD.Length * 8; //ArD
+            sum+=4; //V3
+            sum+=ArU16.Length * 2; //ArU16
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -863,6 +969,8 @@ namespace Asv.Mavlink.V2.PythonArrayTest
             }
             /* PayloadByteSize = 24 */;
         }
+        
+        
 
 
 

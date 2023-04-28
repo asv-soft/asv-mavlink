@@ -68,6 +68,35 @@ namespace Asv.Mavlink.V2.Test
     {
         public byte GetMaxByteSize() => 179; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 179; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //U64
+            sum+=8; //S64
+            sum+=8; //D
+            sum+=U64Array.Length * 8; //U64Array
+            sum+=S64Array.Length * 8; //S64Array
+            sum+=DArray.Length * 8; //DArray
+            sum+=4; //U32
+            sum+=4; //S32
+            sum+=4; //F
+            sum+=U32Array.Length * 4; //U32Array
+            sum+=S32Array.Length * 4; //S32Array
+            sum+=FArray.Length * 4; //FArray
+            sum+=2; //U16
+            sum+=2; //S16
+            sum+=U16Array.Length * 2; //U16Array
+            sum+=S16Array.Length * 2; //S16Array
+            sum+=1; //C
+            sum+=S.Length; //S
+            sum+=1; //U8
+            sum+=1; //S8
+            sum+=U8Array.Length; //U8Array
+            sum+=S8Array.Length; //S8Array
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -216,6 +245,8 @@ namespace Asv.Mavlink.V2.Test
             }
             /* PayloadByteSize = 179 */;
         }
+        
+        
 
 
 

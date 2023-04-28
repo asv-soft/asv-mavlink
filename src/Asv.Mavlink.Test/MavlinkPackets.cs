@@ -47,6 +47,17 @@ namespace Asv.Mavlink.Test
             _expectedObject.Serialize(ref span);
         }
 
+        [Fact]
+        public void Test_Packet_Actual_Size_Calculation()
+        {
+            byte[] buffer2 = new byte[PacketV2Helper.PacketV2MaxSize];
+            var span = new Span<byte>(buffer2);
+            var size = span.Length;
+            _expectedObject.Serialize(ref span);
+            size -= span.Length;
+            Assert.Equal(size, _expectedObject.GetCurrentByteSize());
+        }
+
 
         [Fact]
         public void SpanSerializeTest()

@@ -12,5 +12,10 @@ namespace Asv.Mavlink
         /// Minimum size of payload
         /// </summary>
         byte GetMinByteSize();
+        /// <summary>
+        /// Calculate current size of payload by sum of all fields (include arrays)
+        /// </summary>
+        /// <returns></returns>
+        byte GetCurrentByteSize();
     }
 }

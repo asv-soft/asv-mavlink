@@ -19,15 +19,11 @@ namespace Asv.Mavlink
         public byte ComponentId { get; set; }
         public ushort FullId => (ushort)(ComponentId | SystemId << 8);
         public abstract TPayload Payload { get; }
-        public int Size { get; set; }
         public abstract string Name { get; }
-        
         public abstract bool WrapToV2Extension { get; }
-
         public ISignature Signature => _signature;
-
-        public int GetMaxByteSize() => Payload.GetMaxByteSize() + Signature.GetMaxByteSize() + 12;
-
+        public int GetMaxByteSize() => Payload.GetMaxByteSize() + Signature.GetMaxByteSize() + 12 /*HEADER*/;
+        public int GetCurrentByteSize() => Payload.GetCurrentByteSize() + (Signature.IsPresent ? PacketV2Helper.SignatureByteSize : 0) + 12 /*HEADER*/;
         
 
         public void Serialize(ref Span<byte> buffer)
