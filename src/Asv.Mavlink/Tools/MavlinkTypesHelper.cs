@@ -76,6 +76,16 @@ public static class MavlinkTypesHelper
         value.CopyTo(0, data, 0, value.Length);
     }
 
+    public static byte[] GetBytes(string value)
+    {
+        return Encoding.ASCII.GetBytes(value);
+    }
+    
+    public static byte[] GetBytes(char[] value)
+    {
+        return Encoding.ASCII.GetBytes(value);
+    }
+    
     public static string GetString(byte[] data)
     {
         if (data == null) throw new ArgumentNullException(nameof(data));
