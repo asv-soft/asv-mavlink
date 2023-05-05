@@ -9,34 +9,22 @@ namespace Asv.Mavlink;
 /// </summary>
 public interface IFtpClient
 {
-    #region Directory methods
-
-    Task<FtpMessagePayload> ListDirectory(string path, uint offset, byte sequenceNumber, CancellationToken cancel);
-    
-    Task CreateDirectory(string path, CancellationToken cancel);
-    
-    Task RemoveDirectory(string path, CancellationToken cancel);
-    #endregion
-    
-    #region File methods
-
-    Task ReadFile(string readPath, string savePath, CancellationToken cancel);
-
-    Task BurstReadFile(string path, string savePath, CancellationToken cancel);
-    
-    Task UploadFile(string filePath, CancellationToken cancel);
-    
-    Task RemoveFile(string path, CancellationToken cancel);
-    
-    Task TruncateFile(string path, int offset, CancellationToken cancel);
-    
-    #endregion
-
-    #region Observables
-    
-    IObservable<IPacketV2<IPayload>> OnReceivedPacket { get; }
-
-    #endregion
+    Task<FtpMessagePayload> None(CancellationToken cancel);
+    Task<FtpMessagePayload> TerminateSession(byte sessionNumber, CancellationToken cancel);
+    Task<FtpMessagePayload> ResetSessions(CancellationToken cancel);
+    Task<FtpMessagePayload> OpenFileRO(string path, CancellationToken cancel);
+    Task<FtpMessagePayload> ReadFile(byte size, uint offset, byte sessionNumber, CancellationToken cancel);
+    Task<FtpMessagePayload> CreateFile(string path, CancellationToken cancel);
+    Task<FtpMessagePayload> WriteFile(byte[] writeBuffer, uint offset, byte sessionNumber, CancellationToken cancel);
+    Task<FtpMessagePayload> RemoveFile(string path, CancellationToken cancel);
+    Task<FtpMessagePayload> CreateDirectory(string path, CancellationToken cancel);
+    Task<FtpMessagePayload> RemoveDirectory(string path, CancellationToken cancel);
+    Task<FtpMessagePayload> OpenFileWO(string path, CancellationToken cancel);
+    Task<FtpMessagePayload> ListDirectory(string path, uint offset, CancellationToken cancel);
+    Task<FtpMessagePayload> TruncateFile(string path, uint offset, CancellationToken cancel);
+    Task<FtpMessagePayload> Rename(string pathToRename, string newPath, CancellationToken cancel);
+    Task<FtpMessagePayload> CalcFileCRC32(string path, CancellationToken cancel);
+    // Task<FtpMessagePayload> BurstReadFile(byte size, uint offset, byte sessionNumber, CancellationToken cancel);
 }
 
 #region Enums
