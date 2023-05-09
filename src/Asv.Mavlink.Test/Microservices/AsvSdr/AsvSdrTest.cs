@@ -753,7 +753,7 @@ public class AsvSdrTest
     }
     
     [Fact]
-    public async Task Client_Record_Tag_Delete_And_Check()
+    public async Task Client_Record_Tag_Delete_And_CheckClient_Record_Tag_Delete_And_Check()
     {
         var link = new VirtualLink();
         

@@ -116,7 +116,7 @@ public class AsvSdrClientRecord:DisposableOnceWithCancel, IAsvSdrClientRecord
     }
     public async Task DeleteTag(TagId id, CancellationToken cancel)
     {
-        if (Id == id.RecordGuid)
+        if (Id != id.RecordGuid)
             throw new Exception("Tag not belong to this record");
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
         var requestAck = await _client.DeleteRecordTag(id, cs.Token).ConfigureAwait(false);
