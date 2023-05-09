@@ -148,7 +148,7 @@ namespace Asv.Mavlink
                     result = await InternalSendAndWaitAnswer(packet, cancel, filter, timeoutMs).ConfigureAwait(false);
                     break;
                 }
-                catch (TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     if (cancel.IsCancellationRequested)
                     {
