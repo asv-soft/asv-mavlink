@@ -93,7 +93,7 @@ public class AsvSdrClientRecord:DisposableOnceWithCancel, IAsvSdrClientRecord
         _byteSize.OnNext(value.Item2.Size);
     }
     
-    public async Task<bool> UploadTagList(IProgress<double> progress, CancellationToken cancel)
+    public async Task<bool> DownloadTagList(IProgress<double> progress, CancellationToken cancel)
     {
         var lastUpdate = DateTime.Now;
         _tags.Clear();
@@ -107,7 +107,7 @@ public class AsvSdrClientRecord:DisposableOnceWithCancel, IAsvSdrClientRecord
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
             throw new Exception("Request fail");
 
-        while (DateTime.Now - lastUpdate > _maxTimeToWaitForResponseForList || _tags.Count < requestAck.ItemsCount)
+        while (DateTime.Now - lastUpdate < _maxTimeToWaitForResponseForList && _tags.Count < requestAck.ItemsCount)
         {
             await Task.Delay(1000, cancel).ConfigureAwait(false);
             progress?.Report((double)requestAck.ItemsCount/_tags.Count);
