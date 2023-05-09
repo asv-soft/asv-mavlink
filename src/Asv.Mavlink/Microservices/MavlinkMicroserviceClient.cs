@@ -114,7 +114,7 @@ namespace Asv.Mavlink
             using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
             linkedCancel.CancelAfter(timeoutMs);
             var tcs = new TaskCompletionSource<TAnswerPacket>();
-            using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled());
+            await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled());
 
             filter ??= (_ => true);
             using var subscribe = InternalFilterFirstAsync(filter).Subscribe(_=>tcs.TrySetResult(_));

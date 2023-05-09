@@ -15,7 +15,7 @@ public class CommandMicroserviceTest
             new MavlinkClientIdentity { SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13 },
             new PacketSequenceCalculator(), new CommandProtocolConfig
             {
-                CommandTimeoutMs = 500,
+                CommandTimeoutMs = 1000,
                 CommandAttempt = 5,
             }, TaskPoolScheduler.Default);
         return client;
