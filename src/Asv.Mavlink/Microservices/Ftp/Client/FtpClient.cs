@@ -48,7 +48,8 @@ namespace Asv.Mavlink
             _seq = seq;
             
             OnBurstReadPacket = InternalFilter<FileTransferProtocolPacket>(_ => (OpCode)_.Payload.Payload[3] == OpCode.ACK &&
-                    (OpCode)_.Payload.Payload[5] == OpCode.BurstReadFile && _.Payload.Payload[2] == _burstReadSessionNumber)
+                    (OpCode)_.Payload.Payload[5] == OpCode.BurstReadFile && 
+                    _.Payload.Payload[2] == _burstReadSessionNumber)
                 .Select(_ => new FtpMessagePayload(_.Payload.Payload))
                 .Publish().RefCount();
         }

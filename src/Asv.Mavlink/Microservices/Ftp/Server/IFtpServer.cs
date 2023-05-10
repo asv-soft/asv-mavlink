@@ -4,19 +4,20 @@ namespace Asv.Mavlink;
 
 public interface IFtpServer
 {
-    public IObservable<FtpMessagePayload> ResetSessionsRequest { get; }
-    public IObservable<FtpMessagePayload> TerminateSessionRequest { get; }
-    public IObservable<FtpMessagePayload> ListDirectoryRequest { get; }
-    public IObservable<FtpMessagePayload> OpenFileRORequest { get; }
-    public IObservable<FtpMessagePayload> ReadFileRequest { get; }
-    public IObservable<FtpMessagePayload> CreateFileRequest { get; }
-    public IObservable<FtpMessagePayload> WriteFileRequest { get; }
-    public IObservable<FtpMessagePayload> RemoveFileRequest { get; }
-    public IObservable<FtpMessagePayload> CreateDirectoryRequest { get; }
-    public IObservable<FtpMessagePayload> RemoveDirectoryRequest { get; }
-    public IObservable<FtpMessagePayload> OpenFileWORequest { get; }
-    public IObservable<FtpMessagePayload> TruncateFileRequest { get; }
-    public IObservable<FtpMessagePayload> RenameRequest { get; }
-    public IObservable<FtpMessagePayload> CalcFileCRC32Request { get; }
-    public IObservable<FtpMessagePayload> BurstReadFileRequest { get; }
+    public IObservable<FtpMessagePayload> AnyRequest { get; }
+    public IObservable<FtpMessagePayload> ResetSessionsRequest { get; set; }
+    public IObservable<FtpMessagePayload> TerminateSessionRequest { get; set; }
+    public IObservable<FtpMessagePayload> ListDirectoryRequest { get; set; }
+    public IObservable<FtpMessagePayload> OpenFileRORequest { get; set; }
+    public IObservable<FtpMessagePayload> ReadFileRequest { get; set; }
+    public IObservable<FtpMessagePayload> CreateFileRequest { get; set; }
+    public IObservable<FtpMessagePayload> WriteFileRequest { get; set; }
+    public IObservable<FtpMessagePayload> RemoveFileRequest { get; set; }
+    public IObservable<FtpMessagePayload> CreateDirectoryRequest { get; set; }
+    public IObservable<FtpMessagePayload> RemoveDirectoryRequest { get; set; }
+    public IObservable<FtpMessagePayload> OpenFileWORequest { get; set; }
+    public IObservable<FtpMessagePayload> TruncateFileRequest { get; set; }
+    public IObservable<FtpMessagePayload> RenameRequest { get; set; }
+    public IObservable<FtpMessagePayload> CalcFileCRC32Request { get; set; }
+    public IObservable<FtpMessagePayload> BurstReadFileRequest { get; set; }
 }

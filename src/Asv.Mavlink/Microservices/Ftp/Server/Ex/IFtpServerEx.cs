@@ -1,4 +1,4 @@
-namespace Asv.Mavlink.Ex;
+namespace Asv.Mavlink;
 
 public interface IFtpServerEx
 {
