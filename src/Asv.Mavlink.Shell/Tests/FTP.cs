@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Concurrency;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
@@ -11,7 +13,7 @@ namespace Asv.Mavlink.Shell;
 
 public class FTP : ConsoleCommand
 {
-    private string _connectionString = "tcp://127.0.0.1:5760";
+    private string _connectionString = "tcp://127.0.0.1:5762";
     private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
     private readonly ReaderWriterLockSlim _rw = new ReaderWriterLockSlim();
     private readonly List<DisplayRow> _items = new List<DisplayRow>();
@@ -35,30 +37,53 @@ public class FTP : ConsoleCommand
         conn.Subscribe(OnPacket);
         conn.DeserializePackageErrors.Subscribe(OnError);
 
-        FtpClient client = new FtpClient(conn, 
+        FtpClientEx client = new FtpClientEx(new FtpClient(conn, 
             new MavlinkClientIdentity { SystemId = 123, ComponentId = 123, TargetComponentId = 1, TargetSystemId = 1 }, 
-            new FtpClientConfig(), 
+            new FtpConfig(), 
             new PacketSequenceCalculator(), 
-            TaskPoolScheduler.Default);
-        //Task.WaitAll(client.ResetSessions(_cancel.Token));
-        var res = client.CreateFile("aboba.xml",  _cancel.Token);
-        Task.WaitAll(res);
-        Task.WaitAll(client.TerminateSession(res.Result.Session, _cancel.Token));
+            TaskPoolScheduler.Default));
+
+        // var result = client.ListDirectory(".", _cancel.Token);
+        //
+        // Task.WaitAll(result);
+        //
+        // var list = result.Result;
+
+        Stopwatch sw = new Stopwatch();
+        
+        sw.Start();
+        
+        Task.WaitAll(client.BurstReadFile("cygwin1.dll", "C:\\Users\\VitalyAnofriev\\Documents\\cygwin1.dll", _cancel.Token));
+        
+        sw.Stop();
+        
+        Task.Delay(500);
+        
+        // Task.WaitAll(client.CreateFile("test2.dat",  _cancel.Token));
+        // Task.WaitAll(client.ResetSessions(_cancel.Token));
+        // Task.WaitAll(client.CreateDirectory("abba2\\",  _cancel.Token));
+        // Task.WaitAll(client.ResetSessions(_cancel.Token));
+        // var openFile = client.OpenFileWO("test.dat", _cancel.Token);
+        // Task.WaitAll(openFile);
+        // if (openFile.Result.OpCodeId == OpCode.ACK)
+        // {
+        //     var res = client.WriteFile(Encoding.UTF8.GetBytes("TEST_STRING"), 0,
+        //         openFile.Result.Session, _cancel.Token);
+        //     Task.WaitAll(res);
+        //     if (res.Result.OpCodeId == OpCode.ACK)
+        //     {
+        //         Task.WaitAll(client.TerminateSession(openFile.Result.Session, _cancel.Token));
+        //         
+        //         Task.Delay(100, _cancel.Token).Wait();
+        //     }
+        // }
 
         while (!_cancel.IsCancellationRequested)
         {
             Redraw();
             Task.Delay(3000, _cancel.Token).Wait();
-            // var result = client.None(_cancel.Token);
-            // Task.WaitAll(result);
-            // Task.WaitAll(client.TerminateSession(result.Result.Session, _cancel.Token));
-            var result = client.ListDirectory("", 0, _cancel.Token);
-            Task.WaitAll(result);
-            Task.WaitAll(client.TerminateSession(result.Result.Session, _cancel.Token));
         }
-
         
-
         return 0;
     }
 

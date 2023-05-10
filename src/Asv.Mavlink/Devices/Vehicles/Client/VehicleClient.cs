@@ -37,7 +37,7 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
         Logging = new LoggingClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
         var missions = new MissionClient(connection, identity, seq, _config.Missions, scheduler).DisposeItWith(Disposable);
         Missions = new MissionClientEx(missions).DisposeItWith(Disposable);
-        Ftp = new FtpClient(connection, identity, new FtpClientConfig(), seq, scheduler).DisposeItWith(Disposable);
+        Ftp = new FtpClient(connection, identity, new FtpConfig(), seq, scheduler).DisposeItWith(Disposable);
         var gnss = new GnssClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
         Gnss = new GnssClientEx(gnss).DisposeItWith(Disposable);
         V2Extension = new V2ExtensionClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
