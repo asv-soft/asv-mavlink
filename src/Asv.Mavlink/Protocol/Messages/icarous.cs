@@ -119,6 +119,14 @@ namespace Asv.Mavlink.V2.Icarous
     {
         public byte GetMaxByteSize() => 1; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 1; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+= 1; // Status
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -131,6 +139,8 @@ namespace Asv.Mavlink.V2.Icarous
             BinSerialize.WriteByte(ref buffer,(byte)Status);
             /* PayloadByteSize = 1 */;
         }
+        
+        
 
 
 
@@ -163,6 +173,29 @@ namespace Asv.Mavlink.V2.Icarous
     {
         public byte GetMaxByteSize() => 46; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 46; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Min1
+            sum+=4; //Max1
+            sum+=4; //Min2
+            sum+=4; //Max2
+            sum+=4; //Min3
+            sum+=4; //Max3
+            sum+=4; //Min4
+            sum+=4; //Max4
+            sum+=4; //Min5
+            sum+=4; //Max5
+            sum+=1; //Numbands
+            sum+= 1; // Type1
+            sum+= 1; // Type2
+            sum+= 1; // Type3
+            sum+= 1; // Type4
+            sum+= 1; // Type5
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -205,6 +238,8 @@ namespace Asv.Mavlink.V2.Icarous
             BinSerialize.WriteByte(ref buffer,(byte)Type5);
             /* PayloadByteSize = 46 */;
         }
+        
+        
 
 
 

@@ -2000,6 +2000,25 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //MagDeclination
+            sum+=4; //RawPress
+            sum+=4; //RawTemp
+            sum+=4; //GyroCalX
+            sum+=4; //GyroCalY
+            sum+=4; //GyroCalZ
+            sum+=4; //AccelCalX
+            sum+=4; //AccelCalY
+            sum+=4; //AccelCalZ
+            sum+=2; //MagOfsX
+            sum+=2; //MagOfsY
+            sum+=2; //MagOfsZ
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -2034,6 +2053,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteShort(ref buffer,MagOfsZ);
             /* PayloadByteSize = 42 */;
         }
+        
+        
 
 
 
@@ -2121,6 +2142,18 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=2; //MagOfsX
+            sum+=2; //MagOfsY
+            sum+=2; //MagOfsZ
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -2141,6 +2174,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 8 */;
         }
+        
+        
 
 
 
@@ -2193,6 +2228,16 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=2; //Brkval
+            sum+=2; //Freemem
+            sum+=4; //Freemem32
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -2211,6 +2256,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteUInt(ref buffer,Freemem32);
             /* PayloadByteSize = 8 */;
         }
+        
+        
 
 
 
@@ -2253,6 +2300,19 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=2; //Adc1
+            sum+=2; //Adc2
+            sum+=2; //Adc3
+            sum+=2; //Adc4
+            sum+=2; //Adc5
+            sum+=2; //Adc6
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -2275,6 +2335,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteUShort(ref buffer,Adc6);
             /* PayloadByteSize = 12 */;
         }
+        
+        
 
 
 
@@ -2332,6 +2394,24 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 15; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 15; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //ExtraValue
+            sum+=2; //ShutterSpeed
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+=1; //Mode
+            sum+=1; //Aperture
+            sum+=1; //Iso
+            sum+=1; //ExposureType
+            sum+=1; //CommandId
+            sum+=1; //EngineCutOff
+            sum+=1; //ExtraParam
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -2364,6 +2444,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)ExtraParam);
             /* PayloadByteSize = 15 */;
         }
+        
+        
 
 
 
@@ -2446,6 +2528,23 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 13; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 13; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //ExtraValue
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+=1; //Session
+            sum+=1; //ZoomPos
+            sum+=1; //ZoomStep
+            sum+=1; //FocusLock
+            sum+=1; //Shot
+            sum+=1; //CommandId
+            sum+=1; //ExtraParam
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -2476,6 +2575,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)ExtraParam);
             /* PayloadByteSize = 13 */;
         }
+        
+        
 
 
 
@@ -2553,6 +2654,19 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+= 1; // MountMode
+            sum+=1; //StabRoll
+            sum+=1; //StabPitch
+            sum+=1; //StabYaw
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -2575,6 +2689,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)StabYaw);
             /* PayloadByteSize = 6 */;
         }
+        
+        
 
 
 
@@ -2632,6 +2748,19 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 15; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 15; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //InputA
+            sum+=4; //InputB
+            sum+=4; //InputC
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+=1; //SavePosition
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -2654,6 +2783,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)SavePosition);
             /* PayloadByteSize = 15 */;
         }
+        
+        
 
 
 
@@ -2711,6 +2842,18 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //PointingA
+            sum+=4; //PointingB
+            sum+=4; //PointingC
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -2731,6 +2874,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 14 */;
         }
+        
+        
 
 
 
@@ -2783,6 +2928,19 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Lat
+            sum+=4; //Lng
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+=1; //Idx
+            sum+=1; //Count
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -2805,6 +2963,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Count);
             /* PayloadByteSize = 12 */;
         }
+        
+        
 
 
 
@@ -2862,6 +3022,16 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+=1; //Idx
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -2878,6 +3048,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Idx);
             /* PayloadByteSize = 3 */;
         }
+        
+        
 
 
 
@@ -2920,6 +3092,17 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //BreachTime
+            sum+=2; //BreachCount
+            sum+=1; //BreachStatus
+            sum+= 1; // BreachType
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -2938,6 +3121,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)BreachType);
             /* PayloadByteSize = 8 */;
         }
+        
+        
 
 
 
@@ -2985,6 +3170,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Omegaix
+            sum+=4; //Omegaiy
+            sum+=4; //Omegaiz
+            sum+=4; //AccelWeight
+            sum+=4; //RenormVal
+            sum+=4; //ErrorRp
+            sum+=4; //ErrorYaw
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -3009,6 +3208,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,ErrorYaw);
             /* PayloadByteSize = 28 */;
         }
+        
+        
 
 
 
@@ -3071,6 +3272,24 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Roll
+            sum+=4; //Pitch
+            sum+=4; //Yaw
+            sum+=4; //Xacc
+            sum+=4; //Yacc
+            sum+=4; //Zacc
+            sum+=4; //Xgyro
+            sum+=4; //Ygyro
+            sum+=4; //Zgyro
+            sum+=4; //Lat
+            sum+=4; //Lng
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -3103,6 +3322,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteInt(ref buffer,Lng);
             /* PayloadByteSize = 44 */;
         }
+        
+        
 
 
 
@@ -3185,6 +3406,15 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=2; //Vcc
+            sum+=1; //I2cerr
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -3199,6 +3429,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)I2cerr);
             /* PayloadByteSize = 3 */;
         }
+        
+        
 
 
 
@@ -3236,6 +3468,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=2; //Rxerrors
+            sum+=2; //Fixed
+            sum+=1; //Rssi
+            sum+=1; //Remrssi
+            sum+=1; //Txbuf
+            sum+=1; //Noise
+            sum+=1; //Remnoise
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -3260,6 +3506,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Remnoise);
             /* PayloadByteSize = 9 */;
         }
+        
+        
 
 
 
@@ -3322,6 +3570,22 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //LastTrigger
+            sum+=4; //LastAction
+            sum+=4; //LastRecovery
+            sum+=4; //LastClear
+            sum+=2; //BreachCount
+            sum+= 1; // LimitsState
+            sum+= 1; // ModsEnabled
+            sum+= 1; // ModsRequired
+            sum+= 1; // ModsTriggered
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -3350,6 +3614,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)ModsTriggered);
             /* PayloadByteSize = 22 */;
         }
+        
+        
 
 
 
@@ -3422,6 +3688,16 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Direction
+            sum+=4; //Speed
+            sum+=4; //SpeedZ
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -3438,6 +3714,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,SpeedZ);
             /* PayloadByteSize = 12 */;
         }
+        
+        
 
 
 
@@ -3480,6 +3758,16 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 18; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=1; //Type
+            sum+=1; //Len
+            sum+=Data.Length; //Data
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -3506,6 +3794,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             }
             /* PayloadByteSize = 18 */;
         }
+        
+        
 
 
 
@@ -3549,6 +3839,16 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 34; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 34; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=1; //Type
+            sum+=1; //Len
+            sum+=Data.Length; //Data
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -3575,6 +3875,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             }
             /* PayloadByteSize = 34 */;
         }
+        
+        
 
 
 
@@ -3618,6 +3920,16 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 66; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 66; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=1; //Type
+            sum+=1; //Len
+            sum+=Data.Length; //Data
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -3644,6 +3956,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             }
             /* PayloadByteSize = 66 */;
         }
+        
+        
 
 
 
@@ -3687,6 +4001,16 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 98; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 98; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=1; //Type
+            sum+=1; //Len
+            sum+=Data.Length; //Data
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -3713,6 +4037,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             }
             /* PayloadByteSize = 98 */;
         }
+        
+        
 
 
 
@@ -3756,6 +4082,15 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Distance
+            sum+=4; //Voltage
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -3770,6 +4105,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,Voltage);
             /* PayloadByteSize = 8 */;
         }
+        
+        
 
 
 
@@ -3807,6 +4144,25 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 48; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 48; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Vx
+            sum+=4; //Vy
+            sum+=4; //Vz
+            sum+=4; //DiffPressure
+            sum+=4; //Eas2tas
+            sum+=4; //Ratio
+            sum+=4; //StateX
+            sum+=4; //StateY
+            sum+=4; //StateZ
+            sum+=4; //Pax
+            sum+=4; //Pby
+            sum+=4; //Pcz
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -3841,6 +4197,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,Pcz);
             /* PayloadByteSize = 48 */;
         }
+        
+        
 
 
 
@@ -3928,6 +4286,23 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 19; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 19; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Lat
+            sum+=4; //Lng
+            sum+=2; //Alt
+            sum+=2; //BreakAlt
+            sum+=2; //LandDir
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+=1; //Idx
+            sum+=1; //Count
+            sum+= 1; // Flags
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -3958,6 +4333,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Flags);
             /* PayloadByteSize = 19 */;
         }
+        
+        
 
 
 
@@ -4035,6 +4412,16 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+=1; //Idx
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -4051,6 +4438,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Idx);
             /* PayloadByteSize = 3 */;
         }
+        
+        
 
 
 
@@ -4093,6 +4482,19 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Current
+            sum+=4; //Compensationx
+            sum+=4; //Compensationy
+            sum+=4; //Compensationz
+            sum+=2; //Throttle
+            sum+=2; //Interference
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -4115,6 +4517,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteUShort(ref buffer,Interference);
             /* PayloadByteSize = 20 */;
         }
+        
+        
 
 
 
@@ -4172,6 +4576,19 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Roll
+            sum+=4; //Pitch
+            sum+=4; //Yaw
+            sum+=4; //Altitude
+            sum+=4; //Lat
+            sum+=4; //Lng
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -4194,6 +4611,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteInt(ref buffer,Lng);
             /* PayloadByteSize = 24 */;
         }
+        
+        
 
 
 
@@ -4251,6 +4670,22 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 29; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 29; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //TimeUsec
+            sum+=4; //P1
+            sum+=4; //P2
+            sum+=4; //P3
+            sum+=4; //P4
+            sum+=2; //ImgIdx
+            sum+=1; //TargetSystem
+            sum+=1; //CamIdx
+            sum+= 1; // EventId
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -4279,6 +4714,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)EventId);
             /* PayloadByteSize = 29 */;
         }
+        
+        
 
 
 
@@ -4351,6 +4788,27 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 47; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 47; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //TimeUsec
+            sum+=4; //Lat
+            sum+=4; //Lng
+            sum+=4; //AltMsl
+            sum+=4; //AltRel
+            sum+=4; //Roll
+            sum+=4; //Pitch
+            sum+=4; //Yaw
+            sum+=4; //FocLen
+            sum+=2; //ImgIdx
+            sum+=1; //TargetSystem
+            sum+=1; //CamIdx
+            sum+= 1; // Flags
+            sum+=2; //CompletedCaptures
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -4391,6 +4849,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteUShort(ref buffer,CompletedCaptures);
             /* PayloadByteSize = 47 */;
         }
+        
+        
 
 
 
@@ -4488,6 +4948,15 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=2; //Voltage
+            sum+=2; //CurrentBattery
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -4502,6 +4971,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteShort(ref buffer,CurrentBattery);
             /* PayloadByteSize = 4 */;
         }
+        
+        
 
 
 
@@ -4539,6 +5010,23 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 40; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 40; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Roll
+            sum+=4; //Pitch
+            sum+=4; //Yaw
+            sum+=4; //Altitude
+            sum+=4; //Lat
+            sum+=4; //Lng
+            sum+=4; //V1
+            sum+=4; //V2
+            sum+=4; //V3
+            sum+=4; //V4
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -4569,6 +5057,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,V4);
             /* PayloadByteSize = 40 */;
         }
+        
+        
 
 
 
@@ -4646,6 +5136,15 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -4660,6 +5159,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 2 */;
         }
+        
+        
 
 
 
@@ -4697,6 +5198,17 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 206; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 206; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+= 4; // Seqno
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+=Data.Length; //Data
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -4725,6 +5237,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             }
             /* PayloadByteSize = 206 */;
         }
+        
+        
 
 
 
@@ -4773,6 +5287,17 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Seqno
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+= 1; // Status
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -4791,6 +5316,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Status);
             /* PayloadByteSize = 7 */;
         }
+        
+        
 
 
 
@@ -4838,6 +5365,19 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 29; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 29; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+=1; //Instance
+            sum+=1; //Pattern
+            sum+=1; //CustomLen
+            sum+=CustomBytes.Length; //CustomBytes
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -4870,6 +5410,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             }
             /* PayloadByteSize = 29 */;
         }
+        
+        
 
 
 
@@ -4928,6 +5470,22 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 27; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //DirectionX
+            sum+=4; //DirectionY
+            sum+=4; //DirectionZ
+            sum+=1; //CompassId
+            sum+=1; //CalMask
+            sum+= 1; // CalStatus
+            sum+=1; //Attempt
+            sum+=1; //CompletionPct
+            sum+=CompletionMask.Length; //CompletionMask
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -4966,6 +5524,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             }
             /* PayloadByteSize = 27 */;
         }
+        
+        
 
 
 
@@ -5039,6 +5599,30 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 50; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 50; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Fitness
+            sum+=4; //OfsX
+            sum+=4; //OfsY
+            sum+=4; //OfsZ
+            sum+=4; //DiagX
+            sum+=4; //DiagY
+            sum+=4; //DiagZ
+            sum+=4; //OffdiagX
+            sum+=4; //OffdiagY
+            sum+=4; //OffdiagZ
+            sum+=1; //CompassId
+            sum+=1; //CalMask
+            sum+= 1; // CalStatus
+            sum+=1; //Autosaved
+            sum+=4; //OrientationConfidence
+            sum+= 1; // OldOrientation
+            sum+= 1; // NewOrientation
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -5089,6 +5673,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)NewOrientation);
             /* PayloadByteSize = 50 */;
         }
+        
+        
 
 
 
@@ -5201,6 +5787,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 26; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //VelocityVariance
+            sum+=4; //PosHorizVariance
+            sum+=4; //PosVertVariance
+            sum+=4; //CompassVariance
+            sum+=4; //TerrainAltVariance
+            sum+= 2; // Flags
+            sum+=4; //AirspeedVariance
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -5227,6 +5827,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,AirspeedVariance);
             /* PayloadByteSize = 26 */;
         }
+        
+        
 
 
 
@@ -5289,6 +5891,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 25; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 25; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Desired
+            sum+=4; //Achieved
+            sum+=4; //Ff
+            sum+=4; //P
+            sum+=4; //I
+            sum+=4; //D
+            sum+= 1; // Axis
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -5313,6 +5929,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Axis);
             /* PayloadByteSize = 25 */;
         }
+        
+        
 
 
 
@@ -5375,6 +5993,23 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 37; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 37; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //LandingLat
+            sum+=4; //LandingLon
+            sum+=4; //PathLat
+            sum+=4; //PathLon
+            sum+=4; //ArcEntryLat
+            sum+=4; //ArcEntryLon
+            sum+=4; //Altitude
+            sum+=4; //ExpectedTravelDistance
+            sum+=4; //CrossTrackError
+            sum+= 1; // Stage
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -5405,6 +6040,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Stage);
             /* PayloadByteSize = 37 */;
         }
+        
+        
 
 
 
@@ -5482,6 +6119,25 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //DeltaTime
+            sum+=4; //DeltaAngleX
+            sum+=4; //DeltaAngleY
+            sum+=4; //DeltaAngleZ
+            sum+=4; //DeltaVelocityX
+            sum+=4; //DeltaVelocityY
+            sum+=4; //DeltaVelocityZ
+            sum+=4; //JointRoll
+            sum+=4; //JointEl
+            sum+=4; //JointAz
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -5516,6 +6172,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 42 */;
         }
+        
+        
 
 
 
@@ -5603,6 +6261,18 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //DemandedRateX
+            sum+=4; //DemandedRateY
+            sum+=4; //DemandedRateZ
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -5623,6 +6293,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 14 */;
         }
+        
+        
 
 
 
@@ -5675,6 +6347,18 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=2; //RlTorqueCmd
+            sum+=2; //ElTorqueCmd
+            sum+=2; //AzTorqueCmd
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -5695,6 +6379,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 8 */;
         }
+        
+        
 
 
 
@@ -5747,6 +6433,16 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+= 1; // Status
+            sum+= 1; // CaptureMode
+            sum+= 1; // Flags
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -5763,6 +6459,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Flags);
             /* PayloadByteSize = 3 */;
         }
+        
+        
 
 
 
@@ -5805,6 +6503,16 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+= 1; // CmdId
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -5821,6 +6529,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)CmdId);
             /* PayloadByteSize = 3 */;
         }
+        
+        
 
 
 
@@ -5863,6 +6573,16 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+= 1; // CmdId
+            sum+= 1; // Status
+            sum+=Value.Length; //Value
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -5889,6 +6609,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             }
             /* PayloadByteSize = 6 */;
         }
+        
+        
 
 
 
@@ -5932,6 +6654,17 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+= 1; // CmdId
+            sum+=Value.Length; //Value
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -5960,6 +6693,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             }
             /* PayloadByteSize = 7 */;
         }
+        
+        
 
 
 
@@ -6008,6 +6743,15 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+= 1; // CmdId
+            sum+= 1; // Status
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -6022,6 +6766,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Status);
             /* PayloadByteSize = 2 */;
         }
+        
+        
 
 
 
@@ -6059,6 +6805,15 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Rpm1
+            sum+=4; //Rpm2
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -6073,6 +6828,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,Rpm2);
             /* PayloadByteSize = 8 */;
         }
+        
+        
 
 
 
@@ -6110,6 +6867,22 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 51; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 51; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //RequestId
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+= 1; // Bustype
+            sum+=1; //Bus
+            sum+=1; //Address
+            sum+=Busname.Length; //Busname
+            sum+=1; //Regstart
+            sum+=1; //Count
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -6160,6 +6933,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Count);
             /* PayloadByteSize = 51 */;
         }
+        
+        
 
 
 
@@ -6233,6 +7008,18 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 135; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 135; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //RequestId
+            sum+=1; //Result
+            sum+=1; //Regstart
+            sum+=1; //Count
+            sum+=Data.Length; //Data
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -6263,6 +7050,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             }
             /* PayloadByteSize = 135 */;
         }
+        
+        
 
 
 
@@ -6316,6 +7105,23 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 179; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 179; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //RequestId
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+= 1; // Bustype
+            sum+=1; //Bus
+            sum+=1; //Address
+            sum+=Busname.Length; //Busname
+            sum+=1; //Regstart
+            sum+=1; //Count
+            sum+=Data.Length; //Data
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -6375,6 +7181,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             }
             /* PayloadByteSize = 179 */;
         }
+        
+        
 
 
 
@@ -6453,6 +7261,15 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //RequestId
+            sum+=1; //Result
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -6467,6 +7284,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Result);
             /* PayloadByteSize = 5 */;
         }
+        
+        
 
 
 
@@ -6504,6 +7323,26 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 49; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 49; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Desired
+            sum+=4; //Achieved
+            sum+=4; //Error
+            sum+=4; //Theta
+            sum+=4; //Omega
+            sum+=4; //Sigma
+            sum+=4; //ThetaDot
+            sum+=4; //OmegaDot
+            sum+=4; //SigmaDot
+            sum+=4; //F
+            sum+=4; //FDot
+            sum+=4; //U
+            sum+= 1; // Axis
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -6540,6 +7379,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Axis);
             /* PayloadByteSize = 49 */;
         }
+        
+        
 
 
 
@@ -6632,6 +7473,18 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //TimeUsec
+            sum+=8; //TimeDeltaUsec
+            sum+=AngleDelta.Length * 4; //AngleDelta
+            sum+=PositionDelta.Length * 4; //PositionDelta
+            sum+=4; //Confidence
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -6669,6 +7522,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,Confidence);
             /* PayloadByteSize = 44 */;
         }
+        
+        
 
 
 
@@ -6722,6 +7577,16 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //TimeUsec
+            sum+=4; //Aoa
+            sum+=4; //Ssa
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -6738,6 +7603,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,Ssa);
             /* PayloadByteSize = 16 */;
         }
+        
+        
 
 
 
@@ -6780,6 +7647,19 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=Voltage.Length * 2; //Voltage
+            sum+=Current.Length * 2; //Current
+            sum+=Totalcurrent.Length * 2; //Totalcurrent
+            sum+=Rpm.Length * 2; //Rpm
+            sum+=Count.Length * 2; //Count
+            sum+=Temperature.Length; //Temperature
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -6847,6 +7727,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             }
             /* PayloadByteSize = 44 */;
         }
+        
+        
 
 
 
@@ -6905,6 +7787,19 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=Voltage.Length * 2; //Voltage
+            sum+=Current.Length * 2; //Current
+            sum+=Totalcurrent.Length * 2; //Totalcurrent
+            sum+=Rpm.Length * 2; //Rpm
+            sum+=Count.Length * 2; //Count
+            sum+=Temperature.Length; //Temperature
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -6972,6 +7867,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             }
             /* PayloadByteSize = 44 */;
         }
+        
+        
 
 
 
@@ -7030,6 +7927,19 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=Voltage.Length * 2; //Voltage
+            sum+=Current.Length * 2; //Current
+            sum+=Totalcurrent.Length * 2; //Totalcurrent
+            sum+=Rpm.Length * 2; //Rpm
+            sum+=Count.Length * 2; //Count
+            sum+=Temperature.Length; //Temperature
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -7097,6 +8007,8 @@ namespace Asv.Mavlink.V2.Ardupilotmega
             }
             /* PayloadByteSize = 44 */;
         }
+        
+        
 
 
 

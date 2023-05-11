@@ -159,6 +159,27 @@ namespace Asv.Mavlink.V2.AsvGbs
     {
         public byte GetMaxByteSize() => 26; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Lat
+            sum+=4; //Lng
+            sum+=4; //Alt
+            sum+=2; //Accuracy
+            sum+=2; //Observation
+            sum+=2; //DgpsRate
+            sum+=1; //SatAll
+            sum+=1; //SatGps
+            sum+=1; //SatGlo
+            sum+=1; //SatBdu
+            sum+=1; //SatGal
+            sum+=1; //SatQzs
+            sum+=1; //SatIme
+            sum+=1; //SatSbs
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -197,6 +218,8 @@ namespace Asv.Mavlink.V2.AsvGbs
             BinSerialize.WriteByte(ref buffer,(byte)SatSbs);
             /* PayloadByteSize = 26 */;
         }
+        
+        
 
 
 

@@ -114,7 +114,7 @@ namespace Asv.Mavlink
             using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
             linkedCancel.CancelAfter(timeoutMs);
             var tcs = new TaskCompletionSource<TAnswerPacket>();
-            using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled());
+            await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled());
 
             filter ??= (_ => true);
             using var subscribe = InternalFilterFirstAsync(filter).Subscribe(_=>tcs.TrySetResult(_));
@@ -139,6 +139,8 @@ namespace Asv.Mavlink
             {
                 if (currentAttempt != 0)
                 {
+                    // we need new packet sequence number for each attempt
+                    packet.Sequence = Sequence.GetNextSequenceNumber();
                     fillOnConfirmation?.Invoke(packet, currentAttempt);
                     Logger.Warn($"{LogSend} replay {currentAttempt} {name}");
                 }
@@ -148,7 +150,7 @@ namespace Asv.Mavlink
                     result = await InternalSendAndWaitAnswer(packet, cancel, filter, timeoutMs).ConfigureAwait(false);
                     break;
                 }
-                catch (TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     if (cancel.IsCancellationRequested)
                     {

@@ -163,6 +163,28 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 47; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 47; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //VehicleTimestamp
+            sum+=4; //UtcTime
+            sum+=4; //Param1
+            sum+=4; //Param2
+            sum+=4; //Param3
+            sum+=4; //Param4
+            sum+=4; //X
+            sum+=4; //Y
+            sum+=4; //Z
+            sum+= 2; // Command
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+= 1; // Frame
+            sum+=1; //Current
+            sum+=1; //Autocontinue
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -203,6 +225,8 @@ namespace Asv.Mavlink.V2.Asluav
             BinSerialize.WriteByte(ref buffer,(byte)Autocontinue);
             /* PayloadByteSize = 47 */;
         }
+        
+        
 
 
 
@@ -305,6 +329,26 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 45; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 45; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //VehicleTimestamp
+            sum+=4; //UtcTime
+            sum+=4; //Param1
+            sum+=4; //Param2
+            sum+=4; //Param3
+            sum+=4; //Param4
+            sum+=4; //Param5
+            sum+=4; //Param6
+            sum+=4; //Param7
+            sum+= 2; // Command
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+=1; //Confirmation
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -341,6 +385,8 @@ namespace Asv.Mavlink.V2.Asluav
             BinSerialize.WriteByte(ref buffer,(byte)Confirmation);
             /* PayloadByteSize = 45 */;
         }
+        
+        
 
 
 
@@ -433,6 +479,17 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Adc121VspbVolt
+            sum+=4; //Adc121CspbAmp
+            sum+=4; //Adc121Cs1Amp
+            sum+=4; //Adc121Cs2Amp
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -451,6 +508,8 @@ namespace Asv.Mavlink.V2.Asluav
             BinSerialize.WriteFloat(ref buffer,Adc121Cs2Amp);
             /* PayloadByteSize = 16 */;
         }
+        
+        
 
 
 
@@ -498,6 +557,26 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 41; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //MpptTimestamp
+            sum+=4; //Mppt1Volt
+            sum+=4; //Mppt1Amp
+            sum+=4; //Mppt2Volt
+            sum+=4; //Mppt2Amp
+            sum+=4; //Mppt3Volt
+            sum+=4; //Mppt3Amp
+            sum+=2; //Mppt1Pwm
+            sum+=2; //Mppt2Pwm
+            sum+=2; //Mppt3Pwm
+            sum+=1; //Mppt1Status
+            sum+=1; //Mppt2Status
+            sum+=1; //Mppt3Status
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -534,6 +613,8 @@ namespace Asv.Mavlink.V2.Asluav
             BinSerialize.WriteByte(ref buffer,(byte)Mppt3Status);
             /* PayloadByteSize = 41 */;
         }
+        
+        
 
 
 
@@ -626,6 +707,38 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 98; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 98; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //Timestamp
+            sum+=4; //H
+            sum+=4; //Href
+            sum+=4; //HrefT
+            sum+=4; //Pitchangle
+            sum+=4; //Pitchangleref
+            sum+=4; //Q
+            sum+=4; //Qref
+            sum+=4; //Uelev
+            sum+=4; //Uthrot
+            sum+=4; //Uthrot2
+            sum+=4; //Nz
+            sum+=4; //Airspeedref
+            sum+=4; //Yawangle
+            sum+=4; //Yawangleref
+            sum+=4; //Rollangle
+            sum+=4; //Rollangleref
+            sum+=4; //P
+            sum+=4; //Pref
+            sum+=4; //R
+            sum+=4; //Rref
+            sum+=4; //Uail
+            sum+=4; //Urud
+            sum+=1; //AslctrlMode
+            sum+=1; //Spoilersengaged
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -686,6 +799,8 @@ namespace Asv.Mavlink.V2.Asluav
             BinSerialize.WriteByte(ref buffer,(byte)Spoilersengaged);
             /* PayloadByteSize = 98 */;
         }
+        
+        
 
 
 
@@ -838,6 +953,24 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 38; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //I321
+            sum+=4; //F1
+            sum+=4; //F2
+            sum+=4; //F3
+            sum+=4; //F4
+            sum+=4; //F5
+            sum+=4; //F6
+            sum+=4; //F7
+            sum+=4; //F8
+            sum+=1; //I81
+            sum+=1; //I82
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -870,6 +1003,8 @@ namespace Asv.Mavlink.V2.Asluav
             BinSerialize.WriteByte(ref buffer,(byte)I82);
             /* PayloadByteSize = 38 */;
         }
+        
+        
 
 
 
@@ -952,6 +1087,17 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //MotorRpm
+            sum+=1; //LedStatus
+            sum+=1; //SatcomStatus
+            sum+=ServoStatus.Length; //ServoStatus
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -980,6 +1126,8 @@ namespace Asv.Mavlink.V2.Asluav
             }
             /* PayloadByteSize = 14 */;
         }
+        
+        
 
 
 
@@ -1028,6 +1176,20 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 32; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //Timestamp
+            sum+=4; //Windspeed
+            sum+=4; //Winddir
+            sum+=4; //Windz
+            sum+=4; //Airspeed
+            sum+=4; //Beta
+            sum+=4; //Alpha
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1052,6 +1214,8 @@ namespace Asv.Mavlink.V2.Asluav
             BinSerialize.WriteFloat(ref buffer,Alpha);
             /* PayloadByteSize = 32 */;
         }
+        
+        
 
 
 
@@ -1114,6 +1278,21 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //Timestamp
+            sum+=4; //Uelev
+            sum+=4; //Uthrot
+            sum+=4; //Uthrot2
+            sum+=4; //Uaill
+            sum+=4; //Uailr
+            sum+=4; //Urud
+            sum+=1; //ObctrlStatus
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1140,6 +1319,8 @@ namespace Asv.Mavlink.V2.Asluav
             BinSerialize.WriteByte(ref buffer,(byte)ObctrlStatus);
             /* PayloadByteSize = 33 */;
         }
+        
+        
 
 
 
@@ -1207,6 +1388,16 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //Timestamp
+            sum+=4; //Tempambient
+            sum+=4; //Humidity
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1223,6 +1414,8 @@ namespace Asv.Mavlink.V2.Asluav
             BinSerialize.WriteFloat(ref buffer,Humidity);
             /* PayloadByteSize = 16 */;
         }
+        
+        
 
 
 
@@ -1265,6 +1458,28 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 41; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //BatmonTimestamp
+            sum+=4; //Temperature
+            sum+=4; //Safetystatus
+            sum+=4; //Operationstatus
+            sum+=2; //Voltage
+            sum+=2; //Current
+            sum+=2; //Batterystatus
+            sum+=2; //Serialnumber
+            sum+=2; //Cellvoltage1
+            sum+=2; //Cellvoltage2
+            sum+=2; //Cellvoltage3
+            sum+=2; //Cellvoltage4
+            sum+=2; //Cellvoltage5
+            sum+=2; //Cellvoltage6
+            sum+=1; //Soc
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1305,6 +1520,8 @@ namespace Asv.Mavlink.V2.Asluav
             BinSerialize.WriteByte(ref buffer,(byte)Soc);
             /* PayloadByteSize = 41 */;
         }
+        
+        
 
 
 
@@ -1407,6 +1624,38 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 102; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 102; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //Timestamp
+            sum+=8; //Timestampmodechanged
+            sum+=4; //Xw
+            sum+=4; //Xr
+            sum+=4; //Xlat
+            sum+=4; //Xlon
+            sum+=4; //Varw
+            sum+=4; //Varr
+            sum+=4; //Varlat
+            sum+=4; //Varlon
+            sum+=4; //Loiterradius
+            sum+=4; //Loiterdirection
+            sum+=4; //Disttosoarpoint
+            sum+=4; //Vsinkexp
+            sum+=4; //Z1Localupdraftspeed
+            sum+=4; //Z2Deltaroll
+            sum+=4; //Z1Exp
+            sum+=4; //Z2Exp
+            sum+=4; //Thermalgsnorth
+            sum+=4; //Thermalgseast
+            sum+=4; //TseDot
+            sum+=4; //Debugvar1
+            sum+=4; //Debugvar2
+            sum+=1; //Controlmode
+            sum+=1; //Valid
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1467,6 +1716,8 @@ namespace Asv.Mavlink.V2.Asluav
             BinSerialize.WriteByte(ref buffer,(byte)Valid);
             /* PayloadByteSize = 102 */;
         }
+        
+        
 
 
 
@@ -1619,6 +1870,21 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //Timestamp
+            sum+=2; //FreeSpace
+            sum+=1; //VisensorRate1
+            sum+=1; //VisensorRate2
+            sum+=1; //VisensorRate3
+            sum+=1; //VisensorRate4
+            sum+=1; //RecordingNodesCount
+            sum+=1; //CpuTemp
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1645,6 +1911,8 @@ namespace Asv.Mavlink.V2.Asluav
             BinSerialize.WriteByte(ref buffer,(byte)CpuTemp);
             /* PayloadByteSize = 16 */;
         }
+        
+        
 
 
 
@@ -1712,6 +1980,25 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 46; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 46; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //Timestamp
+            sum+=4; //PwrBrdSystemVolt
+            sum+=4; //PwrBrdServoVolt
+            sum+=4; //PwrBrdDigitalVolt
+            sum+=4; //PwrBrdMotLAmp
+            sum+=4; //PwrBrdMotRAmp
+            sum+=4; //PwrBrdAnalogAmp
+            sum+=4; //PwrBrdDigitalAmp
+            sum+=4; //PwrBrdExtAmp
+            sum+=4; //PwrBrdAuxAmp
+            sum+=1; //PwrBrdStatus
+            sum+=1; //PwrBrdLedStatus
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1746,6 +2033,8 @@ namespace Asv.Mavlink.V2.Asluav
             BinSerialize.WriteByte(ref buffer,(byte)PwrBrdLedStatus);
             /* PayloadByteSize = 46 */;
         }
+        
+        
 
 
 
@@ -1833,6 +2122,20 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //Timestamp
+            sum+= 1; // GsmModemType
+            sum+= 1; // GsmLinkType
+            sum+=1; //Rssi
+            sum+=1; //RsrpRscp
+            sum+=1; //SinrEcio
+            sum+=1; //Rsrq
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1857,6 +2160,8 @@ namespace Asv.Mavlink.V2.Asluav
             BinSerialize.WriteByte(ref buffer,(byte)Rsrq);
             /* PayloadByteSize = 14 */;
         }
+        
+        
 
 
 
@@ -1919,6 +2224,21 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //Timestamp
+            sum+=8; //LastHeartbeat
+            sum+=2; //FailedSessions
+            sum+=2; //SuccessfulSessions
+            sum+=1; //SignalQuality
+            sum+=1; //RingPending
+            sum+=1; //TxSessionPending
+            sum+=1; //RxSessionPending
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1945,6 +2265,8 @@ namespace Asv.Mavlink.V2.Asluav
             BinSerialize.WriteByte(ref buffer,(byte)RxSessionPending);
             /* PayloadByteSize = 24 */;
         }
+        
+        
 
 
 

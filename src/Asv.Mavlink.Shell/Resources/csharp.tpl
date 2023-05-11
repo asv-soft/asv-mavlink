@@ -97,6 +97,105 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
     {
         public byte GetMaxByteSize() => {{ msg.PayloadByteSize }}; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => {{ msg.PayloadByteSize - msg.ExtendedFieldsLength }}; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+{%- for field in msg.Fields -%}
+    {%- if field.IsEnum -%}
+        {%- if field.IsArray -%}
+            {%- case field.Type -%}
+            {%- when 'char' or 'double' or 'float'-%}
+            ERROR => ENUM as 'char' or 'double' or 'float' ???????
+            {%- when 'sbyte' or 'byte' -%}
+            sum+= {{ field.CamelCaseName }}.Length; // {{ field.CamelCaseName }}
+            {%- when 'short' -%}
+            sum+= {{ field.CamelCaseName }}.Length * 2; // {{ field.CamelCaseName }}
+            {%- when 'ushort' -%}
+            sum+= {{ field.CamelCaseName }}.Length * 2; // {{ field.CamelCaseName }}
+            {%- when 'int' -%}
+            sum+= {{ field.CamelCaseName }}.Length * 4; // {{ field.CamelCaseName }}
+            {%- when 'uint' -%}
+            sum+= {{ field.CamelCaseName }}.Length * 4; // {{ field.CamelCaseName }}
+            {%- when 'long' -%}
+            sum+= {{ field.CamelCaseName }}.Length * 8; // {{ field.CamelCaseName }}
+            {%- when 'ulong' -%}
+            sum+= {{ field.CamelCaseName }}.Length * 8; // {{ field.CamelCaseName }}
+            {%- endcase -%}
+            
+        {%- else -%}
+            {%- case field.Type -%}
+            {%- when 'char' or 'double' or 'float'-%}
+            ERROR => ENUM as 'char' or 'double' or 'float' ???????
+            {%- when 'sbyte' or 'byte' -%}
+            sum+= 1; // {{ field.CamelCaseName }}
+            {%- when 'short' -%}
+            sum+= 2; // {{ field.CamelCaseName }}
+            {%- when 'ushort' -%}
+            sum+= 2; // {{ field.CamelCaseName }}
+            {%- when 'int' -%}
+            sum+= 4; // {{ field.CamelCaseName }}
+            {%- when 'uint' -%}
+            sum+= 4; // {{ field.CamelCaseName }}
+            {%- when 'long' -%}
+            sum+= 8; // {{ field.CamelCaseName }}
+            {%- when 'ulong' -%}
+            sum+= 8; // {{ field.CamelCaseName }}
+            {%- endcase -%}
+        {%- endif -%}
+    {%- else -%}
+        {%- if field.IsArray -%}
+            {%- case field.Type -%}
+            {%- when 'char' -%}
+            sum+={{ field.CamelCaseName }}.Length; //{{ field.CamelCaseName }}
+            {%- when 'sbyte' or 'byte' -%}
+            sum+={{ field.CamelCaseName }}.Length; //{{ field.CamelCaseName }}
+            {%- when 'short' -%}
+            sum+={{ field.CamelCaseName }}.Length * 2; //{{ field.CamelCaseName }}
+            {%- when 'ushort' -%}
+            sum+={{ field.CamelCaseName }}.Length * 2; //{{ field.CamelCaseName }}
+            {%- when 'int' -%}
+            sum+={{ field.CamelCaseName }}.Length * 4; //{{ field.CamelCaseName }}
+            {%- when 'uint' -%}
+            sum+={{ field.CamelCaseName }}.Length * 4; //{{ field.CamelCaseName }}
+            {%- when 'long' -%}
+            sum+={{ field.CamelCaseName }}.Length * 8; //{{ field.CamelCaseName }}
+            {%- when 'ulong' -%}
+            sum+={{ field.CamelCaseName }}.Length * 8; //{{ field.CamelCaseName }}
+            {%- when 'float' -%}
+            sum+={{ field.CamelCaseName }}.Length * 4; //{{ field.CamelCaseName }}
+            {%- when 'double' -%}
+            sum+={{ field.CamelCaseName }}.Length * 8; //{{ field.CamelCaseName }}
+            {%- endcase -%}
+        {%- else -%}
+            {%- case field.Type -%}
+            {%- when 'char' -%}
+            sum+=1; //{{ field.CamelCaseName }}
+            {%- when 'sbyte' or 'byte' -%}
+            sum+=1; //{{ field.CamelCaseName }}
+            {%- when 'short' -%}
+            sum+=2; //{{ field.CamelCaseName }}
+            {%- when 'ushort' -%}
+            sum+=2; //{{ field.CamelCaseName }}
+            {%- when 'int' -%}
+            sum+=4; //{{ field.CamelCaseName }}
+            {%- when 'uint' -%}
+            sum+=4; //{{ field.CamelCaseName }}
+            {%- when 'long' -%}
+            sum+=8; //{{ field.CamelCaseName }}
+            {%- when 'ulong' -%}
+            sum+=8; //{{ field.CamelCaseName }}
+            {%- when 'float' -%}
+            sum+=4; //{{ field.CamelCaseName }}
+            {%- when 'double' -%}
+            sum+=8; //{{ field.CamelCaseName }}
+            {%- endcase -%}
+        {%- endif -%}
+    {%- endif -%}
+{%- endfor -%}
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -367,6 +466,8 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
 {%- endfor -%}
             /* PayloadByteSize = {{ msg.PayloadByteSize }} */;
         }
+        
+        
 
 
 

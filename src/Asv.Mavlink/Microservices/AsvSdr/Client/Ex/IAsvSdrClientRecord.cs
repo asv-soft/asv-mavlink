@@ -19,6 +19,6 @@ public interface IAsvSdrClientRecord
     IRxValue<uint> ByteSize { get; }
     IRxValue<TimeSpan> Duration { get; }
     IObservable<IChangeSet<AsvSdrClientRecordTag, TagId>> Tags { get; }
-    Task<bool> UploadTagList(IProgress<double> progress = null, CancellationToken cancel = default);
+    Task<bool> DownloadTagList(IProgress<double> progress = null, CancellationToken cancel = default);
     Task DeleteTag(TagId id, CancellationToken cancel);
 }

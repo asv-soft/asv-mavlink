@@ -249,6 +249,17 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 34; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 34; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+= 8; // SupportedModes
+            sum+=8; //Size
+            sum+=2; //RecordCount
+            sum+=CurrentRecordGuid.Length; //CurrentRecordGuid
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -277,6 +288,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             /* PayloadByteSize = 34 */;
         }
+        
+        
 
 
 
@@ -325,6 +338,18 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=2; //RequestId
+            sum+=2; //Skip
+            sum+=2; //Count
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -345,6 +370,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 8 */;
         }
+        
+        
 
 
 
@@ -397,6 +424,16 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=2; //RequestId
+            sum+=2; //ItemsCount
+            sum+= 1; // Result
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -413,6 +450,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteByte(ref buffer,(byte)Result);
             /* PayloadByteSize = 5 */;
         }
+        
+        
 
 
 
@@ -455,6 +494,22 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 78; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 78; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //Frequency
+            sum+=8; //CreatedUnixUs
+            sum+= 4; // DataType
+            sum+=4; //DurationSec
+            sum+=4; //DataCount
+            sum+=4; //Size
+            sum+=2; //TagCount
+            sum+=RecordGuid.Length; //RecordGuid
+            sum+=RecordName.Length; //RecordName
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -512,6 +567,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             
             /* PayloadByteSize = 78 */;
         }
+        
+        
 
 
 
@@ -585,6 +642,17 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=2; //RequestId
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+=RecordGuid.Length; //RecordGuid
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -613,6 +681,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             /* PayloadByteSize = 20 */;
         }
+        
+        
 
 
 
@@ -661,6 +731,16 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 19; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 19; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=2; //RequestId
+            sum+= 1; // Result
+            sum+=RecordGuid.Length; //RecordGuid
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -687,6 +767,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             /* PayloadByteSize = 19 */;
         }
+        
+        
 
 
 
@@ -730,6 +812,19 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=2; //RequestId
+            sum+=2; //Skip
+            sum+=2; //Count
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+=RecordGuid.Length; //RecordGuid
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -762,6 +857,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             /* PayloadByteSize = 24 */;
         }
+        
+        
 
 
 
@@ -820,6 +917,16 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=2; //RequestId
+            sum+=2; //ItemsCount
+            sum+= 1; // Result
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -836,6 +943,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteByte(ref buffer,(byte)Result);
             /* PayloadByteSize = 5 */;
         }
+        
+        
 
 
 
@@ -878,6 +987,18 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 57; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 57; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=RecordGuid.Length; //RecordGuid
+            sum+=TagGuid.Length; //TagGuid
+            sum+=TagName.Length; //TagName
+            sum+= 1; // TagType
+            sum+=TagValue.Length; //TagValue
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -941,6 +1062,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             /* PayloadByteSize = 57 */;
         }
+        
+        
 
 
 
@@ -994,6 +1117,18 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 36; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 36; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=2; //RequestId
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+=RecordGuid.Length; //RecordGuid
+            sum+=TagGuid.Length; //TagGuid
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1031,6 +1166,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             /* PayloadByteSize = 36 */;
         }
+        
+        
 
 
 
@@ -1084,6 +1221,17 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 35; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 35; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=2; //RequestId
+            sum+= 1; // Result
+            sum+=RecordGuid.Length; //RecordGuid
+            sum+=TagGuid.Length; //TagGuid
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1119,6 +1267,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             /* PayloadByteSize = 35 */;
         }
+        
+        
 
 
 
@@ -1167,6 +1317,19 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=4; //Skip
+            sum+=4; //Count
+            sum+=2; //RequestId
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+=RecordGuid.Length; //RecordGuid
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1199,6 +1362,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             /* PayloadByteSize = 28 */;
         }
+        
+        
 
 
 
@@ -1257,6 +1422,18 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 27; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+= 4; // DataType
+            sum+=4; //ItemsCount
+            sum+=2; //RequestId
+            sum+= 1; // Result
+            sum+=RecordGuid.Length; //RecordGuid
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1287,6 +1464,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             /* PayloadByteSize = 27 */;
         }
+        
+        
 
 
 
@@ -1340,6 +1519,65 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 184; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 184; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //TimeUnixUsec
+            sum+=8; //TotalFreq
+            sum+=4; //DataIndex
+            sum+=4; //GnssLat
+            sum+=4; //GnssLon
+            sum+=4; //GnssAlt
+            sum+=4; //GnssAltEllipsoid
+            sum+=4; //GnssHAcc
+            sum+=4; //GnssVAcc
+            sum+=4; //GnssVelAcc
+            sum+=4; //Lat
+            sum+=4; //Lon
+            sum+=4; //Alt
+            sum+=4; //RelativeAlt
+            sum+=4; //Roll
+            sum+=4; //Pitch
+            sum+=4; //Yaw
+            sum+=4; //CrsAm90
+            sum+=4; //CrsAm150
+            sum+=4; //ClrPower
+            sum+=4; //ClrAm90
+            sum+=4; //ClrAm150
+            sum+=4; //TotalPower
+            sum+=4; //TotalFieldStrength
+            sum+=4; //TotalAm90
+            sum+=4; //TotalAm150
+            sum+=4; //Phi90CrsVsClr
+            sum+=4; //Phi150CrsVsClr
+            sum+=4; //CodeIdAm1020
+            sum+=2; //GnssEph
+            sum+=2; //GnssEpv
+            sum+=2; //GnssVel
+            sum+=2; //Vx
+            sum+=2; //Vy
+            sum+=2; //Vz
+            sum+=2; //Hdg
+            sum+=2; //CrsPower
+            sum+=2; //CrsCarrierOffset
+            sum+=2; //CrsFreq90
+            sum+=2; //CrsFreq150
+            sum+=2; //ClrCarrierOffset
+            sum+=2; //ClrFreq90
+            sum+=2; //ClrFreq150
+            sum+=2; //TotalCarrierOffset
+            sum+=2; //TotalFreq90
+            sum+=2; //TotalFreq150
+            sum+=2; //CodeIdFreq1020
+            sum+=2; //MeasureTime
+            sum+=RecordGuid.Length; //RecordGuid
+            sum+= 1; // GnssFixType
+            sum+=1; //GnssSatellitesVisible
+            sum+=CodeId.Length; //CodeId
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1483,6 +1721,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             
             /* PayloadByteSize = 184 */;
         }
+        
+        
 
 
 
@@ -1771,6 +2011,62 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 174; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 174; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //TimeUnixUsec
+            sum+=8; //TotalFreq
+            sum+=4; //DataIndex
+            sum+=4; //GnssLat
+            sum+=4; //GnssLon
+            sum+=4; //GnssAlt
+            sum+=4; //GnssAltEllipsoid
+            sum+=4; //GnssHAcc
+            sum+=4; //GnssVAcc
+            sum+=4; //GnssVelAcc
+            sum+=4; //Lat
+            sum+=4; //Lon
+            sum+=4; //Alt
+            sum+=4; //RelativeAlt
+            sum+=4; //Roll
+            sum+=4; //Pitch
+            sum+=4; //Yaw
+            sum+=4; //CrsAm90
+            sum+=4; //CrsAm150
+            sum+=4; //ClrPower
+            sum+=4; //ClrAm90
+            sum+=4; //ClrAm150
+            sum+=4; //TotalPower
+            sum+=4; //TotalFieldStrength
+            sum+=4; //TotalAm90
+            sum+=4; //TotalAm150
+            sum+=4; //Phi90CrsVsClr
+            sum+=4; //Phi150CrsVsClr
+            sum+=2; //GnssEph
+            sum+=2; //GnssEpv
+            sum+=2; //GnssVel
+            sum+=2; //Vx
+            sum+=2; //Vy
+            sum+=2; //Vz
+            sum+=2; //Hdg
+            sum+=2; //CrsPower
+            sum+=2; //CrsCarrierOffset
+            sum+=2; //CrsFreq90
+            sum+=2; //CrsFreq150
+            sum+=2; //ClrCarrierOffset
+            sum+=2; //ClrFreq90
+            sum+=2; //ClrFreq150
+            sum+=2; //TotalCarrierOffset
+            sum+=2; //TotalFreq90
+            sum+=2; //TotalFreq150
+            sum+=2; //MeasureTime
+            sum+=RecordGuid.Length; //RecordGuid
+            sum+= 1; // GnssFixType
+            sum+=1; //GnssSatellitesVisible
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -1889,6 +2185,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteByte(ref buffer,(byte)GnssSatellitesVisible);
             /* PayloadByteSize = 174 */;
         }
+        
+        
 
 
 
@@ -2162,6 +2460,53 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 150; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 150; // of byte sized of fields (exclude extended)
+        public byte GetCurrentByteSize()
+        {
+            var sum = 0;
+            sum+=8; //TimeUnixUsec
+            sum+=8; //TotalFreq
+            sum+=4; //DataIndex
+            sum+=4; //GnssLat
+            sum+=4; //GnssLon
+            sum+=4; //GnssAlt
+            sum+=4; //GnssAltEllipsoid
+            sum+=4; //GnssHAcc
+            sum+=4; //GnssVAcc
+            sum+=4; //GnssVelAcc
+            sum+=4; //Lat
+            sum+=4; //Lon
+            sum+=4; //Alt
+            sum+=4; //RelativeAlt
+            sum+=4; //Roll
+            sum+=4; //Pitch
+            sum+=4; //Yaw
+            sum+=4; //Azimuth
+            sum+=4; //Power
+            sum+=4; //FieldStrength
+            sum+=4; //Am30
+            sum+=4; //Am9960
+            sum+=4; //Deviation
+            sum+=4; //CodeIdAm1020
+            sum+=2; //GnssEph
+            sum+=2; //GnssEpv
+            sum+=2; //GnssVel
+            sum+=2; //Vx
+            sum+=2; //Vy
+            sum+=2; //Vz
+            sum+=2; //Hdg
+            sum+=2; //CarrierOffset
+            sum+=2; //Freq30
+            sum+=2; //Freq9960
+            sum+=2; //CodeIdFreq1020
+            sum+=2; //MeasureTime
+            sum+=RecordGuid.Length; //RecordGuid
+            sum+= 1; // GnssFixType
+            sum+=1; //GnssSatellitesVisible
+            sum+=CodeId.Length; //CodeId
+            return (byte)sum;
+        }
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -2281,6 +2626,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             
             /* PayloadByteSize = 150 */;
         }
+        
+        
 
 
 

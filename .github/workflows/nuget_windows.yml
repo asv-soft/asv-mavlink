@@ -50,7 +50,9 @@ jobs:
           dotnet build -c Release --no-restore    
     
       - name: Running all tests
-        run: dotnet test --no-restore --verbosity normal
+        run:  |    
+          cd src   
+          dotnet test --no-restore --verbosity normal
 
       - name: Packing projects to Nuget    
         run: |    

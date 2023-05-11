@@ -15,7 +15,7 @@ public class CommandMicroserviceTest
             new MavlinkClientIdentity { SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13 },
             new PacketSequenceCalculator(), new CommandProtocolConfig
             {
-                CommandTimeoutMs = 500,
+                CommandTimeoutMs = 1000,
                 CommandAttempt = 5,
             }, TaskPoolScheduler.Default);
         return client;
@@ -29,7 +29,7 @@ public class CommandMicroserviceTest
     }
     
     [Fact]
-    public async Task TestSimpleCallCommandInt()
+    public async Task Client_Call_Command_Int_And_Server_Catch_It()
     {
         var link = new VirtualLink();
         var server = CreateCommandServer(link);
@@ -45,7 +45,7 @@ public class CommandMicroserviceTest
         Assert.True(called);
     }
     [Fact]
-    public async Task TestSimpleCallCommandLong()
+    public async Task Client_Call_Command_Long_And_Server_Catch_It()
     {
         var link = new VirtualLink();
         var server = CreateCommandServer(link);
@@ -62,7 +62,7 @@ public class CommandMicroserviceTest
     }
     
     [Fact]
-    public async Task TestConfirmationCallCommandInt()
+    public async Task Client_Call_Command_Int_And_Server_Catch_It_With_Packet_Loss()
     {
         int cnt = 0;
         // Emulation of packet loss
@@ -84,7 +84,7 @@ public class CommandMicroserviceTest
     }
     
     [Fact]
-    public async Task TestConfirmationCallCommandLong()
+    public async Task Client_Call_Command_Long_And_Server_Catch_It_With_Packet_Loss()
     {
         int cnt = 0;
         // Emulation of packet loss
@@ -105,7 +105,7 @@ public class CommandMicroserviceTest
     }
     
     [Fact]
-    public async Task TestCommandList()
+    public async Task Client_Call_Command_Long_And_Server_Catch_It_With_Extended_Interface_And_Packet_Loss()
     {
         int cnt = 0;
         // Emulation of packet loss

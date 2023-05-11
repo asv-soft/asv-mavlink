@@ -10,6 +10,11 @@ namespace Asv.Mavlink
         /// </summary>
         int GetMaxByteSize();
         /// <summary>
+        /// Calculate current size of payload by sum of all fields (include actual array sizes)
+        /// </summary>
+        /// <returns></returns>
+        int GetCurrentByteSize();
+        /// <summary>
         /// Protocol magic marker
         /// </summary>
         byte Magic { get; }
