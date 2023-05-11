@@ -21,7 +21,7 @@ namespace Asv.Mavlink
 
         public override string ToString()
         {
-            return $"[{Type}] [{FileName}]" + (Size == 0 ? "" : $" [{Size}]");
+            return $"{Type}{FileName}\\t{Size}\0";
         }
     }
     

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 
@@ -51,6 +53,29 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         CalcFileCRC32Request = AnyRequest.Where(_ => _.OpCodeId == OpCode.CalcFileCRC32);
 
         BurstReadFileRequest = AnyRequest.Where(_ => _.OpCodeId == OpCode.BurstReadFile);
+    }
+    
+    public async Task SendFtpPacket(byte[] payload, CancellationToken cancel)
+    {
+        await InternalSend<FileTransferProtocolPacket>(_ =>
+        {
+            _.Payload.TargetSystem = Identity.SystemId;
+            _.Payload.TargetComponent = Identity.ComponentId;
+            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+            _.Payload.Payload = payload;
+        }, cancel).ConfigureAwait(false);
+    }
+    
+    public async Task SendFtpPacket(FtpMessagePayload payload, CancellationToken cancel)
+    {
+        await InternalSend<FileTransferProtocolPacket>(_ =>
+        {
+            _.Payload.TargetSystem = Identity.SystemId;
+            _.Payload.TargetComponent = Identity.ComponentId;
+            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+            var payloadSpan = new ReadOnlySpan<byte>(_.Payload.Payload);
+            payload.Deserialize(ref payloadSpan);
+        }, cancel).ConfigureAwait(false);
     }
 
     public IObservable<FtpMessagePayload> AnyRequest { get; }

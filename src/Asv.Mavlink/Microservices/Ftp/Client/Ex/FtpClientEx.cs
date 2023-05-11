@@ -20,6 +20,8 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
     
     public FtpClientEx(IFtpClient client)
     {
+        if (client == null) throw new ArgumentNullException(nameof(client));
+        
         Client = client;
         
         client.OnBurstReadPacket.Subscribe(_ => 
@@ -78,6 +80,7 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
         }
         await Client.TerminateSession(openFileRo.Session, cs.Token).ConfigureAwait(false);
     }
+    
     public async Task BurstReadFile(string serverPath, string filePath, CancellationToken cancel, uint offset = 0)
     {
         _lastBurstReadServerFileName = serverPath;
@@ -132,24 +135,6 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
         await Client.TerminateSession(createFile.Session, cs.Token).ConfigureAwait(false);
     }
 
-    public async Task RemoveFile(string path, CancellationToken cancel)
-    {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-
-        var removeFile = await Client.RemoveFile(path, cs.Token).ConfigureAwait(false);
-
-        await Client.TerminateSession(removeFile.Session, cs.Token).ConfigureAwait(false);
-    }
-
-    public async Task TruncateFile(string path, uint offset, CancellationToken cancel)
-    {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-
-        var truncateFile = await Client.TruncateFile(path, offset, cs.Token).ConfigureAwait(false);
-
-        await Client.TerminateSession(truncateFile.Session, cs.Token).ConfigureAwait(false);
-    }
-
     public async Task<List<FtpFileListItem>> ListDirectory(string path, CancellationToken cancel)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
@@ -166,7 +151,7 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
             
             if (listDirectory.OpCodeId == OpCode.NAK) break;
             
-            sb.Append(Encoding.UTF8.GetString(listDirectory.Data));
+            sb.Append(Encoding.ASCII.GetString(listDirectory.Data));
             
             await Client.TerminateSession(listDirectory.Session, cs.Token).ConfigureAwait(false);
             
@@ -200,17 +185,27 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
 
-        var createDirectory = await Client.CreateDirectory(path, cs.Token).ConfigureAwait(false);
-
-        await Client.TerminateSession(createDirectory.Session, cs.Token).ConfigureAwait(false);
+        await Client.CreateDirectory(path, cs.Token).ConfigureAwait(false);
     }
 
     public async Task RemoveDirectory(string path, CancellationToken cancel)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
 
-        var removeDirectory = await Client.RemoveDirectory(path, cs.Token).ConfigureAwait(false);
+        await Client.RemoveDirectory(path, cs.Token).ConfigureAwait(false);
+    }
+    
+    public async Task RemoveFile(string path, CancellationToken cancel)
+    {
+        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
 
-        await Client.TerminateSession(removeDirectory.Session, cs.Token).ConfigureAwait(false);
+        await Client.RemoveFile(path, cs.Token).ConfigureAwait(false);
+    }
+
+    public async Task TruncateFile(string path, uint offset, CancellationToken cancel)
+    {
+        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+
+        await Client.TruncateFile(path, offset, cs.Token).ConfigureAwait(false);
     }
 }

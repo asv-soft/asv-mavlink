@@ -1,9 +1,13 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Asv.Mavlink;
 
 public interface IFtpServer
 {
+    public Task SendFtpPacket(FtpMessagePayload payload, CancellationToken cancel);
+    public Task SendFtpPacket(byte[] payload, CancellationToken cancel);
     public IObservable<FtpMessagePayload> AnyRequest { get; }
     public IObservable<FtpMessagePayload> ResetSessionsRequest { get; set; }
     public IObservable<FtpMessagePayload> TerminateSessionRequest { get; set; }
