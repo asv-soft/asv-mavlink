@@ -24,7 +24,7 @@ namespace Asv.Mavlink.Test
         [InlineData(12,  12, 12345)]
         [InlineData(1234567,  7654321, -123)]
         [InlineData(0,  0, 0)]
-        public async Task StatusTest(int lat,int lon,int alt)
+        public async Task Server_Send_Status_And_Client_Check_It(int lat,int lon,int alt)
         {
             var link = new VirtualLink();
 
@@ -71,7 +71,7 @@ namespace Asv.Mavlink.Test
         [InlineData(1,   1, MavResult.MavResultAccepted)]
         [InlineData(1000,   1000, MavResult.MavResultAccepted)]
         [InlineData(float.NaN,   float.NaN, MavResult.MavResultFailed)]
-        public async Task CommandTest(float duration,float accuracy, MavResult result)
+        public async Task Client_Call_Command_And_Server_Catch_It(float duration,float accuracy, MavResult result)
         {
             var link = new VirtualLink();
             var called = false;

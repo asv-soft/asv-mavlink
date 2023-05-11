@@ -139,6 +139,8 @@ namespace Asv.Mavlink
             {
                 if (currentAttempt != 0)
                 {
+                    // we need new packet sequence number for each attempt
+                    packet.Sequence = Sequence.GetNextSequenceNumber();
                     fillOnConfirmation?.Invoke(packet, currentAttempt);
                     Logger.Warn($"{LogSend} replay {currentAttempt} {name}");
                 }
