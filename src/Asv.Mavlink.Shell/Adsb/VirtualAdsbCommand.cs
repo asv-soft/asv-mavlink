@@ -67,21 +67,21 @@ public class VirtualAdsbCommand : ConsoleCommand
             var distance = GeoMath.Distance(start, end);
             var azimuth = GeoMath.Azimuth(start, end);
 
-            var server = new AdsbVehicleServer(
+            var server = new AdsbServerDevice(
                 new MavlinkV2Connection(_cs, _ =>
                 {
                     _.RegisterCommonDialect();
                 }),
-                new MavlinkServerIdentity{ComponentId = 13, SystemId = 13}, 
                 new PacketSequenceCalculator(),
-                Scheduler.Default, 
-                new AdsbVehicleServerConfig());
+                new MavlinkServerIdentity{ComponentId = 13, SystemId = 13},
+                new AdsbServerDeviceConfig(),
+                Scheduler.Default);
             
             for (var i = 0; i < distance; i++)
             {
                 var nextPoint = start.RadialPoint(10 * i, azimuth);
             
-                server.Set(_ =>
+                server.Adsb.Set(_ =>
                 {
                     _.Altitude = (int)nextPoint.Altitude;
                     _.Lon = (int)nextPoint.Longitude;
