@@ -19,7 +19,7 @@ namespace Asv.Mavlink.Shell
             HasLongDescription("Generate any text files from MAVLink XML message definitions (https://mavlink.io/en/messages/)\n" +
                             "Used 'liquid' syntax as template engine (http://dotliquidmarkup.org/)" +
                             "Example: gen -t=common.xml -i=in -o=out -e=cs csharp.tpl");
-            HasOption("t|target=", $"Target file name. By default '{_targetFileName}'", _ => _targetFileName = _);
+            HasOption("t|target=", $"OnTarget file name. By default '{_targetFileName}'", _ => _targetFileName = _);
             HasOption("i|input=", $"Folder with source XML files. By default '{_in}'", _=> _in = _);
             HasOption("o|output=", $"Output folder with results. By default '{_out}'", _ => _out = _);
             HasOption("e|extention=", $"Output files extentions. By default used template file ext", _ => _ext = _);

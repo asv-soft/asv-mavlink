@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 
 public interface IAdsbVehicleServer : IDisposable
 {
-    void Start();
-    void Set(Action<AdsbVehiclePayload> changeCallback);
+    Task Send(Action<AdsbVehiclePayload> fillCallback);
 }

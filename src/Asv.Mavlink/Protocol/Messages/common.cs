@@ -2581,7 +2581,7 @@ namespace Asv.Mavlink.V2.Common
         MavCmdJumpTag = 600,
         /// <summary>
         /// Jump to the matching tag in the mission list. Repeat this action for the specified number of times. A mission should contain a single matching tag for each jump. If this is not the case then a jump to a missing tag should complete the mission, and a jump where there are multiple matching tags should always select the one with the lowest mission sequence number.
-        /// Param 1 - Target tag to jump to.
+        /// Param 1 - OnTarget tag to jump to.
         /// Param 2 - Repeat count.
         /// MAV_CMD_DO_JUMP_TAG
         /// </summary>
@@ -10613,7 +10613,7 @@ namespace Asv.Mavlink.V2.Common
             sum+=2; //Z
             sum+=2; //R
             sum+=2; //Buttons
-            sum+=1; //Target
+            sum+=1; //OnTarget
             return (byte)sum;
         }
 
@@ -20518,7 +20518,7 @@ namespace Asv.Mavlink.V2.Common
             sum+= 2; // Flags
             sum+=2; //Squawk
             sum+= 1; // AltitudeType
-            sum+=Callsign.Length; //Callsign
+            sum+=Callsign.Length; //CallSign
             sum+= 1; // EmitterType
             sum+=1; //Tslc
             return (byte)sum;

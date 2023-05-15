@@ -845,7 +845,7 @@
       </entry>
       <entry value="23" name="MAV_CMD_NAV_LAND_LOCAL" hasLocation="true" isDestination="true">
         <description>Land at local position (local frame only)</description>
-        <param index="1" label="Target" minValue="0" increment="1">Landing target number (if available)</param>
+        <param index="1" label="OnTarget" minValue="0" increment="1">Landing target number (if available)</param>
         <param index="2" label="Offset" units="m" minValue="0">Maximum accepted offset from desired landing position - computed magnitude from spherical coordinates: d = sqrt(x^2 + y^2 + z^2), which gives the maximum accepted distance between the desired landing position and the position where the vehicle is about to land</param>
         <param index="3" label="Descend Rate" units="m/s">Landing descend rate</param>
         <param index="4" label="Yaw" units="rad">Desired yaw angle</param>
@@ -1642,7 +1642,7 @@
       </entry>
       <entry value="601" name="MAV_CMD_DO_JUMP_TAG" hasLocation="false" isDestination="false">
         <description>Jump to the matching tag in the mission list. Repeat this action for the specified number of times. A mission should contain a single matching tag for each jump. If this is not the case then a jump to a missing tag should complete the mission, and a jump where there are multiple matching tags should always select the one with the lowest mission sequence number.</description>
-        <param index="1" label="Tag" minValue="0" increment="1">Target tag to jump to.</param>
+        <param index="1" label="Tag" minValue="0" increment="1">OnTarget tag to jump to.</param>
         <param index="2" label="Repeat" minValue="0" increment="1">Repeat count.</param>
       </entry>
       <entry value="2000" name="MAV_CMD_IMAGE_START_CAPTURE" hasLocation="false" isDestination="false">
