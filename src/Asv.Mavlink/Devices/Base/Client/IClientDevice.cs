@@ -46,5 +46,6 @@ public enum DeviceClass
     Plane,
     Copter,
     GbsRtk,
-    SdrPayload
+    SdrPayload,
+    Adsb,
 }

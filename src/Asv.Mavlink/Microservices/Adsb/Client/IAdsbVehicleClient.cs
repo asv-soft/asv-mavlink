@@ -30,5 +30,6 @@ public interface IAdsbVehicle
     IRxValue<AdsbFlags> Flags { get; }
     IRxValue<double> HorVelocity { get; }
     IRxValue<double> VerVelocity { get; }
+    IRxValue<ushort> Squawk { get; }
 }
 

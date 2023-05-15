@@ -61,42 +61,53 @@ public class VirtualAdsbCommand : ConsoleCommand
         
         while (!_cancel.IsCancellationRequested)
         {
-            var start = SetGeoPoint(_start);
-            var end = SetGeoPoint(_end);
-
-            var distance = GeoMath.Distance(start, end);
-            var azimuth = GeoMath.Azimuth(start, end);
-
-            var server = new AdsbServerDevice(
-                new MavlinkV2Connection(_cs, _ =>
-                {
-                    _.RegisterCommonDialect();
-                }),
-                new PacketSequenceCalculator(),
-                new MavlinkServerIdentity{ComponentId = 13, SystemId = 13},
-                new AdsbServerDeviceConfig(),
-                Scheduler.Default);
-            
-            for (var i = 0; i < distance; i++)
-            {
-                var nextPoint = start.RadialPoint(10 * i, azimuth);
-            
-                server.Adsb.Set(_ =>
-                {
-                    _.Altitude = (int)nextPoint.Altitude;
-                    _.Lon = (int)nextPoint.Longitude;
-                    _.Lat = (int)nextPoint.Latitude;
-                    _.Callsign = _callSign.ToCharArray();
-                    _.Flags = AdsbFlags.AdsbFlagsSimulated;
-                    _.Squawk = 15;
-                    _.Heading = 13;
-                    _.AltitudeType = AdsbAltitudeType.AdsbAltitudeTypeGeometric;
-                    _.EmitterType = AdsbEmitterType.AdsbEmitterTypeNoInfo;
-                    _.HorVelocity = 150;
-                    _.VerVelocity = 75;
-                    _.IcaoAddress = 1313;
-                });
-            }
+            // var start = SetGeoPoint(_start);
+            // var end = SetGeoPoint(_end);
+            //
+            //
+            //
+            //
+            // var distance = GeoMath.Distance(start, end);
+            // var azimuth = GeoMath.Azimuth(start, end);
+            //
+            // var server = new AdsbServerDevice(
+            //     new MavlinkV2Connection(_cs, _ =>
+            //     {
+            //         _.RegisterCommonDialect();
+            //     }),
+            //     new PacketSequenceCalculator(),
+            //     new MavlinkServerIdentity{ComponentId = 13, SystemId = 13},
+            //     new AdsbServerDeviceConfig(),
+            //     Scheduler.Default);
+            // var velXY = 10;
+            // var timeSec = 0;
+            // while (true)
+            // {
+            //     var nextPoint = start.RadialPoint(horVelocity/10 * i, azimuth);
+            //     
+            // }
+            // for (var i = 0; i < distance; i++)
+            // {
+            //     var nextPoint = start.RadialPoint(horVelocity/10 * i, azimuth);
+            //     nextPoint = nextPoint.AddAltitude(verVelocity*i)
+            //
+            //     server.Adsb.Send(_ =>
+            //     {
+            //         _.Altitude = (int)nextPoint.Altitude;
+            //         _.Lon = (int)nextPoint.Longitude;
+            //         _.Lat = (int)nextPoint.Latitude;
+            //         _.Callsign = _callSign.ToCharArray();
+            //         _.Flags = AdsbFlags.AdsbFlagsSimulated;
+            //         _.Squawk = 15;
+            //         _.Heading = 13;
+            //         _.AltitudeType = AdsbAltitudeType.AdsbAltitudeTypeGeometric;
+            //         _.EmitterType = AdsbEmitterType.AdsbEmitterTypeNoInfo;
+            //         _.HorVelocity = 150;
+            //         _.VerVelocity = 75;
+            //         _.IcaoAddress = 1313;
+            //     });
+            //     Thread.Sleep(100);
+            // }
         }
 
         return -1;

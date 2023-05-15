@@ -4,6 +4,5 @@ namespace Asv.Mavlink;
 
 public interface IAdsbServerDevice : IServerDevice
 {
-    ICommandServerEx<CommandLongPacket> CommandLongEx { get; }
     IAdsbVehicleServer Adsb { get; }
 }

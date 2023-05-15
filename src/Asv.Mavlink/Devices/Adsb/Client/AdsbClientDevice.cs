@@ -7,7 +7,7 @@ namespace Asv.Mavlink;
 
 public class AdsbClientDeviceConfig : ClientDeviceConfig
 {
-    public CommandProtocolConfig Command { get; set; } = new();
+    public AdsbVehicleClientConfig Adsb { get; set; } = new();
 }
 
 public class AdsbClientDevice : ClientDevice, IAdsbClientDevice
@@ -18,9 +18,7 @@ public class AdsbClientDevice : ClientDevice, IAdsbClientDevice
         IScheduler scheduler,
         AdsbClientDeviceConfig config) : base(connection, identity, config, seq, scheduler)
     {
-        Command = new CommandClient(connection, identity, seq, config.Command, scheduler).DisposeItWith(Disposable);
-        var client = new AdsbVehicleClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
-        AdsbClient = new AdsbVehicleClientEx(client);
+        Adsb = new AdsbVehicleClient(connection, identity, seq, config.Adsb, scheduler).DisposeItWith(Disposable);
     }
 
     protected override Task InternalInit()
@@ -33,7 +31,6 @@ public class AdsbClientDevice : ClientDevice, IAdsbClientDevice
         return Task.FromResult("ADSB");
     }
 
-    public override DeviceClass Class => DeviceClass.Plane;
-    public IAdsbVehicleClientEx AdsbClient { get; }
-    public ICommandClient Command { get; }
+    public override DeviceClass Class => DeviceClass.Adsb;
+    public IAdsbVehicleClient Adsb { get; }
 }

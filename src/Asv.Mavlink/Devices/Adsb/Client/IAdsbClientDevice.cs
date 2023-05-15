@@ -4,6 +4,5 @@ namespace Asv.Mavlink;
 
 public interface IAdsbClientDevice : IClientDevice
 {
-    IAdsbVehicleClientEx AdsbClient { get; }
-    ICommandClient Command { get; }
+    IAdsbVehicleClient Adsb { get; }
 }
