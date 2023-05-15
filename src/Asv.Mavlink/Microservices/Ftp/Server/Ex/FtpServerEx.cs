@@ -345,7 +345,7 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
             ReqOpCodeId = OpCode.ListDirectory
         };
         
-        if (index < ftpMessagePayload.Offset)
+        if (Directory.GetFileSystemEntries(path).Length <= ftpMessagePayload.Offset)
         {
             responsePayload.OpCodeId = OpCode.NAK;
         }

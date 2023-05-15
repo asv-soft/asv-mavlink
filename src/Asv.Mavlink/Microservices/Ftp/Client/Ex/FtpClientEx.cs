@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -142,11 +143,10 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
         
         var items = new List<FtpFileListItem>();
         
-        byte offset = 0;
+        var fileMatches = new List<Match>();
+        var dirMatches = new List<Match>();
 
-        int retries = 0;
-        
-        StringBuilder sb = new StringBuilder();
+        byte offset = 0;
         
         while (true)
         {
@@ -157,48 +157,42 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
             if (listDirectory.OpCodeId == OpCode.NAK) break;
 
             var temp = Encoding.ASCII.GetString(listDirectory.Data);
-            
-            offset += (byte)(temp.Split("\0\0").Where(_ => _.IsNotEmpty()).AsArray().Length - 1);
 
-            var lastPart = temp.Split("\0\0").Where(_ => !_.IsNullOrWhiteSpace()).LastOrDefault() ?? "";
-
-            if (!lastPart.Contains("\0"))
-            {
-                sb.Append(temp.Remove(temp.LastIndexOf(lastPart)));
-            }
-            else
-            {
-                sb.Append(temp);
-                offset++;
-            }
+            fileMatches.Add(Regex.Matches(temp, "F([a-z A-Z 0-9 . , _ -]+)\t(\\d+)\0\0"));
+            dirMatches.Add(Regex.Matches(temp, "D([a-z A-Z 0-9 . , _ -]+)\0\0"));
             
+            offset = (byte)(fileMatches.Count + dirMatches.Count);
+
             await Client.TerminateSession(listDirectory.Session, cs.Token).ConfigureAwait(false);
-
-            if (offset == tempOffset) retries++;
-
-            if (retries == 5) break;
         }
         
-        var elements = sb.ToString().Split("\0\0").Where(_ => _ != "" & _ != "\0");
-
-        foreach (var element in elements)
+        foreach (var dirMatch in dirMatches.Distinct(new CallbackComparer<Match>(_ => _.Value.GetHashCode(), 
+                     (first, second) => first.Value.Equals(second.Value))))
         {
             var item = new FtpFileListItem()
             {
-                Type = (FileItemType)element.Split('\t')[0].First(),
-                FileName = element.Split('\t')[0].Substring(1)
+                Type = FileItemType.Directory,
+                FileName = dirMatch.Groups[1].Value
             };
-
-            if(item.FileName == "." | item.FileName == "..") continue;
-            
-            if (element.Contains('\t') && int.TryParse(element.Split('\t')[1], out var itemSize))
-            {
-                item.Size = itemSize;
-            }
             
             items.Add(item);
         }
 
+        foreach (var fileMatch in fileMatches.Distinct(new CallbackComparer<Match>(_ => _.Value.GetHashCode(), 
+                     (first, second) => first.Value.Equals(second.Value))))
+        {
+            var item = new FtpFileListItem()
+            {
+                Type = FileItemType.File,
+                FileName = fileMatch.Groups[1].Value
+            };
+            
+            if (int.TryParse(fileMatch.Groups[2].Value, out var itemSize))
+                item.Size = itemSize;
+            
+            items.Add(item);
+        }
+        
         return items;
     }
 
