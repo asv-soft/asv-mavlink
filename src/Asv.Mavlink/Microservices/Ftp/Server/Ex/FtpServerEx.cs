@@ -307,10 +307,10 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
             {
                 DirectoryInfo info = new DirectoryInfo(item);
                 
-                var ftpDirectory = new FtpFileListItem()
+                var ftpDirectory = new FtpEntryItem()
                 {
-                    FileName = info.Name,
-                    Type = FileItemType.Directory
+                    Name = info.Name,
+                    Type = FtpEntryType.Directory
                 };
                 
                 if (index >= ftpMessagePayload.Offset)
@@ -322,11 +322,11 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
             {
                 FileInfo info = new FileInfo(item);
             
-                var ftpFile = new FtpFileListItem()
+                var ftpFile = new FtpEntryItem()
                 {
-                    FileName = info.Name,
+                    Name = info.Name,
                     Size = (int)info.Length,
-                    Type = FileItemType.File
+                    Type = FtpEntryType.File
                 };
                 
                 if (index >= ftpMessagePayload.Offset)

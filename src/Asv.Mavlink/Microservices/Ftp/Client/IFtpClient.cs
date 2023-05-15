@@ -209,7 +209,7 @@ public enum OpCode
     NAK = 129,
 }
 
-public enum FileItemType
+public enum FtpEntryType
 {
     File = 'F',
     Directory = 'D',

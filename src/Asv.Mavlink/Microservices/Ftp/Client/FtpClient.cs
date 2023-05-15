@@ -13,15 +13,15 @@ namespace Asv.Mavlink
     /// "[type][file_or_folder_name]\t[file_size_in_bytes]\0", 
     /// where type is one of the letters F(ile), D(irectory), S(skip)
     /// </summary>
-    public class FtpFileListItem
+    public class FtpEntryItem
     {
         public int Size { get; set; }
-        public string FileName { get; set; }
-        public FileItemType Type { get; set; }
+        public string Name { get; set; }
+        public FtpEntryType Type { get; set; }
 
         public override string ToString()
         {
-            return $"{(char)Type}{FileName}{(Size == 0 ? "" : $"\t{Size}")}\0\0";
+            return $"{(char)Type}{Name}{(Size == 0 ? "" : $"\t{Size}")}\0\0";
         }
     }
     

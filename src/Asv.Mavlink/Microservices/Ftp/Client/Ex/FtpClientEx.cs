@@ -137,22 +137,19 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
         await Client.TerminateSession(createFile.Session, cs.Token).ConfigureAwait(false);
     }
 
-    public async Task<List<FtpFileListItem>> ListDirectory(string path, CancellationToken cancel)
+    public async Task<List<FtpEntryItem>> ListDirectory(string path, CancellationToken cancel)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
         
-        var items = new List<FtpFileListItem>();
+        var items = new List<FtpEntryItem>();
         
         var fileMatches = new List<Match>();
         var dirMatches = new List<Match>();
-
-        byte offset = 0;
         
         while (true)
         {
-            var tempOffset = offset;
-            
-            var listDirectory = await Client.ListDirectory(path, offset, cs.Token).ConfigureAwait(false);
+            var listDirectory = await Client.ListDirectory(path, 
+                (byte)(fileMatches.Count + dirMatches.Count), cs.Token).ConfigureAwait(false);
 
             if (listDirectory.OpCodeId == OpCode.NAK) break;
 
@@ -161,18 +158,16 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
             fileMatches.Add(Regex.Matches(temp, "F([a-z A-Z 0-9 . , _ -]+)\t(\\d+)\0\0"));
             dirMatches.Add(Regex.Matches(temp, "D([a-z A-Z 0-9 . , _ -]+)\0\0"));
             
-            offset = (byte)(fileMatches.Count + dirMatches.Count);
-
             await Client.TerminateSession(listDirectory.Session, cs.Token).ConfigureAwait(false);
         }
         
         foreach (var dirMatch in dirMatches.Distinct(new CallbackComparer<Match>(_ => _.Value.GetHashCode(), 
                      (first, second) => first.Value.Equals(second.Value))))
         {
-            var item = new FtpFileListItem()
+            var item = new FtpEntryItem()
             {
-                Type = FileItemType.Directory,
-                FileName = dirMatch.Groups[1].Value
+                Type = FtpEntryType.Directory,
+                Name = dirMatch.Groups[1].Value
             };
             
             items.Add(item);
@@ -181,10 +176,10 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
         foreach (var fileMatch in fileMatches.Distinct(new CallbackComparer<Match>(_ => _.Value.GetHashCode(), 
                      (first, second) => first.Value.Equals(second.Value))))
         {
-            var item = new FtpFileListItem()
+            var item = new FtpEntryItem()
             {
-                Type = FileItemType.File,
-                FileName = fileMatch.Groups[1].Value
+                Type = FtpEntryType.File,
+                Name = fileMatch.Groups[1].Value
             };
             
             if (int.TryParse(fileMatch.Groups[2].Value, out var itemSize))

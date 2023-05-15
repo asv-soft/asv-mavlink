@@ -11,7 +11,7 @@ public interface IFtpClientEx
     Task UploadFile(string serverPath, string filePath, CancellationToken cancel);
     Task RemoveFile(string path, CancellationToken cancel);
     Task TruncateFile(string path, uint offset, CancellationToken cancel);
-    Task<List<FtpFileListItem>> ListDirectory(string path, CancellationToken cancel);
+    Task<List<FtpEntryItem>> ListDirectory(string path, CancellationToken cancel);
     Task CreateDirectory(string path, CancellationToken cancel);
     Task RemoveDirectory(string path, CancellationToken cancel);
 }

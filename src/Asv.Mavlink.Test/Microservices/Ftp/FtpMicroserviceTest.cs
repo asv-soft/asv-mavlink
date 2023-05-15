@@ -37,11 +37,11 @@ public class FtpMicroserviceTest
             new PacketSequenceCalculator(),
             TaskPoolScheduler.Default));
         
-        await client.CreateDirectory("pathdir", new CancellationToken());
+        await client.CreateDirectory("pathdir1", new CancellationToken());
 
-        Assert.True(Directory.Exists("pathdir"));
+        Assert.True(Directory.Exists("pathdir1"));
         
-        Directory.Delete("pathdir");
+        Directory.Delete("pathdir1");
     }
     
     [Fact]
@@ -63,11 +63,11 @@ public class FtpMicroserviceTest
             new PacketSequenceCalculator(),
             TaskPoolScheduler.Default));
         
-        Directory.CreateDirectory("pathdir");
+        Directory.CreateDirectory("pathdir2");
 
-        await client.RemoveDirectory("pathdir", new CancellationToken());
+        await client.RemoveDirectory("pathdir2", new CancellationToken());
 
-        Assert.False(Directory.Exists("pathdir"));
+        Assert.False(Directory.Exists("pathdir2"));
     }
     
     [Fact]
@@ -91,8 +91,8 @@ public class FtpMicroserviceTest
         
         var result = await client.ListDirectory(".", new CancellationToken());
         
-        Assert.True(result.Any(_ => _.FileName == "Asv.Common.dll"));
-        Assert.True(result.Any(_ => _.FileName == "Asv.IO.dll"));
-        Assert.True(result.Any(_ => _.FileName == "Asv.Mavlink.dll"));
+        Assert.True(result.Any(_ => _.Name == "zh-Hans"));
+        Assert.True(result.Any(_ => _.Name == "Asv.IO.dll"));
+        Assert.True(result.Any(_ => _.Name == "xunit.runner.visualstudio.dotnetcore.testadapter.dll"));
     }
 }
