@@ -8,7 +8,7 @@ namespace Asv.Mavlink;
     /// Max size = 251
     /// https://mavlink.io/en/services/ftp.html
     /// </summary>
-    public class FtpMessagePayload : IPayload
+    public class FtpMessagePayload
     {
         /// <summary>
         /// FTP message payload max size in bytes

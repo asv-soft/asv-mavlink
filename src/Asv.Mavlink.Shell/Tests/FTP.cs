@@ -43,8 +43,8 @@ public class FTP : ConsoleCommand
             new PacketSequenceCalculator(), 
             TaskPoolScheduler.Default));
 
-        //var result = client.ListDirectory(".", _cancel.Token);
-        
+        var result = client.ListDirectory(".", _cancel.Token).Result;
+
         // Task.WaitAll(client.RemoveFile("Noname1.psd", _cancel.Token));
         //
         // Task.WaitAll(client.RemoveFile("Noname2.psd", _cancel.Token));
@@ -62,7 +62,7 @@ public class FTP : ConsoleCommand
         // Task.WaitAll(client.BurstReadFile("cygwin1.dll", "C:\\Users\\VitalyAnofriev\\Documents\\cygwin1.dll", _cancel.Token));
         //
         // sw.Stop();
-        //
+        
         Task.Delay(500);
         
         // Task.WaitAll(client.CreateFile("test2.dat",  _cancel.Token));

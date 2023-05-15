@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -21,56 +22,54 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
         
         _sessions = new Dictionary<byte, FileStream>();
         
-        server.TerminateSessionRequest.Subscribe(OnTerminateSession)
+        server.TerminateSessionRequest.Subscribe(_ => OnTerminateSession(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
         
-        server.ResetSessionsRequest.Subscribe(OnResetSessions)
+        server.ResetSessionsRequest.Subscribe(_ => OnResetSessions(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
         
-        server.ListDirectoryRequest.Subscribe(OnListDirectory)
+        server.ListDirectoryRequest.Subscribe(_ => OnListDirectory(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
         
-        server.OpenFileRORequest.Subscribe(OnOpenFileRO)
+        server.OpenFileRORequest.Subscribe(_ => OnOpenFileRO(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
         
-        server.ReadFileRequest.Subscribe(OnReadFile)
+        server.ReadFileRequest.Subscribe(_ => OnReadFile(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
         
-        server.CreateFileRequest.Subscribe(OnCreateFile)
+        server.CreateFileRequest.Subscribe(_ => OnCreateFile(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
         
-        server.WriteFileRequest.Subscribe(OnWriteFile)
+        server.WriteFileRequest.Subscribe(_ => OnWriteFile(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
         
-        server.RemoveFileRequest.Subscribe(RemoveFile)
+        server.RemoveFileRequest.Subscribe(_ => RemoveFile(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
         
-        server.CreateDirectoryRequest.Subscribe(OnCreateDirectory)
+        server.CreateDirectoryRequest.Subscribe(_ => OnCreateDirectory(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
         
-        server.RemoveDirectoryRequest.Subscribe(OnRemoveDirectory)
+        server.RemoveDirectoryRequest.Subscribe(_ => OnRemoveDirectory(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
         
-        server.OpenFileWORequest.Subscribe(OnOpenFileWO)
+        server.OpenFileWORequest.Subscribe(_ => OnOpenFileWO(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
         
-        server.TruncateFileRequest.Subscribe(OnTruncateFile)
+        server.TruncateFileRequest.Subscribe(_ => OnTruncateFile(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
         
-        server.RenameRequest.Subscribe(OnRename)
+        server.RenameRequest.Subscribe(_ => OnRename(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
         
-        server.CalcFileCRC32Request.Subscribe(OnCalcFileCRC32)
+        server.CalcFileCRC32Request.Subscribe(_ => OnCalcFileCRC32(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
         
-        server.BurstReadFileRequest.Subscribe(OnBurstReadFile)
+        server.BurstReadFileRequest.Subscribe(_ => OnBurstReadFile(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
     }
 
-    public void OnResetSessions(FtpMessagePayload ftpMessagePayload)
+    public void OnResetSessions(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
-
         foreach (var sessionNumber in _sessions.Keys)
         {
             _sessions[sessionNumber].Close();
@@ -80,17 +79,14 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
         var responsePayload = new FtpMessagePayload
         {
             OpCodeId = OpCode.ACK,
-            ReqOpCodeId = OpCode.ResetSessions,
-            SequenceNumber = (ushort)(ftpMessagePayload.SequenceNumber + 1)
+            ReqOpCodeId = OpCode.ResetSessions
         };
         
-        Task.WaitAll(_server.SendFtpPacket(responsePayload, cs.Token));
+        _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
     }
 
-    public void OnBurstReadFile(FtpMessagePayload ftpMessagePayload)
+    public void OnBurstReadFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
-
         var sequence = ftpMessagePayload.SequenceNumber;
         
         var offset = ftpMessagePayload.Offset;
@@ -129,55 +125,47 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
                     {
                         responsePayload.BurstComplete = true;
 
-                        Task.WaitAll(_server.SendFtpPacket(responsePayload, cs.Token));
+                        _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
 
                         break;
                     }
                     
-                    Task.WaitAll(_server.SendFtpPacket(responsePayload, cs.Token));
+                    _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
                 }
             }
         }
     }
 
-    public void OnCalcFileCRC32(FtpMessagePayload ftpMessagePayload)
+    public void OnCalcFileCRC32(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
-
         var messagePayload = new FtpMessagePayload
         {
             OpCodeId = OpCode.NAK,
             ReqOpCodeId = OpCode.CalcFileCRC32,
-            SequenceNumber = (ushort)(ftpMessagePayload.SequenceNumber + 1),
             Size = 0,
             Offset = 0,
             Data = new byte[251 - 12]
         };
         
-        Task.WaitAll(_server.SendFtpPacket(messagePayload, cs.Token));
+        _server.SendFtpPacket(messagePayload, identity, DisposeCancel).Wait(DisposeCancel);
     }
 
-    public void OnTruncateFile(FtpMessagePayload ftpMessagePayload)
+    public void OnTruncateFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
-
         var messagePayload = new FtpMessagePayload
         {
             OpCodeId = OpCode.NAK,
             ReqOpCodeId = OpCode.TruncateFile,
-            SequenceNumber = (ushort)(ftpMessagePayload.SequenceNumber + 1),
             Size = 0,
             Offset = 0,
             Data = new byte[251 - 12]
         };
         
-        Task.WaitAll(_server.SendFtpPacket(messagePayload, cs.Token));
+        _server.SendFtpPacket(messagePayload, identity, DisposeCancel).Wait(DisposeCancel);
     }
 
-    public void OnOpenFileWO(FtpMessagePayload ftpMessagePayload)
+    public void OnOpenFileWO(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
-        
         _sessions[(byte)(_sessions.Keys.Last() + 1)] = new FileStream(MavlinkTypesHelper.GetString(ftpMessagePayload.Data), 
             FileMode.Truncate, FileAccess.Write);
         
@@ -185,72 +173,59 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
         {
             OpCodeId = OpCode.ACK,
             ReqOpCodeId = OpCode.OpenFileWO,
-            SequenceNumber = (ushort)(ftpMessagePayload.SequenceNumber + 1)
         };
         
-        Task.WaitAll(_server.SendFtpPacket(responsePayload, cs.Token));
+        _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
     }
 
-    public void OnRemoveDirectory(FtpMessagePayload ftpMessagePayload)
+    public void OnRemoveDirectory(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
-
         Directory.Delete(MavlinkTypesHelper.GetString(ftpMessagePayload.Data), true);
         
         var responsePayload = new FtpMessagePayload
         {
             OpCodeId = OpCode.ACK,
             ReqOpCodeId = OpCode.RemoveDirectory,
-            SequenceNumber = (ushort)(ftpMessagePayload.SequenceNumber + 1)
         };
-        
-        Task.WaitAll(_server.SendFtpPacket(responsePayload, cs.Token));
+     
+        _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
     }
 
-    public void OnCreateDirectory(FtpMessagePayload ftpMessagePayload)
+    public void OnCreateDirectory(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
-        
         Directory.CreateDirectory(MavlinkTypesHelper.GetString(ftpMessagePayload.Data));
         
         var responsePayload = new FtpMessagePayload
         {
             OpCodeId = OpCode.ACK,
-            ReqOpCodeId = OpCode.CreateDirectory,
-            SequenceNumber = (ushort)(ftpMessagePayload.SequenceNumber + 1)
+            ReqOpCodeId = OpCode.CreateDirectory
         };
         
-        Task.WaitAll(_server.SendFtpPacket(responsePayload, cs.Token));
+        _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
     }
 
-    public void RemoveFile(FtpMessagePayload ftpMessagePayload)
+    public void RemoveFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
-        
         File.Delete(MavlinkTypesHelper.GetString(ftpMessagePayload.Data));
         
         var responsePayload = new FtpMessagePayload
         {
             OpCodeId = OpCode.ACK,
             ReqOpCodeId = OpCode.RemoveFile,
-            SequenceNumber = (ushort)(ftpMessagePayload.SequenceNumber + 1)
         };
-        
-        Task.WaitAll(_server.SendFtpPacket(responsePayload, cs.Token));
+
+        _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
     }
 
-    public void OnWriteFile(FtpMessagePayload ftpMessagePayload)
+    public void OnWriteFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
-
         if (_sessions.TryGetValue(ftpMessagePayload.Session, out var session))
         {
             var responsePayload = new FtpMessagePayload
             {
                 OpCodeId = OpCode.ACK,
                 ReqOpCodeId = OpCode.WriteFile,
-                Session = ftpMessagePayload.Session,
-                SequenceNumber = (ushort)(ftpMessagePayload.SequenceNumber + 1)
+                Session = ftpMessagePayload.Session
             };
             
             using (BinaryWriter bw = new BinaryWriter(session))
@@ -261,40 +236,34 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
                 
                 responsePayload.Size = (byte)responsePayload.Data.Length;
                 
-                Task.WaitAll(_server.SendFtpPacket(responsePayload, cs.Token));
+                _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
             }
         }
     }
 
-    public void OnCreateFile(FtpMessagePayload ftpMessagePayload)
+    public void OnCreateFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
-        
         var sessionNumber = _sessions.Keys.Last() + 1;
         _sessions[(byte)sessionNumber] = File.Create(MavlinkTypesHelper.GetString(ftpMessagePayload.Data));
         
         var responsePayload = new FtpMessagePayload
         {
             OpCodeId = OpCode.ACK,
-            ReqOpCodeId = OpCode.CreateFile,
-            SequenceNumber = (ushort)(ftpMessagePayload.SequenceNumber + 1)
+            ReqOpCodeId = OpCode.CreateFile
         };
-        
-        Task.WaitAll(_server.SendFtpPacket(responsePayload, cs.Token));
+
+        _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
     }
 
-    public void OnReadFile(FtpMessagePayload ftpMessagePayload)
+    public void OnReadFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
-
         if (_sessions.TryGetValue(ftpMessagePayload.Session, out var session))
         {
             var responsePayload = new FtpMessagePayload
             {
                 OpCodeId = OpCode.ACK,
                 ReqOpCodeId = OpCode.ReadFile,
-                Session = ftpMessagePayload.Session,
-                SequenceNumber = (ushort)(ftpMessagePayload.SequenceNumber + 1)
+                Session = ftpMessagePayload.Session
             };
             
             using (BinaryReader br = new BinaryReader(session))
@@ -304,89 +273,122 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
                 responsePayload.Data = br.ReadBytes(ftpMessagePayload.Size);
 
                 responsePayload.Size = (byte)responsePayload.Data.Length;
-                
-                Task.WaitAll(_server.SendFtpPacket(responsePayload, cs.Token));
+
+                _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
             }
         }
     }
 
-    public void OnOpenFileRO(FtpMessagePayload ftpMessagePayload)
+    public void OnOpenFileRO(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
-        
         _sessions[(byte)(_sessions.Keys.Last() + 1)] = new FileStream(MavlinkTypesHelper.GetString(ftpMessagePayload.Data), 
             FileMode.Open, FileAccess.Read);
         
         var responsePayload = new FtpMessagePayload
         {
             OpCodeId = OpCode.ACK,
-            ReqOpCodeId = OpCode.OpenFileRO,
-            SequenceNumber = (ushort)(ftpMessagePayload.SequenceNumber + 1)
+            ReqOpCodeId = OpCode.OpenFileRO
         };
-        
-        Task.WaitAll(_server.SendFtpPacket(responsePayload, cs.Token));
+     
+        _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
     }
 
-    public void OnListDirectory(FtpMessagePayload ftpMessagePayload)
+    public void OnListDirectory(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        var directoryItems = new List<FtpFileListItem>();
-        
         var path = MavlinkTypesHelper.GetString(ftpMessagePayload.Data);
+
+        StringBuilder sb = new StringBuilder();
+        
+        var index = 0;
         
         foreach (var item in Directory.GetFileSystemEntries(path))
         {
-            FileInfo info = new FileInfo(item);
-            
-            var ftpFile = new FtpFileListItem()
+            if (Directory.Exists(item))
             {
-                FileName = info.Name,
-                Size = (int)info.Length,
-            };
-            
-            if (info.Directory != null)
-            {
-                ftpFile.Type = FileItemType.Directory;
+                DirectoryInfo info = new DirectoryInfo(item);
+                
+                var ftpDirectory = new FtpFileListItem()
+                {
+                    FileName = info.Name,
+                    Type = FileItemType.Directory
+                };
+                
+                if (index >= ftpMessagePayload.Offset)
+                {
+                    sb.Append(ftpDirectory);
+                }
             }
-            else
+            else if (File.Exists(item))
             {
-                ftpFile.Type = FileItemType.File;
-            }
+                FileInfo info = new FileInfo(item);
             
-            directoryItems.Add(ftpFile);
+                var ftpFile = new FtpFileListItem()
+                {
+                    FileName = info.Name,
+                    Size = (int)info.Length,
+                    Type = FileItemType.File
+                };
+                
+                if (index >= ftpMessagePayload.Offset)
+                {
+                    sb.Append(ftpFile);
+                }
+            }
+
+            if (sb.Length >= 239) break;
+            
+            index++;
         }
+        
+        var responsePayload = new FtpMessagePayload
+        {
+            ReqOpCodeId = OpCode.ListDirectory
+        };
+        
+        if (index < ftpMessagePayload.Offset)
+        {
+            responsePayload.OpCodeId = OpCode.NAK;
+        }
+        else
+        {
+            responsePayload.OpCodeId = OpCode.ACK;
+
+            responsePayload.Data = MavlinkTypesHelper.GetBytes(sb.Length > 239 ? sb.ToString(0, 239) : sb.ToString());
+            
+            responsePayload.Size = (byte)responsePayload.Data.Length;
+        }
+        
+        _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
     }
 
-    public void OnTerminateSession(FtpMessagePayload ftpMessagePayload)
+    public void OnTerminateSession(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
-        
-        _sessions[ftpMessagePayload.Session].Close();
-        _sessions.Remove(ftpMessagePayload.Session);
+        if (_sessions.TryGetValue(ftpMessagePayload.Session, out var stream))
+        {
+            stream.Close();
+            _sessions.Remove(ftpMessagePayload.Session);
+        }
 
         var responsePayload = new FtpMessagePayload
         {
             OpCodeId = OpCode.ACK,
-            ReqOpCodeId = OpCode.TerminateSession,
-            SequenceNumber = (ushort)(ftpMessagePayload.SequenceNumber + 1)
+            ReqOpCodeId = OpCode.TerminateSession
         };
-        
-        Task.WaitAll(_server.SendFtpPacket(responsePayload, cs.Token));
+     
+        _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
     }
 
-    public void OnRename(FtpMessagePayload ftpMessagePayload)
+    public void OnRename(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
-
         var messagePayload = new FtpMessagePayload
         {
             OpCodeId = OpCode.NAK,
             ReqOpCodeId = OpCode.Rename,
-            SequenceNumber = (ushort)(ftpMessagePayload.SequenceNumber + 1),
             Size = 0,
             Offset = 0,
             Data = new byte[251 - 12]
         };
-        
-        Task.WaitAll(_server.SendFtpPacket(messagePayload, cs.Token));
+     
+        _server.SendFtpPacket(messagePayload, identity, DisposeCancel).Wait(DisposeCancel);
     }
 }

@@ -18,95 +18,89 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         IPacketSequenceCalculator seq, IScheduler rxScheduler) : base("FTP", connection, identity, seq, rxScheduler)
     {
         _cfg = config;
-
+        
         AnyRequest = InternalFilter<FileTransferProtocolPacket>(_ => _.Payload.TargetSystem,
                 _ => _.Payload.TargetComponent)
-            .Select(_ => new FtpMessagePayload(_.Payload.Payload))
+            .Select(_ => (new DeviceIdentity()
+                {
+                    ComponentId = _.ComponentId,
+                    SystemId = _.SystemId
+                }, new FtpMessagePayload(_.Payload.Payload)))
             .Publish().RefCount();
 
-        TerminateSessionRequest = AnyRequest.Where(_ => _.OpCodeId == OpCode.TerminateSession);
+        TerminateSessionRequest = AnyRequest.Where(_ => _.Item2.OpCodeId == OpCode.TerminateSession);
 
-        ResetSessionsRequest = AnyRequest.Where(_ => _.OpCodeId == OpCode.ResetSessions);
+        ResetSessionsRequest = AnyRequest.Where(_ => _.Item2.OpCodeId == OpCode.ResetSessions);
 
-        ListDirectoryRequest = AnyRequest.Where(_ => _.OpCodeId == OpCode.ListDirectory);
+        ListDirectoryRequest = AnyRequest.Where(_ => _.Item2.OpCodeId == OpCode.ListDirectory);
 
-        OpenFileRORequest = AnyRequest.Where(_ => _.OpCodeId == OpCode.OpenFileRO);
+        OpenFileRORequest = AnyRequest.Where(_ => _.Item2.OpCodeId == OpCode.OpenFileRO);
 
-        ReadFileRequest = AnyRequest.Where(_ => _.OpCodeId == OpCode.ReadFile);
+        ReadFileRequest = AnyRequest.Where(_ => _.Item2.OpCodeId == OpCode.ReadFile);
 
-        CreateFileRequest = AnyRequest.Where(_ => _.OpCodeId == OpCode.CreateFile);
+        CreateFileRequest = AnyRequest.Where(_ => _.Item2.OpCodeId == OpCode.CreateFile);
 
-        WriteFileRequest = AnyRequest.Where(_ => _.OpCodeId == OpCode.WriteFile);
+        WriteFileRequest = AnyRequest.Where(_ => _.Item2.OpCodeId == OpCode.WriteFile);
 
-        RemoveFileRequest = AnyRequest.Where(_ => _.OpCodeId == OpCode.RemoveFile);
+        RemoveFileRequest = AnyRequest.Where(_ => _.Item2.OpCodeId == OpCode.RemoveFile);
 
-        CreateDirectoryRequest = AnyRequest.Where(_ => _.OpCodeId == OpCode.CreateDirectory);
+        CreateDirectoryRequest = AnyRequest.Where(_ => _.Item2.OpCodeId == OpCode.CreateDirectory);
 
-        RemoveDirectoryRequest = AnyRequest.Where(_ => _.OpCodeId == OpCode.RemoveDirectory);
+        RemoveDirectoryRequest = AnyRequest.Where(_ => _.Item2.OpCodeId == OpCode.RemoveDirectory);
 
-        OpenFileWORequest = AnyRequest.Where(_ => _.OpCodeId == OpCode.OpenFileWO);
+        OpenFileWORequest = AnyRequest.Where(_ => _.Item2.OpCodeId == OpCode.OpenFileWO);
 
-        TruncateFileRequest = AnyRequest.Where(_ => _.OpCodeId == OpCode.TruncateFile);
+        TruncateFileRequest = AnyRequest.Where(_ => _.Item2.OpCodeId == OpCode.TruncateFile);
 
-        RenameRequest = AnyRequest.Where(_ => _.OpCodeId == OpCode.Rename);
+        RenameRequest = AnyRequest.Where(_ => _.Item2.OpCodeId == OpCode.Rename);
 
-        CalcFileCRC32Request = AnyRequest.Where(_ => _.OpCodeId == OpCode.CalcFileCRC32);
+        CalcFileCRC32Request = AnyRequest.Where(_ => _.Item2.OpCodeId == OpCode.CalcFileCRC32);
 
-        BurstReadFileRequest = AnyRequest.Where(_ => _.OpCodeId == OpCode.BurstReadFile);
+        BurstReadFileRequest = AnyRequest.Where(_ => _.Item2.OpCodeId == OpCode.BurstReadFile);
     }
-    
-    public async Task SendFtpPacket(byte[] payload, CancellationToken cancel)
+
+    public Task SendFtpPacket(FtpMessagePayload payload, DeviceIdentity identity, CancellationToken cancel)
     {
-        await InternalSend<FileTransferProtocolPacket>(_ =>
+        
+        return InternalSend<FileTransferProtocolPacket>(_ =>
         {
-            _.Payload.TargetSystem = Identity.SystemId;
-            _.Payload.TargetComponent = Identity.ComponentId;
+            _.Payload.TargetSystem = identity.SystemId;
+            _.Payload.TargetComponent = identity.ComponentId;
             _.Payload.TargetNetwork = _cfg.TargetNetwork;
-            _.Payload.Payload = payload;
-        }, cancel).ConfigureAwait(false);
-    }
-    
-    public async Task SendFtpPacket(FtpMessagePayload payload, CancellationToken cancel)
-    {
-        await InternalSend<FileTransferProtocolPacket>(_ =>
-        {
-            _.Payload.TargetSystem = Identity.SystemId;
-            _.Payload.TargetComponent = Identity.ComponentId;
-            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-            var payloadSpan = new ReadOnlySpan<byte>(_.Payload.Payload);
-            payload.Deserialize(ref payloadSpan);
-        }, cancel).ConfigureAwait(false);
+            var payloadSpan = new Span<byte>(_.Payload.Payload);
+            payload.Serialize(ref payloadSpan);
+        }, cancel);
     }
 
-    public IObservable<FtpMessagePayload> AnyRequest { get; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> AnyRequest { get; }
 
-    public IObservable<FtpMessagePayload> ResetSessionsRequest { get; set; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> ResetSessionsRequest { get; set; }
 
-    public IObservable<FtpMessagePayload> TerminateSessionRequest { get; set; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> TerminateSessionRequest { get; set; }
 
-    public IObservable<FtpMessagePayload> ListDirectoryRequest { get; set; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> ListDirectoryRequest { get; set; }
 
-    public IObservable<FtpMessagePayload> OpenFileRORequest { get; set; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> OpenFileRORequest { get; set; }
 
-    public IObservable<FtpMessagePayload> ReadFileRequest { get; set; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> ReadFileRequest { get; set; }
 
-    public IObservable<FtpMessagePayload> CreateFileRequest { get; set; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> CreateFileRequest { get; set; }
 
-    public IObservable<FtpMessagePayload> WriteFileRequest { get; set; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> WriteFileRequest { get; set; }
 
-    public IObservable<FtpMessagePayload> RemoveFileRequest { get; set; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> RemoveFileRequest { get; set; }
 
-    public IObservable<FtpMessagePayload> CreateDirectoryRequest { get; set; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> CreateDirectoryRequest { get; set; }
 
-    public IObservable<FtpMessagePayload> RemoveDirectoryRequest { get; set; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> RemoveDirectoryRequest { get; set; }
 
-    public IObservable<FtpMessagePayload> OpenFileWORequest { get; set; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> OpenFileWORequest { get; set; }
 
-    public IObservable<FtpMessagePayload> TruncateFileRequest { get; set; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> TruncateFileRequest { get; set; }
 
-    public IObservable<FtpMessagePayload> RenameRequest { get; set; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> RenameRequest { get; set; }
 
-    public IObservable<FtpMessagePayload> CalcFileCRC32Request { get; set; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> CalcFileCRC32Request { get; set; }
 
-    public IObservable<FtpMessagePayload> BurstReadFileRequest { get; set; }
+    public IObservable<(DeviceIdentity, FtpMessagePayload)> BurstReadFileRequest { get; set; }
 }

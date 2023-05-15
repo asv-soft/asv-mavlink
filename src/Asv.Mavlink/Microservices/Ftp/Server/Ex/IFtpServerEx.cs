@@ -2,19 +2,19 @@ namespace Asv.Mavlink;
 
 public interface IFtpServerEx
 {
-    public void OnResetSessions(FtpMessagePayload ftpMessagePayload);
-    public void OnBurstReadFile(FtpMessagePayload ftpMessagePayload);
-    public void OnCalcFileCRC32(FtpMessagePayload ftpMessagePayload);
-    public void OnTruncateFile(FtpMessagePayload ftpMessagePayload);
-    public void OnOpenFileWO(FtpMessagePayload ftpMessagePayload);
-    public void OnRemoveDirectory(FtpMessagePayload ftpMessagePayload);
-    public void OnCreateDirectory(FtpMessagePayload ftpMessagePayload);
-    public void RemoveFile(FtpMessagePayload ftpMessagePayload);
-    public void OnWriteFile(FtpMessagePayload ftpMessagePayload);
-    public void OnCreateFile(FtpMessagePayload ftpMessagePayload);
-    public void OnReadFile(FtpMessagePayload ftpMessagePayload);
-    public void OnOpenFileRO(FtpMessagePayload ftpMessagePayload);
-    public void OnListDirectory(FtpMessagePayload ftpMessagePayload);
-    public void OnTerminateSession(FtpMessagePayload ftpMessagePayload);
-    public void OnRename(FtpMessagePayload ftpMessagePayload);
+    public void OnResetSessions(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
+    public void OnBurstReadFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
+    public void OnCalcFileCRC32(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
+    public void OnTruncateFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
+    public void OnOpenFileWO(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
+    public void OnRemoveDirectory(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
+    public void OnCreateDirectory(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
+    public void RemoveFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
+    public void OnWriteFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
+    public void OnCreateFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
+    public void OnReadFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
+    public void OnOpenFileRO(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
+    public void OnListDirectory(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
+    public void OnTerminateSession(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
+    public void OnRename(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
 }

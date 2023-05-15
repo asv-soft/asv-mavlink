@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
 using DynamicData;
+using DynamicData.Kernel;
 
 namespace Asv.Mavlink;
 
@@ -142,20 +143,40 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
         var items = new List<FtpFileListItem>();
         
         byte offset = 0;
+
+        int retries = 0;
         
         StringBuilder sb = new StringBuilder();
         
         while (true)
         {
+            var tempOffset = offset;
+            
             var listDirectory = await Client.ListDirectory(path, offset, cs.Token).ConfigureAwait(false);
-            
+
             if (listDirectory.OpCodeId == OpCode.NAK) break;
+
+            var temp = Encoding.ASCII.GetString(listDirectory.Data);
             
-            sb.Append(Encoding.ASCII.GetString(listDirectory.Data));
+            offset += (byte)(temp.Split("\0\0").Where(_ => _.IsNotEmpty()).AsArray().Length - 1);
+
+            var lastPart = temp.Split("\0\0").Where(_ => !_.IsNullOrWhiteSpace()).LastOrDefault() ?? "";
+
+            if (!lastPart.Contains("\0"))
+            {
+                sb.Append(temp.Remove(temp.LastIndexOf(lastPart)));
+            }
+            else
+            {
+                sb.Append(temp);
+                offset++;
+            }
             
             await Client.TerminateSession(listDirectory.Session, cs.Token).ConfigureAwait(false);
-            
-            offset += (byte)sb.ToString().Split("\0\0").Length;
+
+            if (offset == tempOffset) retries++;
+
+            if (retries == 5) break;
         }
         
         var elements = sb.ToString().Split("\0\0").Where(_ => _ != "" & _ != "\0");
