@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -153,8 +154,13 @@ public class FtpMicroserviceTest
         string dirName = "testfolder";
         
         string serverFileName = $".\\{dirName}\\testfile3.dat";
-
+        
         string clientFileName = "testfile3.dat";
+        
+        using (var createdFile = File.Create(clientFileName))
+        {
+            createdFile.Write(Encoding.ASCII.GetBytes("1,2,3,4,5,6,7,8,9"));
+        }
         
         await client.CreateDirectory(dirName, new CancellationToken());
         
@@ -164,14 +170,14 @@ public class FtpMicroserviceTest
 
         Assert.True(File.Exists(serverFileName));
 
-        var serverData = new byte[29];
+        var serverData = new byte[30];
         
         using (var openedFile = File.OpenRead(serverFileName))
         {
             openedFile.Read(serverData);
         }
         
-        var clientData = new byte[29];
+        var clientData = new byte[30];
         
         using (var openedFile = File.OpenRead(clientFileName))
         {
@@ -179,6 +185,9 @@ public class FtpMicroserviceTest
         }
 
         Assert.Equal(clientData, serverData);
+
+        File.Delete(serverFileName);
+        File.Delete(clientFileName);
     }
     
     [Fact]
@@ -202,11 +211,16 @@ public class FtpMicroserviceTest
 
         string dirName = "testfolder";
         
-        string serverFileName = $".\\{dirName}\\testfile1.dat";
+        string clientFileName = $".\\{dirName}\\testfile1.dat";
 
-        string clientFileName = "testfile1.dat";
+        string serverFileName = "testfile1.dat";
         
         await client.CreateDirectory(dirName, new CancellationToken());
+        
+        using (var createdFile = File.Create(serverFileName))
+        {
+            createdFile.Write(Encoding.ASCII.GetBytes("1,2,3,4,5,6,7,8,9"));
+        }
         
         Assert.True(Directory.Exists(dirName));
         
@@ -214,14 +228,14 @@ public class FtpMicroserviceTest
 
         Assert.True(File.Exists(clientFileName));
 
-        var serverData = new byte[29];
+        var serverData = new byte[30];
         
         using (var openedFile = File.OpenRead(serverFileName))
         {
             openedFile.Read(serverData);
         }
         
-        var clientData = new byte[29];
+        var clientData = new byte[30];
         
         using (var openedFile = File.OpenRead(clientFileName))
         {
@@ -229,6 +243,9 @@ public class FtpMicroserviceTest
         }
 
         Assert.Equal(clientData, serverData);
+
+        File.Delete(serverFileName);
+        File.Delete(clientFileName);
     }
     
     [Fact]
@@ -252,11 +269,16 @@ public class FtpMicroserviceTest
 
         string dirName = "testfolder";
         
-        string clientFileName = $".\\{dirName}\\Noname1.psd";
+        string clientFileName = $".\\{dirName}\\testfile2.dat";
 
-        string serverFileName = "Noname1.psd";
+        string serverFileName = "testfile2.dat";
         
         await client.CreateDirectory(dirName, new CancellationToken());
+        
+        using (var createdFile = File.Create(serverFileName))
+        {
+            createdFile.Write(Encoding.ASCII.GetBytes("1,2,3,4,5,6,7,8,9"));
+        }
         
         Assert.True(Directory.Exists(dirName));
         
@@ -264,14 +286,14 @@ public class FtpMicroserviceTest
         
         Assert.True(File.Exists(clientFileName));
 
-        var serverData = new byte[1024];
+        var serverData = new byte[30];
         
         using (var openedFile = File.OpenRead(serverFileName))
         {
             openedFile.Read(serverData);
         }
         
-        var clientData = new byte[1024];
+        var clientData = new byte[30];
         
         using (var openedFile = File.OpenRead(clientFileName))
         {
@@ -279,5 +301,8 @@ public class FtpMicroserviceTest
         }
 
         Assert.Equal(clientData, serverData);
+        
+        File.Delete(serverFileName);
+        File.Delete(clientFileName);
     }
 }
