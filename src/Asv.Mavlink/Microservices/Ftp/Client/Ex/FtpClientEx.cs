@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -19,44 +20,19 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
     private uint _fileLength = 0; // burst size is 23900
     private string _lastBurstReadClientFileName;
     private string _lastBurstReadServerFileName;
+    private readonly TimeSpan _maxWaitTimeOfBurstPacket = TimeSpan.FromSeconds(5);
     
-    public RxValue<bool> OnBurstReading { get; set; }
-    public IFtpClient Client { get; }
+    public IObservable<bool> IsBurstReading { get; set; }
     
     public FtpClientEx(IFtpClient client)
     {
         if (client == null) throw new ArgumentNullException(nameof(client));
         
         Client = client;
-        
-        client.OnBurstReadPacket.Subscribe(_ =>
-        {
-            OnBurstReading.Value = true;
-
-            using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
-
-            if (_lastBurstReadClientFileName != null)
-            {
-                using (FileStream fs = new FileStream(_lastBurstReadClientFileName, FileMode.OpenOrCreate))
-                using (BinaryWriter bw = new BinaryWriter(fs))
-                {
-                    bw.BaseStream.Position = _.Offset;
-                    bw.Write(_.Data, 0, _.Size);
-                }
-            }
-            
-            if (_.BurstComplete && _fileLength > _.Size + _.Offset)
-            {
-                Task.WaitAll(BurstReadFile(_lastBurstReadServerFileName, _lastBurstReadClientFileName, cs.Token, _.Size + _.Offset));
-            }
-
-            if (_fileLength <= _.Size + _.Offset)
-            {
-                Task.WaitAll(Client.TerminateSession(_.Session, cs.Token));
-                OnBurstReading.Value = false;
-            }
-        }).DisposeItWith(Disposable);
     }
+    
+    public IObservable<bool> OnBurstReading { get; set; }
+    public IFtpClient Client { get; }
 
     public async Task ReadFile(string serverPath, string filePath, CancellationToken cancel)
     {
@@ -78,10 +54,12 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
             while (fileLength > offset)
             {
                 var readFile = await Client.ReadFile(251 - 12, offset, openFileRo.Session, cs.Token).ConfigureAwait(false);
+                
                 if (readFile.OpCodeId == OpCode.NAK)
                 {
                     break;
                 }
+                
                 bw.Write(readFile.Data, 0, readFile.Size);
                 offset += (uint)readFile.Size;
             }
@@ -91,27 +69,53 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
     
     public async Task BurstReadFile(string serverPath, string filePath, CancellationToken cancel, uint offset = 0)
     {
-        _lastBurstReadServerFileName = serverPath;
-        _lastBurstReadClientFileName = filePath;
+        //using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+
+        await using var fs = new FileStream(filePath, FileMode.OpenOrCreate);
+
+        await using var bw = new BinaryWriter(fs);
         
-        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-
-        var openFileRo = await Client.OpenFileRO(serverPath, cs.Token).ConfigureAwait(false);
-
-        if (openFileRo.OpCodeId == OpCode.NAK)
-        {
-            if ((NakError)openFileRo.Data[0] == NakError.EOF) return;
-            
-            await Client.TerminateSession(openFileRo.Session, cs.Token).ConfigureAwait(false);
-            
-            await BurstReadFile(serverPath, filePath, cancel, offset).ConfigureAwait(false);
-            
-            return;
-        }
+        var openFileRo = await Client.OpenFileRO(serverPath, cancel).ConfigureAwait(false);
         
         _fileLength = BitConverter.ToUInt32(openFileRo.Data, 0);
+
+        var tcs = new TaskCompletionSource();
         
-        await Client.BurstReadFile(251 - 12, offset, openFileRo.Session, cs.Token).ConfigureAwait(false);
+        var lastBurstRead = DateTime.Now;
+        
+        using var obsTimer = Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1)).Subscribe(_ =>
+        {
+            if (DateTime.Now - lastBurstRead >= _maxWaitTimeOfBurstPacket)
+            {
+                tcs.TrySetCanceled();
+                
+                Client.TerminateSession(openFileRo.Session, cancel).Wait(cancel);
+            }
+        });
+        
+        using var burstSubscription = Client.OnBurstReadPacket.Where(_ => _.Session == openFileRo.Session).Subscribe(_ =>
+        {
+            lastBurstRead = DateTime.Now;
+            
+            bw.BaseStream.Position = _.Offset;
+            bw.Write(_.Data, 0, _.Size);
+
+            if (_.BurstComplete && _fileLength > _.Size + _.Offset)
+            {
+                Client.BurstReadFile(251 - 12, _.Size + _.Offset, openFileRo.Session, cancel).Wait(cancel);
+            }
+
+            if (_fileLength <= _.Size + _.Offset)
+            {
+                Client.TerminateSession(_.Session, cancel).Wait(cancel);
+                
+                tcs.TrySetResult();
+            }
+        });
+
+        await Client.BurstReadFile(251 - 12, offset, openFileRo.Session, cancel).ConfigureAwait(false);
+
+        await tcs.Task.ConfigureAwait(false);
     }
 
     public async Task UploadFile(string serverPath, string filePath, CancellationToken cancel)

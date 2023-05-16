@@ -59,7 +59,7 @@ public class FTP : ConsoleCommand
         //
         // sw.Start();
         //
-        // Task.WaitAll(client.BurstReadFile("cygwin1.dll", "C:\\Users\\VitalyAnofriev\\Documents\\cygwin1.dll", _cancel.Token));
+        client.BurstReadFile("Noname1.psd", "C:\\Users\\VitalyAnofriev\\Documents\\Noname1.psd", _cancel.Token).Wait();
         //
         // sw.Stop();
         

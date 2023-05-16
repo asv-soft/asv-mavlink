@@ -1,8 +1,12 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Common;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -118,7 +122,7 @@ public class FtpMicroserviceTest
             new PacketSequenceCalculator(),
             TaskPoolScheduler.Default));
 
-        string fileName = "testfile1.dat";
+        string fileName = "testfile4.dat";
         
         File.Create(fileName).Close();
     
@@ -148,9 +152,9 @@ public class FtpMicroserviceTest
 
         string dirName = "testfolder";
         
-        string serverFileName = $".\\{dirName}\\testfile1.dat";
+        string serverFileName = $".\\{dirName}\\testfile3.dat";
 
-        string clientFileName = "testfile1.dat";
+        string clientFileName = "testfile3.dat";
         
         await client.CreateDirectory(dirName, new CancellationToken());
         
@@ -218,6 +222,56 @@ public class FtpMicroserviceTest
         }
         
         var clientData = new byte[29];
+        
+        using (var openedFile = File.OpenRead(clientFileName))
+        {
+            openedFile.Read(clientData);
+        }
+
+        Assert.Equal(clientData, serverData);
+    }
+    
+    [Fact]
+    public async Task Ftp_File_Burst_Read()
+    {
+        var link = new VirtualLink();
+        
+        var server = new FtpServerEx(new FtpServer(
+            link.Server,
+            new MavlinkServerIdentity{ComponentId = 13, SystemId = 13},
+            new FtpConfig(),
+            new PacketSequenceCalculator(),
+            TaskPoolScheduler.Default));
+        
+        var client = new FtpClientEx(new FtpClient(
+            link.Client,
+            new MavlinkClientIdentity{SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13},
+            new FtpConfig(),
+            new PacketSequenceCalculator(),
+            TaskPoolScheduler.Default));
+
+        string dirName = "testfolder";
+        
+        string clientFileName = $".\\{dirName}\\Noname1.psd";
+
+        string serverFileName = "Noname1.psd";
+        
+        await client.CreateDirectory(dirName, new CancellationToken());
+        
+        Assert.True(Directory.Exists(dirName));
+        
+        await client.BurstReadFile(serverFileName, clientFileName, new CancellationToken());
+        
+        Assert.True(File.Exists(clientFileName));
+
+        var serverData = new byte[1024];
+        
+        using (var openedFile = File.OpenRead(serverFileName))
+        {
+            openedFile.Read(serverData);
+        }
+        
+        var clientData = new byte[1024];
         
         using (var openedFile = File.OpenRead(clientFileName))
         {

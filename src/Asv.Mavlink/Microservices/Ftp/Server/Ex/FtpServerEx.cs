@@ -12,6 +12,8 @@ namespace Asv.Mavlink;
 public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
 {
     private Dictionary<byte, FileStream> _sessions;
+    private Dictionary<byte, BinaryReader> _readers;
+    private Dictionary<byte, BinaryWriter> _writers;
     private IFtpServer _server;
     
     public FtpServerEx(IFtpServer server)
@@ -21,6 +23,8 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
         _server = server;
         
         _sessions = new Dictionary<byte, FileStream>();
+        _readers = new Dictionary<byte, BinaryReader>();
+        _writers = new Dictionary<byte, BinaryWriter>();
         
         server.TerminateSessionRequest.Subscribe(_ => OnTerminateSession(_.Item1, _.Item2))
             .DisposeItWith(Disposable);
@@ -73,6 +77,18 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
         foreach (var sessionNumber in _sessions.Keys)
         {
             _sessions[sessionNumber].Close();
+            
+            if (_readers.TryGetValue(sessionNumber, out var reader))
+            {
+                reader.Close();
+                _readers.Remove(sessionNumber);
+            }
+        
+            if (_writers.TryGetValue(sessionNumber, out var writer))
+            {
+                writer.Close();
+                _writers.Remove(sessionNumber);
+            }
         }
         _sessions.Clear();
         
@@ -88,50 +104,57 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
     public void OnBurstReadFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
         var sequence = ftpMessagePayload.SequenceNumber;
-        
+
         var offset = ftpMessagePayload.Offset;
-        
+
         var currentBurst = 0;
-        
+
         if (_sessions.TryGetValue(ftpMessagePayload.Session, out var session))
         {
-            using (BinaryReader br = new BinaryReader(session))
+            if (!_readers.TryGetValue(ftpMessagePayload.Session, out var reader))
             {
-                br.BaseStream.Position = offset;
-                
-                while (true)
+                _readers[ftpMessagePayload.Session] = new BinaryReader(session);
+            }
+
+            _readers[ftpMessagePayload.Session].BaseStream.Position = offset;
+
+            while (true)
+            {
+                sequence++;
+
+                var responsePayload = new FtpMessagePayload
                 {
-                    sequence++;
-                    
-                    var responsePayload = new FtpMessagePayload
-                    {
-                        OpCodeId = OpCode.ACK,
-                        Session = ftpMessagePayload.Session,
-                        ReqOpCodeId = OpCode.BurstReadFile,
-                        SequenceNumber = sequence
-                    };
+                    OpCodeId = OpCode.ACK,
+                    Session = ftpMessagePayload.Session,
+                    ReqOpCodeId = OpCode.BurstReadFile,
+                    SequenceNumber = sequence
+                };
 
-                    responsePayload.Data = br.ReadBytes(251 - 12);
+                responsePayload.Data = _readers[ftpMessagePayload.Session].ReadBytes(251 - 12);
 
-                    responsePayload.Offset = offset;
-                    
-                    responsePayload.Size = (byte)responsePayload.Data.Length;
-                    
-                    offset += responsePayload.Size;
+                responsePayload.Offset = offset;
 
-                    currentBurst += responsePayload.Size;
-                    
-                    if (currentBurst >= 23900)
-                    {
-                        responsePayload.BurstComplete = true;
+                responsePayload.Size = (byte)responsePayload.Data.Length;
 
-                        _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
+                offset += responsePayload.Size;
 
-                        break;
-                    }
-                    
-                    _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
+                currentBurst += responsePayload.Size;
+
+                if (responsePayload.Size == 0)
+                {
+                    break;
                 }
+
+                if (currentBurst >= 23900)
+                {
+                    responsePayload.BurstComplete = true;
+
+                    _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
+
+                    break;
+                }
+
+                _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
             }
         }
     }
@@ -231,24 +254,25 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
                 Session = ftpMessagePayload.Session
             };
             
-            using (BinaryWriter bw = new BinaryWriter(session))
+            if (!_writers.TryGetValue(ftpMessagePayload.Session, out var writer))
             {
-                bw.BaseStream.Position = ftpMessagePayload.Offset;
-                
-                bw.Write(ftpMessagePayload.Data, 0, ftpMessagePayload.Size);
-                
-                responsePayload.Size = ftpMessagePayload.Size;
-                
-                _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
+                _writers[ftpMessagePayload.Session] = new BinaryWriter(session);
             }
+            
+            _writers[ftpMessagePayload.Session].BaseStream.Position = ftpMessagePayload.Offset;
+                
+            _writers[ftpMessagePayload.Session].Write(ftpMessagePayload.Data, 0, ftpMessagePayload.Size);
+            
+            responsePayload.Size = ftpMessagePayload.Size;
+            
+            _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
         }
     }
 
     public void OnCreateFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
          var sessionNumber = _sessions.Keys.LastOrDefault() + 1;
-        // var sessionNumber = (byte)1;
-        
+
         _sessions[(byte)sessionNumber] = File.Create(MavlinkTypesHelper.GetString(ftpMessagePayload.Data));
         
         var responsePayload = new FtpMessagePayload
@@ -272,16 +296,19 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
                 Session = ftpMessagePayload.Session
             };
             
-            using (BinaryReader br = new BinaryReader(session))
+            if (!_readers.TryGetValue(ftpMessagePayload.Session, out var reader))
             {
-                br.BaseStream.Position = ftpMessagePayload.Offset;
-                
-                responsePayload.Data = br.ReadBytes(ftpMessagePayload.Size);
-
-                responsePayload.Size = (byte)responsePayload.Data.Length;
-
-                _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
+                _readers[ftpMessagePayload.Session] = new BinaryReader(session);
             }
+            
+            _readers[ftpMessagePayload.Session].BaseStream.Position = ftpMessagePayload.Offset;
+            
+            responsePayload.Data = _readers[ftpMessagePayload.Session].ReadBytes(ftpMessagePayload.Size);
+
+            responsePayload.Size = (byte)responsePayload.Data.Length;
+
+            _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
+            
         }
     }
 
@@ -377,6 +404,18 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
         {
             stream.Close();
             _sessions.Remove(ftpMessagePayload.Session);
+        }
+        
+        if (_readers.TryGetValue(ftpMessagePayload.Session, out var reader))
+        {
+            reader.Close();
+            _readers.Remove(ftpMessagePayload.Session);
+        }
+        
+        if (_writers.TryGetValue(ftpMessagePayload.Session, out var writer))
+        {
+            writer.Close();
+            _writers.Remove(ftpMessagePayload.Session);
         }
 
         var responsePayload = new FtpMessagePayload

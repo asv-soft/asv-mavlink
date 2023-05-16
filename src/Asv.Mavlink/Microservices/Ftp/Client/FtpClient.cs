@@ -38,8 +38,7 @@ namespace Asv.Mavlink
         private readonly MavlinkClientIdentity _identity;
         private readonly IPacketSequenceCalculator _seq;
         private readonly FtpConfig _cfg;
-        private byte _burstReadSessionNumber;
-        
+
         public FtpClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, FtpConfig cfg, 
             IPacketSequenceCalculator seq, IScheduler scheduler) : base("FTP", connection, identity, seq, scheduler)
         {
@@ -48,8 +47,7 @@ namespace Asv.Mavlink
             _seq = seq;
             
             OnBurstReadPacket = InternalFilter<FileTransferProtocolPacket>(_ => (OpCode)_.Payload.Payload[3] == OpCode.ACK &&
-                    (OpCode)_.Payload.Payload[5] == OpCode.BurstReadFile && 
-                    _.Payload.Payload[2] == _burstReadSessionNumber)
+                    (OpCode)_.Payload.Payload[5] == OpCode.BurstReadFile)
                 .Select(_ => new FtpMessagePayload(_.Payload.Payload))
                 .Publish().RefCount();
         }
@@ -75,7 +73,7 @@ namespace Asv.Mavlink
                             messagePayload.Serialize(ref spanBuffer);
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
                                         (OpCode)_.Payload.Payload[5] == OpCode.None,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                         resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -100,7 +98,7 @@ namespace Asv.Mavlink
                             messagePayload.Serialize(ref spanBuffer);
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
                                         (OpCode)_.Payload.Payload[5] == OpCode.TerminateSession,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                         resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -123,7 +121,7 @@ namespace Asv.Mavlink
                             messagePayload.Serialize(ref spanBuffer);
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
                                         (OpCode)_.Payload.Payload[5] == OpCode.ResetSessions,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                         resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -149,7 +147,7 @@ namespace Asv.Mavlink
                             messagePayload.Serialize(ref spanBuffer);
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
                                         (OpCode)_.Payload.Payload[5] == OpCode.OpenFileRO,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                        resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -177,7 +175,7 @@ namespace Asv.Mavlink
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork & 
                                         _.Payload.Payload[2] == sessionNumber &
                                         (OpCode)_.Payload.Payload[5] == OpCode.ReadFile,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                         resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -204,7 +202,7 @@ namespace Asv.Mavlink
                             
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
                                         (OpCode)_.Payload.Payload[5] == OpCode.CreateFile,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                         resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -233,7 +231,7 @@ namespace Asv.Mavlink
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork 
                                         & _.Payload.Payload[2] == sessionNumber &
                                         (OpCode)_.Payload.Payload[5] == OpCode.WriteFile,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                         resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -259,7 +257,7 @@ namespace Asv.Mavlink
                             messagePayload.Serialize(ref spanBuffer);
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
                                         (OpCode)_.Payload.Payload[5] == OpCode.RemoveFile,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                         resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -285,7 +283,7 @@ namespace Asv.Mavlink
                             messagePayload.Serialize(ref spanBuffer);
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
                                         (OpCode)_.Payload.Payload[5] == OpCode.CreateDirectory,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                         resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -311,7 +309,7 @@ namespace Asv.Mavlink
                             messagePayload.Serialize(ref spanBuffer);
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
                                         (OpCode)_.Payload.Payload[5] == OpCode.RemoveDirectory,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                         resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -337,7 +335,7 @@ namespace Asv.Mavlink
                             messagePayload.Serialize(ref spanBuffer);
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
                                         (OpCode)_.Payload.Payload[5] == OpCode.OpenFileWO,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                         resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -365,7 +363,7 @@ namespace Asv.Mavlink
                             messagePayload.Serialize(ref spanBuffer);
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
                                         (OpCode)_.Payload.Payload[5] == OpCode.TruncateFile,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                         resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -391,7 +389,7 @@ namespace Asv.Mavlink
                             messagePayload.Serialize(ref spanBuffer);
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
                                         (OpCode)_.Payload.Payload[5] == OpCode.Rename,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                         resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -417,7 +415,7 @@ namespace Asv.Mavlink
                             messagePayload.Serialize(ref spanBuffer);
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
                                         (OpCode)_.Payload.Payload[5] == OpCode.CalcFileCRC32,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                         resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -444,9 +442,8 @@ namespace Asv.Mavlink
                             messagePayload.Serialize(ref spanBuffer);
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
                                         (OpCode)_.Payload.Payload[5] == OpCode.BurstReadFile,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                         resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
-            _burstReadSessionNumber = result.Payload[2];
             return new FtpMessagePayload(result.Payload);
         }
         
@@ -472,7 +469,7 @@ namespace Asv.Mavlink
                             messagePayload.Serialize(ref spanBuffer);
                         }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
                                         (OpCode)_.Payload.Payload[5] == OpCode.ListDirectory,
-                        timeoutMs: 110, attemptCount: 6, resultGetter: _ => _.Payload, cancel: cancel)
+                         resultGetter: _ => _.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
