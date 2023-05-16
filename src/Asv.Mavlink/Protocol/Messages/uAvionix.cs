@@ -347,7 +347,7 @@ namespace Asv.Mavlink.V2.Uavionix
             var sum = 0;
             sum+=4; //Icao
             sum+=2; //Stallspeed
-            sum+=Callsign.Length; //Callsign
+            sum+=Callsign.Length; //CallSign
             sum+= 1; // Emittertype
             sum+= 1; // Aircraftsize
             sum+= 1; // Gpsoffsetlat
