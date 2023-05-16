@@ -166,12 +166,15 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
 
     public void OnOpenFileWO(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        _sessions[(byte)(_sessions.Keys.Last() + 1)] = new FileStream(MavlinkTypesHelper.GetString(ftpMessagePayload.Data), 
+        var session = (byte)(_sessions.Keys.LastOrDefault() + 1);
+        
+        _sessions[session] = new FileStream(MavlinkTypesHelper.GetString(ftpMessagePayload.Data), 
             FileMode.Truncate, FileAccess.Write);
         
         var responsePayload = new FtpMessagePayload
         {
             OpCodeId = OpCode.ACK,
+            Session = session,
             ReqOpCodeId = OpCode.OpenFileWO,
         };
         
@@ -234,7 +237,7 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
                 
                 bw.Write(ftpMessagePayload.Data, 0, ftpMessagePayload.Size);
                 
-                responsePayload.Size = (byte)responsePayload.Data.Length;
+                responsePayload.Size = ftpMessagePayload.Size;
                 
                 _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
             }
@@ -243,12 +246,15 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
 
     public void OnCreateFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        var sessionNumber = _sessions.Keys.Last() + 1;
+         var sessionNumber = _sessions.Keys.LastOrDefault() + 1;
+        // var sessionNumber = (byte)1;
+        
         _sessions[(byte)sessionNumber] = File.Create(MavlinkTypesHelper.GetString(ftpMessagePayload.Data));
         
         var responsePayload = new FtpMessagePayload
         {
             OpCodeId = OpCode.ACK,
+            Session = (byte)sessionNumber,
             ReqOpCodeId = OpCode.CreateFile
         };
 
@@ -281,13 +287,17 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
 
     public void OnOpenFileRO(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
-        _sessions[(byte)(_sessions.Keys.Last() + 1)] = new FileStream(MavlinkTypesHelper.GetString(ftpMessagePayload.Data), 
+        var session = (byte)(_sessions.Keys.LastOrDefault() + 1);
+        
+        _sessions[session] = new FileStream(MavlinkTypesHelper.GetString(ftpMessagePayload.Data), 
             FileMode.Open, FileAccess.Read);
         
         var responsePayload = new FtpMessagePayload
         {
             OpCodeId = OpCode.ACK,
-            ReqOpCodeId = OpCode.OpenFileRO
+            ReqOpCodeId = OpCode.OpenFileRO,
+            Session = session,
+            Data = BitConverter.GetBytes(_sessions[session].Length) 
         };
      
         _server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);

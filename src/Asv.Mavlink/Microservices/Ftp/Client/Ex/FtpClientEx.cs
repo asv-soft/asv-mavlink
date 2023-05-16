@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -18,6 +19,8 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
     private uint _fileLength = 0; // burst size is 23900
     private string _lastBurstReadClientFileName;
     private string _lastBurstReadServerFileName;
+    
+    public RxValue<bool> OnBurstReading { get; set; }
     public IFtpClient Client { get; }
     
     public FtpClientEx(IFtpClient client)
@@ -26,8 +29,10 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
         
         Client = client;
         
-        client.OnBurstReadPacket.Subscribe(_ => 
+        client.OnBurstReadPacket.Subscribe(_ =>
         {
+            OnBurstReading.Value = true;
+
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel);
 
             if (_lastBurstReadClientFileName != null)
@@ -48,6 +53,7 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
             if (_fileLength <= _.Size + _.Offset)
             {
                 Task.WaitAll(Client.TerminateSession(_.Session, cs.Token));
+                OnBurstReading.Value = false;
             }
         }).DisposeItWith(Disposable);
     }
