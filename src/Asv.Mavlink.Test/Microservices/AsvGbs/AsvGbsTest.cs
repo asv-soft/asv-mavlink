@@ -74,6 +74,7 @@ namespace Asv.Mavlink.Test
         public async Task Client_Call_Command_And_Server_Catch_It(float duration,float accuracy, MavResult result)
         {
             var link = new VirtualLink();
+            
             var called = false;
             var serverDevice = new GbsServerDevice(link.Server, new MavlinkServerIdentity(),new PacketSequenceCalculator(),Scheduler.Default, new GbsServerDeviceConfig());
             serverDevice.Gbs.StartAutoMode = (dur, acc, cancel) =>
