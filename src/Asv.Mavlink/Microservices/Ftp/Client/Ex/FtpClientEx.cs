@@ -60,13 +60,13 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
     
     public async Task BurstReadFile(string serverPath, string filePath, CancellationToken cancel, uint offset = 0)
     {
-        //using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
 
         await using var fs = new FileStream(filePath, FileMode.OpenOrCreate);
 
         await using var bw = new BinaryWriter(fs);
         
-        var openFileRo = await Client.OpenFileRO(serverPath, cancel).ConfigureAwait(false);
+        var openFileRo = await Client.OpenFileRO(serverPath, cs.Token).ConfigureAwait(false);
         
         _fileLength = BitConverter.ToUInt32(openFileRo.Data, 0);
 
@@ -80,7 +80,7 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
             {
                 tcs.TrySetCanceled();
                 
-                Client.TerminateSession(openFileRo.Session, cancel).Wait(cancel);
+                Client.TerminateSession(openFileRo.Session, cs.Token).Wait(cs.Token);
             }
         });
         
@@ -93,18 +93,18 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
 
             if (_.BurstComplete && _fileLength > _.Size + _.Offset)
             {
-                Client.BurstReadFile(251 - 12, _.Size + _.Offset, openFileRo.Session, cancel).Wait(cancel);
+                Client.BurstReadFile(251 - 12, _.Size + _.Offset, openFileRo.Session, cs.Token).Wait(cs.Token);
             }
 
             if (_fileLength <= _.Size + _.Offset)
             {
-                Client.TerminateSession(_.Session, cancel).Wait(cancel);
+                Client.TerminateSession(_.Session, cs.Token).Wait(cs.Token);
                 
                 tcs.TrySetResult();
             }
         });
 
-        await Client.BurstReadFile(251 - 12, offset, openFileRo.Session, cancel).ConfigureAwait(false);
+        await Client.BurstReadFile(251 - 12, offset, openFileRo.Session, cs.Token).ConfigureAwait(false);
 
         await tcs.Task.ConfigureAwait(false);
     }
