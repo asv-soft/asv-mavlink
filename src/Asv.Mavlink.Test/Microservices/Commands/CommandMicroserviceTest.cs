@@ -109,7 +109,7 @@ public class CommandMicroserviceTest
     {
         int cnt = 0;
         // Emulation of packet loss
-        var link = new VirtualLink(_=> ++cnt>3);
+        var link = new VirtualLink(_=> Interlocked.Increment(ref cnt) >3);
         var server = CreateCommandServer(link);
         var client = CreateCommandClient(link);
         var intList = new CommandIntServerEx(server);
@@ -124,8 +124,10 @@ public class CommandMicroserviceTest
         
         var result = await client.CommandLong(MavCmd.MavCmdUser1, 0, 0, 0, 0, 0, 0, 0, CancellationToken.None);
         Assert.True(called);
+        Assert.Equal(MavResult.MavResultAccepted, result.Result);
 
         called = false;
+        Interlocked.Exchange(ref cnt, 0);
         intList[MavCmd.MavCmdUser1] = (from, args, cancel)  =>
         {
             called = true;
@@ -133,6 +135,7 @@ public class CommandMicroserviceTest
         };
         result = await client.CommandInt(MavCmd.MavCmdUser1, MavFrame.MavFrameGlobal, true, true, 0, 0, 0, 0, 0, 0, 0,CancellationToken.None);
         Assert.True(called);
+        Assert.Equal(MavResult.MavResultAccepted, result.Result);
             
     }
 

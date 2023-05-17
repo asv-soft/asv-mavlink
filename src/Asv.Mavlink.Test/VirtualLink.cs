@@ -11,31 +11,26 @@ namespace Asv.Mavlink.Test;
 
 public class VirtualLink:DisposableOnceWithCancel
 {
-    private readonly VirtualDataStream _serverStream;
-    private readonly VirtualDataStream _clientStream;
-    private readonly IMavlinkV2Connection _server;
-    private readonly IMavlinkV2Connection _client;
-
     public VirtualLink(Func<IPacketV2<IPayload>, bool> clientToServerFilter = null,Func<IPacketV2<IPayload>, bool> serverToClientFilter = null)
     {
         clientToServerFilter ??= _ => true;
         serverToClientFilter ??= _ => true;
         
-        _serverStream = new VirtualDataStream("server").DisposeItWith(Disposable);
-        _server = MavlinkV2Connection.Create(_serverStream).DisposeItWith(Disposable);
-        _clientStream = new VirtualDataStream("client").DisposeItWith(Disposable);
-        _client = MavlinkV2Connection.Create(_clientStream).DisposeItWith(Disposable);
+        var serverStream = new VirtualDataStream("server").DisposeItWith(Disposable);
+        Server = MavlinkV2Connection.Create(serverStream).DisposeItWith(Disposable);
+        var clientStream = new VirtualDataStream("client").DisposeItWith(Disposable);
+        Client = MavlinkV2Connection.Create(clientStream).DisposeItWith(Disposable);
         
         var serverToClient = new PacketV2Decoder().DisposeItWith(Disposable);
         MavlinkV2Connection.RegisterDefaultDialects(serverToClient);
-        _serverStream.TxPipe.Subscribe(serverToClient.OnData).DisposeItWith(Disposable);
-        serverToClient.Where(serverToClientFilter).Select(Serialize).Subscribe(_clientStream.RxPipe)
+        serverStream.TxPipe.Subscribe(serverToClient.OnData).DisposeItWith(Disposable);
+        serverToClient.Where(serverToClientFilter).Select(Serialize).Subscribe(clientStream.RxPipe)
             .DisposeItWith(Disposable);
         
         var clientToServer = new PacketV2Decoder().DisposeItWith(Disposable);
         MavlinkV2Connection.RegisterDefaultDialects(clientToServer);
-        _clientStream.TxPipe.Subscribe(clientToServer.OnData).DisposeItWith(Disposable);
-        clientToServer.Where(clientToServerFilter).Select(Serialize).Subscribe(_serverStream.RxPipe)
+        clientStream.TxPipe.Subscribe(clientToServer.OnData).DisposeItWith(Disposable);
+        clientToServer.Where(clientToServerFilter).Select(Serialize).Subscribe(serverStream.RxPipe)
             .DisposeItWith(Disposable);
         
         
@@ -59,8 +54,9 @@ public class VirtualLink:DisposableOnceWithCancel
             ArrayPool<byte>.Shared.Return(data);
         }
     }
-    public IMavlinkV2Connection Server => _server;
-    public IMavlinkV2Connection Client => _client;
+    public IMavlinkV2Connection Server { get; }
+
+    public IMavlinkV2Connection Client { get; }
 }
 
 public class VirtualDataStream : DisposableOnceWithCancel, IDataStream
