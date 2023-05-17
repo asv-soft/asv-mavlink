@@ -3,32 +3,23 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.IO;
 using DynamicData;
-using DynamicData.Kernel;
 
 namespace Asv.Mavlink;
 
 public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
 {
-    private uint _fileLength = 0; // burst size is 23900
-    private string _lastBurstReadClientFileName;
-    private string _lastBurstReadServerFileName;
+    private uint _fileLength; // burst size is 23900
     private readonly TimeSpan _maxWaitTimeOfBurstPacket = TimeSpan.FromSeconds(5);
-    
-    public IObservable<bool> IsBurstReading { get; set; }
-    
+
     public FtpClientEx(IFtpClient client)
     {
-        if (client == null) throw new ArgumentNullException(nameof(client));
-        
-        Client = client;
+        Client = client ?? throw new ArgumentNullException(nameof(client));
     }
     
     public IObservable<bool> OnBurstReading { get; set; }
@@ -46,9 +37,9 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
         }
         
         var fileLength = BitConverter.ToInt32(openFileRo.Data, 0);
-        
-        using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
-        using (BinaryWriter bw = new BinaryWriter(fs))
+
+        await using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
+        await using (BinaryWriter bw = new BinaryWriter(fs))
         {
             uint offset = 0;
             while (fileLength > offset)
@@ -61,7 +52,7 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
                 }
                 
                 bw.Write(readFile.Data, 0, readFile.Size);
-                offset += (uint)readFile.Size;
+                offset += readFile.Size;
             }
         }
         await Client.TerminateSession(openFileRo.Session, cs.Token).ConfigureAwait(false);
@@ -129,7 +120,7 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
             throw new Exception($"Server answered NAK with \"{(NakError)createFile.Data[0]}\"");
         }
 
-        using (FileStream fs = new FileStream(filePath, FileMode.Open))
+        await using (FileStream fs = new FileStream(filePath, FileMode.Open))
         using (BinaryReader br = new BinaryReader(fs))
         {
             uint offset = 0;

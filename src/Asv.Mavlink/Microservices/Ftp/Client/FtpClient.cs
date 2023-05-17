@@ -16,8 +16,8 @@ namespace Asv.Mavlink
     public class FtpEntryItem
     {
         public int Size { get; set; }
-        public string Name { get; set; }
-        public FtpEntryType Type { get; set; }
+        public string Name { get; init; }
+        public FtpEntryType Type { get; init; }
 
         public override string ToString()
         {

@@ -151,8 +151,8 @@ public class FtpMicroserviceTest
         string serverFileName = $".\\{dirName}\\testfile3.dat";
         
         string clientFileName = "testfile3.dat";
-        
-        using (var createdFile = File.Create(clientFileName))
+
+        await using (var createdFile = File.Create(clientFileName))
         {
             createdFile.Write(Encoding.ASCII.GetBytes("1,2,3,4,5,6,7,8,9"));
         }
@@ -166,15 +166,15 @@ public class FtpMicroserviceTest
         Assert.True(File.Exists(serverFileName));
 
         var serverData = new byte[30];
-        
-        using (var openedFile = File.OpenRead(serverFileName))
+
+        await using (var openedFile = File.OpenRead(serverFileName))
         {
             openedFile.Read(serverData);
         }
         
         var clientData = new byte[30];
-        
-        using (var openedFile = File.OpenRead(clientFileName))
+
+        await using (var openedFile = File.OpenRead(clientFileName))
         {
             openedFile.Read(clientData);
         }
@@ -211,8 +211,8 @@ public class FtpMicroserviceTest
         string serverFileName = "testfile1.dat";
         
         await client.CreateDirectory(dirName, new CancellationToken());
-        
-        using (var createdFile = File.Create(serverFileName))
+
+        await using (var createdFile = File.Create(serverFileName))
         {
             createdFile.Write(Encoding.ASCII.GetBytes("1,2,3,4,5,6,7,8,9"));
         }
@@ -224,15 +224,15 @@ public class FtpMicroserviceTest
         Assert.True(File.Exists(clientFileName));
 
         var serverData = new byte[30];
-        
-        using (var openedFile = File.OpenRead(serverFileName))
+
+        await using (var openedFile = File.OpenRead(serverFileName))
         {
             openedFile.Read(serverData);
         }
         
         var clientData = new byte[30];
-        
-        using (var openedFile = File.OpenRead(clientFileName))
+
+        await using (var openedFile = File.OpenRead(clientFileName))
         {
             openedFile.Read(clientData);
         }
@@ -269,8 +269,8 @@ public class FtpMicroserviceTest
         string serverFileName = "testfile2.dat";
         
         await client.CreateDirectory(dirName, new CancellationToken());
-        
-        using (var createdFile = File.Create(serverFileName))
+
+        await using (var createdFile = File.Create(serverFileName))
         {
             createdFile.Write(Encoding.ASCII.GetBytes("1,2,3,4,5,6,7,8,9"));
         }
@@ -282,15 +282,15 @@ public class FtpMicroserviceTest
         Assert.True(File.Exists(clientFileName));
 
         var serverData = new byte[30];
-        
-        using (var openedFile = File.OpenRead(serverFileName))
+
+        await using (var openedFile = File.OpenRead(serverFileName))
         {
             openedFile.Read(serverData);
         }
         
         var clientData = new byte[30];
-        
-        using (var openedFile = File.OpenRead(clientFileName))
+
+        await using (var openedFile = File.OpenRead(clientFileName))
         {
             openedFile.Read(clientData);
         }

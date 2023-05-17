@@ -9,15 +9,13 @@ namespace Asv.Mavlink;
 
 public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
 {
-    private Dictionary<byte, FileStream> _sessions;
-    private Dictionary<byte, BinaryReader> _readers;
-    private Dictionary<byte, BinaryWriter> _writers;
+    private readonly Dictionary<byte, FileStream> _sessions;
+    private readonly Dictionary<byte, BinaryReader> _readers;
+    private readonly Dictionary<byte, BinaryWriter> _writers;
     
     public FtpServerEx(IFtpServer server)
     {
-        if (server == null) throw new ArgumentNullException(nameof(server));
-
-        Server = server;
+        Server = server ?? throw new ArgumentNullException(nameof(server));
         
         _sessions = new Dictionary<byte, FileStream>();
         _readers = new Dictionary<byte, BinaryReader>();
@@ -73,6 +71,12 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
 
     public void OnResetSessions(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
+        var responsePayload = new FtpMessagePayload
+        {
+            OpCodeId = _sessions.Keys.Count > 0 ? OpCode.ACK : OpCode.NAK,
+            ReqOpCodeId = OpCode.ResetSessions
+        };
+        
         foreach (var sessionNumber in _sessions.Keys)
         {
             _sessions[sessionNumber].Close();
@@ -91,12 +95,6 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
         }
         _sessions.Clear();
         
-        var responsePayload = new FtpMessagePayload
-        {
-            OpCodeId = OpCode.ACK,
-            ReqOpCodeId = OpCode.ResetSessions
-        };
-        
         Server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
     }
 
@@ -110,7 +108,7 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
 
         if (_sessions.TryGetValue(ftpMessagePayload.Session, out var session))
         {
-            if (!_readers.TryGetValue(ftpMessagePayload.Session, out var reader))
+            if (!_readers.TryGetValue(ftpMessagePayload.Session, out _))
             {
                 _readers[ftpMessagePayload.Session] = new BinaryReader(session);
             }
@@ -269,7 +267,7 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
         {
             responsePayload.OpCodeId = OpCode.ACK;
             
-            if (!_writers.TryGetValue(ftpMessagePayload.Session, out var writer))
+            if (!_writers.TryGetValue(ftpMessagePayload.Session, out _))
             {
                 _writers[ftpMessagePayload.Session] = new BinaryWriter(session);
             }
@@ -317,7 +315,7 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
         {
             responsePayload.OpCodeId = OpCode.ACK;
             
-            if (!_readers.TryGetValue(ftpMessagePayload.Session, out var reader))
+            if (!_readers.TryGetValue(ftpMessagePayload.Session, out _))
             {
                 _readers[ftpMessagePayload.Session] = new BinaryReader(session);
             }
@@ -424,8 +422,15 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
 
     public void OnTerminateSession(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload)
     {
+        var responsePayload = new FtpMessagePayload
+        {
+            OpCodeId = OpCode.NAK,
+            ReqOpCodeId = OpCode.TerminateSession
+        };
+        
         if (_sessions.TryGetValue(ftpMessagePayload.Session, out var stream))
         {
+            responsePayload.OpCodeId = OpCode.ACK;
             stream.Close();
             _sessions.Remove(ftpMessagePayload.Session);
         }
@@ -442,12 +447,6 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
             _writers.Remove(ftpMessagePayload.Session);
         }
 
-        var responsePayload = new FtpMessagePayload
-        {
-            OpCodeId = OpCode.ACK,
-            ReqOpCodeId = OpCode.TerminateSession
-        };
-     
         Server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
     }
 
