@@ -2,6 +2,7 @@ namespace Asv.Mavlink;
 
 public interface IFtpServerEx
 {
+    public IFtpServer Server { get; }
     public void OnResetSessions(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
     public void OnBurstReadFile(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);
     public void OnCalcFileCRC32(DeviceIdentity identity, FtpMessagePayload ftpMessagePayload);

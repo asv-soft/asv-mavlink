@@ -91,7 +91,7 @@ public class FtpMicroserviceTest
             new FtpConfig(),
             new PacketSequenceCalculator(),
             TaskPoolScheduler.Default));
-        
+
         var result = await client.ListDirectory(".", new CancellationToken());
         
         Assert.Contains(result, _ => _.Name == "zh-Hans");

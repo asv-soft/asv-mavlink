@@ -6,6 +6,7 @@ namespace Asv.Mavlink;
 
 public interface IFtpClientEx
 {
+    public IFtpClient Client { get; }
     /// <summary>
     /// Reads whole file from server path to client path
     /// </summary>
