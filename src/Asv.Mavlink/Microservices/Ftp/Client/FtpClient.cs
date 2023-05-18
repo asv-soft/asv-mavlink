@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
@@ -8,303 +8,470 @@ using Asv.Mavlink.V2.Common;
 namespace Asv.Mavlink
 {
     /// <summary>
-    /// TODO: implemet FTP protocol
-    ///
-    /// https://mavlink.io/en/services/ftp.html
+    /// Contains information about items from ListDirectory.
+    /// It has the following format: 
+    /// "[type][file_or_folder_name]\t[file_size_in_bytes]\0", 
+    /// where type is one of the letters F(ile), D(irectory), S(skip)
     /// </summary>
-
-
-
-    public enum OpCode
+    public class FtpEntryItem
     {
-        /// <summary> 
-        /// Ignored, always ACKed
-        /// </summary> 
-        None = 0,
-        /// <summary> 
-        /// "Terminates open Read session.
-        /// - Closes the file associated with (session) and frees the session ID for re-use."
-        /// </summary> 
-        TerminateSession = 1,
-        /// <summary> 
-        /// "Terminates all open read sessions.
-        /// - Clears all state held by the drone (server); closes all open files, etc.
-        /// - Sends an ACK reply with no data."
-        /// </summary> 
-        ResetSessions = 2,
-        /// <summary> 
-        /// "List directory entry information (files, folders etc.) in <path>, starting from a specified entry index (<offset>).
-        /// - Response is an ACK packet with one or more entries on success, otherwise a NAK packet with an error code.
-        /// - Completion is indicated by a NACK with EOF in response to a requested index (offset) beyond the list of entries.
-        /// - The directory is closed after the operation, so this leaves no state on the server."
-        /// </summary> 
-        ListDirectory = 3,
-        /// <summary> 
-        /// "Opens file at <path> for reading, returns <session>
-        /// - The path is stored in the payload data. The drone opens the file (path) and allocates a session number. The file must exist.
-        /// - An ACK packet must include the allocated session and the data size of the file to be opened (size)
-        /// - A NAK packet must contain error information . Typical error codes for this command are NoSessionsAvailable, FileExists.
-        /// - The file remains open after the operation, and must eventually be closed by Reset or Terminate."
-        /// </summary> 
-        OpenFileRO = 4,
-        /// <summary> 
-        /// "Reads <size> bytes from <offset> in <session>.
-        /// - Seeks to (offset) in the file opened in (session) and reads (size) bytes into the result buffer.
-        /// - Sends an ACK packet with the result buffer on success, otherwise a NAK packet with an error code. For short reads or reads beyond the end of a file, the (size) field in the ACK packet will indicate the actual number of bytes read.
-        /// - Reads can be issued to any offset in the file for any number of bytes, so reconstructing portions of the file to deal with lost packets should be easy.
-        /// - For best download performance, try to keep two Read packets in flight."
-        /// </summary> 
-        ReadFile = 5,
-        /// <summary> 
-        /// "Creates file at <path> for writing, returns <session>.
-        /// - Creates the file (path) and allocates a session number. The file must not exist, but all parent directories must exist.
-        /// - Sends an ACK packet with the allocated session number on success, or a NAK packet with an error code on error (i.e. FileExists if the path already exists).
-        /// - The file remains open after the operation, and must eventually be closed by Reset or Terminate."
-        /// </summary> 
-        CreateFile = 6,
-        /// <summary> 
-        /// "Writes <size> bytes to <offset> in <session>.
-        /// - Sends an ACK reply with no data on success, otherwise a NAK packet with an error code."
-        /// </summary> 
-        WriteFile = 7,
-        /// <summary> 
-        /// "Remove file at <path>.
-        /// - ACK reply with no data on success.
-        /// - NAK packet with error information on failure."
-        /// </summary> 
-        RemoveFile = 8,
-        /// <summary> 
-        /// "Creates directory at <path>.
-        /// - Sends an ACK reply with no data on success, otherwise a NAK packet with an error code."
-        /// </summary> 
-        CreateDirectory = 9,
-        /// <summary> 
-        /// "Removes directory at <path>. The directory must be empty.
-        /// - Sends an ACK reply with no data on success, otherwise a NAK packet with an error code."
-        /// </summary> 
-        RemoveDirectory = 10,
-        /// <summary> 
-        /// "Opens file at <path> for writing, returns <session>.
-        /// - Opens the file (path) and allocates a session number. The file must exist.
-        /// - Sends an ACK packet with the allocated session number on success, otherwise a NAK packet with an error code.
-        /// - The file remains open after the operation, and must eventually be closed by Reset or Terminate."
-        /// </summary> 
-        OpenFileWO = 11,
-        /// <summary> 
-        /// "Truncate file at <path> to <offset> length.
-        /// - Sends an ACK reply with no data on success, otherwise a NAK packet with an error code."
-        /// </summary> 
-        TruncateFile = 12,
-        /// <summary> 
-        /// "Rename <path1> to <path2>.
-        /// - Sends an ACK reply the no data on success, otherwise a NAK packet with an error code (i.e. if the source path does not exist)."
-        /// </summary> 
-        Rename = 13,
-        /// <summary> 
-        /// "Calculate CRC32 for file at <path>.
-        /// - Sends an ACK reply with the checksum on success, otherwise a NAK packet with an error code."
-        /// </summary> 
-        CalcFileCRC32 = 14,
-        /// <summary> 
-        /// Burst download session file.
-        /// </summary> 
-        BurstReadFile = 15,
+        public int Size { get; set; }
+        public string Name { get; init; }
+        public FtpEntryType Type { get; init; }
 
-        /// <summary>
-        ///  ACK response.
-        /// </summary>
-        ACK = 128,
-        /// <summary>
-        ///  NAK response.
-        /// </summary>
-        NAK = 129,
-    }
-
-    /// <summary>
-    /// Ftp message payload
-    /// Max size = 251
-    /// https://mavlink.io/en/services/ftp.html
-    /// </summary>
-    public class FtpMessagePayload
-    {
-        public void Serialize(FileTransferProtocolPacket dest)
+        public override string ToString()
         {
-            using (var strm = new MemoryStream())
-            {
-                using (var wrt = new StreamWriter(strm))
-                {
-                    wrt.Write(SequenceNumber);
-                    wrt.Write(Session);
-                    wrt.Write((byte)OpCodeId);
-                    wrt.Write(Size);
-                    wrt.Write((byte)ReqOpCodeId);
-                    wrt.Write((byte)(BurstComplete ? 1:0));
-                    wrt.Write(Padding);
-                    wrt.Write(Offset);
-                    strm.Write(Data,0,Data.Length);
-                    strm.Position = 0;
-                    dest.Payload.Payload = strm.ToArray();
-                }
-            }
+            return $"{(char)Type}{Name}{(Size == 0 ? "" : $"\t{Size}")}\0\0";
         }
-
-        public void Deserialize(FileTransferProtocolPacket src)
-        {
-            var buffer = src.Payload.Payload;
-            int index = 0;
-            SequenceNumber = BitConverter.ToUInt16(buffer, index);index+=2;
-            Session = buffer[index]; index+=1;
-            OpCodeId = (OpCode)buffer[index]; index += 1;
-            Size = buffer[index]; index += 1;
-            ReqOpCodeId = (OpCode)buffer[index]; index += 1;
-            BurstComplete = buffer[index] != 0; index += 1;
-            Padding = buffer[index]; index += 1;
-            Offset = BitConverter.ToUInt16(buffer, index); index += 4;
-            Data = new byte[239];
-            Buffer.BlockCopy(src.Payload.Payload,12,Data,0,Data.Length);
-
-        }
-
-        /// <summary>
-        /// Command/response data. Varies by OpCode. This contains the path for operations that act on a file or directory.
-        /// For an ACK for a read or write this is the requested information.
-        /// For an ACK for a OpenFileRO operation this is the size of the file that was opened.
-        /// For a NAK the first byte is the error code and the (optional) second byte may be an error number.
-        /// </summary>
-        public byte[] Data { get; set; }
-
-        /// <summary>
-        /// 32 bit alignment padding.
-        /// </summary>
-        public ushort Offset { get; set; }
-
-
-        /// <summary>
-        /// 32 bit alignment padding.
-        /// </summary>
-        public byte Padding { get; set; }
-
-        /// <summary>
-        /// Code to indicate if a burst is complete. 1: set of burst packets complete, 0: More burst packets coming.
-        /// - Only used if req_opcode is BurstReadFile.
-        /// </summary>
-        public bool BurstComplete { get; set; }
-
-
-        /// <summary>
-        /// OpCode (of original message) returned in an ACK or NAK response.
-        /// </summary>
-        public OpCode ReqOpCodeId { get; set; }
-
-        /// <summary>
-        /// Depends on OpCode. For Reads/Writes this is the size of the data transported. For NAK it is the number of bytes used for error information (1 or 2).
-        /// </summary>
-        public byte Size { get; set; }
-        /// <summary>
-        /// Ids for particular commands and ACK/NAK messages.
-        /// </summary>
-        public OpCode OpCodeId { get; set; }
-        /// <summary>
-        /// Session id for read/write operations (the server may use this to reference the file handle and information about the progress of read/write operations).
-        /// </summary>
-        public byte Session { get; set; }
-        /// <summary>
-        /// All new messages between the GCS and drone iterate this number. Re-sent commands/ACK/NAK should use the previous response's sequence number.
-        /// </summary>
-        public ushort SequenceNumber { get; set; }
     }
-
-
-    public enum NakError
+    
+    public class FtpConfig
     {
-        /// <summary> 
-        /// No error 
-        /// </summary> 
-        None = 0,
-
-        /// <summary> 
-        /// Unknown failure 
-        /// </summary> 
-        Fail = 1,
-
-        /// <summary> 
-        /// Command failed, Err number sent back in PayloadHeader.data[1]. This is a file-system error number understood by the server operating system. 
-        /// </summary> 
-        FailErrno = 2,
-
-        /// <summary> 
-        /// Payload size is invalid 
-        /// </summary> 
-        InvalidDataSize = 3,
-
-        /// <summary> 
-        /// Session is not currently open 
-        /// </summary> 
-        InvalidSession = 4,
-
-        /// <summary> 
-        /// All available sessions are already in use. 
-        /// </summary> 
-        NoSessionsAvailable = 5,
-
-        /// <summary> 
-        /// Offset past end of file for ListDirectory and ReadFile commands. 
-        /// </summary> 
-        EOF = 6,
-
-        /// <summary> 
-        /// Unknown command / opcode 
-        /// </summary> 
-        UnknownCommand = 7,
-
-        /// <summary> 
-        /// File/directory already exists 
-        /// </summary> 
-        FileExists = 8,
-
-        /// <summary> 
-        /// File/directory is write protected 
-        /// </summary> 
-        FileProtected = 9,
-
-        /// <summary> 
-        /// File/directory not found 
-        /// </summary> 
-        FileNotFound = 10,
-
+        /// <summary>
+        /// Network ID (0 for broadcast)
+        /// </summary>
+        public byte TargetNetwork { get; set; } = 0;
     }
-
-    public interface IFtpClient
-    {
-        Task<FtpFileListItem[]> ListDirectory(string path, int index, CancellationToken cancel);
-    }
-
-    public class FtpFileListItem
-    {
-        public FileItemType Type { get; set; }
-        public string FileName { get; set; }
-        public int Index { get; set; }
-    }
-
-    public enum FileItemType
-    {
-        File,
-        Directory,
-        Skip,
-    }
-  
+    
     public class FtpClient: MavlinkMicroserviceClient, IFtpClient
     {
-        public FtpClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq, IScheduler scheduler) : base("FTP", connection, identity, seq, scheduler)
+        private readonly MavlinkClientIdentity _identity;
+        private readonly IPacketSequenceCalculator _seq;
+        private readonly FtpConfig _cfg;
+
+        public FtpClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, FtpConfig cfg, 
+            IPacketSequenceCalculator seq, IScheduler scheduler) : base("FTP", connection, identity, seq, scheduler)
         {
+            _cfg = cfg;
+            _identity = identity;
+            _seq = seq;
             
+            OnBurstReadPacket = InternalFilter<FileTransferProtocolPacket>(_ => (OpCode)_.Payload.Payload[3] == OpCode.ACK &&
+                    (OpCode)_.Payload.Payload[5] == OpCode.BurstReadFile)
+                .Select(_ => new FtpMessagePayload(_.Payload.Payload))
+                .Publish().RefCount();
         }
-
-        public Task<FtpFileListItem[]> ListDirectory(string path, int index, CancellationToken cancel)
-        {
-            throw new NotImplementedException();
-        }
-
         
-    }
+        public IObservable<FtpMessagePayload> OnBurstReadPacket { get; }
+        
+        public async Task<FtpMessagePayload> None(CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.None,
+                SequenceNumber = _seq.GetNextSequenceNumber(),
+            };
+            
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.None,
+                         resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+
+        public async Task<FtpMessagePayload> TerminateSession(byte sessionNumber, CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.TerminateSession,
+                SequenceNumber = _seq.GetNextSequenceNumber(),
+                Session = sessionNumber
+            };
+
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.TerminateSession,
+                         resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+
+        public async Task<FtpMessagePayload> ResetSessions(CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.ResetSessions,
+                SequenceNumber = _seq.GetNextSequenceNumber(),
+            };
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.ResetSessions,
+                         resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+
+        public async Task<FtpMessagePayload> OpenFileRO(string path, CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.OpenFileRO,
+                Size = (byte)path.Length,
+                SequenceNumber = _seq.GetNextSequenceNumber(),
+                Data = MavlinkTypesHelper.GetBytes(path)
+            };
+            
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.OpenFileRO,
+                        resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+
+        public async Task<FtpMessagePayload> ReadFile(byte size, uint offset, byte sessionNumber, CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.ReadFile,
+                Size = size,
+                Offset = offset,
+                SequenceNumber = _seq.GetNextSequenceNumber(),
+                Session = sessionNumber
+            };
+            
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork & 
+                                        _.Payload.Payload[2] == sessionNumber &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.ReadFile,
+                         resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+
+        public async Task<FtpMessagePayload> CreateFile(string path, CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.CreateFile,
+                Size = (byte)path.Length,
+                SequenceNumber = _seq.GetNextSequenceNumber(),
+                Data = MavlinkTypesHelper.GetBytes(path)
+            };
+            
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                            
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.CreateFile,
+                         resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+
+        public async Task<FtpMessagePayload> WriteFile(byte[] writeBuffer, uint offset, byte sessionNumber, CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.WriteFile,
+                SequenceNumber = _seq.GetNextSequenceNumber(),
+                Size = (byte)writeBuffer.Length,
+                Offset = offset,
+                Session = sessionNumber,
+                Data = writeBuffer
+            };
+            
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork 
+                                        & _.Payload.Payload[2] == sessionNumber &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.WriteFile,
+                         resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+
+        public async Task<FtpMessagePayload> RemoveFile(string path, CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.RemoveFile,
+                SequenceNumber = _seq.GetNextSequenceNumber(),
+                Size = (byte)path.Length,
+                Data = MavlinkTypesHelper.GetBytes(path)
+            };
+            
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.RemoveFile,
+                         resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+
+        public async Task<FtpMessagePayload> CreateDirectory(string path, CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.CreateDirectory,
+                SequenceNumber = _seq.GetNextSequenceNumber(),
+                Size = (byte)path.Length,
+                Data = MavlinkTypesHelper.GetBytes(path)
+            };
+            
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.CreateDirectory,
+                         resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+
+        public async Task<FtpMessagePayload> RemoveDirectory(string path, CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.RemoveDirectory,
+                SequenceNumber = _seq.GetNextSequenceNumber(),
+                Size = (byte)path.Length,
+                Data = MavlinkTypesHelper.GetBytes(path)
+            };
+            
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.RemoveDirectory,
+                         resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+
+        public async Task<FtpMessagePayload> OpenFileWO(string path, CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.OpenFileWO,
+                Size = (byte)path.Length,
+                SequenceNumber = _seq.GetNextSequenceNumber(),
+                Data = MavlinkTypesHelper.GetBytes(path)
+            };
+            
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.OpenFileWO,
+                         resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+
+        //Don't works somehow
+        public async Task<FtpMessagePayload> TruncateFile(string path, uint offset, CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.TruncateFile,
+                Size = (byte)path.Length,
+                Offset = offset,
+                SequenceNumber = _seq.GetNextSequenceNumber(),
+                Data = MavlinkTypesHelper.GetBytes(path)
+            };
+            
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.TruncateFile,
+                         resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+
+        public async Task<FtpMessagePayload> Rename(string pathToRename, string newPath, CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.Rename,
+                Size = (byte)(pathToRename.Length + newPath.Length + 1),
+                SequenceNumber = _seq.GetNextSequenceNumber(),
+                Data = MavlinkTypesHelper.GetBytes(pathToRename + '\0' + newPath)
+            };
+            
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.Rename,
+                         resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+
+        public async Task<FtpMessagePayload> CalcFileCRC32(string path, CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.CalcFileCRC32,
+                Size = (byte)path.Length,
+                SequenceNumber = _seq.GetNextSequenceNumber(),
+                Data = MavlinkTypesHelper.GetBytes(path)
+            };
+            
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.CalcFileCRC32,
+                         resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+
+        public async Task<FtpMessagePayload> BurstReadFile(byte size, uint offset, byte sessionNumber, CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.BurstReadFile,
+                Size = size,
+                Offset = offset,
+                Session = sessionNumber,
+                SequenceNumber = _seq.GetNextSequenceNumber()
+            };
+            
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.BurstReadFile,
+                         resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+        
+        public async Task<FtpMessagePayload> ListDirectory(string path, uint offset, CancellationToken cancel)
+        {
+            var messagePayload = new FtpMessagePayload
+            {
+                OpCodeId = OpCode.ListDirectory,
+                SequenceNumber = _seq.GetNextSequenceNumber(),
+                Size = (byte)path.Length,
+                Offset = offset,
+                Data = MavlinkTypesHelper.GetBytes(path)
+            };
+
+            var result =
+                await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
+                        fillPacket: _ =>
+                        {
+                            _.Payload.TargetComponent = _identity.TargetComponentId;
+                            _.Payload.TargetSystem = _identity.TargetSystemId;
+                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            messagePayload.Serialize(ref spanBuffer);
+                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)_.Payload.Payload[5] == OpCode.ListDirectory,
+                         resultGetter: _ => _.Payload, cancel: cancel)
+                    .ConfigureAwait(false);
+            return new FtpMessagePayload(result.Payload);
+        }
+    } 
 }

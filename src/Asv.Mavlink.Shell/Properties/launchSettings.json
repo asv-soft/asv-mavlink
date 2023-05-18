@@ -2,7 +2,7 @@
   "profiles": {
     "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "params -cs=tcp://127.0.0.1:5760"
+      "commandLineArgs": "ftp -cs=tcp://127.0.0.1:5762"
     }
   }
 }
