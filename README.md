@@ -1,5 +1,7 @@
 # asv-mavlink
 
+[![Deploy Nuget for Windows](https://github.com/asv-soft/asv-mavlink/actions/workflows/nuget_windows.yml/badge.svg)](https://github.com/asv-soft/asv-mavlink/actions/workflows/nuget_windows.yml)
+
 Mavlink library for .NET 6.0, .NET 7.0 (support MAVLinkV2 packets)
 
 You can control vehicles, that support [MAVLink](https://mavlink.io/en/) protocol.
