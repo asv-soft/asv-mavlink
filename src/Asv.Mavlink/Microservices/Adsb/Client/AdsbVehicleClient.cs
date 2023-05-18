@@ -65,11 +65,11 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
             var lookup = _.Lookup(payload.IcaoAddress);
             if (lookup.HasValue)
             {
-                _.AddOrUpdate(new AdsbVehicle(payload));
+                lookup.Value.InternalUpdate(payload);
             }
             else
             {
-                lookup.Value.InternalUpdate(payload);
+                _.AddOrUpdate(new AdsbVehicle(payload));
             }
         });
     }
