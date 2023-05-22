@@ -15,9 +15,11 @@ public class VirtualAdsbCommand : ConsoleCommand
     private readonly CancellationTokenSource _cancel = new ();
     private readonly Subject<ConsoleKeyInfo> _userInput = new ();
     
-    private string _cs = "tcp://127.0.0.1:7344?server=true";
-    private string _start = "-O54.2905802|63.6063891|500";
-    private string _stop = "-O64.2905802|83.6063891|500";
+    private string _cs = "tcp://127.0.0.1:7344?srv=true";
+    private string _start1 = "-O54 17 26|63 38 23|500";
+    private string _start2 = "-O32 17 26|43 38 23|500";
+    private string _stop1 = "-O64 17 26|83 38 23|500";
+    private string _stop2 = "-O42 17 26|63 38 23|500";
     private string _callSign = "UFO";
     private double _vectorVelocity = 300;
     private int _updateRate = 1;
@@ -26,8 +28,10 @@ public class VirtualAdsbCommand : ConsoleCommand
     {
         IsCommand("adsb", "Generate virtual ADSB Vehicle");
         HasOption("cs=", $"Mavlink connection string. By default '{_cs}'", _ => _cs = _);
-        HasOption("start=", $"GeoPoint from where vehicle starts flying. Default value is {_start}", _ => _start = _);
-        HasOption("end=", $"GeoPoint where vehicle stops flight. Default value is {_stop}", _ => _stop = _);
+        HasOption("start1=", $"GeoPoint from where vehicle starts flying. Default value is {_start1}", _ => _start1 = _);
+        HasOption("start2=", $"GeoPoint from where vehicle starts flying. Default value is {_start2}", _ => _start2 = _);
+        HasOption("stop1=", $"GeoPoint where vehicle stops flight. Default value is {_stop1}", _ => _stop1 = _);
+        HasOption("stop2=", $"GeoPoint where vehicle stops flight. Default value is {_stop2}", _ => _stop2 = _);
         HasOption("callSign=", $"Vehicle call sign. Default value is {_callSign}", _ => _callSign = _);
         HasOption("updateRate=", $"Update rate in Hz. Default value is {_updateRate}", _ =>
         {
@@ -62,13 +66,12 @@ public class VirtualAdsbCommand : ConsoleCommand
     private static GeoPoint SetGeoPoint(string value)
     {
         var values = value.Split('|');
-        var altitude = 500.0;
         var result = new GeoPoint();
 
         if (values.Length == 3 &&
             GeoPointLatitude.TryParse(values[0], out var latitude) && 
             GeoPointLongitude.TryParse(values[1], out var longitude) &&
-            double.TryParse(values[2], out altitude))
+            double.TryParse(values[2], out var altitude))
         {
             result = new GeoPoint(latitude, longitude, altitude);
         }
@@ -85,52 +88,113 @@ public class VirtualAdsbCommand : ConsoleCommand
         Task.Factory.StartNew(_ => KeyListen(), _cancel.Token);
         Console.CancelKeyPress += Console_CancelKeyPress;
         
+        var conn = MavlinkV2Connection.Create(_cs);
+        var server1 = new AdsbServerDevice(
+            conn,
+            new PacketSequenceCalculator(),
+            new MavlinkServerIdentity{ComponentId = 13, SystemId = 13},
+            new AdsbServerDeviceConfig(),
+            Scheduler.Default);
+        
+        var server2 = new AdsbServerDevice(
+            conn,
+            new PacketSequenceCalculator(),
+            new MavlinkServerIdentity{ComponentId = 14, SystemId = 14},
+            new AdsbServerDeviceConfig(),
+            Scheduler.Default);
+            
+        server1.Start();
+        server2.Start();
+        
         while (!_cancel.IsCancellationRequested)
         {
-            var start = SetGeoPoint(_start);
-            var stop = SetGeoPoint(_stop);
+            var start1 = SetGeoPoint(_start1);
+            var start2 = SetGeoPoint(_start2);
+            var stop1 = SetGeoPoint(_stop1);
+            var stop2 = SetGeoPoint(_stop2);
 
-            var totalDistance = GeoMath.Distance(start.Latitude, start.Longitude, 
-                start.Altitude, stop.Latitude, stop.Longitude, stop.Altitude);
-            var totalSeconds = totalDistance / _vectorVelocity;
-            var groundDistance = GeoMath.Distance(start, stop); // TODO: suggest to rename this method to GroundDistance
-            var vertVelocity = (start.Altitude - stop.Altitude) / totalSeconds;
-            var horVelocity = groundDistance / totalSeconds;
-            var azimuth = GeoMath.Azimuth(start, stop);
-            
-            var server = new AdsbServerDevice(
-                new MavlinkV2Connection(_cs, _ =>
-                {
-                    _.RegisterCommonDialect();
-                }),
-                new PacketSequenceCalculator(),
-                new MavlinkServerIdentity{ComponentId = 13, SystemId = 13},
-                new AdsbServerDeviceConfig(),
-                Scheduler.Default);
+            var totalDistance1 = GeoMath.Distance(start1.Latitude, start1.Longitude, 
+                start1.Altitude, stop1.Latitude, stop1.Longitude, stop1.Altitude);
+            var totalDistance2 = GeoMath.Distance(start2.Latitude, start2.Longitude, 
+                start2.Altitude, stop2.Latitude, stop2.Longitude, stop2.Altitude);
+            var totalSeconds1 = totalDistance1 / _vectorVelocity;
+            var totalSeconds2 = totalDistance2 / _vectorVelocity;
+            var groundDistance1 = GeoMath.Distance(start1, stop1); // TODO: suggest to rename this method to GroundDistance
+            var groundDistance2 = GeoMath.Distance(start2, stop2); // TODO: suggest to rename this method to GroundDistance
+            var vertVelocity1 = (start1.Altitude - stop1.Altitude) / totalSeconds1;
+            var vertVelocity2 = (start2.Altitude - stop2.Altitude) / totalSeconds2;
+            var horVelocity1 = groundDistance1 / totalSeconds1;
+            var horVelocity2 = groundDistance2 / totalSeconds2;
+            var azimuth1 = GeoMath.Azimuth(start1, stop1);
+            var azimuth2 = GeoMath.Azimuth(start2, stop2);
 
-            for (var i = 0; i < totalDistance / _vectorVelocity * _updateRate; i++)
-            {
-                var nextPoint = start.RadialPoint(horVelocity / _updateRate, azimuth);
-                nextPoint = nextPoint.AddAltitude(vertVelocity / _updateRate);
-            
-                server.Adsb.Send(_ =>
+            var threads = new Thread[2];
+
+            threads[0] = new Thread(() => {
+                for (var i = 0.0; i < groundDistance1; i += horVelocity1)
                 {
-                    _.Altitude = (int)(nextPoint.Altitude * 1e3);
-                    _.Lon = (int)(nextPoint.Longitude * 1e7);
-                    _.Lat = (int)(nextPoint.Latitude * 1e7);
-                    MavlinkTypesHelper.SetString(_.Callsign,_callSign);
-                    _.Flags = AdsbFlags.AdsbFlagsSimulated;
-                    _.Squawk = 15;
-                    _.Heading = 13;
-                    _.AltitudeType = AdsbAltitudeType.AdsbAltitudeTypeGeometric;
-                    _.EmitterType = AdsbEmitterType.AdsbEmitterTypeNoInfo;
-                    _.HorVelocity = 150;
-                    _.VerVelocity = 75;
-                    _.IcaoAddress = 1313;
-                });
+                    var nextPoint = start1.RadialPoint(i / _updateRate, azimuth1);
+                    nextPoint = nextPoint.AddAltitude(vertVelocity1 / _updateRate);
+                    
+                    server1.Adsb.Send(_ =>
+                    {
+                        _.Altitude = (int)(nextPoint.Altitude * 1e3);
+                        _.Lon = (int)(nextPoint.Longitude * 1e7);
+                        _.Lat = (int)(nextPoint.Latitude * 1e7);
+                        MavlinkTypesHelper.SetString(_.Callsign,_callSign);
+                        _.Flags = AdsbFlags.AdsbFlagsSimulated;
+                        _.Squawk = 15;
+                        _.Heading = (ushort)(azimuth1 * 1e2);
+                        _.AltitudeType = AdsbAltitudeType.AdsbAltitudeTypeGeometric;
+                        _.EmitterType = AdsbEmitterType.AdsbEmitterTypeNoInfo;
+                        _.HorVelocity = 150;
+                        _.VerVelocity = 75;
+                        _.IcaoAddress = 1313;
+                    });
+
+                    Console.WriteLine($"Current position 1: {nextPoint}");
+                        
+                    Thread.Sleep(1000 / _updateRate);
+                }
                 
-                Thread.Sleep(1000 / _updateRate);
-            }
+                Console.WriteLine("\n ARRIVED 1 \n");
+            });
+            
+            threads[1] = new Thread(() => {
+                for (var i = 0.0; i < groundDistance2; i += horVelocity2)
+                {
+                    var nextPoint = start2.RadialPoint(i / _updateRate, azimuth2);
+                    nextPoint = nextPoint.AddAltitude(vertVelocity2 / _updateRate);
+                    
+                    server2.Adsb.Send(_ =>
+                    {
+                        _.Altitude = (int)(nextPoint.Altitude * 1e3);
+                        _.Lon = (int)(nextPoint.Longitude * 1e7);
+                        _.Lat = (int)(nextPoint.Latitude * 1e7);
+                        MavlinkTypesHelper.SetString(_.Callsign,_callSign);
+                        _.Flags = AdsbFlags.AdsbFlagsSimulated;
+                        _.Squawk = 15;
+                        _.Heading = (ushort)(azimuth2 * 1e2);
+                        _.AltitudeType = AdsbAltitudeType.AdsbAltitudeTypeGeometric;
+                        _.EmitterType = AdsbEmitterType.AdsbEmitterTypeNoInfo;
+                        _.HorVelocity = 150;
+                        _.VerVelocity = 75;
+                        _.IcaoAddress = 1313;
+                    });
+
+                    Console.WriteLine($"Current position 2: {nextPoint}");
+                        
+                    Thread.Sleep(1000 / _updateRate);
+                }
+                
+                Console.WriteLine("\n ARRIVED 2 \n");
+            });
+            
+            threads[0].Start();
+            threads[1].Start();
+
+            threads[0].Join();
+            threads[1].Join();
         }
 
         return -1;
