@@ -115,10 +115,10 @@ public class VirtualAdsbCommand : ConsoleCommand
             
                 server.Adsb.Send(_ =>
                 {
-                    _.Altitude = (int)nextPoint.Altitude;
-                    _.Lon = (int)nextPoint.Longitude;
-                    _.Lat = (int)nextPoint.Latitude;
-                    _.Callsign = _callSign.ToCharArray();
+                    _.Altitude = (int)(nextPoint.Altitude * 1e3);
+                    _.Lon = (int)(nextPoint.Longitude * 1e7);
+                    _.Lat = (int)(nextPoint.Latitude * 1e7);
+                    MavlinkTypesHelper.SetString(_.Callsign,_callSign);
                     _.Flags = AdsbFlags.AdsbFlagsSimulated;
                     _.Squawk = 15;
                     _.Heading = 13;
