@@ -26,7 +26,7 @@ public class ParamItem: DisposableOnceWithCancel,IParamItem
         Type = payload.ParamType;
         Index = payload.ParamIndex;
         _isSynced = new RxValue<bool>(true).DisposeItWith(Disposable);
-        _value = new RxValue<decimal>(_remoteValue = converter.ConvertFromMavlinkUnionToParamValue(payload.ParamValue,payload.ParamType)).DisposeItWith(Disposable);
+        _value = new RxValue<decimal>(_remoteValue = converter.ConvertFromMavlinkUnion(payload.ParamValue,payload.ParamType)).DisposeItWith(Disposable);
         _value.Subscribe(_ => _isSynced.OnNext(_remoteValue == _)).DisposeItWith(Disposable);
         Disposable.AddAction(() =>
         {
@@ -51,7 +51,7 @@ public class ParamItem: DisposableOnceWithCancel,IParamItem
     
     public async Task Write(CancellationToken cancel)
     {
-        await _client.Write(Name, Type, _converter.ConvertToMavlinkUnionToParamValue(_value.Value, Type), cancel).ConfigureAwait(false);
+        await _client.Write(Name, Type, _converter.ConvertToMavlinkUnion(_value.Value, Type), cancel).ConfigureAwait(false);
     }
 
     internal void Update(ParamValuePayload payload)
@@ -60,7 +60,7 @@ public class ParamItem: DisposableOnceWithCancel,IParamItem
         if (name != Name) throw new Exception($"Invalid index: want {Name} but got {name}");
         try
         {
-            _remoteValue = _converter.ConvertFromMavlinkUnionToParamValue(payload.ParamValue, payload.ParamType);
+            _remoteValue = _converter.ConvertFromMavlinkUnion(payload.ParamValue, payload.ParamType);
             _value.OnNext(_remoteValue);
         }
         catch (Exception)

@@ -8,7 +8,7 @@ namespace Asv.Mavlink
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public float ConvertToMavlinkUnionToParamValue(decimal value, MavParamType type)
+        public float ConvertToMavlinkUnion(decimal value, MavParamType type)
         {
             byte[] arr;
             switch (type)
@@ -48,7 +48,7 @@ namespace Asv.Mavlink
             return BitConverter.ToSingle(arr, 0);
         }
 
-        public decimal ConvertFromMavlinkUnionToParamValue(float value, MavParamType type)
+        public decimal ConvertFromMavlinkUnion(float value, MavParamType type)
         {
 
             // MAVLink (v1.0, v2.0) supports these data types:

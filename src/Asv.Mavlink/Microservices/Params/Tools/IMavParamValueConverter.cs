@@ -4,7 +4,7 @@ namespace Asv.Mavlink
 {
     public interface IMavParamValueConverter
     {
-        float ConvertToMavlinkUnionToParamValue(decimal value, MavParamType type);
-        decimal ConvertFromMavlinkUnionToParamValue(float value, MavParamType type);
+        float ConvertToMavlinkUnion(decimal value, MavParamType type);
+        decimal ConvertFromMavlinkUnion(float value, MavParamType type);
     }
 }

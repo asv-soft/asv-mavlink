@@ -223,6 +223,6 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
     public async Task<decimal> ReadOnce(string name, CancellationToken cancel = default)
     {
         var result = await Base.Read(name,cancel).ConfigureAwait(false);
-        return _converter.ConvertFromMavlinkUnionToParamValue(result.ParamValue, result.ParamType);
+        return _converter.ConvertFromMavlinkUnion(result.ParamValue, result.ParamType);
     }
 }

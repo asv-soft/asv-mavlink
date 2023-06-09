@@ -5,7 +5,7 @@ namespace Asv.Mavlink
 {
     public class MavParamArdupilotValueConverter : IMavParamValueConverter
     {
-        public float ConvertToMavlinkUnionToParamValue(decimal value, MavParamType type)
+        public float ConvertToMavlinkUnion(decimal value, MavParamType type)
         {
             switch (type)
             {
@@ -34,7 +34,7 @@ namespace Asv.Mavlink
             }
         }
 
-        public decimal ConvertFromMavlinkUnionToParamValue(float value, MavParamType type)
+        public decimal ConvertFromMavlinkUnion(float value, MavParamType type)
         {
             switch (type)
             {

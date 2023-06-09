@@ -10,6 +10,19 @@ namespace Asv.Mavlink
 {
     public class MavlinkClientIdentity
     {
+        public MavlinkClientIdentity()
+        {
+            
+        }
+
+        public MavlinkClientIdentity(byte systemId, byte componentId, byte targetSystemId, byte targetComponentId)
+        {
+            SystemId = systemId;
+            ComponentId = componentId;
+            TargetSystemId = targetSystemId;
+            TargetComponentId = targetComponentId;
+        }
+        
         public byte SystemId { get; set; } = 254;
         public byte ComponentId { get; set; } = 254;
         public byte TargetSystemId { get; set; } = 13;
