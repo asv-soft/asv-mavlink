@@ -5282,9 +5282,6 @@ namespace Asv.Mavlink.V2.Common
             sum+=1; //MavlinkVersion
             return (byte)sum;
         }
-
-
-
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
             CustomMode = BinSerialize.ReadUInt(ref buffer);
@@ -5295,7 +5292,6 @@ namespace Asv.Mavlink.V2.Common
             MavlinkVersion = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
-
         public void Serialize(ref Span<byte> buffer)
         {
             BinSerialize.WriteUInt(ref buffer,CustomMode);
@@ -5306,11 +5302,6 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteByte(ref buffer,(byte)MavlinkVersion);
             /* PayloadByteSize = 9 */;
         }
-        
-        
-
-
-
         /// <summary>
         /// A bitfield for use for autopilot-specific flags
         /// OriginName: custom_mode, Units: , IsExtended: false
@@ -10613,7 +10604,7 @@ namespace Asv.Mavlink.V2.Common
             sum+=2; //Z
             sum+=2; //R
             sum+=2; //Buttons
-            sum+=1; //OnTarget
+            sum+=1; //Target
             return (byte)sum;
         }
 
@@ -20518,7 +20509,7 @@ namespace Asv.Mavlink.V2.Common
             sum+= 2; // Flags
             sum+=2; //Squawk
             sum+= 1; // AltitudeType
-            sum+=Callsign.Length; //CallSign
+            sum+=Callsign.Length; //Callsign
             sum+= 1; // EmitterType
             sum+=1; //Tslc
             return (byte)sum;

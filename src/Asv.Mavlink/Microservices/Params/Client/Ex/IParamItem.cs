@@ -12,8 +12,7 @@ public interface IParamItem
     MavParamType Type { get; }
     ParamDescription Info { get; }
     IRxValue<bool> IsSynced { get; }
-    IRxEditableValue<decimal> Value { get; }
-   
+    IRxEditableValue<MavParamValue> Value { get; }
     Task Read(CancellationToken cancel = default);
     Task Write(CancellationToken cancel = default);
     

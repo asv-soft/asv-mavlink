@@ -1,17 +1,81 @@
 ﻿using System;
 using Asv.Mavlink.V2.Common;
-using NLog;
 
 namespace Asv.Mavlink
 {
-    public class MavParamValueConverter : IMavParamValueConverter
+    public interface IMavParamEncoding
     {
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        float ConvertToMavlinkUnion(MavParamValue value);
+        MavParamValue ConvertFromMavlinkUnion(float value, MavParamType type);
+    }
+    
+    public class MavParamCStyleEncoding : IMavParamEncoding
+    {
+        public float ConvertToMavlinkUnion(MavParamValue value)
+        {
+            switch (value.Type)
+            {
+                case MavParamType.MavParamTypeUint8:
+                    return (byte)value;
+                case MavParamType.MavParamTypeInt8:
+                    return (sbyte) value;
+                case MavParamType.MavParamTypeUint16:
+                    return (ushort) value;
+                case MavParamType.MavParamTypeInt16:
+                    return (short) value;
+                case MavParamType.MavParamTypeUint32:
+                    return (uint) value;
+                case MavParamType.MavParamTypeInt32:
+                    return (int) value;
+                case MavParamType.MavParamTypeUint64:
+                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
+                case MavParamType.MavParamTypeInt64:
+                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
+                case MavParamType.MavParamTypeReal32:
+                    return (float)value;
+                case MavParamType.MavParamTypeReal64:
+                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(value.Type), value.Type, null);
+            }
+        }
 
-        public float ConvertToMavlinkUnion(decimal value, MavParamType type)
+        public MavParamValue ConvertFromMavlinkUnion(float value, MavParamType type)
+        {
+            switch (type)
+            {
+                case MavParamType.MavParamTypeUint8:
+                    return new MavParamValue((byte)value);
+                case MavParamType.MavParamTypeInt8:
+                    return new MavParamValue((sbyte) value);
+                case MavParamType.MavParamTypeUint16:
+                    return new MavParamValue((ushort) value);
+                case MavParamType.MavParamTypeInt16:
+                    return new MavParamValue((short) value);
+                case MavParamType.MavParamTypeUint32:
+                    return new MavParamValue((uint) value);
+                case MavParamType.MavParamTypeInt32:
+                    return new MavParamValue((int) value);
+                case MavParamType.MavParamTypeUint64:
+                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
+                case MavParamType.MavParamTypeInt64:
+                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
+                case MavParamType.MavParamTypeReal32:
+                    return new MavParamValue((float)value);
+                case MavParamType.MavParamTypeReal64:
+                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
+    }
+    
+    public class MavParamByteWiseEncoding : IMavParamEncoding
+    {
+        public float ConvertToMavlinkUnion(MavParamValue value)
         {
             byte[] arr;
-            switch (type)
+            switch (value.Type)
             {
                 case MavParamType.MavParamTypeUint8:
                     arr = new []{(byte)value};
@@ -26,10 +90,10 @@ namespace Asv.Mavlink
                     arr = BitConverter.GetBytes((short)value);
                     break;
                 case MavParamType.MavParamTypeUint32:
-                    arr = BitConverter.GetBytes((UInt32)value);
+                    arr = BitConverter.GetBytes((uint)value);
                     break;
                 case MavParamType.MavParamTypeInt32:
-                    arr = BitConverter.GetBytes((Int32)value);
+                    arr = BitConverter.GetBytes((int)value);
                     break;
                 case MavParamType.MavParamTypeInt64:
                     throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
@@ -37,18 +101,16 @@ namespace Asv.Mavlink
                     arr = BitConverter.GetBytes((float)value);
                     break;
                 case MavParamType.MavParamTypeUint64:
-                    _logger.Warn($"Error param type {type}");
                     throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
                 case MavParamType.MavParamTypeReal64:
-                    _logger.Warn($"Error param type {type}");
                     throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+                    throw new ArgumentOutOfRangeException(nameof(value.Type), value.Type, null);
             }
             return BitConverter.ToSingle(arr, 0);
         }
 
-        public decimal ConvertFromMavlinkUnion(float value, MavParamType type)
+        public MavParamValue ConvertFromMavlinkUnion(float value, MavParamType type)
         {
 
             // MAVLink (v1.0, v2.0) supports these data types:
@@ -80,12 +142,11 @@ namespace Asv.Mavlink
                 case MavParamType.MavParamTypeInt64:
                     throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
                 case MavParamType.MavParamTypeReal32:
-                    return (decimal)value;
+                    return value;
                 case MavParamType.MavParamTypeReal64:
                     throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
                 default:
-                    _logger.Warn($"Unknown param type {type} with value {value}");
-                    return 0;
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
     }
