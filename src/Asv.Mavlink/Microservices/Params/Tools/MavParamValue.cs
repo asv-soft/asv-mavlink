@@ -86,6 +86,7 @@ public readonly struct MavParamValue:IComparable<MavParamValue>, IComparable,IEq
     
     public static implicit operator int(MavParamValue x)
     {
+        if (x.Type == MavParamType.MavParamTypeReal32) throw new InvalidOperationException();
         if (x._intValue != null) return (int)x._intValue;
         if (x._realValue != null) return (int)x._realValue;
         throw new InvalidOperationException();
@@ -93,6 +94,7 @@ public readonly struct MavParamValue:IComparable<MavParamValue>, IComparable,IEq
     
     public static implicit operator uint(MavParamValue x)
     {
+        if (x.Type == MavParamType.MavParamTypeReal32) throw new InvalidOperationException();
         if (x._intValue != null) return (uint)x._intValue;
         if (x._realValue != null) return (uint)x._realValue;
         throw new InvalidOperationException();
@@ -100,6 +102,7 @@ public readonly struct MavParamValue:IComparable<MavParamValue>, IComparable,IEq
     
     public static implicit operator short(MavParamValue x)
     {
+        if (x.Type == MavParamType.MavParamTypeReal32) throw new InvalidOperationException();
         if (x._intValue != null) return (short)x._intValue;
         if (x._realValue != null) return (short)x._realValue;
         throw new InvalidOperationException();
@@ -107,6 +110,7 @@ public readonly struct MavParamValue:IComparable<MavParamValue>, IComparable,IEq
     
     public static implicit operator ushort(MavParamValue x)
     {
+        if (x.Type == MavParamType.MavParamTypeReal32) throw new InvalidOperationException();
         if (x._intValue != null) return (ushort)x._intValue;
         if (x._realValue != null) return (ushort)x._realValue;
         throw new InvalidOperationException();
@@ -114,6 +118,7 @@ public readonly struct MavParamValue:IComparable<MavParamValue>, IComparable,IEq
     
     public static implicit operator byte(MavParamValue x)
     {
+        if (x.Type == MavParamType.MavParamTypeReal32) throw new InvalidOperationException();
         if (x._intValue != null) return (byte)x._intValue;
         if (x._realValue != null) return (byte)x._realValue;
         throw new InvalidOperationException();
@@ -121,6 +126,7 @@ public readonly struct MavParamValue:IComparable<MavParamValue>, IComparable,IEq
     
     public static implicit operator sbyte(MavParamValue x)
     {
+        if (x.Type == MavParamType.MavParamTypeReal32) throw new InvalidOperationException();
         if (x._intValue != null) return (sbyte)x._intValue;
         if (x._realValue != null) return (sbyte)x._realValue;
         throw new InvalidOperationException();
@@ -128,6 +134,7 @@ public readonly struct MavParamValue:IComparable<MavParamValue>, IComparable,IEq
     
     public static implicit operator float(MavParamValue x)
     {
+        if (x.Type != MavParamType.MavParamTypeReal32) throw new InvalidOperationException();
         if (x._intValue != null) return (float)x._intValue;
         if (x._realValue != null) return (float)x._realValue;
         throw new InvalidOperationException();
@@ -152,21 +159,33 @@ public readonly struct MavParamValue:IComparable<MavParamValue>, IComparable,IEq
 
     public static bool operator <(MavParamValue left, MavParamValue right)
     {
+        if (left.Type != right.Type &
+            (left.Type == MavParamType.MavParamTypeReal32 | 
+             right.Type == MavParamType.MavParamTypeReal32)) throw new InvalidOperationException();
         return left.CompareTo(right) < 0;
     }
 
     public static bool operator >(MavParamValue left, MavParamValue right)
     {
+        if (left.Type != right.Type &
+            (left.Type == MavParamType.MavParamTypeReal32 | 
+             right.Type == MavParamType.MavParamTypeReal32)) throw new InvalidOperationException();
         return left.CompareTo(right) > 0;
     }
 
     public static bool operator <=(MavParamValue left, MavParamValue right)
     {
+        if (left.Type != right.Type &
+            (left.Type == MavParamType.MavParamTypeReal32 | 
+             right.Type == MavParamType.MavParamTypeReal32)) throw new InvalidOperationException();
         return left.CompareTo(right) <= 0;
     }
 
     public static bool operator >=(MavParamValue left, MavParamValue right)
     {
+        if (left.Type != right.Type &
+            (left.Type == MavParamType.MavParamTypeReal32 | 
+             right.Type == MavParamType.MavParamTypeReal32)) throw new InvalidOperationException();
         return left.CompareTo(right) >= 0;
     }
 
@@ -187,11 +206,17 @@ public readonly struct MavParamValue:IComparable<MavParamValue>, IComparable,IEq
 
     public static bool operator ==(MavParamValue left, MavParamValue right)
     {
+        if (left.Type != right.Type &
+            (left.Type == MavParamType.MavParamTypeReal32 | 
+             right.Type == MavParamType.MavParamTypeReal32)) throw new InvalidOperationException();
         return left.Equals(right);
     }
 
     public static bool operator !=(MavParamValue left, MavParamValue right)
     {
+        if (left.Type != right.Type &
+            (left.Type == MavParamType.MavParamTypeReal32 | 
+             right.Type == MavParamType.MavParamTypeReal32)) throw new InvalidOperationException();
         return !left.Equals(right);
     }
 }

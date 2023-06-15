@@ -51,7 +51,7 @@ public class ParamItem: DisposableOnceWithCancel,IParamItem
     
     public async Task Write(CancellationToken cancel)
     {
-        await _client.Write(Name, Type, _converter.ConvertToMavlinkUnion(_value.Value), cancel).ConfigureAwait(false);
+        await _client.Write(Name, Type, _converter.ConvertToMavlinkUnion(Value.Value), cancel).ConfigureAwait(false);
     }
 
     internal void Update(ParamValuePayload payload)
@@ -69,8 +69,7 @@ public class ParamItem: DisposableOnceWithCancel,IParamItem
         }
         finally
         {
+            
         }
-        
-
     }
 }
