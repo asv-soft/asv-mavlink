@@ -75,6 +75,7 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
             {
                 _.Payload.TargetComponent = Identity.TargetComponentId;
                 _.Payload.TargetSystem = Identity.TargetSystemId;
+                _.Payload.ParamType = type;
                 _.Payload.ParamValue = value;
                 MavlinkTypesHelper.SetString(_.Payload.ParamId, name);
             }, _ => name.Equals(MavlinkTypesHelper.GetString(_.Payload.ParamId)),
