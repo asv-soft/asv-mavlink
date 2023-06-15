@@ -17,6 +17,16 @@ public static class MavParamFactory
             DefaultValue = new((int)0),
         };
     }
+    public static IMavParamTypeMetadata CreateReal32(string name,string shortDesc)
+    {
+        return new MavParamTypeMetadata(name, MavParamType.MavParamTypeReal32)
+        {
+            ShortDesc = shortDesc,
+            MinValue = new(float.MinValue),
+            MaxValue = new(float.MaxValue),
+            DefaultValue = new((float)0),
+        };
+    }
 }
 
 public interface IMavParamTypeMetadata
