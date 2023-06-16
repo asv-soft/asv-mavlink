@@ -166,7 +166,7 @@ public class ParamsMicroserviceTest
             new StatusTextLoggerConfig(),
             Scheduler.Default);
         
-        var server = new ParamsServer(link.Server,srvSeq,srvId,Scheduler.Default);
+        var server = new ParamsServer(link.Server, srvSeq, srvId, Scheduler.Default);
         
         var serverEx = new ParamsServerEx(server, statusServer, 
             new []
@@ -193,7 +193,6 @@ public class ParamsMicroserviceTest
 
         paramItems[0].Value.OnNext(12.3f);
 
-        //TODO: Value is not writes.
         await paramItems[0].Write();
         
         var result = await clientEx.ReadOnce(paramItems[0].Name);
@@ -207,7 +206,63 @@ public class ParamsMicroserviceTest
     [Fact]
     public async Task Parameters_Loss()
     {
-        //TODO
+        var link = new VirtualLink(serverToClientFilter: _ =>
+        {
+            var packet = _ as ParamValuePacket;
+            if (packet == null) return false;
+            var name = MavlinkTypesHelper.GetString(packet.Payload.ParamId);
+            return name != "PARAM1" & name != "PARAM3";
+        });
+        
+        var encoding = MavParamHelper.GetEncoding(MavParamEncodingType.CStyleEncoding);
+        
+        var srvSeq = new PacketSequenceCalculator();
+        
+        var srvId = new MavlinkServerIdentity(componentId: 1, systemId: 1);
+        
+        var srvCfg = new InMemoryConfiguration();
+        
+        var statusServer = new StatusTextServer(link.Server, 
+            srvSeq, 
+            srvId, 
+            new StatusTextLoggerConfig(),
+            Scheduler.Default);
+        
+        var server = new ParamsServer(link.Server,srvSeq,srvId,Scheduler.Default);
+        
+        var serverEx = new ParamsServerEx(server, statusServer, 
+            new []
+            {
+                Param1,
+                Param2,
+                Param3,
+            }, 
+            encoding, 
+            srvCfg, 
+            new ParamsServerExConfig { SendingParamItemDelayMs = 50 });
+        
+        var client = new ParamsClient(link.Client, 
+            new(2,2,1,1), 
+            new PacketSequenceCalculator(), 
+            new ParamsClientExConfig(), 
+            Scheduler.Default);
+        
+        var clientEx = new ParamsClientEx(client, new ParamsClientExConfig());
+        
+        clientEx.Init(encoding, new List<ParamDescription>());
+
+        var readParams = new Dictionary<string, ParamValuePayload>(); 
+        
+        clientEx.Base.OnParamValue.Subscribe(_ =>
+        {
+            readParams[MavlinkTypesHelper.GetString(_.ParamId)] = _;
+        });
+        
+        await clientEx.ReadAll();
+        
+        Assert.False(readParams.ContainsKey(Param1.Name));
+        Assert.True(readParams.ContainsKey(Param2.Name));
+        Assert.False(readParams.ContainsKey(Param3.Name));
     }
     
 }
