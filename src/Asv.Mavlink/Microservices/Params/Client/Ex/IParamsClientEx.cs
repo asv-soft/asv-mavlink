@@ -14,6 +14,6 @@ public interface IParamsClientEx
     Task ReadAll(IProgress<double> progress = null, CancellationToken cancel = default);
     IRxValue<ushort?> RemoteCount { get; }
     IRxValue<ushort> LocalCount { get; }
-    Task<decimal> ReadOnce(string name, CancellationToken cancel = default);
+    Task<MavParamValue> ReadOnce(string name, CancellationToken cancel = default);
 }
 

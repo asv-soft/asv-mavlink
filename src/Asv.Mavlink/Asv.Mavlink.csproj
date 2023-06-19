@@ -41,6 +41,7 @@
     <DocumentationFile>bin\Release\Asv.Mavlink.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Asv.Cfg" Version="1.8.0" />
     <PackageReference Include="Asv.Common" Version="1.8.0" />
     <PackageReference Include="Asv.IO" Version="1.8.0" />
     <PackageReference Include="DynamicData" Version="7.13.5" />
@@ -59,6 +60,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ParamsDesc.resx</DependentUpon>
     </Compile>
+    <Compile Remove="Microservices\Params\Server\Ex\ParamsDesc.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="RS.resx">

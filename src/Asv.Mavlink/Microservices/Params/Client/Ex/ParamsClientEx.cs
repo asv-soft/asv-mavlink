@@ -18,7 +18,7 @@ public class ParamsClientExConfig:ParameterClientConfig
 
 public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
 {
-    private IMavParamValueConverter _converter;
+    private IMavParamEncoding _converter;
     private readonly ParamsClientExConfig _config;
     private readonly SourceCache<ParamItem, string> _missionSource;
     private readonly RxValue<bool> _isSynced;
@@ -42,7 +42,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
 
     public bool IsInit { get; set; }
 
-    public void Init(IMavParamValueConverter converter, IEnumerable<ParamDescription> existDescription)
+    public void Init(IMavParamEncoding converter, IEnumerable<ParamDescription> existDescription)
     {
         _descriptions = existDescription.ToImmutableDictionary(_ => _.Name);
         _converter = converter;
@@ -220,9 +220,9 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
 
     public IRxValue<ushort> LocalCount => _localCount;
     
-    public async Task<decimal> ReadOnce(string name, CancellationToken cancel = default)
+    public async Task<MavParamValue> ReadOnce(string name, CancellationToken cancel = default)
     {
         var result = await Base.Read(name,cancel).ConfigureAwait(false);
-        return _converter.ConvertFromMavlinkUnionToParamValue(result.ParamValue, result.ParamType);
+        return _converter.ConvertFromMavlinkUnion(result.ParamValue, result.ParamType);
     }
 }

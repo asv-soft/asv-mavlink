@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink
 {
@@ -27,6 +28,7 @@ namespace Asv.Mavlink
         public string Values { get; set; }
         public int Calibration { get; set; }
         public string BoardType { get; set; }
+        public MavParamType ParamType { get; set; }
 
         public override string ToString()
         {

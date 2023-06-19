@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Reactive.Concurrency;
+using Asv.Cfg;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using NLog;
@@ -9,6 +11,7 @@ namespace Asv.Mavlink;
 public class SdrServerDeviceConfig : ServerDeviceConfig
 {
     public AsvSdrServerConfig Sdr { get; set; } = new();
+    public ParamsServerExConfig Params { get; set; } = new();
 }
 
 public class SdrServerDevice:ServerDevice, ISdrServerDevice
@@ -17,7 +20,10 @@ public class SdrServerDevice:ServerDevice, ISdrServerDevice
 
 
     public SdrServerDevice(IMavlinkV2Connection connection,
-        IPacketSequenceCalculator seq, MavlinkServerIdentity identity, SdrServerDeviceConfig config, IScheduler scheduler)
+        IPacketSequenceCalculator seq, MavlinkServerIdentity identity, SdrServerDeviceConfig config, IScheduler scheduler,
+        IEnumerable<IMavParamTypeMetadata> paramList,
+        IMavParamEncoding encoding,
+        IConfiguration paramStore)
         : base(connection, seq, identity, config, scheduler)
     {
         if (config == null) throw new ArgumentNullException(nameof(config));
@@ -27,7 +33,7 @@ public class SdrServerDevice:ServerDevice, ISdrServerDevice
         CommandLongEx = new CommandLongServerEx(cmd).DisposeItWith(Disposable);
         SdrEx = new AsvSdrServerEx(sdr, Heartbeat, CommandLongEx).DisposeItWith(Disposable);
         var paramsBase = new ParamsServer(connection, seq, identity, scheduler).DisposeItWith(Disposable);
-        Params = new ParamsServerEx(paramsBase).DisposeItWith(Disposable);
+        Params = new ParamsServerEx(paramsBase,StatusText,paramList,encoding,paramStore,config.Params).DisposeItWith(Disposable);
     }
 
     public override void Start()

@@ -58,11 +58,11 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
         var paramDesc = await GetParamDescription().ConfigureAwait(false);
         if (version.Capabilities.HasFlag(MavProtocolCapability.MavProtocolCapabilityParamUnion))
         {
-            _params.Init(new MavParamValueConverter(), paramDesc);
+            _params.Init(new MavParamByteWiseEncoding(), paramDesc);
         }
         else
         {
-            _params.Init(new MavParamArdupilotValueConverter(),paramDesc);
+            _params.Init(new MavParamCStyleEncoding(),paramDesc);
         }
     }
     protected abstract Task<IReadOnlyCollection<ParamDescription>> GetParamDescription();

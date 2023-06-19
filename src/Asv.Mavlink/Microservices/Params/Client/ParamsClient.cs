@@ -40,7 +40,6 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
         {
             _.Payload.TargetComponent = Identity.TargetComponentId;
             _.Payload.TargetSystem = Identity.TargetSystemId;
-
         }, cancel);
     }
 
@@ -56,6 +55,7 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
             _ => _.Payload,
             _config.ReadAttemptCount, timeoutMs: _config.ReadTimeouMs, cancel: cancel);
     }
+    
     public Task<ParamValuePayload> Read(ushort index, CancellationToken cancel = default)
     {
         return InternalCall<ParamValuePayload, ParamRequestReadPacket, ParamValuePacket>(_ =>
@@ -75,6 +75,7 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
             {
                 _.Payload.TargetComponent = Identity.TargetComponentId;
                 _.Payload.TargetSystem = Identity.TargetSystemId;
+                _.Payload.ParamType = type;
                 _.Payload.ParamValue = value;
                 MavlinkTypesHelper.SetString(_.Payload.ParamId, name);
             }, _ => name.Equals(MavlinkTypesHelper.GetString(_.Payload.ParamId)),

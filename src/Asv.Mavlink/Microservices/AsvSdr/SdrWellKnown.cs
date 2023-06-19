@@ -21,7 +21,7 @@ public static class SdrWellKnown
     public static void CheckRecordName(string name)
     {
         if (name.IsNullOrWhiteSpace()) throw new Exception("Record name is empty");
-        if (name.Length > RecordNameMaxLength) throw new Exception($"Record name is too long. Max length is {SdrWellKnown.RecordNameMaxLength}");
+        if (name.Length > RecordNameMaxLength) throw new Exception($"Record name is too long. Max length is {RecordNameMaxLength}");
         if (RecordNameRegex.IsMatch(name) == false)
             throw new ArgumentException(
                 $"Record name '{name}' not match regex '{RecordNameRegexString}')");
@@ -30,7 +30,7 @@ public static class SdrWellKnown
     public static void CheckTagName(string name)
     {
         if (name.IsNullOrWhiteSpace()) throw new Exception("Tag name is empty");
-        if (name.Length > RecordNameMaxLength) throw new Exception($"Tag name is too long. Max length is {SdrWellKnown.RecordNameMaxLength}");
+        if (name.Length > RecordTagNameMaxLength) throw new Exception($"Tag name is too long. Max length is {RecordTagNameMaxLength}");
         if (RecordTagNameRegex.IsMatch(name) == false)
             throw new ArgumentException(
                 $"Tag name '{name}' not match regex '{RecordTagNameRegexString}')");

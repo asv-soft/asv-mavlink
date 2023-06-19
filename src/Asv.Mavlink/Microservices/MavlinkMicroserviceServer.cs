@@ -10,6 +10,17 @@ namespace Asv.Mavlink;
 
 public class MavlinkServerIdentity
 {
+    public MavlinkServerIdentity()
+    {
+        
+    }
+    
+    public MavlinkServerIdentity(byte systemId, byte componentId)
+    {
+        SystemId = systemId;
+        ComponentId = componentId;
+    }
+    
     public byte ComponentId { get; set; } = 13;
     public byte SystemId { get; set; } = 13;
 
