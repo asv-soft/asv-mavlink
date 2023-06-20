@@ -20,7 +20,7 @@ public class StatusTextMicroserviceTests
     #region Client
 
     [Fact]
-    public async Task Client_Service_Should_Throw_Argument_Null_Exception_If_Identity_Is_Null()
+    public void Client_Service_Should_Throw_Argument_Null_Exception_If_Identity_Is_Null()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -33,7 +33,7 @@ public class StatusTextMicroserviceTests
     }
     
     [Fact]
-    public async Task Client_Service_Should_Throw_Argument_Null_Exception_If_Sequence_Is_Null()
+    public void Client_Service_Should_Throw_Argument_Null_Exception_If_Sequence_Is_Null()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -46,7 +46,7 @@ public class StatusTextMicroserviceTests
     }
     
     [Fact]
-    public async Task Client_Service_Should_Throw_Argument_Null_Exception_If_Connection_Is_Null()
+    public void Client_Service_Should_Throw_Argument_Null_Exception_If_Connection_Is_Null()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -62,7 +62,7 @@ public class StatusTextMicroserviceTests
     #region Server
 
     [Fact]
-    public async Task Server_Service_Should_Throw_Argument_Null_Exception_If_Identity_Is_Null()
+    public void Server_Service_Should_Throw_Argument_Null_Exception_If_Identity_Is_Null()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -77,7 +77,7 @@ public class StatusTextMicroserviceTests
     }
     
     [Fact]
-    public async Task Server_Service_Should_Throw_Argument_Null_Exception_If_Connection_Is_Null()
+    public void Server_Service_Should_Throw_Argument_Null_Exception_If_Connection_Is_Null()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -90,7 +90,7 @@ public class StatusTextMicroserviceTests
     }
     
     [Fact]
-    public async Task Server_Service_Should_Throw_Argument_Null_Exception_If_Sequence_Is_Null()
+    public void Server_Service_Should_Throw_Argument_Null_Exception_If_Sequence_Is_Null()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -105,7 +105,7 @@ public class StatusTextMicroserviceTests
     }
     
     [Fact]
-    public async Task Server_Service_Should_Throw_Argument_Null_Exception_If_Config_Is_Null()
+    public void Server_Service_Should_Throw_Argument_Null_Exception_If_Config_Is_Null()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -120,7 +120,7 @@ public class StatusTextMicroserviceTests
     }
     
     [Fact]
-    public async Task Server_Service_Should_Throw_Argument_Null_Exception_If_Scheduler_Is_Null()
+    public void Server_Service_Should_Throw_Argument_Null_Exception_If_Scheduler_Is_Null()
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -162,7 +162,7 @@ public class StatusTextMicroserviceTests
     }
 
     [Fact]
-    public async Task Name_Property_Should_Be_Set_To_Expected_Value()
+    public void Name_Property_Should_Be_Set_To_Expected_Value()
     {
         var link = new VirtualLink();
         var clientIdentity = new MavlinkClientIdentity()
@@ -220,7 +220,7 @@ public class StatusTextMicroserviceTests
     }
 
     [Fact]
-    public async Task Check_For_Server_Packet_Loss()
+    public void Check_For_Server_Packet_Loss()
     {
         var packetsCount = 0;
         var lostPacketsCount = 4;

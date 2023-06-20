@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -17,7 +18,7 @@ public class ClientDeviceConfig
 public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
 {
     private readonly ClientDeviceConfig _config;
-    private readonly IScheduler _scheduler;
+    private readonly IScheduler? _scheduler;
     private readonly RxValue<InitState> _onInit;
     private readonly RxValue<string> _name;
     private bool _needToRequestAgain = true;

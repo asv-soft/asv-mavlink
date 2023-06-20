@@ -19,7 +19,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Byte_Min_Value()
+    public void Byte_Min_Value()
     {
         var mavValue = new MavParamValue(byte.MinValue);
         var value = byte.MinValue;
@@ -33,7 +33,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Byte_Max_Value()
+    public void Byte_Max_Value()
     {
         var mavValue = new MavParamValue(byte.MaxValue);
         var value = byte.MaxValue;
@@ -47,7 +47,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task SByte_Min_Value()
+    public void SByte_Min_Value()
     {
         var mavValue = new MavParamValue(sbyte.MinValue);
         var value = sbyte.MinValue;
@@ -61,7 +61,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task SByte_Max_Value()
+    public void SByte_Max_Value()
     {
         var mavValue = new MavParamValue(sbyte.MaxValue);
         var value = sbyte.MaxValue;
@@ -75,7 +75,7 @@ public class MavParamValueTest
     }
 
     [Fact]
-    public async Task Short_Min_Value()
+    public void Short_Min_Value()
     {
         var mavValue = new MavParamValue(short.MinValue);
         var value = short.MinValue;
@@ -89,7 +89,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Short_Max_Value()
+    public void Short_Max_Value()
     {
         var mavValue = new MavParamValue(short.MaxValue);
         var value = short.MaxValue;
@@ -103,7 +103,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task UShort_Min_Value()
+    public void UShort_Min_Value()
     {
         var mavValue = new MavParamValue(ushort.MinValue);
         var value = ushort.MinValue;
@@ -117,7 +117,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task UShort_Max_Value()
+    public void UShort_Max_Value()
     {
         var mavValue = new MavParamValue(ushort.MaxValue);
         var value = ushort.MaxValue;
@@ -131,7 +131,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Int_Min_Value()
+    public void Int_Min_Value()
     {
         var mavValue = new MavParamValue(int.MinValue);
         var value = int.MinValue;
@@ -145,7 +145,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Int_Max_Value()
+    public void Int_Max_Value()
     {
         var mavValue = new MavParamValue(int.MaxValue);
         var value = int.MaxValue;
@@ -159,7 +159,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task UInt_Min_Value()
+    public void UInt_Min_Value()
     {
         var mavValue = new MavParamValue(uint.MinValue);
         var value = uint.MinValue;
@@ -173,7 +173,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task UInt_Max_Value()
+    public void UInt_Max_Value()
     {
         var mavValue = new MavParamValue(uint.MaxValue);
         var value = uint.MaxValue;
@@ -187,7 +187,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Float_Min_Value()
+    public void Float_Min_Value()
     {
         var mavValue = new MavParamValue(float.MinValue);
         var value = float.MinValue;
@@ -201,7 +201,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Float_Max_Value()
+    public void Float_Max_Value()
     {
         var mavValue = new MavParamValue(float.MaxValue);
         var value = float.MaxValue;
@@ -215,7 +215,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Float_NaN_Value()
+    public void Float_NaN_Value()
     {
         var mavValue = new MavParamValue(float.NaN);
         var value = float.NaN;
@@ -229,7 +229,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Float_Positive_Infinity_Value()
+    public void Float_Positive_Infinity_Value()
     {
         var mavValue = new MavParamValue(float.PositiveInfinity);
         var value = float.PositiveInfinity;
@@ -243,7 +243,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Float_Negative_Infinity_Value()
+    public void Float_Negative_Infinity_Value()
     {
         var mavValue = new MavParamValue(float.NegativeInfinity);
         var value = float.NegativeInfinity;
@@ -257,7 +257,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Float_Epsilon_Value()
+    public void Float_Epsilon_Value()
     {
         var mavValue = new MavParamValue(float.Epsilon);
         var value = float.Epsilon;
@@ -271,7 +271,7 @@ public class MavParamValueTest
     }
 
     [Fact]
-    public async Task Float_Cast_To_Int_Invalid_Operation_Exception()
+    public void Float_Cast_To_Int_Invalid_Operation_Exception()
     {
         var mavValue = new MavParamValue(12.34f);
         Assert.Throws<InvalidOperationException>(() =>
@@ -281,7 +281,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Int_Cast_To_Float_Invalid_Operation_Exception()
+    public void Int_Cast_To_Float_Invalid_Operation_Exception()
     {
         var mavValue = new MavParamValue(1234);
         Assert.Throws<InvalidOperationException>(() =>
@@ -291,63 +291,63 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Int_Rather_Than()
+    public void Int_Rather_Than()
     {
         var mavValue = new MavParamValue(1234);
         Assert.True(mavValue > 220);
     }
     
     [Fact]
-    public async Task Int_Rather_Than_Or_Equals()
+    public void Int_Rather_Than_Or_Equals()
     {
         var mavValue = new MavParamValue(1234);
         Assert.True(mavValue >= 0);
     }
     
     [Fact]
-    public async Task Int_Less_Than()
+    public void Int_Less_Than()
     {
         var mavValue = new MavParamValue(1234);
         Assert.False(mavValue < 220);
     }
     
     [Fact]
-    public async Task Int_Less_Than_Or_Equals()
+    public void Int_Less_Than_Or_Equals()
     {
         var mavValue = new MavParamValue(1234);
         Assert.False(mavValue <= 0);
     }
     
     [Fact]
-    public async Task Float_Rather_Than()
+    public void Float_Rather_Than()
     {
         var mavValue = new MavParamValue(12.34f);
         Assert.True(mavValue > 2.20f);
     }
     
     [Fact]
-    public async Task Float_Rather_Than_Or_Equals()
+    public void Float_Rather_Than_Or_Equals()
     {
         var mavValue = new MavParamValue(12.34f);
         Assert.True(mavValue >= 0f);
     }
     
     [Fact]
-    public async Task Float_Less_Than()
+    public void Float_Less_Than()
     {
         var mavValue = new MavParamValue(12.34f);
         Assert.False(mavValue < 0f);
     }
     
     [Fact]
-    public async Task Float_Less_Than_Or_Equals()
+    public void Float_Less_Than_Or_Equals()
     {
         var mavValue = new MavParamValue(12.34f);
         Assert.False(mavValue <= 2.2f);
     }
     
     [Fact]
-    public async Task Float_Rather_Than_Int_Invalid_Operation_Exception()
+    public void Float_Rather_Than_Int_Invalid_Operation_Exception()
     {
         var mavValue = new MavParamValue(12.34f);
         Assert.Throws<InvalidOperationException>(() =>
@@ -357,7 +357,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Float_Rather_Than_Or_Equals_Int_Invalid_Operation_Exception()
+    public void Float_Rather_Than_Or_Equals_Int_Invalid_Operation_Exception()
     {
         var mavValue = new MavParamValue(12.34f);
         Assert.Throws<InvalidOperationException>(() =>
@@ -367,7 +367,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Float_Less_Than_Int_Invalid_Operation_Exception()
+    public void Float_Less_Than_Int_Invalid_Operation_Exception()
     {
         var mavValue = new MavParamValue(12.34f);
         Assert.Throws<InvalidOperationException>(() =>
@@ -377,7 +377,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Float_Less_Than_Or_Equals_Int_Invalid_Operation_Exception()
+    public void Float_Less_Than_Or_Equals_Int_Invalid_Operation_Exception()
     {
         var mavValue = new MavParamValue(12.34f);
         Assert.Throws<InvalidOperationException>(() =>
@@ -387,7 +387,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Int_Rather_Than_Float_Invalid_Operation_Exception()
+    public void Int_Rather_Than_Float_Invalid_Operation_Exception()
     {
         var mavValue = new MavParamValue(1234);
         Assert.Throws<InvalidOperationException>(() =>
@@ -397,7 +397,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Int_Rather_Than_Or_Equals_Float_Invalid_Operation_Exception()
+    public void Int_Rather_Than_Or_Equals_Float_Invalid_Operation_Exception()
     {
         var mavValue = new MavParamValue(1234);
         Assert.Throws<InvalidOperationException>(() =>
@@ -407,7 +407,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Int_Less_Than_Float_Invalid_Operation_Exception()
+    public void Int_Less_Than_Float_Invalid_Operation_Exception()
     {
         var mavValue = new MavParamValue(1234);
         Assert.Throws<InvalidOperationException>(() =>
@@ -417,7 +417,7 @@ public class MavParamValueTest
     }
     
     [Fact]
-    public async Task Int_Less_Than_Or_Equals_Float_Invalid_Operation_Exception()
+    public void Int_Less_Than_Or_Equals_Float_Invalid_Operation_Exception()
     {
         var mavValue = new MavParamValue(1234);
         Assert.Throws<InvalidOperationException>(() =>

@@ -39,10 +39,10 @@ namespace Asv.Mavlink
     {
         private readonly string _ifcLogName;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private string _locTargetName;
-        private string _logLocalName;
-        private string _logSend;
-        private string _logRecv;
+        private string? _locTargetName;
+        private string? _logLocalName;
+        private string? _logSend;
+        private string? _logRecv;
 
         protected MavlinkMicroserviceClient(string ifcLogName, IMavlinkV2Connection connection,
             MavlinkClientIdentity identity,
@@ -118,7 +118,7 @@ namespace Asv.Mavlink
         }
 
         protected async Task<TAnswerPacket> InternalSendAndWaitAnswer<TAnswerPacket>(IPacketV2<IPayload> packet,
-            CancellationToken cancel, Func<TAnswerPacket, bool> filter = null, int timeoutMs = 1000)
+            CancellationToken cancel, Func<TAnswerPacket, bool>? filter = null, int timeoutMs = 1000)
             where TAnswerPacket : IPacketV2<IPayload>, new()
         {
             var p = new TAnswerPacket();
@@ -138,14 +138,14 @@ namespace Asv.Mavlink
 
         protected async Task<TResult> InternalCall<TResult,TPacketSend,TPacketRecv>(
             Action<TPacketSend> fillPacket, Func<TPacketRecv,bool> filter, Func<TPacketRecv,TResult> resultGetter, int attemptCount = 5,
-            Action<TPacketSend,int> fillOnConfirmation = null, int timeoutMs = 1000,  CancellationToken cancel = default)
+            Action<TPacketSend,int>? fillOnConfirmation = null, int timeoutMs = 1000,  CancellationToken cancel = default)
             where TPacketSend : IPacketV2<IPayload>, new()
             where TPacketRecv : IPacketV2<IPayload>, new()
         {
             var packet = InternalGeneratePacket<TPacketSend>();
             fillPacket(packet);
             byte currentAttempt = 0;
-            TPacketRecv result = default;
+            TPacketRecv? result = default;
             var name = packet.Name;
             while (currentAttempt < attemptCount)
             {
