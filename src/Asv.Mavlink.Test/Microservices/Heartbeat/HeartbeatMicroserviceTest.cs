@@ -25,8 +25,7 @@ public class HeartbeatMicroserviceTest
             link.Client, 
             new MavlinkClientIdentity{SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13},
             new PacketSequenceCalculator(),
-            TaskPoolScheduler.Default,
-            new HeartbeatClientConfig());
+            new HeartbeatClientConfig(), TaskPoolScheduler.Default);
         
         serverHeartbeat.Set(_=>
         {

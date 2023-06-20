@@ -1,3 +1,4 @@
+#nullable enable
 using System.Collections.Generic;
 using System.Reactive.Concurrency;
 using System.Threading;
@@ -28,25 +29,25 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
         MavlinkClientIdentity identity,
         VehicleClientConfig config,
         IPacketSequenceCalculator seq, 
-        IScheduler scheduler):base(connection,identity,config,seq,scheduler)
+        IScheduler? scheduler = null):base(connection,identity,config,seq,scheduler)
     {
         _config = config;
-        Commands = new CommandClient(connection,identity,seq,config.Command,scheduler).DisposeItWith(Disposable);
-        Offboard = new OffboardClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
-        _params = new ParamsClientEx(new ParamsClient(Connection, Identity, Seq, _config.Params, Scheduler), _config.Params).DisposeItWith(Disposable);
-        Logging = new LoggingClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
-        var missions = new MissionClient(connection, identity, seq, _config.Missions, scheduler).DisposeItWith(Disposable);
+        Commands = new CommandClient(connection,identity,seq,config.Command).DisposeItWith(Disposable);
+        Offboard = new OffboardClient(connection, identity, seq).DisposeItWith(Disposable);
+        _params = new ParamsClientEx(new ParamsClient(Connection, Identity, Seq, _config.Params), _config.Params).DisposeItWith(Disposable);
+        Logging = new LoggingClient(connection, identity, seq).DisposeItWith(Disposable);
+        var missions = new MissionClient(connection, identity, seq, _config.Missions).DisposeItWith(Disposable);
         Missions = new MissionClientEx(missions).DisposeItWith(Disposable);
-        Ftp = new FtpClient(connection, identity, new FtpConfig(), seq, scheduler).DisposeItWith(Disposable);
-        var gnss = new GnssClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
+        Ftp = new FtpClient(connection, identity, new FtpConfig(), seq).DisposeItWith(Disposable);
+        var gnss = new GnssClient(connection, identity, seq).DisposeItWith(Disposable);
         Gnss = new GnssClientEx(gnss).DisposeItWith(Disposable);
-        V2Extension = new V2ExtensionClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
-        var pos = new PositionClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
-        Position = new PositionClientEx(pos,Heartbeat,Commands).DisposeItWith(Disposable);
-        var rtt = new TelemetryClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
+        V2Extension = new V2ExtensionClient(connection, identity, seq).DisposeItWith(Disposable);
+        var pos = new PositionClient(connection, identity, seq).DisposeItWith(Disposable);
+        Position = new PositionClientEx(pos,Heartbeat,Commands,scheduler).DisposeItWith(Disposable);
+        var rtt = new TelemetryClient(connection, identity, seq).DisposeItWith(Disposable);
         Rtt = new TelemetryClientEx(rtt).DisposeItWith(Disposable);
-        Debug = new DebugClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
-        Dgps = new DgpsClient(connection, identity, seq, scheduler).DisposeItWith(Disposable);
+        Debug = new DebugClient(connection, identity, seq).DisposeItWith(Disposable);
+        Dgps = new DgpsClient(connection, identity, seq).DisposeItWith(Disposable);
     }
     protected override async Task InternalInit()
     {

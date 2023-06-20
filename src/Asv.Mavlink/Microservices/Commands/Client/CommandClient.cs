@@ -1,5 +1,4 @@
 using System;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +19,7 @@ namespace Asv.Mavlink
         private readonly CommandProtocolConfig _config;
 
         public CommandClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, CommandProtocolConfig config, IScheduler scheduler):base("COMMAND", connection, identity, seq, scheduler)
+            IPacketSequenceCalculator seq, CommandProtocolConfig config):base("COMMAND", connection, identity, seq)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             OnCommandAck = InternalFilter<CommandAckPacket>().Select(_ => _.Payload);

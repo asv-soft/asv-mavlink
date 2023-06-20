@@ -1,4 +1,6 @@
+#nullable enable
 using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +33,7 @@ public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
     private readonly RxValue<double> _yawSpeed;
 
 
-    public PositionClientEx(IPositionClient client, IHeartbeatClient heartbeatClient, ICommandClient commandClient)
+    public PositionClientEx(IPositionClient client, IHeartbeatClient heartbeatClient, ICommandClient commandClient, IScheduler? scheduler = null)
     {
         _commandClient = commandClient;
         Base = client;
@@ -79,7 +81,8 @@ public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
         _isArmed = new RxValue<bool>(false).DisposeItWith(Disposable);
         _armedTime = new RxValue<TimeSpan>(TimeSpan.Zero).DisposeItWith(Disposable);
         heartbeatClient.RawHeartbeat.Select(_ => _.BaseMode.HasFlag(MavModeFlag.MavModeFlagSafetyArmed)).Subscribe(_isArmed).DisposeItWith(Disposable);
-        var timer = Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1)).Where(_=>IsArmed.Value).Subscribe(_ =>
+        var timer = scheduler == null ? Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1)): Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1),scheduler);
+        timer.Where(_=>IsArmed.Value).Subscribe(_ =>
         {
             var lastBin = Interlocked.Read(ref _lastArmedTime);
             if (lastBin == 0)

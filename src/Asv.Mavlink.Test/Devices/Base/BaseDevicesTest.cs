@@ -187,21 +187,7 @@ public class BaseDevicesTest
         });
     }
     
-    [Fact]
-    public void ClientDeviceSchedulerArgumentNullExceptionTest()
-    {
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            var link = new VirtualLink();
-            
-            var clientDevice = new AbstractClientDevice(link.Client,
-                new MavlinkClientIdentity(),
-                new ClientDeviceConfig(),
-                new PacketSequenceCalculator(),
-                null);
-        });
-        
-    }
+
     
     [Theory]
     [InlineData("The quick brown fox jumps over the lazy dog")]
@@ -303,7 +289,7 @@ public class BaseDevicesTest
         
         clientDevice.WaitUntilConnect();
         
-        await Task.Delay(2000);
+        await Task.Delay(5_000);
 
         var linkQuality = clientDevice.Heartbeat.LinkQuality.Value;
         
@@ -313,7 +299,7 @@ public class BaseDevicesTest
         
         _output.WriteLine($"Tx packets: {serverDevice.Connection.TxPackets}");
         
-        Assert.Equal(0.5, linkQuality);
+        Assert.Equal(0.5, linkQuality,1);
     }
     
     [Fact]

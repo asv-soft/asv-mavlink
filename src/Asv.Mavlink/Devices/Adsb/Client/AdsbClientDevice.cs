@@ -1,4 +1,5 @@
-﻿using System.Reactive.Concurrency;
+﻿#nullable enable
+using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -12,11 +13,11 @@ public class AdsbClientDeviceConfig : ClientDeviceConfig
 
 public class AdsbClientDevice : ClientDevice, IAdsbClientDevice
 {
-    public AdsbClientDevice(IMavlinkV2Connection connection, 
-        MavlinkClientIdentity identity, 
-        IPacketSequenceCalculator seq, 
-        IScheduler scheduler,
-        AdsbClientDeviceConfig config) : base(connection, identity, config, seq, scheduler)
+    public AdsbClientDevice(IMavlinkV2Connection connection,
+        MavlinkClientIdentity identity,
+        IPacketSequenceCalculator seq,
+        AdsbClientDeviceConfig config,
+        IScheduler? scheduler = null) : base(connection, identity, config, seq, scheduler)
     {
         Adsb = new AdsbVehicleClient(connection, identity, seq, config.Adsb, scheduler).DisposeItWith(Disposable);
     }

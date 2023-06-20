@@ -1,5 +1,4 @@
 using System;
-using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
@@ -15,7 +14,7 @@ namespace Asv.Mavlink
         private uint _seqNumber;
 
         public DgpsClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, IScheduler scheduler):base("DGPS", connection, identity, seq, scheduler)
+            IPacketSequenceCalculator seq):base("DGPS", connection, identity, seq)
         {
         
         }

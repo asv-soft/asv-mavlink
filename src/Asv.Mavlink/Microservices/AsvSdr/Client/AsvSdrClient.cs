@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,8 +16,8 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     private uint _requestCounter;
 
     public AsvSdrClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq, IScheduler scheduler)
-        : base("SDR", connection, identity, seq, scheduler)
+        IPacketSequenceCalculator seq)
+        : base("SDR", connection, identity, seq)
     {
         _identity = identity;
         _status = new RxValue<AsvSdrOutStatusPayload>().DisposeItWith(Disposable);

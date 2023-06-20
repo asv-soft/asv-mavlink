@@ -1,4 +1,3 @@
-using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -12,7 +11,7 @@ namespace Asv.Mavlink
         private readonly RxValue<V2ExtensionPacket> _onData = new();
         public static readonly int StaticMaxDataSize = new V2ExtensionPayload().GetMaxByteSize();
 
-        public V2ExtensionClient(IMavlinkV2Connection connection,MavlinkClientIdentity identity, IPacketSequenceCalculator seq, IScheduler scheduler):base("V2EXT", connection, identity, seq, scheduler)
+        public V2ExtensionClient(IMavlinkV2Connection connection,MavlinkClientIdentity identity, IPacketSequenceCalculator seq):base("V2EXT", connection, identity, seq)
         {
             _identity = identity;
             InternalFilter<V2ExtensionPacket>().Subscribe(_onData).DisposeItWith(Disposable);

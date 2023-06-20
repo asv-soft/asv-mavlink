@@ -1,4 +1,6 @@
+#nullable enable
 using System;
+using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
@@ -18,6 +20,7 @@ namespace Asv.Mavlink
     public class HeartbeatClient : MavlinkMicroserviceClient, IHeartbeatClient
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly CircularBuffer2<double> _valueBuffer = new(5);
         private readonly IncrementalRateCounter _rxRate;
         private readonly RxValue<HeartbeatPayload> _heartBeat;
         private readonly RxValue<double> _packetRate;
@@ -31,7 +34,7 @@ namespace Asv.Mavlink
         private readonly TimeSpan _heartBeatTimeoutMs;
 
         public HeartbeatClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, IScheduler scheduler, HeartbeatClientConfig config):base("HEARTBEAT", connection, identity, seq, scheduler)
+            IPacketSequenceCalculator seq, HeartbeatClientConfig config, IScheduler? scheduler = null):base("HEARTBEAT", connection, identity, seq)
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
             FullId = (ushort)(identity.TargetComponentId | identity.TargetSystemId << 8);
@@ -54,10 +57,19 @@ namespace Asv.Mavlink
             _packetRate = new RxValue<double>().DisposeItWith(Disposable);
             _link = new LinkIndicator(config.LinkQualityWarningSkipCount).DisposeItWith(Disposable);
             _linkQuality = new RxValue<double>(1).DisposeItWith(Disposable);
-            Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1))
-                .ObserveOn(Scheduler)
-                .Subscribe(CheckConnection)
-                .DisposeItWith(Disposable);
+            if (scheduler != null)
+            {
+                Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), scheduler)
+                    .Subscribe(CheckConnection)
+                    .DisposeItWith(Disposable);    
+            }
+            else
+            {
+                Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1))
+                    .Subscribe(CheckConnection)
+                    .DisposeItWith(Disposable);
+            }
+            
             RawHeartbeat.Subscribe(_ =>
             {
                 if (IsDisposed) return;
@@ -79,7 +91,8 @@ namespace Asv.Mavlink
 
             var seq = last - first;
             if (seq < 0) seq = last + byte.MaxValue - first + 1;
-            _linkQuality.OnNext(Math.Round(((double)count) / seq,2));
+            _valueBuffer.PushFront(Math.Round(((double)count) / seq,2));
+            _linkQuality.OnNext(_valueBuffer.Average());
         }
 
         public ushort FullId { get; }

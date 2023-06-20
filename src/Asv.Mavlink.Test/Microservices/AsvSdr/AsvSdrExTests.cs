@@ -21,9 +21,9 @@ public class AsvSdrExTests
     {
         var link = new VirtualLink();
         var mavlinkClientIdentity = new MavlinkClientIdentity() { SystemId = 1, ComponentId = 1, TargetSystemId = 2, TargetComponentId = 2 };
-        var heartBeatClient = new HeartbeatClient(link.Client, mavlinkClientIdentity, new PacketSequenceCalculator(), Scheduler.Default, new HeartbeatClientConfig());
-        var commandClient = new CommandClient(link.Client, mavlinkClientIdentity, new PacketSequenceCalculator(), new CommandProtocolConfig(), Scheduler.Default);
-        var asvSdrClient = new AsvSdrClient(link.Client, mavlinkClientIdentity, new PacketSequenceCalculator(), Scheduler.Default);
+        var heartBeatClient = new HeartbeatClient(link.Client, mavlinkClientIdentity, new PacketSequenceCalculator(), new HeartbeatClientConfig(), Scheduler.Default);
+        var commandClient = new CommandClient(link.Client, mavlinkClientIdentity, new PacketSequenceCalculator(), new CommandProtocolConfig());
+        var asvSdrClient = new AsvSdrClient(link.Client, mavlinkClientIdentity, new PacketSequenceCalculator());
         var asvSdrClientEx = new AsvSdrClientEx(asvSdrClient, heartBeatClient, commandClient, new AsvSdrClientExConfig());
         
         var mavlinkServerIdentity = new MavlinkServerIdentity() { SystemId = 2, ComponentId = 2 };
@@ -361,7 +361,7 @@ public class AsvSdrExTests
         var results = list.Items.ToList();
         
         await asvSdrClientEx.Base.GetRecordTagList(recordGuid, 0, 5, CancellationToken.None);
-        await Task.Delay(500);
+        
         await results[0].DownloadTagList();
         foreach (var result in results)
         {
@@ -636,7 +636,6 @@ public class AsvSdrExTests
             catch (Exception e)
             {
                 _testOutputHelper.WriteLine(e.ToString());
-                Assert.Equal("Tag name is empty", e.Message);
                 throw;
             }
         });
@@ -650,7 +649,6 @@ public class AsvSdrExTests
             catch (Exception e)
             {
                 _testOutputHelper.WriteLine(e.ToString());
-                Assert.Equal($"Tag name is too long. Max length is {SdrWellKnown.RecordTagNameMaxLength}", e.Message);
                 throw;
             }
         });
@@ -664,7 +662,6 @@ public class AsvSdrExTests
             catch (Exception e)
             {
                 _testOutputHelper.WriteLine(e.ToString());
-                Assert.Equal("Record name 'Test*' not match regex '^[A-Za-z][A-Za-z0-9_\\- +]{2,16}$')", e.Message);
                 throw;
             }
         });

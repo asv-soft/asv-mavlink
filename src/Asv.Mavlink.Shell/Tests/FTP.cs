@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,8 +39,7 @@ public class FTP : ConsoleCommand
         FtpClientEx client = new FtpClientEx(new FtpClient(conn, 
             new MavlinkClientIdentity { SystemId = 123, ComponentId = 123, TargetComponentId = 1, TargetSystemId = 1 }, 
             new FtpConfig(), 
-            new PacketSequenceCalculator(), 
-            TaskPoolScheduler.Default));
+            new PacketSequenceCalculator()));
 
         var result = client.ListDirectory(".", _cancel.Token).Result;
 

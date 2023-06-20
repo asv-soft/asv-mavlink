@@ -61,8 +61,7 @@ public class ParamsMicroserviceTest
         var client = new ParamsClient(link.Client, 
             new(2,2,1,1), 
             new PacketSequenceCalculator(), 
-            new ParamsClientExConfig(), 
-            Scheduler.Default);
+            new ParamsClientExConfig());
         
         var clientEx = new ParamsClientEx(client, new ParamsClientExConfig());
         
@@ -117,8 +116,7 @@ public class ParamsMicroserviceTest
         var client = new ParamsClient(link.Client, 
             new(2,2,1,1), 
             new PacketSequenceCalculator(), 
-            new ParamsClientExConfig(), 
-            Scheduler.Default);
+            new ParamsClientExConfig());
         
         var clientEx = new ParamsClientEx(client, new ParamsClientExConfig());
         
@@ -179,7 +177,7 @@ public class ParamsMicroserviceTest
         
         var client = new ParamsClient(link.Client, 
             new(2,2,1,1), 
-            new PacketSequenceCalculator(), new ParamsClientExConfig(), Scheduler.Default);
+            new PacketSequenceCalculator(), new ParamsClientExConfig());
         
         var clientEx = new ParamsClientEx(client, new ParamsClientExConfig());
         
@@ -244,8 +242,7 @@ public class ParamsMicroserviceTest
         var client = new ParamsClient(link.Client, 
             new(2,2,1,1), 
             new PacketSequenceCalculator(), 
-            new ParamsClientExConfig(), 
-            Scheduler.Default);
+            new ParamsClientExConfig());
         
         var clientEx = new ParamsClientEx(client, new ParamsClientExConfig());
         

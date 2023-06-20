@@ -109,7 +109,7 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
             throw new Exception("Request fail");
 
-        while (DateTime.Now - lastUpdate < _maxTimeToWaitForResponseForList && _records.Count >= requestAck.ItemsCount)
+        while (DateTime.Now - lastUpdate < _maxTimeToWaitForResponseForList && _records.Count < requestAck.ItemsCount)
         {
             await Task.Delay(1000, cancel).ConfigureAwait(false);
             progress?.Report((double)requestAck.ItemsCount/_records.Count);

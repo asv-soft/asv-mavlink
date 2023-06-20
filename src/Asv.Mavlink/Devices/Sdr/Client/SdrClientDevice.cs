@@ -1,3 +1,4 @@
+#nullable enable
 using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,10 +13,10 @@ public class SdrClientDeviceConfig:ClientDeviceConfig
 }
 public class SdrClientDevice : ClientDevice, ISdrClientDevice
 {
-    public SdrClientDevice(IMavlinkV2Connection connection, MavlinkClientIdentity identity, SdrClientDeviceConfig config, IPacketSequenceCalculator seq, IScheduler scheduler) : base(connection, identity, config, seq, scheduler)
+    public SdrClientDevice(IMavlinkV2Connection connection, MavlinkClientIdentity identity, SdrClientDeviceConfig config, IPacketSequenceCalculator seq, IScheduler? scheduler = null) : base(connection, identity, config, seq, scheduler)
     {
-        Command = new CommandClient(connection, identity, seq, config.Command, scheduler).DisposeItWith(Disposable);
-        Sdr = new AsvSdrClientEx(new AsvSdrClient(connection, identity, seq, scheduler), Heartbeat, Command,config.SdrEx).DisposeItWith(Disposable);
+        Command = new CommandClient(connection, identity, seq, config.Command).DisposeItWith(Disposable);
+        Sdr = new AsvSdrClientEx(new AsvSdrClient(connection, identity, seq), Heartbeat, Command,config.SdrEx).DisposeItWith(Disposable);
     }
     protected override Task InternalInit()
     {

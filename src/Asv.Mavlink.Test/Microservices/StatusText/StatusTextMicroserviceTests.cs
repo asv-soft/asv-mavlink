@@ -28,8 +28,7 @@ public class StatusTextMicroserviceTests
 
             var client = new StatusTextClient(link.Client,
                 null,
-                new PacketSequenceCalculator(),
-                Scheduler.Default);
+                new PacketSequenceCalculator());
         });
     }
     
@@ -42,8 +41,7 @@ public class StatusTextMicroserviceTests
 
             var client = new StatusTextClient(link.Client,
                 new MavlinkClientIdentity(),
-                null,
-                Scheduler.Default);
+                null);
         });
     }
     
@@ -54,25 +52,11 @@ public class StatusTextMicroserviceTests
         {
             var client = new StatusTextClient(null,
                 new MavlinkClientIdentity(),
-                new PacketSequenceCalculator(),
-                Scheduler.Default);
+                new PacketSequenceCalculator());
         });
     }
     
-    [Fact]
-    public async Task Client_Service_Should_Throw_Argument_Null_Exception_If_Scheduler_Is_Null()
-    {
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            var link = new VirtualLink();
-
-            var client = new StatusTextClient(link.Client,
-                new MavlinkClientIdentity(),
-                new PacketSequenceCalculator(),
-                null);
-        });
-    }
-
+   
     #endregion
 
     #region Server
@@ -166,7 +150,7 @@ public class StatusTextMicroserviceTests
             new MavlinkServerIdentity(), new StatusTextLoggerConfig(), Scheduler.Default);
 
         var client = new StatusTextClient(link.Client, new MavlinkClientIdentity(),
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         server.Log(MavSeverity.MavSeverityDebug, messageText);
 
@@ -196,7 +180,7 @@ public class StatusTextMicroserviceTests
             serverIdentity, new StatusTextLoggerConfig(), Scheduler.Default);
 
         var client = new StatusTextClient(link.Client, clientIdentity,
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         server.Log(MavSeverity.MavSeverityDebug, "TEST MESSAGE");
         var name = client.Name.Value;
@@ -212,7 +196,7 @@ public class StatusTextMicroserviceTests
             new MavlinkServerIdentity(), new StatusTextLoggerConfig(), Scheduler.Default);
 
         var client = new StatusTextClient(link.Client, new MavlinkClientIdentity(),
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         var isOverloaded = false;
         var overloadIndex = 0;
@@ -261,7 +245,7 @@ public class StatusTextMicroserviceTests
             serverIdentity, new StatusTextLoggerConfig(), Scheduler.Default);
 
         var client = new StatusTextClient(link.Client, clientIdentity,
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
         
         // currently impossible to check if packets were lost because Connection properties are protected
     }

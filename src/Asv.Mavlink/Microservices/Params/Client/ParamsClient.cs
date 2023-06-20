@@ -1,5 +1,4 @@
 using System;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -22,8 +21,8 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     private readonly Subject<ParamValuePayload> _onParamValue;
 
-    public ParamsClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq,ParameterClientConfig config, IScheduler scheduler) 
-        : base("PARAMS", connection, identity, seq, scheduler)
+    public ParamsClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq,ParameterClientConfig config) 
+        : base("PARAMS", connection, identity, seq)
     {
         _config = config;
         _onParamValue = new Subject<ParamValuePayload>().DisposeItWith(Disposable);

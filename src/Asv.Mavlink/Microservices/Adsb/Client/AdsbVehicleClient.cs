@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -24,7 +25,7 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
 
     public AdsbVehicleClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq, AdsbVehicleClientConfig config,
-        IScheduler scheduler) : base("ADSB", connection, identity, seq, scheduler)
+        IScheduler? scheduler = null) : base("ADSB", connection, identity, seq)
     {
         _onAdsbTarget = new Subject<AdsbVehiclePayload>().DisposeItWith(Disposable);
         InternalFilter<AdsbVehiclePacket>()
@@ -36,9 +37,19 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
         _targetSource = new SourceCache<AdsbVehicle, uint>(_ => _.IcaoAddress).DisposeItWith(Disposable);
         Targets = _targetSource.Connect().Transform(_ => (IAdsbVehicle)_);
         _onAdsbTarget.Subscribe(UpdateTarget).DisposeItWith(Disposable);
-        Observable.Timer(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3))
-            .Subscribe(DeleteOldTargets)
-            .DisposeItWith(Disposable);
+        if (scheduler != null)
+        {
+            Observable.Timer(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3),scheduler)
+                .Subscribe(DeleteOldTargets)
+                .DisposeItWith(Disposable);    
+        }
+        else
+        {
+            Observable.Timer(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3))
+                .Subscribe(DeleteOldTargets)
+                .DisposeItWith(Disposable);
+        }
+        
     }
 
     private void DeleteOldTargets(long l)

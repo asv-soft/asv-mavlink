@@ -1,5 +1,4 @@
 using System;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using Asv.Common;
@@ -13,7 +12,7 @@ namespace Asv.Mavlink
         private readonly RxValue<LoggingDataPayload> _loggingData = new();
 
         public LoggingClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, IScheduler scheduler):base("LOG", connection, identity, seq, scheduler)
+            IPacketSequenceCalculator seq):base("LOG", connection, identity, seq)
         {
 
             InternalFilter<LoggingDataPacket>()

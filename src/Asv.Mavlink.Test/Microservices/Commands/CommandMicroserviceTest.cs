@@ -17,7 +17,7 @@ public class CommandMicroserviceTest
             {
                 CommandTimeoutMs = 1000,
                 CommandAttempt = 5,
-            }, TaskPoolScheduler.Default);
+            });
         return client;
     }
 

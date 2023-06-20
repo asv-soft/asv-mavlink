@@ -1,5 +1,5 @@
+#nullable enable
 using System;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,13 +46,13 @@ namespace Asv.Mavlink
 
         protected MavlinkMicroserviceClient(string ifcLogName, IMavlinkV2Connection connection,
             MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, IScheduler scheduler)
+            IPacketSequenceCalculator seq)
         {
             Connection = connection ?? throw new ArgumentNullException(nameof(connection));
             Identity = identity ?? throw new ArgumentNullException(nameof(identity));
             Sequence = seq ?? throw new ArgumentNullException(nameof(seq));
             _ifcLogName = ifcLogName;
-            Scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
+            InternalFilteredVehiclePackets = Connection.Where(FilterVehicle).Publish().RefCount();
         }
 
         protected string LogTargetName => _locTargetName ??= $"{Identity.TargetSystemId}:{Identity.TargetSystemId}";
@@ -81,7 +81,7 @@ namespace Asv.Mavlink
             return InternalFilteredVehiclePackets.Where(_ => _.MessageId == id).Cast<TPacket>().Where(filter);
         }
 
-        protected IObservable<IPacketV2<IPayload>> InternalFilteredVehiclePackets => Connection.Where(FilterVehicle).ObserveOn(Scheduler).Publish().RefCount();
+        protected IObservable<IPacketV2<IPayload>> InternalFilteredVehiclePackets { get; }
         private bool FilterVehicle(IPacketV2<IPayload> packetV2)
         {
             if (Identity.TargetSystemId != packetV2.SystemId) return false;
@@ -94,7 +94,6 @@ namespace Asv.Mavlink
 
         protected IMavlinkV2Connection Connection { get; }
 
-        protected IScheduler Scheduler { get; }
 
 
         protected TPacket InternalGeneratePacket<TPacket>()

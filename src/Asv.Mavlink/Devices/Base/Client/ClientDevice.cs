@@ -17,6 +17,7 @@ public class ClientDeviceConfig
 public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
 {
     private readonly ClientDeviceConfig _config;
+    private readonly IScheduler _scheduler;
     private readonly RxValue<InitState> _onInit;
     private readonly RxValue<string> _name;
     private bool _needToRequestAgain = true;
@@ -27,15 +28,15 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
         MavlinkClientIdentity identity,
         ClientDeviceConfig config,
         IPacketSequenceCalculator seq, 
-        IScheduler scheduler)
+        IScheduler? scheduler = null)
     {
         Connection = connection;
         _config = config;
+        _scheduler = scheduler;
         Identity = identity;
         Seq = seq;
-        Scheduler = scheduler;
 
-        Heartbeat = new HeartbeatClient(connection,identity,seq,scheduler,config.Heartbeat)
+        Heartbeat = new HeartbeatClient(connection,identity,seq,config.Heartbeat, scheduler)
             .DisposeItWith(Disposable);
         
         _onInit = new RxValue<InitState>(InitState.WaitConnection)
@@ -44,10 +45,20 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
             .Where(_ => _ == LinkState.Disconnected)
             .Subscribe(_ => _needToRequestAgain = true).DisposeItWith(Disposable);
         
-        Heartbeat.Link.DistinctUntilChanged().Where(_ => _needToRequestAgain).Where(_ => _ == LinkState.Connected)
-            // only one time
-            .Delay(TimeSpan.FromMilliseconds(100)).Subscribe(_ => TryReconnect()).DisposeItWith(Disposable);
-        StatusText = new StatusTextClient(connection,identity,seq,scheduler).DisposeItWith(Disposable);
+        if (scheduler != null)
+        {
+            Heartbeat.Link.DistinctUntilChanged().Where(_ => _needToRequestAgain).Where(_ => _ == LinkState.Connected)
+                // only one time
+                .Delay(TimeSpan.FromMilliseconds(100),scheduler).Subscribe(_ => TryReconnect()).DisposeItWith(Disposable);
+        }
+        else
+        {
+            Heartbeat.Link.DistinctUntilChanged().Where(_ => _needToRequestAgain).Where(_ => _ == LinkState.Connected)
+                // only one time
+                .Delay(TimeSpan.FromMilliseconds(100)).Subscribe(_ => TryReconnect()).DisposeItWith(Disposable);
+        }
+       
+        StatusText = new StatusTextClient(connection,identity,seq).DisposeItWith(Disposable);
         _name = new RxValue<string>().DisposeItWith(Disposable);
     }
 
@@ -67,8 +78,17 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
             if (IsDisposed) return; // no need to replay since the instance was already disposed
             Logger.Error( $"Error to init device:{e.Message}");
             _onInit.OnNext(InitState.Failed);
-            Observable.Timer(TimeSpan.FromMilliseconds(_config.RequestInitDataDelayAfterFailMs))
-                .Subscribe(_ => TryReconnect()).DisposeItWith(Disposable);
+            if (_scheduler != null)
+            {
+                Observable.Timer(TimeSpan.FromMilliseconds(_config.RequestInitDataDelayAfterFailMs),_scheduler)
+                    .Subscribe(_ => TryReconnect()).DisposeItWith(Disposable);    
+            }
+            else
+            {
+                Observable.Timer(TimeSpan.FromMilliseconds(_config.RequestInitDataDelayAfterFailMs))
+                    .Subscribe(_ => TryReconnect()).DisposeItWith(Disposable);
+            }
+            
         }
         finally
         {
@@ -89,6 +109,5 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
     public IMavlinkV2Connection Connection { get; }
     public MavlinkClientIdentity Identity { get; }
     public IPacketSequenceCalculator Seq { get; }
-    public IScheduler Scheduler { get; }
     public IRxValue<InitState> OnInit => _onInit;
 }

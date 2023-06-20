@@ -1,4 +1,3 @@
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,8 +20,8 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
 
 
     public PositionClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq, IScheduler scheduler)
-        : base("CTRL", connection, identity, seq, scheduler)
+        IPacketSequenceCalculator seq)
+        : base("CTRL", connection, identity, seq)
     {
         _target = new RxValue<PositionTargetGlobalIntPayload>().DisposeItWith(Disposable);
         InternalFilter<PositionTargetGlobalIntPacket>()

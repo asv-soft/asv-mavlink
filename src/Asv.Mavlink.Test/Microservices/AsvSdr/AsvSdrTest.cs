@@ -29,7 +29,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -49,7 +49,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -73,7 +73,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -93,7 +93,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -113,7 +113,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -133,7 +133,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -153,7 +153,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -173,7 +173,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -193,7 +193,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -213,7 +213,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -233,7 +233,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -253,7 +253,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -275,7 +275,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -295,7 +295,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -315,7 +315,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -337,7 +337,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -357,7 +357,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -377,7 +377,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -399,7 +399,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -419,7 +419,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -439,7 +439,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -461,7 +461,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -481,7 +481,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -501,7 +501,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -523,7 +523,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -543,7 +543,7 @@ public class AsvSdrTest
             new PacketSequenceCalculator(), Scheduler.Default);
         
         var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -573,7 +573,7 @@ public class AsvSdrTest
                 TargetSystemId = 2,
                 TargetComponentId = 2
             }, 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -621,7 +621,7 @@ public class AsvSdrTest
                 TargetSystemId = 2,
                 TargetComponentId = 2
             }, 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -674,7 +674,7 @@ public class AsvSdrTest
                 TargetSystemId = 2,
                 TargetComponentId = 2
             }, 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
         
@@ -723,7 +723,7 @@ public class AsvSdrTest
                 TargetSystemId = 2,
                 TargetComponentId = 2
             }, 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
         
@@ -772,7 +772,7 @@ public class AsvSdrTest
                 TargetSystemId = 2,
                 TargetComponentId = 2
             }, 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
         
@@ -824,7 +824,7 @@ public class AsvSdrTest
                 TargetSystemId = 2,
                 TargetComponentId = 2
             }, 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
         
@@ -975,7 +975,7 @@ public class AsvSdrTest
                 TargetSystemId = 2,
                 TargetComponentId = 2
             }, 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 
@@ -1030,7 +1030,7 @@ public class AsvSdrTest
                 TargetSystemId = 2,
                 TargetComponentId = 2
             }, 
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
 
         serverSdr.Start();
 

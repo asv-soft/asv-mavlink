@@ -1,3 +1,4 @@
+#nullable enable
 using System.Collections.Generic;
 using System.Reactive.Concurrency;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace Asv.Mavlink;
 
 public class ArduCopterClient:ArduVehicle
 {
-    public ArduCopterClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, VehicleClientConfig config, IPacketSequenceCalculator seq, IScheduler scheduler) 
+    public ArduCopterClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, VehicleClientConfig config, IPacketSequenceCalculator seq, IScheduler? scheduler = null) 
         : base(connection, identity, config, seq, scheduler)
     {
     }

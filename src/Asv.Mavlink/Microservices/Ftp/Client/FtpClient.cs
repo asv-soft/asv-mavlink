@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,7 +39,7 @@ namespace Asv.Mavlink
         private readonly FtpConfig _cfg;
 
         public FtpClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, FtpConfig cfg, 
-            IPacketSequenceCalculator seq, IScheduler scheduler) : base("FTP", connection, identity, seq, scheduler)
+            IPacketSequenceCalculator seq) : base("FTP", connection, identity, seq)
         {
             _cfg = cfg;
             _identity = identity;

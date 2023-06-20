@@ -1,5 +1,4 @@
 using System;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,12 +22,10 @@ namespace Asv.Mavlink
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly RxValue<ushort> _missionCurrent;
         private readonly RxValue<ushort> _missionReached;
-        private readonly MavlinkClientIdentity _identity;
 
         public MissionClient(IMavlinkV2Connection mavlink, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, MissionClientConfig config, IScheduler scheduler) : base("MISSION",mavlink, identity, seq, scheduler)
+            IPacketSequenceCalculator seq, MissionClientConfig config) : base("MISSION",mavlink, identity, seq)
         {
-            _identity = identity;
             _config = config;
             _missionCurrent = new RxValue<ushort>().DisposeItWith(Disposable);
             _missionReached = new RxValue<ushort>().DisposeItWith(Disposable);

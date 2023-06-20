@@ -46,7 +46,7 @@ namespace Asv.Mavlink.Test
             serverDevice.Gbs.CustomMode.OnNext(mode);
             serverDevice.Gbs.Position.OnNext(new GeoPoint(lat,lon,alt));
             
-            IGbsClientDevice clientDevice = new GbsClientDevice(link.Client,new MavlinkClientIdentity(), new PacketSequenceCalculator(),Scheduler.Default, new GbsClientDeviceConfig());
+            IGbsClientDevice clientDevice = new GbsClientDevice(link.Client,new MavlinkClientIdentity(), new PacketSequenceCalculator(), new GbsClientDeviceConfig(), Scheduler.Default);
             serverDevice.Heartbeat.Set(_ => _.CustomMode = (uint)mode);
             serverDevice.Gbs.Base.Set(_ =>
             {
@@ -99,7 +99,7 @@ namespace Asv.Mavlink.Test
             serverDevice.Gbs.ImesSatellites.OnNext(10);
             serverDevice.Gbs.CustomMode.OnNext(AsvGbsCustomMode.AsvGbsCustomModeIdle);
             serverDevice.Gbs.Position.OnNext(GeoPoint.Zero);
-            var clientDevice = new GbsClientDevice(link.Client,new MavlinkClientIdentity(), new PacketSequenceCalculator(),Scheduler.Default, new GbsClientDeviceConfig());
+            var clientDevice = new GbsClientDevice(link.Client,new MavlinkClientIdentity(), new PacketSequenceCalculator(), new GbsClientDeviceConfig(), Scheduler.Default);
             serverDevice.Start();
             clientDevice.WaitUntilConnect();
             await Task.Delay(2000);

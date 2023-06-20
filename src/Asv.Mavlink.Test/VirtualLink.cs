@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -17,9 +18,9 @@ public class VirtualLink:DisposableOnceWithCancel
         serverToClientFilter ??= _ => true;
         
         var serverStream = new VirtualDataStream("server").DisposeItWith(Disposable);
-        Server = MavlinkV2Connection.Create(serverStream).DisposeItWith(Disposable);
+        Server = MavlinkV2Connection.Create(serverStream,false,TaskPoolScheduler.Default).DisposeItWith(Disposable);
         var clientStream = new VirtualDataStream("client").DisposeItWith(Disposable);
-        Client = MavlinkV2Connection.Create(clientStream).DisposeItWith(Disposable);
+        Client = MavlinkV2Connection.Create(clientStream,false,TaskPoolScheduler.Default).DisposeItWith(Disposable);
         
         var serverToClient = new PacketV2Decoder().DisposeItWith(Disposable);
         MavlinkV2Connection.RegisterDefaultDialects(serverToClient);

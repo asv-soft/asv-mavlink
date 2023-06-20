@@ -1,5 +1,7 @@
+#nullable enable
 using System;
 using System.Buffers;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -17,11 +19,13 @@ namespace Asv.Mavlink
 {
     public class MavlinkV2Connection : DisposableOnceWithCancel, IMavlinkV2Connection
     {
+        private readonly IScheduler? _publishScheduler;
+
         #region Static
 
-        public static IMavlinkV2Connection Create(IDataStream dataStream, bool disposeDataStream = false)
+        public static IMavlinkV2Connection Create(IDataStream dataStream, bool disposeDataStream = false,IScheduler? publishScheduler = null)
         {
-            return new MavlinkV2Connection(dataStream, RegisterDefaultDialects,disposeDataStream);
+            return new MavlinkV2Connection(dataStream, RegisterDefaultDialects,disposeDataStream,publishScheduler);
         }
         
         public static IMavlinkV2Connection Create(string connectionString)
@@ -59,8 +63,9 @@ namespace Asv.Mavlink
             return p;
         }
 
-        public MavlinkV2Connection(IDataStream dataStream, Action<IPacketDecoder<IPacketV2<IPayload>>> register, bool disposeDataStream = false)
+        public MavlinkV2Connection(IDataStream dataStream, Action<IPacketDecoder<IPacketV2<IPayload>>> register, bool disposeDataStream = false, IScheduler? publishScheduler = null)
         {
+            _publishScheduler = publishScheduler;
             DataStream = dataStream;
             if (disposeDataStream && DataStream is IDisposable disposableStrm)
             {
@@ -70,7 +75,6 @@ namespace Asv.Mavlink
             register(_decoder);
             _decoder.DisposeItWith(Disposable);
             DataStream.Subscribe(_=> _decoder.OnData(_)).DisposeItWith(Disposable); 
-            
             _sendPacketSubject = new Subject<IPacketV2<IPayload>>().DisposeItWith(Disposable);
             _recvPacketsSubject = new Subject<IPacketV2<IPayload>>().DisposeItWith(Disposable);
             _decoder.Where(TryDecodeV2ExtensionPackets).Subscribe(_recvPacketsSubject).DisposeItWith(Disposable); // we need only one subscription to decoder
@@ -145,7 +149,7 @@ namespace Asv.Mavlink
 
         public IDisposable Subscribe(IObserver<IPacketV2<IPayload>> observer)
         {
-            return _recvPacketsSubject.Subscribe(observer);
+            return _publishScheduler != null ? _recvPacketsSubject.ObserveOn(_publishScheduler).Subscribe(observer) : _recvPacketsSubject.Subscribe(observer);
         }
 
         private bool TryDecodeV2ExtensionPackets(IPacketV2<IPayload> arg)

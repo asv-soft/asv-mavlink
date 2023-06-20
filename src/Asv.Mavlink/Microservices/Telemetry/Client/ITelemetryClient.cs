@@ -1,4 +1,3 @@
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,8 +36,8 @@ namespace Asv.Mavlink
         private readonly RxValue<BatteryStatusPayload> _battery;
 
         public TelemetryClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, IScheduler scheduler)
-            : base("RTT", connection, identity, seq, scheduler)
+            IPacketSequenceCalculator seq)
+            : base("RTT", connection, identity, seq)
         {
             _radio = new RxValue<RadioStatusPayload>().DisposeItWith(Disposable);
             InternalFilter<RadioStatusPacket>().Select(_=>_.Payload).Subscribe(_radio).DisposeItWith(Disposable);

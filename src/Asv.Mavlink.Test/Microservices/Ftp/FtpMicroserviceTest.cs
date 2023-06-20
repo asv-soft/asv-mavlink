@@ -33,8 +33,7 @@ public class FtpMicroserviceTest
             link.Client,
             new MavlinkClientIdentity{SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13},
             new FtpConfig(),
-            new PacketSequenceCalculator(),
-            TaskPoolScheduler.Default));
+            new PacketSequenceCalculator()));
         
         string dirName = "pathdir1";
 
@@ -61,8 +60,7 @@ public class FtpMicroserviceTest
             link.Client,
             new MavlinkClientIdentity{SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13},
             new FtpConfig(),
-            new PacketSequenceCalculator(),
-            TaskPoolScheduler.Default));
+            new PacketSequenceCalculator()));
 
         string dirName = "pathdir2"; 
         
@@ -89,8 +87,7 @@ public class FtpMicroserviceTest
             link.Client,
             new MavlinkClientIdentity{SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13},
             new FtpConfig(),
-            new PacketSequenceCalculator(),
-            TaskPoolScheduler.Default));
+            new PacketSequenceCalculator()));
 
         var result = await client.ListDirectory(".", new CancellationToken());
         
@@ -115,8 +112,7 @@ public class FtpMicroserviceTest
             link.Client,
             new MavlinkClientIdentity{SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13},
             new FtpConfig(),
-            new PacketSequenceCalculator(),
-            TaskPoolScheduler.Default));
+            new PacketSequenceCalculator()));
 
         string fileName = "testfile4.dat";
         
@@ -143,8 +139,7 @@ public class FtpMicroserviceTest
             link.Client,
             new MavlinkClientIdentity{SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13},
             new FtpConfig(),
-            new PacketSequenceCalculator(),
-            TaskPoolScheduler.Default));
+            new PacketSequenceCalculator()));
 
         string dirName = "testfolder";
         
@@ -201,8 +196,7 @@ public class FtpMicroserviceTest
             link.Client,
             new MavlinkClientIdentity{SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13},
             new FtpConfig(),
-            new PacketSequenceCalculator(),
-            TaskPoolScheduler.Default));
+            new PacketSequenceCalculator()));
 
         string dirName = "testfolder";
         
@@ -259,8 +253,7 @@ public class FtpMicroserviceTest
             link.Client,
             new MavlinkClientIdentity{SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13},
             new FtpConfig(),
-            new PacketSequenceCalculator(),
-            TaskPoolScheduler.Default));
+            new PacketSequenceCalculator()));
 
         string dirName = "testfolder";
         

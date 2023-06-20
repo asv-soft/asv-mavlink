@@ -1,8 +1,10 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -91,7 +93,7 @@ namespace Asv.Mavlink
         private readonly RxValue<TimeSpan> _deviceTimeout;
         private readonly SourceCache<MavlinkDevice,ushort> _deviceCache;
 
-        public MavlinkDeviceBrowser(IMavlinkV2Connection connection, TimeSpan deviceTimeout)
+        public MavlinkDeviceBrowser(IMavlinkV2Connection connection, TimeSpan deviceTimeout, IScheduler? scheduler = null)
         {
             connection
                 .Filter<HeartbeatPacket>()
@@ -103,7 +105,16 @@ namespace Asv.Mavlink
                 .DisposeItWith(Disposable);
             _deviceCache = new SourceCache<MavlinkDevice, ushort>(x => x.FullId).DisposeItWith(Disposable);
             _deviceTimeout = new RxValue<TimeSpan>(deviceTimeout).DisposeItWith(Disposable);
-            Devices = _deviceCache.Connect().Transform(_ => (IMavlinkDevice)_).RefCount();
+            
+            if (scheduler != null)
+            {
+                Devices = _deviceCache.Connect().ObserveOn(scheduler).Transform(_ => (IMavlinkDevice)_).RefCount();    
+            }
+            else
+            {
+                Devices = _deviceCache.Connect().Transform(_ => (IMavlinkDevice)_).RefCount();
+            }
+            
         }
 
         private void RemoveOldDevice(long l)

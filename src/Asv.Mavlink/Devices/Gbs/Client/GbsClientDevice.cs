@@ -1,3 +1,4 @@
+#nullable enable
 using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,14 +15,14 @@ public class GbsClientDevice : ClientDevice, IGbsClientDevice
 {
     public GbsClientDevice(IMavlinkV2Connection connection,
         MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq, 
-        IScheduler scheduler,
-        GbsClientDeviceConfig config) : base(connection, identity,config, seq, scheduler)
+        IPacketSequenceCalculator seq,
+        GbsClientDeviceConfig config,
+        IScheduler? scheduler = null) : base(connection, identity,config, seq, scheduler)
     {
-        Command = new CommandClient(connection, identity, seq, config.Command, scheduler).DisposeItWith(Disposable);
+        Command = new CommandClient(connection, identity, seq, config.Command).DisposeItWith(Disposable);
         var gbs = new AsvGbsClient(connection,identity,seq,scheduler).DisposeItWith(Disposable);
         Gbs = new AsvGbsExClient(gbs,Heartbeat,Command).DisposeItWith(Disposable);
-        var paramBase = new ParamsClient(connection, identity, seq, config.Params, scheduler).DisposeItWith(Disposable);
+        var paramBase = new ParamsClient(connection, identity, seq, config.Params).DisposeItWith(Disposable);
         Params = new ParamsClientEx(paramBase, config.Params).DisposeItWith(Disposable);
     }
 

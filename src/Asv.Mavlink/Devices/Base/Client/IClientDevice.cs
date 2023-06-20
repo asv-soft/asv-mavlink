@@ -9,7 +9,6 @@ public interface IClientDevice
     ushort FullId { get; }
     IMavlinkV2Connection Connection { get; }
     IPacketSequenceCalculator Seq { get; }
-    IScheduler Scheduler { get; }
     MavlinkClientIdentity Identity { get; }
     DeviceClass Class { get; }
     IRxValue<string> Name { get; }

@@ -1,4 +1,3 @@
-using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
@@ -9,7 +8,7 @@ namespace Asv.Mavlink
     public class OffboardClient : MavlinkMicroserviceClient, IOffboardClient
     {
         public OffboardClient(IMavlinkV2Connection connection, MavlinkClientIdentity config,
-            IPacketSequenceCalculator seq, IScheduler scheduler):base("OFFBOARD", connection, config, seq, scheduler)
+            IPacketSequenceCalculator seq):base("OFFBOARD", connection, config, seq)
         {
         }
 

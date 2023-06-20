@@ -26,8 +26,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
             link.Client,
             new MavlinkClientIdentity { ComponentId = 1, SystemId = 1, TargetComponentId = 2, TargetSystemId = 2 },
             new PacketSequenceCalculator(),
-            Scheduler.Default,
-            new AdsbClientDeviceConfig());
+            new AdsbClientDeviceConfig(), Scheduler.Default);
         
         server.Start();
         
@@ -83,8 +82,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
             link.Client,
             new MavlinkClientIdentity { ComponentId = 1, SystemId = 1, TargetComponentId = 2, TargetSystemId = 2 },
             new PacketSequenceCalculator(),
-            Scheduler.Default,
-            new AdsbClientDeviceConfig());
+            new AdsbClientDeviceConfig(), Scheduler.Default);
         
         server.Start();
         
@@ -163,8 +161,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
             link.Client,
             new MavlinkClientIdentity { ComponentId = 1, SystemId = 1, TargetComponentId = 2, TargetSystemId = 2 },
             new PacketSequenceCalculator(),
-            Scheduler.Default,
-            new AdsbClientDeviceConfig());
+            new AdsbClientDeviceConfig(), Scheduler.Default);
         
         server.Start();
         

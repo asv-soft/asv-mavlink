@@ -4,6 +4,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -84,6 +85,7 @@ namespace Asv.Mavlink
         }
         
         private readonly Action<IPacketDecoder<IPacketV2<IPayload>>> _register;
+        private readonly IScheduler? _publishScheduler;
         private readonly ReaderWriterLockSlim _portCollectionSync = new(LockRecursionPolicy.SupportsRecursion);
         private readonly Subject<IPacketV2<IPayload>> _inputPackets;
         private readonly Subject<byte[]> _rawData;
@@ -100,10 +102,11 @@ namespace Asv.Mavlink
         private readonly Subject<Guid> _onConfigChanged = new();
         private readonly PacketV2Decoder _decoder;
 
-        public MavlinkRouter(Action<IPacketDecoder<IPacketV2<IPayload>>> register,string name="MavlinkRouter")
+        public MavlinkRouter(Action<IPacketDecoder<IPacketV2<IPayload>>> register,string name="MavlinkRouter", IScheduler? publishScheduler = null)
         {
             Name = name;
             _register = register;
+            _publishScheduler = publishScheduler;
             _decoder = new PacketV2Decoder();
             register(_decoder);
             _inputPackets = new Subject<IPacketV2<IPayload>>().DisposeItWith(Disposable);
@@ -299,9 +302,8 @@ namespace Asv.Mavlink
 
         public IDisposable Subscribe(IObserver<IPacketV2<IPayload>> observer)
         {
-            return _inputPackets.Subscribe(observer);
+            return _publishScheduler != null ? _inputPackets.ObserveOn(_publishScheduler).Subscribe(observer) : _inputPackets.Subscribe(observer);
         }
-
         
         public IObservable<DeserializePackageException> DeserializePackageErrors => _deserializeErrors;
 
