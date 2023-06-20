@@ -1,6 +1,7 @@
 #nullable enable
 using System.Collections.Generic;
 using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -48,7 +49,17 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
         Rtt = new TelemetryClientEx(rtt).DisposeItWith(Disposable);
         Debug = new DebugClient(connection, identity, seq).DisposeItWith(Disposable);
         Dgps = new DgpsClient(connection, identity, seq).DisposeItWith(Disposable);
+        
+        var customMode = new RxValue<IVehicleMode>().DisposeItWith(Disposable);
+        Heartbeat
+            .RawHeartbeat
+            .DistinctUntilChanged(_=> ((int) _.BaseMode * 397) ^ (int) _.CustomMode)
+            .Select(_=>InternalInterpretMode(_) ?? VehicleMode.Unknown)
+            .Subscribe(customMode)
+            .DisposeItWith(Disposable);
+        CurrentMode = customMode;
     }
+
     protected override async Task InternalInit()
     {
         await Rtt.Base.RequestDataStream((int)MavDataStream.MavDataStreamAll, _config.MavDataStreamAllRateHz , true, DisposeCancel).ConfigureAwait(false);
@@ -86,9 +97,6 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
     public abstract Task GoTo(GeoPoint point, CancellationToken cancel = default);
     public abstract Task DoLand(CancellationToken cancel = default);
     public abstract Task DoRtl(CancellationToken cancel = default);
-    
-    
-
     public async Task TakeOff(double altInMeters, CancellationToken cancel = default)
     {
         Logger.Info($"=> TakeOff(altitude:{altInMeters:F2})");
@@ -96,4 +104,11 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
         await Position.ArmDisarm(true, cancel).ConfigureAwait(false);
         await Position.TakeOff(altInMeters,  cancel).ConfigureAwait(false);
     }
+
+    
+    public abstract IEnumerable<IVehicleMode> AvailableModes { get; }
+    public IRxValue<IVehicleMode> CurrentMode { get; }
+    protected abstract IVehicleMode? InternalInterpretMode(HeartbeatPayload heartbeatPayload);
+    public abstract Task SetVehicleMode(IVehicleMode mode, CancellationToken cancel = default);
+
 }

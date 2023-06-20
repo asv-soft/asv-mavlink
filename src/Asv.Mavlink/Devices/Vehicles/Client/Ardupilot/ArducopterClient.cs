@@ -1,6 +1,10 @@
 #nullable enable
+using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -14,6 +18,8 @@ public class ArduCopterClient:ArduVehicle
     public ArduCopterClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, VehicleClientConfig config, IPacketSequenceCalculator seq, IScheduler? scheduler = null) 
         : base(connection, identity, config, seq, scheduler)
     {
+        
+
     }
 
     protected override Task<string> GetCustomName(CancellationToken cancel)
@@ -30,8 +36,22 @@ public class ArduCopterClient:ArduVehicle
 
     public override Task SetAutoMode(CancellationToken cancel = default)
     {
-        return Commands.DoSetMode(1, (uint)CopterMode.CopterModeAuto, 0,cancel);
+        return SetVehicleMode(ArdupilotCopterMode.Auto, cancel);
     }
+
+    public override IEnumerable<IVehicleMode> AvailableModes => ArdupilotCopterMode.AllModes;
+    protected override IVehicleMode? InternalInterpretMode(HeartbeatPayload heartbeatPayload)
+    {
+        return AvailableModes.Cast<ArdupilotCopterMode>()
+            .FirstOrDefault(_ => _.CustomMode == (CopterMode)heartbeatPayload.CustomMode);
+    }
+
+    public override Task SetVehicleMode(IVehicleMode mode, CancellationToken cancel = default)
+    {
+        if (mode is not ArdupilotCopterMode) throw new Exception($"Invalid mode. Only {nameof(ArdupilotCopterMode)} supported");
+        return Commands.DoSetMode(1, (uint)((ArdupilotCopterMode)mode).CustomMode, 0,cancel);
+    }
+
 
     public override async Task GoTo(GeoPoint point, CancellationToken cancel = default)
     {
@@ -42,13 +62,13 @@ public class ArduCopterClient:ArduVehicle
     public override async Task DoLand(CancellationToken cancel = default)
     {
         await EnsureInGuidedMode(cancel).ConfigureAwait(false);
-        await Commands.DoSetMode(1, (uint)CopterMode.CopterModeLand, 0, cancel).ConfigureAwait(false);
+        await SetVehicleMode(ArdupilotCopterMode.Land, cancel).ConfigureAwait(false);
     }
 
     public override async Task DoRtl(CancellationToken cancel = default)
     {
         await EnsureInGuidedMode(cancel).ConfigureAwait(false);
-        await Commands.DoSetMode(1, (uint)CopterMode.CopterModeRtl, 0, cancel).ConfigureAwait(false);
+        await SetVehicleMode(ArdupilotCopterMode.Rtl, cancel).ConfigureAwait(false);
     }
     public override Task<bool> CheckGuidedMode(CancellationToken cancel)
     {
@@ -60,7 +80,8 @@ public class ArduCopterClient:ArduVehicle
     {
         if (!await CheckGuidedMode(cancel).ConfigureAwait(false))
         {
-            await Commands.DoSetMode(1, (uint)CopterMode.CopterModeGuided, 0,cancel).ConfigureAwait(false);
+            await SetVehicleMode(ArdupilotCopterMode.Guided, cancel).ConfigureAwait(false);
         }
     }
 }
+
