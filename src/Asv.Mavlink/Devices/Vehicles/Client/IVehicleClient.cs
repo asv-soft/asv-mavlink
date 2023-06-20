@@ -1,7 +1,11 @@
+#nullable enable
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
+using Asv.Mavlink.V2.Ardupilotmega;
+using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 
@@ -26,6 +30,7 @@ public interface IVehicleClient:IClientDevice
     Task DoRtl(CancellationToken cancel = default);
     Task SetAutoMode(CancellationToken cancel = default);
     Task TakeOff(double altInMeters, CancellationToken cancel = default);
+    IEnumerable<IVehicleMode> AvailableModes { get; }
+    IRxValue<IVehicleMode> CurrentMode { get; }
+    Task SetVehicleMode(IVehicleMode mode, CancellationToken cancel = default);
 }
-
-

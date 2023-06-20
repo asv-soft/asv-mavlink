@@ -138,7 +138,7 @@ public class ParamsMicroserviceTest
         var oldValue = (int)serverEx[Param1];
         
         serverEx[Param1] = 1;
-        
+        await Task.Delay(1000);
         Assert.Equal(1, readParams[Param1.Name].ParamValue);
         
         _output.WriteLine($"updated: {readParams[Param1.Name].ParamValue}");

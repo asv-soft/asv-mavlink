@@ -64,4 +64,33 @@ public static class CommandClientHelper
     {
         return src.CommandLongAndCheckResult(MavCmd.MavCmdDoSetMode, mode, customMode, customSubMode, float.NaN, float.NaN, float.NaN, float.NaN, cancel);
     }
+
+   /// <summary>
+   /// Request the reboot or shutdown of system components.
+   /// </summary>
+   /// <param name="src"></param>
+   /// <param name="autopilot"></param>
+   /// <param name="companion"></param>
+   /// <param name="cancel"></param>
+   /// <returns></returns>
+    public static Task PreflightRebootShutdown(this ICommandClient src, AutopilotRebootShutdown autopilot, CompanionRebootShutdown companion, CancellationToken cancel = default)
+    {
+        return src.CommandLongAndCheckResult(MavCmd.MavCmdPreflightRebootShutdown, (float)autopilot, (float)companion, 0, 0, 0, 0, 0, cancel);
+    }
+}
+
+public enum AutopilotRebootShutdown
+{
+    DoNothingForAutopilot = 0,
+    RebootAutopilot = 1,
+    ShutdownAutopilot = 2,
+    RebootAutopilotAndKeepItInTheBootloaderUntilUpgraded = 3,
+}
+
+public enum CompanionRebootShutdown
+{
+    DoNothingForOnboardComputer = 0,
+    RebootOnboardComputer = 1,
+    ShutdownOnboardComputer = 2,
+    RebootOnboardComputerAndKeepItInTheBootloaderUntilUpgraded = 3,
 }

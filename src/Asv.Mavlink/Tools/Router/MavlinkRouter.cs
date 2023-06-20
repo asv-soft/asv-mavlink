@@ -79,9 +79,9 @@ namespace Asv.Mavlink
 
     public class MavlinkRouter:DisposableOnceWithCancel, IMavlinkRouter, IDataStream
     {
-        public static MavlinkRouter CreateDefault()
+        public static MavlinkRouter CreateDefault(IScheduler? scheduler = null)
         {
-            return new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
+            return new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects,publishScheduler: scheduler);
         }
         
         private readonly Action<IPacketDecoder<IPacketV2<IPayload>>> _register;
