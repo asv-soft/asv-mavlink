@@ -1,4 +1,4 @@
-name: Deploy Nuget for Windows
+name: No Test Deploy Nuget for Windows
 
 on:
   push:
