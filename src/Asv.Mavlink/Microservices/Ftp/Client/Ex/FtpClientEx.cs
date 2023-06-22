@@ -74,15 +74,15 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
         
         var lastBurstRead = DateTime.Now;
         
-        using var obsTimer = Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1)).Subscribe(_ =>
-        {
-            if (DateTime.Now - lastBurstRead >= _maxWaitTimeOfBurstPacket)
-            {
-                tcs.TrySetCanceled();
-                
-                Client.TerminateSession(openFileRo.Session, cs.Token).Wait(cs.Token);
-            }
-        });
+        // using var obsTimer = Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1)).Subscribe(_ =>
+        // {
+        //     if (DateTime.Now - lastBurstRead >= _maxWaitTimeOfBurstPacket)
+        //     {
+        //         tcs.TrySetCanceled();
+        //         
+        //         Client.TerminateSession(openFileRo.Session, cs.Token).Wait(cs.Token);
+        //     }
+        // });
         
         using var burstSubscription = Client.OnBurstReadPacket.Where(_ => _.Session == openFileRo.Session).Subscribe(_ =>
         {
@@ -146,9 +146,17 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
         
         var fileMatches = new List<Match>();
         var dirMatches = new List<Match>();
+
+        var retries = 0;
+        var allCounts = 0;
         
-        while (true)
+        while (retries < 5)
         {
+            if (allCounts == fileMatches.Count + dirMatches.Count)
+            {
+                retries++;
+            }
+            
             var listDirectory = await Client.ListDirectory(path, 
                 (byte)(fileMatches.Count + dirMatches.Count), cs.Token).ConfigureAwait(false);
 
@@ -160,6 +168,8 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
             dirMatches.Add(Regex.Matches(temp, "D([a-z A-Z 0-9 . , _ -]+)\0\0"));
             
             await Client.TerminateSession(listDirectory.Session, cs.Token).ConfigureAwait(false);
+
+            allCounts = fileMatches.Count + dirMatches.Count;
         }
         
         foreach (var dirMatch in dirMatches.Distinct(new CallbackComparer<Match>(_ => _.Value.GetHashCode(), 
