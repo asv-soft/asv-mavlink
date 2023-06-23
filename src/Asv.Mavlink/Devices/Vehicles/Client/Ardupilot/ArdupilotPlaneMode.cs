@@ -23,6 +23,7 @@ public class ArdupilotPlaneMode:VehicleMode
             // this is no well known mode, try to create description from enum
             allModes.Add(new ArdupilotPlaneMode(copterMode.ToString("G"), String.Empty, copterMode));
         }
+        allModes.AddRange(WellKnownModes);
         AllModes = allModes.ToImmutableArray();
     }
 

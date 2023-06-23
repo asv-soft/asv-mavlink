@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <Version>3.2.5-alpha-07</Version>
+    <Version>v3.2.5-alpha-10</Version>
     <PackageIcon>asv-mavlink-128.png</PackageIcon>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
   </PropertyGroup>
