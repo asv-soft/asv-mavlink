@@ -13,6 +13,7 @@ public class ArdupilotPlaneMode:VehicleMode
     
     public static ImmutableArray<IVehicleMode> AllModes { get; }
  
+    
     static ArdupilotPlaneMode()
     {
         var wellKnownModes = new HashSet<PlaneMode>(WellKnownModes.Select(_=>_.CustomMode));
