@@ -22,7 +22,7 @@ namespace Asv.Mavlink;
 
         public FtpMessagePayload()
         {
-            
+            Data = new byte[MAX_PAYLOAD_SIZE - DATA_BYTES_OFFSET];
         }
         
         public FtpMessagePayload(ReadOnlySpan<byte> buffer)
@@ -55,7 +55,7 @@ namespace Asv.Mavlink;
             BinSerialize.WriteUInt(ref buffer, Offset);
             BinSerialize.WriteBlock(ref buffer, Data);
         }
-        
+
         /// <summary>
         /// Command/response data. Varies by OpCode. This contains the path for operations that act on a file or directory.
         /// For an ACK for a read or write this is the requested information.

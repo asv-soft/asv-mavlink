@@ -18,7 +18,8 @@ public class FtpMicroserviceTest
         _output = output;
     }
     
-    [Fact(Skip = "Fatal error")]
+    //[Fact(Skip = "Fatal error")]
+    [Fact]
     public async Task Ftp_Directory_Existence_After_Creation()
     {
         var link = new VirtualLink();
@@ -45,7 +46,8 @@ public class FtpMicroserviceTest
         Directory.Delete(dirName);
     }
     
-    [Fact(Skip = "Fatal error")]
+    //[Fact(Skip = "Fatal error")]
+    [Fact]
     public async Task Ftp_Directory_Existence_After_Removal()
     {
         var link = new VirtualLink();
@@ -72,7 +74,8 @@ public class FtpMicroserviceTest
         Assert.False(Directory.Exists(dirName));
     }
 
-    [Fact(Skip = "Fatal error")]
+    //[Fact(Skip = "Fatal error")]
+    [Fact]
     public async Task Ftp_List_Current_Directory()
     {
         var link = new VirtualLink();
@@ -97,7 +100,8 @@ public class FtpMicroserviceTest
         Assert.Contains(result, _ => _.Name == "xunit.runner.visualstudio.dotnetcore.testadapter.dll");
     }
     
-    [Fact(Skip = "Fatal error")]
+    //[Fact(Skip = "Fatal error")]
+    [Fact]
     public async Task Ftp_File_Existence_After_Removal()
     {
         var link = new VirtualLink();
@@ -124,7 +128,8 @@ public class FtpMicroserviceTest
         Assert.False(File.Exists(fileName));
     }
 
-    [Fact(Skip = "Fatal error")]
+    //[Fact(Skip = "Fatal error")]
+    [Fact]
     public async Task Ftp_File_Upload()
     {
         var link = new VirtualLink();
@@ -181,7 +186,8 @@ public class FtpMicroserviceTest
         File.Delete(clientFileName);
     }
     
-    [Fact(Skip = "Fatal error")]
+    //[Fact(Skip = "Fatal error")]
+    [Fact]
     public async Task Ftp_File_Read()
     {
         var link = new VirtualLink();
@@ -238,7 +244,8 @@ public class FtpMicroserviceTest
         File.Delete(clientFileName);
     }
     
-    [Fact(Skip = "Fatal error")]
+    //[Fact(Skip = "Fatal error")]
+    [Fact]
     public async Task Ftp_File_Burst_Read()
     {
         var link = new VirtualLink();

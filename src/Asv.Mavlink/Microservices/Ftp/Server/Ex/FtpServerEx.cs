@@ -115,7 +115,9 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
 
             _readers[ftpMessagePayload.Session].BaseStream.Position = offset;
 
-            while (true)
+            var burstComplete = false;
+            
+            while (!burstComplete)
             {
                 sequence++;
 
@@ -144,8 +146,10 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
 
                 if (currentBurst >= 23900)
                 {
-                    responsePayload.BurstComplete = true;
+                    burstComplete = true;
 
+                    responsePayload.BurstComplete = true;
+                    
                     Server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
 
                     break;
@@ -163,7 +167,7 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
                 ReqOpCodeId = OpCode.BurstReadFile,
                 SequenceNumber = sequence
             };
-            
+   
             responsePayload.Data[0] = (byte)NakError.Fail;
             
             Server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
@@ -428,25 +432,25 @@ public class FtpServerEx : DisposableOnceWithCancel, IFtpServerEx
             ReqOpCodeId = OpCode.TerminateSession
         };
         
-        if (_sessions.TryGetValue(ftpMessagePayload.Session, out var stream))
+        if (_readers.Count > 0 && _readers.TryGetValue(ftpMessagePayload.Session, out var reader))
+        {
+            reader.Close();
+            _readers.Remove(ftpMessagePayload.Session);
+        }
+        
+        if (_writers.Count > 0 && _writers.TryGetValue(ftpMessagePayload.Session, out var writer))
+        {
+            writer.Close();
+            _writers.Remove(ftpMessagePayload.Session);
+        }
+
+        if (_sessions.Count > 0 && _sessions.TryGetValue(ftpMessagePayload.Session, out var stream))
         {
             responsePayload.OpCodeId = OpCode.ACK;
             stream.Close();
             _sessions.Remove(ftpMessagePayload.Session);
         }
         
-        if (_readers.TryGetValue(ftpMessagePayload.Session, out var reader))
-        {
-            reader.Close();
-            _readers.Remove(ftpMessagePayload.Session);
-        }
-        
-        if (_writers.TryGetValue(ftpMessagePayload.Session, out var writer))
-        {
-            writer.Close();
-            _writers.Remove(ftpMessagePayload.Session);
-        }
-
         Server.SendFtpPacket(responsePayload, identity, DisposeCancel).Wait(DisposeCancel);
     }
 
