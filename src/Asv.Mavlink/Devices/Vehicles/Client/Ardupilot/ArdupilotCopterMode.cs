@@ -53,25 +53,73 @@ public class ArdupilotCopterMode:VehicleMode
         }
     }
 
-    public static ArdupilotCopterMode Stabilize = new("Stabilize", "Stabilize", CopterMode.CopterModeStabilize);
-    public static ArdupilotCopterMode Acro = new("Acro", "Acro", CopterMode.CopterModeAcro);
-    public static ArdupilotCopterMode AltHold = new("AltHold", "AltHold", CopterMode.CopterModeAltHold);
-    public static ArdupilotCopterMode Auto = new("Auto", "Auto", CopterMode.CopterModeAuto);
-    public static ArdupilotCopterMode Guided = new("Guided", "Guided", CopterMode.CopterModeGuided);
-    public static ArdupilotCopterMode Loiter = new("Loiter", "Loiter", CopterMode.CopterModeLoiter);
-    public static ArdupilotCopterMode Rtl = new("RTL", "RTL", CopterMode.CopterModeRtl);
-    public static ArdupilotCopterMode Circle = new("Circle", "Circle", CopterMode.CopterModeCircle);
-    public static ArdupilotCopterMode Land = new("Land", "Land", CopterMode.CopterModeLand);
-    public static ArdupilotCopterMode Drift = new("Drift", "Drift", CopterMode.CopterModeDrift);
-    public static ArdupilotCopterMode Sport = new("Sport", "Sport", CopterMode.CopterModeSport);
-    public static ArdupilotCopterMode Flip = new("Flip", "Flip", CopterMode.CopterModeFlip);
-    public static ArdupilotCopterMode AutoTune = new("AutoTune", "AutoTune", CopterMode.CopterModeAutotune);
-    public static ArdupilotCopterMode PosHold = new("PosHold", "PosHold", CopterMode.CopterModePoshold);
-    public static ArdupilotCopterMode Brake = new("Brake", "Brake", CopterMode.CopterModeBrake);
-    public static ArdupilotCopterMode Throw = new("Throw", "Throw", CopterMode.CopterModeThrow);
-    public static ArdupilotCopterMode AvoidAdsb = new("AvoidAdsb", "AvoidAdsb", CopterMode.CopterModeAvoidAdsb);
+    public static ArdupilotCopterMode Stabilize   = new("Stabilize", "Stabilize", CopterMode.CopterModeStabilize);
+    /// <summary>
+    /// Holds attitude, no self-level
+    /// </summary>
+    public static ArdupilotCopterMode Acro        = new("Acro", "Acro", CopterMode.CopterModeAcro);
+    /// <summary>
+    /// Holds altitude and self-levels the roll & pitch
+    /// </summary>
+    public static ArdupilotCopterMode AltHold     = new("AltHold", "AltHold", CopterMode.CopterModeAltHold);
+    /// <summary>
+    /// Executes pre-defined mission
+    /// </summary>
+    public static ArdupilotCopterMode Auto        = new("Auto", "Auto", CopterMode.CopterModeAuto);
+    /// <summary>
+    /// Navigates to single points commanded by GCS
+    /// </summary>
+    public static ArdupilotCopterMode Guided      = new("Guided", "Guided", CopterMode.CopterModeGuided);
+    /// <summary>
+    /// Holds altitude and position, uses GPS for movements
+    /// </summary>
+    public static ArdupilotCopterMode Loiter      = new("Loiter", "Loiter", CopterMode.CopterModeLoiter);
+    /// <summary>
+    /// Returns above takeoff location, may also include landing
+    /// </summary>
+    public static ArdupilotCopterMode Rtl         = new("RTL", "RTL", CopterMode.CopterModeRtl);
+    /// <summary>
+    /// Automatically circles a point in front of the vehicle
+    /// </summary>
+    public static ArdupilotCopterMode Circle      = new("Circle", "Circle", CopterMode.CopterModeCircle);
+    /// <summary>
+    /// Reduces altitude to ground level, attempts to go straight down
+    /// </summary>
+    public static ArdupilotCopterMode Land        = new("Land", "Land", CopterMode.CopterModeLand);
+    /// <summary>
+    /// Like stabilize, but coordinates yaw with roll like a plane
+    /// </summary>
+    public static ArdupilotCopterMode Drift       = new("Drift", "Drift", CopterMode.CopterModeDrift);
+    /// <summary>
+    /// Alt-hold, but holds pitch & roll when sticks centered
+    /// </summary>
+    public static ArdupilotCopterMode Sport       = new("Sport", "Sport", CopterMode.CopterModeSport);
+    /// <summary>
+    /// Rises and completes an automated flip
+    /// </summary>
+    public static ArdupilotCopterMode Flip        = new("Flip", "Flip", CopterMode.CopterModeFlip);
+    /// <summary>
+    /// Automated pitch and bank procedure to improve control loops
+    /// </summary>
+    public static ArdupilotCopterMode AutoTune    = new("AutoTune", "AutoTune", CopterMode.CopterModeAutotune);
+    /// <summary>
+    /// Like loiter, but manual roll and pitch when sticks not centered
+    /// </summary>
+    public static ArdupilotCopterMode PosHold     = new("PosHold", "PosHold", CopterMode.CopterModePoshold);
+    /// <summary>
+    /// Brings copter to an immediate stop
+    /// </summary>
+    public static ArdupilotCopterMode Brake       = new("Brake", "Brake", CopterMode.CopterModeBrake);
+    /// <summary>
+    /// Holds position after a throwing takeoff
+    /// </summary>
+    public static ArdupilotCopterMode Throw       = new("Throw", "Throw", CopterMode.CopterModeThrow);
+    public static ArdupilotCopterMode AvoidAdsb   = new("AvoidAdsb", "AvoidAdsb", CopterMode.CopterModeAvoidAdsb);
     public static ArdupilotCopterMode GuidedNoGps = new("GuidedNoGps", "GuidedNoRc", CopterMode.CopterModeGuidedNogps);
-    public static ArdupilotCopterMode SmartRtl = new("SmartRtl", "SmartRtl", CopterMode.CopterModeSmartRtl);
+    /// <summary>
+    /// RTL, but traces path to get home
+    /// </summary>
+    public static ArdupilotCopterMode SmartRtl    = new("SmartRtl", "SmartRtl", CopterMode.CopterModeSmartRtl);
     
     #endregion
     
