@@ -176,4 +176,115 @@
     <data name="PayloadDiagnosticRtt_PayloadDiagnosticRtt_Payload" xml:space="preserve">
       <value>Полезная нагрузка</value>
   </data>
+	<data name="ArdupilotCopterMode_Acro_Description" xml:space="preserve">
+		<value>Держит высоту без саморегулировки</value>
+	</data>
+	<data name="ArdupilotCopterMode_AltHold_Description" xml:space="preserve">
+		<value>Держит высоту и саморегулирует тангаж и крен</value>
+	</data>
+	<data name="ArdupilotCopterMode_AutoTune_Description" xml:space="preserve">
+		<value>Автоматизированная процедура тангажа и крена для улучшения контроля аппаратом</value>
+	</data>
+	<data name="ArdupilotCopterMode_Auto_Description" xml:space="preserve">
+		<value>Выполняет предустановленную миссию</value>
+	</data>
+	<data name="ArdupilotCopterMode_Brake_Description" xml:space="preserve">
+		<value>Немедленно останавливает дрон</value>
+	</data>
+	<data name="ArdupilotCopterMode_Circle_Description" xml:space="preserve">
+		<value>Автоматически кружит вокруг точки перед дроном</value>
+	</data>
+	<data name="ArdupilotCopterMode_Drift_Description" xml:space="preserve">
+		<value>Работает как режим Stabilize, но координирует рысканье и тангаж как у самолета</value>
+	</data>
+	<data name="ArdupilotCopterMode_Flip_Description" xml:space="preserve">
+		<value>Взлет и выполнение автоматизированного переворота</value>
+	</data>
+	<data name="ArdupilotCopterMode_Guided_Description" xml:space="preserve">
+		<value>Осуществляется навигация по точкам, переданным от НБС</value>
+	</data>
+	<data name="ArdupilotCopterMode_GuidedNoGps_Description" xml:space="preserve">
+		<value>То же что и Guided, но для навигации используются только данные о положении объектов в воздухе</value>
+	</data>
+	<data name="ArdupilotCopterMode_Land_Description" xml:space="preserve">
+		<value>Высота уменьшается до уровня земли, пытается лететь прямо вниз</value>
+	</data>
+	<data name="ArdupilotCopterMode_Loiter_Description" xml:space="preserve">
+		<value>Держит одну высоту и позицию, для движения используется GPS</value>
+	</data>
+	<data name="ArdupilotCopterMode_PosHold_Description" xml:space="preserve">
+		<value>Работает как режим Loiter, но возможно ручное тангажирование и крен, если стики не отцентрованы</value>
+	</data>
+	<data name="ArdupilotCopterMode_Rtl_Description" xml:space="preserve">
+		<value>Возращается в точку над точкой взлета, так же возможна посадка</value>
+	</data>
+	<data name="ArdupilotCopterMode_SmartRtl_Description" xml:space="preserve">
+		<value>Работает как режим RTL, но отображает путь возвращения домой</value>
+	</data>
+	<data name="ArdupilotCopterMode_Sport_Description" xml:space="preserve">
+		<value>Работает как режим AltHold, но держит тангаж и крен если стики отцентрованы</value>
+	</data>
+	<data name="ArdupilotCopterMode_Stabilize_Description" xml:space="preserve">
+		<value>Выравнивает крылья при отпущенных стиках</value>
+	</data>
+	<data name="ArdupilotCopterMode_Throw_Description" xml:space="preserve">
+		<value>Зависает в воздухе после быстрого взлета</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Acro_Description" xml:space="preserve">
+		<value>Режим контролируемой скорости без ограничений по положению в воздухе</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Autotune_Description" xml:space="preserve">
+		<value>Работает как режим FlyByWireA, но умеет корректировать положение в воздухе во время полета</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Auto_Description" xml:space="preserve">
+		<value>Следует миссии</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Circle_Description" xml:space="preserve">
+		<value>Нежно поворачивает воздушное судно</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Cruise_Description" xml:space="preserve">
+		<value>Работает как режим FlyByWireB, но со следованием курса по земле и следованием за местностью</value>
+	</data>
+	<data name="ArdupilotPlaneMode_FlyByWireA_Description" xml:space="preserve">
+		<value>Тангаж и крен соответствуют вводу со стиков до заданных пределов</value>
+	</data>
+	<data name="ArdupilotPlaneMode_FlyByWireB_Description" xml:space="preserve">
+		<value>Работает как режим FlyByWireA, но с автоматическим контролем скорости и высоты</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Guided_Description" xml:space="preserve">
+		<value>Кружит вокруг заданной через НБС точки</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Loiter_Description" xml:space="preserve">
+		<value>Кружит вокруг точки, в которой был установлен данный режим</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Manual_Description" xml:space="preserve">
+		<value>Полностью ручной режим, без автоматики</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Qautotune_Description" xml:space="preserve">
+		<value>Автоматизированная процедура тангажа и крена для улучшения контроля аппаратом</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Qhover_Description" xml:space="preserve">
+		<value>Квадроплан поддерживает стабильную высоту, при этом можно изменять крен, тангаж и рысканье вручную</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Qland_Description" xml:space="preserve">
+		<value>Попытается приземлить квадроплан в точке, в которой был выбран данный режим</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Qloiter_Description" xml:space="preserve">
+		<value>Попытается автоматически держать текущее местоположение, направление и высоту</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Qrtl_Description" xml:space="preserve">
+		<value>Возвращает квадроплан в точку над точкой взлета, а затем сажает его</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Qstabilize_Description" xml:space="preserve">
+		<value>Позволяет управлять квадропланом в ручном режиме, автоматически выравнивая крен и тангаж судна</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Rtl_Description" xml:space="preserve">
+		<value>Возвращается домой или к указанной точке, затем кружит вокруг этой точки</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Stabilize_Description" xml:space="preserve">
+		<value>Выравнивание крыльев при отпускании стиков</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Training_Description" xml:space="preserve">
+		<value>Ручное управление с ограничением уровня тангажа и крена</value>
+	</data>
 </root>
