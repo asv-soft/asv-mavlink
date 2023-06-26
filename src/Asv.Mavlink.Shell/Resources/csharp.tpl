@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2018 Alexey (https://github.com/asvol)
+// Copyright (c) 2023 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal

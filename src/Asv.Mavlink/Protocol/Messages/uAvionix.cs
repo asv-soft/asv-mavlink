@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2018 Alexey (https://github.com/asvol)
+// Copyright (c) 2023 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.1.0
+// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11
 
 using System;
 using System.Text;
@@ -347,7 +347,7 @@ namespace Asv.Mavlink.V2.Uavionix
             var sum = 0;
             sum+=4; //Icao
             sum+=2; //Stallspeed
-            sum+=Callsign.Length; //CallSign
+            sum+=Callsign.Length; //Callsign
             sum+= 1; // Emittertype
             sum+= 1; // Aircraftsize
             sum+= 1; // Gpsoffsetlat
