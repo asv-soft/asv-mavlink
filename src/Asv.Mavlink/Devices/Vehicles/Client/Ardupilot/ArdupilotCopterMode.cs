@@ -47,12 +47,13 @@ public class ArdupilotCopterMode:VehicleMode
             yield return PosHold;
             yield return Brake;
             yield return Throw;
-            yield return AvoidAdsb;
-            yield return GuidedNoGps;
             yield return SmartRtl;
         }
     }
 
+    /// <summary>
+    /// Wing-leveling on stick release
+    /// </summary>
     public static ArdupilotCopterMode Stabilize   = new("Stabilize", "Stabilize", CopterMode.CopterModeStabilize);
     /// <summary>
     /// Holds attitude, no self-level
@@ -114,8 +115,6 @@ public class ArdupilotCopterMode:VehicleMode
     /// Holds position after a throwing takeoff
     /// </summary>
     public static ArdupilotCopterMode Throw       = new("Throw", "Throw", CopterMode.CopterModeThrow);
-    public static ArdupilotCopterMode AvoidAdsb   = new("AvoidAdsb", "AvoidAdsb", CopterMode.CopterModeAvoidAdsb);
-    public static ArdupilotCopterMode GuidedNoGps = new("GuidedNoGps", "GuidedNoRc", CopterMode.CopterModeGuidedNogps);
     /// <summary>
     /// RTL, but traces path to get home
     /// </summary>

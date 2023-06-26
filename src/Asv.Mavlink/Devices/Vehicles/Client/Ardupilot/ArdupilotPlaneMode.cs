@@ -42,9 +42,7 @@ public class ArdupilotPlaneMode:VehicleMode
             yield return Auto;
             yield return Rtl;
             yield return Loiter;
-            yield return AvoidAdsb;
             yield return Guided;
-            yield return Initialising;
             yield return Qstabilize;
             yield return Qhover;
             yield return Qloiter;
@@ -102,12 +100,10 @@ public class ArdupilotPlaneMode:VehicleMode
     /// Circles point where mode switched
     /// </summary>
     public static ArdupilotPlaneMode Loiter      = new("Loiter", "Loiter", PlaneMode.PlaneModeLoiter);
-    public static ArdupilotPlaneMode AvoidAdsb   = new("Avoid Adsb", "AvoidAdsb", PlaneMode.PlaneModeAvoidAdsb);
     /// <summary>
     /// Circles user defined point from GCS
     /// </summary>
     public static ArdupilotPlaneMode Guided      = new("Guided", "Guided", PlaneMode.PlaneModeGuided);
-    public static ArdupilotPlaneMode Initialising= new("Initialising", "Initialising", PlaneMode.PlaneModeInitializing);
     /// <summary>
     ///  Allows you to fly your vehicle manually, but self-levels the roll and pitch axis
     /// </summary>
