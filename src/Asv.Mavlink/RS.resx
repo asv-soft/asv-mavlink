@@ -179,4 +179,115 @@
     <data name="PayloadDiagnosticRtt_PayloadDiagnosticRtt_Payload" xml:space="preserve">
       <value>Payload</value>
   </data>
+	<data name="ArdupilotCopterMode_Stabilize_Description" xml:space="preserve">
+		<value>Wing-leveling on stick release</value>
+	</data>
+	<data name="ArdupilotCopterMode_Acro_Description" xml:space="preserve">
+		<value>Holds attitude, no self-level</value>
+	</data>
+	<data name="ArdupilotCopterMode_AltHold_Description" xml:space="preserve">
+		<value>Holds altitude and self-levels the roll &amp; pitch</value>
+	</data>
+	<data name="ArdupilotCopterMode_Auto_Description" xml:space="preserve">
+		<value>Executes pre-defined mission</value>
+	</data>
+	<data name="ArdupilotCopterMode_Guided_Description" xml:space="preserve">
+		<value>Navigates to single points commanded by GCS</value>
+	</data>
+	<data name="ArdupilotCopterMode_Loiter_Description" xml:space="preserve">
+		<value>Holds altitude and position, uses GPS for movements</value>
+	</data>
+	<data name="ArdupilotCopterMode_Rtl_Description" xml:space="preserve">
+		<value>Returns above takeoff location, may also include landing</value>
+	</data>
+	<data name="ArdupilotCopterMode_Circle_Description" xml:space="preserve">
+		<value>Automatically circles a point in front of the vehicle</value>
+	</data>
+	<data name="ArdupilotCopterMode_Land_Description" xml:space="preserve">
+		<value>Reduces altitude to ground level, attempts to go straight down</value>
+	</data>
+	<data name="ArdupilotCopterMode_Drift_Description" xml:space="preserve">
+		<value>Like stabilize, but coordinates yaw with roll like a plane</value>
+	</data>
+	<data name="ArdupilotCopterMode_Sport_Description" xml:space="preserve">
+		<value>Alt-hold, but holds pitch &amp; roll when sticks centered</value>
+	</data>
+	<data name="ArdupilotCopterMode_Flip_Description" xml:space="preserve">
+		<value>Rises and completes an automated flip</value>
+	</data>
+	<data name="ArdupilotCopterMode_AutoTune_Description" xml:space="preserve">
+		<value>Automated pitch and bank procedure to improve control loops</value>
+	</data>
+	<data name="ArdupilotCopterMode_PosHold_Description" xml:space="preserve">
+		<value>Like loiter, but manual roll and pitch when sticks not centered</value>
+	</data>
+	<data name="ArdupilotCopterMode_Brake_Description" xml:space="preserve">
+		<value>Brings copter to an immediate stop</value>
+	</data>
+	<data name="ArdupilotCopterMode_Throw_Description" xml:space="preserve">
+		<value>Holds position after a throwing takeoff</value>
+	</data>
+	<data name="ArdupilotCopterMode_SmartRtl_Description" xml:space="preserve">
+		<value>RTL, but traces path to get home</value>
+	</data>
+	<data name="ArdupilotCopterMode_GuidedNoGps_Description" xml:space="preserve">
+		<value>Same as Guided, but uses only attitude targets for navigation</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Manual_Description" xml:space="preserve">
+		<value>Manual control surface movement, passthrough</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Circle_Description" xml:space="preserve">
+		<value>Gently turns aircraft</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Stabilize_Description" xml:space="preserve">
+		<value>Wing-leveling on stick release</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Training_Description" xml:space="preserve">
+		<value>Manual control up to roll and pitch limits</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Acro_Description" xml:space="preserve">
+		<value>Rate controlled mode with no attitude limits</value>
+	</data>
+	<data name="ArdupilotPlaneMode_FlyByWireA_Description" xml:space="preserve">
+		<value>Roll and pitch follow stick input, up to set limits</value>
+	</data>
+	<data name="ArdupilotPlaneMode_FlyByWireB_Description" xml:space="preserve">
+		<value>Like FBWA, but with automatic height and speed control</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Cruise_Description" xml:space="preserve">
+		<value>Like FBWB, but with ground course tracking and terrain following</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Autotune_Description" xml:space="preserve">
+		<value>Like FBWA, but learns attitude tuning while flying</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Auto_Description" xml:space="preserve">
+		<value>Follows Mission</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Rtl_Description" xml:space="preserve">
+		<value>Returns to and circles home or rally point</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Loiter_Description" xml:space="preserve">
+		<value>Circles point where mode switched</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Guided_Description" xml:space="preserve">
+		<value>Circles user defined point from GCS</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Qstabilize_Description" xml:space="preserve">
+		<value>Allows you to fly your vehicle manually, but self-levels the roll and pitch axis</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Qhover_Description" xml:space="preserve">
+		<value>QuadPlane maintains a consistent altitude while allowing roll, pitch, and yaw to be controlled normally</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Qloiter_Description" xml:space="preserve">
+		<value>Automatically attempts to maintain the current location, heading and altitude</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Qland_Description" xml:space="preserve">
+		<value>Attempts to bring the QuadPlane straight down at the position the vehicle is located when the mode is entered</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Qrtl_Description" xml:space="preserve">
+		<value>Navigates QuadPlane from its current position to hover above the home position and then land</value>
+	</data>
+	<data name="ArdupilotPlaneMode_Qautotune_Description" xml:space="preserve">
+		<value>Automated pitch and bank procedure to improve control loops</value>
+	</data>
 </root>
