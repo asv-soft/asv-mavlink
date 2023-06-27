@@ -290,4 +290,31 @@
 	<data name="ArdupilotPlaneMode_Qautotune_Description" xml:space="preserve">
 		<value>Automated pitch and bank procedure to improve control loops</value>
 	</data>
+	<data name="CommandClientHelper_AutopilotRebootShutdown_DoNothingForAutopilot_Description" xml:space="preserve">
+		<value>Do nothing for autopilot</value>
+	</data>
+	<data name="CommandClientHelper_AutopilotRebootShutdown_RebootAutopilot_Description" xml:space="preserve">
+		<value>Shutdown autopilot</value>
+	</data>
+	<data name="CommandClientHelper_AutopilotRebootShutdown_ShutdownAutopilot_Description" xml:space="preserve">
+		<value>Reboot autopilot and keep it in the bootloader until upgraded</value>
+	</data>
+	<data name="CommandClientHelper_AutopilotRebootShutdown_RebootAutopilotAndKeepItInTheBootloaderUntilUpgraded_Description" xml:space="preserve">
+		<value>Reboot autopilot</value>
+	</data>
+	<data name="CommandClientHelper_CompanionRebootShutdown_DoNothingForOnboardComputer_Description" xml:space="preserve">
+		<value>Do nothing for onboard computer</value>
+	</data>
+	<data name="CommandClientHelper_CompanionRebootShutdown_RebootOnboardComputer_Description" xml:space="preserve">
+		<value>Shutdown onboard computer</value>
+	</data>
+	<data name="CommandClientHelper_CompanionRebootShutdown_ShutdownOnboardComputer_Description" xml:space="preserve">
+		<value>Reboot onboard computer and keep it in the bootloader until upgraded</value>
+	</data>
+	<data name="CommandClientHelper_CompanionRebootShutdown_RebootOnboardComputerAndKeepItInTheBootloaderUntilUpgraded_Description" xml:space="preserve">
+		<value>Reboot onboard computer</value>
+	</data>
+	<data name="CommandClientHelper_RebootShutdown_UnknownCommand_Description" xml:space="preserve">
+		<value>Unknown command</value>
+	</data>
 </root>

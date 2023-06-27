@@ -393,6 +393,90 @@ namespace Asv.Mavlink {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do nothing for autopilot.
+        /// </summary>
+        public static string CommandClientHelper_AutopilotRebootShutdown_DoNothingForAutopilot_Description {
+            get {
+                return ResourceManager.GetString("CommandClientHelper_AutopilotRebootShutdown_DoNothingForAutopilot_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shutdown autopilot.
+        /// </summary>
+        public static string CommandClientHelper_AutopilotRebootShutdown_RebootAutopilot_Description {
+            get {
+                return ResourceManager.GetString("CommandClientHelper_AutopilotRebootShutdown_RebootAutopilot_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reboot autopilot.
+        /// </summary>
+        public static string CommandClientHelper_AutopilotRebootShutdown_RebootAutopilotAndKeepItInTheBootloaderUntilUpgraded_Description {
+            get {
+                return ResourceManager.GetString("CommandClientHelper_AutopilotRebootShutdown_RebootAutopilotAndKeepItInTheBootload" +
+                        "erUntilUpgraded_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reboot autopilot and keep it in the bootloader until upgraded.
+        /// </summary>
+        public static string CommandClientHelper_AutopilotRebootShutdown_ShutdownAutopilot_Description {
+            get {
+                return ResourceManager.GetString("CommandClientHelper_AutopilotRebootShutdown_ShutdownAutopilot_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do nothing for onboard computer.
+        /// </summary>
+        public static string CommandClientHelper_CompanionRebootShutdown_DoNothingForOnboardComputer_Description {
+            get {
+                return ResourceManager.GetString("CommandClientHelper_CompanionRebootShutdown_DoNothingForOnboardComputer_Descripti" +
+                        "on", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shutdown onboard computer.
+        /// </summary>
+        public static string CommandClientHelper_CompanionRebootShutdown_RebootOnboardComputer_Description {
+            get {
+                return ResourceManager.GetString("CommandClientHelper_CompanionRebootShutdown_RebootOnboardComputer_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reboot onboard computer.
+        /// </summary>
+        public static string CommandClientHelper_CompanionRebootShutdown_RebootOnboardComputerAndKeepItInTheBootloaderUntilUpgraded_Description {
+            get {
+                return ResourceManager.GetString("CommandClientHelper_CompanionRebootShutdown_RebootOnboardComputerAndKeepItInTheBo" +
+                        "otloaderUntilUpgraded_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reboot onboard computer and keep it in the bootloader until upgraded.
+        /// </summary>
+        public static string CommandClientHelper_CompanionRebootShutdown_ShutdownOnboardComputer_Description {
+            get {
+                return ResourceManager.GetString("CommandClientHelper_CompanionRebootShutdown_ShutdownOnboardComputer_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown command.
+        /// </summary>
+        public static string CommandClientHelper_RebootShutdown_UnknownCommand_Description {
+            get {
+                return ResourceManager.GetString("CommandClientHelper_RebootShutdown_UnknownCommand_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error for deserialize mavlink V2 package with messageID {0}: {1}.
         /// </summary>
         public static string DecoderV2_TryDecodePacket_Error_for_deserialize_mavlink_V2 {
