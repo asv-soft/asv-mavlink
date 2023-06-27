@@ -77,6 +77,30 @@ public static class CommandClientHelper
     {
         return src.CommandLongAndCheckResult(MavCmd.MavCmdPreflightRebootShutdown, (float)autopilot, (float)companion, 0, 0, 0, 0, 0, cancel);
     }
+
+   public static string GetAutopilotRebootShutdownDescription(this AutopilotRebootShutdown src)
+   {
+       return src switch
+       {
+           AutopilotRebootShutdown.DoNothingForAutopilot => RS.CommandClientHelper_AutopilotRebootShutdown_DoNothingForAutopilot_Description,
+           AutopilotRebootShutdown.RebootAutopilot => RS.CommandClientHelper_AutopilotRebootShutdown_RebootAutopilot_Description,
+           AutopilotRebootShutdown.ShutdownAutopilot => RS.CommandClientHelper_AutopilotRebootShutdown_ShutdownAutopilot_Description,
+           AutopilotRebootShutdown.RebootAutopilotAndKeepItInTheBootloaderUntilUpgraded => RS.CommandClientHelper_AutopilotRebootShutdown_RebootAutopilotAndKeepItInTheBootloaderUntilUpgraded_Description,
+           _ => RS.CommandClientHelper_RebootShutdown_UnknownCommand_Description
+       };
+   }
+   
+   public static string GetCompanionRebootShutdownDescription(this CompanionRebootShutdown src)
+   {
+       return src switch
+       {
+           CompanionRebootShutdown.DoNothingForOnboardComputer => RS.CommandClientHelper_CompanionRebootShutdown_DoNothingForOnboardComputer_Description,
+           CompanionRebootShutdown.RebootOnboardComputer => RS.CommandClientHelper_CompanionRebootShutdown_RebootOnboardComputer_Description,
+           CompanionRebootShutdown.ShutdownOnboardComputer => RS.CommandClientHelper_CompanionRebootShutdown_ShutdownOnboardComputer_Description,
+           CompanionRebootShutdown.RebootOnboardComputerAndKeepItInTheBootloaderUntilUpgraded => RS.CommandClientHelper_CompanionRebootShutdown_RebootOnboardComputerAndKeepItInTheBootloaderUntilUpgraded_Description,
+           _ => RS.CommandClientHelper_RebootShutdown_UnknownCommand_Description
+       };
+   }
 }
 
 public enum AutopilotRebootShutdown
