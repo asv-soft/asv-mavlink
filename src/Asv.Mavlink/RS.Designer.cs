@@ -402,7 +402,7 @@ namespace Asv.Mavlink {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shutdown autopilot.
+        ///   Looks up a localized string similar to Reboot autopilot.
         /// </summary>
         public static string CommandClientHelper_AutopilotRebootShutdown_RebootAutopilot_Description {
             get {
@@ -411,7 +411,7 @@ namespace Asv.Mavlink {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reboot autopilot.
+        ///   Looks up a localized string similar to Reboot autopilot and keep it in the bootloader until upgraded.
         /// </summary>
         public static string CommandClientHelper_AutopilotRebootShutdown_RebootAutopilotAndKeepItInTheBootloaderUntilUpgraded_Description {
             get {
@@ -421,7 +421,7 @@ namespace Asv.Mavlink {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reboot autopilot and keep it in the bootloader until upgraded.
+        ///   Looks up a localized string similar to Shutdown autopilot.
         /// </summary>
         public static string CommandClientHelper_AutopilotRebootShutdown_ShutdownAutopilot_Description {
             get {
@@ -440,7 +440,7 @@ namespace Asv.Mavlink {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shutdown onboard computer.
+        ///   Looks up a localized string similar to Reboot onboard computer.
         /// </summary>
         public static string CommandClientHelper_CompanionRebootShutdown_RebootOnboardComputer_Description {
             get {
@@ -449,7 +449,7 @@ namespace Asv.Mavlink {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reboot onboard computer.
+        ///   Looks up a localized string similar to Reboot onboard computer and keep it in the bootloader until upgraded.
         /// </summary>
         public static string CommandClientHelper_CompanionRebootShutdown_RebootOnboardComputerAndKeepItInTheBootloaderUntilUpgraded_Description {
             get {
@@ -459,7 +459,7 @@ namespace Asv.Mavlink {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reboot onboard computer and keep it in the bootloader until upgraded.
+        ///   Looks up a localized string similar to Shutdown onboard computer.
         /// </summary>
         public static string CommandClientHelper_CompanionRebootShutdown_ShutdownOnboardComputer_Description {
             get {
