@@ -68,7 +68,7 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
             _config.ReadAttemptCount, timeoutMs: _config.ReadTimeouMs, cancel: cancel);
     }
 
-    public Task Write(string name, MavParamType type, float value, CancellationToken cancel = default)
+    public Task<ParamValuePayload> Write(string name, MavParamType type, float value, CancellationToken cancel = default)
     {
         return InternalCall<ParamValuePayload, ParamSetPacket, ParamValuePacket>(_ =>
             {

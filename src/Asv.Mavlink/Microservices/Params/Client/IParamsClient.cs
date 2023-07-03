@@ -11,5 +11,5 @@ public interface IParamsClient
     Task SendRequestList(CancellationToken cancel = default);
     Task<ParamValuePayload> Read(string name, CancellationToken cancel = default);
     Task<ParamValuePayload> Read(ushort index, CancellationToken cancel = default);
-    Task Write(string name, MavParamType type, float value, CancellationToken cancel = default);
+    Task<ParamValuePayload> Write(string name, MavParamType type, float value, CancellationToken cancel = default);
 }

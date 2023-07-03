@@ -225,4 +225,11 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         var result = await Base.Read(name,cancel).ConfigureAwait(false);
         return _converter.ConvertFromMavlinkUnion(result.ParamValue, result.ParamType);
     }
+
+    public async Task<MavParamValue> WriteOnce(string name, MavParamValue value, CancellationToken cancel = default)
+    {
+        var floatValue = _converter.ConvertToMavlinkUnion(value);
+        var result = await Base.Write(name,value.Type,floatValue, cancel).ConfigureAwait(false);
+        return _converter.ConvertFromMavlinkUnion(result.ParamValue, result.ParamType);
+    }
 }
