@@ -264,7 +264,7 @@
       <field type="float" name="pitch" units="rad">Pitch angle (-pi..+pi)</field>
       <field type="float" name="yaw" units="rad">Yaw angle (-pi..+pi)</field>
       <!-- Course measure data -->
-      <field type="int16_t" name="crs_power" units="dBm">Input power of course.</field>
+      <field type="float" name="crs_power" units="dBm">Input power of course.</field>
       <field type="int16_t" name="crs_carrier_offset" units="Hz">Carrier frequency offset of course.</field>
       <field type="float" name="crs_am_90" units="%">Aplitude modulation of 90Hz of course.</field>
       <field type="int16_t" name="crs_freq_90" units="Hz">Frequency offset of signal 90 Hz of course.</field>
@@ -331,7 +331,7 @@
       <field type="float" name="pitch" units="rad">Pitch angle (-pi..+pi)</field>
       <field type="float" name="yaw" units="rad">Yaw angle (-pi..+pi)</field>
       <!-- Course measure data -->
-      <field type="int16_t" name="crs_power" units="dBm">Input power of course.</field>
+      <field type="float" name="crs_power" units="dBm">Input power of course.</field>
       <field type="int16_t" name="crs_carrier_offset" units="Hz">Carrier frequency offset of course.</field>
       <field type="float" name="crs_am_90" units="%">Aplitude modulation of 90Hz of course.</field>
       <field type="int16_t" name="crs_freq_90" units="Hz">Frequency offset of signal 90 Hz of course.</field>
