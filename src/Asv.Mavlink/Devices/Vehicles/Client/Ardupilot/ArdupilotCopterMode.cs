@@ -21,7 +21,7 @@ public class ArdupilotCopterMode:VehicleMode
         foreach (var copterMode in Enum.GetValues<CopterMode>())
         {
             if (wellKnownModes.Contains(copterMode)) continue;
-            // this is no well known mode, try to create description from enum
+            // this is not well known mode, try to create description from enum
             allModes.Add(new ArdupilotCopterMode(copterMode.ToString("G"), String.Empty, copterMode));
         }
         AllModes = allModes.ToImmutableArray();
@@ -125,7 +125,7 @@ public class ArdupilotCopterMode:VehicleMode
     /// <summary>
     /// ADS-B based avoidance of manned aircraft. Should not be set-up as a pilot selectable flight mode.
     /// </summary>
-    public static ArdupilotCopterMode AvoidAdsb = new("AvoidAdsb", RS.ArdupilotCopterMode_AvoidAdsb_Description, CopterMode.CopterModeAvoidAdsb);
+    public static ArdupilotCopterMode AvoidAdsb = new("AvoidAdsb", RS.ArdupilotCopterMode_AvoidAdsb_Description, CopterMode.CopterModeAvoidAdsb, true);
     /// <summary>
     /// RTL, but traces path to get home
     /// </summary>
@@ -133,7 +133,7 @@ public class ArdupilotCopterMode:VehicleMode
     
     #endregion
     
-    public ArdupilotCopterMode(string name, string description, CopterMode customModeValue) : base(name, description)
+    public ArdupilotCopterMode(string name, string description, CopterMode customModeValue, bool internalMode = false) : base(name, description, internalMode)
     {
         CustomMode = customModeValue;
     }

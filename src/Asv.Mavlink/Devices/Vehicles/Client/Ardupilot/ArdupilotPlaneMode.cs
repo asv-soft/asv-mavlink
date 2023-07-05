@@ -134,7 +134,7 @@ public class ArdupilotPlaneMode:VehicleMode
     
     #endregion
     
-    public ArdupilotPlaneMode(string name, string description, PlaneMode customModeValue) : base(name, description)
+    public ArdupilotPlaneMode(string name, string description, PlaneMode customModeValue, bool internalMode = false) : base(name, description, internalMode)
     {
         CustomMode = customModeValue;
     }
