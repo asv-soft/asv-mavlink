@@ -1504,7 +1504,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13135;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 101;
+        public override byte GetCrcEtra() => 2;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDataLlzPayload Payload { get; } = new AsvSdrRecordDataLlzPayload();
@@ -1517,8 +1517,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDataLlzPayload : IPayload
     {
-        public byte GetMaxByteSize() => 184; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 184; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 186; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 186; // of byte sized of fields (exclude extended)
         public byte GetCurrentByteSize()
         {
             var sum = 0;
@@ -1539,6 +1539,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             sum+=4; //Roll
             sum+=4; //Pitch
             sum+=4; //Yaw
+            sum+=4; //CrsPower
             sum+=4; //CrsAm90
             sum+=4; //CrsAm150
             sum+=4; //ClrPower
@@ -1558,7 +1559,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             sum+=2; //Vy
             sum+=2; //Vz
             sum+=2; //Hdg
-            sum+=2; //CrsPower
             sum+=2; //CrsCarrierOffset
             sum+=2; //CrsFreq90
             sum+=2; //CrsFreq150
@@ -1600,6 +1600,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             Roll = BinSerialize.ReadFloat(ref buffer);
             Pitch = BinSerialize.ReadFloat(ref buffer);
             Yaw = BinSerialize.ReadFloat(ref buffer);
+            CrsPower = BinSerialize.ReadFloat(ref buffer);
             CrsAm90 = BinSerialize.ReadFloat(ref buffer);
             CrsAm150 = BinSerialize.ReadFloat(ref buffer);
             ClrPower = BinSerialize.ReadFloat(ref buffer);
@@ -1619,7 +1620,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             Vy = BinSerialize.ReadShort(ref buffer);
             Vz = BinSerialize.ReadShort(ref buffer);
             Hdg = BinSerialize.ReadUShort(ref buffer);
-            CrsPower = BinSerialize.ReadShort(ref buffer);
             CrsCarrierOffset = BinSerialize.ReadShort(ref buffer);
             CrsFreq90 = BinSerialize.ReadShort(ref buffer);
             CrsFreq150 = BinSerialize.ReadShort(ref buffer);
@@ -1631,7 +1631,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             TotalFreq150 = BinSerialize.ReadShort(ref buffer);
             CodeIdFreq1020 = BinSerialize.ReadShort(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/184 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/186 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordGuid = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -1672,6 +1672,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteFloat(ref buffer,Roll);
             BinSerialize.WriteFloat(ref buffer,Pitch);
             BinSerialize.WriteFloat(ref buffer,Yaw);
+            BinSerialize.WriteFloat(ref buffer,CrsPower);
             BinSerialize.WriteFloat(ref buffer,CrsAm90);
             BinSerialize.WriteFloat(ref buffer,CrsAm150);
             BinSerialize.WriteFloat(ref buffer,ClrPower);
@@ -1691,7 +1692,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteShort(ref buffer,Vy);
             BinSerialize.WriteShort(ref buffer,Vz);
             BinSerialize.WriteUShort(ref buffer,Hdg);
-            BinSerialize.WriteShort(ref buffer,CrsPower);
             BinSerialize.WriteShort(ref buffer,CrsCarrierOffset);
             BinSerialize.WriteShort(ref buffer,CrsFreq90);
             BinSerialize.WriteShort(ref buffer,CrsFreq150);
@@ -1719,7 +1719,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             buffer = buffer.Slice(CodeId.Length);
             
-            /* PayloadByteSize = 184 */;
+            /* PayloadByteSize = 186 */;
         }
         
         
@@ -1811,6 +1811,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// OriginName: yaw, Units: rad, IsExtended: false
         /// </summary>
         public float Yaw { get; set; }
+        /// <summary>
+        /// Input power of course.
+        /// OriginName: crs_power, Units: dBm, IsExtended: false
+        /// </summary>
+        public float CrsPower { get; set; }
         /// <summary>
         /// Aplitude modulation of 90Hz of course.
         /// OriginName: crs_am_90, Units: %, IsExtended: false
@@ -1907,11 +1912,6 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public ushort Hdg { get; set; }
         /// <summary>
-        /// Input power of course.
-        /// OriginName: crs_power, Units: dBm, IsExtended: false
-        /// </summary>
-        public short CrsPower { get; set; }
-        /// <summary>
         /// Carrier frequency offset of course.
         /// OriginName: crs_carrier_offset, Units: Hz, IsExtended: false
         /// </summary>
@@ -1996,7 +1996,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13136;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 215;
+        public override byte GetCrcEtra() => 233;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrRecordDataGpPayload Payload { get; } = new AsvSdrRecordDataGpPayload();
@@ -2009,8 +2009,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordDataGpPayload : IPayload
     {
-        public byte GetMaxByteSize() => 174; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 174; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 176; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 176; // of byte sized of fields (exclude extended)
         public byte GetCurrentByteSize()
         {
             var sum = 0;
@@ -2031,6 +2031,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             sum+=4; //Roll
             sum+=4; //Pitch
             sum+=4; //Yaw
+            sum+=4; //CrsPower
             sum+=4; //CrsAm90
             sum+=4; //CrsAm150
             sum+=4; //ClrPower
@@ -2049,7 +2050,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             sum+=2; //Vy
             sum+=2; //Vz
             sum+=2; //Hdg
-            sum+=2; //CrsPower
             sum+=2; //CrsCarrierOffset
             sum+=2; //CrsFreq90
             sum+=2; //CrsFreq150
@@ -2089,6 +2089,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             Roll = BinSerialize.ReadFloat(ref buffer);
             Pitch = BinSerialize.ReadFloat(ref buffer);
             Yaw = BinSerialize.ReadFloat(ref buffer);
+            CrsPower = BinSerialize.ReadFloat(ref buffer);
             CrsAm90 = BinSerialize.ReadFloat(ref buffer);
             CrsAm150 = BinSerialize.ReadFloat(ref buffer);
             ClrPower = BinSerialize.ReadFloat(ref buffer);
@@ -2107,7 +2108,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             Vy = BinSerialize.ReadShort(ref buffer);
             Vz = BinSerialize.ReadShort(ref buffer);
             Hdg = BinSerialize.ReadUShort(ref buffer);
-            CrsPower = BinSerialize.ReadShort(ref buffer);
             CrsCarrierOffset = BinSerialize.ReadShort(ref buffer);
             CrsFreq90 = BinSerialize.ReadShort(ref buffer);
             CrsFreq150 = BinSerialize.ReadShort(ref buffer);
@@ -2118,7 +2118,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             TotalFreq90 = BinSerialize.ReadShort(ref buffer);
             TotalFreq150 = BinSerialize.ReadShort(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/174 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/176 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordGuid = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -2148,6 +2148,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteFloat(ref buffer,Roll);
             BinSerialize.WriteFloat(ref buffer,Pitch);
             BinSerialize.WriteFloat(ref buffer,Yaw);
+            BinSerialize.WriteFloat(ref buffer,CrsPower);
             BinSerialize.WriteFloat(ref buffer,CrsAm90);
             BinSerialize.WriteFloat(ref buffer,CrsAm150);
             BinSerialize.WriteFloat(ref buffer,ClrPower);
@@ -2166,7 +2167,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteShort(ref buffer,Vy);
             BinSerialize.WriteShort(ref buffer,Vz);
             BinSerialize.WriteUShort(ref buffer,Hdg);
-            BinSerialize.WriteShort(ref buffer,CrsPower);
             BinSerialize.WriteShort(ref buffer,CrsCarrierOffset);
             BinSerialize.WriteShort(ref buffer,CrsFreq90);
             BinSerialize.WriteShort(ref buffer,CrsFreq150);
@@ -2183,7 +2183,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             BinSerialize.WriteByte(ref buffer,(byte)GnssFixType);
             BinSerialize.WriteByte(ref buffer,(byte)GnssSatellitesVisible);
-            /* PayloadByteSize = 174 */;
+            /* PayloadByteSize = 176 */;
         }
         
         
@@ -2276,6 +2276,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public float Yaw { get; set; }
         /// <summary>
+        /// Input power of course.
+        /// OriginName: crs_power, Units: dBm, IsExtended: false
+        /// </summary>
+        public float CrsPower { get; set; }
+        /// <summary>
         /// Aplitude modulation of 90Hz of course.
         /// OriginName: crs_am_90, Units: %, IsExtended: false
         /// </summary>
@@ -2365,11 +2370,6 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// OriginName: hdg, Units: cdeg, IsExtended: false
         /// </summary>
         public ushort Hdg { get; set; }
-        /// <summary>
-        /// Input power of course.
-        /// OriginName: crs_power, Units: dBm, IsExtended: false
-        /// </summary>
-        public short CrsPower { get; set; }
         /// <summary>
         /// Carrier frequency offset of course.
         /// OriginName: crs_carrier_offset, Units: Hz, IsExtended: false
