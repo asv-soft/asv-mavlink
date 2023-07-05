@@ -314,4 +314,7 @@
 	<data name="CommandClientHelper_RebootShutdown_UnknownCommand_Description" xml:space="preserve">
 		<value>Неизвестная команда</value>
 	</data>
+	<data name="ArdupilotCopterMode_AvoidAdsb_Description" xml:space="preserve">
+		<value>Режим уклонения пилотируемых судов, основанный на протоколе ADS-B. Данный режим нельзя делать настраиваемым пилотом.</value>
+	</data>
 </root>

@@ -17,13 +17,13 @@ public class ArdupilotCopterMode:VehicleMode
     {
         var wellKnownModes = new HashSet<CopterMode>(WellKnownModes.Select(_=>_.CustomMode));
         var allModes = new List<IVehicleMode>();
+        allModes.AddRange(WellKnownModes);
         foreach (var copterMode in Enum.GetValues<CopterMode>())
         {
             if (wellKnownModes.Contains(copterMode)) continue;
             // this is no well known mode, try to create description from enum
             allModes.Add(new ArdupilotCopterMode(copterMode.ToString("G"), String.Empty, copterMode));
         }
-        allModes.AddRange(WellKnownModes);
         AllModes = allModes.ToImmutableArray();
     }
 
@@ -49,6 +49,7 @@ public class ArdupilotCopterMode:VehicleMode
             yield return Brake;
             yield return Throw;
             yield return GuidedNoGps;
+            yield return AvoidAdsb;
             yield return SmartRtl;
         }
     }
@@ -121,6 +122,10 @@ public class ArdupilotCopterMode:VehicleMode
     /// Same as Guided, but uses only attitude targets for navigation
     /// </summary>
     public static ArdupilotCopterMode GuidedNoGps = new("GuidedNoGps", RS.ArdupilotCopterMode_GuidedNoGps_Description, CopterMode.CopterModeGuidedNogps);
+    /// <summary>
+    /// ADS-B based avoidance of manned aircraft. Should not be set-up as a pilot selectable flight mode.
+    /// </summary>
+    public static ArdupilotCopterMode AvoidAdsb = new("AvoidAdsb", RS.ArdupilotCopterMode_AvoidAdsb_Description, CopterMode.CopterModeAvoidAdsb);
     /// <summary>
     /// RTL, but traces path to get home
     /// </summary>

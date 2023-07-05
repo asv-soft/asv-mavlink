@@ -96,6 +96,15 @@ namespace Asv.Mavlink {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ADS-B based avoidance of manned aircraft. Should not be set-up as a pilot selectable flight mode..
+        /// </summary>
+        public static string ArdupilotCopterMode_AvoidAdsb_Description {
+            get {
+                return ResourceManager.GetString("ArdupilotCopterMode_AvoidAdsb_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Brings copter to an immediate stop.
         /// </summary>
         public static string ArdupilotCopterMode_Brake_Description {

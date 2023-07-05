@@ -317,4 +317,7 @@
 	<data name="CommandClientHelper_RebootShutdown_UnknownCommand_Description" xml:space="preserve">
 		<value>Unknown command</value>
 	</data>
+	<data name="ArdupilotCopterMode_AvoidAdsb_Description" xml:space="preserve">
+		<value>ADS-B based avoidance of manned aircraft. Should not be set-up as a pilot selectable flight mode.</value>
+	</data>
 </root>
