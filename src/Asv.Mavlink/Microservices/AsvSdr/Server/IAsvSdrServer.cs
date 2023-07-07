@@ -23,7 +23,6 @@ namespace Asv.Mavlink
         Task SendRecordDataResponse(Action<AsvSdrRecordDataResponsePayload> setValueCallback, CancellationToken cancel = default);
         Task SendRecordData(AsvSdrCustomMode mode, Action<IPayload> setValueCallback, CancellationToken cancel = default);
         IPacketV2<IPayload> CreateRecordData(AsvSdrCustomMode mode);
-        
     }
 
     public static class AsvSdrServerHelper
@@ -146,8 +145,5 @@ namespace Asv.Mavlink
                 x.Result = AsvSdrRequestAck.AsvSdrRequestAckOk;
             }, CancellationToken.None);
         }
-        
-          
-        
     }
 }

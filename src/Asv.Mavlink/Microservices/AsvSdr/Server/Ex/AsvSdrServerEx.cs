@@ -91,12 +91,21 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
             var result = await CurrentRecordSetTag((AsvSdrRecordTagType)tagType,name,valueArray, cs.Token).ConfigureAwait(false);
             return new CommandResult(result);
         };
+        commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction] = async (id, args, cancel) =>
+        {
+            if (SystemControlAction == null) return new CommandResult(MavResult.MavResultUnsupported);
+            using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+            var action = (AsvSdrSystemControlAction)BitConverter.ToUInt32(BitConverter.GetBytes(args.Payload.Param1));
+            var result = await SystemControlAction(action, cs.Token).ConfigureAwait(false);
+            return new CommandResult(result);
+        };
     }
 
     public SetModeDelegate SetMode { get; set; }
     public StartRecordDelegate StartRecord { get; set; }
     public StopRecordDelegate StopRecord { get; set; }
     public CurrentRecordSetTagDelegate CurrentRecordSetTag { get; set; }
+    public SystemControlActionDelegate SystemControlAction { get; set; }
     public IAsvSdrServer Base { get; }
     public IRxEditableValue<AsvSdrCustomMode> CustomMode { get; }
 }

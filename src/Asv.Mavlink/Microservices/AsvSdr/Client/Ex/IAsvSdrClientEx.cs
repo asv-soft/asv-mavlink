@@ -23,6 +23,7 @@ public interface IAsvSdrClientEx
     Task<MavResult> StartRecord(string recordName, CancellationToken cancel);
     Task<MavResult> StopRecord(CancellationToken cancel);
     Task<MavResult> CurrentRecordSetTag(string tagName, AsvSdrRecordTagType type, byte[] rawValue , CancellationToken cancel);
+    Task<MavResult> SystemControlAction(AsvSdrSystemControlAction action, CancellationToken cancel);
 }
 
 public static class AsvSdrClientExHelper

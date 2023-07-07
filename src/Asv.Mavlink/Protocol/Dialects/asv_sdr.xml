@@ -60,6 +60,16 @@
         <param index="6">Tag value data 0-3 bytes depends on the type of tag.</param>
         <param index="7">Tag value data 4-7 bytes depends on the type of tag.</param>
       </entry>
+      <entry value="13104" name="MAV_CMD_ASV_SDR_SYSTEM_CONTROL_ACTION">
+        <description>Send shutdown or reboot command.</description>
+        <param index="1">ASV_SDR_SYSTEM_CONTROL_ACTION (uint32).</param>
+        <param index="2">Empty.</param>
+        <param index="3">Empty.</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
     </enum>
     
     <enum name="ASV_SDR_RECORD_TAG_TYPE">
@@ -119,6 +129,16 @@
       </entry>
       <entry name="ASV_SDR_REQUEST_ACK_FAIL">
         <description>Command error.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      </entry>
+    </enum>
+    
+    <enum name="ASV_SDR_SYSTEM_CONTROL_ACTION">
+      <description>SDR system control actions [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <entry name="ASV_SDR_SYSTEM_CONTROL_ACTION_REBOOT">
+        <description>Request system reboot [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      </entry>
+      <entry name="ASV_SDR_SYSTEM_CONTROL_ACTION_SHUTDOWN">
+        <description>Request system shutdown [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       </entry>
     </enum>
   </enums>
