@@ -120,6 +120,18 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// MAV_CMD_ASV_SDR_SET_RECORD_TAG
         /// </summary>
         MavCmdAsvSdrSetRecordTag = 13103,
+        /// <summary>
+        /// Send shutdown or reboot command.
+        /// Param 1 - ASV_SDR_SYSTEM_CONTROL_ACTION (uint32).
+        /// Param 2 - Empty.
+        /// Param 3 - Empty.
+        /// Param 4 - Empty.
+        /// Param 5 - Empty.
+        /// Param 6 - Empty.
+        /// Param 7 - Empty.
+        /// MAV_CMD_ASV_SDR_SYSTEM_CONTROL_ACTION
+        /// </summary>
+        MavCmdAsvSdrSystemControlAction = 13104,
     }
 
     /// <summary>
@@ -219,6 +231,24 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// ASV_SDR_REQUEST_ACK_FAIL
         /// </summary>
         AsvSdrRequestAckFail = 2,
+    }
+
+    /// <summary>
+    /// SDR system control actions [!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_SDR_SYSTEM_CONTROL_ACTION
+    /// </summary>
+    public enum AsvSdrSystemControlAction:uint
+    {
+        /// <summary>
+        /// Request system reboot [!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// ASV_SDR_SYSTEM_CONTROL_ACTION_REBOOT
+        /// </summary>
+        AsvSdrSystemControlActionReboot = 0,
+        /// <summary>
+        /// Request system shutdown [!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// ASV_SDR_SYSTEM_CONTROL_ACTION_SHUTDOWN
+        /// </summary>
+        AsvSdrSystemControlActionShutdown = 1,
     }
 
 

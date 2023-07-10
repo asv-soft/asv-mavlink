@@ -15,6 +15,8 @@ public delegate Task<MavResult> StopRecordDelegate(CancellationToken cancel);
 
 public delegate Task<MavResult> CurrentRecordSetTagDelegate(AsvSdrRecordTagType type, string name, byte[] value, CancellationToken cancel);
 
+public delegate Task<MavResult> SystemControlActionDelegate(AsvSdrSystemControlAction action, CancellationToken cancel);
+
 public interface IAsvSdrServerEx
 {
     IAsvSdrServer Base { get; }
@@ -23,5 +25,5 @@ public interface IAsvSdrServerEx
     StartRecordDelegate StartRecord { set; }
     StopRecordDelegate StopRecord { set; }
     CurrentRecordSetTagDelegate CurrentRecordSetTag { set; }
-    
+    SystemControlActionDelegate SystemControlAction { set; }
 }

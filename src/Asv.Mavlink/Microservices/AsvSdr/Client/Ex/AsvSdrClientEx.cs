@@ -193,4 +193,18 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         return result.Result;
     }
 
+    public async Task<MavResult> SystemControlAction(AsvSdrSystemControlAction action, CancellationToken cancel)
+    {
+        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+        var result = await _commandClient.CommandLong((V2.Common.MavCmd)MavCmd.MavCmdAsvSdrSystemControlAction,
+            BitConverter.ToSingle(BitConverter.GetBytes((uint)action)),
+            Single.NaN,
+            Single.NaN,
+            Single.NaN,
+            Single.NaN,
+            Single.NaN,
+            Single.NaN,
+            cs.Token).ConfigureAwait(false);
+        return result.Result;
+    }
 }
