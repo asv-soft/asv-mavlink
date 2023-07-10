@@ -666,4 +666,60 @@ public class AsvSdrExTests
             }
         });
     }
+
+    [Fact]
+    public async Task Check_System_Control_Action_Reboot_Behaviour()
+    {
+        var (asvSdrClientEx, asvSdrServerEx) = await SetUpConnection();
+
+        asvSdrServerEx.SystemControlAction = (action, cancel) =>
+        {
+            return action switch
+            {
+                AsvSdrSystemControlAction.AsvSdrSystemControlActionReboot => Task.FromResult(
+                    MavResult.MavResultAccepted),
+                AsvSdrSystemControlAction.AsvSdrSystemControlActionShutdown => Task.FromResult(
+                    MavResult.MavResultFailed),
+                _ => Task.FromResult(MavResult.MavResultUnsupported)
+            };
+        };
+
+        var mavRebootResult =
+            await asvSdrClientEx.SystemControlAction(AsvSdrSystemControlAction.AsvSdrSystemControlActionReboot,
+                CancellationToken.None);
+        
+        var mavShutdownResult = await asvSdrClientEx.SystemControlAction(AsvSdrSystemControlAction.AsvSdrSystemControlActionShutdown,
+            CancellationToken.None);
+        
+        Assert.True(mavRebootResult == MavResult.MavResultAccepted);
+        Assert.True(mavShutdownResult == MavResult.MavResultFailed);
+    }
+    
+    [Fact]
+    public async Task Check_System_Control_Action_Shutdown_Behaviour()
+    {
+        var (asvSdrClientEx, asvSdrServerEx) = await SetUpConnection();
+
+        asvSdrServerEx.SystemControlAction = (action, cancel) =>
+        {
+            return action switch
+            {
+                AsvSdrSystemControlAction.AsvSdrSystemControlActionReboot => Task.FromResult(
+                    MavResult.MavResultFailed),
+                AsvSdrSystemControlAction.AsvSdrSystemControlActionShutdown => Task.FromResult(
+                    MavResult.MavResultAccepted),
+                _ => Task.FromResult(MavResult.MavResultUnsupported)
+            };
+        };
+
+        var mavRebootResult =
+            await asvSdrClientEx.SystemControlAction(AsvSdrSystemControlAction.AsvSdrSystemControlActionReboot,
+                CancellationToken.None);
+        
+        var mavShutdownResult = await asvSdrClientEx.SystemControlAction(AsvSdrSystemControlAction.AsvSdrSystemControlActionShutdown,
+            CancellationToken.None);
+        
+        Assert.True(mavRebootResult == MavResult.MavResultFailed);
+        Assert.True(mavShutdownResult == MavResult.MavResultAccepted);
+    }
 }
