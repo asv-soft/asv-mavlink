@@ -710,7 +710,7 @@ public class AsvSdrExTests
                     MavResult.MavResultAccepted),
                 _ => Task.FromResult(MavResult.MavResultUnsupported)
             };
-        };
+        }; 
 
         var mavRebootResult =
             await asvSdrClientEx.SystemControlAction(AsvSdrSystemControlAction.AsvSdrSystemControlActionReboot,
