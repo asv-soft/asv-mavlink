@@ -529,8 +529,17 @@ public class AsvSdrExTests
     {
         var (asvSdrClientEx, asvSdrServerEx) = await SetUpConnection();
 
+        asvSdrServerEx.StartRecord = (name, cancel) =>
+        {
+            return name switch
+            {
+                "TestRecord" => Task.FromResult(MavResult.MavResultAccepted),
+                _ => Task.FromResult<MavResult>(MavResult.MavResultFailed)
+            };
+        };
+
         var mavResult = await asvSdrClientEx.StartRecord("TestRecord", CancellationToken.None);
-        Assert.True(mavResult == MavResult.MavResultUnsupported);
+        Assert.True(mavResult == MavResult.MavResultAccepted);
     }
     
     [Fact]
@@ -538,8 +547,10 @@ public class AsvSdrExTests
     {
         var (asvSdrClientEx, asvSdrServerEx) = await SetUpConnection();
 
+        asvSdrServerEx.StopRecord = cancel => Task.FromResult(MavResult.MavResultAccepted);
+
         var mavResult = await asvSdrClientEx.StopRecord(CancellationToken.None);
-        Assert.True(mavResult == MavResult.MavResultUnsupported);
+        Assert.True(mavResult == MavResult.MavResultAccepted);
     }
     
     [Fact]
@@ -547,9 +558,15 @@ public class AsvSdrExTests
     {
         var (asvSdrClientEx, asvSdrServerEx) = await SetUpConnection();
 
+        asvSdrServerEx.CurrentRecordSetTag = (type, name, value, cancel) =>
+        {
+            SdrWellKnown.CheckTagName(name);
+            return Task.FromResult(MavResult.MavResultAccepted);
+        };
+        
         var nameArray = new byte[SdrWellKnown.RecordTagValueMaxLength];
         var mavResult = await asvSdrClientEx.CurrentRecordSetTag("test", AsvSdrRecordTagType.AsvSdrRecordTagTypeString8, nameArray, CancellationToken.None);
-        Assert.True(mavResult == MavResult.MavResultUnsupported);
+        Assert.True(mavResult == MavResult.MavResultAccepted);
     }
     
     [Fact]
