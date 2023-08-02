@@ -1,28 +1,40 @@
 using System;
 using System.Collections.Generic;
+using Asv.IO;
 
 namespace Asv.Mavlink;
 
-public interface IAsvSdrRecordFile:IDisposable
+
+
+
+public interface IListDataFile<out TMetadata>:IDisposable
+    where TMetadata:ISpanSerializable
 {
-    void EditMetadata(Action<AsvSdrRecordFileMetadata> editCallback);
     uint Count { get; }
-    long Size { get; }
-    bool Exist(uint index);
-    void Write(uint index, IPayload payload);
-    bool Read(uint index, ref IPayload payload);
-    
+    long ByteSize { get; }
+    void EditMetadata(Action<TMetadata> editCallback);
+    TMetadata ReadMetadata();
+    bool Exist(int index);
+    void Write(int index, ISpanSerializable payload);
+    bool Read(int index, ISpanSerializable payload);
 }
 
-public static class AsvSdrRecordFileHelper
+public static class ListDataFileHelper
 {
-    public static IEnumerable<Chunk> GetNotExistChunks(this IAsvSdrRecordFile src, int maxPageSize)
+    public struct Chunk
+    {
+        public int Skip { get; init; }
+        public int Take { get; init; }
+    }
+    
+    public static IEnumerable<Chunk> GetEmptyChunks<TMetadata>(this IListDataFile<TMetadata> src, int maxPageSize) 
+        where TMetadata : ISpanSerializable
     {
         var count = src.Count;
         var startedChunk = false;
-        var skip = 0U;
-        var take = 0U;
-        for (var i = 0U; i < count; i++)
+        var skip = 0;
+        var take = 0;
+        for (var i = 0; i < count; i++)
         {
             //simplify logic
             if (take >= maxPageSize)
@@ -55,8 +67,3 @@ public static class AsvSdrRecordFileHelper
     }
 }
 
-public struct Chunk
-{
-    public uint Skip { get; init; }
-    public uint Take { get; init; }
-}
