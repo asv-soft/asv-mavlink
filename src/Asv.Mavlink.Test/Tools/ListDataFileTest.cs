@@ -7,15 +7,35 @@ using Xunit;
 
 namespace Asv.Mavlink.Test;
 
-public class AsvSdrRecordFileTest
+public class ListDataFileTest
 {
+    public static readonly ListDataFileFormat FileFormat1 = new()
+    {
+        Version = "1.0.0",
+        Type = "TestFile1",
+        MetadataMaxSize = 1024 * 4,
+        ItemMaxSize = 256,
+    };
+    
+    public static readonly ListDataFileFormat FileFormat2 = new()
+    {
+        Version = "1.0.0",
+        Type = "TestFile2",
+        MetadataMaxSize = 1024 * 4,
+        ItemMaxSize = 256,
+    };
+    
     [Fact]
     public void Test_Null_Reference()
     {
         using var strm = new MemoryStream();
         Assert.Throws<ArgumentNullException>(() =>
         {
-            using var file = new AsvSdrRecordFile(null, false);    
+            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(null,FileFormat1, false);    
+        });
+        Assert.Throws<ArgumentNullException>(() =>
+        {
+            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(new MemoryStream(),null, false);    
         });
     }
     
@@ -72,7 +92,7 @@ public class AsvSdrRecordFileTest
     public void Check_Data_Serialization()
     {
         using var strm = new MemoryStream();
-        using var file = new AsvSdrRecordFile(strm,false);
+        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1,false);
         
         Assert.False(file.Exist(0));
         

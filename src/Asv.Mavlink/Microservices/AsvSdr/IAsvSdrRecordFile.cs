@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using Asv.IO;
 using Asv.Mavlink.V2.AsvSdr;
-using DynamicData;
 
 namespace Asv.Mavlink;
 
@@ -109,7 +108,7 @@ public static class AsvSdrRecordFileHelper
 
 public class AsvSdrRecordFile :ListDataFile<AsvSdrRecordFileMetadata>, IAsvSdrRecordFile
 {
-    public static readonly ListDataFileHeader FileFormat = new()
+    public static readonly ListDataFileFormat FileFormat = new()
     {
         Version = "1.0.0",
         Type = "AsvSdrRecordFile",

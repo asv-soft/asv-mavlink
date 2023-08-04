@@ -13,41 +13,39 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
 {
     #region File header
     
-    private const ushort FileHeaderMaxSize = 256;
-    
     private static ushort CalculateHeaderCrc(ReadOnlySpan<byte> buffer)
     {
-        buffer = buffer.Slice(0,FileHeaderMaxSize - sizeof(ushort) /*CRC*/);
+        buffer = buffer.Slice(0,ListDataFileFormat.MaxSize - sizeof(ushort) /*CRC*/);
         return X25Crc.Accumulate(ref buffer, X25Crc.CrcSeed);
     }
     
     private static ushort ReadHeaderCrc(ReadOnlySpan<byte> buffer)
     {
-        buffer = buffer.Slice(FileHeaderMaxSize - sizeof(ushort) /*CRC*/);
+        buffer = buffer.Slice(ListDataFileFormat.MaxSize - sizeof(ushort) /*CRC*/);
         return BinSerialize.ReadUShort(ref buffer);
     }
     
-    public static ListDataFileHeader? ReadHeader(Stream stream)
+    public static ListDataFileFormat? ReadHeader(Stream stream)
     {
-        if (stream.Length < FileHeaderMaxSize) return null;
-        var header = new ListDataFileHeader();
-        var data = ArrayPool<byte>.Shared.Rent(FileHeaderMaxSize);
-        for (var i = 0; i < FileHeaderMaxSize; i++)
+        if (stream.Length < ListDataFileFormat.MaxSize) return null;
+        var header = new ListDataFileFormat();
+        var data = ArrayPool<byte>.Shared.Rent(ListDataFileFormat.MaxSize);
+        for (var i = 0; i < ListDataFileFormat.MaxSize; i++)
         {
             data[i] = 0;
         }
 
         try
         {
-            var readSpan = new Span<byte>(data, 0, FileHeaderMaxSize);
+            var readSpan = new Span<byte>(data, 0, ListDataFileFormat.MaxSize);
             var crc = CalculateHeaderCrc(readSpan);
             var readCrc = ReadHeaderCrc(readSpan);
             if (crc != readCrc) return null;
             
             stream.Seek(0, SeekOrigin.Begin);
             var readCount = stream.Read(readSpan);
-            Debug.Assert(readCount == FileHeaderMaxSize);
-            var deserializeSpan = new ReadOnlySpan<byte>(data, 0, FileHeaderMaxSize);
+            Debug.Assert(readCount == ListDataFileFormat.MaxSize);
+            var deserializeSpan = new ReadOnlySpan<byte>(data, 0, ListDataFileFormat.MaxSize);
             header.Deserialize(ref deserializeSpan);
             
             return header;
@@ -79,42 +77,44 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
     private readonly int _stopRowByteIndex;
     private TMetadata _metadata;
 
-    public ListDataFile(Stream stream, ListDataFileHeader header, bool disposeSteam)
+    public ListDataFile(Stream stream, ListDataFileFormat header, bool disposeSteam)
     {
+        if (header == null) throw new ArgumentNullException(nameof(header));
+        header.Validate();
         _stream = stream ?? throw new ArgumentNullException(nameof(stream));
         if (_stream.CanSeek == false) throw new Exception("Need stream with seek support");
         _disposeSteam = disposeSteam;
-        _startFileMetadataOffset = FileHeaderMaxSize;
+        _startFileMetadataOffset = ListDataFileFormat.MaxSize;
         _fileMetadataSize = header.MetadataMaxSize;
-        _startDataOffset = (uint)(FileHeaderMaxSize + _fileMetadataSize);
+        _startDataOffset = (uint)(ListDataFileFormat.MaxSize + _fileMetadataSize);
         _rowDataSize = header.ItemMaxSize;
         _rowSize = (ushort)(1U /*StartRowMagicByte*/ + _rowDataSize /*MAX DATA SIZE*/ + 1U /*StopRowMagicByte*/ + 2U) /*CRC*/;
         _startRowByteIndex = 0;
         _stopRowByteIndex = (int)(_rowSize - 3);
 
-        var data = ArrayPool<byte>.Shared.Rent(FileHeaderMaxSize);
-        for (var i = 0; i < FileHeaderMaxSize; i++)
+        var data = ArrayPool<byte>.Shared.Rent(ListDataFileFormat.MaxSize);
+        for (var i = 0; i < ListDataFileFormat.MaxSize; i++)
         {
             data[i] = 0;
         }
 
         try
         {
-            if (_stream.Length < FileHeaderMaxSize)
+            if (_stream.Length < ListDataFileFormat.MaxSize)
             {
                 // no header => write origin 
-                var serializeSpan = new Span<byte>(data, 0, FileHeaderMaxSize);
+                var serializeSpan = new Span<byte>(data, 0, ListDataFileFormat.MaxSize);
                 header.Serialize(ref serializeSpan);
                 _stream.Flush();
             }
             else
             {
-                var readSpan = new Span<byte>(data, 0, FileHeaderMaxSize);
+                var readSpan = new Span<byte>(data, 0, ListDataFileFormat.MaxSize);
                 _stream.Seek(0, SeekOrigin.Begin);
                 var readCount = _stream.Read(readSpan);
-                Debug.Assert(readCount == FileHeaderMaxSize);
-                var deserializeSpan = new ReadOnlySpan<byte>(data, 0, FileHeaderMaxSize);
-                var readHeader = new ListDataFileHeader();
+                Debug.Assert(readCount == ListDataFileFormat.MaxSize);
+                var deserializeSpan = new ReadOnlySpan<byte>(data, 0, ListDataFileFormat.MaxSize);
+                var readHeader = new ListDataFileFormat();
                 readHeader.Deserialize(ref deserializeSpan);
                 if (readHeader.Equals(header) == false)
                 {
@@ -138,7 +138,7 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
         {
             var readSpan = new Span<byte>(buffer, 0, _fileMetadataSize);
             // if file have metadata => read
-            if (_stream.Length >= FileHeaderMaxSize + _fileMetadataSize)
+            if (_stream.Length >= ListDataFileFormat.MaxSize + _fileMetadataSize)
             {
                 _stream.Seek(_startFileMetadataOffset, SeekOrigin.Begin);
                 var readCount = _stream.Read(readSpan);
@@ -365,8 +365,10 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
     }
 }
 
-public class ListDataFileHeader:ISizedSpanSerializable, IEquatable<ListDataFileHeader>
+public class ListDataFileFormat:ISizedSpanSerializable, IEquatable<ListDataFileFormat>
 {
+    public const int MaxSize = 256;
+    
     public SemVersion Version { get; set; } = null!;
     public string Type { get; set; } = null!;
     public ushort MetadataMaxSize { get; set; }
@@ -396,7 +398,7 @@ public class ListDataFileHeader:ISizedSpanSerializable, IEquatable<ListDataFileH
                sizeof(ushort);
     }
 
-    public bool Equals(ListDataFileHeader? other)
+    public bool Equals(ListDataFileFormat? other)
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
@@ -408,7 +410,7 @@ public class ListDataFileHeader:ISizedSpanSerializable, IEquatable<ListDataFileH
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
         if (obj.GetType() != this.GetType()) return false;
-        return Equals((ListDataFileHeader)obj);
+        return Equals((ListDataFileFormat)obj);
     }
 
     public override int GetHashCode()
@@ -416,12 +418,12 @@ public class ListDataFileHeader:ISizedSpanSerializable, IEquatable<ListDataFileH
         return HashCode.Combine(Version, Type, MetadataMaxSize, ItemMaxSize);
     }
 
-    public static bool operator ==(ListDataFileHeader? left, ListDataFileHeader? right)
+    public static bool operator ==(ListDataFileFormat? left, ListDataFileFormat? right)
     {
         return Equals(left, right);
     }
 
-    public static bool operator !=(ListDataFileHeader? left, ListDataFileHeader? right)
+    public static bool operator !=(ListDataFileFormat? left, ListDataFileFormat? right)
     {
         return !Equals(left, right);
     }
@@ -430,4 +432,16 @@ public class ListDataFileHeader:ISizedSpanSerializable, IEquatable<ListDataFileH
     {
         return $"{nameof(Version)}: {Version}, {nameof(Type)}: {Type}, {nameof(MetadataMaxSize)}: {MetadataMaxSize}, {nameof(ItemMaxSize)}: {ItemMaxSize}";
     }
+
+    public void Validate()
+    {
+        //validate fields
+        if (Version == null!) throw new InvalidOperationException("Version is null");
+        if (string.IsNullOrWhiteSpace(Type)) throw new InvalidOperationException("Type is null or empty");
+        if (MetadataMaxSize == 0) throw new InvalidOperationException("MetadataMaxSize is 0");
+        if (ItemMaxSize == 0) throw new InvalidOperationException("ItemMaxSize is 0");
+        if (GetByteSize() + 2 /*CRC*/ >= MaxSize) throw new InvalidOperationException("Header size is too big");
+    }
+
+    
 }
