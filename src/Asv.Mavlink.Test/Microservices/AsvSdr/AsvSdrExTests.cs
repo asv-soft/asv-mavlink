@@ -560,11 +560,11 @@ public class AsvSdrExTests
 
         asvSdrServerEx.CurrentRecordSetTag = (type, name, value, cancel) =>
         {
-            SdrWellKnown.CheckTagName(name);
+            AsvSdrHelper.CheckTagName(name);
             return Task.FromResult(MavResult.MavResultAccepted);
         };
         
-        var nameArray = new byte[SdrWellKnown.RecordTagValueMaxLength];
+        var nameArray = new byte[AsvSdrHelper.RecordTagValueMaxLength];
         var mavResult = await asvSdrClientEx.CurrentRecordSetTag("test", AsvSdrRecordTagType.AsvSdrRecordTagTypeString8, nameArray, CancellationToken.None);
         Assert.True(mavResult == MavResult.MavResultAccepted);
     }
@@ -597,7 +597,7 @@ public class AsvSdrExTests
             catch (Exception e)
             {
                 _testOutputHelper.WriteLine(e.ToString());
-                Assert.Equal($"Record name is too long. Max length is {SdrWellKnown.RecordNameMaxLength}", e.Message);
+                Assert.Equal($"Record name is too long. Max length is {AsvSdrHelper.RecordNameMaxLength}", e.Message);
                 throw;
             }
         });
@@ -642,7 +642,7 @@ public class AsvSdrExTests
     public async Task Check_For_Incorrect_CurrentRecordSetTag_Tag_Name()
     {
         var (asvSdrClientEx, asvSdrServerEx) = await SetUpConnection();
-        var nameArray = new byte[SdrWellKnown.RecordTagValueMaxLength];
+        var nameArray = new byte[AsvSdrHelper.RecordTagValueMaxLength];
 
         await Assert.ThrowsAsync<Exception>( async () =>
         {

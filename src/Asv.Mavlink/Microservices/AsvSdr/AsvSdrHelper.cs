@@ -5,7 +5,7 @@ using Asv.Mavlink.V2.AsvSdr;
 
 namespace Asv.Mavlink;
 
-public static class SdrWellKnown
+public static class AsvSdrHelper
 {
     public const int RecordTagValueMaxLength = 8;
     

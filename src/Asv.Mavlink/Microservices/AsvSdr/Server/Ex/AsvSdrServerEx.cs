@@ -53,7 +53,7 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
         {
             if (StartRecord == null) return new CommandResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-            var nameArray = new byte[SdrWellKnown.RecordNameMaxLength];
+            var nameArray = new byte[AsvSdrHelper.RecordNameMaxLength];
             BitConverter.GetBytes(args.Payload.Param1).CopyTo(nameArray,0);
             BitConverter.GetBytes(args.Payload.Param2).CopyTo(nameArray,4);
             BitConverter.GetBytes(args.Payload.Param3).CopyTo(nameArray,8);
@@ -62,7 +62,7 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
             BitConverter.GetBytes(args.Payload.Param6).CopyTo(nameArray,20);
             BitConverter.GetBytes(args.Payload.Param7).CopyTo(nameArray,24);
             var name = MavlinkTypesHelper.GetString(nameArray);
-            SdrWellKnown.CheckRecordName(name);
+            AsvSdrHelper.CheckRecordName(name);
             var result = await StartRecord(name, cs.Token).ConfigureAwait(false);
             return new CommandResult(result);
         };
@@ -78,14 +78,14 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
             if (CurrentRecordSetTag == null) return new CommandResult(MavResult.MavResultUnsupported);
             var tagType = BitConverter.ToUInt32(BitConverter.GetBytes(args.Payload.Param1));
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-            var nameArray = new byte[SdrWellKnown.RecordTagNameMaxLength];
+            var nameArray = new byte[AsvSdrHelper.RecordTagNameMaxLength];
             BitConverter.GetBytes(args.Payload.Param2).CopyTo(nameArray,0);
             BitConverter.GetBytes(args.Payload.Param3).CopyTo(nameArray,4);
             BitConverter.GetBytes(args.Payload.Param4).CopyTo(nameArray,8);
             BitConverter.GetBytes(args.Payload.Param5).CopyTo(nameArray,12);
             var name = MavlinkTypesHelper.GetString(nameArray); 
-            SdrWellKnown.CheckTagName(name);
-            var valueArray = new byte[SdrWellKnown.RecordTagValueMaxLength];
+            AsvSdrHelper.CheckTagName(name);
+            var valueArray = new byte[AsvSdrHelper.RecordTagValueMaxLength];
             BitConverter.GetBytes(args.Payload.Param6).CopyTo(valueArray,0);
             BitConverter.GetBytes(args.Payload.Param7).CopyTo(valueArray,4);
             var result = await CurrentRecordSetTag((AsvSdrRecordTagType)tagType,name,valueArray, cs.Token).ConfigureAwait(false);

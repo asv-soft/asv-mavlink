@@ -146,9 +146,12 @@
     <message id="13100" name="ASV_SDR_OUT_STATUS">
       <description>SDR payload status message. Send with 1 Hz frequency [!WRAP_TO_V2_EXTENSION_PACKET!].</description>
       <field type="uint64_t" name="supported_modes" enum="ASV_SDR_CUSTOM_MODE_FLAG">Supported ASV_SDR_CUSTOM_MODE.</field>
-      <field type="uint8_t[16]" name="current_record_guid">Record GUID. Also by this field we can understand if the data is currently being recorded (GUID!=0x00) or not (GUID==0x00).</field>
       <field type="uint16_t" name="record_count">Number of records in storage.</field>
       <field type="uint64_t" name="size" units="bytes">Total storage size in bytes.</field>
+      <field type="uint8_t[16]" name="current_record_guid">Record GUID. Also by this field we can understand if the data is currently being recorded (GUID!=0x00) or not (GUID==0x00).</field>
+      <field type="uint8_t" name="current_record_mode" enum="ASV_SDR_CUSTOM_MODE">Current record mode (record data type).</field>
+      <field type="char[28]" name="current_record_name">Record name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string. If the data is currently not being recorded, than return null; </field>
+      
     </message>
     
     <!-- ASV_SDR_RECORD_* 13101-13110 -->

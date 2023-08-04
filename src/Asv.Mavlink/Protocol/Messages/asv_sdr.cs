@@ -264,7 +264,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13100;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 126;
+        public override byte GetCrcEtra() => 14;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrOutStatusPayload Payload { get; } = new AsvSdrOutStatusPayload();
@@ -277,8 +277,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrOutStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 34; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 34; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 63; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 63; // of byte sized of fields (exclude extended)
         public int GetByteSize()
         {
             var sum = 0;
@@ -286,6 +286,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             sum+=8; //Size
             sum+=2; //RecordCount
             sum+=CurrentRecordGuid.Length; //CurrentRecordGuid
+            sum+= 1; // CurrentRecordMode
+            sum+=CurrentRecordName.Length; //CurrentRecordName
             return (byte)sum;
         }
 
@@ -298,12 +300,24 @@ namespace Asv.Mavlink.V2.AsvSdr
             SupportedModes = (AsvSdrCustomModeFlag)BinSerialize.ReadULong(ref buffer);
             Size = BinSerialize.ReadULong(ref buffer);
             RecordCount = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/34 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            CurrentRecordGuid = new byte[arraySize];
+            arraySize = 16;
             for(var i=0;i<arraySize;i++)
             {
                 CurrentRecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
+            CurrentRecordMode = (AsvSdrCustomMode)BinSerialize.ReadByte(ref buffer);
+            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/63 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            CurrentRecordName = new char[arraySize];
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = CurrentRecordName)
+                {
+                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, CurrentRecordName.Length);
+                }
+            }
+            buffer = buffer.Slice(arraySize);
+           
 
         }
 
@@ -316,7 +330,18 @@ namespace Asv.Mavlink.V2.AsvSdr
             {
                 BinSerialize.WriteByte(ref buffer,(byte)CurrentRecordGuid[i]);
             }
-            /* PayloadByteSize = 34 */;
+            BinSerialize.WriteByte(ref buffer,(byte)CurrentRecordMode);
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = CurrentRecordName)
+                {
+                    Encoding.ASCII.GetBytes(charPointer, CurrentRecordName.Length, bytePointer, CurrentRecordName.Length);
+                }
+            }
+            buffer = buffer.Slice(CurrentRecordName.Length);
+            
+            /* PayloadByteSize = 63 */;
         }
         
         
@@ -342,8 +367,18 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// Record GUID. Also by this field we can understand if the data is currently being recorded (GUID!=0x00) or not (GUID==0x00).
         /// OriginName: current_record_guid, Units: , IsExtended: false
         /// </summary>
-        public byte[] CurrentRecordGuid { get; set; } = new byte[16];
-        public byte GetCurrentRecordGuidMaxItemsCount() => 16;
+        public byte[] CurrentRecordGuid { get; } = new byte[16];
+        /// <summary>
+        /// Current record mode (record data type).
+        /// OriginName: current_record_mode, Units: , IsExtended: false
+        /// </summary>
+        public AsvSdrCustomMode CurrentRecordMode { get; set; }
+        /// <summary>
+        /// Record name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string. If the data is currently not being recorded, than return null; 
+        /// OriginName: current_record_name, Units: , IsExtended: false
+        /// </summary>
+        public char[] CurrentRecordName { get; set; } = new char[28];
+        public byte GetCurrentRecordNameMaxItemsCount() => 28;
     }
     /// <summary>
     /// Request list of ASV_SDR_RECORD from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]

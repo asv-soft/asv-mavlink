@@ -24,6 +24,17 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
         buffer = buffer.Slice(ListDataFileFormat.MaxSize - sizeof(ushort) /*CRC*/);
         return BinSerialize.ReadUShort(ref buffer);
     }
+    private static void WriteHeaderCrc(Span<byte> buffer, ushort crc)
+    {
+        buffer = buffer.Slice(ListDataFileFormat.MaxSize - sizeof(ushort) /*CRC*/);
+        BinSerialize.WriteUShort(ref buffer,crc);
+    }
+
+    public static ListDataFileFormat? ReadHeader(string filePath)
+    {
+        using var file = File.OpenRead(filePath);
+        return ReadHeader(file);
+    }
     
     public static ListDataFileFormat? ReadHeader(Stream stream)
     {
@@ -104,7 +115,12 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
             {
                 // no header => write origin 
                 var serializeSpan = new Span<byte>(data, 0, ListDataFileFormat.MaxSize);
+                var originSpan = serializeSpan;
                 header.Serialize(ref serializeSpan);
+                var crc = CalculateHeaderCrc(originSpan);
+                WriteHeaderCrc(originSpan,crc);
+                _stream.Seek(0, SeekOrigin.Begin);
+                _stream.Write(serializeSpan);
                 _stream.Flush();
             }
             else

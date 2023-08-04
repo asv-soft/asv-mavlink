@@ -142,8 +142,8 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
 
     public async Task<MavResult> StartRecord(string recordName, CancellationToken cancel)
     {
-        SdrWellKnown.CheckRecordName(recordName);
-        var nameArray = new byte[SdrWellKnown.RecordNameMaxLength];
+        AsvSdrHelper.CheckRecordName(recordName);
+        var nameArray = new byte[AsvSdrHelper.RecordNameMaxLength];
         MavlinkTypesHelper.SetString(nameArray,recordName);
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
         var result = await _commandClient.CommandLong((V2.Common.MavCmd)MavCmd.MavCmdAsvSdrStartRecord,
@@ -177,8 +177,8 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
     {
         if (rawValue.Length != 8) 
             throw new ArgumentException("Raw value must be 8 bytes long");
-        SdrWellKnown.CheckTagName(tagName);
-        var nameArray = new byte[SdrWellKnown.RecordTagNameMaxLength];
+        AsvSdrHelper.CheckTagName(tagName);
+        var nameArray = new byte[AsvSdrHelper.RecordTagNameMaxLength];
         MavlinkTypesHelper.SetString(nameArray,tagName);
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
         var result = await _commandClient.CommandLong((V2.Common.MavCmd)MavCmd.MavCmdAsvSdrSetRecordTag,
