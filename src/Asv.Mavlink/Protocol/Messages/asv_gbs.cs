@@ -159,7 +159,7 @@ namespace Asv.Mavlink.V2.AsvGbs
     {
         public byte GetMaxByteSize() => 26; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Lat

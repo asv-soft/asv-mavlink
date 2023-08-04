@@ -2000,7 +2000,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //MagDeclination
@@ -2142,7 +2142,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=2; //MagOfsX
@@ -2228,7 +2228,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=2; //Brkval
@@ -2300,7 +2300,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=2; //Adc1
@@ -2394,7 +2394,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 15; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 15; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //ExtraValue
@@ -2528,7 +2528,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 13; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 13; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //ExtraValue
@@ -2654,7 +2654,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=1; //TargetSystem
@@ -2748,7 +2748,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 15; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 15; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //InputA
@@ -2842,7 +2842,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //PointingA
@@ -2928,7 +2928,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Lat
@@ -3022,7 +3022,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=1; //TargetSystem
@@ -3092,7 +3092,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //BreachTime
@@ -3170,7 +3170,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Omegaix
@@ -3272,7 +3272,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Roll
@@ -3406,7 +3406,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=2; //Vcc
@@ -3468,7 +3468,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=2; //Rxerrors
@@ -3570,7 +3570,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //LastTrigger
@@ -3688,7 +3688,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Direction
@@ -3758,7 +3758,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 18; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=1; //Type
@@ -3839,7 +3839,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 34; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 34; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=1; //Type
@@ -3920,7 +3920,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 66; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 66; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=1; //Type
@@ -4001,7 +4001,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 98; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 98; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=1; //Type
@@ -4082,7 +4082,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Distance
@@ -4144,7 +4144,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 48; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 48; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Vx
@@ -4286,7 +4286,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 19; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 19; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Lat
@@ -4412,7 +4412,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=1; //TargetSystem
@@ -4482,7 +4482,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Current
@@ -4576,7 +4576,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Roll
@@ -4670,7 +4670,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 29; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 29; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //TimeUsec
@@ -4788,7 +4788,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 47; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 47; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //TimeUsec
@@ -4948,7 +4948,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=2; //Voltage
@@ -5010,7 +5010,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 40; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 40; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Roll
@@ -5136,7 +5136,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=1; //TargetSystem
@@ -5198,7 +5198,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 206; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 206; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+= 4; // Seqno
@@ -5287,7 +5287,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Seqno
@@ -5365,7 +5365,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 29; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 29; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=1; //TargetSystem
@@ -5470,7 +5470,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 27; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //DirectionX
@@ -5599,7 +5599,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 50; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 50; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Fitness
@@ -5787,7 +5787,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 26; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //VelocityVariance
@@ -5891,7 +5891,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 25; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 25; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Desired
@@ -5993,7 +5993,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 37; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 37; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //LandingLat
@@ -6119,7 +6119,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //DeltaTime
@@ -6261,7 +6261,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //DemandedRateX
@@ -6347,7 +6347,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=2; //RlTorqueCmd
@@ -6433,7 +6433,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+= 1; // Status
@@ -6503,7 +6503,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=1; //TargetSystem
@@ -6573,7 +6573,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+= 1; // CmdId
@@ -6654,7 +6654,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=1; //TargetSystem
@@ -6743,7 +6743,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+= 1; // CmdId
@@ -6805,7 +6805,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Rpm1
@@ -6867,7 +6867,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 51; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 51; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //RequestId
@@ -7008,7 +7008,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 135; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 135; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //RequestId
@@ -7105,7 +7105,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 179; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 179; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //RequestId
@@ -7261,7 +7261,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //RequestId
@@ -7323,7 +7323,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 49; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 49; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Desired
@@ -7473,7 +7473,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //TimeUsec
@@ -7577,7 +7577,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //TimeUsec
@@ -7647,7 +7647,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=Voltage.Length * 2; //Voltage
@@ -7787,7 +7787,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=Voltage.Length * 2; //Voltage
@@ -7927,7 +7927,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     {
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=Voltage.Length * 2; //Voltage

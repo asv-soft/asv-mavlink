@@ -163,7 +163,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 47; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 47; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //VehicleTimestamp
@@ -329,7 +329,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 45; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 45; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //VehicleTimestamp
@@ -479,7 +479,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Adc121VspbVolt
@@ -557,7 +557,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 41; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //MpptTimestamp
@@ -707,7 +707,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 98; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 98; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //Timestamp
@@ -953,7 +953,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 38; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //I321
@@ -1087,7 +1087,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //MotorRpm
@@ -1176,7 +1176,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 32; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //Timestamp
@@ -1278,7 +1278,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //Timestamp
@@ -1388,7 +1388,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //Timestamp
@@ -1458,7 +1458,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 41; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //BatmonTimestamp
@@ -1624,7 +1624,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 102; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 102; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //Timestamp
@@ -1870,7 +1870,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //Timestamp
@@ -1980,7 +1980,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 46; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 46; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //Timestamp
@@ -2122,7 +2122,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //Timestamp
@@ -2224,7 +2224,7 @@ namespace Asv.Mavlink.V2.Asluav
     {
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //Timestamp

@@ -75,7 +75,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=ArU32.Length * 4; //ArU32
@@ -193,7 +193,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=ArU32.Length * 4; //ArU32
@@ -258,7 +258,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 17; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 17; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=ArU32.Length * 4; //ArU32
@@ -331,7 +331,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 17; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 17; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=ArU32.Length * 4; //ArU32
@@ -404,7 +404,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 10; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 10; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=C1.Length; //C1
@@ -508,7 +508,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 91; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 91; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=ArD.Length * 8; //ArD
@@ -729,7 +729,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 84; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 84; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=ArD.Length * 8; //ArD
@@ -926,7 +926,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     {
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=ArD.Length * 8; //ArD

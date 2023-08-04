@@ -55,7 +55,7 @@ namespace Asv.Mavlink.Test
             var size = span.Length;
             _expectedObject.Serialize(ref span);
             size -= span.Length;
-            Assert.Equal(size, _expectedObject.GetCurrentByteSize());
+            Assert.Equal(size, _expectedObject.GetByteSize());
         }
 
 

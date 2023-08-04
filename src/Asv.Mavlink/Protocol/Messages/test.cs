@@ -68,7 +68,7 @@ namespace Asv.Mavlink.V2.Test
     {
         public byte GetMaxByteSize() => 179; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 179; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //U64

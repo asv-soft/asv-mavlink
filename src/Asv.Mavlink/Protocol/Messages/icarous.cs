@@ -119,7 +119,7 @@ namespace Asv.Mavlink.V2.Icarous
     {
         public byte GetMaxByteSize() => 1; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 1; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+= 1; // Status
@@ -173,7 +173,7 @@ namespace Asv.Mavlink.V2.Icarous
     {
         public byte GetMaxByteSize() => 46; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 46; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Min1

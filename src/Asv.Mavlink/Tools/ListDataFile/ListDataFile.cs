@@ -9,11 +9,11 @@ using Asv.IO;
 namespace Asv.Mavlink;
 
 public class ListDataFile<TMetadata> : IListDataFile<TMetadata> 
-    where TMetadata : ISpanSerializable, new()
+    where TMetadata : ISizedSpanSerializable, new()
 {
     #region File header
     
-    private const int FileHeaderMaxSize = 256;
+    private const ushort FileHeaderMaxSize = 256;
     
     private static ushort CalculateHeaderCrc(ReadOnlySpan<byte> buffer)
     {
@@ -70,13 +70,14 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
     private readonly Stream _stream;
     private readonly bool _disposeSteam;
     private readonly object _sync = new();
-    private readonly int _startFileMetadataOffset;
-    private readonly int _fileMetadataSize;
-    private readonly int _startDataOffset;
-    private readonly int _rowDataSize;
-    private readonly int _rowSize;
+    private readonly uint _startFileMetadataOffset;
+    private readonly ushort _fileMetadataSize;
+    private readonly uint _startDataOffset;
+    private readonly ushort _rowDataSize;
+    private readonly ushort _rowSize;
     private readonly int _startRowByteIndex;
     private readonly int _stopRowByteIndex;
+    private TMetadata _metadata;
 
     public ListDataFile(Stream stream, ListDataFileHeader header, bool disposeSteam)
     {
@@ -85,11 +86,11 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
         _disposeSteam = disposeSteam;
         _startFileMetadataOffset = FileHeaderMaxSize;
         _fileMetadataSize = header.MetadataMaxSize;
-        _startDataOffset = FileHeaderMaxSize + _fileMetadataSize;
+        _startDataOffset = (uint)(FileHeaderMaxSize + _fileMetadataSize);
         _rowDataSize = header.ItemMaxSize;
-        _rowSize = 1 /*StartRowMagicByte*/ + _rowDataSize /*MAX DATA SIZE*/ + 1 /*StopRowMagicByte*/ + 2 /*CRC*/;
+        _rowSize = (ushort)(1U /*StartRowMagicByte*/ + _rowDataSize /*MAX DATA SIZE*/ + 1U /*StopRowMagicByte*/ + 2U) /*CRC*/;
         _startRowByteIndex = 0;
-        _stopRowByteIndex = _rowSize - 3;
+        _stopRowByteIndex = (int)(_rowSize - 3);
 
         var data = ArrayPool<byte>.Shared.Rent(FileHeaderMaxSize);
         for (var i = 0; i < FileHeaderMaxSize; i++)
@@ -126,9 +127,42 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
             ArrayPool<byte>.Shared.Return(data);
         }
         
-        
-        
-        
+        _metadata = new TMetadata();
+        var buffer = ArrayPool<byte>.Shared.Rent(_fileMetadataSize);
+        for (var i = 0; i < _fileMetadataSize; i++)
+        {
+            buffer[i] = 0;
+        }
+
+        try
+        {
+            var readSpan = new Span<byte>(buffer, 0, _fileMetadataSize);
+            // if file have metadata => read
+            if (_stream.Length >= FileHeaderMaxSize + _fileMetadataSize)
+            {
+                _stream.Seek(_startFileMetadataOffset, SeekOrigin.Begin);
+                var readCount = _stream.Read(readSpan);
+                Debug.Assert(readCount == _fileMetadataSize);
+                var calc = CalculateMetadataCrc(readSpan);
+                var readCrc = ReadMetadataCrc(readSpan);
+                if (calc != readCrc) throw new Exception($"Unknown file metadata CRC. Want {calc}, got {readCrc}");
+                var deserializeSpan = new ReadOnlySpan<byte>(buffer, 0, _fileMetadataSize - 2 /* without CRC*/);
+                _metadata.Deserialize(ref deserializeSpan);
+            }
+            // if file have no metadata => write origin
+            else
+            {
+                var serializeSpan = new Span<byte>(buffer, 0, _fileMetadataSize);
+                _metadata.Serialize(ref serializeSpan);
+                _stream.Seek(_startFileMetadataOffset, SeekOrigin.Begin);
+                _stream.Write(serializeSpan);
+                _stream.Flush();
+            }
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
     }
 
     public long ByteSize
@@ -164,7 +198,6 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
     
     public void EditMetadata(Action<TMetadata> editCallback)
     {
-        var metadata = new TMetadata();
         var data = ArrayPool<byte>.Shared.Rent(_fileMetadataSize);
         for (var i = 0; i < _fileMetadataSize; i++)
         {
@@ -174,24 +207,9 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
         {
             lock (_sync)
             {
-                var readSpan = new Span<byte>(data, 0, _fileMetadataSize);
-                
-                if (_stream.Length >= FileHeaderMaxSize + _fileMetadataSize)
-                {
-                    _stream.Seek(_startFileMetadataOffset, SeekOrigin.Begin);
-                    var readCount = _stream.Read(readSpan);
-                    Debug.Assert(readCount == _fileMetadataSize);
-                    var calc = CalculateMetadataCrc(readSpan);
-                    var readCrc = ReadMetadataCrc(readSpan);
-                    if (calc == readCrc)
-                    {
-                        var deserializeSpan = new ReadOnlySpan<byte>(data, 0, _fileMetadataSize - 2 /* without CRC*/);
-                        metadata.Deserialize(ref deserializeSpan);    
-                    }
-                }
-                editCallback(metadata);
+                editCallback(_metadata);
                 var serializeSpan = new Span<byte>(data, 0, _fileMetadataSize - 2 /* without CRC*/);
-                metadata.Serialize(ref serializeSpan);
+                _metadata.Serialize(ref serializeSpan);
                 
                 var writeSpan = new Span<byte>(data, 0, _fileMetadataSize);
                 var calcCrc = CalculateMetadataCrc(writeSpan);
@@ -199,6 +217,7 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
                 
                 _stream.Seek(_startFileMetadataOffset, SeekOrigin.Begin);
                 _stream.Write(writeSpan);
+                _stream.Flush();
             }
         }
         finally
@@ -209,31 +228,7 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
 
     public TMetadata ReadMetadata()
     {
-        var metadata = new TMetadata();
-        var data = ArrayPool<byte>.Shared.Rent(_fileMetadataSize);
-        for (var i = 0; i < _fileMetadataSize; i++)
-        {
-            data[i] = 0;
-        }
-        lock (_sync)
-        {
-            var readSpan = new Span<byte>(data, 0, _fileMetadataSize);
-                
-            if (_stream.Length >= FileHeaderMaxSize + _fileMetadataSize)
-            {
-                _stream.Seek(_startFileMetadataOffset, SeekOrigin.Begin);
-                var readCount = _stream.Read(readSpan);
-                Debug.Assert(readCount == _fileMetadataSize);
-                var calc = CalculateMetadataCrc(readSpan);
-                var readCrc = ReadMetadataCrc(readSpan);
-                if (calc == readCrc)
-                {
-                    var deserializeSpan = new ReadOnlySpan<byte>(data, 0, _fileMetadataSize - 2 /* without CRC*/);
-                    metadata.Deserialize(ref deserializeSpan);    
-                }
-            }
-            return metadata;
-        }
+        return _metadata.BinaryClone();
     }
     
 
@@ -251,7 +246,7 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
             }
         }
     }
-    private void GetStartStopRowAddress(int index, out int start, out int stop)
+    private void GetStartStopRowAddress(uint index, out uint start, out uint stop)
     {
         start = index * _rowSize + _startDataOffset;
         stop = start + _rowSize;
@@ -259,19 +254,19 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
     
     private ushort CalculateRowCrc(ReadOnlySpan<byte> row)
     {
-        row = row.Slice(0, _rowSize - sizeof(ushort) /*CRC*/);
+        row = row.Slice(0, (int)(_rowSize - sizeof(ushort)) /*CRC*/);
         return X25Crc.Accumulate(ref row, X25Crc.CrcSeed);
     }
     
     private ushort ReadRowCrc(ReadOnlySpan<byte> row)
     {
-        row = row.Slice(_rowSize - sizeof(ushort) /*CRC*/);
+        row = row.Slice((int)(_rowSize - sizeof(ushort)) /*CRC*/);
         return BinSerialize.ReadUShort(ref row);
     }
     
     private void WriteRowCrc(Span<byte> row, ushort crc)
     {
-        row = row.Slice(_rowSize - sizeof(ushort) /*CRC*/);
+        row = row.Slice((int)(_rowSize - sizeof(ushort)) /*CRC*/);
         BinSerialize.WriteUShort(ref row, crc);
     }
     
@@ -284,9 +279,8 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
         return calculatedCrc == readCrc;
     }
     
-    public bool Exist(int index)
+    public bool Exist(uint index)
     {
-        if (index<0) return false;
         GetStartStopRowAddress(index, out var start, out var stop);
         
         var data = ArrayPool<byte>.Shared.Rent(_rowSize);
@@ -308,9 +302,8 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
         }
     }
 
-    public void Write(int index, ISpanSerializable payload)
+    public void Write(uint index, ISpanSerializable payload)
     {
-        if (index < 0) throw new Exception($"{nameof(index)} must be positive or 0");
         GetStartStopRowAddress(index, out var start, out var _);
         var data = ArrayPool<byte>.Shared.Rent(_rowSize);
         for (var i = 0; i < _rowSize; i++)
@@ -338,15 +331,13 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
         }
     }
 
-    public bool Read(int index, ISpanSerializable payload)
+    public bool Read(uint index, ISpanSerializable payload)
     {
-        if (index < 0) throw new Exception($"{nameof(index)} must be positive or 0");
-        
         GetStartStopRowAddress(index, out var start, out var stop);
-        var data = ArrayPool<byte>.Shared.Rent(_rowSize);
+        var data = ArrayPool<byte>.Shared.Rent((int)_rowSize);
         try
         {
-            var row = new Span<byte>(data, 0, _rowSize);
+            var row = new Span<byte>(data, 0, (int)_rowSize);
             lock (_sync)
             {
                 // there is no data
@@ -356,7 +347,7 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
                 Debug.Assert(readBytes == _rowSize);
             }
             if (ValidateRaw(row) == false) return false;
-            ReadOnlySpan<byte> buffer = row.Slice(1/*START BYTE*/, _rowDataSize);
+            ReadOnlySpan<byte> buffer = row.Slice(1/*START BYTE*/, (int)_rowDataSize);
             payload.Deserialize(ref buffer);
             return true;
         }
@@ -378,31 +369,31 @@ public class ListDataFileHeader:ISizedSpanSerializable, IEquatable<ListDataFileH
 {
     public SemVersion Version { get; set; } = null!;
     public string Type { get; set; } = null!;
-    public int MetadataMaxSize { get; set; }
-    public int ItemMaxSize { get; set; }
+    public ushort MetadataMaxSize { get; set; }
+    public ushort ItemMaxSize { get; set; }
 
     public void Deserialize(ref ReadOnlySpan<byte> buffer)
     {
         Type = BinSerialize.ReadString(ref buffer);
         Version = BinSerialize.ReadString(ref buffer);
-        MetadataMaxSize = BinSerialize.ReadInt(ref buffer);
-        ItemMaxSize = BinSerialize.ReadInt(ref buffer);
+        MetadataMaxSize = BinSerialize.ReadUShort(ref buffer);
+        ItemMaxSize = BinSerialize.ReadUShort(ref buffer);
     }
 
     public void Serialize(ref Span<byte> buffer)
     {
         BinSerialize.WriteString(ref buffer,Type);
         BinSerialize.WriteString(ref buffer,Version.ToString());
-        BinSerialize.WriteInt(ref buffer,MetadataMaxSize);
-        BinSerialize.WriteInt(ref buffer,ItemMaxSize);
+        BinSerialize.WriteUShort(ref buffer,MetadataMaxSize);
+        BinSerialize.WriteUShort(ref buffer,ItemMaxSize);
     }
 
     public int GetByteSize()
     {
         return BinSerialize.GetSizeForString(Type) + 
                BinSerialize.GetSizeForString(Version.ToString()) + 
-               sizeof(int) + 
-               sizeof(int);
+               sizeof(ushort) + 
+               sizeof(ushort);
     }
 
     public bool Equals(ListDataFileHeader? other)

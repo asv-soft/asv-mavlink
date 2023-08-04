@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Asv.Common;
 using Geodesy;
+using Angle = Geodesy.Angle;
 
 namespace Asv.Mavlink.Vehicle
 {

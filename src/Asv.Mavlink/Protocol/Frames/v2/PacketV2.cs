@@ -23,7 +23,7 @@ namespace Asv.Mavlink
         public abstract bool WrapToV2Extension { get; }
         public ISignature Signature => _signature;
         public int GetMaxByteSize() => Payload.GetMaxByteSize() + Signature.GetMaxByteSize() + 12 /*HEADER*/;
-        public int GetCurrentByteSize() => Payload.GetCurrentByteSize() + (Signature.IsPresent ? PacketV2Helper.SignatureByteSize : 0) + 12 /*HEADER*/;
+        public int GetByteSize() => Payload.GetByteSize() + (Signature.IsPresent ? PacketV2Helper.SignatureByteSize : 0) + 12 /*HEADER*/;
         
 
         public void Serialize(ref Span<byte> buffer)

@@ -342,7 +342,7 @@ namespace Asv.Mavlink.V2.Uavionix
     {
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Icao
@@ -475,7 +475,7 @@ namespace Asv.Mavlink.V2.Uavionix
     {
         public byte GetMaxByteSize() => 41; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Utctime
@@ -649,7 +649,7 @@ namespace Asv.Mavlink.V2.Uavionix
     {
         public byte GetMaxByteSize() => 1; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 1; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+= 1; // Rfhealth

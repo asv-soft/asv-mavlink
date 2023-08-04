@@ -153,7 +153,7 @@ namespace Asv.Mavlink.V2.Ualberta
     {
         public byte GetMaxByteSize() => 32; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //Usec
@@ -255,7 +255,7 @@ namespace Asv.Mavlink.V2.Ualberta
     {
         public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=Aileron.Length * 2; //Aileron
@@ -395,7 +395,7 @@ namespace Asv.Mavlink.V2.Ualberta
     {
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=1; //Mode

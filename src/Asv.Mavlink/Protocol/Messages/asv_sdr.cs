@@ -279,7 +279,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 34; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 34; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+= 8; // SupportedModes
@@ -368,7 +368,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=2; //RequestId
@@ -454,7 +454,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=2; //RequestId
@@ -524,7 +524,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 78; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 78; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //Frequency
@@ -672,7 +672,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=2; //RequestId
@@ -761,7 +761,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 19; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 19; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=2; //RequestId
@@ -842,7 +842,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=2; //RequestId
@@ -947,7 +947,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=2; //RequestId
@@ -1017,7 +1017,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 57; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 57; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=RecordGuid.Length; //RecordGuid
@@ -1147,7 +1147,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 36; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 36; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=2; //RequestId
@@ -1251,7 +1251,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 35; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 35; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=2; //RequestId
@@ -1347,7 +1347,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=4; //Skip
@@ -1452,7 +1452,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 27; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+= 4; // DataType
@@ -1549,7 +1549,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 186; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 186; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //TimeUnixUsec
@@ -2041,7 +2041,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 176; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 176; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //TimeUnixUsec
@@ -2490,7 +2490,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
         public byte GetMaxByteSize() => 150; // Sum of byte sized of all fields (include extended)
         public byte GetMinByteSize() => 150; // of byte sized of fields (exclude extended)
-        public byte GetCurrentByteSize()
+        public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //TimeUnixUsec
