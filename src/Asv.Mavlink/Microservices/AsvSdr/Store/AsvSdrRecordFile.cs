@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Asv.Mavlink.V2.AsvSdr;
 
 namespace Asv.Mavlink;
 
@@ -19,7 +20,7 @@ public class AsvSdrRecordFile : ListDataFile<AsvSdrRecordFileMetadata>, IAsvSdrR
     {
         Version = "1.0.0",
         Type = "AsvSdrRecordFile",
-        MetadataMaxSize = 1024 * 4,
+        MetadataMaxSize = 78  /*size of AsvSdrRecordPayload */ + sizeof(ushort) /* size of tag list */ + 100 * 57 /* max 100 tag * size of AsvSdrRecordTagPayload */, 
         ItemMaxSize = 256,
     };
 
