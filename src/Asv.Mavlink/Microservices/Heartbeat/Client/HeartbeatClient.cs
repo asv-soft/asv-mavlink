@@ -1,5 +1,8 @@
 #nullable enable
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -27,11 +30,11 @@ namespace Asv.Mavlink
         private readonly RxValue<double> _linkQuality;
         private readonly LinkIndicator _link;
         private DateTime _lastHeartbeat;
-        private int _lastPacketId;
-        private int _packetCounter;
         private int _prev;
         private long _totalRateCounter;
         private readonly TimeSpan _heartBeatTimeoutMs;
+        private SortedSet<byte> _lastPacketList = new();
+        private readonly object _lastPacketListLock = new();
 
         public HeartbeatClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
             IPacketSequenceCalculator seq, HeartbeatClientConfig config, IScheduler? scheduler = null):base("HEARTBEAT", connection, identity, seq)
@@ -41,11 +44,13 @@ namespace Asv.Mavlink
             _rxRate = new IncrementalRateCounter(config.RateMovingAverageFilter);
             _heartBeatTimeoutMs = TimeSpan.FromMilliseconds(config.HeartbeatTimeoutMs);
             InternalFilteredVehiclePackets
-                .Select(_ => _.Sequence)
-                .Subscribe(_ =>
+                .Select(x => x.Sequence)
+                .Subscribe(x =>
                 {
-                    Interlocked.Exchange(ref _lastPacketId, _);
-                    Interlocked.Increment(ref _packetCounter);
+                    lock (_lastPacketListLock)
+                    {
+                        _lastPacketList.Add(x);    
+                    }
                     Interlocked.Increment(ref _totalRateCounter);
                 }).DisposeItWith(Disposable);
 
@@ -81,18 +86,21 @@ namespace Asv.Mavlink
 
         private void CalculateLinqQuality()
         {
-            if (_packetCounter <= 3)
+            byte first;
+            byte last;
+            var count = 0;
+            lock (_lastPacketListLock)
             {
-                return;
+                first = _lastPacketList.FirstOrDefault();
+                last = _lastPacketList.LastOrDefault();
+                count = _lastPacketList.Count;
+                _lastPacketList.Clear();
             }
-            var last = _lastPacketId;
-            var count = Interlocked.Exchange(ref _packetCounter, 0);
-            var first = Interlocked.Exchange(ref _prev, last);
-
+            if (count == 0) return;
+            
             var seq = last - first;
             if (seq < 0) seq = last + byte.MaxValue - first + 1;
-            _valueBuffer.PushFront(Math.Round(((double)count) / seq,2));
-            _linkQuality.OnNext(_valueBuffer.Average());
+            _linkQuality.OnNext(Math.Min(1, Math.Round(((double)count) / seq,2)));
         }
 
         public ushort FullId { get; }

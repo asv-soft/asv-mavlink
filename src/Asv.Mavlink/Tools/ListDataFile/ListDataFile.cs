@@ -35,7 +35,30 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
         using var file = File.OpenRead(filePath);
         return ReadHeader(file);
     }
-    
+    public static void WriteHeader(Stream stream, ListDataFileFormat header)
+    {
+        var data = ArrayPool<byte>.Shared.Rent(ListDataFileFormat.MaxSize);
+        for (var i = 0; i < ListDataFileFormat.MaxSize; i++)
+        {
+            data[i] = 0;
+        }
+
+        try
+        {
+            var serializeSpan = new Span<byte>(data, 0, ListDataFileFormat.MaxSize - 2 /* CRC*/);
+            header.Serialize(ref serializeSpan);
+            var originSpan = new Span<byte>(data, 0, ListDataFileFormat.MaxSize);
+            var crc = CalculateHeaderCrc(originSpan);
+            WriteHeaderCrc(originSpan,crc);
+            stream.Seek(0, SeekOrigin.Begin);
+            stream.Write(originSpan);
+            stream.Flush();
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(data);
+        }
+    }
     public static ListDataFileFormat? ReadHeader(Stream stream)
     {
         if (stream.Length < ListDataFileFormat.MaxSize) return null;
@@ -49,13 +72,14 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
         try
         {
             var readSpan = new Span<byte>(data, 0, ListDataFileFormat.MaxSize);
+            stream.Seek(0, SeekOrigin.Begin);
+            var readCount = stream.Read(readSpan);
+            Debug.Assert(readCount == ListDataFileFormat.MaxSize);
+            
             var crc = CalculateHeaderCrc(readSpan);
             var readCrc = ReadHeaderCrc(readSpan);
             if (crc != readCrc) return null;
             
-            stream.Seek(0, SeekOrigin.Begin);
-            var readCount = stream.Read(readSpan);
-            Debug.Assert(readCount == ListDataFileFormat.MaxSize);
             var deserializeSpan = new ReadOnlySpan<byte>(data, 0, ListDataFileFormat.MaxSize);
             header.Deserialize(ref deserializeSpan);
             
@@ -92,6 +116,7 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
     {
         if (header == null) throw new ArgumentNullException(nameof(header));
         header.Validate();
+        Header = header;
         _stream = stream ?? throw new ArgumentNullException(nameof(stream));
         if (_stream.CanSeek == false) throw new Exception("Need stream with seek support");
         _disposeSteam = disposeSteam;
@@ -114,27 +139,15 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
             if (_stream.Length < ListDataFileFormat.MaxSize)
             {
                 // no header => write origin 
-                var serializeSpan = new Span<byte>(data, 0, ListDataFileFormat.MaxSize);
-                var originSpan = serializeSpan;
-                header.Serialize(ref serializeSpan);
-                var crc = CalculateHeaderCrc(originSpan);
-                WriteHeaderCrc(originSpan,crc);
-                _stream.Seek(0, SeekOrigin.Begin);
-                _stream.Write(serializeSpan);
-                _stream.Flush();
+                WriteHeader(stream, header);
             }
             else
             {
-                var readSpan = new Span<byte>(data, 0, ListDataFileFormat.MaxSize);
-                _stream.Seek(0, SeekOrigin.Begin);
-                var readCount = _stream.Read(readSpan);
-                Debug.Assert(readCount == ListDataFileFormat.MaxSize);
-                var deserializeSpan = new ReadOnlySpan<byte>(data, 0, ListDataFileFormat.MaxSize);
-                var readHeader = new ListDataFileFormat();
-                readHeader.Deserialize(ref deserializeSpan);
-                if (readHeader.Equals(header) == false)
+                // header exist => check
+                var readHeader = ReadHeader(stream);
+                if (readHeader == null || readHeader.Equals(header) == false)
                 {
-                    throw new Exception($"Unknown file version. Want {header}, got {readHeader}");
+                    throw new Exception($"Wrong file format. Want {header}, got {(readHeader == null ? "N/A" : readHeader.ToString())}");
                 }
             }
         }
@@ -168,10 +181,12 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
             // if file have no metadata => write origin
             else
             {
-                var serializeSpan = new Span<byte>(buffer, 0, _fileMetadataSize);
+                var serializeSpan = new Span<byte>(buffer, 0, _fileMetadataSize - 2 /* without CRC*/);
                 _metadata.Serialize(ref serializeSpan);
+                var calc = CalculateMetadataCrc(readSpan);
+                WriteMetadataCrc(readSpan, calc);
                 _stream.Seek(_startFileMetadataOffset, SeekOrigin.Begin);
-                _stream.Write(serializeSpan);
+                _stream.Write(readSpan);
                 _stream.Flush();
             }
         }
@@ -231,7 +246,7 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
                 var calcCrc = CalculateMetadataCrc(writeSpan);
                 WriteMetadataCrc(writeSpan, calcCrc);
                 
-                _stream.Seek(_startFileMetadataOffset, SeekOrigin.Begin);
+                 _stream.Seek(_startFileMetadataOffset, SeekOrigin.Begin);
                 _stream.Write(writeSpan);
                 _stream.Flush();
             }
@@ -241,10 +256,15 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
             ArrayPool<byte>.Shared.Return(data);
         }
     }
+    
+    public ListDataFileFormat Header { get; }
 
     public TMetadata ReadMetadata()
     {
-        return _metadata.BinaryClone();
+        lock (_sync)
+        {
+            return _metadata.BinaryClone();    
+        }
     }
     
 
@@ -262,6 +282,9 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
             }
         }
     }
+
+    
+
     private void GetStartStopRowAddress(uint index, out uint start, out uint stop)
     {
         start = index * _rowSize + _startDataOffset;
@@ -339,6 +362,7 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
             {
                 _stream.Seek(start, SeekOrigin.Begin);
                 _stream.Write(row);
+                _stream.Flush();
             }
         }
         finally
@@ -377,8 +401,11 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
     
     public void Dispose()
     {
+        _stream.Flush();
         if (_disposeSteam) _stream.Dispose();
     }
+
+   
 }
 
 public class ListDataFileFormat:ISizedSpanSerializable, IEquatable<ListDataFileFormat>

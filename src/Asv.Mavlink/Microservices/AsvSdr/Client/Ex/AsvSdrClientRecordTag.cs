@@ -35,4 +35,13 @@ public class AsvSdrClientRecordTag
             _ => throw new ArgumentOutOfRangeException()
         };
     }
+
+    public void CopyTo(AsvSdrRecordTagPayload dest)
+    {
+        MavlinkTypesHelper.SetString(dest.TagName, Name);
+        dest.TagType = Type;
+        RawValue.CopyTo(dest.TagValue, 0);
+        MavlinkTypesHelper.SetGuid(dest.RecordGuid, Id.RecordGuid);
+        MavlinkTypesHelper.SetGuid(dest.TagGuid, Id.TagGuid);
+    }
 }

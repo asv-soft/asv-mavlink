@@ -21,6 +21,7 @@ public class AsvSdrRecordFileMetadata:ISizedSpanSerializable
         {
             var tag = new AsvSdrRecordTagPayload();
             tag.Deserialize(ref buffer);
+            Tags.Add(tag);
         }
     }
 

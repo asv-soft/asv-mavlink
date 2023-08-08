@@ -26,12 +26,12 @@ public interface IAsvSdrClientRecord
 
 public static class AsvSdrClientRecordHelper
 {
-    public static void UpdateMetadataFrom(this IAsvSdrRecordFile self, IAsvSdrClientRecord src)
+    public static void UpdateMetadataFrom(this IListDataFile<AsvSdrRecordFileMetadata> self, IAsvSdrClientRecord src)
     {
         self.EditMetadata(src.CopyTo);
     }
     
-    public static void CopyMetadataTo(this IAsvSdrClientRecord self, IAsvSdrRecordFile dest)
+    public static void CopyMetadataTo(this IAsvSdrClientRecord self, IListDataFile<AsvSdrRecordFileMetadata> dest)
     {
         dest.EditMetadata(self.CopyTo);
     }

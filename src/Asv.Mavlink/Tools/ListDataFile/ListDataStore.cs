@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Asv.Common;
@@ -14,15 +15,17 @@ namespace Asv.Mavlink;
 public class ListDataStore<TMetadata, TKey> : DisposableOnceWithCancel, IListDataStore<TMetadata, TKey> 
     where TMetadata : ISizedSpanSerializable, new() where TKey : notnull
 {
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     private readonly string _rootFolder;
-    private readonly ListDataStoreFormat<TKey> _keyConverter;
+    private readonly ListDataStoreFormat<TKey,TMetadata> _keyConverter;
     private readonly ListDataFileFormat _fileFormat;
     private readonly Dictionary<TKey,ListDataStoreEntry<TKey>> _entries;
     private readonly object _sync = new();
     private readonly RxValue<ushort> _count;
     private readonly RxValue<ulong> _size;
+    
 
-    public ListDataStore(string rootFolder, ListDataStoreFormat<TKey> keyConverter, ListDataFileFormat fileFormat)
+    public ListDataStore(string rootFolder, ListDataStoreFormat<TKey,TMetadata> keyConverter, ListDataFileFormat fileFormat)
     {
         if (string.IsNullOrEmpty(rootFolder))
             throw new ArgumentException("Value cannot be null or empty.", nameof(rootFolder));
@@ -92,14 +95,25 @@ public class ListDataStore<TMetadata, TKey> : DisposableOnceWithCancel, IListDat
         foreach (var file in Directory.EnumerateFiles(_rootFolder))
         {
             var fileInfo = new FileInfo(file);
-            var info = ListDataFile<TMetadata>.ReadHeader(fileInfo.FullName);
-            if (info == null) continue;
-            if (info.Equals(_fileFormat) == false) continue;
-            if (_keyConverter.TyrGetFileKey(fileInfo, out var id) == false) continue;
+            TMetadata metadata;
+            ListDataFileFormat header;
+            try
+            {
+                using var listFile = new ListDataFile<TMetadata>(File.Open(file, FileMode.OpenOrCreate, FileAccess.ReadWrite), _fileFormat, true);
+                metadata = listFile.ReadMetadata();
+                header = listFile.Header;
+            }
+            catch (Exception e)
+            {
+                Logger.Warn($"Skip store file:{e.Message}");
+                continue;
+            }
+            
+            if (_keyConverter.TyrGetFileKey(fileInfo,header, metadata, out var id) == false) continue;
             var entry = new ListDataStoreEntry<TKey>
             {
                 Id = id,
-                Name = _keyConverter.GetFileName(fileInfo),
+                Name = _keyConverter.GetDisplayName(fileInfo, header, metadata),
                 Type = StoreEntryType.File,
                 FullPath = fileInfo.FullName,
                 ParentId = parentFolder == null ? _keyConverter.RootFolderId : parentFolder.Id,
@@ -133,6 +147,8 @@ public class ListDataStore<TMetadata, TKey> : DisposableOnceWithCancel, IListDat
         }
     }
 
+    public TKey RootFolderId => _keyConverter.RootFolderId;
+
     public IReadOnlyList<TKey> GetFolders()
     {
         lock (_sync)
@@ -141,16 +157,17 @@ public class ListDataStore<TMetadata, TKey> : DisposableOnceWithCancel, IListDat
         }
     }
 
-    public bool TryGetEntry(TKey id, out IListDataStoreEntry<TKey> key)
+    public bool TryGetEntry(TKey id,[MaybeNullWhen(false)] out IListDataStoreEntry<TKey>? entry)
     {
+        entry = null;
         lock (_sync)
         {
-            if (_entries.TryGetValue(id, out var entry) == false)
+            if (_entries.TryGetValue(id, out var localEntry))
             {
-                key = entry;
-                return false;
+                entry = localEntry;
+                return true;
             }
-            key = default;
+            entry = default;
             return false;
         }
     }
@@ -163,12 +180,12 @@ public class ListDataStore<TMetadata, TKey> : DisposableOnceWithCancel, IListDat
             if (_entries.TryGetValue(parentId, out var parent))
             {
                 rootFolder = parent.FullPath;
-                parentId = _keyConverter.RootFolderId;
+                parentId = parent.Id;
             }
             var newFolderPath = Path.Combine(rootFolder, name);
             var folderInfo = new DirectoryInfo(newFolderPath);
 
-            if (_keyConverter.TryGetFolderKey(folderInfo, out var newFolderId))
+            if (_keyConverter.TryGetFolderKey(folderInfo, out var newFolderId) == false)
             {
                 throw new InvalidOperationException($"Couldn't create folder {name}");
             }
@@ -180,11 +197,19 @@ public class ListDataStore<TMetadata, TKey> : DisposableOnceWithCancel, IListDat
                 FullPath = newFolderPath,
                 ParentId = parentId,
             };
-            Directory.CreateDirectory(newFolderPath);
+            if (_entries.Where(x => _keyConverter.KeyComparer.Equals(x.Value.ParentId, parentId))
+                .Any(x => x.Value.Name == name))
+            {
+                throw new ListDataFolderAlreadyExistException(name);
+            }
+            
             _entries.Add(newFolderId,newEntry);
+            Directory.CreateDirectory(newFolderPath);
+            
             return newFolderId;
         }
     }
+
 
     public bool DeleteFolder(TKey id)
     {
@@ -222,40 +247,78 @@ public class ListDataStore<TMetadata, TKey> : DisposableOnceWithCancel, IListDat
         }
     }
 
-    public IReadOnlyList<TKey> GetFiles()
+    public IReadOnlyList<IListDataStoreEntry<TKey>> GetFiles()
     {
         lock (_sync)
         {
-            return _entries.Where(_ => _.Value.Type == StoreEntryType.File).Select(x=>x.Key).ToImmutableList();
+            return _entries.Where(x => x.Value.Type == StoreEntryType.File)
+                .Select(x=>x.Value).ToImmutableList();
         }
     }
 
-    public IListDataFile<TMetadata> OpenOrCreateFile(TKey id, string name, TKey parentId)
+    public bool TryGetFile(TKey id, out IListDataStoreEntry<TKey> entry)
+    {
+        entry = default;
+        lock (_sync)
+        {
+            if (!_entries.TryGetValue(id, out var commonEntry)) return false;
+            if (commonEntry.Type != StoreEntryType.File) return false;
+            entry = commonEntry;
+            return true;
+
+        }
+    }
+
+    public IListDataFile<TMetadata> Open(TKey id)
     {
         lock (_sync)
         {
+            if (_entries.TryGetValue(id, out var entry) == false)
+            {
+                throw new FileNotFoundException($"File with [{id}] not found");
+            }
+            
+            var fileInfo =  new FileInfo(entry.FullPath);
+            if (fileInfo.Exists == false)
+            {
+                throw new FileNotFoundException($"File with [{id}]{fileInfo.FullName} not found", fileInfo.FullName);
+            }
+            var file = new ListDataFile<TMetadata>(File.Open(fileInfo.FullName, FileMode.OpenOrCreate, FileAccess.ReadWrite), _fileFormat, true);
+            return file;
+        }
+    }
+
+    public IListDataFile<TMetadata> Create(TKey id, TKey parentId, Action<TMetadata> defaultMetadata)
+    {
+        lock (_sync)
+        {
+            if (_entries.ContainsKey(id))
+            {
+                throw new Exception($"Entry {id} already exist");
+            }
+            
             var rootFolder = _rootFolder;
             if (_entries.TryGetValue(parentId, out var parent) == false)
             {
                 parentId = _keyConverter.RootFolderId;
                 rootFolder = _rootFolder;
             }
-            var fileInfo =  new FileInfo(Path.Combine(rootFolder, name));
-            var strm = File.Open(fileInfo.FullName, FileMode.Create, FileAccess.ReadWrite);
-            var file = new ListDataFile<TMetadata>(strm, _fileFormat, true);
-            
-            if (_entries.TryGetValue(id, out var entry) == false)
+            var name = _keyConverter.GetFileNameByKey(id);
+            var fileInfo = new FileInfo(Path.Combine(rootFolder, name));
+            if (fileInfo.Exists)
             {
-                entry = new ListDataStoreEntry<TKey>
-                {
-                    Id = id,
-                    Name = _keyConverter.GetFileName(fileInfo),
-                    Type = StoreEntryType.File,
-                    FullPath = fileInfo.FullName,
-                    ParentId = parentId,
-                };
-                _entries.Add(id, entry);
+                throw new Exception($"File [{id}]{fileInfo.FullName} already exist");
             }
+            var file = new ListDataFile<TMetadata>(File.Open(fileInfo.FullName, FileMode.OpenOrCreate, FileAccess.ReadWrite), _fileFormat, true);
+            file.EditMetadata(defaultMetadata);
+            _entries.Add(id, new ListDataStoreEntry<TKey>
+            {
+                Id = id,
+                Name = _keyConverter.GetDisplayName(fileInfo,_fileFormat,file.ReadMetadata()),
+                Type = StoreEntryType.File,
+                ParentId = parentId,
+                FullPath = fileInfo.FullName,
+            });
             return file;
         }
     }

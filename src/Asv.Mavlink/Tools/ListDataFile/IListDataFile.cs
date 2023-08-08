@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Asv.IO;
+using Asv.Mavlink.V2.AsvSdr;
 
 namespace Asv.Mavlink;
 

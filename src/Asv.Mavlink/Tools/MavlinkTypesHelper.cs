@@ -22,6 +22,10 @@ public static class MavlinkTypesHelper
     {
         return UnixEpoch.AddSeconds(unixTime);
     }
+    public static DateTime FromUnixTimeSec(ulong unixTime)
+    {
+        return UnixEpoch.AddSeconds(unixTime);
+    }
     
     public static uint ToUnixTimeSec(DateTime unixTime)
     {

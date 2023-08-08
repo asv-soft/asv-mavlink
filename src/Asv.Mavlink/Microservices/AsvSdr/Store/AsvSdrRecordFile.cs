@@ -5,7 +5,7 @@ namespace Asv.Mavlink;
 
 public class AsvSdrRecordStore : ListDataStore<AsvSdrRecordFileMetadata, Guid>, IAsvSdrStore
 {
-    public static ListDataStoreFormat<Guid> StoreFormat { get; } = new GuidListDataStoreFormat();
+    public static AsvSdrListDataStoreFormat StoreFormat { get; } = new ();
     
     public AsvSdrRecordStore(string rootFolder) : base(rootFolder, StoreFormat, AsvSdrRecordFile.FileFormat)
     {

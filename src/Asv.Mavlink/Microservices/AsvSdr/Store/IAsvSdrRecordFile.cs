@@ -19,16 +19,16 @@ public interface IAsvSdrRecordFile:IListDataFile<AsvSdrRecordFileMetadata>
 
 public static class AsvSdrRecordFileHelper
 {
-    public static void ReadRecordInfo(this IAsvSdrRecordFile self,AsvSdrRecordPayload dest)
+    public static void ReadRecordInfo(this IListDataFile<AsvSdrRecordFileMetadata> self,AsvSdrRecordPayload dest)
     {
         self.ReadMetadata().Info.CopyTo(dest);
     }
-    public static void WriteRecordInfo(this IAsvSdrRecordFile self,AsvSdrRecordPayload src)
+    public static void WriteRecordInfo(this IListDataFile<AsvSdrRecordFileMetadata> self,AsvSdrRecordPayload src)
     {
         self.EditMetadata(x => src.CopyTo(x.Info));
     }
 
-    public static bool ReadTag(this IAsvSdrRecordFile self, Guid tagId, AsvSdrRecordTagPayload dest)
+    public static bool ReadTag(this IListDataFile<AsvSdrRecordFileMetadata> self, Guid tagId, AsvSdrRecordTagPayload dest)
     {
         var tagList = self.ReadMetadata().Tags;
         var tagItem = tagList?.FirstOrDefault(x => new Guid(x.TagGuid).Equals(tagId));
@@ -36,25 +36,39 @@ public static class AsvSdrRecordFileHelper
         tagItem.CopyTo(dest);
         return true;
     }
-    public static void WriteTag(this IAsvSdrRecordFile self, Guid tagId, AsvSdrRecordTagPayload src)
+
+    public static void WriteTag(this IListDataFile<AsvSdrRecordFileMetadata> self, Guid tagId, Guid recId, AsvSdrRecordTagType type, string name, byte[] value)
+    {
+        var payload = new AsvSdrRecordTagPayload();
+        MavlinkTypesHelper.SetGuid(payload.RecordGuid,recId);
+        MavlinkTypesHelper.SetGuid(payload.TagGuid,tagId);
+        payload.TagType = type;
+        MavlinkTypesHelper.SetString(payload.TagName,name);
+        value.CopyTo(payload.TagValue,0);
+        self.WriteTag(tagId,payload);
+        
+    }
+    public static void WriteTag(this IListDataFile<AsvSdrRecordFileMetadata> self, Guid tagId, AsvSdrRecordTagPayload src)
     {
         self.EditMetadata(x =>
         {
-            var tag = x.Tags.FirstOrDefault(x => new Guid(x.TagGuid).Equals(tagId));
+            var tag = x.Tags.FirstOrDefault(x => MavlinkTypesHelper.GetGuid(x.TagGuid).Equals(tagId));
             if (tag == null)
             {
                 tag = new AsvSdrRecordTagPayload();
                 x.Tags.Add(tag);
             }
             src.CopyTo(tag);
+            x.Info.TagCount = (ushort)x.Tags.Count;
         });
     }
-    public static IEnumerable<Guid> GetTagIds(this IAsvSdrRecordFile self, ushort skip, ushort count)
+    public static Guid[] GetTagIds(this IListDataFile<AsvSdrRecordFileMetadata> self, ushort skip, ushort count)
     {
-        return self.ReadMetadata().Tags?.Skip(skip).Take(count).Select(x=>new Guid(x.TagGuid)) ?? Array.Empty<Guid>();
+        var tags = self.ReadMetadata().Tags;
+        return tags?.Skip(skip).Take(count).Select(x=>MavlinkTypesHelper.GetGuid(x.TagGuid)).ToArray() ?? Array.Empty<Guid>();
     }
     
-    public static bool DeleteTag(this IAsvSdrRecordFile self, Guid tagId)
+    public static bool DeleteTag(this IListDataFile<AsvSdrRecordFileMetadata> self, Guid tagId)
     {
         var result = false;
         self.EditMetadata(metadata =>
@@ -62,12 +76,18 @@ public static class AsvSdrRecordFileHelper
             var itemToDelete = metadata.Tags?.FirstOrDefault(x => new Guid(x.TagGuid).Equals(tagId));
             if (itemToDelete == null) return;
             metadata.Tags.Remove(itemToDelete);
+            metadata.Info.TagCount = (ushort)metadata.Tags.Count;
             result = true;
         });
         return result;
     }
+
+    public static void Write(this IListDataFile<AsvSdrRecordFileMetadata> self, AsvSdrRecordPayload record)
+    {
+        self.ReadMetadata().Info.CopyTo(record);
+    }
     
-    public static bool Write(this IAsvSdrRecordFile self, IPacketV2<IPayload> packet)
+    public static bool Write(this IListDataFile<AsvSdrRecordFileMetadata> self, IPacketV2<IPayload> packet)
     {
         var type = (AsvSdrCustomMode)packet.MessageId;
         switch (type)
@@ -95,15 +115,15 @@ public static class AsvSdrRecordFileHelper
         return true;
     }
     
-    public static void Write(this IAsvSdrRecordFile self, AsvSdrRecordDataGpPayload src)
+    public static void Write(this IListDataFile<AsvSdrRecordFileMetadata> self, AsvSdrRecordDataGpPayload src)
     {
         self.Write(src.DataIndex, src);
     }
-    public static void Write(this IAsvSdrRecordFile self, AsvSdrRecordDataLlzPayload src)
+    public static void Write(this IListDataFile<AsvSdrRecordFileMetadata> self, AsvSdrRecordDataLlzPayload src)
     {
         self.Write(src.DataIndex, src);
     }
-    public static void Write(this IAsvSdrRecordFile self, AsvSdrRecordDataVorPayload src)
+    public static void Write(this IListDataFile<AsvSdrRecordFileMetadata> self, AsvSdrRecordDataVorPayload src)
     {
         self.Write(src.DataIndex, src);
     }
