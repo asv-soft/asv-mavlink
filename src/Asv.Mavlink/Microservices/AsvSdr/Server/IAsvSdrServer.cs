@@ -128,7 +128,7 @@ namespace Asv.Mavlink
             return src.SendRecordDataResponse(x =>
             {
                 request.RecordGuid.CopyTo(x.RecordGuid, 0);
-                request.Count = 0;
+                x.ItemsCount = 0;
                 x.RequestId = request.RequestId;
                 x.Result = resultCode;
             }, CancellationToken.None);
@@ -140,7 +140,7 @@ namespace Asv.Mavlink
             return src.SendRecordDataResponse(x =>
             {
                 request.RecordGuid.CopyTo(x.RecordGuid, 0);
-                request.Count = count;
+                x.ItemsCount = count;
                 x.RequestId = request.RequestId;
                 x.Result = AsvSdrRequestAck.AsvSdrRequestAckOk;
             }, CancellationToken.None);

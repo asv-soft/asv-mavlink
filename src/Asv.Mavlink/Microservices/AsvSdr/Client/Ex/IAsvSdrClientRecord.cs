@@ -60,6 +60,8 @@ public static class AsvSdrClientRecordHelper
     }
     public static void CopyTo(this IAsvSdrClientRecord self, AsvSdrRecordPayload dest)
     {
+        MavlinkTypesHelper.SetGuid(dest.RecordGuid, self.Id);
+        MavlinkTypesHelper.SetString(dest.RecordName,self.Name.Value);
         dest.Frequency = self.Frequency.Value;
         dest.CreatedUnixUs = MavlinkTypesHelper.ToUnixTimeUs(self.Created.Value);
         dest.DataType = self.DataType.Value;
@@ -67,7 +69,7 @@ public static class AsvSdrClientRecordHelper
         dest.DataCount = self.DataCount.Value;
         dest.Size = self.ByteSize.Value;
         dest.TagCount = self.TagsCount.Value;
-        self.Name.Value.CopyTo(dest.RecordName);
+        
     }
 }
 

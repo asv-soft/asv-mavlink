@@ -93,12 +93,12 @@ public static class AsvSdrRecordFileHelper
         switch (type)
         {
             case AsvSdrCustomMode.AsvSdrCustomModeLlz:
-                var gp = packet as AsvSdrRecordDataGpPacket;
+                var gp = packet as AsvSdrRecordDataLlzPacket;
                 Debug.Assert(gp != null);
                 self.Write(gp.Payload);
                 break;
             case AsvSdrCustomMode.AsvSdrCustomModeGp:
-                var llz = packet as AsvSdrRecordDataLlzPacket;
+                var llz = packet as AsvSdrRecordDataGpPacket;
                 Debug.Assert(llz != null);
                 self.Write(llz.Payload);
                 break;

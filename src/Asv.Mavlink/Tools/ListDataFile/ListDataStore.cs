@@ -36,12 +36,11 @@ public class ListDataStore<TMetadata, TKey> : DisposableOnceWithCancel, IListDat
         _entries = new Dictionary<TKey, ListDataStoreEntry<TKey>>(keyConverter.KeyComparer);
         _count = new RxValue<ushort>().DisposeItWith(Disposable);
         _size = new RxValue<ulong>().DisposeItWith(Disposable);
-        
-        InternalUpdateEntries();
         if (Directory.Exists(_rootFolder) == false)
         {
             Directory.CreateDirectory(_rootFolder);
         }
+        InternalUpdateEntries();
     }
     
     public IEnumerable<IListDataStoreEntry<TKey>> GetEntries()
@@ -92,7 +91,7 @@ public class ListDataStore<TMetadata, TKey> : DisposableOnceWithCancel, IListDat
             }
         }
 
-        foreach (var file in Directory.EnumerateFiles(_rootFolder))
+        foreach (var file in Directory.EnumerateFiles(parentFolder?.FullPath ?? _rootFolder))
         {
             var fileInfo = new FileInfo(file);
             TMetadata metadata;
