@@ -6,8 +6,6 @@ using Asv.IO;
 
 namespace Asv.Mavlink;
 
-
-
 public interface IListDataStore<out TMetadata, TKey>:IDisposable
     where TMetadata:ISizedSpanSerializable,new()
 {
@@ -30,13 +28,16 @@ public interface IListDataStore<out TMetadata, TKey>:IDisposable
     IReadOnlyList<IListDataStoreEntry<TKey>> GetFiles();
     bool TryGetFile(TKey id, out IListDataStoreEntry<TKey> entry);
     
-    IListDataFile<TMetadata> Open(TKey id);
-    IListDataFile<TMetadata> Create(TKey id, TKey parentId, Action<TMetadata> defaultMetadata);
+    ICachedFileWithRefCounter<TMetadata> Open(TKey id);
+    ICachedFileWithRefCounter<TMetadata> Create(TKey id, TKey parentId, Action<TMetadata> defaultMetadata);
+    
     bool DeleteFile(TKey id);
     bool ExistFile(TKey id);
     bool RenameFile(TKey id, string newName);
     bool MoveFile(TKey id, TKey newParentId);
 }
+
+
 
 public static class ListDataStoreHelper
 {

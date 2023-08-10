@@ -7,16 +7,6 @@ using Asv.Mavlink.V2.AsvSdr;
 
 namespace Asv.Mavlink;
 
-public interface IAsvSdrStore : IListDataStore<AsvSdrRecordFileMetadata, Guid>
-{
-    
-}
-
-public interface IAsvSdrRecordFile:IListDataFile<AsvSdrRecordFileMetadata>
-{
-    
-}
-
 public static class AsvSdrRecordFileHelper
 {
     public static void ReadRecordInfo(this IListDataFile<AsvSdrRecordFileMetadata> self,AsvSdrRecordPayload dest)

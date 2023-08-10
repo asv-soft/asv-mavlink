@@ -8,7 +8,10 @@ using Asv.IO;
 
 namespace Asv.Mavlink;
 
-public class ListDataFile<TMetadata> : IListDataFile<TMetadata> 
+
+
+
+public class ListDataFile<TMetadata> : DisposableOnce, IListDataFile<TMetadata> 
     where TMetadata : ISizedSpanSerializable, new()
 {
     #region File header
@@ -195,7 +198,7 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
             ArrayPool<byte>.Shared.Return(buffer);
         }
     }
-
+    
     public long ByteSize
     {
         get
@@ -271,6 +274,8 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
     #endregion
     
     #region Row
+
+    public object Tag { get; set; }
 
     public uint Count
     {
@@ -399,13 +404,14 @@ public class ListDataFile<TMetadata> : IListDataFile<TMetadata>
 
     #endregion
     
-    public void Dispose()
+    protected override void InternalDisposeOnce()
     {
-        _stream.Flush();
-        if (_disposeSteam) _stream.Dispose();
+        lock (_sync)
+        {
+            _stream.Flush();
+            if (_disposeSteam) _stream.Dispose();
+        }
     }
-
-   
 }
 
 public class ListDataFileFormat:ISizedSpanSerializable, IEquatable<ListDataFileFormat>

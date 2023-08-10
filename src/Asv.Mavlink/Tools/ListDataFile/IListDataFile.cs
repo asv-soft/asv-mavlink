@@ -8,9 +8,11 @@ namespace Asv.Mavlink;
 
 
 
-public interface IListDataFile<out TMetadata>:IDisposable
+
+public interface IListDataFile<out TMetadata>
     where TMetadata:ISpanSerializable
 {
+    object Tag { get; set; }
     uint Count { get; }
     long ByteSize { get; }
     void EditMetadata(Action<TMetadata> editCallback);
@@ -28,7 +30,7 @@ public static class ListDataFileHelper
         public uint Take { get; init; }
     }
     
-    public static IEnumerable<Chunk> GetEmptyChunks<TMetadata>(this IListDataFile<TMetadata> src, int maxPageSize) 
+    public static IEnumerable<Chunk> GetEmptyChunks<TMetadata,TKey>(this IListDataFile<TMetadata> src, int maxPageSize) 
         where TMetadata : ISpanSerializable
     {
         var count = src.Count;

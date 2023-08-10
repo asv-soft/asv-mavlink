@@ -13,7 +13,7 @@ public class AsvSdrStoreTest
     public static void Read_write_tag()
     {
         var mem = new MemoryStream();
-        IListDataFile<AsvSdrRecordFileMetadata> write = new AsvSdrRecordFile(mem,false);
+        ListDataFile<AsvSdrRecordFileMetadata> write = new ListDataFile<AsvSdrRecordFileMetadata>(mem, AsvSdrHelper.FileFormat,false);
         var tagId = Guid.NewGuid();
         var recId = Guid.NewGuid();
         var value = new byte[8];
@@ -23,7 +23,7 @@ public class AsvSdrStoreTest
         write.WriteTag(tagId,recId, type,name,value);
         write.Dispose();
         
-        IListDataFile<AsvSdrRecordFileMetadata> read = new AsvSdrRecordFile(mem,false);
+        IListDataFile<AsvSdrRecordFileMetadata> read = new ListDataFile<AsvSdrRecordFileMetadata>(mem, AsvSdrHelper.FileFormat,false);
         Assert.Equal(1, read.ReadMetadata().Tags.Count);
         Assert.Equal(tagId, MavlinkTypesHelper.GetGuid(read.ReadMetadata().Tags[0].TagGuid));
         Assert.Equal(recId, MavlinkTypesHelper.GetGuid(read.ReadMetadata().Tags[0].RecordGuid));

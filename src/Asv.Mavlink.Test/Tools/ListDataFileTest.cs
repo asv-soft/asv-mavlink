@@ -44,7 +44,7 @@ public class ListDataFileTest
     public void Check_Metadata_Serialization()
     {
         using var strm = new MemoryStream();
-        using var file = new AsvSdrRecordFile(strm, false);
+        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, AsvSdrHelper.FileFormat,false);
         var payload = new AsvSdrRecordPayload
         {
             Frequency = 1,
