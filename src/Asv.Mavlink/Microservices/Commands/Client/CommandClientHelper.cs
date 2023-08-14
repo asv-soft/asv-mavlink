@@ -23,16 +23,16 @@ public static class CommandClientHelper
     /// </summary>
     public static Task SetMessageInterval(this ICommandClient client,int messageId,int intervalUs, CancellationToken cancel = default)
     {
-        return client.CommandLongAndCheckResult(MavCmd.MavCmdSetMessageInterval, messageId, intervalUs, 0, float.NaN,
-            float.NaN, float.NaN, float.NaN, cancel);
+        return client.CommandLongAndCheckResult(MavCmd.MavCmdSetMessageInterval, messageId, intervalUs, 0, 0,
+            0, 0, 0, cancel);
     }
     /// <summary>
     /// Request the target system(s) emit a single instance of a specified message (i.e. a "one-shot" version of MAV_CMD_SET_MESSAGE_INTERVAL).
     /// </summary>
     public static Task RequestMessageOnce(this ICommandClient client,int messageId, CancellationToken cancel = default)
     {
-        return client.CommandLongAndCheckResult(MavCmd.MavCmdRequestMessage, messageId, float.NaN, float.NaN, float.NaN,
-            float.NaN, float.NaN, 0, cancel);
+        return client.CommandLongAndCheckResult(MavCmd.MavCmdRequestMessage, messageId, 0, 0, 0,
+            0, 0, 0, cancel);
     }
     /// <summary>
     /// Set the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM.
@@ -50,8 +50,8 @@ public static class CommandClientHelper
         where TPacket : IPacketV2<IPayload>, new()
     {
         var pkt = new TPacket();
-        return src.CommandLongAndWaitPacket<TPacket>(MavCmd.MavCmdRequestMessage, pkt.MessageId, float.NaN, float.NaN, float.NaN,
-            float.NaN, float.NaN, 0, cancel);
+        return src.CommandLongAndWaitPacket<TPacket>(MavCmd.MavCmdRequestMessage, pkt.MessageId, 0, 0, 0,
+            0, 0, 0, cancel);
     }
     
     public static async Task<AutopilotVersionPayload> GetAutopilotVersion(this ICommandClient src,CancellationToken cancel = default)
@@ -62,7 +62,7 @@ public static class CommandClientHelper
 
     public static Task DoSetMode(this ICommandClient src,uint mode, uint customMode, uint customSubMode, CancellationToken cancel = default)
     {
-        return src.CommandLongAndCheckResult(MavCmd.MavCmdDoSetMode, mode, customMode, customSubMode, float.NaN, float.NaN, float.NaN, float.NaN, cancel);
+        return src.CommandLongAndCheckResult(MavCmd.MavCmdDoSetMode, mode, customMode, customSubMode, 0, 0, 0, 0, cancel);
     }
 
    /// <summary>

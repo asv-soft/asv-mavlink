@@ -32,6 +32,7 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
         IPacketSequenceCalculator seq, 
         IScheduler? scheduler = null):base(connection,identity,config,seq,scheduler)
     {
+        
         _config = config;
         Commands = new CommandClient(connection,identity,seq,config.Command).DisposeItWith(Disposable);
         Offboard = new OffboardClient(connection, identity, seq).DisposeItWith(Disposable);

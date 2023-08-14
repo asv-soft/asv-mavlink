@@ -126,8 +126,8 @@ public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
     public async Task ArmDisarm(bool isArm, CancellationToken cancel)
     {
         if (_isArmed.Value == isArm) return;
-        await _commandClient.CommandLongAndCheckResult(MavCmd.MavCmdComponentArmDisarm, isArm ? 1 : 0, float.NaN, float.NaN,
-            float.NaN, float.NaN, float.NaN, float.NaN, cancel).ConfigureAwait(false);
+        await _commandClient.CommandLongAndCheckResult(MavCmd.MavCmdComponentArmDisarm, isArm ? 1 : 0, 0, 0,
+            0, 0, 0, 0, cancel).ConfigureAwait(false);
         
     }
 
@@ -156,7 +156,7 @@ public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
 
     public Task GetHomePosition(CancellationToken cancel)
     {
-        return _commandClient.CommandLong(MavCmd.MavCmdGetHomePosition, float.NaN, float.NaN, float.NaN, float.NaN, float.NaN,
-            float.NaN, float.NaN, cancel);
+        return _commandClient.CommandLong(MavCmd.MavCmdGetHomePosition, 0, 0, 0, 0, 0,
+            0, 0, cancel);
     }
 }
