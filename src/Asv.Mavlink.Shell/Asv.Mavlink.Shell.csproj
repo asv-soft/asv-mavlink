@@ -24,7 +24,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Asv.Cfg" Version="1.10.2" />
+    <PackageReference Include="Asv.Cfg" Version="1.11.0" />
     <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
     <PackageReference Include="DotLiquid" Version="2.2.595" />
     <PackageReference Include="Geodesy" Version="4.1.0" />

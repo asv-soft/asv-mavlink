@@ -19,7 +19,7 @@ public class ListDataFile<TMetadata> : DisposableOnce, IListDataFile<TMetadata>
     private static ushort CalculateHeaderCrc(ReadOnlySpan<byte> buffer)
     {
         buffer = buffer.Slice(0,ListDataFileFormat.MaxSize - sizeof(ushort) /*CRC*/);
-        return X25Crc.Accumulate(ref buffer, X25Crc.CrcSeed);
+        return Crc16Ccit.Accumulate(buffer);
     }
     
     private static ushort ReadHeaderCrc(ReadOnlySpan<byte> buffer)
