@@ -59,7 +59,8 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         _entries = new Dictionary<TKey, FileSystemHierarchicalStoreEntry<TKey>>(_format.KeyComparer);
         if (Directory.Exists(rootFolder) == false)
         {
-            Logger.Warn($"{rootFolder} not exist. Try create");
+            Logger.Warn($"Directory '{rootFolder}' not exist. Try create");
+            Directory.CreateDirectory(rootFolder);
         }
         _count = new RxValue<ushort>().DisposeItWith(Disposable);
         _size = new RxValue<ulong>().DisposeItWith(Disposable);
