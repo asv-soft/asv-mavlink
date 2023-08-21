@@ -449,7 +449,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
                 File.Move(entry.FullPath,newFilePath);
             }
             _entries.Remove(id);
-            _entries.Add(id,new FileSystemHierarchicalStoreEntry<TKey>(id,newFilePath, FolderStoreEntryType.File,entry.ParentId,newFilePath));
+            _entries.Add(id,new FileSystemHierarchicalStoreEntry<TKey>(id,newName, FolderStoreEntryType.File,entry.ParentId,newFilePath));
             return id;
         }
     }

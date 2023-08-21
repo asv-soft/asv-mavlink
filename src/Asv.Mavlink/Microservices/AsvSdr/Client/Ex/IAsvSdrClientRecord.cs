@@ -41,8 +41,8 @@ public static class AsvSdrClientRecordHelper
     {
         self.CopyTo(dest.Info);
         var tags = new List<AsvSdrClientRecordTag>();
-        self.Tags.Clone(tags);
-        foreach (var tag in tags)
+        using var subs = self.Tags.Bind(out var list).Subscribe();
+        foreach (var tag in list)
         {
             var tagPayload = new AsvSdrRecordTagPayload();
             tag.CopyTo(tagPayload);

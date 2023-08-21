@@ -29,7 +29,7 @@ public static class GuidHierarchicalStoreFormat
     
     public const string GuidOfFolderOrFileRegexString = @"[0-9a-zA-Z_-]{22}";
     public static readonly Regex FileSystemNameOfFolderRegex = new($"^({DisplayNameOfFolderRegexString}) #({GuidOfFolderOrFileRegexString})$", RegexOptions.Compiled);
-    public static readonly Regex FileSystemNameOfFileRegex = new($"^({GuidOfFolderOrFileRegexString}) #({GuidOfFolderOrFileRegexString})$", RegexOptions.Compiled);
+    public static readonly Regex FileSystemNameOfFileRegex = new($"^({DisplayNameOfFileRegexString}) #({GuidOfFolderOrFileRegexString})$", RegexOptions.Compiled);
     
     public static IEqualityComparer<Guid> GuidComparer { get; } = new Comp();
 }
