@@ -545,7 +545,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
                 throw new HierarchicalStoreException($"File [{id}]{fileInfo.FullName} already exist");
             }
             var file = _format.CreateFile(File.Open(fileInfo.FullName, FileMode.OpenOrCreate, FileAccess.ReadWrite), id, name);
-            var wrapper = new CachedFile<TKey,TFile>(id,name,file,OnFileDisposed);
+            var wrapper = new CachedFile<TKey,TFile>(id,name, parentId,file,OnFileDisposed);
             var entry = new FileSystemHierarchicalStoreEntry<TKey>(id, name, FolderStoreEntryType.File, parentId,
                 fileInfo.FullName);
             _entries.Add(id,entry);
@@ -591,7 +591,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         {
             var stream = File.Open(entry.FullPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             var file = _format.OpenFile(stream);
-            exist = new CachedFile<TKey, TFile>(entry.Id, entry.Name, file, OnFileDisposed);
+            exist = new CachedFile<TKey, TFile>(entry.Id, entry.Name, entry.ParentId, file, OnFileDisposed);
             exist.AddRef();
             Logger.Trace($"Add file '{entry.Name}'[{entry.Id}] to cache (ref count={exist.RefCount})");
             _fileCache.Add(exist);
@@ -617,7 +617,9 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             // otherwise we wait for check cache timer to delete it
             if (_fileCacheTime == TimeSpan.Zero)
             {
+                file.ImmediateDispose();
                 _fileCache.Remove(file);
+                Logger.Trace("Remove file from cache: {0}", file.Id);
             }
         }
     }

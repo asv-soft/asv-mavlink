@@ -12,11 +12,12 @@ public class CachedFile<TKey, TFile>: ICachedFile<TKey, TFile>
     private readonly Action<CachedFile<TKey, TFile>> _disposedCallback;
     private int _refCount;
 
-    public CachedFile(TKey id, string name, TFile file, Action<CachedFile<TKey, TFile>> disposedCallback)
+    public CachedFile(TKey id, string name, TKey parentId, TFile file, Action<CachedFile<TKey, TFile>> disposedCallback)
     {
         _disposedCallback = disposedCallback;
         Id = id;
         Name = name;
+        ParentId = parentId;
         File = file;
     }
 
@@ -31,8 +32,9 @@ public class CachedFile<TKey, TFile>: ICachedFile<TKey, TFile>
         }
     }
 
-    public TKey Id { get; set; }
+    public TKey Id { get; }
     public string Name { get; }
+    public TKey ParentId { get; }
     public TFile File { get; }
     public DateTime DeadTimeBegin { get; private set; }
     public int RefCount => _refCount;

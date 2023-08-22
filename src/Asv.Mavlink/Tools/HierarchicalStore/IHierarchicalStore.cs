@@ -54,9 +54,11 @@ public interface IHierarchicalStore<TKey, out TFile>: IDisposable
 public interface ICachedFile<out TKey, out TObject>:IDisposable
     where TObject:IDisposable
 {
+    TKey ParentId { get; }
     TKey Id { get; }
     string Name { get; }
     TObject File { get; }
+    
 }
 
 public static class HierarchicalStoreHelper
