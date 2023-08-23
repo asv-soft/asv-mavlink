@@ -88,9 +88,9 @@ public class AsvGbsExClient: DisposableOnceWithCancel, IAsvGbsExClient
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
         var ack = await _command.CommandLong((MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunFixedMode,
-            BitConverter.ToSingle(BitConverter.GetBytes(geoPoint.Latitude), 0),
-            BitConverter.ToSingle(BitConverter.GetBytes(geoPoint.Longitude), 0),
-            BitConverter.ToSingle(BitConverter.GetBytes(geoPoint.Altitude), 0),
+            BitConverter.ToSingle(BitConverter.GetBytes((Int32)(geoPoint.Latitude * 10000000)), 0),
+            BitConverter.ToSingle(BitConverter.GetBytes((Int32)(geoPoint.Longitude * 10000000)), 0),
+            BitConverter.ToSingle(BitConverter.GetBytes((Int32)(geoPoint.Altitude * 1000)), 0),
             accuracy,
             Single.NaN,
             Single.NaN,

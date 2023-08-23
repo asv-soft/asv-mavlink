@@ -33,10 +33,11 @@ public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
         commands[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunFixedMode] = async (id,args, cancel) =>
         {
             if (StartFixedMode == null) return new CommandResult(MavResult.MavResultUnsupported);
-            var lat = BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param1),0) / 10000000D;
-            var lon = BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param2),0) / 10000000D;
-            var alt = BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param3),0) / 1000D;
-            var result = await StartFixedMode(new GeoPoint(lat,lon,alt),0.1f, cancel).ConfigureAwait(false);
+            var lat = BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param1),0) / 10000000.0;
+            var lon = BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param2),0) / 10000000.0;
+            var alt = BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param3),0) / 1000.0;
+            var ac = args.Payload.Param4;
+            var result = await StartFixedMode(new GeoPoint(lat,lon,alt),ac, cancel).ConfigureAwait(false);
             return new CommandResult(result);
         };
         commands[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunIdleMode] = async (id,args, cancel) =>
