@@ -45,6 +45,6 @@ public static class AsvSdrHelper
         ItemMaxSize = 256,
     };
 
-    public static ListDataStoreFormat<Guid, AsvSdrRecordFileMetadata> StoreFormat = new AsvSdrListDataStoreFormat();
+    public static IHierarchicalStoreFormat<Guid,IListDataFile<AsvSdrRecordFileMetadata>> StoreFormat = new AsvSdrListDataStoreFormat();
     
 }

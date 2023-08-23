@@ -1,75 +1,41 @@
 #nullable enable
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Asv.Mavlink;
 
-public class AsvSdrListDataStoreFormat : ListDataStoreFormat<Guid, AsvSdrRecordFileMetadata>
+public class AsvSdrListDataStoreFormat : GuidHierarchicalStoreFormat<IListDataFile<AsvSdrRecordFileMetadata>>
 {
-    private const string DefaultExtension = ".sdr";
-    class Comp : IEqualityComparer<Guid>
+    public AsvSdrListDataStoreFormat() : base(".sdr")
     {
-        public bool Equals(Guid x, Guid y)
+    }
+    public override IListDataFile<AsvSdrRecordFileMetadata> OpenFile(Stream stream)
+    {
+        return new ListDataFile<AsvSdrRecordFileMetadata>(stream, AsvSdrHelper.FileFormat, true);
+    }
+
+    public override IListDataFile<AsvSdrRecordFileMetadata> CreateFile(Stream stream, Guid id, string name)
+    {
+        var file = new ListDataFile<AsvSdrRecordFileMetadata>(stream, AsvSdrHelper.FileFormat, true);
+        file.EditMetadata(metadata=>
         {
-            return x == y;
-        }
-        public int GetHashCode(Guid obj)
-        {
-            return obj.GetHashCode();
-        }
+            MavlinkTypesHelper.SetGuid(metadata.Info.RecordGuid, id);
+            MavlinkTypesHelper.SetString(metadata.Info.RecordName,name);
+        });
+        return file;
     }
 
-    private static IEqualityComparer<Guid> GuidComparer { get; } = new Comp();
-    
-    private readonly MD5 _md5 = MD5.Create();
-
-    public override bool TryGetFolderKey(DirectoryInfo directory, out Guid id)
+    public override void Dispose()
     {
-        var hash = _md5.ComputeHash(Encoding.UTF8.GetBytes(directory.FullName));
-        id = new Guid(hash);
-        return true;
-    }
-
-    public override string GetFolderName(DirectoryInfo folderInfo)
-    {
-        return folderInfo.Name;
-    }
-
-    public override Guid RootFolderId => Guid.Empty;
-
-  
-    public override IEqualityComparer<Guid> KeyComparer => GuidComparer;
-
-    public override void Dispose() => _md5.Dispose();
-    
-    public override bool TyrGetFileKey(FileInfo fileInfo, ListDataFileFormat header, AsvSdrRecordFileMetadata metadata,
-        out Guid id)
-    {
-        var ext = Path.GetExtension(fileInfo.Name);
-        if (ext != DefaultExtension)
-        {
-            id = default;
-            return false;
-        }
-
-        var name = Path.GetFileNameWithoutExtension(fileInfo.Name);
-        if (Guid.TryParse(name, out id) == false) return false;
-        var metadataGuid = MavlinkTypesHelper.GetGuid(metadata.Info.RecordGuid);
-        return metadataGuid == id;
-    }
-
-    
-
-    public override string GetFileNameByKey(Guid id)
-    {
-        return $"{id:N}{DefaultExtension}";
-    }
-
-    public override string GetDisplayName(FileInfo fileInfo, ListDataFileFormat header, AsvSdrRecordFileMetadata metadata)
-    {
-        return MavlinkTypesHelper.GetString(metadata.Info.RecordName);
+        
     }
 }
+
+public class AsvSdrStore : FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>
+{
+    public AsvSdrStore(string rootFolder, TimeSpan? fileCacheTime) : base(rootFolder, AsvSdrHelper.StoreFormat, fileCacheTime)
+    {
+        
+    }
+}
+

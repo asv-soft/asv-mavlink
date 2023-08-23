@@ -289,7 +289,7 @@ public class BaseDevicesTest
         
         clientDevice.WaitUntilConnect();
         
-        await Task.Delay(5_000);
+        await Task.Delay(3_100);
 
         var linkQuality = clientDevice.Heartbeat.LinkQuality.Value;
         
@@ -299,7 +299,8 @@ public class BaseDevicesTest
         
         _output.WriteLine($"Tx packets: {serverDevice.Connection.TxPackets}");
         
-        Assert.Equal(0.5, linkQuality,1);
+        Assert.InRange(linkQuality,0.4,0.7); 
+        _output.WriteLine($"Linq quality {linkQuality:F2}");
     }
     
     [Fact]

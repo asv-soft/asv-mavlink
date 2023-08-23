@@ -119,6 +119,8 @@
 <!--      <entry value="64" name="ASV_SDR_SUPPORT_MODE_SPECTRUM"/>-->
     </enum>
     
+    
+    
     <enum name="ASV_SDR_REQUEST_ACK">
       <description>ACK / NACK / ERROR values as a result of ASV_SDR_*_REQUEST or ASV_SDR_*_DELETE commands.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <entry name="ASV_SDR_REQUEST_ACK_OK">
