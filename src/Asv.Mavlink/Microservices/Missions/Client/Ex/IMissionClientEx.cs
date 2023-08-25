@@ -56,4 +56,19 @@ public static class MissionClientExHelper
         item.Param4.OnNext(0);
         return item;
     }
+    public static MissionItem AddRoiMissionItem(this IMissionClientEx vehicle, GeoPoint point)
+    {
+        var item = vehicle.Create();
+        item.Location.OnNext(point);
+        item.Autocontinue.OnNext(true);
+        item.Command.OnNext(MavCmd.MavCmdDoSetRoiLocation);
+        item.Current.OnNext(false);
+        item.Frame.OnNext(MavFrame.MavFrameGlobalInt);
+        item.MissionType.OnNext(MavMissionType.MavMissionTypeMission);
+        item.Param1.OnNext(0);
+        item.Param2.OnNext(0);
+        item.Param3.OnNext(0);
+        item.Param4.OnNext(0);
+        return item;
+    }
 }
