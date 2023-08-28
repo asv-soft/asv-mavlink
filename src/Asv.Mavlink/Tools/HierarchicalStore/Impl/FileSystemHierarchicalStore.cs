@@ -314,7 +314,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             var files = InternalGetSubFiles(id);
             foreach (var file in files)
             {
-                if (TryImmediatelyRemoveFromCache(file))
+                if (TryImmediatelyRemoveFromCache(file) == false)
                 {
                     throw new HierarchicalStoreException($"Can't rename folder: file '{file}' in folder currently in use");
                 }
@@ -469,16 +469,13 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             }
 
             var parentPath = _rootFolder;
-            if (_entries.TryGetValue(newParentId, out var newParent) == false)
+            if (_entries.TryGetValue(newParentId, out var newParent))
             {
-                if (newParent != null)
+                if (newParent.Type != FolderStoreEntryType.Folder)
                 {
-                    if (newParent.Type != FolderStoreEntryType.Folder)
-                    {
-                        throw new HierarchicalStoreException("Parent entry is not folder");
-                    }
-                    parentPath = newParent.FullPath;
+                    throw new HierarchicalStoreException("Parent entry is not folder");
                 }
+                parentPath = newParent.FullPath;
             }
             var nameAtFileSystem = _format.GetFileSystemFileName(id,entry.Name);
             var newFilePath = Path.Combine(parentPath, nameAtFileSystem);
