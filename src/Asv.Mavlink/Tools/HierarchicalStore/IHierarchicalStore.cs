@@ -16,7 +16,7 @@ public interface IHierarchicalStore<TKey, out TFile>: IDisposable
 
     IReadOnlyList<IHierarchicalStoreEntry<TKey>> GetEntries();
     bool TryGetEntry(TKey id, out IHierarchicalStoreEntry<TKey>? entry);
-    bool ExistEntry(TKey id);
+    bool EntryExists(TKey id);
 
     #endregion
     
@@ -26,7 +26,7 @@ public interface IHierarchicalStore<TKey, out TFile>: IDisposable
     IReadOnlyList<IHierarchicalStoreEntry<TKey>> GetFolders();
     TKey CreateFolder(TKey id, string name, TKey parentId);
     void DeleteFolder(TKey id);
-    bool ExistFolder(TKey id);
+    bool FolderExists(TKey id);
     void RenameFolder(TKey id, string newName);
     void MoveFolder(TKey id, TKey newParentId);
     
@@ -37,7 +37,7 @@ public interface IHierarchicalStore<TKey, out TFile>: IDisposable
     IReadOnlyList<IHierarchicalStoreEntry<TKey>> GetFiles();
     bool TryGetFile(TKey id, out IHierarchicalStoreEntry<TKey> entry);
     void DeleteFile(TKey id);
-    bool ExistFile(TKey id);
+    bool FileExists(TKey id);
     TKey RenameFile(TKey id, string newName);
     void MoveFile(TKey id, TKey newParentId);
     
@@ -45,8 +45,8 @@ public interface IHierarchicalStore<TKey, out TFile>: IDisposable
     
     #region Open/Create
 
-    ICachedFile<TKey, TFile> Open(TKey id);
-    ICachedFile<TKey, TFile> Create(TKey id, string name, TKey parentId);
+    ICachedFile<TKey, TFile> OpenFile(TKey id);
+    ICachedFile<TKey, TFile> CreateFile(TKey id, string name, TKey parentId);
 
     #endregion
 }
