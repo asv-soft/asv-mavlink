@@ -30,7 +30,7 @@ namespace Asv.Mavlink
 
         public void Start()
         {
-            _transponder.Start(TimeSpan.FromMilliseconds(_config.StatusRateMs));
+            _transponder.Start(TimeSpan.FromMilliseconds(500),TimeSpan.FromMilliseconds(_config.StatusRateMs));
         }
 
         public void Set(Action<AsvGbsOutStatusPayload> changeCallback)

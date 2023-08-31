@@ -47,23 +47,13 @@ namespace Asv.Mavlink
             {
                 throw new ArgumentException($"Data is too long (max size {_maxDebugFloatArrayDataLength})", nameof(name));
             }
-
-            var packet = new DebugFloatArrayPacket()
+            return InternalSend<DebugFloatArrayPacket>(packet =>
             {
-                ComponentId = _identity.ComponentId,
-                SystemId = _identity.SystemId,
-                CompatFlags = 0,
-                IncompatFlags = 0,
-                Sequence = _seq.GetNextSequenceNumber(),
-                Payload =
-                {
-                    TimeUsec = (uint)(DateTime.Now - _bootTime).TotalMilliseconds,
-                    ArrayId = arrayId,
-                }
-            };
-            MavlinkTypesHelper.SetString(packet.Payload.Name, name);
-            data.CopyTo(packet.Payload.Data,0);
-            return _connection.Send(packet, DisposeCancel);
+                packet.Payload.TimeUsec = (uint)(DateTime.Now - _bootTime).TotalMilliseconds;
+                packet.Payload.ArrayId = arrayId;
+                MavlinkTypesHelper.SetString(packet.Payload.Name, name);
+                data.CopyTo(packet.Payload.Data,0);
+            });
         }
 
         public Task SendMemoryVect(ushort address, byte version, byte type, sbyte[] value)
@@ -73,22 +63,14 @@ namespace Asv.Mavlink
             {
                 throw new ArgumentException($"Value '{value}' is too long (max size {_maxMemoryVectLength})", nameof(value));
             }
-            var packet = new MemoryVectPacket
+           
+            return InternalSend<MemoryVectPacket>(packet =>
             {
-                ComponentId = _identity.ComponentId,
-                SystemId = _identity.SystemId,
-                CompatFlags = 0,
-                IncompatFlags = 0,
-                Sequence = _seq.GetNextSequenceNumber(),
-                Payload =
-                {
-                    Address = address,
-                    Type = type,
-                    Ver = version,
-                }
-            };
-            value.CopyTo(packet.Payload.Value, 0);
-            return _connection.Send(packet, DisposeCancel);
+                value.CopyTo(packet.Payload.Value, 0);
+                packet.Payload.Address = address;
+                packet.Payload.Type = type;
+                packet.Payload.Ver = version;
+            });
         }
 
         public Task SendNamedValueFloat(string name, float value)
@@ -97,22 +79,12 @@ namespace Asv.Mavlink
             {
                 throw new ArgumentException($"Name '{name}' is too long for parameter name (max size {_maxNamedValueKeyLength})", nameof(name));
             }
-
-            var packet = new NamedValueFloatPacket
+            return InternalSend<NamedValueFloatPacket>(packet =>
             {
-                ComponentId = _identity.ComponentId,
-                SystemId = _identity.SystemId,
-                CompatFlags = 0,
-                IncompatFlags = 0,
-                Sequence = _seq.GetNextSequenceNumber(),
-                Payload =
-                {
-                    TimeBootMs = (uint)(DateTime.Now - _bootTime).TotalMilliseconds,
-                    Value = value,
-                }
-            };
-            MavlinkTypesHelper.SetString(packet.Payload.Name, name);
-            return _connection.Send(packet, DisposeCancel);
+                MavlinkTypesHelper.SetString(packet.Payload.Name, name);
+                packet.Payload.TimeBootMs = (uint)(DateTime.Now - _bootTime).TotalMilliseconds;
+                packet.Payload.Value = value;
+            });
         }
 
         public Task SendNamedValueInteger(string name, int value)
@@ -121,22 +93,12 @@ namespace Asv.Mavlink
             {
                 throw new ArgumentException($"Name '{name}' is too long for parameter name (max size {_maxNamedValueKeyLength})", nameof(name));
             }
-
-            var packet = new NamedValueIntPacket()
+            return InternalSend<NamedValueIntPacket>(packet =>
             {
-                ComponentId = _identity.ComponentId,
-                SystemId = _identity.SystemId,
-                CompatFlags = 0,
-                IncompatFlags = 0,
-                Sequence = _seq.GetNextSequenceNumber(),
-                Payload =
-                {
-                    TimeBootMs = (uint)(DateTime.Now - _bootTime).TotalMilliseconds,
-                    Value = value,
-                }
-            };
-            MavlinkTypesHelper.SetString(packet.Payload.Name, name);
-            return _connection.Send(packet, DisposeCancel);
+                MavlinkTypesHelper.SetString(packet.Payload.Name, name);
+                packet.Payload.TimeBootMs = (uint)(DateTime.Now - _bootTime).TotalMilliseconds;
+                packet.Payload.Value = value;
+            });
         }
 
        

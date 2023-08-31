@@ -257,7 +257,7 @@ namespace Asv.Mavlink
             var data = ArrayPool<byte>.Shared.Rent(size);
             try
             {
-                
+                if (IsDisposed) return;
                 _portCollectionSync.EnterReadLock();
                 // for optimization we serialize packet once and then send it as byte array
                 var span = new Span<byte>(data, 0, size);
@@ -272,7 +272,10 @@ namespace Asv.Mavlink
             finally
             {
                 ArrayPool<byte>.Shared.Return(data);
-                _portCollectionSync.ExitReadLock();
+                if (IsDisposed == false)
+                {
+                    _portCollectionSync.ExitReadLock();    
+                }
             }
 
             packet.Tag = null;

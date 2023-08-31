@@ -96,24 +96,17 @@ namespace Asv.Mavlink
 
 
 
-        protected TPacket InternalGeneratePacket<TPacket>()
-            where TPacket : IPacketV2<IPayload>, new()
-        {
-            return new TPacket
-            {
-                ComponentId = Identity.ComponentId,
-                SystemId = Identity.SystemId,
-                Sequence = Sequence.GetNextSequenceNumber(),
-            };
-        }
-
+       
 
         protected Task InternalSend<TPacketSend>(Action<TPacketSend> fillPacket, CancellationToken cancel = default)
             where TPacketSend : IPacketV2<IPayload>, new()
         {
-            var packet = InternalGeneratePacket<TPacketSend>();
+            var packet = new TPacketSend();
             fillPacket(packet);
             Logger.Trace($"{LogSend} send {packet.Name}");
+            packet.Sequence = Sequence.GetNextSequenceNumber();
+            packet.ComponentId = Identity.ComponentId;
+            packet.SystemId = Identity.SystemId;
             return Connection.Send(packet, cancel);
         }
 
@@ -130,6 +123,9 @@ namespace Asv.Mavlink
 
             filter ??= (_ => true);
             using var subscribe = InternalFilterFirstAsync(filter).Subscribe(_=>tcs.TrySetResult(_));
+            packet.Sequence = Sequence.GetNextSequenceNumber();
+            packet.ComponentId = Identity.ComponentId;
+            packet.SystemId = Identity.SystemId;
             await Connection.Send(packet, linkedCancel.Token).ConfigureAwait(false);
             var result = await tcs.Task.ConfigureAwait(false);
             Logger.Trace($"{LogRecv} ok {packet.Name}<=={p.Name}");
@@ -142,7 +138,7 @@ namespace Asv.Mavlink
             where TPacketSend : IPacketV2<IPayload>, new()
             where TPacketRecv : IPacketV2<IPayload>, new()
         {
-            var packet = InternalGeneratePacket<TPacketSend>();
+            var packet = new TPacketSend();
             fillPacket(packet);
             byte currentAttempt = 0;
             TPacketRecv? result = default;
@@ -151,8 +147,6 @@ namespace Asv.Mavlink
             {
                 if (currentAttempt != 0)
                 {
-                    // we need new packet sequence number for each attempt
-                    packet.Sequence = Sequence.GetNextSequenceNumber();
                     fillOnConfirmation?.Invoke(packet, currentAttempt);
                     Logger.Warn($"{LogSend} replay {currentAttempt} {name}");
                 }

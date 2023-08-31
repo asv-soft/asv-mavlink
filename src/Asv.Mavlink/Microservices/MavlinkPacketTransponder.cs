@@ -35,7 +35,7 @@ namespace Asv.Mavlink
             };
         }
 
-        public void Start(TimeSpan rate)
+        public void Start(TimeSpan dueTime,TimeSpan period)
         {
             if (_packet == null) throw new Exception($"You need call '{nameof(Set)}' method< before call start");
             lock (_sync)
@@ -47,7 +47,7 @@ namespace Asv.Mavlink
                 }
 
                 IsStarted = true;
-                _timerSubscribe = Observable.Timer(TimeSpan.FromMilliseconds(1), rate).Subscribe(OnTick);
+                _timerSubscribe = Observable.Timer(dueTime, period).Subscribe(OnTick);
             }
         }
 
@@ -97,6 +97,11 @@ namespace Asv.Mavlink
             if (_state.Value == PacketTransponderState.Skipped) return;
             _state.OnNext(PacketTransponderState.Skipped);
             _logger.Warn($"{new TPacket().Name} skipped sending: previous command has not yet been executed");
+        }
+
+        public void Start(DateTimeOffset dueTime, TimeSpan period)
+        {
+            throw new NotImplementedException();
         }
 
         public bool IsStarted { get; private set; }

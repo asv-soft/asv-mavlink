@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -26,4 +27,6 @@ public interface IAsvSdrServerEx
     StopRecordDelegate StopRecord { set; }
     CurrentRecordSetTagDelegate CurrentRecordSetTag { set; }
     SystemControlActionDelegate SystemControlAction { set; }
+
+    Task<bool> SendSignal(ulong unixTime, string name, ReadOnlyMemory<double> signal, AsvSdrSignalFormat format, CancellationToken cancel = default);
 }

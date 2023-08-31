@@ -41,7 +41,9 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         OnDeleteRecord = InternalFilter<AsvSdrRecordDeleteResponsePacket>().Select(_ => (new Guid(_.Payload.RecordGuid),_.Payload))
             .Publish().RefCount();
         
-        OnRecordData = InternalFilteredVehiclePackets.Where(_=>dataPacketsHashSet.Contains(_.MessageId));
+        OnRecordData = InternalFilteredVehiclePackets.Where(x=>dataPacketsHashSet.Contains(x.MessageId));
+        
+        OnSignal = InternalFilter<AsvSdrSignalRawPacket>().Select(x=>x.Payload).Publish().RefCount();
     }
 
     public IRxValue<AsvSdrOutStatusPayload> Status => _status;
@@ -125,4 +127,5 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     }
 
     public IObservable<IPacketV2<IPayload>> OnRecordData { get; }
+    public IObservable<AsvSdrSignalRawPayload> OnSignal { get; }
 }
