@@ -143,6 +143,20 @@
         <description>Request system shutdown [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       </entry>
     </enum>
+
+
+    <enum name="ASV_SDR_SIGNAL_FORMAT">
+      <description>SDR signal transmition data type</description>
+      <entry name="ASV_SDR_SIGNAL_FORMAT_RANGE_FLOAT_8BIT">
+        <description>Write a value as a fraction between a given minimum and maximum. Uses 8 bits so we have '256' steps between min and max.</description>
+      </entry>
+      <entry name="ASV_SDR_SIGNAL_FORMAT_RANGE_FLOAT_16BIT">
+        <description>Write a value as a fraction between a given minimum and maximum. Uses 16 bits so we have '65535' steps between min and max.</description>
+      </entry>
+      <entry name="ASV_SDR_SIGNAL_FORMAT_FLOAT">
+        <description>Write a value as a float. Uses 32 bits.</description>
+      </entry>
+    </enum>
   </enums>
   <messages>
     <message id="13100" name="ASV_SDR_OUT_STATUS">
@@ -153,9 +167,7 @@
       <field type="uint8_t[16]" name="current_record_guid">Record GUID. Also by this field we can understand if the data is currently being recorded (GUID!=0x00) or not (GUID==0x00).</field>
       <field type="uint8_t" name="current_record_mode" enum="ASV_SDR_CUSTOM_MODE">Current record mode (record data type).</field>
       <field type="char[28]" name="current_record_name">Record name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string. If the data is currently not being recorded, than return null; </field>
-      
     </message>
-    
     <!-- ASV_SDR_RECORD_* 13101-13110 -->
     <message id="13101" name="ASV_SDR_RECORD_REQUEST">
       <description>Request list of ASV_SDR_RECORD from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
@@ -212,7 +224,6 @@
       <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
       <field type="uint16_t" name="items_count">Number of items ASV_SDR_RECORD_TAG for transmition after this request with success result code (depended from request).</field>
     </message>
-    
     <message id="13112" name="ASV_SDR_RECORD_TAG">
       <description>Request to read info with either tag_index and record_index from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint8_t[16]" name="record_guid">Record GUID.</field>
@@ -236,7 +247,6 @@
       <field type="uint8_t[16]" name="record_guid">Record GUID.</field>
       <field type="uint8_t[16]" name="tag_guid">Tag GUID.</field>
     </message>
-    
     <!-- ASV_SDR_RECORD_DATA_* 13120-13130-->
     <message id="13120" name="ASV_SDR_RECORD_DATA_REQUEST">
       <description>Request list of ASV_SDR_RECORD_DATA_* items from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
@@ -255,7 +265,20 @@
       <field type="uint32_t" name="data_type" enum="ASV_SDR_CUSTOM_MODE">Record data type(it is also possible to know the type of data inside the record by cast enum to int).</field>
       <field type="uint32_t" name="items_count">Number of items ASV_SDR_RECORD_DATA_* for transmition after this request with success result code (depended from request).</field>
     </message>
-
+    <!-- ASV_SDR_SIGNAL_* 13130-13134-->
+    <message id="13130" name="ASV_SDR_SIGNAL_RAW">
+      <description>Raw signal data for visualization.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <field type="char[8]" name="signal_name">Signal name, terminated by NULL if the length is less than 8 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 8+1 bytes storage if the ID is stored as string</field>
+      <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time) for current set of measures.</field>
+      <field type="uint8_t" name="format" enum="ASV_SDR_SIGNAL_FORMAT">Format of one measure.</field>
+      <field type="uint16_t" name="start">Start index of measure set.</field>
+      <field type="uint8_t" name="count">Measures count in this packet.</field>
+      <field type="uint16_t" name="total">Total points in set.</field>
+      <field type="float" name="min">Min value of set.</field>
+      <field type="float" name="max">Max value of set.</field>
+      <field type="uint8_t[200]" name="data">Data set of points.</field>
+    </message>
+    
     <!-- ASV_SDR_RECORD_DATA_* 13135-13198 for 64 types of data in future-->
     <message id="13135" name="ASV_SDR_RECORD_DATA_LLZ">
       <description>LLZ reciever record data.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>

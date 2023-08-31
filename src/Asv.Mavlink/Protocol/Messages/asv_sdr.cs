@@ -47,6 +47,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             src.Register(()=>new AsvSdrRecordTagDeleteResponsePacket());
             src.Register(()=>new AsvSdrRecordDataRequestPacket());
             src.Register(()=>new AsvSdrRecordDataResponsePacket());
+            src.Register(()=>new AsvSdrSignalRawPacket());
             src.Register(()=>new AsvSdrRecordDataLlzPacket());
             src.Register(()=>new AsvSdrRecordDataGpPacket());
             src.Register(()=>new AsvSdrRecordDataVorPacket());
@@ -249,6 +250,29 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// ASV_SDR_SYSTEM_CONTROL_ACTION_SHUTDOWN
         /// </summary>
         AsvSdrSystemControlActionShutdown = 1,
+    }
+
+    /// <summary>
+    /// SDR signal transmition data type
+    ///  ASV_SDR_SIGNAL_FORMAT
+    /// </summary>
+    public enum AsvSdrSignalFormat:uint
+    {
+        /// <summary>
+        /// Write a value as a fraction between a given minimum and maximum. Uses 8 bits so we have '256' steps between min and max.
+        /// ASV_SDR_SIGNAL_FORMAT_RANGE_FLOAT_8BIT
+        /// </summary>
+        AsvSdrSignalFormatRangeFloat8bit = 0,
+        /// <summary>
+        /// Write a value as a fraction between a given minimum and maximum. Uses 16 bits so we have '65535' steps between min and max.
+        /// ASV_SDR_SIGNAL_FORMAT_RANGE_FLOAT_16BIT
+        /// </summary>
+        AsvSdrSignalFormatRangeFloat16bit = 1,
+        /// <summary>
+        /// Write a value as a float. Uses 32 bits.
+        /// ASV_SDR_SIGNAL_FORMAT_FLOAT
+        /// </summary>
+        AsvSdrSignalFormatFloat = 2,
     }
 
 
@@ -1560,6 +1584,154 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public byte[] RecordGuid { get; set; } = new byte[16];
         public byte GetRecordGuidMaxItemsCount() => 16;
+    }
+    /// <summary>
+    /// Raw signal data for visualization.[!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_SDR_SIGNAL_RAW
+    /// </summary>
+    public class AsvSdrSignalRawPacket: PacketV2<AsvSdrSignalRawPayload>
+    {
+	    public const int PacketMessageId = 13130;
+        public override int MessageId => PacketMessageId;
+        public override byte GetCrcEtra() => 27;
+        public override bool WrapToV2Extension => true;
+
+        public override AsvSdrSignalRawPayload Payload { get; } = new AsvSdrSignalRawPayload();
+
+        public override string Name => "ASV_SDR_SIGNAL_RAW";
+    }
+
+    /// <summary>
+    ///  ASV_SDR_SIGNAL_RAW
+    /// </summary>
+    public class AsvSdrSignalRawPayload : IPayload
+    {
+        public byte GetMaxByteSize() => 230; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 230; // of byte sized of fields (exclude extended)
+        public int GetByteSize()
+        {
+            var sum = 0;
+            sum+=8; //TimeUnixUsec
+            sum+=4; //Min
+            sum+=4; //Max
+            sum+=2; //Start
+            sum+=2; //Total
+            sum+=SignalName.Length; //SignalName
+            sum+= 1; // Format
+            sum+=1; //Count
+            sum+=Data.Length; //Data
+            return (byte)sum;
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            var arraySize = 0;
+            var payloadSize = buffer.Length;
+            TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
+            Min = BinSerialize.ReadFloat(ref buffer);
+            Max = BinSerialize.ReadFloat(ref buffer);
+            Start = BinSerialize.ReadUShort(ref buffer);
+            Total = BinSerialize.ReadUShort(ref buffer);
+            arraySize = 8;
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = SignalName)
+                {
+                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, SignalName.Length);
+                }
+            }
+            buffer = buffer.Slice(arraySize);
+           
+            Format = (AsvSdrSignalFormat)BinSerialize.ReadByte(ref buffer);
+            Count = (byte)BinSerialize.ReadByte(ref buffer);
+            arraySize = /*ArrayLength*/200 - Math.Max(0,((/*PayloadByteSize*/230 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            Data = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
+            {
+                Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
+            BinSerialize.WriteFloat(ref buffer,Min);
+            BinSerialize.WriteFloat(ref buffer,Max);
+            BinSerialize.WriteUShort(ref buffer,Start);
+            BinSerialize.WriteUShort(ref buffer,Total);
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = SignalName)
+                {
+                    Encoding.ASCII.GetBytes(charPointer, SignalName.Length, bytePointer, SignalName.Length);
+                }
+            }
+            buffer = buffer.Slice(SignalName.Length);
+            
+            BinSerialize.WriteByte(ref buffer,(byte)Format);
+            BinSerialize.WriteByte(ref buffer,(byte)Count);
+            for(var i=0;i<Data.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Data[i]);
+            }
+            /* PayloadByteSize = 230 */;
+        }
+        
+        
+
+
+
+        /// <summary>
+        /// Timestamp (UNIX epoch time) for current set of measures.
+        /// OriginName: time_unix_usec, Units: us, IsExtended: false
+        /// </summary>
+        public ulong TimeUnixUsec { get; set; }
+        /// <summary>
+        /// Min value of set.
+        /// OriginName: min, Units: , IsExtended: false
+        /// </summary>
+        public float Min { get; set; }
+        /// <summary>
+        /// Max value of set.
+        /// OriginName: max, Units: , IsExtended: false
+        /// </summary>
+        public float Max { get; set; }
+        /// <summary>
+        /// Start index of measure set.
+        /// OriginName: start, Units: , IsExtended: false
+        /// </summary>
+        public ushort Start { get; set; }
+        /// <summary>
+        /// Total points in set.
+        /// OriginName: total, Units: , IsExtended: false
+        /// </summary>
+        public ushort Total { get; set; }
+        /// <summary>
+        /// Signal name, terminated by NULL if the length is less than 8 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 8+1 bytes storage if the ID is stored as string
+        /// OriginName: signal_name, Units: , IsExtended: false
+        /// </summary>
+        public char[] SignalName { get; } = new char[8];
+        /// <summary>
+        /// Format of one measure.
+        /// OriginName: format, Units: , IsExtended: false
+        /// </summary>
+        public AsvSdrSignalFormat Format { get; set; }
+        /// <summary>
+        /// Measures count in this packet.
+        /// OriginName: count, Units: , IsExtended: false
+        /// </summary>
+        public byte Count { get; set; }
+        /// <summary>
+        /// Data set of points.
+        /// OriginName: data, Units: , IsExtended: false
+        /// </summary>
+        public byte[] Data { get; set; } = new byte[200];
+        public byte GetDataMaxItemsCount() => 200;
     }
     /// <summary>
     /// LLZ reciever record data.[!WRAP_TO_V2_EXTENSION_PACKET!]
