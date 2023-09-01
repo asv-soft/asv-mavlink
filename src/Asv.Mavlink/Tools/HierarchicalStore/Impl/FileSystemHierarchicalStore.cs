@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using Asv.Common;
-using Asv.IO;
 using NLog;
 
 namespace Asv.Mavlink;
@@ -183,7 +182,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         }
     }
 
-    public bool ExistEntry(TKey id)
+    public bool EntryExists(TKey id)
     {
         lock (_sync)
         {
@@ -212,6 +211,11 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         lock (_sync)    
         {
             var rootFolder = _rootFolder;
+            if (!_entries.ContainsKey(parentId) && !_format.KeyComparer.Equals(parentId, RootFolderId))
+            {
+                Logger.Error($"Folder with id {parentId} does not exist");
+                throw new HierarchicalStoreException(name);
+            }
             if (_entries.TryGetValue(parentId, out var parent))
             {
                 rootFolder = parent.FullPath;
@@ -274,7 +278,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         }
     }
 
-    public bool ExistFolder(TKey id)
+    public bool FolderExists(TKey id)
     {
         lock (_sync)
         {
@@ -404,7 +408,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         }
     }
 
-    public bool ExistFile(TKey id)
+    public bool FileExists(TKey id)
     {
         lock (_sync)
         {
@@ -493,7 +497,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         }
     }
 
-    public ICachedFile<TKey, TFile> Open(TKey id)
+    public ICachedFile<TKey, TFile> OpenFile(TKey id)
     {
         lock (_sync)
         {
@@ -513,7 +517,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         }
     }
 
-    public ICachedFile<TKey, TFile> Create(TKey id, string name, TKey parentId)
+    public ICachedFile<TKey, TFile> CreateFile(TKey id, string name, TKey parentId)
     {
         lock (_sync)
         {
@@ -566,7 +570,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     private bool TryImmediatelyRemoveFromCache(TKey id)
     {
         if (_fileCache.Count == 0) return true;
-        var item = _fileCache.FirstOrDefault(file => file.RefCount == 0 && file.Id.Equals(id));
+        var item = _fileCache.FirstOrDefault(file => file.Id.Equals(id));
         if (item == null) return true;
             
         if (item.RefCount != 0) return false;
