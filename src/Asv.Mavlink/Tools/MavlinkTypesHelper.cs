@@ -101,4 +101,23 @@ public static class MavlinkTypesHelper
         }
         return sb.ToString();
     }
+
+    public static double LatLonFromInt32E7ToDegDouble(int value)
+    {
+        return value / 10000000D;
+    }
+    
+    public static int LatLonDegDoubleToFromInt32E7To(double value)
+    {
+        return (int)Math.Round(value * 10000000D,0);
+    }
+
+    public static double AltFromMmToDoubleMeter(int altitudeInMm)
+    {
+        return altitudeInMm / 1000D;
+    }
+    public static int AltFromDoubleMeterToInt32Mm(double altitudeInMm)
+    {
+        return (int)Math.Round(altitudeInMm * 1000D);
+    }
 }

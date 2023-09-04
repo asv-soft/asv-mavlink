@@ -33,9 +33,9 @@ public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
         commands[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunFixedMode] = async (id,args, cancel) =>
         {
             if (StartFixedMode == null) return new CommandResult(MavResult.MavResultUnsupported);
-            var lat = BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param1),0) / 10000000D;
-            var lon = BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param2),0) / 10000000D;
-            var alt = BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param3),0) / 1000D;
+            var lat = MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param1),0));
+            var lon = MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param2),0));
+            var alt = MavlinkTypesHelper.AltFromMmToDoubleMeter(BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param3),0));
             var result = await StartFixedMode(new GeoPoint(lat,lon,alt),0.1f, cancel).ConfigureAwait(false);
             return new CommandResult(result);
         };
@@ -53,9 +53,9 @@ public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
         Position = new RxValue<GeoPoint>().DisposeItWith(Disposable);
         Position.Subscribe(_ => server.Set(status =>
         {
-            status.Lat = (int)(_.Latitude * 10000000D);
-            status.Lng = (int)(_.Longitude * 10000000D);
-            status.Alt = (int)(_.Altitude * 1000D);
+            status.Lat = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(_.Latitude);
+            status.Lng = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(_.Longitude);
+            status.Alt = MavlinkTypesHelper.AltFromDoubleMeterToInt32Mm(_.Altitude);
         })).DisposeItWith(Disposable);
 
         AccuracyMeter = new RxValue<double>().DisposeItWith(Disposable);

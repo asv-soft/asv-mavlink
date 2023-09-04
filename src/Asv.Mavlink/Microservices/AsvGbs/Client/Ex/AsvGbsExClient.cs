@@ -64,7 +64,7 @@ public class AsvGbsExClient: DisposableOnceWithCancel, IAsvGbsExClient
 
     private static GeoPoint ConvertLocation(AsvGbsOutStatusPayload payload)
     {
-        return new GeoPoint(payload.Lat / 10000000D, payload.Lng / 10000000D, payload.Alt / 1000D);
+        return new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(payload.Lat), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(payload.Lng), MavlinkTypesHelper.AltFromMmToDoubleMeter(payload.Alt));
     }
 
     public IAsvGbsClient Base { get; }
