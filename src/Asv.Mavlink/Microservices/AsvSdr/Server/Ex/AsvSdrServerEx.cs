@@ -1,7 +1,10 @@
 using System;
+using System.Globalization;
 using System.Reactive.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Asv.Common;
+using Asv.IO;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
@@ -10,6 +13,8 @@ namespace Asv.Mavlink;
 
 public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
 {
+    private double _signalSendingFlag;
+
     public AsvSdrServerEx(IAsvSdrServer server,IHeartbeatServer heartbeat, ICommandServerEx<CommandLongPacket> commands)
     {
         if (heartbeat == null) throw new ArgumentNullException(nameof(heartbeat));
@@ -106,6 +111,207 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
     public StopRecordDelegate StopRecord { get; set; }
     public CurrentRecordSetTagDelegate CurrentRecordSetTag { get; set; }
     public SystemControlActionDelegate SystemControlAction { get; set; }
+   
+
+    public async Task<bool> SendSignal(ulong unixTime, string name, ReadOnlyMemory<double> signal,
+        AsvSdrSignalFormat format, CancellationToken cancel = default)
+    {
+        if (Interlocked.CompareExchange(ref _signalSendingFlag, 1, 0) != 0) return false;
+        try
+        {
+            ushort index = 0;
+            while (signal.IsEmpty == false)
+            {
+                switch (format)
+                {
+                    case AsvSdrSignalFormat.AsvSdrSignalFormatRangeFloat8bit:
+                    {
+                        await Base.SendSignal(x =>
+                        {
+                            var size = sizeof(byte);
+
+                            
+                            // ReSharper disable once UselessBinaryOperation
+                            var maxSendPerPacket = x.Payload.Data.Length / size;
+                            var count = (byte)(signal.Length - index);
+                            if (count > maxSendPerPacket)
+                            {
+                                count = (byte)maxSendPerPacket;
+                            }
+
+                            x.Payload.Start = index;
+                            x.Payload.Count = count;
+                            x.Payload.Format = format;
+                            x.Payload.Total = (ushort)signal.Length;
+                            MavlinkTypesHelper.SetString(x.Payload.SignalName, name);
+                            x.Payload.TimeUnixUsec = unixTime;
+                            double min = float.MinValue;
+                            double max = float.MaxValue;
+                            for (var i = 0; i < count; i++)
+                            {
+                                var val = signal.Span[index + i];
+                                if (val < min)
+                                {
+                                    min = val;
+                                }
+
+                                if (val > max)
+                                {
+                                    max = val;
+                                }
+                            }
+
+                            x.Payload.Min = (float)min;
+                            x.Payload.Max = (float)max;
+                            WriteRange8(signal, x, count, min, max, index);
+
+                            signal = signal.Slice(count);
+                            index += count;
+                        }, cancel).ConfigureAwait(false);
+                    }
+                        break;
+                    case AsvSdrSignalFormat.AsvSdrSignalFormatRangeFloat16bit:
+
+                      {
+                        await Base.SendSignal(x =>
+                        {
+                            var size = sizeof(ushort);
+
+                           
+                            // ReSharper disable once UselessBinaryOperation
+                            var maxSendPerPacket = x.Payload.Data.Length / size;
+                            var count = (byte)(signal.Length - index);
+                            if (count > maxSendPerPacket)
+                            {
+                                count = (byte)maxSendPerPacket;
+                            }
+
+                            x.Payload.Start = index;
+                            x.Payload.Count = count;
+                            x.Payload.Format = format;
+                            x.Payload.Total = (ushort)signal.Length;
+                            MavlinkTypesHelper.SetString(x.Payload.SignalName, name);
+                            x.Payload.TimeUnixUsec = unixTime;
+                            double min = float.MinValue;
+                            double max = float.MaxValue;
+                            for (var i = 0; i < count; i++)
+                            {
+                                var val = signal.Span[index + i];
+                                if (val < min)
+                                {
+                                    min = val;
+                                }
+
+                                if (val > max)
+                                {
+                                    max = val;
+                                }
+                            }
+
+                            x.Payload.Min = (float)min;
+                            x.Payload.Max = (float)max;
+                            WriteRange16(signal, x, count, min, max, index);
+                            signal = signal.Slice(count);
+                            index += count;
+                        }, cancel).ConfigureAwait(false);
+                    }
+                        break;
+                    case AsvSdrSignalFormat.AsvSdrSignalFormatFloat:
+                        
+                      {
+                        await Base.SendSignal(x =>
+                        {
+                            var size = sizeof(float);
+
+                            
+                            // ReSharper disable once UselessBinaryOperation
+                            var maxSendPerPacket = x.Payload.Data.Length / size;
+                            var count = (byte)(signal.Length - index);
+                            if (count > maxSendPerPacket)
+                            {
+                                count = (byte)maxSendPerPacket;
+                            }
+
+                            x.Payload.Start = index;
+                            x.Payload.Count = count;
+                            x.Payload.Format = format;
+                            x.Payload.Total = (ushort)signal.Length;
+                            MavlinkTypesHelper.SetString(x.Payload.SignalName, name);
+                            x.Payload.TimeUnixUsec = unixTime;
+                            double min = float.MinValue;
+                            double max = float.MaxValue;
+                            for (var i = 0; i < count; i++)
+                            {
+                                var val = signal.Span[index + i];
+                                if (val < min)
+                                {
+                                    min = val;
+                                }
+
+                                if (val > max)
+                                {
+                                    max = val;
+                                }
+                            }
+
+                            x.Payload.Min = (float)min;
+                            x.Payload.Max = (float)max;
+                            
+                            WriteFloat(signal, x, count, index);
+
+                            signal = signal.Slice(count);
+                            index += count;
+                        }, cancel).ConfigureAwait(false);
+                    }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(format), format, null);
+                }
+            }
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _signalSendingFlag, 0);
+        }
+
+    }
+
+    private static void WriteRange8(ReadOnlyMemory<double> signal, AsvSdrSignalRawPacket x, byte count, double min, double max,
+        ushort index)
+    {
+        var span = new Span<byte>(x.Payload.Data);
+        for (var i = 0; i < count; i++)
+        {
+            BinSerialize.Write8BitRange(ref span, (float)min, (float)max, (float)signal.Span[index + i]);
+        }
+    }
+
+    private static void WriteRange16(ReadOnlyMemory<double> signal, AsvSdrSignalRawPacket x, byte count, double min, double max,
+        ushort index)
+    {
+        var span = new Span<byte>(x.Payload.Data);
+        for (var i = 0; i < count; i++)
+        {
+            BinSerialize.Write16BitRange(ref span, (float)min, (float)max, (float)signal.Span[index + i]);
+        }
+    }
+
+    private static void WriteFloat(ReadOnlyMemory<double> signal, AsvSdrSignalRawPacket x, byte count, ushort index)
+    {
+        var span = new Span<byte>(x.Payload.Data);
+        for (var i = 0; i < count; i++)
+        {
+            BinSerialize.WriteFloat(ref span, (float)signal.Span[index + i]);
+        }
+    }
+
     public IAsvSdrServer Base { get; }
     public IRxEditableValue<AsvSdrCustomMode> CustomMode { get; }
 }

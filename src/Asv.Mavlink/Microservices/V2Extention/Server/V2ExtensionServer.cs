@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,19 +8,22 @@ using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink
 {
-    public class V2ExtensionServer : IV2ExtensionServer
+    public class V2ExtensionServer : MavlinkMicroserviceServer, IV2ExtensionServer
     {
         private readonly IMavlinkV2Connection _connection;
         private readonly IPacketSequenceCalculator _seq;
         private readonly MavlinkServerIdentity _identity;
-        private readonly RxValue<V2ExtensionPacket> _onData = new RxValue<V2ExtensionPacket>();
-        private readonly CancellationTokenSource _disposeCancel = new CancellationTokenSource();
+        private readonly RxValue<V2ExtensionPacket> _onData = new();
+        private readonly CancellationTokenSource _disposeCancel = new();
 
-        public V2ExtensionServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq, MavlinkServerIdentity identity)
+        public V2ExtensionServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
+            MavlinkServerIdentity identity, IScheduler rxScheduler)
+        :base("V2EXT",connection,identity,seq,rxScheduler)
         {
             _connection = connection;
             _seq = seq;
             _identity = identity;
+            _onData.DisposeItWith(Disposable);
             connection
                 .Where(_ => _.MessageId == V2ExtensionPacket.PacketMessageId)
                 .Cast<V2ExtensionPacket>().Where(_ =>
@@ -28,33 +32,18 @@ namespace Asv.Mavlink
                 .Subscribe(_onData,_disposeCancel.Token);
         }
 
-        public void Dispose()
-        {
-            _disposeCancel.Dispose();
-        }
-
         public IRxValue<V2ExtensionPacket> OnData => _onData;
 
-        public async Task SendData(byte targetSystemId,byte targetComponentId,byte targetNetworkId,ushort messageType, byte[] data, CancellationToken cancel)
+        public Task SendData(byte targetSystemId,byte targetComponentId,byte targetNetworkId,ushort messageType, byte[] data, CancellationToken cancel)
         {
-            using var linked = CancellationTokenSource.CreateLinkedTokenSource(_disposeCancel.Token, cancel);
-            await _connection.Send(new V2ExtensionPacket
+            return InternalSend<V2ExtensionPacket>(packet =>
             {
-                ComponentId = _identity.ComponentId,
-                SystemId = _identity.SystemId,
-                CompatFlags = 0,
-                IncompatFlags = 0,
-                Sequence = _seq.GetNextSequenceNumber(),
-                Payload =
-                {
-                    MessageType = messageType,
-                    Payload = data,
-                    TargetComponent = targetComponentId,
-                    TargetSystem = targetSystemId,
-                    TargetNetwork = targetNetworkId,
-                }
-            }, linked.Token).ConfigureAwait(false);
-
+                packet.Payload.MessageType = messageType;
+                packet.Payload.Payload = data;
+                packet.Payload.TargetComponent = targetComponentId;
+                packet.Payload.TargetSystem = targetSystemId;
+                packet.Payload.TargetNetwork = targetNetworkId;
+            }, cancel);
         }
     }
 

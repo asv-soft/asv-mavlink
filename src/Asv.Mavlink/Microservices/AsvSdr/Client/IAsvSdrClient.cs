@@ -21,6 +21,7 @@ public interface IAsvSdrClient
     Task<AsvSdrRecordTagDeleteResponsePayload> DeleteRecordTag(TagId tag, CancellationToken cancel = default);
     Task<AsvSdrRecordDataResponsePayload> GetRecordDataList(Guid recordId, uint skip, uint count, CancellationToken cancel = default);
     IObservable<IPacketV2<IPayload>> OnRecordData { get; }
+    IObservable<AsvSdrSignalRawPayload> OnSignal { get; }
 }
 
 public static class AsvSdrClientExtensions

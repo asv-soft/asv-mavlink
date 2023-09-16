@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -33,7 +34,7 @@ namespace Asv.Mavlink
         private int _prev;
         private long _totalRateCounter;
         private readonly TimeSpan _heartBeatTimeoutMs;
-        private SortedSet<byte> _lastPacketList = new();
+        private readonly List<byte> _lastPacketList = new();
         private readonly object _lastPacketListLock = new();
 
         public HeartbeatClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
@@ -98,9 +99,14 @@ namespace Asv.Mavlink
             }
             if (count == 0) return;
             
-            var seq = last - first;
-            if (seq < 0) seq = last + byte.MaxValue - first + 1;
-            _linkQuality.OnNext(Math.Min(1, Math.Round(((double)count) / seq,2)));
+            var seq = last - first + 1;
+            if (seq <= 0)
+            {
+                seq = last + byte.MaxValue - first + 2;
+            }
+            Debug.Assert(seq != 0);
+            _valueBuffer.PushFront(Math.Min(1, Math.Round(((double)count) / seq,2)));
+            _linkQuality.OnNext(_valueBuffer.Average());
         }
 
         public ushort FullId { get; }

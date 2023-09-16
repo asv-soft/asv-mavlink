@@ -76,45 +76,43 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
         return InternalFilter(targetSystemGetter, targetComponentGetter).FirstAsync(filter);
     }
 
-    private TPacket InternalGeneratePacket<TPacket>()
+    /*protected TPacket InternalGeneratePacket<TPacket>()
         where TPacket : IPacketV2<IPayload>, new()
     {
         return new TPacket
         {
             ComponentId = Identity.ComponentId,
             SystemId = Identity.SystemId,
-            Sequence = PacketSequence.GetNextSequenceNumber(),
         };
     }
     
-    protected IPacketV2<IPayload> InternalGeneratePacket(int messageId, bool incrementSequence = true)
+    protected IPacketV2<IPayload> InternalGeneratePacket(int messageId)
     {
         var pkt = Connection.CreatePacketByMessageId(messageId);
         pkt.ComponentId = Identity.ComponentId;
         pkt.SystemId = Identity.SystemId;
-        if (incrementSequence)
-        {
-            pkt.Sequence = PacketSequence.GetNextSequenceNumber();
-        }
         return pkt;
-    }
+    }*/
 
     
     protected Task InternalSend(int messageId, Action<IPacketV2<IPayload>> fillPacket, CancellationToken cancel = default)
     {
         var pkt = Connection.CreatePacketByMessageId(messageId);
+        fillPacket(pkt);
         pkt.ComponentId = Identity.ComponentId;
         pkt.SystemId = Identity.SystemId;
         pkt.Sequence = PacketSequence.GetNextSequenceNumber();
-        fillPacket(pkt);
         return Connection.Send(pkt, cancel);
     }
     
     protected Task InternalSend<TPacketSend>(Action<TPacketSend> fillPacket, CancellationToken cancel = default)
         where TPacketSend : IPacketV2<IPayload>, new()
     {
-        var packet = InternalGeneratePacket<TPacketSend>();
+        var packet = new TPacketSend();
         fillPacket(packet);
+        packet.ComponentId = Identity.ComponentId;
+        packet.SystemId = Identity.SystemId;
+        packet.Sequence = PacketSequence.GetNextSequenceNumber();
         return Connection.Send(packet, cancel);
     }
 
@@ -135,6 +133,9 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
 
         filter ??= (_ => true);
         using var subscribe = InternalFilterFirstAsync(targetSystemGetter,targetComponentGetter,filter).Subscribe(_ => tcs.TrySetResult(_));
+        packet.ComponentId = Identity.ComponentId;
+        packet.SystemId = Identity.SystemId;
+        packet.Sequence = PacketSequence.GetNextSequenceNumber();
         await Connection.Send(packet, linkedCancel.Token).ConfigureAwait(false);
         var result = await tcs.Task.ConfigureAwait(false);
         Logger.Trace($"{LogRecv} ok {packet.Name}<=={p.Name}");
@@ -152,7 +153,7 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
         where TPacketSend : IPacketV2<IPayload>, new()
         where TPacketRecv : IPacketV2<IPayload>, new()
     {
-        var packet = InternalGeneratePacket<TPacketSend>();
+        var packet = new TPacketSend();
         fillPacket(packet);
         byte currentAttempt = 0;
         TPacketRecv result = default;

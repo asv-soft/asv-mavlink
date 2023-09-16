@@ -13,7 +13,7 @@
     <PackageIcon>asv-mavlink-128.png</PackageIcon>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Configurations>Debug;Release;</Configurations>
+    <Configurations>Debug;Release</Configurations>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
@@ -42,17 +42,13 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\Release\Asv.Mavlink.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)' == 'ReleasePlugins' ">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Release\Asv.Mavlink.xml</DocumentationFile>
     <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Asv.Cfg" Version="1.11.0" />
-    <PackageReference Include="Asv.Common" Version="1.11.0" />
-    <PackageReference Include="Asv.IO" Version="1.11.0" />
+    <PackageReference Include="Asv.Cfg" Version="1.12.0" />
+    <PackageReference Include="Asv.Common" Version="1.12.0" />
+    <PackageReference Include="Asv.IO" Version="1.12.0" />
     <PackageReference Include="DynamicData" Version="7.13.5" />
     <PackageReference Include="Geodesy" Version="4.1.0" />
     <PackageReference Include="NLog" Version="5.1.2" />

@@ -14,7 +14,7 @@ namespace Asv.Mavlink
         where TPacket : IPacketV2<TPayload>, new()
         where TPayload : IPayload, new()
     {
-        void Start(TimeSpan rate);
+        void Start(DateTimeOffset dueTime,TimeSpan period);
         bool IsStarted { get; }
         IRxValue<PacketTransponderState> State { get; }
         void Stop();

@@ -42,7 +42,7 @@ namespace Asv.Mavlink
 
         public void Start()
         {
-            _transponder.Start(TimeSpan.FromMilliseconds(_config.StatusRateMs));
+            _transponder.Start(TimeSpan.FromMilliseconds(500),TimeSpan.FromMilliseconds(_config.StatusRateMs));
         }
 
         public void Set(Action<AsvSdrOutStatusPayload> changeCallback)
@@ -112,7 +112,12 @@ namespace Asv.Mavlink
         {
             if (mode == AsvSdrCustomMode.AsvSdrCustomModeIdle)
                 throw new ArgumentException("Can't create message for IDLE mode", nameof(mode));
-            return InternalGeneratePacket((int)mode,false);
+            return Connection.CreatePacketByMessageId((int)mode);
+        }
+
+        public Task SendSignal(Action<AsvSdrSignalRawPacket> setValueCallback, CancellationToken cancel = default)
+        {
+            return InternalSend(setValueCallback,cancel);
         }
     }
 }

@@ -55,15 +55,15 @@ public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
         
         _target = new RxValue<GeoPoint?>(null).DisposeItWith(Disposable);
         client.Target.Where(_ => _.CoordinateFrame == MavFrame.MavFrameGlobal)
-            .Select(_ =>(GeoPoint?) new GeoPoint(_.LatInt / 10000000.0, _.LonInt / 10000000.0, _.Alt))
+            .Select(_ =>(GeoPoint?) new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.LatInt)  , MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.LonInt), _.Alt))
             .Subscribe(_target).DisposeItWith(Disposable);
         
         _home = new RxValue<GeoPoint?>(null).DisposeItWith(Disposable);
-        client.Home.Select(_ => (GeoPoint?)new GeoPoint(_.Latitude / 10000000D, _.Longitude / 10000000D, _.Altitude / 1000D))
+        client.Home.Select(_ => (GeoPoint?)new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.Latitude), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.Longitude), MavlinkTypesHelper.AltFromMmToDoubleMeter(_.Altitude)))
             .Subscribe(_home).DisposeItWith(Disposable);
         
         _current = new RxValue<GeoPoint>(GeoPoint.Zero).DisposeItWith(Disposable);
-        client.GlobalPosition.Select(_=>new GeoPoint(_.Lat / 10000000D, _.Lon / 10000000D, _.Alt / 1000D))
+        client.GlobalPosition.Select(_=>new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.Lat), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.Lon), MavlinkTypesHelper.AltFromMmToDoubleMeter(_.Alt)))
             .Subscribe(_current).DisposeItWith(Disposable);
         
         _homeDistance = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
