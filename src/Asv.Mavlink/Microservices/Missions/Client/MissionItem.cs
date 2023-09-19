@@ -9,7 +9,7 @@ namespace Asv.Mavlink
     public class MissionItem : DisposableOnceWithCancel
     {
         internal readonly MissionItemIntPayload Payload;
-        private readonly Subject<Unit> _onChanged = new Subject<Unit>();
+        private readonly Subject<Unit> _onChanged = new();
 
         public MissionItem(MissionItemIntPayload item)
         {

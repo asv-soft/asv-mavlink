@@ -106,8 +106,7 @@ namespace Asv.Mavlink
             }, cancel);
 
         }
-
-      
+        
         public async Task ClearAll(CancellationToken cancel)
         {
             Logger.Info($"{LogSend} Clear all mission items");
@@ -160,7 +159,6 @@ namespace Asv.Mavlink
         {
             if (result == MavMissionResult.MavMissionAccepted) return;
             throw new MavlinkException($"{LogSend} Error to {actionName}:{result:G}");
-
         }
     }
 }
