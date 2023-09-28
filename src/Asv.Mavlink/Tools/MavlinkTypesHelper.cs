@@ -102,22 +102,27 @@ public static class MavlinkTypesHelper
         return sb.ToString();
     }
 
+    public static GeoPoint FromInt32ToGeoPoint(int lat, int lon,float alt)
+    {
+        return new GeoPoint(lat / 1E7, lon / 1E7, alt / 1E3);
+    }
+    
     public static double LatLonFromInt32E7ToDegDouble(int value)
     {
-        return value / 10000000D;
+        return value / 1E7D;
     }
     
     public static int LatLonDegDoubleToFromInt32E7To(double value)
     {
-        return (int)Math.Round(value * 10000000D,0);
+        return (int)Math.Round(value * 1E7D,0);
     }
 
     public static double AltFromMmToDoubleMeter(int altitudeInMm)
     {
-        return altitudeInMm / 1000D;
+        return altitudeInMm / 1E3D;
     }
     public static int AltFromDoubleMeterToInt32Mm(double altitudeInMm)
     {
-        return (int)Math.Round(altitudeInMm * 1000D);
+        return (int)Math.Round(altitudeInMm * 1E3D);
     }
 }

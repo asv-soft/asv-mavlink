@@ -154,6 +154,16 @@ namespace Asv.Mavlink
                 _.Payload.MissionType = missionItem.Payload.MissionType;
             }, cancel);
         }
+        public Task WriteMissionIntItem(Action<MissionItemIntPayload> fillCallback, CancellationToken cancel = default)
+        {
+            Logger.Info($"{LogSend} Write mission item");
+            return InternalSend<MissionItemIntPacket>(_ =>
+            {
+                _.Payload.TargetComponent = Identity.TargetComponentId;
+                _.Payload.TargetSystem = Identity.TargetSystemId;
+                fillCallback(_.Payload);
+            }, cancel);
+        }
 
         private void CheckResult(MavMissionResult result, string actionName)
         {
