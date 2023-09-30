@@ -6,7 +6,7 @@ using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink
 {
-    public interface IMissionClient
+    public interface IMissionClient:IDisposable
     {
         MavlinkClientIdentity Identity { get; }
         IRxValue<ushort> MissionCurrent { get; }
@@ -17,12 +17,9 @@ namespace Asv.Mavlink
         /// <param name="cancel"></param>
         /// <returns></returns>
         Task MissionSetCurrent(ushort missionItemsIndex, CancellationToken cancel = default);
-
         IRxValue<ushort> MissionReached { get; }
-
         IObservable<MissionRequestPayload> OnMissionRequest { get; }
         IObservable<MissionAckPayload> OnMissionAck { get; }
-
         Task<MissionItemIntPayload> MissionRequestItem(ushort index, CancellationToken cancel = default);
         /// <summary>
         /// Initiate mission download from a system by requesting the list of mission items.
@@ -32,7 +29,6 @@ namespace Asv.Mavlink
         /// <returns></returns>
         Task<int> MissionRequestCount(CancellationToken cancel = default);
         Task MissionSetCount(ushort count, CancellationToken cancel = default);
-
         /// <summary>
         /// 
         /// </summary>
@@ -51,6 +47,8 @@ namespace Asv.Mavlink
         Task ClearAll(CancellationToken cancel = default);
 
         Task WriteMissionItem(MissionItem missionItem, CancellationToken cancel = default);
+        
+        Task WriteMissionIntItem(Action<MissionItemIntPayload> fillCallback, CancellationToken cancel = default);
     }
 
     

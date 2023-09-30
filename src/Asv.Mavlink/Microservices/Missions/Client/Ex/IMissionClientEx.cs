@@ -30,7 +30,7 @@ public static class MissionClientExHelper
     {
         var item = vehicle.Create();
         item.Location.OnNext(point);
-        item.Autocontinue.OnNext(true);
+        item.AutoContinue.OnNext(true);
         item.Command.OnNext(MavCmd.MavCmdNavSplineWaypoint);
         item.Current.OnNext(false);
         item.Frame.OnNext(MavFrame.MavFrameGlobalInt);
@@ -45,7 +45,7 @@ public static class MissionClientExHelper
     {
         var item = vehicle.Create();
         item.Location.OnNext(point);
-        item.Autocontinue.OnNext(true);
+        item.AutoContinue.OnNext(true);
         item.Command.OnNext(MavCmd.MavCmdNavWaypoint);
         item.Current.OnNext(false);
         item.Frame.OnNext(MavFrame.MavFrameGlobalInt);
@@ -60,7 +60,7 @@ public static class MissionClientExHelper
     {
         var item = vehicle.Create();
         item.Location.OnNext(point);
-        item.Autocontinue.OnNext(true);
+        item.AutoContinue.OnNext(true);
         item.Command.OnNext(MavCmd.MavCmdDoSetRoiLocation);
         item.Current.OnNext(false);
         item.Frame.OnNext(MavFrame.MavFrameGlobalInt);

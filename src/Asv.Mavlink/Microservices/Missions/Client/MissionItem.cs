@@ -9,54 +9,57 @@ namespace Asv.Mavlink
     public class MissionItem : DisposableOnceWithCancel
     {
         internal readonly MissionItemIntPayload Payload;
-        private readonly Subject<Unit> _onChanged = new Subject<Unit>();
+        private readonly Subject<Unit> _onChanged;
 
         public MissionItem(MissionItemIntPayload item)
         {
-            Payload = item;
-            Location = new RxValue<GeoPoint>(new GeoPoint(item.X / 10_000_000.0, item.Y / 10_000_000.0, item.Z)).DisposeItWith(Disposable);
-            Location.Subscribe(_ =>
+            Payload = item ?? throw new ArgumentNullException(nameof(item));
+            _onChanged = new Subject<Unit>().DisposeItWith(Disposable);
+            Location = new RxValue<GeoPoint>(new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(item.X), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(item.Y), item.Z)).DisposeItWith(Disposable);
+            Location.Subscribe(x =>
             {
-                Payload.X = (int)(_.Latitude * 10_000_000.0);
-                Payload.Y = (int)(_.Longitude * 10_000_000.0);
-                Payload.Z = (float)_.Altitude;
-                _onChanged.OnNext(Unit.Default);
+                Edit(p=>
+                {
+                    p.X = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(x.Latitude);
+                    p.Y = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(x.Longitude);
+                    p.Z = (float)x.Altitude;
+                });
             }).DisposeItWith(Disposable);
 
-            Autocontinue = new RxValue<bool>(item.Autocontinue != 0).DisposeItWith(Disposable);
-            Autocontinue.Subscribe(_ => item.Autocontinue = (byte)(_ ? 1 : 0)).DisposeItWith(Disposable);
+            AutoContinue = new RxValue<bool>(item.Autocontinue != 0).DisposeItWith(Disposable);
+            AutoContinue.Subscribe(b =>Edit(p=>p.Autocontinue = (byte)(b ? 1 : 0))).DisposeItWith(Disposable);
 
             Command = new RxValue<MavCmd>(item.Command).DisposeItWith(Disposable);
-            Command.Subscribe(_ => item.Command = _).DisposeItWith(Disposable);
+            Command.Subscribe(c => Edit(p=>p.Command = c)).DisposeItWith(Disposable);
 
             Current = new RxValue<bool>(item.Current != 0).DisposeItWith(Disposable);
-            Current.Subscribe(_ => item.Current = (byte)(_ ? 1 : 0)).DisposeItWith(Disposable);
+            Current.Subscribe(b => Edit(p=>p.Current = (byte)(b ? 1 : 0))).DisposeItWith(Disposable);
 
             Frame = new RxValue<MavFrame>(item.Frame).DisposeItWith(Disposable);
-            Frame.Subscribe(_ => item.Frame = _).DisposeItWith(Disposable);
+            Frame.Subscribe(f => Edit(p=>p.Frame = f)).DisposeItWith(Disposable);
 
             MissionType = new RxValue<MavMissionType>(item.MissionType).DisposeItWith(Disposable);
-            MissionType.Subscribe(_ => item.MissionType = _).DisposeItWith(Disposable);
+            MissionType.Subscribe(t => Edit(p=>p.MissionType = t)).DisposeItWith(Disposable);
 
             Param1 = new RxValue<float>(item.Param1).DisposeItWith(Disposable);
-            Param1.Subscribe(_ => item.Param1 = _).DisposeItWith(Disposable);
+            Param1.Subscribe(f => Edit(p=>p.Param1 = f)).DisposeItWith(Disposable);
 
             Param2 = new RxValue<float>(item.Param2).DisposeItWith(Disposable);
-            Param2.Subscribe(_ => item.Param2 = _).DisposeItWith(Disposable);
+            Param2.Subscribe(f => Edit(p=>p.Param2 = f)).DisposeItWith(Disposable);
 
             Param3 = new RxValue<float>(item.Param3).DisposeItWith(Disposable);
-            Param3.Subscribe(_ => item.Param3 = _).DisposeItWith(Disposable);
+            Param3.Subscribe(f => Edit(p=>p.Param3 = f)).DisposeItWith(Disposable);
 
             Param4 = new RxValue<float>(item.Param4).DisposeItWith(Disposable);
-            Param4.Subscribe(_ => item.Param4 = _).DisposeItWith(Disposable);
+            Param4.Subscribe(f => Edit(p=>p.Param4 = f)).DisposeItWith(Disposable);
 
-            _onChanged.DisposeItWith(Disposable);
+            
         }
 
         public ushort Index => Payload.Seq;
 
         public IRxEditableValue<GeoPoint> Location { get; }
-        public IRxEditableValue<bool> Autocontinue { get; }
+        public IRxEditableValue<bool> AutoContinue { get; }
         public IRxEditableValue<MavCmd> Command { get; }
         public IRxEditableValue<bool> Current { get; }
         public IRxEditableValue<MavFrame> Frame { get; }
@@ -66,6 +69,13 @@ namespace Asv.Mavlink
         public IRxEditableValue<float> Param3 { get; }
         public IRxEditableValue<float> Param4 { get; }
         public IObservable<Unit> OnChanged => _onChanged;
+
+        public void Edit(Action<MissionItemIntPayload> editCallback)
+        {
+            editCallback(Payload);
+            _onChanged.OnNext(Unit.Default);
+        }
+        
         public object Tag { get; set; }
 
         public override string ToString()

@@ -10,6 +10,10 @@ public class SdrClientDeviceConfig:ClientDeviceConfig
 {
     public CommandProtocolConfig Command { get; set; } = new();
     public AsvSdrClientExConfig SdrEx { get; set; } = new();
+    public MissionClientConfig Missions { get; set; } = new();
+    public MissionClientExConfig MissionsEx { get; set; } = new();
+    public ParameterClientConfig Params { get; set; } = new();
+    public ParamsClientExConfig ParamsEx { get; set; } = new();
 }
 public class SdrClientDevice : ClientDevice, ISdrClientDevice
 {
@@ -17,6 +21,8 @@ public class SdrClientDevice : ClientDevice, ISdrClientDevice
     {
         Command = new CommandClient(connection, identity, seq, config.Command).DisposeItWith(Disposable);
         Sdr = new AsvSdrClientEx(new AsvSdrClient(connection, identity, seq), Heartbeat, Command,config.SdrEx).DisposeItWith(Disposable);
+        Missions = new MissionClientEx(new MissionClient(connection, identity, seq,config.Missions), config.MissionsEx).DisposeItWith(Disposable);
+        Params = new ParamsClientEx(new ParamsClient(connection, identity, seq,config.Params), config.ParamsEx).DisposeItWith(Disposable);
     }
     protected override Task InternalInit()
     {
@@ -30,6 +36,6 @@ public class SdrClientDevice : ClientDevice, ISdrClientDevice
     public override DeviceClass Class => DeviceClass.SdrPayload;
     public IAsvSdrClientEx Sdr { get; }
     public ICommandClient Command { get; }
-
-    
+    public IMissionClientEx Missions { get; }
+    public IParamsClientEx Params { get; }
 }

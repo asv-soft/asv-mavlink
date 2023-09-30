@@ -12,17 +12,27 @@ using NLog;
 
 namespace Asv.Mavlink;
 
+public class MissionClientExConfig
+{
+    public int DeviceUploadTimeoutMs { get; set; } = 3000;
+}
+
 public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
 {
     public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     private readonly IMissionClient _client;
+    private readonly MissionClientExConfig _config;
     private readonly SourceCache<MissionItem, ushort> _missionSource;
     private readonly RxValue<bool> _isMissionSynced;
     private readonly RxValue<double> _allMissionDistance;
-    
-    public MissionClientEx(IMissionClient client)
+    private readonly TimeSpan _deviceUploadTimeout;
+
+    public MissionClientEx(IMissionClient client, MissionClientExConfig config = null)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
+        _config = config ?? new MissionClientExConfig();
+        _client.DisposeItWith(Disposable);
+        _deviceUploadTimeout = TimeSpan.FromMilliseconds(_config.DeviceUploadTimeoutMs);
         _missionSource = new SourceCache<MissionItem, ushort>(_=>_.Index).DisposeItWith(Disposable);
         _isMissionSynced = new RxValue<bool>(false).DisposeItWith(Disposable);
         _allMissionDistance = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
@@ -80,9 +90,20 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
         var tcs = new TaskCompletionSource<Unit>();
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled());
         var current = 0;
+        var lastUpdateTime = DateTime.Now;
+        using var checkTimer = Observable.Timer(_deviceUploadTimeout, _deviceUploadTimeout)
+            .Subscribe(_ =>
+            {
+                if (DateTime.Now - lastUpdateTime > _deviceUploadTimeout)
+                {
+                    Logger.Warn($"Mission upload timeout");
+                    tcs.TrySetException(new Exception($"Mission upload timeout"));
+                }
+            });
         _client.OnMissionRequest.Subscribe(req =>
         {
             Logger.Debug($"UAV request {req.Seq} item");
+            lastUpdateTime = DateTime.Now;
             current++;
             progress?.Invoke((double)(current) / _missionSource.Count);
             var item = _missionSource.Lookup(req.Seq);
@@ -97,6 +118,7 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
 
         _client.OnMissionAck.Subscribe(_ =>
         {
+            lastUpdateTime = DateTime.Now;
             if (_.Type == MavMissionResult.MavMissionAccepted)
             {
                 tcs.TrySetResult(Unit.Default);
