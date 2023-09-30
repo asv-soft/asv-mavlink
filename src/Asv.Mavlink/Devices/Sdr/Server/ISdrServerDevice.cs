@@ -7,4 +7,5 @@ public interface ISdrServerDevice:IServerDevice
     ICommandServerEx<CommandLongPacket> CommandLongEx { get; }
     IParamsServerEx Params { get; }
     IAsvSdrServerEx SdrEx { get; }
+    IMissionServer Missions { get; }
 }

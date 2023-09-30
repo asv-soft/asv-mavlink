@@ -21,7 +21,7 @@
     <!-- Asv SDR specific MAV_CMD_* commands -->
     <enum name="MAV_CMD">
       <entry value="13100" name="MAV_CMD_ASV_SDR_SET_MODE">
-        <description>Start one of ASV_SDR_CUSTOM_MODE</description>
+        <description>Start one of ASV_SDR_CUSTOM_MODE. Can be used in the mission protocol for SDR payloads.</description>
         <param index="1">Mode (uint32_t, see ASV_SDR_CUSTOM_MODE).</param>
         <param index="2">Frequency in Hz, 0-3 bytes of uint_64, ignored for IDLE mode (uint32).</param>
         <param index="3">Frequency in Hz, 4-7 bytes of uint_64, ignored for IDLE mode (uint32).</param>
@@ -31,7 +31,7 @@
         <param index="7">Empty.</param>
       </entry>
       <entry value="13101" name="MAV_CMD_ASV_SDR_START_RECORD">
-        <description>Start recoring data with unique name (max 28 chars)</description>
+        <description>Start recoring data with unique name (max 28 chars). Can be used in the mission protocol for SDR payloads.</description>
         <param index="1">Record unique name: 0-3 chars (char[4]).</param>
         <param index="2">Record unique name: 4-7 chars (char[4]).</param>
         <param index="3">Record unique name: 8-11 chars (char[4]).</param>
@@ -41,7 +41,7 @@
         <param index="7">Record unique name: 24-27 chars (char[4]).</param>
       </entry>
       <entry value="13102" name="MAV_CMD_ASV_SDR_STOP_RECORD">
-        <description>Stop recoring data</description>
+        <description>Stop recoring data. Can be used in the mission protocol for SDR payloads.</description>
         <param index="1">Empty.</param>
         <param index="2">Empty.</param>
         <param index="3">Empty.</param>
@@ -51,7 +51,7 @@
         <param index="7">Empty.</param>
       </entry>
       <entry value="13103" name="MAV_CMD_ASV_SDR_SET_RECORD_TAG">
-        <description>Set custom tag to current record.</description>
+        <description>Set custom tag to current record. Can be used in the mission protocol for SDR payloads.</description>
         <param index="1">ASV_SDR_RECORD_TAG_TYPE (uint32).</param>
         <param index="2">Tag name: 0-3 chars (char[4]).</param>
         <param index="3">Tag name: 4-7 chars (char[4]).</param>
@@ -61,7 +61,7 @@
         <param index="7">Tag value data 4-7 bytes depends on the type of tag.</param>
       </entry>
       <entry value="13104" name="MAV_CMD_ASV_SDR_SYSTEM_CONTROL_ACTION">
-        <description>Send shutdown or reboot command.</description>
+        <description>Send shutdown or reboot command. Can be used in the mission protocol for SDR payloads.</description>
         <param index="1">ASV_SDR_SYSTEM_CONTROL_ACTION (uint32).</param>
         <param index="2">Empty.</param>
         <param index="3">Empty.</param>
@@ -69,6 +69,58 @@
         <param index="5">Empty.</param>
         <param index="6">Empty.</param>
         <param index="7">Empty.</param>
+      </entry>
+      <entry value="13105" name="MAV_CMD_ASV_SDR_WAIT_VEHICLE_WAYPOINT">
+        <description>Waiting for a vehicle mission waypoint point. Can be used in the mission protocol for SDR payloads.</description>
+        <param index="1">Waypoint index (uint32).</param>
+        <param index="2">Empty.</param>
+        <param index="3">Empty.</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
+      <entry value="13106" name="MAV_CMD_ASV_SDR_DELAY">
+        <description>Waiting a certain amount of time. Can be used in the mission protocol for SDR payloads.</description>
+        <param index="1">Delay in ms (uint32).</param>
+        <param index="2">Empty.</param>
+        <param index="3">Empty.</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
+      <entry value="13107" name="MAV_CMD_ASV_SDR_START_MISSION">
+        <description>Starting mission, uploaded to SDR payload. Can't be used in the mission protocol for SDR payloads.</description>
+        <param index="1">Index of the task to start the mission (uint32).</param>
+        <param index="2">Empty.</param>
+        <param index="3">Empty.</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
+      <entry value="13108" name="MAV_CMD_ASV_SDR_STOP_MISSION">
+        <description>Start mission, uploaded to SDR. Can't be used in the mission protocol for SDR payloads.</description>
+        <param index="1">Empty.</param>
+        <param index="2">Empty.</param>
+        <param index="3">Empty.</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
+    </enum>
+    <enum name="ASV_SDR_MISSION_STATE">
+      <description>State of the current mission (unit8_t).</description>
+      <entry value="1" name="ASV_SDR_MISSION_STATE_IDLE">
+        <description>Do nothing</description>
+      </entry>
+      <entry value="2" name="ASV_SDR_MISSION_STATE_PROGRESS">
+        <description>Mission in progress</description>
+      </entry>
+      <entry value="3" name="ASV_SDR_MISSION_STATE_ERROR">
+        <description>Mission failed</description>
       </entry>
     </enum>
     
@@ -108,7 +160,7 @@
 <!--      <entry value="13142" name="ASV_SDR_CUSTOM_MODE_SPECTRUM"/>-->
     </enum>
     <enum name="ASV_SDR_CUSTOM_MODE_FLAG">
-      <description>These flags encode supported mode.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <description>These flags encode supported mode.</description>
       <entry value="1" name="ASV_SDR_CUSTOM_MODE_FLAG_LLZ"/>
       <entry value="2" name="ASV_SDR_CUSTOM_MODE_FLAG_GP"/>
       <entry value="4" name="ASV_SDR_CUSTOM_MODE_FLAG_VOR"/>
@@ -122,15 +174,15 @@
     
     
     <enum name="ASV_SDR_REQUEST_ACK">
-      <description>ACK / NACK / ERROR values as a result of ASV_SDR_*_REQUEST or ASV_SDR_*_DELETE commands.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <description>ACK / NACK / ERROR values as a result of ASV_SDR_*_REQUEST or ASV_SDR_*_DELETE commands.</description>
       <entry name="ASV_SDR_REQUEST_ACK_OK">
-        <description>Request is ok.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>Request is ok.</description>
       </entry>
       <entry name="ASV_SDR_REQUEST_ACK_IN_PROGRESS">
-        <description>Command already in progress.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>Command already in progress.</description>
       </entry>
       <entry name="ASV_SDR_REQUEST_ACK_FAIL">
-        <description>Command error.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <description>Command error.</description>
       </entry>
     </enum>
     
@@ -167,6 +219,8 @@
       <field type="uint8_t[16]" name="current_record_guid">Record GUID. Also by this field we can understand if the data is currently being recorded (GUID!=0x00) or not (GUID==0x00).</field>
       <field type="uint8_t" name="current_record_mode" enum="ASV_SDR_CUSTOM_MODE">Current record mode (record data type).</field>
       <field type="char[28]" name="current_record_name">Record name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string. If the data is currently not being recorded, than return null; </field>
+      <field type="uint8_t" name="mission_state" enum="ASV_SDR_MISSION_STATE">Mission state.</field>
+      <field type="uint16_t" name="current_mission_index">Current mission index.</field>
     </message>
     <!-- ASV_SDR_RECORD_* 13101-13110 -->
     <message id="13101" name="ASV_SDR_RECORD_REQUEST">

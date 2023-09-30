@@ -74,7 +74,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     public enum MavCmd:uint
     {
         /// <summary>
-        /// Start one of ASV_SDR_CUSTOM_MODE
+        /// Start one of ASV_SDR_CUSTOM_MODE. Can be used in the mission protocol for SDR payloads.
         /// Param 1 - Mode (uint32_t, see ASV_SDR_CUSTOM_MODE).
         /// Param 2 - Frequency in Hz, 0-3 bytes of uint_64, ignored for IDLE mode (uint32).
         /// Param 3 - Frequency in Hz, 4-7 bytes of uint_64, ignored for IDLE mode (uint32).
@@ -86,7 +86,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         MavCmdAsvSdrSetMode = 13100,
         /// <summary>
-        /// Start recoring data with unique name (max 28 chars)
+        /// Start recoring data with unique name (max 28 chars). Can be used in the mission protocol for SDR payloads.
         /// Param 1 - Record unique name: 0-3 chars (char[4]).
         /// Param 2 - Record unique name: 4-7 chars (char[4]).
         /// Param 3 - Record unique name: 8-11 chars (char[4]).
@@ -98,7 +98,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         MavCmdAsvSdrStartRecord = 13101,
         /// <summary>
-        /// Stop recoring data
+        /// Stop recoring data. Can be used in the mission protocol for SDR payloads.
         /// Param 1 - Empty.
         /// Param 2 - Empty.
         /// Param 3 - Empty.
@@ -110,7 +110,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         MavCmdAsvSdrStopRecord = 13102,
         /// <summary>
-        /// Set custom tag to current record.
+        /// Set custom tag to current record. Can be used in the mission protocol for SDR payloads.
         /// Param 1 - ASV_SDR_RECORD_TAG_TYPE (uint32).
         /// Param 2 - Tag name: 0-3 chars (char[4]).
         /// Param 3 - Tag name: 4-7 chars (char[4]).
@@ -122,7 +122,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         MavCmdAsvSdrSetRecordTag = 13103,
         /// <summary>
-        /// Send shutdown or reboot command.
+        /// Send shutdown or reboot command. Can be used in the mission protocol for SDR payloads.
         /// Param 1 - ASV_SDR_SYSTEM_CONTROL_ACTION (uint32).
         /// Param 2 - Empty.
         /// Param 3 - Empty.
@@ -133,6 +133,77 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// MAV_CMD_ASV_SDR_SYSTEM_CONTROL_ACTION
         /// </summary>
         MavCmdAsvSdrSystemControlAction = 13104,
+        /// <summary>
+        /// Waiting for a vehicle mission waypoint point. Can be used in the mission protocol for SDR payloads.
+        /// Param 1 - Waypoint index (uint32).
+        /// Param 2 - Empty.
+        /// Param 3 - Empty.
+        /// Param 4 - Empty.
+        /// Param 5 - Empty.
+        /// Param 6 - Empty.
+        /// Param 7 - Empty.
+        /// MAV_CMD_ASV_SDR_WAIT_VEHICLE_WAYPOINT
+        /// </summary>
+        MavCmdAsvSdrWaitVehicleWaypoint = 13105,
+        /// <summary>
+        /// Waiting a certain amount of time. Can be used in the mission protocol for SDR payloads.
+        /// Param 1 - Delay in ms (uint32).
+        /// Param 2 - Empty.
+        /// Param 3 - Empty.
+        /// Param 4 - Empty.
+        /// Param 5 - Empty.
+        /// Param 6 - Empty.
+        /// Param 7 - Empty.
+        /// MAV_CMD_ASV_SDR_DELAY
+        /// </summary>
+        MavCmdAsvSdrDelay = 13106,
+        /// <summary>
+        /// Starting mission, uploaded to SDR payload. Can't be used in the mission protocol for SDR payloads.
+        /// Param 1 - Index of the task to start the mission (uint32).
+        /// Param 2 - Empty.
+        /// Param 3 - Empty.
+        /// Param 4 - Empty.
+        /// Param 5 - Empty.
+        /// Param 6 - Empty.
+        /// Param 7 - Empty.
+        /// MAV_CMD_ASV_SDR_START_MISSION
+        /// </summary>
+        MavCmdAsvSdrStartMission = 13107,
+        /// <summary>
+        /// Start mission, uploaded to SDR. Can't be used in the mission protocol for SDR payloads.
+        /// Param 1 - Empty.
+        /// Param 2 - Empty.
+        /// Param 3 - Empty.
+        /// Param 4 - Empty.
+        /// Param 5 - Empty.
+        /// Param 6 - Empty.
+        /// Param 7 - Empty.
+        /// MAV_CMD_ASV_SDR_STOP_MISSION
+        /// </summary>
+        MavCmdAsvSdrStopMission = 13108,
+    }
+
+    /// <summary>
+    /// State of the current mission (unit8_t).
+    ///  ASV_SDR_MISSION_STATE
+    /// </summary>
+    public enum AsvSdrMissionState:uint
+    {
+        /// <summary>
+        /// Do nothing
+        /// ASV_SDR_MISSION_STATE_IDLE
+        /// </summary>
+        AsvSdrMissionStateIdle = 1,
+        /// <summary>
+        /// Mission in progress
+        /// ASV_SDR_MISSION_STATE_PROGRESS
+        /// </summary>
+        AsvSdrMissionStateProgress = 2,
+        /// <summary>
+        /// Mission failed
+        /// ASV_SDR_MISSION_STATE_ERROR
+        /// </summary>
+        AsvSdrMissionStateError = 3,
     }
 
     /// <summary>
@@ -192,7 +263,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     }
 
     /// <summary>
-    /// These flags encode supported mode.[!WRAP_TO_V2_EXTENSION_PACKET!]
+    /// These flags encode supported mode.
     ///  ASV_SDR_CUSTOM_MODE_FLAG
     /// </summary>
     public enum AsvSdrCustomModeFlag:uint
@@ -212,23 +283,23 @@ namespace Asv.Mavlink.V2.AsvSdr
     }
 
     /// <summary>
-    /// ACK / NACK / ERROR values as a result of ASV_SDR_*_REQUEST or ASV_SDR_*_DELETE commands.[!WRAP_TO_V2_EXTENSION_PACKET!]
+    /// ACK / NACK / ERROR values as a result of ASV_SDR_*_REQUEST or ASV_SDR_*_DELETE commands.
     ///  ASV_SDR_REQUEST_ACK
     /// </summary>
     public enum AsvSdrRequestAck:uint
     {
         /// <summary>
-        /// Request is ok.[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// Request is ok.
         /// ASV_SDR_REQUEST_ACK_OK
         /// </summary>
         AsvSdrRequestAckOk = 0,
         /// <summary>
-        /// Command already in progress.[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// Command already in progress.
         /// ASV_SDR_REQUEST_ACK_IN_PROGRESS
         /// </summary>
         AsvSdrRequestAckInProgress = 1,
         /// <summary>
-        /// Command error.[!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// Command error.
         /// ASV_SDR_REQUEST_ACK_FAIL
         /// </summary>
         AsvSdrRequestAckFail = 2,
@@ -288,7 +359,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13100;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 14;
+        public override byte GetCrcEtra() => 145;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrOutStatusPayload Payload { get; } = new AsvSdrOutStatusPayload();
@@ -301,17 +372,19 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrOutStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 63; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 63; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 66; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 66; // of byte sized of fields (exclude extended)
         public int GetByteSize()
         {
             var sum = 0;
             sum+= 8; // SupportedModes
             sum+=8; //Size
             sum+=2; //RecordCount
+            sum+=2; //CurrentMissionIndex
             sum+=CurrentRecordGuid.Length; //CurrentRecordGuid
             sum+= 1; // CurrentRecordMode
             sum+=CurrentRecordName.Length; //CurrentRecordName
+            sum+= 1; // MissionState
             return (byte)sum;
         }
 
@@ -324,13 +397,14 @@ namespace Asv.Mavlink.V2.AsvSdr
             SupportedModes = (AsvSdrCustomModeFlag)BinSerialize.ReadULong(ref buffer);
             Size = BinSerialize.ReadULong(ref buffer);
             RecordCount = BinSerialize.ReadUShort(ref buffer);
+            CurrentMissionIndex = BinSerialize.ReadUShort(ref buffer);
             arraySize = 16;
             for(var i=0;i<arraySize;i++)
             {
                 CurrentRecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
             CurrentRecordMode = (AsvSdrCustomMode)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/63 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/66 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             CurrentRecordName = new char[arraySize];
             unsafe
             {
@@ -342,6 +416,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             buffer = buffer.Slice(arraySize);
            
+            MissionState = (AsvSdrMissionState)BinSerialize.ReadByte(ref buffer);
 
         }
 
@@ -350,6 +425,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteULong(ref buffer,(ulong)SupportedModes);
             BinSerialize.WriteULong(ref buffer,Size);
             BinSerialize.WriteUShort(ref buffer,RecordCount);
+            BinSerialize.WriteUShort(ref buffer,CurrentMissionIndex);
             for(var i=0;i<CurrentRecordGuid.Length;i++)
             {
                 BinSerialize.WriteByte(ref buffer,(byte)CurrentRecordGuid[i]);
@@ -365,7 +441,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             buffer = buffer.Slice(CurrentRecordName.Length);
             
-            /* PayloadByteSize = 63 */;
+            BinSerialize.WriteByte(ref buffer,(byte)MissionState);
+            /* PayloadByteSize = 66 */;
         }
         
         
@@ -388,6 +465,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public ushort RecordCount { get; set; }
         /// <summary>
+        /// Current mission index.
+        /// OriginName: current_mission_index, Units: , IsExtended: false
+        /// </summary>
+        public ushort CurrentMissionIndex { get; set; }
+        /// <summary>
         /// Record GUID. Also by this field we can understand if the data is currently being recorded (GUID!=0x00) or not (GUID==0x00).
         /// OriginName: current_record_guid, Units: , IsExtended: false
         /// </summary>
@@ -403,6 +485,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public char[] CurrentRecordName { get; set; } = new char[28];
         public byte GetCurrentRecordNameMaxItemsCount() => 28;
+        /// <summary>
+        /// Mission state.
+        /// OriginName: mission_state, Units: , IsExtended: false
+        /// </summary>
+        public AsvSdrMissionState MissionState { get; set; }
     }
     /// <summary>
     /// Request list of ASV_SDR_RECORD from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
