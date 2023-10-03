@@ -20,7 +20,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
 {
     private IMavParamEncoding _converter;
     private readonly ParamsClientExConfig _config;
-    private readonly SourceCache<ParamItem, string> _missionSource;
+    private readonly SourceCache<ParamItem, string> _paramsSource;
     private readonly RxValue<bool> _isSynced;
     private ImmutableDictionary<string,ParamDescription> _descriptions;
     private readonly RxValue<ushort?> _remoteCount;
@@ -30,14 +30,14 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
     {
         _config = config ?? throw new ArgumentNullException(nameof(config));
         Base = client;
-        _missionSource = new SourceCache<ParamItem, string>(x => x.Name).DisposeItWith(Disposable);
+        _paramsSource = new SourceCache<ParamItem, string>(x => x.Name).DisposeItWith(Disposable);
         _isSynced = new RxValue<bool>(false).DisposeItWith(Disposable);
-        Items = _missionSource.Connect().Transform(_=>(IParamItem)_).RefCount();
+        Items = _paramsSource.Connect().Transform(_=>(IParamItem)_).RefCount();
         client.OnParamValue.Where(_=>IsInit).Buffer(TimeSpan.FromMilliseconds(100)).Subscribe(OnUpdate).DisposeItWith(Disposable);
         
         _remoteCount = new RxValue<ushort?>(null).DisposeItWith(Disposable);
         _localCount = new RxValue<ushort>(0).DisposeItWith(Disposable);
-        _missionSource.CountChanged.Select(_=>(ushort)_).Subscribe(_localCount).DisposeItWith(Disposable);
+        _paramsSource.CountChanged.Select(_=>(ushort)_).Subscribe(_localCount).DisposeItWith(Disposable);
     }
 
     public bool IsInit { get; set; }
@@ -53,7 +53,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
     private void OnUpdate(IList<ParamValuePayload> items)
     {
         if (items.Count == 0) return;
-        _missionSource.Edit(_ =>
+        _paramsSource.Edit(_ =>
         {
             foreach (var value in items)
             {
@@ -84,7 +84,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         if (value == false) _isSynced.OnNext(false);
         else
         {
-            var allSynced = _missionSource.Items.All(_ => _.IsSynced.Value);
+            var allSynced = _paramsSource.Items.All(_ => _.IsSynced.Value);
             if (allSynced) _isSynced.OnNext(true);
         }
     }
@@ -176,11 +176,11 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         using var c2 = Base.OnParamValue.Sample(TimeSpan.FromMilliseconds(50)).Subscribe(_ =>
         {
             paramsCount = _.ParamCount;
-            if (_missionSource.Count == _.ParamCount)
+            if (_paramsSource.Count == _.ParamCount)
             {
                 tcs.TrySetResult(true);
             }
-            progress.Report((double)_missionSource.Count / _.ParamCount);
+            progress.Report((double)_paramsSource.Count / _.ParamCount);
             lastUpdate = DateTime.Now;
         });
         using var c3 = Observable.Timer(TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(100))
@@ -191,7 +191,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
                     tcs.TrySetResult(false);
                 }
             });
-        _missionSource.Edit(_ =>
+        _paramsSource.Edit(_ =>
         {
             foreach (var item in _.Items)
             {
