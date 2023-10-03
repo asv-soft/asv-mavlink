@@ -31,7 +31,7 @@ public class MissionServer : MavlinkMicroserviceServer, IMissionServer
         InternalFilter<MissionCountPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
             .Subscribe(UploadMission)
             .DisposeItWith(Disposable);
-        InternalFilter<MissionRequestPartialListPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
+        InternalFilter<MissionRequestListPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
             .Subscribe(DownloadMission)
             .DisposeItWith(Disposable);
         InternalFilter<MissionRequestIntPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
@@ -128,7 +128,7 @@ public class MissionServer : MavlinkMicroserviceServer, IMissionServer
             x.Payload.Frame = item.Value.Frame;
         }, DisposeCancel).ConfigureAwait(false);
     }
-    private async void DownloadMission(MissionRequestPartialListPacket req)
+    private async void DownloadMission(MissionRequestListPacket req)
     {
         await InternalSend<MissionCountPacket>(x=>
         {
