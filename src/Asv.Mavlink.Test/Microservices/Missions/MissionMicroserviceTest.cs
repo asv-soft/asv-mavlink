@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using DynamicData;
 using DynamicData.Binding;
 using Xunit;
 
@@ -96,5 +95,115 @@ public class MissionMicroserviceTest
         Assert.Equal(maxItems, serverList.Count);
         var items = await client.Download(CancellationToken.None);
         Assert.Equal(maxItems, items.Length);
+    }
+
+    [Fact]
+    public async Task Check_Client_MissionSetCurrent()
+    {
+        var link = new VirtualLink();
+        CreateClientServer(link, out var server, out var client);
+        using var subscribe = server.Items.BindToObservableList(out var serverList).Subscribe();
+        client.Create();
+        client.Create();
+        client.Create();
+        await client.Upload();
+        
+        Assert.Equal(3, serverList.Count);
+        
+        await client.Base.MissionSetCurrent(2);
+        
+        Assert.Equal(2, server.Current.Value);
+
+        await client.SetCurrent(1);
+        
+        Assert.Equal(1, server.Current.Value);
+        
+        Assert.NotEqual(0, server.Current.Value);
+        Assert.NotEqual(2, server.Current.Value);
+        Assert.NotEqual(3, server.Current.Value);
+    }
+
+    [Fact]
+    public async Task Check_Client_MissionReached()
+    {
+        var link = new VirtualLink();
+        CreateClientServer(link, out var server, out var client);
+        using var subscribe = server.Items.BindToObservableList(out var serverList).Subscribe();
+        client.Create();
+        client.Create();
+        client.Create();
+        await client.Upload();
+        
+        server.SendReached(serverList.Items.ElementAt(0).Seq);
+        await Task.Delay(100);
+        Assert.Equal(serverList.Items.ElementAt(0).Seq, client.Reached.Value);
+        
+        server.SendReached(serverList.Items.ElementAt(1).Seq);
+        await Task.Delay(100);
+        Assert.Equal(serverList.Items.ElementAt(1).Seq, client.Reached.Value);
+        
+        server.SendReached(serverList.Items.ElementAt(2).Seq);
+        await Task.Delay(100);
+        Assert.Equal(serverList.Items.ElementAt(2).Seq, client.Reached.Value);
+    }
+
+    [Fact]
+    public async Task Check_Client_MissionRequestCount()
+    {
+        var link = new VirtualLink();
+        CreateClientServer(link, out var server, out var client);
+        using var subscribe = server.Items.BindToObservableList(out var serverList).Subscribe();
+        client.Create();
+        client.Create();
+        client.Create();
+        await client.Upload();
+
+        var count = await client.Base.MissionRequestCount();
+        
+        Assert.Equal(serverList.Count, count);
+    }
+
+    [Fact]
+    public async Task Check_Client_MissionRequestItem()
+    {
+        var link = new VirtualLink();
+        CreateClientServer(link, out var server, out var client);
+        using var subscribe = server.Items.BindToObservableList(out var serverList).Subscribe();
+        client.Create();
+        client.Create();
+        client.Create();
+        await client.Upload();
+
+        var payload = await client.Base.MissionRequestItem(1);
+        var serverSideData = serverList.Items.ElementAt(1);
+        
+        Assert.Equal(payload.Command, serverSideData.Command);
+        Assert.Equal(payload.Autocontinue, serverSideData.Autocontinue);
+        Assert.Equal(payload.Current, serverSideData.Current);
+        Assert.Equal(payload.MissionType, serverSideData.MissionType);
+        Assert.Equal(payload.Param1, serverSideData.Param1);
+        Assert.Equal(payload.Param2, serverSideData.Param2);
+        Assert.Equal(payload.Param3, serverSideData.Param3);
+        Assert.Equal(payload.Param4, serverSideData.Param4);
+        Assert.Equal(payload.Frame, serverSideData.Frame);
+        Assert.Equal(payload.Seq, serverSideData.Seq);
+        Assert.Equal(payload.X, serverSideData.X);
+        Assert.Equal(payload.Y, serverSideData.Y);
+        Assert.Equal(payload.Z, serverSideData.Z);
+        Assert.Equal(payload.TargetComponent, serverSideData.TargetComponent);
+        Assert.Equal(payload.TargetSystem, serverSideData.TargetSystem);
+    }
+
+    [Fact]
+    public async Task Check_Client_WriteMissionItem()
+    {
+        var link = new VirtualLink();
+        CreateClientServer(link, out var server, out var client);
+        using var subscribe = server.Items.BindToObservableList(out var serverList).Subscribe();
+        client.Create();
+        client.Create();
+        client.Create();
+        
+        await client.Upload();
     }
 }
