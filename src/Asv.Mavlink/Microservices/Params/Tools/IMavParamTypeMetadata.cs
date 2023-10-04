@@ -123,15 +123,63 @@ public class MavParamTypeMetadata : IMavParamTypeMetadata
     public MavParamValue Increment { get; set; }
     public (MavParamValue, string)[] Values { get; set; }
     public (uint, MavParamValue)[] Bitmask { get; set; }
-    public bool IsValid(MavParamValue newValue)
+    public bool IsValid(MavParamValue value)
     {
-        // TODO: implement validation
+        if (value.Type != Type) return false; 
+        switch (Type)
+        {
+            case MavParamType.MavParamTypeUint8:
+            case MavParamType.MavParamTypeInt8:
+            case MavParamType.MavParamTypeUint16:
+            case MavParamType.MavParamTypeInt16:
+            case MavParamType.MavParamTypeUint32:
+            case MavParamType.MavParamTypeInt32:
+            case MavParamType.MavParamTypeReal32:
+                if (value > MaxValue)
+                {
+                    return false;
+                }
+                if (value < MinValue)
+                {
+                    return false;
+                }
+                break;
+            case MavParamType.MavParamTypeUint64:
+            case MavParamType.MavParamTypeInt64:
+            case MavParamType.MavParamTypeReal64:
+            default:
+                return false;
+        }
         return true;
     }
 
-    public string GetValidationError(MavParamValue newValue)
+    public string GetValidationError(MavParamValue value)
     {
-        // TODO: implement validation
+        if (value.Type != Type) return $"Type not equals {value.Type:G} != {Type:G}";
+        switch (Type)
+        {
+            case MavParamType.MavParamTypeUint8:
+            case MavParamType.MavParamTypeInt8:
+            case MavParamType.MavParamTypeUint16:
+            case MavParamType.MavParamTypeInt16:
+            case MavParamType.MavParamTypeUint32:
+            case MavParamType.MavParamTypeInt32:
+            case MavParamType.MavParamTypeReal32:
+                if (value > MaxValue)
+                {
+                    return $"must be <'{MaxValue}'";
+                }
+                if (value < MinValue)
+                {
+                    return $"must be >'{MinValue}'";
+                }
+                break;
+            case MavParamType.MavParamTypeUint64:
+            case MavParamType.MavParamTypeInt64:
+            case MavParamType.MavParamTypeReal64:
+            default:
+                return $"wrong type {Type}";
+        }
         return null;
     }
 }

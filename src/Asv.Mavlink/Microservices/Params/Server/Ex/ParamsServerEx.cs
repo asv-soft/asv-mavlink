@@ -168,50 +168,13 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
             return;
         }
 
-        if (ValidateParam(param.Item2, newValue, out var errorText) == false)
-        {
-            Logger.Warn("Set param {0} validation fail:{1}",param.Item2.Name,errorText);
-            _statusTextServer.Error($"param '{name}':{errorText}");
-            return;
-        }
         Logger.Info("Set param {0} from {1} => {2}", param.Item2.Name, currentValue, newValue);
         MavParamHelper.WriteToConfig(_cfg, cfgKey, newValue);
         _onParamChangedSubject.OnNext(new ParamChangedEvent(param, currentValue, newValue, true));
         await SendParam(param, newValue, DisposeCancel).ConfigureAwait(false);
     }
 
-    private bool ValidateParam(IMavParamTypeMetadata desc, MavParamValue value, out string errorMsg)
-    {
-        errorMsg = null;
-        switch (desc.Type)
-        {
-            case MavParamType.MavParamTypeUint8:
-            case MavParamType.MavParamTypeInt8:
-            case MavParamType.MavParamTypeUint16:
-            case MavParamType.MavParamTypeInt16:
-            case MavParamType.MavParamTypeUint32:
-            case MavParamType.MavParamTypeInt32:
-            case MavParamType.MavParamTypeReal32:
-                if (value > desc.MaxValue)
-                {
-                    errorMsg = $"must be <'{desc.MaxValue}'";
-                    return false;
-                }
-                if (value < desc.MinValue)
-                {
-                    errorMsg = $"must be >'{desc.MinValue}'";
-                    return false;
-                }
-                break;
-            case MavParamType.MavParamTypeUint64:
-            case MavParamType.MavParamTypeInt64:
-            case MavParamType.MavParamTypeReal64:
-            default:
-                errorMsg = $"wrong type {desc.Type}";
-                return false;
-        }
-        return true;
-    }
+
 
     private async Task SendParam((ushort, IMavParamTypeMetadata) param, MavParamValue value, CancellationToken cancel)
     {
