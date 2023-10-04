@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,15 +18,18 @@ public class SdrClientDeviceConfig:ClientDeviceConfig
 }
 public class SdrClientDevice : ClientDevice, ISdrClientDevice
 {
+    private readonly ParamsClientEx _params;
+
     public SdrClientDevice(IMavlinkV2Connection connection, MavlinkClientIdentity identity, SdrClientDeviceConfig config, IPacketSequenceCalculator seq, IScheduler? scheduler = null) : base(connection, identity, config, seq, scheduler)
     {
         Command = new CommandClient(connection, identity, seq, config.Command).DisposeItWith(Disposable);
         Sdr = new AsvSdrClientEx(new AsvSdrClient(connection, identity, seq), Heartbeat, Command,config.SdrEx).DisposeItWith(Disposable);
         Missions = new MissionClientEx(new MissionClient(connection, identity, seq,config.Missions), config.MissionsEx).DisposeItWith(Disposable);
-        Params = new ParamsClientEx(new ParamsClient(connection, identity, seq,config.Params), config.ParamsEx).DisposeItWith(Disposable);
+        _params = new ParamsClientEx(new ParamsClient(connection, identity, seq,config.Params), config.ParamsEx).DisposeItWith(Disposable);
     }
     protected override Task InternalInit()
     {
+        _params.Init(MavParamHelper.ByteWiseEncoding, ArraySegment<ParamDescription>.Empty);
         return Task.CompletedTask;
     }
 
@@ -37,5 +41,6 @@ public class SdrClientDevice : ClientDevice, ISdrClientDevice
     public IAsvSdrClientEx Sdr { get; }
     public ICommandClient Command { get; }
     public IMissionClientEx Missions { get; }
-    public IParamsClientEx Params { get; }
+
+    public IParamsClientEx Params => _params;
 }
