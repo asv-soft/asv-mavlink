@@ -62,6 +62,7 @@ namespace Asv.Mavlink
         {
             var arr = ArrayPool<byte>.Shared.Rent(4);
             var span = new Span<byte>(arr, 0, 4);
+            var readSpan = new ReadOnlySpan<byte>(arr, 0, 4);
             try
             {
                 switch (value.Type)
@@ -91,16 +92,16 @@ namespace Asv.Mavlink
                         span[3] = 0;
                         break;
                     case MavParamType.MavParamTypeUint32:
-                        Debug.Assert(BitConverter.TryWriteBytes(span, (uint)value),
-                            "BitConverter.TryWriteBytes(span, (uint)value) == false");
+                        if (BitConverter.TryWriteBytes(span, (uint)value) == false)
+                            throw new MavlinkException("BitConverter.TryWriteBytes(span, (uint)value) == false"); 
                         break;
                     case MavParamType.MavParamTypeInt32:
-                        Debug.Assert(BitConverter.TryWriteBytes(span, (int)value),
-                            "BitConverter.TryWriteBytes(span, (int)value) == false");
+                        if (BitConverter.TryWriteBytes(span, (int)value) == false)
+                            throw new MavlinkException("BitConverter.TryWriteBytes(span, (int)value) == false");
                         break;
                     case MavParamType.MavParamTypeReal32:
-                        Debug.Assert(BitConverter.TryWriteBytes(span, (float)value),
-                            "BitConverter.TryWriteBytes(span, (float)value) == false");
+                        if (BitConverter.TryWriteBytes(span, (float)value) == false)
+                            throw new MavlinkException("BitConverter.TryWriteBytes(span, (float)value) == false");
                         break;
                     case MavParamType.MavParamTypeInt64:
                     case MavParamType.MavParamTypeUint64:
@@ -109,7 +110,7 @@ namespace Asv.Mavlink
                     default:
                         throw new ArgumentOutOfRangeException(nameof(value.Type), value.Type, null);
                 }
-                return BitConverter.ToSingle(span);
+                return BitConverter.ToSingle(readSpan);
             }
             finally
             {
