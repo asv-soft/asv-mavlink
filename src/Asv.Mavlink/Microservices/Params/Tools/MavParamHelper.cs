@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Asv.Cfg;
 using Asv.Common;
@@ -31,7 +33,16 @@ public static class MavParamHelper
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
-    
+    public static IEnumerable<MavParamEncodingType> EncodingTypes
+    {
+        get
+        {
+            yield return MavParamEncodingType.ByteWiseEncoding;
+            yield return MavParamEncodingType.CStyleEncoding;    
+        }
+    }
+    public static IEnumerable<IMavParamEncoding> Encodings => EncodingTypes.Select(GetEncoding);
+
     public static IMavParamEncoding ByteWiseEncoding { get; } = new MavParamByteWiseEncoding();
     public static IMavParamEncoding CStyleEncoding { get; } = new MavParamCStyleEncoding();
 

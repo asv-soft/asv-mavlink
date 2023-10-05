@@ -1,5 +1,6 @@
 using System;
 using Asv.Mavlink.V2.Common;
+using NLog.Targets;
 
 namespace Asv.Mavlink;
 
@@ -218,5 +219,27 @@ public readonly struct MavParamValue:IComparable<MavParamValue>, IComparable,IEq
             (left.Type == MavParamType.MavParamTypeReal32 | 
              right.Type == MavParamType.MavParamTypeReal32)) throw new InvalidOperationException();
         return !left.Equals(right);
+    }
+
+    public override string ToString()
+    {
+        switch (Type)
+        {
+            case MavParamType.MavParamTypeUint8:
+            case MavParamType.MavParamTypeInt8:
+            case MavParamType.MavParamTypeUint16:
+            case MavParamType.MavParamTypeInt16:
+            case MavParamType.MavParamTypeUint32:
+            case MavParamType.MavParamTypeInt32:
+                return $"{_intValue}[{Type:G}]";
+            case MavParamType.MavParamTypeReal32:
+                return $"{_realValue}[{Type:G}]";
+            case MavParamType.MavParamTypeUint64:
+            case MavParamType.MavParamTypeInt64:
+            case MavParamType.MavParamTypeReal64:
+                return "Not supported";
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 }

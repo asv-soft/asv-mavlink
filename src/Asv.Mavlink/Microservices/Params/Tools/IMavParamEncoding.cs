@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Buffers;
+using System.Diagnostics;
 using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink
@@ -13,60 +15,44 @@ namespace Asv.Mavlink
     {
         public float ConvertToMavlinkUnion(MavParamValue value)
         {
-            switch (value.Type)
+            return value.Type switch
             {
-                case MavParamType.MavParamTypeUint8:
-                    return (byte)value;
-                case MavParamType.MavParamTypeInt8:
-                    return (sbyte) value;
-                case MavParamType.MavParamTypeUint16:
-                    return (ushort) value;
-                case MavParamType.MavParamTypeInt16:
-                    return (short) value;
-                case MavParamType.MavParamTypeUint32:
-                    return (uint) value;
-                case MavParamType.MavParamTypeInt32:
-                    return (int) value;
-                case MavParamType.MavParamTypeUint64:
-                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
-                case MavParamType.MavParamTypeInt64:
-                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
-                case MavParamType.MavParamTypeReal32:
-                    return (float)value;
-                case MavParamType.MavParamTypeReal64:
-                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(value.Type), value.Type, null);
-            }
+                MavParamType.MavParamTypeUint8 => (byte)value,
+                MavParamType.MavParamTypeInt8 => (sbyte)value,
+                MavParamType.MavParamTypeUint16 => (ushort)value,
+                MavParamType.MavParamTypeInt16 => (short)value,
+                MavParamType.MavParamTypeUint32 => (uint)value,
+                MavParamType.MavParamTypeInt32 => (int)value,
+                MavParamType.MavParamTypeUint64 => throw new MavlinkException(
+                    RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte),
+                MavParamType.MavParamTypeInt64 => throw new MavlinkException(
+                    RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte),
+                MavParamType.MavParamTypeReal32 => (float)value,
+                MavParamType.MavParamTypeReal64 => throw new MavlinkException(
+                    RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte),
+                _ => throw new ArgumentOutOfRangeException(nameof(value.Type), value.Type, null)
+            };
         }
 
         public MavParamValue ConvertFromMavlinkUnion(float value, MavParamType type)
         {
-            switch (type)
+            return type switch
             {
-                case MavParamType.MavParamTypeUint8:
-                    return new MavParamValue((byte)value);
-                case MavParamType.MavParamTypeInt8:
-                    return new MavParamValue((sbyte) value);
-                case MavParamType.MavParamTypeUint16:
-                    return new MavParamValue((ushort) value);
-                case MavParamType.MavParamTypeInt16:
-                    return new MavParamValue((short) value);
-                case MavParamType.MavParamTypeUint32:
-                    return new MavParamValue((uint) value);
-                case MavParamType.MavParamTypeInt32:
-                    return new MavParamValue((int) value);
-                case MavParamType.MavParamTypeUint64:
-                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
-                case MavParamType.MavParamTypeInt64:
-                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
-                case MavParamType.MavParamTypeReal32:
-                    return new MavParamValue((float)value);
-                case MavParamType.MavParamTypeReal64:
-                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
+                MavParamType.MavParamTypeUint8 => new MavParamValue((byte)value),
+                MavParamType.MavParamTypeInt8 => new MavParamValue((sbyte)value),
+                MavParamType.MavParamTypeUint16 => new MavParamValue((ushort)value),
+                MavParamType.MavParamTypeInt16 => new MavParamValue((short)value),
+                MavParamType.MavParamTypeUint32 => new MavParamValue((uint)value),
+                MavParamType.MavParamTypeInt32 => new MavParamValue((int)value),
+                MavParamType.MavParamTypeUint64 => throw new MavlinkException(
+                    RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte),
+                MavParamType.MavParamTypeInt64 => throw new MavlinkException(
+                    RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte),
+                MavParamType.MavParamTypeReal32 => new MavParamValue((float)value),
+                MavParamType.MavParamTypeReal64 => throw new MavlinkException(
+                    RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte),
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+            };
         }
     }
     
@@ -74,45 +60,67 @@ namespace Asv.Mavlink
     {
         public float ConvertToMavlinkUnion(MavParamValue value)
         {
-            byte[] arr;
-            switch (value.Type)
+            var arr = ArrayPool<byte>.Shared.Rent(4);
+            var span = new Span<byte>(arr, 0, 4);
+            try
             {
-                case MavParamType.MavParamTypeUint8:
-                    arr = new []{(byte)value};
-                    break;
-                case MavParamType.MavParamTypeInt8:
-                    arr = new []{(byte)value};
-                    break;
-                case MavParamType.MavParamTypeUint16:
-                    arr = BitConverter.GetBytes((ushort)value);
-                    break;
-                case MavParamType.MavParamTypeInt16:
-                    arr = BitConverter.GetBytes((short)value);
-                    break;
-                case MavParamType.MavParamTypeUint32:
-                    arr = BitConverter.GetBytes((uint)value);
-                    break;
-                case MavParamType.MavParamTypeInt32:
-                    arr = BitConverter.GetBytes((int)value);
-                    break;
-                case MavParamType.MavParamTypeInt64:
-                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
-                case MavParamType.MavParamTypeReal32:
-                    arr = BitConverter.GetBytes((float)value);
-                    break;
-                case MavParamType.MavParamTypeUint64:
-                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
-                case MavParamType.MavParamTypeReal64:
-                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(value.Type), value.Type, null);
+                switch (value.Type)
+                {
+                    case MavParamType.MavParamTypeUint8:
+                        span[0] = (byte)value;
+                        span[1] = 0;
+                        span[2] = 0;
+                        span[3] = 0;
+                        break;
+                    case MavParamType.MavParamTypeInt8:
+                        span[0] = (byte)value;
+                        span[1] = 0;
+                        span[2] = 0;
+                        span[3] = 0;
+                        break;
+                    case MavParamType.MavParamTypeUint16:
+                        Debug.Assert(BitConverter.TryWriteBytes(span, (ushort)value),
+                            "BitConverter.TryWriteBytes(span, (ushort)value) == false");
+                        span[2] = 0;
+                        span[3] = 0;
+                        break;
+                    case MavParamType.MavParamTypeInt16:
+                        Debug.Assert(BitConverter.TryWriteBytes(span, (short)value),
+                            "BitConverter.TryWriteBytes(span, (short)value) == false");
+                        span[2] = 0;
+                        span[3] = 0;
+                        break;
+                    case MavParamType.MavParamTypeUint32:
+                        Debug.Assert(BitConverter.TryWriteBytes(span, (uint)value),
+                            "BitConverter.TryWriteBytes(span, (uint)value) == false");
+                        break;
+                    case MavParamType.MavParamTypeInt32:
+                        Debug.Assert(BitConverter.TryWriteBytes(span, (int)value),
+                            "BitConverter.TryWriteBytes(span, (int)value) == false");
+                        break;
+                    case MavParamType.MavParamTypeReal32:
+                        Debug.Assert(BitConverter.TryWriteBytes(span, (float)value),
+                            "BitConverter.TryWriteBytes(span, (float)value) == false");
+                        break;
+                    case MavParamType.MavParamTypeInt64:
+                    case MavParamType.MavParamTypeUint64:
+                    case MavParamType.MavParamTypeReal64:
+                        throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(value.Type), value.Type, null);
+                }
+                return BitConverter.ToSingle(span);
             }
-            return BitConverter.ToSingle(arr, 0);
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(arr);
+            }
+            
         }
 
         public MavParamValue ConvertFromMavlinkUnion(float value, MavParamType type)
         {
-
+            
             // MAVLink (v1.0, v2.0) supports these data types:
             // uint32_t - 32bit unsigned integer(use the ENUM value MAV_PARAM_TYPE_UINT32)
             // int32_t - 32bit signed integer(use the ENUM value MAV_PARAM_TYPE_INT32)
@@ -123,31 +131,37 @@ namespace Asv.Mavlink
             // E.g. GPS coordinates can only be expressed with single float precision up to a few meters, while GPS coordinates in 1E7 scaled integers 
             // provide very high accuracy.
 
-            switch (type)
+            var arr = ArrayPool<byte>.Shared.Rent(4);
+            
+            
+            try
             {
-                case MavParamType.MavParamTypeUint8:
-                    return BitConverter.GetBytes(value)[0];
-                case MavParamType.MavParamTypeInt8:
-                    return (sbyte)BitConverter.GetBytes(value)[0];
-                case MavParamType.MavParamTypeUint16:
-                    return BitConverter.ToUInt16(BitConverter.GetBytes(value), 0);
-                case MavParamType.MavParamTypeInt16:
-                    return BitConverter.ToInt16(BitConverter.GetBytes(value), 0);
-                case MavParamType.MavParamTypeUint32:
-                    return BitConverter.ToUInt32(BitConverter.GetBytes(value), 0);
-                case MavParamType.MavParamTypeInt32:
-                    return BitConverter.ToInt32(BitConverter.GetBytes(value), 0);
-                case MavParamType.MavParamTypeUint64:
-                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
-                case MavParamType.MavParamTypeInt64:
-                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
-                case MavParamType.MavParamTypeReal32:
-                    return value;
-                case MavParamType.MavParamTypeReal64:
-                    throw new MavlinkException(RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+                var writeSpan = new Span<byte>(arr, 0, 4);
+                var span = new ReadOnlySpan<byte>(arr, 0, 4);
+                BitConverter.TryWriteBytes(writeSpan, value);
+                return type switch
+                {
+                    MavParamType.MavParamTypeUint8 => new MavParamValue(span[0]),
+                    MavParamType.MavParamTypeInt8 => new MavParamValue((sbyte)span[0]),
+                    MavParamType.MavParamTypeUint16 => new MavParamValue(BitConverter.ToUInt16(span)),
+                    MavParamType.MavParamTypeInt16 => new MavParamValue(BitConverter.ToInt16(span)),
+                    MavParamType.MavParamTypeUint32 => new MavParamValue(BitConverter.ToUInt32(span)),
+                    MavParamType.MavParamTypeInt32 => new MavParamValue(BitConverter.ToInt32(span)),
+                    MavParamType.MavParamTypeReal32 => new MavParamValue((float)value),
+                    MavParamType.MavParamTypeUint64 => throw new MavlinkException(
+                        RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte),
+                    MavParamType.MavParamTypeInt64 => throw new MavlinkException(
+                        RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte),
+                    MavParamType.MavParamTypeReal64 => throw new MavlinkException(
+                        RS.Vehicle_ConvertToMavlinkUnionToParamValue_NeedMoreByte),
+                    _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+                };
             }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(arr);
+            }
+            
         }
     }
 }
