@@ -80,14 +80,14 @@ namespace Asv.Mavlink
                         span[3] = 0;
                         break;
                     case MavParamType.MavParamTypeUint16:
-                        Debug.Assert(BitConverter.TryWriteBytes(span, (ushort)value),
-                            "BitConverter.TryWriteBytes(span, (ushort)value) == false");
+                        if (BitConverter.TryWriteBytes(span, (ushort)value) == false)
+                            throw new MavlinkException("BitConverter.TryWriteBytes(span, (ushort)value) == false");
                         span[2] = 0;
                         span[3] = 0;
                         break;
                     case MavParamType.MavParamTypeInt16:
-                        Debug.Assert(BitConverter.TryWriteBytes(span, (short)value),
-                            "BitConverter.TryWriteBytes(span, (short)value) == false");
+                        if (BitConverter.TryWriteBytes(span, (short)value) == false)
+                            throw new MavlinkException("BitConverter.TryWriteBytes(span, (short)value) == false");
                         span[2] = 0;
                         span[3] = 0;
                         break;
