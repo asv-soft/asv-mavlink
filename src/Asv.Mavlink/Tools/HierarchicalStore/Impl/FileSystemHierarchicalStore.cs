@@ -65,7 +65,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         _size = new RxValue<ulong>().DisposeItWith(Disposable);
         
         InternalUpdateEntries();
-
+        
         Disposable.AddAction(ClearFileCache);
 
     }
@@ -73,7 +73,14 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     public IRxValue<ushort> Count => _count;
     public IRxValue<ulong> Size => _size;
 
-
+    public void UpdateEntries()
+    {
+        lock (_sync)
+        {
+            InternalUpdateEntries();
+        }    
+    }
+    
     #region Internal update items
 
     /// <summary>

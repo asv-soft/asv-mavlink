@@ -100,10 +100,8 @@ public class FileSystemHierarchicalStoreTest
         var files = Directory.GetFiles(storeLocation);
     
         File.Delete(files[0]);
-        store.Dispose();
         
-        store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeLocation, format,
-            TimeSpan.FromMilliseconds(0));
+        store.UpdateEntries();
 
         var storeFiles = store.GetFiles();
         Assert.True(storeFiles.Count == 0);
@@ -389,9 +387,9 @@ public class FileSystemHierarchicalStoreTest
         Assert.Equal(2, folders.Count);
         
         Directory.Delete($"{storeLocation}\\SecondFolder #{ShortGuid.Encode(guid2)}");
-        store.Dispose();
-        store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeLocation, format,
-            TimeSpan.FromMilliseconds(0));
+
+        store.UpdateEntries();
+        
         folders = store.GetFolders();
         
         Assert.Equal(1, folders.Count);
@@ -505,11 +503,9 @@ public class FileSystemHierarchicalStoreTest
         Assert.True(store.FolderExists(guid1));
         
         Directory.Delete($"{storeLocation}\\SecondFolder #{ShortGuid.Encode(guid2)}");
-        store.Dispose();
-        
-        store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeLocation, format,
-            TimeSpan.FromMilliseconds(100));
 
+        store.UpdateEntries();
+        
         await Task.Delay(250);
 
         Assert.False(store.FolderExists(guid2));
