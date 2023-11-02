@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<mavlink>
+    <include>common.xml</include>
+    <messages>
+        <message id="14202" name="CHEMICAL_DETECTOR_DATA">
+            <description>Chemical Detector Data</description>
+            <field type="uint32_t" name="agent_id">Agent ID, 0=No agent, 1=GA, 2=GB, 3=GD/GF, 4=VX, 5=VXR, 6=DPM, 7=AC/CK, 8=CK, 9=AC, 11=HD</field>
+            <field type="float" name="concentration" units="mg/m3">Concentration (mg/m3), IEEE floating point format</field>
+            <field type="uint32_t" name="bars">Bars (0 - 8)</field>
+            <field type="uint32_t" name="bars_peak">Peak Bars (0 - 8)</field>
+            <field type="float" name="dose" units="mg-min/m3">Dose (mg-min/m3), IEEE floating point format</field>
+            <field type="float" name="hazard_level">Hazard Level - none, low, medium, high ( 0-3 )</field>
+        </message>
+    </messages>
+</mavlink>

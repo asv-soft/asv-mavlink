@@ -1,6 +1,9 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Test;
+using Asv.Mavlink.V2.UnitTestMessage;
 using DeepEqual.Syntax;
 using Xunit;
 using Xunit.Abstractions;
@@ -147,6 +150,106 @@ namespace Asv.Mavlink.Test
             {
                 //Assert.True(false, "CRC EXTRA for some messages not equal. See more https://mavlink.io/en/guide/serialization.html#crc_extra");
             }
+        }
+
+
+        /// <summary>
+        /// https://github.com/asv-soft/asv-mavlink/issues/36
+        /// </summary>
+        [Fact]
+        public async Task Test_custom_crc_message()
+        {
+            // create virtual link with custom dialect 
+            var link = new VirtualLink(registerDialects: decoder =>
+            {
+                decoder.RegisterCommonDialect();
+                decoder.RegisterUnitTestMessageDialect();
+            });
+
+            // create original packet
+            var outPkt = new ChemicalDetectorDataPacket
+            {
+                SystemId = 1,
+                ComponentId = 1,
+                Payload =
+                {
+                    AgentId = 0,
+                    Concentration = 0,
+                    Bars = 0,
+                    BarsPeak = 0,
+                    Dose = 0,
+                    HazardLevel = 0
+                }
+            };
+            // create waiter, to wait for incoming packet
+            var waiter = new TaskCompletionSource<ChemicalDetectorDataPacket>();
+            using var serverSubscribe = link.Server.Filter<ChemicalDetectorDataPacket>().Subscribe(inPkt =>
+            {
+                waiter.TrySetResult(inPkt);
+            });
+            // send packet client=>server
+            await link.Client.Send(outPkt, CancellationToken.None);
+            // wait for incoming packet
+            var inPkt = await waiter.Task;
+            // check incoming packet with original
+            Assert.Equal(inPkt.SystemId, outPkt.SystemId);
+            Assert.Equal(inPkt.ComponentId, outPkt.ComponentId);
+            Assert.Equal(inPkt.Payload.AgentId, outPkt.Payload.AgentId);
+            Assert.Equal(inPkt.Payload.Concentration, outPkt.Payload.Concentration);
+            Assert.Equal(inPkt.Payload.Bars, outPkt.Payload.Bars);
+            Assert.Equal(inPkt.Payload.BarsPeak, outPkt.Payload.BarsPeak);
+            Assert.Equal(inPkt.Payload.Dose, outPkt.Payload.Dose);
+            Assert.Equal(inPkt.Payload.HazardLevel, outPkt.Payload.HazardLevel);
+
+        }
+        
+        /// <summary>
+        /// https://github.com/asv-soft/asv-mavlink/issues/36
+        /// </summary>
+        [Fact]
+        public async Task Test_custom_crc_message2()
+        {
+            var link = new VirtualLink(registerDialects: decoder =>
+            {
+                decoder.RegisterCommonDialect();
+                decoder.RegisterUnitTestMessageDialect();
+            });
+
+            // create original packet
+            var outPkt = new ChemicalDetectorDataPacket
+            {
+                SystemId = 1,
+                ComponentId = 1,
+                Payload =
+                {
+                    AgentId = 0,
+                    Concentration = -1f,
+                    Bars = 0,
+                    BarsPeak = 0,
+                    Dose = -1f,
+                    HazardLevel =-1f
+                }
+            };
+            // create waiter, to wait for incoming packet
+            var waiter = new TaskCompletionSource<ChemicalDetectorDataPacket>();
+            using var serverSubscribe = link.Server.Filter<ChemicalDetectorDataPacket>().Subscribe(inPkt =>
+            {
+                waiter.TrySetResult(inPkt);
+            });
+            // send packet client=>server
+            await link.Client.Send(outPkt, CancellationToken.None);
+            // wait for incoming packet
+            var inPkt = await waiter.Task;
+            // check incoming packet with original
+            Assert.Equal(inPkt.SystemId, outPkt.SystemId);
+            Assert.Equal(inPkt.ComponentId, outPkt.ComponentId);
+            Assert.Equal(inPkt.Payload.AgentId, outPkt.Payload.AgentId);
+            Assert.Equal(inPkt.Payload.Concentration, outPkt.Payload.Concentration);
+            Assert.Equal(inPkt.Payload.Bars, outPkt.Payload.Bars);
+            Assert.Equal(inPkt.Payload.BarsPeak, outPkt.Payload.BarsPeak);
+            Assert.Equal(inPkt.Payload.Dose, outPkt.Payload.Dose);
+            Assert.Equal(inPkt.Payload.HazardLevel, outPkt.Payload.HazardLevel);
+
         }
     }
 }

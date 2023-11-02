@@ -28,6 +28,11 @@ namespace Asv.Mavlink
             return new MavlinkV2Connection(dataStream, RegisterDefaultDialects,disposeDataStream,publishScheduler);
         }
         
+        public static IMavlinkV2Connection Create(IDataStream dataStream,Action<IPacketDecoder<IPacketV2<IPayload>>> register, bool disposeDataStream = false,IScheduler? publishScheduler = null)
+        {
+            return new MavlinkV2Connection(dataStream, register,disposeDataStream,publishScheduler);
+        }
+        
         public static IMavlinkV2Connection Create(string connectionString)
         {
             return new MavlinkV2Connection(connectionString, RegisterDefaultDialects);

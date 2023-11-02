@@ -23,6 +23,8 @@
     commands: 13000 - 13099
   -->
   <include>asv_gbs.xml</include>
- 
+  <include>asv_sdr.xml</include>
+  <include>unit_test_message.xml</include>
+  
   <messages/>
 </mavlink>
