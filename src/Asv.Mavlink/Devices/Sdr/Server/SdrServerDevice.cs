@@ -34,7 +34,8 @@ public class SdrServerDevice:ServerDevice, ISdrServerDevice
         SdrEx = new AsvSdrServerEx(sdr, Heartbeat, CommandLongEx).DisposeItWith(Disposable);
         var paramsBase = new ParamsServer(connection, seq, identity, scheduler).DisposeItWith(Disposable);
         Params = new ParamsServerEx(paramsBase,StatusText,paramList,encoding,paramStore,config.Params).DisposeItWith(Disposable);
-        Missions = new MissionServer(StatusText, connection, identity, seq, scheduler).DisposeItWith(Disposable);
+        var mission = new MissionServer(connection, identity, seq, scheduler).DisposeItWith(Disposable);
+        Missions = new MissionServerEx(mission, StatusText, connection, identity, seq, scheduler).DisposeItWith(Disposable);
     }
 
     public override void Start()
@@ -44,7 +45,7 @@ public class SdrServerDevice:ServerDevice, ISdrServerDevice
     }
     
     public IAsvSdrServerEx SdrEx { get; }
-    public IMissionServer Missions { get; }
+    public IMissionServerEx Missions { get; }
     public ICommandServerEx<CommandLongPacket> CommandLongEx { get; }
     public IParamsServerEx Params { get; }
 }

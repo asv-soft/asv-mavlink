@@ -12,18 +12,14 @@ namespace Asv.Mavlink.Test;
 
 public class MissionMicroserviceTest
 {
-    public void CreateClientServer(VirtualLink link, out IMissionServer server, out IMissionClientEx client)
+    private void CreateClientServer(VirtualLink link, out IMissionServerEx serverEx, out IMissionClientEx client)
     {
         var serverSeq = new PacketSequenceCalculator();
         var serverId = new MavlinkServerIdentity{ComponentId = 13, SystemId = 13};
         var statusServer = new StatusTextServer(link.Server, serverSeq,
             serverId, new StatusTextLoggerConfig(), Scheduler.Default);
-        server = new MissionServer(
-            statusServer,
-            link.Server, 
-            serverId, 
-            serverSeq,
-            TaskPoolScheduler.Default);
+        var server = new MissionServer(link.Server, serverId, serverSeq, TaskPoolScheduler.Default);
+        serverEx = new MissionServerEx(server, statusServer, link.Server, serverId, serverSeq, Scheduler.Default);
         
         var clientSeq = new PacketSequenceCalculator();
         var clientId = new MavlinkClientIdentity{SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13};
@@ -62,7 +58,6 @@ public class MissionMicroserviceTest
         Assert.Equal(1, serverList.Count);
         var item2 = serverList.Items.First();
         Assert.Equal(item1.Command.Value, item2.Command);
-        Assert.Equal(item1.Current.Value, item2.Current != 0);
         Assert.Equal(item1.AutoContinue.Value, item2.Autocontinue != 0);
         Assert.Equal(item1.Param1.Value, item2.Param1);
         Assert.Equal(item1.Param2.Value, item2.Param2);
@@ -134,15 +129,15 @@ public class MissionMicroserviceTest
         client.Create();
         await client.Upload();
         
-        server.SendReached(serverList.Items.ElementAt(0).Seq);
+        server.Reached.OnNext(serverList.Items.ElementAt(0).Seq);
         await Task.Delay(100);
         Assert.Equal(serverList.Items.ElementAt(0).Seq, client.Reached.Value);
         
-        server.SendReached(serverList.Items.ElementAt(1).Seq);
+        server.Reached.OnNext(serverList.Items.ElementAt(1).Seq);
         await Task.Delay(100);
         Assert.Equal(serverList.Items.ElementAt(1).Seq, client.Reached.Value);
         
-        server.SendReached(serverList.Items.ElementAt(2).Seq);
+        server.Reached.OnNext(serverList.Items.ElementAt(2).Seq);
         await Task.Delay(100);
         Assert.Equal(serverList.Items.ElementAt(2).Seq, client.Reached.Value);
     }
@@ -179,7 +174,6 @@ public class MissionMicroserviceTest
         
         Assert.Equal(payload.Command, serverSideData.Command);
         Assert.Equal(payload.Autocontinue, serverSideData.Autocontinue);
-        Assert.Equal(payload.Current, serverSideData.Current);
         Assert.Equal(payload.MissionType, serverSideData.MissionType);
         Assert.Equal(payload.Param1, serverSideData.Param1);
         Assert.Equal(payload.Param2, serverSideData.Param2);
@@ -190,8 +184,6 @@ public class MissionMicroserviceTest
         Assert.Equal(payload.X, serverSideData.X);
         Assert.Equal(payload.Y, serverSideData.Y);
         Assert.Equal(payload.Z, serverSideData.Z);
-        Assert.Equal(payload.TargetComponent, serverSideData.TargetComponent);
-        Assert.Equal(payload.TargetSystem, serverSideData.TargetSystem);
     }
 
     [Fact]

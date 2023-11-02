@@ -1,209 +1,124 @@
 using System;
 using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using DynamicData;
-using Newtonsoft.Json;
-using NLog;
 
 namespace Asv.Mavlink;
 
 public class MissionServer : MavlinkMicroserviceServer, IMissionServer
 {
-    private readonly IStatusTextServer _statusLogger;
-    public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-    private readonly SourceCache<MissionItemIntPayload,ushort> _missionSource;
-    private double _busy;
+    private ushort _currentMissionIndex;
 
-    public MissionServer(IStatusTextServer srv, IMavlinkV2Connection connection, MavlinkServerIdentity identity,
-        IPacketSequenceCalculator seq, IScheduler rxScheduler) :
-        base("MISSION", connection, identity, seq, rxScheduler)
+    public MissionServer(IMavlinkV2Connection connection, MavlinkServerIdentity identity, IPacketSequenceCalculator seq, IScheduler rxScheduler) : base("MISSION", connection, identity, seq, rxScheduler)
     {
-        _statusLogger = srv ?? throw new ArgumentNullException(nameof(srv));
-        _missionSource = new SourceCache<MissionItemIntPayload, ushort>(x => x.Seq).DisposeItWith(Disposable);
-
-        Current = new RxValue<ushort>(0).DisposeItWith(Disposable);
-        Current.Subscribe(OnCurrentChanged).DisposeItWith(Disposable);
-        
-        InternalFilter<MissionCountPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
-            .Subscribe(UploadMission)
-            .DisposeItWith(Disposable);
-        InternalFilter<MissionRequestListPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
-            .Subscribe(DownloadMission)
-            .DisposeItWith(Disposable);
-        InternalFilter<MissionRequestIntPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
-            .Subscribe(ReadMissionItem)
-            .DisposeItWith(Disposable);
-        InternalFilter<MissionClearAllPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
-            .Subscribe(ClearAll)
-            .DisposeItWith(Disposable);
-        InternalFilter<MissionSetCurrentPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
-            .Subscribe(SetCurrent)
-            .DisposeItWith(Disposable);
+       
     }
 
-    private void SetCurrent(MissionSetCurrentPacket req)
+
+    public IObservable<MissionCountPacket> OnMissionCount =>
+        InternalFilter<MissionCountPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
+
+    public IObservable<MissionRequestListPacket> OnMissionRequestList =>
+        InternalFilter<MissionRequestListPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
+
+    public IObservable<MissionRequestIntPacket> OnMissionRequestInt =>
+        InternalFilter<MissionRequestIntPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
+
+    public IObservable<MissionClearAllPacket> OnMissionClearAll =>
+        InternalFilter<MissionClearAllPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
+
+    public IObservable<MissionSetCurrentPacket> OnMissionSetCurrent =>
+        InternalFilter<MissionSetCurrentPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
+
+    public Task SendMissionAck(MavMissionResult result, byte targetSystemId = 0, byte targetComponentId = 0,
+        MavMissionType? type = null)
     {
-        var item = _missionSource.Lookup(req.Payload.Seq);
-        if (item.HasValue == false)
+        return InternalSend<MissionAckPacket>(x =>
         {
-            Logger.Warn($"{LogRecv}: '{req.Payload.Seq}' not found");
-            return;
-        }
-        Current.OnNext(req.Payload.Seq);
-    }
-    private void OnCurrentChanged(ushort current)
-    {
-        InternalSend<MissionCurrentPacket>(x =>
-        {
-            x.Payload.Seq = current;
-        }, DisposeCancel).ConfigureAwait(false);
-    }
-    private async void ClearAll(MissionClearAllPacket req)
-    {
-        if (req.Payload.MissionType != MavMissionType.MavMissionTypeMission)
-        {
-            await InternalSend<MissionAckPacket>(x =>
+            x.Payload.TargetSystem = targetSystemId;
+            x.Payload.TargetComponent = targetComponentId;
+            x.Payload.Type = result;
+            if (type.HasValue)
             {
-                x.Payload.TargetSystem = req.SystemId;
-                x.Payload.TargetComponent = req.ComponentId;
-                x.Payload.Type = MavMissionResult.MavMissionUnsupported;
-            }, DisposeCancel).ConfigureAwait(false);
-            return;
-        }
-        _missionSource.Clear();
-        await InternalSend<MissionAckPacket>(x =>
-        {
-            x.Payload.TargetSystem = req.SystemId;
-            x.Payload.TargetComponent = req.ComponentId;
-            x.Payload.Type = MavMissionResult.MavMissionAccepted;
-        }, DisposeCancel).ConfigureAwait(false);
-    }
-        
-    private async void ReadMissionItem(MissionRequestIntPacket req)
-    {
-        if (req.Payload.MissionType != MavMissionType.MavMissionTypeMission)
-        {
-            await InternalSend<MissionAckPacket>(x =>
-            {
-                x.Payload.TargetSystem = req.SystemId;
-                x.Payload.TargetComponent = req.ComponentId;
-                x.Payload.Type = MavMissionResult.MavMissionUnsupported;
-            }, DisposeCancel).ConfigureAwait(false);
-            return;
-        }
-
-        var item = _missionSource.Lookup(req.Payload.Seq);
-        if (item.HasValue == false)
-        {
-            await InternalSend<MissionAckPacket>(x =>
-            {
-                x.Payload.TargetSystem = req.SystemId;
-                x.Payload.TargetComponent = req.ComponentId;
-                x.Payload.Type = MavMissionResult.MavMissionInvalid;
-            }, DisposeCancel).ConfigureAwait(false);
-            return;
-        }
-        await InternalSend<MissionItemIntPacket>(x =>
-        {
-            x.Payload.TargetSystem = req.SystemId;
-            x.Payload.TargetComponent = req.ComponentId;
-            x.Payload.MissionType = item.Value.MissionType;
-            x.Payload.Seq = item.Value.Seq;
-            x.Payload.Current = item.Value.Current;
-            x.Payload.Autocontinue = item.Value.Autocontinue;
-            x.Payload.Param1 = item.Value.Param1;
-            x.Payload.Param2 = item.Value.Param2;
-            x.Payload.Param3 = item.Value.Param3;
-            x.Payload.Param4 = item.Value.Param4;
-            x.Payload.X = item.Value.X;
-            x.Payload.Y = item.Value.Y;
-            x.Payload.Z = item.Value.Z;
-            x.Payload.Command = item.Value.Command;
-            x.Payload.TargetSystem = item.Value.TargetSystem;
-            x.Payload.TargetComponent = item.Value.TargetComponent;
-            x.Payload.Frame = item.Value.Frame;
-        }, DisposeCancel).ConfigureAwait(false);
-    }
-    private async void DownloadMission(MissionRequestListPacket req)
-    {
-        await InternalSend<MissionCountPacket>(x=>
-        {
-            x.Payload.TargetSystem = req.SystemId;
-            x.Payload.TargetComponent = req.ComponentId;
-            x.Payload.Count = (ushort) _missionSource.Count;
-        }, DisposeCancel).ConfigureAwait(false);
-    }
-
-    private async void UploadMission(MissionCountPacket req)
-    {
-        if (Interlocked.CompareExchange(ref _busy, 1, 0) != 0)
-        {
-            Logger.Trace($"{LogSend}: Duplicate '{nameof(MissionCountPacket)}' received. Skip it...");
-            return;
-        }
-        _missionSource.Clear();
-        _statusLogger.Info($"{LogSend}: begin upload '{req.Payload.Count}' items");
-        try
-        {
-            var count = req.Payload.Count;
-            for (ushort i = 0; i < count; i++)
-            {
-                var index = i;
-                var item = await InternalCall<MissionItemIntPayload, MissionRequestPacket, MissionItemIntPacket>(
-                    x =>
-                    {
-                        x.Payload.MissionType = req.Payload.MissionType;
-                        x.Payload.TargetComponent = req.ComponentId;
-                        x.Payload.TargetSystem = req.SystemId;
-                        x.Payload.Seq = index;
-                    },p=>p.Payload.TargetSystem, p=>p.Payload.TargetComponent,p=>
-                    {
-                        return p.Payload.Seq == index;
-                    }, p=>p.Payload, cancel:DisposeCancel).ConfigureAwait(false);
-                if (i % 5 == 0)
-                {
-                    _statusLogger.Info($"{LogSend}: uploaded '{(i + 1) / count:P0}' items");
-                }
-                _missionSource.AddOrUpdate(item);
+                x.Payload.MissionType = type.Value;
             }
-            _statusLogger.Info($"{LogSend}: uploaded '{count}' items");
-            await InternalSend<MissionAckPacket>(x =>
-            {
-                x.Payload.TargetSystem = req.SystemId;
-                x.Payload.TargetComponent = req.ComponentId;
-                x.Payload.Type = MavMissionResult.MavMissionAccepted;
-            }, DisposeCancel).ConfigureAwait(false);
-        }
-        catch (Exception e)
-        {
-            Logger.Error(e, $"{LogSend}: upload error");
-            await InternalSend<MissionAckPacket>(x =>
-            {
-                x.Payload.Type = MavMissionResult.MavMissionError;
-                x.Payload.MissionType = req.Payload.MissionType;
-                x.Payload.TargetSystem = req.SystemId;
-                x.Payload.TargetComponent = req.ComponentId;
-            }, DisposeCancel).ConfigureAwait(false);
-        }
-        finally
-        {
-            Interlocked.Exchange(ref _busy, 0);
-        }
+        }, DisposeCancel);
     }
 
-    public IRxEditableValue<ushort> Current { get; }
-    public IObservable<IChangeSet<MissionItemIntPayload, ushort>> Items => _missionSource.Connect();
-    public void SendReached(ushort seq)
+    public Task SendMissionCount(ushort count, byte targetSystemId = 0, byte targetComponentId = 0)
     {
-        _statusLogger.Info($"Reached {seq}");
-        InternalSend<MissionItemReachedPacket>(x =>
+        return InternalSend<MissionCountPacket>(x =>
+        {
+            x.Payload.TargetSystem = targetSystemId;
+            x.Payload.TargetComponent = targetComponentId;
+            x.Payload.Count = count;
+        }, DisposeCancel);
+    }
+
+    public Task SendReached(ushort seq)
+    {
+        return InternalSend<MissionItemReachedPacket>(x =>
         {
             x.Payload.Seq = seq;
-        }, DisposeCancel).ConfigureAwait(false);
+        },DisposeCancel);
+    }
+
+    public Task SendMissionCurrent(ushort current)
+    {
+        _currentMissionIndex = current;
+        return InternalSend<MissionCurrentPacket>(x =>
+        {
+            x.Payload.Seq = current;
+        }, DisposeCancel);
+    }
+
+    public Task SendMissionItemInt(ServerMissionItem item,byte targetSystemId = 0, byte targetComponentId = 0)
+    {
+        return InternalSend<MissionItemIntPacket>(x =>
+        {
+            x.Payload.Frame = item.Frame;
+            x.Payload.TargetSystem = targetSystemId;
+            x.Payload.TargetComponent = targetComponentId;
+            x.Payload.MissionType = item.MissionType;
+            x.Payload.Seq = item.Seq;
+            x.Payload.Current = (byte)(_currentMissionIndex == item.Seq ? 1:0);
+            x.Payload.Autocontinue = item.Autocontinue;
+            x.Payload.Param1 = item.Param1;
+            x.Payload.Param2 = item.Param2;
+            x.Payload.Param3 = item.Param3;
+            x.Payload.Param4 = item.Param4;
+            x.Payload.X = item.X;
+            x.Payload.Y = item.Y;
+            x.Payload.Z = item.Z;
+            x.Payload.Command = item.Command;
+            x.Payload.Frame = item.Frame;
+        }, DisposeCancel);
+    }
+
+    public Task<ServerMissionItem> RequestMissionItem(ushort index, MavMissionType type,byte targetSystemId = 0, byte targetComponentId = 0, CancellationToken cancel = default)
+    {
+        return InternalCall<ServerMissionItem, MissionRequestPacket, MissionItemIntPacket>(
+            x =>
+            {
+                x.Payload.MissionType = type;
+                x.Payload.TargetComponent = targetComponentId;
+                x.Payload.TargetSystem = targetSystemId;
+                x.Payload.Seq = index;
+            },p=>p.Payload.TargetSystem, p=>p.Payload.TargetComponent,p=> p.Payload.Seq == index, p => new ServerMissionItem
+            {
+                Param1 = p.Payload.Param1,
+                Param2 = p.Payload.Param2,
+                Param3 = p.Payload.Param3,
+                Param4 = p.Payload.Param4,
+                X = p.Payload.X,
+                Y = p.Payload.Y,
+                Z = p.Payload.Z,
+                Seq = p.Payload.Seq,
+                Command = p.Payload.Command,
+                Frame = p.Payload.Frame,
+                Autocontinue = p.Payload.Autocontinue,
+                MissionType = p.Payload.MissionType
+            }, cancel:DisposeCancel);
     }
 }
-

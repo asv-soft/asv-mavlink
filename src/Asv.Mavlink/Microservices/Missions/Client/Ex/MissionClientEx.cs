@@ -76,7 +76,7 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
     {
         Logger.Info($"Begin clear mission");
         _missionSource.Clear();
-        await _client.ClearAll(cancel).ConfigureAwait(false);
+        await _client.ClearAll(MavMissionType.MavMissionTypeMission, cancel).ConfigureAwait(false);
         _isMissionSynced.OnNext(true);
     }
 
@@ -84,7 +84,7 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
     {
         Logger.Info($"Begin upload mission");
         progress?.Invoke(0);
-        await _client.ClearAll(cancel).ConfigureAwait(false);
+        await _client.ClearAll(MavMissionType.MavMissionTypeMission ,cancel).ConfigureAwait(false);
 
         using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
         var tcs = new TaskCompletionSource<Unit>();

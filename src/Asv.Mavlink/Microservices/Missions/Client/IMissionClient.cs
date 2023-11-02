@@ -44,7 +44,7 @@ namespace Asv.Mavlink
         Task WriteMissionItem(ushort seq, MavFrame frame, MavCmd cmd, bool current, bool autoContinue, float param1, float param2, float param3,
             float param4, float x, float y, float z, MavMissionType missionType, CancellationToken cancel = default);
 
-        Task ClearAll(CancellationToken cancel = default);
+        Task ClearAll(MavMissionType type = MavMissionType.MavMissionTypeAll, CancellationToken cancel = default);
 
         Task WriteMissionItem(MissionItem missionItem, CancellationToken cancel = default);
         

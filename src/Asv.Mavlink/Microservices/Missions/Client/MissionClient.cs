@@ -107,13 +107,15 @@ namespace Asv.Mavlink
 
         }
         
-        public async Task ClearAll(CancellationToken cancel)
+        public async Task ClearAll(MavMissionType type = MavMissionType.MavMissionTypeAll,
+            CancellationToken cancel = default)
         {
             Logger.Info($"{LogSend} Clear all mission items");
             var result = await InternalCall<MavMissionResult, MissionClearAllPacket, MissionAckPacket>(_ =>
             {
                 _.Payload.TargetComponent = Identity.TargetComponentId;
                 _.Payload.TargetSystem = Identity.TargetSystemId;
+                _.Payload.MissionType = type;
             }, null, _ => _.Payload.Type, _config.AttemptToCallCount, timeoutMs: _config.CommandTimeoutMs, cancel: cancel).ConfigureAwait(false);
             CheckResult(result, "MissionClearAll");
         }
