@@ -9,7 +9,7 @@ namespace Asv.Mavlink.Test;
 
 public class CommandMicroserviceTest
 {
-    private static CommandClient CreateCommandClient(VirtualLink link)
+    private static CommandClient CreateCommandClient(VirtualMavlinkConnection link)
     {
         var client = new CommandClient(link.Client,
             new MavlinkClientIdentity { SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13 },
@@ -21,7 +21,7 @@ public class CommandMicroserviceTest
         return client;
     }
 
-    private static CommandServer CreateCommandServer(VirtualLink link)
+    private static CommandServer CreateCommandServer(VirtualMavlinkConnection link)
     {
         var server = new CommandServer(link.Server, new PacketSequenceCalculator(),
             new MavlinkServerIdentity { ComponentId = 13, SystemId = 13 }, TaskPoolScheduler.Default);
@@ -31,7 +31,7 @@ public class CommandMicroserviceTest
     [Fact]
     public async Task Client_Call_Command_Int_And_Server_Catch_It()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         var server = CreateCommandServer(link);
         var client = CreateCommandClient(link);
         
@@ -47,7 +47,7 @@ public class CommandMicroserviceTest
     [Fact]
     public async Task Client_Call_Command_Long_And_Server_Catch_It()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         var server = CreateCommandServer(link);
         var client = CreateCommandClient(link);
         
@@ -66,7 +66,7 @@ public class CommandMicroserviceTest
     {
         int cnt = 0;
         // Emulation of packet loss
-        var link = new VirtualLink(_=> ++cnt>2);
+        var link = new VirtualMavlinkConnection(_=> ++cnt>2);
         var server = CreateCommandServer(link);
         var client = CreateCommandClient(link);
        
@@ -88,7 +88,7 @@ public class CommandMicroserviceTest
     {
         int cnt = 0;
         // Emulation of packet loss
-        var link = new VirtualLink(_=> ++cnt>3);
+        var link = new VirtualMavlinkConnection(_=> ++cnt>3);
         var server = CreateCommandServer(link);
         var client = CreateCommandClient(link);
         
@@ -109,7 +109,7 @@ public class CommandMicroserviceTest
     {
         int cnt = 0;
         // Emulation of packet loss
-        var link = new VirtualLink(_=> Interlocked.Increment(ref cnt) >3);
+        var link = new VirtualMavlinkConnection(_=> Interlocked.Increment(ref cnt) >3);
         var server = CreateCommandServer(link);
         var client = CreateCommandClient(link);
         var intList = new CommandIntServerEx(server);

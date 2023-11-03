@@ -11,13 +11,13 @@ using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test
 {
-    public class MavlinkPackets
+    public class CommonTestMavlinkPackets
     {
         private readonly TestTypesPacket _expectedObject;
         private readonly byte[] _buffer = new byte[PacketV2Helper.PacketV2MaxSize];
         private readonly ITestOutputHelper _output;
 
-        public MavlinkPackets(ITestOutputHelper output)
+        public CommonTestMavlinkPackets(ITestOutputHelper output)
         {
             _output = output;
             _expectedObject = new TestTypesPacket
@@ -63,7 +63,7 @@ namespace Asv.Mavlink.Test
 
 
         [Fact]
-        public void SpanSerializeTest()
+        public void Try_serialize_packet_with_span()
         {
             byte[] buffer2 = new byte[PacketV2Helper.PacketV2MaxSize];
             var span = new Span<byte>(buffer2);
@@ -73,7 +73,7 @@ namespace Asv.Mavlink.Test
         }
 
         [Fact]
-        public void BufferDeserializeTest()
+        public void Deserialize_BufferInput_MatchesExpectedObject()
         {
             var deserialized = new TestTypesPacket();
             var span = new ReadOnlySpan<byte>(_buffer);
@@ -160,7 +160,7 @@ namespace Asv.Mavlink.Test
         public async Task Test_custom_crc_message()
         {
             // create virtual link with custom dialect 
-            var link = new VirtualLink(registerDialects: decoder =>
+            var link = new VirtualMavlinkConnection(registerDialects: decoder =>
             {
                 decoder.RegisterCommonDialect();
                 decoder.RegisterUnitTestMessageDialect();
@@ -209,7 +209,7 @@ namespace Asv.Mavlink.Test
         [Fact]
         public async Task Test_custom_crc_message2()
         {
-            var link = new VirtualLink(registerDialects: decoder =>
+            var link = new VirtualMavlinkConnection(registerDialects: decoder =>
             {
                 decoder.RegisterCommonDialect();
                 decoder.RegisterUnitTestMessageDialect();

@@ -10,9 +10,9 @@ using Xunit;
 
 namespace Asv.Mavlink.Test;
 
-public class MissionMicroserviceTest
+public class MavlinkMissionExMicroserviceTest
 {
-    private void CreateClientServer(VirtualLink link, out IMissionServerEx serverEx, out IMissionClientEx client)
+    private void CreateClientServer(VirtualMavlinkConnection link, out IMissionServerEx serverEx, out IMissionClientEx client)
     {
         var serverSeq = new PacketSequenceCalculator();
         var serverId = new MavlinkServerIdentity{ComponentId = 13, SystemId = 13};
@@ -37,7 +37,7 @@ public class MissionMicroserviceTest
     [Fact]
     public async Task Upload_And_Download_Mission_Item()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         CreateClientServer(link, out var server, out var client);
         using var subscribe = server.Items.BindToObservableList(out var serverList).Subscribe();
         var item1 = client.Create();
@@ -79,7 +79,7 @@ public class MissionMicroserviceTest
     [InlineData(100)]
     public async Task Client_upload_and_download_list_of_missions(int maxItems)
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         CreateClientServer(link, out var server, out var client);
         using var subscribe = server.Items.BindToObservableList(out var serverList).Subscribe();
         for (int i = 0; i < maxItems; i++)
@@ -95,7 +95,7 @@ public class MissionMicroserviceTest
     [Fact]
     public async Task Check_Client_MissionSetCurrent()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         CreateClientServer(link, out var server, out var client);
         using var subscribe = server.Items.BindToObservableList(out var serverList).Subscribe();
         client.Create();
@@ -121,7 +121,7 @@ public class MissionMicroserviceTest
     [Fact]
     public async Task Check_Client_MissionReached()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         CreateClientServer(link, out var server, out var client);
         using var subscribe = server.Items.BindToObservableList(out var serverList).Subscribe();
         client.Create();
@@ -145,7 +145,7 @@ public class MissionMicroserviceTest
     [Fact]
     public async Task Check_Client_MissionRequestCount()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         CreateClientServer(link, out var server, out var client);
         using var subscribe = server.Items.BindToObservableList(out var serverList).Subscribe();
         client.Create();
@@ -161,7 +161,7 @@ public class MissionMicroserviceTest
     [Fact]
     public async Task Check_Client_MissionRequestItem()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         CreateClientServer(link, out var server, out var client);
         using var subscribe = server.Items.BindToObservableList(out var serverList).Subscribe();
         client.Create();
@@ -189,7 +189,7 @@ public class MissionMicroserviceTest
     [Fact]
     public async Task Check_Client_WriteMissionItem()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         CreateClientServer(link, out var server, out var client);
         using var subscribe = server.Items.BindToObservableList(out var serverList).Subscribe();
         client.Create();

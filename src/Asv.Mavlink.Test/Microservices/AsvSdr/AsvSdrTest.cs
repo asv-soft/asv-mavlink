@@ -22,7 +22,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Set_Argument_Null_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -42,7 +42,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Argument_Null_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -66,7 +66,7 @@ public class AsvSdrTest
     [InlineData(AsvSdrCustomMode.AsvSdrCustomModeVor)]
     public void Server_Sdr_Send_Record_Data_Argument_Null_Exception(AsvSdrCustomMode customMode)
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -86,7 +86,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Data_Idle_Argument_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -106,7 +106,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Create_Record_Data_Idle_Argument_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -126,7 +126,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Data_Response_Argument_Null_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -146,7 +146,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Tag_Delete_Response_Argument_Null_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -166,7 +166,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Tag_Argument_Null_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -186,7 +186,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Tag_Response_Argument_Null_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -206,7 +206,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Delete_Response_Argument_Null_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -226,7 +226,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Response_Argument_Null_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -246,7 +246,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Response_Fail_Result_Code_Argument_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -268,7 +268,7 @@ public class AsvSdrTest
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
     public void Server_Sdr_Send_Record_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -288,7 +288,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Response_Success_Null_Reference_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -308,7 +308,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Tag_Response_Fail_Result_Code_Argument_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -330,7 +330,7 @@ public class AsvSdrTest
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
     public void Server_Sdr_Send_Record_Tag_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -350,7 +350,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Tag_Response_Success_Null_Reference_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -370,7 +370,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Delete_Response_Fail_Result_Code_Argument_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -392,7 +392,7 @@ public class AsvSdrTest
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
     public void Server_Sdr_Send_Record_Delete_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -412,7 +412,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Delete_Response_Success_Null_Reference_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -432,7 +432,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Tag_Delete_Response_Fail_Result_Code_Argument_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -454,7 +454,7 @@ public class AsvSdrTest
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
     public void Server_Sdr_Send_Record_Tag_Delete_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -474,7 +474,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Tag_Delete_Response_Success_Null_Reference_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -494,7 +494,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Data_Response_Fail_Result_Code_Argument_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -516,7 +516,7 @@ public class AsvSdrTest
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
     public void Server_Sdr_Send_Record_Data_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -536,7 +536,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Data_Response_Success_Null_Reference_Exception()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
@@ -556,7 +556,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Client_Get_Record_List_And_Check()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity
@@ -604,7 +604,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Client_Get_Record_Data_List_And_Check()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity
@@ -657,7 +657,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Client_Get_Record_Tag_List_And_Check()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity
@@ -706,7 +706,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Client_Record_Delete_And_Check()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity
@@ -755,7 +755,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Client_Record_Tag_Delete_And_CheckClient_Record_Tag_Delete_And_Check()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity
@@ -807,7 +807,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Server_Send_Record_Data_Llz_And_Check()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity
@@ -958,7 +958,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Server_Send_Record_And_Check()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity
@@ -1013,7 +1013,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Server_Send_Record_Tag_And_Check()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity

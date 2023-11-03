@@ -12,7 +12,7 @@ public class HeartbeatMicroserviceTest
     [Fact]
     public async Task Server_Send_Heartbeat_Packet_And_Client_Catch_It()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var serverHeartbeat = new HeartbeatServer(
             link.Server, 

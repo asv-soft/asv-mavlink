@@ -3,7 +3,7 @@
   <!-- Interface for interaction and configuration                -->
   <!-- of ground base station with RTK mode support               -->
   <!-- Asv Soft contact info: https://github.com/asvol            -->
-  <!-- company URL: https://github.com/asv-soft                   -->
+  <!-- company URL: https://github.com/asv-soft and asv.me        -->
   <!-- email contact: me@asv.me                                   -->
   <!-- mavlink MAV_TYPE: 250                                   -->
   <!-- mavlink MAV_CMD range:  13000 - 13099                   -->

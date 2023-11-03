@@ -28,7 +28,7 @@ namespace Asv.Mavlink.Test
         [InlineData(0,  0, 0)]
         public async Task Server_Send_Status_And_Client_Check_It(int lat,int lon,int alt)
         {
-            var link = new VirtualLink();
+            var link = new VirtualMavlinkConnection();
             var cfg = new InMemoryConfiguration(); 
             var mode = AsvGbsCustomMode.AsvGbsCustomModeAuto;
             IGbsServerDevice serverDevice = new GbsServerDevice(link.Server, new MavlinkServerIdentity(),new PacketSequenceCalculator(),Scheduler.Default,new GbsServerDeviceConfig(), new List<IMavParamTypeMetadata>(), new MavParamCStyleEncoding(),cfg);
@@ -75,7 +75,7 @@ namespace Asv.Mavlink.Test
         [InlineData(float.NaN,   float.NaN, MavResult.MavResultFailed)]
         public async Task Client_Call_Command_And_Server_Catch_It(float duration,float accuracy, MavResult result)
         {
-            var link = new VirtualLink();
+            var link = new VirtualMavlinkConnection();
             
             var called = false;
             var serverDevice = new GbsServerDevice(link.Server, new MavlinkServerIdentity(),new PacketSequenceCalculator(),Scheduler.Default, new GbsServerDeviceConfig(), new List<IMavParamTypeMetadata>(), new MavParamCStyleEncoding(),new InMemoryConfiguration());

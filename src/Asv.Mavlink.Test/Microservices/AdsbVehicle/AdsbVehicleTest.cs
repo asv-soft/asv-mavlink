@@ -13,7 +13,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
     [Fact]
     public async Task Check_Single_Adsb_Vehicle()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
     
         var server = new AdsbServerDevice(
             link.Server,
@@ -69,7 +69,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
     [Fact]
     public async Task Check_Multiple_Adsb_Vehicles()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
     
         var server = new AdsbServerDevice(
             link.Server,
@@ -148,7 +148,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
     [Fact]
     public async Task Check_If_Old_Vehicles_Are_Deleted()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
     
         var server = new AdsbServerDevice(
             link.Server,

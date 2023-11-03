@@ -3,7 +3,7 @@
   <!-- Interface for interaction and configuration                -->
   <!-- of Software-defined radio payload                          -->
   <!-- Asv Soft contact info: https://github.com/asvol            -->
-  <!-- company URL: https://github.com/asv-soft                   -->
+  <!-- company URL: https://github.com/asv-soft and asv.me        -->
   <!-- email contact: me@asv.me                                   -->
   <!-- mavlink MAV_TYPE: 251                                      -->
   <!-- mavlink MAV_CMD range:  13100 - 13199                      -->

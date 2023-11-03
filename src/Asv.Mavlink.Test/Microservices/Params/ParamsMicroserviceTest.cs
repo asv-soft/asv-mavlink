@@ -29,7 +29,7 @@ public class ParamsMicroserviceTest
     [Fact]
     public async Task Read_All_Param_List()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var encoding = MavParamHelper.GetEncoding(MavParamEncodingType.CStyleEncoding);
         
@@ -84,7 +84,7 @@ public class ParamsMicroserviceTest
     [Fact]
     public async Task Update_Param_After_Write_From_Server()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var encoding = MavParamHelper.GetEncoding(MavParamEncodingType.CStyleEncoding);
         
@@ -148,7 +148,7 @@ public class ParamsMicroserviceTest
     [Fact]
     public async Task Update_Param_After_Write_From_Client()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var encoding = MavParamHelper.GetEncoding(MavParamEncodingType.CStyleEncoding);
         
@@ -204,7 +204,7 @@ public class ParamsMicroserviceTest
     [Fact]
     public async Task Parameters_Loss()
     {
-        var link = new VirtualLink(serverToClientFilter: _ =>
+        var link = new VirtualMavlinkConnection(serverToClientFilter: _ =>
         {
             var packet = _ as ParamValuePacket;
             if (packet == null) return false;

@@ -19,7 +19,7 @@ public class AsvSdrExTests
 
     private async Task<(AsvSdrClientEx, AsvSdrServerEx)> SetUpConnection()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         var mavlinkClientIdentity = new MavlinkClientIdentity() { SystemId = 1, ComponentId = 1, TargetSystemId = 2, TargetComponentId = 2 };
         var heartBeatClient = new HeartbeatClient(link.Client, mavlinkClientIdentity, new PacketSequenceCalculator(), new HeartbeatClientConfig(), Scheduler.Default);
         var commandClient = new CommandClient(link.Client, mavlinkClientIdentity, new PacketSequenceCalculator(), new CommandProtocolConfig());

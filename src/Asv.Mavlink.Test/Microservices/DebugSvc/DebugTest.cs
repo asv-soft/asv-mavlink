@@ -13,7 +13,7 @@ public class DebugTest
     [Fact]
     public async Task TestDebug()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         var client = new DebugClient(link.Client, new MavlinkClientIdentity(), new PacketSequenceCalculator());
         var server = new DebugServer(link.Server, new PacketSequenceCalculator(), new MavlinkServerIdentity(), Scheduler.Default);
 

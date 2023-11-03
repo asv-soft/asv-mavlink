@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
 
-namespace Asv.Mavlink.Test;
+namespace Asv.Mavlink;
 
-public class VirtualLink:DisposableOnceWithCancel
+public class VirtualMavlinkConnection:DisposableOnceWithCancel
 {
-    public VirtualLink(Func<IPacketV2<IPayload>, bool> clientToServerFilter = null,Func<IPacketV2<IPayload>, bool> serverToClientFilter = null,Action<IPacketDecoder<IPacketV2<IPayload>>> registerDialects = null)
+    public VirtualMavlinkConnection(Func<IPacketV2<IPayload>, bool> clientToServerFilter = null,Func<IPacketV2<IPayload>, bool> serverToClientFilter = null,Action<IPacketDecoder<IPacketV2<IPayload>>> registerDialects = null)
     {
         clientToServerFilter ??= _ => true;
         serverToClientFilter ??= _ => true;

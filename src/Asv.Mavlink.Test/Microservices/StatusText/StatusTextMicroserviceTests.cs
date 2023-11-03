@@ -24,7 +24,7 @@ public class StatusTextMicroserviceTests
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var link = new VirtualLink();
+            var link = new VirtualMavlinkConnection();
 
             var client = new StatusTextClient(link.Client,
                 null,
@@ -37,7 +37,7 @@ public class StatusTextMicroserviceTests
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var link = new VirtualLink();
+            var link = new VirtualMavlinkConnection();
 
             var client = new StatusTextClient(link.Client,
                 new MavlinkClientIdentity(),
@@ -66,7 +66,7 @@ public class StatusTextMicroserviceTests
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var link = new VirtualLink();
+            var link = new VirtualMavlinkConnection();
 
             var server = new StatusTextServer(link.Client,
                 new PacketSequenceCalculator(),
@@ -94,7 +94,7 @@ public class StatusTextMicroserviceTests
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var link = new VirtualLink();
+            var link = new VirtualMavlinkConnection();
 
             var server = new StatusTextServer(link.Client,
                 null,
@@ -109,7 +109,7 @@ public class StatusTextMicroserviceTests
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var link = new VirtualLink();
+            var link = new VirtualMavlinkConnection();
 
             var server = new StatusTextServer(link.Client,
                 new PacketSequenceCalculator(),
@@ -124,7 +124,7 @@ public class StatusTextMicroserviceTests
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var link = new VirtualLink();
+            var link = new VirtualMavlinkConnection();
 
             var server = new StatusTextServer(link.Client,
                 new PacketSequenceCalculator(),
@@ -144,7 +144,7 @@ public class StatusTextMicroserviceTests
     [InlineData("1234567890")]
     public async Task OnMessage_Property_Should_Return_Expected_Status_Message(string messageText)
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
 
         var server = new StatusTextServer(link.Server, new PacketSequenceCalculator(),
             new MavlinkServerIdentity(), new StatusTextLoggerConfig(), Scheduler.Default);
@@ -164,7 +164,7 @@ public class StatusTextMicroserviceTests
     [Fact]
     public void Name_Property_Should_Be_Set_To_Expected_Value()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         var clientIdentity = new MavlinkClientIdentity()
         {
             SystemId = 1,
@@ -190,7 +190,7 @@ public class StatusTextMicroserviceTests
     [Fact]
     public async Task Check_For_Server_Overload()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
 
         var server = new StatusTextServer(link.Server, new PacketSequenceCalculator(),
             new MavlinkServerIdentity(), new StatusTextLoggerConfig(), Scheduler.Default);
@@ -225,7 +225,7 @@ public class StatusTextMicroserviceTests
         var packetsCount = 0;
         var lostPacketsCount = 4;
         
-        var link = new VirtualLink(_ => true,_ => ++packetsCount > lostPacketsCount);
+        var link = new VirtualMavlinkConnection(_ => true,_ => ++packetsCount > lostPacketsCount);
 
         var serverIdentity = new MavlinkServerIdentity()
         {

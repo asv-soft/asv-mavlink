@@ -26,7 +26,7 @@ public class BaseDevicesTest
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var link = new VirtualLink();
+            var link = new VirtualMavlinkConnection();
             
             var clientDevice = new AbstractClientDevice(link.Client,
                 null,
@@ -42,7 +42,7 @@ public class BaseDevicesTest
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var link = new VirtualLink();
+            var link = new VirtualMavlinkConnection();
             
             var clientDevice = new AbstractClientDevice(link.Client,
                 new MavlinkClientIdentity(),
@@ -92,7 +92,7 @@ public class BaseDevicesTest
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var link = new VirtualLink();
+            var link = new VirtualMavlinkConnection();
             
             var serverDevice = new ServerDevice(link.Server,
                 null,
@@ -108,7 +108,7 @@ public class BaseDevicesTest
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var link = new VirtualLink();
+            var link = new VirtualMavlinkConnection();
             
             var serverDevice = new ServerDevice(link.Server,
                 new PacketSequenceCalculator(),
@@ -124,7 +124,7 @@ public class BaseDevicesTest
     // {
     //     Assert.Throws<ArgumentNullException>(() =>
     //     {
-    //         var link = new VirtualLink();
+    //         var link = new VirtualMavlinkConnection();
     //         
     //         var serverDevice = new ServerDevice(link.Server,
     //             new PacketSequenceCalculator(),
@@ -142,7 +142,7 @@ public class BaseDevicesTest
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var link = new VirtualLink();
+            var link = new VirtualMavlinkConnection();
             
             var serverDevice = new ServerDevice(link.Server,
                 new PacketSequenceCalculator(),
@@ -161,7 +161,7 @@ public class BaseDevicesTest
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var link = new VirtualLink();
+            var link = new VirtualMavlinkConnection();
             
             var serverDevice = new ServerDevice(link.Server,
                 new PacketSequenceCalculator(),
@@ -177,7 +177,7 @@ public class BaseDevicesTest
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var link = new VirtualLink();
+            var link = new VirtualMavlinkConnection();
             
             var clientDevice = new AbstractClientDevice(link.Client,
                 new MavlinkClientIdentity(),
@@ -195,7 +195,7 @@ public class BaseDevicesTest
     [InlineData("1234567890")]
     public async Task BaseDevicesStatusTextTest(string messageText)
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
 
         var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
             new MavlinkServerIdentity(), new ServerDeviceConfig(), Scheduler.Default);
@@ -221,7 +221,7 @@ public class BaseDevicesTest
     [Fact]
     public async Task BaseDevicesStatusTextOverloadTest()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
 
         var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
             new MavlinkServerIdentity(), new ServerDeviceConfig(), Scheduler.Default);
@@ -269,7 +269,7 @@ public class BaseDevicesTest
         
         int packetsCount = 0;
         
-        var link = new VirtualLink(_ => true, _ => ++packetsCount % 2 == 1);
+        var link = new VirtualMavlinkConnection(_ => true, _ => ++packetsCount % 2 == 1);
         
         var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(), 
             new MavlinkServerIdentity(),
@@ -308,7 +308,7 @@ public class BaseDevicesTest
     {
         bool canSend = true;
         
-        var link = new VirtualLink(_ => canSend, _ => canSend);
+        var link = new VirtualMavlinkConnection(_ => canSend, _ => canSend);
 
         var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
             new MavlinkServerIdentity(), new ServerDeviceConfig(), Scheduler.Default);
@@ -362,7 +362,7 @@ public class BaseDevicesTest
     [Fact]
     public async Task BaseDevicesCustomModeTest()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var mode = 23;
         
@@ -396,7 +396,7 @@ public class BaseDevicesTest
         
         int lostPacketsCount = 4;
         
-        var link = new VirtualLink(_ => true,_ => ++packetsCount > lostPacketsCount);
+        var link = new VirtualMavlinkConnection(_ => true,_ => ++packetsCount > lostPacketsCount);
 
         var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
             new MavlinkServerIdentity { ComponentId = 13, SystemId = 13 }, new ServerDeviceConfig(),
@@ -421,14 +421,14 @@ public class BaseDevicesTest
         _output.WriteLine($"Client rx packets: {clientDevice.Connection.RxPackets}");
     }
     
-    private AbstractClientDevice CreateClientDevice(VirtualLink link, PacketSequenceCalculator seq, 
+    private AbstractClientDevice CreateClientDevice(VirtualMavlinkConnection link, PacketSequenceCalculator seq, 
         MavlinkClientIdentity identity, ClientDeviceConfig cfg)
     {
         return new AbstractClientDevice(link.Client,
             identity, cfg, seq, Scheduler.Default);
     }
     
-    private ServerDevice CreateServerDevice(VirtualLink link, PacketSequenceCalculator seq, 
+    private ServerDevice CreateServerDevice(VirtualMavlinkConnection link, PacketSequenceCalculator seq, 
         MavlinkServerIdentity identity, ServerDeviceConfig cfg)
     {
         return new ServerDevice(link.Server,

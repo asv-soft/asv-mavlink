@@ -22,7 +22,7 @@ public class FtpMicroserviceTest
     [Fact]
     public async Task Ftp_Directory_Existence_After_Creation()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var server = new FtpServerEx(new FtpServer(
             link.Server,
@@ -50,7 +50,7 @@ public class FtpMicroserviceTest
     [Fact]
     public async Task Ftp_Directory_Existence_After_Removal()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var server = new FtpServerEx(new FtpServer(
             link.Server,
@@ -78,7 +78,7 @@ public class FtpMicroserviceTest
     //[Fact]
     public async Task Ftp_List_Current_Directory()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var server = new FtpServerEx(new FtpServer(
             link.Server,
@@ -104,7 +104,7 @@ public class FtpMicroserviceTest
     [Fact]
     public async Task Ftp_File_Existence_After_Removal()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var server = new FtpServerEx(new FtpServer(
             link.Server,
@@ -132,7 +132,7 @@ public class FtpMicroserviceTest
     [Fact]
     public async Task Ftp_File_Upload()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var server = new FtpServerEx(new FtpServer(
             link.Server,
@@ -190,7 +190,7 @@ public class FtpMicroserviceTest
     [Fact]
     public async Task Ftp_File_Read()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var server = new FtpServerEx(new FtpServer(
             link.Server,
@@ -248,7 +248,7 @@ public class FtpMicroserviceTest
     //[Fact]
     public async Task Ftp_File_Burst_Read()
     {
-        var link = new VirtualLink();
+        var link = new VirtualMavlinkConnection();
         
         var server = new FtpServerEx(new FtpServer(
             link.Server,
