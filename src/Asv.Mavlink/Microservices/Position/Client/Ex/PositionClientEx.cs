@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Minimal;
 using Asv.Mavlink.Vehicle;
 using NLog;
 

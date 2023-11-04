@@ -25,6 +25,7 @@
 using System;
 using System.Text;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.Uavionix
@@ -447,7 +448,7 @@ namespace Asv.Mavlink.V2.Uavionix
         /// </summary>
         public UavionixAdsbOutCfgGpsOffsetLon Gpsoffsetlon { get; set; }
         /// <summary>
-        /// ADS-B transponder reciever and transmit enable flags
+        /// ADS-B transponder receiver and transmit enable flags
         /// OriginName: rfSelect, Units: , IsExtended: false
         /// </summary>
         public UavionixAdsbOutRfSelect Rfselect { get; set; }

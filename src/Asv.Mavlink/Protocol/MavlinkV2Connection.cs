@@ -8,11 +8,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
+using Asv.Mavlink.V2.All;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.AsvGbs;
 using Asv.Mavlink.V2.AsvSdr;
+using Asv.Mavlink.V2.Avssuas;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Csairlink;
+using Asv.Mavlink.V2.Cubepilot;
 using Asv.Mavlink.V2.Icarous;
+using Asv.Mavlink.V2.Minimal;
+using Asv.Mavlink.V2.Storm32;
+using Asv.Mavlink.V2.Ualberta;
 using Asv.Mavlink.V2.Uavionix;
 
 namespace Asv.Mavlink
@@ -40,10 +47,16 @@ namespace Asv.Mavlink
 
         public static void RegisterDefaultDialects(IPacketDecoder<IPacketV2<IPayload>> decoder)
         {
+            decoder.RegisterMinimalDialect();
             decoder.RegisterCommonDialect();
             decoder.RegisterArdupilotmegaDialect();
             decoder.RegisterIcarousDialect();
+            decoder.RegisterUalbertaDialect();
+            decoder.RegisterStorm32Dialect();
+            decoder.RegisterAvssuasDialect();
             decoder.RegisterUavionixDialect();
+            decoder.RegisterCubepilotDialect();
+            decoder.RegisterCsairlinkDialect();
             decoder.RegisterAsvGbsDialect();
             decoder.RegisterAsvSdrDialect();
         }

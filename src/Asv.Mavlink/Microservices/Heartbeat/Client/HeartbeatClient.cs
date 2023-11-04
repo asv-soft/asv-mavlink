@@ -10,6 +10,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Minimal;
 using NLog;
 
 namespace Asv.Mavlink

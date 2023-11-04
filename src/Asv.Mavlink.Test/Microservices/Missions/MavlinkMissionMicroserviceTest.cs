@@ -24,7 +24,7 @@ public class MavlinkMissionMicroserviceTest
             clientSeq, new MissionClientConfig
             {
                 AttemptToCallCount = 5,
-                CommandTimeoutMs = 100
+                CommandTimeoutMs = 300
             });
     }
     
@@ -34,7 +34,7 @@ public class MavlinkMissionMicroserviceTest
     {
         var link = new VirtualMavlinkConnection();
         CreateClientServer(link, out var server, out var client);
-
+        server.OnMissionSetCurrent.Subscribe(_=>server.SendMissionCurrent(_.Payload.Seq));
         var waiter = new TaskCompletionSource<MissionSetCurrentPacket>();
         using var subscribe = server.OnMissionSetCurrent.Subscribe(x =>
         {

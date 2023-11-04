@@ -25,6 +25,7 @@
 using System;
 using System.Text;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.Test
@@ -51,7 +52,7 @@ namespace Asv.Mavlink.V2.Test
     /// </summary>
     public class TestTypesPacket: PacketV2<TestTypesPayload>
     {
-	    public const int PacketMessageId = 0;
+	    public const int PacketMessageId = 17000;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 103;
         public override bool WrapToV2Extension => false;

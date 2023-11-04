@@ -10,6 +10,7 @@ using System.Reactive.Subjects;
 using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Minimal;
 using DynamicData;
 using Newtonsoft.Json;
 using NLog;

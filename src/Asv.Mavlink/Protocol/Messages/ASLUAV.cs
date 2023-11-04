@@ -25,6 +25,7 @@
 using System;
 using System.Text;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.Asluav
@@ -50,6 +51,7 @@ namespace Asv.Mavlink.V2.Asluav
             src.Register(()=>new SensPowerBoardPacket());
             src.Register(()=>new GsmLinkStatusPacket());
             src.Register(()=>new SatcomLinkStatusPacket());
+            src.Register(()=>new SensorAirflowAnglesPacket());
         }
     }
 
@@ -146,7 +148,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class CommandIntStampedPacket: PacketV2<CommandIntStampedPayload>
     {
-	    public const int PacketMessageId = 78;
+	    public const int PacketMessageId = 223;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 119;
         public override bool WrapToV2Extension => false;
@@ -312,7 +314,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class CommandLongStampedPacket: PacketV2<CommandLongStampedPayload>
     {
-	    public const int PacketMessageId = 79;
+	    public const int PacketMessageId = 224;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 102;
         public override bool WrapToV2Extension => false;
@@ -462,7 +464,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensPowerPacket: PacketV2<SensPowerPayload>
     {
-	    public const int PacketMessageId = 201;
+	    public const int PacketMessageId = 8002;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 218;
         public override bool WrapToV2Extension => false;
@@ -540,7 +542,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensMpptPacket: PacketV2<SensMpptPayload>
     {
-	    public const int PacketMessageId = 202;
+	    public const int PacketMessageId = 8003;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 231;
         public override bool WrapToV2Extension => false;
@@ -690,7 +692,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class AslctrlDataPacket: PacketV2<AslctrlDataPayload>
     {
-	    public const int PacketMessageId = 203;
+	    public const int PacketMessageId = 8004;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 172;
         public override bool WrapToV2Extension => false;
@@ -936,7 +938,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class AslctrlDebugPacket: PacketV2<AslctrlDebugPayload>
     {
-	    public const int PacketMessageId = 204;
+	    public const int PacketMessageId = 8005;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 251;
         public override bool WrapToV2Extension => false;
@@ -1070,7 +1072,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class AsluavStatusPacket: PacketV2<AsluavStatusPayload>
     {
-	    public const int PacketMessageId = 205;
+	    public const int PacketMessageId = 8006;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 97;
         public override bool WrapToV2Extension => false;
@@ -1159,7 +1161,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class EkfExtPacket: PacketV2<EkfExtPayload>
     {
-	    public const int PacketMessageId = 206;
+	    public const int PacketMessageId = 8007;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 64;
         public override bool WrapToV2Extension => false;
@@ -1261,7 +1263,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class AslObctrlPacket: PacketV2<AslObctrlPayload>
     {
-	    public const int PacketMessageId = 207;
+	    public const int PacketMessageId = 8008;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 234;
         public override bool WrapToV2Extension => false;
@@ -1371,7 +1373,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensAtmosPacket: PacketV2<SensAtmosPayload>
     {
-	    public const int PacketMessageId = 208;
+	    public const int PacketMessageId = 8009;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 144;
         public override bool WrapToV2Extension => false;
@@ -1441,7 +1443,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensBatmonPacket: PacketV2<SensBatmonPayload>
     {
-	    public const int PacketMessageId = 209;
+	    public const int PacketMessageId = 8010;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 155;
         public override bool WrapToV2Extension => false;
@@ -1607,7 +1609,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class FwSoaringDataPacket: PacketV2<FwSoaringDataPayload>
     {
-	    public const int PacketMessageId = 210;
+	    public const int PacketMessageId = 8011;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 20;
         public override bool WrapToV2Extension => false;
@@ -1853,7 +1855,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensorpodStatusPacket: PacketV2<SensorpodStatusPayload>
     {
-	    public const int PacketMessageId = 211;
+	    public const int PacketMessageId = 8012;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 54;
         public override bool WrapToV2Extension => false;
@@ -1963,7 +1965,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensPowerBoardPacket: PacketV2<SensPowerBoardPayload>
     {
-	    public const int PacketMessageId = 212;
+	    public const int PacketMessageId = 8013;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 222;
         public override bool WrapToV2Extension => false;
@@ -2105,7 +2107,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class GsmLinkStatusPacket: PacketV2<GsmLinkStatusPayload>
     {
-	    public const int PacketMessageId = 213;
+	    public const int PacketMessageId = 8014;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 200;
         public override bool WrapToV2Extension => false;
@@ -2207,7 +2209,7 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SatcomLinkStatusPacket: PacketV2<SatcomLinkStatusPayload>
     {
-	    public const int PacketMessageId = 214;
+	    public const int PacketMessageId = 8015;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 23;
         public override bool WrapToV2Extension => false;
@@ -2310,6 +2312,92 @@ namespace Asv.Mavlink.V2.Asluav
         /// OriginName: rx_session_pending, Units: , IsExtended: false
         /// </summary>
         public byte RxSessionPending { get; set; }
+    }
+    /// <summary>
+    /// Calibrated airflow angle measurements
+    ///  SENSOR_AIRFLOW_ANGLES
+    /// </summary>
+    public class SensorAirflowAnglesPacket: PacketV2<SensorAirflowAnglesPayload>
+    {
+	    public const int PacketMessageId = 8016;
+        public override int MessageId => PacketMessageId;
+        public override byte GetCrcEtra() => 149;
+        public override bool WrapToV2Extension => false;
+
+        public override SensorAirflowAnglesPayload Payload { get; } = new SensorAirflowAnglesPayload();
+
+        public override string Name => "SENSOR_AIRFLOW_ANGLES";
+    }
+
+    /// <summary>
+    ///  SENSOR_AIRFLOW_ANGLES
+    /// </summary>
+    public class SensorAirflowAnglesPayload : IPayload
+    {
+        public byte GetMaxByteSize() => 18; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
+        public int GetByteSize()
+        {
+            var sum = 0;
+            sum+=8; //Timestamp
+            sum+=4; //Angleofattack
+            sum+=4; //Sideslip
+            sum+=1; //AngleofattackValid
+            sum+=1; //SideslipValid
+            return (byte)sum;
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            Timestamp = BinSerialize.ReadULong(ref buffer);
+            Angleofattack = BinSerialize.ReadFloat(ref buffer);
+            Sideslip = BinSerialize.ReadFloat(ref buffer);
+            AngleofattackValid = (byte)BinSerialize.ReadByte(ref buffer);
+            SideslipValid = (byte)BinSerialize.ReadByte(ref buffer);
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteULong(ref buffer,Timestamp);
+            BinSerialize.WriteFloat(ref buffer,Angleofattack);
+            BinSerialize.WriteFloat(ref buffer,Sideslip);
+            BinSerialize.WriteByte(ref buffer,(byte)AngleofattackValid);
+            BinSerialize.WriteByte(ref buffer,(byte)SideslipValid);
+            /* PayloadByteSize = 18 */;
+        }
+        
+        
+
+
+
+        /// <summary>
+        /// Timestamp
+        /// OriginName: timestamp, Units: us, IsExtended: false
+        /// </summary>
+        public ulong Timestamp { get; set; }
+        /// <summary>
+        /// Angle of attack
+        /// OriginName: angleofattack, Units: deg, IsExtended: false
+        /// </summary>
+        public float Angleofattack { get; set; }
+        /// <summary>
+        /// Sideslip angle
+        /// OriginName: sideslip, Units: deg, IsExtended: false
+        /// </summary>
+        public float Sideslip { get; set; }
+        /// <summary>
+        /// Angle of attack measurement valid
+        /// OriginName: angleofattack_valid, Units: , IsExtended: false
+        /// </summary>
+        public byte AngleofattackValid { get; set; }
+        /// <summary>
+        /// Sideslip angle measurement valid
+        /// OriginName: sideslip_valid, Units: , IsExtended: false
+        /// </summary>
+        public byte SideslipValid { get; set; }
     }
 
 

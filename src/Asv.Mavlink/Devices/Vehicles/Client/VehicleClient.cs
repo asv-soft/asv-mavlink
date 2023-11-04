@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Minimal;
 using NLog;
 
 namespace Asv.Mavlink;
@@ -69,7 +70,7 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
         await Position.GetHomePosition(DisposeCancel).ConfigureAwait(false);
         var version = await Commands.GetAutopilotVersion(DisposeCancel).ConfigureAwait(false);
         var paramDesc = await GetParamDescription().ConfigureAwait(false);
-        if (version.Capabilities.HasFlag(MavProtocolCapability.MavProtocolCapabilityParamUnion))
+        if (version.Capabilities.HasFlag(MavProtocolCapability.MavProtocolCapabilityParamEncodeBytewise))
         {
             _params.Init(new MavParamByteWiseEncoding(), paramDesc);
         }

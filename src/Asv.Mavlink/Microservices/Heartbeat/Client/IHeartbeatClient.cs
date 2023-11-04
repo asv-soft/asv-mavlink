@@ -1,6 +1,7 @@
 using System;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Minimal;
 
 namespace Asv.Mavlink
 {

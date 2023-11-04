@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvGbs;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Minimal;
 using NLog;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
-using MavType = Asv.Mavlink.V2.Common.MavType;
+using MavType = Asv.Mavlink.V2.Minimal.MavType;
 
 namespace Asv.Mavlink;
 

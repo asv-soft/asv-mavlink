@@ -7,7 +7,9 @@ using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Minimal;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
+using MavType = Asv.Mavlink.V2.Minimal.MavType;
 
 namespace Asv.Mavlink;
 
@@ -26,7 +28,7 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
         heartbeat.Set(_ =>
         {
             _.Autopilot = MavAutopilot.MavAutopilotInvalid;
-            _.Type = (Asv.Mavlink.V2.Common.MavType)V2.AsvSdr.MavType.MavTypeAsvSdrPayload;
+            _.Type = (MavType)V2.AsvSdr.MavType.MavTypeAsvSdrPayload;
             _.SystemStatus = MavState.MavStateActive;
             _.BaseMode = MavModeFlag.MavModeFlagCustomModeEnabled;
             _.MavlinkVersion = 3;

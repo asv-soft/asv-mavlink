@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Minimal;
 
 namespace Asv.Mavlink;
 
