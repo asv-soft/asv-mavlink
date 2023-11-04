@@ -18,6 +18,9 @@ public delegate Task<MavResult> CurrentRecordSetTagDelegate(AsvSdrRecordTagType 
 
 public delegate Task<MavResult> SystemControlActionDelegate(AsvSdrSystemControlAction action, CancellationToken cancel);
 
+public delegate Task<MavResult> StartMissionDelegate(ushort missionIndex, CancellationToken cancel);
+public delegate Task<MavResult> StopMissionDelegate(CancellationToken cancel);
+
 public interface IAsvSdrServerEx
 {
     IAsvSdrServer Base { get; }
@@ -27,6 +30,7 @@ public interface IAsvSdrServerEx
     StopRecordDelegate StopRecord { set; }
     CurrentRecordSetTagDelegate CurrentRecordSetTag { set; }
     SystemControlActionDelegate SystemControlAction { set; }
-
+    StartMissionDelegate StartMission { set; }
+    StopMissionDelegate StopMission { set; }
     Task<bool> SendSignal(ulong unixTime, string name, ReadOnlyMemory<double> signal, AsvSdrSignalFormat format, CancellationToken cancel = default);
 }

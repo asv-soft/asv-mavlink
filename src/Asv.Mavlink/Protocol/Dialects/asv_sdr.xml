@@ -71,7 +71,7 @@
         <param index="7">Empty.</param>
       </entry>
       <entry value="13105" name="MAV_CMD_ASV_SDR_WAIT_VEHICLE_WAYPOINT">
-        <description>Waiting for a vehicle mission waypoint point. Can be used in the mission protocol for SDR payloads.</description>
+        <description>Waiting for a vehicle mission waypoint point. Only used in the mission protocol for SDR payloads.</description>
         <param index="1">Waypoint index (uint32).</param>
         <param index="2">Empty.</param>
         <param index="3">Empty.</param>
@@ -81,7 +81,7 @@
         <param index="7">Empty.</param>
       </entry>
       <entry value="13106" name="MAV_CMD_ASV_SDR_DELAY">
-        <description>Waiting a certain amount of time. Can be used in the mission protocol for SDR payloads.</description>
+        <description>Waiting a certain amount of time. Only used in the mission protocol for SDR payloads.</description>
         <param index="1">Delay in ms (uint32).</param>
         <param index="2">Empty.</param>
         <param index="3">Empty.</param>

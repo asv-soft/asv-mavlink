@@ -1052,4 +1052,7 @@ public class AsvSdrTest
         Assert.Equal(guid, MavlinkTypesHelper.GetGuid(record.RecordGuid));
         Assert.Equal(AsvSdrRecordTagType.AsvSdrRecordTagTypeReal64, record.TagType);
     }
+
+
+  
 }

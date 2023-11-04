@@ -207,4 +207,34 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
             cs.Token).ConfigureAwait(false);
         return result.Result;
     }
+
+    public async Task<MavResult> StartMission(ushort missionIndex = 0, CancellationToken cancel = default)
+    {
+        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+        var result = await _commandClient.CommandLong((V2.Common.MavCmd)MavCmd.MavCmdAsvSdrStartMission,
+            BitConverter.ToSingle(BitConverter.GetBytes((uint)missionIndex)),
+            Single.NaN,
+            Single.NaN,
+            Single.NaN,
+            Single.NaN,
+            Single.NaN,
+            Single.NaN,
+            cs.Token).ConfigureAwait(false);
+        return result.Result;
+    }
+
+    public async Task<MavResult> StopMission(CancellationToken cancel = default)
+    {
+        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+        var result = await _commandClient.CommandLong((V2.Common.MavCmd)MavCmd.MavCmdAsvSdrStopMission,
+            Single.NaN,
+            Single.NaN,
+            Single.NaN,
+            Single.NaN,
+            Single.NaN,
+            Single.NaN,
+            Single.NaN,
+            cs.Token).ConfigureAwait(false);
+        return result.Result;
+    }
 }

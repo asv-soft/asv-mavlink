@@ -106,6 +106,22 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
             var result = await SystemControlAction(action, cs.Token).ConfigureAwait(false);
             return new CommandResult(result);
         };
+        commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartMission] = async (id, args, cancel) =>
+        {
+            if (StartMission == null) return new CommandResult(MavResult.MavResultUnsupported);
+            using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+            var missionIndex = BitConverter.ToUInt32(BitConverter.GetBytes(args.Payload.Param1));
+            if (missionIndex > ushort.MaxValue) return new CommandResult(MavResult.MavResultFailed);
+            var result = await StartMission((ushort)missionIndex, cs.Token).ConfigureAwait(false);
+            return new CommandResult(result);
+        };
+        commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopMission] = async (id, args, cancel) =>
+        {
+            if (StopMission == null) return new CommandResult(MavResult.MavResultUnsupported);
+            using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+            var result = await StopMission(cs.Token).ConfigureAwait(false);
+            return new CommandResult(result);
+        };
     }
 
     public SetModeDelegate SetMode { get; set; }
@@ -113,8 +129,8 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
     public StopRecordDelegate StopRecord { get; set; }
     public CurrentRecordSetTagDelegate CurrentRecordSetTag { get; set; }
     public SystemControlActionDelegate SystemControlAction { get; set; }
-   
-
+    public StartMissionDelegate StartMission { get; set; }
+    public StopMissionDelegate StopMission { get; set; }
     public async Task<bool> SendSignal(ulong unixTime, string name, ReadOnlyMemory<double> signal,
         AsvSdrSignalFormat format, CancellationToken cancel = default)
     {

@@ -739,4 +739,34 @@ public class AsvSdrExTests
         Assert.True(mavRebootResult == MavResult.MavResultFailed);
         Assert.True(mavShutdownResult == MavResult.MavResultAccepted);
     }
+    
+    
+    [Theory]
+    [InlineData(0)]
+    [InlineData(256)]
+    [InlineData(ushort.MaxValue)]
+    public async Task Check_Start_Mission_Behaviour(ushort originIndex)
+    {
+        var (client, server) = await SetUpConnection();
+
+        server.StartMission = (missionIndex, cancel) =>
+        {
+            Assert.Equal(originIndex, missionIndex);
+            return Task.FromResult(MavResult.MavResultAccepted);
+        };
+
+        await client.StartMissionAndCheckResult(originIndex);
+        
+    }
+    
+    [Fact]
+    public async Task Check_Stop_Mission_Behaviour()
+    {
+        var (client, server) = await SetUpConnection();
+
+        server.StopMission = (cancel) => Task.FromResult(MavResult.MavResultAccepted);
+
+        await client.StopMission();
+
+    }
 }
