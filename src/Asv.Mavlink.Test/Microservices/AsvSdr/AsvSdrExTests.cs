@@ -59,7 +59,7 @@ public class AsvSdrExTests
             Assert.Equal(customMode, mode);
             Assert.Equal(11223U, hz);
             Assert.Equal(1, rate);
-            Assert.Equal(1, ratio);
+            Assert.Equal(1U, ratio);
             return Task.FromResult(MavResult.MavResultAccepted);
         };
 

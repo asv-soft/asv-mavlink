@@ -105,20 +105,6 @@ public class MissionServer : MavlinkMicroserviceServer, IMissionServer
                 x.Payload.TargetComponent = targetComponentId;
                 x.Payload.TargetSystem = targetSystemId;
                 x.Payload.Seq = index;
-            },p=>p.Payload.TargetSystem, p=>p.Payload.TargetComponent,p=> p.Payload.Seq == index, p => new ServerMissionItem
-            {
-                Param1 = p.Payload.Param1,
-                Param2 = p.Payload.Param2,
-                Param3 = p.Payload.Param3,
-                Param4 = p.Payload.Param4,
-                X = p.Payload.X,
-                Y = p.Payload.Y,
-                Z = p.Payload.Z,
-                Seq = p.Payload.Seq,
-                Command = p.Payload.Command,
-                Frame = p.Payload.Frame,
-                Autocontinue = p.Payload.Autocontinue,
-                MissionType = p.Payload.MissionType
-            }, cancel:DisposeCancel);
+            },p=>p.Payload.TargetSystem, p=>p.Payload.TargetComponent,p=> p.Payload.Seq == index, AsvSdrHelper.Convert , cancel:DisposeCancel);
     }
 }

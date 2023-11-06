@@ -94,9 +94,27 @@ namespace Asv.Mavlink
 
         public IObservable<CommandAckPayload> OnCommandAck { get; }
 
+        public async Task<CommandAckPayload> CommandLong(Action<CommandLongPayload> edit, CancellationToken cancel = default)
+        {
+            var command = (MavCmd)0;
+            string commandTxt = String.Empty;
+            var result = await InternalCall<CommandAckPayload, CommandLongPacket, CommandAckPacket>((packet) =>
+            {
+                packet.Payload.TargetComponent = Identity.TargetComponentId;
+                packet.Payload.TargetSystem = Identity.TargetSystemId;
+                packet.Payload.Confirmation = 0;
+                edit(packet.Payload);
+                command = packet.Payload.Command;
+                commandTxt = $"{command:G}({packet.Payload.Param1},{packet.Payload.Param1},{packet.Payload.Param2},{packet.Payload.Param3},{packet.Payload.Param4},{packet.Payload.Param5},{packet.Payload.Param6},{packet.Payload.Param7})";
+                Logger.Trace($"{LogSend}{commandTxt}");
+            }, _ => _.Payload.Command == command, _ => _.Payload, _config.CommandAttempt, (_,att)=>_.Payload.Confirmation = (byte)att, _config.CommandTimeoutMs, cancel).ConfigureAwait(false);
+            Logger.Trace($"{LogRecv}{commandTxt} => {result.Result:G} {result.Progress} {result.ResultParam2})");
+            return result;
+        }
+
         public async Task<CommandAckPayload> CommandLong(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, CancellationToken cancel)
         {
-            Logger.Trace($"{LogSend}{command:G}{param1},{param1},{param2},{param3},{param4},{param5},{param6},{param7}");
+            Logger.Trace($"{LogSend}{command:G}({param1},{param1},{param2},{param3},{param4},{param5},{param6},{param7})");
             var result = await InternalCall<CommandAckPayload, CommandLongPacket, CommandAckPacket>((packet) =>
             {
                 packet.Payload.Command = command;
@@ -120,7 +138,7 @@ namespace Asv.Mavlink
             where TAnswerPacket : IPacketV2<IPayload>, new()
 
         {
-            Logger.Trace($"{LogSend}{command:G}{param1},{param1},{param2},{param3},{param4},{param5},{param6},{param7}");
+            Logger.Trace($"{LogSend}{command:G}({param1},{param1},{param2},{param3},{param4},{param5},{param6},{param7})");
             var result = await InternalCall<TAnswerPacket, CommandLongPacket, TAnswerPacket>((packet) =>
             {
                 packet.Payload.Command = command;

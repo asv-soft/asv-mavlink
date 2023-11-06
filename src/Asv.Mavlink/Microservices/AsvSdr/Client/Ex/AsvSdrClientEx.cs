@@ -126,115 +126,50 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
     public async Task<MavResult> SetMode(AsvSdrCustomMode mode, ulong frequencyHz, float recordRate, uint sendingThinningRatio,
         CancellationToken cancel)
     {
-        var freqArray = BitConverter.GetBytes(frequencyHz);
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var result = await _commandClient.CommandLong((V2.Common.MavCmd)MavCmd.MavCmdAsvSdrSetMode,
-            BitConverter.ToSingle(BitConverter.GetBytes((uint)mode)),
-            BitConverter.ToSingle(freqArray,0),
-            BitConverter.ToSingle(freqArray,4),
-            recordRate,
-            BitConverter.ToSingle(BitConverter.GetBytes(sendingThinningRatio)),
-            Single.NaN,
-            Single.NaN,
-            cs.Token).ConfigureAwait(false);
+        var result = await _commandClient.CommandLong(item => AsvSdrHelper.SetArgsForSdrSetMode(item, mode,frequencyHz,recordRate,sendingThinningRatio),cs.Token).ConfigureAwait(false);
         return result.Result;
     }
 
     public async Task<MavResult> StartRecord(string recordName, CancellationToken cancel)
     {
-        AsvSdrHelper.CheckRecordName(recordName);
-        var nameArray = new byte[AsvSdrHelper.RecordNameMaxLength];
-        MavlinkTypesHelper.SetString(nameArray,recordName);
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var result = await _commandClient.CommandLong((V2.Common.MavCmd)MavCmd.MavCmdAsvSdrStartRecord,
-            BitConverter.ToSingle(nameArray,0),
-            BitConverter.ToSingle(nameArray,4),
-            BitConverter.ToSingle(nameArray,8),
-            BitConverter.ToSingle(nameArray,12),
-            BitConverter.ToSingle(nameArray,16),
-            BitConverter.ToSingle(nameArray,20),
-            BitConverter.ToSingle(nameArray,24),
-            cs.Token).ConfigureAwait(false);
+        var result = await _commandClient.CommandLong(item => AsvSdrHelper.SetArgsForSdrStartRecord(item, recordName), cs.Token).ConfigureAwait(false);
         return result.Result;
     }
 
     public async Task<MavResult> StopRecord(CancellationToken cancel)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var result = await _commandClient.CommandLong((V2.Common.MavCmd)MavCmd.MavCmdAsvSdrStopRecord,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            cs.Token).ConfigureAwait(false);
+        var result = await _commandClient.CommandLong(AsvSdrHelper.SetArgsForSdrStopRecord, cs.Token).ConfigureAwait(false);
         return result.Result;
     }
 
     public async Task<MavResult> CurrentRecordSetTag(string tagName, AsvSdrRecordTagType type, byte[] rawValue , CancellationToken cancel)
     {
-        if (rawValue.Length != 8) 
-            throw new ArgumentException("Raw value must be 8 bytes long");
-        AsvSdrHelper.CheckTagName(tagName);
-        var nameArray = new byte[AsvSdrHelper.RecordTagNameMaxLength];
-        MavlinkTypesHelper.SetString(nameArray,tagName);
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var result = await _commandClient.CommandLong((V2.Common.MavCmd)MavCmd.MavCmdAsvSdrSetRecordTag,
-            BitConverter.ToSingle(BitConverter.GetBytes((uint)type)),
-            BitConverter.ToSingle(nameArray,0),
-            BitConverter.ToSingle(nameArray,4),
-            BitConverter.ToSingle(nameArray,8),
-            BitConverter.ToSingle(nameArray,12),
-            BitConverter.ToSingle(rawValue,0),
-            BitConverter.ToSingle(rawValue,4),
-            cs.Token).ConfigureAwait(false);
+        var result = await _commandClient.CommandLong(item=>AsvSdrHelper.SetArgsForSdrCurrentRecordSetTag(item,tagName,type,rawValue), cs.Token).ConfigureAwait(false);
         return result.Result;
     }
 
     public async Task<MavResult> SystemControlAction(AsvSdrSystemControlAction action, CancellationToken cancel)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var result = await _commandClient.CommandLong((V2.Common.MavCmd)MavCmd.MavCmdAsvSdrSystemControlAction,
-            BitConverter.ToSingle(BitConverter.GetBytes((uint)action)),
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            cs.Token).ConfigureAwait(false);
+        var result = await _commandClient.CommandLong(item=>AsvSdrHelper.SetArgsForSdrSystemControlAction(item, action), cs.Token).ConfigureAwait(false);
         return result.Result;
     }
 
     public async Task<MavResult> StartMission(ushort missionIndex = 0, CancellationToken cancel = default)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var result = await _commandClient.CommandLong((V2.Common.MavCmd)MavCmd.MavCmdAsvSdrStartMission,
-            BitConverter.ToSingle(BitConverter.GetBytes((uint)missionIndex)),
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            cs.Token).ConfigureAwait(false);
+        var result = await _commandClient.CommandLong(item=>AsvSdrHelper.SetArgsForSdrStartMission(item,missionIndex), cs.Token).ConfigureAwait(false);
         return result.Result;
     }
 
     public async Task<MavResult> StopMission(CancellationToken cancel = default)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var result = await _commandClient.CommandLong((V2.Common.MavCmd)MavCmd.MavCmdAsvSdrStopMission,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            Single.NaN,
-            cs.Token).ConfigureAwait(false);
+        var result = await _commandClient.CommandLong(AsvSdrHelper.SetArgsForSdrStopMission, cs.Token).ConfigureAwait(false);
         return result.Result;
     }
 }

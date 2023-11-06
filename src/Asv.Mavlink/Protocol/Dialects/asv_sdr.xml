@@ -61,7 +61,7 @@
         <param index="7">Tag value data 4-7 bytes depends on the type of tag.</param>
       </entry>
       <entry value="13104" name="MAV_CMD_ASV_SDR_SYSTEM_CONTROL_ACTION">
-        <description>Send shutdown or reboot command. Can be used in the mission protocol for SDR payloads.</description>
+        <description>Send shutdown or reboot command. Can't be used in the mission protocol for SDR payloads.</description>
         <param index="1">ASV_SDR_SYSTEM_CONTROL_ACTION (uint32).</param>
         <param index="2">Empty.</param>
         <param index="3">Empty.</param>

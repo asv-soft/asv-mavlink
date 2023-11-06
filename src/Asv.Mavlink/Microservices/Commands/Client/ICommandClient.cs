@@ -8,6 +8,7 @@ namespace Asv.Mavlink
     public interface ICommandClient
     {
         IObservable<CommandAckPayload> OnCommandAck { get; }
+        Task<CommandAckPayload> CommandLong(Action<CommandLongPayload> edit, CancellationToken cancel = default);
         Task<CommandAckPayload> CommandLong(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, CancellationToken cancel = default);
 
         Task<TAnswerPacket> CommandLongAndWaitPacket<TAnswerPacket>(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, CancellationToken cancel = default)

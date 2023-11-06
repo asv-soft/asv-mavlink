@@ -8,7 +8,7 @@ using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 
-public delegate Task<MavResult> SetModeDelegate(AsvSdrCustomMode mode, ulong frequencyHz, float recordRate,int sendingThinningRatio, CancellationToken cancel);
+public delegate Task<MavResult> SetModeDelegate(AsvSdrCustomMode mode, ulong frequencyHz, float recordRate,uint sendingThinningRatio, CancellationToken cancel);
 
 public delegate Task<MavResult> StartRecordDelegate(string recordName, CancellationToken cancel);
 

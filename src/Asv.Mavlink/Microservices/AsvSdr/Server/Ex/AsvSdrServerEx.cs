@@ -46,13 +46,7 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
         {
             if (SetMode == null) return new CommandResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-            var mode = (AsvSdrCustomMode)BitConverter.ToUInt32(BitConverter.GetBytes(args.Payload.Param1));
-            var freqArray = new byte[8];
-            BitConverter.GetBytes(args.Payload.Param2).CopyTo(freqArray,0);
-            BitConverter.GetBytes(args.Payload.Param3).CopyTo(freqArray,4);
-            var freq = BitConverter.ToUInt64(freqArray,0);
-            var rate = args.Payload.Param4;
-            var sendingThinningRatio = BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param5));
+            AsvSdrHelper.GetArgsForSdrSetMode(args.Payload, out var mode, out var freq, out var rate, out var sendingThinningRatio);
             var result = await SetMode(mode,freq, rate,sendingThinningRatio, cs.Token).ConfigureAwait(false);
             return new CommandResult(result);
         };
@@ -60,16 +54,7 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
         {
             if (StartRecord == null) return new CommandResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-            var nameArray = new byte[AsvSdrHelper.RecordNameMaxLength];
-            BitConverter.GetBytes(args.Payload.Param1).CopyTo(nameArray,0);
-            BitConverter.GetBytes(args.Payload.Param2).CopyTo(nameArray,4);
-            BitConverter.GetBytes(args.Payload.Param3).CopyTo(nameArray,8);
-            BitConverter.GetBytes(args.Payload.Param4).CopyTo(nameArray,12);
-            BitConverter.GetBytes(args.Payload.Param5).CopyTo(nameArray,16);
-            BitConverter.GetBytes(args.Payload.Param6).CopyTo(nameArray,20);
-            BitConverter.GetBytes(args.Payload.Param7).CopyTo(nameArray,24);
-            var name = MavlinkTypesHelper.GetString(nameArray);
-            AsvSdrHelper.CheckRecordName(name);
+            AsvSdrHelper.GetArgsForSdrStartRecord(args.Payload, out var name);
             var result = await StartRecord(name, cs.Token).ConfigureAwait(false);
             return new CommandResult(result);
         };
@@ -77,32 +62,23 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
         {
             if (StopRecord == null) return new CommandResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+            AsvSdrHelper.GetArgsForSdrStopRecord(args.Payload);
             var result = await StopRecord(cs.Token).ConfigureAwait(false);
             return new CommandResult(result);
         };
         commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag] = async (id,args, cancel) =>
         {
             if (CurrentRecordSetTag == null) return new CommandResult(MavResult.MavResultUnsupported);
-            var tagType = BitConverter.ToUInt32(BitConverter.GetBytes(args.Payload.Param1));
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-            var nameArray = new byte[AsvSdrHelper.RecordTagNameMaxLength];
-            BitConverter.GetBytes(args.Payload.Param2).CopyTo(nameArray,0);
-            BitConverter.GetBytes(args.Payload.Param3).CopyTo(nameArray,4);
-            BitConverter.GetBytes(args.Payload.Param4).CopyTo(nameArray,8);
-            BitConverter.GetBytes(args.Payload.Param5).CopyTo(nameArray,12);
-            var name = MavlinkTypesHelper.GetString(nameArray); 
-            AsvSdrHelper.CheckTagName(name);
-            var valueArray = new byte[AsvSdrHelper.RecordTagValueMaxLength];
-            BitConverter.GetBytes(args.Payload.Param6).CopyTo(valueArray,0);
-            BitConverter.GetBytes(args.Payload.Param7).CopyTo(valueArray,4);
-            var result = await CurrentRecordSetTag((AsvSdrRecordTagType)tagType,name,valueArray, cs.Token).ConfigureAwait(false);
+            AsvSdrHelper.GetArgsForSdrCurrentRecordSetTag(args.Payload, out var name, out var tagType, out var valueArray);
+            var result = await CurrentRecordSetTag(tagType,name,valueArray, cs.Token).ConfigureAwait(false);
             return new CommandResult(result);
         };
         commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction] = async (id, args, cancel) =>
         {
             if (SystemControlAction == null) return new CommandResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-            var action = (AsvSdrSystemControlAction)BitConverter.ToUInt32(BitConverter.GetBytes(args.Payload.Param1));
+            AsvSdrHelper.GetArgsForSdrSystemControlAction(args.Payload, out var action);
             var result = await SystemControlAction(action, cs.Token).ConfigureAwait(false);
             return new CommandResult(result);
         };
@@ -110,15 +86,15 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
         {
             if (StartMission == null) return new CommandResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-            var missionIndex = BitConverter.ToUInt32(BitConverter.GetBytes(args.Payload.Param1));
-            if (missionIndex > ushort.MaxValue) return new CommandResult(MavResult.MavResultFailed);
-            var result = await StartMission((ushort)missionIndex, cs.Token).ConfigureAwait(false);
+            AsvSdrHelper.GetArgsForSdrStartMission(args.Payload, out var missionIndex);
+            var result = await StartMission(missionIndex, cs.Token).ConfigureAwait(false);
             return new CommandResult(result);
         };
         commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopMission] = async (id, args, cancel) =>
         {
             if (StopMission == null) return new CommandResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+            AsvSdrHelper.GetArgsForSdrStopMission(args.Payload);
             var result = await StopMission(cs.Token).ConfigureAwait(false);
             return new CommandResult(result);
         };
