@@ -160,6 +160,107 @@ public class AsvSdrHelperTest
         Assert.Equal(rawValueIn, rawValueOut);
     }
     
+    [Theory]
+    [InlineData(AsvSdrSystemControlAction.AsvSdrSystemControlActionReboot)]
+    [InlineData(AsvSdrSystemControlAction.AsvSdrSystemControlActionShutdown)]
+    public void Check_mission_conversion_for_system_control_action(AsvSdrSystemControlAction action)
+    {
+        var input = new MissionItemIntPayload();
+        var buffer = new byte[input.GetByteSize()];
+        var inputSpan = new Span<byte>(buffer);
+        AsvSdrHelper.SetArgsForSdrSystemControlAction(input, action);
+        input.Serialize(ref inputSpan);
+        var output = new MissionItemIntPayload();
+        var outputSpan = new ReadOnlySpan<byte>(buffer);
+        output.Deserialize(ref outputSpan);
+        var outputServerItem = AsvSdrHelper.Convert(output);
+        AsvSdrHelper.GetArgsForSdrSystemControlAction(outputServerItem, out var actionOut);
+        Assert.Equal(action,actionOut);
+    }
+    [Theory]
+    [InlineData(AsvSdrSystemControlAction.AsvSdrSystemControlActionReboot)]
+    [InlineData(AsvSdrSystemControlAction.AsvSdrSystemControlActionShutdown)]
+    public void Check_command_conversion_for_system_control_action(AsvSdrSystemControlAction action)
+    {
+        var input = new CommandLongPayload();
+        var buffer = new byte[input.GetByteSize()];
+        var inputSpan = new Span<byte>(buffer);
+        AsvSdrHelper.SetArgsForSdrSystemControlAction(input, action);
+        input.Serialize(ref inputSpan);
+        var output = new CommandLongPayload();
+        var outputSpan = new ReadOnlySpan<byte>(buffer);
+        output.Deserialize(ref outputSpan);
+        AsvSdrHelper.GetArgsForSdrSystemControlAction(output, out var actionOut);
+        Assert.Equal(action,actionOut);
+    }
+    
+    [Theory]
+    [InlineData(0)]
+    [InlineData(10)]
+    public void Check_command_conversion_for_start_mission(ushort missionIndex)
+    {
+        var input = new CommandLongPayload();
+        var buffer = new byte[input.GetByteSize()];
+        var inputSpan = new Span<byte>(buffer);
+        AsvSdrHelper.SetArgsForSdrStartMission(input, missionIndex);
+        input.Serialize(ref inputSpan);
+        var output = new CommandLongPayload();
+        var outputSpan = new ReadOnlySpan<byte>(buffer);
+        output.Deserialize(ref outputSpan);
+        AsvSdrHelper.GetArgsForSdrStartMission(output, out var missionIndexOut);
+        Assert.Equal(missionIndex,missionIndexOut);
+    }
+    
+    [Fact]
+    public void Check_command_conversion_for_stop_mission()
+    {
+        var input = new CommandLongPayload();
+        var buffer = new byte[input.GetByteSize()];
+        var inputSpan = new Span<byte>(buffer);
+        AsvSdrHelper.SetArgsForSdrStopMission(input);
+        input.Serialize(ref inputSpan);
+        var output = new CommandLongPayload();
+        var outputSpan = new ReadOnlySpan<byte>(buffer);
+        output.Deserialize(ref outputSpan);
+        AsvSdrHelper.GetArgsForSdrStopMission(output);
+    }
+    
+    [Theory]
+    [InlineData(0)]
+    [InlineData(uint.MaxValue)]
+    public void Check_mission_conversion_for_sdr_delay(uint delayMs)
+    {
+        var input = new MissionItemIntPayload();
+        var buffer = new byte[input.GetByteSize()];
+        var inputSpan = new Span<byte>(buffer);
+        AsvSdrHelper.SetArgsForSdrDelay(input, delayMs);
+        input.Serialize(ref inputSpan);
+        var output = new MissionItemIntPayload();
+        var outputSpan = new ReadOnlySpan<byte>(buffer);
+        output.Deserialize(ref outputSpan);
+        var outputServerItem = AsvSdrHelper.Convert(output);
+        AsvSdrHelper.GetArgsForSdrDelay(outputServerItem, out var delayMsOut);
+        Assert.Equal(delayMs,delayMsOut);
+    }
+    
+    
+    [Theory]
+    [InlineData(0)]
+    [InlineData(ushort.MaxValue)]
+    public void Check_mission_conversion_for_wait_vehicle(ushort index)
+    {
+        var input = new MissionItemIntPayload();
+        var buffer = new byte[input.GetByteSize()];
+        var inputSpan = new Span<byte>(buffer);
+        AsvSdrHelper.SetArgsForSdrWaitVehicleWaypoint(input, index);
+        input.Serialize(ref inputSpan);
+        var output = new MissionItemIntPayload();
+        var outputSpan = new ReadOnlySpan<byte>(buffer);
+        output.Deserialize(ref outputSpan);
+        var outputServerItem = AsvSdrHelper.Convert(output);
+        AsvSdrHelper.GetArgsForSdrWaitVehicleWaypoint(outputServerItem, out var indexOut);
+        Assert.Equal(index,indexOut);
+    }
     
     
   

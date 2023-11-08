@@ -9,7 +9,7 @@ namespace Asv.Mavlink;
 
 public static class AsvSdrHelper
 {
-    public const int RecordTagValueMaxLength = 8;
+    public const int RecordTagValueLength = 8;
 
     public const int RecordNameMaxLength = 28;
     private const string RecordNameRegexString = "^[A-Za-z][A-Za-z0-9_\\- +]{2,28}$";
@@ -224,6 +224,8 @@ public static class AsvSdrHelper
     public static void SetArgsForSdrCurrentRecordSetTag(CommandLongPayload item, string tagName, AsvSdrRecordTagType type, byte[] rawValue)
     {
         CheckTagName(tagName);
+        if (rawValue.Length != RecordTagValueLength)
+            throw new ArgumentException(nameof(rawValue), $"Tag value array must be {RecordTagValueLength} bytes length");
         var nameArray = new byte[RecordTagNameMaxLength];
         MavlinkTypesHelper.SetString(nameArray, tagName);
         item.Command = (V2.Common.MavCmd)MavCmd.MavCmdAsvSdrSetRecordTag;
@@ -238,6 +240,8 @@ public static class AsvSdrHelper
     public static void SetArgsForSdrCurrentRecordSetTag(MissionItemIntPayload payload,string tagName, AsvSdrRecordTagType type, byte[] rawValue)
     {
         CheckTagName(tagName);
+        if (rawValue.Length != RecordTagValueLength)
+            throw new ArgumentException(nameof(rawValue), $"Tag value array must be {RecordTagValueLength} bytes length");
         var nameArray = new byte[RecordTagNameMaxLength];
         MavlinkTypesHelper.SetString(nameArray, tagName);
         payload.Command = (V2.Common.MavCmd)MavCmd.MavCmdAsvSdrSetRecordTag;
@@ -263,7 +267,7 @@ public static class AsvSdrHelper
         BitConverter.GetBytes(item.Param5).CopyTo(nameArray,12);
         tagName = MavlinkTypesHelper.GetString(nameArray); 
         CheckTagName(tagName);
-        valueArray = new byte[RecordTagValueMaxLength];
+        valueArray = new byte[RecordTagValueLength];
         BitConverter.GetBytes(item.Param6).CopyTo(valueArray,0);
         BitConverter.GetBytes(item.Param7).CopyTo(valueArray,4);
     }
@@ -280,7 +284,7 @@ public static class AsvSdrHelper
         BitConverter.GetBytes(item.X).CopyTo(nameArray,12);
         tagName = MavlinkTypesHelper.GetString(nameArray); 
         CheckTagName(tagName);
-        valueArray = new byte[RecordTagValueMaxLength];
+        valueArray = new byte[RecordTagValueLength];
         BitConverter.GetBytes(item.Y).CopyTo(valueArray,0);
         BitConverter.GetBytes(item.Z).CopyTo(valueArray,4);
     }
@@ -404,7 +408,7 @@ public static class AsvSdrHelper
     public static void SetArgsForSdrWaitVehicleWaypoint(MissionItemIntPayload item,ushort index)
     {   
         item.Command = (V2.Common.MavCmd)MavCmd.MavCmdAsvSdrWaitVehicleWaypoint;
-        item.Param1 = BitConverter.ToSingle(BitConverter.GetBytes(index));
+        item.Param1 = BitConverter.ToSingle(BitConverter.GetBytes((uint)index));
         item.Param2 = Single.NaN;
         item.Param3 = Single.NaN;
         item.Param4 = Single.NaN;

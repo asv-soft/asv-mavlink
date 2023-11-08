@@ -564,7 +564,7 @@ public class AsvSdrExTests
             return Task.FromResult(MavResult.MavResultAccepted);
         };
         
-        var nameArray = new byte[AsvSdrHelper.RecordTagValueMaxLength];
+        var nameArray = new byte[AsvSdrHelper.RecordTagValueLength];
         var mavResult = await asvSdrClientEx.CurrentRecordSetTag("test", AsvSdrRecordTagType.AsvSdrRecordTagTypeString8, nameArray, CancellationToken.None);
         Assert.True(mavResult == MavResult.MavResultAccepted);
     }
@@ -642,7 +642,7 @@ public class AsvSdrExTests
     public async Task Check_For_Incorrect_CurrentRecordSetTag_Tag_Name()
     {
         var (asvSdrClientEx, asvSdrServerEx) = await SetUpConnection();
-        var nameArray = new byte[AsvSdrHelper.RecordTagValueMaxLength];
+        var nameArray = new byte[AsvSdrHelper.RecordTagValueLength];
 
         await Assert.ThrowsAsync<Exception>( async () =>
         {

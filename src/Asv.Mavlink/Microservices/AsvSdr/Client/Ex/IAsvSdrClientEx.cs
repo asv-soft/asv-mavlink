@@ -86,9 +86,9 @@ public static class AsvSdrClientExHelper
     
     public static Task<MavResult> CurrentRecordSetTag(this IAsvSdrClientEx src, string tagName, string value, CancellationToken cancel)
     {
-        if (value.Length > AsvSdrHelper.RecordTagValueMaxLength) 
-            throw new Exception($"Tag string value is too long. Max length is {AsvSdrHelper.RecordTagValueMaxLength}");
-        var nameArray = new byte[AsvSdrHelper.RecordTagValueMaxLength];
+        if (value.Length > AsvSdrHelper.RecordTagValueLength) 
+            throw new Exception($"Tag string value is too long. Max length is {AsvSdrHelper.RecordTagValueLength}");
+        var nameArray = new byte[AsvSdrHelper.RecordTagValueLength];
         MavlinkTypesHelper.SetString(nameArray,value);
         return src.CurrentRecordSetTag(tagName, AsvSdrRecordTagType.AsvSdrRecordTagTypeString8, nameArray, cancel);
     }
