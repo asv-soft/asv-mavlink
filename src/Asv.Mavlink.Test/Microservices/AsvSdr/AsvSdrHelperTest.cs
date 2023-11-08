@@ -261,6 +261,56 @@ public class AsvSdrHelperTest
         AsvSdrHelper.GetArgsForSdrWaitVehicleWaypoint(outputServerItem, out var indexOut);
         Assert.Equal(index,indexOut);
     }
+    [Theory]
+    [InlineData(ulong.MaxValue)]
+    [InlineData(ulong.MinValue)]
+    [InlineData(1234567789)]
+    public void Check_set_and_get_value_from_byte_array_uint64(ulong value)
+    {
+        var data = new byte[AsvSdrHelper.RecordTagValueLength];
+        AsvSdrHelper.SetTagValueAsUInt64(data, AsvSdrRecordTagType.AsvSdrRecordTagTypeUint64, value);
+        var valueOut = AsvSdrHelper.GetTagValueAsUInt64(data, AsvSdrRecordTagType.AsvSdrRecordTagTypeUint64);
+        Assert.Equal(value,valueOut);
+    }
+    [Theory]
+    [InlineData(0)]
+    [InlineData(123456789)]
+    [InlineData(long.MaxValue)]
+    [InlineData(long.MinValue)]
+    public void Check_set_and_get_value_from_byte_array_int64(long value)
+    {
+        var data = new byte[AsvSdrHelper.RecordTagValueLength];
+        AsvSdrHelper.SetTagValueAsInt64(data, AsvSdrRecordTagType.AsvSdrRecordTagTypeInt64, value);
+        var valueOut = AsvSdrHelper.GetTagValueAsInt64(data, AsvSdrRecordTagType.AsvSdrRecordTagTypeInt64);
+        Assert.Equal(value,valueOut);
+    }
+    [Theory]
+    [InlineData(0)]
+    [InlineData(double.Epsilon)]
+    [InlineData(double.NaN)]
+    [InlineData(12345.45)]
+    public void Check_set_and_get_value_from_byte_array_double(double value)
+    {
+        var data = new byte[AsvSdrHelper.RecordTagValueLength];
+        AsvSdrHelper.SetTagValueAsReal64(data, AsvSdrRecordTagType.AsvSdrRecordTagTypeReal64, value);
+        var valueOut = AsvSdrHelper.GetTagValueAsReal64(data, AsvSdrRecordTagType.AsvSdrRecordTagTypeReal64);
+        Assert.Equal(value,valueOut);
+    }
+    
+    [Theory]
+    [InlineData("")]
+    [InlineData("12345678")]
+    [InlineData("1234")]
+    [InlineData("A")]
+    public void Check_set_and_get_value_from_byte_array_string8(string value)
+    {
+        var data = new byte[AsvSdrHelper.RecordTagValueLength];
+        AsvSdrHelper.SetTagValueAsString(data, AsvSdrRecordTagType.AsvSdrRecordTagTypeString8, value);
+        var valueOut = AsvSdrHelper.GetTagValueAsString(data, AsvSdrRecordTagType.AsvSdrRecordTagTypeString8);
+        Assert.Equal(value,valueOut);
+    }
+    
+    
     
     
   

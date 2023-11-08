@@ -30,6 +30,8 @@ public static class AsvSdrHelper
                 $"Record name '{name}' not match regex '{RecordNameRegexString}')");
     }
 
+    #region Tags
+
     public static void CheckTagName(string name)
     {
         if (name.IsNullOrWhiteSpace()) throw new Exception("Tag name is empty");
@@ -40,6 +42,98 @@ public static class AsvSdrHelper
                 $"Tag name '{name}' not match regex '{RecordTagNameRegexString}')");
     }
 
+    public static string PrintTag(string tagName,AsvSdrRecordTagType type, byte[] value)
+    {
+        return $"{tagName}:{PrintTagValue(type, value)}";
+    }
+    public static string PrintTagValue(AsvSdrRecordTagType type, byte[] rawValue)
+    {
+        if (rawValue.Length != RecordTagValueLength)
+            throw new ArgumentException(nameof(rawValue), $"Tag value array must be {RecordTagValueLength} bytes length");
+        return type switch
+        {
+            AsvSdrRecordTagType.AsvSdrRecordTagTypeUint64 => $"{BitConverter.ToUInt64(rawValue, 0)}",
+            AsvSdrRecordTagType.AsvSdrRecordTagTypeInt64 => $"{BitConverter.ToInt64(rawValue, 0)}",
+            AsvSdrRecordTagType.AsvSdrRecordTagTypeReal64 => $"{BitConverter.ToDouble(rawValue, 0)}",
+            AsvSdrRecordTagType.AsvSdrRecordTagTypeString8 => $"{MavlinkTypesHelper.GetString(rawValue)}",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    public static ulong GetTagValueAsUInt64(ReadOnlySpan<byte> rawValue, AsvSdrRecordTagType type)
+    {
+        if (rawValue.Length != RecordTagValueLength)
+            throw new ArgumentException($"Tag value array must be {RecordTagValueLength} bytes length", nameof(rawValue));
+        if (type != AsvSdrRecordTagType.AsvSdrRecordTagTypeUint64)
+            throw new ArgumentException($"Tag type must be {AsvSdrRecordTagType.AsvSdrRecordTagTypeUint64}", nameof(type));
+        return BitConverter.ToUInt64(rawValue);
+    }
+    public static void SetTagValueAsUInt64(Span<byte> rawValue, AsvSdrRecordTagType type, ulong value)
+    {
+        if (rawValue.Length != RecordTagValueLength)
+            throw new ArgumentException($"Tag value array must be {RecordTagValueLength} bytes length", nameof(rawValue));
+        if (type != AsvSdrRecordTagType.AsvSdrRecordTagTypeUint64)
+            throw new ArgumentException($"Tag type must be {AsvSdrRecordTagType.AsvSdrRecordTagTypeUint64}", nameof(type));
+        if (BitConverter.TryWriteBytes(rawValue, value) == false)
+            throw new ArgumentException($"Can't write value {value} to tag value array", nameof(value));
+        
+    }
+    public static long GetTagValueAsInt64(ReadOnlySpan<byte> rawValue, AsvSdrRecordTagType type)
+    {
+        if (rawValue.Length != RecordTagValueLength)
+            throw new ArgumentException($"Tag value array must be {RecordTagValueLength} bytes length", nameof(rawValue));
+        if (type != AsvSdrRecordTagType.AsvSdrRecordTagTypeInt64)
+            throw new ArgumentException($"Tag type must be {AsvSdrRecordTagType.AsvSdrRecordTagTypeInt64}", nameof(type));
+        return BitConverter.ToInt64(rawValue);
+    }
+
+    public static void SetTagValueAsInt64(Span<byte> rawValue, AsvSdrRecordTagType type, long value)
+    {
+        if (rawValue.Length != RecordTagValueLength)
+            throw new ArgumentException($"Tag value array must be {RecordTagValueLength} bytes length", nameof(rawValue));
+        if (type != AsvSdrRecordTagType.AsvSdrRecordTagTypeInt64)
+            throw new ArgumentException($"Tag type must be {AsvSdrRecordTagType.AsvSdrRecordTagTypeInt64}", nameof(type));
+        if (BitConverter.TryWriteBytes(rawValue, value) == false)
+            throw new ArgumentException($"Can't write value {value} to tag value array", nameof(value));
+    }
+    public static double GetTagValueAsReal64(ReadOnlySpan<byte> rawValue, AsvSdrRecordTagType type)
+    {
+        if (rawValue.Length != RecordTagValueLength)
+            throw new ArgumentException($"Tag value array must be {RecordTagValueLength} bytes length", nameof(rawValue));
+        if (type != AsvSdrRecordTagType.AsvSdrRecordTagTypeReal64)
+            throw new ArgumentException($"Tag type must be {AsvSdrRecordTagType.AsvSdrRecordTagTypeReal64}", nameof(type));
+        return BitConverter.ToDouble(rawValue);
+    }
+
+    public static void SetTagValueAsReal64(Span<byte> rawValue, AsvSdrRecordTagType type, double value)
+    {
+        if (rawValue.Length != RecordTagValueLength)
+            throw new ArgumentException($"Tag value array must be {RecordTagValueLength} bytes length", nameof(rawValue));
+        if (type != AsvSdrRecordTagType.AsvSdrRecordTagTypeReal64)
+            throw new ArgumentException($"Tag type must be {AsvSdrRecordTagType.AsvSdrRecordTagTypeReal64}", nameof(type));
+        if (BitConverter.TryWriteBytes(rawValue, value) == false)
+            throw new ArgumentException($"Can't write value {value} to tag value array", nameof(value));
+    }
+
+    public static string GetTagValueAsString(byte[] rawValue, AsvSdrRecordTagType type)
+    {
+        if (rawValue.Length != RecordTagValueLength)
+            throw new ArgumentException($"Tag value array must be {RecordTagValueLength} bytes length", nameof(rawValue));
+        if (type != AsvSdrRecordTagType.AsvSdrRecordTagTypeString8)
+            throw new ArgumentException($"Tag type must be {AsvSdrRecordTagType.AsvSdrRecordTagTypeUint64}", nameof(type));
+        return MavlinkTypesHelper.GetString(rawValue);
+    }
+    
+    public static void SetTagValueAsString(byte[] rawValue, AsvSdrRecordTagType type, string value)
+    {
+        if (rawValue.Length != RecordTagValueLength)
+            throw new ArgumentException($"Tag value array must be {RecordTagValueLength} bytes length", nameof(rawValue));
+        if (type != AsvSdrRecordTagType.AsvSdrRecordTagTypeString8)
+            throw new ArgumentException($"Tag type must be {AsvSdrRecordTagType.AsvSdrRecordTagTypeUint64}", nameof(type));
+        MavlinkTypesHelper.SetString(rawValue, value);
+    }
+    
+    #endregion
 
     public static readonly ListDataFileFormat FileFormat = new()
     {

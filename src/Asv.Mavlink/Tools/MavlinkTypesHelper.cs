@@ -66,6 +66,20 @@ public static class MavlinkTypesHelper
         }
         Encoding.ASCII.GetBytes(value,0,value.Length, data, 0);
     }
+    
+    public static void SetString(Span<byte> data,string value)
+    {
+        if (data == null) throw new ArgumentNullException(nameof(data));
+        if (value.IsNullOrWhiteSpace())
+        {
+            for (var i = 0; i < data.Length; i++)
+            {
+                data[i] = (byte)'\0';
+            }
+            return;
+        }
+        Encoding.ASCII.GetBytes(value,data);
+    }
     public static void SetString(char[] data,string value)
     {
         if (data == null) throw new ArgumentNullException(nameof(data));
@@ -91,6 +105,18 @@ public static class MavlinkTypesHelper
     }
     
     public static string GetString(byte[] data)
+    {
+        if (data == null) throw new ArgumentNullException(nameof(data));
+        var sb = new StringBuilder(data.Length);
+        foreach (var _ in data)
+        {
+            if (_ == '\0') break;
+            sb.Append((char)_);
+        }
+        return sb.ToString();
+    }
+    
+    public static string GetString(ReadOnlySpan<byte> data)
     {
         if (data == null) throw new ArgumentNullException(nameof(data));
         var sb = new StringBuilder(data.Length);

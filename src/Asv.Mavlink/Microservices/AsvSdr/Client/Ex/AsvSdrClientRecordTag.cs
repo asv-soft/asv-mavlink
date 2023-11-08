@@ -19,22 +19,12 @@ public class AsvSdrClientRecordTag
     
     public AsvSdrRecordTagType Type { get; }
 
-    public ulong GetUint64() => BitConverter.ToUInt64(RawValue,0); 
-    public long GetInt64() => BitConverter.ToInt64(RawValue,0);
-    public double GetReal64() => BitConverter.ToDouble(RawValue,0);
-    public string GetString() => MavlinkTypesHelper.GetString(RawValue);
+    public ulong GetUint64() => AsvSdrHelper.GetTagValueAsUInt64(RawValue, Type);
+    public long GetInt64() => AsvSdrHelper.GetTagValueAsInt64(RawValue, Type);
+    public double GetReal64() => AsvSdrHelper.GetTagValueAsReal64(RawValue,Type);
+    public string GetString() => AsvSdrHelper.GetTagValueAsString(RawValue,Type);
 
-    public override string ToString()
-    {
-        return Type switch
-        {
-            AsvSdrRecordTagType.AsvSdrRecordTagTypeUint64 => $"{Name}:{GetUint64()}",
-            AsvSdrRecordTagType.AsvSdrRecordTagTypeInt64 => $"{Name}:{GetInt64()}",
-            AsvSdrRecordTagType.AsvSdrRecordTagTypeReal64 => $"{Name}:{GetReal64()}",
-            AsvSdrRecordTagType.AsvSdrRecordTagTypeString8 => $"{Name}:{GetString()}",
-            _ => throw new ArgumentOutOfRangeException()
-        };
-    }
+    public override string ToString() => AsvSdrHelper.PrintTag(Name, Type, RawValue);
 
     public void CopyTo(AsvSdrRecordTagPayload dest)
     {
