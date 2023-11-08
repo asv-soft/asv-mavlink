@@ -76,8 +76,8 @@ public static class AsvSdrRecordFileHelper
     {
         self.ReadMetadata().Info.CopyTo(record);
     }
-    
-    public static bool Write(this IListDataFile<AsvSdrRecordFileMetadata> self, IPacketV2<IPayload> packet)
+
+    public static bool TryReadDataIndex(IPacketV2<IPayload> packet, out uint index)
     {
         var type = (AsvSdrCustomMode)packet.MessageId;
         switch (type)
@@ -85,23 +85,29 @@ public static class AsvSdrRecordFileHelper
             case AsvSdrCustomMode.AsvSdrCustomModeLlz:
                 var gp = packet as AsvSdrRecordDataLlzPacket;
                 Debug.Assert(gp != null);
-                self.Write(gp.Payload);
-                break;
+                index = gp.Payload.DataIndex;
+                return true;
             case AsvSdrCustomMode.AsvSdrCustomModeGp:
                 var llz = packet as AsvSdrRecordDataGpPacket;
                 Debug.Assert(llz != null);
-                self.Write(llz.Payload);
-                break;
+                index = llz.Payload.DataIndex;
+                return true;
             case AsvSdrCustomMode.AsvSdrCustomModeVor:
                 var vor = packet as AsvSdrRecordDataVorPacket;
                 Debug.Assert(vor != null);
-                self.Write(vor.Payload);
-                break;
+                index = vor.Payload.DataIndex;
+                return true;
             case AsvSdrCustomMode.AsvSdrCustomModeIdle:
             default:
+                index = 0;
                 return false;
         }
-
+    }
+    
+    public static bool Write(this IListDataFile<AsvSdrRecordFileMetadata> self, IPacketV2<IPayload> packet)
+    {
+        if (TryReadDataIndex(packet, out var dataIndex) == false) return false;
+        self.Write(dataIndex, packet.Payload);
         return true;
     }
     
