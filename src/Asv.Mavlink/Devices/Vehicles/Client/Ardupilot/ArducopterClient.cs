@@ -11,11 +11,13 @@ using Asv.Common;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Minimal;
+using NLog;
 
 namespace Asv.Mavlink;
 
 public class ArduCopterClient:ArduVehicle
 {
+    public static readonly Logger _logger = LogManager.GetCurrentClassLogger(); 
     public ArduCopterClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, VehicleClientConfig config, IPacketSequenceCalculator seq, IScheduler? scheduler = null) 
         : base(connection, identity, config, seq, scheduler)
     {
@@ -37,7 +39,7 @@ public class ArduCopterClient:ArduVehicle
         }
         catch (Exception e)
         {
-            // ignored
+            _logger.Error($"Error to get vehicle name:{e.Message}");
         }
 
         return $"Arducopter [{Identity.TargetSystemId:00},{Identity.TargetComponentId:00}]";

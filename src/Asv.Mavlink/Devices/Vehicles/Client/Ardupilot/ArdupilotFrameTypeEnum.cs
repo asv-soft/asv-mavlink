@@ -2,7 +2,6 @@ namespace Asv.Mavlink
 {
     public enum ArdupilotFrameTypeEnum
     {
-        Unknown,
         Plus = 0,
         X = 1,
         V = 2,
@@ -17,7 +16,7 @@ namespace Asv.Mavlink
         I = 15,
         BetaFlightXReversed = 18,
         Y4 = 19,
-        
+        Unknown,
     }
 
     public enum ArdupilotFrameClassEnum

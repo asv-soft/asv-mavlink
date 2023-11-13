@@ -60,8 +60,8 @@ public class ArduPlaneClient:ArduVehicle
     public override IEnumerable<IVehicleMode> AvailableModes => ArdupilotPlaneMode.AllModes;
     protected override IVehicleMode? InternalInterpretMode(HeartbeatPayload heartbeatPayload)
     {
-        return AvailableModes.Cast<ArdupilotCopterMode>()
-            .FirstOrDefault(_ => _.CustomMode == (CopterMode)heartbeatPayload.CustomMode);
+        return AvailableModes.Cast<ArdupilotPlaneMode>()
+            .FirstOrDefault(_ => _.CustomMode == (PlaneMode)heartbeatPayload.CustomMode);
     }
 
     public override Task SetVehicleMode(IVehicleMode mode, CancellationToken cancel = default)
