@@ -69,8 +69,8 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
         _onInit.OnNext(InitState.InProgress);
         try
         {
-            _name.OnNext(await GetCustomName(DisposeCancel).ConfigureAwait(false));
             await InternalInit().ConfigureAwait(false);
+            _name.OnNext(await GetCustomName(DisposeCancel).ConfigureAwait(false));
             _onInit.OnNext(InitState.Complete);
             _needToRequestAgain = false;
         }

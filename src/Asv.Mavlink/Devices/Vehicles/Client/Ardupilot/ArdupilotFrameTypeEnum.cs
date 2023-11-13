@@ -57,7 +57,7 @@ namespace Asv.Mavlink
             return (ArdupilotFrameClassEnum)frameType.Value;
         }
 
-        public static string GenerateName(ArdupilotFrameClassEnum frameClass, ArdupilotFrameTypeEnum frameType, ushort serialNumber)
+        public static string GenerateName(ArdupilotFrameClassEnum frameClass, ArdupilotFrameTypeEnum frameType, int serialNumber)
         {
             return $"{frameClass:G} {frameType:G} [{serialNumber:D5}]";
         }

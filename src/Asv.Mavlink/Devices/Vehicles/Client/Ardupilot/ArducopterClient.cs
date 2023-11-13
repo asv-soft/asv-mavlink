@@ -23,9 +23,24 @@ public class ArduCopterClient:ArduVehicle
 
     }
 
-    protected override Task<string> GetCustomName(CancellationToken cancel)
+    protected override async Task<string> GetCustomName(CancellationToken cancel)
     {
-        return Task.FromResult("ArduCopter");
+        try
+        {
+            if (Params.IsInit)
+            {
+                var frameClass = ArdupilotFrameTypeHelper.ParseFrameClass((sbyte)await Params.ReadOnce("FRAME_CLASS", cancel).ConfigureAwait(false));
+                var frameType = ArdupilotFrameTypeHelper.ParseFrameType((sbyte)await Params.ReadOnce("FRAME_TYPE", cancel).ConfigureAwait(false));
+                var serial  = (int)await Params.ReadOnce("BRD_SERIAL_NUM", cancel).ConfigureAwait(false);
+                return ArdupilotFrameTypeHelper.GenerateName(frameClass, frameType,serial);
+            }
+        }
+        catch (Exception e)
+        {
+            // ignored
+        }
+
+        return $"Arducopter [{Identity.TargetSystemId:00},{Identity.TargetComponentId:00}]";
     }
 
     public override DeviceClass Class => DeviceClass.Copter;
