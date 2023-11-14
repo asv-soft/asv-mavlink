@@ -25,26 +25,27 @@ public class ArduCopterClient:ArduVehicle
 
     }
 
-    protected override async Task<string> GetCustomName(CancellationToken cancel)
+    protected override async Task InternalInit()
     {
+        await base.InternalInit().ConfigureAwait(false);
+        if (Params.IsInit == false) return;
         try
         {
-            if (Params.IsInit)
-            {
-                var frameClass = ArdupilotFrameTypeHelper.ParseFrameClass((sbyte)await Params.ReadOnce("FRAME_CLASS", cancel).ConfigureAwait(false));
-                var frameType = ArdupilotFrameTypeHelper.ParseFrameType((sbyte)await Params.ReadOnce("FRAME_TYPE", cancel).ConfigureAwait(false));
-                var serial  = (int)await Params.ReadOnce("BRD_SERIAL_NUM", cancel).ConfigureAwait(false);
-                return ArdupilotFrameTypeHelper.GenerateName(frameClass, frameType,serial);
-            }
+            var frameClass = ArdupilotFrameTypeHelper.ParseFrameClass((sbyte)await Params.ReadOnce("FRAME_CLASS", DisposeCancel).ConfigureAwait(false));
+            var frameType = ArdupilotFrameTypeHelper.ParseFrameType((sbyte)await Params.ReadOnce("FRAME_TYPE", DisposeCancel).ConfigureAwait(false));
+            Params.Filter("BRD_SERIAL_NUM")
+                .Select(serial => ArdupilotFrameTypeHelper.GenerateName(frameClass, frameType, (int)serial))
+                .Subscribe(EditableName)
+                .DisposeItWith(Disposable);;
+            await Params.ReadOnce("BRD_SERIAL_NUM", DisposeCancel).ConfigureAwait(false);
         }
         catch (Exception e)
         {
             _logger.Error($"Error to get vehicle name:{e.Message}");
         }
-
-        return $"Arducopter [{Identity.TargetSystemId:00},{Identity.TargetComponentId:00}]";
     }
 
+    protected override string DefaultName => $"Arducopter [{Identity.TargetSystemId:00},{Identity.TargetComponentId:00}]";
     public override DeviceClass Class => DeviceClass.Copter;
     protected override Task<IReadOnlyCollection<ParamDescription>> GetParamDescription()
     {

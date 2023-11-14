@@ -449,15 +449,13 @@ public class AbstractClientDevice : ClientDevice, IClientDevice
         
     }
 
+    protected override string DefaultName => "TEST";
+
     protected override Task InternalInit()
     {
         return Task.CompletedTask;
     }
 
-    protected override Task<string> GetCustomName(CancellationToken cancel)
-    {
-        return Task.FromResult("TEST");
-    }
 
     public override DeviceClass Class => DeviceClass.Unknown;
 }

@@ -22,14 +22,11 @@ public class AdsbClientDevice : ClientDevice, IAdsbClientDevice
         Adsb = new AdsbVehicleClient(connection, identity, seq, config.Adsb, scheduler).DisposeItWith(Disposable);
     }
 
+    protected override string DefaultName => $"ADSB [{Identity.TargetSystemId:00},{Identity.TargetComponentId:00}]";
+
     protected override Task InternalInit()
     {
         return Task.CompletedTask;
-    }
-
-    protected override Task<string> GetCustomName(CancellationToken cancel)
-    {
-        return Task.FromResult("ADSB");
     }
 
     public override DeviceClass Class => DeviceClass.Adsb;

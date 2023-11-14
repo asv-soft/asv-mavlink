@@ -28,7 +28,7 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
     protected ClientDevice(IMavlinkV2Connection connection,
         MavlinkClientIdentity identity,
         ClientDeviceConfig config,
-        IPacketSequenceCalculator seq, 
+        IPacketSequenceCalculator seq,
         IScheduler? scheduler = null)
     {
         Connection = connection;
@@ -63,6 +63,8 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
         _name = new RxValue<string>().DisposeItWith(Disposable);
     }
 
+    protected abstract string DefaultName { get; }
+    
     private async void TryReconnect()
     {
         if (Interlocked.CompareExchange(ref _isRequestInfoIsInProgressOrAlreadySuccess,1,0) == 1) return;
@@ -70,7 +72,7 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
         try
         {
             await InternalInit().ConfigureAwait(false);
-            _name.OnNext(await GetCustomName(DisposeCancel).ConfigureAwait(false));
+            _name.OnNext(DefaultName);
             _onInit.OnNext(InitState.Complete);
             _needToRequestAgain = false;
         }
@@ -99,11 +101,9 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
     }
 
     protected abstract Task InternalInit();
-    protected abstract Task<string> GetCustomName(CancellationToken cancel);
-
     public abstract DeviceClass Class { get; }
-    
     public IRxValue<string> Name => _name;
+    protected IRxEditableValue<string> EditableName => _name;
     public IHeartbeatClient Heartbeat { get; }
     public IStatusTextClient StatusText { get; }
     public ushort FullId => Heartbeat.FullId;

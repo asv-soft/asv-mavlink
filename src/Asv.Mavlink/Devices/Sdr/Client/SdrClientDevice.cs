@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -32,29 +33,27 @@ public class SdrClientDevice : ClientDevice, ISdrClientDevice
         Missions = new MissionClientEx(new MissionClient(connection, identity, seq,config.Missions), config.MissionsEx).DisposeItWith(Disposable);
         _params = new ParamsClientEx(new ParamsClient(connection, identity, seq,config.Params), config.ParamsEx).DisposeItWith(Disposable);
     }
-    protected override Task InternalInit()
+
+    protected override string DefaultName => $"SDR [{Identity.TargetSystemId:00},{Identity.TargetComponentId:00}]";
+
+    protected override async Task InternalInit()
     {
         _params.Init(MavParamHelper.ByteWiseEncoding, ArraySegment<ParamDescription>.Empty);
-        return Task.CompletedTask;
-    }
-
-    protected override async Task<string> GetCustomName(CancellationToken cancel)
-    {
         try
         {
-            if (_config.SerialNumberParamName.IsNullOrWhiteSpace() == false)
-            {
-                _logger.Trace($"Try to read serial number from param {_config.SerialNumberParamName}");
-                var serialNumber  = (int)await Params.ReadOnce(_config.SerialNumberParamName, cancel).ConfigureAwait(false);
-                return $"SDR [{serialNumber:D5}]";    
-            }
+            _logger.Trace($"Try to read serial number from param {_config.SerialNumberParamName}");
+            Params.Filter(_config.SerialNumberParamName)
+                .Select(serial => $"SDR [{(int)serial:D5}]")
+                .Subscribe(EditableName)
+                .DisposeItWith(Disposable);
+            await Params.ReadOnce(_config.SerialNumberParamName, DisposeCancel).ConfigureAwait(false);
         }
         catch (Exception e)
         {
             _logger.Warn($"Error to get SDR serial number:{e.Message}");
         }
-        return "SDR Payload";
     }
+
     public override DeviceClass Class => DeviceClass.SdrPayload;
     public IAsvSdrClientEx Sdr { get; }
     public ICommandClient Command { get; }

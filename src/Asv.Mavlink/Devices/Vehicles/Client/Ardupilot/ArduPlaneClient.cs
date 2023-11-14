@@ -20,10 +20,7 @@ public class ArduPlaneClient:ArduVehicle
         
     }
 
-    protected override Task<string> GetCustomName(CancellationToken cancel)
-    {
-        return Task.FromResult("Arduplane");
-    }
+    protected override string DefaultName => $"Arduplane [{Identity.TargetSystemId:00},{Identity.TargetComponentId:00}]";
 
     public override DeviceClass Class => DeviceClass.Plane;
     protected override Task<IReadOnlyCollection<ParamDescription>> GetParamDescription()
