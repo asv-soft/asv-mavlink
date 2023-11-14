@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -25,6 +26,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
     private ImmutableDictionary<string,ParamDescription> _descriptions;
     private readonly RxValue<ushort?> _remoteCount;
     private readonly RxValue<ushort> _localCount;
+    private readonly Subject<(string, MavParamValue)> _onValueChanged;
 
     public ParamsClientEx(IParamsClient client, ParamsClientExConfig config)
     {
@@ -38,8 +40,10 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         _remoteCount = new RxValue<ushort?>(null).DisposeItWith(Disposable);
         _localCount = new RxValue<ushort>(0).DisposeItWith(Disposable);
         _paramsSource.CountChanged.Select(_=>(ushort)_).Subscribe(_localCount).DisposeItWith(Disposable);
+        _onValueChanged = new Subject<(string, MavParamValue)>().DisposeItWith(Disposable);
     }
 
+    public IObservable<(string, MavParamValue)> OnValueChanged => _onValueChanged;
     public bool IsInit { get; set; }
 
     public void Init(IMavParamEncoding converter, IEnumerable<ParamDescription> existDescription)
@@ -63,6 +67,10 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
                 if (exist.HasValue)
                 {
                     exist.Value.Update(value);
+                    if (_onValueChanged.HasObservers)
+                    {
+                        _onValueChanged.OnNext((name, _converter.ConvertFromMavlinkUnion(value.ParamValue, value.ParamType)));
+                    }
                 }
                 else
                 {
@@ -73,6 +81,10 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
                     var newItem = new ParamItem(Base, _converter, desc, value);
                     _.AddOrUpdate(newItem);
                     newItem.IsSynced.Subscribe(OnSyncedChanged);
+                    if (_onValueChanged.HasObservers)
+                    {
+                        _onValueChanged.OnNext((name, _converter.ConvertFromMavlinkUnion(value.ParamValue, value.ParamType)));
+                    }
                 }
             }
             

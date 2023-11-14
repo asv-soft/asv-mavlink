@@ -17,7 +17,7 @@ namespace Asv.Mavlink;
 
 public class ArduCopterClient:ArduVehicle
 {
-    public static readonly Logger _logger = LogManager.GetCurrentClassLogger(); 
+    private static readonly Logger _logger = LogManager.GetCurrentClassLogger(); 
     public ArduCopterClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, VehicleClientConfig config, IPacketSequenceCalculator seq, IScheduler? scheduler = null) 
         : base(connection, identity, config, seq, scheduler)
     {

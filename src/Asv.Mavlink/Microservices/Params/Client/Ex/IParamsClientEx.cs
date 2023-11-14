@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -8,6 +9,10 @@ namespace Asv.Mavlink;
 
 public interface IParamsClientEx
 {
+    IParamsClient Base { get; }
+    IObservable<(string, MavParamValue)> OnValueChanged { get; }
+
+    
     bool IsInit { get; set; }
     /// <summary>
     /// True if params synced with remote device and local cache
@@ -47,5 +52,11 @@ public interface IParamsClientEx
     /// <param name="cancel"></param>
     /// <returns></returns>
     Task<MavParamValue> WriteOnce(string name, MavParamValue value, CancellationToken cancel = default);
+    
+    public IObservable<MavParamValue> Filter(string name)
+    {
+        MavParamHelper.CheckParamName(name);
+        return OnValueChanged.Where(x=>x.Item1.Equals(name, StringComparison.InvariantCultureIgnoreCase)).Select(x=>x.Item2);
+    }
 }
 

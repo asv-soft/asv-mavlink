@@ -23,7 +23,7 @@ public static class MavParamHelper
             throw new ArgumentException(
                 $"Param name '{name}' not match regex '{ParamNameRegexString}')");
     }
-
+   
     public static IMavParamEncoding GetEncoding(MavParamEncodingType type)
     {
         return type switch
