@@ -25,6 +25,7 @@
 using System;
 using System.Text;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.AsvSdr
@@ -47,6 +48,13 @@ namespace Asv.Mavlink.V2.AsvSdr
             src.Register(()=>new AsvSdrRecordTagDeleteResponsePacket());
             src.Register(()=>new AsvSdrRecordDataRequestPacket());
             src.Register(()=>new AsvSdrRecordDataResponsePacket());
+            src.Register(()=>new AsvSdrCalibAccPacket());
+            src.Register(()=>new AsvSdrCalibTableReadPacket());
+            src.Register(()=>new AsvSdrCalibTablePacket());
+            src.Register(()=>new AsvSdrCalibTableRowReadPacket());
+            src.Register(()=>new AsvSdrCalibTableRowPacket());
+            src.Register(()=>new AsvSdrCalibTableUploadStartPacket());
+            src.Register(()=>new AsvSdrCalibTableUploadReadCallbackPacket());
             src.Register(()=>new AsvSdrSignalRawPacket());
             src.Register(()=>new AsvSdrRecordDataLlzPacket());
             src.Register(()=>new AsvSdrRecordDataGpPacket());
@@ -80,7 +88,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// Param 3 - Frequency in Hz, 4-7 bytes of uint_64, ignored for IDLE mode (uint32).
         /// Param 4 - Record rate in Hz, ignored for IDLE mode (float).
         /// Param 5 - Sending data thinning ratio. Each specified amount of recorded data will be skipped before it is sent over the communication channel. (uint32).
-        /// Param 6 - Empty.
+        /// Param 6 - Estimated reference power in dBm. Needed to tune the internal amplifiers and filters (float).
         /// Param 7 - Empty.
         /// MAV_CMD_ASV_SDR_SET_MODE
         /// </summary>
@@ -122,7 +130,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         MavCmdAsvSdrSetRecordTag = 13103,
         /// <summary>
-        /// Send shutdown or reboot command. Can be used in the mission protocol for SDR payloads.
+        /// Send shutdown or reboot command. Can't be used in the mission protocol for SDR payloads.
         /// Param 1 - ASV_SDR_SYSTEM_CONTROL_ACTION (uint32).
         /// Param 2 - Empty.
         /// Param 3 - Empty.
@@ -134,7 +142,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         MavCmdAsvSdrSystemControlAction = 13104,
         /// <summary>
-        /// Waiting for a vehicle mission waypoint point. Can be used in the mission protocol for SDR payloads.
+        /// Waiting for a vehicle mission waypoint point. Only used in the mission protocol for SDR payloads.
         /// Param 1 - Waypoint index (uint32).
         /// Param 2 - Empty.
         /// Param 3 - Empty.
@@ -146,7 +154,7 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         MavCmdAsvSdrWaitVehicleWaypoint = 13105,
         /// <summary>
-        /// Waiting a certain amount of time. Can be used in the mission protocol for SDR payloads.
+        /// Waiting a certain amount of time. Only used in the mission protocol for SDR payloads.
         /// Param 1 - Delay in ms (uint32).
         /// Param 2 - Empty.
         /// Param 3 - Empty.
@@ -181,6 +189,30 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// MAV_CMD_ASV_SDR_STOP_MISSION
         /// </summary>
         MavCmdAsvSdrStopMission = 13108,
+        /// <summary>
+        /// Start calibration process. Can't be used in the mission protocol for SDR payloads.
+        /// Param 1 - Empty.
+        /// Param 2 - Empty.
+        /// Param 3 - Empty.
+        /// Param 4 - Empty.
+        /// Param 5 - Empty.
+        /// Param 6 - Empty.
+        /// Param 7 - Empty.
+        /// MAV_CMD_ASV_SDR_START_CALIBRATION
+        /// </summary>
+        MavCmdAsvSdrStartCalibration = 13109,
+        /// <summary>
+        /// Stop calibration process. Can't be used in the mission protocol for SDR payloads.
+        /// Param 1 - Empty.
+        /// Param 2 - Empty.
+        /// Param 3 - Empty.
+        /// Param 4 - Empty.
+        /// Param 5 - Empty.
+        /// Param 6 - Empty.
+        /// Param 7 - Empty.
+        /// MAV_CMD_ASV_SDR_STOP_CALIBRATION
+        /// </summary>
+        MavCmdAsvSdrStopCalibration = 13110,
     }
 
     /// <summary>
@@ -303,6 +335,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// ASV_SDR_REQUEST_ACK_FAIL
         /// </summary>
         AsvSdrRequestAckFail = 2,
+        /// <summary>
+        /// Not supported command.
+        /// ASV_SDR_REQUEST_ACK_NOT_SUPPORTED
+        /// </summary>
+        AsvSdrRequestAckNotSupported = 3,
     }
 
     /// <summary>
@@ -321,6 +358,29 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// ASV_SDR_SYSTEM_CONTROL_ACTION_SHUTDOWN
         /// </summary>
         AsvSdrSystemControlActionShutdown = 1,
+    }
+
+    /// <summary>
+    /// Status of calibration process.
+    ///  ASV_SDR_CALIB_STATE
+    /// </summary>
+    public enum AsvSdrCalibState:uint
+    {
+        /// <summary>
+        /// Calibration not supported by device. Commands MAV_CMD_ASV_SDR_START_CALIBRATION and MAV_CMD_ASV_SDR_STOP_CALIBRATION not supported.
+        /// ASV_SDR_CALIB_STATE_NOT_SUPPORTED
+        /// </summary>
+        AsvSdrCalibStateNotSupported = 0,
+        /// <summary>
+        /// Normal measure mode. Calibration table USED for measures.
+        /// ASV_SDR_CALIB_STATE_OK
+        /// </summary>
+        AsvSdrCalibStateOk = 1,
+        /// <summary>
+        /// Calibration progress started. Table NOT! used for calculating values. All measures send as raw values.
+        /// ASV_SDR_CALIB_STATE_PROGRESS
+        /// </summary>
+        AsvSdrCalibStateProgress = 2,
     }
 
     /// <summary>
@@ -372,8 +432,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrOutStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 66; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 66; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 69; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 69; // of byte sized of fields (exclude extended)
         public int GetByteSize()
         {
             var sum = 0;
@@ -385,6 +445,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             sum+= 1; // CurrentRecordMode
             sum+=CurrentRecordName.Length; //CurrentRecordName
             sum+= 1; // MissionState
+            sum+= 1; // CalibState
+            sum+=2; //CalibTableCount
             return (byte)sum;
         }
 
@@ -404,7 +466,7 @@ namespace Asv.Mavlink.V2.AsvSdr
                 CurrentRecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
             CurrentRecordMode = (AsvSdrCustomMode)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/66 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/69 - payloadSize - /*ExtendedFieldsLength*/3)/1 /*FieldTypeByteSize*/));
             CurrentRecordName = new char[arraySize];
             unsafe
             {
@@ -417,6 +479,12 @@ namespace Asv.Mavlink.V2.AsvSdr
             buffer = buffer.Slice(arraySize);
            
             MissionState = (AsvSdrMissionState)BinSerialize.ReadByte(ref buffer);
+            // extended field 'CalibState' can be empty
+            if (buffer.IsEmpty) return;
+            CalibState = (AsvSdrCalibState)BinSerialize.ReadByte(ref buffer);
+            // extended field 'CalibTableCount' can be empty
+            if (buffer.IsEmpty) return;
+            CalibTableCount = BinSerialize.ReadUShort(ref buffer);
 
         }
 
@@ -442,7 +510,9 @@ namespace Asv.Mavlink.V2.AsvSdr
             buffer = buffer.Slice(CurrentRecordName.Length);
             
             BinSerialize.WriteByte(ref buffer,(byte)MissionState);
-            /* PayloadByteSize = 66 */;
+            BinSerialize.WriteByte(ref buffer,(byte)CalibState);
+            BinSerialize.WriteUShort(ref buffer,CalibTableCount);
+            /* PayloadByteSize = 69 */;
         }
         
         
@@ -490,6 +560,16 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// OriginName: mission_state, Units: , IsExtended: false
         /// </summary>
         public AsvSdrMissionState MissionState { get; set; }
+        /// <summary>
+        /// Calibration status.
+        /// OriginName: calib_state, Units: , IsExtended: true
+        /// </summary>
+        public AsvSdrCalibState CalibState { get; set; }
+        /// <summary>
+        /// Number of calibration tables.
+        /// OriginName: calib_table_count, Units: , IsExtended: true
+        /// </summary>
+        public ushort CalibTableCount { get; set; }
     }
     /// <summary>
     /// Request list of ASV_SDR_RECORD from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -668,8 +748,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordPayload : IPayload
     {
-        public byte GetMaxByteSize() => 78; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 78; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 82; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 82; // of byte sized of fields (exclude extended)
         public int GetByteSize()
         {
             var sum = 0;
@@ -682,6 +762,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             sum+=2; //TagCount
             sum+=RecordGuid.Length; //RecordGuid
             sum+=RecordName.Length; //RecordName
+            sum+=4; //RefPower
             return (byte)sum;
         }
 
@@ -703,7 +784,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             {
                 RecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/78 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/82 - payloadSize - /*ExtendedFieldsLength*/4)/1 /*FieldTypeByteSize*/));
             RecordName = new char[arraySize];
             unsafe
             {
@@ -715,6 +796,9 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             buffer = buffer.Slice(arraySize);
            
+            // extended field 'RefPower' can be empty
+            if (buffer.IsEmpty) return;
+            RefPower = BinSerialize.ReadFloat(ref buffer);
 
         }
 
@@ -741,7 +825,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             buffer = buffer.Slice(RecordName.Length);
             
-            /* PayloadByteSize = 78 */;
+            BinSerialize.WriteFloat(ref buffer,RefPower);
+            /* PayloadByteSize = 82 */;
         }
         
         
@@ -749,7 +834,7 @@ namespace Asv.Mavlink.V2.AsvSdr
 
 
         /// <summary>
-        /// Frequency in Hz.
+        /// Reference frequency in Hz, specified by MAV_CMD_ASV_SDR_SET_MODE command.
         /// OriginName: frequency, Units: , IsExtended: false
         /// </summary>
         public ulong Frequency { get; set; }
@@ -794,6 +879,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public char[] RecordName { get; set; } = new char[28];
         public byte GetRecordNameMaxItemsCount() => 28;
+        /// <summary>
+        /// Reference power in dBm, specified by MAV_CMD_ASV_SDR_SET_MODE command.
+        /// OriginName: ref_power, Units: , IsExtended: true
+        /// </summary>
+        public float RefPower { get; set; }
     }
     /// <summary>
     /// Request to delete ASV_SDR_RECORD items from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -1380,7 +1470,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordTagDeleteResponsePacket: PacketV2<AsvSdrRecordTagDeleteResponsePayload>
     {
-	    public const int PacketMessageId = 13116;
+	    public const int PacketMessageId = 13114;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 100;
         public override bool WrapToV2Extension => true;
@@ -1673,12 +1763,629 @@ namespace Asv.Mavlink.V2.AsvSdr
         public byte GetRecordGuidMaxItemsCount() => 16;
     }
     /// <summary>
+    /// Response for ASV_SDR_CALIB_* requests. Result from ASV_SDR_CALIB_TABLE_READ, ASV_SDR_CALIB_TABLE_ROW_READ, ASV_SDR_CALIB_TABLE_UPLOAD_START messages.[!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_SDR_CALIB_ACC
+    /// </summary>
+    public class AsvSdrCalibAccPacket: PacketV2<AsvSdrCalibAccPayload>
+    {
+	    public const int PacketMessageId = 13124;
+        public override int MessageId => PacketMessageId;
+        public override byte GetCrcEtra() => 136;
+        public override bool WrapToV2Extension => true;
+
+        public override AsvSdrCalibAccPayload Payload { get; } = new AsvSdrCalibAccPayload();
+
+        public override string Name => "ASV_SDR_CALIB_ACC";
+    }
+
+    /// <summary>
+    ///  ASV_SDR_CALIB_ACC
+    /// </summary>
+    public class AsvSdrCalibAccPayload : IPayload
+    {
+        public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        public int GetByteSize()
+        {
+            var sum = 0;
+            sum+=2; //RequestId
+            sum+= 1; // Result
+            return (byte)sum;
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            RequestId = BinSerialize.ReadUShort(ref buffer);
+            Result = (AsvSdrRequestAck)BinSerialize.ReadByte(ref buffer);
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteUShort(ref buffer,RequestId);
+            BinSerialize.WriteByte(ref buffer,(byte)Result);
+            /* PayloadByteSize = 3 */;
+        }
+        
+        
+
+
+
+        /// <summary>
+        /// Specifies the unique number of the original request. This allows the response to be matched to the correct request.
+        /// OriginName: request_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RequestId { get; set; }
+        /// <summary>
+        /// Result code.
+        /// OriginName: result, Units: , IsExtended: false
+        /// </summary>
+        public AsvSdrRequestAck Result { get; set; }
+    }
+    /// <summary>
+    /// Request to read ASV_SDR_CALIB_TABLE from the system/component. If success, device send ASV_SDR_CALIB_TABLE or ASV_SDR_CALIB_ACC, when error occured.[!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_SDR_CALIB_TABLE_READ
+    /// </summary>
+    public class AsvSdrCalibTableReadPacket: PacketV2<AsvSdrCalibTableReadPayload>
+    {
+	    public const int PacketMessageId = 13125;
+        public override int MessageId => PacketMessageId;
+        public override byte GetCrcEtra() => 8;
+        public override bool WrapToV2Extension => true;
+
+        public override AsvSdrCalibTableReadPayload Payload { get; } = new AsvSdrCalibTableReadPayload();
+
+        public override string Name => "ASV_SDR_CALIB_TABLE_READ";
+    }
+
+    /// <summary>
+    ///  ASV_SDR_CALIB_TABLE_READ
+    /// </summary>
+    public class AsvSdrCalibTableReadPayload : IPayload
+    {
+        public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
+        public int GetByteSize()
+        {
+            var sum = 0;
+            sum+=2; //TableIndex
+            sum+=2; //RequestId
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            return (byte)sum;
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            TableIndex = BinSerialize.ReadUShort(ref buffer);
+            RequestId = BinSerialize.ReadUShort(ref buffer);
+            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
+            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteUShort(ref buffer,TableIndex);
+            BinSerialize.WriteUShort(ref buffer,RequestId);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
+            /* PayloadByteSize = 6 */;
+        }
+        
+        
+
+
+
+        /// <summary>
+        /// Table index.
+        /// OriginName: table_index, Units: , IsExtended: false
+        /// </summary>
+        public ushort TableIndex { get; set; }
+        /// <summary>
+        /// Specifies the unique number of the original request. This allows the response to be matched to the correct request.
+        /// OriginName: request_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RequestId { get; set; }
+        /// <summary>
+        /// System ID
+        /// OriginName: target_system, Units: , IsExtended: false
+        /// </summary>
+        public byte TargetSystem { get; set; }
+        /// <summary>
+        /// Component ID
+        /// OriginName: target_component, Units: , IsExtended: false
+        /// </summary>
+        public byte TargetComponent { get; set; }
+    }
+    /// <summary>
+    /// Calibration table info.[!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_SDR_CALIB_TABLE
+    /// </summary>
+    public class AsvSdrCalibTablePacket: PacketV2<AsvSdrCalibTablePayload>
+    {
+	    public const int PacketMessageId = 13126;
+        public override int MessageId => PacketMessageId;
+        public override byte GetCrcEtra() => 194;
+        public override bool WrapToV2Extension => true;
+
+        public override AsvSdrCalibTablePayload Payload { get; } = new AsvSdrCalibTablePayload();
+
+        public override string Name => "ASV_SDR_CALIB_TABLE";
+    }
+
+    /// <summary>
+    ///  ASV_SDR_CALIB_TABLE
+    /// </summary>
+    public class AsvSdrCalibTablePayload : IPayload
+    {
+        public byte GetMaxByteSize() => 40; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 40; // of byte sized of fields (exclude extended)
+        public int GetByteSize()
+        {
+            var sum = 0;
+            sum+=8; //CreatedUnixUs
+            sum+=2; //TableIndex
+            sum+=2; //RowCount
+            sum+=TableName.Length; //TableName
+            return (byte)sum;
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            var arraySize = 0;
+            var payloadSize = buffer.Length;
+            CreatedUnixUs = BinSerialize.ReadULong(ref buffer);
+            TableIndex = BinSerialize.ReadUShort(ref buffer);
+            RowCount = BinSerialize.ReadUShort(ref buffer);
+            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/40 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            TableName = new char[arraySize];
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = TableName)
+                {
+                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, TableName.Length);
+                }
+            }
+            buffer = buffer.Slice(arraySize);
+           
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteULong(ref buffer,CreatedUnixUs);
+            BinSerialize.WriteUShort(ref buffer,TableIndex);
+            BinSerialize.WriteUShort(ref buffer,RowCount);
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = TableName)
+                {
+                    Encoding.ASCII.GetBytes(charPointer, TableName.Length, bytePointer, TableName.Length);
+                }
+            }
+            buffer = buffer.Slice(TableName.Length);
+            
+            /* PayloadByteSize = 40 */;
+        }
+        
+        
+
+
+
+        /// <summary>
+        /// Updated timestamp (UNIX epoch time).
+        /// OriginName: created_unix_us, Units: us, IsExtended: false
+        /// </summary>
+        public ulong CreatedUnixUs { get; set; }
+        /// <summary>
+        /// Table index.
+        /// OriginName: table_index, Units: , IsExtended: false
+        /// </summary>
+        public ushort TableIndex { get; set; }
+        /// <summary>
+        /// Specifies the number of ROWs in the table.
+        /// OriginName: row_count, Units: , IsExtended: false
+        /// </summary>
+        public ushort RowCount { get; set; }
+        /// <summary>
+        /// Table name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.
+        /// OriginName: table_name, Units: , IsExtended: false
+        /// </summary>
+        public char[] TableName { get; set; } = new char[28];
+        public byte GetTableNameMaxItemsCount() => 28;
+    }
+    /// <summary>
+    /// Request to read ASV_SDR_CALIB_TABLE_ROW from the system/component. If success, device send ASV_SDR_CALIB_TABLE_ROW or ASV_SDR_CALIB_ACC, when error occured.[!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_SDR_CALIB_TABLE_ROW_READ
+    /// </summary>
+    public class AsvSdrCalibTableRowReadPacket: PacketV2<AsvSdrCalibTableRowReadPayload>
+    {
+	    public const int PacketMessageId = 13127;
+        public override int MessageId => PacketMessageId;
+        public override byte GetCrcEtra() => 2;
+        public override bool WrapToV2Extension => true;
+
+        public override AsvSdrCalibTableRowReadPayload Payload { get; } = new AsvSdrCalibTableRowReadPayload();
+
+        public override string Name => "ASV_SDR_CALIB_TABLE_ROW_READ";
+    }
+
+    /// <summary>
+    ///  ASV_SDR_CALIB_TABLE_ROW_READ
+    /// </summary>
+    public class AsvSdrCalibTableRowReadPayload : IPayload
+    {
+        public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        public int GetByteSize()
+        {
+            var sum = 0;
+            sum+=2; //RequestId
+            sum+=2; //TableIndex
+            sum+=2; //RowIndex
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            return (byte)sum;
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            RequestId = BinSerialize.ReadUShort(ref buffer);
+            TableIndex = BinSerialize.ReadUShort(ref buffer);
+            RowIndex = BinSerialize.ReadUShort(ref buffer);
+            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
+            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteUShort(ref buffer,RequestId);
+            BinSerialize.WriteUShort(ref buffer,TableIndex);
+            BinSerialize.WriteUShort(ref buffer,RowIndex);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
+            /* PayloadByteSize = 8 */;
+        }
+        
+        
+
+
+
+        /// <summary>
+        /// Specifies the unique number of the original request. This allows the response to be matched to the correct request.
+        /// OriginName: request_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RequestId { get; set; }
+        /// <summary>
+        /// Table index.
+        /// OriginName: table_index, Units: , IsExtended: false
+        /// </summary>
+        public ushort TableIndex { get; set; }
+        /// <summary>
+        /// ROW index.
+        /// OriginName: row_index, Units: , IsExtended: false
+        /// </summary>
+        public ushort RowIndex { get; set; }
+        /// <summary>
+        /// System ID.
+        /// OriginName: target_system, Units: , IsExtended: false
+        /// </summary>
+        public byte TargetSystem { get; set; }
+        /// <summary>
+        /// Component ID.
+        /// OriginName: target_component, Units: , IsExtended: false
+        /// </summary>
+        public byte TargetComponent { get; set; }
+    }
+    /// <summary>
+    /// Calibration ROW content.[!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_SDR_CALIB_TABLE_ROW
+    /// </summary>
+    public class AsvSdrCalibTableRowPacket: PacketV2<AsvSdrCalibTableRowPayload>
+    {
+	    public const int PacketMessageId = 13128;
+        public override int MessageId => PacketMessageId;
+        public override byte GetCrcEtra() => 103;
+        public override bool WrapToV2Extension => true;
+
+        public override AsvSdrCalibTableRowPayload Payload { get; } = new AsvSdrCalibTableRowPayload();
+
+        public override string Name => "ASV_SDR_CALIB_TABLE_ROW";
+    }
+
+    /// <summary>
+    ///  ASV_SDR_CALIB_TABLE_ROW
+    /// </summary>
+    public class AsvSdrCalibTableRowPayload : IPayload
+    {
+        public byte GetMaxByteSize() => 26; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
+        public int GetByteSize()
+        {
+            var sum = 0;
+            sum+=8; //RefFreq
+            sum+=4; //RefPower
+            sum+=4; //RefValue
+            sum+=4; //MeasuredValue
+            sum+=2; //TableIndex
+            sum+=2; //RowIndex
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            return (byte)sum;
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            RefFreq = BinSerialize.ReadULong(ref buffer);
+            RefPower = BinSerialize.ReadFloat(ref buffer);
+            RefValue = BinSerialize.ReadFloat(ref buffer);
+            MeasuredValue = BinSerialize.ReadFloat(ref buffer);
+            TableIndex = BinSerialize.ReadUShort(ref buffer);
+            RowIndex = BinSerialize.ReadUShort(ref buffer);
+            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
+            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteULong(ref buffer,RefFreq);
+            BinSerialize.WriteFloat(ref buffer,RefPower);
+            BinSerialize.WriteFloat(ref buffer,RefValue);
+            BinSerialize.WriteFloat(ref buffer,MeasuredValue);
+            BinSerialize.WriteUShort(ref buffer,TableIndex);
+            BinSerialize.WriteUShort(ref buffer,RowIndex);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
+            /* PayloadByteSize = 26 */;
+        }
+        
+        
+
+
+
+        /// <summary>
+        /// Reference frequency in Hz.
+        /// OriginName: ref_freq, Units: , IsExtended: false
+        /// </summary>
+        public ulong RefFreq { get; set; }
+        /// <summary>
+        /// Reference power in dBm.
+        /// OriginName: ref_power, Units: , IsExtended: false
+        /// </summary>
+        public float RefPower { get; set; }
+        /// <summary>
+        /// Reference value.
+        /// OriginName: ref_value, Units: , IsExtended: false
+        /// </summary>
+        public float RefValue { get; set; }
+        /// <summary>
+        /// Measured value.
+        /// OriginName: measured_value, Units: , IsExtended: false
+        /// </summary>
+        public float MeasuredValue { get; set; }
+        /// <summary>
+        /// Table index.
+        /// OriginName: table_index, Units: , IsExtended: false
+        /// </summary>
+        public ushort TableIndex { get; set; }
+        /// <summary>
+        /// ROW index.
+        /// OriginName: row_index, Units: , IsExtended: false
+        /// </summary>
+        public ushort RowIndex { get; set; }
+        /// <summary>
+        /// System ID.
+        /// OriginName: target_system, Units: , IsExtended: false
+        /// </summary>
+        public byte TargetSystem { get; set; }
+        /// <summary>
+        /// Component ID.
+        /// OriginName: target_component, Units: , IsExtended: false
+        /// </summary>
+        public byte TargetComponent { get; set; }
+    }
+    /// <summary>
+    /// Start uploading process. After that payload must send ASV_SDR_CALIB_TABLE_UPLOAD_READ_CALLBACK to client for reading table rows row_count times. Process end by payload with ASV_SDR_CALIB_ACC. [!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_SDR_CALIB_TABLE_UPLOAD_START
+    /// </summary>
+    public class AsvSdrCalibTableUploadStartPacket: PacketV2<AsvSdrCalibTableUploadStartPayload>
+    {
+	    public const int PacketMessageId = 13129;
+        public override int MessageId => PacketMessageId;
+        public override byte GetCrcEtra() => 40;
+        public override bool WrapToV2Extension => true;
+
+        public override AsvSdrCalibTableUploadStartPayload Payload { get; } = new AsvSdrCalibTableUploadStartPayload();
+
+        public override string Name => "ASV_SDR_CALIB_TABLE_UPLOAD_START";
+    }
+
+    /// <summary>
+    ///  ASV_SDR_CALIB_TABLE_UPLOAD_START
+    /// </summary>
+    public class AsvSdrCalibTableUploadStartPayload : IPayload
+    {
+        public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        public int GetByteSize()
+        {
+            var sum = 0;
+            sum+=8; //CreatedUnixUs
+            sum+=2; //TableIndex
+            sum+=2; //RequestId
+            sum+=2; //RowCount
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            return (byte)sum;
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            CreatedUnixUs = BinSerialize.ReadULong(ref buffer);
+            TableIndex = BinSerialize.ReadUShort(ref buffer);
+            RequestId = BinSerialize.ReadUShort(ref buffer);
+            RowCount = BinSerialize.ReadUShort(ref buffer);
+            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
+            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteULong(ref buffer,CreatedUnixUs);
+            BinSerialize.WriteUShort(ref buffer,TableIndex);
+            BinSerialize.WriteUShort(ref buffer,RequestId);
+            BinSerialize.WriteUShort(ref buffer,RowCount);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
+            /* PayloadByteSize = 16 */;
+        }
+        
+        
+
+
+
+        /// <summary>
+        /// Current timestamp (UNIX epoch time).
+        /// OriginName: created_unix_us, Units: us, IsExtended: false
+        /// </summary>
+        public ulong CreatedUnixUs { get; set; }
+        /// <summary>
+        /// Table index.
+        /// OriginName: table_index, Units: , IsExtended: false
+        /// </summary>
+        public ushort TableIndex { get; set; }
+        /// <summary>
+        /// Specifies the unique number of the original request. This allows the response to be matched to the correct request.
+        /// OriginName: request_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RequestId { get; set; }
+        /// <summary>
+        /// Specifies the number of ROWs in the table.
+        /// OriginName: row_count, Units: , IsExtended: false
+        /// </summary>
+        public ushort RowCount { get; set; }
+        /// <summary>
+        /// System ID.
+        /// OriginName: target_system, Units: , IsExtended: false
+        /// </summary>
+        public byte TargetSystem { get; set; }
+        /// <summary>
+        /// Component ID.
+        /// OriginName: target_component, Units: , IsExtended: false
+        /// </summary>
+        public byte TargetComponent { get; set; }
+    }
+    /// <summary>
+    /// Read ASV_SDR_CALIB_TABLE_ROW callback from payload server to client. [!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_SDR_CALIB_TABLE_UPLOAD_READ_CALLBACK
+    /// </summary>
+    public class AsvSdrCalibTableUploadReadCallbackPacket: PacketV2<AsvSdrCalibTableUploadReadCallbackPayload>
+    {
+	    public const int PacketMessageId = 13130;
+        public override int MessageId => PacketMessageId;
+        public override byte GetCrcEtra() => 156;
+        public override bool WrapToV2Extension => true;
+
+        public override AsvSdrCalibTableUploadReadCallbackPayload Payload { get; } = new AsvSdrCalibTableUploadReadCallbackPayload();
+
+        public override string Name => "ASV_SDR_CALIB_TABLE_UPLOAD_READ_CALLBACK";
+    }
+
+    /// <summary>
+    ///  ASV_SDR_CALIB_TABLE_UPLOAD_READ_CALLBACK
+    /// </summary>
+    public class AsvSdrCalibTableUploadReadCallbackPayload : IPayload
+    {
+        public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        public int GetByteSize()
+        {
+            var sum = 0;
+            sum+=2; //RequestId
+            sum+=2; //TableIndex
+            sum+=2; //RowIndex
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            return (byte)sum;
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            RequestId = BinSerialize.ReadUShort(ref buffer);
+            TableIndex = BinSerialize.ReadUShort(ref buffer);
+            RowIndex = BinSerialize.ReadUShort(ref buffer);
+            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
+            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteUShort(ref buffer,RequestId);
+            BinSerialize.WriteUShort(ref buffer,TableIndex);
+            BinSerialize.WriteUShort(ref buffer,RowIndex);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
+            /* PayloadByteSize = 8 */;
+        }
+        
+        
+
+
+
+        /// <summary>
+        /// Specifies the unique number of the original request from ASV_SDR_CALIB_TABLE_UPLOAD_START. This allows the response to be matched to the correct request.
+        /// OriginName: request_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RequestId { get; set; }
+        /// <summary>
+        /// Table index.
+        /// OriginName: table_index, Units: , IsExtended: false
+        /// </summary>
+        public ushort TableIndex { get; set; }
+        /// <summary>
+        /// ROW index.
+        /// OriginName: row_index, Units: , IsExtended: false
+        /// </summary>
+        public ushort RowIndex { get; set; }
+        /// <summary>
+        /// System ID.
+        /// OriginName: target_system, Units: , IsExtended: false
+        /// </summary>
+        public byte TargetSystem { get; set; }
+        /// <summary>
+        /// Component ID.
+        /// OriginName: target_component, Units: , IsExtended: false
+        /// </summary>
+        public byte TargetComponent { get; set; }
+    }
+    /// <summary>
     /// Raw signal data for visualization.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_SIGNAL_RAW
     /// </summary>
     public class AsvSdrSignalRawPacket: PacketV2<AsvSdrSignalRawPayload>
     {
-	    public const int PacketMessageId = 13130;
+	    public const int PacketMessageId = 13134;
         public override int MessageId => PacketMessageId;
         public override byte GetCrcEtra() => 27;
         public override bool WrapToV2Extension => true;

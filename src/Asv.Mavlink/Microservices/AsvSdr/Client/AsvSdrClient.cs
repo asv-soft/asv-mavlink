@@ -41,9 +41,21 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         OnDeleteRecord = InternalFilter<AsvSdrRecordDeleteResponsePacket>().Select(_ => (new Guid(_.Payload.RecordGuid),_.Payload))
             .Publish().RefCount();
         
+        
+        
         OnRecordData = InternalFilteredVehiclePackets.Where(x=>dataPacketsHashSet.Contains(x.MessageId));
         
+        OnCalibrationTableRowUploadCallback = InternalFilter<AsvSdrCalibTableUploadReadCallbackPacket>().Select(_ => _.Payload)
+            .Publish().RefCount();
+        OnCalibrationAcc = InternalFilter<AsvSdrCalibAccPacket>().Select(_ => _.Payload)
+            .Publish().RefCount();
+        
+        OnCalibrationTable = InternalFilter<AsvSdrCalibTablePacket>().Select(_ => _.Payload)
+            .Publish().RefCount();
+        
         OnSignal = InternalFilter<AsvSdrSignalRawPacket>().Select(x=>x.Payload).Publish().RefCount();
+        
+        
     }
 
     public IRxValue<AsvSdrOutStatusPayload> Status => _status;
@@ -63,7 +75,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         },_=>_.Payload.RequestId == id,resultGetter:_=>_.Payload,cancel: cancel);
     }
 
-    private ushort GenerateRequestIndex()
+    public ushort GenerateRequestIndex()
     {
         return (ushort)(Interlocked.Increment(ref _requestCounter)%ushort.MaxValue);
     }
@@ -127,5 +139,104 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     }
 
     public IObservable<IPacketV2<IPayload>> OnRecordData { get; }
+    public IObservable<AsvSdrCalibTablePayload> OnCalibrationTable { get; }
+
+    #region Calibration
+    public async Task<AsvSdrCalibTablePayload> ReadCalibrationTable(ushort tableIndex, CancellationToken cancel = default)
+    {
+        var id = GenerateRequestIndex();
+        var result = await InternalCall<(AsvSdrCalibTablePayload,AsvSdrCalibAccPayload), AsvSdrCalibTableReadPacket>(
+            arg =>
+            {
+                arg.Payload.TargetComponent = _identity.TargetComponentId;
+                arg.Payload.TargetSystem = _identity.TargetSystemId;
+                arg.Payload.RequestId = id;
+                arg.Payload.TableIndex = tableIndex;
+            }, (IPacketV2<IPayload> input, out (AsvSdrCalibTablePayload, AsvSdrCalibAccPayload) tuple) =>
+            {
+                switch (input.MessageId)
+                {
+                    case AsvSdrCalibTablePacket.PacketMessageId when input is AsvSdrCalibTablePacket packet2 && packet2.Payload.TableIndex == tableIndex:
+                        tuple = (packet2.Payload, default);
+                        return true;
+                    case AsvSdrCalibAccPacket.PacketMessageId when input is AsvSdrCalibAccPacket packet && packet.Payload.RequestId == id:
+                        tuple = (default, packet.Payload);
+                        return true;
+                    default:
+                        tuple = default;
+                        return false;
+                }
+            }, cancel:cancel).ConfigureAwait(false);
+        if (result.Item2 != null)
+        {
+            throw new Exception($"Error to read calibration table {tableIndex}: {result.Item2.Result:G}");
+        }
+        if (result.Item1 == null)
+        {
+            throw new Exception($"Error to read calibration table {tableIndex}: no response");
+        }
+        return result.Item1;
+    }
+
+    public async Task<AsvSdrCalibTableRowPayload> ReadCalibrationTableRow(ushort tableIndex, ushort rowIndex, CancellationToken cancel = default)
+    {
+        var id = GenerateRequestIndex();
+        var result = await InternalCall<(AsvSdrCalibTableRowPayload,AsvSdrCalibAccPayload), AsvSdrCalibTableRowReadPacket>(
+            arg =>
+            {
+                arg.Payload.TargetComponent = _identity.TargetComponentId;
+                arg.Payload.TargetSystem = _identity.TargetSystemId;
+                arg.Payload.RequestId = id;
+                arg.Payload.TableIndex = tableIndex;
+                arg.Payload.RowIndex = rowIndex;
+            }, (IPacketV2<IPayload> input, out (AsvSdrCalibTableRowPayload, AsvSdrCalibAccPayload) tuple) =>
+            {
+                switch (input.MessageId)
+                {
+                    case AsvSdrCalibTableRowPacket.PacketMessageId when input is AsvSdrCalibTableRowPacket packet2 
+                                                                     && packet2.Payload.TableIndex == tableIndex
+                                                                     && packet2.Payload.RowIndex == rowIndex:
+                        tuple = (packet2.Payload, default);
+                        return true;
+                    case AsvSdrCalibAccPacket.PacketMessageId when input is AsvSdrCalibAccPacket packet && packet.Payload.RequestId == id:
+                        tuple = (default, packet.Payload);
+                        return true;
+                    default:
+                        tuple = default;
+                        return false;
+                }
+            }, cancel:cancel).ConfigureAwait(false);
+        if (result.Item2 != null)
+        {
+            throw new Exception($"Error to read calibration table {tableIndex}: {result.Item2.Result:G}");
+        }
+        if (result.Item1 == null)
+        {
+            throw new Exception($"Error to read calibration table {tableIndex}: no response");
+        }
+        return result.Item1;
+    }
+
+    public Task SendCalibrationTableRowUploadStart(Action<AsvSdrCalibTableUploadStartPayload> argsFill, CancellationToken cancel = default)
+    {
+        var id = GenerateRequestIndex();
+        return InternalSend<AsvSdrCalibTableUploadStartPacket>(_ =>
+        {
+            _.Payload.TargetComponent = _identity.TargetComponentId;
+            _.Payload.TargetSystem = _identity.TargetSystemId;
+            _.Payload.RequestId = id;
+            argsFill(_.Payload);
+        },cancel: cancel);
+    }
+
+    public IObservable<AsvSdrCalibTableUploadReadCallbackPayload> OnCalibrationTableRowUploadCallback { get; }
+    public IObservable<AsvSdrCalibAccPayload> OnCalibrationAcc { get; }
+    public Task SendCalibrationTableRowUploadItem(Action<AsvSdrCalibTableRowPayload> argsFill, CancellationToken cancel = default)
+    {
+        return InternalSend<AsvSdrCalibTableRowPacket>(_ => { argsFill(_.Payload); },cancel: cancel);
+    }
+    
+    #endregion
+
     public IObservable<AsvSdrSignalRawPayload> OnSignal { get; }
 }

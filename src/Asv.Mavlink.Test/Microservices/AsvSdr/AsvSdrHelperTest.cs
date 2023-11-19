@@ -9,15 +9,15 @@ public class AsvSdrHelperTest
 {
 
     [Theory]
-    [InlineData(AsvSdrCustomMode.AsvSdrCustomModeLlz, 0, 0, 0)]
-    [InlineData(AsvSdrCustomMode.AsvSdrCustomModeGp, 330000001, 5, 1)]
-    public void Check_mission_conversion_for_set_mode(AsvSdrCustomMode mode, ulong frequencyHz, float recordRate, uint sendingThinningRatio)
+    [InlineData(AsvSdrCustomMode.AsvSdrCustomModeLlz, 0, 0, 0, -10)]
+    [InlineData(AsvSdrCustomMode.AsvSdrCustomModeGp, 330000001, 5, 1,-60)]
+    public void Check_mission_conversion_for_set_mode(AsvSdrCustomMode mode, ulong frequencyHz, float recordRate, uint sendingThinningRatio, float refPower)
     {
         var input = new MissionItemIntPayload();
         var buffer = new byte[input.GetByteSize()];
         var inputSpan = new Span<byte>(buffer);
         
-        AsvSdrHelper.SetArgsForSdrSetMode(input, mode, frequencyHz, recordRate, sendingThinningRatio);
+        AsvSdrHelper.SetArgsForSdrSetMode(input, mode, frequencyHz, recordRate, sendingThinningRatio,refPower);
         
         input.Serialize(ref inputSpan);
         
@@ -27,34 +27,36 @@ public class AsvSdrHelperTest
         
         
         var serverItem = AsvSdrHelper.Convert(output);
-        AsvSdrHelper.GetArgsForSdrSetMode(serverItem, out var modeOut, out var frequencyHzOut, out var recordRateOut, out var sendingThinningRatioOut);
+        AsvSdrHelper.GetArgsForSdrSetMode(serverItem, out var modeOut, out var frequencyHzOut, out var recordRateOut, out var sendingThinningRatioOut, out var outRefPower);
         Assert.Equal(mode, modeOut);
         Assert.Equal(frequencyHz, frequencyHzOut);
         Assert.Equal(recordRate, recordRateOut);
         Assert.Equal(sendingThinningRatio, sendingThinningRatioOut);
+        Assert.Equal(refPower, outRefPower);
     }
     
     [Theory]
-    [InlineData(AsvSdrCustomMode.AsvSdrCustomModeLlz, 0, 0, 0)]
-    [InlineData(AsvSdrCustomMode.AsvSdrCustomModeGp, 330000001, 5, 1)]
-    public void Check_command_conversion_for_set_mode(AsvSdrCustomMode mode, ulong frequencyHz, float recordRate, uint sendingThinningRatio)
+    [InlineData(AsvSdrCustomMode.AsvSdrCustomModeLlz, 0, 0, 0, -10)]
+    [InlineData(AsvSdrCustomMode.AsvSdrCustomModeGp, 330000001, 5, 1,-60)]
+    public void Check_command_conversion_for_set_mode(AsvSdrCustomMode mode, ulong frequencyHz, float recordRate, uint sendingThinningRatio, float refPower)
     {
         var input = new CommandLongPayload();
         var buffer = new byte[input.GetByteSize()];
         var inputSpan = new Span<byte>(buffer);
         
-        AsvSdrHelper.SetArgsForSdrSetMode(input, mode, frequencyHz, recordRate, sendingThinningRatio);
+        AsvSdrHelper.SetArgsForSdrSetMode(input, mode, frequencyHz, recordRate, sendingThinningRatio, refPower);
         input.Serialize(ref inputSpan);
         
         var output = new CommandLongPayload();
         var outputSpan = new ReadOnlySpan<byte>(buffer);
         output.Deserialize(ref outputSpan);
         
-        AsvSdrHelper.GetArgsForSdrSetMode(output, out var modeOut, out var frequencyHzOut, out var recordRateOut, out var sendingThinningRatioOut);
+        AsvSdrHelper.GetArgsForSdrSetMode(output, out var modeOut, out var frequencyHzOut, out var recordRateOut, out var sendingThinningRatioOut, out var outRefPower);
         Assert.Equal(mode, modeOut);
         Assert.Equal(frequencyHz, frequencyHzOut);
         Assert.Equal(recordRate, recordRateOut);
         Assert.Equal(sendingThinningRatio, sendingThinningRatioOut);
+        Assert.Equal(refPower, outRefPower);
     }
 
     [Theory]

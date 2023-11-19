@@ -35,6 +35,8 @@ namespace Asv.Mavlink
     }
     
     
+    public delegate bool FilterDelegate<TResult>(IPacketV2<IPayload> inputPacket, out TResult result);
+    
     public abstract class MavlinkMicroserviceClient:DisposableOnceWithCancel
     {
         private readonly string _ifcLogName;
@@ -88,7 +90,7 @@ namespace Asv.Mavlink
             if (Identity.TargetComponentId != packetV2.ComponentId) return false;
             return true;
         }
-        protected MavlinkClientIdentity Identity { get; }
+        public MavlinkClientIdentity Identity { get; }
 
         protected IPacketSequenceCalculator Sequence { get; }
 
@@ -110,6 +112,67 @@ namespace Asv.Mavlink
             return Connection.Send(packet, cancel);
         }
 
+        protected async Task<TResult> InternalSendAndWaitAnswer<TResult>(IPacketV2<IPayload> packet,
+            CancellationToken cancel, FilterDelegate<TResult> filterAndResultGetter, int timeoutMs = 1000)
+        {
+            if (filterAndResultGetter == null) throw new ArgumentNullException(nameof(filterAndResultGetter));
+            Logger.Trace($"{LogSend} call {packet.Name}");
+            using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
+            linkedCancel.CancelAfter(timeoutMs);
+            var tcs = new TaskCompletionSource<TResult>();
+            await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled());
+
+            using var subscribe = InternalFilteredVehiclePackets.Subscribe(x=>
+            {
+                if (filterAndResultGetter(x, out var result) == true)
+                {
+                    tcs.SetResult(result);
+                }
+            });
+            packet.Sequence = Sequence.GetNextSequenceNumber();
+            packet.ComponentId = Identity.ComponentId;
+            packet.SystemId = Identity.SystemId;
+            await Connection.Send(packet, linkedCancel.Token).ConfigureAwait(false);
+            var result = await tcs.Task.ConfigureAwait(false);
+            Logger.Trace($"{LogRecv} ok {packet.Name}<=={result}");
+            return result;
+        }
+        
+        protected async Task<TResult> InternalCall<TResult,TPacketSend>(
+            Action<TPacketSend> fillPacket, FilterDelegate<TResult> filterAndResultGetter, int attemptCount = 5,
+            Action<TPacketSend,int>? fillOnConfirmation = null, int timeoutMs = 1000,  CancellationToken cancel = default)
+            where TPacketSend : IPacketV2<IPayload>, new()
+        {
+            var packet = new TPacketSend();
+            fillPacket(packet);
+            byte currentAttempt = 0;
+            var name = packet.Name;
+            while (currentAttempt < attemptCount)
+            {
+                if (currentAttempt != 0)
+                {
+                    fillOnConfirmation?.Invoke(packet, currentAttempt);
+                    Logger.Warn($"{LogSend} replay {currentAttempt} {name}");
+                }
+                ++currentAttempt;
+                try
+                {
+                    return await InternalSendAndWaitAnswer(packet, cancel, filterAndResultGetter, timeoutMs).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    if (cancel.IsCancellationRequested)
+                    {
+                        throw;
+                    }
+                }
+            }
+            var msg = $"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'";
+            Logger.Error(msg);
+            throw new TimeoutException(msg);
+        }
+        
+        
         protected async Task<TAnswerPacket> InternalSendAndWaitAnswer<TAnswerPacket>(IPacketV2<IPayload> packet,
             CancellationToken cancel, Func<TAnswerPacket, bool>? filter = null, int timeoutMs = 1000)
             where TAnswerPacket : IPacketV2<IPayload>, new()

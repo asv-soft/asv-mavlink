@@ -11,13 +11,13 @@ using DynamicData.Binding;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Asv.Mavlink.Test.AsvSdr;
+namespace Asv.Mavlink.Test;
 
 public class AsvSdrExTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
 
-    private async Task<(AsvSdrClientEx, AsvSdrServerEx)> SetUpConnection()
+    private async Task<(IAsvSdrClientEx, IAsvSdrServerEx)> SetUpConnection()
     {
         var link = new VirtualMavlinkConnection();
         var mavlinkClientIdentity = new MavlinkClientIdentity() { SystemId = 1, ComponentId = 1, TargetSystemId = 2, TargetComponentId = 2 };
@@ -54,16 +54,17 @@ public class AsvSdrExTests
     {
         var (asvSdrClientEx, asvSdrServerEx) = await SetUpConnection();
 
-        asvSdrServerEx.SetMode = (mode, hz, rate, ratio, cancel) =>
+        asvSdrServerEx.SetMode = (mode, hz, rate, ratio, refPower, cancel) =>
         {
             Assert.Equal(customMode, mode);
             Assert.Equal(11223U, hz);
             Assert.Equal(1, rate);
             Assert.Equal(1U, ratio);
+            Assert.Equal(-90, refPower);
             return Task.FromResult(MavResult.MavResultAccepted);
         };
 
-        var result = await asvSdrClientEx.SetMode(customMode, 11223, 1, 1, CancellationToken.None);
+        var result = await asvSdrClientEx.SetMode(customMode, 11223, 1, 1, -90, CancellationToken.None);
         Assert.Equal(MavResult.MavResultAccepted, result);
     }
 
@@ -78,9 +79,9 @@ public class AsvSdrExTests
     {
         var (asvSdrClientEx, asvSdrServerEx) = await SetUpConnection();
         
-        asvSdrServerEx.SetMode = (_, _, _, _, _) => Task.FromResult(mavResult);
+        asvSdrServerEx.SetMode = (_, _, _, _, _,_) => Task.FromResult(mavResult);
 
-        var result = await asvSdrClientEx.SetMode(AsvSdrCustomMode.AsvSdrCustomModeLlz, 11223, 1, 1, CancellationToken.None);
+        var result = await asvSdrClientEx.SetMode(AsvSdrCustomMode.AsvSdrCustomModeLlz, 11223, 1, 1, -90.5f, CancellationToken.None);
         Assert.Equal(mavResult, result);
     }
 

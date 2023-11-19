@@ -248,11 +248,11 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
+        IAsvSdrClient clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
             new PacketSequenceCalculator());
 
         serverSdr.Start();
@@ -270,11 +270,11 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
+        IAsvSdrClient clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
             new PacketSequenceCalculator());
 
         serverSdr.Start();
@@ -290,7 +290,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
@@ -310,7 +310,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
@@ -332,7 +332,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
@@ -352,7 +352,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
@@ -372,7 +372,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
@@ -394,7 +394,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
@@ -414,7 +414,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
@@ -434,7 +434,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
@@ -456,7 +456,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
@@ -476,7 +476,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
@@ -496,7 +496,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
@@ -518,7 +518,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
@@ -538,7 +538,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity(), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
@@ -558,7 +558,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity
             {
                 ComponentId = 2,
@@ -606,7 +606,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity
             {
                 ComponentId = 2,
@@ -659,7 +659,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity
             {
                 ComponentId = 2,
@@ -708,7 +708,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         
-        var serverSdr = new AsvSdrServer(link.Server,
+        IAsvSdrServer serverSdr = new AsvSdrServer(link.Server,
             new MavlinkServerIdentity
             {
                 ComponentId = 2,

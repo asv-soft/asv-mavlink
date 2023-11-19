@@ -100,7 +100,7 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
                     tcs.TrySetException(new Exception($"Mission upload timeout"));
                 }
             });
-        _client.OnMissionRequest.Subscribe(req =>
+        using var sub1 = _client.OnMissionRequest.Subscribe(req =>
         {
             Logger.Debug($"UAV request {req.Seq} item");
             lastUpdateTime = DateTime.Now;
@@ -114,9 +114,9 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
             }
             _client.WriteMissionItem(item.Value, cancel);
 
-        } , cancel);
+        } );
 
-        _client.OnMissionAck.Subscribe(_ =>
+        using var sub2 =_client.OnMissionAck.Subscribe(_ =>
         {
             lastUpdateTime = DateTime.Now;
             if (_.Type == MavMissionResult.MavMissionAccepted)
@@ -128,7 +128,7 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
                 tcs.TrySetException(new Exception($"Error to upload mission to vehicle:{_.Type:G}"));
             }
                 
-        } , cancel);
+        });
 
         await _client.MissionSetCount((ushort)_missionSource.Count, cancel).ConfigureAwait(false);
         await tcs.Task.ConfigureAwait(false);
