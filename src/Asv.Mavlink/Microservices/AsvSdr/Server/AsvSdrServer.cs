@@ -165,6 +165,7 @@ namespace Asv.Mavlink
             return InternalCall<CalibrationTableRow, AsvSdrCalibTableUploadReadCallbackPacket, AsvSdrCalibTableRowPacket>(
                 x =>
                 {
+                    x.Payload.TableIndex = tableIndex;
                     x.Payload.RequestId = reqId;
                     x.Payload.TargetComponent = targetCompId;
                     x.Payload.TargetSystem = targetSysId;

@@ -10,6 +10,7 @@ using Asv.IO;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Minimal;
+using NLog;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
 using MavType = Asv.Mavlink.V2.Minimal.MavType;
 
@@ -17,12 +18,16 @@ namespace Asv.Mavlink;
 
 public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
 {
+    private readonly IStatusTextServer _status;
     private double _signalSendingFlag;
+    private int _calibrationTableUploadFlag;
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public AsvSdrServerEx(IAsvSdrServer server,IHeartbeatServer heartbeat, ICommandServerEx<CommandLongPacket> commands)
+    public AsvSdrServerEx(IAsvSdrServer server, IStatusTextServer status, IHeartbeatServer heartbeat, ICommandServerEx<CommandLongPacket> commands)
     {
         if (heartbeat == null) throw new ArgumentNullException(nameof(heartbeat));
         if (commands == null) throw new ArgumentNullException(nameof(commands));
+        _status = status ?? throw new ArgumentNullException(nameof(status));
         Base = server ?? throw new ArgumentNullException(nameof(server));
 
         #region Heartbeat
@@ -125,14 +130,41 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
 
     private async void OnCalibrationTableUploadStart(AsvSdrCalibTableUploadStartPacket args)
     {
-        // TODO: interlocked and write to table
-        var rows = new List<CalibrationTableRow>(args.Payload.RowCount);
-        for (ushort i = 0; i < args.Payload.RowCount; i++)
+        if (WriteCalibrationTable == null)
         {
-            var row = await Base.CallCalibrationTableUploadReadCallback(args.SystemId,args.ComponentId,args.Payload.RequestId,args.Payload.TableIndex,i,DisposeCancel).ConfigureAwait(false);
-            rows.Add(row);
+            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckNotSupported).ConfigureAwait(false);
+            return;
         }
-        await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckOk).ConfigureAwait(false);
+        if (Interlocked.CompareExchange(ref _calibrationTableUploadFlag, 1, 0) != 0)
+        {
+            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckInProgress).ConfigureAwait(false);
+            Logger.Warn($"Calibration table upload already in progress");
+            return;
+        }
+        try
+        {
+            _status.Info($"Upload calibration [{args.Payload.TableIndex}] started");
+            var rows = new CalibrationTableRow[args.Payload.RowCount];
+            for (ushort i = 0; i < args.Payload.RowCount; i++)
+            {
+                var row = await Base.CallCalibrationTableUploadReadCallback(args.SystemId,args.ComponentId,args.Payload.RequestId,args.Payload.TableIndex,i,DisposeCancel).ConfigureAwait(false);
+                rows[i] = row;
+            }
+            WriteCalibrationTable(args.Payload.TableIndex, rows);
+            _status.Info($"Upload calibration [{args.Payload.TableIndex}] completed");
+            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckOk).ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            _status.Info($"Upload calibration [{args.Payload.TableIndex}] error");
+            Logger.Error(e,$"Upload calibration [{args.Payload.TableIndex}] error:{e.Message}");
+            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail).ConfigureAwait(false);
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _calibrationTableUploadFlag, 0);
+        }
+        
     }
     private async void OnCalibrationReadTableRow(AsvSdrCalibTableRowReadPayload args)
     {
@@ -196,6 +228,7 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
     public StopCalibrationDelegate StopCalibration { get; set; }
     public ReadCalibrationTableInfoDelegate? ReadCalibrationTableInfo { get; set; }
     public ReadCalibrationTableRowDelegate? ReadCalibrationTableRow { get; set; }
+    public WriteCalibrationDelegate? WriteCalibrationTable { get; set; }
 
     public async Task<bool> SendSignal(ulong unixTime, string name, ReadOnlyMemory<double> signal,
         AsvSdrSignalFormat format, CancellationToken cancel = default)

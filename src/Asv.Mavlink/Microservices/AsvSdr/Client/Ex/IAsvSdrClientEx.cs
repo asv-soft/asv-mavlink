@@ -43,73 +43,73 @@ public interface IAsvSdrClientEx
     public async Task StartCalibrationAndCheckResult( CancellationToken cancel = default)
     {
         var result = await StartCalibration(cancel).ConfigureAwait(false);
-        if (result != MavResult.MavResultAccepted) throw new Exception($"Start calibration failed. Result: {result}");
+        if (result != MavResult.MavResultAccepted) throw new AsvSdrException($"Start calibration failed. Result: {result}");
     }
     
     public async Task StopCalibrationAndCheckResult( CancellationToken cancel = default)
     {
         var result = await StopCalibration(cancel).ConfigureAwait(false);
-        if (result != MavResult.MavResultAccepted) throw new Exception($"Stop calibration failed. Result: {result}");
+        if (result != MavResult.MavResultAccepted) throw new AsvSdrException($"Stop calibration failed. Result: {result}");
     }
     
     public async Task StartMissionAndCheckResult( ushort missionIndex, CancellationToken cancel = default)
     {
         var result = await StartMission(missionIndex, cancel).ConfigureAwait(false);
-        if (result != MavResult.MavResultAccepted) throw new Exception($"Start mission '{missionIndex:g}' failed. Result: {result}");
+        if (result != MavResult.MavResultAccepted) throw new AsvSdrException($"Start mission '{missionIndex:g}' failed. Result: {result}");
     }
     public async Task StopMissionAndCheckResult( CancellationToken cancel = default)
     {
         var result = await StopMission(cancel).ConfigureAwait(false);
-        if (result != MavResult.MavResultAccepted) throw new Exception($"Stop mission failed. Result: {result}");
+        if (result != MavResult.MavResultAccepted) throw new AsvSdrException($"Stop mission failed. Result: {result}");
     }
     public async Task SystemControlActionCheckResult( AsvSdrSystemControlAction action, CancellationToken cancel = default)
     {
         var result = await SystemControlAction(action, cancel).ConfigureAwait(false);
-        if (result != MavResult.MavResultAccepted) throw new Exception($"System control action {action:G} failed. Result: {result}");
+        if (result != MavResult.MavResultAccepted) throw new AsvSdrException($"System control action {action:G} failed. Result: {result}");
     }
     public async Task SetModeAndCheckResult( AsvSdrCustomMode mode, ulong frequencyHz, float recordRate, uint sendingThinningRatio, float refPower, CancellationToken cancel)
     {
         var result = await SetMode(mode, frequencyHz, recordRate, sendingThinningRatio, refPower, cancel).ConfigureAwait(false);
-        if (result != MavResult.MavResultAccepted) throw new Exception($"Set mode failed. Result: {result}");
+        if (result != MavResult.MavResultAccepted) throw new AsvSdrException($"Set mode failed. Result: {result}");
     }
     
     public async Task StartRecordAndCheckResult( string recordName, CancellationToken cancel)
     {
         var result = await StartRecord(recordName, cancel).ConfigureAwait(false);
-        if (result != MavResult.MavResultAccepted) throw new Exception($"Start record failed. Result: {result}");
+        if (result != MavResult.MavResultAccepted) throw new AsvSdrException($"Start record failed. Result: {result}");
     }
     
     public async Task StopRecordAndCheckResult( CancellationToken cancel)
     {
         var result = await StopRecord(cancel).ConfigureAwait(false);
-        if (result != MavResult.MavResultAccepted) throw new Exception($"Stop record failed. Result: {result}");
+        if (result != MavResult.MavResultAccepted) throw new AsvSdrException($"Stop record failed. Result: {result}");
     }
 
     public async Task CurrentRecordSetTagAndCheckResult( string tagName, string value, CancellationToken cancel)
     {
         var result = await CurrentRecordSetTag(tagName, value, cancel).ConfigureAwait(false);
-        if (result != MavResult.MavResultAccepted) throw new Exception($"Set tag failed. Result: {result}");
+        if (result != MavResult.MavResultAccepted) throw new AsvSdrException($"Set tag failed. Result: {result}");
     }
     public async Task CurrentRecordSetTagAndCheckResult( string tagName, ulong value, CancellationToken cancel)
     {
         var result = await CurrentRecordSetTag(tagName, value, cancel).ConfigureAwait(false);
-        if (result != MavResult.MavResultAccepted) throw new Exception($"Set tag failed. Result: {result}");
+        if (result != MavResult.MavResultAccepted) throw new AsvSdrException($"Set tag failed. Result: {result}");
     }
     public async Task CurrentRecordSetTagAndCheckResult( string tagName, long value, CancellationToken cancel)
     {
         var result = await CurrentRecordSetTag(tagName, value, cancel).ConfigureAwait(false);
-        if (result != MavResult.MavResultAccepted) throw new Exception($"Set tag failed. Result: {result}");
+        if (result != MavResult.MavResultAccepted) throw new AsvSdrException($"Set tag failed. Result: {result}");
     }
     public async Task CurrentRecordSetTagAndCheckResult( string tagName, double value, CancellationToken cancel)
     {
         var result = await CurrentRecordSetTag(tagName, value, cancel).ConfigureAwait(false);
-        if (result != MavResult.MavResultAccepted) throw new Exception($"Set tag failed. Result: {result}");
+        if (result != MavResult.MavResultAccepted) throw new AsvSdrException($"Set tag failed. Result: {result}");
     }
     
     public Task<MavResult> CurrentRecordSetTag( string tagName, string value, CancellationToken cancel)
     {
         if (value.Length > AsvSdrHelper.RecordTagValueLength) 
-            throw new Exception($"Tag string value is too long. Max length is {AsvSdrHelper.RecordTagValueLength}");
+            throw new ArgumentException($"Tag string value is too long. Max length is {AsvSdrHelper.RecordTagValueLength}");
         var nameArray = new byte[AsvSdrHelper.RecordTagValueLength];
         MavlinkTypesHelper.SetString(nameArray,value);
         return CurrentRecordSetTag(tagName, AsvSdrRecordTagType.AsvSdrRecordTagTypeString8, nameArray, cancel);

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
+using DynamicData;
 using DynamicData.Binding;
 using Xunit;
 using Xunit.Abstractions;
@@ -25,13 +26,15 @@ public class AsvSdrExTests
         var commandClient = new CommandClient(link.Client, mavlinkClientIdentity, new PacketSequenceCalculator(), new CommandProtocolConfig());
         var asvSdrClient = new AsvSdrClient(link.Client, mavlinkClientIdentity, new PacketSequenceCalculator());
         var asvSdrClientEx = new AsvSdrClientEx(asvSdrClient, heartBeatClient, commandClient, new AsvSdrClientExConfig());
-        
+
+        var pkt = new PacketSequenceCalculator();
         var mavlinkServerIdentity = new MavlinkServerIdentity() { SystemId = 2, ComponentId = 2 };
-        var heartBeatServer = new HeartbeatServer(link.Server, new PacketSequenceCalculator(), mavlinkServerIdentity, new MavlinkHeartbeatServerConfig(), Scheduler.Default);
-        var commandServer = new CommandServer(link.Server, new PacketSequenceCalculator(), mavlinkServerIdentity, Scheduler.Default);
+        var heartBeatServer = new HeartbeatServer(link.Server, pkt, mavlinkServerIdentity, new MavlinkHeartbeatServerConfig(), Scheduler.Default);
+        var commandServer = new CommandServer(link.Server, pkt, mavlinkServerIdentity, Scheduler.Default);
         var commandLongServerEx = new CommandLongServerEx(commandServer);
-        var asvSdrServer = new AsvSdrServer(link.Server, mavlinkServerIdentity, new AsvSdrServerConfig(), new PacketSequenceCalculator(), Scheduler.Default);
-        var asvSdrServerEx = new AsvSdrServerEx(asvSdrServer, heartBeatServer, commandLongServerEx);
+        var status = new StatusTextServer(link.Server, pkt, mavlinkServerIdentity, new StatusTextLoggerConfig(), Scheduler.Default);
+        var asvSdrServer = new AsvSdrServer(link.Server, mavlinkServerIdentity, new AsvSdrServerConfig(), pkt, Scheduler.Default);
+        var asvSdrServerEx = new AsvSdrServerEx(asvSdrServer,status, heartBeatServer, commandLongServerEx);
         
         heartBeatServer.Start();
         asvSdrServer.Start();
@@ -770,4 +773,174 @@ public class AsvSdrExTests
         await client.StopMission();
 
     }
+    
+    
+    [Fact]
+    public async Task Client_call_start_calibration_server_respond()
+    {
+        var (client, server) = await SetUpConnection();
+        server.StartCalibration = (cancel) => Task.FromResult(MavResult.MavResultAccepted);
+        await client.StartCalibrationAndCheckResult();
+
+    }
+    
+    [Fact]
+    public async Task Client_call_unsupported_commands()
+    {
+        var (client, server) = await SetUpConnection();
+        await Assert.ThrowsAsync<AsvSdrException>(async () =>
+        {
+            await client.StartCalibrationAndCheckResult();
+        });
+        await Assert.ThrowsAsync<AsvSdrException>(async () =>
+        {
+            await client.StopCalibrationAndCheckResult();
+        });
+    }
+
+    [Fact]
+    public async Task Client_read_calibration_table_list()
+    {
+        var (client, server) = await SetUpConnection();
+        var date = DateTime.Now;
+        server.Base.Set(_ => _.CalibTableCount = 2);
+        server.ReadCalibrationTableInfo = index =>
+        {
+            return index switch
+            {
+                0 => new CalibrationTableInfo { Name = "Table 1", Size = 10, Updated = date, },
+                1 => new CalibrationTableInfo { Name = "Table 2", Size = 20, Updated = date, },
+                _ => throw new Exception("Invalid table index")
+            };
+        };
+        var status = await client.Base.Status.FirstAsync();
+        await client.ReadCalibrationTableList();
+        var sub = client.CalibrationTables.Bind(out var list).Subscribe();
+        Assert.Equal(2, list.Count);
+        Assert.Equal("Table 1", list[0].Name);
+        Assert.Equal("Table 2", list[1].Name);
+        Assert.Equal(10, list[0].RemoteRowCount.Value);
+        Assert.Equal(20, list[1].RemoteRowCount.Value);
+        Assert.Equal(0, list[0].Index);
+        Assert.Equal(1, list[1].Index);
+        Assert.True(date - list[0].Updated.Value < TimeSpan.FromMilliseconds(100));
+    }
+    [Fact]
+    public async Task Client_download_calibration_table()
+    {
+        var (client, server) = await SetUpConnection();
+        var date = DateTime.Now;
+        server.Base.Set(_ => _.CalibTableCount = 2);
+        server.ReadCalibrationTableInfo = index =>
+        {
+            return index switch
+            {
+                0 => new CalibrationTableInfo { Name = "Table 1", Size = 10, Updated = date, },
+                1 => new CalibrationTableInfo { Name = "Table 2", Size = 20, Updated = date, },
+                _ => throw new Exception("Invalid table index")
+            };
+        };
+        var status = await client.Base.Status.FirstAsync();
+        await client.ReadCalibrationTableList();
+        var sub = client.CalibrationTables.Bind(out var list).Subscribe();
+        Assert.Equal(2, list.Count);
+        Assert.Equal("Table 1", list[0].Name);
+        Assert.Equal("Table 2", list[1].Name);
+        Assert.Equal(10, list[0].RemoteRowCount.Value);
+        Assert.Equal(20, list[1].RemoteRowCount.Value);
+        Assert.Equal(0, list[0].Index);
+        Assert.Equal(1, list[1].Index);
+        Assert.True(date - list[0].Updated.Value < TimeSpan.FromSeconds(1));
+    }
+    
+    [Theory]
+    [InlineData(0)]
+    [InlineData(10)]
+    [InlineData(100)]
+    public async Task Client_read_calibration_table_rows(ushort count)
+    {
+        var (client, server) = await SetUpConnection();
+        var name = "Table 1";
+        var date = DateTime.Now;
+        server.Base.Set(_ => _.CalibTableCount = 1);
+        server.ReadCalibrationTableInfo = index =>
+        {
+            return index switch
+            {
+                0 => new CalibrationTableInfo { Name = name, Size = count, Updated = date, },
+                _ => throw new Exception("Invalid table index")
+            };
+        };
+        server.ReadCalibrationTableRow = (tableIndex, row) =>
+        {
+            if (tableIndex != 0) throw new Exception("Invalid table index");
+            return new CalibrationTableRow(row,row*0.1f,row*20,row*10);
+        };
+        var status = await client.Base.Status.FirstAsync();
+        await client.ReadCalibrationTableList();
+        var sub = client.CalibrationTables.Bind(out var list).Subscribe();
+        var table = await client.GetCalibrationTable(name);
+        Assert.NotNull(table);
+        Assert.Equal(name, table.Name);
+        Assert.Equal(count, table.RemoteRowCount.Value);
+        Assert.Equal(0, table.Index);
+        Assert.True(date - table.Updated.Value < TimeSpan.FromMilliseconds(100));
+        var items = await table.Download();
+        Assert.Equal(count, items.Length);
+        for (int i = 0; i < count; i++)
+        {
+            Assert.Equal((ulong)i, items[i].FrequencyHz);
+            Assert.Equal(i*0.1f, items[i].RefPower);
+            Assert.Equal(i*20, items[i].RefValue);
+            Assert.Equal(i*10, items[i].MeasuredValue);
+        }
+    }
+    
+    
+    
+    [Fact]
+    public async Task Client_upload_and_download_with_server_error()
+    {
+        var (client, server) = await SetUpConnection();
+        var name = "Table 1";
+        var date = DateTime.Now;
+
+        server.Base.Set(_ => _.CalibTableCount = 1);
+        server.ReadCalibrationTableInfo = index =>
+        {
+            return index switch
+            {
+                0 => new CalibrationTableInfo { Name = name, Size = 10, Updated = date, },
+                _ => throw new Exception("Invalid table index")
+            };
+        };
+        server.WriteCalibrationTable = (tableIndex, items) =>
+        {
+            throw new Exception("FATAL");
+        };
+        server.ReadCalibrationTableRow = (tableIndex, row) =>
+        {
+            throw new Exception("FATAL");
+        };
+        
+        
+        
+        
+        var status = await client.Base.Status.FirstAsync();
+        await client.ReadCalibrationTableList();
+        var sub = client.CalibrationTables.Bind(out var list).Subscribe();
+        var table = await client.GetCalibrationTable(name);
+        Assert.NotNull(table);
+        await Assert.ThrowsAsync<AsvSdrException>(async () =>
+        {
+            var resultEmpty = await table.Download();
+        });
+        await Assert.ThrowsAsync<AsvSdrException>(async () =>
+        {
+            await table.Upload(new CalibrationTableRow[]{new CalibrationTableRow(100,0,0,0) });
+        });
+        
+       
+    }
+
 }

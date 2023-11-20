@@ -15,25 +15,29 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
     private readonly RxValue<ushort> _remoteRowCount;
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     private readonly TimeSpan _deviceUploadTimeout;
+    private readonly RxValue<DateTime> _updated;
 
-    public AsvSdrClientCalibrationTable(AsvSdrCalibTablePayload table, IAsvSdrClient ifc, TimeSpan deviceUploadTimeout)
+    public AsvSdrClientCalibrationTable(AsvSdrCalibTablePayload payload, IAsvSdrClient ifc, TimeSpan deviceUploadTimeout)
     {
         _ifc = ifc;
         _deviceUploadTimeout = deviceUploadTimeout;
-        Index = table.TableIndex;
-        Name = MavlinkTypesHelper.GetString(table.TableName);
-        _remoteRowCount = new RxValue<ushort>(table.RowCount).DisposeItWith(Disposable);
+        _remoteRowCount = new RxValue<ushort>(payload.RowCount).DisposeItWith(Disposable);
+        _updated = new RxValue<DateTime>(MavlinkTypesHelper.FromUnixTimeUs(payload.CreatedUnixUs)).DisposeItWith(Disposable);
+        Name = MavlinkTypesHelper.GetString(payload.TableName);
+        Index = payload.TableIndex;
     }
     public string Name { get; }
     public ushort Index { get; }
 
     public IRxValue<ushort> RemoteRowCount => _remoteRowCount;
+    public IRxEditableValue<DateTime> Updated => _updated;
 
     internal void Update(AsvSdrCalibTablePayload payload)
     {
         var name = MavlinkTypesHelper.GetString(payload.TableName);
         if (payload.TableIndex!= Index) throw new ArgumentException($"Invalid table index. Expected: {Index}, actual: {payload.TableIndex}");
         if (name != Name) throw new ArgumentException($"Invalid table name. Expected: {Name}, actual: {name}");
+        _updated.OnNext(MavlinkTypesHelper.FromUnixTimeUs(payload.CreatedUnixUs));
         _remoteRowCount.OnNext(payload.RowCount);
     }
     
@@ -84,7 +88,7 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
             if (data.Length <= req.RowIndex)
             {
                 tcs.TrySetException(
-                    new Exception($"Requested mission item with index '{req.RowIndex}' not found in local store"));
+                    new AsvSdrException($"Requested mission item with index '{req.RowIndex}' not found in local store"));
                 return;
             }
             var value = data[req.RowIndex];
@@ -111,7 +115,7 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
             }
             else
             {
-                tcs.TrySetException(new Exception($"Error to upload '{Name}[{Index}]' table to payload:{_.Result:G}"));
+                tcs.TrySetException(new AsvSdrException($"Error to upload '{Name}[{Index}]' table to payload:{_.Result:G}"));
             }
 
         });
@@ -121,6 +125,8 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
             args.TableIndex = Index;
             args.RowCount = (ushort)data.Length;
             args.RequestId = reqId;
+            args.CreatedUnixUs = MavlinkTypesHelper.ToUnixTimeUs(DateTime.Now);
+            
         }, linkedCancel.Token).ConfigureAwait(false);
         await tcs.Task.ConfigureAwait(false);
         

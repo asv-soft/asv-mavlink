@@ -29151,7 +29151,7 @@ namespace Asv.Mavlink.V2.Common
         /// Bitmap of ESC failure flags.
         /// OriginName: failure_flags, Units: , IsExtended: false
         /// </summary>
-        public EscFailureFlags[] FailureFlags { get; } = new ushort[4];
+        public EscFailureFlags[] FailureFlags { get; } = new EscFailureFlags[4];
         /// <summary>
         /// Temperature of each ESC. INT16_MAX: if data not supplied by ESC.
         /// OriginName: temperature, Units: cdegC, IsExtended: false
@@ -31015,7 +31015,7 @@ namespace Asv.Mavlink.V2.Common
         /// MAV_CMD command id of waypoint, set to UINT16_MAX if not being used.
         /// OriginName: command, Units: , IsExtended: false
         /// </summary>
-        public MavCmd[] Command { get; } = new ushort[5];
+        public MavCmd[] Command { get; } = new MavCmd[5];
         /// <summary>
         /// Number of valid points (up-to 5 waypoints are possible)
         /// OriginName: valid_points, Units: , IsExtended: false

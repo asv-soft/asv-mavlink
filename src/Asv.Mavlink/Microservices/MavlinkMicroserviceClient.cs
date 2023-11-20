@@ -126,7 +126,7 @@ namespace Asv.Mavlink
             {
                 if (filterAndResultGetter(x, out var result) == true)
                 {
-                    tcs.SetResult(result);
+                    tcs.TrySetResult(result);
                 }
             });
             packet.Sequence = Sequence.GetNextSequenceNumber();

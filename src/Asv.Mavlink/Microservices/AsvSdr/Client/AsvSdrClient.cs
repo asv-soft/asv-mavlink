@@ -169,11 +169,11 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
             }, cancel:cancel).ConfigureAwait(false);
         if (result.Item2 != null)
         {
-            throw new Exception($"Error to read calibration table {tableIndex}: {result.Item2.Result:G}");
+            throw new AsvSdrException($"Error to read calibration table {tableIndex}: {result.Item2.Result:G}");
         }
         if (result.Item1 == null)
         {
-            throw new Exception($"Error to read calibration table {tableIndex}: no response");
+            throw new AsvSdrException($"Error to read calibration table {tableIndex}: no response");
         }
         return result.Item1;
     }
@@ -208,11 +208,11 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
             }, cancel:cancel).ConfigureAwait(false);
         if (result.Item2 != null)
         {
-            throw new Exception($"Error to read calibration table {tableIndex}: {result.Item2.Result:G}");
+            throw new AsvSdrException($"Error to read calibration table {tableIndex}: {result.Item2.Result:G}");
         }
         if (result.Item1 == null)
         {
-            throw new Exception($"Error to read calibration table {tableIndex}: no response");
+            throw new AsvSdrException($"Error to read calibration table {tableIndex}: no response");
         }
         return result.Item1;
     }
