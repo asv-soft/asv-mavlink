@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Linq;
 using Asv.Mavlink.V2.AsvSdr;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace Asv.Mavlink.Test;

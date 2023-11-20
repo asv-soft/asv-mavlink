@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Reactive.Concurrency;
-using System.Threading.Tasks;
-using Asv.Cfg.ImMemory;
 using Asv.Mavlink.V2.Common;
 using Xunit;
 using Xunit.Abstractions;

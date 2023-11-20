@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
-using Asv.Mavlink.V2.All;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.AsvGbs;
 using Asv.Mavlink.V2.AsvSdr;

@@ -1,11 +1,8 @@
 #nullable enable
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.V2.Ardupilotmega;
-using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 

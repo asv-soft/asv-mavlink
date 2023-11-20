@@ -1,11 +1,4 @@
 using System.Net;
-using System.Net.Sockets;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
-using Asv.Common;
-using Asv.IO;
-using Asv.Mavlink.Server;
-using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink.Test
 {

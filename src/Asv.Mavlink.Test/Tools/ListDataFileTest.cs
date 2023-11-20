@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Text;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
 using DeepEqual.Syntax;

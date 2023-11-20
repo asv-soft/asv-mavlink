@@ -24,8 +24,6 @@
 
 using System;
 using System.Text;
-using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.Csairlink

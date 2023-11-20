@@ -1,7 +1,5 @@
 using System;
-using System.Linq;
 using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;

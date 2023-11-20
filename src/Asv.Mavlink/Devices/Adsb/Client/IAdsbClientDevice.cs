@@ -1,6 +1,4 @@
-﻿using System.Windows.Input;
-
-namespace Asv.Mavlink;
+﻿namespace Asv.Mavlink;
 
 public interface IAdsbClientDevice : IClientDevice
 {

@@ -1,6 +1,5 @@
 ﻿#nullable enable
 using System.Reactive.Concurrency;
-using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 

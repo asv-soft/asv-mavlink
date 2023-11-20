@@ -4,7 +4,6 @@ using System.Reactive.Concurrency;
 using Asv.Cfg;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using NLog;
 
 namespace Asv.Mavlink;
 

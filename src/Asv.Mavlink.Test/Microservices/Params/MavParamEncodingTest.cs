@@ -1,4 +1,3 @@
-using Asv.Mavlink.V2.Common;
 using Xunit;
 
 namespace Asv.Mavlink.Test;

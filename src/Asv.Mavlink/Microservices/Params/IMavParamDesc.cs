@@ -1,7 +1,3 @@
-using System;
-using Asv.Cfg;
-using Asv.Mavlink.V2.Common;
-
 namespace Asv.Mavlink;
 
 

@@ -1,6 +1,5 @@
 using System;
 using Asv.Mavlink.V2.Common;
-using NLog.Targets;
 
 namespace Asv.Mavlink;
 

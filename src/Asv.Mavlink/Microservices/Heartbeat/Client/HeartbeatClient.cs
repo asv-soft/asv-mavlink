@@ -1,15 +1,12 @@
 #nullable enable
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using Asv.Common;
-using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Minimal;
 using NLog;
 

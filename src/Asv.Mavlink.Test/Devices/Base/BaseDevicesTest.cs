@@ -1,14 +1,11 @@
 using System;
 using System.Reactive.Concurrency;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Xunit;
 using Xunit.Abstractions;
-using MavCmd = Asv.Mavlink.V2.AsvGbs.MavCmd;
 
 namespace Asv.Mavlink.Test;
 
