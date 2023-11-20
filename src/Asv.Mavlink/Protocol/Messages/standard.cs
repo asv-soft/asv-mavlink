@@ -22,6 +22,12 @@
 
 // This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11
 
+using System;
+using System.Text;
+using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Minimal;
+using Asv.IO;
+
 namespace Asv.Mavlink.V2.Standard
 {
 

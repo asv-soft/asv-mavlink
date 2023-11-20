@@ -25,6 +25,7 @@
 using System;
 using System.Text;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.AsvSdr
@@ -747,8 +748,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrRecordPayload : IPayload
     {
-        public byte GetMaxByteSize() => 82; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 82; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 78; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 78; // of byte sized of fields (exclude extended)
         public int GetByteSize()
         {
             var sum = 0;
@@ -761,7 +762,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             sum+=2; //TagCount
             sum+=RecordGuid.Length; //RecordGuid
             sum+=RecordName.Length; //RecordName
-            sum+=4; //RefPower
             return (byte)sum;
         }
 
@@ -783,7 +783,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             {
                 RecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/82 - payloadSize - /*ExtendedFieldsLength*/4)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/78 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordName = new char[arraySize];
             unsafe
             {
@@ -795,9 +795,6 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             buffer = buffer.Slice(arraySize);
            
-            // extended field 'RefPower' can be empty
-            if (buffer.IsEmpty) return;
-            RefPower = BinSerialize.ReadFloat(ref buffer);
 
         }
 
@@ -824,8 +821,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             }
             buffer = buffer.Slice(RecordName.Length);
             
-            BinSerialize.WriteFloat(ref buffer,RefPower);
-            /* PayloadByteSize = 82 */;
+            /* PayloadByteSize = 78 */;
         }
         
         
@@ -878,11 +874,6 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public char[] RecordName { get; set; } = new char[28];
         public byte GetRecordNameMaxItemsCount() => 28;
-        /// <summary>
-        /// Reference power in dBm, specified by MAV_CMD_ASV_SDR_SET_MODE command.
-        /// OriginName: ref_power, Units: , IsExtended: true
-        /// </summary>
-        public float RefPower { get; set; }
     }
     /// <summary>
     /// Request to delete ASV_SDR_RECORD items from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]

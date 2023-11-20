@@ -286,8 +286,6 @@
       <field type="uint16_t" name="tag_count">Tag items count.</field>
       <field type="uint32_t" name="data_count">Data items count.</field>
       <field type="uint32_t" name="size" units="bytes">Total data size of record with all data items and tags.</field>
-      <extensions/>
-      <field type="float" name="ref_power">Reference power in dBm, specified by MAV_CMD_ASV_SDR_SET_MODE command.</field>
     </message>
     <message id="13104" name="ASV_SDR_RECORD_DELETE_REQUEST">
       <description>Request to delete ASV_SDR_RECORD items from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
