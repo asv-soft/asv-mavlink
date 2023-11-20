@@ -24,48 +24,57 @@ namespace Asv.Mavlink
         Task SendRecordData(AsvSdrCustomMode mode, Action<IPayload> setValueCallback, CancellationToken cancel = default);
         IPacketV2<IPayload> CreateRecordData(AsvSdrCustomMode mode);
         Task SendSignal(Action<AsvSdrSignalRawPacket> setValueCallback, CancellationToken cancel = default);
-    }
-
-    public static class AsvSdrServerHelper
-    {
-        public static Task SendRecordResponseFail(this IAsvSdrServer src, AsvSdrRecordRequestPayload request,
+        
+        #region Calibration
+        
+        Task SendCalibrationAcc(ushort reqId, AsvSdrRequestAck resultCode , CancellationToken cancel = default);
+        IObservable<AsvSdrCalibTableReadPayload> OnCalibrationTableReadRequest { get; }
+        Task SendCalibrationTableReadResponse(Action<AsvSdrCalibTablePayload> setValueCallback, CancellationToken cancel = default);
+        IObservable<AsvSdrCalibTableRowReadPayload> OnCalibrationTableRowReadRequest { get; }
+        Task SendCalibrationTableRowReadResponse(Action<AsvSdrCalibTableRowPayload> setValueCallback, CancellationToken cancel = default);
+        IObservable<AsvSdrCalibTableUploadStartPacket> OnCalibrationTableUploadStart { get; }
+        Task<CalibrationTableRow> CallCalibrationTableUploadReadCallback(byte targetSysId, byte targetCompId, ushort reqId, ushort tableIndex, ushort rowIndex , CancellationToken cancel = default);
+        
+        #endregion
+        
+        public Task SendRecordResponseFail( AsvSdrRecordRequestPayload request,
             AsvSdrRequestAck resultCode)
         {
             if (resultCode == AsvSdrRequestAck.AsvSdrRequestAckOk)
                 throw new ArgumentException("Result code must be not success");
-            return src.SendRecordResponse(x =>
+            return SendRecordResponse(x =>
             {
                 x.ItemsCount = 0;
                 x.RequestId = request.RequestId;
                 x.Result = resultCode;
             }, CancellationToken.None);
         }
-        public static Task SendRecordResponseSuccess(this IAsvSdrServer src, AsvSdrRecordRequestPayload request,
+        public Task SendRecordResponseSuccess( AsvSdrRecordRequestPayload request,
             ushort recordsCount)
         {
-            return src.SendRecordResponse(x =>
+            return SendRecordResponse(x =>
             {
                 x.ItemsCount = recordsCount;
                 x.RequestId = request.RequestId;
                 x.Result = AsvSdrRequestAck.AsvSdrRequestAckOk;
             }, CancellationToken.None);
         }
-        public static Task SendRecordTagResponseFail(this IAsvSdrServer src, AsvSdrRecordTagRequestPayload request,
+        public Task SendRecordTagResponseFail( AsvSdrRecordTagRequestPayload request,
             AsvSdrRequestAck resultCode)
         {
             if (resultCode == AsvSdrRequestAck.AsvSdrRequestAckOk)
                 throw new ArgumentException("Result code must be not success");
-            return src.SendRecordTagResponse(x =>
+            return SendRecordTagResponse(x =>
             {
                 x.ItemsCount = 0;
                 x.RequestId = request.RequestId;
                 x.Result = resultCode;
             }, CancellationToken.None);
         }
-        public static Task SendRecordTagResponseSuccess(this IAsvSdrServer src, AsvSdrRecordTagRequestPayload request,
+        public Task SendRecordTagResponseSuccess( AsvSdrRecordTagRequestPayload request,
             ushort recordsCount)
         {
-            return src.SendRecordTagResponse(x =>
+            return SendRecordTagResponse(x =>
             {
                 x.ItemsCount = recordsCount;
                 x.RequestId = request.RequestId;
@@ -73,21 +82,21 @@ namespace Asv.Mavlink
             }, CancellationToken.None);
         }
 
-        public static Task SendRecordDeleteResponseFail(this IAsvSdrServer src, AsvSdrRecordDeleteRequestPayload request,
+        public Task SendRecordDeleteResponseFail( AsvSdrRecordDeleteRequestPayload request,
             AsvSdrRequestAck resultCode)
         {
             if (resultCode == AsvSdrRequestAck.AsvSdrRequestAckOk)
                 throw new ArgumentException("Result code must be not success");
-            return src.SendRecordDeleteResponse(x =>
+            return SendRecordDeleteResponse(x =>
             {
                 request.RecordGuid.CopyTo(x.RecordGuid, 0);
                 x.RequestId = request.RequestId;
                 x.Result = resultCode;
             }, CancellationToken.None);
         }
-        public static Task SendRecordDeleteResponseSuccess(this IAsvSdrServer src, AsvSdrRecordDeleteRequestPayload request)
+        public Task SendRecordDeleteResponseSuccess( AsvSdrRecordDeleteRequestPayload request)
         {
-            return src.SendRecordDeleteResponse(x =>
+            return SendRecordDeleteResponse(x =>
             {
                 request.RecordGuid.CopyTo(x.RecordGuid, 0);
                 x.RequestId = request.RequestId;
@@ -95,12 +104,12 @@ namespace Asv.Mavlink
             }, CancellationToken.None);
         }
         
-        public static Task SendRecordTagDeleteResponseFail(this IAsvSdrServer src, AsvSdrRecordTagDeleteRequestPayload request,
+        public Task SendRecordTagDeleteResponseFail( AsvSdrRecordTagDeleteRequestPayload request,
             AsvSdrRequestAck resultCode)
         {
             if (resultCode == AsvSdrRequestAck.AsvSdrRequestAckOk)
                 throw new ArgumentException("Result code must be not success");
-            return src.SendRecordTagDeleteResponse(x =>
+            return SendRecordTagDeleteResponse(x =>
             {
                 request.RecordGuid.CopyTo(x.RecordGuid, 0);
                 request.TagGuid.CopyTo(x.TagGuid, 0);
@@ -109,10 +118,10 @@ namespace Asv.Mavlink
             }, CancellationToken.None);
         }
         
-        public static Task SendRecordTagDeleteResponseSuccess(this IAsvSdrServer src, AsvSdrRecordTagDeleteRequestPayload request)
+        public Task SendRecordTagDeleteResponseSuccess( AsvSdrRecordTagDeleteRequestPayload request)
         {
            
-            return src.SendRecordTagDeleteResponse(x =>
+            return SendRecordTagDeleteResponse(x =>
             {
                 request.RecordGuid.CopyTo(x.RecordGuid, 0);
                 request.TagGuid.CopyTo(x.TagGuid, 0);
@@ -121,12 +130,12 @@ namespace Asv.Mavlink
             }, CancellationToken.None);
         }
         
-        public static Task SendRecordDataResponseFail(this IAsvSdrServer src, AsvSdrRecordDataRequestPayload request,
+        public Task SendRecordDataResponseFail( AsvSdrRecordDataRequestPayload request,
             AsvSdrRequestAck resultCode)
         {
             if (resultCode == AsvSdrRequestAck.AsvSdrRequestAckOk)
                 throw new ArgumentException("Result code must be not success");
-            return src.SendRecordDataResponse(x =>
+            return SendRecordDataResponse(x =>
             {
                 request.RecordGuid.CopyTo(x.RecordGuid, 0);
                 x.ItemsCount = 0;
@@ -135,10 +144,10 @@ namespace Asv.Mavlink
             }, CancellationToken.None);
         }
         
-        public static Task SendRecordDataResponseSuccess(this IAsvSdrServer src, AsvSdrRecordDataRequestPayload request,
+        public Task SendRecordDataResponseSuccess( AsvSdrRecordDataRequestPayload request,
             uint count)
         {
-            return src.SendRecordDataResponse(x =>
+            return SendRecordDataResponse(x =>
             {
                 request.RecordGuid.CopyTo(x.RecordGuid, 0);
                 x.ItemsCount = count;
@@ -147,4 +156,5 @@ namespace Asv.Mavlink
             }, CancellationToken.None);
         }
     }
+
 }

@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Linq;
 using System.Reactive.Linq;
@@ -27,6 +28,9 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
     private readonly SourceCache<AsvSdrClientRecord,Guid> _records;
     private readonly RxValue<bool> _isRecordStarted;
     private readonly RxValue<Guid> _currentRecord;
+    private readonly RxValue<ushort> _calibrationTableRemoteCount;
+    private readonly RxValue<AsvSdrCalibState> _calibrationState;
+    private readonly ISourceCache<AsvSdrClientCalibrationTable,string> _calibrationTables;
 
     public AsvSdrClientEx(IAsvSdrClient client, IHeartbeatClient heartbeatClient, ICommandClient commandClient, AsvSdrClientExConfig config)
     {
@@ -48,6 +52,10 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
             .DisposeItWith(Disposable);
         _isRecordStarted = new RxValue<bool>(false)
             .DisposeItWith(Disposable);
+        _calibrationTableRemoteCount = new RxValue<ushort>()
+            .DisposeItWith(Disposable);
+        _calibrationState = new RxValue<AsvSdrCalibState>()
+            .DisposeItWith(Disposable);
         
         client.Status.Subscribe(_ =>
         {
@@ -56,6 +64,8 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
             var guid = new Guid(_.CurrentRecordGuid);
             _currentRecord.OnNext(guid);
             _isRecordStarted.OnNext(guid != Guid.Empty);
+            _calibrationTableRemoteCount.OnNext(_.CalibTableCount);
+            _calibrationState.OnNext(_.CalibState);
         }).DisposeItWith(Disposable);
         
         _records = new SourceCache<AsvSdrClientRecord, Guid>(x => x.Id)
@@ -75,9 +85,25 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
             updater.RemoveKey(_.Item1);
             value.Value.Dispose();
         })).DisposeItWith(Disposable);
-     
         
         Records = _records.Connect().Transform(_=>(IAsvSdrClientRecord)_).RefCount();
+        
+        _calibrationTables = new SourceCache<AsvSdrClientCalibrationTable,string>(_=>_.Name)
+            .DisposeItWith(Disposable);
+        CalibrationTables = _calibrationTables.Connect().DisposeMany().RefCount();
+        Base.OnCalibrationTable.Subscribe(payload=>_calibrationTables.Edit(updater =>
+        {
+            var name = MavlinkTypesHelper.GetString(payload.TableName);
+            var value = updater.Lookup(name);
+            if (value.HasValue == false)
+            {
+                updater.AddOrUpdate(new AsvSdrClientCalibrationTable(payload, Base, _maxTimeToWaitForResponseForList));
+            }
+            else
+            {
+                value.Value.Update(payload);
+            }
+        })).DisposeItWith(Disposable);
     }
 
     public IRxValue<Guid> CurrentRecord => _currentRecord;
@@ -123,11 +149,11 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
     public IRxValue<ushort> RecordsCount => _recordsCount;
     public IObservable<IChangeSet<IAsvSdrClientRecord,Guid>> Records { get; }
     
-    public async Task<MavResult> SetMode(AsvSdrCustomMode mode, ulong frequencyHz, float recordRate, uint sendingThinningRatio,
+    public async Task<MavResult> SetMode(AsvSdrCustomMode mode, ulong frequencyHz, float recordRate, uint sendingThinningRatio, float referencePowerDbm,
         CancellationToken cancel)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var result = await _commandClient.CommandLong(item => AsvSdrHelper.SetArgsForSdrSetMode(item, mode,frequencyHz,recordRate,sendingThinningRatio),cs.Token).ConfigureAwait(false);
+        var result = await _commandClient.CommandLong(item => AsvSdrHelper.SetArgsForSdrSetMode(item, mode,frequencyHz,recordRate,sendingThinningRatio,referencePowerDbm),cs.Token).ConfigureAwait(false);
         return result.Result;
     }
 
@@ -173,4 +199,45 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         var result = await _commandClient.CommandLong(AsvSdrHelper.SetArgsForSdrStopMission, cs.Token).ConfigureAwait(false);
         return result.Result;
     }
+
+    public async Task<MavResult> StartCalibration(CancellationToken cancel = default)
+    {
+        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+        var result = await _commandClient.CommandLong(AsvSdrHelper.SetArgsForSdrStartCalibration, cs.Token).ConfigureAwait(false);
+        return result.Result;
+    }
+
+    public async Task<MavResult> StopCalibration(CancellationToken cancel = default)
+    {
+        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+        var result = await _commandClient.CommandLong(AsvSdrHelper.SetArgsForSdrStopCalibration, cs.Token).ConfigureAwait(false);
+        return result.Result;
+    }
+
+    public IRxValue<ushort> CalibrationTableRemoteCount => _calibrationTableRemoteCount;
+    public IRxValue<AsvSdrCalibState> CalibrationState => _calibrationState;
+    public async Task ReadCalibrationTableList(IProgress<double>? progress = null, CancellationToken cancel = default)
+    {
+        progress ??= new Progress<double>();
+        var count = CalibrationTableRemoteCount.Value;
+        for (ushort i = 0; i < count; i++)
+        {
+            progress.Report(i);
+            await Base.ReadCalibrationTable(i,cancel).ConfigureAwait(false);
+            // no need to add result to cache, it will be added by OnCalibrationTable subscription in ctor
+        }
+    }
+
+    public async Task<AsvSdrClientCalibrationTable?> GetCalibrationTable(string name, CancellationToken cancel = default)
+    {
+        var value = _calibrationTables.Lookup(name);
+        if (value.HasValue) return value.Value;
+        await ReadCalibrationTableList(null, cancel).ConfigureAwait(false);
+        value = _calibrationTables.Lookup(name);
+        return value.HasValue ? value.Value : null;
+    }
+
+
+    public IObservable<IChangeSet<AsvSdrClientCalibrationTable,string>> CalibrationTables { get; }
+    
 }

@@ -16,9 +16,6 @@ public class SdrServerDeviceConfig : ServerDeviceConfig
 
 public class SdrServerDevice:ServerDevice, ISdrServerDevice
 {
-    public static Logger Logger = LogManager.GetCurrentClassLogger();
-
-
     public SdrServerDevice(IMavlinkV2Connection connection,
         IPacketSequenceCalculator seq, MavlinkServerIdentity identity, SdrServerDeviceConfig config, IScheduler scheduler,
         IEnumerable<IMavParamTypeMetadata> paramList,
@@ -31,7 +28,8 @@ public class SdrServerDevice:ServerDevice, ISdrServerDevice
         var sdr = new AsvSdrServer(connection, identity, config.Sdr,seq, scheduler).DisposeItWith(Disposable);
         var cmd = new CommandServer(connection, seq, identity, scheduler).DisposeItWith(Disposable);
         CommandLongEx = new CommandLongServerEx(cmd).DisposeItWith(Disposable);
-        SdrEx = new AsvSdrServerEx(sdr, Heartbeat, CommandLongEx).DisposeItWith(Disposable);
+        
+        SdrEx = new AsvSdrServerEx(sdr, StatusText, Heartbeat, CommandLongEx).DisposeItWith(Disposable);
         var paramsBase = new ParamsServer(connection, seq, identity, scheduler).DisposeItWith(Disposable);
         Params = new ParamsServerEx(paramsBase,StatusText,paramList,encoding,paramStore,config.Params).DisposeItWith(Disposable);
         var mission = new MissionServer(connection, identity, seq, scheduler).DisposeItWith(Disposable);

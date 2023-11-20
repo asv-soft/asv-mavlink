@@ -20,6 +20,22 @@ public static class AsvSdrHelper
     private const string RecordTagNameRegexString = "^[A-Za-z][A-Za-z0-9_\\- +]{2,16}$";
     private static readonly Regex RecordTagNameRegex = new(RecordNameRegexString, RegexOptions.Compiled);
 
+    
+    public const int CalibrationTableNameMaxLength = 28;
+    private const string CalibrationTableNameRegexString = "^[A-Za-z][A-Za-z0-9_\\- +]{2,28}$";
+    private static readonly Regex CalibrationTableNameRegex = new(CalibrationTableNameRegexString, RegexOptions.Compiled);
+    
+    public static void CheckCalibrationTableName(string name)
+    {
+        if (name.IsNullOrWhiteSpace()) throw new Exception("Record name is empty");
+        if (name.Length > CalibrationTableNameMaxLength)
+            throw new Exception($"Record name is too long. Max length is {CalibrationTableNameMaxLength}");
+        if (CalibrationTableNameRegex.IsMatch(name) == false)
+            throw new ArgumentException(
+                $"Record name '{name}' not match regex '{CalibrationTableNameRegexString}')");
+    }
+
+    
     public static void CheckRecordName(string name)
     {
         if (name.IsNullOrWhiteSpace()) throw new Exception("Record name is empty");
@@ -151,7 +167,7 @@ public static class AsvSdrHelper
     #region Set mode
 
     public static void SetArgsForSdrSetMode(CommandLongPayload item, AsvSdrCustomMode mode, ulong frequencyHz,
-        float recordRate, uint sendingThinningRatio)
+        float recordRate, uint sendingThinningRatio, float referencePowerDbm)
     {
         var freqArray = BitConverter.GetBytes(frequencyHz);
         item.Command = (V2.Common.MavCmd)MavCmd.MavCmdAsvSdrSetMode;
@@ -160,12 +176,12 @@ public static class AsvSdrHelper
         item.Param3 = BitConverter.ToSingle(freqArray, 4);
         item.Param4 = recordRate;
         item.Param5 = BitConverter.ToSingle(BitConverter.GetBytes(sendingThinningRatio));
-        item.Param6 = Single.NaN;
+        item.Param6 = referencePowerDbm;
         item.Param7 = Single.NaN;
     }
 
     public static void SetArgsForSdrSetMode(MissionItemIntPayload payload, AsvSdrCustomMode mode, ulong frequencyHz,
-        float recordRate, uint sendingThinningRatio)
+        float recordRate, uint sendingThinningRatio, float referencePowerDbm)
     {
         var freqArray = BitConverter.GetBytes(frequencyHz);
         payload.Command = (V2.Common.MavCmd)MavCmd.MavCmdAsvSdrSetMode;
@@ -174,11 +190,11 @@ public static class AsvSdrHelper
         payload.Param3 = BitConverter.ToSingle(freqArray, 4);
         payload.Param4 = recordRate;
         payload.X = BitConverter.ToInt32(BitConverter.GetBytes(sendingThinningRatio));
-        payload.Y = 0;
+        payload.Y = BitConverter.ToInt32(BitConverter.GetBytes(referencePowerDbm));
         payload.Z = Single.NaN;
     }
     public static void GetArgsForSdrSetMode(CommandLongPayload item, out AsvSdrCustomMode mode, out ulong frequencyHz,
-        out float recordRate, out uint sendingThinningRatio)
+        out float recordRate, out uint sendingThinningRatio, out float referencePowerDbm)
     {
         if (item.Command != (V2.Common.MavCmd)MavCmd.MavCmdAsvSdrSetMode)
             throw new ArgumentException($"Command {item.Command} is not {MavCmd.MavCmdAsvSdrSetMode}");
@@ -189,10 +205,11 @@ public static class AsvSdrHelper
         frequencyHz = BitConverter.ToUInt64(freqArray,0);
         recordRate = item.Param4;
         sendingThinningRatio = BitConverter.ToUInt32(BitConverter.GetBytes(item.Param5));
+        referencePowerDbm = item.Param6;
     }
 
     public static void GetArgsForSdrSetMode(ServerMissionItem item, out AsvSdrCustomMode mode,  out ulong frequencyHz,
-        out float recordRate, out uint sendingThinningRatio)
+        out float recordRate, out uint sendingThinningRatio, out float referencePowerDbm)
     {
         if (item.Command != (V2.Common.MavCmd)MavCmd.MavCmdAsvSdrSetMode)
             throw new ArgumentException($"Command {item.Command} is not {MavCmd.MavCmdAsvSdrSetMode}");
@@ -203,6 +220,7 @@ public static class AsvSdrHelper
         frequencyHz = BitConverter.ToUInt64(freqArray,0);
         recordRate = item.Param4;
         sendingThinningRatio = BitConverter.ToUInt32(BitConverter.GetBytes(item.X));
+        referencePowerDbm = BitConverter.ToSingle(BitConverter.GetBytes(item.Y));
     }
 
     #endregion
@@ -518,6 +536,41 @@ public static class AsvSdrHelper
         index = (ushort)BitConverter.ToUInt32(BitConverter.GetBytes(item.Param1));
     }
 
+    public static void SetArgsForSdrStartCalibration(CommandLongPayload item)
+    {
+        item.Command = (V2.Common.MavCmd)MavCmd.MavCmdAsvSdrStartCalibration;
+        item.Param1 = Single.NaN;
+        item.Param2 = Single.NaN;
+        item.Param3 = Single.NaN;
+        item.Param4 = Single.NaN;
+        item.Param5 = Single.NaN;
+        item.Param6 = Single.NaN;
+        item.Param7 = Single.NaN;
+    }
+    
+    public static void GetArgsForSdrStartCalibration(CommandLongPayload item)
+    {   
+        if (item.Command != (V2.Common.MavCmd)MavCmd.MavCmdAsvSdrStartCalibration)
+            throw new ArgumentException($"Command {item.Command} is not {MavCmd.MavCmdAsvSdrStartCalibration}");
+    }
+
+    public static void SetArgsForSdrStopCalibration(CommandLongPayload item)
+    {
+        item.Command = (V2.Common.MavCmd)MavCmd.MavCmdAsvSdrStopCalibration;
+        item.Param1 = Single.NaN;
+        item.Param2 = Single.NaN;
+        item.Param3 = Single.NaN;
+        item.Param4 = Single.NaN;
+        item.Param5 = Single.NaN;
+        item.Param6 = Single.NaN;
+        item.Param7 = Single.NaN;
+    }
+    public static void GetArgsForSdrStopCalibration(CommandLongPayload item)
+    {   
+        if (item.Command != (V2.Common.MavCmd)MavCmd.MavCmdAsvSdrStopCalibration)
+            throw new ArgumentException($"Command {item.Command} is not {MavCmd.MavCmdAsvSdrStopCalibration}");
+    }
+    
     #endregion
 
     public static ServerMissionItem Convert(MissionItemIntPacket input)
@@ -542,4 +595,6 @@ public static class AsvSdrHelper
             MissionType = input.MissionType
         };
     }
+
+   
 }

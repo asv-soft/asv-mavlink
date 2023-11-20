@@ -19,19 +19,33 @@ public class AsvSdrTest
         _output = output;
     }
 
-    [Fact]
-    public void Server_Sdr_Set_Argument_Null_Exception()
+    private void SetupClientServer(out IAsvSdrServer serverSdr, out IAsvSdrClient clientSdr)
     {
         var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
+        serverSdr = new AsvSdrServer(link.Server,
+            new MavlinkServerIdentity
+            {
+                ComponentId = 2,
+                SystemId = 2
+            }, new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
+        clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity
+            {
+                SystemId = 13,
+                ComponentId = 13,
+                TargetSystemId = 2,
+                TargetComponentId = 2
+            }, 
             new PacketSequenceCalculator());
 
         serverSdr.Start();
+    }
+    
+    [Fact]
+    public void Server_Sdr_Set_Argument_Null_Exception()
+    {
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -42,16 +56,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Argument_Null_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -66,16 +71,7 @@ public class AsvSdrTest
     [InlineData(AsvSdrCustomMode.AsvSdrCustomModeVor)]
     public void Server_Sdr_Send_Record_Data_Argument_Null_Exception(AsvSdrCustomMode customMode)
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -86,16 +82,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Data_Idle_Argument_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentException>(() =>
         {
@@ -106,16 +93,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Create_Record_Data_Idle_Argument_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentException>(() =>
         {
@@ -126,16 +104,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Data_Response_Argument_Null_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -146,16 +115,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Tag_Delete_Response_Argument_Null_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -166,16 +126,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Tag_Argument_Null_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -186,16 +137,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Tag_Response_Argument_Null_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -206,16 +148,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Delete_Response_Argument_Null_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -226,16 +159,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Response_Argument_Null_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -246,16 +170,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Response_Fail_Result_Code_Argument_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentException>(() =>
         {
@@ -268,17 +183,7 @@ public class AsvSdrTest
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
     public void Server_Sdr_Send_Record_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
-
+        SetupClientServer(out var serverSdr, out var clientSdr);
         Assert.Throws<NullReferenceException>(() =>
         {
             serverSdr.SendRecordResponseFail(null, requestAck);
@@ -288,16 +193,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Response_Success_Null_Reference_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<NullReferenceException>(() =>
         {
@@ -308,16 +204,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Tag_Response_Fail_Result_Code_Argument_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentException>(() =>
         {
@@ -330,16 +217,7 @@ public class AsvSdrTest
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
     public void Server_Sdr_Send_Record_Tag_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<NullReferenceException>(() =>
         {
@@ -350,16 +228,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Tag_Response_Success_Null_Reference_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<NullReferenceException>(() =>
         {
@@ -370,16 +239,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Delete_Response_Fail_Result_Code_Argument_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentException>(() =>
         {
@@ -392,16 +252,7 @@ public class AsvSdrTest
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
     public void Server_Sdr_Send_Record_Delete_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<NullReferenceException>(() =>
         {
@@ -412,16 +263,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Delete_Response_Success_Null_Reference_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<NullReferenceException>(() =>
         {
@@ -432,16 +274,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Tag_Delete_Response_Fail_Result_Code_Argument_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentException>(() =>
         {
@@ -454,16 +287,7 @@ public class AsvSdrTest
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
     public void Server_Sdr_Send_Record_Tag_Delete_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<NullReferenceException>(() =>
         {
@@ -474,16 +298,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Tag_Delete_Response_Success_Null_Reference_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<NullReferenceException>(() =>
         {
@@ -494,16 +309,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Data_Response_Fail_Result_Code_Argument_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<ArgumentException>(() =>
         {
@@ -516,16 +322,7 @@ public class AsvSdrTest
     [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
     public void Server_Sdr_Send_Record_Data_Response_Fail_Null_Reference_Exception(AsvSdrRequestAck requestAck)
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<NullReferenceException>(() =>
         {
@@ -536,16 +333,7 @@ public class AsvSdrTest
     [Fact]
     public void Server_Sdr_Send_Record_Data_Response_Success_Null_Reference_Exception()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity(), new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity(), 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         Assert.Throws<NullReferenceException>(() =>
         {
@@ -556,26 +344,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Client_Get_Record_List_And_Check()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity
-            {
-                ComponentId = 2,
-                SystemId = 2
-            }, new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity
-            {
-                SystemId = 13,
-                ComponentId = 13,
-                TargetSystemId = 2,
-                TargetComponentId = 2
-            }, 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
 
         var requestId = 0;
@@ -604,26 +373,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Client_Get_Record_Data_List_And_Check()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity
-            {
-                ComponentId = 2,
-                SystemId = 2
-            }, new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity
-            {
-                SystemId = 13,
-                ComponentId = 13,
-                TargetSystemId = 2,
-                TargetComponentId = 2
-            }, 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         var recordGuid = Guid.NewGuid();
         
@@ -657,26 +407,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Client_Get_Record_Tag_List_And_Check()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity
-            {
-                ComponentId = 2,
-                SystemId = 2
-            }, new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity
-            {
-                SystemId = 13,
-                ComponentId = 13,
-                TargetSystemId = 2,
-                TargetComponentId = 2
-            }, 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
         
         var recordGuid = Guid.NewGuid();
 
@@ -706,26 +437,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Client_Record_Delete_And_Check()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity
-            {
-                ComponentId = 2,
-                SystemId = 2
-            }, new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity
-            {
-                SystemId = 13,
-                ComponentId = 13,
-                TargetSystemId = 2,
-                TargetComponentId = 2
-            }, 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
         
         var recordGuid = Guid.NewGuid();
 
@@ -755,26 +467,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Client_Record_Tag_Delete_And_CheckClient_Record_Tag_Delete_And_Check()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity
-            {
-                ComponentId = 2,
-                SystemId = 2
-            }, new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity
-            {
-                SystemId = 13,
-                ComponentId = 13,
-                TargetSystemId = 2,
-                TargetComponentId = 2
-            }, 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
         
         var recordGuid = Guid.NewGuid();
         var tagGuid = Guid.NewGuid();
@@ -807,26 +500,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Server_Send_Record_Data_Llz_And_Check()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity
-            {
-                ComponentId = 2,
-                SystemId = 2
-            }, new AsvSdrServerConfig(),
-        new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity
-            {
-                SystemId = 13,
-                ComponentId = 13,
-                TargetSystemId = 2,
-                TargetComponentId = 2
-            }, 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
         
         AsvSdrRecordDataLlzPayload payload = null;
         
@@ -958,26 +632,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Server_Send_Record_And_Check()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity
-            {
-                ComponentId = 2,
-                SystemId = 2
-            }, new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity
-            {
-                SystemId = 13,
-                ComponentId = 13,
-                TargetSystemId = 2,
-                TargetComponentId = 2
-            }, 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         var record = new AsvSdrRecordPayload();
         
@@ -1013,26 +668,7 @@ public class AsvSdrTest
     [Fact]
     public async Task Server_Send_Record_Tag_And_Check()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        var serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity
-            {
-                ComponentId = 2,
-                SystemId = 2
-            }, new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
-        
-        var clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity
-            {
-                SystemId = 13,
-                ComponentId = 13,
-                TargetSystemId = 2,
-                TargetComponentId = 2
-            }, 
-            new PacketSequenceCalculator());
-
-        serverSdr.Start();
+        SetupClientServer(out var serverSdr, out var clientSdr);
 
         var record = new AsvSdrRecordTagPayload();
         
@@ -1053,6 +689,168 @@ public class AsvSdrTest
         Assert.Equal(AsvSdrRecordTagType.AsvSdrRecordTagTypeReal64, record.TagType);
     }
 
+   
+    
+    
+    [Theory]
+    [InlineData(AsvSdrRequestAck.AsvSdrRequestAckOk)]
+    [InlineData(AsvSdrRequestAck.AsvSdrRequestAckFail)]
+    [InlineData(AsvSdrRequestAck.AsvSdrRequestAckInProgress)]
+    [InlineData(AsvSdrRequestAck.AsvSdrRequestAckNotSupported)]
+    public async Task Server_send_acc_and_client_recv_it(AsvSdrRequestAck orgign)
+    {
+        SetupClientServer(out var serverSdr, out var clientSdr);
+        var tcs = new TaskCompletionSource();
+        
+        using var sub1 = clientSdr.OnCalibrationAcc.Subscribe(args =>
+        {
+            Assert.Equal(100, args.RequestId);
+            Assert.Equal( orgign,args.Result);
+            tcs.SetResult();
+        });
+        await serverSdr.SendCalibrationAcc(100, orgign);
+        await tcs.Task.WaitAsync(TimeSpan.FromMilliseconds(500));
+    }
+    [Fact]
+    public async Task Client_request_calibration_table_and_server_respond()
+    {
+        SetupClientServer(out var serverSdr, out var clientSdr);
+        var date = DateTime.Now;
+        using var sub1 = serverSdr.OnCalibrationTableReadRequest.Subscribe(args =>
+        {
+            Assert.Equal(100, args.TableIndex);
+            serverSdr.SendCalibrationTableReadResponse(res =>
+            {
+                res.TableIndex = 100;
+                res.RowCount = 10;
+                res.CreatedUnixUs = MavlinkTypesHelper.ToUnixTimeUs(date);
+                MavlinkTypesHelper.SetString(res.TableName, "TEST");
+            });
+        });
+        var result = await clientSdr.ReadCalibrationTable(100);
+        Assert.Equal(100, result.TableIndex);
+        Assert.Equal(10, result.RowCount);
+        // date is not equal because of precision
+        Assert.True((date - MavlinkTypesHelper.FromUnixTimeUs(result.CreatedUnixUs)).TotalMilliseconds < 100);
+        Assert.Equal("TEST", MavlinkTypesHelper.GetString(result.TableName));
 
-  
+    }
+    
+    [Fact]
+    public async Task Client_request_calibration_table_and_server_respond_error()
+    {
+        SetupClientServer(out var serverSdr, out var clientSdr);
+        using var sub1 = serverSdr.OnCalibrationTableReadRequest.Subscribe(args =>
+        {
+            Assert.Equal(100, args.TableIndex);
+            serverSdr.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail);
+        });
+        await Assert.ThrowsAsync<AsvSdrException>(async () =>
+        {
+            await clientSdr.ReadCalibrationTable(100);
+        });
+    }
+    
+    [Fact]
+    public async Task Client_request_calibration_row_and_server_respond()
+    {
+        SetupClientServer(out var serverSdr, out var clientSdr);
+        using var sub1 = serverSdr.OnCalibrationTableRowReadRequest.Subscribe(args =>
+        {
+            Assert.Equal(100, args.TableIndex);
+            Assert.Equal(10, args.RowIndex);
+            serverSdr.SendCalibrationTableRowReadResponse(res =>
+            {
+                res.TableIndex = 100;
+                res.RowIndex = 10;
+                res.MeasuredValue = 100;
+                res.RefFreq = 200U;
+                res.RefValue = 300.5f;
+                res.RefPower = 400.0f;
+            });
+        });
+        var result = await clientSdr.ReadCalibrationTableRow(100, 10);
+        Assert.Equal(100, result.MeasuredValue);
+        Assert.Equal(200U, result.RefFreq);
+        Assert.Equal(300.5f, result.RefValue);
+        Assert.Equal(400.0f, result.RefPower);
+        Assert.Equal(100, result.TableIndex);
+        Assert.Equal(10, result.RowIndex);
+        
+    }
+    [Fact]
+    public async Task Client_request_calibration_row_and_server_respond_error()
+    {
+        SetupClientServer(out var serverSdr, out var clientSdr);
+        using var sub1 = serverSdr.OnCalibrationTableRowReadRequest.Subscribe(args =>
+        {
+            Assert.Equal(100, args.TableIndex);
+            Assert.Equal(10, args.RowIndex);
+            serverSdr.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail);
+        });
+        await Assert.ThrowsAsync<AsvSdrException>(async () =>
+        {
+            await clientSdr.ReadCalibrationTableRow(100, 10);
+        });
+    }
+    
+    [Fact]
+    public async Task Client_request_calibration_upload_start_and_server_recv()
+    {
+        SetupClientServer(out var serverSdr, out var clientSdr);
+        var date = DateTime.Now;
+        var tcs = new TaskCompletionSource();
+        
+       
+        
+        using var sub1 = serverSdr.OnCalibrationTableUploadStart.Subscribe(args =>
+        {
+            Assert.Equal(100, args.Payload.TableIndex);
+            Assert.Equal(10, args.Payload.RowCount);
+            Assert.Equal(200, args.Payload.RequestId);
+            Assert.True((date - MavlinkTypesHelper.FromUnixTimeUs(args.Payload.CreatedUnixUs)).TotalMilliseconds < 100);
+            tcs.SetResult();
+        });
+        await clientSdr.SendCalibrationTableRowUploadStart(args =>
+        {
+            args.TableIndex = 100;
+            args.RowCount = 10;
+            args.RequestId = 200;
+            args.CreatedUnixUs = MavlinkTypesHelper.ToUnixTimeUs(date);
+        });
+        await tcs.Task.WaitAsync(TimeSpan.FromMilliseconds(500));
+
+    }
+    
+    [Fact]
+    public async Task Server_callback_read_calibraion_row_and_client_respond()
+    {
+        SetupClientServer(out var serverSdr, out var clientSdr);
+        
+        using var sub1 = clientSdr.OnCalibrationTableRowUploadCallback.Subscribe(args =>
+        {
+            Assert.Equal(100, args.TableIndex);
+            Assert.Equal(10, args.RowIndex);
+            Assert.Equal(200, args.RequestId);
+            clientSdr.SendCalibrationTableRowUploadItem(res =>
+            {
+                res.TableIndex = 100;
+                res.RowIndex = 10;
+                res.MeasuredValue = 100;
+                res.RefFreq = 200U;
+                res.RefValue = 300.5f;
+                res.RefPower = 400.0f;
+                res.TargetComponent = clientSdr.Identity.TargetComponentId;
+                res.TargetSystem = clientSdr.Identity.TargetSystemId;
+            }).Wait();
+        });
+        var result = await serverSdr.CallCalibrationTableUploadReadCallback(clientSdr.Identity.SystemId,
+            clientSdr.Identity.ComponentId, 200, 100, 10);
+        Assert.Equal(100, result.MeasuredValue);
+        Assert.Equal(200U, result.FrequencyHz);
+        Assert.Equal(400.0f, result.RefPower);
+        Assert.Equal(300.5f, result.RefValue);
+
+    }
+    
 }

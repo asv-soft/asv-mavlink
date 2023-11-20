@@ -27,7 +27,7 @@
         <param index="3">Frequency in Hz, 4-7 bytes of uint_64, ignored for IDLE mode (uint32).</param>
         <param index="4">Record rate in Hz, ignored for IDLE mode (float).</param>
         <param index="5">Sending data thinning ratio. Each specified amount of recorded data will be skipped before it is sent over the communication channel. (uint32).</param>
-        <param index="6">Empty.</param>
+        <param index="6">Estimated reference power in dBm. Needed to tune the internal amplifiers and filters (float).</param>
         <param index="7">Empty.</param>
       </entry>
       <entry value="13101" name="MAV_CMD_ASV_SDR_START_RECORD">
@@ -110,6 +110,26 @@
         <param index="6">Empty.</param>
         <param index="7">Empty.</param>
       </entry>
+      <entry value="13109" name="MAV_CMD_ASV_SDR_START_CALIBRATION">
+        <description>Start calibration process. Can't be used in the mission protocol for SDR payloads.</description>
+        <param index="1">Empty.</param>
+        <param index="2">Empty.</param>
+        <param index="3">Empty.</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
+      <entry value="13110" name="MAV_CMD_ASV_SDR_STOP_CALIBRATION">
+        <description>Stop calibration process. Can't be used in the mission protocol for SDR payloads.</description>
+        <param index="1">Empty.</param>
+        <param index="2">Empty.</param>
+        <param index="3">Empty.</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
     </enum>
     <enum name="ASV_SDR_MISSION_STATE">
       <description>State of the current mission (unit8_t).</description>
@@ -164,11 +184,11 @@
       <entry value="1" name="ASV_SDR_CUSTOM_MODE_FLAG_LLZ"/>
       <entry value="2" name="ASV_SDR_CUSTOM_MODE_FLAG_GP"/>
       <entry value="4" name="ASV_SDR_CUSTOM_MODE_FLAG_VOR"/>
-<!--      <entry value="4" name="ASV_SDR_SUPPORT_MODE_DME"/>-->
-<!--      <entry value="8" name="ASV_SDR_SUPPORT_MODE_MARKER"/>-->
-<!--      <entry value="16" name="ASV_SDR_SUPPORT_MODE_RDF"/>-->
-<!--      <entry value="32" name="ASV_SDR_SUPPORT_MODE_GBAS"/>-->
-<!--      <entry value="64" name="ASV_SDR_SUPPORT_MODE_SPECTRUM"/>-->
+<!--      <entry value="8" name="ASV_SDR_SUPPORT_MODE_DME"/>-->
+<!--      <entry value="16" name="ASV_SDR_SUPPORT_MODE_MARKER"/>-->
+<!--      <entry value="32" name="ASV_SDR_SUPPORT_MODE_RDF"/>-->
+<!--      <entry value="64" name="ASV_SDR_SUPPORT_MODE_GBAS"/>-->
+<!--      <entry value="128" name="ASV_SDR_SUPPORT_MODE_SPECTRUM"/>-->
     </enum>
     
     
@@ -184,6 +204,9 @@
       <entry name="ASV_SDR_REQUEST_ACK_FAIL">
         <description>Command error.</description>
       </entry>
+      <entry name="ASV_SDR_REQUEST_ACK_NOT_SUPPORTED">
+        <description>Not supported command.</description>
+      </entry>
     </enum>
     
     <enum name="ASV_SDR_SYSTEM_CONTROL_ACTION">
@@ -195,7 +218,19 @@
         <description>Request system shutdown [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       </entry>
     </enum>
-
+    
+    <enum name="ASV_SDR_CALIB_STATE">
+      <description>Status of calibration process.</description>
+      <entry name="ASV_SDR_CALIB_STATE_NOT_SUPPORTED">
+        <description>Calibration not supported by device. Commands MAV_CMD_ASV_SDR_START_CALIBRATION and MAV_CMD_ASV_SDR_STOP_CALIBRATION not supported.</description>
+      </entry>
+      <entry name="ASV_SDR_CALIB_STATE_OK">
+        <description>Normal measure mode. Calibration table USED for measures.</description>
+      </entry>
+      <entry name="ASV_SDR_CALIB_STATE_PROGRESS">
+        <description>Calibration progress started. Table NOT! used for calculating values. All measures send as raw values.</description>
+      </entry>
+    </enum>
 
     <enum name="ASV_SDR_SIGNAL_FORMAT">
       <description>SDR signal transmition data type</description>
@@ -221,8 +256,11 @@
       <field type="char[28]" name="current_record_name">Record name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string. If the data is currently not being recorded, than return null; </field>
       <field type="uint8_t" name="mission_state" enum="ASV_SDR_MISSION_STATE">Mission state.</field>
       <field type="uint16_t" name="current_mission_index">Current mission index.</field>
+      <extensions/>
+      <field type="uint8_t" name="calib_state" enum="ASV_SDR_CALIB_STATE">Calibration status.</field>
+      <field type="uint16_t" name="calib_table_count">Number of calibration tables.</field>
     </message>
-    <!-- ASV_SDR_RECORD_* 13101-13110 -->
+    <!-- ASV_SDR_RECORD_* 13101-13109 -->
     <message id="13101" name="ASV_SDR_RECORD_REQUEST">
       <description>Request list of ASV_SDR_RECORD from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint8_t" name="target_system">System ID</field>
@@ -242,12 +280,14 @@
       <field type="uint8_t[16]" name="record_guid">Record GUID. Generated by payload after the start of recording.</field>
       <field type="char[28]" name="record_name">Record name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
       <field type="uint32_t" name="data_type" enum="ASV_SDR_CUSTOM_MODE">Record data type(it is also possible to know the type of data inside the record by cast enum to int).</field>
-      <field type="uint64_t" name="frequency" >Frequency in Hz.</field>
+      <field type="uint64_t" name="frequency" >Reference frequency in Hz, specified by MAV_CMD_ASV_SDR_SET_MODE command.</field>
       <field type="uint64_t" name="created_unix_us" units="us">Created timestamp (UNIX epoch time).</field>
       <field type="uint32_t" name="duration_sec" units="sec">Record duration in sec.</field>
       <field type="uint16_t" name="tag_count">Tag items count.</field>
       <field type="uint32_t" name="data_count">Data items count.</field>
       <field type="uint32_t" name="size" units="bytes">Total data size of record with all data items and tags.</field>
+      <extensions/>
+      <field type="float" name="ref_power">Reference power in dBm, specified by MAV_CMD_ASV_SDR_SET_MODE command.</field>
     </message>
     <message id="13104" name="ASV_SDR_RECORD_DELETE_REQUEST">
       <description>Request to delete ASV_SDR_RECORD items from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
@@ -262,7 +302,7 @@
       <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
       <field type="uint8_t[16]" name="record_guid">Specifies the GUID of the record that was deleted.</field>
     </message>
-    <!-- ASV_SDR_RECORD_TAG_* 13110-13120-->
+    <!-- ASV_SDR_RECORD_TAG_* 13110-13119-->
     <message id="13110" name="ASV_SDR_RECORD_TAG_REQUEST">
       <description>Request list of ASV_SDR_RECORD_TAG from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint8_t" name="target_system">System ID</field>
@@ -294,14 +334,14 @@
       <field type="uint8_t[16]" name="record_guid">Record GUID.</field>
       <field type="uint8_t[16]" name="tag_guid">Tag GUID.</field>
     </message>
-    <message id="13116" name="ASV_SDR_RECORD_TAG_DELETE_RESPONSE">
+    <message id="13114" name="ASV_SDR_RECORD_TAG_DELETE_RESPONSE">
       <description>Response for ASV_SDR_RECORD_TAG_DELETE_REQUEST.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
       <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
       <field type="uint8_t[16]" name="record_guid">Record GUID.</field>
       <field type="uint8_t[16]" name="tag_guid">Tag GUID.</field>
     </message>
-    <!-- ASV_SDR_RECORD_DATA_* 13120-13130-->
+    <!-- ASV_SDR_RECORD_DATA_* 13120-13123-->
     <message id="13120" name="ASV_SDR_RECORD_DATA_REQUEST">
       <description>Request list of ASV_SDR_RECORD_DATA_* items from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint8_t" name="target_system">System ID</field>
@@ -319,8 +359,66 @@
       <field type="uint32_t" name="data_type" enum="ASV_SDR_CUSTOM_MODE">Record data type(it is also possible to know the type of data inside the record by cast enum to int).</field>
       <field type="uint32_t" name="items_count">Number of items ASV_SDR_RECORD_DATA_* for transmition after this request with success result code (depended from request).</field>
     </message>
-    <!-- ASV_SDR_SIGNAL_* 13130-13134-->
-    <message id="13130" name="ASV_SDR_SIGNAL_RAW">
+
+    <!-- ASV_SDR_CALIB_* 13124-13129-->
+    <message id="13124" name="ASV_SDR_CALIB_ACC">
+      <description>Response for ASV_SDR_CALIB_* requests. Result from ASV_SDR_CALIB_TABLE_READ, ASV_SDR_CALIB_TABLE_ROW_READ, ASV_SDR_CALIB_TABLE_UPLOAD_START messages.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
+      <field type="uint8_t" name="result" enum="ASV_SDR_REQUEST_ACK">Result code.</field>
+    </message>
+    <message id="13125" name="ASV_SDR_CALIB_TABLE_READ">
+      <description>Request to read ASV_SDR_CALIB_TABLE from the system/component. If success, device send ASV_SDR_CALIB_TABLE or ASV_SDR_CALIB_ACC, when error occured.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+      <field type="uint16_t" name="table_index">Table index.</field>
+      <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
+    </message>
+    <message id="13126" name="ASV_SDR_CALIB_TABLE">
+      <description>Calibration table info.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <field type="uint16_t" name="table_index">Table index.</field>
+      <field type="char[28]" name="table_name">Table name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.</field>
+      <field type="uint16_t" name="row_count">Specifies the number of ROWs in the table.</field>
+      <field type="uint64_t" name="created_unix_us" units="us">Updated timestamp (UNIX epoch time).</field>
+    </message>
+    <message id="13127" name="ASV_SDR_CALIB_TABLE_ROW_READ">
+      <description>Request to read ASV_SDR_CALIB_TABLE_ROW from the system/component. If success, device send ASV_SDR_CALIB_TABLE_ROW or ASV_SDR_CALIB_ACC, when error occured.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <field type="uint8_t" name="target_system">System ID.</field>
+      <field type="uint8_t" name="target_component">Component ID.</field>
+      <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
+      <field type="uint16_t" name="table_index">Table index.</field>
+      <field type="uint16_t" name="row_index">ROW index.</field>
+    </message>
+    <message id="13128" name="ASV_SDR_CALIB_TABLE_ROW">
+      <description>Calibration ROW content.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <field type="uint8_t" name="target_system">System ID.</field>
+      <field type="uint8_t" name="target_component">Component ID.</field>
+      <field type="uint16_t" name="table_index">Table index.</field>
+      <field type="uint16_t" name="row_index">ROW index.</field>
+      <field type="uint64_t" name="ref_freq" >Reference frequency in Hz.</field>
+      <field type="float" name="ref_power">Reference power in dBm.</field>
+      <field type="float" name="ref_value">Reference value.</field>
+      <field type="float" name="measured_value">Measured value.</field>
+    </message>
+    <message id="13129" name="ASV_SDR_CALIB_TABLE_UPLOAD_START">
+      <description>Start uploading process. After that payload must send ASV_SDR_CALIB_TABLE_UPLOAD_READ_CALLBACK to client for reading table rows row_count times. Process end by payload with ASV_SDR_CALIB_ACC. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <field type="uint8_t" name="target_system">System ID.</field>
+      <field type="uint8_t" name="target_component">Component ID.</field>
+      <field type="uint16_t" name="table_index">Table index.</field>
+      <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
+      <field type="uint16_t" name="row_count">Specifies the number of ROWs in the table.</field>
+      <field type="uint64_t" name="created_unix_us" units="us">Current timestamp (UNIX epoch time).</field>
+    </message>
+    <message id="13130" name="ASV_SDR_CALIB_TABLE_UPLOAD_READ_CALLBACK">
+      <description>Read ASV_SDR_CALIB_TABLE_ROW callback from payload server to client. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <field type="uint8_t" name="target_system">System ID.</field>
+      <field type="uint8_t" name="target_component">Component ID.</field>
+      <field type="uint16_t" name="request_id">Specifies the unique number of the original request from ASV_SDR_CALIB_TABLE_UPLOAD_START. This allows the response to be matched to the correct request.</field>
+      <field type="uint16_t" name="table_index">Table index.</field>
+      <field type="uint16_t" name="row_index">ROW index.</field>
+    </message>
+    
+    <!-- ASV_SDR_SIGNAL_* 13131-13134-->
+    <message id="13134" name="ASV_SDR_SIGNAL_RAW">
       <description>Raw signal data for visualization.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="char[8]" name="signal_name">Signal name, terminated by NULL if the length is less than 8 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 8+1 bytes storage if the ID is stored as string</field>
       <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time) for current set of measures.</field>

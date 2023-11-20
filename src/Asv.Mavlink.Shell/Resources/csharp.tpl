@@ -482,9 +482,9 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
     {%- if field.IsEnum -%}
         {%- if field.IsArray -%}
             {%- if field.IsTheLargestArrayInMessage -%}
-        public {{ field.EnumCamelCaseName }}[] {{ field.CamelCaseName }} { get; set; } = new {{ field.Type }}[{{ field.ArrayLength }}];
+        public {{ field.EnumCamelCaseName }}[] {{ field.CamelCaseName }} { get; set; } = new {{ field.EnumCamelCaseName }}[{{ field.ArrayLength }}];
             {%- else -%}
-        public {{ field.EnumCamelCaseName }}[] {{ field.CamelCaseName }} { get; } = new {{ field.Type }}[{{ field.ArrayLength }}];
+        public {{ field.EnumCamelCaseName }}[] {{ field.CamelCaseName }} { get; } = new {{ field.EnumCamelCaseName }}[{{ field.ArrayLength }}];
             {%- endif -%}
         {%- else -%}
         public {{ field.EnumCamelCaseName }} {{ field.CamelCaseName }} { get; set; }
