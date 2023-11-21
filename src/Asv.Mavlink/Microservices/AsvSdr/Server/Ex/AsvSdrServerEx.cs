@@ -166,22 +166,28 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
     }
     private async void OnCalibrationReadTableRow(AsvSdrCalibTableRowReadPayload args)
     {
-        if (ReadCalibrationTableRow == null)
+        if (TryReadCalibrationTableRow == null)
         {
             await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckNotSupported).ConfigureAwait(false);
             return;
         }
         try
         {
-            var info = ReadCalibrationTableRow(args.TableIndex,args.RowIndex);
-            await Base.SendCalibrationTableRowReadResponse(res =>
+            if (TryReadCalibrationTableRow(args.TableIndex, args.RowIndex, out var info) == true)
             {
-                res.RowIndex = args.RowIndex;
-                res.TableIndex = args.TableIndex;
-                res.TargetComponent = 0;
-                res.TargetSystem = 0;
-                info.Fill(res);
-            }).ConfigureAwait(false);
+                await Base.SendCalibrationTableRowReadResponse(res =>
+                {
+                    res.RowIndex = args.RowIndex;
+                    res.TableIndex = args.TableIndex;
+                    res.TargetComponent = 0;
+                    res.TargetSystem = 0;
+                    info?.Fill(res);
+                }).ConfigureAwait(false);
+            }
+            else
+            {
+                await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail).ConfigureAwait(false);
+            }
         }
         catch (Exception e)
         {
@@ -193,21 +199,27 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
 
     private void OnCalibrationReadTable(AsvSdrCalibTableReadPayload args)
     {
-        if (ReadCalibrationTableInfo == null)
+        if (TryReadCalibrationTableInfo == null)
         {
             Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckNotSupported);
             return;
         }
         try
         {
-            var info = ReadCalibrationTableInfo(args.TableIndex);
-            Base.SendCalibrationTableReadResponse(res =>
+            if (TryReadCalibrationTableInfo(args.TableIndex, out var name, out var size, out var metadata))
             {
-                res.RowCount = info.Size;
-                res.TableIndex = args.TableIndex;
-                MavlinkTypesHelper.SetString(res.TableName, info.Name);
-                res.CreatedUnixUs = MavlinkTypesHelper.ToUnixTimeUs(info.Updated);
-            });
+                Base.SendCalibrationTableReadResponse(res =>
+                {
+                    res.TableIndex = args.TableIndex;
+                    if (size != null) res.RowCount = size.Value;
+                    MavlinkTypesHelper.SetString(res.TableName, name);
+                    metadata?.Fill(res);
+                });
+            }
+            else
+            {
+                Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail);
+            }
         }
         catch (Exception e)
         {
@@ -224,8 +236,8 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
     public StopMissionDelegate StopMission { get; set; }
     public StartCalibrationDelegate StartCalibration { get; set; }
     public StopCalibrationDelegate StopCalibration { get; set; }
-    public ReadCalibrationTableInfoDelegate? ReadCalibrationTableInfo { get; set; }
-    public ReadCalibrationTableRowDelegate? ReadCalibrationTableRow { get; set; }
+    public TryReadCalibrationTableInfoDelegate? TryReadCalibrationTableInfo { get; set; }
+    public TryReadCalibrationTableRowDelegate? TryReadCalibrationTableRow { get; set; }
     public WriteCalibrationDelegate? WriteCalibrationTable { get; set; }
 
     public async Task<bool> SendSignal(ulong unixTime, string name, ReadOnlyMemory<double> signal,

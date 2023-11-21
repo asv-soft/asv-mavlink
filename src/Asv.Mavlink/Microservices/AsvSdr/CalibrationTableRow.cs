@@ -3,15 +3,42 @@ using Asv.Mavlink.V2.AsvSdr;
 
 namespace Asv.Mavlink;
 
-public class CalibrationTableInfo
+public class CalibrationTablePod
 {
     public string Name { get; set; }
+    public CalibrationTableMetadata Metadata { get; set; }
+    public CalibrationTableRow[] Rows { get; set; }
+}
+
+
+public class CalibrationTableMetadata
+{
+    public CalibrationTableMetadata()
+    {
+        
+    }
+    public CalibrationTableMetadata(AsvSdrCalibTablePayload result)
+    {
+        Updated = MavlinkTypesHelper.FromUnixTimeUs(result.CreatedUnixUs);
+    }
+    public CalibrationTableMetadata(DateTime updated)
+    {
+        Updated = updated;
+    }
     public DateTime Updated { get; set; }
-    public ushort Size { get; set; }
+
+    public void Fill(AsvSdrCalibTablePayload payload)
+    {
+        payload.CreatedUnixUs = MavlinkTypesHelper.ToUnixTimeUs(Updated);
+    }
 }
 
 public class CalibrationTableRow
 {
+    public CalibrationTableRow()
+    {
+        
+    }
     public CalibrationTableRow(AsvSdrCalibTableRowPayload result)
     {
         FrequencyHz = result.RefFreq;
@@ -27,10 +54,10 @@ public class CalibrationTableRow
         RefValue = refValue;
         MeasuredValue = measuredValue;
     }
-    public ulong FrequencyHz { get; }
-    public float RefPower { get; }
-    public float RefValue { get; }
-    public float MeasuredValue { get; }
+    public ulong FrequencyHz { get; set; }
+    public float RefPower { get;set; }
+    public float RefValue { get;set; }
+    public float MeasuredValue { get; set; }
 
     public void Fill(AsvSdrCalibTableRowPayload args)
     {

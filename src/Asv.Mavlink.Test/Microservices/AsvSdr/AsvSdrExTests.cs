@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -804,14 +805,26 @@ public class AsvSdrExTests
         var (client, server) = await SetUpConnection();
         var date = DateTime.Now;
         server.Base.Set(_ => _.CalibTableCount = 2);
-        server.ReadCalibrationTableInfo = index =>
+        server.TryReadCalibrationTableInfo =  (ushort index, out string? name,out ushort? size, out CalibrationTableMetadata? metadata) =>
         {
-            return index switch
+            switch (index)
             {
-                0 => new CalibrationTableInfo { Name = "Table 1", Size = 10, Updated = date, },
-                1 => new CalibrationTableInfo { Name = "Table 2", Size = 20, Updated = date, },
-                _ => throw new Exception("Invalid table index")
-            };
+                case 0:
+                    size = 10;
+                    name = "Table 1";
+                    metadata = new CalibrationTableMetadata(updated: date);
+                    return true;
+                case 1:
+                    size = 20;
+                    name = "Table 2";
+                    metadata = new CalibrationTableMetadata(updated: date);
+                    return true;
+                default:
+                    size = null;
+                    name = null;
+                    metadata = null;
+                    return false;
+            }
         };
         var status = await client.Base.Status.FirstAsync();
         await client.ReadCalibrationTableList();
@@ -819,11 +832,11 @@ public class AsvSdrExTests
         Assert.Equal(2, list.Count);
         Assert.Equal("Table 1", list[0].Name);
         Assert.Equal("Table 2", list[1].Name);
-        Assert.Equal(10, list[0].RemoteRowCount.Value);
-        Assert.Equal(20, list[1].RemoteRowCount.Value);
+        Assert.Equal(10, list[0].RemoteSize.Value);
+        Assert.Equal(20, list[1].RemoteSize.Value);
         Assert.Equal(0, list[0].Index);
         Assert.Equal(1, list[1].Index);
-        Assert.True(date - list[0].Updated.Value < TimeSpan.FromMilliseconds(100));
+        Assert.True(date - list[0].Metadata.Value.Updated < TimeSpan.FromMilliseconds(100));
     }
     [Fact]
     public async Task Client_download_calibration_table()
@@ -831,14 +844,26 @@ public class AsvSdrExTests
         var (client, server) = await SetUpConnection();
         var date = DateTime.Now;
         server.Base.Set(_ => _.CalibTableCount = 2);
-        server.ReadCalibrationTableInfo = index =>
+        server.TryReadCalibrationTableInfo = (ushort index, out string? name,out ushort? size, out CalibrationTableMetadata? metadata) =>
         {
-            return index switch
+            switch (index)
             {
-                0 => new CalibrationTableInfo { Name = "Table 1", Size = 10, Updated = date, },
-                1 => new CalibrationTableInfo { Name = "Table 2", Size = 20, Updated = date, },
-                _ => throw new Exception("Invalid table index")
-            };
+                case 0:
+                    size = 10;
+                    name = "Table 1";
+                    metadata = new CalibrationTableMetadata(updated: date);
+                    return true;
+                case 1:
+                    size = 20;
+                    name = "Table 2";
+                    metadata = new CalibrationTableMetadata(updated: date);
+                    return true;
+                default:
+                    size = null;
+                    name = null;
+                    metadata = null;
+                    return false;
+            }
         };
         var status = await client.Base.Status.FirstAsync();
         await client.ReadCalibrationTableList();
@@ -846,11 +871,11 @@ public class AsvSdrExTests
         Assert.Equal(2, list.Count);
         Assert.Equal("Table 1", list[0].Name);
         Assert.Equal("Table 2", list[1].Name);
-        Assert.Equal(10, list[0].RemoteRowCount.Value);
-        Assert.Equal(20, list[1].RemoteRowCount.Value);
+        Assert.Equal(10, list[0].RemoteSize.Value);
+        Assert.Equal(20, list[1].RemoteSize.Value);
         Assert.Equal(0, list[0].Index);
         Assert.Equal(1, list[1].Index);
-        Assert.True(date - list[0].Updated.Value < TimeSpan.FromSeconds(1));
+        Assert.True(date - list[0].Metadata.Value.Updated < TimeSpan.FromSeconds(1));
     }
     
     [Theory]
@@ -860,31 +885,46 @@ public class AsvSdrExTests
     public async Task Client_read_calibration_table_rows(ushort count)
     {
         var (client, server) = await SetUpConnection();
-        var name = "Table 1";
+        var originName = "Table 1";
         var date = DateTime.Now;
         server.Base.Set(_ => _.CalibTableCount = 1);
-        server.ReadCalibrationTableInfo = index =>
+        server.TryReadCalibrationTableInfo = (ushort index, out string? name,out ushort? size, out CalibrationTableMetadata? metadata) =>
         {
-            return index switch
+            if (index == 0)
             {
-                0 => new CalibrationTableInfo { Name = name, Size = count, Updated = date, },
-                _ => throw new Exception("Invalid table index")
-            };
+                size = count;
+                name = originName;
+                metadata = new CalibrationTableMetadata(updated: date);
+                return true;
+            }
+            else
+            {
+                name = null;
+                size = null;
+                metadata = null;
+                return false;
+            }
         };
-        server.ReadCalibrationTableRow = (tableIndex, row) =>
+        server.TryReadCalibrationTableRow = (ushort tableIndex, ushort rowIndex, out CalibrationTableRow? row) => 
         {
-            if (tableIndex != 0) throw new Exception("Invalid table index");
-            return new CalibrationTableRow(row,row*0.1f,row*20,row*10);
+            if (tableIndex != 0)
+            {
+                row = null;
+                return false;
+            }
+            row = new CalibrationTableRow(rowIndex,rowIndex*0.1f,rowIndex*20,rowIndex*10);
+            return true;
+
         };
         var status = await client.Base.Status.FirstAsync();
         await client.ReadCalibrationTableList();
         var sub = client.CalibrationTables.Bind(out var list).Subscribe();
-        var table = await client.GetCalibrationTable(name);
+        var table = await client.GetCalibrationTable(originName);
         Assert.NotNull(table);
-        Assert.Equal(name, table.Name);
-        Assert.Equal(count, table.RemoteRowCount.Value);
+        Assert.Equal(originName, table.Name);
+        Assert.Equal(count, table.RemoteSize.Value);
         Assert.Equal(0, table.Index);
-        Assert.True(date - table.Updated.Value < TimeSpan.FromMilliseconds(100));
+        Assert.True(date - table.Metadata.Value.Updated < TimeSpan.FromMilliseconds(100));
         var items = await table.Download();
         Assert.Equal(count, items.Length);
         for (int i = 0; i < count; i++)
@@ -902,23 +942,30 @@ public class AsvSdrExTests
     public async Task Client_upload_and_download_with_server_error()
     {
         var (client, server) = await SetUpConnection();
-        var name = "Table 1";
+        var originName = "Table 1";
         var date = DateTime.Now;
 
         server.Base.Set(_ => _.CalibTableCount = 1);
-        server.ReadCalibrationTableInfo = index =>
+        server.TryReadCalibrationTableInfo = (ushort index, out string? name,out ushort? size, out CalibrationTableMetadata? metadata) =>
         {
-            return index switch
+            if (index == 0)
             {
-                0 => new CalibrationTableInfo { Name = name, Size = 10, Updated = date, },
-                _ => throw new Exception("Invalid table index")
-            };
+                size = 10;
+                name = originName;
+                metadata = new CalibrationTableMetadata(updated: date);
+                return true;
+            }
+
+            name = null;
+            size = null;
+            metadata = null;
+            return false;
         };
         server.WriteCalibrationTable = (tableIndex, items) =>
         {
             throw new Exception("FATAL");
         };
-        server.ReadCalibrationTableRow = (tableIndex, row) =>
+        server.TryReadCalibrationTableRow =  (ushort tableIndex, ushort rowIndex, out CalibrationTableRow? row) => 
         {
             throw new Exception("FATAL");
         };
@@ -929,7 +976,7 @@ public class AsvSdrExTests
         var status = await client.Base.Status.FirstAsync();
         await client.ReadCalibrationTableList();
         var sub = client.CalibrationTables.Bind(out var list).Subscribe();
-        var table = await client.GetCalibrationTable(name);
+        var table = await client.GetCalibrationTable(originName);
         Assert.NotNull(table);
         await Assert.ThrowsAsync<AsvSdrException>(async () =>
         {

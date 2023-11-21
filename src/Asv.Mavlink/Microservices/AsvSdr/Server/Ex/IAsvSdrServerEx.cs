@@ -24,8 +24,8 @@ public delegate Task<MavResult> StopMissionDelegate(CancellationToken cancel);
 
 public delegate Task<MavResult> StartCalibrationDelegate(CancellationToken cancel);
 public delegate Task<MavResult> StopCalibrationDelegate(CancellationToken cancel);
-public delegate CalibrationTableInfo ReadCalibrationTableInfoDelegate(ushort tableIndex);
-public delegate CalibrationTableRow ReadCalibrationTableRowDelegate(ushort tableIndex, ushort rowIndex);
+public delegate bool TryReadCalibrationTableInfoDelegate(ushort tableIndex, out string? name, out ushort? size, out CalibrationTableMetadata? metadata);
+public delegate bool TryReadCalibrationTableRowDelegate(ushort tableIndex, ushort rowIndex, out CalibrationTableRow? row);
 public delegate void WriteCalibrationDelegate(ushort tableIndex, CalibrationTableRow[] items);
 
 
@@ -43,8 +43,8 @@ public interface IAsvSdrServerEx
     
     StartCalibrationDelegate StartCalibration { set; }
     StopCalibrationDelegate StopCalibration { set; }
-    ReadCalibrationTableInfoDelegate? ReadCalibrationTableInfo { set; }
-    ReadCalibrationTableRowDelegate? ReadCalibrationTableRow { get; set; }
+    TryReadCalibrationTableInfoDelegate? TryReadCalibrationTableInfo { set; }
+    TryReadCalibrationTableRowDelegate? TryReadCalibrationTableRow { get; set; }
     WriteCalibrationDelegate? WriteCalibrationTable { get; set; }
     Task<bool> SendSignal(ulong unixTime, string name, ReadOnlyMemory<double> signal, AsvSdrSignalFormat format, CancellationToken cancel = default);
 }

@@ -12,33 +12,33 @@ namespace Asv.Mavlink;
 public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
 {
     private readonly IAsvSdrClient _ifc;
-    private readonly RxValue<ushort> _remoteRowCount;
+    private readonly RxValue<ushort> _remoteSize;
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     private readonly TimeSpan _deviceUploadTimeout;
-    private readonly RxValue<DateTime> _updated;
+    private readonly RxValue<CalibrationTableMetadata> _metadata;
 
     public AsvSdrClientCalibrationTable(AsvSdrCalibTablePayload payload, IAsvSdrClient ifc, TimeSpan deviceUploadTimeout)
     {
         _ifc = ifc;
         _deviceUploadTimeout = deviceUploadTimeout;
-        _remoteRowCount = new RxValue<ushort>(payload.RowCount).DisposeItWith(Disposable);
-        _updated = new RxValue<DateTime>(MavlinkTypesHelper.FromUnixTimeUs(payload.CreatedUnixUs)).DisposeItWith(Disposable);
+        _remoteSize = new RxValue<ushort>(payload.RowCount).DisposeItWith(Disposable);
+        _metadata = new RxValue<CalibrationTableMetadata>(new CalibrationTableMetadata(payload)).DisposeItWith(Disposable);
         Name = MavlinkTypesHelper.GetString(payload.TableName);
         Index = payload.TableIndex;
     }
     public string Name { get; }
     public ushort Index { get; }
 
-    public IRxValue<ushort> RemoteRowCount => _remoteRowCount;
-    public IRxEditableValue<DateTime> Updated => _updated;
+    public IRxValue<ushort> RemoteSize => _remoteSize;
+    public IRxEditableValue<CalibrationTableMetadata> Metadata => _metadata;
 
     internal void Update(AsvSdrCalibTablePayload payload)
     {
         var name = MavlinkTypesHelper.GetString(payload.TableName);
         if (payload.TableIndex!= Index) throw new ArgumentException($"Invalid table index. Expected: {Index}, actual: {payload.TableIndex}");
         if (name != Name) throw new ArgumentException($"Invalid table name. Expected: {Name}, actual: {name}");
-        _updated.OnNext(MavlinkTypesHelper.FromUnixTimeUs(payload.CreatedUnixUs));
-        _remoteRowCount.OnNext(payload.RowCount);
+        _metadata.OnNext(new CalibrationTableMetadata(payload));
+        _remoteSize.OnNext(payload.RowCount);
     }
     
     public async Task<CalibrationTableRow[]> Download(IProgress<double> progress = null,CancellationToken cancel = default)
@@ -47,7 +47,7 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
         progress.Report(0);
         var info = await _ifc.ReadCalibrationTable(Index, cancel).ConfigureAwait(false);
         var count = info.RowCount;
-        _remoteRowCount.OnNext(count);
+        _remoteSize.OnNext(count);
         var array = new CalibrationTableRow[count];
         for (ushort i = 0; i < count; i++)
         {
