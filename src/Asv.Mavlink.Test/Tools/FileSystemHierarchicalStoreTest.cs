@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Asv.Common;
 using Xunit;
@@ -17,7 +18,7 @@ public class FileSystemHierarchicalStoreTest
     }
     
     #region Files
-
+    
     [Fact]
     public void Check_File_Open_After_Store_Was_Disposed()
     {
@@ -63,6 +64,33 @@ public class FileSystemHierarchicalStoreTest
         ClearAllDirectories(storeLocation);
     }
 
+    [Fact]
+    public void Check_Update_Entries_With_Same_Id()
+    {
+        var format = new AsvSdrListDataStoreFormat();
+        var storeLocation = "TestFolder_Create_File_With_Same_Id #" + Path.GetRandomFileName();
+        var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeLocation, format,
+            TimeSpan.FromMilliseconds(0));
+
+        var firstGuid = Guid.NewGuid();
+        
+        var file = store.CreateFile(firstGuid, "FirstCreation", store.RootFolderId);
+        file.Dispose();
+
+        var filePath = Directory.GetFiles(storeLocation).First(_ => _.Contains(file.Name));
+        var pathItems = filePath.Split("#");
+        var newFilePath = $"{storeLocation}\\SecondCreation #{pathItems.Last()}";
+
+        File.Copy(filePath, newFilePath);
+        
+        store.UpdateEntries();
+        
+        Assert.Equal(2, store.Count.Value);
+        store.Dispose();
+        
+        ClearAllDirectories(storeLocation);
+    }
+    
     [Fact]
     public void Check_Success_Create_File()
     {

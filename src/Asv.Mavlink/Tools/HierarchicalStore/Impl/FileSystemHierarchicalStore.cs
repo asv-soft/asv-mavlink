@@ -25,6 +25,7 @@ public interface IHierarchicalStoreFormat<TKey, out TFile>:IDisposable
     TFile OpenFile(Stream stream);
     TFile CreateFile(Stream stream, TKey id, string name);
     void CheckFolderDisplayName(string name);
+    TKey GenerateNewKey();
 }
 
 public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,IHierarchicalStore<TKey, TFile> 
@@ -91,7 +92,22 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         _entries.Clear();
         foreach (var entry in InternalGetEntries(null))
         {
-            _entries.Add(entry.Id, entry);
+            if (_entries.TryGetValue(entry.Id, out _))
+            {
+                var newKey = _format.GenerateNewKey();
+                var newName = _format.GetFileSystemFileName(newKey, entry.Name);
+                var newFullName = Directory.GetParent(entry.FullPath).FullName;
+                var newEntryFullPath = Path.Combine(newFullName, newName);
+                
+                File.Move(entry.FullPath, newEntryFullPath);
+                
+                var newEntry = new FileSystemHierarchicalStoreEntry<TKey>(newKey, entry.Name, entry.Type, entry.ParentId, newEntryFullPath);
+                _entries.Add(newEntry.Id, newEntry);
+            }
+            else
+            {
+                _entries.Add(entry.Id, entry);
+            }
         }
         InternalUpdateStatistics();    
     }
@@ -447,7 +463,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
                 }
             }
             
-            var nameAtFileSystem = _format.GetFileSystemFileName(id,newName);
+            var nameAtFileSystem = _format.GetFileSystemFileName(id, newName);
             var newFilePath = Path.Combine(parentFolder, nameAtFileSystem);
             // we need to remove file from cache, if we want to modify it
             if (TryImmediatelyRemoveFromCache(id) == false)

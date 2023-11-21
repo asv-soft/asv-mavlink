@@ -115,6 +115,11 @@ public abstract class GuidHierarchicalStoreFormat<TFile> : IHierarchicalStoreFor
         }
     }
 
+    public Guid GenerateNewKey()
+    {
+        return Guid.NewGuid();
+    }
+
     public abstract void Dispose();
 
 }
