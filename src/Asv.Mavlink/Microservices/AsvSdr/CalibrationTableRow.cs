@@ -17,6 +17,10 @@ public class CalibrationTableMetadata
     {
         
     }
+    public CalibrationTableMetadata(AsvSdrCalibTableUploadStartPacket updated)
+    {
+        Updated = MavlinkTypesHelper.FromUnixTimeUs(updated.Payload.CreatedUnixUs);
+    }
     public CalibrationTableMetadata(AsvSdrCalibTablePayload result)
     {
         Updated = MavlinkTypesHelper.FromUnixTimeUs(result.CreatedUnixUs);
@@ -25,6 +29,9 @@ public class CalibrationTableMetadata
     {
         Updated = updated;
     }
+
+    
+
     public DateTime Updated { get; set; }
 
     public void Fill(AsvSdrCalibTablePayload payload)

@@ -26,7 +26,7 @@ public delegate Task<MavResult> StartCalibrationDelegate(CancellationToken cance
 public delegate Task<MavResult> StopCalibrationDelegate(CancellationToken cancel);
 public delegate bool TryReadCalibrationTableInfoDelegate(ushort tableIndex, out string? name, out ushort? size, out CalibrationTableMetadata? metadata);
 public delegate bool TryReadCalibrationTableRowDelegate(ushort tableIndex, ushort rowIndex, out CalibrationTableRow? row);
-public delegate void WriteCalibrationDelegate(ushort tableIndex, CalibrationTableRow[] items);
+public delegate void WriteCalibrationDelegate(ushort tableIndex, CalibrationTableMetadata metadata, CalibrationTableRow[] items);
 
 
 public interface IAsvSdrServerEx

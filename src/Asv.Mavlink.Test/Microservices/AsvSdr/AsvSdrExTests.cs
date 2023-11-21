@@ -961,7 +961,7 @@ public class AsvSdrExTests
             metadata = null;
             return false;
         };
-        server.WriteCalibrationTable = (tableIndex, items) =>
+        server.WriteCalibrationTable = (tableIndex, metadata, items) =>
         {
             throw new Exception("FATAL");
         };

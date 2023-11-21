@@ -148,7 +148,7 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
                 var row = await Base.CallCalibrationTableUploadReadCallback(args.SystemId,args.ComponentId,args.Payload.RequestId,args.Payload.TableIndex,i,DisposeCancel).ConfigureAwait(false);
                 rows[i] = row;
             }
-            WriteCalibrationTable(args.Payload.TableIndex, rows);
+            WriteCalibrationTable(args.Payload.TableIndex, new CalibrationTableMetadata(args), rows);
             _status.Info($"Upload calibration [{args.Payload.TableIndex}] completed");
             await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckOk).ConfigureAwait(false);
         }
