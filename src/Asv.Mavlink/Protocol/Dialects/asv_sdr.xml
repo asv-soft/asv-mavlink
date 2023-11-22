@@ -395,7 +395,7 @@
       <field type="uint64_t" name="ref_freq" >Reference frequency in Hz.</field>
       <field type="float" name="ref_power">Reference power in dBm.</field>
       <field type="float" name="ref_value">Reference value.</field>
-      <field type="float" name="measured_value">Measured value.</field>
+      <field type="float" name="adjustment">Adjustment for measured value (ref_value = measured_value + adjustment)</field>
     </message>
     <message id="13129" name="ASV_SDR_CALIB_TABLE_UPLOAD_START">
       <description>Start uploading process. After that payload must send ASV_SDR_CALIB_TABLE_UPLOAD_READ_CALLBACK to client for reading table rows row_count times. Process end by payload with ASV_SDR_CALIB_ACC. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>

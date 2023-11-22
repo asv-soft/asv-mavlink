@@ -2087,7 +2087,7 @@ namespace Asv.Mavlink.V2.AsvSdr
     {
 	    public const int PacketMessageId = 13128;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 103;
+        public override byte GetCrcEtra() => 179;
         public override bool WrapToV2Extension => true;
 
         public override AsvSdrCalibTableRowPayload Payload { get; } = new AsvSdrCalibTableRowPayload();
@@ -2108,7 +2108,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             sum+=8; //RefFreq
             sum+=4; //RefPower
             sum+=4; //RefValue
-            sum+=4; //MeasuredValue
+            sum+=4; //Adjustment
             sum+=2; //TableIndex
             sum+=2; //RowIndex
             sum+=1; //TargetSystem
@@ -2123,7 +2123,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             RefFreq = BinSerialize.ReadULong(ref buffer);
             RefPower = BinSerialize.ReadFloat(ref buffer);
             RefValue = BinSerialize.ReadFloat(ref buffer);
-            MeasuredValue = BinSerialize.ReadFloat(ref buffer);
+            Adjustment = BinSerialize.ReadFloat(ref buffer);
             TableIndex = BinSerialize.ReadUShort(ref buffer);
             RowIndex = BinSerialize.ReadUShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
@@ -2136,7 +2136,7 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteULong(ref buffer,RefFreq);
             BinSerialize.WriteFloat(ref buffer,RefPower);
             BinSerialize.WriteFloat(ref buffer,RefValue);
-            BinSerialize.WriteFloat(ref buffer,MeasuredValue);
+            BinSerialize.WriteFloat(ref buffer,Adjustment);
             BinSerialize.WriteUShort(ref buffer,TableIndex);
             BinSerialize.WriteUShort(ref buffer,RowIndex);
             BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
@@ -2164,10 +2164,10 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// </summary>
         public float RefValue { get; set; }
         /// <summary>
-        /// Measured value.
-        /// OriginName: measured_value, Units: , IsExtended: false
+        /// Adjustment for measured value (ref_value = measured_value + adjustment)
+        /// OriginName: adjustment, Units: , IsExtended: false
         /// </summary>
-        public float MeasuredValue { get; set; }
+        public float Adjustment { get; set; }
         /// <summary>
         /// Table index.
         /// OriginName: table_index, Units: , IsExtended: false

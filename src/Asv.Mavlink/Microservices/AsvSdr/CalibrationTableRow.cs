@@ -51,26 +51,26 @@ public class CalibrationTableRow
         FrequencyHz = result.RefFreq;
         RefPower = result.RefPower;
         RefValue = result.RefValue;
-        MeasuredValue = result.MeasuredValue;
+        Adjustment = result.Adjustment;
     }
 
-    public CalibrationTableRow(ulong frequencyHz, float refPower, float refValue, float measuredValue)
+    public CalibrationTableRow(ulong frequencyHz, float refPower, float refValue, float adjustment)
     {
         FrequencyHz = frequencyHz;
         RefPower = refPower;
         RefValue = refValue;
-        MeasuredValue = measuredValue;
+        Adjustment = adjustment;
     }
     public ulong FrequencyHz { get; set; }
     public float RefPower { get;set; }
     public float RefValue { get;set; }
-    public float MeasuredValue { get; set; }
+    public float Adjustment { get; set; }
 
     public void Fill(AsvSdrCalibTableRowPayload args)
     {
         args.RefFreq = FrequencyHz;
         args.RefPower = RefPower;
         args.RefValue = RefValue;
-        args.MeasuredValue = MeasuredValue;
+        args.Adjustment = Adjustment;
     }
 }

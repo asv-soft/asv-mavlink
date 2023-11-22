@@ -932,7 +932,7 @@ public class AsvSdrExTests
             Assert.Equal((ulong)i, items[i].FrequencyHz);
             Assert.Equal(i*0.1f, items[i].RefPower);
             Assert.Equal(i*20, items[i].RefValue);
-            Assert.Equal(i*10, items[i].MeasuredValue);
+            Assert.Equal(i*10, items[i].Adjustment);
         }
     }
     

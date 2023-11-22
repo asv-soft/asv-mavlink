@@ -761,14 +761,14 @@ public class AsvSdrTest
             {
                 res.TableIndex = 100;
                 res.RowIndex = 10;
-                res.MeasuredValue = 100;
+                res.Adjustment = 100;
                 res.RefFreq = 200U;
                 res.RefValue = 300.5f;
                 res.RefPower = 400.0f;
             });
         });
         var result = await clientSdr.ReadCalibrationTableRow(100, 10);
-        Assert.Equal(100, result.MeasuredValue);
+        Assert.Equal(100, result.Adjustment);
         Assert.Equal(200U, result.RefFreq);
         Assert.Equal(300.5f, result.RefValue);
         Assert.Equal(400.0f, result.RefPower);
@@ -834,7 +834,7 @@ public class AsvSdrTest
             {
                 res.TableIndex = 100;
                 res.RowIndex = 10;
-                res.MeasuredValue = 100;
+                res.Adjustment = 100;
                 res.RefFreq = 200U;
                 res.RefValue = 300.5f;
                 res.RefPower = 400.0f;
@@ -844,7 +844,7 @@ public class AsvSdrTest
         });
         var result = await serverSdr.CallCalibrationTableUploadReadCallback(clientSdr.Identity.SystemId,
             clientSdr.Identity.ComponentId, 200, 100, 10);
-        Assert.Equal(100, result.MeasuredValue);
+        Assert.Equal(100, result.Adjustment);
         Assert.Equal(200U, result.FrequencyHz);
         Assert.Equal(400.0f, result.RefPower);
         Assert.Equal(300.5f, result.RefValue);

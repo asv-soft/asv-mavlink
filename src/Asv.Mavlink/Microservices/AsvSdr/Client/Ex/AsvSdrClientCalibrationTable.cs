@@ -102,7 +102,7 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
                 arg.RefFreq = value.FrequencyHz;
                 arg.RefPower = value.RefPower;
                 arg.RefValue = value.RefValue;
-                arg.MeasuredValue = value.MeasuredValue;
+                arg.Adjustment = value.Adjustment;
             }, cancel);
         });
 
