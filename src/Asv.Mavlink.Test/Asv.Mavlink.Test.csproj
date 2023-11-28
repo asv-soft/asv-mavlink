@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <PackageReference Include="Asv.Cfg" Version="1.13.0" />
+	  <PackageReference Include="Asv.Cfg" Version="1.13.1" />
 	  <PackageReference Include="DeepEqual" Version="2.0.0" />
 	  <PackageReference Include="DynamicData" Version="7.13.5" />
 	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
