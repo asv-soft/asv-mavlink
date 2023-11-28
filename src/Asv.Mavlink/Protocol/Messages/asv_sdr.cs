@@ -432,8 +432,8 @@ namespace Asv.Mavlink.V2.AsvSdr
     /// </summary>
     public class AsvSdrOutStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 69; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 69; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 77; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 77; // of byte sized of fields (exclude extended)
         public int GetByteSize()
         {
             var sum = 0;
@@ -447,6 +447,8 @@ namespace Asv.Mavlink.V2.AsvSdr
             sum+= 1; // MissionState
             sum+= 1; // CalibState
             sum+=2; //CalibTableCount
+            sum+=4; //RefPower
+            sum+=4; //SignalOverflow
             return (byte)sum;
         }
 
@@ -466,7 +468,7 @@ namespace Asv.Mavlink.V2.AsvSdr
                 CurrentRecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
             CurrentRecordMode = (AsvSdrCustomMode)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/69 - payloadSize - /*ExtendedFieldsLength*/3)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/77 - payloadSize - /*ExtendedFieldsLength*/11)/1 /*FieldTypeByteSize*/));
             CurrentRecordName = new char[arraySize];
             unsafe
             {
@@ -485,6 +487,12 @@ namespace Asv.Mavlink.V2.AsvSdr
             // extended field 'CalibTableCount' can be empty
             if (buffer.IsEmpty) return;
             CalibTableCount = BinSerialize.ReadUShort(ref buffer);
+            // extended field 'RefPower' can be empty
+            if (buffer.IsEmpty) return;
+            RefPower = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'SignalOverflow' can be empty
+            if (buffer.IsEmpty) return;
+            SignalOverflow = BinSerialize.ReadFloat(ref buffer);
 
         }
 
@@ -512,7 +520,9 @@ namespace Asv.Mavlink.V2.AsvSdr
             BinSerialize.WriteByte(ref buffer,(byte)MissionState);
             BinSerialize.WriteByte(ref buffer,(byte)CalibState);
             BinSerialize.WriteUShort(ref buffer,CalibTableCount);
-            /* PayloadByteSize = 69 */;
+            BinSerialize.WriteFloat(ref buffer,RefPower);
+            BinSerialize.WriteFloat(ref buffer,SignalOverflow);
+            /* PayloadByteSize = 77 */;
         }
         
         
@@ -570,6 +580,16 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// OriginName: calib_table_count, Units: , IsExtended: true
         /// </summary>
         public ushort CalibTableCount { get; set; }
+        /// <summary>
+        /// Estimated reference power in dBm. Entered in MAV_CMD_ASV_SDR_SET_MODE command.
+        /// OriginName: ref_power, Units: , IsExtended: true
+        /// </summary>
+        public float RefPower { get; set; }
+        /// <summary>
+        /// Input path signal overflow indicator. Relative value from 0.0 to 1.0.
+        /// OriginName: signal_overflow, Units: , IsExtended: true
+        /// </summary>
+        public float SignalOverflow { get; set; }
     }
     /// <summary>
     /// Request list of ASV_SDR_RECORD from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]

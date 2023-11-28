@@ -259,6 +259,8 @@
       <extensions/>
       <field type="uint8_t" name="calib_state" enum="ASV_SDR_CALIB_STATE">Calibration status.</field>
       <field type="uint16_t" name="calib_table_count">Number of calibration tables.</field>
+      <field type="float" name="ref_power">Estimated reference power in dBm. Entered in MAV_CMD_ASV_SDR_SET_MODE command.</field>
+      <field type="float" name="signal_overflow">Input path signal overflow indicator. Relative value from 0.0 to 1.0.</field>
     </message>
     <!-- ASV_SDR_RECORD_* 13101-13109 -->
     <message id="13101" name="ASV_SDR_RECORD_REQUEST">
