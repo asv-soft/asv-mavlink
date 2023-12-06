@@ -358,6 +358,11 @@ namespace Asv.Mavlink.V2.AsvSdr
         /// ASV_SDR_SYSTEM_CONTROL_ACTION_SHUTDOWN
         /// </summary>
         AsvSdrSystemControlActionShutdown = 1,
+        /// <summary>
+        /// Request software restart [!WRAP_TO_V2_EXTENSION_PACKET!]
+        /// ASV_SDR_SYSTEM_CONTROL_ACTION_RESTART
+        /// </summary>
+        AsvSdrSystemControlActionRestart = 2,
     }
 
     /// <summary>

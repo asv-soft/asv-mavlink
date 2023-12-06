@@ -217,6 +217,9 @@
       <entry name="ASV_SDR_SYSTEM_CONTROL_ACTION_SHUTDOWN">
         <description>Request system shutdown [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       </entry>
+      <entry name="ASV_SDR_SYSTEM_CONTROL_ACTION_RESTART">
+        <description>Request software reboot [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      </entry>
     </enum>
     
     <enum name="ASV_SDR_CALIB_STATE">
