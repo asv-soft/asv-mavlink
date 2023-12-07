@@ -74,16 +74,24 @@ public static class MissionClientExHelper
         return item;
     }
 
-    public static MissionItem SetVehicleSpeed(this IMissionClientEx vehicle, float speed)
+    /// <summary>
+    /// Change speed and/or throttle set points. The value persists until it is overridden or there is a mode change
+    /// </summary>
+    /// <param name="speed">Speed (-1 indicates no change, -2 indicates return to default vehicle speed)</param>
+    /// <param name="speedType">Speed type of value set in param2 (such as airspeed, ground speed, and so on)</param>
+    /// <param name="throttle">Throttle (-1 indicates no change, -2 indicates return to default vehicle throttle value)</param>
+    /// <returns></returns>
+    public static MissionItem SetVehicleSpeed(this IMissionClientEx vehicle, float speed, float speedType = 1, float throttle = -1)
     {
         var item = vehicle.Create();
+        item.AutoContinue.OnNext(true);
         item.Command.OnNext(MavCmd.MavCmdDoChangeSpeed);
         item.Current.OnNext(false);
         item.Frame.OnNext(MavFrame.MavFrameGlobalInt);
         item.MissionType.OnNext(MavMissionType.MavMissionTypeMission);
-        item.Param1.OnNext(1);
+        item.Param1.OnNext(speedType);
         item.Param2.OnNext(speed);
-        item.Param3.OnNext(-1);
+        item.Param3.OnNext(throttle);
         return item;
     }
 }
