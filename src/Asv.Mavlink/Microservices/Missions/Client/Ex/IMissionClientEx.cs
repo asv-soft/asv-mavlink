@@ -41,6 +41,7 @@ public static class MissionClientExHelper
         item.Param4.OnNext(0);
         return item;
     }
+    
     public static MissionItem AddNavMissionItem(this IMissionClientEx vehicle, GeoPoint point)
     {
         var item = vehicle.Create();
@@ -56,6 +57,7 @@ public static class MissionClientExHelper
         item.Param4.OnNext(0);
         return item;
     }
+    
     public static MissionItem AddRoiMissionItem(this IMissionClientEx vehicle, GeoPoint point)
     {
         var item = vehicle.Create();
@@ -69,6 +71,19 @@ public static class MissionClientExHelper
         item.Param2.OnNext(0);
         item.Param3.OnNext(0);
         item.Param4.OnNext(0);
+        return item;
+    }
+
+    public static MissionItem SetVehicleSpeed(this IMissionClientEx vehicle, float speed)
+    {
+        var item = vehicle.Create();
+        item.Command.OnNext(MavCmd.MavCmdDoChangeSpeed);
+        item.Current.OnNext(false);
+        item.Frame.OnNext(MavFrame.MavFrameGlobalInt);
+        item.MissionType.OnNext(MavMissionType.MavMissionTypeMission);
+        item.Param1.OnNext(1);
+        item.Param2.OnNext(speed);
+        item.Param3.OnNext(-1);
         return item;
     }
 }
