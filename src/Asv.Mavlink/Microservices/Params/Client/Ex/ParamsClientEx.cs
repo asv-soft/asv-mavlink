@@ -179,6 +179,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
     
     public async Task ReadAll(IProgress<double> progress = null, CancellationToken cancel = default)
     {
+        
         progress ??= new Progress<double>();
         using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
         var tcs = new TaskCompletionSource<bool>();
@@ -212,7 +213,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
             _.Clear();
         });
         await Base.SendRequestList(linkedCancel.Token).ConfigureAwait(false);
-        var readAllParams = await tcs.Task.ConfigureAwait(false);
+            // var readAllParams = await tcs.Task.ConfigureAwait(false);
         // if (readAllParams == true) return;
         // if (paramsCount.HasValue == false) throw new Exception("Can't read params: collection is empty or connection error");
         // // read no all params=>try to read one by one

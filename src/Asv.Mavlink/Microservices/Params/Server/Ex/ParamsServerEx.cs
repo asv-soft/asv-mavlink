@@ -73,35 +73,34 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
 
     private async void OnParamRequestRead(ParamRequestReadPacket _)
     {
-        (ushort,IMavParamTypeMetadata) param;
-        if (_.Payload.ParamIndex < 0)
-        {
-            var name =  MavlinkTypesHelper.GetString(_.Payload.ParamId);
-            if (_paramDict.TryGetValue(name, out param) == false)
+        (ushort, IMavParamTypeMetadata) param;
+            if (_.Payload.ParamIndex < 0)
             {
-                var msg = $"Error to get mavlink param: param '{name}' not found";
-                Logger.Error(msg);
-                _statusTextServer.Error($"Param '{name}' not found");
-                _onErrorSubject.OnNext(new ArgumentException(msg,name));
-                return;
+                var name = MavlinkTypesHelper.GetString(_.Payload.ParamId);
+                if (_paramDict.TryGetValue(name, out param) == false)
+                {
+                    var msg = $"Error to get mavlink param: param '{name}' not found";
+                    Logger.Error(msg);
+                    _statusTextServer.Error($"Param '{name}' not found");
+                    _onErrorSubject.OnNext(new ArgumentException(msg, name));
+                    return;
+                }
             }
-        }
-        else
-        {
-            if (_.Payload.ParamIndex >= _paramDict.Count)
+            else
             {
-                var msg = $"Error to get mavlink param: param with index '{_.Payload.ParamIndex}' not found";
-                Logger.Error(msg);
-                _statusTextServer.Error($"Param '{_.Payload.ParamIndex}' not found");
-                _onErrorSubject.OnNext(new ArgumentException(msg));
-                return;
+                if (_.Payload.ParamIndex >= _paramDict.Count)
+                {
+                    var msg = $"Error to get mavlink param: param with index '{_.Payload.ParamIndex}' not found";
+                    Logger.Error(msg);
+                    _statusTextServer.Error($"Param '{_.Payload.ParamIndex}' not found");
+                    _onErrorSubject.OnNext(new ArgumentException(msg));
+                    return;
+                }
+                param = ((ushort)_.Payload.ParamIndex, _paramList[_.Payload.ParamIndex]);
             }
-            param = ((ushort)_.Payload.ParamIndex, _paramList[_.Payload.ParamIndex]);
-        }
-            
-        var cfgKey = GetCfgKey(param.Item2.Name);
-        var currentValue = MavParamHelper.ReadFromConfig(_cfg, cfgKey, param.Item2);
-        await SendParam(param, currentValue, DisposeCancel).ConfigureAwait(false);
+            var cfgKey = GetCfgKey(param.Item2.Name);
+            var currentValue = MavParamHelper.ReadFromConfig(_cfg, cfgKey, param.Item2);
+            await SendParam(param, currentValue, DisposeCancel).ConfigureAwait(false);
     }
 
     private async void OnParamRequestList(ParamRequestListPacket paramRequestListPacket)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reactive.Concurrency;
+using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.Mavlink.V2.Common;
@@ -78,6 +79,72 @@ public class ParamsMicroserviceTest
         Assert.Equal(Param3.Name, readParamNames[2]);
     }
     
+    [Fact]
+    public async Task Cancel_Read_All_Params()
+    {
+        var link = new VirtualMavlinkConnection();
+        
+        var encoding = MavParamHelper.GetEncoding(MavParamEncodingType.CStyleEncoding);
+        
+        var srvSeq = new PacketSequenceCalculator();
+        
+        var srvId = new MavlinkServerIdentity(componentId: 1, systemId: 1);
+        
+        var srvCfg = new InMemoryConfiguration();
+        
+        var statusServer = new StatusTextServer(link.Server, 
+            srvSeq, 
+            srvId, 
+            new StatusTextLoggerConfig(),
+            Scheduler.Default);
+        
+        var server = new ParamsServer(link.Server,srvSeq,srvId,Scheduler.Default);
+        
+        var serverEx = new ParamsServerEx(server, statusServer, 
+            new []
+            {
+                Param1,
+                Param2,
+                Param3,
+            }, 
+            encoding, 
+            srvCfg, 
+            new ParamsServerExConfig { SendingParamItemDelayMs = 50 });
+        
+        var client = new ParamsClient(link.Client, 
+            new(2,2,1,1), 
+            new PacketSequenceCalculator(), 
+            new ParamsClientExConfig());
+        
+        var clientEx = new ParamsClientEx(client, new ParamsClientExConfig());
+        var clientExCanceled = new ParamsClientEx(client, new ParamsClientExConfig());
+        
+        clientEx.Init(encoding, new List<ParamDescription>());
+        clientExCanceled.Init(encoding, new List<ParamDescription>());
+
+        var readParams = new Dictionary<string, ParamValuePayload>(); 
+        var readParamsCanceled = new Dictionary<string, ParamValuePayload>(); 
+        
+        clientEx.Base.OnParamValue.Subscribe(_ =>
+        {
+            readParams[MavlinkTypesHelper.GetString(_.ParamId)] = _;
+        });
+        clientExCanceled.Base.OnParamValue.Subscribe(_ =>
+        {
+            readParams[MavlinkTypesHelper.GetString(_.ParamId)] = _;
+        });
+        CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        
+        Task.Run( ()=> clientExCanceled.ReadAll( new Progress<double>(), _cancellationTokenSource.Token));
+        Task.Delay(2000).Wait();
+        
+        _cancellationTokenSource.Cancel();
+        await clientEx.ReadAll();
+        
+        Task.Delay(10000).Wait();
+        
+        Assert.False(readParams.Count==readParamsCanceled.Count, $"{readParams.Count}={readParamsCanceled.Count}");
+       } 
     [Fact]
     public async Task Update_Param_After_Write_From_Server()
     {
