@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reactive.Concurrency;
 using System.Threading;
 using Asv.Common;
@@ -121,5 +122,16 @@ public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
     public IRxEditableValue<ushort> Current { get; }
     public IRxEditableValue<ushort> Reached { get; }
     public IObservable<IChangeSet<ServerMissionItem, ushort>> Items => _missionSource.Connect();
+    public void AddItems(IEnumerable<ServerMissionItem> items)
+    {
+        if(items != null)
+            _missionSource.AddOrUpdate(items);
+    }
+
+    public void RemoveItems(IEnumerable<ServerMissionItem> items)
+    {
+        if(items != null)
+            _missionSource.Remove(items);
+    }
 }
 
