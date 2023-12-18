@@ -33,8 +33,26 @@ namespace Asv.Mavlink
             var originLength = payloadBuffer.Length;
             Payload.Serialize(ref payloadBuffer);
             var payloadSize = originLength - payloadBuffer.Length;
-            // Debug.Assert(payloadSize <= byte.MaxValue, $"Wrong payload serialize size (must be {byte.MaxValue} size)");
+            var originPayloadBuffer = buffer.Slice(10, payloadSize);
 
+            
+            // try to truncate empty bytes from the end of payload buffer. See https://mavlink.io/en/guide/serialization.html#payload_truncation
+            if (payloadSize > 1) /*The first byte of the payload is never truncated, even if the payload consists entirely of zeros.*/
+            {
+                var startIndex = payloadSize - 1;
+                for (var i = startIndex; i >=1 ; i--)
+                {
+                    if (originPayloadBuffer[i] != 0)
+                    {
+                        break;
+                    }
+                    --payloadSize;
+                }
+            }
+            
+            
+            
+            
             BinSerialize.WriteByte(ref fillBuffer, PacketV2Helper.MagicMarkerV2);
             BinSerialize.WriteByte(ref fillBuffer, (byte)payloadSize);
             BinSerialize.WriteByte(ref fillBuffer, IncompatFlags);
@@ -90,7 +108,6 @@ namespace Asv.Mavlink
             var originSize = Payload.GetMinByteSize();
             if (payloadSize < originSize)
             {
-                
                 // this is Empty-Byte Payload Truncation https://mavlink.io/en/guide/serialization.html#payload_truncation
                 var data = ArrayPool<byte>.Shared.Rent(originSize);
                 var span = new Span<byte>(data,0,originSize);
@@ -119,6 +136,7 @@ namespace Asv.Mavlink
                 Payload.Deserialize(ref payloadBuffer);
                 //Debug.Assert(payloadBuffer.Length == 0);
             }
+            buffer = buffer.Slice(payloadSize); // skip payload
             
             var crcBuffer1 = crcBuffer.Slice(0, 9);
             var crcBuffer2 = crcBuffer.Slice(9, payloadSize);
@@ -128,6 +146,8 @@ namespace Asv.Mavlink
             if (crc != calcCrc)
                 throw new MavlinkException(string.Format(RS.PacketV2Helper_VerifyCrc_Bad_X25Crc, calcCrc, crc));
 
+            buffer = buffer.Slice(2); // skip CRC
+            
             if ((IncompatFlags & 0x01) != 0)
             {
                 Signature.Deserialize(ref buffer);

@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.PythonArrayTest;
 using Asv.Mavlink.V2.Test;
 using Asv.Mavlink.V2.UnitTestMessage;
 using DeepEqual.Syntax;
@@ -13,14 +14,18 @@ namespace Asv.Mavlink.Test
 {
     public class CommonTestMavlinkPackets
     {
-        private readonly TestTypesPacket _expectedObject;
+        
         private readonly byte[] _buffer = new byte[PacketV2Helper.PacketV2MaxSize];
         private readonly ITestOutputHelper _output;
 
         public CommonTestMavlinkPackets(ITestOutputHelper output)
         {
             _output = output;
-            _expectedObject = new TestTypesPacket
+        }
+
+        [Fact]
+        public void Test_Packet_Actual_Size_Calculation()
+        {var expectedObject = new TestTypesPacket
             {
                 CompatFlags = 0,
                 IncompatFlags = 0,
@@ -46,28 +51,60 @@ namespace Asv.Mavlink.Test
                     S8 = 8
                 }
             };
-            var span = new Span<byte>(_buffer);
-            _expectedObject.Serialize(ref span);
-        }
-
-        [Fact]
-        public void Test_Packet_Actual_Size_Calculation()
-        {
+            // this is the last array int serialization and we need fill it last element non zero, because => Empty-Byte Payload Truncation https://mavlink.io/en/guide/serialization.html#payload_truncation
+            expectedObject.Payload.S8Array[^1] = 127;
+            
+            var serializeSpan = new Span<byte>(_buffer);
+            expectedObject.Serialize(ref serializeSpan);
+            
+            
             byte[] buffer2 = new byte[PacketV2Helper.PacketV2MaxSize];
             var span = new Span<byte>(buffer2);
             var size = span.Length;
-            _expectedObject.Serialize(ref span);
+            expectedObject.Serialize(ref span);
             size -= span.Length;
-            Assert.Equal(size, _expectedObject.GetByteSize());
+            Assert.Equal(size, expectedObject.GetByteSize());
         }
 
 
         [Fact]
         public void Try_serialize_packet_with_span()
         {
+            var expectedObject = new TestTypesPacket
+            {
+                CompatFlags = 0,
+                IncompatFlags = 0,
+                Sequence = 10,
+                SystemId = 255,
+                ComponentId = 255,
+                Payload =
+                {
+                    U64 = 1,
+                    S64 = 2,
+                    D = 3,
+                    U64Array = new ulong[]
+                    {
+                        1, 2, 3
+                    },
+                    U32 = 1,
+                    S32 = 2,
+                    F = 3,
+                    U16 = 4,
+                    S16 = 5,
+                    C = 'A',
+                    U8 = 7,
+                    S8 = 8,
+                }
+            };
+            
+            
+            
+            var serializeSpan = new Span<byte>(_buffer);
+            expectedObject.Serialize(ref serializeSpan);
+            
             byte[] buffer2 = new byte[PacketV2Helper.PacketV2MaxSize];
             var span = new Span<byte>(buffer2);
-            _expectedObject.Serialize(ref span);
+            expectedObject.Serialize(ref span);
 
             Assert.Equal(buffer2, _buffer);
         }
@@ -75,19 +112,77 @@ namespace Asv.Mavlink.Test
         [Fact]
         public void Deserialize_BufferInput_MatchesExpectedObject()
         {
+            var expectedObject = new TestTypesPacket
+            {
+                CompatFlags = 0,
+                IncompatFlags = 0,
+                Sequence = 10,
+                SystemId = 255,
+                ComponentId = 255,
+                Payload =
+                {
+                    U64 = 1,
+                    S64 = 2,
+                    D = 3,
+                    U64Array = new ulong[]
+                    {
+                        1, 2, 3
+                    },
+                    U32 = 1,
+                    S32 = 2,
+                    F = 3,
+                    U16 = 4,
+                    S16 = 5,
+                    C = 'A',
+                    U8 = 7,
+                    S8 = 8
+                }
+            };
+            var serializeSpan = new Span<byte>(_buffer);
+            expectedObject.Serialize(ref serializeSpan);
+            
             var deserialized = new TestTypesPacket();
             var span = new ReadOnlySpan<byte>(_buffer);
             deserialized.Deserialize(ref span);
-            _expectedObject.ShouldDeepEqual(deserialized);
+            expectedObject.ShouldDeepEqual(deserialized);
         }
 
         [Fact]
         public void SpanDeserializeTest()
         {
+           var expectedObject = new TestTypesPacket
+            {
+                CompatFlags = 0,
+                IncompatFlags = 0,
+                Sequence = 10,
+                SystemId = 255,
+                ComponentId = 255,
+                Payload =
+                {
+                    U64 = 1,
+                    S64 = 2,
+                    D = 3,
+                    U64Array = new ulong[]
+                    {
+                        1, 2, 3
+                    },
+                    U32 = 1,
+                    S32 = 2,
+                    F = 3,
+                    U16 = 4,
+                    S16 = 5,
+                    C = 'A',
+                    U8 = 7,
+                    S8 = 8
+                }
+            };
+            var serializeSpan = new Span<byte>(_buffer);
+            expectedObject.Serialize(ref serializeSpan);
+            
             var deserialized = new TestTypesPacket();
             var span = new ReadOnlySpan<byte>(_buffer);
             deserialized.Deserialize(ref span);
-            _expectedObject.ShouldDeepEqual(deserialized);
+            expectedObject.ShouldDeepEqual(deserialized);
         }
 
         [Fact]
@@ -249,6 +344,26 @@ namespace Asv.Mavlink.Test
             Assert.Equal(inPkt.Payload.BarsPeak, outPkt.Payload.BarsPeak);
             Assert.Equal(inPkt.Payload.Dose, outPkt.Payload.Dose);
             Assert.Equal(inPkt.Payload.HazardLevel, outPkt.Payload.HazardLevel);
+
+        }
+
+        [Fact]
+        public void Test_empty_byte_payload_truncation()
+        {
+            var packet = new ArrayTest0Packet();
+            var buff = new byte[packet.GetMaxByteSize()];
+            var writeSpan = new Span<byte>(buff);
+            var originLength = writeSpan.Length;
+            packet.Serialize(ref writeSpan);
+            var realSize = originLength - writeSpan.Length;
+            Assert.Equal(13 /*ONLY HEADER SIZE + 1 zero payload*/,realSize);
+
+
+            var readBuffer = new ReadOnlySpan<byte>(buff, 0, realSize);
+            var readPacket = new ArrayTest0Packet();
+            readPacket.Deserialize(ref readBuffer);
+            Assert.Equal(0,readBuffer.Length);
+
 
         }
     }
