@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Asv.Common;
 using DynamicData;
 
@@ -10,4 +11,6 @@ public interface IMissionServerEx
    IRxEditableValue<ushort> Current { get; }
    IRxEditableValue<ushort> Reached { get; }
    IObservable<IChangeSet<ServerMissionItem,ushort>> Items { get; }
+   void AddItems(IEnumerable<ServerMissionItem> items);
+   void RemoveItems(IEnumerable<ServerMissionItem> items);
 }
