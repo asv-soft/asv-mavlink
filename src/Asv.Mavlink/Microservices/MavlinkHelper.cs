@@ -44,8 +44,14 @@ namespace Asv.Mavlink
             var id = pkt.MessageId;
             return src.Where(_ => _.MessageId == id).Cast<TPacket>();
         }
-        
-        
+
+        public static ushort ConvertToFullId(byte componentId, byte targetId) => (ushort)(componentId | targetId << 8);
+
+        public static void ConvertFromId(ushort fullId, out byte componentId, out byte targetId)
+        {
+            componentId = (byte)(fullId & 0xFF);
+            targetId = (byte)(fullId >> 8);
+        }
         
     }
 }
