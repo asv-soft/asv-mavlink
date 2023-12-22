@@ -18,7 +18,7 @@ namespace Asv.Mavlink
         private readonly MavlinkPacketTransponder<AsvSdrOutStatusPacket, AsvSdrOutStatusPayload> _transponder;
 
         public AsvSdrServer(IMavlinkV2Connection connection,
-            MavlinkServerIdentity identity,AsvSdrServerConfig config, IPacketSequenceCalculator seq,
+            MavlinkIdentity identity,AsvSdrServerConfig config, IPacketSequenceCalculator seq,
             IScheduler rxScheduler) 
             : base("SDR", connection, identity, seq, rxScheduler)
         {

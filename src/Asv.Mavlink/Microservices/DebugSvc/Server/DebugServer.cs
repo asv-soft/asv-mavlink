@@ -9,7 +9,7 @@ namespace Asv.Mavlink
     {
         private readonly IMavlinkV2Connection _connection;
         private readonly IPacketSequenceCalculator _seq;
-        private readonly MavlinkServerIdentity _identity;
+        private readonly MavlinkIdentity _identity;
         private readonly int _maxDebugFloatArrayNameLength = new DebugFloatArrayPayload().Name.Length;
         private readonly int _maxDebugFloatArrayDataLength = new DebugFloatArrayPayload().Data.Length;
         private readonly int _maxMemoryVectLength = new MemoryVectPayload().Value.Length;
@@ -17,7 +17,7 @@ namespace Asv.Mavlink
         private readonly DateTime _bootTime;
 
         public DebugServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkServerIdentity identity, IScheduler rxScheduler) 
+            MavlinkIdentity identity, IScheduler rxScheduler) 
             : base("DEBUG", connection, identity, seq, rxScheduler)
         {
             _connection = connection;

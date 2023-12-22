@@ -8,27 +8,6 @@ using NLog;
 
 namespace Asv.Mavlink;
 
-public class MavlinkServerIdentity
-{
-    public MavlinkServerIdentity()
-    {
-        
-    }
-    
-    public MavlinkServerIdentity(byte systemId, byte componentId)
-    {
-        SystemId = systemId;
-        ComponentId = componentId;
-    }
-    
-    public byte ComponentId { get; set; } = 13;
-    public byte SystemId { get; set; } = 13;
-
-    public override string ToString()
-    {
-        return $"[Server:{SystemId}.{ComponentId}]<==";
-    }
-}
 
 public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
 {
@@ -39,11 +18,11 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
     private string _logRecv;
 
     protected MavlinkMicroserviceServer(string ifcLogName, IMavlinkV2Connection connection,
-        MavlinkServerIdentity identity,
+        MavlinkIdentity identity,
         IPacketSequenceCalculator seq, IScheduler rxScheduler)
     {
         Connection = connection ?? throw new ArgumentNullException(nameof(connection));
-        Identity = identity ?? throw new ArgumentNullException(nameof(identity));
+        Identity = identity;
         PacketSequence = seq ?? throw new ArgumentNullException(nameof(seq));
         _ifcLogName = ifcLogName;
         Scheduler = rxScheduler ?? throw new ArgumentNullException(nameof(rxScheduler));
@@ -55,7 +34,7 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
 
     protected IMavlinkV2Connection Connection { get; }
 
-    protected MavlinkServerIdentity Identity { get; }
+    protected MavlinkIdentity Identity { get; }
 
     protected IPacketSequenceCalculator PacketSequence { get; }
 

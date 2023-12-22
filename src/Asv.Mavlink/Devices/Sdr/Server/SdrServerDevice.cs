@@ -16,7 +16,7 @@ public class SdrServerDeviceConfig : ServerDeviceConfig
 public class SdrServerDevice:ServerDevice, ISdrServerDevice
 {
     public SdrServerDevice(IMavlinkV2Connection connection,
-        IPacketSequenceCalculator seq, MavlinkServerIdentity identity, SdrServerDeviceConfig config, IScheduler scheduler,
+        IPacketSequenceCalculator seq, MavlinkIdentity identity, SdrServerDeviceConfig config, IScheduler scheduler,
         IEnumerable<IMavParamTypeMetadata> paramList,
         IMavParamEncoding encoding,
         IConfiguration paramStore)

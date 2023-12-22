@@ -89,13 +89,13 @@
       <field type="uint8_t[32]" name="codecs">Supported codecs. Each bit of array is flag from ASV_RADIO_CODEC(max 255 items) enum .</field>
     </message>
     <message id="13253" name="ASV_RADIO_CODEC_CFG_REQUEST">
-      <description>Request supported additional params for target codec. Devices must reply ASV_RADIO_CODEC_RESPONSE message.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <description>Request supported additional params for target codec. Devices must reply ASV_RADIO_CODEC_CFG_RESPONSE message.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
       <field type="uint8_t" name="target_codec" enum="ASV_AUDIO_CODEC">Target audio codec.</field>
     </message>
     <message id="13254" name="ASV_RADIO_CODEC_CFG_RESPONSE">
-      <description>Request supported additional params for target codec. Devices must reply ASV_RADIO_CODEC_RESPONSE message.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <description>Request supported additional params for target codec. Devices must reply ASV_RADIO_CODEC_CFG_REQUEST message.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint8_t" name="target_codec" enum="ASV_AUDIO_CODEC">Selected audio codec.</field>
       <field type="uint8_t[32]" name="supported_cfg">Supported additional params for target codec. Each bit of array is flag from ASV_AUDIO_CODEC_[*]_CFG(max 255 items) enum .</field>
     </message>

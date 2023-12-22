@@ -16,7 +16,7 @@ namespace Asv.Mavlink.Server
         private static readonly int _maxDataLength = new LoggingDataPayload().Data.Length;
 
         public LoggingServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkServerIdentity identity, IScheduler scheduler) : base("LOG",connection,identity, seq,scheduler)
+            MavlinkIdentity identity, IScheduler scheduler) : base("LOG",connection,identity, seq,scheduler)
         {
         }
 

@@ -13,7 +13,7 @@ public class AdsbServerDevice : ServerDevice, IAdsbServerDevice
 {
     public AdsbServerDevice(IMavlinkV2Connection connection, 
         IPacketSequenceCalculator seq, 
-        MavlinkServerIdentity identity, 
+        MavlinkIdentity identity, 
         AdsbServerDeviceConfig config, 
         IScheduler scheduler) : base(connection, seq, identity, config, scheduler)
     {

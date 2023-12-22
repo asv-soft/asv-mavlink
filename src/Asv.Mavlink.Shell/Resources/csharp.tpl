@@ -51,6 +51,9 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
     {%- endfor -%}
     ///  {{ en.Name }}
     /// </summary>
+    {%- if en.IsFlag -%}
+    [Flags]
+    {%- endif -%}
     public enum {{ en.CamelCaseName }}:uint
     {
     {%- for entry in en.Entries -%}

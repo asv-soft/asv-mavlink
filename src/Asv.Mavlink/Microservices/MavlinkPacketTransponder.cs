@@ -11,7 +11,7 @@ namespace Asv.Mavlink
         where TPayload : IPayload, new()
     {
         private readonly IMavlinkV2Connection _connection;
-        private readonly MavlinkServerIdentity _identityConfig;
+        private readonly MavlinkIdentity _identityConfig;
         private readonly IPacketSequenceCalculator _seq;
         private readonly object _sync = new();
         private IDisposable _timerSubscribe;
@@ -21,10 +21,10 @@ namespace Asv.Mavlink
         private readonly RxValue<PacketTransponderState> _state = new();
         private TPacket _packet;
 
-        public MavlinkPacketTransponder(IMavlinkV2Connection connection, MavlinkServerIdentity identityConfig, IPacketSequenceCalculator seq)
+        public MavlinkPacketTransponder(IMavlinkV2Connection connection, MavlinkIdentity identityConfig, IPacketSequenceCalculator seq)
         {
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            _identityConfig = identityConfig ?? throw new ArgumentNullException(nameof(identityConfig));
+            _identityConfig = identityConfig;
             _seq = seq ?? throw new ArgumentNullException(nameof(seq));
             _packet = new TPacket
             {

@@ -8,7 +8,7 @@ public interface IServerDevice
     IMavlinkV2Connection Connection { get; }
     IPacketSequenceCalculator Seq { get; }
     IScheduler Scheduler { get; }
-    MavlinkServerIdentity Identity { get; }
+    MavlinkIdentity Identity { get; }
     IStatusTextServer StatusText { get; }
     IHeartbeatServer Heartbeat { get; }
 }

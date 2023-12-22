@@ -18,7 +18,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
         var server = new AdsbServerDevice(
             link.Server,
             new PacketSequenceCalculator(),
-            new MavlinkServerIdentity { ComponentId = 2, SystemId = 2 },
+            new MavlinkIdentity (2,2),
             new AdsbServerDeviceConfig(), 
             Scheduler.Default);
     
@@ -74,7 +74,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
         var server = new AdsbServerDevice(
             link.Server,
             new PacketSequenceCalculator(),
-            new MavlinkServerIdentity { ComponentId = 2, SystemId = 2 },
+            new MavlinkIdentity (2,2),
             new AdsbServerDeviceConfig(), 
             Scheduler.Default);
     
@@ -153,7 +153,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
         var server = new AdsbServerDevice(
             link.Server,
             new PacketSequenceCalculator(),
-            new MavlinkServerIdentity { ComponentId = 2, SystemId = 2 },
+            new MavlinkIdentity (2,2),
             new AdsbServerDeviceConfig(), 
             Scheduler.Default);
     

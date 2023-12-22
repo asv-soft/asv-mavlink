@@ -9,7 +9,7 @@ namespace Asv.Mavlink
     public class ParamsServer: MavlinkMicroserviceServer, IParamsServer
     {
         public ParamsServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkServerIdentity identity, IScheduler scheduler)
+            MavlinkIdentity identity, IScheduler scheduler)
             : base("PARAM",connection, identity, seq, scheduler)
         {
             OnParamRequestRead =

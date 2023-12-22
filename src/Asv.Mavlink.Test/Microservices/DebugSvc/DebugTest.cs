@@ -12,7 +12,7 @@ public class DebugTest
     {
         var link = new VirtualMavlinkConnection();
         var client = new DebugClient(link.Client, new MavlinkClientIdentity(), new PacketSequenceCalculator());
-        var server = new DebugServer(link.Server, new PacketSequenceCalculator(), new MavlinkServerIdentity(), Scheduler.Default);
+        var server = new DebugServer(link.Server, new PacketSequenceCalculator(), new MavlinkIdentity(), Scheduler.Default);
 
         var completed = false;
         client.DebugFloatArray.Subscribe(_=>

@@ -83,7 +83,6 @@
   <ItemGroup>
     <Folder Include="Devices\Gbs\" />
     <Folder Include="Devices\Vehicles\Server\" />
-    <Folder Include="Microservices\AsvAirTalk\Server\" />
     <Folder Include="Microservices\Commands\Client\Ex\" />
     <Folder Include="Microservices\Dgps\Server\" />
     <Folder Include="Microservices\Gnss\Server\" />

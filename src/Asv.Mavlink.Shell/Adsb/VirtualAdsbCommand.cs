@@ -92,14 +92,14 @@ public class VirtualAdsbCommand : ConsoleCommand
         var server1 = new AdsbServerDevice(
             conn,
             new PacketSequenceCalculator(),
-            new MavlinkServerIdentity{ComponentId = 13, SystemId = 13},
+            new MavlinkIdentity(13, 13),
             new AdsbServerDeviceConfig(),
             Scheduler.Default);
         
         var server2 = new AdsbServerDevice(
             conn,
             new PacketSequenceCalculator(),
-            new MavlinkServerIdentity{ComponentId = 14, SystemId = 14},
+            new MavlinkIdentity(14,  14),
             new AdsbServerDeviceConfig(),
             Scheduler.Default);
             

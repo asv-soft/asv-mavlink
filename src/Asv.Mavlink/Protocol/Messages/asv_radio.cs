@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11+3aea76daf22e6bd6e485f835f817413e247d3d85
+// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11+57a394b8339c23e5455f81ed473816c2f3f50313
 
 using System;
 using System.Text;
@@ -344,7 +344,7 @@ namespace Asv.Mavlink.V2.AsvRadio
         public byte[] Codecs { get; } = new byte[32];
     }
     /// <summary>
-    /// Request supported additional params for target codec. Devices must reply ASV_RADIO_CODEC_RESPONSE message.[!WRAP_TO_V2_EXTENSION_PACKET!]
+    /// Request supported additional params for target codec. Devices must reply ASV_RADIO_CODEC_CFG_RESPONSE message.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RADIO_CODEC_CFG_REQUEST
     /// </summary>
     public class AsvRadioCodecCfgRequestPacket: PacketV2<AsvRadioCodecCfgRequestPayload>
@@ -414,7 +414,7 @@ namespace Asv.Mavlink.V2.AsvRadio
         public AsvAudioCodec TargetCodec { get; set; }
     }
     /// <summary>
-    /// Request supported additional params for target codec. Devices must reply ASV_RADIO_CODEC_RESPONSE message.[!WRAP_TO_V2_EXTENSION_PACKET!]
+    /// Request supported additional params for target codec. Devices must reply ASV_RADIO_CODEC_CFG_REQUEST message.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RADIO_CODEC_CFG_RESPONSE
     /// </summary>
     public class AsvRadioCodecCfgResponsePacket: PacketV2<AsvRadioCodecCfgResponsePayload>

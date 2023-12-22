@@ -14,7 +14,7 @@ namespace Asv.Mavlink
     {
         private readonly MavlinkHeartbeatServerConfig _config;
         private readonly MavlinkPacketTransponder<HeartbeatPacket, HeartbeatPayload> _transponder;
-        public HeartbeatServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq, MavlinkServerIdentity identity, MavlinkHeartbeatServerConfig config, IScheduler rxScheduler) 
+        public HeartbeatServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq, MavlinkIdentity identity, MavlinkHeartbeatServerConfig config, IScheduler rxScheduler) 
             : base("HEARTBEAT", connection, identity, seq, rxScheduler)
         {
             _config = config;

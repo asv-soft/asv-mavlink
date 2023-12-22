@@ -9,7 +9,7 @@ namespace Asv.Mavlink;
 
 public class AdsbVehicleServer : MavlinkMicroserviceServer, IAdsbVehicleServer
 {
-    public AdsbVehicleServer(IMavlinkV2Connection connection, MavlinkServerIdentity identity, 
+    public AdsbVehicleServer(IMavlinkV2Connection connection, MavlinkIdentity identity, 
         IPacketSequenceCalculator seq, IScheduler rxScheduler) : base("ADSB", connection, identity, seq, rxScheduler)
     {
     }

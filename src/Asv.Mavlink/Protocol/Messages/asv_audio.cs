@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11+3aea76daf22e6bd6e485f835f817413e247d3d85
+// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11+57a394b8339c23e5455f81ed473816c2f3f50313
 
 using System;
 using System.Text;
@@ -44,9 +44,10 @@ namespace Asv.Mavlink.V2.AsvAudio
 #region Enums
 
     /// <summary>
-    /// Device capabilities flags (uint8_t).
+    /// Device capabilities flags (uint8_t).[!THIS_IS_ENUM_FLAG!]
     ///  ASV_AUDIO_MODE_FLAG
     /// </summary>
+    [Flags]
     public enum AsvAudioModeFlag:uint
     {
         /// <summary>
@@ -59,6 +60,128 @@ namespace Asv.Mavlink.V2.AsvAudio
         /// ASV_AUDIO_MODE_FLAG_MIC_ON
         /// </summary>
         AsvAudioModeFlagMicOn = 2,
+    }
+
+    /// <summary>
+    ///  ASV_AUDIO_SAMPLE_RATE
+    /// </summary>
+    public enum AsvAudioSampleRate:uint
+    {
+        /// <summary>
+        /// Unknown\unset sample rate
+        /// ASV_AUDIO_SAMPLE_RATE_UNKNOWN
+        /// </summary>
+        AsvAudioSampleRateUnknown = 0,
+        /// <summary>
+        /// Adequate for human speech but without sibilance. Used in telephone/walkie-talkie.
+        /// ASV_AUDIO_SAMPLE_RATE_8_000_HZ
+        /// </summary>
+        AsvAudioSampleRate8000Hz = 1,
+        /// <summary>
+        /// Used for lower-quality PCM, MPEG audio and for audio analysis of subwoofer bandpasses.
+        /// ASV_AUDIO_SAMPLE_RATE_11_025_HZ
+        /// </summary>
+        AsvAudioSampleRate11025Hz = 2,
+        /// <summary>
+        /// 12 000 kHz.
+        /// ASV_AUDIO_SAMPLE_RATE_12_000_HZ
+        /// </summary>
+        AsvAudioSampleRate12000Hz = 3,
+        /// <summary>
+        /// Used in most VoIP and VVoIP, extension of telephone narrowband.
+        /// ASV_AUDIO_SAMPLE_RATE_16_000_HZ
+        /// </summary>
+        AsvAudioSampleRate16000Hz = 4,
+        /// <summary>
+        /// Used for lower-quality PCM and MPEG audio and for audio analysis of low frequency energy.
+        /// ASV_AUDIO_SAMPLE_RATE_22_050_HZ
+        /// </summary>
+        AsvAudioSampleRate22050Hz = 5,
+        /// <summary>
+        /// Used for lower-quality PCM and MPEG audio and for audio analysis of low frequency energy.
+        /// ASV_AUDIO_SAMPLE_RATE_24_000_HZ
+        /// </summary>
+        AsvAudioSampleRate24000Hz = 6,
+        /// <summary>
+        /// Audio CD, most commonly used rate with MPEG-1 audio (VCD, SVCD, MP3). Covers the 20 kHz bandwidth.
+        /// ASV_AUDIO_SAMPLE_RATE_44_100_HZ
+        /// </summary>
+        AsvAudioSampleRate44100Hz = 7,
+        /// <summary>
+        /// Standard sampling rate used by professional digital video equipment, could reconstruct frequencies up to 22 kHz.
+        /// ASV_AUDIO_SAMPLE_RATE_48_000_HZ
+        /// </summary>
+        AsvAudioSampleRate48000Hz = 8,
+        /// <summary>
+        /// Used by some professional recording equipment when the destination is CD, such as mixers, EQs, compressors, reverb, crossovers and recording devices.
+        /// ASV_AUDIO_SAMPLE_RATE_88_200_HZ
+        /// </summary>
+        AsvAudioSampleRate88200Hz = 9,
+        /// <summary>
+        /// DVD-Audio, LPCM DVD tracks, Blu-ray audio tracks, HD DVD audio tracks.
+        /// ASV_AUDIO_SAMPLE_RATE_96_000_HZ
+        /// </summary>
+        AsvAudioSampleRate96000Hz = 10,
+        /// <summary>
+        /// Used in HDCD recorders and other professional applications for CD production.
+        /// ASV_AUDIO_SAMPLE_RATE_176_400_HZ
+        /// </summary>
+        AsvAudioSampleRate176400Hz = 11,
+        /// <summary>
+        /// Used with audio on professional video equipment. DVD-Audio, LPCM DVD tracks, Blu-ray audio tracks, HD DVD audio tracks.
+        /// ASV_AUDIO_SAMPLE_RATE_192_000_HZ
+        /// </summary>
+        AsvAudioSampleRate192000Hz = 12,
+        /// <summary>
+        /// Digital eXtreme Definition. Used for recording and editing Super Audio CDs.
+        /// ASV_AUDIO_SAMPLE_RATE_328_800_HZ
+        /// </summary>
+        AsvAudioSampleRate328800Hz = 13,
+        /// <summary>
+        /// Highest sample rate available for common software. Allows for precise peak detection.
+        /// ASV_AUDIO_SAMPLE_RATE_384_000_HZ
+        /// </summary>
+        AsvAudioSampleRate384000Hz = 14,
+        /// <summary>
+        /// Last element in enum.
+        /// ASV_AUDIO_SAMPLE_RATE_RESERVED
+        /// </summary>
+        AsvAudioSampleRateReserved = 255,
+    }
+
+    /// <summary>
+    ///  ASV_AUDIO_CHANNEL
+    /// </summary>
+    public enum AsvAudioChannel:uint
+    {
+        /// <summary>
+        /// Mono, 1 channel.
+        /// ASV_AUDIO_CHANNEL_MONO
+        /// </summary>
+        AsvAudioChannelMono = 1,
+        /// <summary>
+        /// Stereo, 2 channel.
+        /// ASV_AUDIO_CHANNEL_STEREO
+        /// </summary>
+        AsvAudioChannelStereo = 2,
+    }
+
+    /// <summary>
+    /// Count of bit per sample for decoded.
+    ///  ASV_AUDIO_PCM_FORMAT
+    /// </summary>
+    public enum AsvAudioPcmFormat:uint
+    {
+        /// <summary>
+        /// 8 bit per sample.
+        /// ASV_AUDIO_PCM_FORMAT_INT8
+        /// </summary>
+        AsvAudioPcmFormatInt8 = 1,
+        /// <summary>
+        /// 16 bit per sample.
+        /// ASV_AUDIO_PCM_FORMAT_INT16
+        /// </summary>
+        AsvAudioPcmFormatInt16 = 2,
     }
 
     /// <summary>
@@ -153,7 +276,7 @@ namespace Asv.Mavlink.V2.AsvAudio
     {
 	    public const int PacketMessageId = 13200;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 212;
+        public override byte GetCrcEtra() => 245;
         public override bool WrapToV2Extension => true;
 
         public override AsvAudioOnlinePayload Payload { get; } = new AsvAudioOnlinePayload();
@@ -166,12 +289,15 @@ namespace Asv.Mavlink.V2.AsvAudio
     /// </summary>
     public class AsvAudioOnlinePayload : IPayload
     {
-        public byte GetMaxByteSize() => 19; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 19; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
         public int GetByteSize()
         {
             var sum = 0;
             sum+= 1; // Mode
+            sum+= 1; // SampleRate
+            sum+= 1; // Channels
+            sum+= 1; // Format
             sum+= 1; // Codec
             sum+=1; //CodecCfg
             sum+=Name.Length; //Name
@@ -185,27 +311,45 @@ namespace Asv.Mavlink.V2.AsvAudio
             var arraySize = 0;
             var payloadSize = buffer.Length;
             Mode = (AsvAudioModeFlag)BinSerialize.ReadByte(ref buffer);
+            SampleRate = (AsvAudioSampleRate)BinSerialize.ReadByte(ref buffer);
+            Channels = (AsvAudioChannel)BinSerialize.ReadByte(ref buffer);
+            Format = (AsvAudioPcmFormat)BinSerialize.ReadByte(ref buffer);
             Codec = (AsvAudioCodec)BinSerialize.ReadByte(ref buffer);
             CodecCfg = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/19 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Name = new byte[arraySize];
-            for(var i=0;i<arraySize;i++)
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/22 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            Name = new char[arraySize];
+            unsafe
             {
-                Name[i] = (byte)BinSerialize.ReadByte(ref buffer);
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = Name)
+                {
+                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Name.Length);
+                }
             }
+            buffer = buffer.Slice(arraySize);
+           
 
         }
 
         public void Serialize(ref Span<byte> buffer)
         {
             BinSerialize.WriteByte(ref buffer,(byte)Mode);
+            BinSerialize.WriteByte(ref buffer,(byte)SampleRate);
+            BinSerialize.WriteByte(ref buffer,(byte)Channels);
+            BinSerialize.WriteByte(ref buffer,(byte)Format);
             BinSerialize.WriteByte(ref buffer,(byte)Codec);
             BinSerialize.WriteByte(ref buffer,(byte)CodecCfg);
-            for(var i=0;i<Name.Length;i++)
+            unsafe
             {
-                BinSerialize.WriteByte(ref buffer,(byte)Name[i]);
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = Name)
+                {
+                    Encoding.ASCII.GetBytes(charPointer, Name.Length, bytePointer, Name.Length);
+                }
             }
-            /* PayloadByteSize = 19 */;
+            buffer = buffer.Slice(Name.Length);
+            
+            /* PayloadByteSize = 22 */;
         }
         
         
@@ -217,6 +361,21 @@ namespace Asv.Mavlink.V2.AsvAudio
         /// OriginName: mode, Units: , IsExtended: false
         /// </summary>
         public AsvAudioModeFlag Mode { get; set; }
+        /// <summary>
+        /// Decoded audio sample rate.
+        /// OriginName: sample_rate, Units: , IsExtended: false
+        /// </summary>
+        public AsvAudioSampleRate SampleRate { get; set; }
+        /// <summary>
+        /// Channels count.
+        /// OriginName: channels, Units: , IsExtended: false
+        /// </summary>
+        public AsvAudioChannel Channels { get; set; }
+        /// <summary>
+        /// PCM format.
+        /// OriginName: format, Units: , IsExtended: false
+        /// </summary>
+        public AsvAudioPcmFormat Format { get; set; }
         /// <summary>
         /// Audio codec used by this device.
         /// OriginName: codec, Units: , IsExtended: false
@@ -231,7 +390,7 @@ namespace Asv.Mavlink.V2.AsvAudio
         /// Audio device name in voice chat.
         /// OriginName: name, Units: , IsExtended: false
         /// </summary>
-        public byte[] Name { get; set; } = new byte[16];
+        public char[] Name { get; set; } = new char[16];
         public byte GetNameMaxItemsCount() => 16;
     }
     /// <summary>
@@ -242,7 +401,7 @@ namespace Asv.Mavlink.V2.AsvAudio
     {
 	    public const int PacketMessageId = 13201;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 131;
+        public override byte GetCrcEtra() => 152;
         public override bool WrapToV2Extension => true;
 
         public override AsvAudioStreamPayload Payload { get; } = new AsvAudioStreamPayload();
@@ -255,16 +414,17 @@ namespace Asv.Mavlink.V2.AsvAudio
     /// </summary>
     public class AsvAudioStreamPayload : IPayload
     {
-        public byte GetMaxByteSize() => 235; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 235; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 236; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 236; // of byte sized of fields (exclude extended)
         public int GetByteSize()
         {
             var sum = 0;
             sum+=1; //TargetSystem
             sum+=1; //TargetComponent
-            sum+=1; //PacketsInFrame
-            sum+=1; //SequenceNumber
-            sum+=1; //DataSzie
+            sum+=1; //FrameSeq
+            sum+=1; //PktInFrame
+            sum+=1; //PktSeq
+            sum+=1; //DataSize
             sum+=Data.Length; //Data
             return (byte)sum;
         }
@@ -277,10 +437,11 @@ namespace Asv.Mavlink.V2.AsvAudio
             var payloadSize = buffer.Length;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            PacketsInFrame = (byte)BinSerialize.ReadByte(ref buffer);
-            SequenceNumber = (byte)BinSerialize.ReadByte(ref buffer);
-            DataSzie = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/230 - Math.Max(0,((/*PayloadByteSize*/235 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            FrameSeq = (byte)BinSerialize.ReadByte(ref buffer);
+            PktInFrame = (byte)BinSerialize.ReadByte(ref buffer);
+            PktSeq = (byte)BinSerialize.ReadByte(ref buffer);
+            DataSize = (byte)BinSerialize.ReadByte(ref buffer);
+            arraySize = /*ArrayLength*/230 - Math.Max(0,((/*PayloadByteSize*/236 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -293,14 +454,15 @@ namespace Asv.Mavlink.V2.AsvAudio
         {
             BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
-            BinSerialize.WriteByte(ref buffer,(byte)PacketsInFrame);
-            BinSerialize.WriteByte(ref buffer,(byte)SequenceNumber);
-            BinSerialize.WriteByte(ref buffer,(byte)DataSzie);
+            BinSerialize.WriteByte(ref buffer,(byte)FrameSeq);
+            BinSerialize.WriteByte(ref buffer,(byte)PktInFrame);
+            BinSerialize.WriteByte(ref buffer,(byte)PktSeq);
+            BinSerialize.WriteByte(ref buffer,(byte)DataSize);
             for(var i=0;i<Data.Length;i++)
             {
                 BinSerialize.WriteByte(ref buffer,(byte)Data[i]);
             }
-            /* PayloadByteSize = 235 */;
+            /* PayloadByteSize = 236 */;
         }
         
         
@@ -318,20 +480,25 @@ namespace Asv.Mavlink.V2.AsvAudio
         /// </summary>
         public byte TargetComponent { get; set; }
         /// <summary>
-        /// Number of packets for one encoded audio frame.
-        /// OriginName: packets_in_frame, Units: , IsExtended: false
+        /// Frame sequence number.
+        /// OriginName: frame_seq, Units: , IsExtended: false
         /// </summary>
-        public byte PacketsInFrame { get; set; }
+        public byte FrameSeq { get; set; }
         /// <summary>
-        /// Sequence number (starting with 0 on every encoded frame).
-        /// OriginName: sequence_number, Units: , IsExtended: false
+        /// Number of packets for one encoded audio frame.
+        /// OriginName: pkt_in_frame, Units: , IsExtended: false
         /// </summary>
-        public byte SequenceNumber { get; set; }
+        public byte PktInFrame { get; set; }
+        /// <summary>
+        /// Packet sequence number (starting with 0 on every encoded frame).
+        /// OriginName: pkt_seq, Units: , IsExtended: false
+        /// </summary>
+        public byte PktSeq { get; set; }
         /// <summary>
         /// Size of data array.
-        /// OriginName: data_szie, Units: , IsExtended: false
+        /// OriginName: data_size, Units: , IsExtended: false
         /// </summary>
-        public byte DataSzie { get; set; }
+        public byte DataSize { get; set; }
         /// <summary>
         /// Audio data.
         /// OriginName: data, Units: , IsExtended: false
