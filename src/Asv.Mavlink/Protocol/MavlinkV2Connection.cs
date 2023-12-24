@@ -9,7 +9,9 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.V2.Ardupilotmega;
+using Asv.Mavlink.V2.AsvAudio;
 using Asv.Mavlink.V2.AsvGbs;
+using Asv.Mavlink.V2.AsvRadio;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Avssuas;
 using Asv.Mavlink.V2.Common;
@@ -58,6 +60,8 @@ namespace Asv.Mavlink
             decoder.RegisterCsairlinkDialect();
             decoder.RegisterAsvGbsDialect();
             decoder.RegisterAsvSdrDialect();
+            decoder.RegisterAsvAudioDialect();
+            decoder.RegisterAsvRadioDialect();
         }
 
         #endregion

@@ -1,7 +1,12 @@
 namespace Asv.Mavlink;
 
-public struct MavlinkIdentity(byte systemId, byte componentId)
+public struct MavlinkIdentity
 {
-    public byte ComponentId { get; } = componentId;
-    public byte SystemId { get; } = systemId;
+    public MavlinkIdentity(byte systemId, byte componentId)
+    {
+        SystemId = systemId;
+        ComponentId = componentId;
+    }
+    public byte ComponentId { get; }
+    public byte SystemId { get; }
 }
