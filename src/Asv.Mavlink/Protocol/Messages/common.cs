@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11+57a394b8339c23e5455f81ed473816c2f3f50313
+// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11+6881e692bec5d36a0fe50f4b69f669d0f2f2847f
 
 using System;
 using System.Text;
@@ -8940,7 +8940,9 @@ namespace Asv.Mavlink.V2.Common
         /// Password / Key, depending on version plaintext or encrypted. 25 or less characters, NULL terminated. The characters may involve A-Z, a-z, 0-9, and "!?,.-"
         /// OriginName: passkey, Units: , IsExtended: false
         /// </summary>
+        public const int PasskeyMaxItemsCount = 25;
         public char[] Passkey { get; set; } = new char[25];
+        [Obsolete("This method is deprecated. Use GetPasskeyMaxItemsCount instead.")]
         public byte GetPasskeyMaxItemsCount() => 25;
     }
     /// <summary>
@@ -9087,7 +9089,9 @@ namespace Asv.Mavlink.V2.Common
         /// key
         /// OriginName: key, Units: , IsExtended: false
         /// </summary>
+        public const int KeyMaxItemsCount = 32;
         public char[] Key { get; set; } = new char[32];
+        [Obsolete("This method is deprecated. Use GetKeyMaxItemsCount instead.")]
         public byte GetKeyMaxItemsCount() => 32;
     }
     /// <summary>
@@ -9392,7 +9396,9 @@ namespace Asv.Mavlink.V2.Common
         /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
         /// OriginName: param_id, Units: , IsExtended: false
         /// </summary>
+        public const int ParamIdMaxItemsCount = 16;
         public char[] ParamId { get; set; } = new char[16];
+        [Obsolete("This method is deprecated. Use GetParamIdMaxItemsCount instead.")]
         public byte GetParamIdMaxItemsCount() => 16;
     }
     /// <summary>
@@ -9558,7 +9564,9 @@ namespace Asv.Mavlink.V2.Common
         /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
         /// OriginName: param_id, Units: , IsExtended: false
         /// </summary>
+        public const int ParamIdMaxItemsCount = 16;
         public char[] ParamId { get; set; } = new char[16];
+        [Obsolete("This method is deprecated. Use GetParamIdMaxItemsCount instead.")]
         public byte GetParamIdMaxItemsCount() => 16;
         /// <summary>
         /// Onboard parameter type.
@@ -9669,7 +9677,9 @@ namespace Asv.Mavlink.V2.Common
         /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
         /// OriginName: param_id, Units: , IsExtended: false
         /// </summary>
+        public const int ParamIdMaxItemsCount = 16;
         public char[] ParamId { get; set; } = new char[16];
+        [Obsolete("This method is deprecated. Use GetParamIdMaxItemsCount instead.")]
         public byte GetParamIdMaxItemsCount() => 16;
         /// <summary>
         /// Onboard parameter type.
@@ -9974,27 +9984,33 @@ namespace Asv.Mavlink.V2.Common
         /// Global satellite ID
         /// OriginName: satellite_prn, Units: , IsExtended: false
         /// </summary>
+        public const int SatellitePrnMaxItemsCount = 20;
         public byte[] SatellitePrn { get; set; } = new byte[20];
+        [Obsolete("This method is deprecated. Use GetSatellitePrnMaxItemsCount instead.")]
         public byte GetSatellitePrnMaxItemsCount() => 20;
         /// <summary>
         /// 0: Satellite not used, 1: used for localization
         /// OriginName: satellite_used, Units: , IsExtended: false
         /// </summary>
+        public const int SatelliteUsedMaxItemsCount = 20;
         public byte[] SatelliteUsed { get; } = new byte[20];
         /// <summary>
         /// Elevation (0: right on top of receiver, 90: on the horizon) of satellite
         /// OriginName: satellite_elevation, Units: deg, IsExtended: false
         /// </summary>
+        public const int SatelliteElevationMaxItemsCount = 20;
         public byte[] SatelliteElevation { get; } = new byte[20];
         /// <summary>
         /// Direction of satellite, 0: 0 deg, 255: 360 deg.
         /// OriginName: satellite_azimuth, Units: deg, IsExtended: false
         /// </summary>
+        public const int SatelliteAzimuthMaxItemsCount = 20;
         public byte[] SatelliteAzimuth { get; } = new byte[20];
         /// <summary>
         /// Signal to noise ratio of satellite
         /// OriginName: satellite_snr, Units: dB, IsExtended: false
         /// </summary>
+        public const int SatelliteSnrMaxItemsCount = 20;
         public byte[] SatelliteSnr { get; } = new byte[20];
     }
     /// <summary>
@@ -10682,6 +10698,7 @@ namespace Asv.Mavlink.V2.Common
         /// Rotation offset by which the attitude quaternion and angular speed vector should be rotated for user display (quaternion with [w, x, y, z] order, zero-rotation is [1, 0, 0, 0], send [0, 0, 0, 0] if field not supported). This field is intended for systems in which the reference attitude may change during flight. For example, tailsitters VTOLs rotate their reference attitude by 90 degrees between hover mode and fixed wing mode, thus repr_offset_q is equal to [1, 0, 0, 0] in hover mode and equal to [0.7071, 0, 0.7071, 0] in fixed wing mode.
         /// OriginName: repr_offset_q, Units: , IsExtended: true
         /// </summary>
+        public const int ReprOffsetQMaxItemsCount = 4;
         public float[] ReprOffsetQ { get; } = new float[4];
     }
     /// <summary>
@@ -12629,7 +12646,9 @@ namespace Asv.Mavlink.V2.Common
         /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
         /// OriginName: param_id, Units: , IsExtended: false
         /// </summary>
+        public const int ParamIdMaxItemsCount = 16;
         public char[] ParamId { get; set; } = new char[16];
+        [Obsolete("This method is deprecated. Use GetParamIdMaxItemsCount instead.")]
         public byte GetParamIdMaxItemsCount() => 16;
         /// <summary>
         /// Index of parameter RC channel. Not equal to the RC channel id. Typically corresponds to a potentiometer-knob on the RC.
@@ -13026,6 +13045,7 @@ namespace Asv.Mavlink.V2.Common
         /// Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation)
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; } = new float[4];
         /// <summary>
         /// Roll angular speed
@@ -13046,7 +13066,9 @@ namespace Asv.Mavlink.V2.Common
         /// Row-major representation of a 3x3 attitude covariance matrix (states: roll, pitch, yaw; first three entries are the first ROW, next three entries are the second row, etc.). If unknown, assign NaN value to first element in the array.
         /// OriginName: covariance, Units: , IsExtended: false
         /// </summary>
+        public const int CovarianceMaxItemsCount = 9;
         public float[] Covariance { get; set; } = new float[9];
+        [Obsolete("This method is deprecated. Use GetCovarianceMaxItemsCount instead.")]
         public byte GetCovarianceMaxItemsCount() => 9;
     }
     /// <summary>
@@ -13288,7 +13310,9 @@ namespace Asv.Mavlink.V2.Common
         /// Row-major representation of a 6x6 position and velocity 6x6 cross-covariance matrix (states: lat, lon, alt, vx, vy, vz; first six entries are the first ROW, next six entries are the second row, etc.). If unknown, assign NaN value to first element in the array.
         /// OriginName: covariance, Units: , IsExtended: false
         /// </summary>
+        public const int CovarianceMaxItemsCount = 36;
         public float[] Covariance { get; set; } = new float[36];
+        [Obsolete("This method is deprecated. Use GetCovarianceMaxItemsCount instead.")]
         public byte GetCovarianceMaxItemsCount() => 36;
         /// <summary>
         /// Class id of the estimator this estimate originated from.
@@ -13441,7 +13465,9 @@ namespace Asv.Mavlink.V2.Common
         /// Row-major representation of position, velocity and acceleration 9x9 cross-covariance matrix upper right triangle (states: x, y, z, vx, vy, vz, ax, ay, az; first nine entries are the first ROW, next eight entries are the second row, etc.). If unknown, assign NaN value to first element in the array.
         /// OriginName: covariance, Units: , IsExtended: false
         /// </summary>
+        public const int CovarianceMaxItemsCount = 45;
         public float[] Covariance { get; set; } = new float[45];
+        [Obsolete("This method is deprecated. Use GetCovarianceMaxItemsCount instead.")]
         public byte GetCovarianceMaxItemsCount() => 45;
         /// <summary>
         /// Class id of the estimator this estimate originated from.
@@ -15163,7 +15189,9 @@ namespace Asv.Mavlink.V2.Common
         /// Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0) from MAV_FRAME_LOCAL_NED to MAV_FRAME_BODY_FRD
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; set; } = new float[4];
+        [Obsolete("This method is deprecated. Use GetQMaxItemsCount instead.")]
         public byte GetQMaxItemsCount() => 4;
         /// <summary>
         /// Body roll rate
@@ -15204,6 +15232,7 @@ namespace Asv.Mavlink.V2.Common
         /// 3D thrust setpoint in the body NED frame, normalized to -1 .. 1
         /// OriginName: thrust_body, Units: , IsExtended: true
         /// </summary>
+        public const int ThrustBodyMaxItemsCount = 3;
         public float[] ThrustBody { get; } = new float[3];
     }
     /// <summary>
@@ -15291,7 +15320,9 @@ namespace Asv.Mavlink.V2.Common
         /// Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0)
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; set; } = new float[4];
+        [Obsolete("This method is deprecated. Use GetQMaxItemsCount instead.")]
         public byte GetQMaxItemsCount() => 4;
         /// <summary>
         /// Body roll rate
@@ -16632,7 +16663,9 @@ namespace Asv.Mavlink.V2.Common
         /// Control outputs -1 .. 1. Channel assignment depends on the simulated hardware.
         /// OriginName: controls, Units: , IsExtended: false
         /// </summary>
+        public const int ControlsMaxItemsCount = 16;
         public float[] Controls { get; set; } = new float[16];
+        [Obsolete("This method is deprecated. Use GetControlsMaxItemsCount instead.")]
         public byte GetControlsMaxItemsCount() => 16;
         /// <summary>
         /// System mode. Includes arming state.
@@ -16894,6 +16927,7 @@ namespace Asv.Mavlink.V2.Common
         /// Row-major representation of pose 6x6 cross-covariance matrix upper right triangle (states: x_global, y_global, z_global, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.
         /// OriginName: covariance, Units: , IsExtended: true
         /// </summary>
+        public const int CovarianceMaxItemsCount = 21;
         public float[] Covariance { get; } = new float[21];
         /// <summary>
         /// Estimate reset counter. This should be incremented when the estimate resets in any of the dimensions (position, velocity, attitude, angular speed). This is designed to be used when e.g an external SLAM system detects a loop-closure and the estimate jumps.
@@ -17025,6 +17059,7 @@ namespace Asv.Mavlink.V2.Common
         /// Row-major representation of pose 6x6 cross-covariance matrix upper right triangle (states: x, y, z, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.
         /// OriginName: covariance, Units: , IsExtended: true
         /// </summary>
+        public const int CovarianceMaxItemsCount = 21;
         public float[] Covariance { get; } = new float[21];
         /// <summary>
         /// Estimate reset counter. This should be incremented when the estimate resets in any of the dimensions (position, velocity, attitude, angular speed). This is designed to be used when e.g an external SLAM system detects a loop-closure and the estimate jumps.
@@ -17132,6 +17167,7 @@ namespace Asv.Mavlink.V2.Common
         /// Row-major representation of 3x3 linear velocity covariance matrix (states: vx, vy, vz; 1st three entries - 1st row, etc.). If unknown, assign NaN value to first element in the array.
         /// OriginName: covariance, Units: , IsExtended: true
         /// </summary>
+        public const int CovarianceMaxItemsCount = 9;
         public float[] Covariance { get; } = new float[9];
         /// <summary>
         /// Estimate reset counter. This should be incremented when the estimate resets in any of the dimensions (position, velocity, attitude, angular speed). This is designed to be used when e.g an external SLAM system detects a loop-closure and the estimate jumps.
@@ -17258,6 +17294,7 @@ namespace Asv.Mavlink.V2.Common
         /// Row-major representation of 6x6 pose cross-covariance matrix upper right triangle (states: x, y, z, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.
         /// OriginName: covariance, Units: , IsExtended: true
         /// </summary>
+        public const int CovarianceMaxItemsCount = 21;
         public float[] Covariance { get; } = new float[21];
     }
     /// <summary>
@@ -18176,7 +18213,9 @@ namespace Asv.Mavlink.V2.Common
         /// Variable length payload. The length is defined by the remaining message length when subtracting the header and other fields. The content/format of this block is defined in https://mavlink.io/en/services/ftp.html.
         /// OriginName: payload, Units: , IsExtended: false
         /// </summary>
+        public const int PayloadMaxItemsCount = 251;
         public byte[] Payload { get; set; } = new byte[251];
+        [Obsolete("This method is deprecated. Use GetPayloadMaxItemsCount instead.")]
         public byte GetPayloadMaxItemsCount() => 251;
     }
     /// <summary>
@@ -18757,7 +18796,9 @@ namespace Asv.Mavlink.V2.Common
         /// Vehicle attitude expressed as normalized quaternion in w, x, y, z order (with 1 0 0 0 being the null-rotation)
         /// OriginName: attitude_quaternion, Units: , IsExtended: false
         /// </summary>
+        public const int AttitudeQuaternionMaxItemsCount = 4;
         public float[] AttitudeQuaternion { get; set; } = new float[4];
+        [Obsolete("This method is deprecated. Use GetAttitudeQuaternionMaxItemsCount instead.")]
         public byte GetAttitudeQuaternionMaxItemsCount() => 4;
         /// <summary>
         /// Body frame roll / phi angular speed
@@ -19302,7 +19343,9 @@ namespace Asv.Mavlink.V2.Common
         /// log data
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 90;
         public byte[] Data { get; set; } = new byte[90];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 90;
     }
     /// <summary>
@@ -19515,7 +19558,9 @@ namespace Asv.Mavlink.V2.Common
         /// Raw data (110 is enough for 12 satellites of RTCMv2)
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 110;
         public byte[] Data { get; set; } = new byte[110];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 110;
     }
     /// <summary>
@@ -19902,7 +19947,9 @@ namespace Asv.Mavlink.V2.Common
         /// serial data
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 70;
         public byte[] Data { get; set; } = new byte[70];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 70;
         /// <summary>
         /// System ID
@@ -20523,7 +20570,9 @@ namespace Asv.Mavlink.V2.Common
         /// image data bytes
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 253;
         public byte[] Data { get; set; } = new byte[253];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 253;
     }
     /// <summary>
@@ -20678,6 +20727,7 @@ namespace Asv.Mavlink.V2.Common
         /// Quaternion of the sensor orientation in vehicle body frame (w, x, y, z order, zero-rotation is 1, 0, 0, 0). Zero-rotation is along the vehicle body x-axis. This field is required if the orientation is set to MAV_SENSOR_ROTATION_CUSTOM. Set it to 0 if invalid."
         /// OriginName: quaternion, Units: , IsExtended: true
         /// </summary>
+        public const int QuaternionMaxItemsCount = 4;
         public float[] Quaternion { get; } = new float[4];
         /// <summary>
         /// Signal quality of the sensor. Specific to each sensor type, representing the relation of the signal strength with the target reflectivity, distance, size or aspect, but normalised as a percentage. 0 = unknown/unset signal quality, 1 = invalid signal, 100 = perfect signal.
@@ -20852,7 +20902,9 @@ namespace Asv.Mavlink.V2.Common
         /// Terrain data MSL
         /// OriginName: data, Units: m, IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 16;
         public short[] Data { get; set; } = new short[16];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 16;
         /// <summary>
         /// bit within the terrain request mask
@@ -21203,7 +21255,9 @@ namespace Asv.Mavlink.V2.Common
         /// Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0)
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; set; } = new float[4];
+        [Obsolete("This method is deprecated. Use GetQMaxItemsCount instead.")]
         public byte GetQMaxItemsCount() => 4;
         /// <summary>
         /// X position (NED)
@@ -21224,6 +21278,7 @@ namespace Asv.Mavlink.V2.Common
         /// Row-major representation of a pose 6x6 cross-covariance matrix upper right triangle (states: x, y, z, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.
         /// OriginName: covariance, Units: , IsExtended: true
         /// </summary>
+        public const int CovarianceMaxItemsCount = 21;
         public float[] Covariance { get; } = new float[21];
     }
     /// <summary>
@@ -21305,7 +21360,9 @@ namespace Asv.Mavlink.V2.Common
         /// Actuator controls. Normed to -1..+1 where 0 is neutral position. Throttle for single rotation direction motors is 0..1, negative range for reverse direction. Standard mapping for attitude controls (group 0): (index 0-7): roll, pitch, yaw, throttle, flaps, spoilers, airbrakes, landing gear. Load a pass-through mixer to repurpose them as generic outputs.
         /// OriginName: controls, Units: , IsExtended: false
         /// </summary>
+        public const int ControlsMaxItemsCount = 8;
         public float[] Controls { get; set; } = new float[8];
+        [Obsolete("This method is deprecated. Use GetControlsMaxItemsCount instead.")]
         public byte GetControlsMaxItemsCount() => 8;
         /// <summary>
         /// Actuator group. The "_mlx" indicates this is a multi-instance message and a MAVLink parser should use this field to difference between instances.
@@ -21396,7 +21453,9 @@ namespace Asv.Mavlink.V2.Common
         /// Actuator controls. Normed to -1..+1 where 0 is neutral position. Throttle for single rotation direction motors is 0..1, negative range for reverse direction. Standard mapping for attitude controls (group 0): (index 0-7): roll, pitch, yaw, throttle, flaps, spoilers, airbrakes, landing gear. Load a pass-through mixer to repurpose them as generic outputs.
         /// OriginName: controls, Units: , IsExtended: false
         /// </summary>
+        public const int ControlsMaxItemsCount = 8;
         public float[] Controls { get; set; } = new float[8];
+        [Obsolete("This method is deprecated. Use GetControlsMaxItemsCount instead.")]
         public byte GetControlsMaxItemsCount() => 8;
         /// <summary>
         /// Actuator group. The "_mlx" indicates this is a multi-instance message and a MAVLink parser should use this field to difference between instances.
@@ -21597,7 +21656,9 @@ namespace Asv.Mavlink.V2.Common
         /// The requested unique resource identifier (URI). It is not necessarily a straight domain name (depends on the URI type enum)
         /// OriginName: uri, Units: , IsExtended: false
         /// </summary>
+        public const int UriMaxItemsCount = 120;
         public byte[] Uri { get; set; } = new byte[120];
+        [Obsolete("This method is deprecated. Use GetUriMaxItemsCount instead.")]
         public byte GetUriMaxItemsCount() => 120;
         /// <summary>
         /// The way the autopilot wants to receive the URI. 0 = MAVLink FTP. 1 = binary stream.
@@ -21608,6 +21669,7 @@ namespace Asv.Mavlink.V2.Common
         /// The storage path the autopilot wants the URI to be stored in. Will only be valid if the transfer_type has a storage associated (e.g. MAVLink FTP).
         /// OriginName: storage, Units: , IsExtended: false
         /// </summary>
+        public const int StorageMaxItemsCount = 120;
         public byte[] Storage { get; } = new byte[120];
     }
     /// <summary>
@@ -21843,27 +21905,33 @@ namespace Asv.Mavlink.V2.Common
         /// target velocity (0,0,0) for unknown
         /// OriginName: vel, Units: m/s, IsExtended: false
         /// </summary>
+        public const int VelMaxItemsCount = 3;
         public float[] Vel { get; } = new float[3];
         /// <summary>
         /// linear target acceleration (0,0,0) for unknown
         /// OriginName: acc, Units: m/s/s, IsExtended: false
         /// </summary>
+        public const int AccMaxItemsCount = 3;
         public float[] Acc { get; } = new float[3];
         /// <summary>
         /// (0 0 0 0 for unknown)
         /// OriginName: attitude_q, Units: , IsExtended: false
         /// </summary>
+        public const int AttitudeQMaxItemsCount = 4;
         public float[] AttitudeQ { get; set; } = new float[4];
+        [Obsolete("This method is deprecated. Use GetAttitudeQMaxItemsCount instead.")]
         public byte GetAttitudeQMaxItemsCount() => 4;
         /// <summary>
         /// (0 0 0 for unknown)
         /// OriginName: rates, Units: , IsExtended: false
         /// </summary>
+        public const int RatesMaxItemsCount = 3;
         public float[] Rates { get; } = new float[3];
         /// <summary>
         /// eph epv
         /// OriginName: position_cov, Units: , IsExtended: false
         /// </summary>
+        public const int PositionCovMaxItemsCount = 3;
         public float[] PositionCov { get; } = new float[3];
         /// <summary>
         /// bit positions for tracker reporting capabilities (POS = 0, VEL = 1, ACCEL = 2, ATT + RATES = 3)
@@ -22050,17 +22118,21 @@ namespace Asv.Mavlink.V2.Common
         /// Variance of body velocity estimate
         /// OriginName: vel_variance, Units: , IsExtended: false
         /// </summary>
+        public const int VelVarianceMaxItemsCount = 3;
         public float[] VelVariance { get; } = new float[3];
         /// <summary>
         /// Variance in local position
         /// OriginName: pos_variance, Units: , IsExtended: false
         /// </summary>
+        public const int PosVarianceMaxItemsCount = 3;
         public float[] PosVariance { get; } = new float[3];
         /// <summary>
         /// The attitude, represented as Quaternion
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; set; } = new float[4];
+        [Obsolete("This method is deprecated. Use GetQMaxItemsCount instead.")]
         public byte GetQMaxItemsCount() => 4;
         /// <summary>
         /// Angular rate in roll axis
@@ -22211,7 +22283,9 @@ namespace Asv.Mavlink.V2.Common
         /// Battery voltage of cells 1 to 10 (see voltages_ext for cells 11-14). Cells in this field above the valid cell count for this battery should have the UINT16_MAX value. If individual cell voltages are unknown or not measured for this battery, then the overall battery voltage should be filled in cell 0, with all others set to UINT16_MAX. If the voltage of the battery is greater than (UINT16_MAX - 1), then cell 0 should be set to (UINT16_MAX - 1), and cell 1 to the remaining voltage. This can be extended to multiple cells if the total voltage is greater than 2 * (UINT16_MAX - 1).
         /// OriginName: voltages, Units: mV, IsExtended: false
         /// </summary>
+        public const int VoltagesMaxItemsCount = 10;
         public ushort[] Voltages { get; set; } = new ushort[10];
+        [Obsolete("This method is deprecated. Use GetVoltagesMaxItemsCount instead.")]
         public byte GetVoltagesMaxItemsCount() => 10;
         /// <summary>
         /// Battery current, -1: autopilot does not measure the current
@@ -22252,6 +22326,7 @@ namespace Asv.Mavlink.V2.Common
         /// Battery voltages for cells 11 to 14. Cells above the valid cell count for this battery should have a value of 0, where zero indicates not supported (note, this is different than for the voltages field and allows empty byte truncation). If the measured value is 0 then 1 should be sent instead.
         /// OriginName: voltages_ext, Units: mV, IsExtended: true
         /// </summary>
+        public const int VoltagesExtMaxItemsCount = 4;
         public ushort[] VoltagesExt { get; } = new ushort[4];
         /// <summary>
         /// Battery mode. Default (0) is that battery mode reporting is not supported or battery is in normal-use mode.
@@ -22422,22 +22497,27 @@ namespace Asv.Mavlink.V2.Common
         /// Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases.
         /// OriginName: flight_custom_version, Units: , IsExtended: false
         /// </summary>
+        public const int FlightCustomVersionMaxItemsCount = 8;
         public byte[] FlightCustomVersion { get; set; } = new byte[8];
+        [Obsolete("This method is deprecated. Use GetFlightCustomVersionMaxItemsCount instead.")]
         public byte GetFlightCustomVersionMaxItemsCount() => 8;
         /// <summary>
         /// Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases.
         /// OriginName: middleware_custom_version, Units: , IsExtended: false
         /// </summary>
+        public const int MiddlewareCustomVersionMaxItemsCount = 8;
         public byte[] MiddlewareCustomVersion { get; } = new byte[8];
         /// <summary>
         /// Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases.
         /// OriginName: os_custom_version, Units: , IsExtended: false
         /// </summary>
+        public const int OsCustomVersionMaxItemsCount = 8;
         public byte[] OsCustomVersion { get; } = new byte[8];
         /// <summary>
         /// UID if provided by hardware (supersedes the uid field. If this is non-zero, use this field, otherwise use uid)
         /// OriginName: uid2, Units: , IsExtended: true
         /// </summary>
+        public const int Uid2MaxItemsCount = 18;
         public byte[] Uid2 { get; } = new byte[18];
     }
     /// <summary>
@@ -22607,6 +22687,7 @@ namespace Asv.Mavlink.V2.Common
         /// Quaternion of landing target orientation (w, x, y, z order, zero-rotation is 1, 0, 0, 0)
         /// OriginName: q, Units: , IsExtended: true
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; } = new float[4];
         /// <summary>
         /// Type of landing target
@@ -23629,7 +23710,9 @@ namespace Asv.Mavlink.V2.Common
         /// RTCM message (may be fragmented)
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 180;
         public byte[] Data { get; set; } = new byte[180];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 180;
     }
     /// <summary>
@@ -24370,7 +24453,9 @@ namespace Asv.Mavlink.V2.Common
         ///       
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; set; } = new float[4];
+        [Obsolete("This method is deprecated. Use GetQMaxItemsCount instead.")]
         public byte GetQMaxItemsCount() => 4;
         /// <summary>
         /// Local X position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone.
@@ -24528,7 +24613,9 @@ namespace Asv.Mavlink.V2.Common
         /// World to surface normal and heading transformation of the takeoff position. Used to indicate the heading and slope of the ground
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; set; } = new float[4];
+        [Obsolete("This method is deprecated. Use GetQMaxItemsCount instead.")]
         public byte GetQMaxItemsCount() => 4;
         /// <summary>
         /// Local X position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone.
@@ -24844,7 +24931,9 @@ namespace Asv.Mavlink.V2.Common
         /// The callsign, 8+null
         /// OriginName: callsign, Units: , IsExtended: false
         /// </summary>
+        public const int CallsignMaxItemsCount = 9;
         public char[] Callsign { get; set; } = new char[9];
+        [Obsolete("This method is deprecated. Use GetCallsignMaxItemsCount instead.")]
         public byte GetCallsignMaxItemsCount() => 9;
         /// <summary>
         /// ADSB emitter type.
@@ -25053,7 +25142,9 @@ namespace Asv.Mavlink.V2.Common
         /// Variable length payload. The length must be encoded in the payload as part of the message_type protocol, e.g. by including the length as payload data, or by terminating the payload data with a non-zero marker. This is required in order to reconstruct zero-terminated payloads that are (or otherwise would be) trimmed by MAVLink 2 empty-byte truncation. The entire content of the payload block is opaque unless you understand the encoding message_type. The particular encoding used can be extension specific and might not always be documented as part of the MAVLink specification.
         /// OriginName: payload, Units: , IsExtended: false
         /// </summary>
+        public const int PayloadMaxItemsCount = 249;
         public byte[] Payload { get; set; } = new byte[249];
+        [Obsolete("This method is deprecated. Use GetPayloadMaxItemsCount instead.")]
         public byte GetPayloadMaxItemsCount() => 249;
     }
     /// <summary>
@@ -25142,7 +25233,9 @@ namespace Asv.Mavlink.V2.Common
         /// Memory contents at specified address
         /// OriginName: value, Units: , IsExtended: false
         /// </summary>
+        public const int ValueMaxItemsCount = 32;
         public sbyte[] Value { get; set; } = new sbyte[32];
+        [Obsolete("This method is deprecated. Use GetValueMaxItemsCount instead.")]
         public byte GetValueMaxItemsCount() => 32;
     }
     /// <summary>
@@ -25251,7 +25344,9 @@ namespace Asv.Mavlink.V2.Common
         /// Name
         /// OriginName: name, Units: , IsExtended: false
         /// </summary>
+        public const int NameMaxItemsCount = 10;
         public char[] Name { get; set; } = new char[10];
+        [Obsolete("This method is deprecated. Use GetNameMaxItemsCount instead.")]
         public byte GetNameMaxItemsCount() => 10;
     }
     /// <summary>
@@ -25344,7 +25439,9 @@ namespace Asv.Mavlink.V2.Common
         /// Name of the debug variable
         /// OriginName: name, Units: , IsExtended: false
         /// </summary>
+        public const int NameMaxItemsCount = 10;
         public char[] Name { get; set; } = new char[10];
+        [Obsolete("This method is deprecated. Use GetNameMaxItemsCount instead.")]
         public byte GetNameMaxItemsCount() => 10;
     }
     /// <summary>
@@ -25437,7 +25534,9 @@ namespace Asv.Mavlink.V2.Common
         /// Name of the debug variable
         /// OriginName: name, Units: , IsExtended: false
         /// </summary>
+        public const int NameMaxItemsCount = 10;
         public char[] Name { get; set; } = new char[10];
+        [Obsolete("This method is deprecated. Use GetNameMaxItemsCount instead.")]
         public byte GetNameMaxItemsCount() => 10;
     }
     /// <summary>
@@ -25532,7 +25631,9 @@ namespace Asv.Mavlink.V2.Common
         /// Status text message, without null termination character
         /// OriginName: text, Units: , IsExtended: false
         /// </summary>
+        public const int TextMaxItemsCount = 50;
         public char[] Text { get; set; } = new char[50];
+        [Obsolete("This method is deprecated. Use GetTextMaxItemsCount instead.")]
         public byte GetTextMaxItemsCount() => 50;
         /// <summary>
         /// Unique (opaque) identifier for this statustext message.  May be used to reassemble a logical long-statustext message from a sequence of chunks.  A value of zero indicates this is the only chunk in the sequence and the message can be emitted immediately.
@@ -25701,7 +25802,9 @@ namespace Asv.Mavlink.V2.Common
         /// signing key
         /// OriginName: secret_key, Units: , IsExtended: false
         /// </summary>
+        public const int SecretKeyMaxItemsCount = 32;
         public byte[] SecretKey { get; set; } = new byte[32];
+        [Obsolete("This method is deprecated. Use GetSecretKeyMaxItemsCount instead.")]
         public byte GetSecretKeyMaxItemsCount() => 32;
     }
     /// <summary>
@@ -25888,12 +25991,15 @@ namespace Asv.Mavlink.V2.Common
         /// tune in board specific format
         /// OriginName: tune, Units: , IsExtended: false
         /// </summary>
+        public const int TuneMaxItemsCount = 30;
         public char[] Tune { get; set; } = new char[30];
+        [Obsolete("This method is deprecated. Use GetTuneMaxItemsCount instead.")]
         public byte GetTuneMaxItemsCount() => 30;
         /// <summary>
         /// tune extension (appended to tune)
         /// OriginName: tune2, Units: , IsExtended: true
         /// </summary>
+        public const int Tune2MaxItemsCount = 200;
         public char[] Tune2 { get; } = new char[200];
     }
     /// <summary>
@@ -26070,11 +26176,13 @@ namespace Asv.Mavlink.V2.Common
         /// Name of the camera vendor
         /// OriginName: vendor_name, Units: , IsExtended: false
         /// </summary>
+        public const int VendorNameMaxItemsCount = 32;
         public byte[] VendorName { get; } = new byte[32];
         /// <summary>
         /// Name of the camera model
         /// OriginName: model_name, Units: , IsExtended: false
         /// </summary>
+        public const int ModelNameMaxItemsCount = 32;
         public byte[] ModelName { get; } = new byte[32];
         /// <summary>
         /// Reserved for a lens ID.  Use 0 if not known.
@@ -26085,7 +26193,9 @@ namespace Asv.Mavlink.V2.Common
         /// Camera definition URI (if any, otherwise only basic functions will be available). HTTP- (http://) and MAVLink FTP- (mavlinkftp://) formatted URIs are allowed (and both must be supported by any GCS that implements the Camera Protocol). The definition file may be xz compressed, which will be indicated by the file extension .xml.xz (a GCS that implements the protocol must support decompressing the file). The string needs to be zero terminated.  Use a zero-length string if not known.
         /// OriginName: cam_definition_uri, Units: , IsExtended: false
         /// </summary>
+        public const int CamDefinitionUriMaxItemsCount = 140;
         public char[] CamDefinitionUri { get; set; } = new char[140];
+        [Obsolete("This method is deprecated. Use GetCamDefinitionUriMaxItemsCount instead.")]
         public byte GetCamDefinitionUriMaxItemsCount() => 140;
         /// <summary>
         /// Gimbal id of a gimbal associated with this camera. This is the component id of the gimbal device, or 1-6 for non mavlink gimbals. Use 0 if no gimbal is associated with the camera.
@@ -26337,6 +26447,7 @@ namespace Asv.Mavlink.V2.Common
         /// Textual storage name to be used in UI (microSD 1, Internal Memory, etc.) This is a NULL terminated string. If it is exactly 32 characters long, add a terminating NULL. If this string is empty, the generic type is shown to the user.
         /// OriginName: name, Units: , IsExtended: true
         /// </summary>
+        public const int NameMaxItemsCount = 32;
         public char[] Name { get; } = new char[32];
         /// <summary>
         /// Flags indicating whether this instance is preferred storage for photos, videos, etc.
@@ -26598,6 +26709,7 @@ namespace Asv.Mavlink.V2.Common
         /// Quaternion of camera orientation (w, x, y, z order, zero-rotation is 1, 0, 0, 0)
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; } = new float[4];
         /// <summary>
         /// Zero based index of this image (i.e. a new image will have index CAMERA_CAPTURE_STATUS.image count -1)
@@ -26618,7 +26730,9 @@ namespace Asv.Mavlink.V2.Common
         /// URL of image taken. Either local storage or http://foo.jpg if camera provides an HTTP interface.
         /// OriginName: file_url, Units: , IsExtended: false
         /// </summary>
+        public const int FileUrlMaxItemsCount = 205;
         public char[] FileUrl { get; set; } = new char[205];
+        [Obsolete("This method is deprecated. Use GetFileUrlMaxItemsCount instead.")]
         public byte GetFileUrlMaxItemsCount() => 205;
     }
     /// <summary>
@@ -26891,7 +27005,9 @@ namespace Asv.Mavlink.V2.Common
         /// logged data
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 249;
         public byte[] Data { get; set; } = new byte[249];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 249;
     }
     /// <summary>
@@ -26996,7 +27112,9 @@ namespace Asv.Mavlink.V2.Common
         /// logged data
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 249;
         public byte[] Data { get; set; } = new byte[249];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 249;
     }
     /// <summary>
@@ -27245,12 +27363,15 @@ namespace Asv.Mavlink.V2.Common
         /// Stream name.
         /// OriginName: name, Units: , IsExtended: false
         /// </summary>
+        public const int NameMaxItemsCount = 32;
         public char[] Name { get; } = new char[32];
         /// <summary>
         /// Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).
         /// OriginName: uri, Units: , IsExtended: false
         /// </summary>
+        public const int UriMaxItemsCount = 160;
         public char[] Uri { get; set; } = new char[160];
+        [Obsolete("This method is deprecated. Use GetUriMaxItemsCount instead.")]
         public byte GetUriMaxItemsCount() => 160;
     }
     /// <summary>
@@ -27487,7 +27608,9 @@ namespace Asv.Mavlink.V2.Common
         /// Quaternion of camera orientation (w, x, y, z order, zero-rotation is 1, 0, 0, 0)
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; set; } = new float[4];
+        [Obsolete("This method is deprecated. Use GetQMaxItemsCount instead.")]
         public byte GetQMaxItemsCount() => 4;
         /// <summary>
         /// Horizontal field of view (NaN if unknown).
@@ -28084,7 +28207,9 @@ namespace Asv.Mavlink.V2.Common
         /// Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation, the frame is depends on whether the flag GIMBAL_MANAGER_FLAGS_YAW_LOCK is set)
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; set; } = new float[4];
+        [Obsolete("This method is deprecated. Use GetQMaxItemsCount instead.")]
         public byte GetQMaxItemsCount() => 4;
         /// <summary>
         /// X component of angular velocity, positive is rolling to the right, NaN to be ignored.
@@ -28336,17 +28461,21 @@ namespace Asv.Mavlink.V2.Common
         /// Name of the gimbal vendor.
         /// OriginName: vendor_name, Units: , IsExtended: false
         /// </summary>
+        public const int VendorNameMaxItemsCount = 32;
         public char[] VendorName { get; set; } = new char[32];
+        [Obsolete("This method is deprecated. Use GetVendorNameMaxItemsCount instead.")]
         public byte GetVendorNameMaxItemsCount() => 32;
         /// <summary>
         /// Name of the gimbal model.
         /// OriginName: model_name, Units: , IsExtended: false
         /// </summary>
+        public const int ModelNameMaxItemsCount = 32;
         public char[] ModelName { get; } = new char[32];
         /// <summary>
         /// Custom name of the gimbal given to it by the user.
         /// OriginName: custom_name, Units: , IsExtended: false
         /// </summary>
+        public const int CustomNameMaxItemsCount = 32;
         public char[] CustomName { get; } = new char[32];
         /// <summary>
         /// This field is to be used if the gimbal manager and the gimbal device are the same component and hence have the same component ID. This field is then set to a number between 1-6. If the component ID is separate, this field is not required and must be set to 0.
@@ -28445,7 +28574,9 @@ namespace Asv.Mavlink.V2.Common
         /// Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). The frame is described in the message description. Set fields to NaN to be ignored.
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; set; } = new float[4];
+        [Obsolete("This method is deprecated. Use GetQMaxItemsCount instead.")]
         public byte GetQMaxItemsCount() => 4;
         /// <summary>
         /// X component of angular velocity (positive: rolling to the right). The frame is described in the message description. NaN to be ignored.
@@ -28598,7 +28729,9 @@ namespace Asv.Mavlink.V2.Common
         /// Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). The frame is described in the message description.
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; set; } = new float[4];
+        [Obsolete("This method is deprecated. Use GetQMaxItemsCount instead.")]
         public byte GetQMaxItemsCount() => 4;
         /// <summary>
         /// X component of angular velocity (positive: rolling to the right). The frame is described in the message description. NaN if unknown.
@@ -28756,7 +28889,9 @@ namespace Asv.Mavlink.V2.Common
         /// Quaternion components of autopilot attitude: w, x, y, z (1 0 0 0 is the null-rotation, Hamilton convention).
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; set; } = new float[4];
+        [Obsolete("This method is deprecated. Use GetQMaxItemsCount instead.")]
         public byte GetQMaxItemsCount() => 4;
         /// <summary>
         /// Estimated delay of the attitude data. 0 if unknown.
@@ -29141,7 +29276,9 @@ namespace Asv.Mavlink.V2.Common
         /// Number of reported errors by each ESC since boot.
         /// OriginName: error_count, Units: , IsExtended: false
         /// </summary>
+        public const int ErrorCountMaxItemsCount = 4;
         public uint[] ErrorCount { get; set; } = new uint[4];
+        [Obsolete("This method is deprecated. Use GetErrorCountMaxItemsCount instead.")]
         public byte GetErrorCountMaxItemsCount() => 4;
         /// <summary>
         /// Counter of data packets received.
@@ -29152,11 +29289,13 @@ namespace Asv.Mavlink.V2.Common
         /// Bitmap of ESC failure flags.
         /// OriginName: failure_flags, Units: , IsExtended: false
         /// </summary>
+        public const int FailureFlagsMaxItemsCount = 4;
         public EscFailureFlags[] FailureFlags { get; } = new EscFailureFlags[4];
         /// <summary>
         /// Temperature of each ESC. INT16_MAX: if data not supplied by ESC.
         /// OriginName: temperature, Units: cdegC, IsExtended: false
         /// </summary>
+        public const int TemperatureMaxItemsCount = 4;
         public short[] Temperature { get; } = new short[4];
         /// <summary>
         /// Index of the first ESC in this message. minValue = 0, maxValue = 60, increment = 4.
@@ -29272,17 +29411,21 @@ namespace Asv.Mavlink.V2.Common
         /// Reported motor RPM from each ESC (negative for reverse rotation).
         /// OriginName: rpm, Units: rpm, IsExtended: false
         /// </summary>
+        public const int RpmMaxItemsCount = 4;
         public int[] Rpm { get; set; } = new int[4];
+        [Obsolete("This method is deprecated. Use GetRpmMaxItemsCount instead.")]
         public byte GetRpmMaxItemsCount() => 4;
         /// <summary>
         /// Voltage measured from each ESC.
         /// OriginName: voltage, Units: V, IsExtended: false
         /// </summary>
+        public const int VoltageMaxItemsCount = 4;
         public float[] Voltage { get; } = new float[4];
         /// <summary>
         /// Current measured from each ESC.
         /// OriginName: current, Units: A, IsExtended: false
         /// </summary>
+        public const int CurrentMaxItemsCount = 4;
         public float[] Current { get; } = new float[4];
         /// <summary>
         /// Index of the first ESC in this message. minValue = 0, maxValue = 60, increment = 4.
@@ -29396,12 +29539,15 @@ namespace Asv.Mavlink.V2.Common
         /// Name of Wi-Fi network (SSID). Blank to leave it unchanged when setting. Current SSID when sent back as a response.
         /// OriginName: ssid, Units: , IsExtended: false
         /// </summary>
+        public const int SsidMaxItemsCount = 32;
         public char[] Ssid { get; } = new char[32];
         /// <summary>
         /// Password. Blank for an open AP. MD5 hash when message is sent back as a response.
         /// OriginName: password, Units: , IsExtended: false
         /// </summary>
+        public const int PasswordMaxItemsCount = 64;
         public char[] Password { get; set; } = new char[64];
+        [Obsolete("This method is deprecated. Use GetPasswordMaxItemsCount instead.")]
         public byte GetPasswordMaxItemsCount() => 64;
         /// <summary>
         /// WiFi Mode.
@@ -29630,12 +29776,15 @@ namespace Asv.Mavlink.V2.Common
         /// The vessel callsign
         /// OriginName: callsign, Units: , IsExtended: false
         /// </summary>
+        public const int CallsignMaxItemsCount = 7;
         public char[] Callsign { get; } = new char[7];
         /// <summary>
         /// The vessel name
         /// OriginName: name, Units: , IsExtended: false
         /// </summary>
+        public const int NameMaxItemsCount = 20;
         public char[] Name { get; set; } = new char[20];
+        [Obsolete("This method is deprecated. Use GetNameMaxItemsCount instead.")]
         public byte GetNameMaxItemsCount() => 20;
     }
     /// <summary>
@@ -29852,7 +30001,9 @@ namespace Asv.Mavlink.V2.Common
         /// Node name string. For example, "sapog.px4.io".
         /// OriginName: name, Units: , IsExtended: false
         /// </summary>
+        public const int NameMaxItemsCount = 80;
         public char[] Name { get; set; } = new char[80];
+        [Obsolete("This method is deprecated. Use GetNameMaxItemsCount instead.")]
         public byte GetNameMaxItemsCount() => 80;
         /// <summary>
         /// Hardware major version number.
@@ -29868,6 +30019,7 @@ namespace Asv.Mavlink.V2.Common
         /// Hardware unique 128-bit ID.
         /// OriginName: hw_unique_id, Units: , IsExtended: false
         /// </summary>
+        public const int HwUniqueIdMaxItemsCount = 16;
         public byte[] HwUniqueId { get; } = new byte[16];
         /// <summary>
         /// Software major version number.
@@ -29978,7 +30130,9 @@ namespace Asv.Mavlink.V2.Common
         /// Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
         /// OriginName: param_id, Units: , IsExtended: false
         /// </summary>
+        public const int ParamIdMaxItemsCount = 16;
         public char[] ParamId { get; set; } = new char[16];
+        [Obsolete("This method is deprecated. Use GetParamIdMaxItemsCount instead.")]
         public byte GetParamIdMaxItemsCount() => 16;
     }
     /// <summary>
@@ -30158,12 +30312,15 @@ namespace Asv.Mavlink.V2.Common
         /// Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
         /// OriginName: param_id, Units: , IsExtended: false
         /// </summary>
+        public const int ParamIdMaxItemsCount = 16;
         public char[] ParamId { get; } = new char[16];
         /// <summary>
         /// Parameter value
         /// OriginName: param_value, Units: , IsExtended: false
         /// </summary>
+        public const int ParamValueMaxItemsCount = 128;
         public char[] ParamValue { get; set; } = new char[128];
+        [Obsolete("This method is deprecated. Use GetParamValueMaxItemsCount instead.")]
         public byte GetParamValueMaxItemsCount() => 128;
         /// <summary>
         /// Parameter type.
@@ -30286,12 +30443,15 @@ namespace Asv.Mavlink.V2.Common
         /// Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
         /// OriginName: param_id, Units: , IsExtended: false
         /// </summary>
+        public const int ParamIdMaxItemsCount = 16;
         public char[] ParamId { get; } = new char[16];
         /// <summary>
         /// Parameter value
         /// OriginName: param_value, Units: , IsExtended: false
         /// </summary>
+        public const int ParamValueMaxItemsCount = 128;
         public char[] ParamValue { get; set; } = new char[128];
+        [Obsolete("This method is deprecated. Use GetParamValueMaxItemsCount instead.")]
         public byte GetParamValueMaxItemsCount() => 128;
         /// <summary>
         /// Parameter type.
@@ -30401,12 +30561,15 @@ namespace Asv.Mavlink.V2.Common
         /// Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
         /// OriginName: param_id, Units: , IsExtended: false
         /// </summary>
+        public const int ParamIdMaxItemsCount = 16;
         public char[] ParamId { get; } = new char[16];
         /// <summary>
         /// Parameter value (new value if PARAM_ACK_ACCEPTED, current value otherwise)
         /// OriginName: param_value, Units: , IsExtended: false
         /// </summary>
+        public const int ParamValueMaxItemsCount = 128;
         public char[] ParamValue { get; set; } = new char[128];
+        [Obsolete("This method is deprecated. Use GetParamValueMaxItemsCount instead.")]
         public byte GetParamValueMaxItemsCount() => 128;
         /// <summary>
         /// Parameter type.
@@ -30516,7 +30679,9 @@ namespace Asv.Mavlink.V2.Common
         /// Distance of obstacles around the vehicle with index 0 corresponding to north + angle_offset, unless otherwise specified in the frame. A value of 0 is valid and means that the obstacle is practically touching the sensor. A value of max_distance +1 means no obstacle is present. A value of UINT16_MAX for unknown/not used. In a array element, one unit corresponds to 1cm.
         /// OriginName: distances, Units: cm, IsExtended: false
         /// </summary>
+        public const int DistancesMaxItemsCount = 72;
         public ushort[] Distances { get; set; } = new ushort[72];
+        [Obsolete("This method is deprecated. Use GetDistancesMaxItemsCount instead.")]
         public byte GetDistancesMaxItemsCount() => 72;
         /// <summary>
         /// Minimum distance the sensor can measure.
@@ -30707,6 +30872,7 @@ namespace Asv.Mavlink.V2.Common
         /// Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation)
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; } = new float[4];
         /// <summary>
         /// X linear speed
@@ -30742,12 +30908,15 @@ namespace Asv.Mavlink.V2.Common
         /// Row-major representation of a 6x6 pose cross-covariance matrix upper right triangle (states: x, y, z, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.
         /// OriginName: pose_covariance, Units: , IsExtended: false
         /// </summary>
+        public const int PoseCovarianceMaxItemsCount = 21;
         public float[] PoseCovariance { get; set; } = new float[21];
+        [Obsolete("This method is deprecated. Use GetPoseCovarianceMaxItemsCount instead.")]
         public byte GetPoseCovarianceMaxItemsCount() => 21;
         /// <summary>
         /// Row-major representation of a 6x6 velocity cross-covariance matrix upper right triangle (states: vx, vy, vz, rollspeed, pitchspeed, yawspeed; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.
         /// OriginName: velocity_covariance, Units: , IsExtended: false
         /// </summary>
+        public const int VelocityCovarianceMaxItemsCount = 21;
         public float[] VelocityCovariance { get; } = new float[21];
         /// <summary>
         /// Coordinate frame of reference for the pose data.
@@ -30960,62 +31129,75 @@ namespace Asv.Mavlink.V2.Common
         /// X-coordinate of waypoint, set to NaN if not being used
         /// OriginName: pos_x, Units: m, IsExtended: false
         /// </summary>
+        public const int PosXMaxItemsCount = 5;
         public float[] PosX { get; set; } = new float[5];
+        [Obsolete("This method is deprecated. Use GetPosXMaxItemsCount instead.")]
         public byte GetPosXMaxItemsCount() => 5;
         /// <summary>
         /// Y-coordinate of waypoint, set to NaN if not being used
         /// OriginName: pos_y, Units: m, IsExtended: false
         /// </summary>
+        public const int PosYMaxItemsCount = 5;
         public float[] PosY { get; } = new float[5];
         /// <summary>
         /// Z-coordinate of waypoint, set to NaN if not being used
         /// OriginName: pos_z, Units: m, IsExtended: false
         /// </summary>
+        public const int PosZMaxItemsCount = 5;
         public float[] PosZ { get; } = new float[5];
         /// <summary>
         /// X-velocity of waypoint, set to NaN if not being used
         /// OriginName: vel_x, Units: m/s, IsExtended: false
         /// </summary>
+        public const int VelXMaxItemsCount = 5;
         public float[] VelX { get; } = new float[5];
         /// <summary>
         /// Y-velocity of waypoint, set to NaN if not being used
         /// OriginName: vel_y, Units: m/s, IsExtended: false
         /// </summary>
+        public const int VelYMaxItemsCount = 5;
         public float[] VelY { get; } = new float[5];
         /// <summary>
         /// Z-velocity of waypoint, set to NaN if not being used
         /// OriginName: vel_z, Units: m/s, IsExtended: false
         /// </summary>
+        public const int VelZMaxItemsCount = 5;
         public float[] VelZ { get; } = new float[5];
         /// <summary>
         /// X-acceleration of waypoint, set to NaN if not being used
         /// OriginName: acc_x, Units: m/s/s, IsExtended: false
         /// </summary>
+        public const int AccXMaxItemsCount = 5;
         public float[] AccX { get; } = new float[5];
         /// <summary>
         /// Y-acceleration of waypoint, set to NaN if not being used
         /// OriginName: acc_y, Units: m/s/s, IsExtended: false
         /// </summary>
+        public const int AccYMaxItemsCount = 5;
         public float[] AccY { get; } = new float[5];
         /// <summary>
         /// Z-acceleration of waypoint, set to NaN if not being used
         /// OriginName: acc_z, Units: m/s/s, IsExtended: false
         /// </summary>
+        public const int AccZMaxItemsCount = 5;
         public float[] AccZ { get; } = new float[5];
         /// <summary>
         /// Yaw angle, set to NaN if not being used
         /// OriginName: pos_yaw, Units: rad, IsExtended: false
         /// </summary>
+        public const int PosYawMaxItemsCount = 5;
         public float[] PosYaw { get; } = new float[5];
         /// <summary>
         /// Yaw rate, set to NaN if not being used
         /// OriginName: vel_yaw, Units: rad/s, IsExtended: false
         /// </summary>
+        public const int VelYawMaxItemsCount = 5;
         public float[] VelYaw { get; } = new float[5];
         /// <summary>
         /// MAV_CMD command id of waypoint, set to UINT16_MAX if not being used.
         /// OriginName: command, Units: , IsExtended: false
         /// </summary>
+        public const int CommandMaxItemsCount = 5;
         public MavCmd[] Command { get; } = new MavCmd[5];
         /// <summary>
         /// Number of valid points (up-to 5 waypoints are possible)
@@ -31136,27 +31318,33 @@ namespace Asv.Mavlink.V2.Common
         /// X-coordinate of bezier control points. Set to NaN if not being used
         /// OriginName: pos_x, Units: m, IsExtended: false
         /// </summary>
+        public const int PosXMaxItemsCount = 5;
         public float[] PosX { get; set; } = new float[5];
+        [Obsolete("This method is deprecated. Use GetPosXMaxItemsCount instead.")]
         public byte GetPosXMaxItemsCount() => 5;
         /// <summary>
         /// Y-coordinate of bezier control points. Set to NaN if not being used
         /// OriginName: pos_y, Units: m, IsExtended: false
         /// </summary>
+        public const int PosYMaxItemsCount = 5;
         public float[] PosY { get; } = new float[5];
         /// <summary>
         /// Z-coordinate of bezier control points. Set to NaN if not being used
         /// OriginName: pos_z, Units: m, IsExtended: false
         /// </summary>
+        public const int PosZMaxItemsCount = 5;
         public float[] PosZ { get; } = new float[5];
         /// <summary>
         /// Bezier time horizon. Set to NaN if velocity/acceleration should not be incorporated
         /// OriginName: delta, Units: s, IsExtended: false
         /// </summary>
+        public const int DeltaMaxItemsCount = 5;
         public float[] Delta { get; } = new float[5];
         /// <summary>
         /// Yaw. Set to NaN for unchanged
         /// OriginName: pos_yaw, Units: rad, IsExtended: false
         /// </summary>
+        public const int PosYawMaxItemsCount = 5;
         public float[] PosYaw { get; } = new float[5];
         /// <summary>
         /// Number of valid control points (up-to 5 points are possible)
@@ -31540,22 +31728,27 @@ namespace Asv.Mavlink.V2.Common
         /// PIN sent to the SIM card. Blank when PIN is disabled. Empty when message is sent back as a response.
         /// OriginName: pin, Units: , IsExtended: false
         /// </summary>
+        public const int PinMaxItemsCount = 16;
         public char[] Pin { get; } = new char[16];
         /// <summary>
         /// New PIN when changing the PIN. Blank to leave it unchanged. Empty when message is sent back as a response.
         /// OriginName: new_pin, Units: , IsExtended: false
         /// </summary>
+        public const int NewPinMaxItemsCount = 16;
         public char[] NewPin { get; } = new char[16];
         /// <summary>
         /// Name of the cellular APN. Blank to leave it unchanged. Current APN when sent back as a response.
         /// OriginName: apn, Units: , IsExtended: false
         /// </summary>
+        public const int ApnMaxItemsCount = 32;
         public char[] Apn { get; set; } = new char[32];
+        [Obsolete("This method is deprecated. Use GetApnMaxItemsCount instead.")]
         public byte GetApnMaxItemsCount() => 32;
         /// <summary>
         /// Required PUK code in case the user failed to authenticate 3 times with the PIN. Empty when message is sent back as a response.
         /// OriginName: puk, Units: , IsExtended: false
         /// </summary>
+        public const int PukMaxItemsCount = 16;
         public char[] Puk { get; } = new char[16];
         /// <summary>
         /// Enable/disable roaming. 0: setting unchanged, 1: disabled, 2: enabled. Current setting when sent back as a response.
@@ -31818,7 +32011,9 @@ namespace Asv.Mavlink.V2.Common
         /// Unique UAS ID.
         /// OriginName: uas_id, Units: , IsExtended: false
         /// </summary>
+        public const int UasIdMaxItemsCount = 18;
         public byte[] UasId { get; set; } = new byte[18];
+        [Obsolete("This method is deprecated. Use GetUasIdMaxItemsCount instead.")]
         public byte GetUasIdMaxItemsCount() => 18;
         /// <summary>
         /// Flight state
@@ -31933,12 +32128,15 @@ namespace Asv.Mavlink.V2.Common
         /// Name, for human-friendly display in a Ground Control Station
         /// OriginName: name, Units: , IsExtended: false
         /// </summary>
+        public const int NameMaxItemsCount = 10;
         public char[] Name { get; set; } = new char[10];
+        [Obsolete("This method is deprecated. Use GetNameMaxItemsCount instead.")]
         public byte GetNameMaxItemsCount() => 10;
         /// <summary>
         /// data
         /// OriginName: data, Units: , IsExtended: true
         /// </summary>
+        public const int DataMaxItemsCount = 58;
         public float[] Data { get; } = new float[58];
     }
     /// <summary>
@@ -32255,12 +32453,15 @@ namespace Asv.Mavlink.V2.Common
         /// Serial number in ASCII characters, 0 terminated. All 0: field not provided.
         /// OriginName: serial_number, Units: , IsExtended: false
         /// </summary>
+        public const int SerialNumberMaxItemsCount = 16;
         public char[] SerialNumber { get; } = new char[16];
         /// <summary>
         /// Static device name in ASCII characters, 0 terminated. All 0: field not provided. Encode as manufacturer name then product name separated using an underscore.
         /// OriginName: device_name, Units: , IsExtended: false
         /// </summary>
+        public const int DeviceNameMaxItemsCount = 50;
         public char[] DeviceName { get; set; } = new char[50];
+        [Obsolete("This method is deprecated. Use GetDeviceNameMaxItemsCount instead.")]
         public byte GetDeviceNameMaxItemsCount() => 50;
         /// <summary>
         /// Maximum per-cell voltage when charged. 0: field not provided.
@@ -32286,6 +32487,7 @@ namespace Asv.Mavlink.V2.Common
         /// Manufacture date (DD/MM/YYYY) in ASCII characters, 0 terminated. All 0: field not provided.
         /// OriginName: manufacture_date, Units: , IsExtended: true
         /// </summary>
+        public const int ManufactureDateMaxItemsCount = 11;
         public char[] ManufactureDate { get; } = new char[11];
     }
     /// <summary>
@@ -32500,7 +32702,9 @@ namespace Asv.Mavlink.V2.Common
         /// Servo / motor output array values. Zero values indicate unused channels.
         /// OriginName: actuator, Units: , IsExtended: false
         /// </summary>
+        public const int ActuatorMaxItemsCount = 32;
         public float[] Actuator { get; set; } = new float[32];
+        [Obsolete("This method is deprecated. Use GetActuatorMaxItemsCount instead.")]
         public byte GetActuatorMaxItemsCount() => 32;
     }
     /// <summary>
@@ -32683,7 +32887,9 @@ namespace Asv.Mavlink.V2.Common
         /// Variable length payload. The payload length is defined by payload_length. The entire content of this block is opaque unless you understand the encoding specified by payload_type.
         /// OriginName: payload, Units: , IsExtended: false
         /// </summary>
+        public const int PayloadMaxItemsCount = 128;
         public byte[] Payload { get; set; } = new byte[128];
+        [Obsolete("This method is deprecated. Use GetPayloadMaxItemsCount instead.")]
         public byte GetPayloadMaxItemsCount() => 128;
     }
     /// <summary>
@@ -32788,7 +32994,9 @@ namespace Asv.Mavlink.V2.Common
         /// Frame data
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 8;
         public byte[] Data { get; set; } = new byte[8];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 8;
     }
     /// <summary>
@@ -33021,47 +33229,57 @@ namespace Asv.Mavlink.V2.Common
         /// Storage type: 0: HDD, 1: SSD, 2: EMMC, 3: SD card (non-removable), 4: SD card (removable). A value of UINT32_MAX implies the field is unused.
         /// OriginName: storage_type, Units: , IsExtended: false
         /// </summary>
+        public const int StorageTypeMaxItemsCount = 4;
         public uint[] StorageType { get; } = new uint[4];
         /// <summary>
         /// Amount of used storage space on the component system. A value of UINT32_MAX implies the field is unused.
         /// OriginName: storage_usage, Units: MiB, IsExtended: false
         /// </summary>
+        public const int StorageUsageMaxItemsCount = 4;
         public uint[] StorageUsage { get; } = new uint[4];
         /// <summary>
         /// Total amount of storage space on the component system. A value of UINT32_MAX implies the field is unused.
         /// OriginName: storage_total, Units: MiB, IsExtended: false
         /// </summary>
+        public const int StorageTotalMaxItemsCount = 4;
         public uint[] StorageTotal { get; } = new uint[4];
         /// <summary>
         /// Link type: 0-9: UART, 10-19: Wired network, 20-29: Wifi, 30-39: Point-to-point proprietary, 40-49: Mesh proprietary
         /// OriginName: link_type, Units: , IsExtended: false
         /// </summary>
+        public const int LinkTypeMaxItemsCount = 6;
         public uint[] LinkType { get; set; } = new uint[6];
+        [Obsolete("This method is deprecated. Use GetLinkTypeMaxItemsCount instead.")]
         public byte GetLinkTypeMaxItemsCount() => 6;
         /// <summary>
         /// Network traffic from the component system. A value of UINT32_MAX implies the field is unused.
         /// OriginName: link_tx_rate, Units: KiB/s, IsExtended: false
         /// </summary>
+        public const int LinkTxRateMaxItemsCount = 6;
         public uint[] LinkTxRate { get; } = new uint[6];
         /// <summary>
         /// Network traffic to the component system. A value of UINT32_MAX implies the field is unused.
         /// OriginName: link_rx_rate, Units: KiB/s, IsExtended: false
         /// </summary>
+        public const int LinkRxRateMaxItemsCount = 6;
         public uint[] LinkRxRate { get; } = new uint[6];
         /// <summary>
         /// Network capacity from the component system. A value of UINT32_MAX implies the field is unused.
         /// OriginName: link_tx_max, Units: KiB/s, IsExtended: false
         /// </summary>
+        public const int LinkTxMaxMaxItemsCount = 6;
         public uint[] LinkTxMax { get; } = new uint[6];
         /// <summary>
         /// Network capacity to the component system. A value of UINT32_MAX implies the field is unused.
         /// OriginName: link_rx_max, Units: KiB/s, IsExtended: false
         /// </summary>
+        public const int LinkRxMaxMaxItemsCount = 6;
         public uint[] LinkRxMax { get; } = new uint[6];
         /// <summary>
         /// Fan speeds. A value of INT16_MAX implies the field is unused.
         /// OriginName: fan_speed, Units: rpm, IsExtended: false
         /// </summary>
+        public const int FanSpeedMaxItemsCount = 4;
         public short[] FanSpeed { get; } = new short[4];
         /// <summary>
         /// Type of the onboard computer: 0: Mission computer primary, 1: Mission computer backup 1, 2: Mission computer backup 2, 3: Compute node, 4-5: Compute spares, 6-9: Payload computers.
@@ -33072,21 +33290,25 @@ namespace Asv.Mavlink.V2.Common
         /// CPU usage on the component in percent (100 - idle). A value of UINT8_MAX implies the field is unused.
         /// OriginName: cpu_cores, Units: , IsExtended: false
         /// </summary>
+        public const int CpuCoresMaxItemsCount = 8;
         public byte[] CpuCores { get; } = new byte[8];
         /// <summary>
         /// Combined CPU usage as the last 10 slices of 100 MS (a histogram). This allows to identify spikes in load that max out the system, but only for a short amount of time. A value of UINT8_MAX implies the field is unused.
         /// OriginName: cpu_combined, Units: , IsExtended: false
         /// </summary>
+        public const int CpuCombinedMaxItemsCount = 10;
         public byte[] CpuCombined { get; } = new byte[10];
         /// <summary>
         /// GPU usage on the component in percent (100 - idle). A value of UINT8_MAX implies the field is unused.
         /// OriginName: gpu_cores, Units: , IsExtended: false
         /// </summary>
+        public const int GpuCoresMaxItemsCount = 4;
         public byte[] GpuCores { get; } = new byte[4];
         /// <summary>
         /// Combined GPU usage as the last 10 slices of 100 MS (a histogram). This allows to identify spikes in load that max out the system, but only for a short amount of time. A value of UINT8_MAX implies the field is unused.
         /// OriginName: gpu_combined, Units: , IsExtended: false
         /// </summary>
+        public const int GpuCombinedMaxItemsCount = 10;
         public byte[] GpuCombined { get; } = new byte[10];
         /// <summary>
         /// Temperature of the board. A value of INT8_MAX implies the field is unused.
@@ -33097,6 +33319,7 @@ namespace Asv.Mavlink.V2.Common
         /// Temperature of the CPU core. A value of INT8_MAX implies the field is unused.
         /// OriginName: temperature_core, Units: degC, IsExtended: false
         /// </summary>
+        public const int TemperatureCoreMaxItemsCount = 8;
         public sbyte[] TemperatureCore { get; } = new sbyte[8];
     }
     /// <summary>
@@ -33221,12 +33444,15 @@ namespace Asv.Mavlink.V2.Common
         /// MAVLink FTP URI for the general metadata file (COMP_METADATA_TYPE_GENERAL), which may be compressed with xz. The file contains general component metadata, and may contain URI links for additional metadata (see COMP_METADATA_TYPE). The information is static from boot, and may be generated at compile time. The string needs to be zero terminated.
         /// OriginName: general_metadata_uri, Units: , IsExtended: false
         /// </summary>
+        public const int GeneralMetadataUriMaxItemsCount = 100;
         public char[] GeneralMetadataUri { get; set; } = new char[100];
+        [Obsolete("This method is deprecated. Use GetGeneralMetadataUriMaxItemsCount instead.")]
         public byte GetGeneralMetadataUriMaxItemsCount() => 100;
         /// <summary>
         /// (Optional) MAVLink FTP URI for the peripherals metadata file (COMP_METADATA_TYPE_PERIPHERALS), which may be compressed with xz. This contains data about "attached components" such as UAVCAN nodes. The peripherals are in a separate file because the information must be generated dynamically at runtime. The string needs to be zero terminated.
         /// OriginName: peripherals_metadata_uri, Units: , IsExtended: false
         /// </summary>
+        public const int PeripheralsMetadataUriMaxItemsCount = 100;
         public char[] PeripheralsMetadataUri { get; } = new char[100];
     }
     /// <summary>
@@ -33330,7 +33556,9 @@ namespace Asv.Mavlink.V2.Common
         /// MAVLink FTP URI for the general metadata file (COMP_METADATA_TYPE_GENERAL), which may be compressed with xz. The file contains general component metadata, and may contain URI links for additional metadata (see COMP_METADATA_TYPE). The information is static from boot, and may be generated at compile time. The string needs to be zero terminated.
         /// OriginName: uri, Units: , IsExtended: false
         /// </summary>
+        public const int UriMaxItemsCount = 100;
         public char[] Uri { get; set; } = new char[100];
+        [Obsolete("This method is deprecated. Use GetUriMaxItemsCount instead.")]
         public byte GetUriMaxItemsCount() => 100;
     }
     /// <summary>
@@ -33431,7 +33659,9 @@ namespace Asv.Mavlink.V2.Common
         /// Tune definition as a NULL-terminated string.
         /// OriginName: tune, Units: , IsExtended: false
         /// </summary>
+        public const int TuneMaxItemsCount = 248;
         public char[] Tune { get; set; } = new char[248];
+        [Obsolete("This method is deprecated. Use GetTuneMaxItemsCount instead.")]
         public byte GetTuneMaxItemsCount() => 248;
     }
     /// <summary>
@@ -33614,7 +33844,9 @@ namespace Asv.Mavlink.V2.Common
         /// Arguments (depend on event ID).
         /// OriginName: arguments, Units: , IsExtended: false
         /// </summary>
+        public const int ArgumentsMaxItemsCount = 40;
         public byte[] Arguments { get; set; } = new byte[40];
+        [Obsolete("This method is deprecated. Use GetArgumentsMaxItemsCount instead.")]
         public byte GetArgumentsMaxItemsCount() => 40;
     }
     /// <summary>
@@ -33945,7 +34177,9 @@ namespace Asv.Mavlink.V2.Common
         /// Frame data
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 64;
         public byte[] Data { get; set; } = new byte[64];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 64;
     }
     /// <summary>
@@ -34025,7 +34259,9 @@ namespace Asv.Mavlink.V2.Common
         /// filter IDs, length num_ids
         /// OriginName: ids, Units: , IsExtended: false
         /// </summary>
+        public const int IdsMaxItemsCount = 16;
         public ushort[] Ids { get; set; } = new ushort[16];
+        [Obsolete("This method is deprecated. Use GetIdsMaxItemsCount instead.")]
         public byte GetIdsMaxItemsCount() => 16;
         /// <summary>
         /// System ID.
@@ -34126,7 +34362,9 @@ namespace Asv.Mavlink.V2.Common
         /// Distance reported by individual wheel encoders. Forward rotations increase values, reverse rotations decrease them. Not all wheels will necessarily have wheel encoders; the mapping of encoders to wheel positions must be agreed/understood by the endpoints.
         /// OriginName: distance, Units: m, IsExtended: false
         /// </summary>
+        public const int DistanceMaxItemsCount = 16;
         public double[] Distance { get; set; } = new double[16];
+        [Obsolete("This method is deprecated. Use GetDistanceMaxItemsCount instead.")]
         public byte GetDistanceMaxItemsCount() => 16;
         /// <summary>
         /// Number of wheels reported.
@@ -34338,7 +34576,9 @@ namespace Asv.Mavlink.V2.Common
         /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. 
         /// OriginName: id_or_mac, Units: , IsExtended: false
         /// </summary>
+        public const int IdOrMacMaxItemsCount = 20;
         public byte[] IdOrMac { get; set; } = new byte[20];
+        [Obsolete("This method is deprecated. Use GetIdOrMacMaxItemsCount instead.")]
         public byte GetIdOrMacMaxItemsCount() => 20;
         /// <summary>
         /// Indicates the format for the uas_id field of this message.
@@ -34354,6 +34594,7 @@ namespace Asv.Mavlink.V2.Common
         /// UAS (Unmanned Aircraft System) ID following the format specified by id_type. Shall be filled with nulls in the unused portion of the field.
         /// OriginName: uas_id, Units: , IsExtended: false
         /// </summary>
+        public const int UasIdMaxItemsCount = 20;
         public byte[] UasId { get; } = new byte[20];
     }
     /// <summary>
@@ -34527,7 +34768,9 @@ namespace Asv.Mavlink.V2.Common
         /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. 
         /// OriginName: id_or_mac, Units: , IsExtended: false
         /// </summary>
+        public const int IdOrMacMaxItemsCount = 20;
         public byte[] IdOrMac { get; set; } = new byte[20];
+        [Obsolete("This method is deprecated. Use GetIdOrMacMaxItemsCount instead.")]
         public byte GetIdOrMacMaxItemsCount() => 20;
         /// <summary>
         /// Indicates whether the unmanned aircraft is on the ground or in the air.
@@ -34673,6 +34916,7 @@ namespace Asv.Mavlink.V2.Common
         /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. 
         /// OriginName: id_or_mac, Units: , IsExtended: false
         /// </summary>
+        public const int IdOrMacMaxItemsCount = 20;
         public byte[] IdOrMac { get; } = new byte[20];
         /// <summary>
         /// Indicates the type of authentication.
@@ -34698,7 +34942,9 @@ namespace Asv.Mavlink.V2.Common
         /// Opaque authentication data. For page 0, the size is only 17 bytes. For other pages, the size is 23 bytes. Shall be filled with nulls in the unused portion of the field.
         /// OriginName: authentication_data, Units: , IsExtended: false
         /// </summary>
+        public const int AuthenticationDataMaxItemsCount = 23;
         public byte[] AuthenticationData { get; set; } = new byte[23];
+        [Obsolete("This method is deprecated. Use GetAuthenticationDataMaxItemsCount instead.")]
         public byte GetAuthenticationDataMaxItemsCount() => 23;
     }
     /// <summary>
@@ -34804,6 +35050,7 @@ namespace Asv.Mavlink.V2.Common
         /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. 
         /// OriginName: id_or_mac, Units: , IsExtended: false
         /// </summary>
+        public const int IdOrMacMaxItemsCount = 20;
         public byte[] IdOrMac { get; } = new byte[20];
         /// <summary>
         /// Indicates the type of the description field.
@@ -34814,7 +35061,9 @@ namespace Asv.Mavlink.V2.Common
         /// Text description or numeric value expressed as ASCII characters. Shall be filled with nulls in the unused portion of the field.
         /// OriginName: description, Units: , IsExtended: false
         /// </summary>
+        public const int DescriptionMaxItemsCount = 23;
         public char[] Description { get; set; } = new char[23];
+        [Obsolete("This method is deprecated. Use GetDescriptionMaxItemsCount instead.")]
         public byte GetDescriptionMaxItemsCount() => 23;
     }
     /// <summary>
@@ -34971,7 +35220,9 @@ namespace Asv.Mavlink.V2.Common
         /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. 
         /// OriginName: id_or_mac, Units: , IsExtended: false
         /// </summary>
+        public const int IdOrMacMaxItemsCount = 20;
         public byte[] IdOrMac { get; set; } = new byte[20];
+        [Obsolete("This method is deprecated. Use GetIdOrMacMaxItemsCount instead.")]
         public byte GetIdOrMacMaxItemsCount() => 20;
         /// <summary>
         /// Specifies the operator location type.
@@ -35097,7 +35348,9 @@ namespace Asv.Mavlink.V2.Common
         /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. 
         /// OriginName: id_or_mac, Units: , IsExtended: false
         /// </summary>
+        public const int IdOrMacMaxItemsCount = 20;
         public byte[] IdOrMac { get; set; } = new byte[20];
+        [Obsolete("This method is deprecated. Use GetIdOrMacMaxItemsCount instead.")]
         public byte GetIdOrMacMaxItemsCount() => 20;
         /// <summary>
         /// Indicates the type of the operator_id field.
@@ -35108,6 +35361,7 @@ namespace Asv.Mavlink.V2.Common
         /// Text description or numeric value expressed as ASCII characters. Shall be filled with nulls in the unused portion of the field.
         /// OriginName: operator_id, Units: , IsExtended: false
         /// </summary>
+        public const int OperatorIdMaxItemsCount = 20;
         public char[] OperatorId { get; } = new char[20];
     }
     /// <summary>
@@ -35204,6 +35458,7 @@ namespace Asv.Mavlink.V2.Common
         /// Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. 
         /// OriginName: id_or_mac, Units: , IsExtended: false
         /// </summary>
+        public const int IdOrMacMaxItemsCount = 20;
         public byte[] IdOrMac { get; } = new byte[20];
         /// <summary>
         /// This field must currently always be equal to 25 (bytes), since all encoded OpenDroneID messages are specified to have this length.
@@ -35219,7 +35474,9 @@ namespace Asv.Mavlink.V2.Common
         /// Concatenation of encoded OpenDroneID messages. Shall be filled with nulls in the unused portion of the field.
         /// OriginName: messages, Units: , IsExtended: false
         /// </summary>
+        public const int MessagesMaxItemsCount = 225;
         public byte[] Messages { get; set; } = new byte[225];
+        [Obsolete("This method is deprecated. Use GetMessagesMaxItemsCount instead.")]
         public byte GetMessagesMaxItemsCount() => 225;
     }
     /// <summary>
@@ -35304,7 +35561,9 @@ namespace Asv.Mavlink.V2.Common
         /// Text error message, should be empty if status is good to arm. Fill with nulls in unused portion.
         /// OriginName: error, Units: , IsExtended: false
         /// </summary>
+        public const int ErrorMaxItemsCount = 50;
         public char[] Error { get; set; } = new char[50];
+        [Obsolete("This method is deprecated. Use GetErrorMaxItemsCount instead.")]
         public byte GetErrorMaxItemsCount() => 50;
     }
     /// <summary>

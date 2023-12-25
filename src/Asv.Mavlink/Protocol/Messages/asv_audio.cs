@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11+57a394b8339c23e5455f81ed473816c2f3f50313
+// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11+6881e692bec5d36a0fe50f4b69f669d0f2f2847f
 
 using System;
 using System.Text;
@@ -390,7 +390,9 @@ namespace Asv.Mavlink.V2.AsvAudio
         /// Audio device name in voice chat.
         /// OriginName: name, Units: , IsExtended: false
         /// </summary>
+        public const int NameMaxItemsCount = 16;
         public char[] Name { get; set; } = new char[16];
+        [Obsolete("This method is deprecated. Use GetNameMaxItemsCount instead.")]
         public byte GetNameMaxItemsCount() => 16;
     }
     /// <summary>
@@ -503,7 +505,9 @@ namespace Asv.Mavlink.V2.AsvAudio
         /// Audio data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 230;
         public byte[] Data { get; set; } = new byte[230];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 230;
     }
 

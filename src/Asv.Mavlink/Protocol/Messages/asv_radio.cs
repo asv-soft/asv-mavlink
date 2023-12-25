@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11+57a394b8339c23e5455f81ed473816c2f3f50313
+// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11+6881e692bec5d36a0fe50f4b69f669d0f2f2847f
 
 using System;
 using System.Text;
@@ -335,12 +335,15 @@ namespace Asv.Mavlink.V2.AsvRadio
         /// Supported RF modulations. Each bit of array is flag from ASV_RADIO_MODULATION(max 255 items) enum.
         /// OriginName: supported_modulation, Units: , IsExtended: false
         /// </summary>
+        public const int SupportedModulationMaxItemsCount = 32;
         public byte[] SupportedModulation { get; set; } = new byte[32];
+        [Obsolete("This method is deprecated. Use GetSupportedModulationMaxItemsCount instead.")]
         public byte GetSupportedModulationMaxItemsCount() => 32;
         /// <summary>
         /// Supported codecs. Each bit of array is flag from ASV_RADIO_CODEC(max 255 items) enum .
         /// OriginName: codecs, Units: , IsExtended: false
         /// </summary>
+        public const int CodecsMaxItemsCount = 32;
         public byte[] Codecs { get; } = new byte[32];
     }
     /// <summary>
@@ -483,7 +486,9 @@ namespace Asv.Mavlink.V2.AsvRadio
         /// Supported additional params for target codec. Each bit of array is flag from ASV_AUDIO_CODEC_[*]_CFG(max 255 items) enum .
         /// OriginName: supported_cfg, Units: , IsExtended: false
         /// </summary>
+        public const int SupportedCfgMaxItemsCount = 32;
         public byte[] SupportedCfg { get; set; } = new byte[32];
+        [Obsolete("This method is deprecated. Use GetSupportedCfgMaxItemsCount instead.")]
         public byte GetSupportedCfgMaxItemsCount() => 32;
     }
 

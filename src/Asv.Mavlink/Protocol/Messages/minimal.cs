@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11+57a394b8339c23e5455f81ed473816c2f3f50313
+// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11+6881e692bec5d36a0fe50f4b69f669d0f2f2847f
 
 using System;
 using System.Text;
@@ -1412,12 +1412,15 @@ namespace Asv.Mavlink.V2.Minimal
         /// The first 8 bytes (not characters printed in hex!) of the git hash.
         /// OriginName: spec_version_hash, Units: , IsExtended: false
         /// </summary>
+        public const int SpecVersionHashMaxItemsCount = 8;
         public byte[] SpecVersionHash { get; set; } = new byte[8];
+        [Obsolete("This method is deprecated. Use GetSpecVersionHashMaxItemsCount instead.")]
         public byte GetSpecVersionHashMaxItemsCount() => 8;
         /// <summary>
         /// The first 8 bytes (not characters printed in hex!) of the git hash.
         /// OriginName: library_version_hash, Units: , IsExtended: false
         /// </summary>
+        public const int LibraryVersionHashMaxItemsCount = 8;
         public byte[] LibraryVersionHash { get; } = new byte[8];
     }
 
