@@ -206,6 +206,9 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
             MavlinkTypesHelper.SetString(p.Name,name);
             p.Codec = codec.Codec;
             p.CodecCfg = codec.CodecConfig;
+            p.SampleRate = codec.SampleRate;
+            p.Channels = codec.Channel;
+            p.Format = codec.Format;
             AsvAudioModeFlag mode = 0;
             if (speakerEnabled)
             {

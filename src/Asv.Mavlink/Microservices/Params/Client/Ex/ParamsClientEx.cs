@@ -182,7 +182,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         progress ??= new Progress<double>();
         using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
         var tcs = new TaskCompletionSource<bool>();
-        await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled());
+        await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
         var lastUpdate = DateTime.Now;
         ushort? paramsCount = null;
         using var c2 = Base.OnParamValue.Sample(TimeSpan.FromMilliseconds(50)).Subscribe(_ =>

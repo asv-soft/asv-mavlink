@@ -108,7 +108,7 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
         using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
         linkedCancel.CancelAfter(timeoutMs);
         var tcs = new TaskCompletionSource<TAnswerPacket>();
-        using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled());
+        using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
 
         filter ??= (_ => true);
         using var subscribe = InternalFilterFirstAsync(targetSystemGetter,targetComponentGetter,filter).Subscribe(_ => tcs.TrySetResult(_));

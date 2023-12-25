@@ -7,7 +7,7 @@ namespace Asv.Mavlink;
 
 public static class AsvAudioHelper
 {
-    public const int MaxPacketStreamData = 230;
+    public const int MaxPacketStreamData = AsvAudioStreamPayload.DataMaxItemsCount;
     
     public const int DeviceNameLength = 8;
 

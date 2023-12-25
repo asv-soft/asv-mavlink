@@ -68,7 +68,7 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
 
         using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
         var tcs = new TaskCompletionSource<Unit>();
-        await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled());
+        await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
         
         var lastUpdateTime = DateTime.Now;
         using var checkTimer = Observable.Timer(_deviceUploadTimeout, _deviceUploadTimeout)

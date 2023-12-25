@@ -45,7 +45,7 @@ public class CompositeAudioCodecFactory : IAudioCodecFactory
 
     public IEnumerable<AudioCodecInfo> AvailableCodecs => _parts.SelectMany(x=>x.Value.AvailableCodecs);
 
-    public bool TryFindCodec(AsvAudioPcmFormat format, int sampleRate, int channels, AsvAudioCodec codec,
+    public bool TryFindCodec(AsvAudioPcmFormat format, AsvAudioSampleRate sampleRate, AsvAudioChannel channels, AsvAudioCodec codec,
         byte codecAdditionalParam, out AudioCodecInfo codecInfo)
     {
         if (_parts.TryGetValue(codec, out var part) == false)

@@ -8,6 +8,6 @@ public interface IAudioCodecFactory
     IAudioEncoder CreateEncoder(AudioCodecInfo info);
     IAudioDecoder CreateDecoder(AudioCodecInfo info);
     IEnumerable<AudioCodecInfo> AvailableCodecs { get; }
-    bool TryFindCodec(AsvAudioPcmFormat format, int sampleRate, int channels, AsvAudioCodec codec,
+    bool TryFindCodec(AsvAudioPcmFormat format, AsvAudioSampleRate sampleRate, AsvAudioChannel channels, AsvAudioCodec codec,
         byte codecAdditionalParam, out AudioCodecInfo codecInfo); 
 }

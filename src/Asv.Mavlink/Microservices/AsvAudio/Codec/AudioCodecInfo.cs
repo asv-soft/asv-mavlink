@@ -6,8 +6,8 @@ namespace Asv.Mavlink;
 
 public class AudioCodecInfo: IEquatable<AudioCodecInfo>
 {
-    public AudioCodecInfo(AsvAudioCodec codec, byte codecAdditionalParam, AsvAudioPcmFormat format, int sampleRate,
-        int channels, string name)
+    public AudioCodecInfo(AsvAudioCodec codec, byte codecAdditionalParam, AsvAudioPcmFormat format, AsvAudioSampleRate sampleRate,
+        AsvAudioChannel channels, string name)
     {
         Codec = codec;
         CodecConfig = codecAdditionalParam;
@@ -22,8 +22,8 @@ public class AudioCodecInfo: IEquatable<AudioCodecInfo>
     public byte CodecConfig { get; }
 
     public AsvAudioPcmFormat Format { get; }
-    public int SampleRate { get; }
-    public int Channel { get; }
+    public AsvAudioSampleRate SampleRate { get; }
+    public AsvAudioChannel Channel { get; }
     
 
     public override string ToString()
@@ -31,7 +31,7 @@ public class AudioCodecInfo: IEquatable<AudioCodecInfo>
         return Name;
     }
 
-    public bool IsEqual(AsvAudioPcmFormat format, int sampleRate, int channels, AsvAudioCodec codec, byte codecAdditionalParam)
+    public bool IsEqual(AsvAudioPcmFormat format, AsvAudioSampleRate sampleRate, AsvAudioChannel channels, AsvAudioCodec codec, byte codecAdditionalParam)
     {
         return Format == format && SampleRate == sampleRate && Channel == channels && Codec == codec && CodecConfig == codecAdditionalParam;
     }
