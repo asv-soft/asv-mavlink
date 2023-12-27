@@ -23,6 +23,17 @@ Asv.Mavlink.Shell.exe mavlink --cs=tcp://127.0.0.1:5760
 ```
 ![screenshot-1](img/screenshot-1.png)
 
+## How To Build Asv-MavLink using Asv.Drones
+
+**1. Setup required dependencies for Asv.Drones:**
+Make sure next components installed: 
+- .NET SDK 7 - https://dotnet.microsoft.com/en-us/download/dotnet/7.0 ; 
+-  AvaloniaUI - https://docs.avaloniaui.net/docs/get-started/install ;
+- Execute **dotnet install (package name)** command to setup required packages.
+
+**2. Clone project repository:**
+[ git clone https://github.com/your-repository-url.git](https://github.com/asv-soft/asv-drones.git)
+
 
 ## Versioning
 
