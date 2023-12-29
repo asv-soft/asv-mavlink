@@ -2,7 +2,7 @@
 
 asv-mavlink library that provides tools for UAV control, that support [MAVLink](https://mavlink.io/en/) protocol.
 
-[![Deploy Nuget for Windows](https://github.com/asv-soft/asv-mavlink/actions/workflows/nuget_windows.yml/badge.svg)](https://github.com/asv-soft/asv-mavlink/actions/workflows/nuget_windows.yml)
+[![No Test Deploy Nuget for Windows](https://github.com/asv-soft/asv-mavlink/actions/workflows/NO_TEST_NUGET_WINDOWS.yml/badge.svg)](https://github.com/asv-soft/asv-mavlink/actions/workflows/NO_TEST_NUGET_WINDOWS.yml)
 
 Mavlink library for .NET 6.0, .NET 7.0 (support MAVLinkV2 packets)
 
