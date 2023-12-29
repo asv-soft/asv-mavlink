@@ -1,6 +1,6 @@
 ## 1. Introduction 
 
-asv-mavlimk library provide functional that allows control vehicles, that support [MAVLink](https://mavlink.io/en/) protocol.
+asv-mavlimk library that provides tools for UAV control, that support [MAVLink](https://mavlink.io/en/) protocol.
 
 [![Deploy Nuget for Windows](https://github.com/asv-soft/asv-mavlink/actions/workflows/nuget_windows.yml/badge.svg)](https://github.com/asv-soft/asv-mavlink/actions/workflows/nuget_windows.yml)
 
@@ -117,7 +117,7 @@ Our solution is organized the following way:
 
 ### 3.2 Naming Conventions
 
-Consistent naming conventions are essential for code readability. Throughout the codebase, we follow the general [Microsoft Naming Guidelines](https://learn.microsoft.com/en-us/dotnet/standard/design-guidelines/naming-guidelines)
+Consistent naming conventions are essential for code readability. Throughout the codebase, we follow the guidelines outlined [in our documentation](https://docs.asv.me/use-cases/for-developers)
 
 These conventions contribute to a unified and coherent codebase.
 
