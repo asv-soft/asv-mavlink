@@ -4,9 +4,6 @@ using Asv.IO;
 
 namespace Asv.Mavlink;
 
-
-
-
 /// <summary>
 /// An abstraction over Stream that allows data to be stored and quickly accessed as a list by index.
 /// The file starts with a fixed-format header signed with a checksum (it cannot be changed).
@@ -19,36 +16,43 @@ public interface IListDataFile<out TMetadata>:IDisposable
 {
     IListDataFileFormat Header { get; }
     object Tag { get; set; }
+
     /// <summary>
     /// Count of items in list
     /// </summary>
     uint Count { get; }
+
     /// <summary>
     /// Byte size of all file
     /// </summary>
     long ByteSize { get; }
+
     /// <summary>
     /// Thread safe method to edit metadata
     /// </summary>
     /// <param name="editCallback"></param>
     void EditMetadata(Action<TMetadata> editCallback);
+
     /// <summary>
     /// Thread safe method to read metadata. Return copy of metadata 
     /// </summary>
     /// <returns></returns>
     TMetadata ReadMetadata();
+
     /// <summary>
     /// Check if item exist in list (include the checksum)
     /// </summary>
     /// <param name="index"></param>
     /// <returns></returns>
     bool Exist(uint index);
+
     /// <summary>
     /// Write item to list and sign it with checksum
     /// </summary>
     /// <param name="index"></param>
     /// <param name="payload"></param>
     void Write(uint index, ISpanSerializable payload);
+
     /// <summary>
     /// Try to read item from list and check it with checksum
     /// </summary>
