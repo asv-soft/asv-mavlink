@@ -490,7 +490,7 @@ By incorporating security practices into our development process, we aim to crea
 
 ## 10. License
 
-This project is licensed under the terms of the MIT License. A copy of the MIT License is provided in the [LICENSE](https://github.com/asv-soft/asv-drones-gbs?tab=MIT-1-ov-file) file.
+This project is licensed under the terms of the MIT License. A copy of the MIT License is provided in the [LICENSE](https://github.com/asv-soft/asv-mavlink?tab=MIT-1-ov-file) file.
 
 ### MIT License
 
