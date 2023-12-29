@@ -1,6 +1,6 @@
 ## 1. Introduction 
 
-asv-mavlimk library that provides tools for UAV control, that support [MAVLink](https://mavlink.io/en/) protocol.
+asv-mavlink library that provides tools for UAV control, that support [MAVLink](https://mavlink.io/en/) protocol.
 
 [![Deploy Nuget for Windows](https://github.com/asv-soft/asv-mavlink/actions/workflows/nuget_windows.yml/badge.svg)](https://github.com/asv-soft/asv-mavlink/actions/workflows/nuget_windows.yml)
 
