@@ -29,12 +29,12 @@ public class AsvSdrExTests
         var asvSdrClientEx = new AsvSdrClientEx(asvSdrClient, heartBeatClient, commandClient, new AsvSdrClientExConfig());
 
         var pkt = new PacketSequenceCalculator();
-        var mavlinkServerIdentity = new MavlinkServerIdentity() { SystemId = 2, ComponentId = 2 };
-        var heartBeatServer = new HeartbeatServer(link.Server, pkt, mavlinkServerIdentity, new MavlinkHeartbeatServerConfig(), Scheduler.Default);
-        var commandServer = new CommandServer(link.Server, pkt, mavlinkServerIdentity, Scheduler.Default);
+        var MavlinkIdentity = new MavlinkIdentity(2, 2 );
+        var heartBeatServer = new HeartbeatServer(link.Server, pkt, MavlinkIdentity, new MavlinkHeartbeatServerConfig(), Scheduler.Default);
+        var commandServer = new CommandServer(link.Server, pkt, MavlinkIdentity, Scheduler.Default);
         var commandLongServerEx = new CommandLongServerEx(commandServer);
-        var status = new StatusTextServer(link.Server, pkt, mavlinkServerIdentity, new StatusTextLoggerConfig(), Scheduler.Default);
-        var asvSdrServer = new AsvSdrServer(link.Server, mavlinkServerIdentity, new AsvSdrServerConfig(), pkt, Scheduler.Default);
+        var status = new StatusTextServer(link.Server, pkt, MavlinkIdentity, new StatusTextLoggerConfig(), Scheduler.Default);
+        var asvSdrServer = new AsvSdrServer(link.Server, MavlinkIdentity, new AsvSdrServerConfig(), pkt, Scheduler.Default);
         var asvSdrServerEx = new AsvSdrServerEx(asvSdrServer,status, heartBeatServer, commandLongServerEx);
         
         heartBeatServer.Start();

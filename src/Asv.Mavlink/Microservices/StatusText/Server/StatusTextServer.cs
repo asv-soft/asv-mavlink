@@ -21,14 +21,14 @@ namespace Asv.Mavlink
         private readonly int _maxMessageSize = new StatustextPayload().Text.Length;
         private readonly IMavlinkV2Connection _connection;
         private readonly IPacketSequenceCalculator _seq;
-        private readonly MavlinkServerIdentity _identity;
+        private readonly MavlinkIdentity _identity;
         private readonly StatusTextLoggerConfig _config;
         private readonly ConcurrentQueue<KeyValuePair<MavSeverity,string>> _messageQueue = new();
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private int _isSending;
 
         public StatusTextServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkServerIdentity identity, StatusTextLoggerConfig config, IScheduler scheduler):   
+            MavlinkIdentity identity, StatusTextLoggerConfig config, IScheduler scheduler):   
             base("STATUS",connection,identity,seq,scheduler)
         {
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));

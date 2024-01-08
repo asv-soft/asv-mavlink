@@ -17,7 +17,7 @@ namespace Asv.Mavlink
         ///
         public byte SystemId { get; set; }
         public byte ComponentId { get; set; }
-        public ushort FullId => (ushort)(ComponentId | SystemId << 8);
+        public ushort FullId => MavlinkHelper.ConvertToFullId(ComponentId , SystemId);
         public abstract TPayload Payload { get; }
         public abstract string Name { get; }
         public abstract bool WrapToV2Extension { get; }

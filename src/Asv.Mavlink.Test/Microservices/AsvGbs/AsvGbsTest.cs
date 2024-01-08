@@ -30,7 +30,7 @@ namespace Asv.Mavlink.Test
             var link = new VirtualMavlinkConnection();
             var cfg = new InMemoryConfiguration(); 
             var mode = AsvGbsCustomMode.AsvGbsCustomModeAuto;
-            IGbsServerDevice serverDevice = new GbsServerDevice(link.Server, new MavlinkServerIdentity(),new PacketSequenceCalculator(),Scheduler.Default,new GbsServerDeviceConfig(), new List<IMavParamTypeMetadata>(), new MavParamCStyleEncoding(),cfg);
+            IGbsServerDevice serverDevice = new GbsServerDevice(link.Server, new MavlinkIdentity(),new PacketSequenceCalculator(),Scheduler.Default,new GbsServerDeviceConfig(), new List<IMavParamTypeMetadata>(), new MavParamCStyleEncoding(),cfg);
             serverDevice.Gbs.AccuracyMeter.OnNext(0.15);
             serverDevice.Gbs.ObservationSec.OnNext(1);
             serverDevice.Gbs.DgpsRate.OnNext(2);
@@ -77,7 +77,7 @@ namespace Asv.Mavlink.Test
             var link = new VirtualMavlinkConnection();
             
             var called = false;
-            var serverDevice = new GbsServerDevice(link.Server, new MavlinkServerIdentity(),new PacketSequenceCalculator(),Scheduler.Default, new GbsServerDeviceConfig(), new List<IMavParamTypeMetadata>(), new MavParamCStyleEncoding(),new InMemoryConfiguration());
+            var serverDevice = new GbsServerDevice(link.Server, new MavlinkIdentity(),new PacketSequenceCalculator(),Scheduler.Default, new GbsServerDeviceConfig(), new List<IMavParamTypeMetadata>(), new MavParamCStyleEncoding(),new InMemoryConfiguration());
             serverDevice.Gbs.StartAutoMode = (dur, acc, cancel) =>
             {
                 called = true;

@@ -32,7 +32,7 @@ public class ParamsMicroserviceTest
         
         var srvSeq = new PacketSequenceCalculator();
         
-        var srvId = new MavlinkServerIdentity(componentId: 1, systemId: 1);
+        var srvId = new MavlinkIdentity(componentId: 1, systemId: 1);
         
         var srvCfg = new InMemoryConfiguration();
         
@@ -87,7 +87,7 @@ public class ParamsMicroserviceTest
         
         var srvSeq = new PacketSequenceCalculator();
         
-        var srvId = new MavlinkServerIdentity(componentId: 1, systemId: 1);
+        var srvId = new MavlinkIdentity(componentId: 1, systemId: 1);
         
         var srvCfg = new InMemoryConfiguration();
         
@@ -151,7 +151,7 @@ public class ParamsMicroserviceTest
         
         var srvSeq = new PacketSequenceCalculator();
         
-        var srvId = new MavlinkServerIdentity(componentId: 1, systemId: 1);
+        var srvId = new MavlinkIdentity(componentId: 1, systemId: 1);
         
         var srvCfg = new InMemoryConfiguration();
         
@@ -213,7 +213,7 @@ public class ParamsMicroserviceTest
         
         var srvSeq = new PacketSequenceCalculator();
         
-        var srvId = new MavlinkServerIdentity(componentId: 1, systemId: 1);
+        var srvId = new MavlinkIdentity(componentId: 1, systemId: 1);
         
         var srvCfg = new InMemoryConfiguration();
         

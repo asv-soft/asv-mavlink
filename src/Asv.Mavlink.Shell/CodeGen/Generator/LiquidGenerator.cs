@@ -33,6 +33,7 @@ namespace Asv.Mavlink.Shell
                                                        Value = en.Value,
                                                        Desc = en.Desc,
                                                        Name = en.Name,
+                                                       IsFlag = en.IsFlag,
                                                        CamelCaseName = NameConverter(en.Name),
                                                        Entries = en.Entries.Select(
                                                            enEntry => new

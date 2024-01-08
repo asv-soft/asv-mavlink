@@ -21,11 +21,7 @@ public class AsvSdrTest
     {
         var link = new VirtualMavlinkConnection();
         serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity
-            {
-                ComponentId = 2,
-                SystemId = 2
-            }, new AsvSdrServerConfig(),
+            new MavlinkIdentity (2, 2), new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
         clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity

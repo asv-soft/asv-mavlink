@@ -19,7 +19,7 @@ namespace Asv.Mavlink
         private readonly AsvGbsServerConfig _config;
         private readonly MavlinkPacketTransponder<AsvGbsOutStatusPacket,AsvGbsOutStatusPayload> _transponder;
 
-        public AsvGbsServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,MavlinkServerIdentity identity,AsvGbsServerConfig config, IScheduler rxScheduler) 
+        public AsvGbsServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,MavlinkIdentity identity,AsvGbsServerConfig config, IScheduler rxScheduler) 
             : base("GBS", connection, identity, seq, rxScheduler)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));

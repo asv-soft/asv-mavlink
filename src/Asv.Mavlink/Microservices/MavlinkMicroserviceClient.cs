@@ -120,7 +120,7 @@ namespace Asv.Mavlink
             using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
             linkedCancel.CancelAfter(timeoutMs);
             var tcs = new TaskCompletionSource<TResult>();
-            await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled());
+            await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
 
             using var subscribe = InternalFilteredVehiclePackets.Subscribe(x=>
             {
@@ -182,7 +182,7 @@ namespace Asv.Mavlink
             using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
             linkedCancel.CancelAfter(timeoutMs);
             var tcs = new TaskCompletionSource<TAnswerPacket>();
-            await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled());
+            await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
 
             filter ??= (_ => true);
             using var subscribe = InternalFilterFirstAsync(filter).Subscribe(_=>tcs.TrySetResult(_));

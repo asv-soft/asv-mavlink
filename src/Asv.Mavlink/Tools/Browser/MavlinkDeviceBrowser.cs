@@ -69,7 +69,7 @@ namespace Asv.Mavlink
 
         public byte SystemId { get; }
         public byte ComponentId { get; }
-        public ushort FullId => (ushort)(ComponentId | SystemId << 8);
+        public ushort FullId => MavlinkHelper.ConvertToFullId(ComponentId , SystemId);
         public MavType Type { get; }
         public MavAutopilot Autopilot { get; }
         public byte MavlinkVersion { get; }

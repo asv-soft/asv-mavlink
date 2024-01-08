@@ -12,7 +12,7 @@ public class MavlinkMissionMicroserviceTest
     private void CreateClientServer(VirtualMavlinkConnection link, out IMissionServer server, out IMissionClient client)
     {
         var serverSeq = new PacketSequenceCalculator();
-        var serverId = new MavlinkServerIdentity{ComponentId = 13, SystemId = 13};
+        var serverId = new MavlinkIdentity(13,13);
         server = new MissionServer(link.Server, serverId, serverSeq, TaskPoolScheduler.Default);
         
         

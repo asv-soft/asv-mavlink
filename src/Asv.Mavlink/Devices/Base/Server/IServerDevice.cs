@@ -48,7 +48,7 @@ public interface IServerDevice
     /// <returns>
     /// Returns the MavlinkServerIdentity object representing the identity of the Mavlink server.
     /// </returns>
-    MavlinkServerIdentity Identity { get; }
+    MavlinkIdentity Identity { get; }
 
     /// <summary>
     /// Gets the server status text.

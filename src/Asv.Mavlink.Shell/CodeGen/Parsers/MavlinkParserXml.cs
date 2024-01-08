@@ -216,7 +216,9 @@ namespace Asv.Mavlink.Shell
                 switch (rdr.Name)
                 {
                     case "description":
-                        enumItem.Desc = ConvertDesc(rdr.ReadElementContentAsString());;
+                        var content = rdr.ReadElementContentAsString();
+                        enumItem.Desc = ConvertDesc(content);
+                        enumItem.IsFlag = content.Contains("[!THIS_IS_ENUM_FLAG!]");
                         break;
                     case "entry":
                         ParseEnumEntry(rdr,enumItem.Entries);

@@ -14,10 +14,10 @@ namespace Asv.Mavlink
     {
         private readonly IMavlinkV2Connection _connection;
         private readonly IPacketSequenceCalculator _seq;
-        private readonly MavlinkServerIdentity _identity;
+        private readonly MavlinkIdentity _identity;
 
         public CommandServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkServerIdentity identity, IScheduler rxScheduler)
+            MavlinkIdentity identity, IScheduler rxScheduler)
             : base("COMMAND", connection, identity, seq, rxScheduler)
         {
             _connection = connection;
