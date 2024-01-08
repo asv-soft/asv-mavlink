@@ -6,6 +6,9 @@ using DynamicData;
 
 namespace Asv.Mavlink
 {
+    /// <summary>
+    /// Represents a MAVLink device.
+    /// </summary>
     public interface IMavlinkDevice
     {
         /// <summary>

@@ -12,20 +12,63 @@ using NLog;
 
 namespace Asv.Mavlink;
 
-
-public interface IHierarchicalStoreFormat<TKey, out TFile>:IDisposable
-    where TFile : IDisposable
+/// <summary>
+/// Interface representing a hierarchical store format
+/// </summary>
+/// <typeparam name="TKey">Type of key identifying each file or folder</typeparam>
+/// <typeparam name="TFile">Type of file</typeparam>
+public interface IHierarchicalStoreFormat<TKey, out TFile> : IDisposable where TFile : IDisposable
 {
+    /// <summary>
+    /// Gets the Identifier of the root folder.
+    /// </summary>
     TKey RootFolderId { get; }
-    IEqualityComparer<TKey> KeyComparer{ get; }
-    bool TryGetFolderInfo(DirectoryInfo folderInfo,out TKey id, out string? displayName);
+
+    /// <summary>
+    /// Gets the Key Comparer for this store format.
+    /// </summary>
+    IEqualityComparer<TKey> KeyComparer { get; }
+
+    /// <summary>
+    /// Tries to get the information of a folder.
+    /// </summary>
+    /// <param name="folderInfo">The DirectoryInfo object representing the folder.</param>
+    /// <param name="id">[out] When this method returns, contains the unique identifier of the folder if it is found; otherwise, the default value for the type of the identifier.</param>
+    /// <param name="displayName">[out] When this method returns, contains the display name of the folder if it is found; otherwise, null.</param>
+    /// <returns>Returns true if the folder information is successfully retrieved; otherwise, false.</returns>
+    bool TryGetFolderInfo(DirectoryInfo folderInfo, out TKey id, out string? displayName);
+
+    /// <summary>
+    /// Get the folder name in the file system.
+    /// </summary>
     string GetFileSystemFolderName(TKey id, string displayName);
-    bool TryGetFileInfo(FileInfo fileInfo,out TKey id, out string displayName);
+
+    /// <summary>
+    /// Try to get file information.
+    /// </summary>
+    bool TryGetFileInfo(FileInfo fileInfo, out TKey id, out string displayName);
+
+    /// <summary>
+    /// Get file name from the file system.
+    /// </summary>
     string GetFileSystemFileName(TKey id, string displayName);
+
+    /// <summary>
+    /// Open a file.
+    /// </summary>
     TFile OpenFile(Stream stream);
+
+    /// <summary>
+    /// Create a new file.
+    /// </summary>
     TFile CreateFile(Stream stream, TKey id, string name);
+
+    /// <summary>
+    /// Check if folder name is valid.
+    /// </summary>
     void CheckFolderDisplayName(string name);
 }
+
 
 public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,IHierarchicalStore<TKey, TFile> 
     where TKey : notnull
@@ -71,6 +114,13 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     }
     
     public IRxValue<ushort> Count => _count;
+
+    /// <summary>
+    /// Gets the size value as an observable.
+    /// </summary>
+    /// <value>
+    /// An instance of <see cref="IRxValue{ulong}"/> representing the size value.
+    /// </value>
     public IRxValue<ulong> Size => _size;
 
     public void UpdateEntries()
@@ -141,6 +191,18 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         Logger.Info($"Update statistics: items:{_count.Value}, size:{_size.Value}");
     }
 
+    /// <summary>
+    /// Retrieves all sub-files of a given folder.
+    /// </summary>
+    /// <param name="folderId">The identifier of the folder.</param>
+    /// <returns>An enumerable collection of sub-file identifiers.</returns>
+    /// <remarks>
+    /// The method recursively retrieves all sub-files within a folder.
+    /// If the folder identified by <paramref name="folderId"/> does not exist in the internal collection,
+    /// an empty collection is returned.
+    /// </remarks>
+    /// <typeparam name="TKey">The type of the folder identifier.</typeparam>
+    /// <returns>An <see cref="IEnumerable{T}"/> of <typeparamref name="TKey"/>.</returns>
     private IEnumerable<TKey> InternalGetSubFiles(TKey folderId)
     {
         if (_entries.TryGetValue(folderId, out var folder) == false) yield break;
@@ -174,6 +236,13 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         }
     }
 
+    /// <summary>
+    /// Tries to get the entry with the specified id from the hierarchical store.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the id.</typeparam>
+    /// <param name="id">The id of the entry to get.</param>
+    /// <param name="entry">When this method returns, contains the entry associated with the specified id, if the id is found; otherwise, null. This parameter is passed uninitialized.</param>
+    /// <returns>true if the entry is found and retrieved successfully; otherwise, false.</returns>
     public bool TryGetEntry(TKey id, out IHierarchicalStoreEntry<TKey>? entry)
     {
         entry = null;
@@ -211,6 +280,24 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         }
     }
 
+    /// <summary>
+    /// Creates a new folder in the hierarchical store.
+    /// </summary>
+    /// <param name="id">The unique identifier for the folder.</param>
+    /// <param name="name">The name of the folder to create.</param>
+    /// <param name="parentId">The unique identifier of the parent folder.</param>
+    /// <returns>
+    /// The unique identifier of the created folder.
+    /// </returns>
+    /// <exception cref="System.ArgumentException">
+    /// Thrown when <paramref name="name"/> is null or empty.
+    /// </exception>
+    /// <exception cref="HierarchicalStoreException">
+    /// Thrown when the folder with <paramref name="parentId"/> does not exist.
+    /// </exception>
+    /// <exception cref="HierarchicalStoreFolderAlreadyExistException">
+    /// Thrown when a folder with the same name already exists under the parent folder.
+    /// </exception>
     public TKey CreateFolder(TKey id, string name, TKey parentId)
     {
         if (string.IsNullOrEmpty(name)) throw new ArgumentException("Folder name cannot be null or empty.", nameof(name));
@@ -285,6 +372,11 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         }
     }
 
+    /// <summary>
+    /// Checks if a folder with the specified ID exists in the folder store.
+    /// </summary>
+    /// <param name="id">The ID of the folder to check.</param>
+    /// <returns>True if the folder exists, otherwise false.</returns>
     public bool FolderExists(TKey id)
     {
         lock (_sync)
@@ -335,6 +427,18 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         }
     }
 
+    /// <summary>
+    /// Moves a folder to a new parent folder.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the folder ID.</typeparam>
+    /// <param name="id">The ID of the folder to move.</param>
+    /// <param name="newParentId">The ID of the new parent folder.</param>
+    /// <exception cref="HierarchicalStoreException">
+    /// <para>Thrown if the folder with the specified <paramref name="id"/> is not found.</para>
+    /// <para>Thrown if the entry with the specified <paramref name="id"/> is not a folder.</para>
+    /// <para>Thrown if the parent folder with the specified <paramref name="newParentId"/> is not found.</para>
+    /// <para>Thrown if the parent entry with the specified <paramref name="newParentId"/> is not a folder.</para>
+    /// </exception>
     public void MoveFolder(TKey id, TKey newParentId)
     {
         lock (_sync)
@@ -424,6 +528,12 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         }
     }
 
+    /// <summary>
+    /// Renames a file with the specified ID to the new name.
+    /// </summary>
+    /// <param name="id">The ID of the file to be renamed.</param>
+    /// <param name="newName">The new name for the file.</param>
+    /// <returns>The ID of the renamed file.</returns>
     public TKey RenameFile(TKey id, string newName)
     {
         lock (_sync)
@@ -465,6 +575,14 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         }
     }
 
+    /// <summary>
+    /// Moves a file with the specified ID to a new parent folder with the specified ID.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the ID.</typeparam>
+    /// <param name="id">The ID of the file to be moved.</param>
+    /// <param name="newParentId">The ID of the new parent folder.</param>
+    /// <exception cref="HierarchicalStoreException">Thrown if the file with the given ID is not found,
+    /// if the entry with the given ID is not a file, or if the parent entry is not a folder.</exception>
     public void MoveFile(TKey id, TKey newParentId)
     {
         lock (_sync)
@@ -524,6 +642,16 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         }
     }
 
+    /// <summary>
+    /// Creates a new file in the hierarchical store.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the file's ID.</typeparam>
+    /// <typeparam name="TFile">The type of the file.</typeparam>
+    /// <param name="id">The ID of the file.</param>
+    /// <param name="name">The name of the file.</param>
+    /// <param name="parentId">The ID of the parent folder.</param>
+    /// <returns>The created file with its associated cache.</returns>
+    /// <exception cref="HierarchicalStoreException">Thrown when the ID or file name already exists.</exception>
     public ICachedFile<TKey, TFile> CreateFile(TKey id, string name, TKey parentId)
     {
         lock (_sync)
@@ -632,6 +760,10 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         }
     }
 
+    /// <summary>
+    /// Checks the file cache for rotten files and removes them.
+    /// </summary>
+    /// <param name="delay">The delay in milliseconds to wait before checking the cache again if it is already in progress.</param>
     private void CheckFileCacheForRottenFiles(long delay)
     {
         if (Interlocked.CompareExchange(ref _checkCacheInProgress,1,0) != 0) return;
