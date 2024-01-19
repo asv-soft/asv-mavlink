@@ -11,8 +11,18 @@ public class DebugTest
     public async Task TestDebug()
     {
         var link = new VirtualMavlinkConnection();
-        var client = new DebugClient(link.Client, new MavlinkClientIdentity(), new PacketSequenceCalculator());
-        var server = new DebugServer(link.Server, new PacketSequenceCalculator(), new MavlinkIdentity(), Scheduler.Default);
+        var clientId = new MavlinkClientIdentity
+        {
+            SystemId = 1,
+            ComponentId = 2,
+            TargetSystemId = 3,
+            TargetComponentId = 4
+        };
+        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
+        
+        
+        var client = new DebugClient(link.Client, clientId, new PacketSequenceCalculator());
+        var server = new DebugServer(link.Server, new PacketSequenceCalculator(), serverId, Scheduler.Default);
 
         var completed = false;
         client.DebugFloatArray.Subscribe(_=>

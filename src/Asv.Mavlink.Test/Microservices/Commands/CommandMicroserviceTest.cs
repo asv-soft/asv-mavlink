@@ -9,11 +9,18 @@ namespace Asv.Mavlink.Test;
 
 public class CommandMicroserviceTest
 {
-    private static CommandClient CreateCommandClient(VirtualMavlinkConnection link)
+    private static CommandClient CreateCommandClient(VirtualMavlinkConnection link, out MavlinkClientIdentity clientId)
     {
-        var client = new CommandClient(link.Client,
-            new MavlinkClientIdentity { SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13 },
-            new PacketSequenceCalculator(), new CommandProtocolConfig
+         clientId = new MavlinkClientIdentity
+        {
+            SystemId = 1,
+            ComponentId = 2,
+            TargetSystemId = 3,
+            TargetComponentId = 4
+        };
+        
+        
+        var client = new CommandClient(link.Client, clientId, new PacketSequenceCalculator(), new CommandProtocolConfig
             {
                 CommandTimeoutMs = 1000,
                 CommandAttempt = 5,
@@ -21,10 +28,10 @@ public class CommandMicroserviceTest
         return client;
     }
 
-    private static CommandServer CreateCommandServer(VirtualMavlinkConnection link)
+    private static CommandServer CreateCommandServer(VirtualMavlinkConnection link,MavlinkClientIdentity clientId)
     {
-        var server = new CommandServer(link.Server, new PacketSequenceCalculator(),
-            new MavlinkIdentity (13,13), TaskPoolScheduler.Default);
+        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
+        var server = new CommandServer(link.Server, new PacketSequenceCalculator(), serverId, TaskPoolScheduler.Default);
         return server;
     }
     
@@ -32,8 +39,9 @@ public class CommandMicroserviceTest
     public async Task Client_Call_Command_Int_And_Server_Catch_It()
     {
         var link = new VirtualMavlinkConnection();
-        var server = CreateCommandServer(link);
-        var client = CreateCommandClient(link);
+        var client = CreateCommandClient(link, out var clientId);
+        var server = CreateCommandServer(link, clientId);
+        
         
         var called = false;
         server.OnCommandInt.Subscribe(_ =>
@@ -48,8 +56,8 @@ public class CommandMicroserviceTest
     public async Task Client_Call_Command_Long_And_Server_Catch_It()
     {
         var link = new VirtualMavlinkConnection();
-        var server = CreateCommandServer(link);
-        var client = CreateCommandClient(link);
+        var client = CreateCommandClient(link, out var clientId);
+        var server = CreateCommandServer(link, clientId);
         
         var called = false;
         server.OnCommandLong.Subscribe(_ =>
@@ -67,8 +75,8 @@ public class CommandMicroserviceTest
         int cnt = 0;
         // Emulation of packet loss
         var link = new VirtualMavlinkConnection(_=> ++cnt>2);
-        var server = CreateCommandServer(link);
-        var client = CreateCommandClient(link);
+        var client = CreateCommandClient(link, out var clientId);
+        var server = CreateCommandServer(link, clientId);
        
         
         var called = false;
@@ -89,8 +97,8 @@ public class CommandMicroserviceTest
         int cnt = 0;
         // Emulation of packet loss
         var link = new VirtualMavlinkConnection(_=> ++cnt>3);
-        var server = CreateCommandServer(link);
-        var client = CreateCommandClient(link);
+        var client = CreateCommandClient(link, out var clientId);
+        var server = CreateCommandServer(link, clientId);
         
         var called = false;
         server.OnCommandLong.Subscribe(_ =>
@@ -110,8 +118,8 @@ public class CommandMicroserviceTest
         int cnt = 0;
         // Emulation of packet loss
         var link = new VirtualMavlinkConnection(_=> Interlocked.Increment(ref cnt) >3);
-        var server = CreateCommandServer(link);
-        var client = CreateCommandClient(link);
+        var client = CreateCommandClient(link, out var clientId);
+        var server = CreateCommandServer(link, clientId);
         var intList = new CommandIntServerEx(server);
         var longList = new CommandLongServerEx(server);
         var called = false;

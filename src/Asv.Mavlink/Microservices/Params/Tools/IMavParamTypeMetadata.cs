@@ -1,3 +1,6 @@
+using System;
+using Asv.Cfg;
+using Asv.Common;
 using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
@@ -86,12 +89,12 @@ public interface IMavParamTypeMetadata
     bool Volatile { get; }
     /// <summary>
     /// Minimum valid value
-    /// If 'min' is not specified the minimum value is the minimum numeric value which can be represented by the type.
+    /// If 'min' is not specified the minimum value is the minimum numeric value which can be represented by the 
     /// </summary>
     MavParamValue MinValue { get; }
     /// <summary>
     /// Maximum valid value
-    /// If 'max' is not specified the minimum value is the maximum numeric value which can be represented by the type.
+    /// If 'max' is not specified the minimum value is the maximum numeric value which can be represented by the 
     /// </summary>
     MavParamValue MaxValue { get; }
     /// <summary>
@@ -123,15 +126,81 @@ public interface IMavParamTypeMetadata
     /// Validates a MAV parameter value and returns an error message if validation fails. </summary> <param name="newValue">The new value to be validated.</param> <returns>A string containing the error message if validation fails; otherwise, an empty string.</returns>
     /// /
     string GetValidationError(MavParamValue newValue);
+    
+    private static string CombineConfigKey(string prefix, string name)
+    {
+        return prefix.IsNullOrWhiteSpace() ? name : $"{prefix}{name}";
+    }
+    
+    public MavParamValue ReadFromConfig(IConfiguration config, string prefix = null)
+    {
+        var key = CombineConfigKey(prefix, Name);
+        switch (Type)
+        {
+            case MavParamType.MavParamTypeUint8:
+                return new MavParamValue(config.Get(key, (byte)DefaultValue));
+            case MavParamType.MavParamTypeInt8:
+                return new MavParamValue(config.Get(key, (sbyte)DefaultValue));
+            case MavParamType.MavParamTypeUint16:
+                return new MavParamValue(config.Get(key, (ushort)DefaultValue));
+            case MavParamType.MavParamTypeInt16:
+                return new MavParamValue(config.Get(key, (short)DefaultValue));
+            case MavParamType.MavParamTypeUint32:
+                return new MavParamValue(config.Get(key, (uint)DefaultValue));
+            case MavParamType.MavParamTypeInt32:
+                return new MavParamValue(config.Get(key, (int)DefaultValue));
+            case MavParamType.MavParamTypeReal32:
+                return new MavParamValue(config.Get(key, (float)DefaultValue));
+            case MavParamType.MavParamTypeUint64:
+            case MavParamType.MavParamTypeInt64:
+            case MavParamType.MavParamTypeReal64:
+            default:
+                throw new ArgumentOutOfRangeException(nameof(Type));
+        }
+    }
+    
+    public void WriteToConfig(IConfiguration config, MavParamValue value,string prefix = null)
+    {
+        var key = CombineConfigKey(prefix, Name);
+        switch (value.Type)
+        {
+            case MavParamType.MavParamTypeUint8:
+                config.Set(key, (byte)value);
+                break;
+            case MavParamType.MavParamTypeInt8:
+                config.Set(key, (sbyte)value);
+                break;
+            case MavParamType.MavParamTypeUint16:
+                config.Set(key, (ushort)value);
+                break;
+            case MavParamType.MavParamTypeInt16:
+                config.Set(key, (short)value);
+                break;
+            case MavParamType.MavParamTypeUint32:
+                config.Set(key, (uint)value);
+                break;
+            case MavParamType.MavParamTypeInt32:
+                config.Set(key, (int)value);
+                break;
+            case MavParamType.MavParamTypeReal32:
+                config.Set(key, (float)value);
+                break;
+            case MavParamType.MavParamTypeUint64:
+            case MavParamType.MavParamTypeInt64:
+            case MavParamType.MavParamTypeReal64:
+            default:
+                throw new ArgumentOutOfRangeException(nameof(value), value, null);
+        }
+    }
 }
 
 /// <summary>
-/// Represents the metadata associated with a MAVLink parameter type.
+/// Represents the metadata associated with a MAVLink parameter 
 /// </summary>
 public class MavParamTypeMetadata : IMavParamTypeMetadata
 {
     /// <summary>
-    /// Represents the metadata for a MAVLink parameter type.
+    /// Represents the metadata for a MAVLink parameter 
     /// </summary>
     /// <param name="name">The name of the parameter.</param>
     /// <param name="type">The type of the parameter.</param>

@@ -46,64 +46,7 @@ public static class MavParamHelper
     public static IMavParamEncoding ByteWiseEncoding { get; } = new MavParamByteWiseEncoding();
     public static IMavParamEncoding CStyleEncoding { get; } = new MavParamCStyleEncoding();
 
-    public static MavParamValue ReadFromConfig(IConfiguration config, string key, IMavParamTypeMetadata type)
-    {
-        switch (type.Type)
-        {
-            case MavParamType.MavParamTypeUint8:
-                return new MavParamValue(config.Get(key, (byte)type.DefaultValue));
-            case MavParamType.MavParamTypeInt8:
-                return new MavParamValue(config.Get(key, (sbyte)type.DefaultValue));
-            case MavParamType.MavParamTypeUint16:
-                return new MavParamValue(config.Get(key, (ushort)type.DefaultValue));
-            case MavParamType.MavParamTypeInt16:
-                return new MavParamValue(config.Get(key, (short)type.DefaultValue));
-            case MavParamType.MavParamTypeUint32:
-                return new MavParamValue(config.Get(key, (uint)type.DefaultValue));
-            case MavParamType.MavParamTypeInt32:
-                return new MavParamValue(config.Get(key, (int)type.DefaultValue));
-            case MavParamType.MavParamTypeReal32:
-                return new MavParamValue(config.Get(key, (float)type.DefaultValue));
-            case MavParamType.MavParamTypeUint64:
-            case MavParamType.MavParamTypeInt64:
-            case MavParamType.MavParamTypeReal64:
-            default:
-                throw new ArgumentOutOfRangeException(nameof(type), type, null);
-        }
-    }
     
-    public static void WriteToConfig(IConfiguration config, string key, MavParamValue value)
-    {
-        switch (value.Type)
-        {
-            case MavParamType.MavParamTypeUint8:
-                config.Set(key, (byte)value);
-                break;
-            case MavParamType.MavParamTypeInt8:
-                config.Set(key, (sbyte)value);
-                break;
-            case MavParamType.MavParamTypeUint16:
-                config.Set(key, (ushort)value);
-                break;
-            case MavParamType.MavParamTypeInt16:
-                config.Set(key, (short)value);
-                break;
-            case MavParamType.MavParamTypeUint32:
-                config.Set(key, (uint)value);
-                break;
-            case MavParamType.MavParamTypeInt32:
-                config.Set(key, (int)value);
-                break;
-            case MavParamType.MavParamTypeReal32:
-                config.Set(key, (float)value);
-                break;
-            case MavParamType.MavParamTypeUint64:
-            case MavParamType.MavParamTypeInt64:
-            case MavParamType.MavParamTypeReal64:
-            default:
-                throw new ArgumentOutOfRangeException(nameof(value), value, null);
-        }
-    }
     
 }
 

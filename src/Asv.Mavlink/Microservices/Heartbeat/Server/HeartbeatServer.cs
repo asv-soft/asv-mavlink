@@ -29,7 +29,7 @@ namespace Asv.Mavlink
 
         public void Start()
         {
-            _transponder.Start(TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(_config.HeartbeatRateMs));
+            _transponder.Start(TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(_config.HeartbeatRateMs));
         }
     }
 }

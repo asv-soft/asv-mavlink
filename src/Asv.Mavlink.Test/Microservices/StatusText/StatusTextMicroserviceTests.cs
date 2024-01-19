@@ -132,11 +132,19 @@ public class StatusTextMicroserviceTests
     public async Task OnMessage_Property_Should_Return_Expected_Status_Message(string messageText)
     {
         var link = new VirtualMavlinkConnection();
+        var clientId = new MavlinkClientIdentity
+        {
+            SystemId = 1,
+            ComponentId = 2,
+            TargetSystemId = 3,
+            TargetComponentId = 4
+        };
+        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
 
         var server = new StatusTextServer(link.Server, new PacketSequenceCalculator(),
-            new MavlinkIdentity(), new StatusTextLoggerConfig(), Scheduler.Default);
+            serverId, new StatusTextLoggerConfig(), Scheduler.Default);
 
-        var client = new StatusTextClient(link.Client, new MavlinkClientIdentity(),
+        var client = new StatusTextClient(link.Client, clientId,
             new PacketSequenceCalculator());
 
         server.Log(MavSeverity.MavSeverityDebug, messageText);
@@ -174,11 +182,19 @@ public class StatusTextMicroserviceTests
     public async Task Check_For_Server_Overload()
     {
         var link = new VirtualMavlinkConnection();
-
+        var clientId = new MavlinkClientIdentity
+        {
+            SystemId = 1,
+            ComponentId = 2,
+            TargetSystemId = 3,
+            TargetComponentId = 4
+        };
+        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
+        
         var server = new StatusTextServer(link.Server, new PacketSequenceCalculator(),
-            new MavlinkIdentity(), new StatusTextLoggerConfig(), Scheduler.Default);
+            serverId, new StatusTextLoggerConfig(), Scheduler.Default);
 
-        var client = new StatusTextClient(link.Client, new MavlinkClientIdentity(),
+        var client = new StatusTextClient(link.Client, clientId,
             new PacketSequenceCalculator());
 
         var isOverloaded = false;
