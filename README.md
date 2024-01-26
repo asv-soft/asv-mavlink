@@ -35,7 +35,7 @@ Asv.Mavlink.Shell.exe mavlink --cs=tcp://127.0.0.1:5760
 To ensure a smooth development experience, follow the steps below to set up your development environment:
 
 #### 2.1 **Prerequisites:**
-- **Operating System:** This project is compatible with Windows, macOS, and Linux. Ensure that your development machine runs one of these supported operating systems.
+- **Operating System:** This project is compatible with Windows, macOS, and Linux. Ensure that your development machine runs one of these supported operating systems. But we recommended use Windows for developing in this project.
 - **IDE (Integrated Development Environment):** We recommend using [Visual Studio](https://visualstudio.microsoft.com/) or [JetBrains Rider](https://www.jetbrains.com/rider/) as your IDE for C# development. Make sure to install the necessary extensions and plugins for a better development experience.
 
 #### 2.2 **.NET 7 Installation:**
