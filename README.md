@@ -41,6 +41,8 @@ To ensure a smooth development experience, follow the steps below to set up your
 #### 2.2 **.NET 7 Installation:**
 - This project is built using [.NET 7](https://dotnet.microsoft.com/download/dotnet/7.0), the latest version of the .NET platform. Install .NET 7 by following the instructions provided on the official [.NET website](https://dotnet.microsoft.com/download/dotnet/7.0).
 
+- This project is built using [.NET 6.0](https://dotnet.microsoft.com/download/dotnet/6.0) and [.NET 7.0](https://dotnet.microsoft.com/download/dotnet/7.0), the latest version of the .NET platform. We recommend installing .NET 7.0 by following the instructions provided on the official [.NET website](https://dotnet.microsoft.com/download/dotnet/7.0).
+
    ```bash
    # Check your current .NET version
    dotnet --version
