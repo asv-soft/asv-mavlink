@@ -8,6 +8,7 @@ namespace Asv.Mavlink;
 /// </summary>
 public interface IStatusTextClient
 {
+    /// <summary>
     /// Gets the editable value for Name.
     /// </summary>
     /// <value>
