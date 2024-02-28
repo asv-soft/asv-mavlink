@@ -17,7 +17,7 @@ public class HeartbeatMicroserviceTest
         var serverHeartbeat = new HeartbeatServer(
             link.Server, 
             new PacketSequenceCalculator(), 
-            new MavlinkServerIdentity{ComponentId = 13, SystemId = 13}, 
+            new MavlinkIdentity(13,13), 
             new MavlinkHeartbeatServerConfig(), 
             TaskPoolScheduler.Default);
         

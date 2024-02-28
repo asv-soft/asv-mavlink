@@ -39,7 +39,7 @@ namespace Asv.Mavlink
             IPacketSequenceCalculator seq, HeartbeatClientConfig config, IScheduler? scheduler = null):base("HEARTBEAT", connection, identity, seq)
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
-            FullId = (ushort)(identity.TargetComponentId | identity.TargetSystemId << 8);
+            FullId = MavlinkHelper.ConvertToFullId(identity.TargetComponentId, identity.TargetSystemId);
             _rxRate = new IncrementalRateCounter(config.RateMovingAverageFilter);
             _heartBeatTimeoutMs = TimeSpan.FromMilliseconds(config.HeartbeatTimeoutMs);
             InternalFilteredVehiclePackets

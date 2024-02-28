@@ -24,6 +24,7 @@
 
 using System;
 using System.Text;
+using System.ComponentModel;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Minimal;
 using Asv.IO;
@@ -50,6 +51,9 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
     {%- endfor -%}
     ///  {{ en.Name }}
     /// </summary>
+    {%- if en.IsFlag -%}
+    [Flags]
+    {%- endif -%}
     public enum {{ en.CamelCaseName }}:uint
     {
     {%- for entry in en.Entries -%}
@@ -482,8 +486,10 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
     {%- if field.IsEnum -%}
         {%- if field.IsArray -%}
             {%- if field.IsTheLargestArrayInMessage -%}
+        public const int {{ field.CamelCaseName }}MaxItemsCount = {{ field.ArrayLength }};    
         public {{ field.EnumCamelCaseName }}[] {{ field.CamelCaseName }} { get; set; } = new {{ field.EnumCamelCaseName }}[{{ field.ArrayLength }}];
             {%- else -%}
+        public const int {{ field.CamelCaseName }}MaxItemsCount = {{ field.ArrayLength }};
         public {{ field.EnumCamelCaseName }}[] {{ field.CamelCaseName }} { get; } = new {{ field.EnumCamelCaseName }}[{{ field.ArrayLength }}];
             {%- endif -%}
         {%- else -%}
@@ -492,9 +498,12 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
     {%- else -%}
         {%- if field.IsArray -%}
             {%- if field.IsTheLargestArrayInMessage -%}
+        public const int {{ field.CamelCaseName }}MaxItemsCount = {{ field.ArrayLength }};
         public {{ field.Type }}[] {{ field.CamelCaseName }} { get; set; } = new {{ field.Type }}[{{ field.ArrayLength }}];
+        [Obsolete("This method is deprecated. Use Get{{ field.CamelCaseName }}MaxItemsCount instead.")]
         public byte Get{{ field.CamelCaseName }}MaxItemsCount() => {{ field.ArrayLength }};
             {%- else -%}
+        public const int {{ field.CamelCaseName }}MaxItemsCount = {{ field.ArrayLength }};
         public {{ field.Type }}[] {{ field.CamelCaseName }} { get; } = new {{ field.Type }}[{{ field.ArrayLength }}];
             {%- endif -%}
         {%- else -%}

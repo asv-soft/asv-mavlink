@@ -25,7 +25,7 @@ namespace Asv.Mavlink
         private int _isSending;
 
         public StatusTextServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkServerIdentity identity, StatusTextLoggerConfig config, IScheduler scheduler):   
+            MavlinkIdentity identity, StatusTextLoggerConfig config, IScheduler scheduler):   
             base("STATUS",connection,identity,seq,scheduler)
         {
             if (seq == null) throw new ArgumentNullException(nameof(seq));

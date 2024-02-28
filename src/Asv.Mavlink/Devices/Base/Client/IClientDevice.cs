@@ -1,4 +1,8 @@
+using System;
 using System.Reactive.Linq;
+using System.Runtime.InteropServices.ComTypes;
+using System.Threading;
+using System.Threading.Tasks;
 using Asv.Common;
 
 namespace Asv.Mavlink;
@@ -90,18 +94,30 @@ public static class ClientDeviceHelper
     /// Waits until the client device is connected.
     /// </summary>
     /// <param name="client">The client device.</param>
-    public static void WaitUntilConnect(this IClientDevice client)
+    /// <param name="timeoutMs">Timeout</param>
+    public static void WaitUntilConnect(this IClientDevice client, int timeoutMs = 3000)
     {
-        client.Heartbeat.Link.Where(_ => _ == LinkState.Connected).FirstAsync().Wait();
+        var tcs = new TaskCompletionSource();
+        using var subscribe = client.Heartbeat.Link.Where(_ => _ == LinkState.Connected).FirstAsync().Subscribe(_ =>
+        {
+            tcs.TrySetResult();
+        });
+        tcs.Task.Wait(timeoutMs);
     }
 
     /// <summary>
-    /// Waits until the client is connected and initialized. </summary> <param name="client">The IVehicleClient object.</param>
-    /// /
-    public static void WaitUntilConnectAndInit(this IVehicleClient client)
+    /// Waits until the client is connected and initialized.
+    /// </summary>
+    /// <param name="client">The IVehicleClient object.</param>
+    public static void WaitUntilConnectAndInit(this IVehicleClient client, int timeoutMs = 3000)
     {
-        client.WaitUntilConnect();
-        client.OnInit.Where(_ => _ == InitState.Complete).FirstAsync().Wait();
+        client.WaitUntilConnect(timeoutMs);
+        var tcs = new TaskCompletionSource();
+        using var subscribe = client.OnInit.Where(_ => _ == InitState.Complete).FirstAsync().Subscribe(_ =>
+        {
+            tcs.TrySetResult();
+        });
+        tcs.Task.Wait(timeoutMs);
     }
 }
 

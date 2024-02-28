@@ -11,7 +11,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 {
     private readonly FtpConfig _cfg;
 
-    public FtpServer(IMavlinkV2Connection connection, MavlinkServerIdentity identity, FtpConfig config,
+    public FtpServer(IMavlinkV2Connection connection, MavlinkIdentity identity, FtpConfig config,
         IPacketSequenceCalculator seq, IScheduler rxScheduler) : base("FTP", connection, identity, seq, rxScheduler)
     {
         _cfg = config;

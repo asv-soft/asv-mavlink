@@ -20,22 +20,20 @@ public class AsvSdrTest
     private void SetupClientServer(out IAsvSdrServer serverSdr, out IAsvSdrClient clientSdr)
     {
         var link = new VirtualMavlinkConnection();
+        var clientId = new MavlinkClientIdentity
+        {
+            SystemId = 1,
+            ComponentId = 2,
+            TargetSystemId = 3,
+            TargetComponentId = 4
+        };
+        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
+        
         serverSdr = new AsvSdrServer(link.Server,
-            new MavlinkServerIdentity
-            {
-                ComponentId = 2,
-                SystemId = 2
-            }, new AsvSdrServerConfig(),
+            serverId, new AsvSdrServerConfig(),
             new PacketSequenceCalculator(), Scheduler.Default);
         
-        clientSdr = new AsvSdrClient(link.Client, new MavlinkClientIdentity
-            {
-                SystemId = 13,
-                ComponentId = 13,
-                TargetSystemId = 2,
-                TargetComponentId = 2
-            }, 
-            new PacketSequenceCalculator());
+        clientSdr = new AsvSdrClient(link.Client,clientId, new PacketSequenceCalculator());
 
         serverSdr.Start();
     }

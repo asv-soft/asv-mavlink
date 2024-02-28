@@ -99,8 +99,7 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
             param = ((ushort)_.Payload.ParamIndex, _paramList[_.Payload.ParamIndex]);
         }
             
-        var cfgKey = GetCfgKey(param.Item2.Name);
-        var currentValue = MavParamHelper.ReadFromConfig(_cfg, cfgKey, param.Item2);
+        var currentValue = param.Item2.ReadFromConfig(_cfg, _serverCfg.CfgPrefix);
         await SendParam(param, currentValue, DisposeCancel).ConfigureAwait(false);
     }
 
@@ -117,8 +116,7 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
             for (var index = 0; index < _paramList.Count; index++)
             {
                 var param = _paramList[index];
-                var cfgKey = GetCfgKey(param.Name);
-                var currentValue =  MavParamHelper.ReadFromConfig(_cfg, cfgKey,param);
+                var currentValue =  param.ReadFromConfig(_cfg, _serverCfg.CfgPrefix);
                 await SendParam(((ushort)index,param), currentValue, DisposeCancel).ConfigureAwait(false);
                 await Task.Delay(_serverCfg.SendingParamItemDelayMs, DisposeCancel).ConfigureAwait(false);
             }
@@ -141,8 +139,7 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
             return;
         }
 
-        var cfgKey = GetCfgKey(param.Item2.Name);
-        var currentValue = MavParamHelper.ReadFromConfig(_cfg, cfgKey, param.Item2);
+        var currentValue = param.Item2.ReadFromConfig(_cfg, _serverCfg.CfgPrefix);
         if (param.Item2.Type != _.Payload.ParamType)
         {
             var msg = $"Error to set mavlink param: param '{name}' type didn't equal. Want {param.Item2.Type} but found {_.Payload.ParamType}";
@@ -166,7 +163,7 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
         }
 
         Logger.Info("Set param {0} from {1} => {2}", param.Item2.Name, currentValue, newValue);
-        MavParamHelper.WriteToConfig(_cfg, cfgKey, newValue);
+        param.Item2.WriteToConfig(_cfg, newValue,_serverCfg.CfgPrefix);
         _onParamChangedSubject.OnNext(new ParamChangedEvent(param, currentValue, newValue, true));
         await SendParam(param, newValue, DisposeCancel).ConfigureAwait(false);
     }
@@ -185,10 +182,7 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
         }, cancel).ConfigureAwait(false);
     }
 
-    private string GetCfgKey(string name)
-    {
-        return $"{_serverCfg.CfgPrefix}{name}";
-    }
+    
 
     public IObservable<Exception> OnError => _onErrorSubject;
     public IObservable<ParamChangedEvent> OnUpdated => _onParamChangedSubject;
@@ -201,8 +195,7 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
             {
                 throw new ArgumentException($"Param '{name}' not found", nameof(name));
             }
-            var cfgKey = GetCfgKey(param.Item2.Name);
-            return MavParamHelper.ReadFromConfig(_cfg, cfgKey, param.Item2);
+            return param.Item2.ReadFromConfig(_cfg, _serverCfg.CfgPrefix);
         }
         set
         {
@@ -210,14 +203,14 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
             {
                 throw new ArgumentException($"Param '{name}' not found", nameof(name));
             }
-            var cfgKey = GetCfgKey(param.Item2.Name);
+            
             if (param.Item2.IsValid(value) == false)
             {
                 var errorMsg = param.Item2.GetValidationError(value);
                 throw new ArgumentException($"Error to set mavlink param '{name}' [{param.Item2.Type}]: {errorMsg}", nameof(value));
             }
-            var oldValue = MavParamHelper.ReadFromConfig(_cfg, cfgKey, param.Item2);
-            MavParamHelper.WriteToConfig(_cfg, cfgKey, value);
+            var oldValue = param.Item2.ReadFromConfig(_cfg, _serverCfg.CfgPrefix);
+            param.Item2.WriteToConfig(_cfg,value, _serverCfg.CfgPrefix);
             _onParamChangedSubject.OnNext(new ParamChangedEvent(param, oldValue, value, false));
             // TODO: put to queue and send in background using delay (throttle)
             SendParam(param, value, DisposeCancel).Wait();

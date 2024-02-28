@@ -1,3 +1,7 @@
+<div align="center">
+<img src="https://github.com/asv-soft/asv-drones-gui-afis/assets/151620493/932425b6-547e-4d35-bf90-6430265c8e97" width="300px" margin-left="200px">  
+</div>
+
 # Asv.Mavlink
 
 ## 1. Introduction 
@@ -31,11 +35,11 @@ Asv.Mavlink.Shell.exe mavlink --cs=tcp://127.0.0.1:5760
 To ensure a smooth development experience, follow the steps below to set up your development environment:
 
 #### 2.1 **Prerequisites:**
-- **Operating System:** This project is compatible with Windows, macOS, and Linux. Ensure that your development machine runs one of these supported operating systems.
+- **Operating System:** This project is compatible with Windows, macOS, and Linux. Ensure that your development machine runs one of these supported operating systems. But we recommended use Windows for developing in this project.
 - **IDE (Integrated Development Environment):** We recommend using [Visual Studio](https://visualstudio.microsoft.com/) or [JetBrains Rider](https://www.jetbrains.com/rider/) as your IDE for C# development. Make sure to install the necessary extensions and plugins for a better development experience.
 
 #### 2.2 **.NET 7 Installation:**
-- This project is built using [.NET 7](https://dotnet.microsoft.com/download/dotnet/7.0), the latest version of the .NET platform. Install .NET 7 by following the instructions provided on the official [.NET website](https://dotnet.microsoft.com/download/dotnet/7.0).
+- This project is built using [.NET 6.0](https://dotnet.microsoft.com/download/dotnet/6.0) and [.NET 7.0](https://dotnet.microsoft.com/download/dotnet/7.0), the latest version of the .NET platform. We recommend installing .NET 7.0 by following the instructions provided on the official [.NET website](https://dotnet.microsoft.com/download/dotnet/7.0).
 
    ```bash
    # Check your current .NET version

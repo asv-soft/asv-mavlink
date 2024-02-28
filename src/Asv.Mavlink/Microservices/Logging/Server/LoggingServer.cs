@@ -46,7 +46,7 @@ namespace Asv.Mavlink.Server
         /// <param name="identity">The server identity.</param>
         /// <param name="scheduler">The scheduler for processing incoming packets.</param>
         public LoggingServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkServerIdentity identity, IScheduler scheduler) : base("LOG",connection,identity, seq,scheduler)
+            MavlinkIdentity identity, IScheduler scheduler) : base("LOG",connection,identity, seq,scheduler)
         {
         }
 

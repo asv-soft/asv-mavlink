@@ -13,7 +13,7 @@ public class ServerDevice: DisposableOnceWithCancel, IServerDevice
 {
     public ServerDevice(IMavlinkV2Connection connection,
         IPacketSequenceCalculator seq, 
-        MavlinkServerIdentity identity,
+        MavlinkIdentity identity,
         ServerDeviceConfig config,
         IScheduler scheduler)
     {
@@ -28,7 +28,7 @@ public class ServerDevice: DisposableOnceWithCancel, IServerDevice
     public IMavlinkV2Connection Connection { get; }
     public IPacketSequenceCalculator Seq { get; }
     public IScheduler Scheduler { get; }
-    public MavlinkServerIdentity Identity { get; }
+    public MavlinkIdentity Identity { get; }
     public IStatusTextServer StatusText { get; }
     public IHeartbeatServer Heartbeat { get; }
     

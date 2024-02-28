@@ -14,7 +14,7 @@ public class GbsServerDeviceConfig:ServerDeviceConfig
 public class GbsServerDevice:ServerDevice, IGbsServerDevice
 {
     public GbsServerDevice(IMavlinkV2Connection connection,
-        MavlinkServerIdentity identity,
+        MavlinkIdentity identity,
         IPacketSequenceCalculator seq,
         IScheduler scheduler,
         GbsServerDeviceConfig config,

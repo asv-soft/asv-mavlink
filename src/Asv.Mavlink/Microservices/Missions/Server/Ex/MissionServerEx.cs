@@ -16,7 +16,7 @@ public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
     private readonly SourceCache<ServerMissionItem, ushort> _missionSource;
     private double _busy;
 
-    public MissionServerEx(IMissionServer baseIfc, IStatusTextServer status, IMavlinkV2Connection connection, MavlinkServerIdentity identity,
+    public MissionServerEx(IMissionServer baseIfc, IStatusTextServer status, IMavlinkV2Connection connection, MavlinkIdentity identity,
         IPacketSequenceCalculator seq, IScheduler rxScheduler) :
         base("MISSION", connection, identity, seq, rxScheduler)
     {

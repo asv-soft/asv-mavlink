@@ -41,8 +41,16 @@ public class BaseDevicesTest
         {
             var link = new VirtualMavlinkConnection();
             
+            var clientId = new MavlinkClientIdentity
+            {
+                SystemId = 1,
+                ComponentId = 2,
+                TargetSystemId = 3,
+                TargetComponentId = 4
+            };
+            
             var clientDevice = new AbstractClientDevice(link.Client,
-                new MavlinkClientIdentity(),
+                clientId,
                 new ClientDeviceConfig
                 {
                     Heartbeat = null
@@ -77,7 +85,7 @@ public class BaseDevicesTest
         {
             var serverDevice = new ServerDevice(null,
                 new PacketSequenceCalculator(),
-                new MavlinkServerIdentity(),
+                new MavlinkIdentity(),
                 new ServerDeviceConfig(),
                 Scheduler.Default);
         });
@@ -93,28 +101,14 @@ public class BaseDevicesTest
             
             var serverDevice = new ServerDevice(link.Server,
                 null,
-                new MavlinkServerIdentity(),
+                new MavlinkIdentity(),
                 new ServerDeviceConfig(),
                 Scheduler.Default);
         });
         return Task.CompletedTask;
     }
     
-    [Fact]
-    public Task ServerDeviceIdentityArgumentNullExceptionTest()
-    {
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            var link = new VirtualMavlinkConnection();
-            
-            var serverDevice = new ServerDevice(link.Server,
-                new PacketSequenceCalculator(),
-                null,
-                new ServerDeviceConfig(),
-                Scheduler.Default);
-        });
-        return Task.CompletedTask;
-    }
+    
     
     // [Fact]
     // public async Task ServerDeviceConfigHeartbeatArgumentNullExceptionTest()
@@ -125,7 +119,7 @@ public class BaseDevicesTest
     //         
     //         var serverDevice = new ServerDevice(link.Server,
     //             new PacketSequenceCalculator(),
-    //             new MavlinkServerIdentity(),
+    //             new MavlinkIdentity(),
     //             new ServerDeviceConfig
     //             {
     //                 Heartbeat = null
@@ -143,7 +137,7 @@ public class BaseDevicesTest
             
             var serverDevice = new ServerDevice(link.Server,
                 new PacketSequenceCalculator(),
-                new MavlinkServerIdentity(),
+                new MavlinkIdentity(),
                 new ServerDeviceConfig
                 {
                     StatusText = null
@@ -162,7 +156,7 @@ public class BaseDevicesTest
             
             var serverDevice = new ServerDevice(link.Server,
                 new PacketSequenceCalculator(),
-                new MavlinkServerIdentity(),
+                new MavlinkIdentity(),
                 new ServerDeviceConfig(),
                 null);
         });
@@ -175,9 +169,15 @@ public class BaseDevicesTest
         Assert.Throws<ArgumentNullException>(() =>
         {
             var link = new VirtualMavlinkConnection();
-            
+            var clientId = new MavlinkClientIdentity
+            {
+                SystemId = 1,
+                ComponentId = 2,
+                TargetSystemId = 3,
+                TargetComponentId = 4
+            };
             var clientDevice = new AbstractClientDevice(link.Client,
-                new MavlinkClientIdentity(),
+                clientId,
                 new ClientDeviceConfig(),
                 null,
                 Scheduler.Default);
@@ -193,11 +193,18 @@ public class BaseDevicesTest
     public async Task BaseDevicesStatusTextTest(string messageText)
     {
         var link = new VirtualMavlinkConnection();
-
+        var clientId = new MavlinkClientIdentity
+        {
+            SystemId = 1,
+            ComponentId = 2,
+            TargetSystemId = 3,
+            TargetComponentId = 4
+        };
+        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
         var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
-            new MavlinkServerIdentity(), new ServerDeviceConfig(), Scheduler.Default);
+            serverId, new ServerDeviceConfig(), Scheduler.Default);
         
-        var clientDevice = new AbstractClientDevice(link.Client, new MavlinkClientIdentity(),
+        var clientDevice = new AbstractClientDevice(link.Client, clientId,
             new ClientDeviceConfig(), new PacketSequenceCalculator(), Scheduler.Default);
         
         serverDevice.Start();
@@ -219,11 +226,19 @@ public class BaseDevicesTest
     public async Task BaseDevicesStatusTextOverloadTest()
     {
         var link = new VirtualMavlinkConnection();
-
-        var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
-            new MavlinkServerIdentity(), new ServerDeviceConfig(), Scheduler.Default);
+        var clientId = new MavlinkClientIdentity
+        {
+            SystemId = 1,
+            ComponentId = 2,
+            TargetSystemId = 3,
+            TargetComponentId = 4
+        };
+        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
         
-        var clientDevice = new AbstractClientDevice(link.Client, new MavlinkClientIdentity(),
+        var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
+            serverId, new ServerDeviceConfig(), Scheduler.Default);
+        
+        var clientDevice = new AbstractClientDevice(link.Client, clientId,
             new ClientDeviceConfig(), new PacketSequenceCalculator(), Scheduler.Default);
         
         serverDevice.Start();
@@ -267,9 +282,17 @@ public class BaseDevicesTest
         int packetsCount = 0;
         
         var link = new VirtualMavlinkConnection(_ => true, _ => ++packetsCount % 2 == 1);
+        var clientId = new MavlinkClientIdentity
+        {
+            SystemId = 1,
+            ComponentId = 2,
+            TargetSystemId = 3,
+            TargetComponentId = 4
+        };
+        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
         
         var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(), 
-            new MavlinkServerIdentity(),
+            serverId,
             new ServerDeviceConfig()
             {
                 Heartbeat = new MavlinkHeartbeatServerConfig()
@@ -279,7 +302,7 @@ public class BaseDevicesTest
             },
             Scheduler.Default);
         
-        var clientDevice = new AbstractClientDevice(link.Client, new MavlinkClientIdentity(),
+        var clientDevice = new AbstractClientDevice(link.Client, clientId,
             new ClientDeviceConfig(), new PacketSequenceCalculator(), Scheduler.Default);
         
         serverDevice.Start();
@@ -306,11 +329,19 @@ public class BaseDevicesTest
         bool canSend = true;
         
         var link = new VirtualMavlinkConnection(_ => canSend, _ => canSend);
-
-        var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
-            new MavlinkServerIdentity(), new ServerDeviceConfig(), Scheduler.Default);
+        var clientId = new MavlinkClientIdentity
+        {
+            SystemId = 1,
+            ComponentId = 2,
+            TargetSystemId = 3,
+            TargetComponentId = 4
+        };
+        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
         
-        var clientDevice = new AbstractClientDevice(link.Client, new MavlinkClientIdentity(),
+        var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
+            serverId, new ServerDeviceConfig(), Scheduler.Default);
+        
+        var clientDevice = new AbstractClientDevice(link.Client, clientId,
             new ClientDeviceConfig(), new PacketSequenceCalculator(), Scheduler.Default);
         
         serverDevice.Start();
@@ -360,15 +391,23 @@ public class BaseDevicesTest
     public async Task BaseDevicesCustomModeTest()
     {
         var link = new VirtualMavlinkConnection();
+        var clientId = new MavlinkClientIdentity
+        {
+            SystemId = 1,
+            ComponentId = 2,
+            TargetSystemId = 3,
+            TargetComponentId = 4
+        };
+        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
         
         var mode = 23;
         
         var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
-            new MavlinkServerIdentity(), new ServerDeviceConfig(), Scheduler.Default);
+            serverId, new ServerDeviceConfig(), Scheduler.Default);
         
         serverDevice.Heartbeat.Set(_ => _.CustomMode = (uint)mode);
         
-        var clientDevice = new AbstractClientDevice(link.Client, new MavlinkClientIdentity(),
+        var clientDevice = new AbstractClientDevice(link.Client, clientId,
             new ClientDeviceConfig(), new PacketSequenceCalculator(), Scheduler.Default);
         
         serverDevice.Start();
@@ -394,13 +433,21 @@ public class BaseDevicesTest
         int lostPacketsCount = 4;
         
         var link = new VirtualMavlinkConnection(_ => true,_ => ++packetsCount > lostPacketsCount);
+        var clientId = new MavlinkClientIdentity
+        {
+            SystemId = 1,
+            ComponentId = 2,
+            TargetSystemId = 3,
+            TargetComponentId = 4
+        };
+        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
 
         var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
-            new MavlinkServerIdentity { ComponentId = 13, SystemId = 13 }, new ServerDeviceConfig(),
+            serverId, new ServerDeviceConfig(),
             Scheduler.Default);
 
         var clientDevice = new AbstractClientDevice(link.Client,
-            new MavlinkClientIdentity { ComponentId = 1, SystemId = 1, TargetComponentId = 13, TargetSystemId = 13},
+            clientId,
             new ClientDeviceConfig(), new PacketSequenceCalculator(), Scheduler.Default);
 
         serverDevice.Start();
@@ -426,7 +473,7 @@ public class BaseDevicesTest
     }
     
     private ServerDevice CreateServerDevice(VirtualMavlinkConnection link, PacketSequenceCalculator seq, 
-        MavlinkServerIdentity identity, ServerDeviceConfig cfg)
+        MavlinkIdentity identity, ServerDeviceConfig cfg)
     {
         return new ServerDevice(link.Server,
             seq, identity, cfg, Scheduler.Default);

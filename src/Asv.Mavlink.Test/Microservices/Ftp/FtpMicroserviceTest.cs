@@ -26,7 +26,7 @@ public class FtpMicroserviceTest
         
         var server = new FtpServerEx(new FtpServer(
             link.Server,
-            new MavlinkServerIdentity{ComponentId = 13, SystemId = 13},
+            new MavlinkIdentity(13,13),
             new FtpConfig(),
             new PacketSequenceCalculator(),
             TaskPoolScheduler.Default));
@@ -54,7 +54,7 @@ public class FtpMicroserviceTest
         
         var server = new FtpServerEx(new FtpServer(
             link.Server,
-            new MavlinkServerIdentity{ComponentId = 13, SystemId = 13},
+            new MavlinkIdentity(13,13),
             new FtpConfig(),
             new PacketSequenceCalculator(),
             TaskPoolScheduler.Default));
@@ -82,7 +82,7 @@ public class FtpMicroserviceTest
         
         var server = new FtpServerEx(new FtpServer(
             link.Server,
-            new MavlinkServerIdentity{ComponentId = 13, SystemId = 13},
+            new MavlinkIdentity(13,13),
             new FtpConfig(),
             new PacketSequenceCalculator(),
             TaskPoolScheduler.Default));
@@ -108,7 +108,7 @@ public class FtpMicroserviceTest
         
         var server = new FtpServerEx(new FtpServer(
             link.Server,
-            new MavlinkServerIdentity{ComponentId = 13, SystemId = 13},
+            new MavlinkIdentity(13,13),
             new FtpConfig(),
             new PacketSequenceCalculator(),
             TaskPoolScheduler.Default));
@@ -136,7 +136,7 @@ public class FtpMicroserviceTest
         
         var server = new FtpServerEx(new FtpServer(
             link.Server,
-            new MavlinkServerIdentity{ComponentId = 13, SystemId = 13},
+            new MavlinkIdentity(13,13),
             new FtpConfig(),
             new PacketSequenceCalculator(),
             TaskPoolScheduler.Default));
@@ -194,7 +194,7 @@ public class FtpMicroserviceTest
         
         var server = new FtpServerEx(new FtpServer(
             link.Server,
-            new MavlinkServerIdentity{ComponentId = 13, SystemId = 13},
+            new MavlinkIdentity(13,13),
             new FtpConfig(),
             new PacketSequenceCalculator(),
             TaskPoolScheduler.Default));
@@ -252,7 +252,7 @@ public class FtpMicroserviceTest
         
         var server = new FtpServerEx(new FtpServer(
             link.Server,
-            new MavlinkServerIdentity{ComponentId = 13, SystemId = 13},
+            new MavlinkIdentity(13,13),
             new FtpConfig(),
             new PacketSequenceCalculator(),
             TaskPoolScheduler.Default));

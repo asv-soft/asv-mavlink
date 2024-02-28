@@ -14,17 +14,25 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
     public async Task Check_Single_Adsb_Vehicle()
     {
         var link = new VirtualMavlinkConnection();
+        var clientId = new MavlinkClientIdentity
+        {
+            SystemId = 1,
+            ComponentId = 2,
+            TargetSystemId = 3,
+            TargetComponentId = 4
+        };
+        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
     
         var server = new AdsbServerDevice(
             link.Server,
             new PacketSequenceCalculator(),
-            new MavlinkServerIdentity { ComponentId = 2, SystemId = 2 },
+            serverId,
             new AdsbServerDeviceConfig(), 
             Scheduler.Default);
     
         var client = new AdsbClientDevice(
             link.Client,
-            new MavlinkClientIdentity { ComponentId = 1, SystemId = 1, TargetComponentId = 2, TargetSystemId = 2 },
+            clientId,
             new PacketSequenceCalculator(),
             new AdsbClientDeviceConfig(), Scheduler.Default);
         
@@ -71,16 +79,25 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
     {
         var link = new VirtualMavlinkConnection();
     
+        var clientId = new MavlinkClientIdentity
+        {
+            SystemId = 1,
+            ComponentId = 2,
+            TargetSystemId = 3,
+            TargetComponentId = 4
+        };
+        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
+        
         var server = new AdsbServerDevice(
             link.Server,
             new PacketSequenceCalculator(),
-            new MavlinkServerIdentity { ComponentId = 2, SystemId = 2 },
+            serverId,
             new AdsbServerDeviceConfig(), 
             Scheduler.Default);
     
         var client = new AdsbClientDevice(
             link.Client,
-            new MavlinkClientIdentity { ComponentId = 1, SystemId = 1, TargetComponentId = 2, TargetSystemId = 2 },
+            clientId,
             new PacketSequenceCalculator(),
             new AdsbClientDeviceConfig(), Scheduler.Default);
         
@@ -149,17 +166,25 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
     public async Task Check_If_Old_Vehicles_Are_Deleted()
     {
         var link = new VirtualMavlinkConnection();
-    
+        var clientId = new MavlinkClientIdentity
+        {
+            SystemId = 1,
+            ComponentId = 2,
+            TargetSystemId = 3,
+            TargetComponentId = 4
+        };
+        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
+        
         var server = new AdsbServerDevice(
             link.Server,
             new PacketSequenceCalculator(),
-            new MavlinkServerIdentity { ComponentId = 2, SystemId = 2 },
+            serverId,
             new AdsbServerDeviceConfig(), 
             Scheduler.Default);
     
         var client = new AdsbClientDevice(
             link.Client,
-            new MavlinkClientIdentity { ComponentId = 1, SystemId = 1, TargetComponentId = 2, TargetSystemId = 2 },
+            clientId,
             new PacketSequenceCalculator(),
             new AdsbClientDeviceConfig(), Scheduler.Default);
         
