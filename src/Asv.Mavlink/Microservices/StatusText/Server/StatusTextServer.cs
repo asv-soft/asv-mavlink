@@ -16,12 +16,9 @@ namespace Asv.Mavlink
         public int MaxSendRateHz { get; set; } = 10;
     }
 
-    public class StatusTextServer : MavlinkMicroserviceServer, IDisposable, IStatusTextServer
+    public class StatusTextServer : MavlinkMicroserviceServer, IStatusTextServer
     {
         private readonly int _maxMessageSize = new StatustextPayload().Text.Length;
-        private readonly IMavlinkV2Connection _connection;
-        private readonly IPacketSequenceCalculator _seq;
-        private readonly MavlinkIdentity _identity;
         private readonly StatusTextLoggerConfig _config;
         private readonly ConcurrentQueue<KeyValuePair<MavSeverity,string>> _messageQueue = new();
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -31,10 +28,9 @@ namespace Asv.Mavlink
             MavlinkIdentity identity, StatusTextLoggerConfig config, IScheduler scheduler):   
             base("STATUS",connection,identity,seq,scheduler)
         {
-            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            _seq = seq ?? throw new ArgumentNullException(nameof(seq));
-            _identity = identity;
+            if (seq == null) throw new ArgumentNullException(nameof(seq));
             _config = config ?? throw new ArgumentNullException(nameof(config));
+            if (connection == null) throw new ArgumentNullException(nameof(connection));
 
             _logger.Debug($"Create status logger for [sys:{identity.SystemId}, com:{identity.ComponentId}] with send rate:{config.MaxSendRateHz} Hz, buffer size: {config.MaxQueueSize}");
 
