@@ -28,7 +28,7 @@ public class TraceStreamServer : MavlinkMicroserviceServer, ITraceStreamServer
     private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     public TraceStreamServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-        MavlinkServerIdentity identity, TraceStreamConfig config, IScheduler scheduler) :
+                             MavlinkIdentity identity, TraceStreamConfig config, IScheduler scheduler) :
         base("TRACESTREAM", connection, identity, seq, scheduler)
     {
         if (seq == null) throw new ArgumentNullException(nameof(seq));

@@ -34,11 +34,7 @@ public class TraceStreamMicroserviceTests
     private static TraceStreamServer CreateTraceStreamServer(VirtualMavlinkConnection link)
     {
         var seqCalculator = new PacketSequenceCalculator();
-        var identity = new MavlinkServerIdentity
-        {
-            SystemId = 1,
-            ComponentId = 2
-        };
+        var identity = new MavlinkIdentity(1, 2);
         var config = new TraceStreamConfig
         {
             MaxQueueSize = 100,
@@ -137,7 +133,7 @@ public class TraceStreamMicroserviceTests
         {
             var server = new TraceStreamServer(null,
                 new PacketSequenceCalculator(),
-                new MavlinkServerIdentity(),
+                new MavlinkIdentity(),
                 new TraceStreamConfig(),
                 Scheduler.Default);
         });
@@ -152,22 +148,7 @@ public class TraceStreamMicroserviceTests
 
             var server = new TraceStreamServer(link.Server,
                 null,
-                new MavlinkServerIdentity(),
-                new TraceStreamConfig(),
-                Scheduler.Default);
-        });
-    }
-
-    [Fact]
-    public void TraceStreamServer_Should_Throw_ArgumentNullException_If_Identity_Is_Null()
-    {
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            var link = new VirtualMavlinkConnection();
-
-            var server = new TraceStreamServer(link.Server,
-                new PacketSequenceCalculator(),
-                null,
+                new MavlinkIdentity(),
                 new TraceStreamConfig(),
                 Scheduler.Default);
         });
@@ -182,7 +163,7 @@ public class TraceStreamMicroserviceTests
 
             var server = new TraceStreamServer(link.Server,
                 new PacketSequenceCalculator(),
-                new MavlinkServerIdentity(),
+                new MavlinkIdentity(),
                 null,
                 Scheduler.Default);
         });
@@ -197,7 +178,7 @@ public class TraceStreamMicroserviceTests
 
             var server = new TraceStreamServer(link.Server,
                 new PacketSequenceCalculator(),
-                new MavlinkServerIdentity(),
+                new MavlinkIdentity(),
                 new TraceStreamConfig(),
                 null);
         });
