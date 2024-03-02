@@ -1,9 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <Version>3.2.5-alpha-11</Version>
+    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+    <AssemblyVersion>$(ProductVersion)</AssemblyVersion>
+    <FileVersion>$(ProductVersion)</FileVersion>
+    <Version>$(ProductVersion)</Version>
     <PackageIcon>asv-mavlink-128.png</PackageIcon>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\img\asv-mavlink-128.png">
@@ -24,15 +26,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Asv.Cfg" Version="1.13.1" />
+    <PackageReference Include="Asv.Cfg" Version="$(AsvCommonVersion)" />
+    <PackageReference Include="NLog" Version="$(NLogVersion)" />
+    <PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJsonVersion)" />
+    <PackageReference Include="System.Reactive.Linq" Version="$(ReactiveVersion)" />
     <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
     <PackageReference Include="DotLiquid" Version="2.2.595" />
     <PackageReference Include="Geodesy" Version="4.1.0" />
     <PackageReference Include="ManyConsole" Version="2.0.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />
-    <PackageReference Include="NLog" Version="5.2.6" />
-    <PackageReference Include="System.Reactive.Linq" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Asv.Mavlink\Asv.Mavlink.csproj" />

@@ -1,12 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <Authors>https://github.com/asvol</Authors>
-    <Company>https://github.com/asvol</Company>
-    <Copyright>https://github.com/asvol</Copyright>
+    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+    <AssemblyVersion>$(ProductVersion)</AssemblyVersion>
+    <FileVersion>$(ProductVersion)</FileVersion>
+    <Version>$(ProductVersion)</Version>
+    <PackageVersion>$(ProductVersion)</PackageVersion>
+    <ApiCompatGenerateSuppressionFile>true</ApiCompatGenerateSuppressionFile>
+    <PackageValidationBaselineVersion>$(ProductPrevVersion)</PackageValidationBaselineVersion>
+    
+    <Authors>https://github.com/asv-soft</Authors>
+    <Company>https://github.com/asv-soft</Company>
+    <Copyright>https://github.com/asv-soft</Copyright>
+    
     <PackageProjectUrl>https://github.com/asv-soft/asv-mavlink</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/asvol/asv-mavlink</RepositoryUrl>
+    <RepositoryUrl>https://github.com/asv-soft/asv-mavlink</RepositoryUrl>
     <PackageTags>mavlink;drone;PX4;Ardupilot;.net</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Mavlink library for .NET 6.0, .NET 7.0 for vehicle control Px4, Ardupilot </Description>
@@ -15,6 +22,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Configurations>Debug;Release</Configurations>
     <Platforms>AnyCPU</Platforms>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -46,13 +54,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asv.Cfg" Version="1.13.1" />
-    <PackageReference Include="Asv.Common" Version="1.13.1" />
-    <PackageReference Include="Asv.IO" Version="1.13.1" />
-    <PackageReference Include="DynamicData" Version="7.13.5" />
+    <PackageReference Include="Asv.Cfg" Version="$(AsvCommonVersion)" />
+    <PackageReference Include="Asv.Common" Version="$(AsvCommonVersion)" />
+    <PackageReference Include="Asv.IO" Version="$(AsvCommonVersion)" />
+    <PackageReference Include="NLog" Version="$(NLogVersion)" />
+    <PackageReference Include="System.Reactive" Version="$(ReactiveVersion)" />
+    <PackageReference Include="DynamicData" Version="$(DynamicDataVersion)" />
+    <PackageReference Include="Microsoft.DotNet.ApiCompat.Task" Version="$(ApiCompatVersion)" >
+      <!--using api compatibility purely as a development harness-->
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Geodesy" Version="4.1.0" />
-    <PackageReference Include="NLog" Version="5.2.6" />
-    <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="RS.Designer.cs">

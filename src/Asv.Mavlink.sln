@@ -9,6 +9,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asv.Mavlink.Test", "Asv.Mav
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asv.Mavlink.Shell", "Asv.Mavlink.Shell\Asv.Mavlink.Shell.csproj", "{0D760F93-A62C-482E-A898-511720F4B664}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{5B9E6116-00F2-4CB8-AB21-E302F04138A8}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		..\build.bat = ..\build.bat
+		..\LICENSE = ..\LICENSE
+		..\publish_nuget.bat = ..\publish_nuget.bat
+		..\README.md = ..\README.md
+		..\regenerate_asv.bat = ..\regenerate_asv.bat
+		..\regenerate_mavlink.bat = ..\regenerate_mavlink.bat
+		Directory.Build.props = Directory.Build.props
+		..\.github\workflows\NO_TEST_NUGET_WINDOWS.yml = ..\.github\workflows\NO_TEST_NUGET_WINDOWS.yml
+		..\.github\workflows\nuget_windows.yml = ..\.github\workflows\nuget_windows.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

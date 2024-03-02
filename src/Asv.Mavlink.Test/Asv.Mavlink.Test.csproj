@@ -1,20 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-
-    <IsPackable>false</IsPackable>
-
-    <Version>3.2.5-alpha-11</Version>
+	  <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+      <IsPackable>false</IsPackable>
+      <AssemblyVersion>$(ProductVersion)</AssemblyVersion>
+      <FileVersion>$(ProductVersion)</FileVersion>
+      <Version>$(ProductVersion)</Version>
   </PropertyGroup>
 
   <ItemGroup>
-	  <PackageReference Include="Asv.Cfg" Version="1.13.1" />
+      <PackageReference Include="Asv.Cfg" Version="$(AsvCommonVersion)" />
+      <PackageReference Include="System.Reactive.Linq" Version="$(ReactiveVersion)" />
+      <PackageReference Include="DynamicData" Version="$(DynamicDataVersion)" />
 	  <PackageReference Include="DeepEqual" Version="2.0.0" />
-	  <PackageReference Include="DynamicData" Version="7.13.5" />
+      
 	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
 	  <PackageReference Include="Moq" Version="4.18.4" />
-	  <PackageReference Include="System.Reactive.Linq" Version="5.0.0" />
+	  
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
