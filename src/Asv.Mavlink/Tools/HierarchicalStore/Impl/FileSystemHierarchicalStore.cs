@@ -188,7 +188,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     {
         _count.Value = (ushort)_entries.Count(x => x.Value.Type == FolderStoreEntryType.File);
         _size.Value = (ulong)_entries.Where(x => x.Value.Type == FolderStoreEntryType.File).Sum(x => new FileInfo(x.Value.FullPath).Length);
-        Logger.Info($"Update statistics: items:{_count.Value}, size:{_size.Value}");
+        //Logger.Info($"Update statistics: items:{_count.Value}, size:{_size.Value}");
     }
 
     /// <summary>
