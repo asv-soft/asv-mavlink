@@ -21,6 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution 
 		Directory.Build.props = Directory.Build.props
 		..\.github\workflows\NO_TEST_NUGET_WINDOWS.yml = ..\.github\workflows\NO_TEST_NUGET_WINDOWS.yml
 		..\.github\workflows\nuget_windows.yml = ..\.github\workflows\nuget_windows.yml
+		..\publish_github.bat = ..\publish_github.bat
 	EndProjectSection
 EndProject
 Global

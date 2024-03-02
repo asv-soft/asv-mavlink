@@ -2,7 +2,7 @@
 rem ====== projects ======
 
 set projects=Asv.Mavlink
-set source=https://api.nuget.org/v3/index.json
+set source=https://nuget.pkg.github.com/asv-soft/index.json
 
 rem ====== projects ======
 
@@ -23,6 +23,12 @@ SET VERSION=%VERSION:v=%
 	dotnet nuget push %%p.%VERSION%.nupkg --skip-duplicate --source %source%
 	cd ../../../../
 )) 
+
+
+
+
+
+
 
 
 
