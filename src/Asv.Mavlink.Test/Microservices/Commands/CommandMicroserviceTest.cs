@@ -96,7 +96,7 @@ public class CommandMicroserviceTest
     {
         int cnt = 0;
         // Emulation of packet loss
-        var link = new VirtualMavlinkConnection(_=> ++cnt>3);
+        var link = new VirtualMavlinkConnection(_=> ++cnt>=3);
         var client = CreateCommandClient(link, out var clientId);
         var server = CreateCommandServer(link, clientId);
         
