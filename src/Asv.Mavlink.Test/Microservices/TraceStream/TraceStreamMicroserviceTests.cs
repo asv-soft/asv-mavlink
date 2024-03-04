@@ -44,7 +44,7 @@ public class TraceStreamMicroserviceTests
     }
 
     #endregion
-    
+
     #region Client
 
     [Fact]
@@ -182,6 +182,23 @@ public class TraceStreamMicroserviceTests
                 new TraceStreamConfig(),
                 null);
         });
+    }
+
+    [Fact]
+    public void TraceStreanServer_Should_Handle_Debug_MemoryVectorMessage_Queue_Overflow()
+    {
+        var link = new VirtualMavlinkConnection();
+        MemoryVectorMessage message = new();
+        message.Value = new sbyte[1];
+        var server = new TraceStreamServer(link.Server,
+            new PacketSequenceCalculator(),
+            new MavlinkIdentity(),
+            new TraceStreamConfig(), Scheduler.Default);
+        for (int i = 0; i < 101; i++)
+        {
+            server.AddMessage(message);
+        }
+        Assert.False(server.AddMessage(message));
     }
 
     #endregion
