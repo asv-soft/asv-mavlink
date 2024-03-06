@@ -90,7 +90,189 @@ public class TraceStreamMicroserviceTests
         Assert.Equal(resultMessage.Y, resultMessage.Y);
         Assert.Equal(resultMessage.Z, resultMessage.Z);
     }
+    
+    [Fact]
+    public async Task TraceStreamClient_Should_Handle_NamedValueFloatMessage_Correctly()
+    {
+        var link = new VirtualMavlinkConnection();
 
+        var client = CreateTraceStreamClient(link);
+        var server = CreateTraceStreamServer(link);
+
+        var namedValueFloatMessage = new NamedValueFloatMessage()
+        {
+            Name = "test",
+            TimeBoot = 1234,
+            Value = 1.1f
+        };
+
+        Assert.True(server.AddMessage(namedValueFloatMessage));
+
+        var resultMessage = await client.OnNamedValueFloatMessage.FirstAsync();
+
+        Assert.NotNull(resultMessage);
+        Assert.Equal(namedValueFloatMessage.Name, resultMessage.Name);
+        Assert.Equal(namedValueFloatMessage.TimeBoot, resultMessage.TimeBoot);
+        Assert.Equal(namedValueFloatMessage.Value, resultMessage.Value);
+    }
+    
+    [Fact]
+    public async Task TraceStreamClient_Should_Handle_NamedValueIntMessage_Correctly()
+    {
+        var link = new VirtualMavlinkConnection();
+
+        var client = CreateTraceStreamClient(link);
+        var server = CreateTraceStreamServer(link);
+
+        var namedValueIntMessage = new NamedValueIntMessage()
+        {
+            Name = "test",
+            TimeBoot = 1234,
+            Value = 1
+        };
+
+        Assert.True(server.AddMessage(namedValueIntMessage));
+
+        var resultMessage = await client.OnNamedValueIntMessage.FirstAsync();
+
+        Assert.NotNull(resultMessage);
+        Assert.Equal(namedValueIntMessage.Name, resultMessage.Name);
+        Assert.Equal(namedValueIntMessage.TimeBoot, resultMessage.TimeBoot);
+        Assert.Equal(namedValueIntMessage.Value, resultMessage.Value);
+    }
+    
+    [Fact]
+    public async Task TraceStreamClient_Should_Handle_MemoryVectorMessage_Correctly()
+    {
+        var link = new VirtualMavlinkConnection();
+
+        var client = CreateTraceStreamClient(link);
+        var server = CreateTraceStreamServer(link);
+
+        var memoryVectorMessage = new MemoryVectorMessage()
+        {
+            Address = 1,
+            Type = 1,
+            Value = new sbyte[32] ,
+            Version = 1
+        };
+
+        Assert.True(server.AddMessage(memoryVectorMessage));
+
+        var resultMessage = await client.OnMemoryVectorMessage.FirstAsync();
+
+        Assert.NotNull(resultMessage);
+        Assert.Equal(memoryVectorMessage.Address, resultMessage.Address);
+        Assert.Equal(memoryVectorMessage.Type, resultMessage.Address);
+        Assert.Equal(memoryVectorMessage.Value, resultMessage.Value);
+        Assert.Equal(memoryVectorMessage.Version, resultMessage.Version);
+    }
+    
+    [Fact]
+     public async Task TraceStreamClient_Should_Handle_DebugVectorMessage_Bad_Values()
+    {
+        var link = new VirtualMavlinkConnection();
+
+        var client = CreateTraceStreamClient(link);
+        var server = CreateTraceStreamServer(link);
+
+        var debugVectorMessage = new DebugVectorMessage
+        {
+            Name = "",
+            TimeUsec = 12345678912345678912,
+            X = 1234567890f,
+            Y = 1234567891f,
+            Z = 1234567892f
+        };
+
+        Assert.True(server.AddMessage(debugVectorMessage));
+
+        var resultMessage = await client.OnDebugVectorMessage.FirstAsync();
+
+        Assert.NotNull(resultMessage);
+        Assert.Equal(debugVectorMessage.Name, resultMessage.Name);
+        Assert.Equal(debugVectorMessage.TimeUsec, resultMessage.TimeUsec);
+        Assert.Equal(resultMessage.X, resultMessage.X);
+        Assert.Equal(resultMessage.Y, resultMessage.Y);
+        Assert.Equal(resultMessage.Z, resultMessage.Z);
+    }
+    
+    [Fact]
+    public async Task TraceStreamClient_Should_Handle_NamedValueFloatMessage_Bad_Values()
+    {
+        var link = new VirtualMavlinkConnection();
+
+        var client = CreateTraceStreamClient(link);
+        var server = CreateTraceStreamServer(link);
+
+        var namedValueFloatMessage = new NamedValueFloatMessage()
+        {
+            Name = "",
+            TimeBoot = 1234567891,
+            Value = 123456789.123456789f
+        };
+
+        Assert.True(server.AddMessage(namedValueFloatMessage));
+
+        var resultMessage = await client.OnNamedValueFloatMessage.FirstAsync();
+
+        Assert.NotNull(resultMessage);
+        Assert.Equal(namedValueFloatMessage.Name, resultMessage.Name);
+        Assert.Equal(namedValueFloatMessage.TimeBoot, resultMessage.TimeBoot);
+        Assert.Equal(namedValueFloatMessage.Value, resultMessage.Value);
+    }
+    
+    [Fact]
+    public async Task TraceStreamClient_Should_Handle_NamedValueIntMessage_Bad_Values()
+    {
+        var link = new VirtualMavlinkConnection();
+
+        var client = CreateTraceStreamClient(link);
+        var server = CreateTraceStreamServer(link);
+
+        var namedValueIntMessage = new NamedValueIntMessage()
+        {
+            Name = "",
+            TimeBoot = 1234567891,
+            Value = 1234567891
+        };
+
+        Assert.True(server.AddMessage(namedValueIntMessage));
+
+        var resultMessage = await client.OnNamedValueIntMessage.FirstAsync();
+
+        Assert.NotNull(resultMessage);
+        Assert.Equal(namedValueIntMessage.Name, resultMessage.Name);
+        Assert.Equal(namedValueIntMessage.TimeBoot, resultMessage.TimeBoot);
+        Assert.Equal(namedValueIntMessage.Value, resultMessage.Value);
+    }
+    
+    [Fact]
+    public async Task TraceStreamClient_Should_Handle_MemoryVectorMessage_Bad_Values()
+    {
+        var link = new VirtualMavlinkConnection();
+
+        var client = CreateTraceStreamClient(link);
+        var server = CreateTraceStreamServer(link);
+
+        var memoryVectorMessage = new MemoryVectorMessage()
+        {
+            Address = 1,
+            Type = 3,
+            Value = new sbyte[33] ,
+            Version = 9
+        };
+
+        Assert.True(server.AddMessage(memoryVectorMessage));
+
+        var resultMessage = await client.OnMemoryVectorMessage.FirstAsync();
+
+        Assert.NotNull(resultMessage);
+        Assert.Equal(memoryVectorMessage.Address, resultMessage.Address);
+        Assert.Equal(memoryVectorMessage.Type, resultMessage.Address);
+        Assert.Equal(memoryVectorMessage.Value, resultMessage.Value);
+        Assert.Equal(memoryVectorMessage.Version, resultMessage.Version);
+    }
     [Fact]
     public void TraceStreamClient_Should_Throw_ArgumentNullException_If_Connection_Is_Null()
     {
@@ -125,7 +307,7 @@ public class TraceStreamMicroserviceTests
     #endregion
 
     #region Server
-
+    
     [Fact]
     public void TraceStreamServer_Should_Throw_ArgumentNullException_If_Connection_Is_Null()
     {
@@ -185,7 +367,7 @@ public class TraceStreamMicroserviceTests
     }
 
     [Fact]
-    public void TraceStreanServer_Should_Handle_Debug_MemoryVectorMessage_Queue_Overflow()
+    public void TraceStreamServer_Should_Handle_Debug_MemoryVectorMessage_Queue_Overflow()
     {
         var link = new VirtualMavlinkConnection();
         MemoryVectorMessage message = new();
