@@ -1,11 +1,11 @@
 <Project>
   <PropertyGroup>
-    <ProductVersion>3.7.0</ProductVersion>
-    <ProductPrevVersion>3.7.0-alpha02</ProductPrevVersion>
+    <ProductVersion>3.7.1</ProductVersion>
+    <ProductPrevVersion>3.7.0</ProductPrevVersion>
 
-    <AsvCommonVersion>1.13.3</AsvCommonVersion>
-    <ReactiveVersion>5.0.0</ReactiveVersion>
-    <NewtonsoftJsonVersion>13.0.1</NewtonsoftJsonVersion>
+    <AsvCommonVersion>2.0.0</AsvCommonVersion>
+    <ReactiveVersion>6.0.0</ReactiveVersion>
+    <NewtonsoftJsonVersion>13.0.3</NewtonsoftJsonVersion>
     <NLogVersion>5.2.8</NLogVersion>
     <ApiCompatVersion>8.0.200</ApiCompatVersion>
     <DynamicDataVersion>7.13.5</DynamicDataVersion>

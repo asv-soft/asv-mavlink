@@ -269,7 +269,7 @@ public class TraceStreamMicroserviceTests
 
         Assert.NotNull(resultMessage);
         Assert.Equal(memoryVectorMessage.Address, resultMessage.Address);
-        Assert.Equal(memoryVectorMessage.Type, resultMessage.Address);
+        Assert.Equal(memoryVectorMessage.Type, resultMessage.Type);
         Assert.Equal(memoryVectorMessage.Value, resultMessage.Value);
         Assert.Equal(memoryVectorMessage.Version, resultMessage.Version);
     }
