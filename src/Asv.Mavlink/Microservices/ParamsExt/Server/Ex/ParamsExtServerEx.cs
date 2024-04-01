@@ -137,7 +137,7 @@ public class ParamsExtServerEx : DisposableOnceWithCancel, IParamsExtServerEx
             Logger.Error(msg);
             _statusTextServer.Error($"param type '{name}' not equal");
             _onErrorSubject.OnNext(new ArgumentException(msg, name));
-            await SendParam(param, currentValue, DisposeCancel).ConfigureAwait(false);
+            await SendAck(param, currentValue, DisposeCancel).ConfigureAwait(false);
             return;
         }
 
@@ -149,17 +149,28 @@ public class ParamsExtServerEx : DisposableOnceWithCancel, IParamsExtServerEx
             Logger.Error(msg);
             _statusTextServer.Error($"param '{name}':{errorMsg}");
             _onErrorSubject.OnNext(new ArgumentException(msg, name));
-            await SendParam(param, currentValue, DisposeCancel).ConfigureAwait(false);
+            await SendAck(param, currentValue, DisposeCancel).ConfigureAwait(false);
             return;
         }
 
         Logger.Info("Set param {0} from {1} => {2}", param.Item2.Name, currentValue, newValue);
         param.Item2.WriteToConfig(_cfg, newValue, _serverCfg.CfgPrefix);
         _onParamChangedSubject.OnNext(new ParamExtChangedEvent(param, currentValue, newValue, true));
-        await SendParam(param, newValue, DisposeCancel).ConfigureAwait(false);
+        await SendAck(param, newValue, DisposeCancel).ConfigureAwait(false);
     }
 
-
+    private async Task SendAck((ushort, IMavParamExtTypeMetadata) param, MavParamExtValue value,
+        CancellationToken cancel)
+    {
+        await _server.SendParamExtAck(payload =>
+        {
+            MavlinkTypesHelper.SetString(payload.ParamId, param.Item2.Name);
+            payload.ParamType = param.Item2.Type;
+            payload.ParamValue = value;
+            payload.ParamResult = ParamAck.ParamAckAccepted;
+        }, cancel).ConfigureAwait(false);
+    }
+    
     private async Task SendParam((ushort, IMavParamExtTypeMetadata) param, MavParamExtValue value,
         CancellationToken cancel)
     {
