@@ -58,8 +58,8 @@ public class ParamsExtEncodingTest
         Assert.Equal(MavParamExtType.MavParamExtTypeReal32, encoding.Type);
     }
 
-    [Theory]
-    // [InlineData(data: new byte[] { 1, 3, 4, 5, 6,2,3,4,5,6,7,8,5,34,2,2,34,45,56,6,4,43,43,4,3,3, })]
+    [Theory] 
+    [InlineData(data: new byte[] { 1, 3, 4, 5, 6,2,3,4,5,6,7,8,5,34,2,2,34,45,56,6,4,43,43,4,3,3, })]
     [InlineData(data: new byte[]
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x7F, 0x40,
