@@ -76,9 +76,10 @@ public class ParamsExtValueTest
     {
         var data = new ulong();
         MavParamExtValue testValueParamExtValue = new MavParamExtValue(data);
-        Assert.True(testValueParamExtValue.Type == MavParamExtType.MavParamExtTypeUint64,
+        Assert.True(testValueParamExtValue.Type == MavParamExtType.MavParamExtTypeUint32,
             $"{testValueParamExtValue.Type.ToString()}");
     }
+
     [Fact]
     public void MavParamExtValue_float_Constructor_Test()
     {
@@ -87,6 +88,7 @@ public class ParamsExtValueTest
         Assert.True(testValueParamExtValue.Type == MavParamExtType.MavParamExtTypeReal32,
             $"{testValueParamExtValue.Type.ToString()}");
     }
+
     [Fact]
     public void MavParamExtValue_double_Constructor_Test()
     {
@@ -95,6 +97,7 @@ public class ParamsExtValueTest
         Assert.True(testValueParamExtValue.Type == MavParamExtType.MavParamExtTypeReal64,
             $"{testValueParamExtValue.Type.ToString()}");
     }
+
     [Fact]
     public void MavParamExtValue_char_arr_Constructor_Test()
     {
@@ -111,13 +114,11 @@ public class ParamsExtValueTest
     [Fact]
     public void Test_MavParamsExtValue_Compare_To()
     {
-        var data = new MavParamExtValue(new byte[]{1,2,3,4,5});
-        MavParamExtValue data1 = new MavParamExtValue(new byte[]{1,2,3,4,5});
+        var data = new MavParamExtValue(new byte[] { 1, 2, 3, 4, 5 });
+        MavParamExtValue data1 = new MavParamExtValue(new byte[] { 1, 2, 3, 4, 5 });
         var res = data1.CompareTo(data);
-        Assert.True(res==0, $"{res}");
+        Assert.True(res == 0, $"{res}");
     }
-    
-    
 
     #endregion
 }

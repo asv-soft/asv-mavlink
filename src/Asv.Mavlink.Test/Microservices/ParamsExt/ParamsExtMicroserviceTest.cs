@@ -7,7 +7,7 @@ namespace Asv.Mavlink.Test.ParamsExt;
 public class ParamsExtMicroserviceTest
 {
     #region Client
-    
+
     [Fact]
     public void ParamsExtClient_Should_Throw_ArgumentNullException_If_Connection_Is_Null()
     {
@@ -19,7 +19,7 @@ public class ParamsExtMicroserviceTest
                 new ParamsExtClientConfig());
         });
     }
-    
+
     [Fact]
     public void ParamsExtClient_Should_Throw_ArgumentNullException_If_ClientIdentity_Is_Null()
     {
@@ -33,7 +33,7 @@ public class ParamsExtMicroserviceTest
                 new ParamsExtClientConfig());
         });
     }
-    
+
     [Fact]
     public void ParamsExtClient_Should_Throw_ArgumentNullException_If_SequenceCalculator_Is_Null()
     {
@@ -47,7 +47,7 @@ public class ParamsExtMicroserviceTest
                 new ParamsExtClientConfig());
         });
     }
-    
+
     [Fact]
     public void ParamsExtClient_Should_Throw_ArgumentNullException_If_Config_Is_Null()
     {
@@ -61,11 +61,11 @@ public class ParamsExtMicroserviceTest
                 null);
         });
     }
-    
+
     #endregion
 
     #region Server
-    
+
     [Fact]
     public void ParamsExtServer_Should_Throw_ArgumentNullException_If_Connection_Is_Null()
     {
@@ -77,7 +77,7 @@ public class ParamsExtMicroserviceTest
                 Scheduler.Default);
         });
     }
-    
+
     [Fact]
     public void ParamsExtServer_Should_Throw_ArgumentNullException_If_SequenceCalculator_Is_Null()
     {
@@ -91,7 +91,7 @@ public class ParamsExtMicroserviceTest
                 Scheduler.Default);
         });
     }
-    
+
     [Fact]
     public void ParamsExtServer_Should_Throw_ArgumentNullException_If_Scheduler_Is_Null()
     {
@@ -105,6 +105,6 @@ public class ParamsExtMicroserviceTest
                 null);
         });
     }
-    
+
     #endregion
 }
