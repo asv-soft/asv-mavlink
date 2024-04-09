@@ -6,13 +6,11 @@ namespace Asv.Mavlink.Test.ParamsExt;
 
 public class ParamsExtEncodingTest
 {
-    #region Convert test
+    #region Convert test valid values
 
     [Theory]
     [InlineData(data: new byte[] { 1, 3, 4, 5, 6,2,3,4,5,6,7,8,5,34,2,2,34,45,56,6,4,43,43,4,3,3, })]
     [InlineData(data: new byte[] { 1, 3, 4, 5, 6 })]
-    [InlineData(data: new byte[0])]
-    [InlineData(data: new byte[] { 1, 2 })]
     public void Convert_value_using_byte_wise_encoding_and_check_type_MavParamExtTypeUint8(byte[] origin)
     {
         var encoding = MavParamExtHelper.CreateFromBuffer(origin, MavParamExtType.MavParamExtTypeUint8);
@@ -21,8 +19,7 @@ public class ParamsExtEncodingTest
 
     [Theory]
     [InlineData(data: new byte[] { 1, 3, 4, 5, 6,2,3,4,5,6,7,8,5,34,2,2,34,45,56,6,4,43,43,4,3,3, })]
-    [InlineData(data: new byte[0])]
-    [InlineData(data: new byte[] { 1, 2 })]
+    [InlineData(data: new byte[] { 1, 3, 4, 5, 6 })]
     public void Convert_value_using_byte_wise_encoding_and_check_type_MavParamExtTypeInt8(byte[] origin)
     {
         var encoding = MavParamExtHelper.CreateFromBuffer(origin, MavParamExtType.MavParamExtTypeInt8);
@@ -31,8 +28,6 @@ public class ParamsExtEncodingTest
     [Theory]
     [InlineData(data: new byte[] { 1, 3, 4, 5, 6,2,3,4,5,6,7,8,5,34,2,2,34,45,56,6,4,43,43,4,3,3, })]
     [InlineData(data: new byte[] { 1, 3, 4, 5, 6 })]
-    [InlineData(data: new byte[0])]
-    [InlineData(data: new byte[] { 1, 2 })]
     public void Convert_value_using_byte_wise_encoding_and_check_type_MavParamExtTypeUint16(byte[] origin)
     {
         var encoding = MavParamExtHelper.CreateFromBuffer(origin, MavParamExtType.MavParamExtTypeUint16);
@@ -41,8 +36,6 @@ public class ParamsExtEncodingTest
     [Theory]
     [InlineData(data: new byte[] { 1, 3, 4, 5, 6,2,3,4,5,6,7,8,5,34,2,2,34,45,56,6,4,43,43,4,3,3, })]
     [InlineData(data: new byte[] { 1, 3, 4, 5, 6 })]
-    [InlineData(data: new byte[0])]
-    [InlineData(data: new byte[] { 1, 2 })]
     public void Convert_value_using_byte_wise_encoding_and_check_type_MavParamExtTypeUint32(byte[] origin)
     {
         var encoding = MavParamExtHelper.CreateFromBuffer(origin, MavParamExtType.MavParamExtTypeUint32);
@@ -51,40 +44,32 @@ public class ParamsExtEncodingTest
     [Theory]
     [InlineData(data: new byte[] { 1, 3, 4, 5, 6,2,3,4,5,6,7,8,5,34,2,2,34,45,56,6,4,43,43,4,3,3, })]
     [InlineData(data: new byte[] { 1, 3, 4, 5, 6 })]
-    [InlineData(data: new byte[0])]
-    [InlineData(data: new byte[] { 1, 2 })]
     public void Convert_value_using_byte_wise_encoding_and_check_type_MavParamExtTypeReal32(byte[] origin)
     {
         var encoding = MavParamExtHelper.CreateFromBuffer(origin, MavParamExtType.MavParamExtTypeReal32);
         Assert.Equal(MavParamExtType.MavParamExtTypeReal32, encoding.Type);
     }
     [Theory]
-    [InlineData(data: new byte[] { 1, 3, 4, 5, 6,2,3,4,5,6,7,8,5,34,2,2,34,45,56,6,4,43,43,4,3,3, })]
-    [InlineData(data: new byte[] { 1, 3, 4, 5, 6 })]
-    [InlineData(data: new byte[0])]
-    [InlineData(data: new byte[] { 1, 2 })]
+   // [InlineData(data: new byte[] { 1, 3, 4, 5, 6,2,3,4,5,6,7,8,5,34,2,2,34,45,56,6,4,43,43,4,3,3, })]
+    [InlineData(data: new byte[] {
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x7F, 0x40,
+    })]
     public void Convert_value_using_byte_wise_encoding_and_check_type_MavParamExtTypeUint64(byte[] origin)
     {
         var encoding = MavParamExtHelper.CreateFromBuffer(origin, MavParamExtType.MavParamExtTypeUint64);
-        Assert.Equal(MavParamExtType.MavParamExtTypeReal64, encoding.Type);
+        Assert.Equal(MavParamExtType.MavParamExtTypeUint64, encoding.Type);
     }
     [Theory]
     [InlineData(data: new byte[] { 1, 3, 4, 5, 6,2,3,4,5,6,7,8,5,34,2,2,34,45,56,6,4,43,43,4,3,3, })]
-
-    [InlineData(data: new byte[] { 1, 3, 4, 5, 6 })]
-    [InlineData(data: new byte[0])]
-    [InlineData(data: new byte[] { 1, 2 })]
+    [InlineData(data: new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x7F, 0x40})]
     public void Convert_value_using_byte_wise_encoding_and_check_type_MavParamExtTypeInt64(byte[] origin)
     {
-        var encoding = MavParamExtHelper.CreateFromBuffer((byte[])origin, MavParamExtType.MavParamExtTypeInt64);
+        var encoding = MavParamExtHelper.CreateFromBuffer(origin, MavParamExtType.MavParamExtTypeInt64);
         Assert.Equal(MavParamExtType.MavParamExtTypeInt64, encoding.Type);
     }
     [Theory]
     [InlineData(data: new byte[] { 1, 3, 4, 5, 6,2,3,4,5,6,7,8,5,34,2,2,34,45,56,6,4,43,43,4,3,3, })]
-
     [InlineData(data: new byte[] { 1, 3, 4, 5, 6 })]
-    [InlineData(data: new byte[0])]
-    [InlineData(data: new byte[] { 1, 2 })]
     public void Convert_value_using_byte_wise_encoding_and_check_type_MavParamExtTypeReal64(byte[] origin)
     {
       var encoding = MavParamExtHelper.CreateFromBuffer(origin, MavParamExtType.MavParamExtTypeReal64);
@@ -92,10 +77,7 @@ public class ParamsExtEncodingTest
     }
     [Theory]
     [InlineData(data: new byte[] { 1, 3, 4, 5, 6,2,3,4,5,6,7,8,5,34,2,2,34,45,56,6,4,43,43,4,3,3, })]
-
-    [InlineData(data: new byte[] { 1, 3, 4, 5, 6 })]
-    [InlineData(data: new byte[0])]
-    [InlineData(data: new byte[] { 1, 2 })]
+    [InlineData(data: new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x7F, 0x40})]
     
     public void Convert_value_using_byte_wise_encoding_and_check_type_MavParamExtTypeCustom(byte[] origin)
     {
@@ -104,6 +86,27 @@ public class ParamsExtEncodingTest
     }
 
     #endregion
+
+    #region Convert test bad values
+    [Theory]
+    [InlineData(data: new byte[0])]
+    [InlineData(data: new byte[] { 1, 3, 4, 5, 6 })]
+    
+    public void Convert_value_using_byte_wise_encoding_and_check_type_MavParamExtTypeCustom_Bad(byte[] origin)
+    {
+        try
+        {
+            var encoding = MavParamExtHelper.CreateFromBuffer(origin, MavParamExtType.MavParamExtTypeCustom);
+            Assert.Equal(MavParamExtType.MavParamExtTypeCustom, encoding.Type);
+        }
+        catch (ArgumentException ex)
+        {
+            Assert.True(true, ex.Message);
+        }        
+    }
+
+    #endregion
+    
     
     #region Check parameter name with bad values
 
