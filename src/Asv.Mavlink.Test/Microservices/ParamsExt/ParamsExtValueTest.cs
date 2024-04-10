@@ -67,7 +67,7 @@ public class ParamsExtValueTest
     {
         var data = new long();
         MavParamExtValue testValueParamExtValue = new MavParamExtValue(data);
-        Assert.True(testValueParamExtValue.Type == MavParamExtType.MavParamExtTypeInt32,
+        Assert.True(testValueParamExtValue.Type == MavParamExtType.MavParamExtTypeInt64,
             $"{testValueParamExtValue.Type.ToString()}");
     }
 
@@ -76,7 +76,7 @@ public class ParamsExtValueTest
     {
         var data = new ulong();
         MavParamExtValue testValueParamExtValue = new MavParamExtValue(data);
-        Assert.True(testValueParamExtValue.Type == MavParamExtType.MavParamExtTypeUint32,
+        Assert.True(testValueParamExtValue.Type == MavParamExtType.MavParamExtTypeUint64,
             $"{testValueParamExtValue.Type.ToString()}");
     }
 

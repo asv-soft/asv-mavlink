@@ -16,61 +16,71 @@ public readonly struct MavParamExtValue : IComparable<MavParamExtValue>, ICompar
     public MavParamExtValue(byte value)
     {
         Type = MavParamExtType.MavParamExtTypeUint8;
-        CopyValueBytesToRawValue(value);
+        byte[] tempBuf = { value };
+        Array.Copy(tempBuf, _rawValue, tempBuf.Length);
     }
 
     public MavParamExtValue(sbyte value)
     {
         Type = MavParamExtType.MavParamExtTypeInt8;
-        CopyValueBytesToRawValue(value);
+        byte[] tempBuf = { unchecked((byte)value) };
+        Array.Copy(tempBuf, _rawValue, tempBuf.Length);
     }
 
     public MavParamExtValue(short value)
     {
         Type = MavParamExtType.MavParamExtTypeInt16;
-        CopyValueBytesToRawValue(value);
+        var tempBuf = BitConverter.GetBytes(value);
+        Array.Copy(tempBuf, _rawValue, tempBuf.Length);
     }
 
     public MavParamExtValue(ushort value)
     {
         Type = MavParamExtType.MavParamExtTypeUint16;
-        CopyValueBytesToRawValue(value);
+        var tempBuf = BitConverter.GetBytes(value);
+        Array.Copy(tempBuf, _rawValue, tempBuf.Length);
     }
 
     public MavParamExtValue(int value)
     {
         Type = MavParamExtType.MavParamExtTypeInt32;
-        CopyValueBytesToRawValue(value);
+        var tempBuf = BitConverter.GetBytes(value);
+        Array.Copy(tempBuf, _rawValue, tempBuf.Length);
     }
 
     public MavParamExtValue(uint value)
     {
         Type = MavParamExtType.MavParamExtTypeUint32;
-        CopyValueBytesToRawValue(value);
+        var tempBuf = BitConverter.GetBytes(value);
+        Array.Copy(tempBuf, _rawValue, tempBuf.Length);
     }
 
     public MavParamExtValue(long value)
     {
-        Type = MavParamExtType.MavParamExtTypeInt32;
-        CopyValueBytesToRawValue(value);
+        Type = MavParamExtType.MavParamExtTypeInt64;
+        var tempBuf = BitConverter.GetBytes(value);
+        Array.Copy(tempBuf, _rawValue, tempBuf.Length);
     }
 
     public MavParamExtValue(ulong value)
     {
-        Type = MavParamExtType.MavParamExtTypeUint32;
-        CopyValueBytesToRawValue(value);
+        Type = MavParamExtType.MavParamExtTypeUint64;
+        var tempBuf = BitConverter.GetBytes(value);
+        Array.Copy(tempBuf, _rawValue, tempBuf.Length);
     }
 
     public MavParamExtValue(float value)
     {
         Type = MavParamExtType.MavParamExtTypeReal32;
-        CopyValueBytesToRawValue(value);
+        var tempBuf = BitConverter.GetBytes(value);
+        Array.Copy(tempBuf, _rawValue, tempBuf.Length);
     }
 
     public MavParamExtValue(double value)
     {
         Type = MavParamExtType.MavParamExtTypeReal64;
-        CopyValueBytesToRawValue(value);
+        var tempBuf = BitConverter.GetBytes(value);
+        Array.Copy(tempBuf, _rawValue, tempBuf.Length);
     }
 
     public MavParamExtValue(char[] value)
@@ -88,13 +98,6 @@ public readonly struct MavParamExtValue : IComparable<MavParamExtValue>, ICompar
     }
 
     #endregion
-
-    private void CopyValueBytesToRawValue<T>(T value) where T : struct
-    {
-        dynamic dynamicValue = value;
-        var tempBuf = BitConverter.GetBytes(dynamicValue);
-        Array.Copy(tempBuf, _rawValue, tempBuf.Length);
-    }
 
     #region Cast to MavParamExtValue
 
