@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
+using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 
@@ -212,4 +213,21 @@ public interface IPositionClientEx
     /// <param name="cancel">Optional cancellation token to cancel the takeoff process.</param>
     /// <returns>A task representing the asynchronous takeoff process.</returns>
     Task TakeOff(double altInMeters, CancellationToken cancel=default);
+    
+    /// <summary>
+    /// Initiates vertical takeoff
+    /// </summary>
+    /// <param name="altInMeters">The altitude to reach in meters.</param>
+    /// <param name="cancel">Optional cancellation token to cancel the takeoff process.</param>
+    /// <returns>A task representing the asynchronous takeoff process for quad planes.</returns>
+    Task QTakeOff(double altInMeters, CancellationToken cancel=default);
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="landOption">VTOL land option</param>
+    /// <param name="approachAlt">Approach altitude (with the same reference as the Altitude field). NaN if unspecified.</param>
+    /// <param name="cancel">Optional cancellation token to cancel the takeoff process.</param>
+    /// <returns></returns>
+    Task QLand(NavVtolLandOptions landOption, double approachAlt, CancellationToken cancel=default);
 }

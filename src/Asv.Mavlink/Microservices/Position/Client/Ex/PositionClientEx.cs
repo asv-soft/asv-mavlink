@@ -155,9 +155,19 @@ public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
         return _commandClient.CommandLongAndCheckResult(MavCmd.MavCmdNavTakeoff, 0, 0, 0, 0, 0, 0, (float)altInMeters, cancel);
     }
 
+    public Task QTakeOff(double altInMeters, CancellationToken cancel = default)
+    {
+        return _commandClient.CommandLongAndCheckResult(MavCmd.MavCmdNavVtolTakeoff, 0, 0, 0, 0, 0, 0, (float)altInMeters, cancel);
+    }
+
     public Task GetHomePosition(CancellationToken cancel)
     {
         return _commandClient.CommandLong(MavCmd.MavCmdGetHomePosition, 0, 0, 0, 0, 0,
             0, 0, cancel);
+    }
+
+    public Task QLand(NavVtolLandOptions landOptions, double approachAlt, CancellationToken cancel)
+    {
+        return _commandClient.CommandLong(MavCmd.MavCmdNavVtolLand, (float)landOptions, 0, (float)approachAlt, 0, 0, 0, 0, cancel);
     }
 }

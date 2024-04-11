@@ -15,7 +15,7 @@ namespace Asv.Mavlink;
 
 public class ArduCopterClient:ArduVehicle
 {
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger(); 
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger(); 
     public ArduCopterClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, VehicleClientConfig config, IPacketSequenceCalculator seq, IScheduler? scheduler = null) 
         : base(connection, identity, config, seq, scheduler)
     {
@@ -39,16 +39,23 @@ public class ArduCopterClient:ArduVehicle
         }
         catch (Exception e)
         {
-            _logger.Error($"Error to get vehicle name:{e.Message}");
+            Logger.Error($"Error to get vehicle name:{e.Message}");
         }
     }
 
-    protected override string DefaultName => $"Arducopter [{Identity.TargetSystemId:00},{Identity.TargetComponentId:00}]";
+    protected override string DefaultName => $"ArduCopter [{Identity.TargetSystemId:00},{Identity.TargetComponentId:00}]";
     public override DeviceClass Class => DeviceClass.Copter;
     protected override Task<IReadOnlyCollection<ParamDescription>> GetParamDescription()
     {
         // TODO: Read from device by FTP or load from XML file
         return Task.FromResult((IReadOnlyCollection<ParamDescription>)new List<ParamDescription>());
+    }
+
+    public override Task<bool> CheckAutoMode(CancellationToken cancel)
+    {
+        return Task.FromResult(
+            Heartbeat.RawHeartbeat.Value.BaseMode.HasFlag(MavModeFlag.MavModeFlagCustomModeEnabled) &&
+            Heartbeat.RawHeartbeat.Value.CustomMode == (int)CopterMode.CopterModeAuto);
     }
 
     public override Task SetAutoMode(CancellationToken cancel = default)
@@ -87,12 +94,14 @@ public class ArduCopterClient:ArduVehicle
         await EnsureInGuidedMode(cancel).ConfigureAwait(false);
         await SetVehicleMode(ArdupilotCopterMode.Rtl, cancel).ConfigureAwait(false);
     }
+    
     public override Task<bool> CheckGuidedMode(CancellationToken cancel)
     {
         return Task.FromResult(
             Heartbeat.RawHeartbeat.Value.BaseMode.HasFlag(MavModeFlag.MavModeFlagCustomModeEnabled) &&
             Heartbeat.RawHeartbeat.Value.CustomMode == (int)CopterMode.CopterModeGuided);
     }
+    
     public override async Task EnsureInGuidedMode(CancellationToken cancel)
     {
         if (!await CheckGuidedMode(cancel).ConfigureAwait(false))
@@ -100,5 +109,20 @@ public class ArduCopterClient:ArduVehicle
             await SetVehicleMode(ArdupilotCopterMode.Guided, cancel).ConfigureAwait(false);
         }
     }
-}
+    
+    public override async Task EnsureInAutoMode(CancellationToken cancel)
+    {
+        if (!await CheckAutoMode(cancel).ConfigureAwait(false))
+        {
+            await SetVehicleMode(ArdupilotCopterMode.Auto, cancel).ConfigureAwait(false);
+        }
+    }
 
+    public override async Task TakeOff(double altInMeters, CancellationToken cancel = default)
+    {
+        Logger.Info($"=> TakeOff(altitude:{altInMeters:F2})");
+        await EnsureInGuidedMode(cancel).ConfigureAwait(false);
+        await Position.ArmDisarm(true, cancel).ConfigureAwait(false);
+        await Position.TakeOff(altInMeters,  cancel).ConfigureAwait(false);
+    }
+}
