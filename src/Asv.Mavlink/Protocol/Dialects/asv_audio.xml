@@ -90,34 +90,42 @@
     </enum>
     <enum name="ASV_AUDIO_CODEC">
       <description>Audio codec (uint8_t).</description>
-      <entry value="0" name="ASV_AUDIO_CODEC_RAW">
+      <entry value="0" name="ASV_AUDIO_CODEC_UNKNOWN">
+        <description>Unknown codec.</description>
+      </entry>
+      <entry value="1" name="ASV_AUDIO_CODEC_RAW">
         <description>Raw uncompressed audio (PCM).</description>
       </entry>
-      <entry value="1" name="ASV_AUDIO_CODEC_OPUS">
+      <entry value="2" name="ASV_AUDIO_CODEC_OPUS">
         <description>Opus (RFC 6716) – based on SILK vocoder and CELT codec.</description>
       </entry>
-      <entry value="2" name="ASV_AUDIO_CODEC_AAC">
+      <entry value="3" name="ASV_AUDIO_CODEC_AAC">
         <description>Advanced Audio Coding (AAC).</description>
       </entry>
-      <entry value="3" name="ASV_AUDIO_CODEC_PCMU">
+      <entry value="4" name="ASV_AUDIO_CODEC_PCMU">
         <description>G.711 μ-law (PCMU).</description>
       </entry>
-      <entry value="4" name="ASV_AUDIO_CODEC_PCMA">
+      <entry value="5" name="ASV_AUDIO_CODEC_PCMA">
         <description>G.711 A-law (PCMA).</description>
       </entry>
-      <entry value="5" name="ASV_AUDIO_CODEC_SPEEX">
+      <entry value="6" name="ASV_AUDIO_CODEC_SPEEX">
         <description>Speex.</description>
       </entry>
-      <entry value="6" name="ASV_AUDIO_CODEC_ILBC">
+      <entry value="7" name="ASV_AUDIO_CODEC_ILBC">
         <description>Internet Low Bitrate Codec (iLBC).</description>
       </entry>
-      <entry value="7" name="ASV_AUDIO_CODEC_G722">
+      <entry value="8" name="ASV_AUDIO_CODEC_G722">
         <description>G.722.</description>
       </entry>
-      <entry value="8" name="ASV_AUDIO_CODEC_L16">
+      <entry value="9" name="ASV_AUDIO_CODEC_L16">
         <description>Linear Pulse Code Modulation (L16).</description>
       </entry>
-      <!-- add new codecs here. Max value is 255 -->
+      <!-- add new codecs here. Max value is 254 -->
+      
+      
+      <entry value="255" name="ASV_AUDIO_CODEC_RESERVED">
+        <description>Reserved</description>
+      </entry>
     </enum>
     
     <!-- Additional params for specified codec. -->

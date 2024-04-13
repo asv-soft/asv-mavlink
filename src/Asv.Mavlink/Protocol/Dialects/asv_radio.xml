@@ -31,15 +31,15 @@
       <entry value="13250" name="MAV_CMD_ASV_RADIO_ON">
         <description>Enable radio transmiiter. Change mode to ASV_RADIO_CUSTOM_MODE_ONAIR</description>
         <param index="1">Reference frequency in Hz (unit32_t).</param>
-        <param index="2" enum="ASV_RADIO_MODULATION">RF modulation type, see ASV_RADIO_MODULATION (uint32_t).</param>
-        <param index="3" enum="ASV_RADIO_RF_FLAG">Set RX reciever or\and TX tranmitter enabled, see ASV_RADIO_RF_FLAG (uint32_t).</param>
-        <param index="4">Estimated RX reference power in dBm. Needed to tune the internal amplifiers and filters (float).</param>
-        <param index="5">TX power in dBm (float).</param>
-        <param index="6" enum="ASV_AUDIO_CODEC">Digital audio codec, see ASV_AUDIO_CODEC (unit32_t).</param>
-        <param index="7">Digital audio codec options, see ASV_AUDIO_CODEC_[*]_CFG (uint32_t).</param>
+        <param index="2" enum="ASV_RADIO_MODULATION">RF modulation type, see ASV_RADIO_MODULATION (uint8_t).</param>
+        <param index="3">Estimated RX reference power in dBm. May be needed to tune the internal amplifiers and filters. NaN for auto-gain (float).</param>
+        <param index="4">TX power in dBm (float).</param>
+        <param index="5" enum="ASV_AUDIO_CODEC">Digital audio codec, see ASV_AUDIO_CODEC (uint8_t).</param>
+        <param index="6">Digital audio codec options, see ASV_AUDIO_CODEC_[*]_CFG (uint8_t).</param>
+        <param index="7">Empty.</param>
       </entry>
       <entry value="13251" name="MAV_CMD_ASV_RADIO_OFF">
-        <description>Disable radio transmiiter. Change mode to ASV_RADIO_CUSTOM_MODE_IDLE</description>
+        <description>Disable radio. Change mode to ASV_RADIO_CUSTOM_MODE_IDLE</description>
         <param index="1">Empty.</param>
         <param index="2">Empty.</param>
         <param index="3">Empty.</param>
@@ -59,13 +59,13 @@
         <description>FM modulation.</description>
       </entry>
     </enum>
-    <enum name="ASV_RADIO_RF_FLAG">
+    <enum name="ASV_RADIO_RF_MODE_FLAG">
       <description>RF device mode falgs (uint8_t).</description>
-      <entry value="1" name="ASV_RADIO_RF_FLAG_RX_ENABLED">
-        <description>RX channel for listen RF audio is enabled.</description>
+      <entry value="1" name="ASV_RADIO_RF_MODE_FLAG_RX_ON_AIR">
+        <description>RX channel found RF signal.</description>
       </entry>
-      <entry value="2" name="ASV_RADIO_RF_FLAG_TX_ENABLED">
-        <description>TX channgel for transmitting RF audio is enabled.</description>
+      <entry value="2" name="ASV_RADIO_RF_MODE_FLAG_TX_ON_AIR">
+        <description>TX channel transmitting RF signal.</description>
       </entry>
     </enum>
     
@@ -75,7 +75,14 @@
   <messages>
     <message id="13250" name="ASV_RADIO_STATUS">
       <description>Status of radio device. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
-      <field type="uint8_t" name="current_codec" enum="ASV_AUDIO_CODEC">Current audio codecs.</field>
+      <field type="uint32_t" name="rf_freq" >Current RF frequency.</field>
+      <field type="uint8_t" name="rf_modulation" enum="ASV_RADIO_MODULATION">Current RF modulation.</field>
+      <field type="uint8_t" name="codec" enum="ASV_AUDIO_CODEC">Current audio codecs.</field>
+      <field type="uint8_t" name="codec_cfg">Current audio codec config(ASV_AUDIO_CODEC_[*]_CFG).</field>
+      <field type="float" name="tx_power">Current TX power in dBm.</field>
+      <field type="float" name="rx_estimated_power">Estimated RX reference power in dBm.</field>
+      <field type="uint32_t" name="rf_mode" enum="ASV_RADIO_RF_MODE_FLAG">RF mode.</field>
+      <field type="float" name="rx_power">Measured RX power in dBm.</field>
     </message>
     
     <message id="13251" name="ASV_RADIO_CAPABILITIES_REQUEST">
@@ -85,6 +92,12 @@
     </message>
     <message id="13252" name="ASV_RADIO_CAPABILITIES_RESPONSE">
       <description>Device capabilities. This is response for ASV_RADIO_CAPABILITIES_REQUEST message.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <field type="uint32_t" name="max_rf_freq">Max RF frequency in Hz.</field>
+      <field type="uint32_t" name="min_rf_freq">Min RF frequency in Hz.</field>
+      <field type="float" name="max_tx_power">Max TX power in dBm.</field>
+      <field type="float" name="min_tx_power">Min TX power in dBm.</field>
+      <field type="float" name="max_rx_power">Max estimated RX power in dBm.</field>
+      <field type="float" name="min_rx_power">Min estimated RX power in dBm.</field>
       <field type="uint8_t[32]" name="supported_modulation">Supported RF modulations. Each bit of array is flag from ASV_RADIO_MODULATION(max 255 items) enum.</field>
       <field type="uint8_t[32]" name="codecs">Supported codecs. Each bit of array is flag from ASV_RADIO_CODEC(max 255 items) enum .</field>
     </message>

@@ -191,50 +191,60 @@ namespace Asv.Mavlink.V2.AsvAudio
     public enum AsvAudioCodec:uint
     {
         /// <summary>
+        /// Unknown codec.
+        /// ASV_AUDIO_CODEC_UNKNOWN
+        /// </summary>
+        AsvAudioCodecUnknown = 0,
+        /// <summary>
         /// Raw uncompressed audio (PCM).
         /// ASV_AUDIO_CODEC_RAW
         /// </summary>
-        AsvAudioCodecRaw = 0,
+        AsvAudioCodecRaw = 1,
         /// <summary>
         /// Opus (RFC 6716) – based on SILK vocoder and CELT codec.
         /// ASV_AUDIO_CODEC_OPUS
         /// </summary>
-        AsvAudioCodecOpus = 1,
+        AsvAudioCodecOpus = 2,
         /// <summary>
         /// Advanced Audio Coding (AAC).
         /// ASV_AUDIO_CODEC_AAC
         /// </summary>
-        AsvAudioCodecAac = 2,
+        AsvAudioCodecAac = 3,
         /// <summary>
         /// G.711 μ-law (PCMU).
         /// ASV_AUDIO_CODEC_PCMU
         /// </summary>
-        AsvAudioCodecPcmu = 3,
+        AsvAudioCodecPcmu = 4,
         /// <summary>
         /// G.711 A-law (PCMA).
         /// ASV_AUDIO_CODEC_PCMA
         /// </summary>
-        AsvAudioCodecPcma = 4,
+        AsvAudioCodecPcma = 5,
         /// <summary>
         /// Speex.
         /// ASV_AUDIO_CODEC_SPEEX
         /// </summary>
-        AsvAudioCodecSpeex = 5,
+        AsvAudioCodecSpeex = 6,
         /// <summary>
         /// Internet Low Bitrate Codec (iLBC).
         /// ASV_AUDIO_CODEC_ILBC
         /// </summary>
-        AsvAudioCodecIlbc = 6,
+        AsvAudioCodecIlbc = 7,
         /// <summary>
         /// G.722.
         /// ASV_AUDIO_CODEC_G722
         /// </summary>
-        AsvAudioCodecG722 = 7,
+        AsvAudioCodecG722 = 8,
         /// <summary>
         /// Linear Pulse Code Modulation (L16).
         /// ASV_AUDIO_CODEC_L16
         /// </summary>
-        AsvAudioCodecL16 = 8,
+        AsvAudioCodecL16 = 9,
+        /// <summary>
+        /// Reserved
+        /// ASV_AUDIO_CODEC_RESERVED
+        /// </summary>
+        AsvAudioCodecReserved = 255,
     }
 
     /// <summary>

@@ -83,17 +83,17 @@ namespace Asv.Mavlink.V2.AsvRadio
         /// <summary>
         /// Enable radio transmiiter. Change mode to ASV_RADIO_CUSTOM_MODE_ONAIR
         /// Param 1 - Reference frequency in Hz (unit32_t).
-        /// Param 2 - RF modulation type, see ASV_RADIO_MODULATION (uint32_t).
-        /// Param 3 - Set RX reciever or\and TX tranmitter enabled, see ASV_RADIO_RF_FLAG (uint32_t).
-        /// Param 4 - Estimated RX reference power in dBm. Needed to tune the internal amplifiers and filters (float).
-        /// Param 5 - TX power in dBm (float).
-        /// Param 6 - Digital audio codec, see ASV_AUDIO_CODEC (unit32_t).
-        /// Param 7 - Digital audio codec options, see ASV_AUDIO_CODEC_[*]_CFG (uint32_t).
+        /// Param 2 - RF modulation type, see ASV_RADIO_MODULATION (uint8_t).
+        /// Param 3 - Estimated RX reference power in dBm. May be needed to tune the internal amplifiers and filters. NaN for auto-gain (float).
+        /// Param 4 - TX power in dBm (float).
+        /// Param 5 - Digital audio codec, see ASV_AUDIO_CODEC (uint8_t).
+        /// Param 6 - Digital audio codec options, see ASV_AUDIO_CODEC_[*]_CFG (uint8_t).
+        /// Param 7 - Empty.
         /// MAV_CMD_ASV_RADIO_ON
         /// </summary>
         MavCmdAsvRadioOn = 13250,
         /// <summary>
-        /// Disable radio transmiiter. Change mode to ASV_RADIO_CUSTOM_MODE_IDLE
+        /// Disable radio. Change mode to ASV_RADIO_CUSTOM_MODE_IDLE
         /// Param 1 - Empty.
         /// Param 2 - Empty.
         /// Param 3 - Empty.
@@ -126,20 +126,20 @@ namespace Asv.Mavlink.V2.AsvRadio
 
     /// <summary>
     /// RF device mode falgs (uint8_t).
-    ///  ASV_RADIO_RF_FLAG
+    ///  ASV_RADIO_RF_MODE_FLAG
     /// </summary>
-    public enum AsvRadioRfFlag:uint
+    public enum AsvRadioRfModeFlag:uint
     {
         /// <summary>
-        /// RX channel for listen RF audio is enabled.
-        /// ASV_RADIO_RF_FLAG_RX_ENABLED
+        /// RX channel found RF signal.
+        /// ASV_RADIO_RF_MODE_FLAG_RX_ON_AIR
         /// </summary>
-        AsvRadioRfFlagRxEnabled = 1,
+        AsvRadioRfModeFlagRxOnAir = 1,
         /// <summary>
-        /// TX channgel for transmitting RF audio is enabled.
-        /// ASV_RADIO_RF_FLAG_TX_ENABLED
+        /// TX channel transmitting RF signal.
+        /// ASV_RADIO_RF_MODE_FLAG_TX_ON_AIR
         /// </summary>
-        AsvRadioRfFlagTxEnabled = 2,
+        AsvRadioRfModeFlagTxOnAir = 2,
     }
 
 
@@ -155,7 +155,7 @@ namespace Asv.Mavlink.V2.AsvRadio
     {
 	    public const int PacketMessageId = 13250;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 178;
+        public override byte GetCrcEtra() => 127;
         public override bool WrapToV2Extension => true;
 
         public override AsvRadioStatusPayload Payload { get; } = new AsvRadioStatusPayload();
@@ -168,12 +168,19 @@ namespace Asv.Mavlink.V2.AsvRadio
     /// </summary>
     public class AsvRadioStatusPayload : IPayload
     {
-        public byte GetMaxByteSize() => 1; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 1; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 23; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 23; // of byte sized of fields (exclude extended)
         public int GetByteSize()
         {
             var sum = 0;
-            sum+= 1; // CurrentCodec
+            sum+=4; //RfFreq
+            sum+=4; //TxPower
+            sum+=4; //RxEstimatedPower
+            sum+= 4; // RfMode
+            sum+=4; //RxPower
+            sum+= 1; // RfModulation
+            sum+= 1; // Codec
+            sum+=1; //CodecCfg
             return (byte)sum;
         }
 
@@ -181,14 +188,28 @@ namespace Asv.Mavlink.V2.AsvRadio
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
-            CurrentCodec = (AsvAudioCodec)BinSerialize.ReadByte(ref buffer);
+            RfFreq = BinSerialize.ReadUInt(ref buffer);
+            TxPower = BinSerialize.ReadFloat(ref buffer);
+            RxEstimatedPower = BinSerialize.ReadFloat(ref buffer);
+            RfMode = (AsvRadioRfModeFlag)BinSerialize.ReadUInt(ref buffer);
+            RxPower = BinSerialize.ReadFloat(ref buffer);
+            RfModulation = (AsvRadioModulation)BinSerialize.ReadByte(ref buffer);
+            Codec = (AsvAudioCodec)BinSerialize.ReadByte(ref buffer);
+            CodecCfg = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
 
         public void Serialize(ref Span<byte> buffer)
         {
-            BinSerialize.WriteByte(ref buffer,(byte)CurrentCodec);
-            /* PayloadByteSize = 1 */;
+            BinSerialize.WriteUInt(ref buffer,RfFreq);
+            BinSerialize.WriteFloat(ref buffer,TxPower);
+            BinSerialize.WriteFloat(ref buffer,RxEstimatedPower);
+            BinSerialize.WriteUInt(ref buffer,(uint)RfMode);
+            BinSerialize.WriteFloat(ref buffer,RxPower);
+            BinSerialize.WriteByte(ref buffer,(byte)RfModulation);
+            BinSerialize.WriteByte(ref buffer,(byte)Codec);
+            BinSerialize.WriteByte(ref buffer,(byte)CodecCfg);
+            /* PayloadByteSize = 23 */;
         }
         
         
@@ -196,10 +217,45 @@ namespace Asv.Mavlink.V2.AsvRadio
 
 
         /// <summary>
-        /// Current audio codecs.
-        /// OriginName: current_codec, Units: , IsExtended: false
+        /// Current RF frequency.
+        /// OriginName: rf_freq, Units: , IsExtended: false
         /// </summary>
-        public AsvAudioCodec CurrentCodec { get; set; }
+        public uint RfFreq { get; set; }
+        /// <summary>
+        /// Current TX power in dBm.
+        /// OriginName: tx_power, Units: , IsExtended: false
+        /// </summary>
+        public float TxPower { get; set; }
+        /// <summary>
+        /// Estimated RX reference power in dBm.
+        /// OriginName: rx_estimated_power, Units: , IsExtended: false
+        /// </summary>
+        public float RxEstimatedPower { get; set; }
+        /// <summary>
+        /// RF mode.
+        /// OriginName: rf_mode, Units: , IsExtended: false
+        /// </summary>
+        public AsvRadioRfModeFlag RfMode { get; set; }
+        /// <summary>
+        /// Measured RX power in dBm.
+        /// OriginName: rx_power, Units: , IsExtended: false
+        /// </summary>
+        public float RxPower { get; set; }
+        /// <summary>
+        /// Current RF modulation.
+        /// OriginName: rf_modulation, Units: , IsExtended: false
+        /// </summary>
+        public AsvRadioModulation RfModulation { get; set; }
+        /// <summary>
+        /// Current audio codecs.
+        /// OriginName: codec, Units: , IsExtended: false
+        /// </summary>
+        public AsvAudioCodec Codec { get; set; }
+        /// <summary>
+        /// Current audio codec config(ASV_AUDIO_CODEC_[*]_CFG).
+        /// OriginName: codec_cfg, Units: , IsExtended: false
+        /// </summary>
+        public byte CodecCfg { get; set; }
     }
     /// <summary>
     /// Request for device capabilities. Devices must reply ASV_RADIO_CAPABILITIES_RESPONSE message.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -271,7 +327,7 @@ namespace Asv.Mavlink.V2.AsvRadio
     {
 	    public const int PacketMessageId = 13252;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 138;
+        public override byte GetCrcEtra() => 171;
         public override bool WrapToV2Extension => true;
 
         public override AsvRadioCapabilitiesResponsePayload Payload { get; } = new AsvRadioCapabilitiesResponsePayload();
@@ -284,11 +340,17 @@ namespace Asv.Mavlink.V2.AsvRadio
     /// </summary>
     public class AsvRadioCapabilitiesResponsePayload : IPayload
     {
-        public byte GetMaxByteSize() => 64; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 64; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 88; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 88; // of byte sized of fields (exclude extended)
         public int GetByteSize()
         {
             var sum = 0;
+            sum+=4; //MaxRfFreq
+            sum+=4; //MinRfFreq
+            sum+=4; //MaxTxPower
+            sum+=4; //MinTxPower
+            sum+=4; //MaxRxPower
+            sum+=4; //MinRxPower
             sum+=SupportedModulation.Length; //SupportedModulation
             sum+=Codecs.Length; //Codecs
             return (byte)sum;
@@ -300,7 +362,13 @@ namespace Asv.Mavlink.V2.AsvRadio
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/64 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            MaxRfFreq = BinSerialize.ReadUInt(ref buffer);
+            MinRfFreq = BinSerialize.ReadUInt(ref buffer);
+            MaxTxPower = BinSerialize.ReadFloat(ref buffer);
+            MinTxPower = BinSerialize.ReadFloat(ref buffer);
+            MaxRxPower = BinSerialize.ReadFloat(ref buffer);
+            MinRxPower = BinSerialize.ReadFloat(ref buffer);
+            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/88 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             SupportedModulation = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -316,6 +384,12 @@ namespace Asv.Mavlink.V2.AsvRadio
 
         public void Serialize(ref Span<byte> buffer)
         {
+            BinSerialize.WriteUInt(ref buffer,MaxRfFreq);
+            BinSerialize.WriteUInt(ref buffer,MinRfFreq);
+            BinSerialize.WriteFloat(ref buffer,MaxTxPower);
+            BinSerialize.WriteFloat(ref buffer,MinTxPower);
+            BinSerialize.WriteFloat(ref buffer,MaxRxPower);
+            BinSerialize.WriteFloat(ref buffer,MinRxPower);
             for(var i=0;i<SupportedModulation.Length;i++)
             {
                 BinSerialize.WriteByte(ref buffer,(byte)SupportedModulation[i]);
@@ -324,13 +398,43 @@ namespace Asv.Mavlink.V2.AsvRadio
             {
                 BinSerialize.WriteByte(ref buffer,(byte)Codecs[i]);
             }
-            /* PayloadByteSize = 64 */;
+            /* PayloadByteSize = 88 */;
         }
         
         
 
 
 
+        /// <summary>
+        /// Max RF frequency in Hz.
+        /// OriginName: max_rf_freq, Units: , IsExtended: false
+        /// </summary>
+        public uint MaxRfFreq { get; set; }
+        /// <summary>
+        /// Min RF frequency in Hz.
+        /// OriginName: min_rf_freq, Units: , IsExtended: false
+        /// </summary>
+        public uint MinRfFreq { get; set; }
+        /// <summary>
+        /// Max TX power in dBm.
+        /// OriginName: max_tx_power, Units: , IsExtended: false
+        /// </summary>
+        public float MaxTxPower { get; set; }
+        /// <summary>
+        /// Min TX power in dBm.
+        /// OriginName: min_tx_power, Units: , IsExtended: false
+        /// </summary>
+        public float MinTxPower { get; set; }
+        /// <summary>
+        /// Max estimated RX power in dBm.
+        /// OriginName: max_rx_power, Units: , IsExtended: false
+        /// </summary>
+        public float MaxRxPower { get; set; }
+        /// <summary>
+        /// Min estimated RX power in dBm.
+        /// OriginName: min_rx_power, Units: , IsExtended: false
+        /// </summary>
+        public float MinRxPower { get; set; }
         /// <summary>
         /// Supported RF modulations. Each bit of array is flag from ASV_RADIO_MODULATION(max 255 items) enum.
         /// OriginName: supported_modulation, Units: , IsExtended: false
