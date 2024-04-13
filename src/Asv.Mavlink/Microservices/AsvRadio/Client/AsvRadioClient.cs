@@ -29,7 +29,7 @@ public class AsvRadioClient : MavlinkMicroserviceClient, IAsvRadioClient
         },_=> true, resultGetter:x=>x.Payload,cancel: cancel);
     }
 
-    public Task<AsvRadioCodecCfgResponsePayload> RequestCodecCfg(AsvAudioCodec codec, CancellationToken cancel = default)
+    public Task<AsvRadioCodecCfgResponsePayload> RequestCodecOptions(AsvAudioCodec codec, CancellationToken cancel = default)
     {
         return InternalCall<AsvRadioCodecCfgResponsePayload, AsvRadioCodecCfgRequestPacket, AsvRadioCodecCfgResponsePacket>(x =>
         {

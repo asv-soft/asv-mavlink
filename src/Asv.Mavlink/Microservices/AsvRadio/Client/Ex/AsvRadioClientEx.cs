@@ -77,7 +77,7 @@ public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
         var list = new Dictionary<AsvAudioCodec,AsvRadioCodecCapabilities>(codecs.Length);
         foreach (var codec in codecs)
         {
-            var response = await Base.RequestCodecCfg(codec,cancel).ConfigureAwait(false);
+            var response = await Base.RequestCodecOptions(codec,cancel).ConfigureAwait(false);
             var config = AsvRadioHelper.GetCodecsOptions(response);
             list.Add(codec,new AsvRadioCodecCapabilities()
              {
