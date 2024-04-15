@@ -30,11 +30,11 @@ public class AsvSdrExTests
             TargetComponentId = 4
         };
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
-        
-        
-        var heartBeatClient = new HeartbeatClient(link.Client, clientId, new PacketSequenceCalculator(), new HeartbeatClientConfig(), Scheduler.Default);
-        var commandClient = new CommandClient(link.Client, clientId, new PacketSequenceCalculator(), new CommandProtocolConfig());
-        var asvSdrClient = new AsvSdrClient(link.Client, clientId, new PacketSequenceCalculator());
+
+        var clientSeq = new PacketSequenceCalculator();
+        var heartBeatClient = new HeartbeatClient(link.Client, clientId, clientSeq, new HeartbeatClientConfig(), Scheduler.Default);
+        var commandClient = new CommandClient(link.Client, clientId, clientSeq, new CommandProtocolConfig());
+        var asvSdrClient = new AsvSdrClient(link.Client, clientId, clientSeq);
         var asvSdrClientEx = new AsvSdrClientEx(asvSdrClient, heartBeatClient, commandClient, new AsvSdrClientExConfig());
 
         var pkt = new PacketSequenceCalculator();

@@ -4,9 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.AsvAudio;
 using Asv.Mavlink.V2.AsvRadio;
-using Asv.Mavlink.V2.Common;
 
-namespace Asv.Mavlink.Client;
+namespace Asv.Mavlink;
 
 public class AsvRadioClient : MavlinkMicroserviceClient, IAsvRadioClient
 {

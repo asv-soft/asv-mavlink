@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Asv.Mavlink.V2.AsvAudio;
 using Asv.Mavlink.V2.AsvRadio;
@@ -5,20 +6,98 @@ using Asv.Mavlink.V2.AsvRadio;
 namespace Asv.Mavlink;
 
 
-public class AsvRadioCodecCapabilities
+public class AsvRadioCapabilitiesBuilder
 {
-    public AsvAudioCodec Codec { get; set; }
-    public IReadOnlySet<byte> SupportedOptions { get; set; }
+    private readonly AsvRadioCapabilities _capabilities = new AsvRadioCapabilities();
+
+    public AsvRadioCapabilitiesBuilder SetFrequencyHz(uint min, uint max)
+    {
+        _capabilities.MinFrequencyHz = min;
+        _capabilities.MaxFrequencyHz = max;
+        return this;
+    }
+    public AsvRadioCapabilitiesBuilder SetReferencePowerDbm(float min, float max)
+    {
+        _capabilities.MinReferencePowerDbm = min;
+        _capabilities.MaxReferencePowerDbm = max;
+        return this;
+    }
+    public AsvRadioCapabilitiesBuilder SetTxPowerDbm(float min, float max)
+    {
+        _capabilities.MinTxPowerDbm = min;
+        _capabilities.MaxTxPowerDbm = max;
+        return this;
+    }
+
+    public AsvRadioCapabilitiesBuilder SetSupportedModulations(params AsvRadioModulation[] modulations)
+    {
+        foreach (var modulation in modulations)
+        {
+            _capabilities.InternalSupportedModulations.Add(modulation);
+        }
+        return this;
+    }
+    public AsvRadioCapabilitiesBuilder SetSupportedModulations(IEnumerable<AsvRadioModulation> modulations)
+    {
+        foreach (var modulation in modulations)
+        {
+            _capabilities.InternalSupportedModulations.Add(modulation);
+        }
+        return this;
+    }
+
+    public AsvRadioCapabilitiesBuilder SetSupportedCodecs(AsvAudioCodec codec, params byte[] codecConfigs)
+    {
+        if (!_capabilities.InternalSupportedCodecs.TryGetValue(codec, out _))
+        {
+            _capabilities.InternalSupportedCodecs[codec] = new HashSet<byte>(codecConfigs);
+        }
+        else
+        {
+            _capabilities.InternalSupportedCodecs.Add(codec, new HashSet<byte>(codecConfigs));
+        }
+        return this;
+    }
+    public AsvRadioCapabilitiesBuilder SetSupportedCodecs(AsvAudioCodec codec, IEnumerable<byte> codecConfigs)
+    {
+        if (!_capabilities.InternalSupportedCodecs.TryGetValue(codec, out _))
+        {
+            _capabilities.InternalSupportedCodecs[codec] = new HashSet<byte>(codecConfigs);
+        }
+        else
+        {
+            _capabilities.InternalSupportedCodecs.Add(codec, new HashSet<byte>(codecConfigs));
+        }
+        return this;
+    }
+
+    public AsvRadioCapabilities Build()
+    {
+        return _capabilities;
+    }
+
 }
 
 public class AsvRadioCapabilities
 {
-    public uint MinFrequencyHz { get; set; } = 10_000_000;
-    public uint MaxFrequencyHz { get; set; } = 1_000_000_000;
-    public float MinReferencePowerDbm { get; set; } = -100;
-    public float MaxReferencePowerDbm { get; set; } = 10;
-    public float MinTxPowerDbm { get; set; } = -100;
-    public float MaxTxPowerDbm { get; set; } = 10;
-    public IReadOnlySet<AsvRadioModulation> SupportedModulations { get; set; }
-    public IReadOnlyDictionary<AsvAudioCodec,AsvRadioCodecCapabilities> SupportedCodecs { get; set; }
+    public static AsvRadioCapabilities Empty => new AsvRadioCapabilitiesBuilder().Build();
+    
+    internal readonly Dictionary<AsvAudioCodec, IReadOnlySet<byte>> InternalSupportedCodecs = new();
+    internal readonly HashSet<AsvRadioModulation> InternalSupportedModulations = new();
+
+    internal AsvRadioCapabilities()
+    {
+        
+    }
+    
+    public uint MinFrequencyHz { get; internal set; } = 10_000_000;
+    public uint MaxFrequencyHz { get; internal set; } = 1_000_000_000;
+    public float MinReferencePowerDbm { get; internal set; } = -100;
+    public float MaxReferencePowerDbm { get; internal set; } = 10;
+    public float MinTxPowerDbm { get; internal set; } = -100;
+    public float MaxTxPowerDbm { get; internal set; } = 10;
+
+    public IReadOnlySet<AsvRadioModulation> SupportedModulations => InternalSupportedModulations;
+
+    public IReadOnlyDictionary<AsvAudioCodec, IReadOnlySet<byte>> SupportedCodecs => InternalSupportedCodecs;
 }

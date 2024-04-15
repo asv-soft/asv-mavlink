@@ -4,7 +4,6 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
-using Asv.Mavlink.Client;
 using Asv.Mavlink.V2.AsvAudio;
 using Asv.Mavlink.V2.AsvRadio;
 using Xunit;
@@ -26,7 +25,9 @@ public class AsvRadioTest
         cancel.CancelAfter(TimeSpan.FromSeconds(10));
         await using var c1 = cancel.Token.Register(()=>tcs.TrySetCanceled(), false);
         
-        client.Status.Skip(3).Subscribe(x =>
+        client.Status
+            .Skip(3) // this is for skip first 3 messages
+            .Subscribe(x =>
         {
             tcs.TrySetResult(x);
         });

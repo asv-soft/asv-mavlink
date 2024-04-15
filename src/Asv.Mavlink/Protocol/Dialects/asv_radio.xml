@@ -16,8 +16,8 @@
     <!-- CUSTOM_MODE -->
     <enum name="ASV_RADIO_CUSTOM_MODE">
       <description>A mapping of RADIO modes for custom_mode field of heartbeat.</description>
-      <entry value="1" name="ASV_RADIO_CUSTOM_MODE_IDLE"/>
-      <entry value="2" name="ASV_RADIO_CUSTOM_MODE_ONAIR"/>
+      <entry value="0" name="ASV_RADIO_CUSTOM_MODE_IDLE"/>
+      <entry value="1" name="ASV_RADIO_CUSTOM_MODE_ONAIR"/>
     </enum>
     
     <!-- Asv Gbs specific MAV_TYPE identity -->

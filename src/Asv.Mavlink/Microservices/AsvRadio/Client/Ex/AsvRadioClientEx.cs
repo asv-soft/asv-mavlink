@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +10,7 @@ using Asv.Mavlink.V2.AsvAudio;
 using Asv.Mavlink.V2.AsvRadio;
 using Asv.Mavlink.V2.Common;
 
-namespace Asv.Mavlink.Client;
+namespace Asv.Mavlink;
 
 public interface IAsvRadioClientEx
 {
@@ -63,31 +62,22 @@ public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
 
     public async Task<AsvRadioCapabilities> GetCapabilities(CancellationToken cancel = default)
     {
-        var result = new AsvRadioCapabilities();
+        
         var cap = await Base.RequestCapabilities(cancel).ConfigureAwait(false);
-        result.MaxTxPowerDbm = cap.MaxTxPower;
-        result.MinTxPowerDbm = cap.MinTxPower;
-        result.MinFrequencyHz = cap.MinRfFreq;
-        result.MaxFrequencyHz = cap.MaxRfFreq;
-        result.MaxReferencePowerDbm = cap.MaxRxPower;
-        result.MinReferencePowerDbm = cap.MinRxPower;
-        result.SupportedModulations = AsvRadioHelper.GetModulation(cap).ToImmutableHashSet();
+        var builder = new AsvRadioCapabilitiesBuilder();
+        builder.SetFrequencyHz(cap.MinRfFreq,cap.MaxRfFreq);
+        builder.SetReferencePowerDbm(cap.MinRxPower,cap.MaxRxPower);
+        builder.SetTxPowerDbm(cap.MinTxPower,cap.MaxTxPower);
+        builder.SetSupportedModulations(AsvRadioHelper.GetModulation(cap));
         var codecs = AsvRadioHelper.GetCodecs(cap).ToImmutableArray();
 
-        var list = new Dictionary<AsvAudioCodec,AsvRadioCodecCapabilities>(codecs.Length);
         foreach (var codec in codecs)
         {
             var response = await Base.RequestCodecOptions(codec,cancel).ConfigureAwait(false);
-            var config = AsvRadioHelper.GetCodecsOptions(response);
-            list.Add(codec,new AsvRadioCodecCapabilities()
-             {
-                 Codec = codec,
-                 SupportedOptions = config.ToImmutableHashSet()
-             });
+            var options = AsvRadioHelper.GetCodecsOptions(response);
+            builder.SetSupportedCodecs(codec,options);
         }
-
-        result.SupportedCodecs = list;
-        return result;
+        return builder.Build();
        
     }
 
