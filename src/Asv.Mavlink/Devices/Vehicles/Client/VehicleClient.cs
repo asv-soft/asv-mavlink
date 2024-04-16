@@ -94,23 +94,17 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
     public ITelemetryClientEx Rtt { get; }
     public IV2ExtensionClient V2Extension { get; }
     public abstract Task EnsureInGuidedMode(CancellationToken cancel);
+    public abstract Task EnsureInAutoMode(CancellationToken cancel);
     public abstract Task<bool> CheckGuidedMode(CancellationToken cancel);
+    public abstract Task<bool> CheckAutoMode(CancellationToken cancel);
     public abstract Task SetAutoMode(CancellationToken cancel = default);
     public abstract Task GoTo(GeoPoint point, CancellationToken cancel = default);
     public abstract Task DoLand(CancellationToken cancel = default);
     public abstract Task DoRtl(CancellationToken cancel = default);
-    public async Task TakeOff(double altInMeters, CancellationToken cancel = default)
-    {
-        Logger.Info($"=> TakeOff(altitude:{altInMeters:F2})");
-        await EnsureInGuidedMode(cancel).ConfigureAwait(false);
-        await Position.ArmDisarm(true, cancel).ConfigureAwait(false);
-        await Position.TakeOff(altInMeters,  cancel).ConfigureAwait(false);
-    }
-
+    public abstract Task TakeOff(double altInMeters, CancellationToken cancel = default);
     
     public abstract IEnumerable<IVehicleMode> AvailableModes { get; }
     public IRxValue<IVehicleMode> CurrentMode { get; }
     protected abstract IVehicleMode? InternalInterpretMode(HeartbeatPayload heartbeatPayload);
     public abstract Task SetVehicleMode(IVehicleMode mode, CancellationToken cancel = default);
-
 }
