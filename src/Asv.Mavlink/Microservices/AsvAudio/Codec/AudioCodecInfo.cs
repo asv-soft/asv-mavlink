@@ -4,13 +4,83 @@ using Asv.Mavlink.V2.AsvAudio;
 
 namespace Asv.Mavlink;
 
+
+/// <summary>
+///  ASV_AUDIO_CHANNEL
+/// </summary>
+public enum AsvAudioChannel:uint
+{
+    /// <summary>
+    /// Mono, 1 channel.
+    /// ASV_AUDIO_CHANNEL_MONO
+    /// </summary>
+    AsvAudioChannelMono = 1,
+    /// <summary>
+    /// Stereo, 2 channel.
+    /// ASV_AUDIO_CHANNEL_STEREO
+    /// </summary>
+    AsvAudioChannelStereo = 2,
+}
+
+/// <summary>
+/// Count of bit per sample for decoded.
+///  ASV_AUDIO_PCM_FORMAT
+/// </summary>
+public enum AsvAudioPcmFormat:uint
+{
+    /// <summary>
+    /// 8 bit per sample.
+    /// ASV_AUDIO_PCM_FORMAT_INT8
+    /// </summary>
+    AsvAudioPcmFormatInt8 = 1,
+    /// <summary>
+    /// 16 bit per sample.
+    /// ASV_AUDIO_PCM_FORMAT_INT16
+    /// </summary>
+    AsvAudioPcmFormatInt16 = 2,
+}
+
 public class AudioCodecInfo: IEquatable<AudioCodecInfo>
 {
-    public AudioCodecInfo(AsvAudioCodec codec, byte codecAdditionalParam, AsvAudioPcmFormat format, AsvAudioSampleRate sampleRate,
+    public static AudioCodecInfo Create(AsvAudioCodec codec)
+    {
+        switch (codec)
+        {
+            case AsvAudioCodec.AsvAudioCodecUnknown:
+                break;
+            case AsvAudioCodec.AsvAudioCodecReserved255:
+                break;
+            case AsvAudioCodec.AsvAudioCodecRaw8000Mono:
+                break;
+            case AsvAudioCodec.AsvAudioCodecOpus8000Mono:
+                break;
+            case AsvAudioCodec.AsvAudioCodecAac:
+                break;
+            case AsvAudioCodec.AsvAudioCodecPcmu:
+                break;
+            case AsvAudioCodec.AsvAudioCodecPcma:
+                break;
+            case AsvAudioCodec.AsvAudioCodecSpeex:
+                break;
+            case AsvAudioCodec.AsvAudioCodecIlbc:
+                break;
+            case AsvAudioCodec.AsvAudioCodecG722:
+                break;
+            case AsvAudioCodec.AsvAudioCodecL16:
+                break;
+            case AsvAudioCodec.AsvAudioCodecReserved:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(codec), codec, null);
+        }
+
+        return null;
+    }
+    
+    private AudioCodecInfo(AsvAudioCodec codec, AsvAudioPcmFormat format, uint sampleRate,
         AsvAudioChannel channels, string name)
     {
         Codec = codec;
-        CodecConfig = codecAdditionalParam;
         Format = format;
         SampleRate = sampleRate;
         Channel = channels;
@@ -19,31 +89,18 @@ public class AudioCodecInfo: IEquatable<AudioCodecInfo>
 
     public string Name { get; }
     public AsvAudioCodec Codec { get; }
-    public byte CodecConfig { get; }
-
     public AsvAudioPcmFormat Format { get; }
-    public AsvAudioSampleRate SampleRate { get; }
+    public uint SampleRate { get; }
     public AsvAudioChannel Channel { get; }
-    
 
-    public override string ToString()
-    {
-        return Name;
-    }
-
-    public bool IsEqual(AsvAudioPcmFormat format, AsvAudioSampleRate sampleRate, AsvAudioChannel channels, AsvAudioCodec codec, byte codecAdditionalParam)
-    {
-        return Format == format && SampleRate == sampleRate && Channel == channels && Codec == codec && CodecConfig == codecAdditionalParam;
-    }
-
-    public bool Equals(AudioCodecInfo? other)
+    public bool Equals(AudioCodecInfo other)
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
-        return Codec == other.Codec && CodecConfig == other.CodecConfig && Format == other.Format && SampleRate == other.SampleRate && Channel == other.Channel;
+        return Name == other.Name && Codec == other.Codec && Format == other.Format && SampleRate == other.SampleRate && Channel == other.Channel;
     }
 
-    public override bool Equals(object? obj)
+    public override bool Equals(object obj)
     {
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
@@ -53,15 +110,15 @@ public class AudioCodecInfo: IEquatable<AudioCodecInfo>
 
     public override int GetHashCode()
     {
-        return HashCode.Combine((int)Codec, CodecConfig, (int)Format, SampleRate, Channel);
+        return HashCode.Combine(Name, (int)Codec, (int)Format, SampleRate, (int)Channel);
     }
 
-    public static bool operator ==(AudioCodecInfo? left, AudioCodecInfo? right)
+    public static bool operator ==(AudioCodecInfo left, AudioCodecInfo right)
     {
         return Equals(left, right);
     }
 
-    public static bool operator !=(AudioCodecInfo? left, AudioCodecInfo? right)
+    public static bool operator !=(AudioCodecInfo left, AudioCodecInfo right)
     {
         return !Equals(left, right);
     }

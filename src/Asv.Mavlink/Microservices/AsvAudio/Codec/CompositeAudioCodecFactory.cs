@@ -7,52 +7,37 @@ using Asv.Mavlink.V2.AsvAudio;
 namespace Asv.Mavlink;
 
 
-public interface IAudioCodecFactoryPart
-{
-    AsvAudioCodec Codec { get; }
-    IEnumerable<AudioCodecInfo> AvailableCodecs { get; }
-    IAudioEncoder CreateEncoder(AudioCodecInfo codecInfo);
-    IAudioDecoder CreateDecoder(AudioCodecInfo codecInfo);
-}
 
 public class CompositeAudioCodecFactory : IAudioCodecFactory
 {
-    private readonly ImmutableDictionary<AsvAudioCodec,IAudioCodecFactoryPart> _parts;
+    private readonly ImmutableArray<IAudioCodecFactory> _parts;
 
-    public CompositeAudioCodecFactory(IEnumerable<IAudioCodecFactoryPart> parts)
+    public CompositeAudioCodecFactory(IEnumerable<IAudioCodecFactory> parts)
     {
-        _parts = parts.ToImmutableDictionary(x => x.Codec);
-    }
-   
-
-    public IAudioEncoder CreateEncoder(AudioCodecInfo info)
-    {
-        if (_parts.TryGetValue(info.Codec, out var part) == false)
+        _parts = parts.ToImmutableArray();
+        //check codec unique
+        var codecs = _parts.GroupBy(x => x.AvailableCodecs).Where(x => x.Count() > 1).ToList();
+        if (codecs.Any())
         {
-            throw new Exception($"Codec {info.Name} not supported");
+            throw new Exception($"Codec {codecs.First().Key} duplicated");
         }
-        return part.CreateEncoder(info);
     }
 
-    public IAudioDecoder CreateDecoder(AudioCodecInfo info)
+
+    public IAudioEncoder CreateEncoder(AsvAudioCodec codec)
     {
-        if (_parts.TryGetValue(info.Codec, out var part) == false)
-        {
-            throw new Exception($"Codec {info.Name} not supported");
-        }
-        return part.CreateDecoder(info);
+        var result = _parts.FirstOrDefault(part => part.AvailableCodecs.Contains(codec))?.CreateEncoder(codec);
+        if (result == null) throw new Exception($"Codec {codec} not supported");
+        return result;
     }
 
-    public IEnumerable<AudioCodecInfo> AvailableCodecs => _parts.SelectMany(x=>x.Value.AvailableCodecs);
-
-    public bool TryFindCodec(AsvAudioPcmFormat format, AsvAudioSampleRate sampleRate, AsvAudioChannel channels, AsvAudioCodec codec,
-        byte codecAdditionalParam, out AudioCodecInfo codecInfo)
+    public IAudioDecoder CreateDecoder(AsvAudioCodec codec)
     {
-        if (_parts.TryGetValue(codec, out var part) == false)
-        {
-            throw new Exception($"Codec {codec} not supported");
-        }
-        codecInfo = part.AvailableCodecs.FirstOrDefault(x => x.IsEqual(format, sampleRate, channels,codec, codecAdditionalParam));
-        return codecInfo != null;
+        var result = _parts.FirstOrDefault(part => part.AvailableCodecs.Contains(codec))?.CreateDecoder(codec);
+        if (result == null) throw new Exception($"Codec {codec} not supported");
+        return result;
     }
+
+    public IEnumerable<AsvAudioCodec> AvailableCodecs => _parts.SelectMany(x => x.AvailableCodecs);
+
 }

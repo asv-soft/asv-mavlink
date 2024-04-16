@@ -254,7 +254,13 @@ namespace Asv.Mavlink.Shell
                 switch (rdr.Name)
                 {
                     case "description":
-                        result.Desc = ConvertDesc(rdr.ReadElementContentAsString());;
+                        var content = rdr.ReadElementContentAsString();
+                        result.Desc = ConvertDesc(content);
+                        result.HasMetadataDescription = content.Contains("[!METADATA!]");;
+                        if (result.HasMetadataDescription)
+                        {
+                            result.MetadataDescription = content.Replace("[!METADATA!]", string.Empty);
+                        }
                         break;
                     case "param":
                         ParseEnumEntryParam(rdr,result.Params);

@@ -66,6 +66,9 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
         {%- endfor -%}
         /// {{ entry.Name }}
         /// </summary>
+        {%- if entry.HasMetadataDescription -%}
+        [Description("{{ entry.MetadataDescription }}")]
+        {%- endif -%}
         {{ entry.CamelCaseName }} = {{ entry.Value }},
     {%- endfor -%}
     }
@@ -216,8 +219,8 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
     {%- if field.IsEnum -%}
         {%- if field.IsArray -%}
             {%- if field.IsTheLargestArrayInMessage -%}
-            arraySize = /*ArrayLength*/{{ field.ArrayLength }} - Math.Max(0,((/*PayloadByteSize*/{{ msg.PayloadByteSize }} - payloadSize - /*ExtendedFieldsLength*/{{ msg.ExtendedFieldsLength }})//*FieldTypeByteSize*/{{ field.FieldTypeByteSize }}));
-            {{ field.CamelCaseName }} = new {{ field.Type }}[arraySize];
+            arraySize = /*ArrayLength*/{{ field.ArrayLength }} - Math.Max(0,((/*PayloadByteSize*/{{ msg.PayloadByteSize }} - payloadSize - /*ExtendedFieldsLength*/{{ msg.ExtendedFieldsLength }})/*FieldTypeByteSize*/ /{{ field.FieldTypeByteSize }}));
+            {{ field.CamelCaseName }} = new {{ field.EnumCamelCaseName }}[arraySize];
             {%- else -%}
             arraySize = {{ field.ArrayLength }};
             {%- endif -%}

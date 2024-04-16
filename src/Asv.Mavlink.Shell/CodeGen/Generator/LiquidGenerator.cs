@@ -42,6 +42,8 @@ namespace Asv.Mavlink.Shell
                                                                           CamelCaseName = NameConverter(enEntry.Name),
                                                                           Desc =  enEntry.Desc,
                                                                           Value = enEntry.Value,
+                                                                          HasMetadataDescription = enEntry.HasMetadataDescription,
+                                                                          MetadataDescription = enEntry.MetadataDescription,
                                                                           Params = enEntry.Params.Select(p => new
                                                                                                               {
                                                                                                                   p.Index,

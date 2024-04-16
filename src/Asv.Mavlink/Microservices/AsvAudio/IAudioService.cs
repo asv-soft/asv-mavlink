@@ -13,9 +13,6 @@ using NLog;
 
 namespace Asv.Mavlink;
 
-
-
-
 public delegate void OnRecvAudioDelegate(IAudioDevice device, byte[] data, int dataSize);
 
 /// <summary>
@@ -24,16 +21,22 @@ public delegate void OnRecvAudioDelegate(IAudioDevice device, byte[] data, int d
 /// </summary>
 public interface IAudioService
 {
-    IRxEditableValue<TimeSpan> DeviceTimeout { get; }
-    IEnumerable<AudioCodecInfo> AvailableCodecs { get; }
-    void GoOnline(string name, AudioCodecInfo codec, bool speakerEnabled, bool micEnabled);
+    IEnumerable<AsvAudioCodec> AvailableCodecs { get; }
+    void GoOnline(string name, AsvAudioCodec codec, bool speakerEnabled, bool micEnabled);
     void GoOffline();
     IRxValue<bool> IsOnline { get; }
-    IRxValue<AudioCodecInfo?> Codec { get; }
+    IRxValue<AsvAudioCodec?> Codec { get; }
     IRxEditableValue<bool> SpeakerEnabled { get; }
     IRxEditableValue<bool> MicEnabled { get; }
     IObservable<IChangeSet<IAudioDevice, ushort>> Devices { get; }
     OnRecvAudioDelegate OnReceiveAudio { get; set; }
+    Task SendAll(byte[] pcmRawAudioData, int dataSize,CancellationToken cancel = default);
+}
+
+public class AudioServiceConfig
+{
+    public int DeviceTimeoutMs { get; set; } = TimeSpan.FromSeconds(10).Milliseconds;
+    public int OnlineRateMs { get; set; } = TimeSpan.FromSeconds(1).Milliseconds;
 }
 
 public class AudioService : DisposableOnceWithCancel, IAudioService
@@ -43,34 +46,34 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
     private readonly IMavlinkV2Connection _connection;
     private readonly MavlinkIdentity _identity;
     private readonly IPacketSequenceCalculator _seq;
-    private readonly TimeSpan _onlineRate;
     private readonly SourceCache<AudioDevice,ushort> _deviceCache;
-    private readonly IRxEditableValue<TimeSpan> _deviceTimeout;
     private readonly MavlinkPacketTransponder<AsvAudioOnlinePacket,AsvAudioOnlinePayload> _transponder;
     private readonly RxValue<bool> _isOnline;
-    private readonly RxValue<AudioCodecInfo?> _codec;
+    private readonly RxValue<AsvAudioCodec?> _codec;
     private readonly RxValue<bool> _speakerEnabled;
     private readonly RxValue<bool> _micEnabled;
     private IAudioEncoder? _encoder;
-    
+    private readonly TimeSpan _deviceTimeout;
+    private readonly TimeSpan _onlineRate;
+
 
     public AudioService(
         IAudioCodecFactory codecFactory,    
         IMavlinkV2Connection connection, 
         MavlinkIdentity identity, 
         IPacketSequenceCalculator seq,
-        TimeSpan deviceTimeout, 
-        TimeSpan onlineRate, 
+        AudioServiceConfig config, 
         IScheduler? publishScheduler = null)
     {
         _codecFactory = codecFactory ?? throw new ArgumentNullException(nameof(codecFactory));
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _identity = identity;
         _seq = seq ?? throw new ArgumentNullException(nameof(seq));
-        _onlineRate = onlineRate;
+        var config1 = config ?? throw new ArgumentNullException(nameof(config));
+        _deviceTimeout = TimeSpan.FromMilliseconds(config1.DeviceTimeoutMs);
+        _onlineRate = TimeSpan.FromMilliseconds(config1.OnlineRateMs);
         _deviceCache = new SourceCache<AudioDevice,ushort>(x => x.FullId).DisposeItWith(Disposable);
         Devices = _deviceCache.Connect().Transform(x=>(IAudioDevice)x);
-        _deviceTimeout = new RxValue<TimeSpan>(deviceTimeout).DisposeItWith(Disposable);
         
         connection.Filter<AsvAudioOnlinePacket>().Where(_=>IsOnline.Value).Subscribe(OnRecvDeviceOnline).DisposeItWith(Disposable);
         connection.Filter<AsvAudioStreamPacket>().Where(_=>IsOnline.Value).Subscribe(OnRecvAudioStream).DisposeItWith(Disposable);
@@ -86,7 +89,7 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
         _transponder = new MavlinkPacketTransponder<AsvAudioOnlinePacket,AsvAudioOnlinePayload>(connection, identity, seq)
             .DisposeItWith(Disposable);
         _isOnline = new RxValue<bool>(false).DisposeItWith(Disposable);
-        _codec = new RxValue<AudioCodecInfo?>().DisposeItWith(Disposable);
+        _codec = new RxValue<AsvAudioCodec?>().DisposeItWith(Disposable);
         _speakerEnabled = new RxValue<bool>(false).DisposeItWith(Disposable);
         _speakerEnabled.Subscribe(speakerEnabled=>_transponder.Set(p=>
         {
@@ -151,7 +154,7 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
                 else
                 {
 
-                    var newItem = new AudioDevice(_codecFactory, _codec.Value, pkt, SendAudioStream,
+                    var newItem = new AudioDevice(_codecFactory, _codec.Value.Value, pkt, SendAudioStream,
                         InternalOnReceiveAudio);
                     update.AddOrUpdate(newItem);
                 }
@@ -185,7 +188,7 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
         _deviceCache.Edit(update =>
         {
             var now = DateTime.Now;
-            var itemsToDelete = update.Items.Where(device => (now - device.GetLastHit()) > _deviceTimeout.Value).ToList();
+            var itemsToDelete = update.Items.Where(device => (now - device.GetLastHit()) > _deviceTimeout).ToList();
             foreach (var item in itemsToDelete)
             {
                 item.Dispose();
@@ -194,9 +197,9 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
         });
     }
     
-    public IEnumerable<AudioCodecInfo> AvailableCodecs => _codecFactory.AvailableCodecs;
+    public IEnumerable<AsvAudioCodec> AvailableCodecs => _codecFactory.AvailableCodecs;
     
-    public void GoOnline(string name, AudioCodecInfo codec, bool speakerEnabled, bool micEnabled)
+    public void GoOnline(string name, AsvAudioCodec codec, bool speakerEnabled, bool micEnabled)
     {
         AsvAudioHelper.CheckDeviceName(name);
         _encoder?.Dispose();
@@ -204,11 +207,7 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
         _transponder.Set(p =>
         {
             MavlinkTypesHelper.SetString(p.Name,name);
-            p.Codec = codec.Codec;
-            p.CodecCfg = codec.CodecConfig;
-            p.SampleRate = codec.SampleRate;
-            p.Channels = codec.Channel;
-            p.Format = codec.Format;
+            p.Codec = codec;
             AsvAudioModeFlag mode = 0;
             if (speakerEnabled)
             {
@@ -227,6 +226,7 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
         _transponder.Start(_onlineRate, _onlineRate);
     }
 
+
     public void GoOffline()
     {
         _encoder?.Dispose();
@@ -236,10 +236,15 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
     }
 
     public IRxValue<bool> IsOnline => _isOnline;
-    public IRxValue<AudioCodecInfo?> Codec => _codec;
+    public IRxValue<AsvAudioCodec?> Codec => _codec;
     public IRxEditableValue<bool> SpeakerEnabled => _speakerEnabled;
     public IRxEditableValue<bool> MicEnabled => _micEnabled;
-    public IRxEditableValue<TimeSpan> DeviceTimeout => _deviceTimeout;
     public IObservable<IChangeSet<IAudioDevice, ushort>> Devices { get; }
     public OnRecvAudioDelegate OnReceiveAudio { get; set; }
+    public Task SendAll(byte[] pcmRawAudioData, int dataSize, CancellationToken cancel = default)
+    {
+        return Task.WhenAll(_deviceCache.Items.Select(device => device.SendAudio(pcmRawAudioData, dataSize, cancel)));
+    }
+
+    
 }

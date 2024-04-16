@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
@@ -34,37 +35,33 @@ public class AsvRadioTest
         
         var origin = new AsvRadioStatusPayload
         {
-            RfFreq = (uint)Random.Shared.Next(10_000_000, 1_000_000_000),
-            TxPower = Random.Shared.Next(-100, 10),
-            RxEstimatedPower = Random.Shared.Next(-100, 10),
+            Freq = (uint)Random.Shared.Next(10_000_000, 1_000_000_000),
+            TxLevel = Random.Shared.Next(-100, 10),
+            RxEstimatedLevel = Random.Shared.Next(-100, 10),
             RfMode = AsvRadioRfModeFlag.AsvRadioRfModeFlagRxOnAir | AsvRadioRfModeFlag.AsvRadioRfModeFlagTxOnAir,
-            RxPower = Random.Shared.Next(-100, 10),
-            RfModulation = AsvRadioModulation.AsvRadioModulationAm | AsvRadioModulation.AsvRadioModulationFm,
-            Codec = AsvAudioCodec.AsvAudioCodecUnknown | AsvAudioCodec.AsvAudioCodecOpus,
-            CodecCfg = (byte)Random.Shared.Next(0, 255),
+            RxLevel = Random.Shared.Next(-100, 10),
+            Modulation = AsvRadioModulation.AsvRadioModulationAm,
         };
         
         server.Set(x=>
         {
-            x.RxEstimatedPower = origin.RxEstimatedPower;
-            x.RfFreq = origin.RfFreq;
+            x.RxEstimatedLevel = origin.RxEstimatedLevel;
+            x.Freq = origin.Freq;
             x.RfMode = origin.RfMode;
-            x.RfModulation = origin.RfModulation;
-            x.TxPower = origin.TxPower;
-            x.RxPower = origin.RxPower;
-            x.Codec = origin.Codec;
-            x.CodecCfg = origin.CodecCfg;
+            x.Modulation = origin.Modulation;
+            x.TxLevel = origin.TxLevel;
+            x.RxLevel = origin.RxLevel;
         });
         server.Start();
         
         var result = await tcs.Task;
-        Assert.Equal(origin.RfModulation, result.RfModulation);
-        Assert.Equal(origin.RfFreq, result.RfFreq);
-        Assert.Equal(origin.TxPower, result.TxPower);
-        Assert.Equal(origin.RxEstimatedPower, result.RxEstimatedPower);
-        Assert.Equal(origin.RxPower, result.RxPower);
-        Assert.Equal(origin.Codec, result.Codec);
-        Assert.Equal(origin.CodecCfg, result.CodecCfg);
+        Assert.Equal(origin.Freq, result.Freq);
+        Assert.Equal(origin.TxLevel, result.TxLevel);
+        Assert.Equal(origin.RxEstimatedLevel, result.RxEstimatedLevel);
+        Assert.Equal(origin.RfMode, result.RfMode);
+        Assert.Equal(origin.RxLevel, result.RxLevel);
+        Assert.Equal(origin.Modulation, result.Modulation);
+        
         
     }
     [Fact]
@@ -114,24 +111,36 @@ public class AsvRadioTest
         var client = new AsvRadioClient(link.Client, new MavlinkClientIdentity(1,1,2,2),new PacketSequenceCalculator());
         var server = new AsvRadioServer(link.Server, new MavlinkIdentity(2,2), new AsvRadioServerConfig(), new PacketSequenceCalculator(),Scheduler.Default);
         
-        var origin = new AsvRadioCodecCfgResponsePayload
+        var origin = new AsvRadioCodecCapabilitiesResponsePayload
         {
-            TargetCodec = AsvAudioCodec.AsvAudioCodecOpus,
+            Skip = 0,
         };
-        Random.Shared.NextBytes(origin.SupportedCfg);
+        Enum.GetValues<AsvAudioCodec>().CopyTo(origin.Codecs,0);
+        origin.Count = (byte)origin.Codecs.Length;
+        origin.All = (byte)origin.Codecs.Length;
         
-        server.OnCodecCfgRequest.Subscribe( x =>
+        server.OnCodecCapabilitiesRequest.Subscribe( x =>
         {
             Assert.Equal(client.Identity.TargetSystemId, x.TargetSystem);
             Assert.Equal(client.Identity.TargetComponentId, x.TargetComponent);
-            server.SendCodecCfgResponse(arg =>
+            server.SendCodecCapabilitiesRequest(arg =>
             {
                 origin.CopyTo(arg);
             });
         });
-        var result = await client.RequestCodecOptions(AsvAudioCodec.AsvAudioCodecOpus);
-        Assert.Equal(origin.TargetCodec, result.TargetCodec);
-        Assert.Equal(origin.SupportedCfg, result.SupportedCfg);
+        var result = await client.RequestCodecCapabilities(origin.Skip,origin.Count);
+        foreach (var codec in origin.Codecs)
+        {
+            if (result.Codecs.Contains(codec))
+            {
+                continue;
+            }
+            Assert.True(false, $"Codec {codec} not found in result");
+        }
+        Assert.Equal(origin.Count, result.Count);
+        Assert.Equal(origin.Skip, result.Skip);
+        Assert.Equal(origin.All, result.All);
+        
             
     }
 }

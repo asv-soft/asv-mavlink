@@ -11,7 +11,7 @@ public interface IAsvRadioServer
     void Set(Action<AsvRadioStatusPayload> changeCallback);
     IObservable<AsvRadioCapabilitiesRequestPayload> OnCapabilitiesRequest { get; }
     Task SendCapabilitiesResponse(Action<AsvRadioCapabilitiesResponsePayload> setValueCallback, CancellationToken cancel = default);
-    IObservable<AsvRadioCodecCfgRequestPayload> OnCodecCfgRequest { get; }
-    Task SendCodecCfgResponse(Action<AsvRadioCodecCfgResponsePayload> setValueCallback, CancellationToken cancel = default);
+    IObservable<AsvRadioCodecCapabilitiesRequestPayload> OnCodecCapabilitiesRequest { get; }
+    Task SendCodecCapabilitiesRequest(Action<AsvRadioCodecCapabilitiesResponsePayload> setValueCallback, CancellationToken cancel = default);
     
 }

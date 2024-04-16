@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +16,7 @@ namespace Asv.Mavlink;
 
 
 public delegate Task<MavResult> EnableRadioDelegate(uint frequencyHz, AsvRadioModulation modulation,
-    float referenceRxPowerDbm, float txPowerDbm, AsvAudioCodec codec, byte codecConfig, CancellationToken cancel);
+    float referenceRxPowerDbm, float txPowerDbm, AsvAudioCodec codec, CancellationToken cancel);
 
 public delegate Task<MavResult> DisableRadioDelegate(CancellationToken cancel);
 
@@ -33,17 +35,18 @@ public interface IAsvRadioServerEx
 public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
 {
     private readonly AsvRadioCapabilities _capabilities;
+    private readonly IReadOnlySet<AsvAudioCodec> _codecs;
     private readonly IHeartbeatServer _heartbeat;
-    private readonly IStatusTextServer _statusText;
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     private int _capRequestInProgress;
 
-    public AsvRadioServerEx(AsvRadioCapabilities capabilities, IAsvRadioServer server, IHeartbeatServer heartbeat, ICommandServerEx<CommandLongPacket> commands, IStatusTextServer statusText)
+    public AsvRadioServerEx(AsvRadioCapabilities capabilities, IReadOnlySet<AsvAudioCodec> codecs, IAsvRadioServer server, IHeartbeatServer heartbeat, ICommandServerEx<CommandLongPacket> commands, IStatusTextServer statusText)
     {
         if (commands == null) throw new ArgumentNullException(nameof(commands));
         _capabilities = capabilities ?? throw new ArgumentNullException(nameof(capabilities));
+        _codecs = codecs ?? throw new ArgumentNullException(nameof(codecs));
         _heartbeat = heartbeat ?? throw new ArgumentNullException(nameof(heartbeat));
-        _statusText = statusText ?? throw new ArgumentNullException(nameof(statusText));
+        var statusText1 = statusText ?? throw new ArgumentNullException(nameof(statusText));
         Base = server ?? throw new ArgumentNullException(nameof(server));
         
         heartbeat.Set(x =>
@@ -65,39 +68,33 @@ public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
         {
             if (EnableRadio == null) return new CommandResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-            AsvRadioHelper.GetArgsForRadioOn(args.Payload, out var freq, out var mode, out var referencePower, out var txPower, out var codec, out var codecConfig);
+            AsvRadioHelper.GetArgsForRadioOn(args.Payload, out var freq, out var mode, out var referencePower, out var txPower, out var codec);
             if (freq > capabilities.MaxFrequencyHz || freq < capabilities.MinFrequencyHz)
             {
                 Logger.Warn($"Frequency {freq} out of range {capabilities.MinFrequencyHz}-{capabilities.MaxFrequencyHz}");
-                _statusText.Error("Frequency out of range");
+                statusText1.Error("Frequency out of range");
                 return new CommandResult(MavResult.MavResultFailed);
             }
 
             if (referencePower > capabilities.MaxReferencePowerDbm || referencePower < capabilities.MinReferencePowerDbm)
             {
                 Logger.Warn($"Reference power {referencePower} out of range {capabilities.MinReferencePowerDbm}-{capabilities.MaxReferencePowerDbm}");
-                _statusText.Error("Reference power out of range");
+                statusText1.Error("Reference power out of range");
                 return new CommandResult(MavResult.MavResultFailed);
             }
             if (capabilities.SupportedModulations.Contains(mode) == false)
             {
                 Logger.Warn($"Modulation {mode} not supported. Available: {string.Join(",", capabilities.SupportedModulations)}");
-                _statusText.Error("Modulation not supported");
+                statusText1.Error("Modulation not supported");
             }
 
-            if (capabilities.SupportedCodecs.ContainsKey(codec) == false)
+            if (_codecs.Contains(codec) == false)
             {
-                Logger.Warn($"Codec {codec} not supported. Available: {string.Join(",", capabilities.SupportedCodecs.Keys)}");
-                _statusText.Error("Codec not supported");
+                Logger.Warn($"Codec {codec} not supported. Available: {string.Join(",", _codecs)}");
+                statusText1.Error("Codec not supported");
             }
             
-            if (capabilities.SupportedCodecs[codec].Contains(codecConfig) == false)
-            {
-                Logger.Warn($"Codec {codec} config {codecConfig} not supported. Available: {string.Join(",", capabilities.SupportedCodecs[codec])}");
-                _statusText.Error("Codec config not supported");
-            }
-            
-            var result = await EnableRadio(freq, mode, referencePower, txPower, codec, codecConfig, cs.Token).ConfigureAwait(false);
+            var result = await EnableRadio(freq, mode, referencePower, txPower, codec, cs.Token).ConfigureAwait(false);
             return new CommandResult(result);
         };
         commands[(MavCmd)V2.AsvRadio.MavCmd.MavCmdAsvRadioOff] = async (id,args, cancel) =>
@@ -110,28 +107,24 @@ public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
         };
 
         Base.OnCapabilitiesRequest.Subscribe(OnCapabilitiesRequest).DisposeItWith(Disposable);
-        Base.OnCodecCfgRequest.Subscribe(OnCodecCfgRequest).DisposeItWith(Disposable);
+        Base.OnCodecCapabilitiesRequest.Subscribe(OnCodecCapabilitiesRequest).DisposeItWith(Disposable);
     }
 
-    private async void OnCodecCfgRequest(AsvRadioCodecCfgRequestPayload request)
+    private async void OnCodecCapabilitiesRequest(AsvRadioCodecCapabilitiesRequestPayload request)
     {
         try
         {
-            if (_capabilities.SupportedCodecs.TryGetValue(request.TargetCodec, out var options) == false)
+            var count = Math.Min((byte)request.Count, (byte)AsvRadioCodecCapabilitiesResponsePayload.CodecsMaxItemsCount);
+            var items = _codecs.Skip(request.Skip).Take(count);
+            await Base.SendCodecCapabilitiesRequest(x =>
             {
-                Logger.Warn($"Codec {request.TargetCodec} not supported");
-                // send empty response
-                await Base.SendCodecCfgResponse(x =>
+                x.Skip = request.Skip;
+                x.All = (byte)_codecs.Count;
+                foreach (var item in items)
                 {
-                    x.TargetCodec = request.TargetCodec;
-                },DisposeCancel).ConfigureAwait(false);
-                return;
-            }
-
-            await Base.SendCodecCfgResponse(x =>
-            {
-                x.TargetCodec = request.TargetCodec;
-                AsvRadioHelper.SetCodecsOptions(x, options);
+                    x.Codecs[x.Count] = item;
+                    ++x.Count;
+                }
             }, DisposeCancel).ConfigureAwait(false);
         }
         catch (Exception e)
@@ -153,7 +146,6 @@ public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
             await Base.SendCapabilitiesResponse(x =>
             {
                 AsvRadioHelper.SetModulation(x, _capabilities.SupportedModulations);
-                AsvRadioHelper.SetCodecs(x, _capabilities.SupportedCodecs.Keys);
                 x.MinRfFreq = _capabilities.MinFrequencyHz;
                 x.MaxRfFreq = _capabilities.MaxFrequencyHz;
                 x.MinRxPower = _capabilities.MinReferencePowerDbm;

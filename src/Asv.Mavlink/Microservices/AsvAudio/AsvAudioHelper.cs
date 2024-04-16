@@ -25,36 +25,39 @@ public static class AsvAudioHelper
                 $"Record name '{name}' not match regex '{DeviceNameRegexString}')");
     }
 
-    public static int GetSampleRate(AsvAudioSampleRate rate)
+    public static string GetConfigName(AsvAudioCodec codec)
     {
-        return rate switch
+        switch (codec)
         {
-            AsvAudioSampleRate.AsvAudioSampleRate8000Hz => 8000,
-            AsvAudioSampleRate.AsvAudioSampleRate11025Hz => 11_025,
-            AsvAudioSampleRate.AsvAudioSampleRate12000Hz => 12_000,
-            AsvAudioSampleRate.AsvAudioSampleRate16000Hz => 16_000,
-            AsvAudioSampleRate.AsvAudioSampleRate22050Hz => 22_050,
-            AsvAudioSampleRate.AsvAudioSampleRate24000Hz => 24_000,
-            AsvAudioSampleRate.AsvAudioSampleRate44100Hz => 44_100,
-            AsvAudioSampleRate.AsvAudioSampleRate48000Hz => 48_000,
-            AsvAudioSampleRate.AsvAudioSampleRate88200Hz => 88_200,
-            AsvAudioSampleRate.AsvAudioSampleRate96000Hz => 96_000,
-            AsvAudioSampleRate.AsvAudioSampleRate176400Hz => 176_400,
-            AsvAudioSampleRate.AsvAudioSampleRate192000Hz => 192_000,
-            AsvAudioSampleRate.AsvAudioSampleRate328800Hz => 328_800,
-            AsvAudioSampleRate.AsvAudioSampleRate384000Hz => 384_000,
-            _ => throw new ArgumentOutOfRangeException(nameof(rate), rate, null)
-        };
-    }
+            case AsvAudioCodec.AsvAudioCodecUnknown:
+                break;
+            case AsvAudioCodec.AsvAudioCodecReserved255:
+                break;
+            case AsvAudioCodec.AsvAudioCodecRaw8000Mono:
+                break;
+            case AsvAudioCodec.AsvAudioCodecOpus8000Mono:
+                break;
+            case AsvAudioCodec.AsvAudioCodecAac:
+                break;
+            case AsvAudioCodec.AsvAudioCodecPcmu:
+                break;
+            case AsvAudioCodec.AsvAudioCodecPcma:
+                break;
+            case AsvAudioCodec.AsvAudioCodecSpeex:
+                break;
+            case AsvAudioCodec.AsvAudioCodecIlbc:
+                break;
+            case AsvAudioCodec.AsvAudioCodecG722:
+                break;
+            case AsvAudioCodec.AsvAudioCodecL16:
+                break;
+            case AsvAudioCodec.AsvAudioCodecReserved:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(codec), codec, null);
+        }
 
-    public static int GetChannels(AsvAudioChannel channel)
-    {
-        return channel switch
-        {
-            AsvAudioChannel.AsvAudioChannelMono => 1,
-            AsvAudioChannel.AsvAudioChannelStereo => 2,
-            _ => throw new ArgumentOutOfRangeException(nameof(channel), channel, null)
-        };
+        return "";
     }
 
 }

@@ -10,5 +10,7 @@ public interface IAsvRadioClient
 {
     IObservable<AsvRadioStatusPayload> Status { get; }
     Task<AsvRadioCapabilitiesResponsePayload> RequestCapabilities(CancellationToken cancel = default);
-    Task<AsvRadioCodecCfgResponsePayload> RequestCodecOptions(AsvAudioCodec codec, CancellationToken cancel = default);
+
+    Task<AsvRadioCodecCapabilitiesResponsePayload> RequestCodecCapabilities(ushort skip = 0, byte count = byte.MaxValue,
+        CancellationToken cancel = default);
 }

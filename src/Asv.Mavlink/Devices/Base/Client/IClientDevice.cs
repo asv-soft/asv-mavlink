@@ -185,6 +185,10 @@ public enum DeviceClass
     SdrPayload,
 
     /// <summary>
+    /// Radio transmitter device class.
+    /// </summary>
+    Radio,
+    /// <summary>
     /// Represents the device class for ADS-B devices.
     /// </summary>
     Adsb,

@@ -19,6 +19,7 @@ public interface IAudioDevice
     IObservable<Unit> OnLinePing { get; }
     IRxValue<string> Name { get; }
     Task SendAudio(byte[] pcmRawAudioData, int dataSize, CancellationToken cancel);
+    AsvAudioCodec RxCodec { get; }
 }
 
 
@@ -38,13 +39,12 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
     private readonly object _sync = new();
 
     public AudioDevice(IAudioCodecFactory factory, 
-        AudioCodecInfo outputCodecInfo, 
+        AsvAudioCodec outputCodecInfo, 
         AsvAudioOnlinePacket packet, 
         Func<Action<AsvAudioStreamPacket>, CancellationToken, Task> sendPacketDelegate,
         OnRecvAudioDelegate onRecvAudioDelegate)
     {
         if (factory == null) throw new ArgumentNullException(nameof(factory));
-        if (outputCodecInfo == null) throw new ArgumentNullException(nameof(outputCodecInfo));
         if (packet == null) throw new ArgumentNullException(nameof(packet));
         
         _sendPacketDelegate = sendPacketDelegate ?? throw new ArgumentNullException(nameof(sendPacketDelegate));
@@ -55,12 +55,8 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
         _name = new RxValue<string>(MavlinkTypesHelper.GetString(packet.Payload.Name)).DisposeItWith(Disposable);
         _onLinePing = new Subject<Unit>().DisposeItWith(Disposable);
         _encoder = factory.CreateEncoder(outputCodecInfo).DisposeItWith(Disposable);
-        if (factory.TryFindCodec(packet.Payload.Format, packet.Payload.SampleRate, packet.Payload.Channels,packet.Payload.Codec,packet.Payload.CodecCfg, out var codecInfo) == false)
-        {
-            throw new Exception($"Codec {packet.Payload.Codec} not supported");
-        }
-        _decoder = factory.CreateDecoder(codecInfo).DisposeItWith(Disposable);
-        
+        _decoder = factory.CreateDecoder(packet.Payload.Codec).DisposeItWith(Disposable);
+        RxCodec = packet.Payload.Codec;
         Touch();
     }
     public byte SystemId { get; }
@@ -127,6 +123,8 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
         }
         
     }
+
+    public AsvAudioCodec RxCodec { get; }
 
     private void Touch()
     {

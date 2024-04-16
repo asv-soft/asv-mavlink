@@ -45,32 +45,6 @@ public class AsvRadioCapabilitiesBuilder
         }
         return this;
     }
-
-    public AsvRadioCapabilitiesBuilder SetSupportedCodecs(AsvAudioCodec codec, params byte[] codecConfigs)
-    {
-        if (!_capabilities.InternalSupportedCodecs.TryGetValue(codec, out _))
-        {
-            _capabilities.InternalSupportedCodecs[codec] = new HashSet<byte>(codecConfigs);
-        }
-        else
-        {
-            _capabilities.InternalSupportedCodecs.Add(codec, new HashSet<byte>(codecConfigs));
-        }
-        return this;
-    }
-    public AsvRadioCapabilitiesBuilder SetSupportedCodecs(AsvAudioCodec codec, IEnumerable<byte> codecConfigs)
-    {
-        if (!_capabilities.InternalSupportedCodecs.TryGetValue(codec, out _))
-        {
-            _capabilities.InternalSupportedCodecs[codec] = new HashSet<byte>(codecConfigs);
-        }
-        else
-        {
-            _capabilities.InternalSupportedCodecs.Add(codec, new HashSet<byte>(codecConfigs));
-        }
-        return this;
-    }
-
     public AsvRadioCapabilities Build()
     {
         return _capabilities;
@@ -82,7 +56,6 @@ public class AsvRadioCapabilities
 {
     public static AsvRadioCapabilities Empty => new AsvRadioCapabilitiesBuilder().Build();
     
-    internal readonly Dictionary<AsvAudioCodec, IReadOnlySet<byte>> InternalSupportedCodecs = new();
     internal readonly HashSet<AsvRadioModulation> InternalSupportedModulations = new();
 
     internal AsvRadioCapabilities()
@@ -98,6 +71,4 @@ public class AsvRadioCapabilities
     public float MaxTxPowerDbm { get; internal set; } = 10;
 
     public IReadOnlySet<AsvRadioModulation> SupportedModulations => InternalSupportedModulations;
-
-    public IReadOnlyDictionary<AsvAudioCodec, IReadOnlySet<byte>> SupportedCodecs => InternalSupportedCodecs;
 }

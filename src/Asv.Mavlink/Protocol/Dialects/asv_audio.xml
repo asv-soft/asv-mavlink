@@ -19,145 +19,77 @@
         <description>The device generate audio stream (e.g., microphone is on).</description>
       </entry>
     </enum>
-    <enum name="ASV_AUDIO_SAMPLE_RATE">
-      <entry value="0" name="ASV_AUDIO_SAMPLE_RATE_UNKNOWN">
-        <description>Unknown\unset sample rate</description>
+    
+    <enum name="ASV_AUDIO_CODEC">
+      <description>Audio codec and audio format (uint8_t).</description>
+      <entry value="0" name="ASV_AUDIO_CODEC_UNKNOWN">
+        <description>Unknown codec[!METADATA!]</description>
       </entry>
-      <entry value="1" name="ASV_AUDIO_SAMPLE_RATE_8_000_HZ">
-        <description>Adequate for human speech but without sibilance. Used in telephone/walkie-talkie.</description>
-      </entry>
-      <entry value="2" name="ASV_AUDIO_SAMPLE_RATE_11_025_HZ">
-        <description>Used for lower-quality PCM, MPEG audio and for audio analysis of subwoofer bandpasses.</description>
-      </entry>
-      <entry value="3" name="ASV_AUDIO_SAMPLE_RATE_12_000_HZ">
-        <description>12 000 kHz.</description>
-      </entry>
-      <entry value="4" name="ASV_AUDIO_SAMPLE_RATE_16_000_HZ">
-        <description>Used in most VoIP and VVoIP, extension of telephone narrowband.</description>
-      </entry>
-      <entry value="5" name="ASV_AUDIO_SAMPLE_RATE_22_050_HZ">
-        <description>Used for lower-quality PCM and MPEG audio and for audio analysis of low frequency energy.</description>
-      </entry>
-      <entry value="6" name="ASV_AUDIO_SAMPLE_RATE_24_000_HZ">
-        <description>Used for lower-quality PCM and MPEG audio and for audio analysis of low frequency energy.</description>
-      </entry>
-      <entry value="7" name="ASV_AUDIO_SAMPLE_RATE_44_100_HZ">
-        <description>Audio CD, most commonly used rate with MPEG-1 audio (VCD, SVCD, MP3). Covers the 20 kHz bandwidth.</description>
-      </entry>
-      <entry value="8" name="ASV_AUDIO_SAMPLE_RATE_48_000_HZ">
-        <description>Standard sampling rate used by professional digital video equipment, could reconstruct frequencies up to 22 kHz.</description>
-      </entry>
-      <entry value="9" name="ASV_AUDIO_SAMPLE_RATE_88_200_HZ">
-        <description>Used by some professional recording equipment when the destination is CD, such as mixers, EQs, compressors, reverb, crossovers and recording devices.</description>
-      </entry>
-      <entry value="10" name="ASV_AUDIO_SAMPLE_RATE_96_000_HZ">
-        <description>DVD-Audio, LPCM DVD tracks, Blu-ray audio tracks, HD DVD audio tracks.</description>
-      </entry>
-      <entry value="11" name="ASV_AUDIO_SAMPLE_RATE_176_400_HZ">
-        <description>Used in HDCD recorders and other professional applications for CD production.</description>
-      </entry>
-      <entry value="12" name="ASV_AUDIO_SAMPLE_RATE_192_000_HZ">
-        <description>Used with audio on professional video equipment. DVD-Audio, LPCM DVD tracks, Blu-ray audio tracks, HD DVD audio tracks.</description>
-      </entry>
-      <entry value="13" name="ASV_AUDIO_SAMPLE_RATE_328_800_HZ">
-        <description>Digital eXtreme Definition. Used for recording and editing Super Audio CDs.</description>
-      </entry>
-      <entry value="14" name="ASV_AUDIO_SAMPLE_RATE_384_000_HZ">
-        <description>Highest sample rate available for common software. Allows for precise peak detection.</description>
-      </entry>
-      <!-- Add more entries as needed -->
-      <entry value="255" name="ASV_AUDIO_SAMPLE_RATE_RESERVED">
-        <description>Last element in enum.</description>
+      <!-- Reserved values [001 - 255]-->      
+      <entry value="255" name="ASV_AUDIO_CODEC_RESERVED_255">
+        <description>Reserverd[!METADATA!]</description>
       </entry>
 
-    </enum>
-    <enum name="ASV_AUDIO_CHANNEL">
-      <entry value="1" name="ASV_AUDIO_CHANNEL_MONO">
-        <description>Mono, 1 channel.</description>
+      <!--Raw uncompressed audio (PCM) [256 - 511] -->
+      <entry value="256" name="ASV_AUDIO_CODEC_RAW_8000_MONO">
+        <description>PCM 8k MONO[!METADATA!]</description>
       </entry>
-      <entry value="2" name="ASV_AUDIO_CHANNEL_STEREO">
-        <description>Stereo, 2 channel.</description>
+      <!--Opus (RFC 6716) – based on SILK vocoder and CELT codec. [256 - 511] -->
+      <entry value="512" name="ASV_AUDIO_CODEC_OPUS_8000_MONO">
+        <description>OPUS 8k MONO[!METADATA!]</description>
       </entry>
-    </enum>
-    <enum name="ASV_AUDIO_PCM_FORMAT">
-      <description>Count of bit per sample for decoded.</description>
-      <entry value="1" name="ASV_AUDIO_PCM_FORMAT_INT8">
-        <description>8 bit per sample.</description>
-      </entry>
-      <entry value="2" name="ASV_AUDIO_PCM_FORMAT_INT16">
-        <description>16 bit per sample.</description>
-      </entry>
-    </enum>
-    <enum name="ASV_AUDIO_CODEC">
-      <description>Audio codec (uint8_t).</description>
-      <entry value="0" name="ASV_AUDIO_CODEC_UNKNOWN">
-        <description>Unknown codec.</description>
-      </entry>
-      <entry value="1" name="ASV_AUDIO_CODEC_RAW">
-        <description>Raw uncompressed audio (PCM).</description>
-      </entry>
-      <entry value="2" name="ASV_AUDIO_CODEC_OPUS">
-        <description>Opus (RFC 6716) – based on SILK vocoder and CELT codec.</description>
-      </entry>
-      <entry value="3" name="ASV_AUDIO_CODEC_AAC">
+      
+      
+      <!--Advanced Audio Coding (AAC) [768 - 1023]-->
+      <entry value="768" name="ASV_AUDIO_CODEC_AAC">
         <description>Advanced Audio Coding (AAC).</description>
       </entry>
-      <entry value="4" name="ASV_AUDIO_CODEC_PCMU">
+      <!--G.711 μ-law (PCMU) [1024 - 1279] -->
+      <entry value="1024" name="ASV_AUDIO_CODEC_PCMU">
         <description>G.711 μ-law (PCMU).</description>
       </entry>
-      <entry value="5" name="ASV_AUDIO_CODEC_PCMA">
+        <!--G.711 A-law (PCMA) [1280 - 1535] -->
+      <entry value="1280" name="ASV_AUDIO_CODEC_PCMA">
         <description>G.711 A-law (PCMA).</description>
       </entry>
-      <entry value="6" name="ASV_AUDIO_CODEC_SPEEX">
+        <!--Speex [1536 - 1791] -->
+      <entry value="1536" name="ASV_AUDIO_CODEC_SPEEX">
         <description>Speex.</description>
       </entry>
-      <entry value="7" name="ASV_AUDIO_CODEC_ILBC">
+        <!--Internet Low Bitrate Codec (iLBC) [1792 - 2047] -->
+      <entry value="1792" name="ASV_AUDIO_CODEC_ILBC">
         <description>Internet Low Bitrate Codec (iLBC).</description>
       </entry>
-      <entry value="8" name="ASV_AUDIO_CODEC_G722">
+        <!--G.722 [2048 - 2303] -->
+      <entry value="2048" name="ASV_AUDIO_CODEC_G722">
         <description>G.722.</description>
       </entry>
-      <entry value="9" name="ASV_AUDIO_CODEC_L16">
+        <!--Linear Pulse Code Modulation (L16) [2304 - 2559] -->
+      <entry value="2304" name="ASV_AUDIO_CODEC_L16">
         <description>Linear Pulse Code Modulation (L16).</description>
       </entry>
-      <!-- add new codecs here. Max value is 254 -->
+      <!-- add new codecs here.-->
       
       
-      <entry value="255" name="ASV_AUDIO_CODEC_RESERVED">
+      <entry value="65535" name="ASV_AUDIO_CODEC_RESERVED">
         <description>Reserved</description>
       </entry>
     </enum>
     
-    <!-- Additional params for specified codec. -->
-    <enum name="ASV_AUDIO_CODEC_RAW_CFG">
-      <description>Additional params for ASV_AUDIO_CODEC_RAW codec (uint8_t).</description>
-      <entry value="0" name="ASV_AUDIO_CODEC_RAW_CFG_8000_MONO">
-        <description>Raw uncompressed audio (PCM) with 8 000 Hz smaple rate and 1 channel (mono).</description>
-      </entry>
-    </enum>
-    <enum name="ASV_AUDIO_CODEC_OPUS_CFG">
-      <description>Params for ASV_AUDIO_CODEC_OPUS codec (uint8_t).</description>
-      <entry value="0" name="ASV_AUDIO_CODEC_OPUS_CFG_8000_MONO">
-        <description>Raw uncompressed audio (PCM).</description>
-      </entry>
-    </enum>
+ 
     
   </enums>
   <messages>
     <message id="13200" name="ASV_AUDIO_ONLINE">
       <description>Every device that wants to be visible at voice chat and can talk to the others sends this packet at 1 Hz.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint8_t" name="mode" enum="ASV_AUDIO_MODE_FLAG">Device current work mode.</field>
-      <field type="uint8_t" name="sample_rate" enum="ASV_AUDIO_SAMPLE_RATE">Decoded audio sample rate.</field>
-      <field type="uint8_t" name="channels" enum="ASV_AUDIO_CHANNEL">Channels count.</field>
-      <field type="uint8_t" name="format" enum="ASV_AUDIO_PCM_FORMAT">PCM format.</field>
-      <field type="uint8_t" name="codec" enum="ASV_AUDIO_CODEC">Audio codec used by this device.</field>
-      <field type="uint8_t" name="codec_cfg">Additional params for specified codec.</field>
+      <field type="uint16_t" name="codec" enum="ASV_AUDIO_CODEC">Audio codec used by this device.</field>
       <field type="char[16]" name="name" >Audio device name in voice chat.</field>
     </message>
     <message id="13201" name="ASV_AUDIO_STREAM">
       <description>Message containing encoded audio data. If, after audio-encoding, one frame exceeds one packet size, multiple packets are used for frame transmitting.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
-      <field type="uint8_t" name="target_system">System ID. If equal 0 - broadcast.</field>
-      <field type="uint8_t" name="target_component">Component ID. If equal 0 - broadcast.</field>
+      <field type="uint8_t" name="target_system">System ID.</field>
+      <field type="uint8_t" name="target_component">Component ID.</field>
       <field type="uint8_t" name="frame_seq">Frame sequence number.</field>
       <field type="uint8_t" name="pkt_in_frame">Number of packets for one encoded audio frame.</field>
       <field type="uint8_t" name="pkt_seq">Packet sequence number (starting with 0 on every encoded frame).</field>

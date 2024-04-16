@@ -20,10 +20,11 @@ public interface IAsvRadioClientEx
     IRxValue<AsvRadioCapabilities?> Capabilities { get; }
     
     Task<MavResult> EnableRadio(uint frequencyHz, AsvRadioModulation modulation, float referenceRxPowerDbm,
-        float txPowerDbm, AsvAudioCodec codec, byte codecConfig, CancellationToken cancel = default);
+        float txPowerDbm, AsvAudioCodec codec, CancellationToken cancel = default);
     Task<MavResult> DisableRadio(CancellationToken cancel = default);
     
     Task<AsvRadioCapabilities> GetCapabilities(CancellationToken cancel = default);
+    Task<ISet<AsvAudioCodec>> GetCodecsCapabilities(CancellationToken cancel = default);
 
 }
 
@@ -47,10 +48,10 @@ public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
 
     public IRxValue<AsvRadioCapabilities?> Capabilities => _capabilities;
 
-    public async Task<MavResult> EnableRadio(uint frequencyHz, AsvRadioModulation modulation,float referenceRxPowerDbm,float txPowerDbm,  AsvAudioCodec codec, byte codecConfig,  CancellationToken cancel)
+    public async Task<MavResult> EnableRadio(uint frequencyHz, AsvRadioModulation modulation,float referenceRxPowerDbm,float txPowerDbm,  AsvAudioCodec codec, CancellationToken cancel)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var result = await _commandClient.CommandLong(item => AsvRadioHelper.SetArgsForRadioOn(item, frequencyHz,modulation,referenceRxPowerDbm,txPowerDbm,codec,codecConfig),cs.Token).ConfigureAwait(false);
+        var result = await _commandClient.CommandLong(item => AsvRadioHelper.SetArgsForRadioOn(item, frequencyHz,modulation,referenceRxPowerDbm,txPowerDbm,codec),cs.Token).ConfigureAwait(false);
         return result.Result;
     }
     public async Task<MavResult> DisableRadio( CancellationToken cancel)
@@ -62,23 +63,32 @@ public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
 
     public async Task<AsvRadioCapabilities> GetCapabilities(CancellationToken cancel = default)
     {
-        
-        var cap = await Base.RequestCapabilities(cancel).ConfigureAwait(false);
+        var result = await Base.RequestCapabilities(cancel).ConfigureAwait(false);
         var builder = new AsvRadioCapabilitiesBuilder();
-        builder.SetFrequencyHz(cap.MinRfFreq,cap.MaxRfFreq);
-        builder.SetReferencePowerDbm(cap.MinRxPower,cap.MaxRxPower);
-        builder.SetTxPowerDbm(cap.MinTxPower,cap.MaxTxPower);
-        builder.SetSupportedModulations(AsvRadioHelper.GetModulation(cap));
-        var codecs = AsvRadioHelper.GetCodecs(cap).ToImmutableArray();
+        builder.SetFrequencyHz(result.MinRfFreq,result.MaxRfFreq);
+        builder.SetReferencePowerDbm(result.MinRxPower,result.MaxRxPower);
+        builder.SetTxPowerDbm(result.MinTxPower,result.MaxTxPower);
+        builder.SetSupportedModulations(AsvRadioHelper.GetModulation(result));
+        var cap = builder.Build();
+        _capabilities.OnNext(cap);
+        return cap;
+    }
 
-        foreach (var codec in codecs)
+    public async Task<ISet<AsvAudioCodec>> GetCodecsCapabilities(CancellationToken cancel = default)
+    {
+        const int count = 50;
+        ushort skip = 0;
+        ushort all;
+        var result = new HashSet<AsvAudioCodec>();
+        do
         {
-            var response = await Base.RequestCodecOptions(codec,cancel).ConfigureAwait(false);
-            var options = AsvRadioHelper.GetCodecsOptions(response);
-            builder.SetSupportedCodecs(codec,options);
-        }
-        return builder.Build();
-       
+            var next = await Base.RequestCodecCapabilities(skip, count, cancel).ConfigureAwait(false);
+            result.UnionWith(next.Codecs);
+            skip += next.Count;
+            all = next.All;
+        } while (result.Count < all);
+
+        return result;
     }
 
     public IRxValue<AsvRadioCustomMode> CustomMode => _customMode;

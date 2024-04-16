@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Mavlink.V2.AsvAudio;
 using DynamicData;
 using DynamicData.Binding;
 using Xunit;
@@ -32,12 +33,13 @@ public class AsvAudioTest
     {
         var link = new VirtualMavlinkConnection();
         var rawPart = new RawCodecFactoryPart();
+        var cfg = new AudioServiceConfig();
         var factory = new CompositeAudioCodecFactory(new []{rawPart});
-        var device1 = new AudioService(factory, link.Client, new MavlinkIdentity(1,1), new PacketSequenceCalculator(), TimeSpan.FromSeconds(5),TimeSpan.FromSeconds(1));
-        var device2 = new AudioService(factory, link.Server, new MavlinkIdentity(2,2), new PacketSequenceCalculator(), TimeSpan.FromSeconds(5),TimeSpan.FromSeconds(1));
+        var device1 = new AudioService(factory, link.Client, new MavlinkIdentity(1,1), new PacketSequenceCalculator(), cfg);
+        var device2 = new AudioService(factory, link.Server, new MavlinkIdentity(2,2), new PacketSequenceCalculator(), cfg);
         
-        device1.GoOnline("device1", RawCodecFactoryPart.Raw8KHz16BitMono, true, true);
-        device2.GoOnline("device2", RawCodecFactoryPart.Raw8KHz16BitMono, true, true);
+        device1.GoOnline("device1", AsvAudioCodec.AsvAudioCodecRaw8000Mono , true, true);
+        device2.GoOnline("device2", AsvAudioCodec.AsvAudioCodecRaw8000Mono, true, true);
 
         await Task.Delay(2000);
         

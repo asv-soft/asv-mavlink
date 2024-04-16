@@ -28,7 +28,7 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
         
         OnCapabilitiesRequest = InternalFilter<AsvRadioCapabilitiesRequestPacket>(x=>x.Payload.TargetSystem,x=>x.Payload.TargetComponent)
             .Select(x => x.Payload).Publish().RefCount();
-        OnCodecCfgRequest = InternalFilter<AsvRadioCodecCfgRequestPacket>(x=>x.Payload.TargetSystem,x=>x.Payload.TargetComponent)
+        OnCodecCapabilitiesRequest = InternalFilter<AsvRadioCodecCapabilitiesRequestPacket>(x=>x.Payload.TargetSystem,x=>x.Payload.TargetComponent)
             .Select(x => x.Payload).Publish().RefCount();
     }
     
@@ -52,10 +52,10 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
         return InternalSend<AsvRadioCapabilitiesResponsePacket>(x => { setValueCallback(x.Payload); }, cancel);
     }
     
-    public IObservable<AsvRadioCodecCfgRequestPayload> OnCodecCfgRequest { get; }
-    public Task SendCodecCfgResponse(Action<AsvRadioCodecCfgResponsePayload> setValueCallback, CancellationToken cancel = default)
+    public IObservable<AsvRadioCodecCapabilitiesRequestPayload> OnCodecCapabilitiesRequest { get; }
+    public Task SendCodecCapabilitiesRequest(Action<AsvRadioCodecCapabilitiesResponsePayload> setValueCallback, CancellationToken cancel = default)
     {
         if (setValueCallback == null) throw new ArgumentNullException(nameof(setValueCallback));
-        return InternalSend<AsvRadioCodecCfgResponsePacket>(x => { setValueCallback(x.Payload); }, cancel);
+        return InternalSend<AsvRadioCodecCapabilitiesResponsePacket>(x => { setValueCallback(x.Payload); }, cancel);
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -12,7 +13,7 @@ namespace Asv.Mavlink.Test;
 
 public class AsvRadioExTest
 {
-    private void Create(AsvRadioCapabilities cap, out IAsvRadioClientEx clientEx, out IAsvRadioServerEx serverEx)
+    private void Create(AsvRadioCapabilities cap, IReadOnlySet<AsvAudioCodec> codecs, out IAsvRadioClientEx clientEx, out IAsvRadioServerEx serverEx)
     {
         var link = new VirtualMavlinkConnection();
         var clientId = new MavlinkClientIdentity
@@ -37,7 +38,7 @@ public class AsvRadioExTest
         var status = new StatusTextServer(link.Server, serverSeq, serverId, new StatusTextLoggerConfig(), Scheduler.Default);
         
         var server = new AsvRadioServer(link.Server, serverId, new AsvRadioServerConfig(), new PacketSequenceCalculator(),Scheduler.Default);
-        serverEx = new AsvRadioServerEx(cap, server, heartBeatServer,commandLongServerEx,status);
+        serverEx = new AsvRadioServerEx(cap,codecs, server, heartBeatServer,commandLongServerEx,status);
         
         serverEx.Start();
     }
@@ -52,22 +53,21 @@ public class AsvRadioExTest
             .SetReferencePowerDbm(-100,10)
             .SetTxPowerDbm(-100,10)
             .Build();
+        var codecs = new HashSet<AsvAudioCodec>{AsvAudioCodec.AsvAudioCodecUnknown};
         
+        Create(cap,codecs, out var client,out var server);
         
-        Create(cap, out var client,out var server);
-        
-        server.EnableRadio = (freq,modulation,refRxPower,txPower,codec,codecConfig, cancel) =>
+        server.EnableRadio = (freq,modulation,refRxPower,txPower,codec, cancel) =>
         {
             Assert.Equal(uint.MaxValue, freq);
             Assert.Equal(AsvRadioModulation.AsvRadioModulationAm, modulation);
             Assert.Equal(0.1f, refRxPower);
             Assert.Equal(-10.0f, txPower);
             Assert.Equal(AsvAudioCodec.AsvAudioCodecUnknown, codec);
-            Assert.Equal(1, codecConfig);
             return Task.FromResult(MavResult.MavResultAccepted);
         };
         
-        var result = await client.EnableRadio(uint.MaxValue, AsvRadioModulation.AsvRadioModulationAm, 0.1f, -10.0f, AsvAudioCodec.AsvAudioCodecUnknown, 1);
+        var result = await client.EnableRadio(uint.MaxValue, AsvRadioModulation.AsvRadioModulationAm, 0.1f, -10.0f, AsvAudioCodec.AsvAudioCodecUnknown );
         Assert.Equal(MavResult.MavResultAccepted,result);
     }
     
@@ -80,19 +80,20 @@ public class AsvRadioExTest
             .SetReferencePowerDbm(-100,10)
             .SetTxPowerDbm(-100,10)
             .Build();
-        Create(cap, out var client,out var server);
+        var codecs = new HashSet<AsvAudioCodec>{AsvAudioCodec.AsvAudioCodecUnknown};
+        Create(cap,codecs, out var client,out var server);
         
-        server.EnableRadio = (_,_,_,_,_,_, _) => Task.FromResult(MavResult.MavResultFailed);
+        server.EnableRadio = (_,_,_,_,_,_) => Task.FromResult(MavResult.MavResultFailed);
         
-        var result = await client.EnableRadio(uint.MaxValue, AsvRadioModulation.AsvRadioModulationAm, 0.1f, -10.0f, AsvAudioCodec.AsvAudioCodecUnknown, 1);
+        var result = await client.EnableRadio(uint.MaxValue, AsvRadioModulation.AsvRadioModulationAm, 0.1f, -10.0f, AsvAudioCodec.AsvAudioCodecUnknown);
         Assert.Equal(MavResult.MavResultFailed,result);
     }
     
     [Fact]
     public async void Client_call_DisableRadio_command_and_server_accept_it()
     {
-        
-        Create(AsvRadioCapabilities.Empty, out var client,out var server);
+        var codecs = new HashSet<AsvAudioCodec>{AsvAudioCodec.AsvAudioCodecUnknown};
+        Create(AsvRadioCapabilities.Empty,codecs, out var client,out var server);
         
         server.DisableRadio = (_) => Task.FromResult(MavResult.MavResultAccepted);
         
@@ -109,8 +110,8 @@ public class AsvRadioExTest
             .SetReferencePowerDbm(-100,10)
             .SetTxPowerDbm(-100,10)
             .Build();
-        
-        Create(cap, out var client,out var server);
+        var codecs = new HashSet<AsvAudioCodec>{AsvAudioCodec.AsvAudioCodecUnknown};
+        Create(cap,codecs, out var client,out var server);
         
         var result = await client.GetCapabilities();
         Assert.Equal(cap.MinFrequencyHz, result.MinFrequencyHz);
@@ -118,17 +119,29 @@ public class AsvRadioExTest
         Assert.Equal(cap.MinReferencePowerDbm, result.MinReferencePowerDbm);
         Assert.Equal(cap.MaxReferencePowerDbm, result.MaxReferencePowerDbm);
         Assert.Equal(cap.SupportedModulations, result.SupportedModulations.ToArray());
-        Assert.Equal(cap.SupportedCodecs.Keys, result.SupportedCodecs.Keys.ToArray());
-        foreach (var codec in cap.SupportedCodecs)
-        {
-            Assert.Equal(codec.Value, result.SupportedCodecs[codec.Key].ToArray());
-        }
+    }
+    
+    [Fact]
+    public async void Client_get_codec_capabilities_command_and_server_return_it()
+    {
+        var cap = new AsvRadioCapabilitiesBuilder()
+            .SetFrequencyHz(0,uint.MaxValue)
+            .SetSupportedModulations(AsvRadioModulation.AsvRadioModulationAm,AsvRadioModulation.AsvRadioModulationFm)
+            .SetReferencePowerDbm(-100,10)
+            .SetTxPowerDbm(-100,10)
+            .Build();
+        var codecs = new HashSet<AsvAudioCodec>(Enum.GetValues<AsvAudioCodec>());
+        Create(cap,codecs, out var client,out var server);
+        
+        var result = await client.GetCodecsCapabilities();
+        Assert.Equal(codecs, result);
     }
     
     [Fact]
     public async void Client_check_server_status()
     {
-        Create(AsvRadioCapabilities.Empty, out var client,out var server);
+        var codecs = new HashSet<AsvAudioCodec>{AsvAudioCodec.AsvAudioCodecUnknown};
+        Create(AsvRadioCapabilities.Empty,codecs, out var client,out var server);
 
         server.CustomMode.OnNext(AsvRadioCustomMode.AsvRadioCustomModeIdle);
         

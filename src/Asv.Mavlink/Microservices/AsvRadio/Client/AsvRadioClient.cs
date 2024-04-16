@@ -28,13 +28,15 @@ public class AsvRadioClient : MavlinkMicroserviceClient, IAsvRadioClient
         },_=> true, resultGetter:x=>x.Payload,cancel: cancel);
     }
 
-    public Task<AsvRadioCodecCfgResponsePayload> RequestCodecOptions(AsvAudioCodec codec, CancellationToken cancel = default)
+
+    public Task<AsvRadioCodecCapabilitiesResponsePayload> RequestCodecCapabilities(ushort skip = 0, byte count = byte.MaxValue, CancellationToken cancel = default)
     {
-        return InternalCall<AsvRadioCodecCfgResponsePayload, AsvRadioCodecCfgRequestPacket, AsvRadioCodecCfgResponsePacket>(x =>
+        return InternalCall<AsvRadioCodecCapabilitiesResponsePayload, AsvRadioCodecCapabilitiesRequestPacket, AsvRadioCodecCapabilitiesResponsePacket>(x =>
         {
             x.Payload.TargetComponent = Identity.TargetComponentId;
             x.Payload.TargetSystem = Identity.TargetSystemId;
-            x.Payload.TargetCodec = codec;
-        },x=> x.Payload.TargetCodec == codec, resultGetter:x=>x.Payload,cancel: cancel);
+            x.Payload.Skip = (ushort)skip;
+            x.Payload.Count = (byte)count;
+        },x=> x.Payload.Skip == skip, resultGetter:x=>x.Payload,cancel: cancel);
     }
 }
