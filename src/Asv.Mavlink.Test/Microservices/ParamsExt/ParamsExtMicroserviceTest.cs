@@ -1,5 +1,9 @@
 using System;
 using System.Reactive.Concurrency;
+using System.Threading;
+using System.Threading.Tasks;
+using Asv.Common;
+using Asv.Mavlink.V2.Common;
 using Xunit;
 
 namespace Asv.Mavlink.Test.ParamsExt;
@@ -62,6 +66,78 @@ public class ParamsExtMicroserviceTest
         });
     }
 
+   
+
+    [Fact]
+    public async void ParamsExt_Client_Write()
+    {
+        var paramValue = new[] { '1', '2' };
+        var paramType = MavParamExtType.MavParamExtTypeInt16;
+        var paramName = "param1";
+        var link = new VirtualMavlinkConnection();
+        var server = new ParamsExtServer(link.Server, new PacketSequenceCalculator(), new MavlinkIdentity( 13,13),
+            Scheduler.Default);
+        var cts = new CancellationTokenSource();
+        var disp = server.OnParamExtSet.Subscribe( async _ =>
+        {
+            await server.SendParamExtAck(_ =>
+            {
+                MavlinkTypesHelper.SetString(_.ParamId, paramName);
+                _.ParamType = paramType;
+                _.ParamValue = paramValue;
+                _.ParamResult = ParamAck.ParamAckAccepted;
+            }, cts.Token);
+        });
+        var client = new ParamsExtClient(link.Client,
+            new MavlinkClientIdentity()
+            {
+                SystemId = 1,
+                ComponentId = 1,
+                TargetComponentId = 13,
+                TargetSystemId = 13
+            },
+            new PacketSequenceCalculator(),
+            new ParamsExtClientConfig());
+        
+        var writeResult = await client.Write(paramName,paramType, paramValue, cts.Token);
+        Assert.Equal( ParamAck.ParamAckAccepted, writeResult.ParamResult);
+        disp.Dispose();
+    }
+    [Fact]
+    public async void ParamsExt_Client_Read()
+    {
+        var paramValue = new[] { '1', '2' };
+        var paramType = MavParamExtType.MavParamExtTypeInt16;
+        var paramName = "param1";
+        var link = new VirtualMavlinkConnection();
+        var server = new ParamsExtServer(link.Server, new PacketSequenceCalculator(), new MavlinkIdentity( 13,13),
+            Scheduler.Default);
+        var cts = new CancellationTokenSource();
+        var disp = server.OnParamExtSet.Subscribe( async _ =>
+        {
+            await server.SendParamExtValue(_ =>
+            {
+                MavlinkTypesHelper.SetString(_.ParamId, paramName);
+                _.ParamType = paramType;
+                _.ParamValue = paramValue;
+            }, cts.Token);
+        });
+        var client = new ParamsExtClient(link.Client,
+            new MavlinkClientIdentity()
+            {
+                SystemId = 1,
+                ComponentId = 1,
+                TargetComponentId = 13,
+                TargetSystemId = 13
+            },
+            new PacketSequenceCalculator(),
+            new ParamsExtClientConfig());
+        
+        var writeResult = await client.Read(paramName, cts.Token);
+        Assert.Equal( paramValue , writeResult.ParamValue );
+        disp.Dispose();
+    }
+   
     #endregion
 
     #region Server
