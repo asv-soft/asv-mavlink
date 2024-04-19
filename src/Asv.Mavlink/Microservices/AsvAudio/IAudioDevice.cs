@@ -18,7 +18,7 @@ public interface IAudioDevice
     ushort FullId { get; }
     IObservable<Unit> OnLinePing { get; }
     IRxValue<string> Name { get; }
-    Task SendAudio(byte[] pcmRawAudioData, int dataSize, CancellationToken cancel);
+    Task SendAudio(ReadOnlyMemory<byte> pcmRawAudioData, CancellationToken cancel);
     AsvAudioCodec RxCodec { get; }
 }
 
@@ -65,7 +65,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
     public IObservable<Unit> OnLinePing => _onLinePing;
     public IRxValue<string> Name => _name;
     
-    public async Task SendAudio(byte[] pcmRawAudioData, int dataSize, CancellationToken cancel)
+    public async Task SendAudio(ReadOnlyMemory<byte> pcmRawAudioData, CancellationToken cancel)
     {
         byte[] encodedData = null!;
         var frameIndex = (byte)(Interlocked.Increment(ref _frameCounter) % 255);
@@ -76,7 +76,8 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
             lock (_encoder)
             {
                 encodedData = ArrayPool<byte>.Shared.Rent(_encoder.MaxEncodedSize);
-                _encoder.Encode(pcmRawAudioData,dataSize,encodedData,_encoder.MaxEncodedSize,out encodedSize);    
+                var mem = new Memory<byte>(encodedData,0,_encoder.MaxEncodedSize);
+                _encoder.Encode(pcmRawAudioData,mem,out encodedSize);    
             }
             var fullPackets = encodedSize / AsvAudioHelper.MaxPacketStreamData;
             var lastPacketSize = encodedSize % AsvAudioHelper.MaxPacketStreamData;
@@ -155,10 +156,11 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
             if (stream.PktInFrame == 1)
             {
                 var outputBuffer = ArrayPool<byte>.Shared.Rent(_decoder.MaxDecodedSize);
+                var outMem = new Memory<byte>(outputBuffer,0,_decoder.MaxDecodedSize);
                 try
                 {
-                    _decoder.Decode(stream.Data, stream.DataSize, outputBuffer, out var decodedSize);
-                    _onRecvAudioDelegate(this,outputBuffer, decodedSize);
+                    _decoder.Decode(new ReadOnlyMemory<byte>(outputBuffer,0,_decoder.MaxDecodedSize), outMem, out var decodedSize);
+                    _onRecvAudioDelegate(this,new ReadOnlyMemory<byte>(outputBuffer,0,decodedSize));
                 }
                 catch (Exception e)
                 {
@@ -190,8 +192,8 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
                 var outputBuffer = ArrayPool<byte>.Shared.Rent(_decoder.MaxDecodedSize);
                 try
                 {
-                    _decoder.Decode(frameData, frameSize, outputBuffer, out var decodedSize);
-                    _onRecvAudioDelegate(this,outputBuffer, decodedSize);
+                    _decoder.Decode(new ReadOnlyMemory<byte>(frameData,0, frameSize), new Memory<byte>(outputBuffer,0,_decoder.MaxDecodedSize), out var decodedSize);
+                    _onRecvAudioDelegate(this, new ReadOnlyMemory<byte>(outputBuffer, 0, decodedSize));
                 }
                 catch (Exception e)
                 {
@@ -199,6 +201,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
                 }
                 finally
                 {
+                    ArrayPool<byte>.Shared.Return(outputBuffer);
                     ArrayPool<byte>.Shared.Return(frameData);
                 }
             }

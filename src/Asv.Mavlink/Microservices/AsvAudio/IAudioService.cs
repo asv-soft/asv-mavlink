@@ -13,7 +13,7 @@ using NLog;
 
 namespace Asv.Mavlink;
 
-public delegate void OnRecvAudioDelegate(IAudioDevice device, byte[] data, int dataSize);
+public delegate void OnRecvAudioDelegate(IAudioDevice device, ReadOnlyMemory<byte> pcmRawAudioData);
 
 /// <summary>
 /// This is not usual mavlink microservice.
@@ -30,7 +30,7 @@ public interface IAudioService
     IRxEditableValue<bool> MicEnabled { get; }
     IObservable<IChangeSet<IAudioDevice, ushort>> Devices { get; }
     OnRecvAudioDelegate OnReceiveAudio { get; set; }
-    Task SendAll(byte[] pcmRawAudioData, int dataSize,CancellationToken cancel = default);
+    Task SendAll(ReadOnlyMemory<byte> pcmRawAud,CancellationToken cancel = default);
 }
 
 public class AudioServiceConfig
@@ -166,9 +166,9 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
         });
     }
 
-    private void InternalOnReceiveAudio(IAudioDevice device, byte[] data, int dataSize)
+    private void InternalOnReceiveAudio(IAudioDevice device, ReadOnlyMemory<byte> pcmRawAudioData)
     {
-        OnReceiveAudio?.Invoke(device, data, dataSize);
+        OnReceiveAudio?.Invoke(device, pcmRawAudioData);
     }
 
     private Task SendAudioStream(Action<AsvAudioStreamPacket> packet, CancellationToken cancel)
@@ -241,9 +241,10 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
     public IRxEditableValue<bool> MicEnabled => _micEnabled;
     public IObservable<IChangeSet<IAudioDevice, ushort>> Devices { get; }
     public OnRecvAudioDelegate OnReceiveAudio { get; set; }
-    public Task SendAll(byte[] pcmRawAudioData, int dataSize, CancellationToken cancel = default)
+  
+    public Task SendAll(ReadOnlyMemory<byte> pcmRawAudioData, CancellationToken cancel = default)
     {
-        return Task.WhenAll(_deviceCache.Items.Select(device => device.SendAudio(pcmRawAudioData, dataSize, cancel)));
+        return Task.WhenAll(_deviceCache.Items.Select(device => device.SendAudio(pcmRawAudioData, cancel)));
     }
 
     

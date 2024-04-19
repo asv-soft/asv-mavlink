@@ -31,10 +31,12 @@ public class RawCodec:IAudioEncoder,IAudioDecoder
     
     public AsvAudioCodec Codec => AsvAudioCodec.AsvAudioCodecRaw8000Mono;
 
-    public void Encode(byte[] inputData, int inputSize, byte[] outputData, int outputSize, out int encodedSize)
+   
+
+    public void Encode(ReadOnlyMemory<byte> input, Memory<byte> output, out int encodedSize)
     {
-        encodedSize = inputSize;
-        inputData.CopyTo(outputData,0);
+        input.CopyTo(output);
+        encodedSize = input.Length;
     }
 
     public int MaxEncodedSize => 58_650;
@@ -43,6 +45,11 @@ public class RawCodec:IAudioEncoder,IAudioDecoder
     {
         decodedSize = inputSize;
         inputData.CopyTo(outputData,0);
+    }
+
+    public void Decode(ReadOnlyMemory<byte> input, Memory<byte> output, out int decodedSize)
+    {
+        throw new NotImplementedException();
     }
 
     public int MaxDecodedSize => 58_650;

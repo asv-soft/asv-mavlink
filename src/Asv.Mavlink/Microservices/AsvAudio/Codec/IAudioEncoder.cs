@@ -6,6 +6,6 @@ namespace Asv.Mavlink;
 public interface IAudioEncoder:IDisposable
 {   
     AsvAudioCodec Codec { get; }
-    void Encode(byte[] inputData, int inputSize, byte[] outputData, int outputSize, out int encodedSize);   
+    void Encode(ReadOnlyMemory<byte> input, Memory<byte> output, out int encodedSize);   
     int MaxEncodedSize { get; }
 }
