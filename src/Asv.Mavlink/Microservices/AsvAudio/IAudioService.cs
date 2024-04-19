@@ -35,8 +35,8 @@ public interface IAudioService
 
 public class AudioServiceConfig
 {
-    public int DeviceTimeoutMs { get; set; } = TimeSpan.FromSeconds(10).Milliseconds;
-    public int OnlineRateMs { get; set; } = TimeSpan.FromSeconds(1).Milliseconds;
+    public int DeviceTimeoutMs { get; set; } = (int)TimeSpan.FromSeconds(10).TotalMilliseconds;
+    public int OnlineRateMs { get; set; } = (int)TimeSpan.FromSeconds(1).TotalMilliseconds;
 }
 
 public class AudioService : DisposableOnceWithCancel, IAudioService
@@ -74,7 +74,10 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
         _onlineRate = TimeSpan.FromMilliseconds(config1.OnlineRateMs);
         _deviceCache = new SourceCache<AudioDevice,ushort>(x => x.FullId).DisposeItWith(Disposable);
         Devices = _deviceCache.Connect().Transform(x=>(IAudioDevice)x);
-        
+        connection.Subscribe(x =>
+        {
+
+        });
         connection.Filter<AsvAudioOnlinePacket>().Where(_=>IsOnline.Value).Subscribe(OnRecvDeviceOnline).DisposeItWith(Disposable);
         connection.Filter<AsvAudioStreamPacket>().Where(_=>IsOnline.Value).Subscribe(OnRecvAudioStream).DisposeItWith(Disposable);
         

@@ -159,7 +159,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
                 var outMem = new Memory<byte>(outputBuffer,0,_decoder.MaxDecodedSize);
                 try
                 {
-                    _decoder.Decode(new ReadOnlyMemory<byte>(outputBuffer,0,_decoder.MaxDecodedSize), outMem, out var decodedSize);
+                    _decoder.Decode(new ReadOnlyMemory<byte>(stream.Data,0,stream.DataSize), outMem, out var decodedSize);
                     _onRecvAudioDelegate(this,new ReadOnlyMemory<byte>(outputBuffer,0,decodedSize));
                 }
                 catch (Exception e)
