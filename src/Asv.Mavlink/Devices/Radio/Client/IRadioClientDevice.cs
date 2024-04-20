@@ -7,5 +7,4 @@ public interface IRadioClientDevice
     ICommandClient Command { get; }
     IParamsClientEx Params { get; }
     IAsvRadioClientEx Radio { get; }
-    IAudioService Audio { get; }
 }

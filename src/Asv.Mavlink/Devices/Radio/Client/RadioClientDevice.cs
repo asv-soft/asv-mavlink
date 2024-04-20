@@ -13,7 +13,6 @@ public class RadioClientDeviceConfig:ClientDeviceConfig
 {
     public CommandProtocolConfig Command { get; set; } = new();
     public ParamsClientExConfig Params { get; set; } = new();
-    public AudioServiceConfig Audio { get; set; } = new();
     public string SerialNumberParamName { get; set; } = "BRD_SERIAL_NUM";
 }
 
@@ -33,7 +32,6 @@ public class RadioClientDevice : ClientDevice, IRadioClientDevice
         Radio = new AsvRadioClientEx(client, Heartbeat, Command).DisposeItWith(Disposable);
         var param = new ParamsClient(connection, identity, seq, config.Params).DisposeItWith(Disposable);
         _params = new ParamsClientEx(param, config.Params).DisposeItWith(Disposable);
-        Audio = new AudioService(factory,connection, new MavlinkIdentity(identity.SystemId,identity.ComponentId), seq,config.Audio).DisposeItWith(Disposable);
     }
     
     public IAsvRadioClientEx Radio { get; }
@@ -58,7 +56,6 @@ public class RadioClientDevice : ClientDevice, IRadioClientDevice
     }
 
     public override DeviceClass Class => DeviceClass.Radio;
-    public IAudioService Audio { get; }
     public ICommandClient Command { get; }
     public IParamsClientEx Params => _params;
 }

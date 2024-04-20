@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.7.1+471ae71350a63dca343f7ae51dc97567e049496b
+// This code was generate by tool Asv.Mavlink.Shell version 3.7.1+4106fec092ad8e5c656389a6225b57600d851309
 
 using System;
 using System.Text;
@@ -82,15 +82,20 @@ namespace Asv.Mavlink.V2.AsvRadio
     public enum AsvRadioModulation:uint
     {
         /// <summary>
+        /// Not set modulation.
+        /// ASV_RADIO_MODULATION_UNKNOWN
+        /// </summary>
+        AsvRadioModulationUnknown = 0,
+        /// <summary>
         /// AM modulation.
         /// ASV_RADIO_MODULATION_AM
         /// </summary>
-        AsvRadioModulationAm = 0,
+        AsvRadioModulationAm = 1,
         /// <summary>
         /// FM modulation.
         /// ASV_RADIO_MODULATION_FM
         /// </summary>
-        AsvRadioModulationFm = 1,
+        AsvRadioModulationFm = 2,
     }
 
     /// <summary>

@@ -28,12 +28,17 @@
     </enum>
     <enum name="ASV_RADIO_MODULATION">
       <description>RF modulation (uint8_t).</description>
-      <entry value="0" name="ASV_RADIO_MODULATION_AM">
+      <entry value="0" name="ASV_RADIO_MODULATION_UNKNOWN">
+        <description>Not set modulation.</description>
+      </entry>
+      
+      <entry value="1" name="ASV_RADIO_MODULATION_AM">
         <description>AM modulation.</description>
       </entry>
-      <entry value="1" name="ASV_RADIO_MODULATION_FM">
+      <entry value="2" name="ASV_RADIO_MODULATION_FM">
         <description>FM modulation.</description>
       </entry>
+      
     </enum>
     <enum name="ASV_RADIO_RF_MODE_FLAG">
       <description>RF device mode falgs (uint8_t).[!THIS_IS_ENUM_FLAG!]</description>
