@@ -59,17 +59,18 @@ public class AsvAudioTest
         var data = new byte[dataLength];
         Random.Shared.NextBytes(data);
         
-        device2.OnReceiveAudio += (device, bytes, dataSize) =>
+        device2.OnReceiveAudio += (device, bytes) =>
         {
-            Assert.Equal(data.Length, dataSize);
-            for (var i = 0; i < dataSize; i++)
+            Assert.Equal(data.Length, bytes.Length);
+            for (var i = 0; i < bytes.Length; i++)
             {
-                Assert.Equal(data[i], bytes[i]);    
+                var val = bytes.Span[i];
+                Assert.Equal(data[i],val );    
             }
             tcs.SetResult();
         };
         
-        await audio1.SendAudio(data, data.Length, default);
+        await audio1.SendAudio(data, default);
         await tcs.Task;
         
         
