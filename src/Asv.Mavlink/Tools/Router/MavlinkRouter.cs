@@ -16,7 +16,6 @@ using NLog;
 
 namespace Asv.Mavlink
 {
-
     public class MavlinkPort : DisposableOnceWithCancel
     {
         private readonly MavlinkPortConfig _config;
@@ -83,7 +82,7 @@ namespace Asv.Mavlink
         {
             return new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects,publishScheduler: scheduler);
         }
-        
+
         private readonly Action<IPacketDecoder<IPacketV2<IPayload>>> _register;
         private readonly IScheduler? _publishScheduler;
         private readonly ReaderWriterLockSlim _portCollectionSync = new(LockRecursionPolicy.SupportsRecursion);
@@ -127,7 +126,21 @@ namespace Asv.Mavlink
                 var portObject = new MavlinkPort(port, _register, Guid.NewGuid());
                 portObject.Connection.DeserializePackageErrors.Do(_=>_.SourceName = port.Name).Subscribe(_deserializeErrors);
                 portObject.Port.Subscribe(_rawData);
-                portObject.Connection.Do(_=>_.Tag = portObject).Subscribe(OnRecvPacket);
+                portObject.Connection.Do(_=>_.Tag = portObject).Subscribe(packet =>
+                {
+                    var random = new Random();
+                    var chance = random.Next(100);
+                    if (port.PacketLossChance >= 100)
+                    {
+                        return;
+                    }
+                    if (chance < port.PacketLossChance) // set PacketLossChance to 0 if you want to get no packet loss
+                    {
+                        return;
+                    }
+        
+                    OnRecvPacket(packet);
+                });
                 _ports.Add(portObject);
                 id = portObject.Id;
             }
