@@ -29,6 +29,11 @@ namespace Asv.Mavlink
         /// <c>true</c> if the property is enabled; otherwise, <c>false</c>.
         /// </value>
         public bool IsEnabled { get; set; }
+        
+        /// <summary>
+        /// Gets or sets chance to lose current package
+        /// </summary>
+        public int PacketLossChance { get; set; } = 0; // !!!use it only for testing purposes to simulate packet loss!!!
     }
 
     /// <summary>
@@ -94,6 +99,7 @@ namespace Asv.Mavlink
         /// </value>
         public long TxPackets { get; internal set; }
 
+        /// <summary>
         /// Gets or sets the number of packets to skip.
         /// </summary>
         /// <value>
