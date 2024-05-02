@@ -32,7 +32,6 @@ namespace Asv.Mavlink
         
         /// <summary>
         /// Gets or sets chance to lose current package
-        /// (99 is 100%)
         /// </summary>
         public int PacketLossChance { get; set; } = 0; // !!!use it only for testing purposes to simulate packet loss!!!
     }
