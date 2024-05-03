@@ -152,6 +152,14 @@ namespace Asv.Mavlink
         /// The value indicating whether the property is enabled. Null indicates that the property state is unknown.
         /// </value>
         public bool? IsEnabled { get; internal set; }
+        
+        /// <summary>
+        /// Gets or sets value of the chance to lose packet 
+        /// </summary>
+        /// <value>
+        /// The value indicating what is the chance to lose a packet. Zero indicates that you don't lose packet. 100 indicates that you lose all the packets
+        /// </value>
+        public int PacketLossChance { get; internal set; }
     }
 
     
