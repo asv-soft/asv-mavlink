@@ -74,7 +74,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
     
     private async void InternalSendEncodedAudio(ReadOnlyMemory<byte> encodedData)
     {
-        
+        if (IsDisposed) return;
         var frameIndex = (byte)(Interlocked.Increment(ref _frameCounter) % 255);
         try
         {
@@ -122,6 +122,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
     
     public void SendAudio(ReadOnlyMemory<byte> pcmRawAudioData)
     {
+        if (IsDisposed) return;
         lock (_sync)
         {
             _inputEncoderAudioStream.OnNext(pcmRawAudioData);
@@ -132,6 +133,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
 
     private void Touch()
     {
+        if (IsDisposed) return;
         Interlocked.Exchange(ref _lastHit, DateTime.Now.ToBinary());
         _onLinePing.OnNext(Unit.Default);
     }
@@ -148,6 +150,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
 
     public void OnInputAudioStream(AsvAudioStreamPayload stream)
     {
+        if (IsDisposed) return;
         if (stream.PktInFrame == 0)
         {
             Logger.Warn("Recv strange packet with PktInFrame = 0");
