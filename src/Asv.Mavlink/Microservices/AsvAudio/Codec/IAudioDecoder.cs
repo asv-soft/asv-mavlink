@@ -3,9 +3,8 @@ using Asv.Mavlink.V2.AsvAudio;
 
 namespace Asv.Mavlink;
 
-public interface IAudioDecoder:IDisposable
+public interface IAudioDecoder: IObservable<ReadOnlyMemory<byte>>, IDisposable
 {   
     AsvAudioCodec Codec { get; }
-    void Decode(ReadOnlyMemory<byte> input, Memory<byte> output,out int decodedSize);   
-    int MaxDecodedSize { get; }     
+   
 }

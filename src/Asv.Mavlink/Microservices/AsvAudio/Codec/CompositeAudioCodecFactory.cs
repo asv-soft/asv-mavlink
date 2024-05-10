@@ -24,16 +24,16 @@ public class CompositeAudioCodecFactory : IAudioCodecFactory
     }
 
 
-    public IAudioEncoder CreateEncoder(AsvAudioCodec codec)
+    public IAudioEncoder CreateEncoder(AsvAudioCodec codec, IObservable<ReadOnlyMemory<byte>> input)
     {
-        var result = _parts.FirstOrDefault(part => part.AvailableCodecs.Contains(codec))?.CreateEncoder(codec);
+        var result = _parts.FirstOrDefault(part => part.AvailableCodecs.Contains(codec))?.CreateEncoder(codec,input);
         if (result == null) throw new Exception($"Codec {codec} not supported");
         return result;
     }
 
-    public IAudioDecoder CreateDecoder(AsvAudioCodec codec)
+    public IAudioDecoder CreateDecoder(AsvAudioCodec codec, IObservable<ReadOnlyMemory<byte>> input)
     {
-        var result = _parts.FirstOrDefault(part => part.AvailableCodecs.Contains(codec))?.CreateDecoder(codec);
+        var result = _parts.FirstOrDefault(part => part.AvailableCodecs.Contains(codec))?.CreateDecoder(codec,input);
         if (result == null) throw new Exception($"Codec {codec} not supported");
         return result;
     }

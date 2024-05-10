@@ -70,7 +70,7 @@ public class AsvAudioTest
             tcs.SetResult();
         };
         
-        await audio1.SendAudio(data, default);
+        audio1.SendAudio(data);
         await tcs.Task;
         
         

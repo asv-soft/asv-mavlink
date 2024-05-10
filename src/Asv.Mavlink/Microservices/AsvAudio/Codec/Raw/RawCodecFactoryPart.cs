@@ -1,19 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.Reactive.Disposables;
+using System.Reactive.Subjects;
+using Asv.Common;
 using Asv.Mavlink.V2.AsvAudio;
 
 namespace Asv.Mavlink;
 
 public class RawCodecFactoryPart:IAudioCodecFactory
 {
-    public IAudioEncoder CreateEncoder(AsvAudioCodec codec)
+    
+
+    public IAudioEncoder CreateEncoder(AsvAudioCodec codec, IObservable<ReadOnlyMemory<byte>> input)
     {
-        return new RawCodec();
+        return new RawCodec(input);
     }
 
-    public IAudioDecoder CreateDecoder(AsvAudioCodec codec)
+    public IAudioDecoder CreateDecoder(AsvAudioCodec codec, IObservable<ReadOnlyMemory<byte>> input)
     {
-        return new RawCodec();
+        return new RawCodec(input);
     }
 
     public IEnumerable<AsvAudioCodec> AvailableCodecs
@@ -25,37 +30,22 @@ public class RawCodecFactoryPart:IAudioCodecFactory
     }
 }
 
-public class RawCodec:IAudioEncoder,IAudioDecoder
+public class RawCodec: DisposableOnceWithCancel,IAudioEncoder,IAudioDecoder
 {
+    private readonly Subject<ReadOnlyMemory<byte>> _output;
     public const AsvAudioCodec CodecId = AsvAudioCodec.AsvAudioCodecRaw8000Mono;
     
     public AsvAudioCodec Codec => AsvAudioCodec.AsvAudioCodecRaw8000Mono;
 
-   
-
-    public void Encode(ReadOnlyMemory<byte> input, Memory<byte> output, out int encodedSize)
+    public RawCodec(IObservable<ReadOnlyMemory<byte>> src)
     {
-        input.CopyTo(output);
-        encodedSize = input.Length;
+        _output = new Subject<ReadOnlyMemory<byte>>().DisposeItWith(Disposable);
+        src.Subscribe(_output);
     }
 
-    public int MaxEncodedSize => 58_650;
-    
-    public void Decode(byte[] inputData, int inputSize, byte[] outputData, out int decodedSize)
-    {
-        decodedSize = inputSize;
-        inputData.CopyTo(outputData,0);
-    }
 
-    public void Decode(ReadOnlyMemory<byte> input, Memory<byte> output, out int decodedSize)
+    public IDisposable Subscribe(IObserver<ReadOnlyMemory<byte>> observer)
     {
-        throw new NotImplementedException();
-    }
-
-    public int MaxDecodedSize => 58_650;
-    
-    public void Dispose()
-    {
-        // TODO release managed resources here
+        return _output.Subscribe(observer);
     }
 }

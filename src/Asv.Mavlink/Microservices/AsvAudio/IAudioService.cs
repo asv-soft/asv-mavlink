@@ -30,7 +30,7 @@ public interface IAudioService
     IRxEditableValue<bool> MicEnabled { get; }
     IObservable<IChangeSet<IAudioDevice, ushort>> Devices { get; }
     OnRecvAudioDelegate OnReceiveAudio { get; set; }
-    Task SendAll(ReadOnlyMemory<byte> pcmRawAud,CancellationToken cancel = default);
+    void SendAll(ReadOnlyMemory<byte> pcmRawAudioData);
 }
 
 public class AudioServiceConfig
@@ -52,7 +52,7 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
     private readonly RxValue<AsvAudioCodec?> _codec;
     private readonly RxValue<bool> _speakerEnabled;
     private readonly RxValue<bool> _micEnabled;
-    private IAudioEncoder? _encoder;
+    
     private readonly TimeSpan _deviceTimeout;
     private readonly TimeSpan _onlineRate;
 
@@ -118,11 +118,7 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
             }
         })).DisposeItWith(Disposable);
 
-        Disposable.AddAction(() =>
-        {
-            _encoder?.Dispose();
-            _encoder = null;
-        });
+        
     }
 
     private void OnRecvAudioStream(AsvAudioStreamPacket pkt)
@@ -205,8 +201,6 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
     public void GoOnline(string name, AsvAudioCodec codec, bool speakerEnabled, bool micEnabled)
     {
         AsvAudioHelper.CheckDeviceName(name);
-        _encoder?.Dispose();
-        _encoder = _codecFactory.CreateEncoder(codec);
         _transponder.Set(p =>
         {
             MavlinkTypesHelper.SetString(p.Name,name);
@@ -232,8 +226,6 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
 
     public void GoOffline()
     {
-        _encoder?.Dispose();
-        _encoder = null;
         _isOnline.OnNext(false);
         _transponder.Stop();
     }
@@ -245,9 +237,12 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
     public IObservable<IChangeSet<IAudioDevice, ushort>> Devices { get; }
     public OnRecvAudioDelegate OnReceiveAudio { get; set; }
   
-    public Task SendAll(ReadOnlyMemory<byte> pcmRawAudioData, CancellationToken cancel = default)
+    public void SendAll(ReadOnlyMemory<byte> pcmRawAudioData)
     {
-        return Task.WhenAll(_deviceCache.Items.Select(device => device.SendAudio(pcmRawAudioData, cancel)));
+        foreach (var item in _deviceCache.Items)
+        {
+            item.SendAudio(pcmRawAudioData);
+        }
     }
 
     
