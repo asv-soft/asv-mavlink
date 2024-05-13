@@ -70,7 +70,7 @@ public class MavlinkRouterTest
         }
         
         // Assert
-        Assert.Equal(serverDevice.Connection.TxPackets/2, clientDevice.Connection.RxPackets);
+        Assert.Equal(serverDevice.Connection.TxPackets, clientDevice.Connection.RxPackets);
     }
     
     [Fact, Priority(1)]

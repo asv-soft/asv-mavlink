@@ -354,7 +354,7 @@ namespace Asv.Mavlink
                     wrappedPacket.Payload.Payload = arr;
                     packet = wrappedPacket;
                 }
-                Interlocked.Increment(ref _txPackets);
+                
                 var data = ArrayPool<byte>.Shared.Rent(packet.GetMaxByteSize());
                 try
                 {
