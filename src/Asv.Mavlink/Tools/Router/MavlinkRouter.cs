@@ -62,6 +62,7 @@ namespace Asv.Mavlink
                 LastException = Port.Error.Value,
                 Type = Port.PortType,
                 IsEnabled = Port?.IsEnabled.Value,
+                PacketLossChance = _config.PacketLossChance
             };
         }
 
@@ -130,16 +131,10 @@ namespace Asv.Mavlink
                 {
                     var random = new Random();
                     var chance = random.Next(100);
-                    if (port.PacketLossChance >= 100)
+                    if (chance > port.PacketLossChance)
                     {
-                        return;
+                        OnRecvPacket(packet);
                     }
-                    if (chance < port.PacketLossChance) // set PacketLossChance to 0 if you want to get no packet loss
-                    {
-                        return;
-                    }
-        
-                    OnRecvPacket(packet);
                 });
                 _ports.Add(portObject);
                 id = portObject.Id;
@@ -262,7 +257,7 @@ namespace Asv.Mavlink
         }
 
         public IObservable<Guid> OnConfigChanged => _onConfigChanged;
-
+        
         private void OnRecvPacket(IPacketV2<IPayload> packet)
         {
             Interlocked.Increment(ref _rxPackets);
@@ -359,7 +354,7 @@ namespace Asv.Mavlink
                     wrappedPacket.Payload.Payload = arr;
                     packet = wrappedPacket;
                 }
-                Interlocked.Increment(ref _txPackets);
+                
                 var data = ArrayPool<byte>.Shared.Rent(packet.GetMaxByteSize());
                 try
                 {
