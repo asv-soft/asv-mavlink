@@ -41,16 +41,7 @@ public interface IParamsServerEx
     /// <returns>The MavParamValue with the specified name.</returns>
     MavParamValue this[string name] { get; set; }
 
-    /// <summary>
-    /// Gets or sets the MavParamValue associated with the specified IMavParamTypeMetadata.
-    /// </summary>
-    /// <param name="param">The IMavParamTypeMetadata to retrieve or set the MavParamValue for.</param>
-    /// <returns>The MavParamValue associated with the specified IMavParamTypeMetadata.</returns>
-    public MavParamValue this[IMavParamTypeMetadata param]
-    {
-        get => this[param.Name];
-        set => this[param.Name] = value;
-    }
+    
 
     public IObservable<ParamChangedEvent> OnChange(string name)
     {

@@ -217,5 +217,15 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
         }
     }
 
+    /// <summary>
+    /// Gets or sets the MavParamValue associated with the specified IMavParamTypeMetadata.
+    /// </summary>
+    /// <param name="param">The IMavParamTypeMetadata to retrieve or set the MavParamValue for.</param>
+    /// <returns>The MavParamValue associated with the specified IMavParamTypeMetadata.</returns>
+    public MavParamValue this[IMavParamTypeMetadata param]
+    {
+        get => this[param.Name];
+        set => this[param.Name] = value;
+    }
     
 }
