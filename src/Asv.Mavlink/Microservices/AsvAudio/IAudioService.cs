@@ -35,8 +35,8 @@ public interface IAudioService
 
 public class AudioServiceConfig
 {
-    public int DeviceTimeoutMs { get; set; } = (int)TimeSpan.FromSeconds(10).TotalMilliseconds;
-    public int OnlineRateMs { get; set; } = (int)TimeSpan.FromSeconds(1).TotalMilliseconds;
+    public int DeviceTimeoutMs { get; set; } = 10_000;
+    public int OnlineRateMs { get; set; } = 1_000;
 }
 
 public class AudioService : DisposableOnceWithCancel, IAudioService

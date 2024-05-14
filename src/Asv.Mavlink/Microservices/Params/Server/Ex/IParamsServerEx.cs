@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Linq;
 
 namespace Asv.Mavlink;
 
@@ -45,7 +46,36 @@ public interface IParamsServerEx
     /// </summary>
     /// <param name="param">The IMavParamTypeMetadata to retrieve or set the MavParamValue for.</param>
     /// <returns>The MavParamValue associated with the specified IMavParamTypeMetadata.</returns>
-    MavParamValue this[IMavParamTypeMetadata param] { get; set; }
+    public MavParamValue this[IMavParamTypeMetadata param]
+    {
+        get => this[param.Name];
+        set => this[param.Name] = value;
+    }
+
+    public IObservable<ParamChangedEvent> OnChange(string name)
+    {
+        return OnUpdated.Where(x => x.Metadata.Name.Equals(name));
+    }
+    public IObservable<ParamChangedEvent> OnChange(IMavParamTypeMetadata param)
+    {
+        return OnUpdated.Where(x => x.Metadata.Name.Equals(param.Name));
+    }
+    public IObservable<ParamChangedEvent> OnRemoteChange(string name)
+    {
+        return OnUpdated.Where(x => x.IsRemoteChange && x.Metadata.Name.Equals(name));
+    }
+    public IObservable<ParamChangedEvent> OnRemoteChange(IMavParamTypeMetadata param)
+    {
+        return OnUpdated.Where(x => x.IsRemoteChange && x.Metadata.Name.Equals(param.Name));
+    }
+    public IObservable<ParamChangedEvent> OnLocalChange(string name)
+    {
+        return OnUpdated.Where(x => x.IsRemoteChange == false && x.Metadata.Name.Equals(name));
+    }
+    public IObservable<ParamChangedEvent> OnLocalChange(IMavParamTypeMetadata param)
+    {
+        return OnUpdated.Where(x => x.IsRemoteChange == false && x.Metadata.Name.Equals(param.Name));
+    }
 }
 
 /// <summary>

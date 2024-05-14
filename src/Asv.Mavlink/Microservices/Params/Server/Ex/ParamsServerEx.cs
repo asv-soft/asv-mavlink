@@ -217,9 +217,5 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
         }
     }
 
-    public MavParamValue this[IMavParamTypeMetadata param]
-    {
-        get => this[param.Name];
-        set => this[param.Name] = value;
-    }
+    
 }
