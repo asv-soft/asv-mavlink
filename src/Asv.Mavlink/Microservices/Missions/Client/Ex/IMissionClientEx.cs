@@ -169,6 +169,26 @@ public static class MissionClientExHelper
         return item;
     }
 
+    /// <summary>
+    /// Adds a mission item to change altitude.
+    /// </summary>
+    /// <param name="vehicle">The vehicle's mission client</param>
+    /// <param name="altitude">The new altitude value</param>
+    /// <param name="frame">The frame of the new altitude</param>
+    /// <returns>The newly added altitude change mission item</returns>
+    public static MissionItem DoChangeAltitude(this IMissionClientEx vehicle, float altitude, MavFrame frame)
+    {
+        var item = vehicle.Create();
+        item.AutoContinue.OnNext(true);
+        item.Command.OnNext(MavCmd.MavCmdDoChangeAltitude);
+        item.Current.OnNext(false);
+        item.Frame.OnNext(MavFrame.MavFrameGlobalInt);
+        item.MissionType.OnNext(MavMissionType.MavMissionTypeMission);
+        item.Param1.OnNext(altitude);
+        item.Param2.OnNext((float)frame);
+        return item;
+    }
+
     /// and creating the documentation based on those comments yourself.
     public static MissionItem AddNavMissionItem(this IMissionClientEx vehicle, GeoPoint point,
         float holdTime = 0, float acceptRadius = 0, float passRadius = 0, float yawAngle = float.NaN)
