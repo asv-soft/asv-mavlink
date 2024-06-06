@@ -146,8 +146,8 @@ public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
 
     public Task SetTarget(GeoPoint point, CancellationToken cancel)
     {
-        return Base.SetTargetGlobalInt(0, MavFrame.MavFrameGlobalInt, cancel, (int)(point.Latitude * 10000000),
-            (int)(point.Longitude * 10000000), (float?)point.Altitude);
+        return Base.SetTargetGlobalInt(0, MavFrame.MavFrameGlobalInt, cancel, MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(point.Latitude),
+            MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(point.Longitude), (float?)point.Altitude);
     }
 
     public Task TakeOff(double altInMeters, CancellationToken cancel = default)

@@ -21,7 +21,7 @@ public class ArdupilotCopterMode:VehicleMode
         foreach (var copterMode in Enum.GetValues<CopterMode>())
         {
             if (wellKnownModes.Contains(copterMode)) continue;
-            // this is not well known mode, try to create description from enum
+            // this is not "well known" mode, try to create description from enum
             allModes.Add(new ArdupilotCopterMode(copterMode.ToString("G"), String.Empty, copterMode));
         }
         AllModes = allModes.ToImmutableArray();

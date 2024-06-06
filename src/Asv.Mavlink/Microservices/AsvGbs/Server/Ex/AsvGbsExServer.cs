@@ -53,86 +53,86 @@ public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
         #region Telemetry
 
         Position = new RxValue<GeoPoint>().DisposeItWith(Disposable);
-        Position.Subscribe(_ => server.Set(status =>
+        Position.Subscribe(x => server.Set(status =>
         {
-            status.Lat = (int)(_.Latitude * 10000000D);
-            status.Lng = (int)(_.Longitude * 10000000D);
-            status.Alt = (int)(_.Altitude * 1000D);
+            status.Lat = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(x.Latitude);
+            status.Lng = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(x.Longitude);
+            status.Alt = MavlinkTypesHelper.AltFromDoubleMeterToInt32Mm(x.Altitude);
         })).DisposeItWith(Disposable);
 
         AccuracyMeter = new RxValue<double>().DisposeItWith(Disposable);
-        AccuracyMeter.Select(_=>(ushort)Math.Round(_*100,0)).DistinctUntilChanged().Subscribe(_ => server.Set(status =>
+        AccuracyMeter.Select(d=>(ushort)Math.Round(d*100,0)).DistinctUntilChanged().Subscribe(x => server.Set(status =>
         {
-            status.Accuracy = _;
+            status.Accuracy = x;
         })).DisposeItWith(Disposable);
         ObservationSec = new RxValue<ushort>().DisposeItWith(Disposable);
-        ObservationSec.DistinctUntilChanged().Subscribe(_ => server.Set(status =>
+        ObservationSec.DistinctUntilChanged().Subscribe(x => server.Set(status =>
         {
-            status.Observation = _;
+            status.Observation = x;
         })).DisposeItWith(Disposable);
         DgpsRate = new RxValue<ushort>().DisposeItWith(Disposable);
-        DgpsRate.DistinctUntilChanged().Subscribe(_ => server.Set(status =>
+        DgpsRate.DistinctUntilChanged().Subscribe(x => server.Set(status =>
         {
-            status.DgpsRate = _;
+            status.DgpsRate = x;
         })).DisposeItWith(Disposable);
         AllSatellites = new RxValue<byte>().DisposeItWith(Disposable);
-        AllSatellites.DistinctUntilChanged().Subscribe(_ => server.Set(status =>
+        AllSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
         {
-            status.SatAll = _;
+            status.SatAll = b;
         })).DisposeItWith(Disposable);
         GalSatellites = new RxValue<byte>().DisposeItWith(Disposable);
-        GalSatellites.DistinctUntilChanged().Subscribe(_ => server.Set(status =>
+        GalSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
         {
-            status.SatGal = _;
+            status.SatGal = b;
         })).DisposeItWith(Disposable);
         BeidouSatellites = new RxValue<byte>().DisposeItWith(Disposable);
-        BeidouSatellites.DistinctUntilChanged().Subscribe(_ => server.Set(status =>
+        BeidouSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
         {
-            status.SatBdu = _;
+            status.SatBdu = b;
         })).DisposeItWith(Disposable);
         GlonassSatellites = new RxValue<byte>().DisposeItWith(Disposable);
-        GlonassSatellites.DistinctUntilChanged().Subscribe(_ => server.Set(status =>
+        GlonassSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
         {
-            status.SatGlo = _;
+            status.SatGlo = b;
         })).DisposeItWith(Disposable);
         GpsSatellites = new RxValue<byte>().DisposeItWith(Disposable);
-        GpsSatellites.DistinctUntilChanged().Subscribe(_ => server.Set(status =>
+        GpsSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
         {
-            status.SatGps = _;
+            status.SatGps = b;
         })).DisposeItWith(Disposable);
         QzssSatellites = new RxValue<byte>().DisposeItWith(Disposable);
-        QzssSatellites.DistinctUntilChanged().Subscribe(_ => server.Set(status =>
+        QzssSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
         {
-            status.SatQzs = _;
+            status.SatQzs = b;
         })).DisposeItWith(Disposable);
         SbasSatellites = new RxValue<byte>().DisposeItWith(Disposable);
-        SbasSatellites.DistinctUntilChanged().Subscribe(_ => server.Set(status =>
+        SbasSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
         {
-            status.SatSbs = _;
+            status.SatSbs = b;
         })).DisposeItWith(Disposable);
         ImesSatellites = new RxValue<byte>().DisposeItWith(Disposable);
-        ImesSatellites.DistinctUntilChanged().Subscribe(_ => server.Set(status =>
+        ImesSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
         {
-            status.SatIme = _;
+            status.SatIme = b;
         })).DisposeItWith(Disposable);
 
         #endregion
 
         #region Custom mode
 
-        heartbeatServer.Set(_ =>
+        heartbeatServer.Set(p =>
         {
-            _.Autopilot = MavAutopilot.MavAutopilotInvalid;
-            _.Type = (MavType)V2.AsvGbs.MavType.MavTypeAsvGbs;
-            _.SystemStatus = MavState.MavStateActive;
-            _.BaseMode = MavModeFlag.MavModeFlagCustomModeEnabled;
-            _.MavlinkVersion = 3;
-            _.CustomMode = (uint)V2.AsvGbs.AsvGbsCustomMode.AsvGbsCustomModeLoading;
+            p.Autopilot = MavAutopilot.MavAutopilotInvalid;
+            p.Type = (MavType)V2.AsvGbs.MavType.MavTypeAsvGbs;
+            p.SystemStatus = MavState.MavStateActive;
+            p.BaseMode = MavModeFlag.MavModeFlagCustomModeEnabled;
+            p.MavlinkVersion = 3;
+            p.CustomMode = (uint)V2.AsvGbs.AsvGbsCustomMode.AsvGbsCustomModeLoading;
         });
         CustomMode = new RxValue<AsvGbsCustomMode>().DisposeItWith(Disposable);
-        CustomMode.DistinctUntilChanged().Subscribe(mode => heartbeatServer.Set(_ =>
+        CustomMode.DistinctUntilChanged().Subscribe(mode => heartbeatServer.Set(p =>
         {
-            _.CustomMode = (uint)mode;
+            p.CustomMode = (uint)mode;
         })).DisposeItWith(Disposable);
 
         #endregion
