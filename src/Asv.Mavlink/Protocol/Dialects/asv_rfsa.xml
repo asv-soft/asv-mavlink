@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<mavlink>
+  <!-- Interface for communication with RF spectrum analyzer (RFSA)-->
+  <!-- Asv Soft contact info: https://github.com/asvol             -->
+  <!-- company URL: https://github.com/asv-soft and asv.me         -->
+  <!-- email contact: me@asv.me                                    -->
+  <!-- mavlink MAV_TYPE: 253                                       -->
+  <!-- mavlink MAV_CMD range:  13300 - 13350                       -->
+  <!-- mavlink messages range: 13300 - 13350                       -->
+  <include>minimal.xml</include>
+
+  <enums>
+    <!-- CUSTOM_MODE -->
+    <enum name="ASV_RFSA_CUSTOM_MODE">
+      <description>A mapping of RFSA modes for custom_mode field of heartbeat.</description>
+      <entry value="0" name="ASV_RFSA_CUSTOM_MODE_IDLE"/>
+      <entry value="1" name="ASV_RFSA_CUSTOM_MODE_MEASURE"/>
+    </enum>
+    
+    <!-- Asv specific MAV_TYPE identity -->
+    <enum name="MAV_TYPE">
+      <entry value="253" name="MAV_TYPE_ASV_RFSA">
+        <description>Used to identify RF spectrum analyzer payload in HEARTBEAT packet.</description>
+      </entry>
+    </enum>
+    
+    <!-- Asv Gbs specific MAV_CMD_* commands -->
+    <enum name="MAV_CMD">
+      <entry value="13300" name="MAV_CMD_ASV_RFSA_ON">
+        <description>Enable RF analyzer. Change mode to ASV_RFSA_CUSTOM_MODE_MEASURE</description>
+        <param index="1">Empty.</param>
+        <param index="2">Empty.</param>
+        <param index="3">Empty.</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
+      <entry value="13301" name="MAV_CMD_ASV_RFSA_OFF">
+        <description>Disable analyzer. Change mode to ASV_RFSA_CUSTOM_MODE_IDLE</description>
+        <param index="1">Empty.</param>
+        <param index="2">Empty.</param>
+        <param index="3">Empty.</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
+    </enum>
+
+    <enum name="ASV_RFSA_REQUEST_ACK">
+      <description>ACK / NACK / ERROR values as a result of ASV_RFSA_*_REQUEST commands.</description>
+      <entry name="ASV_RFSA_REQUEST_ACK_OK">
+        <description>Request is ok.</description>
+      </entry>
+      <entry name="ASV_RFSA_REQUEST_ACK_IN_PROGRESS">
+        <description>Command already in progress.</description>
+      </entry>
+      <entry name="ASV_RFSA_REQUEST_ACK_FAIL">
+        <description>Command error.</description>
+      </entry>
+      <entry name="ASV_RFSA_REQUEST_ACK_NOT_SUPPORTED">
+        <description>Not supported command.</description>
+      </entry>
+    </enum>
+    <enum name="ASV_RFSA_SIGNAL_FORMAT">
+      <description>SDR signal transmition data type</description>
+      <entry name="ASV_SDR_SIGNAL_FORMAT_RANGE_FLOAT_8BIT">
+        <description>Write a value as a fraction between a given minimum and maximum. Uses 8 bits so we have '256' steps between min and max.</description>
+      </entry>
+      <entry name="ASV_SDR_SIGNAL_FORMAT_RANGE_FLOAT_16BIT">
+        <description>Write a value as a fraction between a given minimum and maximum. Uses 16 bits so we have '65535' steps between min and max.</description>
+      </entry>
+      <entry name="ASV_SDR_SIGNAL_FORMAT_FLOAT">
+        <description>Write a value as a float. Uses 32 bits.</description>
+      </entry>
+    </enum>
+  </enums>
+  <messages>
+    <message id="13300" name="ASV_RFSA_SIGNAL_REQUEST">
+        <description>Request available signals for visualization.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+        <field type="uint8_t" name="target_system">System ID</field>
+        <field type="uint8_t" name="target_component">Component ID</field>
+        <field type="uint16_t" name="request_id">Specifies a unique number for this request. This allows the response packet to be identified.</field>
+        <field type="uint16_t" name="skip">Specifies the start index of the records to be sent in the response.</field>
+        <field type="uint16_t" name="count">Specifies the number of records to be sent in the response after the skip index.</field>
+    </message>
+    <message id="13301" name="ASV_RFSA_SIGNAL_RESPONSE">
+      <description>Request available signals for visualization.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <field type="uint8_t" name="result" enum="ASV_RFSA_REQUEST_ACK">Result code.</field>
+      <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
+      <field type="uint16_t" name="items_count">Number of items ASV_RFSA_SIGNAL_INFO for transmition after this request with success result code (depended from request).</field>
+    </message>
+    <message id="13302" name="ASV_RFSA_SIGNAL_INFO">
+      <description>Response available signals for visualization with params.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <field type="uint16_t" name="signal_id">Signal id.</field>
+      <field type="char[16]" name="signal_name">Signal name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 8+1 bytes storage if the ID is stored as string</field>
+      <field type="char[16]" name="axes_x_name">Axis X name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 8+1 bytes storage if the ID is stored as string</field>
+      <field type="float" name="axes_x_min">Minimum value of Axis X.</field>
+      <field type="float" name="axes_x_max">Maximum value of Axis X.</field>
+      <field type="uint16_t" name="axes_x_count">Total measure points for X axes (1 measure for simple plot signal, more for heatmap signal).</field>
+      <field type="char[16]" name="axes_y_name">Axis Y name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 8+1 bytes storage if the ID is stored as string</field>
+      <field type="float" name="axes_y_min">Minimum value of Axis Y.</field>
+      <field type="float" name="axes_y_max">Maximum value of Axis Y.</field>
+      <field type="uint16_t" name="axes_y_count">Total measure count for Y.</field>
+      <field type="uint8_t" name="format" enum="ASV_RFSA_SIGNAL_FORMAT">Format of one measure.</field>
+    </message>
+    <message id="13303" name="ASV_RFSA_SIGNAL_DATA">
+      <description>Raw signal data for visualization.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <field type="uint16_t" name="signal_id">Signal id.</field>
+      <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time) for current set of measures.</field>
+      <field type="uint8_t" name="pkt_in_frame">Number of packets for one frame.</field>
+      <field type="uint8_t" name="pkt_seq">Packet sequence number (starting with 0 on every encoded frame).</field>
+      <field type="uint8_t" name="data_size">Size of data array.</field>
+      <field type="uint8_t[220]" name="data">Signal data.</field>
+    </message>
+
+
+  </messages>
+</mavlink>

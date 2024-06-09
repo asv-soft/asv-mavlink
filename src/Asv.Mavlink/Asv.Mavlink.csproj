@@ -102,7 +102,6 @@
     <Folder Include="Microservices\Offboard\Server\" />
     <Folder Include="Microservices\Position\Server\" />
     <Folder Include="Microservices\Telemetry\Server\" />
-    <Folder Include="Protocol\Messages\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\img\asv-mavlink-128.png">

@@ -18,7 +18,7 @@ public static class AsvSdrHelper
 
     public const int RecordTagNameMaxLength = 16;
     private const string RecordTagNameRegexString = "^[A-Za-z][A-Za-z0-9_\\- +]{2,16}$";
-    private static readonly Regex RecordTagNameRegex = new(RecordNameRegexString, RegexOptions.Compiled);
+    private static readonly Regex RecordTagNameRegex = new(RecordTagNameRegexString, RegexOptions.Compiled);
 
     
     public const int CalibrationTableNameMaxLength = 28;

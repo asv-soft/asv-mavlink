@@ -20,7 +20,7 @@
       <entry value="1" name="ASV_RADIO_CUSTOM_MODE_ONAIR"/>
     </enum>
     
-    <!-- Asv Gbs specific MAV_TYPE identity -->
+    <!-- Asv specific MAV_TYPE identity -->
     <enum name="MAV_TYPE">
       <entry value="252" name="MAV_TYPE_ASV_RADIO">
         <description>Used to identify radio payload in HEARTBEAT packet.</description>
