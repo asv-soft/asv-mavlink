@@ -7,9 +7,11 @@ using Asv.IO;
 
 namespace Asv.Mavlink;
 
+public delegate Task<StreamOptions> OnStreamOptionsDelegate(StreamOptions options, CancellationToken cancel = default);
 public interface IRfsaServer
 {
     IReadOnlyDictionary<ushort, SignalInfo> Signals { get; }
     Task Send(DateTime time, ReadOnlyMemory<float> data, SignalInfo info, CancellationToken cancel = default);
+    OnStreamOptionsDelegate OnStreamOptions { get; set; }
 }
 

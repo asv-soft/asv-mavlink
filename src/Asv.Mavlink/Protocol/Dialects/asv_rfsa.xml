@@ -75,6 +75,21 @@
         <description>Write a value as a float. Uses 32 bits.</description>
       </entry>
     </enum>
+    <enum name="ASV_RFSA_STREAM_ARG">
+      <description></description>
+      <entry name="ASV_RFSA_STREAM_ARG_DISABLE">
+        <description>Disable stream.</description>
+      </entry>
+      <entry name="ASV_RFSA_STREAM_ARG_ONCE">
+        <description>Update once.</description>
+      </entry>
+      <entry name="ASV_RFSA_STREAM_ARG_ON_CHANGED">
+        <description>Update only on changed.</description>
+      </entry>
+      <entry name="ASV_RFSA_STREAM_ARG_PERIODIC">
+        <description>Periodic update.</description>
+      </entry>
+    </enum>
   </enums>
   <messages>
     <message id="13300" name="ASV_RFSA_SIGNAL_REQUEST">
@@ -105,12 +120,29 @@
       <field type="uint16_t" name="axes_y_count">Total measure count for Y.</field>
       <field type="uint8_t" name="format" enum="ASV_RFSA_SIGNAL_FORMAT">Format of one measure.</field>
     </message>
-    <message id="13303" name="ASV_RFSA_SIGNAL_DATA">
+
+    <message id="13303" name="ASV_RFSA_STREAM_REQUEST">
+      <description>Request for signal stream.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <field type="uint8_t" name="target_system">System ID</field>
+      <field type="uint8_t" name="target_component">Component ID</field>
+      <field type="uint16_t" name="signal_id">The ID of the requested signal</field>
+      <field type="float" name="stream_rate" units="Hz">The requested message rate</field>
+      <field type="uint8_t" name="event" enum="ASV_RFSA_STREAM_ARG">Additional argument for stream request.</field>
+    </message>
+    <message id="13304" name="ASV_RFSA_STREAM_RESPONSE">
+      <description>Response for ASV_RFSA_STREAM_REQUEST.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+      <field type="uint8_t" name="result" enum="ASV_RFSA_REQUEST_ACK">Result code.</field>
+      <field type="uint16_t" name="signal_id">The ID of the requested signal</field>
+      <field type="float" name="stream_rate" units="Hz">The requested message rate.</field>
+      <field type="uint8_t" name="event" enum="ASV_RFSA_STREAM_ARG">Additional argument for stream request.</field>
+    </message>
+    
+    <message id="13310" name="ASV_RFSA_SIGNAL_DATA">
       <description>Raw signal data for visualization.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint16_t" name="signal_id">Signal id.</field>
       <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time) for current set of measures.</field>
-      <field type="uint8_t" name="pkt_in_frame">Number of packets for one frame.</field>
-      <field type="uint8_t" name="pkt_seq">Packet sequence number (starting with 0 on every encoded frame).</field>
+      <field type="uint16_t" name="pkt_in_frame">Number of packets for one frame.</field>
+      <field type="uint16_t" name="pkt_seq">Packet sequence number (starting with 0 on every encoded frame).</field>
       <field type="uint8_t" name="data_size">Size of data array.</field>
       <field type="uint8_t[220]" name="data">Signal data.</field>
     </message>

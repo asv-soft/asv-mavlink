@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvRfsa;
+using NLog;
 
 namespace Asv.Mavlink;
 
@@ -21,23 +22,57 @@ public class RfsaServer : MavlinkMicroserviceServer, IRfsaServer
 {
     private readonly RfsaServerConfig _config;
     private readonly ImmutableDictionary<ushort,SignalInfo> _signal;
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public RfsaServer(RfsaServerConfig config, IEnumerable<SignalInfo> signals, IMavlinkV2Connection connection, MavlinkIdentity identity, IPacketSequenceCalculator seq, IScheduler rxScheduler) : base("RFSA", connection, identity, seq, rxScheduler)
+    public RfsaServer(RfsaServerConfig config, IEnumerable<SignalInfo> signals, IMavlinkV2Connection connection, MavlinkIdentity identity, IPacketSequenceCalculator seq, IScheduler rxScheduler) 
+        : base("RFSA", connection, identity, seq, rxScheduler)
     {
         _config = config;
         _signal = signals.ToImmutableDictionary(x=>x.Id, x=>x);
         InternalFilter<AsvRfsaSignalRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
             .Subscribe(OnRequestSignalInfo)
             .DisposeItWith(Disposable);
+        InternalFilter<AsvRfsaStreamRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
+            .Subscribe(OnRequestSignalInfo)
+            .DisposeItWith(Disposable);
     }
 
+    private async void OnRequestSignalInfo(AsvRfsaStreamRequestPacket request)
+    {
+        try
+        {
+            if (OnStreamOptions == null)
+            {
+                await InternalSend<AsvRfsaStreamResponsePacket>(x => { x.Payload.Result = AsvRfsaRequestAck.AsvRfsaRequestAckNotSupported; }).ConfigureAwait(false);
+                return;
+            }
+            var result = await OnStreamOptions.Invoke(new StreamOptions(request), CancellationToken.None).ConfigureAwait(false);
+            await InternalSend<AsvRfsaStreamResponsePacket>(x =>
+            {
+                x.Payload.Result = AsvRfsaRequestAck.AsvRfsaRequestAckOk;
+                x.Payload.StreamRate = result.Rate;
+                x.Payload.Event = result.EventType;
+                x.Payload.SignalId = result.SignalId;
+                
+            }).ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            Logger.Error(e, "Error on request stream options");
+            await InternalSend<AsvRfsaStreamResponsePacket>(x =>
+            {
+                x.Payload.Result = AsvRfsaRequestAck.AsvRfsaRequestAckFail;
+            }).ConfigureAwait(false);    
+        }
+    }
+    
     private async void OnRequestSignalInfo(AsvRfsaSignalRequestPacket request)
     {
         var requestId = request.Payload.RequestId;
         await InternalSend<AsvRfsaSignalResponsePacket>(x =>
         {
             x.Payload.RequestId = requestId;
-            x.Payload.ItemsCount = (ushort)Math.Max(0, request.Payload.Count - request.Payload.Skip);
+            x.Payload.ItemsCount = (ushort)Math.Max(0, _signal.Count - request.Payload.Skip);
             x.Payload.Result = AsvRfsaRequestAck.AsvRfsaRequestAckOk;
         }).ConfigureAwait(false);
         var signals = _signal.Skip(request.Payload.Skip).Take(request.Payload.Count);
@@ -66,7 +101,7 @@ public class RfsaServer : MavlinkMicroserviceServer, IRfsaServer
         var size = AsvRfsaSignalDataPayload.DataMaxItemsCount / info.OneMeasureByteSize;
         var timeValue = MavlinkTypesHelper.ToUnixTimeUs(time);
         var packetCount = fullPackets + (lastPacketSize > 0 ? 1 : 0);
-        var seq = 0;
+        var seq = -1; // first packet increment will be 0
         for (var i = 0; i < fullPackets; i++)
         {
             var copyI = i; // copy to local variable !!!
@@ -80,9 +115,9 @@ public class RfsaServer : MavlinkMicroserviceServer, IRfsaServer
                 }
                 pkt.Payload.TimeUnixUsec = timeValue;
                 pkt.Payload.SignalId = info.Id;
-                pkt.Payload.PktSeq = (byte)Interlocked.Increment(ref seq);
+                pkt.Payload.PktSeq = (ushort)Interlocked.Increment(ref seq);
                 pkt.Payload.DataSize = (byte)(size * info.OneMeasureByteSize);
-                pkt.Payload.PktInFrame = (byte)packetCount;
+                pkt.Payload.PktInFrame = (ushort)packetCount;
             }, cancel).ConfigureAwait(false);
             if (_config.SendSignalDelayMs > 0)
                 await Task.Delay(_config.SendSignalDelayMs, cancel).ConfigureAwait(false);
@@ -100,9 +135,9 @@ public class RfsaServer : MavlinkMicroserviceServer, IRfsaServer
                 }
                 pkt.Payload.TimeUnixUsec = timeValue;
                 pkt.Payload.SignalId = info.Id;
-                pkt.Payload.PktSeq = (byte)Interlocked.Increment(ref seq);
+                pkt.Payload.PktSeq = (ushort)Interlocked.Increment(ref seq);
                 pkt.Payload.DataSize = (byte)(lastSize * info.OneMeasureByteSize);
-                pkt.Payload.PktInFrame = (byte)packetCount;
+                pkt.Payload.PktInFrame = (ushort)packetCount;
             }, cancel).ConfigureAwait(false);
             if (_config.SendSignalDelayMs > 0)
                 await Task.Delay(_config.SendSignalDelayMs, cancel).ConfigureAwait(false);
@@ -110,5 +145,5 @@ public class RfsaServer : MavlinkMicroserviceServer, IRfsaServer
         
     }
 
-    
+    public OnStreamOptionsDelegate OnStreamOptions { get; set; }
 }

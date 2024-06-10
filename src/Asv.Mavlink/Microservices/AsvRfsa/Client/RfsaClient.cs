@@ -26,22 +26,27 @@ public class RfsaClient :MavlinkMicroserviceClient, IRfsaClient
     private volatile uint _seq;
     private readonly ISourceCache<SignalInfo, ushort> _signals;
     private readonly TimeSpan _maxTimeToWaitForResponseForList;
-    private ushort _lastSignalId;
+    private ushort _lastSignalId = ushort.MaxValue;
     private readonly object _sync = new();
     private ulong _currentFrameId;
-    private readonly SortedList<byte,AsvRfsaSignalDataPayload> _frameBuffer = new();
+    private readonly SortedList<ushort,AsvRfsaSignalDataPayload> _frameBuffer = new();
 
-    public RfsaClient(IConfiguration cfg, IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq)
+    public RfsaClient(RfsaClientConfig config, IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq)
         : base("RFSA", connection, identity, seq)
     {
         _signals = new SourceCache<SignalInfo, ushort>(x=>x.Id).DisposeItWith(Disposable);
-        var config = cfg.Get<RfsaClientConfig>();
         _maxTimeToWaitForResponseForList = TimeSpan.FromMilliseconds(config.MaxTimeToWaitForResponseForListMs);
         OnSignalInfo
+            .Do(x =>
+            {
+                
+                
+            })
             .Subscribe(_signals.AddOrUpdate)
             .DisposeItWith(Disposable);
         Signals = _signals.Connect().RefCount();
         InternalFilter<AsvRfsaSignalDataPacket>().Subscribe(InternalOnDataRecv).DisposeItWith(Disposable);
+        OnStreamOptions = InternalFilter<AsvRfsaStreamResponsePacket>().Select(x => new StreamOptions(x));
     }
     public IObservable<SignalInfo> OnSignalInfo =>
         InternalFilter<AsvRfsaSignalInfoPacket>().Select(x => new SignalInfo(x.Payload));
@@ -69,12 +74,12 @@ public class RfsaClient :MavlinkMicroserviceClient, IRfsaClient
 
         while (DateTime.Now - lastUpdate < _maxTimeToWaitForResponseForList && _signals.Count < requestAck.ItemsCount)
         {
-            await Task.Delay(_maxTimeToWaitForResponseForList, cancel).ConfigureAwait(false);
+            await Task.Delay(_maxTimeToWaitForResponseForList/10, cancel).ConfigureAwait(false);
             progress?.Report((double)requestAck.ItemsCount/_signals.Count);
         }
         return _signals.Count == requestAck.ItemsCount;
-        
     }
+    
 
     private void InternalOnDataRecv(AsvRfsaSignalDataPacket data)
     {
@@ -96,7 +101,7 @@ public class RfsaClient :MavlinkMicroserviceClient, IRfsaClient
                 var frameData = ArrayPool<float>.Shared.Rent(info.OneFrameMeasureSize);
                 try
                 {
-                    var frameSpan = frameData.AsSpan(info.OneFrameMeasureSize);
+                    var frameSpan = frameData.AsSpan(0,info.OneFrameMeasureSize);
                     var readSpan = new ReadOnlySpan<byte>(data.Payload.Data);
                     for (var i = 0; i < info.OneFrameMeasureSize; i++)
                     {
@@ -134,8 +139,8 @@ public class RfsaClient :MavlinkMicroserviceClient, IRfsaClient
                         index += payload.Value.DataSize;
                     }
                     _frameBuffer.Clear();
-                    var frameSpan = frameFloatData.AsSpan(info.OneFrameMeasureSize);
-                    var readSpan = new ReadOnlySpan<byte>(data.Payload.Data);
+                    var frameSpan = frameFloatData.AsSpan(0,info.OneFrameMeasureSize);
+                    var readSpan = new ReadOnlySpan<byte>(frameData,0,frameSize);
                     for (var i = 0; i < info.OneFrameMeasureSize; i++)
                     {
                         frameSpan[i] = RfsaHelper.ReadSignalMeasure(ref readSpan, info);    
@@ -153,8 +158,19 @@ public class RfsaClient :MavlinkMicroserviceClient, IRfsaClient
                 }
             }
         }
-
     }
     public IObservable<IChangeSet<SignalInfo, ushort>> Signals { get; }
-    public OnDataReceived OnDataReceived { get; set; }
+    public OnDataReceivedDelegate OnDataReceived { get; set; }
+    public IObservable<StreamOptions> OnStreamOptions { get; }
+    public Task<StreamOptions> RequestStream(StreamOptions options, CancellationToken cancel = default)
+    {
+        return InternalCall<StreamOptions,AsvRfsaStreamRequestPacket,AsvRfsaStreamResponsePacket>(x=>
+        {
+            x.Payload.TargetSystem = Identity.TargetSystemId;
+            x.Payload.TargetComponent = Identity.TargetComponentId;
+            x.Payload.SignalId = options.SignalId;
+            x.Payload.Event = options.EventType;
+            x.Payload.StreamRate = options.Rate;
+        }, x=>x.Payload.SignalId == options.SignalId, x=>new StreamOptions(x), cancel: cancel);
+    }
 }

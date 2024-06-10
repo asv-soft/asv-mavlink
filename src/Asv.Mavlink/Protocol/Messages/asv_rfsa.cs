@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.7.1+4106fec092ad8e5c656389a6225b57600d851309
+// This code was generate by tool Asv.Mavlink.Shell version 3.7.1+c33f656317a21f32a7734da0bfc10db26a371663
 
 using System;
 using System.Text;
@@ -39,6 +39,8 @@ namespace Asv.Mavlink.V2.AsvRfsa
             src.Register(()=>new AsvRfsaSignalRequestPacket());
             src.Register(()=>new AsvRfsaSignalResponsePacket());
             src.Register(()=>new AsvRfsaSignalInfoPacket());
+            src.Register(()=>new AsvRfsaStreamRequestPacket());
+            src.Register(()=>new AsvRfsaStreamResponsePacket());
             src.Register(()=>new AsvRfsaSignalDataPacket());
         }
     }
@@ -153,6 +155,34 @@ namespace Asv.Mavlink.V2.AsvRfsa
         /// ASV_SDR_SIGNAL_FORMAT_FLOAT
         /// </summary>
         AsvSdrSignalFormatFloat = 2,
+    }
+
+    /// <summary>
+    /// 
+    ///  ASV_RFSA_STREAM_ARG
+    /// </summary>
+    public enum AsvRfsaStreamArg:uint
+    {
+        /// <summary>
+        /// Disable stream.
+        /// ASV_RFSA_STREAM_ARG_DISABLE
+        /// </summary>
+        AsvRfsaStreamArgDisable = 0,
+        /// <summary>
+        /// Update once.
+        /// ASV_RFSA_STREAM_ARG_ONCE
+        /// </summary>
+        AsvRfsaStreamArgOnce = 1,
+        /// <summary>
+        /// Update only on changed.
+        /// ASV_RFSA_STREAM_ARG_ON_CHANGED
+        /// </summary>
+        AsvRfsaStreamArgOnChanged = 2,
+        /// <summary>
+        /// Periodic update.
+        /// ASV_RFSA_STREAM_ARG_PERIODIC
+        /// </summary>
+        AsvRfsaStreamArgPeriodic = 3,
     }
 
 
@@ -516,14 +546,178 @@ namespace Asv.Mavlink.V2.AsvRfsa
         public AsvRfsaSignalFormat Format { get; set; }
     }
     /// <summary>
+    /// Request for signal stream.[!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_RFSA_STREAM_REQUEST
+    /// </summary>
+    public class AsvRfsaStreamRequestPacket: PacketV2<AsvRfsaStreamRequestPayload>
+    {
+	    public const int PacketMessageId = 13303;
+        public override int MessageId => PacketMessageId;
+        public override byte GetCrcEtra() => 11;
+        public override bool WrapToV2Extension => true;
+
+        public override AsvRfsaStreamRequestPayload Payload { get; } = new AsvRfsaStreamRequestPayload();
+
+        public override string Name => "ASV_RFSA_STREAM_REQUEST";
+    }
+
+    /// <summary>
+    ///  ASV_RFSA_STREAM_REQUEST
+    /// </summary>
+    public class AsvRfsaStreamRequestPayload : IPayload
+    {
+        public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
+        public int GetByteSize()
+        {
+            var sum = 0;
+            sum+=4; //StreamRate
+            sum+=2; //SignalId
+            sum+=1; //TargetSystem
+            sum+=1; //TargetComponent
+            sum+= 1; // Event
+            return (byte)sum;
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            StreamRate = BinSerialize.ReadFloat(ref buffer);
+            SignalId = BinSerialize.ReadUShort(ref buffer);
+            TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
+            TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
+            Event = (AsvRfsaStreamArg)BinSerialize.ReadByte(ref buffer);
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteFloat(ref buffer,StreamRate);
+            BinSerialize.WriteUShort(ref buffer,SignalId);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetSystem);
+            BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
+            BinSerialize.WriteByte(ref buffer,(byte)Event);
+            /* PayloadByteSize = 9 */;
+        }
+        
+        
+
+
+
+        /// <summary>
+        /// The requested message rate
+        /// OriginName: stream_rate, Units: Hz, IsExtended: false
+        /// </summary>
+        public float StreamRate { get; set; }
+        /// <summary>
+        /// The ID of the requested signal
+        /// OriginName: signal_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort SignalId { get; set; }
+        /// <summary>
+        /// System ID
+        /// OriginName: target_system, Units: , IsExtended: false
+        /// </summary>
+        public byte TargetSystem { get; set; }
+        /// <summary>
+        /// Component ID
+        /// OriginName: target_component, Units: , IsExtended: false
+        /// </summary>
+        public byte TargetComponent { get; set; }
+        /// <summary>
+        /// Additional argument for stream request.
+        /// OriginName: event, Units: , IsExtended: false
+        /// </summary>
+        public AsvRfsaStreamArg Event { get; set; }
+    }
+    /// <summary>
+    /// Response for ASV_RFSA_STREAM_REQUEST.[!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_RFSA_STREAM_RESPONSE
+    /// </summary>
+    public class AsvRfsaStreamResponsePacket: PacketV2<AsvRfsaStreamResponsePayload>
+    {
+	    public const int PacketMessageId = 13304;
+        public override int MessageId => PacketMessageId;
+        public override byte GetCrcEtra() => 205;
+        public override bool WrapToV2Extension => true;
+
+        public override AsvRfsaStreamResponsePayload Payload { get; } = new AsvRfsaStreamResponsePayload();
+
+        public override string Name => "ASV_RFSA_STREAM_RESPONSE";
+    }
+
+    /// <summary>
+    ///  ASV_RFSA_STREAM_RESPONSE
+    /// </summary>
+    public class AsvRfsaStreamResponsePayload : IPayload
+    {
+        public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        public int GetByteSize()
+        {
+            var sum = 0;
+            sum+=4; //StreamRate
+            sum+=2; //SignalId
+            sum+= 1; // Result
+            sum+= 1; // Event
+            return (byte)sum;
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            StreamRate = BinSerialize.ReadFloat(ref buffer);
+            SignalId = BinSerialize.ReadUShort(ref buffer);
+            Result = (AsvRfsaRequestAck)BinSerialize.ReadByte(ref buffer);
+            Event = (AsvRfsaStreamArg)BinSerialize.ReadByte(ref buffer);
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteFloat(ref buffer,StreamRate);
+            BinSerialize.WriteUShort(ref buffer,SignalId);
+            BinSerialize.WriteByte(ref buffer,(byte)Result);
+            BinSerialize.WriteByte(ref buffer,(byte)Event);
+            /* PayloadByteSize = 8 */;
+        }
+        
+        
+
+
+
+        /// <summary>
+        /// The requested message rate.
+        /// OriginName: stream_rate, Units: Hz, IsExtended: false
+        /// </summary>
+        public float StreamRate { get; set; }
+        /// <summary>
+        /// The ID of the requested signal
+        /// OriginName: signal_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort SignalId { get; set; }
+        /// <summary>
+        /// Result code.
+        /// OriginName: result, Units: , IsExtended: false
+        /// </summary>
+        public AsvRfsaRequestAck Result { get; set; }
+        /// <summary>
+        /// Additional argument for stream request.
+        /// OriginName: event, Units: , IsExtended: false
+        /// </summary>
+        public AsvRfsaStreamArg Event { get; set; }
+    }
+    /// <summary>
     /// Raw signal data for visualization.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RFSA_SIGNAL_DATA
     /// </summary>
     public class AsvRfsaSignalDataPacket: PacketV2<AsvRfsaSignalDataPayload>
     {
-	    public const int PacketMessageId = 13303;
+	    public const int PacketMessageId = 13310;
         public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 211;
+        public override byte GetCrcEtra() => 191;
         public override bool WrapToV2Extension => true;
 
         public override AsvRfsaSignalDataPayload Payload { get; } = new AsvRfsaSignalDataPayload();
@@ -536,15 +730,15 @@ namespace Asv.Mavlink.V2.AsvRfsa
     /// </summary>
     public class AsvRfsaSignalDataPayload : IPayload
     {
-        public byte GetMaxByteSize() => 233; // Sum of byte sized of all fields (include extended)
-        public byte GetMinByteSize() => 233; // of byte sized of fields (exclude extended)
+        public byte GetMaxByteSize() => 235; // Sum of byte sized of all fields (include extended)
+        public byte GetMinByteSize() => 235; // of byte sized of fields (exclude extended)
         public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //TimeUnixUsec
             sum+=2; //SignalId
-            sum+=1; //PktInFrame
-            sum+=1; //PktSeq
+            sum+=2; //PktInFrame
+            sum+=2; //PktSeq
             sum+=1; //DataSize
             sum+=Data.Length; //Data
             return (byte)sum;
@@ -558,10 +752,10 @@ namespace Asv.Mavlink.V2.AsvRfsa
             var payloadSize = buffer.Length;
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
             SignalId = BinSerialize.ReadUShort(ref buffer);
-            PktInFrame = (byte)BinSerialize.ReadByte(ref buffer);
-            PktSeq = (byte)BinSerialize.ReadByte(ref buffer);
+            PktInFrame = BinSerialize.ReadUShort(ref buffer);
+            PktSeq = BinSerialize.ReadUShort(ref buffer);
             DataSize = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/220 - Math.Max(0,((/*PayloadByteSize*/233 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/220 - Math.Max(0,((/*PayloadByteSize*/235 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -574,14 +768,14 @@ namespace Asv.Mavlink.V2.AsvRfsa
         {
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
             BinSerialize.WriteUShort(ref buffer,SignalId);
-            BinSerialize.WriteByte(ref buffer,(byte)PktInFrame);
-            BinSerialize.WriteByte(ref buffer,(byte)PktSeq);
+            BinSerialize.WriteUShort(ref buffer,PktInFrame);
+            BinSerialize.WriteUShort(ref buffer,PktSeq);
             BinSerialize.WriteByte(ref buffer,(byte)DataSize);
             for(var i=0;i<Data.Length;i++)
             {
                 BinSerialize.WriteByte(ref buffer,(byte)Data[i]);
             }
-            /* PayloadByteSize = 233 */;
+            /* PayloadByteSize = 235 */;
         }
         
         
@@ -602,12 +796,12 @@ namespace Asv.Mavlink.V2.AsvRfsa
         /// Number of packets for one frame.
         /// OriginName: pkt_in_frame, Units: , IsExtended: false
         /// </summary>
-        public byte PktInFrame { get; set; }
+        public ushort PktInFrame { get; set; }
         /// <summary>
         /// Packet sequence number (starting with 0 on every encoded frame).
         /// OriginName: pkt_seq, Units: , IsExtended: false
         /// </summary>
-        public byte PktSeq { get; set; }
+        public ushort PktSeq { get; set; }
         /// <summary>
         /// Size of data array.
         /// OriginName: data_size, Units: , IsExtended: false

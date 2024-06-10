@@ -42,7 +42,7 @@ public class SignalInfo
         Format = format;
         
         OneMeasureByteSize = RfsaHelper.GetByteSizeOneMeasure(Format);
-        OneFrameByteSize = (byte)(AxisXSize * AxisYSize * OneMeasureByteSize);
+        OneFrameByteSize = (ushort)(AxisXSize * AxisYSize * OneMeasureByteSize);
         OneFrameMeasureSize = AxisYSize * AxisXSize;
     }
 
