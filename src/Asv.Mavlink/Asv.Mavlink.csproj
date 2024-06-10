@@ -57,8 +57,6 @@
     <PackageReference Include="Asv.Cfg" Version="$(AsvCommonVersion)" />
     <PackageReference Include="Asv.Common" Version="$(AsvCommonVersion)" />
     <PackageReference Include="Asv.IO" Version="$(AsvCommonVersion)" />
-    <PackageReference Include="NLog" Version="$(NLogVersion)" />
-    <PackageReference Include="System.Reactive" Version="$(ReactiveVersion)" />
     <PackageReference Include="DynamicData" Version="$(DynamicDataVersion)" />
     <PackageReference Include="Microsoft.DotNet.ApiCompat.Task" Version="$(ApiCompatVersion)" >
       <!--using api compatibility purely as a development harness-->

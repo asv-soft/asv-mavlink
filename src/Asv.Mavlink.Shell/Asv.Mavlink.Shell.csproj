@@ -27,9 +27,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Asv.Cfg" Version="$(AsvCommonVersion)" />
-    <PackageReference Include="NLog" Version="$(NLogVersion)" />
-    <PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJsonVersion)" />
-    <PackageReference Include="System.Reactive.Linq" Version="$(ReactiveVersion)" />
     <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
     <PackageReference Include="DotLiquid" Version="2.2.595" />
     <PackageReference Include="Geodesy" Version="4.1.0" />

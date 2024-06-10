@@ -42,6 +42,12 @@ namespace Asv.Mavlink
             Interlocked.Increment(ref _txPackets);
             return Port.Send(data, count, cancel);
         }
+        internal Task<bool> InternalSendSerializedPacket(ReadOnlyMemory<byte> data, CancellationToken cancel)
+        {
+            // we have to manually increment the packet counter because we serialize the packet once into an array of bytes and send
+            Interlocked.Increment(ref _txPackets);
+            return Port.Send(data, cancel);
+        }
 
         public MavlinkPortInfo GetInfo()
         {
@@ -275,7 +281,7 @@ namespace Asv.Mavlink
                 _onSendPacketSubject.OnNext(packet);
                 // we need to send the packet to all other ports except the receiving one
                 var portToSend = _ports.Where(_ => _.Port.IsEnabled.Value && _.Port.State.Value == PortState.Connected && packet.Tag != _);
-                Task.WaitAll(portToSend.Select(_ => (Task)_.InternalSendSerializedPacket(data, packetSize, DisposeCancel)).ToArray());
+                Task.WaitAll(portToSend.Select(_ => (Task)_.InternalSendSerializedPacket(new ReadOnlyMemory<byte>(data,0,size), DisposeCancel)).ToArray());
             }
             finally
             {
@@ -393,6 +399,25 @@ namespace Asv.Mavlink
                 _portCollectionSync.EnterReadLock();
                 tasks =  _ports.Where(_ => _.Port.IsEnabled.Value && _.Port.State.Value == PortState.Connected)
                     .Select(_ => _.InternalSendSerializedPacket(data, count, cancel)).ToArray();
+            }
+            finally
+            {
+                _portCollectionSync.ExitReadLock();
+            }
+            var result = await Task.WhenAll(tasks).ConfigureAwait(false);
+            return result.All(_ => _);
+        }
+
+        public async Task<bool> Send(ReadOnlyMemory<byte> data, CancellationToken cancel)
+        {
+            Interlocked.Add(ref _txBytes, data.Length);
+            Interlocked.Increment(ref _txPackets);
+            Task<bool>[] tasks;
+            try
+            {
+                _portCollectionSync.EnterReadLock();
+                tasks =  _ports.Where(_ => _.Port.IsEnabled.Value && _.Port.State.Value == PortState.Connected)
+                    .Select(_ => _.InternalSendSerializedPacket(data, cancel)).ToArray();
             }
             finally
             {

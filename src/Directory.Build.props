@@ -3,11 +3,8 @@
     <ProductVersion>3.7.1</ProductVersion>
     <ProductPrevVersion>3.7.0</ProductPrevVersion>
 
-    <AsvCommonVersion>2.0.0</AsvCommonVersion>
-    <ReactiveVersion>6.0.0</ReactiveVersion>
-    <NewtonsoftJsonVersion>13.0.3</NewtonsoftJsonVersion>
-    <NLogVersion>5.2.8</NLogVersion>
+    <AsvCommonVersion>2.0.1</AsvCommonVersion>
     <ApiCompatVersion>8.0.200</ApiCompatVersion>
-    <DynamicDataVersion>7.13.5</DynamicDataVersion>
+    <DynamicDataVersion>8.4.1</DynamicDataVersion>
   </PropertyGroup>
 </Project>

@@ -94,6 +94,16 @@ public class VirtualDataStream : DisposableOnceWithCancel, IDataStream
         }, cancel);
     }
 
+    public Task<bool> Send(ReadOnlyMemory<byte> data, CancellationToken cancel)
+    {
+        return Task.Run(() =>
+        {
+            Interlocked.Add(ref _txBytes, data.Length);
+            _txPipe.OnNext(data.ToArray());
+            return true;
+        }, cancel);
+    }
+
     public IObserver<byte[]> RxPipe => _rxPipe;
     public IObservable<byte[]> TxPipe => _txPipe;
 
