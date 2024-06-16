@@ -3,3 +3,4 @@
 "src\Asv.Mavlink.Shell\bin\Debug\net8.0\Asv.Mavlink.Shell.exe" gen -t=asv_audio.xml -i=src/Asv.Mavlink/Protocol/Dialects -o=src/Asv.Mavlink/Protocol/Messages -e=cs src/Asv.Mavlink.Shell/Resources/csharp.tpl
 "src\Asv.Mavlink.Shell\bin\Debug\net8.0\Asv.Mavlink.Shell.exe" gen -t=asv_radio.xml -i=src/Asv.Mavlink/Protocol/Dialects -o=src/Asv.Mavlink/Protocol/Messages -e=cs src/Asv.Mavlink.Shell/Resources/csharp.tpl
 "src\Asv.Mavlink.Shell\bin\Debug\net8.0\Asv.Mavlink.Shell.exe" gen -t=asv_rfsa.xml -i=src/Asv.Mavlink/Protocol/Dialects -o=src/Asv.Mavlink/Protocol/Messages -e=cs src/Asv.Mavlink.Shell/Resources/csharp.tpl
+"src\Asv.Mavlink.Shell\bin\Debug\net8.0\Asv.Mavlink.Shell.exe" gen -t=asv_chart.xml -i=src/Asv.Mavlink/Protocol/Dialects -o=src/Asv.Mavlink/Protocol/Messages -e=cs src/Asv.Mavlink.Shell/Resources/csharp.tpl

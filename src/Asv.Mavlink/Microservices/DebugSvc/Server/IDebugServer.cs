@@ -1,10 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Asv.Mavlink
 {
     /// <summary>
     /// Represents a debugging server interface.
     /// </summary>
+    [Obsolete("This interface is obsolete and will be removed in the future.")]
     public interface IDebugServer
     {
         /// <summary>

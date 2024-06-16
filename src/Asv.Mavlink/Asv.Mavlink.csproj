@@ -23,6 +23,7 @@
     <Configurations>Debug;Release</Configurations>
     <Platforms>AnyCPU</Platforms>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -92,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Devices\Gbs\" />
+    <Folder Include="Devices\Rfsa\Server\" />
     <Folder Include="Devices\Vehicles\Client\Px4\Plane\" />
     <Folder Include="Devices\Vehicles\Server\" />
     <Folder Include="Microservices\Commands\Client\Ex\" />

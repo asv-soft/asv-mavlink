@@ -7,6 +7,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Represents a debug client interface.
     /// </summary>
+    [Obsolete("This interface is obsolete and will be removed in the future.")]
     public interface IDebugClient:IDisposable
     {
         /// <summary>

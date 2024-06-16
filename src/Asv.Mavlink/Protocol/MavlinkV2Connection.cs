@@ -10,6 +10,7 @@ using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.AsvAudio;
+using Asv.Mavlink.V2.AsvChart;
 using Asv.Mavlink.V2.AsvGbs;
 using Asv.Mavlink.V2.AsvRadio;
 using Asv.Mavlink.V2.AsvRfsa;
@@ -64,6 +65,7 @@ namespace Asv.Mavlink
             decoder.RegisterAsvAudioDialect();
             decoder.RegisterAsvRadioDialect();
             decoder.RegisterAsvRfsaDialect();
+            decoder.RegisterAsvChartDialect();
         }
 
         #endregion

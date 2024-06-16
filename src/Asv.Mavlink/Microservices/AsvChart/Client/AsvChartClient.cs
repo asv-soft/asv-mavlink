@@ -1,65 +1,58 @@
 using System;
 using System.Buffers;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Cfg;
 using Asv.Common;
-using Asv.Mavlink.V2.AsvRfsa;
+using Asv.Mavlink.V2.AsvChart;
 using DynamicData;
 using NLog;
 
 namespace Asv.Mavlink;
 
-public class RfsaClientConfig
+public class AsvChartClientConfig
 {
-    public int MaxTimeToWaitForResponseForListMs { get; set; } = 5000;
-
+    public double MaxTimeToWaitForResponseForListMs { get; set; } = 5000;
 }
 
-public class RfsaClient :MavlinkMicroserviceClient, IRfsaClient
+public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     private volatile uint _seq;
-    private readonly ISourceCache<SignalInfo, ushort> _signals;
+    private readonly SourceCache<AsvChartInfo,ushort> _signals;
     private readonly TimeSpan _maxTimeToWaitForResponseForList;
-    private ushort _lastSignalId = ushort.MaxValue;
     private readonly object _sync = new();
     private ulong _currentFrameId;
-    private readonly SortedList<ushort,AsvRfsaSignalDataPayload> _frameBuffer = new();
+    private readonly SortedList<ushort,AsvChartDataPayload> _frameBuffer = new();
+    private ushort _lastCollectionHash;
+    private readonly RxValue<bool> _isSynced;
 
-    public RfsaClient(RfsaClientConfig config, IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq)
-        : base("RFSA", connection, identity, seq)
+    public AsvChartClient(AsvChartClientConfig config,IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq): base("CHART", connection, identity, seq)
     {
-        _signals = new SourceCache<SignalInfo, ushort>(x=>x.Id).DisposeItWith(Disposable);
+        _signals = new SourceCache<AsvChartInfo, ushort>(x=>x.Id).DisposeItWith(Disposable);
         _maxTimeToWaitForResponseForList = TimeSpan.FromMilliseconds(config.MaxTimeToWaitForResponseForListMs);
-        OnSignalInfo
-            .Do(x =>
-            {
-                
-                
-            })
+        OnChartInfo = InternalFilter<AsvChartInfoPacket>().Select(x => new AsvChartInfo(x.Payload));
+        OnChartInfo
             .Subscribe(_signals.AddOrUpdate)
             .DisposeItWith(Disposable);
-        Signals = _signals.Connect().RefCount();
-        InternalFilter<AsvRfsaSignalDataPacket>().Subscribe(InternalOnDataRecv).DisposeItWith(Disposable);
-        OnStreamOptions = InternalFilter<AsvRfsaStreamResponsePacket>().Select(x => new StreamOptions(x));
+        Charts = _signals.Connect().RefCount();
+        InternalFilter<AsvChartDataPacket>().Subscribe(InternalOnDataRecv).DisposeItWith(Disposable);
+        OnStreamOptions = InternalFilter<AsvChartDataResponsePacket>().Select(x => new AsvChartOptions(x));
+        OnUpdateEvent = InternalFilter<AsvChartInfoUpdatedEventPacket>().Select(x => x.Payload);
+        _isSynced = new RxValue<bool>(false).DisposeItWith(Disposable);
+        OnUpdateEvent.Select(x=>x.ChatListHash == _lastCollectionHash).Subscribe(_isSynced).DisposeItWith(Disposable);
     }
-    public IObservable<SignalInfo> OnSignalInfo =>
-        InternalFilter<AsvRfsaSignalInfoPacket>().Select(x => new SignalInfo(x.Payload));
-    
-    public async Task<bool> ReadAllSignalInfo(IProgress<double> progress = null, CancellationToken cancel = default)
+    public async Task<bool> ReadAllInfo(IProgress<double> progress = null, CancellationToken cancel = default)
     {
         var lastUpdate = DateTime.Now;
         _signals.Clear();
-        using var request = OnSignalInfo
+        using var request = OnChartInfo
             .Do(_=>lastUpdate = DateTime.Now)
             .Subscribe();
         var requestId =  (byte)(Interlocked.Increment(ref _seq) % 255);
-        var requestAck = await InternalCall<AsvRfsaSignalResponsePayload, AsvRfsaSignalRequestPacket, AsvRfsaSignalResponsePacket>(x =>
+        var requestAck = await InternalCall<AsvChartInfoResponsePayload, AsvChartInfoRequestPacket, AsvChartInfoResponsePacket>(x =>
         {
             x.Payload.TargetComponent = Identity.TargetComponentId;
             x.Payload.TargetSystem = Identity.TargetSystemId;
@@ -67,21 +60,45 @@ public class RfsaClient :MavlinkMicroserviceClient, IRfsaClient
             x.Payload.Skip = 0;
             x.Payload.Count = ushort.MaxValue;
         }, x=>x.Payload.RequestId == requestId, x=>x.Payload, cancel: cancel).ConfigureAwait(false);
-        if (requestAck.Result == AsvRfsaRequestAck.AsvRfsaRequestAckInProgress)
+        if (requestAck.Result == AsvChartRequestAck.AsvChartRequestAckInProgress)
             throw new Exception("Request already in progress");
-        if (requestAck.Result == AsvRfsaRequestAck.AsvRfsaRequestAckFail) 
+        if (requestAck.Result == AsvChartRequestAck.AsvChartRequestAckFail) 
             throw new Exception("Request fail");
-
+        
         while (DateTime.Now - lastUpdate < _maxTimeToWaitForResponseForList && _signals.Count < requestAck.ItemsCount)
         {
             await Task.Delay(_maxTimeToWaitForResponseForList/10, cancel).ConfigureAwait(false);
             progress?.Report((double)requestAck.ItemsCount/_signals.Count);
         }
-        return _signals.Count == requestAck.ItemsCount;
+        var result = _signals.Count == requestAck.ItemsCount;
+        _lastCollectionHash = requestAck.ChatListHash;
+        _isSynced.OnNext(result);
+        return result;
     }
-    
 
-    private void InternalOnDataRecv(AsvRfsaSignalDataPacket data)
+    public Task<AsvChartOptions> RequestStream(AsvChartOptions options, CancellationToken cancel = default)
+    {
+        var info = _signals.Lookup(options.ChartId);
+        if (info.HasValue == false) throw new Exception($"Chart with id {options.ChartId} not found");
+        return InternalCall<AsvChartOptions,AsvChartDataRequestPacket,AsvChartDataResponsePacket>(x=>
+        {
+            x.Payload.TargetSystem = Identity.TargetSystemId;
+            x.Payload.TargetComponent = Identity.TargetComponentId;
+            x.Payload.ChatId = options.ChartId;
+            x.Payload.DataTrigger = options.Trigger;
+            x.Payload.DataRate = options.Rate;
+            x.Payload.ChatInfoHash = info.Value.InfoHash;
+        }, x=>x.Payload.ChatId == options.ChartId, x=>new AsvChartOptions(x), cancel: cancel);
+    }
+
+    public IObservable<IChangeSet<AsvChartInfo, ushort>> Charts { get; }
+    public IObservable<AsvChartInfo> OnChartInfo { get; }
+    public OnDataReceivedDelegate OnDataReceived { get; set; }
+    public IObservable<AsvChartOptions> OnStreamOptions { get; }
+    public IObservable<AsvChartInfoUpdatedEventPayload> OnUpdateEvent { get; }
+    public IRxValue<bool> IsSynced => _isSynced;
+
+    private void InternalOnDataRecv(AsvChartDataPacket data)
     {
         if (data.Payload.PktInFrame == 0)
         {
@@ -89,8 +106,15 @@ public class RfsaClient :MavlinkMicroserviceClient, IRfsaClient
             return;
         }
         
-        var signalInfo = _signals.Lookup(data.Payload.SignalId);
+        var signalInfo = _signals.Lookup(data.Payload.ChatId);
         if (signalInfo.HasValue == false) return;
+        
+        if (signalInfo.Value.InfoHash != data.Payload.ChatInfoHash)
+        {
+            Logger.Warn($"Recv data for chart {data.Payload.ChatId} with different hash {data.Payload.ChatInfoHash} != {signalInfo.Value.InfoHash}");
+            return;
+        }
+        
         var info = signalInfo.Value;
         var dateTime = MavlinkTypesHelper.FromUnixTimeUs(data.Payload.TimeUnixUsec);
         var stream = data.Payload;
@@ -105,7 +129,7 @@ public class RfsaClient :MavlinkMicroserviceClient, IRfsaClient
                     var readSpan = new ReadOnlySpan<byte>(data.Payload.Data);
                     for (var i = 0; i < info.OneFrameMeasureSize; i++)
                     {
-                        frameSpan[i] = RfsaHelper.ReadSignalMeasure(ref readSpan, info);    
+                        frameSpan[i] = AsvChartTypeHelper.ReadSignalMeasure(ref readSpan, info);    
                     }
                     OnDataReceived?.Invoke(dateTime, new ReadOnlyMemory<float>(frameData,0,info.OneFrameMeasureSize), info);
                 }
@@ -143,7 +167,7 @@ public class RfsaClient :MavlinkMicroserviceClient, IRfsaClient
                     var readSpan = new ReadOnlySpan<byte>(frameData,0,frameSize);
                     for (var i = 0; i < info.OneFrameMeasureSize; i++)
                     {
-                        frameSpan[i] = RfsaHelper.ReadSignalMeasure(ref readSpan, info);    
+                        frameSpan[i] = AsvChartTypeHelper.ReadSignalMeasure(ref readSpan, info);    
                     }
                     OnDataReceived?.Invoke(dateTime, new ReadOnlyMemory<float>(frameFloatData,0,info.OneFrameMeasureSize), info);
                 }
@@ -158,19 +182,5 @@ public class RfsaClient :MavlinkMicroserviceClient, IRfsaClient
                 }
             }
         }
-    }
-    public IObservable<IChangeSet<SignalInfo, ushort>> Signals { get; }
-    public OnDataReceivedDelegate OnDataReceived { get; set; }
-    public IObservable<StreamOptions> OnStreamOptions { get; }
-    public Task<StreamOptions> RequestStream(StreamOptions options, CancellationToken cancel = default)
-    {
-        return InternalCall<StreamOptions,AsvRfsaStreamRequestPacket,AsvRfsaStreamResponsePacket>(x=>
-        {
-            x.Payload.TargetSystem = Identity.TargetSystemId;
-            x.Payload.TargetComponent = Identity.TargetComponentId;
-            x.Payload.SignalId = options.SignalId;
-            x.Payload.Event = options.EventType;
-            x.Payload.StreamRate = options.Rate;
-        }, x=>x.Payload.SignalId == options.SignalId, x=>new StreamOptions(x), cancel: cancel);
     }
 }

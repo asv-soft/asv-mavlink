@@ -151,17 +151,7 @@ public enum InitState
 /// /
 public enum DeviceClass
 {
-    /// <summary>
-    /// Represents the unknown device class.
-    /// </summary>
-    /// <remarks>
-    /// This member is used to indicate a device class that is unknown or not defined.
-    /// </remarks>
-    /// <seealso cref="DeviceClass.Plane"/>
-    /// <seealso cref="DeviceClass.Copter"/>
-    /// <seealso cref="DeviceClass.GbsRtk"/>
-    /// <seealso cref="DeviceClass.SdrPayload"/>
-    /// <seealso cref="DeviceClass.Adsb"/>
+    
     Unknown,
 
     /// <summary>
@@ -192,4 +182,8 @@ public enum DeviceClass
     /// Represents the device class for ADS-B devices.
     /// </summary>
     Adsb,
+    /// <summary>
+    /// Represents the device class for RF signal analyzer devices.
+    /// </summary>
+    Rfsa,
 }
