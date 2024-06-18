@@ -227,5 +227,7 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
         get => this[param.Name];
         set => this[param.Name] = value;
     }
-    
+
+    public IReadOnlyList<IMavParamTypeMetadata> AllParamsList => _paramList;
+    public IReadOnlyDictionary<string,(ushort,IMavParamTypeMetadata)> AllParamsDict => _paramDict;
 }

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Reactive.Linq;
+using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 
@@ -47,7 +49,8 @@ public interface IParamsServerEx
     /// <param name="param">The IMavParamTypeMetadata to retrieve or set the MavParamValue for.</param>
     /// <returns>The MavParamValue associated with the specified IMavParamTypeMetadata.</returns>
     MavParamValue this[IMavParamTypeMetadata param] { get; set; }
-
+    IReadOnlyList<IMavParamTypeMetadata> AllParamsList { get; }
+    IReadOnlyDictionary<string,(ushort,IMavParamTypeMetadata)> AllParamsDict { get; }
     public IObservable<ParamChangedEvent> OnChange(string name)
     {
         return OnUpdated.Where(x => x.Metadata.Name.Equals(name));
@@ -72,6 +75,73 @@ public interface IParamsServerEx
     {
         return OnUpdated.Where(x => x.IsRemoteChange == false && x.Metadata.Name.Equals(param.Name));
     }
+
+    public IDisposable SetOnChangeReal32(IMavParamTypeMetadata param, Action<float> setCallback)
+    {
+        CheckType(param, MavParamType.MavParamTypeReal32);
+        setCallback(this[param]);
+        return OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(x => setCallback(x.NewValue));
+    }
+    public IDisposable SetOnChangeInt32(IMavParamTypeMetadata param, Action<int> setCallback)
+    {
+        CheckType(param, MavParamType.MavParamTypeInt32);
+        setCallback(this[param]);
+        return OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(x => setCallback(x.NewValue));
+    }
+    public IDisposable SetOnChangeUint32(IMavParamTypeMetadata param, Action<uint> setCallback)
+    {
+        CheckType(param, MavParamType.MavParamTypeUint32);
+        setCallback(this[param]);
+        return OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(x => setCallback(x.NewValue));
+    }
+    public IDisposable SetOnChangeUint16(IMavParamTypeMetadata param, Action<ushort> setCallback)
+    {
+        CheckType(param, MavParamType.MavParamTypeUint16);
+        setCallback(this[param]);
+        return OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(x => setCallback(x.NewValue));
+    }
+    public IDisposable SetOnChangeInt16(IMavParamTypeMetadata param, Action<short> setCallback)
+    {
+        CheckType(param, MavParamType.MavParamTypeInt16);
+        setCallback(this[param]);
+        return OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(x => setCallback(x.NewValue));
+    }
+    public IDisposable SetOnChangeUint8(IMavParamTypeMetadata param, Action<byte> setCallback)
+    {
+        CheckType(param, MavParamType.MavParamTypeUint8);
+        setCallback(this[param]);
+        return OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(x => setCallback(x.NewValue));
+    }
+    public IDisposable SetOnChangeInt8(IMavParamTypeMetadata param, Action<sbyte> setCallback)
+    {
+        CheckType(param, MavParamType.MavParamTypeInt8);
+        setCallback(this[param]);
+        return OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(x => setCallback(x.NewValue));
+    }
+    
+    private static void CheckType(IMavParamTypeMetadata param, MavParamType type)
+    {
+        if (param.Type != type)
+        {
+            throw new ArgumentException($"Parameter must be of type {type:G}", nameof(param));
+        }
+    }
+    
+    
 }
 
 /// <summary>
