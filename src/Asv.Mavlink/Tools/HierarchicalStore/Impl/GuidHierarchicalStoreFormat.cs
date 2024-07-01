@@ -21,13 +21,13 @@ public static class GuidHierarchicalStoreFormat
         }
     }
     
-    public const string DisplayNameOfFolderRegexString = @"[A-Za-z][A-Za-z0-9_\- +]{0,28}";
+    public const string DisplayNameOfFolderRegexString = @"[A-Za-zа-яА-Я][A-Za-zа-яА-Я0-9_\- +]{0,28}";
     public static readonly Regex DisplayNameOfFolderRegex = new($"^{DisplayNameOfFolderRegexString}$", RegexOptions.Compiled);
     
-    public const string DisplayNameOfFileRegexString = @"[A-Za-z][A-Za-z0-9_\- +]{0,28}";
+    public const string DisplayNameOfFileRegexString = @"[A-Za-zа-яА-Я][A-Za-zа-яА-Я0-9_\- +]{0,28}";
     public static readonly Regex DisplayNameOfFileRegex = new($"^{DisplayNameOfFileRegexString}$", RegexOptions.Compiled);
     
-    public const string GuidOfFolderOrFileRegexString = @"[0-9a-zA-Z_-]{22}";
+    public const string GuidOfFolderOrFileRegexString = @"[0-9a-zA-Zа-яА-Я_-]{22}";
     public static readonly Regex FileSystemNameOfFolderRegex = new($"^({DisplayNameOfFolderRegexString}) #({GuidOfFolderOrFileRegexString})$", RegexOptions.Compiled);
     public static readonly Regex FileSystemNameOfFileRegex = new($"^({DisplayNameOfFileRegexString}) #({GuidOfFolderOrFileRegexString})$", RegexOptions.Compiled);
     
