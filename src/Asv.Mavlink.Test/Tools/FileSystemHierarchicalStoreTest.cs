@@ -84,6 +84,50 @@ public class FileSystemHierarchicalStoreTest
         
         ClearAllDirectories(storeLocation);
     }
+    
+    [Fact]
+    public void Check_Success_Create_File_With_Cyrillic_Characters()
+    {
+        var storeLocation = "TestFolder_Success_CreateFile_Cyrillic #" + Path.GetRandomFileName();
+        var format = new AsvSdrListDataStoreFormat();
+    
+        var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeLocation, format,
+            TimeSpan.FromMilliseconds(0));
+
+        var guidCyrillic = Guid.NewGuid();
+        const string fileNameCyrillic = "Файл_Пример";
+        var fileCyrillic = store.CreateFile(guidCyrillic, fileNameCyrillic, store.RootFolderId);
+        fileCyrillic.Dispose();
+    
+        var filesCyrillic = Directory.GetFiles(storeLocation);
+        Assert.Contains($"{storeLocation}\\{fileNameCyrillic} #{ShortGuid.Encode(guidCyrillic)}.sdr", filesCyrillic);
+
+        store.Dispose();
+    
+        ClearAllDirectories(storeLocation);
+    }
+
+    [Fact]
+    public void Check_Success_Create_File_With_Numeric_Characters()
+    {
+        var storeLocation = "TestFolder_Success_CreateFile_Numeric #" + Path.GetRandomFileName();
+        var format = new AsvSdrListDataStoreFormat();
+    
+        var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeLocation, format,
+            TimeSpan.FromMilliseconds(0));
+
+        var guidNumeric = Guid.NewGuid();
+        const string fileNameNumeric = "1234567890";
+        var fileNumeric = store.CreateFile(guidNumeric, fileNameNumeric, store.RootFolderId);
+        fileNumeric.Dispose();
+
+        var filesNumeric = Directory.GetFiles(storeLocation);
+        Assert.Contains($"{storeLocation}\\{fileNameNumeric} #{ShortGuid.Encode(guidNumeric)}.sdr", filesNumeric);
+
+        store.Dispose();
+    
+        ClearAllDirectories(storeLocation);
+    }
 
     [Fact]
     public void Check_If_File_Exists_After_Manual_Delete()
