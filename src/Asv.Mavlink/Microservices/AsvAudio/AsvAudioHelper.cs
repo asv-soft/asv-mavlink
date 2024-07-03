@@ -10,7 +10,7 @@ public static class AsvAudioHelper
 {
     public const int MaxPacketStreamData = AsvAudioStreamPayload.DataMaxItemsCount;
     public const int DeviceNameMaxLength = 16;
-    private const string DeviceNameRegexString = "^[A-Za-z][A-Za-z0-9_\\- +]{2,16}$";
+    private const string DeviceNameRegexString = "^[A-Za-zА-Яа-я0-9][A-Za-zА-Яа-я0-9_\\- +]{2,16}$";
     private static readonly Regex RecordNameRegex = new(DeviceNameRegexString, RegexOptions.Compiled);
     
     public static void CheckDeviceName(string name)

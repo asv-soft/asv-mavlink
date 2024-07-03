@@ -12,17 +12,17 @@ public static class AsvSdrHelper
     public const int RecordTagValueLength = 8;
 
     public const int RecordNameMaxLength = 28;
-    private const string RecordNameRegexString = "^[A-Za-z][A-Za-z0-9_\\- +]{2,28}$";
+    private const string RecordNameRegexString = "^[A-Za-zА-Яа-я0-9][A-Za-zА-Яа-я0-9_\\- +]{2,28}$";
     private static readonly Regex RecordNameRegex = new(RecordNameRegexString, RegexOptions.Compiled);
 
 
     public const int RecordTagNameMaxLength = 16;
-    private const string RecordTagNameRegexString = "^[A-Za-z][A-Za-z0-9_\\- +]{2,16}$";
+    private const string RecordTagNameRegexString = "^[A-Za-zА-Яа-я0-9][A-Za-zА-Яа-я0-9_\\- +]{2,16}$";
     private static readonly Regex RecordTagNameRegex = new(RecordTagNameRegexString, RegexOptions.Compiled);
 
     
     public const int CalibrationTableNameMaxLength = 28;
-    private const string CalibrationTableNameRegexString = "^[A-Za-z][A-Za-z0-9_\\- +]{2,28}$";
+    private const string CalibrationTableNameRegexString = "^[A-Za-zА-Яа-я0-9][A-Za-zА-Яа-я0-9_\\- +]{2,28}$";
     private static readonly Regex CalibrationTableNameRegex = new(CalibrationTableNameRegexString, RegexOptions.Compiled);
     
     public static void CheckCalibrationTableName(string name)

@@ -11,7 +11,7 @@ namespace Asv.Mavlink;
 public static class MavParamExtHelper
 {
     public const int ParamExtNameMaxLength = 16;
-    private const string ParamExtNameRegexString = "^[A-Za-z][A-Za-z0-9_]{2,16}$";
+    private const string ParamExtNameRegexString = "^[A-Za-zА-Яа-я0-9][A-Za-zА-Яа-я0-9_]{2,16}$";
     private static readonly Regex RecordNameRegex = new(ParamExtNameRegexString, RegexOptions.Compiled);
 
     public static void CheckParamName(string name)

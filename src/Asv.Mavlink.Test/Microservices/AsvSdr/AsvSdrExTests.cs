@@ -624,7 +624,7 @@ public class AsvSdrExTests
             catch (Exception e)
             {
                 _testOutputHelper.WriteLine(e.ToString());
-                Assert.Equal("Record name 'Test*' not match regex '^[A-Za-z][A-Za-z0-9_\\- +]{2,28}$')", e.Message);
+                Assert.Equal("Record name 'Test*' not match regex '^[A-Za-zА-Яа-я0-9][A-Za-zА-Яа-я0-9_\\- +]{2,28}$')", e.Message);
                 throw;
             }
         });
