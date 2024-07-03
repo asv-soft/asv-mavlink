@@ -20,7 +20,7 @@ public class RsgaClientDeviceConfig:ClientDeviceConfig
 
 public class RsgaClientDevice : ClientDevice, IRsgaClientDevice
 {
-    private readonly RfsaClientDeviceConfig _config;
+    private readonly RsgaClientDeviceConfig _config;
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private readonly ParamsClientEx _params;
     private readonly AsvChartClient _charts;
@@ -28,7 +28,7 @@ public class RsgaClientDevice : ClientDevice, IRsgaClientDevice
     private readonly CommandClient _command;
     private readonly AsvRsgaClientEx _rsga;
 
-    public RsgaClientDevice(IMavlinkV2Connection link, MavlinkClientIdentity identity, RfsaClientDeviceConfig config, IPacketSequenceCalculator seq, IScheduler scheduler)
+    public RsgaClientDevice(IMavlinkV2Connection link, MavlinkClientIdentity identity, RsgaClientDeviceConfig config, IPacketSequenceCalculator seq, IScheduler scheduler)
         :base(link,identity,config,seq,scheduler)
     {
         _config = config;

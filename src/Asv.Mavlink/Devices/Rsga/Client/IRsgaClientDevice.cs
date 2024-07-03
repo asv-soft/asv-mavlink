@@ -9,7 +9,7 @@ namespace Asv.Mavlink;
 
 
 
-public interface IRsgaClientDevice
+public interface IRsgaClientDevice:IClientDevice
 {
     IParamsClientEx Params { get; }
     IAsvChartClient Charts { get; }
