@@ -6,7 +6,7 @@
   <!-- email contact: me@asv.me                                    -->
   <!-- mavlink MAV_TYPE:        NOT USED                           -->
   <!-- mavlink MAV_CMD range:   NOT USED                           -->
-  <!-- mavlink messages range:  13400 - 13450                      -->
+  <!-- mavlink messages range:  13500 - 13600                      -->
   <include>minimal.xml</include>
 
   <enums>
@@ -53,7 +53,7 @@
     </enum>
   </enums>
   <messages>
-    <message id="13350" name="ASV_TABLE_INFO_REQUEST">
+    <!--<message id="13500" name="ASV_TABLE_INFO_REQUEST">
       <description>Requests available charts for visualization. Returns ASV_TABLE_INFO_RESPONSE and then items with ASV_TABLE_INFO. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint8_t" name="target_system">System ID.</field>
       <field type="uint8_t" name="target_component">Component ID.</field>
@@ -61,7 +61,7 @@
       <field type="uint16_t" name="skip">Specifies the start index of the records to be sent in the response.</field>
       <field type="uint16_t" name="count">Specifies the number of records to be sent in the response after the skip index.</field>
     </message>
-    <message id="13351" name="ASV_TABLE_INFO_RESPONSE">
+    <message id="13501" name="ASV_TABLE_INFO_RESPONSE">
       <description>Responds to the request for available charts for visualization. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint8_t" name="result" enum="ASV_TABLE_REQUEST_ACK">Result code.</field>
       <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
@@ -69,7 +69,7 @@
       <field type="uint16_t" name="chat_list_hash">Hash of the all ASV_TABLE_INFO.</field>
     </message>
 
-    <message id="13352" name="ASV_TABLE_INFO_UPDATED_EVENT">
+    <message id="13502" name="ASV_TABLE_INFO_UPDATED_EVENT">
       <description>Event about chart collection or it's element changed. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint16_t" name="chart_count">Number of ASV_TABLE_INFO items to be transmitted after this response with a success result code (dependent on the request).</field>
       <field type="uint16_t" name="chat_list_hash">Hash of the all ASV_TABLE_INFO.</field>
@@ -77,19 +77,19 @@
             
     
 
-    <message id="13353" name="ASV_TABLE_INFO">
+    <message id="13503" name="ASV_TABLE_INFO">
       <description>Contains chart info. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint16_t" name="chart_id">Chart ID.</field>
       <field type="uint16_t" name="chart_info_hash">Hash of the chart info.</field>
       <field type="char[16]" name="chart_name">Chart name, terminated by NULL if the length is less than 16 human-readable chars, and WITHOUT null termination (NULL) byte if the length is exactly 16 chars. Applications have to provide 8+1 bytes storage if the ID is stored as a string.</field>
       <field type="uint8_t" name="chart_type" enum="ASV_TABLE_TYPE">Type of chart.</field>
-      <!-- X axis -->
+      &lt;!&ndash; X axis &ndash;&gt;
       <field type="char[16]" name="axes_x_name">Axis X name, terminated by NULL if the length is less than 16 human-readable chars, and WITHOUT null termination (NULL) byte if the length is exactly 16 chars. Applications have to provide 8+1 bytes storage if the ID is stored as a string.</field>
       <field type="uint16_t" name="axes_x_unit" enum="ASV_TABLE_UNIT_TYPE">Axis X unit.</field>
       <field type="float" name="axes_x_min">Minimum value of Axis X.</field>
       <field type="float" name="axes_x_max">Maximum value of Axis X.</field>
       <field type="uint16_t" name="axes_x_count">Total measure points for Axis X. Dependent on chart type (1 measure for simple plot signal, more for heatmap signal).</field>
-      <!-- Y axis -->
+      &lt;!&ndash; Y axis &ndash;&gt;
       <field type="char[16]" name="axes_y_name">Axis Y name, terminated by NULL if the length is less than 16 human-readable chars, and WITHOUT null termination (NULL) byte if the length is exactly 16 chars. Applications have to provide 8+1 bytes storage if the ID is stored as a string.</field>
       <field type="uint16_t" name="axes_y_unit" enum="ASV_TABLE_UNIT_TYPE">Axis Y unit.</field>
       <field type="float" name="axes_y_min">Minimum value of Axis Y.</field>
@@ -100,7 +100,7 @@
     </message>
 
 
-    <message id="13354" name="ASV_TABLE_DATA_REQUEST">
+    <message id="13504" name="ASV_TABLE_DATA_REQUEST">
       <description>Request for chart data stream.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
@@ -109,7 +109,7 @@
       <field type="float" name="data_rate" units="Ms">The requested message rate (delay in ms)</field>
       <field type="uint8_t" name="data_trigger" enum="ASV_TABLE_DATA_TRIGGER">Additional argument for stream request.</field>
     </message>
-    <message id="13355" name="ASV_TABLE_DATA_RESPONSE">
+    <message id="13505" name="ASV_TABLE_DATA_RESPONSE">
       <description>Response for ASV_TABLE_STREAM_REQUEST.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint8_t" name="result" enum="ASV_TABLE_REQUEST_ACK">Result code.</field>
       <field type="uint16_t" name="chat_id">The ID of the requested chart</field>
@@ -118,7 +118,7 @@
       <field type="uint8_t" name="data_trigger" enum="ASV_TABLE_DATA_TRIGGER">Additional argument for stream request.</field>
     </message>
     
-    <message id="13360" name="ASV_TABLE_DATA">
+    <message id="13506" name="ASV_TABLE_DATA">
       <description>Raw chart data for visualization.[!WRAP_TO_V2_EXTENSION_PACKET!]</description>
       <field type="uint16_t" name="chat_id">Chart id.</field>
       <field type="uint16_t" name="chat_info_hash">Hash of the chart ASV_TABLE_INFO to ensure that all settings are synchronized.</field>
@@ -127,7 +127,7 @@
       <field type="uint16_t" name="pkt_seq">Packet sequence number (starting with 0 on every encoded frame).</field>
       <field type="uint8_t" name="data_size">Size of data array.</field>
       <field type="uint8_t[220]" name="data">Chart data.</field>
-    </message>
+    </message>-->
 
 
   </messages>

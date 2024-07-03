@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<mavlink>
+    <!-- Interface for communication with Radio Signal Generator and Analyser-->
+    <!-- Asv Soft contact info: https://github.com/asvol             -->
+    <!-- company URL: https://github.com/asv-soft and asv.me         -->
+    <!-- email contact: me@asv.me                                    -->
+    <!-- mavlink MAV_TYPE: 254                                       -->
+    <!-- mavlink MAV_CMD range:  13400 - 13499                       -->
+    <!-- mavlink messages range: 13400 - 13499                       -->
+    <include>minimal.xml</include>
+    <include>asv_table.xml</include>
+
+    <enums>
+        <!-- Asv specific MAV_TYPE identity -->
+        <enum name="MAV_TYPE">
+            <entry value="254" name="MAV_TYPE_ASV_RSGA">
+                <description>Used to identify Radio Signal Generator and Analyser(RSGA) payload in HEARTBEAT packet.</description>
+            </entry>
+        </enum>
+        <!-- CUSTOM_MODE -->
+        <enum name="ASV_RSGA_CUSTOM_MODE">
+            <description>A mapping of RSGA modes for custom_mode field of heartbeat.</description>
+            <entry value="0" name="ASV_RSGA_CUSTOM_MODE_IDLE">
+                <description>Default mode. Do nothing.</description>
+            </entry>
+            <entry value="1" name="ASV_RSGA_CUSTOM_MODE_TX_LLZ">
+                <description>Localizer generator mode.</description>
+            </entry>
+            <entry value="2" name="ASV_RSGA_CUSTOM_MODE_TX_GP">
+                <description>Glide Path generator mode.</description>
+            </entry>
+            <entry value="3" name="ASV_SDR_CUSTOM_MODE_TX_VOR">
+                <description>VOR generator mode.</description>
+            </entry>
+            <entry value="4" name="ASV_SDR_CUSTOM_MODE_TX_MARKER">
+                <description>Marker generator mode.</description>
+            </entry>
+            <entry value="5" name="ASV_SDR_CUSTOM_MODE_DME_REQ">
+                <description>DME beacon mode.</description>
+            </entry>
+
+        </enum>
+
+        <enum name="ASV_RSGA_REQUEST_ACK">
+            <description>ACK / NACK / ERROR values as a result of ASV_RSGA_*_REQUEST commands.</description>
+            <entry name="ASV_RSGA_REQUEST_ACK_OK">
+                <description>Request is ok.</description>
+            </entry>
+            <entry name="ASV_RSGA_REQUEST_ACK_IN_PROGRESS">
+                <description>Already in progress.</description>
+            </entry>
+            <entry name="ASV_RSGA_REQUEST_ACK_FAIL">
+                <description>Internal error.</description>
+            </entry>
+            <entry name="ASV_RSGA_REQUEST_ACK_NOT_SUPPORTED">
+                <description>Not supported.</description>
+            </entry>
+            <entry name="ASV_RSGA_REQUEST_ACK_NOT_FOUND">
+                <description>Not found.</description>
+            </entry>
+        </enum>
+
+        <!-- Asv specific MAV_CMD_* commands -->
+        <enum name="MAV_CMD">
+            <entry value="13400" name="MAV_CMD_ASV_RSGA_SET_MODE">
+                <description>Do set mode</description>
+                <param index="1">Mode (uint32_t, see ASV_RSGA_CUSTOM_MODE).</param>
+                <param index="2">Frequency in Hz, 0-3 bytes of uint_64, ignored for IDLE mode (uint32).</param>
+                <param index="3">Frequency in Hz, 4-7 bytes of uint_64, ignored for IDLE mode (uint32).</param>
+                <param index="4">Empty.</param>
+                <param index="5">Empty.</param>
+                <param index="6">Empty.</param>
+                <param index="7">Empty.</param>
+            </entry>
+        </enum>
+    </enums>
+    <messages>
+        <message id="13400" name="ASV_RSGA_COMPATIBILITY_REQUEST">
+            <description>Requests device COMPATIBILITY. Returns ASV_RSGA_COMPATIBILITY_RESPONSE. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+            <field type="uint8_t" name="target_system">System ID.</field>
+            <field type="uint8_t" name="target_component">Component ID.</field>
+            <field type="uint16_t" name="request_id">Specifies a unique number for this request. This allows the response packet to be identified.</field>
+        </message>
+        <message id="13401" name="ASV_RSGA_COMPATIBILITY_RESPONSE">
+            <description>Responds to the ASV_RSGA_COMPATIBILITY_REQUEST. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+            <field type="uint8_t" name="result" enum="ASV_RSGA_REQUEST_ACK">Result code.</field>
+            <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
+            <field type="uint8_t[32]" name="supported_modes">Supported modes. Each bit index represents an ASV_RSGA_CUSTOM_MODE value (256 bits). First (IDLE) bit always true.</field>
+        </message>
+<!--
+        <message id="13400" name="ASV_RSGA_TX_LLZ_REQUEST">
+            <description>Requests device COMPATIBILITY. Returns ASV_RSGA_COMPATIBILITY_RESPONSE. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+            <field type="uint8_t" name="target_system">System ID.</field>
+            <field type="uint8_t" name="target_component">Component ID.</field>
+            <field type="uint16_t" name="request_id">Specifies a unique number for this request. This allows the response packet to be identified.</field>
+        </message>
+        <message id="13400" name="ASV_RSGA_TX_LLZ_RESPONSE">
+            <description>Requests device COMPATIBILITY. Returns ASV_RSGA_COMPATIBILITY_RESPONSE. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+            <field type="uint8_t" name="target_system">System ID.</field>
+            <field type="uint8_t" name="target_component">Component ID.</field>
+            <field type="uint16_t" name="request_id">Specifies a unique number for this request. This allows the response packet to be identified.</field>
+        </message>-->
+
+        <!--<message id="13402" name="ASV_RSGA_MODE_COMPATIBILITY_REQUEST">
+          <description>Requests device COMPATIBILITY specified for MODE. Returns ASV_RSGA_MODE_COMPATIBILITY_RESPONSE. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+          <field type="uint8_t" name="target_system">System ID.</field>
+          <field type="uint8_t" name="target_component">Component ID.</field>
+          <field type="uint16_t" name="request_id">Specifies a unique number for this request. This allows the response packet to be identified.</field>
+          <field type="uint8_t" name="mode" enum="ASV_RSGA_CUSTOM_MODE">Specifies mode for request.</field>
+        </message>
+        <message id="13403" name="ASV_RSGA_MODE_COMPATIBILITY_RESPONSE">
+          <description>Responds to the ASV_RSGA_COMPATIBILITY_REQUEST. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+          <field type="uint8_t" name="result" enum="ASV_RSGA_REQUEST_ACK">Result code.</field>
+          <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
+          <field type="uint8_t" name="mode" enum="ASV_RSGA_CUSTOM_MODE">Specifies mode.</field>
+          <field type="uint8_t[32]" name="supported_params">Supported params. Each bit index represents an ASV_RSGA_PARAM_*[MODE] value (256 bits).</field>
+          <field type="uint8_t[32]" name="supported_rtt">Supported telemetry. Each bit index represents an ASV_RSGA_RTT_*[MODE] value (256 bits).</field>
+        </message>
+        <message id="13404" name="ASV_RSGA_PARAM_VALUE">
+          <description>Requests device COMPATIBILITY. Returns ASV_RSGA_COMPATIBILITY_RESPONSE. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+          <field type="uint8_t" name="mode" enum="ASV_RSGA_CUSTOM_MODE">Specifies mode for request.</field>
+        </message>-->
+
+    </messages>
+</mavlink>

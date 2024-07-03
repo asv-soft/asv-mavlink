@@ -186,4 +186,8 @@ public enum DeviceClass
     /// Represents the device class for RF signal analyzer devices.
     /// </summary>
     Rfsa,
+    /// <summary>
+    /// Represents the device class for Radio Signal Generator and Analyzer devices.
+    /// </summary>
+    Rsga,
 }

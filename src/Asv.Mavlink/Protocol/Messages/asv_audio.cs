@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.7.1+4106fec092ad8e5c656389a6225b57600d851309
+// This code was generate by tool Asv.Mavlink.Shell version 3.7.1+cb62d970af0fddbc80e3a31f14be801d53c8392b
 
 using System;
 using System.Text;
@@ -72,21 +72,25 @@ namespace Asv.Mavlink.V2.AsvAudio
         /// Unknown codec[!METADATA!]
         /// ASV_AUDIO_CODEC_UNKNOWN
         /// </summary>
+        [Description("Unknown codec")]
         AsvAudioCodecUnknown = 0,
         /// <summary>
         /// Reserverd[!METADATA!]
         /// ASV_AUDIO_CODEC_RESERVED_255
         /// </summary>
+        [Description("Reserverd")]
         AsvAudioCodecReserved255 = 255,
         /// <summary>
         /// PCM 8k MONO[!METADATA!]
         /// ASV_AUDIO_CODEC_RAW_8000_MONO
         /// </summary>
+        [Description("PCM 8k MONO")]
         AsvAudioCodecRaw8000Mono = 256,
         /// <summary>
         /// OPUS 8k MONO[!METADATA!]
         /// ASV_AUDIO_CODEC_OPUS_8000_MONO
         /// </summary>
+        [Description("OPUS 8k MONO")]
         AsvAudioCodecOpus8000Mono = 512,
         /// <summary>
         /// Advanced Audio Coding (AAC).

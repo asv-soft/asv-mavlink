@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.7.1+4106fec092ad8e5c656389a6225b57600d851309
+// This code was generate by tool Asv.Mavlink.Shell version 3.7.1+cb62d970af0fddbc80e3a31f14be801d53c8392b
 
 using System;
 using System.Text;
@@ -76,9 +76,9 @@ namespace Asv.Mavlink.V2.AsvRfsa
     {
         /// <summary>
         /// Enable RF analyzer. Change mode to ASV_RFSA_CUSTOM_MODE_MEASURE
-        /// Param 1 - Empty.
-        /// Param 2 - Empty.
-        /// Param 3 - Empty.
+        /// Param 1 - Frequency in Hz, 0-3 bytes of uint_64(uint32).
+        /// Param 2 - Frequency in Hz, 4-7 bytes of uint_64(uint32).
+        /// Param 3 - Span frequency in Hz (unit32_t).
         /// Param 4 - Empty.
         /// Param 5 - Empty.
         /// Param 6 - Empty.

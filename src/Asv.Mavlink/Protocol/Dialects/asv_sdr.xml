@@ -180,7 +180,7 @@
 <!--      <entry value="13142" name="ASV_SDR_CUSTOM_MODE_SPECTRUM"/>-->
     </enum>
     <enum name="ASV_SDR_CUSTOM_MODE_FLAG">
-      <description>These flags encode supported mode.</description>
+      <description>These flags encode supported mode.[!THIS_IS_ENUM_FLAG!]</description>
       <entry value="1" name="ASV_SDR_CUSTOM_MODE_FLAG_LLZ"/>
       <entry value="2" name="ASV_SDR_CUSTOM_MODE_FLAG_GP"/>
       <entry value="4" name="ASV_SDR_CUSTOM_MODE_FLAG_VOR"/>

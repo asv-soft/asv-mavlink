@@ -14,6 +14,7 @@ using Asv.Mavlink.V2.AsvChart;
 using Asv.Mavlink.V2.AsvGbs;
 using Asv.Mavlink.V2.AsvRadio;
 using Asv.Mavlink.V2.AsvRfsa;
+using Asv.Mavlink.V2.AsvRsga;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Avssuas;
 using Asv.Mavlink.V2.Common;
@@ -66,6 +67,7 @@ namespace Asv.Mavlink
             decoder.RegisterAsvRadioDialect();
             decoder.RegisterAsvRfsaDialect();
             decoder.RegisterAsvChartDialect();
+            decoder.RegisterAsvRsgaDialect();
         }
 
         #endregion
