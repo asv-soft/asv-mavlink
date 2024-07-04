@@ -43,12 +43,10 @@ public class AsvRsgaExTest
         CreateEx(out var clientEx, out var serverEx);
         var origin = new HashSet<AsvRsgaCustomMode>(Enum.GetValues<AsvRsgaCustomMode>());
         serverEx.GetCompatibility = () => origin;
-        var originFreq = uint.MaxValue;
         var originMode = AsvRsgaCustomMode.AsvRsgaCustomModeTxGp;
-        serverEx.SetMode = async (mode, freq, cancel) =>
+        serverEx.SetMode = async (mode, cancel) =>
         {
             Assert.Equal(originMode,mode);
-            Assert.Equal(originFreq,freq);
             return MavResult.MavResultAccepted;
         };
         await clientEx.RefreshInfo();
@@ -56,6 +54,6 @@ public class AsvRsgaExTest
         Assert.Equal(origin.Count, list.Count);
         Assert.True(origin.All(x => list.Items.Contains(x)));
 
-        await clientEx.SetMode(originMode, originFreq);
+        await clientEx.SetMode(originMode);
     }
 }
