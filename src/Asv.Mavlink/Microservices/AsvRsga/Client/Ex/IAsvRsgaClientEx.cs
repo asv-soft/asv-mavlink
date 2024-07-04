@@ -14,5 +14,5 @@ public interface IAsvRsgaClientEx
     IAsvRsgaClient Base { get; }
     IObservable<IChangeSet<AsvRsgaCustomMode>> AvailableModes { get; }
     Task RefreshInfo(CancellationToken cancel = default);
-    Task<MavResult> SetMode(AsvRsgaCustomMode mode, ulong frequencyHz, CancellationToken cancel = default);
+    Task<MavResult> SetMode(AsvRsgaCustomMode mode, CancellationToken cancel = default);
 }

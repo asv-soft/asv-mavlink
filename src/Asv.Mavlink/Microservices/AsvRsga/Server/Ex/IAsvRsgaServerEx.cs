@@ -7,7 +7,7 @@ using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 
-public delegate Task<MavResult> RsgaSetMode(AsvRsgaCustomMode mode, ulong freq, CancellationToken cancel = default);
+public delegate Task<MavResult> RsgaSetMode(AsvRsgaCustomMode mode, CancellationToken cancel = default);
 public delegate IEnumerable<AsvRsgaCustomMode> RsgaGetCompatibility();
 
 public interface IAsvRsgaServerEx

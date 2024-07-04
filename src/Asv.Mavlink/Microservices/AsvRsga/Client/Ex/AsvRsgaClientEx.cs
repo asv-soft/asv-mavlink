@@ -46,10 +46,10 @@ public class AsvRsgaClientEx : DisposableOnceWithCancel, IAsvRsgaClientEx
         return Base.GetCompatibilities(cancel);
     }
 
-    public async Task<MavResult> SetMode(AsvRsgaCustomMode mode, ulong frequencyHz, CancellationToken cancel = default)
+    public async Task<MavResult> SetMode(AsvRsgaCustomMode mode, CancellationToken cancel = default)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var result = await _commandClient.CommandLong(item => RsgaHelper.SetArgsForSetMode(item, mode,frequencyHz),cs.Token).ConfigureAwait(false);
+        var result = await _commandClient.CommandLong(item => RsgaHelper.SetArgsForSetMode(item, mode),cs.Token).ConfigureAwait(false);
         return result.Result;
     }
 }
