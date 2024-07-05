@@ -29,13 +29,13 @@
             <entry value="2" name="ASV_RSGA_CUSTOM_MODE_TX_GP">
                 <description>Glide Path generator mode.</description>
             </entry>
-            <entry value="3" name="ASV_SDR_CUSTOM_MODE_TX_VOR">
+            <entry value="3" name="ASV_RSGA_CUSTOM_MODE_TX_VOR">
                 <description>VOR generator mode.</description>
             </entry>
-            <entry value="4" name="ASV_SDR_CUSTOM_MODE_TX_MARKER">
+            <entry value="4" name="ASV_RSGA_CUSTOM_MODE_TX_MARKER">
                 <description>Marker generator mode.</description>
             </entry>
-            <entry value="5" name="ASV_SDR_CUSTOM_MODE_DME_REQ">
+            <entry value="5" name="ASV_RSGA_CUSTOM_MODE_DME_REQ">
                 <description>DME beacon mode.</description>
             </entry>
 

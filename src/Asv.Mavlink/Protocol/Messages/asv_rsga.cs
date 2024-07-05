@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.7.1+cb62d970af0fddbc80e3a31f14be801d53c8392b
+// This code was generate by tool Asv.Mavlink.Shell version 3.7.1+98c5c7a392002d9bb54507cd50df001a14c44120
 
 using System;
 using System.Text;
@@ -78,19 +78,19 @@ namespace Asv.Mavlink.V2.AsvRsga
         AsvRsgaCustomModeTxGp = 2,
         /// <summary>
         /// VOR generator mode.
-        /// ASV_SDR_CUSTOM_MODE_TX_VOR
+        /// ASV_RSGA_CUSTOM_MODE_TX_VOR
         /// </summary>
-        AsvSdrCustomModeTxVor = 3,
+        AsvRsgaCustomModeTxVor = 3,
         /// <summary>
         /// Marker generator mode.
-        /// ASV_SDR_CUSTOM_MODE_TX_MARKER
+        /// ASV_RSGA_CUSTOM_MODE_TX_MARKER
         /// </summary>
-        AsvSdrCustomModeTxMarker = 4,
+        AsvRsgaCustomModeTxMarker = 4,
         /// <summary>
         /// DME beacon mode.
-        /// ASV_SDR_CUSTOM_MODE_DME_REQ
+        /// ASV_RSGA_CUSTOM_MODE_DME_REQ
         /// </summary>
-        AsvSdrCustomModeDmeReq = 5,
+        AsvRsgaCustomModeDmeReq = 5,
     }
 
     /// <summary>
