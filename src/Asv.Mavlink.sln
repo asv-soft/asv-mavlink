@@ -12,16 +12,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{5B9E6116-00F2-4CB8-AB21-E302F04138A8}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
-		..\build.bat = ..\build.bat
 		..\LICENSE = ..\LICENSE
-		..\publish_nuget.bat = ..\publish_nuget.bat
 		..\README.md = ..\README.md
 		..\regenerate_asv.bat = ..\regenerate_asv.bat
 		..\regenerate_mavlink.bat = ..\regenerate_mavlink.bat
 		Directory.Build.props = Directory.Build.props
 		..\.github\workflows\NO_TEST_NUGET_WINDOWS.yml = ..\.github\workflows\NO_TEST_NUGET_WINDOWS.yml
 		..\.github\workflows\nuget_windows.yml = ..\.github\workflows\nuget_windows.yml
-		..\publish_github.bat = ..\publish_github.bat
 	EndProjectSection
 EndProject
 Global
