@@ -31,7 +31,9 @@
     <PackageReference Include="DotLiquid" Version="2.2.595" />
     <PackageReference Include="Geodesy" Version="4.1.0" />
     <PackageReference Include="ManyConsole" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />
+    <PackageReference Include="Spectre.Console" Version="0.49.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Asv.Mavlink\Asv.Mavlink.csproj" />

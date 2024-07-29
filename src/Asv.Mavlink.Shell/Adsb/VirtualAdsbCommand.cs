@@ -1,202 +1,207 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reactive.Concurrency;
-using System.Reactive.Subjects;
-using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.Vehicle;
 using ManyConsole;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Spectre.Console;
 
 namespace Asv.Mavlink.Shell;
 
-public class VirtualAdsbCommand : ConsoleCommand
+public class VirtualAdsbCommand : ConsoleCommand,ILogger
 {
-    private readonly CancellationTokenSource _cancel = new ();
-    private readonly Subject<ConsoleKeyInfo> _userInput = new ();
-    
-    private string _cs = "tcp://127.0.0.1:7344?srv=true";
-    private string _start1 = "-O54 17 26|63 38 23|500";
-    private string _start2 = "-O32 17 26|43 38 23|500";
-    private string _stop1 = "-O64 17 26|83 38 23|500";
-    private string _stop2 = "-O42 17 26|63 38 23|500";
-    private string _callSign = "UFO";
-    private double _vectorVelocity = 300;
-    private int _updateRate = 1;
+    private string _file = "adsb.json";
 
     public VirtualAdsbCommand()
     {
         IsCommand("adsb", "Generate virtual ADSB Vehicle");
-        HasOption("cs=", $"Mavlink connection string. By default '{_cs}'", _ => _cs = _);
-        HasOption("start1=", $"GeoPoint from where vehicle starts flying. Default value is {_start1}", _ => _start1 = _);
-        HasOption("start2=", $"GeoPoint from where vehicle starts flying. Default value is {_start2}", _ => _start2 = _);
-        HasOption("stop1=", $"GeoPoint where vehicle stops flight. Default value is {_stop1}", _ => _stop1 = _);
-        HasOption("stop2=", $"GeoPoint where vehicle stops flight. Default value is {_stop2}", _ => _stop2 = _);
-        HasOption("callSign=", $"Vehicle call sign. Default value is {_callSign}", _ => _callSign = _);
-        HasOption("updateRate=", $"Update rate in Hz. Default value is {_updateRate}", _ =>
-        {
-            if (int.TryParse(_, out var result))
-            {
-                _updateRate = result;
-            }
-        });
-        HasOption("vectorSpeed=", $"Vehicle vector velocity. Default value is {_vectorVelocity}", _ =>
-        {
-            if (double.TryParse(_, out var result))
-            {
-                _vectorVelocity = result;
-            }
-        });
+        HasOption("cfg=", $"File path with ADSB config. Will be created if not exist. Default '{_file}'", x => _file = x);
+        
     }
-    
-    private void KeyListen()
-    {
-        while (!_cancel.IsCancellationRequested)
-        {
-            var key = Console.ReadKey(true);
-            _userInput.OnNext(key);
-        }
-    }
-    
-    private void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
-    {
-        if (e.Cancel) _cancel.Cancel(false);
-    }
-
-    private static GeoPoint SetGeoPoint(string value)
-    {
-        var values = value.Split('|');
-        var result = new GeoPoint();
-
-        if (values.Length == 3 &&
-            GeoPointLatitude.TryParse(values[0], out var latitude) && 
-            GeoPointLongitude.TryParse(values[1], out var longitude) &&
-            double.TryParse(values[2], out var altitude))
-        {
-            result = new GeoPoint(latitude, longitude, altitude);
-        }
-        else
-        {
-            Console.WriteLine($"Incorrect GeoPoint string fromat");
-        }
-
-        return result;
-    }
-    
+   
     public override int Run(string[] remainingArguments)
     {
-        Task.Factory.StartNew(_ => KeyListen(), _cancel.Token);
-        Console.CancelKeyPress += Console_CancelKeyPress;
-        
-        var conn = MavlinkV2Connection.Create(_cs);
-        var server1 = new AdsbServerDevice(
-            conn,
-            new PacketSequenceCalculator(),
-            new MavlinkIdentity(13, 13),
-            new AdsbServerDeviceConfig(),
-            Scheduler.Default);
-        
-        var server2 = new AdsbServerDevice(
-            conn,
-            new PacketSequenceCalculator(),
-            new MavlinkIdentity(14,  14),
-            new AdsbServerDeviceConfig(),
-            Scheduler.Default);
-            
-        server1.Start();
-        server2.Start();
-        
-        while (!_cancel.IsCancellationRequested)
-        {
-            var start1 = SetGeoPoint(_start1);
-            var start2 = SetGeoPoint(_start2);
-            var stop1 = SetGeoPoint(_stop1);
-            var stop2 = SetGeoPoint(_stop2);
-
-            var totalDistance1 = GeoMath.Distance(start1.Latitude, start1.Longitude, 
-                start1.Altitude, stop1.Latitude, stop1.Longitude, stop1.Altitude);
-            var totalDistance2 = GeoMath.Distance(start2.Latitude, start2.Longitude, 
-                start2.Altitude, stop2.Latitude, stop2.Longitude, stop2.Altitude);
-            var totalSeconds1 = totalDistance1 / _vectorVelocity;
-            var totalSeconds2 = totalDistance2 / _vectorVelocity;
-            var groundDistance1 = GeoMath.Distance(start1, stop1); // TODO: suggest to rename this method to GroundDistance
-            var groundDistance2 = GeoMath.Distance(start2, stop2); // TODO: suggest to rename this method to GroundDistance
-            var vertVelocity1 = (start1.Altitude - stop1.Altitude) / totalSeconds1;
-            var vertVelocity2 = (start2.Altitude - stop2.Altitude) / totalSeconds2;
-            var horVelocity1 = groundDistance1 / totalSeconds1;
-            var horVelocity2 = groundDistance2 / totalSeconds2;
-            var azimuth1 = GeoMath.Azimuth(start1, stop1);
-            var azimuth2 = GeoMath.Azimuth(start2, stop2);
-
-            var threads = new Thread[2];
-
-            threads[0] = new Thread(() => {
-                for (var i = 0.0; i < groundDistance1; i += horVelocity1)
-                {
-                    var nextPoint = start1.RadialPoint(i / _updateRate, azimuth1);
-                    nextPoint = nextPoint.AddAltitude(vertVelocity1 / _updateRate);
-                    
-                    server1.Adsb.Send(_ =>
-                    {
-                        _.Altitude = (int)(nextPoint.Altitude * 1e3);
-                        _.Lon = (int)(nextPoint.Longitude * 1e7);
-                        _.Lat = (int)(nextPoint.Latitude * 1e7);
-                        MavlinkTypesHelper.SetString(_.Callsign,_callSign);
-                        _.Flags = AdsbFlags.AdsbFlagsSimulated;
-                        _.Squawk = 15;
-                        _.Heading = (ushort)(azimuth1 * 1e2);
-                        _.AltitudeType = AdsbAltitudeType.AdsbAltitudeTypeGeometric;
-                        _.EmitterType = AdsbEmitterType.AdsbEmitterTypeNoInfo;
-                        _.HorVelocity = 150;
-                        _.VerVelocity = 75;
-                        _.IcaoAddress = 1313;
-                    });
-
-                    Console.WriteLine($"Current position 1: {nextPoint}");
-                        
-                    Thread.Sleep(1000 / _updateRate);
-                }
-                
-                Console.WriteLine("\n ARRIVED 1 \n");
-            });
-            
-            threads[1] = new Thread(() => {
-                for (var i = 0.0; i < groundDistance2; i += horVelocity2)
-                {
-                    var nextPoint = start2.RadialPoint(i / _updateRate, azimuth2);
-                    nextPoint = nextPoint.AddAltitude(vertVelocity2 / _updateRate);
-                    
-                    server2.Adsb.Send(_ =>
-                    {
-                        _.Altitude = (int)(nextPoint.Altitude * 1e3);
-                        _.Lon = (int)(nextPoint.Longitude * 1e7);
-                        _.Lat = (int)(nextPoint.Latitude * 1e7);
-                        MavlinkTypesHelper.SetString(_.Callsign,_callSign);
-                        _.Flags = AdsbFlags.AdsbFlagsSimulated;
-                        _.Squawk = 15;
-                        _.Heading = (ushort)(azimuth2 * 1e2);
-                        _.AltitudeType = AdsbAltitudeType.AdsbAltitudeTypeGeometric;
-                        _.EmitterType = AdsbEmitterType.AdsbEmitterTypeNoInfo;
-                        _.HorVelocity = 150;
-                        _.VerVelocity = 75;
-                        _.IcaoAddress = 1313;
-                    });
-
-                    Console.WriteLine($"Current position 2: {nextPoint}");
-                        
-                    Thread.Sleep(1000 / _updateRate);
-                }
-                
-                Console.WriteLine("\n ARRIVED 2 \n");
-            });
-            
-            threads[0].Start();
-            threads[1].Start();
-
-            threads[0].Join();
-            threads[1].Join();
-        }
+        return AnsiConsole.Progress()
+            .Columns(new ProgressColumn[] 
+            {
+                new TaskDescriptionColumn(),    // Task description
+                new ProgressBarColumn(),        // Progress bar
+                new PercentageColumn(),         // Percentage
+                new ElapsedTimeColumn(),        // Elapsed time
+                new SpinnerColumn(),            // Spinner
+            })
+            .StartAsync(RunAsync).Result;
 
         return -1;
     }
+
+    private async Task<int> RunAsync(ProgressContext ctx)
+    {
+        this.LogInformation("Check config file exist {ConfigFile}", _file);
+        if (File.Exists(_file) == false)
+        {
+            this.LogWarning("Create default config file {ConfigFile}", _file);
+            await File.WriteAllTextAsync(_file,JsonConvert.SerializeObject(AdsbCommandConfig.Default, Formatting.Indented));
+        }
+        var config = JsonConvert.DeserializeObject<AdsbCommandConfig>(await File.ReadAllTextAsync(_file));
+        
+        if (config.Vehicles == null || config.Vehicles.Length == 0)
+        {
+            this.LogError("Vehicles settings not found in the configuration file: {ConfigFile}", _file);
+            return -1;
+        }
+        
+        this.LogInformation("Start virtual ADSB receiver with SystemId:{SystemId}, ComponentId:{ComponentId}", config.SystemId, config.ComponentId);
+
+        using var router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
+        foreach (var port in config.Ports)
+        {
+            this.LogInformation("Add connection port {PortName}: {PortConnectionString}", port.Name, port.ConnectionString);
+            router.AddPort(port);
+        }
+        
+        var srv = new AdsbServerDevice(
+            router,
+            new PacketSequenceCalculator(),
+            new MavlinkIdentity(config.SystemId, config.ComponentId),
+            new AdsbServerDeviceConfig(),
+            Scheduler.Default);
+        srv.Start();
+        
+        this.LogInformation("Found config for {Count} vehicle", config.Vehicles.Length);
+        await Task.WhenAll(config.Vehicles.Select(x=>RunVehicleAsync(ctx, x,srv)));
+        this.LogInformation("Finish simulation");
+        
+        return 0;
+    }
+
+    private async Task RunVehicleAsync(ProgressContext ctx, AdsbCommandVehicleConfig cfg, AdsbServerDevice srv)
+    {
+        var vehicleTask = ctx.AddTask(cfg.CallSign);
+        if (cfg.Route == null || cfg.Route.Length < 2)
+        {
+            this.LogError("Vehicle {ConfigIcaoCodeSign} route must contain more than two points", cfg.CallSign);
+            return;
+        }
+
+        var route = new List<GeoPoint>();
+        var totalDistance = 0.0;
+        for (var index = 0; index < cfg.Route.Length; index++)
+        {
+            var point = cfg.Route[index];
+            if (GeoPointLatitude.TryParse(point.Lat, out var lat) == false)
+            {
+                var err = GeoPointLatitude.GetErrorMessage(point.Lat);
+                this.LogError("Config error {ConfigIcaoCodeSign}. route point '{Index}.{LatName}={LatString}' parse error:{Err}", cfg.CallSign, index, nameof(point.Lat),point.Lat, err);
+            }
+            if (GeoPointLatitude.TryParse(point.Lon, out var lon) == false)
+            {
+                var err = GeoPointLongitude.GetErrorMessage(point.Lon);
+                this.LogError("Vehicle {ConfigIcaoCodeSign} route point '{Index}.{LonName}={LonString}' parse error:{Err}", cfg.CallSign, index, nameof(point.Lon),point.Lon, err);
+            }
+            route.Add(new GeoPoint(lat,lon,point.Alt));
+        }
+        for (int i = 1; i < route.Count; i++)
+        {
+            totalDistance += route[i - 1].DistanceTo(route[i]);
+        }
+        var currentDistance = 0.0;
+        for (int i = 1; i < route.Count; i++)
+        {
+            currentDistance+= await RunVehicleTaskAsync(i,currentDistance, totalDistance,srv,cfg,ctx, vehicleTask,route[i - 1],cfg.Route[i - 1].Velocity, route[i],cfg.Route[i].Velocity);
+        }
+    }
+
+    private async Task<double> RunVehicleTaskAsync(int index, double dist, double total, AdsbServerDevice srv,
+        AdsbCommandVehicleConfig cfg, ProgressContext ctx, ProgressTask vehicleTask, GeoPoint from,
+        double velocityFrom, GeoPoint to, double velocityTo)
+    {
+        var spatialDistance = from.DistanceTo(to);
+        var horizontalDistance = from.SetAltitude(0).DistanceTo(to.SetAltitude(0));
+        var verticalDistance = Math.Abs(to.Altitude - from.Altitude);
+        var azimuth = from.Azimuth(to);
+        var timeStep = (double)cfg.UpdateRateMs / 1000;
+        
+        var currentDistance = 0.0;
+        var currentHorizontalDistance = 0.0;
+        var currentVerticalDistance = 0.0;
+
+        while (currentDistance < spatialDistance)
+        {
+            var fractionOfJourney = currentDistance / spatialDistance;
+            var currentVelocity = velocityFrom + (velocityTo - velocityFrom) * fractionOfJourney;
+            var vHorizontal = currentVelocity * (horizontalDistance / spatialDistance);
+            var vVertical = currentVelocity * (verticalDistance / spatialDistance);
+            currentHorizontalDistance += vHorizontal / timeStep;
+            currentVerticalDistance += vVertical / timeStep;
+            var vehiclePos = from.RadialPoint(currentHorizontalDistance, azimuth)
+                .AddAltitude(currentVerticalDistance);
+            currentDistance = from.DistanceTo(vehiclePos);
+            await srv.Adsb.Send(x =>
+            {
+                x.Tslc = (byte)(timeStep + 1);
+                x.Altitude = MavlinkTypesHelper.AltFromDoubleMeterToInt32Mm(vehiclePos.Altitude);
+                x.Lon = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(vehiclePos.Longitude);
+                x.Lat = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(vehiclePos.Latitude);
+                MavlinkTypesHelper.SetString(x.Callsign, cfg.CallSign);
+                x.Flags = AdsbFlags.AdsbFlagsSimulated |
+                          AdsbFlags.AdsbFlagsValidAltitude |
+                          AdsbFlags.AdsbFlagsValidHeading |
+                          AdsbFlags.AdsbFlagsValidCoords |
+                          AdsbFlags.AdsbFlagsValidSquawk;
+                x.Squawk = cfg.Squawk;
+                x.Heading = (ushort)(azimuth * 1e2);
+                x.AltitudeType = AdsbAltitudeType.AdsbAltitudeTypeGeometric;
+                x.EmitterType = AdsbEmitterType.AdsbEmitterTypeNoInfo;
+                x.HorVelocity = (ushort)(vHorizontal * 1e2);
+                x.VerVelocity = (short)(vVertical * 1e2);
+                x.IcaoAddress = cfg.IcaoAddress;
+            });
+
+            // Simulate delay for realistic movement
+            vehicleTask.Description =
+                $"[green]{cfg.CallSign}[/] {index:0}=>{index + 1:0} V:[blue]{vVertical,-5:F1} m/s[/] H:[blue]{vHorizontal,-5:F1}[/] m/s D:[blue]{currentDistance,-5:F0} m[/] from [blue]{spatialDistance,-5:F0} m[/]";
+            vehicleTask.Value = ((dist + currentDistance) / total) * 100.0;
+            await Task.Delay((int)(timeStep * 1000));
+        }
+
+        return spatialDistance;
+    }
+
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+    {
+        switch (logLevel)
+        {
+            case LogLevel.Trace:
+                AnsiConsole.MarkupLine("[italic dim grey]trce[/]: " + formatter(state, exception));
+                break;
+            case LogLevel.Debug:
+                AnsiConsole.MarkupLine("[dim grey]dbug[/]: " + formatter(state, exception));
+                break;
+            case LogLevel.Information:
+                AnsiConsole.MarkupLine("[dim deepskyblue2]info[/]: " + formatter(state, exception));
+                break;
+            case LogLevel.Warning:
+                AnsiConsole.MarkupLine("[bold orange3]warn[/]: " + formatter(state, exception));
+                break;
+            case LogLevel.Error:
+                AnsiConsole.MarkupLine("[bold red]fail[/]: " + formatter(state, exception));
+                break;
+            case LogLevel.Critical:
+                AnsiConsole.MarkupLine("[bold underline red on white]crit[/]: " + formatter(state, exception));
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(logLevel));
+        }
+    }
+
+    public bool IsEnabled(LogLevel logLevel) => true;
+
+    public IDisposable BeginScope<TState>(TState state) where TState : notnull => null;
 }
