@@ -452,7 +452,6 @@ namespace Asv.Mavlink
 
         protected override void InternalDisposeOnce()
         {
-            base.InternalDisposeOnce();
             _portCollectionSync.EnterWriteLock();
             try
             {
@@ -470,8 +469,8 @@ namespace Asv.Mavlink
             {
                 _portCollectionSync.ExitWriteLock();
             }
-            
             _portCollectionSync.Dispose();
+             base.InternalDisposeOnce();
         }
     }
 }
