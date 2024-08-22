@@ -93,9 +93,9 @@ public class ArduQuadPlaneClient : ArduVehicle
 
     public override async Task TakeOff(double altInMeters, CancellationToken cancel = default)
     {
-        IVehicleMode mode = ArduQuadPlaneMode.Guided;
         await EnsureInGuidedMode(cancel).ConfigureAwait(false);
-        
+        await Position.ArmDisarm(true, cancel).ConfigureAwait(false);
+        await Position.TakeOff(altInMeters,  cancel).ConfigureAwait(false);
     }
 
     public override IEnumerable<IVehicleMode> AvailableModes { get; }
