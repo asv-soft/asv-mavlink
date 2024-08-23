@@ -126,7 +126,7 @@ public class CommandMicroserviceTest
         longList[MavCmd.MavCmdUser1] = (from, args, cancel)  =>
         {
             called = true;
-            return Task.FromResult(new CommandResult(MavResult.MavResultAccepted));
+            return CommandResult.AsTask(MavResult.MavResultAccepted);
         };
        
         
@@ -139,7 +139,7 @@ public class CommandMicroserviceTest
         intList[MavCmd.MavCmdUser1] = (from, args, cancel)  =>
         {
             called = true;
-            return Task.FromResult(new CommandResult(MavResult.MavResultAccepted));
+            return CommandResult.AsTask(MavResult.MavResultAccepted);
         };
         result = await client.CommandInt(MavCmd.MavCmdUser1, MavFrame.MavFrameGlobal, true, true, 0, 0, 0, 0, 0, 0, 0,CancellationToken.None);
         Assert.True(called);

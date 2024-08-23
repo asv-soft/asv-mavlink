@@ -52,7 +52,7 @@ public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, IC
                 }
                 Logger.Warn($"Reject command {pkt}): too busy now");
                 await Base.SendCommandAck((MavCmd)cmd, requester,
-                    new CommandResult(MavResult.MavResultTemporarilyRejected), DisposeCancel).ConfigureAwait(false);
+                    CommandResult.FromResult(MavResult.MavResultTemporarilyRejected), DisposeCancel).ConfigureAwait(false);
                 return;
             }
             _lastCommand = cmd;
@@ -61,7 +61,7 @@ public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, IC
                 Logger.Warn($"Reject unknown command {pkt})");
                 _lastCommand = -1;
                 await Base.SendCommandAck((MavCmd)cmd, requester,
-                    new CommandResult(MavResult.MavResultUnsupported), DisposeCancel).ConfigureAwait(false);
+                    CommandResult.FromResult(MavResult.MavResultUnsupported), DisposeCancel).ConfigureAwait(false);
                 return;
             }
 
@@ -73,7 +73,7 @@ public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, IC
             Logger.Error($"Error to execute command {pkt}:{e.Message}");
             _lastCommand = -1;
             await Base.SendCommandAck((MavCmd)cmd, requester,
-                new CommandResult(MavResult.MavResultFailed), DisposeCancel).ConfigureAwait(false);
+                CommandResult.FromResult(MavResult.MavResultFailed), DisposeCancel).ConfigureAwait(false);
 
         }
         finally

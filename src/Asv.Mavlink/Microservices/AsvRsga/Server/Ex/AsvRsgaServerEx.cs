@@ -18,11 +18,11 @@ public class AsvRsgaServerEx : DisposableOnceWithCancel, IAsvRsgaServerEx
         server.OnCompatibilityRequest.Subscribe(OnCompatibilityRequest).DisposeItWith(Disposable);
         commands[(MavCmd)V2.AsvRsga.MavCmd.MavCmdAsvRsgaSetMode] = async (id,args, cancel) =>
         {
-            if (SetMode == null) return new CommandResult(MavResult.MavResultUnsupported);
+            if (SetMode == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             RsgaHelper.GetArgsForSetMode(args.Payload, out var mode);
             var result = await SetMode(mode, cs.Token).ConfigureAwait(false);
-            return new CommandResult(result);
+            return CommandResult.FromResult(result);
         };
     }
     

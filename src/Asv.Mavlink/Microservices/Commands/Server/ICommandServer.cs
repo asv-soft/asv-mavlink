@@ -60,7 +60,7 @@ namespace Asv.Mavlink
         /// <returns>A task representing the asynchronous operation.</returns>
         public static Task SendCommandAckAccepted(this ICommandServer server, CommandIntPacket req, MavResult result, CancellationToken cancel = default)
         {
-            return server.SendCommandAck(req.Payload.Command, new DeviceIdentity(req.SystemId,req.ComponentId), new CommandResult(result), cancel);
+            return server.SendCommandAck(req.Payload.Command, new DeviceIdentity(req.SystemId,req.ComponentId), CommandResult.FromResult(result), cancel);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Asv.Mavlink
         /// </returns>
         public static Task SendCommandAckAccepted(this ICommandServer server, CommandLongPacket req, MavResult result, CancellationToken cancel = default)
         {
-            return server.SendCommandAck(req.Payload.Command, new DeviceIdentity(req.SystemId,req.ComponentId), new CommandResult(result), cancel);
+            return server.SendCommandAck(req.Payload.Command, new DeviceIdentity(req.SystemId,req.ComponentId), CommandResult.FromResult(result), cancel);
         }
     }
 
@@ -83,6 +83,112 @@ namespace Asv.Mavlink
     /// /
     public class CommandResult
     {
+        #region Static
+
+        private static CommandResult? _accepted;
+        public static CommandResult Accepted => _accepted ??= new(MavResult.MavResultAccepted);
+       
+        private static CommandResult? _temporarilyRejected;
+        public static CommandResult TemporarilyRejected => _temporarilyRejected ??= new(MavResult.MavResultTemporarilyRejected);
+        
+       
+        
+        private static CommandResult? _denied;
+        public static CommandResult Denied => _denied ??= new(MavResult.MavResultDenied);
+        
+        private static CommandResult? _unsupported;
+        public static CommandResult Unsupported => _unsupported ??= new(MavResult.MavResultUnsupported);
+        
+        private static CommandResult? _failed;
+        public static CommandResult Failed => _failed ??= new(MavResult.MavResultFailed);
+        
+        private static CommandResult? _inProgress;
+        public static CommandResult InProgress => _inProgress ??= new(MavResult.MavResultInProgress);
+        
+        private static CommandResult? _cancelled;
+        public static CommandResult Cancelled => _cancelled ??= new(MavResult.MavResultCancelled);
+        
+        private static CommandResult? _commandLongOnly;
+        public static CommandResult CommandLongOnly => _commandLongOnly ??= new(MavResult.MavResultCommandLongOnly);
+        
+        private static CommandResult? _commandIntOnly;
+        public static CommandResult CommandIntOnly => _commandIntOnly ??= new(MavResult.MavResultCommandIntOnly);
+        
+        private static CommandResult? _commandUnsupportedMavFrame;
+        
+        public static CommandResult CommandUnsupportedMavFrame => _commandUnsupportedMavFrame ??= new(MavResult.MavResultCommandUnsupportedMavFrame);
+        
+        private static Task<CommandResult>? _acceptedTask;
+        public static Task<CommandResult> AcceptedTask => _acceptedTask ??= Task.FromResult(Accepted);
+        
+        private static Task<CommandResult>? _temporarilyRejectedTask;
+        public static Task<CommandResult> TemporarilyRejectedTask => _temporarilyRejectedTask ??= Task.FromResult(TemporarilyRejected);
+        
+        private static Task<CommandResult>? _deniedTask;
+        public static Task<CommandResult> DeniedTask => _deniedTask ??= Task.FromResult(Denied);
+        
+        private static Task<CommandResult>? _unsupportedTask;
+        public static Task<CommandResult> UnsupportedTask => _unsupportedTask ??= Task.FromResult(Unsupported);
+        
+        private static Task<CommandResult>? _failedTask;
+        public static Task<CommandResult> FailedTask => _failedTask ??= Task.FromResult(Failed);
+        
+        private static Task<CommandResult>? _inProgressTask;
+        public static Task<CommandResult> InProgressTask => _inProgressTask ??= Task.FromResult(InProgress);
+        
+        private static Task<CommandResult>? _cancelledTask;
+        public static Task<CommandResult> CancelledTask => _cancelledTask ??= Task.FromResult(Cancelled);
+        
+        private static Task<CommandResult>? _commandLongOnlyTask;
+        public static Task<CommandResult> CommandLongOnlyTask => _commandLongOnlyTask ??= Task.FromResult(CommandLongOnly);
+        
+        private static Task<CommandResult>? _commandIntOnlyTask;
+        public static Task<CommandResult> CommandIntOnlyTask => _commandIntOnlyTask ??= Task.FromResult(CommandIntOnly);
+        
+        private static Task<CommandResult>? _commandUnsupportedMavFrameTask;
+        public static Task<CommandResult> CommandUnsupportedMavFrameTask => _commandUnsupportedMavFrameTask ??= Task.FromResult(CommandUnsupportedMavFrame);
+        
+        
+
+        
+        public static CommandResult FromResult(MavResult result)
+        {
+            return result switch
+            {
+                MavResult.MavResultAccepted => Accepted,
+                MavResult.MavResultTemporarilyRejected => TemporarilyRejected,
+                MavResult.MavResultDenied => Denied,
+                MavResult.MavResultUnsupported => Unsupported,
+                MavResult.MavResultFailed => Failed,
+                MavResult.MavResultInProgress => InProgress,
+                MavResult.MavResultCancelled => Cancelled,
+                MavResult.MavResultCommandLongOnly => CommandLongOnly,
+                MavResult.MavResultCommandIntOnly => CommandIntOnly,
+                MavResult.MavResultCommandUnsupportedMavFrame => CommandUnsupportedMavFrame,
+                _ => CommandResult.FromResult(result)
+            };
+        }
+        public static Task<CommandResult> AsTask(MavResult result)
+        {
+            return result switch
+            {
+                MavResult.MavResultAccepted => AcceptedTask,
+                MavResult.MavResultTemporarilyRejected => TemporarilyRejectedTask,
+                MavResult.MavResultDenied => DeniedTask,
+                MavResult.MavResultUnsupported => UnsupportedTask,
+                MavResult.MavResultFailed => FailedTask,
+                MavResult.MavResultInProgress => InProgressTask,
+                MavResult.MavResultCancelled => CancelledTask,
+                MavResult.MavResultCommandLongOnly => CommandLongOnlyTask,
+                MavResult.MavResultCommandIntOnly => CommandIntOnlyTask,
+                MavResult.MavResultCommandUnsupportedMavFrame => CommandUnsupportedMavFrameTask,
+                _ => Task.FromResult(CommandResult.FromResult(result))
+            };
+        }
+        
+
+        #endregion
+        
         /// <summary>
         /// Represents the result of a command.
         /// </summary>

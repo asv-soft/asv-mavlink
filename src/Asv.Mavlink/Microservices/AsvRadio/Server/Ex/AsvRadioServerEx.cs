@@ -66,21 +66,21 @@ public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
         
         commands[(MavCmd)V2.AsvRadio.MavCmd.MavCmdAsvRadioOn] = async (id,args, cancel) =>
         {
-            if (EnableRadio == null) return new CommandResult(MavResult.MavResultUnsupported);
+            if (EnableRadio == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             AsvRadioHelper.GetArgsForRadioOn(args.Payload, out var freq, out var mode, out var referencePower, out var txPower, out var codec);
             if (freq > capabilities.MaxFrequencyHz || freq < capabilities.MinFrequencyHz)
             {
                 Logger.Warn($"Frequency {freq} out of range {capabilities.MinFrequencyHz}-{capabilities.MaxFrequencyHz}");
                 statusText1.Error("Frequency out of range");
-                return new CommandResult(MavResult.MavResultFailed);
+                return CommandResult.FromResult(MavResult.MavResultFailed);
             }
 
             if (referencePower > capabilities.MaxReferencePowerDbm || referencePower < capabilities.MinReferencePowerDbm)
             {
                 Logger.Warn($"Reference power {referencePower} out of range {capabilities.MinReferencePowerDbm}-{capabilities.MaxReferencePowerDbm}");
                 statusText1.Error("Reference power out of range");
-                return new CommandResult(MavResult.MavResultFailed);
+                return CommandResult.FromResult(MavResult.MavResultFailed);
             }
             if (capabilities.SupportedModulations.Contains(mode) == false)
             {
@@ -95,15 +95,15 @@ public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
             }
             
             var result = await EnableRadio(freq, mode, referencePower, txPower, codec, cs.Token).ConfigureAwait(false);
-            return new CommandResult(result);
+            return CommandResult.FromResult(result);
         };
         commands[(MavCmd)V2.AsvRadio.MavCmd.MavCmdAsvRadioOff] = async (id,args, cancel) =>
         {
-            if (DisableRadio == null) return new CommandResult(MavResult.MavResultUnsupported);
+            if (DisableRadio == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             AsvRadioHelper.GetArgsForRadioOff(args.Payload);
             var result = await DisableRadio(cs.Token).ConfigureAwait(false);
-            return new CommandResult(result);
+            return CommandResult.FromResult(result);
         };
 
         Base.OnCapabilitiesRequest.Subscribe(OnCapabilitiesRequest).DisposeItWith(Disposable);

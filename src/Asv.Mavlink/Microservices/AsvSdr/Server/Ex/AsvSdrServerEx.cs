@@ -49,76 +49,76 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
         
         commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSetMode] = async (id,args, cancel) =>
         {
-            if (SetMode == null) return new CommandResult(MavResult.MavResultUnsupported);
+            if (SetMode == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             AsvSdrHelper.GetArgsForSdrSetMode(args.Payload, out var mode, out var freq, out var rate, out var sendingThinningRatio, out var referencePower);
             var result = await SetMode(mode,freq, rate,sendingThinningRatio, referencePower, cs.Token).ConfigureAwait(false);
-            return new CommandResult(result);
+            return CommandResult.FromResult(result);
         };
         commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartRecord] = async (id,args, cancel) =>
         {
-            if (StartRecord == null) return new CommandResult(MavResult.MavResultUnsupported);
+            if (StartRecord == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             AsvSdrHelper.GetArgsForSdrStartRecord(args.Payload, out var name);
             var result = await StartRecord(name, cs.Token).ConfigureAwait(false);
-            return new CommandResult(result);
+            return CommandResult.FromResult(result);
         };
         commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopRecord] = async (id,args, cancel) =>
         {
-            if (StopRecord == null) return new CommandResult(MavResult.MavResultUnsupported);
+            if (StopRecord == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             AsvSdrHelper.GetArgsForSdrStopRecord(args.Payload);
             var result = await StopRecord(cs.Token).ConfigureAwait(false);
-            return new CommandResult(result);
+            return CommandResult.FromResult(result);
         };
         commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag] = async (id,args, cancel) =>
         {
-            if (CurrentRecordSetTag == null) return new CommandResult(MavResult.MavResultUnsupported);
+            if (CurrentRecordSetTag == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             AsvSdrHelper.GetArgsForSdrCurrentRecordSetTag(args.Payload, out var name, out var tagType, out var valueArray);
             var result = await CurrentRecordSetTag(tagType,name,valueArray, cs.Token).ConfigureAwait(false);
-            return new CommandResult(result);
+            return CommandResult.FromResult(result);
         };
         commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction] = async (id, args, cancel) =>
         {
-            if (SystemControlAction == null) return new CommandResult(MavResult.MavResultUnsupported);
+            if (SystemControlAction == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             AsvSdrHelper.GetArgsForSdrSystemControlAction(args.Payload, out var action);
             var result = await SystemControlAction(action, cs.Token).ConfigureAwait(false);
-            return new CommandResult(result);
+            return CommandResult.FromResult(result);
         };
         commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartMission] = async (id, args, cancel) =>
         {
-            if (StartMission == null) return new CommandResult(MavResult.MavResultUnsupported);
+            if (StartMission == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             AsvSdrHelper.GetArgsForSdrStartMission(args.Payload, out var missionIndex);
             var result = await StartMission(missionIndex, cs.Token).ConfigureAwait(false);
-            return new CommandResult(result);
+            return CommandResult.FromResult(result);
         };
         commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopMission] = async (id, args, cancel) =>
         {
-            if (StopMission == null) return new CommandResult(MavResult.MavResultUnsupported);
+            if (StopMission == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             AsvSdrHelper.GetArgsForSdrStopMission(args.Payload);
             var result = await StopMission(cs.Token).ConfigureAwait(false);
-            return new CommandResult(result);
+            return CommandResult.FromResult(result);
         };
         
         commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration] = async (id, args, cancel) =>
         {
-            if (StartCalibration == null) return new CommandResult(MavResult.MavResultUnsupported);
+            if (StartCalibration == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             AsvSdrHelper.SetArgsForSdrStartCalibration(args.Payload);
             var result = await StartCalibration(cs.Token).ConfigureAwait(false);
-            return new CommandResult(result);
+            return CommandResult.FromResult(result);
         };
         commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration] = async (id, args, cancel) =>
         {
-            if (StopCalibration == null) return new CommandResult(MavResult.MavResultUnsupported);
+            if (StopCalibration == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             AsvSdrHelper.SetArgsForSdrStopCalibration(args.Payload);
             var result = await StopCalibration(cs.Token).ConfigureAwait(false);
-            return new CommandResult(result);
+            return CommandResult.FromResult(result);
         };
 
         Base.OnCalibrationTableReadRequest.Subscribe(OnCalibrationReadTable).DisposeItWith(Disposable);
