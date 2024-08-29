@@ -51,6 +51,8 @@ public class ArdupilotPlaneMode:VehicleMode
             yield return Qland;
             yield return Qrtl;
             yield return Qautotune;
+            yield return LoiterToQuadLand;
+            yield return Qacro;
         }
     }
 
@@ -129,8 +131,15 @@ public class ArdupilotPlaneMode:VehicleMode
     /// <summary>
     /// Automated pitch and bank procedure to improve control loops
     /// </summary>
-    public static ArdupilotPlaneMode Qautotune   = new("Qautotune", RS.ArdupilotPlaneMode_Qautotune_Description, PlaneMode.PlaneModeQautotune);
-   
+    public static ArdupilotPlaneMode Qautotune   = new("Quad Autotune", RS.ArdupilotPlaneMode_Qautotune_Description, PlaneMode.PlaneModeQautotune);
+    /// <summary>
+    /// This mode will perform a descending fixed wing LOITER down to Q_RTL_ALT and then switch to QLAND mode.
+    /// </summary>
+    public static ArdupilotPlaneMode LoiterToQuadLand = new("Loiter To QLand", RS.ArdupilotPlaneMode_Loiter_To_QLand_Description, PlaneMode.LoiterToQLand);
+    /// <summary>
+    /// A quadplane mode for advanced users that provides rate based stabilization like Copter ACRO
+    /// </summary>
+    public static ArdupilotPlaneMode Qacro = new("Quad Acro", RS.ArdupilotPlaneMode_QAcro_Description, PlaneMode.PlaneModeQacro);
     
     #endregion
     

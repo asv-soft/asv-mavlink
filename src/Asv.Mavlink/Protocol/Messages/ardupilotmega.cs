@@ -1893,6 +1893,10 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// PLANE_MODE_THERMAL
         /// </summary>
         PlaneModeThermal = 24,
+        /// <summary>
+        /// PLANE_MODE_THERMAL
+        /// </summary>
+        LoiterToQLand = 25,
     }
 
     /// <summary>

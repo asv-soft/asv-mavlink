@@ -320,4 +320,10 @@
 	<data name="ArdupilotCopterMode_AvoidAdsb_Description" xml:space="preserve">
 		<value>ADS-B based avoidance of manned aircraft. Should not be set-up as a pilot selectable flight mode.</value>
 	</data>
+	<data name="ArdupilotPlaneMode_Loiter_To_QLand_Description" xml:space="preserve">
+		<value>This mode will perform a descending fixed wing LOITER down to Q_RTL_ALT and then switch to QLAND mode.</value>
+	</data>
+	<data name="ArdupilotPlaneMode_QAcro_Description" xml:space="preserve">
+		<value>A quadplane mode for advanced users that provides rate based stabilization like Copter ACRO</value>
+	</data>
 </root>

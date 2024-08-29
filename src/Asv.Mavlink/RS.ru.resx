@@ -317,4 +317,10 @@
 	<data name="ArdupilotCopterMode_AvoidAdsb_Description" xml:space="preserve">
 		<value>Режим уклонения пилотируемых судов, основанный на протоколе ADS-B. Данный режим нельзя делать настраиваемым пилотом.</value>
 	</data>
+	<data name="ArdupilotPlaneMode_Loiter_To_QLand_Description" xml:space="preserve">
+		<value>В этом режиме будет выполнено снижение неподвижного крыла LOITER до Q_RTL_ALT, а затем переключение в режим QLAND.</value>
+	</data>
+	<data name="ArdupilotPlaneMode_QAcro_Description" xml:space="preserve">
+		<value>Режим квадроплана для опытных пользователей, обеспечивающий стабилизацию на основе скорости, как у Copter ACRO.</value>
+	</data>
 </root>

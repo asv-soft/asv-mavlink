@@ -312,11 +312,29 @@ namespace Asv.Mavlink {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This mode will perform a descending fixed wing LOITER down to Q_RTL_ALT and then switch to QLAND mode..
+        /// </summary>
+        public static string ArdupilotPlaneMode_Loiter_To_QLand_Description {
+            get {
+                return ResourceManager.GetString("ArdupilotPlaneMode_Loiter_To_QLand_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Manual control surface movement, passthrough.
         /// </summary>
         public static string ArdupilotPlaneMode_Manual_Description {
             get {
                 return ResourceManager.GetString("ArdupilotPlaneMode_Manual_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A quadplane mode for advanced users that provides rate based stabilization like Copter ACRO.
+        /// </summary>
+        public static string ArdupilotPlaneMode_QAcro_Description {
+            get {
+                return ResourceManager.GetString("ArdupilotPlaneMode_QAcro_Description", resourceCulture);
             }
         }
         

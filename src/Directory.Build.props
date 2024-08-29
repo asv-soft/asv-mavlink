@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <ProductVersion>3.10.3</ProductVersion>
-    <ProductPrevVersion>3.10.2</ProductPrevVersion>
+    <ProductVersion>3.10.4</ProductVersion>
+    <ProductPrevVersion>3.10.3</ProductPrevVersion>
 
     <AsvCommonVersion>2.0.1</AsvCommonVersion>
     <ApiCompatVersion>8.0.200</ApiCompatVersion>
