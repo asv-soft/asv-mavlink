@@ -133,15 +133,22 @@ namespace Asv.Mavlink
                 var portObject = new MavlinkPort(port, _register, Guid.NewGuid());
                 portObject.Connection.DeserializePackageErrors.Do(_=>_.SourceName = port.Name).Subscribe(_deserializeErrors);
                 portObject.Port.Subscribe(_rawData);
-                portObject.Connection.Do(_=>_.Tag = portObject).Subscribe(packet =>
+
+                if (port.PacketLossChance <= 0)
                 {
-                    var random = new Random();
-                    var chance = random.Next(100);
-                    if (chance > port.PacketLossChance)
+                    portObject.Connection.Do(_=>_.Tag = portObject).Subscribe(OnRecvPacket);
+                }
+                else
+                {
+                    portObject.Connection.Do(_=>_.Tag = portObject).Subscribe(packet =>
                     {
-                        OnRecvPacket(packet);
-                    }
-                });
+                        var chance = Random.Shared.Next(100);
+                        if (chance > port.PacketLossChance)
+                        {
+                            OnRecvPacket(packet);
+                        }
+                    });
+                }
                 _ports.Add(portObject);
                 id = portObject.Id;
             }
