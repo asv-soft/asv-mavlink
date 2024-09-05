@@ -13,6 +13,51 @@ using NLog;
 
 namespace Asv.Mavlink;
 
+public class PacketCounter(byte initialCounter = 0)
+{
+    /// <summary>
+    /// Проверяет, является ли новый счетчик инкрементом предыдущего.
+    /// Возвращает количество пропущенных значений, если они есть.
+    /// </summary>
+    /// <param name="newCounter">Новое значение счетчика пакета.</param>
+    /// <returns>Количество пропущенных значений (0, если последовательность не нарушена).</returns>
+    public int CheckIncrement(byte newCounter)
+    {
+        int missedPackets = 0;
+
+        // Проверяем переход через 255
+        if (initialCounter == 255 && newCounter == 0)
+        {
+            missedPackets = 0; // Ничего не пропущено, корректный переход через границу
+        }
+        // Если новый счетчик больше предыдущего на 1
+        else if (newCounter == initialCounter + 1)
+        {
+            missedPackets = 0; // Последовательность не нарушена
+        }
+        // Если новый счетчик меньше предыдущего (переполнение через 255) или пропущены пакеты
+        else
+        {
+            // Рассчитываем количество пропущенных пакетов
+            if (newCounter > initialCounter)
+            {
+                missedPackets = newCounter - initialCounter - 1;
+            }
+            else
+            {
+                // Учитываем переполнение через 255
+                missedPackets = (256 - initialCounter) + (newCounter - 1);
+            }
+        }
+
+        // Обновляем последний счетчик
+        initialCounter = newCounter;
+
+        // Возвращаем количество пропущенных пакетов
+        return missedPackets;
+    }
+}
+
 public interface IAudioDevice
 {
     ushort FullId { get; }
@@ -35,10 +80,12 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
     private readonly IAudioEncoder _encoder;
     private uint _frameCounter = 0;
     private readonly SortedDictionary<byte, AsvAudioStreamPayload> _frameBuffer = new();
-    private int _currentFrameId;
+    
     private readonly object _sync = new();
     private readonly Subject<ReadOnlyMemory<byte>> _inputEncoderAudioStream;
     private readonly Subject<ReadOnlyMemory<byte>> _inputDecoderAudioStream;
+    private PacketCounter? _counter;
+    private int _lastFrameSeq;
 
     public AudioDevice(IAudioCodecFactory factory, 
         AsvAudioCodec outputCodecInfo, 
@@ -157,13 +204,31 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
             return;
         }
 
+        if (_lastFrameSeq == stream.FrameSeq)
+        {
+            // skip same frame
+            return;
+        }
         lock (_sync)
         {
             if (stream.PktInFrame == 1)
             {
+                _counter ??= new PacketCounter((byte)(stream.FrameSeq - 1));
+                var missed = _counter.CheckIncrement(stream.FrameSeq);
                 try
                 {
-                    _inputDecoderAudioStream.OnNext(new ReadOnlyMemory<byte>(stream.Data,0,stream.DataSize));
+                    if (missed > 0)
+                    {
+                        for (var i = 0; i < missed; i++)
+                        {
+                            Logger.Trace($"Missed packets {missed}");
+                            _inputDecoderAudioStream.OnNext(ReadOnlyMemory<byte>.Empty);        
+                        }
+                    }
+                    else
+                    {
+                        _inputDecoderAudioStream.OnNext(new ReadOnlyMemory<byte>(stream.Data,0,stream.DataSize));   
+                    }
                 }
                 catch (Exception e)
                 {
@@ -172,10 +237,9 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
             }
             else
             {
-                if (_currentFrameId != stream.FrameSeq)
+                if (_lastFrameSeq != stream.FrameSeq)
                 {
                     _frameBuffer.Clear();
-                    _currentFrameId = stream.FrameSeq;
                 }
                 if (!_frameBuffer.TryAdd(stream.PktSeq, stream)) return;
                 if (_frameBuffer.Count < stream.PktInFrame) return;
@@ -201,6 +265,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
                     ArrayPool<byte>.Shared.Return(frameData);
                 }
             }
+            _lastFrameSeq = stream.FrameSeq;
         }
     }
 }
