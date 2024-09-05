@@ -1,10 +1,10 @@
-name: Build and Publish Debug Version
+name: Build and Publish Pre-Release Version
 
 on:
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+-dev.[0-9]+"
-      - "v[0-9]+.[0-9]+.[0-9]+-dev"
+      - "v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-rc"
 
 env:
   PATH_TO_PROJECTS: ${{ github.workspace }}\src
@@ -45,7 +45,7 @@ jobs:
         run: |
           dotnet tool install -g dotnet-setversion    
           setversion ${{ env.VERSION }} ${{ env.PATH_TO_PROJECTS }}\Asv.Mavlink\Asv.Mavlink.csproj    
-          
+
       - name: Add NuGet source
         run: |
           dotnet nuget add source ${{ env.GITHUB_PACKAGES_URL }} --username '${{ secrets.USER_NAME }}' --password '${{ secrets.GIHUB_NUGET_AUTH_TOKEN }}' --store-password-in-clear-text
@@ -68,4 +68,9 @@ jobs:
 #      - name: Pushing packages to Github   
 #        run: |    
 #          cd src    
-#          dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.${{ env.VERSION }}.nupkg -k ${{ secrets.GIHUB_NUGET_AUTH_TOKEN }} --skip-duplicate -s ${{ env.GITHUB_PACKAGES_URL }}
+#          dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.${{ env.VERSION }}.nupkg -k ${{ secrets.GIHUB_NUGET_AUTH_TOKEN }} --skip-duplicate -s ${{ env.GITHUB_PACKAGES_URL }} --prerelease
+
+#      - name: Pushing packages to Nuget   
+#        run: |    
+#          cd src    
+#          dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.${{ env.VERSION }}.nupkg -k ${{ secrets.NUGET_AUTH_TOKEN }} --skip-duplicate -s ${{ env.NUGET_SOURCE_URL }} --prerelease
