@@ -46,7 +46,8 @@ jobs:
           setversion ${{ env.VERSION }} ${{ env.PATH_TO_PROJECTS }}\Asv.Mavlink\Asv.Mavlink.csproj  
           
       - name: Add NuGet source
-        run: dotnet nuget add source ${{ env.GITHUB_PACKAGES_URL }} \--username '${{ secrets.USER_NAME }}' \--password '${{ secrets.GITHUB_TOKEN }}' \--store-password-in-clear-text
+        run: |
+          dotnet nuget add source ${{ env.GITHUB_PACKAGES_URL }} --username '${{ secrets.USER_NAME }}' --password '${{ secrets.GITHUB_TOKEN }}' --store-password-in-clear-text
 
       - name: Restoring dependencies
         run: |
