@@ -34,7 +34,7 @@ jobs:
           TAG: ${{ github.ref_name }}
         shell: pwsh
         run: |
-          $newTag = $env:TAG -replace "v", "", 1 
+          $newTag = $env:TAG -replace "^v", "" 
           echo "VERSION=$newTag" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Checking version
