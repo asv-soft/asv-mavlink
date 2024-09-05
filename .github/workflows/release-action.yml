@@ -47,7 +47,7 @@ jobs:
           
       - name: Add NuGet source
         run: |
-          dotnet nuget add source ${{ env.GITHUB_PACKAGES_URL }} --username '${{ secrets.USER_NAME }}' --password '${{ secrets.GITHUB_TOKEN }}' --store-password-in-clear-text
+          dotnet nuget add source ${{ env.GITHUB_PACKAGES_URL }} --username '${{ secrets.USER_NAME }}' --password '${{ secrets.GIHUB_NUGET_AUTH_TOKEN }}' --store-password-in-clear-text
 
       - name: Restoring dependencies
         run: |
