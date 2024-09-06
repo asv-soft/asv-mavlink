@@ -26,6 +26,12 @@ namespace Asv.Mavlink
             _transponder =
                 new MavlinkPacketTransponder<AsvSdrOutStatusPacket, AsvSdrOutStatusPayload>(connection, identity, seq)
                     .DisposeItWith(Disposable);
+            _transponder.Set(x =>
+            {
+                x.SignalOverflow = float.NaN;
+                x.RefPower = float.NaN;
+            });
+            
             OnRecordRequest = InternalFilter<AsvSdrRecordRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)
                 .Select(_ => _.Payload).Publish().RefCount();
             OnRecordDeleteRequest = InternalFilter<AsvSdrRecordDeleteRequestPacket>(_=>_.Payload.TargetSystem,_=>_.Payload.TargetComponent)

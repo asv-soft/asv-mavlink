@@ -30,6 +30,7 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
             .Select(x => x.Payload).Publish().RefCount();
         OnCodecCapabilitiesRequest = InternalFilter<AsvRadioCodecCapabilitiesRequestPacket>(x=>x.Payload.TargetSystem,x=>x.Payload.TargetComponent)
             .Select(x => x.Payload).Publish().RefCount();
+        
     }
     
     public void Start()

@@ -58,6 +58,7 @@ public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
             x.MavlinkVersion = 3;
             x.CustomMode = (uint)AsvRadioCustomMode.AsvRadioCustomModeIdle;
         });
+        
         CustomMode = new RxValue<AsvRadioCustomMode>().DisposeItWith(Disposable);
         CustomMode.DistinctUntilChanged().Subscribe(mode => heartbeat.Set(_ =>
         {

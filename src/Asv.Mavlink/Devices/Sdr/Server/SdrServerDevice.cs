@@ -33,6 +33,7 @@ public class SdrServerDevice:ServerDevice, ISdrServerDevice
         Params = new ParamsServerEx(paramsBase,StatusText,paramList,encoding,paramStore,config.Params).DisposeItWith(Disposable);
         var mission = new MissionServer(connection, identity, seq, scheduler).DisposeItWith(Disposable);
         Missions = new MissionServerEx(mission, StatusText, connection, identity, seq, scheduler).DisposeItWith(Disposable);
+        
     }
 
     public override void Start()
