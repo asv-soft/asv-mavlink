@@ -67,6 +67,11 @@ public class ServerMissionItem
     /// OriginName: mission_type, Units: , IsExtended: true
     /// </summary>
     public MavMissionType MissionType { get; set; }
+
+    public override string ToString()
+    {
+        return $"Seq:{Seq} Command:{Command:G} Frame:{Frame:G} X:{X} Y:{Y} Z:{Z} Param1:{Param1} Param2:{Param2} Param3:{Param3} Param4:{Param4} Autocontinue:{Autocontinue} MissionType:{MissionType:G}"; 
+    }
 }
 
 /// <summary>
