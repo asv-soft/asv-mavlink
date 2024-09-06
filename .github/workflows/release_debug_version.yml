@@ -1,0 +1,71 @@
+name: Build and Publish Debug Version
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+-dev.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-dev"
+
+env:
+  PATH_TO_PROJECTS: ${{ github.workspace }}\src
+  PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}\output\
+  NUGET_SOURCE_URL: 'https://api.nuget.org/v3/index.json'
+  GITHUB_PACKAGES_URL: 'https://nuget.pkg.github.com/asv-soft/index.json'
+
+jobs:
+  deploy:
+    name: 'Deploy'
+    runs-on: windows-2019
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+      - name: Setup .Net
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: |
+            8.x.x
+            7.x.x   
+            6.x.x   
+            5.x.x   
+            3.x.x   
+
+      - name: Set version variable
+        env:
+          TAG: ${{ github.ref_name }}
+        shell: pwsh
+        run: |
+          $newTag = $env:TAG
+          $newTag = $newTag.TrimStart("v")
+          echo "VERSION=$newTag" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Checking version
+        run: echo ${{ env.VERSION }}
+
+      - name: Setting the project version
+        run: |
+          dotnet tool install -g dotnet-setversion    
+          setversion ${{ env.VERSION }} ${{ env.PATH_TO_PROJECTS }}\Asv.Mavlink\Asv.Mavlink.csproj    
+          
+      - name: Add NuGet source
+        run: |
+          dotnet nuget add source ${{ env.GITHUB_PACKAGES_URL }} --username '${{ secrets.USER_NAME }}' --password '${{ secrets.GIHUB_NUGET_AUTH_TOKEN }}' --store-password-in-clear-text
+
+      - name: Restoring dependencies
+        run: |
+          cd src    
+          dotnet restore    
+
+      - name: Building projects
+        run: |
+          cd src    
+          dotnet build -c Release --no-restore    
+
+      - name: Packing projects to Nuget
+        run: |
+          cd src    
+          dotnet pack -c Release --no-build --no-restore -p:PackageVersion=${{ env.VERSION }} --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}    
+
+      - name: Pushing packages to Github   
+        run: |    
+          cd src    
+          dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.${{ env.VERSION }}.nupkg -k ${{ secrets.GIHUB_NUGET_AUTH_TOKEN }} --skip-duplicate -s ${{ env.GITHUB_PACKAGES_URL }}
