@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Reactive.Concurrency;
 using System.Threading;
 using Asv.Common;
@@ -132,6 +134,11 @@ public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
     {
         if(items != null)
             _missionSource.Remove(items);
+    }
+
+    public ImmutableArray<ServerMissionItem> GetItemsSnapshot()
+    {
+        return [.._missionSource.Items];
     }
 }
 

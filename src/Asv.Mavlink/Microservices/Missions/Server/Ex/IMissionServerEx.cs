@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using Asv.Common;
 using DynamicData;
 
@@ -41,4 +42,10 @@ public interface IMissionServerEx
    IObservable<IChangeSet<ServerMissionItem,ushort>> Items { get; }
    void AddItems(IEnumerable<ServerMissionItem> items);
    void RemoveItems(IEnumerable<ServerMissionItem> items);
+
+   /// <summary>
+   /// Retrieves a snapshot of the mission items.
+   /// </summary>
+   /// <returns>An array of ServerMissionItem representing the snapshot of the mission items.</returns>
+   ImmutableArray<ServerMissionItem> GetItemsSnapshot();
 }
