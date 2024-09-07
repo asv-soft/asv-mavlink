@@ -138,7 +138,7 @@ public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
 
     public ImmutableArray<ServerMissionItem> GetItemsSnapshot()
     {
-        return [.._missionSource.Items];
+        return  _missionSource.Items.ToImmutableArray();
     }
 }
 
