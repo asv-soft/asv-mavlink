@@ -5,7 +5,7 @@ namespace Asv.Mavlink;
 public class CommandLongServerEx : CommandServerEx<CommandLongPacket>
 {
     public CommandLongServerEx(ICommandServer server) 
-        : base(server, server.OnCommandLong, _=>(ushort)_.Payload.Command, _=>_.Payload.Confirmation)
+        : base(server, server.OnCommandLong, p=>(ushort)p.Payload.Command, p=>p.Payload.Confirmation)
     {
         
     }

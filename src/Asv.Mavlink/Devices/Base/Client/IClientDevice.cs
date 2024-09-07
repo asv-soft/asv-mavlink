@@ -1,7 +1,5 @@
 using System;
 using System.Reactive.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 
@@ -98,7 +96,7 @@ public static class ClientDeviceHelper
     public static void WaitUntilConnect(this IClientDevice client, int timeoutMs = 3000)
     {
         var tcs = new TaskCompletionSource();
-        using var subscribe = client.Heartbeat.Link.Where(_ => _ == LinkState.Connected).FirstAsync().Subscribe(_ =>
+        using var subscribe = client.Heartbeat.Link.Where(s => s == LinkState.Connected).FirstAsync().Subscribe(_ =>
         {
             tcs.TrySetResult();
         });
@@ -113,7 +111,7 @@ public static class ClientDeviceHelper
     {
         client.WaitUntilConnect(timeoutMs);
         var tcs = new TaskCompletionSource();
-        using var subscribe = client.OnInit.Where(_ => _ == InitState.Complete).FirstAsync().Subscribe(_ =>
+        using var subscribe = client.OnInit.Where(s => s == InitState.Complete).FirstAsync().Subscribe(_ =>
         {
             tcs.TrySetResult();
         });

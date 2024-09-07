@@ -1,8 +1,10 @@
 using System;
+using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using ZLogger;
 
 namespace Asv.Mavlink
 {
@@ -10,11 +12,15 @@ namespace Asv.Mavlink
     {
 
         private readonly int _maxMessageLength = new GpsRtcmDataPayload().Data.Length;
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _logger;
         private uint _seqNumber;
 
-        public DgpsClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq):base("DGPS", connection, identity, seq)
+        public DgpsClient(
+            IMavlinkV2Connection connection, 
+            MavlinkClientIdentity identity,
+            IPacketSequenceCalculator seq,
+            IScheduler? scheduler = null,
+            ILogger? logger = null):base("DGPS", connection, identity, seq, scheduler, logger)
         {
         
         }
@@ -23,7 +29,7 @@ namespace Asv.Mavlink
         {
             if (length > _maxMessageLength * 4)
             {
-                _logger.Error($"RTCM message for DGPS is too large '{length}'");
+                _logger.ZLogError($"RTCM message for DGPS is too large '{length}'");
                 return;
             }
 

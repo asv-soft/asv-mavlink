@@ -5,7 +5,9 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -23,14 +25,16 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
     private readonly RxValue<string> _name;
     private bool _needToRequestAgain = true;
     private int _isRequestInfoIsInProgressOrAlreadySuccess;
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-    
+    private readonly ILogger _loggerBase;
+
     protected ClientDevice(IMavlinkV2Connection connection,
         MavlinkClientIdentity identity,
         ClientDeviceConfig config,
         IPacketSequenceCalculator seq,
-        IScheduler? scheduler = null)
+        IScheduler? scheduler = null, 
+        ILogger? logger = null)
     {
+        _loggerBase = logger ?? NullLogger.Instance;
         Connection = connection;
         _config = config;
         _scheduler = scheduler;
@@ -43,18 +47,18 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
         _onInit = new RxValue<InitState>(InitState.WaitConnection)
             .DisposeItWith(Disposable);
         Heartbeat.Link.DistinctUntilChanged()
-            .Where(_ => _ == LinkState.Disconnected)
+            .Where(s => s == LinkState.Disconnected)
             .Subscribe(_ => _needToRequestAgain = true).DisposeItWith(Disposable);
         
         if (scheduler != null)
         {
-            Heartbeat.Link.DistinctUntilChanged().Where(_ => _needToRequestAgain).Where(_ => _ == LinkState.Connected)
+            Heartbeat.Link.DistinctUntilChanged().Where(_ => _needToRequestAgain).Where(s => s == LinkState.Connected)
                 // only one time
                 .Delay(TimeSpan.FromMilliseconds(100),scheduler).Subscribe(_ => TryReconnect()).DisposeItWith(Disposable);
         }
         else
         {
-            Heartbeat.Link.DistinctUntilChanged().Where(_ => _needToRequestAgain).Where(_ => _ == LinkState.Connected)
+            Heartbeat.Link.DistinctUntilChanged().Where(_ => _needToRequestAgain).Where(s => s == LinkState.Connected)
                 // only one time
                 .Delay(TimeSpan.FromMilliseconds(100)).Subscribe(_ => TryReconnect()).DisposeItWith(Disposable);
         }
@@ -79,7 +83,7 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
         catch (Exception e)
         {
             if (IsDisposed) return; // no need to replay since the instance was already disposed
-            Logger.Error( $"Error to init device:{e.Message}");
+            _loggerBase.ZLogError(e, $"Error to init device:{e.Message}");
             _onInit.OnNext(InitState.Failed);
             if (_scheduler != null)
             {

@@ -63,11 +63,11 @@ public class GnssStatusClient : DisposableOnceWithCancel, IGnssStatusClient
     public GnssStatusClient(IObservable<GpsRawIntPayload> pipe)
     {
         _info = new RxValue<GpsInfo>(null).DisposeItWith(Disposable);
-        pipe.Select(_ => new GpsInfo(_)).Subscribe(_info).DisposeItWith(Disposable);
+        pipe.Select(p => new GpsInfo(p)).Subscribe(_info).DisposeItWith(Disposable);
         _groundVelocity = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        pipe.Select(_ => _.Vel / 100D).Subscribe(_groundVelocity).DisposeItWith(Disposable);
+        pipe.Select(p => p.Vel / 100D).Subscribe(_groundVelocity).DisposeItWith(Disposable);
         _position = new RxValue<GeoPoint>(GeoPoint.Zero).DisposeItWith(Disposable);
-        pipe.Select(_ => new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.Lat), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.Lon), MavlinkTypesHelper.AltFromMmToDoubleMeter(_.Alt))).Subscribe(_position).DisposeItWith(Disposable);
+        pipe.Select(p => new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lat), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lon), MavlinkTypesHelper.AltFromMmToDoubleMeter(p.Alt))).Subscribe(_position).DisposeItWith(Disposable);
     }
 
     /// <summary>
@@ -77,11 +77,11 @@ public class GnssStatusClient : DisposableOnceWithCancel, IGnssStatusClient
     public GnssStatusClient(IObservable<Gps2RawPayload> pipe)
     {
         _info = new RxValue<GpsInfo>(null).DisposeItWith(Disposable);
-        pipe.Select(_ => new GpsInfo(_)).Subscribe(_info).DisposeItWith(Disposable);
+        pipe.Select(p => new GpsInfo(p)).Subscribe(_info).DisposeItWith(Disposable);
         _groundVelocity = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        pipe.Select(_ => _.Vel / 100D).Subscribe(_groundVelocity).DisposeItWith(Disposable);
+        pipe.Select(p => p.Vel / 100D).Subscribe(_groundVelocity).DisposeItWith(Disposable);
         _position = new RxValue<GeoPoint>(GeoPoint.Zero).DisposeItWith(Disposable);
-        pipe.Select(_ => new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.Lat), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.Lon), MavlinkTypesHelper.AltFromMmToDoubleMeter(_.Alt))).Subscribe(_position).DisposeItWith(Disposable);
+        pipe.Select(p => new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lat), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lon), MavlinkTypesHelper.AltFromMmToDoubleMeter(p.Alt))).Subscribe(_position).DisposeItWith(Disposable);
     }
 
 

@@ -9,7 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvAudio;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -70,7 +72,7 @@ public interface IAudioDevice
 
 public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
     private readonly Func<Action<AsvAudioStreamPacket>, CancellationToken, Task> _sendPacketDelegate;
     private readonly OnRecvAudioDelegate _onRecvAudioDelegate;
     private readonly RxValue<string> _name;
@@ -90,9 +92,12 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
     public AudioDevice(IAudioCodecFactory factory, 
         AsvAudioCodec outputCodecInfo, 
         AsvAudioOnlinePacket packet, 
-        Func<Action<AsvAudioStreamPacket>, CancellationToken, Task> sendPacketDelegate,
-        OnRecvAudioDelegate onRecvAudioDelegate)
+        Func<Action<AsvAudioStreamPacket>, 
+            CancellationToken, Task> sendPacketDelegate,
+        OnRecvAudioDelegate onRecvAudioDelegate,
+        ILogger? logger = null)
     {
+        _logger = logger ?? NullLogger.Instance;
         if (factory == null) throw new ArgumentNullException(nameof(factory));
         if (packet == null) throw new ArgumentNullException(nameof(packet));
         _inputEncoderAudioStream = new Subject<ReadOnlyMemory<byte>>().DisposeItWith(Disposable);
@@ -162,7 +167,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
         }
         catch (Exception e)
         {
-            Logger.Error(e);
+            _logger.ZLogError(e,$"Error to send audio packet:{e.Message}");
         }
         
     }
@@ -200,7 +205,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
         if (IsDisposed) return;
         if (stream.PktInFrame == 0)
         {
-            Logger.Warn("Recv strange packet with PktInFrame = 0");
+            _logger.LogWarning("Recv strange packet with PktInFrame = 0");
             return;
         }
 
@@ -221,7 +226,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
                     {
                         for (var i = 0; i < missed; i++)
                         {
-                            Logger.Trace($"Missed packets {missed}");
+                            _logger.ZLogTrace($"Missed packets {missed}");
                             _inputDecoderAudioStream.OnNext(ReadOnlyMemory<byte>.Empty);        
                         }
                     }
@@ -232,7 +237,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e);
+                    _logger.ZLogError(e,$"Error to process audio stream packet:{e.Message}");
                 }
             }
             else
@@ -258,7 +263,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e);
+                    _logger.ZLogError(e,$"Error to process audio stream packet:{e.Message}");
                 }
                 finally
                 {

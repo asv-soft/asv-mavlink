@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -43,21 +46,30 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
     private readonly IConfiguration _cfg;
     private readonly ParamsServerExConfig _serverCfg;
 
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
     private readonly Subject<Exception> _onErrorSubject;
     private int _sendingInProgressFlag;
     private readonly ImmutableDictionary<string,(ushort,IMavParamTypeMetadata)> _paramDict;
     private readonly ImmutableList<IMavParamTypeMetadata> _paramList;
     private readonly Subject<ParamChangedEvent> _onParamChangedSubject;
-    public ParamsServerEx(IParamsServer server, IStatusTextServer statusTextServer, IEnumerable<IMavParamTypeMetadata> paramDescriptions, IMavParamEncoding encoding, IConfiguration cfg, ParamsServerExConfig serverCfg)
+    public ParamsServerEx(
+        IParamsServer server, 
+        IStatusTextServer statusTextServer, 
+        IEnumerable<IMavParamTypeMetadata> paramDescriptions, 
+        IMavParamEncoding encoding, 
+        IConfiguration cfg, 
+        ParamsServerExConfig serverCfg,
+        IScheduler? scheduler = null,
+        ILogger? logger = null)
     {
+        _logger = logger ?? NullLogger.Instance;
         _server = server;
         _statusTextServer = statusTextServer ?? throw new ArgumentNullException(nameof(statusTextServer));
         _encoding = encoding;
         _cfg = cfg;
         _serverCfg = serverCfg;
         _onErrorSubject = new Subject<Exception>().DisposeItWith(Disposable);
-        _paramList = paramDescriptions.OrderBy(_=>_.Name).ToImmutableList();
+        _paramList = paramDescriptions.OrderBy(m=>m.Name).ToImmutableList();
         var dict = new Dictionary<string, (ushort,IMavParamTypeMetadata)>();
         for (var i = 0; i < _paramList.Count; i++)
         {
@@ -79,10 +91,9 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
             var name =  MavlinkTypesHelper.GetString(_.Payload.ParamId);
             if (_paramDict.TryGetValue(name, out param) == false)
             {
-                var msg = $"Error to get mavlink param: param '{name}' not found";
-                Logger.Error(msg);
+                _logger.ZLogError($"Error to get mavlink param: param '{name}' not found");
                 _statusTextServer.Error($"Param '{name}' not found");
-                _onErrorSubject.OnNext(new ArgumentException(msg,name));
+                _onErrorSubject.OnNext(new ArgumentException($"Error to get mavlink param: param '{name}' not found",name));
                 return;
             }
         }
@@ -90,10 +101,9 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
         {
             if (_.Payload.ParamIndex >= _paramDict.Count)
             {
-                var msg = $"Error to get mavlink param: param with index '{_.Payload.ParamIndex}' not found";
-                Logger.Error(msg);
+                _logger.ZLogError($"Error to get mavlink param: param '{_.Payload.ParamIndex}' not found");
                 _statusTextServer.Error($"Param '{_.Payload.ParamIndex}' not found");
-                _onErrorSubject.OnNext(new ArgumentException(msg));
+                _onErrorSubject.OnNext(new ArgumentException($"Error to get mavlink param: param with index '{_.Payload.ParamIndex}' not found"));
                 return;
             }
             param = ((ushort)_.Payload.ParamIndex, _paramList[_.Payload.ParamIndex]);
@@ -107,7 +117,7 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
     {
         if (Interlocked.CompareExchange(ref _sendingInProgressFlag, 1, 0) == 1)
         {
-            Logger.Warn("Skip duplicate request for params list");
+            _logger.LogWarning("Skip duplicate request for params list");
             _statusTextServer.Error($"Skip duplicate request");
             return;
         }
@@ -132,20 +142,18 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
         var name = MavlinkTypesHelper.GetString(_.Payload.ParamId);
         if (_paramDict.TryGetValue(name, out var param) == false)
         {
-            var msg = $"Error to set mavlink param: param '{name}' not found";
-            Logger.Error(msg);
+            _logger.ZLogError($"Error to set mavlink param: param '{name}' not found");
             _statusTextServer.Error($"Param '{name}' not found");
-            _onErrorSubject.OnNext(new ArgumentException(msg, name));
+            _onErrorSubject.OnNext(new ArgumentException($"Error to set mavlink param: param '{name}' not found", name));
             return;
         }
 
         var currentValue = param.Item2.ReadFromConfig(_cfg, _serverCfg.CfgPrefix);
         if (param.Item2.Type != _.Payload.ParamType)
         {
-            var msg = $"Error to set mavlink param: param '{name}' type didn't equal. Want {param.Item2.Type} but found {_.Payload.ParamType}";
-            Logger.Error(msg);
+            _logger.ZLogError($"Error to set mavlink param: param '{name}' type didn't equal. Want {param.Item2.Type} but found {_.Payload.ParamType}");
             _statusTextServer.Error($"param type '{name}' not equal");
-            _onErrorSubject.OnNext(new ArgumentException(msg, name));
+            _onErrorSubject.OnNext(new ArgumentException($"Error to set mavlink param: param '{name}' type didn't equal. Want {param.Item2.Type} but found {_.Payload.ParamType}", name));
             await SendParam(param, currentValue, DisposeCancel).ConfigureAwait(false);
             return;
         }
@@ -154,15 +162,13 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
         if (param.Item2.IsValid(newValue) == false)
         {
             var errorMsg = param.Item2.GetValidationError(newValue);
-            var msg = $"Error to set mavlink param '{name}' [{param.Item2.Type}]: {errorMsg}";
-            Logger.Error(msg);
+            _logger.ZLogError($"Error to set mavlink param '{name}' [{param.Item2.Type}]: {errorMsg}");
             _statusTextServer.Error($"param '{name}':{errorMsg}");
-            _onErrorSubject.OnNext(new ArgumentException(msg, name));
+            _onErrorSubject.OnNext(new ArgumentException($"Error to set mavlink param '{name}' [{param.Item2.Type}]: {errorMsg}", name));
             await SendParam(param, currentValue, DisposeCancel).ConfigureAwait(false);
             return;
         }
-
-        Logger.Info("Set param {0} from {1} => {2}", param.Item2.Name, currentValue, newValue);
+        _logger.ZLogInformation($"Set param {param.Item2.Name} from {currentValue} => {newValue}");
         param.Item2.WriteToConfig(_cfg, newValue,_serverCfg.CfgPrefix);
         _onParamChangedSubject.OnNext(new ParamChangedEvent(param, currentValue, newValue, true));
         await SendParam(param, newValue, DisposeCancel).ConfigureAwait(false);
@@ -172,13 +178,13 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
 
     private async Task SendParam((ushort, IMavParamTypeMetadata) param, MavParamValue value, CancellationToken cancel)
     {
-        await _server.SendParamValue(_ =>
+        await _server.SendParamValue(p =>
         {
-            _.ParamIndex = param.Item1;
-            MavlinkTypesHelper.SetString(_.ParamId, param.Item2.Name);
-            _.ParamType = param.Item2.Type;
-            _.ParamCount = (ushort)_paramList.Count;
-            _.ParamValue = _encoding.ConvertToMavlinkUnion(value);
+            p.ParamIndex = param.Item1;
+            MavlinkTypesHelper.SetString(p.ParamId, param.Item2.Name);
+            p.ParamType = param.Item2.Type;
+            p.ParamCount = (ushort)_paramList.Count;
+            p.ParamValue = _encoding.ConvertToMavlinkUnion(value);
         }, cancel).ConfigureAwait(false);
     }
 

@@ -4,6 +4,7 @@ using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink.Diagnostic.Server;
 
@@ -20,7 +21,13 @@ public class DiagnosticServer: MavlinkMicroserviceServer, IDiagnosticServer
     private readonly ConcurrentDictionary<string,DateTime> _lastSendFloatTime = new();
     private readonly ConcurrentDictionary<string,DateTime> _lastSendIntTime = new();
 
-    public DiagnosticServer(DiagnosticServerConfig config,IMavlinkV2Connection connection, MavlinkIdentity identity, IPacketSequenceCalculator seq, IScheduler rxScheduler) : base("DIAG", connection, identity, seq, rxScheduler)
+    public DiagnosticServer(
+        DiagnosticServerConfig config,
+        IMavlinkV2Connection connection, 
+        MavlinkIdentity identity, 
+        IPacketSequenceCalculator seq, 
+        IScheduler? rxScheduler = null,
+        ILogger? logger = null) : base("DIAG", connection, identity, seq, rxScheduler,logger)
     {
         _config = config;
         _bootTime = DateTime.Now;

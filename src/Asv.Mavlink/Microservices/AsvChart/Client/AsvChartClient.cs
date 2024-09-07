@@ -2,13 +2,16 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvChart;
 using DynamicData;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -19,7 +22,7 @@ public class AsvChartClientConfig
 
 public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
     private volatile uint _seq;
     private readonly SourceCache<AsvChartInfo,ushort> _signals;
     private readonly TimeSpan _maxTimeToWaitForResponseForList;
@@ -29,8 +32,15 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
     private ushort _lastCollectionHash;
     private readonly RxValue<bool> _isSynced;
 
-    public AsvChartClient(AsvChartClientConfig config,IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq): base("CHART", connection, identity, seq)
+    public AsvChartClient(
+        AsvChartClientConfig config,
+        IMavlinkV2Connection connection, 
+        MavlinkClientIdentity identity, 
+        IPacketSequenceCalculator seq,
+        IScheduler? scheduler = null,
+        ILogger? logger = null): base("CHART", connection, identity, seq,scheduler, logger)
     {
+        _logger = logger ?? NullLogger.Instance;
         _signals = new SourceCache<AsvChartInfo, ushort>(x=>x.Id).DisposeItWith(Disposable);
         _maxTimeToWaitForResponseForList = TimeSpan.FromMilliseconds(config.MaxTimeToWaitForResponseForListMs);
         OnChartInfo = InternalFilter<AsvChartInfoPacket>().Select(x => new AsvChartInfo(x.Payload));
@@ -102,7 +112,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
     {
         if (data.Payload.PktInFrame == 0)
         {
-            Logger.Warn("Recv strange packet with PktInFrame = 0");
+            _logger.LogWarning("Recv strange packet with PktInFrame = 0");
             return;
         }
         
@@ -111,7 +121,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
         
         if (signalInfo.Value.InfoHash != data.Payload.ChatInfoHash)
         {
-            Logger.Warn($"Recv data for chart {data.Payload.ChatId} with different hash {data.Payload.ChatInfoHash} != {signalInfo.Value.InfoHash}");
+            _logger.ZLogWarning($"Recv data for chart {data.Payload.ChatId} with different hash {data.Payload.ChatInfoHash} != {signalInfo.Value.InfoHash}");
             return;
         }
         
@@ -135,7 +145,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e);
+                    _logger.ZLogError(e, $"Error on read data:{e.Message}");
                 }
                 finally
                 {
@@ -173,7 +183,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e);
+                    _logger.ZLogError(e, $"Error on read data:{e.Message}");
                 }
                 finally
                 {

@@ -9,7 +9,9 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvAudio;
 using DynamicData;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -41,7 +43,7 @@ public class AudioServiceConfig
 
 public class AudioService : DisposableOnceWithCancel, IAudioService
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger(); 
+    private readonly ILogger _logger; 
     private readonly IAudioCodecFactory _codecFactory;
     private readonly IMavlinkV2Connection _connection;
     private readonly MavlinkIdentity _identity;
@@ -63,8 +65,10 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
         MavlinkIdentity identity, 
         IPacketSequenceCalculator seq,
         AudioServiceConfig config, 
-        IScheduler? publishScheduler = null)
+        IScheduler? publishScheduler = null,
+        ILogger? logger = null)
     {
+        _logger = logger ?? NullLogger.Instance;
         _codecFactory = codecFactory ?? throw new ArgumentNullException(nameof(codecFactory));
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _identity = identity;
@@ -160,7 +164,7 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                _logger.ZLogError(e, $"Error on add device:{e.Message}");
             }
         });
     }

@@ -84,21 +84,21 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
         //     }
         // });
         
-        using var burstSubscription = Client.OnBurstReadPacket.Where(_ => _.Session == openFileRo.Session).Subscribe(_ =>
+        using var burstSubscription = Client.OnBurstReadPacket.Where(p => p.Session == openFileRo.Session).Subscribe(p =>
         {
             lastBurstRead = DateTime.Now;
             
-            bw.BaseStream.Position = _.Offset;
-            bw.Write(_.Data, 0, _.Size);
+            bw.BaseStream.Position = p.Offset;
+            bw.Write(p.Data, 0, p.Size);
 
-            if (_.BurstComplete && _fileLength > _.Size + _.Offset)
+            if (p.BurstComplete && _fileLength > p.Size + p.Offset)
             {
-                Client.BurstReadFile(251 - 12, _.Size + _.Offset, openFileRo.Session, cs.Token).Wait(cs.Token);
+                Client.BurstReadFile(251 - 12, p.Size + p.Offset, openFileRo.Session, cs.Token).Wait(cs.Token);
             }
 
-            if (_fileLength <= _.Size + _.Offset)
+            if (_fileLength <= p.Size + p.Offset)
             {
-                Client.TerminateSession(_.Session, cs.Token).Wait(cs.Token);
+                Client.TerminateSession(p.Session, cs.Token).Wait(cs.Token);
                 
                 tcs.TrySetResult();
             }
@@ -172,7 +172,7 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
             allCounts = fileMatches.Count + dirMatches.Count;
         }
         
-        foreach (var dirMatch in dirMatches.Distinct(new CallbackComparer<Match>(_ => _.Value.GetHashCode(), 
+        foreach (var dirMatch in dirMatches.Distinct(new CallbackComparer<Match>(m => m.Value.GetHashCode(), 
                      (first, second) => first.Value.Equals(second.Value))))
         {
             var item = new FtpEntryItem()
@@ -184,7 +184,7 @@ public class FtpClientEx : DisposableOnceWithCancel, IFtpClientEx
             items.Add(item);
         }
 
-        foreach (var fileMatch in fileMatches.Distinct(new CallbackComparer<Match>(_ => _.Value.GetHashCode(), 
+        foreach (var fileMatch in fileMatches.Distinct(new CallbackComparer<Match>(m => m.Value.GetHashCode(), 
                      (first, second) => first.Value.Equals(second.Value))))
         {
             var item = new FtpEntryItem()

@@ -26,7 +26,7 @@ public class ParamItem: DisposableOnceWithCancel,IParamItem
         Index = payload.ParamIndex;
         _isSynced = new RxValue<bool>(true).DisposeItWith(Disposable);
         _value = new RxValue<MavParamValue>(_remoteValue = converter.ConvertFromMavlinkUnion(payload.ParamValue,payload.ParamType)).DisposeItWith(Disposable);
-        _value.Subscribe(_ => _isSynced.OnNext(_remoteValue == _)).DisposeItWith(Disposable);
+        _value.Subscribe(v => _isSynced.OnNext(_remoteValue == v)).DisposeItWith(Disposable);
         Disposable.AddAction(() =>
         {
             

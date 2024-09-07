@@ -1,7 +1,8 @@
-using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
 
 
 namespace Asv.Mavlink;
@@ -13,8 +14,12 @@ public class TraceStreamClient : MavlinkMicroserviceClient, ITraceStreamClient
     private readonly RxValue<NamedValueIntMessage> _onNamedValueIntMessage;
     private readonly RxValue<NamedValueFloatMessage> _onNamedValueFloatMessage;
 
-    public TraceStreamClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq) : base("TRACESTREAM", connection, identity, seq)
+    public TraceStreamClient(
+        IMavlinkV2Connection connection, 
+        MavlinkClientIdentity identity,
+        IPacketSequenceCalculator seq,
+        IScheduler? scheduler = null,
+        ILogger? logger = null) : base("TRACESTREAM", connection, identity, seq,scheduler,logger)
     {
         Name = new RxValue<string>($"[{identity.TargetSystemId},{identity.TargetComponentId}]")
             .DisposeItWith(Disposable);

@@ -9,8 +9,10 @@ using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
 using DynamicData;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
-using NLog;
+using ZLogger;
 
 namespace Asv.Mavlink
 {
@@ -87,12 +89,13 @@ namespace Asv.Mavlink
 
     public class MavlinkDeviceBrowser : DisposableOnceWithCancel, IMavlinkDeviceBrowser
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _logger;
         private readonly RxValue<TimeSpan> _deviceTimeout;
         private readonly SourceCache<MavlinkDevice,ushort> _deviceCache;
 
-        public MavlinkDeviceBrowser(IMavlinkV2Connection connection, TimeSpan deviceTimeout, IScheduler? scheduler = null)
+        public MavlinkDeviceBrowser(IMavlinkV2Connection connection, TimeSpan deviceTimeout, IScheduler? scheduler = null, ILogger? logger = null)
         {
+            _logger = logger ?? NullLogger.Instance;
             connection
                 .Filter<HeartbeatPacket>()
                 .Subscribe(UpdateDevice)
@@ -106,11 +109,11 @@ namespace Asv.Mavlink
             
             if (scheduler != null)
             {
-                Devices = _deviceCache.Connect().ObserveOn(scheduler).Transform(_ => (IMavlinkDevice)_).RefCount();    
+                Devices = _deviceCache.Connect().ObserveOn(scheduler).Transform(d => (IMavlinkDevice)d).RefCount();    
             }
             else
             {
-                Devices = _deviceCache.Connect().Transform(_ => (IMavlinkDevice)_).RefCount();
+                Devices = _deviceCache.Connect().Transform(d => (IMavlinkDevice)d).RefCount();
             }
             
         }
@@ -142,7 +145,7 @@ namespace Asv.Mavlink
                 {
                     var newItem = new MavlinkDevice(packet);
                     update.AddOrUpdate(newItem);
-                    Logger.Info($"Found new device {JsonConvert.SerializeObject(newItem.ToString())}");
+                    _logger.ZLogInformation($"Found new device {JsonConvert.SerializeObject(newItem.ToString())}");
                 }
             });
         }

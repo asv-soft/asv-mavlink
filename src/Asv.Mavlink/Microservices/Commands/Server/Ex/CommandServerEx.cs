@@ -3,7 +3,8 @@ using System.Collections.Concurrent;
 using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -13,7 +14,7 @@ public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, IC
     private readonly Func<TArgPacket,ushort> _cmdGetter;
     private readonly Func<TArgPacket,byte> _confirmationGetter;
     private readonly ConcurrentDictionary<ushort, CommandDelegate<TArgPacket>> _registry = new();
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
     private int _isBusy;
     private int _lastCommand = -1;
 
@@ -50,7 +51,7 @@ public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, IC
                     // do nothing, we already doing this task
                     return;
                 }
-                Logger.Warn($"Reject command {pkt}): too busy now");
+                _logger.ZLogWarning($"Reject command {pkt}): too busy now");
                 await Base.SendCommandAck((MavCmd)cmd, requester,
                     CommandResult.FromResult(MavResult.MavResultTemporarilyRejected), DisposeCancel).ConfigureAwait(false);
                 return;
@@ -58,7 +59,7 @@ public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, IC
             _lastCommand = cmd;
             if (_registry.TryGetValue(cmd, out var callback) == false)
             {
-                Logger.Warn($"Reject unknown command {pkt})");
+                _logger.ZLogWarning($"Reject unknown command {pkt})");
                 _lastCommand = -1;
                 await Base.SendCommandAck((MavCmd)cmd, requester,
                     CommandResult.FromResult(MavResult.MavResultUnsupported), DisposeCancel).ConfigureAwait(false);
@@ -70,7 +71,7 @@ public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, IC
         }
         catch (Exception e)
         {
-            Logger.Error($"Error to execute command {pkt}:{e.Message}");
+            _logger.ZLogError(e, $"Error to execute command {pkt}:{e.Message}");
             _lastCommand = -1;
             await Base.SendCommandAck((MavCmd)cmd, requester,
                 CommandResult.FromResult(MavResult.MavResultFailed), DisposeCancel).ConfigureAwait(false);

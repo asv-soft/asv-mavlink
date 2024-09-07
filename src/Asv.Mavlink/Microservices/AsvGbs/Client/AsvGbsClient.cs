@@ -13,7 +13,7 @@ namespace Asv.Mavlink
             : base("GBS", connection, identity, seq)
         {
             _status = new RxValue<AsvGbsOutStatusPayload>().DisposeItWith(Disposable);
-            InternalFilter<AsvGbsOutStatusPacket>().Select(_=>_.Payload).Subscribe(_status).DisposeItWith(Disposable);
+            InternalFilter<AsvGbsOutStatusPacket>().Select(p=>p.Payload).Subscribe(_status).DisposeItWith(Disposable);
         }
         public IRxValue<AsvGbsOutStatusPayload> RawStatus => _status;
     }

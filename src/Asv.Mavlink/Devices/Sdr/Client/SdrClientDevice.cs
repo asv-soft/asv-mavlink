@@ -4,7 +4,9 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Asv.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -22,10 +24,17 @@ public class SdrClientDevice : ClientDevice, ISdrClientDevice
 {
     private readonly SdrClientDeviceConfig _config;
     private readonly ParamsClientEx _params;
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
 
-    public SdrClientDevice(IMavlinkV2Connection connection, MavlinkClientIdentity identity, SdrClientDeviceConfig config, IPacketSequenceCalculator seq, IScheduler? scheduler = null) : base(connection, identity, config, seq, scheduler)
+    public SdrClientDevice(
+        IMavlinkV2Connection connection, 
+        MavlinkClientIdentity identity, 
+        SdrClientDeviceConfig config, 
+        IPacketSequenceCalculator seq, 
+        IScheduler? scheduler = null,
+        ILogger? logger = null) : base(connection, identity, config, seq, scheduler,logger)
     {
+        _logger = logger ?? NullLogger.Instance;
         _config = config;
         Command = new CommandClient(connection, identity, seq, config.Command).DisposeItWith(Disposable);
         Sdr = new AsvSdrClientEx(new AsvSdrClient(connection, identity, seq), Heartbeat, Command,config.SdrEx).DisposeItWith(Disposable);
@@ -40,7 +49,7 @@ public class SdrClientDevice : ClientDevice, ISdrClientDevice
         _params.Init(MavParamHelper.ByteWiseEncoding, ArraySegment<ParamDescription>.Empty);
         try
         {
-            _logger.Trace($"Try to read serial number from param {_config.SerialNumberParamName}");
+            _logger.ZLogTrace($"Try to read serial number from param {_config.SerialNumberParamName}");
             Params.Filter(_config.SerialNumberParamName)
                 .Select(serial => $"SDR [{(int)serial:D5}]")
                 .Subscribe(EditableName)
@@ -49,7 +58,7 @@ public class SdrClientDevice : ClientDevice, ISdrClientDevice
         }
         catch (Exception e)
         {
-            _logger.Warn($"Error to get SDR serial number:{e.Message}");
+            _logger.ZLogWarning($"Error to get SDR serial number:{e.Message}");
         }
     }
 

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink
 {
@@ -38,16 +40,21 @@ namespace Asv.Mavlink
         private readonly IPacketSequenceCalculator _seq;
         private readonly FtpConfig _cfg;
 
-        public FtpClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, FtpConfig cfg, 
-            IPacketSequenceCalculator seq) : base("FTP", connection, identity, seq)
+        public FtpClient(
+            IMavlinkV2Connection connection, 
+            MavlinkClientIdentity identity, 
+            FtpConfig cfg, 
+            IPacketSequenceCalculator seq,
+            IScheduler? scheduler = null,
+            ILogger? logger = null) : base("FTP", connection, identity, seq, scheduler,logger)
         {
             _cfg = cfg;
             _identity = identity;
             _seq = seq;
             
-            OnBurstReadPacket = InternalFilter<FileTransferProtocolPacket>(_ => (OpCode)_.Payload.Payload[3] == OpCode.ACK &&
-                    (OpCode)_.Payload.Payload[5] == OpCode.BurstReadFile)
-                .Select(_ => new FtpMessagePayload(_.Payload.Payload))
+            OnBurstReadPacket = InternalFilter<FileTransferProtocolPacket>(p => (OpCode)p.Payload.Payload[3] == OpCode.ACK &&
+                    (OpCode)p.Payload.Payload[5] == OpCode.BurstReadFile)
+                .Select(p => new FtpMessagePayload(p.Payload.Payload))
                 .Publish().RefCount();
         }
         
@@ -63,16 +70,16 @@ namespace Asv.Mavlink
             
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.None,
-                         resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.None,
+                         resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -88,16 +95,16 @@ namespace Asv.Mavlink
 
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.TerminateSession,
-                         resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.TerminateSession,
+                         resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -111,16 +118,16 @@ namespace Asv.Mavlink
             };
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.ResetSessions,
-                         resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.ResetSessions,
+                         resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -137,16 +144,16 @@ namespace Asv.Mavlink
             
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.OpenFileRO,
-                        resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.OpenFileRO,
+                        resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -164,17 +171,17 @@ namespace Asv.Mavlink
             
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork & 
-                                        _.Payload.Payload[2] == sessionNumber &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.ReadFile,
-                         resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork & 
+                                        p.Payload.Payload[2] == sessionNumber &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.ReadFile,
+                         resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -191,17 +198,17 @@ namespace Asv.Mavlink
             
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
                             
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.CreateFile,
-                         resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.CreateFile,
+                         resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -220,17 +227,17 @@ namespace Asv.Mavlink
             
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork 
-                                        & _.Payload.Payload[2] == sessionNumber &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.WriteFile,
-                         resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork 
+                                        & p.Payload.Payload[2] == sessionNumber &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.WriteFile,
+                         resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -247,16 +254,16 @@ namespace Asv.Mavlink
             
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.RemoveFile,
-                         resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.RemoveFile,
+                         resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -273,16 +280,16 @@ namespace Asv.Mavlink
             
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.CreateDirectory,
-                         resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.CreateDirectory,
+                         resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -299,16 +306,16 @@ namespace Asv.Mavlink
             
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.RemoveDirectory,
-                         resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.RemoveDirectory,
+                         resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -325,16 +332,16 @@ namespace Asv.Mavlink
             
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.OpenFileWO,
-                         resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.OpenFileWO,
+                         resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -353,16 +360,16 @@ namespace Asv.Mavlink
             
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.TruncateFile,
-                         resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.TruncateFile,
+                         resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -379,16 +386,16 @@ namespace Asv.Mavlink
             
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.Rename,
-                         resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.Rename,
+                         resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -405,16 +412,16 @@ namespace Asv.Mavlink
             
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.CalcFileCRC32,
-                         resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.CalcFileCRC32,
+                         resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -432,16 +439,16 @@ namespace Asv.Mavlink
             
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.BurstReadFile,
-                         resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.BurstReadFile,
+                         resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }
@@ -459,16 +466,16 @@ namespace Asv.Mavlink
 
             var result =
                 await InternalCall<FileTransferProtocolPayload, FileTransferProtocolPacket, FileTransferProtocolPacket>(
-                        fillPacket: _ =>
+                        fillPacket: p =>
                         {
-                            _.Payload.TargetComponent = _identity.TargetComponentId;
-                            _.Payload.TargetSystem = _identity.TargetSystemId;
-                            _.Payload.TargetNetwork = _cfg.TargetNetwork;
-                            var spanBuffer = new Span<byte>(_.Payload.Payload);
+                            p.Payload.TargetComponent = _identity.TargetComponentId;
+                            p.Payload.TargetSystem = _identity.TargetSystemId;
+                            p.Payload.TargetNetwork = _cfg.TargetNetwork;
+                            var spanBuffer = new Span<byte>(p.Payload.Payload);
                             messagePayload.Serialize(ref spanBuffer);
-                        }, filter: _ => _.Payload.TargetNetwork == _cfg.TargetNetwork &
-                                        (OpCode)_.Payload.Payload[5] == OpCode.ListDirectory,
-                         resultGetter: _ => _.Payload, cancel: cancel)
+                        }, filter: p => p.Payload.TargetNetwork == _cfg.TargetNetwork &
+                                        (OpCode)p.Payload.Payload[5] == OpCode.ListDirectory,
+                         resultGetter: p => p.Payload, cancel: cancel)
                     .ConfigureAwait(false);
             return new FtpMessagePayload(result.Payload);
         }

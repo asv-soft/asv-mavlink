@@ -2,6 +2,7 @@ using System;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink
 {
@@ -17,8 +18,8 @@ namespace Asv.Mavlink
         private readonly DateTime _bootTime;
 
         public DebugServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkIdentity identity, IScheduler rxScheduler) 
-            : base("DEBUG", connection, identity, seq, rxScheduler)
+            MavlinkIdentity identity, IScheduler? rxScheduler,ILogger? logger = null) 
+            : base("DEBUG", connection, identity, seq, rxScheduler,logger)
         {
             _connection = connection;
             _seq = seq;

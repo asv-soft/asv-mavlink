@@ -104,16 +104,16 @@ public class TelemetryClientEx : DisposableOnceWithCancel, ITelemetryClientEx
         Base = client;
         
         _batteryCharge = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
-        client.SystemStatus.Select(_=>_.BatteryRemaining < 0 ? Double.NaN : _.BatteryRemaining / 100.0d).Subscribe(_batteryCharge).DisposeItWith(Disposable);
+        client.SystemStatus.Select(p=>p.BatteryRemaining < 0 ? Double.NaN : p.BatteryRemaining / 100.0d).Subscribe(_batteryCharge).DisposeItWith(Disposable);
         _batteryCurrent = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
-        client.SystemStatus.Select(_=>_.CurrentBattery < 0 ? Double.NaN : _.CurrentBattery / 100.0d).Subscribe(_batteryCurrent).DisposeItWith(Disposable);
+        client.SystemStatus.Select(p=>p.CurrentBattery < 0 ? Double.NaN : p.CurrentBattery / 100.0d).Subscribe(_batteryCurrent).DisposeItWith(Disposable);
         _batteryVoltage = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
-        client.SystemStatus.Select(_=>_.VoltageBattery / 1000.0d).Subscribe(_batteryVoltage).DisposeItWith(Disposable);
+        client.SystemStatus.Select(p=>p.VoltageBattery / 1000.0d).Subscribe(_batteryVoltage).DisposeItWith(Disposable);
         
         _cpuLoad = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
-        client.SystemStatus.Select(_=>_.Load/1000D).Subscribe(_cpuLoad).DisposeItWith(Disposable);
+        client.SystemStatus.Select(p=>p.Load/1000D).Subscribe(_cpuLoad).DisposeItWith(Disposable);
         _dropRateComm = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
-        client.SystemStatus.Select(_ => _.DropRateComm / 1000D).Subscribe(_dropRateComm).DisposeItWith(Disposable);
+        client.SystemStatus.Select(p => p.DropRateComm / 1000D).Subscribe(_dropRateComm).DisposeItWith(Disposable);
     }
 
     /// <summary>

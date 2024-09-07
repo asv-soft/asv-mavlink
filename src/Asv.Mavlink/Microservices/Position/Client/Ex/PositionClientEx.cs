@@ -8,13 +8,13 @@ using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Minimal;
 using Asv.Mavlink.Vehicle;
-using NLog;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
 public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
 {
-    public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    public readonly ILogger _logger;
     private readonly ICommandClient _commandClient;
     private readonly RxValue<GeoPoint?> _target;
     private readonly RxValue<GeoPoint?> _home;
@@ -40,48 +40,48 @@ public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
         Base = client;
         
         _pitch = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        client.Attitude.Select(_ => GeoMath.RadiansToDegrees(_.Pitch)).Subscribe(_pitch).DisposeItWith(Disposable);
+        client.Attitude.Select(p => GeoMath.RadiansToDegrees(p.Pitch)).Subscribe(_pitch).DisposeItWith(Disposable);
         _pitchSpeed = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        client.Attitude.Select(_ => (double)_.Pitchspeed).Subscribe(_pitchSpeed).DisposeItWith(Disposable);
+        client.Attitude.Select(p => (double)p.Pitchspeed).Subscribe(_pitchSpeed).DisposeItWith(Disposable);
         
         _roll = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        client.Attitude.Select(_ => GeoMath.RadiansToDegrees(_.Roll)).Subscribe(_roll).DisposeItWith(Disposable);
+        client.Attitude.Select(p => GeoMath.RadiansToDegrees(p.Roll)).Subscribe(_roll).DisposeItWith(Disposable);
         _rollSpeed = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        client.Attitude.Select(_ => (double)_.Rollspeed).Subscribe(_rollSpeed).DisposeItWith(Disposable);
+        client.Attitude.Select(p => (double)p.Rollspeed).Subscribe(_rollSpeed).DisposeItWith(Disposable);
         
         _yaw = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        client.Attitude.Select(_ => GeoMath.RadiansToDegrees(_.Yaw)).Subscribe(_yaw).DisposeItWith(Disposable);
+        client.Attitude.Select(p => GeoMath.RadiansToDegrees(p.Yaw)).Subscribe(_yaw).DisposeItWith(Disposable);
         _yawSpeed = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        client.Attitude.Select(_ => (double)_.Yawspeed).Subscribe(_yawSpeed).DisposeItWith(Disposable);
+        client.Attitude.Select(p => (double)p.Yawspeed).Subscribe(_yawSpeed).DisposeItWith(Disposable);
         
         _target = new RxValue<GeoPoint?>(null).DisposeItWith(Disposable);
-        client.Target.Where(_ => _.CoordinateFrame == MavFrame.MavFrameGlobal)
-            .Select(_ =>(GeoPoint?) new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.LatInt)  , MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.LonInt), _.Alt))
+        client.Target.Where(p => p.CoordinateFrame == MavFrame.MavFrameGlobal)
+            .Select(p =>(GeoPoint?) new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.LatInt)  , MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.LonInt), p.Alt))
             .Subscribe(_target).DisposeItWith(Disposable);
         
         _home = new RxValue<GeoPoint?>(null).DisposeItWith(Disposable);
-        client.Home.Select(_ => (GeoPoint?)new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.Latitude), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.Longitude), MavlinkTypesHelper.AltFromMmToDoubleMeter(_.Altitude)))
+        client.Home.Select(p => (GeoPoint?)new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Latitude), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Longitude), MavlinkTypesHelper.AltFromMmToDoubleMeter(p.Altitude)))
             .Subscribe(_home).DisposeItWith(Disposable);
         
         _current = new RxValue<GeoPoint>(GeoPoint.Zero).DisposeItWith(Disposable);
-        client.GlobalPosition.Select(_=>new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.Lat), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(_.Lon), MavlinkTypesHelper.AltFromMmToDoubleMeter(_.Alt)))
+        client.GlobalPosition.Select(p=>new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lat), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lon), MavlinkTypesHelper.AltFromMmToDoubleMeter(p.Alt)))
             .Subscribe(_current).DisposeItWith(Disposable);
         
         _homeDistance = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
         _current.CombineLatest(_home)
             // ReSharper disable once PossibleInvalidOperationException
-            .Select(_ => GeoMath.Distance(_.First, _.Second))
+            .Select(t => GeoMath.Distance(t.First, t.Second))
             .Subscribe(_homeDistance).DisposeItWith(Disposable);
         
         _targetDistance = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
         _current.CombineLatest(_target)
             // ReSharper disable once PossibleInvalidOperationException
-            .Select(_ => GeoMath.Distance(_.First, _.Second))
+            .Select(t => GeoMath.Distance(t.First, t.Second))
             .Subscribe(_targetDistance).DisposeItWith(Disposable);
 
         _isArmed = new RxValue<bool>(false).DisposeItWith(Disposable);
         _armedTime = new RxValue<TimeSpan>(TimeSpan.Zero).DisposeItWith(Disposable);
-        heartbeatClient.RawHeartbeat.Select(_ => _.BaseMode.HasFlag(MavModeFlag.MavModeFlagSafetyArmed)).Subscribe(_isArmed).DisposeItWith(Disposable);
+        heartbeatClient.RawHeartbeat.Select(p => p.BaseMode.HasFlag(MavModeFlag.MavModeFlagSafetyArmed)).Subscribe(_isArmed).DisposeItWith(Disposable);
         var timer = scheduler == null ? Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1)): Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1),scheduler);
         timer.Where(_=>IsArmed.Value).Subscribe(_ =>
         {
@@ -102,7 +102,7 @@ public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
         _roi = new RxValue<GeoPoint?>(null).DisposeItWith(Disposable);
         
         _altitudeAboveHome = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        client.GlobalPosition.Select(_=>_.RelativeAlt/1000D).Subscribe(_altitudeAboveHome).DisposeItWith(Disposable);
+        client.GlobalPosition.Select(p=>p.RelativeAlt/1000D).Subscribe(_altitudeAboveHome).DisposeItWith(Disposable);
     }
 
     public IPositionClient Base { get; }

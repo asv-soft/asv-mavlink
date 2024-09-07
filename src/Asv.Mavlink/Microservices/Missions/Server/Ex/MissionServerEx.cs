@@ -1,27 +1,35 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Reactive.Concurrency;
 using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
 public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
 {
     private readonly IStatusTextServer _statusLogger;
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
     private readonly SourceCache<ServerMissionItem, ushort> _missionSource;
     private double _busy;
 
-    public MissionServerEx(IMissionServer baseIfc, IStatusTextServer status, IMavlinkV2Connection connection, MavlinkIdentity identity,
-        IPacketSequenceCalculator seq, IScheduler rxScheduler) :
-        base("MISSION", connection, identity, seq, rxScheduler)
+    public MissionServerEx(
+        IMissionServer baseIfc, 
+        IStatusTextServer status,
+        IMavlinkV2Connection connection, 
+        MavlinkIdentity identity,
+        IPacketSequenceCalculator seq, 
+        IScheduler? rxScheduler = null,
+        ILogger? logger = null) :
+        base("MISSION", connection, identity, seq, rxScheduler,logger)
     {
+        _logger = logger ?? NullLogger.Instance;
         Base = baseIfc;
         _statusLogger = status ?? throw new ArgumentNullException(nameof(status));
         _missionSource = new SourceCache<ServerMissionItem, ushort>(x => x.Seq).DisposeItWith(Disposable);
@@ -44,7 +52,7 @@ public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
         var item = _missionSource.Lookup(req.Payload.Seq);
         if (item.HasValue == false)
         {
-            Logger.Warn($"{LogRecv}: '{req.Payload.Seq}' not found");
+            _logger.ZLogWarning($"{LogRecv}: '{req.Payload.Seq}' not found");
             _statusLogger.Info($"{LogSend}: item '{req.Payload.Seq}' not found");
             return;
         }
@@ -88,7 +96,7 @@ public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
     {
         if (Interlocked.CompareExchange(ref _busy, 1, 0) != 0)
         {
-            Logger.Trace($"{LogSend}: Duplicate '{nameof(MissionCountPacket)}' received. Skip it...");
+            _logger.ZLogTrace($"{LogSend}: Duplicate '{nameof(MissionCountPacket)}' received. Skip it...");
             return;
         }
         _missionSource.Clear();
@@ -111,7 +119,7 @@ public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
         }
         catch (Exception e)
         {
-            Logger.Error(e, $"{LogSend}: upload error");
+            _logger.ZLogError($"{LogSend}: upload error");
             await Base.SendMissionAck(MavMissionResult.MavMissionError, req.SystemId, req.ComponentId).ConfigureAwait(false);
         }
         finally

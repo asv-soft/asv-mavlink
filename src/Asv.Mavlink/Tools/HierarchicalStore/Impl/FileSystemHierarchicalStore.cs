@@ -8,7 +8,8 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using Asv.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -76,7 +77,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
 {
     private readonly string _rootFolder;
     private readonly IHierarchicalStoreFormat<TKey,TFile> _format;
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
     private readonly object _sync = new();
     private readonly RxValue<ushort> _count;
     private readonly RxValue<ulong> _size;
@@ -101,7 +102,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         _entries = new Dictionary<TKey, FileSystemHierarchicalStoreEntry<TKey>>(_format.KeyComparer);
         if (Directory.Exists(rootFolder) == false)
         {
-            Logger.Warn($"Directory '{rootFolder}' not exist. Try create");
+            _logger.ZLogWarning($"Directory '{rootFolder}' not exist. Try create");
             Directory.CreateDirectory(rootFolder);
         }
         _count = new RxValue<ushort>().DisposeItWith(Disposable);
@@ -154,7 +155,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             Debug.Assert(folderInfo.Exists);
             if (_format.TryGetFolderInfo(folderInfo,out var id, out var displayName) == false)
             {
-                Logger.Warn($"Skip store folder '{folderInfo.FullName}'");
+                _logger.ZLogWarning($"Skip store folder '{folderInfo.FullName}'");
                 continue;
             }
             Debug.Assert(displayName.IsNullOrWhiteSpace() == false);
@@ -173,7 +174,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             Debug.Assert(fileInfo.Exists);
             if (_format.TryGetFileInfo(fileInfo, out var id, out var displayName) == false)
             {
-                Logger.Warn($"Skip store file '{fileInfo.FullName}'");
+                _logger.ZLogWarning($"Skip store file '{fileInfo.FullName}'");
                 continue;
             }
             
@@ -307,7 +308,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             var rootFolder = _rootFolder;
             if (!_entries.ContainsKey(parentId) && !_format.KeyComparer.Equals(parentId, RootFolderId))
             {
-                Logger.Error($"Folder with id {parentId} does not exist");
+                _logger.ZLogError($"Folder with id {parentId} does not exist");
                 throw new HierarchicalStoreException(name);
             }
             if (_entries.TryGetValue(parentId, out var parent))
@@ -317,7 +318,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             }
             if (_entries.ContainsKey(id))
             {
-                Logger.Error("Folder with id='{0}' already exist",id);
+                _logger.ZLogError($"Folder with id {id} already exist");
                 throw new HierarchicalStoreFolderAlreadyExistException(name);
             }
             
@@ -326,7 +327,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             if (_entries.Where(x => _format.KeyComparer.Equals(x.Value.ParentId, parentId))
                 .Any(x => x.Value.Name == name))
             {
-                Logger.Error("Folder with name='{0}' already exist at {1}",name,rootFolder);
+                _logger.ZLogError($"Folder with name='{name}' already exist at {rootFolder}");
                 throw new HierarchicalStoreFolderAlreadyExistException(name);
             }
             
@@ -339,7 +340,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             var newEntry =
                 new FileSystemHierarchicalStoreEntry<TKey>(id, name, FolderStoreEntryType.Folder, parentId,
                     newFolderPath);
-            Logger.Info("Create folder {0}",name);
+            _logger.ZLogInformation($"Create folder {name}");
             _entries.Add(id,newEntry);
             return id;
         }
@@ -349,7 +350,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     {
         lock (_sync)
         {
-            Logger.Info("Delete folder {0}",id);
+            _logger.ZLogInformation($"Delete folder {id}");
             if (_entries.TryGetValue(id, out var entry) == false)
             { 
                 throw new HierarchicalStoreException($"Folder with id='{id}' not found");
@@ -391,7 +392,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     {
         lock (_sync)
         {
-            Logger.Info($"Rename folder {id} to {newName}");
+            _logger.ZLogInformation($"Rename folder {id} to {newName}");
             if (_entries.TryGetValue(id, out var entry) == false)
             {   
                 throw new HierarchicalStoreException($"Folder with id '{id}' not found");
@@ -443,7 +444,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     {
         lock (_sync)
         {
-            Logger.Info("Move folder '{0}' to '{1}'", id, newParentId);
+            _logger.ZLogInformation($"Move folder '{id}' to '{newParentId}'");
             if (_entries.TryGetValue(id, out var entry) == false)
             {
                 throw new HierarchicalStoreException($"Folder with id='{id}' not found");
@@ -499,7 +500,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     {
         lock (_sync)
         {   
-            Logger.Info("Delete file {0}",id);
+            _logger.ZLogInformation($"Delete file {id}");
             if (_entries.TryGetValue(id, out var entry) == false)
             {
                 throw new HierarchicalStoreException($"File with id='{id}' not found");
@@ -538,7 +539,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     {
         lock (_sync)
         {
-            Logger.Info("Rename file {0} to {1}",id,newName);
+            _logger.ZLogInformation($"Rename file {id} to {newName}");
             if (_entries.TryGetValue(id, out var entry) == false)
             {
                 throw new HierarchicalStoreException("File with id='{id}' not found");
@@ -587,7 +588,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     {
         lock (_sync)
         {
-            Logger.Info("Move file {0} to {1}",id,newParentId);
+            _logger.ZLogInformation($"Move file {id} to {newParentId}");
             if (_entries.TryGetValue(id, out var entry) == false)
             {
                 throw new HierarchicalStoreException($"File with id='{id}' not found");
@@ -628,14 +629,14 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         {
             if (_entries.TryGetValue(id, out var entry) == false)
             {
-                Logger.Error("File with [{0}] not found", id);
+                _logger.ZLogError($"File with id '{id}' not found");
                 throw new FileNotFoundException($"File with [{id}] not found");
             }
             
             var fileInfo =  new FileInfo(entry.FullPath);
             if (fileInfo.Exists == false)
             {
-                Logger.Error("File with [{0}]{1} not found", id, fileInfo.FullName);
+                _logger.ZLogError($"File with [{id}]{fileInfo.FullName} not found");
                 throw new FileNotFoundException($"File with [{id}]{fileInfo.FullName} not found", fileInfo.FullName);
             }
             return GetOrAddFileToCache(entry);
@@ -658,7 +659,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         {
             if (_entries.ContainsKey(id))
             {
-                Logger.Error("Entry {0} already exist",id);
+                _logger.ZLogError($"Entry '{id}' already exist");
                 throw new HierarchicalStoreException($"Entry {id} already exist");
             }
             
@@ -677,7 +678,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             var fileInfo = new FileInfo(newFilePath);
             if (fileInfo.Exists)
             {
-                Logger.Error("File [{0}]{1} already exist", id, fileInfo.FullName);
+                _logger.ZLogError($"File [{id}]{fileInfo.FullName} already exist");
                 throw new HierarchicalStoreException($"File [{id}]{fileInfo.FullName} already exist");
             }
             var file = _format.CreateFile(File.Open(fileInfo.FullName, FileMode.OpenOrCreate, FileAccess.ReadWrite), id, name);
@@ -709,7 +710,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         if (item == null) return true;
             
         if (item.RefCount != 0) return false;
-        Logger.Trace("Immediately remove file from cache: '{0}'", item.Id);
+        _logger.ZLogTrace($"Immediately remove file from cache: '{item.Id}'");
         item.ImmediateDispose();
         _fileCache.Remove(item);
         return true;
@@ -717,11 +718,11 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
 
     private ICachedFile<TKey, TFile> GetOrAddFileToCache(FileSystemHierarchicalStoreEntry<TKey> entry)
     {
-        var exist = _fileCache.FirstOrDefault(_ => _.Id.Equals(entry.Id));
+        var exist = _fileCache.FirstOrDefault(f => f.Id.Equals(entry.Id));
         if (exist != null)
         {
             exist.AddRef();
-            Logger.Trace($"Return file '{entry.Name}'[{entry.Id}] from cache (ref count={exist.RefCount})");
+            _logger.ZLogTrace($"Return file '{entry.Name}'[{entry.Id}] from cache (ref count={exist.RefCount})");
         }
         else
         {
@@ -729,7 +730,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             var file = _format.OpenFile(stream);
             exist = new CachedFile<TKey, TFile>(entry.Id, entry.Name, entry.ParentId, file, OnFileDisposed);
             exist.AddRef();
-            Logger.Trace($"Add file '{entry.Name}'[{entry.Id}] to cache (ref count={exist.RefCount})");
+            _logger.ZLogTrace($"Add file '{entry.Name}'[{entry.Id}] to cache (ref count={exist.RefCount})");
             _fileCache.Add(exist);
         }
 
@@ -739,7 +740,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     private ICachedFile<TKey, TFile> AddFileToCache(FileSystemHierarchicalStoreEntry<TKey> entry, CachedFile<TKey, TFile> wrapper)
     {
         wrapper.AddRef();
-        Logger.Trace($"Add file '{entry.Name}'[{entry.Id}] to cache (ref count={wrapper.RefCount})");
+        _logger.ZLogTrace($"Add file '{entry.Name}'[{entry.Id}] to cache (ref count={wrapper.RefCount})");
         _fileCache.Add(wrapper);
         return wrapper;
     }
@@ -755,7 +756,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             {
                 file.ImmediateDispose();
                 _fileCache.Remove(file);
-                Logger.Trace("Remove file from cache: {0}", file.Id);
+                _logger.ZLogTrace($"Remove file from cache: {file.Id}");
             }
         }
     }
@@ -784,13 +785,13 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
                 {
                     file.ImmediateDispose();
                     _fileCache.Remove(file);
-                    Logger.Trace("Remove file from cache: {0}", file.Id);
+                    _logger.ZLogTrace($"Remove file from cache: {file.Id}");
                 }
             }
         }
         catch (Exception ex)
         {
-            Logger.Error($"CheckFileCacheForRottenFiles error:{ex.Message}");
+            _logger.ZLogError(ex,$"CheckFileCacheForRottenFiles error:{ex.Message}");
         }
         finally
         {

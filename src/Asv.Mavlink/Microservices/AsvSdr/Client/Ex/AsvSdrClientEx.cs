@@ -7,6 +7,8 @@ using Asv.Common;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Asv.Mavlink;
 
@@ -29,16 +31,22 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
     private readonly RxValue<ushort> _calibrationTableRemoteCount;
     private readonly RxValue<AsvSdrCalibState> _calibrationState;
     private readonly ISourceCache<AsvSdrClientCalibrationTable,string> _calibrationTables;
+    private readonly ILogger _logger;
 
-    public AsvSdrClientEx(IAsvSdrClient client, IHeartbeatClient heartbeatClient, ICommandClient commandClient, AsvSdrClientExConfig config)
+    public AsvSdrClientEx(
+        IAsvSdrClient client, 
+        IHeartbeatClient heartbeatClient, 
+        ICommandClient commandClient, 
+        AsvSdrClientExConfig config, ILogger? logger = null)
     {
+        _logger = logger ?? NullLogger.Instance;
         _commandClient = commandClient;
         _config = config;
         Base = client;
         _maxTimeToWaitForResponseForList = TimeSpan.FromMilliseconds(config.MaxTimeToWaitForResponseForListMs);
         _customMode = new RxValue<AsvSdrCustomMode>();
         heartbeatClient.RawHeartbeat
-            .Select(_ => (AsvSdrCustomMode)_.CustomMode)
+            .Select(p => (AsvSdrCustomMode)p.CustomMode)
             .Subscribe(_customMode)
             .DisposeItWith(Disposable);
 
@@ -55,38 +63,38 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         _calibrationState = new RxValue<AsvSdrCalibState>()
             .DisposeItWith(Disposable);
         
-        client.Status.Subscribe(_ =>
+        client.Status.Subscribe(p =>
         {
-            _supportedModes.OnNext(_.SupportedModes);
-            _recordsCount.OnNext(_.RecordCount);
-            var guid = new Guid(_.CurrentRecordGuid);
+            _supportedModes.OnNext(p.SupportedModes);
+            _recordsCount.OnNext(p.RecordCount);
+            var guid = new Guid(p.CurrentRecordGuid);
             _currentRecord.OnNext(guid);
             _isRecordStarted.OnNext(guid != Guid.Empty);
-            _calibrationTableRemoteCount.OnNext(_.CalibTableCount);
-            _calibrationState.OnNext(_.CalibState);
+            _calibrationTableRemoteCount.OnNext(p.CalibTableCount);
+            _calibrationState.OnNext(p.CalibState);
         }).DisposeItWith(Disposable);
         
         _records = new SourceCache<AsvSdrClientRecord, Guid>(x => x.Id)
             .DisposeItWith(Disposable);
-        client.OnRecord.Subscribe(_=>_records.Edit(updater =>
+        client.OnRecord.Subscribe(t=>_records.Edit(updater =>
         {
-            var value = updater.Lookup(_.Item1);
+            var value = updater.Lookup(t.Item1);
             if (value.HasValue == false)
             {
-                updater.AddOrUpdate(new AsvSdrClientRecord(_.Item1,_.Item2,client,config));
+                updater.AddOrUpdate(new AsvSdrClientRecord(t.Item1,t.Item2,client,config));
             }
         })).DisposeItWith(Disposable);
-        client.OnDeleteRecord.Where(_=>_.Item2.Result == AsvSdrRequestAck.AsvSdrRequestAckOk).Subscribe(_=>_records.Edit(updater =>
+        client.OnDeleteRecord.Where(t=>t.Item2.Result == AsvSdrRequestAck.AsvSdrRequestAckOk).Subscribe(t=>_records.Edit(updater =>
         {
-            var value = updater.Lookup(_.Item1);
+            var value = updater.Lookup(t.Item1);
             if (!value.HasValue) return;
-            updater.RemoveKey(_.Item1);
+            updater.RemoveKey(t.Item1);
             value.Value.Dispose();
         })).DisposeItWith(Disposable);
         
-        Records = _records.Connect().Transform(_=>(IAsvSdrClientRecord)_).RefCount();
+        Records = _records.Connect().Transform(r=>(IAsvSdrClientRecord)r).RefCount();
         
-        _calibrationTables = new SourceCache<AsvSdrClientCalibrationTable,string>(_=>_.Name)
+        _calibrationTables = new SourceCache<AsvSdrClientCalibrationTable,string>(t=>t.Name)
             .DisposeItWith(Disposable);
         CalibrationTables = _calibrationTables.Connect().DisposeMany().RefCount();
         Base.OnCalibrationTable.Subscribe(payload=>_calibrationTables.Edit(updater =>

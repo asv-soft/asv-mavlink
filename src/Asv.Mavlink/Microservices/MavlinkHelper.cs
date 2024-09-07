@@ -22,12 +22,12 @@ namespace Asv.Mavlink
 
         public static IObservable<IPacketV2<IPayload>> FilterVehicle(this IObservable<IPacketV2<IPayload>> src, MavlinkClientIdentity identity)
         {
-            return src.Where(_ => FilterVehicle(_, identity.TargetSystemId,identity.TargetComponentId));
+            return src.Where(v => FilterVehicle(v, identity.TargetSystemId,identity.TargetComponentId));
         }
 
         public static IObservable<IPacketV2<IPayload>> FilterVehicle(this IObservable<IPacketV2<IPayload>> src, byte targetSystemId, byte targetComponentId)
         {
-            return src.Where(_ => FilterVehicle(_, targetSystemId, targetComponentId));
+            return src.Where(v => FilterVehicle(v, targetSystemId, targetComponentId));
         }
 
         public static bool FilterVehicle(IPacketV2<IPayload> packetV2, byte targetSystemId, byte targetComponentId)
@@ -42,7 +42,7 @@ namespace Asv.Mavlink
         {
             var pkt = new TPacket();
             var id = pkt.MessageId;
-            return src.Where(_ => _.MessageId == id).Cast<TPacket>();
+            return src.Where(v => v.MessageId == id).Cast<TPacket>();
         }
 
       

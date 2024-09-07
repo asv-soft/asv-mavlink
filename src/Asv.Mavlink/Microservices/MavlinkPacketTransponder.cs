@@ -2,7 +2,9 @@ using System;
 using System.Reactive.Linq;
 using System.Threading;
 using Asv.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink
 {
@@ -11,27 +13,30 @@ namespace Asv.Mavlink
         where TPayload : IPayload, new()
     {
         private readonly IMavlinkV2Connection _connection;
-        private readonly MavlinkIdentity _identityConfig;
         private readonly IPacketSequenceCalculator _seq;
         private readonly object _sync = new();
         private IDisposable _timerSubscribe;
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _logger;
         private readonly ReaderWriterLockSlim _dataLock = new();
         private int _isSending;
         private readonly RxValue<PacketTransponderState> _state = new();
         private TPacket _packet;
 
-        public MavlinkPacketTransponder(IMavlinkV2Connection connection, MavlinkIdentity identityConfig, IPacketSequenceCalculator seq)
+        public MavlinkPacketTransponder(
+            IMavlinkV2Connection connection, 
+            MavlinkIdentity identityConfig, 
+            IPacketSequenceCalculator seq,
+            ILogger? logger = null)
         {
+            _logger = logger ?? NullLogger.Instance;
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            _identityConfig = identityConfig;
             _seq = seq ?? throw new ArgumentNullException(nameof(seq));
             _packet = new TPacket
             {
                 CompatFlags = 0,
                 IncompatFlags = 0,
-                ComponentId = _identityConfig.ComponentId,
-                SystemId = _identityConfig.SystemId,
+                ComponentId = identityConfig.ComponentId,
+                SystemId = identityConfig.SystemId,
             };
         }
 
@@ -82,21 +87,21 @@ namespace Asv.Mavlink
         {
             if (_state.Value == PacketTransponderState.ErrorToSend) return;
             _state.OnNext(PacketTransponderState.ErrorToSend);
-            _logger.Error( $"{new TPacket().Name} sending error:{e.Message}");
+            _logger.ZLogError($"{new TPacket().Name} sending error:{e.Message}");
         }
 
         private void LogSuccess()
         {
             if (_state.Value == PacketTransponderState.Ok) return;
             _state.OnNext(PacketTransponderState.Ok);
-            _logger.Debug($"{new TPacket().Name} start stream");
+            _logger.ZLogDebug($"{new TPacket().Name} start stream");
         }
 
         private void LogSkipped()
         {
             if (_state.Value == PacketTransponderState.Skipped) return;
             _state.OnNext(PacketTransponderState.Skipped);
-            _logger.Warn($"{new TPacket().Name} skipped sending: previous command has not yet been executed");
+            _logger.ZLogWarning($"{new TPacket().Name} skipped sending: previous command has not yet been executed");
         }
 
         public void Start(DateTimeOffset dueTime, TimeSpan period)
@@ -127,7 +132,7 @@ namespace Asv.Mavlink
             }
             catch (Exception e)
             {
-                _logger.Error( $"Error to set new value for {new TPacket().Name}:{e.Message}");
+                _logger.ZLogError(e,$"Error to set new value for {new TPacket().Name}:{e.Message}");
             }
             finally
             {

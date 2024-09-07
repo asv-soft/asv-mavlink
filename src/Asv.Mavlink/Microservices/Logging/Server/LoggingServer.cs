@@ -2,6 +2,7 @@
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink.Server
 {
@@ -38,15 +39,13 @@ namespace Asv.Mavlink.Server
         /// </summary>
         private static readonly int _maxDataLength = new LoggingDataPayload().Data.Length;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LoggingServer"/> class.
-        /// </summary>
-        /// <param name="connection">The Mavlink connection.</param>
-        /// <param name="seq">The packet sequence calculator.</param>
-        /// <param name="identity">The server identity.</param>
-        /// <param name="scheduler">The scheduler for processing incoming packets.</param>
-        public LoggingServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkIdentity identity, IScheduler scheduler) : base("LOG",connection,identity, seq,scheduler)
+       
+        public LoggingServer(
+            IMavlinkV2Connection connection, 
+            IPacketSequenceCalculator seq,
+            MavlinkIdentity identity, 
+            IScheduler? scheduler = null,
+            ILogger? logger = null) : base("LOG",connection,identity, seq,scheduler,logger)
         {
         }
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvGbs;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink
 {
@@ -19,8 +20,14 @@ namespace Asv.Mavlink
         private readonly AsvGbsServerConfig _config;
         private readonly MavlinkPacketTransponder<AsvGbsOutStatusPacket,AsvGbsOutStatusPayload> _transponder;
 
-        public AsvGbsServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,MavlinkIdentity identity,AsvGbsServerConfig config, IScheduler rxScheduler) 
-            : base("GBS", connection, identity, seq, rxScheduler)
+        public AsvGbsServer(
+            IMavlinkV2Connection connection, 
+            IPacketSequenceCalculator seq,
+            MavlinkIdentity identity,
+            AsvGbsServerConfig config, 
+            IScheduler? rxScheduler,
+            ILogger? logger = null)
+            : base("GBS", connection, identity, seq, rxScheduler,logger)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _transponder =

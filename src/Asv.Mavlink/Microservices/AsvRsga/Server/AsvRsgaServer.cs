@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvRsga;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
@@ -13,8 +14,13 @@ public class AsvRsgaServer:MavlinkMicroserviceServer,IAsvRsgaServer
 {
     private readonly Subject<AsvRsgaCompatibilityRequestPayload> _onCompatibilityRequest;
 
-    public AsvRsgaServer(IMavlinkV2Connection connection, MavlinkIdentity identity, IPacketSequenceCalculator seq, IScheduler rxScheduler) 
-        : base("RSGA", connection, identity, seq, rxScheduler)
+    public AsvRsgaServer(
+        IMavlinkV2Connection connection, 
+        MavlinkIdentity identity, 
+        IPacketSequenceCalculator seq, 
+        IScheduler? rxScheduler = null,
+        ILogger? logger = null) 
+        : base("RSGA", connection, identity, seq, rxScheduler,logger)
     {
         _onCompatibilityRequest = new Subject<AsvRsgaCompatibilityRequestPayload>().DisposeItWith(Disposable);
         InternalFilter<AsvRsgaCompatibilityRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)

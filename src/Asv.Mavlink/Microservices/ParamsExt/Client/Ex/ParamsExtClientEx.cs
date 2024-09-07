@@ -6,7 +6,6 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Cfg;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
@@ -34,13 +33,13 @@ public class ParamsExtClientEx : DisposableOnceWithCancel, IParamsExtClientEx
         Base = client;
         _paramsSource = new SourceCache<ParamExtItem, string>(x => x.Name).DisposeItWith(Disposable);
         _isSynced = new RxValue<bool>(false).DisposeItWith(Disposable);
-        Items = _paramsSource.Connect().Transform(_ => (IParamExtItem)_).RefCount();
+        Items = _paramsSource.Connect().Transform(i => (IParamExtItem)i).RefCount();
         client.OnParamExtValue.Where(_ => IsInit).Buffer(TimeSpan.FromMilliseconds(100)).Subscribe(OnUpdate)
             .DisposeItWith(Disposable);
 
         _remoteCount = new RxValue<ushort?>(null).DisposeItWith(Disposable);
         _localCount = new RxValue<ushort>(0).DisposeItWith(Disposable);
-        _paramsSource.CountChanged.Select(_ => (ushort)_).Subscribe(_localCount).DisposeItWith(Disposable);
+        _paramsSource.CountChanged.Select(i => (ushort)i).Subscribe(_localCount).DisposeItWith(Disposable);
         _onValueChanged = new Subject<(string, MavParamExtValue)>().DisposeItWith(Disposable);
     }
 
@@ -49,7 +48,7 @@ public class ParamsExtClientEx : DisposableOnceWithCancel, IParamsExtClientEx
 
     public void Init(IEnumerable<ParamExtDescription> existDescription)
     {
-        _descriptions = existDescription.ToImmutableDictionary(_ => _.Name);
+        _descriptions = existDescription.ToImmutableDictionary(d => d.Name);
         IsInit = true;
     }
 
@@ -58,13 +57,13 @@ public class ParamsExtClientEx : DisposableOnceWithCancel, IParamsExtClientEx
     private void OnUpdate(IList<ParamExtValuePayload> items)
     {
         if (items.Count == 0) return;
-        _paramsSource.Edit(_ =>
+        _paramsSource.Edit(u =>
         {
             foreach (var value in items)
             {
                 _remoteCount.Value = value.ParamCount;
                 var name = MavlinkTypesHelper.GetString(value.ParamId);
-                var exist = _.Lookup(name);
+                var exist = u.Lookup(name);
                 if (exist.HasValue)
                 {
                     exist.Value.Update(value);
@@ -81,7 +80,7 @@ public class ParamsExtClientEx : DisposableOnceWithCancel, IParamsExtClientEx
                     }
 
                     var newItem = new ParamExtItem(Base, desc, value);
-                    _.AddOrUpdate(newItem);
+                    u.AddOrUpdate(newItem);
                     newItem.IsSynced.Subscribe(OnSyncedChanged);
                     if (_onValueChanged.HasObservers)
                     {
@@ -97,7 +96,7 @@ public class ParamsExtClientEx : DisposableOnceWithCancel, IParamsExtClientEx
         if (value == false) _isSynced.OnNext(false);
         else
         {
-            var allSynced = _paramsSource.Items.All(_ => _.IsSynced.Value);
+            var allSynced = _paramsSource.Items.All(i => i.IsSynced.Value);
             if (allSynced) _isSynced.OnNext(true);
         }
     }
@@ -177,15 +176,15 @@ public class ParamsExtClientEx : DisposableOnceWithCancel, IParamsExtClientEx
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
         var lastUpdate = DateTime.Now;
         ushort? paramsCount = null;
-        using var c2 = Base.OnParamExtValue.Sample(TimeSpan.FromMilliseconds(50)).Subscribe(_ =>
+        using var c2 = Base.OnParamExtValue.Sample(TimeSpan.FromMilliseconds(50)).Subscribe(p =>
         {
-            paramsCount = _.ParamCount;
-            if (_paramsSource.Count == _.ParamCount)
+            paramsCount = p.ParamCount;
+            if (_paramsSource.Count == p.ParamCount)
             {
                 tcs.TrySetResult(true);
             }
 
-            progress.Report((double)_paramsSource.Count / _.ParamCount);
+            progress.Report((double)_paramsSource.Count / p.ParamCount);
             lastUpdate = DateTime.Now;
         });
         using var c3 = Observable.Timer(TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(100))
@@ -196,14 +195,14 @@ public class ParamsExtClientEx : DisposableOnceWithCancel, IParamsExtClientEx
                     tcs.TrySetResult(false);
                 }
             });
-        _paramsSource.Edit(_ =>
+        _paramsSource.Edit(u =>
         {
-            foreach (var item in _.Items)
+            foreach (var item in u.Items)
             {
                 item.Dispose();
             }
 
-            _.Clear();
+            u.Clear();
         });
         await Base.SendRequestList(linkedCancel.Token).ConfigureAwait(false);
         var readAllParams = await tcs.Task.ConfigureAwait(false);

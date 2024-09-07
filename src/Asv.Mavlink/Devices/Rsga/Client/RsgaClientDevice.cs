@@ -4,7 +4,9 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.Diagnostic.Client;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -21,17 +23,25 @@ public class RsgaClientDeviceConfig:ClientDeviceConfig
 public class RsgaClientDevice : ClientDevice, IRsgaClientDevice
 {
     private readonly RsgaClientDeviceConfig _config;
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
     private readonly ParamsClientEx _params;
     private readonly AsvChartClient _charts;
     private readonly DiagnosticClient _diagnostics;
     private readonly CommandClient _command;
     private readonly AsvRsgaClientEx _rsga;
 
-    public RsgaClientDevice(IMavlinkV2Connection link, MavlinkClientIdentity identity, RsgaClientDeviceConfig config, IPacketSequenceCalculator seq, IScheduler scheduler)
-        :base(link,identity,config,seq,scheduler)
+    public RsgaClientDevice(
+        IMavlinkV2Connection link, 
+        MavlinkClientIdentity identity, 
+        RsgaClientDeviceConfig config, 
+        IPacketSequenceCalculator seq, 
+        IScheduler? scheduler = null, 
+        ILogger? logger = null)
+        :base(link,identity,config,seq,scheduler,logger)
     {
         _config = config;
+        _logger = logger ?? NullLogger.Instance;
+        scheduler ??= Scheduler.Default;
         _command = new CommandClient(link, identity, seq, config.Command).DisposeItWith(Disposable);
         var paramBase = new ParamsClient(link, identity, seq, config.Params).DisposeItWith(Disposable);
         _params = new ParamsClientEx(paramBase, config.Params).DisposeItWith(Disposable);
@@ -46,9 +56,9 @@ public class RsgaClientDevice : ClientDevice, IRsgaClientDevice
         _params.Init(MavParamHelper.ByteWiseEncoding, ArraySegment<ParamDescription>.Empty);
         try
         {
-            _logger.Trace($"Try to read compatibilities.");
+            _logger.ZLogTrace($"Try to read compatibilities.");
             await Rsga.Base.GetCompatibilities().ConfigureAwait(false);
-            _logger.Trace($"Try to read serial number from param {_config.SerialNumberParamName}");
+            _logger.ZLogTrace($"Try to read serial number from param {_config.SerialNumberParamName}");
             Params.Filter(_config.SerialNumberParamName)
                 .Select(serial => $"RSGA [{(int)serial:D5}]")
                 .Subscribe(EditableName)
@@ -58,7 +68,7 @@ public class RsgaClientDevice : ClientDevice, IRsgaClientDevice
         }
         catch (Exception e)
         {
-            _logger.Warn($"Error to get serial number:{e.Message}");
+            _logger.ZLogWarning($"Error to get serial number:{e.Message}");
         }
     }
     public IParamsClientEx Params => _params;

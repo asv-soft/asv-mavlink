@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reactive.Subjects;
 using Asv.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -16,8 +18,8 @@ public class PacketV2Decoder : DisposableOnceWithCancel, IPacketDecoder<IPacketV
     private readonly Dictionary<int, Func<IPacketV2<IPayload>>> _dict = new();
     private readonly Subject<DeserializePackageException> _decodeErrorSubject;
     private readonly Subject<IPacketV2<IPayload>> _packetSubject;
-    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-    private readonly object _sync = new object();
+    private readonly ILogger _logger;
+    private readonly object _sync = new();
 
     private enum DecodeStep
     {
@@ -27,8 +29,9 @@ public class PacketV2Decoder : DisposableOnceWithCancel, IPacketDecoder<IPacketV
         FillSignature
     }
 
-    public PacketV2Decoder()
+    public PacketV2Decoder(ILogger? logger = null)
     {
+        _logger = logger ?? NullLogger.Instance;
         // the first byte is always STX
         _buffer[0] = PacketV2Helper.MagicMarkerV2;
         _decodeErrorSubject = new Subject<DeserializePackageException>().DisposeItWith(Disposable);
@@ -54,7 +57,7 @@ public class PacketV2Decoder : DisposableOnceWithCancel, IPacketDecoder<IPacketV
                 }
                 catch (Exception e)
                 {
-                    _logger.Fatal($"Fatal error to decode packet:{e.Message}");
+                    _logger.ZLogCritical(e,$"Fatal error to decode packet:{e.Message}");
                     _decodeStep = DecodeStep.Sync;
                     Debug.Assert(false, e.Message);
                 }
@@ -140,7 +143,7 @@ public class PacketV2Decoder : DisposableOnceWithCancel, IPacketDecoder<IPacketV
         }
         catch (Exception e)
         {
-            _logger.Error( $"Fatal error to publish packet:{e.Message}");
+            _logger.ZLogError(e, $"Fatal error to publish packet:{e.Message}");
             Debug.Assert(false, e.Message);
         }
             

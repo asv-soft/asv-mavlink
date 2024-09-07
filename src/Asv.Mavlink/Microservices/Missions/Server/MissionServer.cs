@@ -3,6 +3,7 @@ using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
@@ -10,7 +11,13 @@ public class MissionServer : MavlinkMicroserviceServer, IMissionServer
 {
     private ushort _currentMissionIndex;
 
-    public MissionServer(IMavlinkV2Connection connection, MavlinkIdentity identity, IPacketSequenceCalculator seq, IScheduler rxScheduler) : base("MISSION", connection, identity, seq, rxScheduler)
+    public MissionServer(
+        IMavlinkV2Connection connection, 
+        MavlinkIdentity identity, 
+        IPacketSequenceCalculator seq, 
+        IScheduler? rxScheduler = null,
+        ILogger? logger = null)
+        : base("MISSION", connection, identity, seq, rxScheduler,logger)
     {
        
     }

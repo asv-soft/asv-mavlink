@@ -65,10 +65,10 @@ namespace Asv.Mavlink
             var tcs = new TaskCompletionSource<TAnswerPacket>();
             using var c1 = cancel.Register(()=>tcs.TrySetCanceled());
             filter ??= (_ => true);
-            using var subscribe = src.Where(_ => _.ComponentId == targetComponent && _.SystemId == targetSystem && _.MessageId == p.MessageId)
+            using var subscribe = src.Where(v => v.ComponentId == targetComponent && v.SystemId == targetSystem && v.MessageId == p.MessageId)
                 .Cast<TAnswerPacket>()
                 .FirstAsync(filter)
-                .Subscribe(_=>tcs.TrySetResult(_));
+                .Subscribe(v=>tcs.TrySetResult(v));
             await src.Send(packet, cancel).ConfigureAwait(false);
             return await tcs.Task.ConfigureAwait(false);
         }

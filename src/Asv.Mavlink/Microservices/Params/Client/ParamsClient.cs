@@ -1,11 +1,14 @@
 using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -18,15 +21,22 @@ public class ParameterClientConfig
 public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
 {
     private readonly ParameterClientConfig _config;
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
     private readonly Subject<ParamValuePayload> _onParamValue;
 
-    public ParamsClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq,ParameterClientConfig config) 
-        : base("PARAMS", connection, identity, seq)
+    public ParamsClient(
+        IMavlinkV2Connection connection, 
+        MavlinkClientIdentity identity, 
+        IPacketSequenceCalculator seq,
+        ParameterClientConfig config,
+        IScheduler? scheduler = null,
+        ILogger? logger = null) 
+        : base("PARAMS", connection, identity, seq,scheduler,logger)
     {
+        _logger = logger ?? NullLogger.Instance;
         _config = config;
         _onParamValue = new Subject<ParamValuePayload>().DisposeItWith(Disposable);
-        InternalFilter<ParamValuePacket>().Select(_ => _.Payload).Subscribe(_onParamValue)
+        InternalFilter<ParamValuePacket>().Select(p => p.Payload).Subscribe(_onParamValue)
             .DisposeItWith(Disposable);
     }
 
@@ -34,51 +44,51 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
     
     public Task SendRequestList(CancellationToken cancel = default)
     {
-        Logger.Info($"{LogSend} Request all params from vehicle");
-        return InternalSend<ParamRequestListPacket>(_ =>
+        _logger.ZLogInformation($"{LogSend} Request all params from vehicle");
+        return InternalSend<ParamRequestListPacket>(p =>
         {
-            _.Payload.TargetComponent = Identity.TargetComponentId;
-            _.Payload.TargetSystem = Identity.TargetSystemId;
+            p.Payload.TargetComponent = Identity.TargetComponentId;
+            p.Payload.TargetSystem = Identity.TargetSystemId;
         }, cancel);
     }
 
     public Task<ParamValuePayload> Read(string name, CancellationToken cancel = default)
     {
-        return InternalCall<ParamValuePayload, ParamRequestReadPacket, ParamValuePacket>(_ =>
+        return InternalCall<ParamValuePayload, ParamRequestReadPacket, ParamValuePacket>(p =>
             {
-                _.Payload.TargetComponent = Identity.TargetComponentId;
-                _.Payload.TargetSystem = Identity.TargetSystemId;
-                _.Payload.ParamIndex = -1;
-                MavlinkTypesHelper.SetString(_.Payload.ParamId, name);
-            }, _ => name.Equals(MavlinkTypesHelper.GetString(_.Payload.ParamId)),
-            _ => _.Payload,
+                p.Payload.TargetComponent = Identity.TargetComponentId;
+                p.Payload.TargetSystem = Identity.TargetSystemId;
+                p.Payload.ParamIndex = -1;
+                MavlinkTypesHelper.SetString(p.Payload.ParamId, name);
+            }, p => name.Equals(MavlinkTypesHelper.GetString(p.Payload.ParamId)),
+            p => p.Payload,
             _config.ReadAttemptCount, timeoutMs: _config.ReadTimeouMs, cancel: cancel);
     }
     
     public Task<ParamValuePayload> Read(ushort index, CancellationToken cancel = default)
     {
-        return InternalCall<ParamValuePayload, ParamRequestReadPacket, ParamValuePacket>(_ =>
+        return InternalCall<ParamValuePayload, ParamRequestReadPacket, ParamValuePacket>(p =>
             {
-                _.Payload.TargetComponent = Identity.TargetComponentId;
-                _.Payload.TargetSystem = Identity.TargetSystemId;
-                MavlinkTypesHelper.SetString(_.Payload.ParamId, string.Empty);
-                _.Payload.ParamIndex = (short)index;
-            }, _ => index == _.Payload.ParamIndex,
-            _ => _.Payload,
+                p.Payload.TargetComponent = Identity.TargetComponentId;
+                p.Payload.TargetSystem = Identity.TargetSystemId;
+                MavlinkTypesHelper.SetString(p.Payload.ParamId, string.Empty);
+                p.Payload.ParamIndex = (short)index;
+            }, p => index == p.Payload.ParamIndex,
+            p => p.Payload,
             _config.ReadAttemptCount, timeoutMs: _config.ReadTimeouMs, cancel: cancel);
     }
 
     public Task<ParamValuePayload> Write(string name, MavParamType type, float value, CancellationToken cancel = default)
     {
-        return InternalCall<ParamValuePayload, ParamSetPacket, ParamValuePacket>(_ =>
+        return InternalCall<ParamValuePayload, ParamSetPacket, ParamValuePacket>(p =>
             {
-                _.Payload.TargetComponent = Identity.TargetComponentId;
-                _.Payload.TargetSystem = Identity.TargetSystemId;
-                _.Payload.ParamType = type;
-                _.Payload.ParamValue = value;
-                MavlinkTypesHelper.SetString(_.Payload.ParamId, name);
-            }, _ => name.Equals(MavlinkTypesHelper.GetString(_.Payload.ParamId)),
-            _ => _.Payload,
+                p.Payload.TargetComponent = Identity.TargetComponentId;
+                p.Payload.TargetSystem = Identity.TargetSystemId;
+                p.Payload.ParamType = type;
+                p.Payload.ParamValue = value;
+                MavlinkTypesHelper.SetString(p.Payload.ParamId, name);
+            }, p => name.Equals(MavlinkTypesHelper.GetString(p.Payload.ParamId)),
+            p => p.Payload,
             _config.ReadAttemptCount, timeoutMs: _config.ReadTimeouMs, cancel: cancel);
     }
 }

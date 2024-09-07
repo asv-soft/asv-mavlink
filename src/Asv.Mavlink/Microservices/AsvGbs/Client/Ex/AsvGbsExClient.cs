@@ -5,12 +5,15 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvGbs;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
 
 namespace Asv.Mavlink;
 
 public class AsvGbsExClient: DisposableOnceWithCancel, IAsvGbsExClient
 {
+    private readonly ILogger _logger;
     private readonly ICommandClient _command;
     private readonly RxValue<AsvGbsCustomMode> _internalCustomMode;
     private readonly RxValue<GeoPoint> _internalPosition;
@@ -25,10 +28,16 @@ public class AsvGbsExClient: DisposableOnceWithCancel, IAsvGbsExClient
     private readonly RxValue<byte> _internalQzssSatellites;
     private readonly RxValue<byte> _internalSbasSatellites;
     private readonly RxValue<byte> _internalImesSatellites;
+    
 
-    public AsvGbsExClient(IAsvGbsClient asvGbs, IHeartbeatClient heartbeat, ICommandClient command)
+    public AsvGbsExClient(
+        IAsvGbsClient asvGbs, 
+        IHeartbeatClient heartbeat, 
+        ICommandClient command,
+        ILogger? logger = null)
     {
-        if (heartbeat == null) throw new ArgumentNullException(nameof(heartbeat));
+        _logger = logger ?? NullLogger.Instance;
+        ArgumentNullException.ThrowIfNull(heartbeat);
         _command = command ?? throw new ArgumentNullException(nameof(command));
         Base = asvGbs ?? throw new ArgumentNullException(nameof(asvGbs));
         _internalCustomMode = new RxValue<AsvGbsCustomMode>(AsvGbsCustomMode.AsvGbsCustomModeLoading).DisposeItWith(Disposable);
@@ -45,19 +54,19 @@ public class AsvGbsExClient: DisposableOnceWithCancel, IAsvGbsExClient
         _internalSbasSatellites = new RxValue<byte>(0).DisposeItWith(Disposable);
         _internalImesSatellites = new RxValue<byte>(0).DisposeItWith(Disposable);
         Base.RawStatus.Select(ConvertLocation).Subscribe(_internalPosition).DisposeItWith(Disposable);
-        Base.RawStatus.Select(_=>Math.Round(_.Accuracy/100.0,2)).Subscribe(_internalAccuracyMeter).DisposeItWith(Disposable);
-        Base.RawStatus.Select(_=>_.Observation).Subscribe(_internalObservationSec).DisposeItWith(Disposable);
-        Base.RawStatus.Select(_=>_.DgpsRate).Subscribe(_internalDgpsRate).DisposeItWith(Disposable);
-        Base.RawStatus.Select(_ => _.SatAll).Subscribe(_internalAllSatellites).DisposeItWith(Disposable);
-        Base.RawStatus.Select(_ => _.SatGal).Subscribe(_internalGalSatellites).DisposeItWith(Disposable);
-        Base.RawStatus.Select(_ => _.SatBdu).Subscribe(_internalBeidouSatellites).DisposeItWith(Disposable);
-        Base.RawStatus.Select(_ => _.SatGlo).Subscribe(_internalGlonassSatellites).DisposeItWith(Disposable);
-        Base.RawStatus.Select(_ => _.SatGps).Subscribe(_internalGpsSatellites).DisposeItWith(Disposable);
-        Base.RawStatus.Select(_ => _.SatQzs).Subscribe(_internalQzssSatellites).DisposeItWith(Disposable);
-        Base.RawStatus.Select(_ => _.SatSbs).Subscribe(_internalSbasSatellites).DisposeItWith(Disposable);
-        Base.RawStatus.Select(_ => _.SatIme).Subscribe(_internalImesSatellites).DisposeItWith(Disposable);
+        Base.RawStatus.Select(p=>Math.Round(p.Accuracy/100.0,2)).Subscribe(_internalAccuracyMeter).DisposeItWith(Disposable);
+        Base.RawStatus.Select(p=>p.Observation).Subscribe(_internalObservationSec).DisposeItWith(Disposable);
+        Base.RawStatus.Select(p=>p.DgpsRate).Subscribe(_internalDgpsRate).DisposeItWith(Disposable);
+        Base.RawStatus.Select(p => p.SatAll).Subscribe(_internalAllSatellites).DisposeItWith(Disposable);
+        Base.RawStatus.Select(p => p.SatGal).Subscribe(_internalGalSatellites).DisposeItWith(Disposable);
+        Base.RawStatus.Select(p => p.SatBdu).Subscribe(_internalBeidouSatellites).DisposeItWith(Disposable);
+        Base.RawStatus.Select(p => p.SatGlo).Subscribe(_internalGlonassSatellites).DisposeItWith(Disposable);
+        Base.RawStatus.Select(p => p.SatGps).Subscribe(_internalGpsSatellites).DisposeItWith(Disposable);
+        Base.RawStatus.Select(p => p.SatQzs).Subscribe(_internalQzssSatellites).DisposeItWith(Disposable);
+        Base.RawStatus.Select(p => p.SatSbs).Subscribe(_internalSbasSatellites).DisposeItWith(Disposable);
+        Base.RawStatus.Select(p => p.SatIme).Subscribe(_internalImesSatellites).DisposeItWith(Disposable);
         heartbeat.RawHeartbeat
-            .Select(_ => (AsvGbsCustomMode)_.CustomMode)
+            .Select(p => (AsvGbsCustomMode)p.CustomMode)
             .Subscribe(_internalCustomMode)
             .DisposeItWith(Disposable);
     }

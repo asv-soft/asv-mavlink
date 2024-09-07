@@ -8,7 +8,9 @@ using Asv.IO;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Minimal;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
 using MavType = Asv.Mavlink.V2.Minimal.MavType;
 
@@ -19,10 +21,16 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
     private readonly IStatusTextServer _status;
     private double _signalSendingFlag;
     private int _calibrationTableUploadFlag;
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
 
-    public AsvSdrServerEx(IAsvSdrServer server, IStatusTextServer status, IHeartbeatServer heartbeat, ICommandServerEx<CommandLongPacket> commands)
+    public AsvSdrServerEx(
+        IAsvSdrServer server, 
+        IStatusTextServer status, 
+        IHeartbeatServer heartbeat, 
+        ICommandServerEx<CommandLongPacket> commands,
+        ILogger? logger = null)
     {
+        _logger = logger ?? NullLogger.Instance;
         if (heartbeat == null) throw new ArgumentNullException(nameof(heartbeat));
         if (commands == null) throw new ArgumentNullException(nameof(commands));
         _status = status ?? throw new ArgumentNullException(nameof(status));
@@ -30,19 +38,19 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
 
         #region Heartbeat
 
-        heartbeat.Set(_ =>
+        heartbeat.Set(p =>
         {
-            _.Autopilot = MavAutopilot.MavAutopilotInvalid;
-            _.Type = (MavType)V2.AsvSdr.MavType.MavTypeAsvSdrPayload;
-            _.SystemStatus = MavState.MavStateActive;
-            _.BaseMode = MavModeFlag.MavModeFlagCustomModeEnabled;
-            _.MavlinkVersion = 3;
-            _.CustomMode = (uint)AsvSdrCustomMode.AsvSdrCustomModeIdle;
+            p.Autopilot = MavAutopilot.MavAutopilotInvalid;
+            p.Type = (MavType)V2.AsvSdr.MavType.MavTypeAsvSdrPayload;
+            p.SystemStatus = MavState.MavStateActive;
+            p.BaseMode = MavModeFlag.MavModeFlagCustomModeEnabled;
+            p.MavlinkVersion = 3;
+            p.CustomMode = (uint)AsvSdrCustomMode.AsvSdrCustomModeIdle;
         });
         CustomMode = new RxValue<AsvSdrCustomMode>().DisposeItWith(Disposable);
-        CustomMode.DistinctUntilChanged().Subscribe(mode => heartbeat.Set(_ =>
+        CustomMode.DistinctUntilChanged().Subscribe(mode => heartbeat.Set(p =>
         {
-            _.CustomMode = (uint)mode;
+            p.CustomMode = (uint)mode;
         })).DisposeItWith(Disposable);
 
         #endregion
@@ -136,7 +144,7 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
         if (Interlocked.CompareExchange(ref _calibrationTableUploadFlag, 1, 0) != 0)
         {
             await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckInProgress).ConfigureAwait(false);
-            Logger.Warn($"Calibration table upload already in progress");
+            _logger.ZLogWarning($"Calibration table upload already in progress");
             return;
         }
         try
@@ -155,7 +163,7 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
         catch (Exception e)
         {
             _status.Info($"Upload calibration [{args.Payload.TableIndex}] error");
-            Logger.Error(e,$"Upload calibration [{args.Payload.TableIndex}] error:{e.Message}");
+            _logger.ZLogError(e,$"Upload calibration [{args.Payload.TableIndex}] error:{e.Message}");
             await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail).ConfigureAwait(false);
         }
         finally

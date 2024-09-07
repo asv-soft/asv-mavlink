@@ -8,7 +8,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
-using NLog;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink
 {
@@ -21,7 +21,7 @@ namespace Asv.Mavlink
     
     public class HeartbeatClient : MavlinkMicroserviceClient, IHeartbeatClient
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _logger;
         private readonly CircularBuffer2<double> _valueBuffer = new(5);
         private readonly IncrementalRateCounter _rxRate;
         private readonly RxValue<HeartbeatPayload> _heartBeat;
@@ -35,8 +35,13 @@ namespace Asv.Mavlink
         private readonly List<byte> _lastPacketList = new();
         private readonly object _lastPacketListLock = new();
 
-        public HeartbeatClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, HeartbeatClientConfig config, IScheduler? scheduler = null):base("HEARTBEAT", connection, identity, seq)
+        public HeartbeatClient(
+            IMavlinkV2Connection connection, 
+            MavlinkClientIdentity identity,
+            IPacketSequenceCalculator seq, 
+            HeartbeatClientConfig config, 
+            IScheduler? scheduler = null,
+            ILogger? logger = null):base("HEARTBEAT", connection, identity, seq,scheduler,logger)
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
             FullId = MavlinkHelper.ConvertToFullId(identity.TargetComponentId, identity.TargetSystemId);
@@ -55,7 +60,7 @@ namespace Asv.Mavlink
 
             _heartBeat = new RxValue<HeartbeatPayload>().DisposeItWith(Disposable);
             InternalFilter<HeartbeatPacket>()
-                .Select(_ => _.Payload)
+                .Select(p => p.Payload)
                 .Subscribe(_heartBeat).DisposeItWith(Disposable);
 
             _packetRate = new RxValue<double>().DisposeItWith(Disposable);

@@ -28,7 +28,7 @@ namespace Asv.Mavlink
 
         private static IEnumerable<ParamExtDescription> ParseGroup(XmlNode group)
         {
-            foreach (var ParamExtList in group.ChildNodes.Cast<XmlNode>().Where(_ => _.Name == "ParamExteters"))
+            foreach (var ParamExtList in group.ChildNodes.Cast<XmlNode>().Where(n => n.Name == "ParamExteters"))
             {
                 foreach (var item in ParseParamExtList(group,ParamExtList))
                 {
@@ -41,7 +41,7 @@ namespace Asv.Mavlink
 
         private static IEnumerable<ParamExtDescription> ParseParamExtList(XmlNode @group, XmlNode ParamExtList)
         {
-            foreach (var ParamExt in ParamExtList.ChildNodes.Cast<XmlNode>().Where(_ => _.Name == "ParamExt"))
+            foreach (var ParamExt in ParamExtList.ChildNodes.Cast<XmlNode>().Where(n => n.Name == "ParamExt"))
             {
                 yield return ParseParamExt(group, ParamExtList, ParamExt);
             }
@@ -66,7 +66,7 @@ namespace Asv.Mavlink
                 result.Name = combinedName[1];
             }
 
-            foreach (var field in ParamExt.ChildNodes.Cast<XmlNode>().Where(_ => _.Name == "field"))
+            foreach (var field in ParamExt.ChildNodes.Cast<XmlNode>().Where(n => n.Name == "field"))
             {
                 switch (field.Attributes["name"].Value)
                 {
@@ -102,7 +102,7 @@ namespace Asv.Mavlink
                         break;
                 }
             }
-            foreach (var field in ParamExt.ChildNodes.Cast<XmlNode>().Where(_ => _.Name == "values"))
+            foreach (var field in ParamExt.ChildNodes.Cast<XmlNode>().Where(n => n.Name == "values"))
             {
                 foreach (var valueField in field.ChildNodes.Cast<XmlNode>())
                 {

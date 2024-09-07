@@ -12,7 +12,9 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.V2.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink
 {
@@ -85,11 +87,12 @@ namespace Asv.Mavlink
 
     public class MavlinkRouter:DisposableOnceWithCancel, IMavlinkRouter, IDataStream
     {
-        public static MavlinkRouter CreateDefault(IScheduler? scheduler = null)
+        public const string DefaultName = "MavlinkRouter";
+        public static MavlinkRouter CreateDefault(IScheduler? scheduler = null,ILogger? logger = null)
         {
-            return new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects,publishScheduler: scheduler);
+            return new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects,DefaultName,scheduler,logger);
         }
-
+       
         private readonly Action<IPacketDecoder<IPacketV2<IPayload>>> _register;
         private readonly IScheduler? _publishScheduler;
         private readonly ReaderWriterLockSlim _portCollectionSync = new(LockRecursionPolicy.SupportsRecursion);
@@ -102,15 +105,16 @@ namespace Asv.Mavlink
         private readonly Subject<DeserializePackageException> _deserializeErrors;
         private long _txPackets;
         private long _rxPackets;
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _logger;
         private readonly Subject<Guid> _onAddSubject;
         private readonly Subject<Guid> _onRemoveSubject;
         private readonly Subject<Guid> _onConfigChanged = new();
         private readonly PacketV2Decoder _decoder;
 
-        public MavlinkRouter(Action<IPacketDecoder<IPacketV2<IPayload>>> register,string name="MavlinkRouter", IScheduler? publishScheduler = null)
+        public MavlinkRouter(Action<IPacketDecoder<IPacketV2<IPayload>>> register,string? name=DefaultName, IScheduler? publishScheduler = null, ILogger? logger = null)
         {
-            Name = name;
+            _logger = logger ?? NullLogger.Instance;
+            Name = name ?? DefaultName;
             _register = register;
             _publishScheduler = publishScheduler;
             _decoder = new PacketV2Decoder();
@@ -131,16 +135,16 @@ namespace Asv.Mavlink
             {
                 _portCollectionSync.EnterWriteLock();
                 var portObject = new MavlinkPort(port, _register, Guid.NewGuid());
-                portObject.Connection.DeserializePackageErrors.Do(_=>_.SourceName = port.Name).Subscribe(_deserializeErrors);
+                portObject.Connection.DeserializePackageErrors.Do(p=>p.SourceName = port.Name).Subscribe(_deserializeErrors);
                 portObject.Port.Subscribe(_rawData);
 
                 if (port.PacketLossChance <= 0)
                 {
-                    portObject.Connection.Do(_=>_.Tag = portObject).Subscribe(OnRecvPacket);
+                    portObject.Connection.Do(v=>v.Tag = portObject).Subscribe(OnRecvPacket);
                 }
                 else
                 {
-                    portObject.Connection.Do(_=>_.Tag = portObject).Subscribe(packet =>
+                    portObject.Connection.Do(v=>v.Tag = portObject).Subscribe(packet =>
                     {
                         var chance = Random.Shared.Next(100);
                         if (chance > port.PacketLossChance)
@@ -169,7 +173,7 @@ namespace Asv.Mavlink
             try
             {
                 _portCollectionSync.EnterWriteLock();
-                var portToRemove = _ports.FirstOrDefault(_ => _.Id == id);
+                var portToRemove = _ports.FirstOrDefault(p => p.Id == id);
                 if (portToRemove == null) return false;
                 portToRemove.Dispose();
                 result = _ports.Remove(portToRemove);
@@ -195,7 +199,7 @@ namespace Asv.Mavlink
             try
             {
                 _portCollectionSync.EnterReadLock();
-                var portToRemove = _ports.FirstOrDefault(_ => _.Id == id);
+                var portToRemove = _ports.FirstOrDefault(p => p.Id == id);
                 if (portToRemove == null) return false;
                 if (enabled)
                 {
@@ -220,7 +224,7 @@ namespace Asv.Mavlink
             try
             {
                 _portCollectionSync.EnterReadLock();
-                return _ports.Select(_ => _.Id).ToArray();
+                return _ports.Select(p => p.Id).ToArray();
             }
             finally
             {
@@ -233,7 +237,7 @@ namespace Asv.Mavlink
             try
             {
                 _portCollectionSync.EnterReadLock();
-                var portToRemove = _ports.FirstOrDefault(_ => _.Id == id);
+                var portToRemove = _ports.FirstOrDefault(p => p.Id == id);
                 return portToRemove?.GetInfo();
             }
             finally
@@ -247,7 +251,7 @@ namespace Asv.Mavlink
             try
             {
                 _portCollectionSync.EnterReadLock();
-                var portToRemove = _ports.FirstOrDefault(_ => _.Id == id);
+                var portToRemove = _ports.FirstOrDefault(p => p.Id == id);
                 return portToRemove?.GetConfig();
             }
             finally
@@ -261,7 +265,7 @@ namespace Asv.Mavlink
             try
             {
                 _portCollectionSync.EnterReadLock();
-                return _ports.Select(_ => _.GetConfig()).ToArray();
+                return _ports.Select(p => p.GetConfig()).ToArray();
             }
             finally
             {
@@ -287,8 +291,8 @@ namespace Asv.Mavlink
                 Interlocked.Add(ref _rxBytes,packetSize);
                 _onSendPacketSubject.OnNext(packet);
                 // we need to send the packet to all other ports except the receiving one
-                var portToSend = _ports.Where(_ => _.Port.IsEnabled.Value && _.Port.State.Value == PortState.Connected && packet.Tag != _);
-                Task.WaitAll(portToSend.Select(_ => (Task)_.InternalSendSerializedPacket(new ReadOnlyMemory<byte>(data,0,size), DisposeCancel)).ToArray());
+                var portToSend = _ports.Where(p => p.Port.IsEnabled.Value && p.Port.State.Value == PortState.Connected && packet.Tag != p);
+                Task.WaitAll(portToSend.Select(p => (Task)p.InternalSendSerializedPacket(new ReadOnlyMemory<byte>(data,0,size), DisposeCancel)).ToArray());
             }
             finally
             {
@@ -314,7 +318,7 @@ namespace Asv.Mavlink
             }
             catch (Exception e)
             {
-                Logger.Error(e,$"Error to publish packet:{packet.Name}");
+                _logger.ZLogError(e,$"Error to publish packet:{packet.Name}");
                 if (Debugger.IsAttached)
                 {
                     Debugger.Break();
@@ -404,15 +408,15 @@ namespace Asv.Mavlink
             try
             {
                 _portCollectionSync.EnterReadLock();
-                tasks =  _ports.Where(_ => _.Port.IsEnabled.Value && _.Port.State.Value == PortState.Connected)
-                    .Select(_ => _.InternalSendSerializedPacket(data, count, cancel)).ToArray();
+                tasks =  _ports.Where(p => p.Port.IsEnabled.Value && p.Port.State.Value == PortState.Connected)
+                    .Select(p => p.InternalSendSerializedPacket(data, count, cancel)).ToArray();
             }
             finally
             {
                 _portCollectionSync.ExitReadLock();
             }
             var result = await Task.WhenAll(tasks).ConfigureAwait(false);
-            return result.All(_ => _);
+            return result.All(b => b);
         }
 
         public async Task<bool> Send(ReadOnlyMemory<byte> data, CancellationToken cancel)
@@ -423,15 +427,15 @@ namespace Asv.Mavlink
             try
             {
                 _portCollectionSync.EnterReadLock();
-                tasks =  _ports.Where(_ => _.Port.IsEnabled.Value && _.Port.State.Value == PortState.Connected)
-                    .Select(_ => _.InternalSendSerializedPacket(data, cancel)).ToArray();
+                tasks =  _ports.Where(p => p.Port.IsEnabled.Value && p.Port.State.Value == PortState.Connected)
+                    .Select(p => p.InternalSendSerializedPacket(data, cancel)).ToArray();
             }
             finally
             {
                 _portCollectionSync.ExitReadLock();
             }
             var result = await Task.WhenAll(tasks).ConfigureAwait(false);
-            return result.All(_ => _);
+            return result.All(b => b);
         }
 
         public string Name { get; }
@@ -446,7 +450,7 @@ namespace Asv.Mavlink
                 try
                 {
                     _portCollectionSync.EnterReadLock();
-                    return _ports.Sum(_ => _.Connection.SkipPackets);
+                    return _ports.Sum(p => p.Connection.SkipPackets);
                 }
                 finally
                 {
@@ -470,7 +474,7 @@ namespace Asv.Mavlink
             }
             catch (Exception e)
             {
-                Logger.Error(e,$"Error to dispose mavlink ports:{e.Message}");
+                _logger.ZLogError(e,$"Error to dispose mavlink ports:{e.Message}");
             }
             finally
             {

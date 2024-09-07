@@ -8,6 +8,7 @@ using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
@@ -23,19 +24,23 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
     private readonly RxValue<TimeSpan> _targetTimeout;
 
 
-    public AdsbVehicleClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq, AdsbVehicleClientConfig config,
-        IScheduler? scheduler = null) : base("ADSB", connection, identity, seq)
+    public AdsbVehicleClient(
+        IMavlinkV2Connection connection, 
+        MavlinkClientIdentity identity,
+        IPacketSequenceCalculator seq, 
+        AdsbVehicleClientConfig config,
+        IScheduler? scheduler = null,
+        ILogger? logger = null) : base("ADSB", connection, identity, seq,scheduler, logger)
     {
         _onAdsbTarget = new Subject<AdsbVehiclePayload>().DisposeItWith(Disposable);
         InternalFilter<AdsbVehiclePacket>()
-            .Select(_ => _.Payload)
+            .Select(p => p.Payload)
             .Subscribe(_onAdsbTarget).DisposeItWith(Disposable);
 
         _targetTimeout =
             new RxValue<TimeSpan>(TimeSpan.FromMilliseconds(config.TargetTimeoutMs)).DisposeItWith(Disposable);
-        _targetSource = new SourceCache<AdsbVehicle, uint>(_ => _.IcaoAddress).DisposeItWith(Disposable);
-        Targets = _targetSource.Connect().Transform(_ => (IAdsbVehicle)_);
+        _targetSource = new SourceCache<AdsbVehicle, uint>(v => v.IcaoAddress).DisposeItWith(Disposable);
+        Targets = _targetSource.Connect().Transform(v => (IAdsbVehicle)v);
         _onAdsbTarget.Subscribe(UpdateTarget).DisposeItWith(Disposable);
         if (scheduler != null)
         {
@@ -71,16 +76,16 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
 
     private void UpdateTarget(AdsbVehiclePayload payload)
     {
-        _targetSource.Edit(_ =>
+        _targetSource.Edit(u =>
         {
-            var lookup = _.Lookup(payload.IcaoAddress);
+            var lookup = u.Lookup(payload.IcaoAddress);
             if (lookup.HasValue)
             {
                 lookup.Value.InternalUpdate(payload);
             }
             else
             {
-                _.AddOrUpdate(new AdsbVehicle(payload));
+                u.AddOrUpdate(new AdsbVehicle(payload));
             }
         });
     }

@@ -4,24 +4,31 @@ using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvRsga;
 using Asv.Mavlink.V2.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
 
 namespace Asv.Mavlink;
 
 public class AsvRsgaServerEx : DisposableOnceWithCancel, IAsvRsgaServerEx
 {
-    public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-    public AsvRsgaServerEx(IAsvRsgaServer server, IStatusTextServer status, ICommandServerEx<CommandLongPacket> commands)
+    public readonly ILogger _logger;
+    public AsvRsgaServerEx(
+        IAsvRsgaServer server, 
+        IStatusTextServer status, 
+        ICommandServerEx<CommandLongPacket> commands,
+        ILogger? logger = null)
     {
+        _logger = logger ?? NullLogger.Instance;
         Base = server;
         server.OnCompatibilityRequest.Subscribe(OnCompatibilityRequest).DisposeItWith(Disposable);
         commands[(MavCmd)V2.AsvRsga.MavCmd.MavCmdAsvRsgaSetMode] = async (id,args, cancel) =>
         {
             if (SetMode == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-            RsgaHelper.GetArgsForSetMode(args.Payload, out var mode);
-            var result = await SetMode(mode, cs.Token).ConfigureAwait(false);
+            RsgaHelper.GetArgsForSetMode(args.Payload, out var mode, out var p2, out var p3, out var p4, out var p5, out var p6, out var p7);
+            var result = await SetMode(mode, p2, p3, p4, p5, p6, p7, cs.Token).ConfigureAwait(false);
             return CommandResult.FromResult(result);
         };
     }
@@ -49,7 +56,7 @@ public class AsvRsgaServerEx : DisposableOnceWithCancel, IAsvRsgaServerEx
         }
         catch (Exception e)
         {
-            Logger.Error(e,$"Error to get compatibility:{e.Message}");
+            _logger.ZLogError(e,$"Error to get compatibility:{e.Message}");
             await Base.SendCompatilityResponse(tx =>
             {
                 tx.RequestId = rx.RequestId;

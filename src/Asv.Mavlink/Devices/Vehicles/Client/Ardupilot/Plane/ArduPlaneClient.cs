@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.Minimal;
-using NLog;
+using Microsoft.Extensions.Logging;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
 public class ArduPlaneClient : ArduVehicle
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
     private string _vehicleClassName;
     private const string ClassNamePlane = "ArduPlane";
     private const string ClassNameQuadPlane = "ArduQuadPlane";
@@ -22,7 +23,9 @@ public class ArduPlaneClient : ArduVehicle
 
     public ArduPlaneClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
         VehicleClientConfig config,
-        IPacketSequenceCalculator seq, IScheduler scheduler) : base(connection, identity, config, seq, scheduler)
+        IPacketSequenceCalculator seq, 
+        IScheduler? scheduler = null,
+        ILogger? logger = null) : base(connection, identity, config, seq, scheduler,logger)
     {
     }
 
@@ -80,7 +83,7 @@ public class ArduPlaneClient : ArduVehicle
 
     public override async Task DoLand(CancellationToken cancel = default)
     {
-        Logger.Info("=> Land manualy");
+        _logger.LogInformation("=> Land manually");
         await SetVehicleMode(ArdupilotPlaneMode.Qland, cancel).ConfigureAwait(false);
     }
 
@@ -101,7 +104,7 @@ public class ArduPlaneClient : ArduVehicle
     protected override IVehicleMode? InternalInterpretMode(HeartbeatPayload heartbeatPayload)
     {
         return AvailableModes.Cast<ArdupilotPlaneMode>()
-            .FirstOrDefault(_ => _.CustomMode == (PlaneMode)heartbeatPayload.CustomMode);
+            .FirstOrDefault(m => m.CustomMode == (PlaneMode)heartbeatPayload.CustomMode);
     }
 
     public override Task SetVehicleMode(IVehicleMode mode, CancellationToken cancel = default)

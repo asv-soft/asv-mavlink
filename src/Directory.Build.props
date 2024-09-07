@@ -3,7 +3,8 @@
     <ProductVersion>3.10.4</ProductVersion>
     <ProductPrevVersion>3.10.3</ProductPrevVersion>
 
-    <AsvCommonVersion>2.0.1</AsvCommonVersion>
+    <AsvCommonVersion>3.0.0-dev.2</AsvCommonVersion>
+    <ZLoggerVersion>2.5.5</ZLoggerVersion>
     <ApiCompatVersion>8.0.200</ApiCompatVersion>
     <DynamicDataVersion>8.4.1</DynamicDataVersion>
   </PropertyGroup>

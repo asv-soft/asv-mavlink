@@ -1,10 +1,13 @@
 #nullable enable
 using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink
 {
@@ -40,7 +43,7 @@ namespace Asv.Mavlink
     public abstract class MavlinkMicroserviceClient:DisposableOnceWithCancel
     {
         private readonly string _ifcLogName;
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _loggerBase;
         private string? _locTargetName;
         private string? _logLocalName;
         private string? _logSend;
@@ -48,14 +51,20 @@ namespace Asv.Mavlink
 
         protected MavlinkMicroserviceClient(string ifcLogName, IMavlinkV2Connection connection,
             MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq)
+            IPacketSequenceCalculator seq,
+            IScheduler? scheduler = null,
+            ILogger? logger = null)
         {
+            Scheduler = scheduler ?? System.Reactive.Concurrency.Scheduler.Default;
+            _loggerBase = logger ?? NullLogger.Instance;
             Connection = connection ?? throw new ArgumentNullException(nameof(connection));
             Identity = identity ?? throw new ArgumentNullException(nameof(identity));
             Sequence = seq ?? throw new ArgumentNullException(nameof(seq));
             _ifcLogName = ifcLogName;
             InternalFilteredVehiclePackets = Connection.Where(FilterVehicle).Publish().RefCount();
         }
+        
+        protected IScheduler Scheduler { get; } 
 
         protected string LogTargetName => _locTargetName ??= $"{Identity.TargetSystemId}:{Identity.TargetSystemId}";
         protected string LogLocalName => _logLocalName ??= $"{Identity.SystemId}:{Identity.ComponentId}";
@@ -66,21 +75,21 @@ namespace Asv.Mavlink
             where TPacket : IPacketV2<IPayload>, new()
         {
             var id = new TPacket().MessageId;
-            return InternalFilteredVehiclePackets.Where(_=>_.MessageId == id).Cast<TPacket>();
+            return InternalFilteredVehiclePackets.Where(v=>v.MessageId == id).Cast<TPacket>();
         }
 
         protected IObservable<TPacket> InternalFilterFirstAsync<TPacket>(Func<TPacket, bool> filter)
             where TPacket : IPacketV2<IPayload>, new()
         {
             var id = new TPacket().MessageId;
-            return InternalFilteredVehiclePackets.Where(_ => _.MessageId == id).Cast<TPacket>().FirstAsync(filter);
+            return InternalFilteredVehiclePackets.Where(v => v.MessageId == id).Cast<TPacket>().FirstAsync(filter);
         }
 
         protected IObservable<TPacket> InternalFilter<TPacket>(Func<TPacket, bool> filter)
             where TPacket : IPacketV2<IPayload>, new()
         {
             var id = new TPacket().MessageId;
-            return InternalFilteredVehiclePackets.Where(_ => _.MessageId == id).Cast<TPacket>().Where(filter);
+            return InternalFilteredVehiclePackets.Where(v => v.MessageId == id).Cast<TPacket>().Where(filter);
         }
 
         protected IObservable<IPacketV2<IPayload>> InternalFilteredVehiclePackets { get; }
@@ -105,7 +114,7 @@ namespace Asv.Mavlink
         {
             var packet = new TPacketSend();
             fillPacket(packet);
-            Logger.Trace($"{LogSend} send {packet.Name}");
+            _loggerBase.ZLogTrace($"{LogSend} send {packet.Name}");
             packet.Sequence = Sequence.GetNextSequenceNumber();
             packet.ComponentId = Identity.ComponentId;
             packet.SystemId = Identity.SystemId;
@@ -116,7 +125,7 @@ namespace Asv.Mavlink
             CancellationToken cancel, FilterDelegate<TResult> filterAndResultGetter, int timeoutMs = 1000)
         {
             if (filterAndResultGetter == null) throw new ArgumentNullException(nameof(filterAndResultGetter));
-            Logger.Trace($"{LogSend} call {packet.Name}");
+            _loggerBase.ZLogTrace($"{LogSend} call {packet.Name}");
             using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
             linkedCancel.CancelAfter(timeoutMs);
             var tcs = new TaskCompletionSource<TResult>();
@@ -134,7 +143,7 @@ namespace Asv.Mavlink
             packet.SystemId = Identity.SystemId;
             await Connection.Send(packet, linkedCancel.Token).ConfigureAwait(false);
             var result = await tcs.Task.ConfigureAwait(false);
-            Logger.Trace($"{LogRecv} ok {packet.Name}<=={result}");
+            _loggerBase.ZLogTrace($"{LogRecv} ok {packet.Name}<=={result}");
             return result;
         }
         
@@ -152,7 +161,7 @@ namespace Asv.Mavlink
                 if (currentAttempt != 0)
                 {
                     fillOnConfirmation?.Invoke(packet, currentAttempt);
-                    Logger.Warn($"{LogSend} replay {currentAttempt} {name}");
+                    _loggerBase.ZLogWarning($"{LogSend} replay {currentAttempt} {name}");
                 }
                 ++currentAttempt;
                 try
@@ -167,9 +176,8 @@ namespace Asv.Mavlink
                     }
                 }
             }
-            var msg = $"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'";
-            Logger.Error(msg);
-            throw new TimeoutException(msg);
+            _loggerBase.ZLogError($"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
+            throw new TimeoutException($"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
         }
         
         
@@ -178,20 +186,20 @@ namespace Asv.Mavlink
             where TAnswerPacket : IPacketV2<IPayload>, new()
         {
             var p = new TAnswerPacket();
-            Logger.Trace($"{LogSend} call {p.Name}");
+            _loggerBase.ZLogTrace($"{LogSend} call {p.Name}");
             using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
             linkedCancel.CancelAfter(timeoutMs);
             var tcs = new TaskCompletionSource<TAnswerPacket>();
             await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
 
             filter ??= (_ => true);
-            using var subscribe = InternalFilterFirstAsync(filter).Subscribe(_=>tcs.TrySetResult(_));
+            using var subscribe = InternalFilterFirstAsync(filter).Subscribe(v=>tcs.TrySetResult(v));
             packet.Sequence = Sequence.GetNextSequenceNumber();
             packet.ComponentId = Identity.ComponentId;
             packet.SystemId = Identity.SystemId;
             await Connection.Send(packet, linkedCancel.Token).ConfigureAwait(false);
             var result = await tcs.Task.ConfigureAwait(false);
-            Logger.Trace($"{LogRecv} ok {packet.Name}<=={p.Name}");
+            _loggerBase.ZLogTrace($"{LogRecv} ok {packet.Name}<=={p.Name}");
             return result;
         }
 
@@ -211,7 +219,7 @@ namespace Asv.Mavlink
                 if (currentAttempt != 0)
                 {
                     fillOnConfirmation?.Invoke(packet, currentAttempt);
-                    Logger.Warn($"{LogSend} replay {currentAttempt} {name}");
+                    _loggerBase.ZLogWarning($"{LogSend} replay {currentAttempt} {name}");
                 }
                 ++currentAttempt;
                 try
@@ -229,9 +237,8 @@ namespace Asv.Mavlink
             }
 
             if (result != null) return resultGetter(result);
-            var msg = $"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'";
-            Logger.Error(msg);
-            throw new TimeoutException(msg);
+            _loggerBase.ZLogError($"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
+            throw new TimeoutException($"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
         }
     }
 }

@@ -1,17 +1,23 @@
 using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvAudio;
 using Asv.Mavlink.V2.AsvRadio;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
 public class AsvRadioClient : MavlinkMicroserviceClient, IAsvRadioClient
 {
     
-    public AsvRadioClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq) 
-        : base(AsvRadioHelper.IfcName, connection, identity, seq)
+    public AsvRadioClient(
+        IMavlinkV2Connection connection, 
+        MavlinkClientIdentity identity, 
+        IPacketSequenceCalculator seq,
+        IScheduler? scheduler = null,
+        ILogger? logger = null) 
+        : base(AsvRadioHelper.IfcName, connection, identity, seq,scheduler, logger)
     {
         Status = InternalFilter<AsvRadioStatusPacket>()
             .Select(p => p.Payload).Publish().RefCount();

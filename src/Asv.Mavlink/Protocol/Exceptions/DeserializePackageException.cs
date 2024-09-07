@@ -4,7 +4,7 @@ namespace Asv.Mavlink
 {
     public class DeserializePackageException:MavlinkException
     {
-        public string SourceName { get; set; }
+        public string? SourceName { get; set; }
 
         public int MessageId { get; }
 

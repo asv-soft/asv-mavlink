@@ -11,7 +11,7 @@ namespace Asv.Mavlink
             IPacketSequenceCalculator seq):base("DEBUG", connection, identity, seq)
         {
             DebugFloatArray = InternalFilter<DebugFloatArrayPacket>()
-                .Select(_ => _.Payload)
+                .Select(p => p.Payload)
                 .Publish()
                 .RefCount();
             NamedFloatValue = InternalFilter<NamedValueFloatPacket>()

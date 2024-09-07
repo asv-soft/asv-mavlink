@@ -74,7 +74,7 @@ public class VirtualDataStream : DisposableOnceWithCancel, IDataStream
         _name = name;
         _txPipe = new Subject<byte[]>().DisposeItWith(Disposable);
         _rxPipe = new Subject<byte[]>().DisposeItWith(Disposable);
-        _rxPipe.Subscribe(_ => Interlocked.Add(ref _rxBytes, _.Length));
+        _rxPipe.Subscribe(b => Interlocked.Add(ref _rxBytes, b.Length));
     }
 
     public IDisposable Subscribe(IObserver<byte[]> observer)

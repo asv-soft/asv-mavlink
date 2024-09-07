@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvRsga;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
@@ -15,8 +16,13 @@ public class AsvRsgaClient: MavlinkMicroserviceClient, IAsvRsgaClient
     private uint _requestCounter;
 
 
-    public AsvRsgaClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq) 
-        : base("RSGA", connection, identity, seq)
+    public AsvRsgaClient(
+        IMavlinkV2Connection connection, 
+        MavlinkClientIdentity identity, 
+        IPacketSequenceCalculator seq,
+        IScheduler? scheduler = null,
+        ILogger? logger = null) 
+        : base("RSGA", connection, identity, seq,scheduler,logger)
     {
         _onCompatibilityRequest = new Subject<AsvRsgaCompatibilityResponsePayload>().DisposeItWith(Disposable);
         InternalFilter<AsvRsgaCompatibilityResponsePacket>()

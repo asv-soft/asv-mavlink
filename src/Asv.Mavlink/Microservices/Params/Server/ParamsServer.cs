@@ -3,27 +3,30 @@ using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink
 {
     public class ParamsServer: MavlinkMicroserviceServer, IParamsServer
     {
         public ParamsServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkIdentity identity, IScheduler scheduler)
-            : base("PARAM",connection, identity, seq, scheduler)
+            MavlinkIdentity identity,
+            IScheduler? scheduler = null,
+            ILogger? logger = null)
+            : base("PARAM",connection, identity, seq, scheduler,logger)
         {
             OnParamRequestRead =
-                InternalFilter<ParamRequestReadPacket>(_ => _.Payload.TargetSystem, _ => _.Payload.TargetComponent);
+                InternalFilter<ParamRequestReadPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
             OnParamRequestList =
-                InternalFilter<ParamRequestListPacket>(_ => _.Payload.TargetSystem, _ => _.Payload.TargetComponent);
+                InternalFilter<ParamRequestListPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
             OnParamSet =
-                InternalFilter<ParamSetPacket>(_ => _.Payload.TargetSystem, _ => _.Payload.TargetComponent);
+                InternalFilter<ParamSetPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
 
         }
         
         public Task SendParamValue(Action<ParamValuePayload> changeCallback, CancellationToken cancel = default)
         {
-            return InternalSend<ParamValuePacket>(_=>changeCallback(_.Payload), cancel);
+            return InternalSend<ParamValuePacket>(p=>changeCallback(p.Payload), cancel);
         }
 
         public IObservable<ParamRequestReadPacket> OnParamRequestRead { get; }

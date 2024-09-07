@@ -5,7 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvSdr;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -13,12 +15,17 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
 {
     private readonly IAsvSdrClient _ifc;
     private readonly RxValue<ushort> _remoteSize;
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
     private readonly TimeSpan _deviceUploadTimeout;
     private readonly RxValue<CalibrationTableMetadata> _metadata;
 
-    public AsvSdrClientCalibrationTable(AsvSdrCalibTablePayload payload, IAsvSdrClient ifc, TimeSpan deviceUploadTimeout)
+    public AsvSdrClientCalibrationTable(
+        AsvSdrCalibTablePayload payload, 
+        IAsvSdrClient ifc, 
+        TimeSpan deviceUploadTimeout,
+        ILogger? logger = null)
     {
+        _logger = logger ?? NullLogger.Instance;
         _ifc = ifc;
         _deviceUploadTimeout = deviceUploadTimeout;
         _remoteSize = new RxValue<ushort>(payload.RowCount).DisposeItWith(Disposable);
@@ -62,7 +69,7 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
     {
         progress ??= new Progress<double>();
         progress.Report(0);
-        Logger.Info($"Begin upload rows for '{Name}[{Index}]' table");
+        _logger.ZLogInformation($"Begin upload rows for '{Name}[{Index}]' table");
 
         var reqId = _ifc.GenerateRequestIndex();
 
@@ -76,14 +83,14 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
             {
                 if (DateTime.Now - lastUpdateTime > _deviceUploadTimeout)
                 {
-                    Logger.Warn($"'{Name}[{Index}]' table upload timeout");
+                    _logger.ZLogWarning($"'{Name}[{Index}]' table upload timeout");
                     tcs.TrySetException(new Exception($"'{Name}[{Index}]' table upload timeout"));
                 }
             });
 
         using var sub1 = _ifc.OnCalibrationTableRowUploadCallback.Subscribe(req =>
         {
-            Logger.Debug($"Payload request '{Name}[{Index}]' row with index={req.RowIndex}");
+            _logger.ZLogDebug($"Payload request '{Name}[{Index}]' row with index={req.RowIndex}");
             lastUpdateTime = DateTime.Now;
             if (data.Length <= req.RowIndex)
             {
@@ -106,16 +113,16 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
             }, cancel);
         });
 
-        using var sub2 = _ifc.OnCalibrationAcc.Where(_ => _.RequestId == reqId).Subscribe(_ =>
+        using var sub2 = _ifc.OnCalibrationAcc.Where(p => p.RequestId == reqId).Subscribe(p =>
         {
             lastUpdateTime = DateTime.Now;
-            if (_.Result == AsvSdrRequestAck.AsvSdrRequestAckOk)
+            if (p.Result == AsvSdrRequestAck.AsvSdrRequestAckOk)
             {
                 tcs.TrySetResult(Unit.Default);
             }
             else
             {
-                tcs.TrySetException(new AsvSdrException($"Error to upload '{Name}[{Index}]' table to payload:{_.Result:G}"));
+                tcs.TrySetException(new AsvSdrException($"Error to upload '{Name}[{Index}]' table to payload:{p.Result:G}"));
             }
 
         });

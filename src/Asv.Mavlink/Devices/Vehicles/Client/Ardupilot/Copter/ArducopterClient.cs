@@ -9,17 +9,25 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.Minimal;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
 public class ArduCopterClient:ArduVehicle
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger(); 
-    public ArduCopterClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity, VehicleClientConfig config, IPacketSequenceCalculator seq, IScheduler? scheduler = null) 
-        : base(connection, identity, config, seq, scheduler)
+    private readonly ILogger _logger; 
+    public ArduCopterClient(
+        IMavlinkV2Connection connection, 
+        MavlinkClientIdentity identity, 
+        VehicleClientConfig config, 
+        IPacketSequenceCalculator seq, 
+        IScheduler? scheduler = null,
+        ILogger? logger = null) 
+        : base(connection, identity, config, seq, scheduler,logger)
     {
-        
+        _logger = logger ?? NullLogger.Instance;        
 
     }
 
@@ -39,7 +47,7 @@ public class ArduCopterClient:ArduVehicle
         }
         catch (Exception e)
         {
-            Logger.Error($"Error to get vehicle name:{e.Message}");
+            _logger.ZLogError(e,$"Error to get vehicle name:{e.Message}");
         }
     }
 
@@ -67,7 +75,7 @@ public class ArduCopterClient:ArduVehicle
     protected override IVehicleMode? InternalInterpretMode(HeartbeatPayload heartbeatPayload)
     {
         return AvailableModes.Cast<ArdupilotCopterMode>()
-            .FirstOrDefault(_ => _.CustomMode == (CopterMode)heartbeatPayload.CustomMode);
+            .FirstOrDefault(m => m.CustomMode == (CopterMode)heartbeatPayload.CustomMode);
     }
 
     public override Task SetVehicleMode(IVehicleMode mode, CancellationToken cancel = default)
@@ -120,7 +128,7 @@ public class ArduCopterClient:ArduVehicle
 
     public override async Task TakeOff(double altInMeters, CancellationToken cancel = default)
     {
-        Logger.Info($"=> TakeOff(altitude:{altInMeters:F2})");
+        _logger.ZLogInformation($"=> TakeOff(altitude:{altInMeters:F2})");
         await EnsureInGuidedMode(cancel).ConfigureAwait(false);
         await Position.ArmDisarm(true, cancel).ConfigureAwait(false);
         await Position.TakeOff(altInMeters,  cancel).ConfigureAwait(false);

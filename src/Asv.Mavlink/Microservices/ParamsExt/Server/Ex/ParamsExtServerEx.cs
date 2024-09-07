@@ -2,25 +2,28 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
 public class ParamsExtServerExConfig
 {
-    public int SendingParamItemDelayMs { get; set; } = 100;
+    public int SendingParamItemDelayMs { get; set; } = 30;
     public string CfgPrefix { get; set; } = "MAV_CFG_";
 }
 
 public class ParamsExtServerEx : DisposableOnceWithCancel, IParamsExtServerEx
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
 
     private readonly Subject<Exception> _onErrorSubject;
     private int _sendingInProgressFlag;
@@ -33,10 +36,16 @@ public class ParamsExtServerEx : DisposableOnceWithCancel, IParamsExtServerEx
     private readonly IConfiguration _cfg;
     private readonly ParamsExtServerExConfig _serverCfg;
 
-    public ParamsExtServerEx(IParamsExtServer server, IStatusTextServer statusTextServer,
-        IEnumerable<IMavParamExtTypeMetadata> paramDescriptions, IConfiguration cfg,
-        ParamsExtServerExConfig serverCfg)
+    public ParamsExtServerEx(
+        IParamsExtServer server, 
+        IStatusTextServer statusTextServer,
+        IEnumerable<IMavParamExtTypeMetadata> paramDescriptions, 
+        IConfiguration cfg,
+        ParamsExtServerExConfig serverCfg,
+        IScheduler? scheduler = null,
+        ILogger? logger = null)
     {
+        _logger = logger ?? NullLogger.Instance;
         _server = server ?? throw new ArgumentNullException(nameof(server));
         _statusTextServer = statusTextServer ?? throw new ArgumentNullException(nameof(statusTextServer));
         _cfg = cfg ?? throw new ArgumentNullException(nameof(cfg));
@@ -67,10 +76,9 @@ public class ParamsExtServerEx : DisposableOnceWithCancel, IParamsExtServerEx
             var name = MavlinkTypesHelper.GetString(packet.Payload.ParamId);
             if (_paramDict.TryGetValue(name, out param) == false)
             {
-                var msg = $"Error to get mavlink param: param '{name}' not found";
-                Logger.Error(msg);
+                _logger.ZLogError($"Error to get mavlink param: param '{name}' not found");
                 _statusTextServer.Error($"Param '{name}' not found");
-                _onErrorSubject.OnNext(new ArgumentException(msg, name));
+                _onErrorSubject.OnNext(new ArgumentException($"Error to get mavlink param: param '{name}' not found", name));
                 return;
             }
         }
@@ -78,10 +86,9 @@ public class ParamsExtServerEx : DisposableOnceWithCancel, IParamsExtServerEx
         {
             if (packet.Payload.ParamIndex >= _paramDict.Count)
             {
-                var msg = $"Error to get mavlink param: param with index '{packet.Payload.ParamIndex}' not found";
-                Logger.Error(msg);
+                _logger.ZLogError($"Error to get mavlink param: param with index '{packet.Payload.ParamIndex}' not found");
                 _statusTextServer.Error($"Param '{packet.Payload.ParamIndex}' not found");
-                _onErrorSubject.OnNext(new ArgumentException(msg));
+                _onErrorSubject.OnNext(new ArgumentException($"Error to get mavlink param: param with index '{packet.Payload.ParamIndex}' not found"));
                 return;
             }
 
@@ -96,7 +103,7 @@ public class ParamsExtServerEx : DisposableOnceWithCancel, IParamsExtServerEx
     {
         if (Interlocked.CompareExchange(ref _sendingInProgressFlag, 1, 0) == 1)
         {
-            Logger.Warn("Skip duplicate request for params list");
+            _logger.LogWarning("Skip duplicate request for params list");
             _statusTextServer.Error($"Skip duplicate request");
             return;
         }
@@ -122,21 +129,18 @@ public class ParamsExtServerEx : DisposableOnceWithCancel, IParamsExtServerEx
         var name = MavlinkTypesHelper.GetString(packet.Payload.ParamId);
         if (_paramDict.TryGetValue(name, out var param) == false)
         {
-            var msg = $"Error to set mavlink param: param '{name}' not found";
-            Logger.Error(msg);
+            _logger.ZLogError($"Error to set mavlink param: param '{name}' not found");
             _statusTextServer.Error($"Param '{name}' not found");
-            _onErrorSubject.OnNext(new ArgumentException(msg, name));
+            _onErrorSubject.OnNext(new ArgumentException($"Error to set mavlink param: param '{name}' not found", name));
             return;
         }
 
         var currentValue = param.Item2.ReadFromConfig(_cfg, _serverCfg.CfgPrefix);
         if (param.Item2.Type != packet.Payload.ParamType)
         {
-            var msg =
-                $"Error to set mavlink param: param '{name}' type didn't equal. Want {param.Item2.Type} but found {packet.Payload.ParamType}";
-            Logger.Error(msg);
+            _logger.ZLogError($"Error to set mavlink param: param '{name}' type didn't equal. Want {param.Item2.Type} but found {packet.Payload.ParamType}");
             _statusTextServer.Error($"param type '{name}' not equal");
-            _onErrorSubject.OnNext(new ArgumentException(msg, name));
+            _onErrorSubject.OnNext(new ArgumentException($"Error to set mavlink param: param '{name}' type didn't equal. Want {param.Item2.Type} but found {packet.Payload.ParamType}", name));
             await SendAck(param, currentValue, DisposeCancel).ConfigureAwait(false);
             return;
         }
@@ -145,15 +149,13 @@ public class ParamsExtServerEx : DisposableOnceWithCancel, IParamsExtServerEx
         if (param.Item2.IsValid(newValue) == false)
         {
             var errorMsg = param.Item2.GetValidationError(newValue);
-            var msg = $"Error to set mavlink param '{name}' [{param.Item2.Type}]: {errorMsg}";
-            Logger.Error(msg);
+            _logger.ZLogError($"Error to set mavlink param '{name}' [{param.Item2.Type}]: {errorMsg}");
             _statusTextServer.Error($"param '{name}':{errorMsg}");
-            _onErrorSubject.OnNext(new ArgumentException(msg, name));
+            _onErrorSubject.OnNext(new ArgumentException($"Error to set mavlink param '{name}' [{param.Item2.Type}]: {errorMsg}", name));
             await SendAck(param, currentValue, DisposeCancel).ConfigureAwait(false);
             return;
         }
-
-        Logger.Info("Set param {0} from {1} => {2}", param.Item2.Name, currentValue, newValue);
+        _logger.ZLogError($"Set param {param.Item2.Name} from {currentValue} => {newValue}");
         param.Item2.WriteToConfig(_cfg, newValue, _serverCfg.CfgPrefix);
         _onParamChangedSubject.OnNext(new ParamExtChangedEvent(param, currentValue, newValue, true));
         await SendAck(param, newValue, DisposeCancel).ConfigureAwait(false);

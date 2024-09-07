@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Minimal;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Asv.Mavlink;
 
@@ -23,7 +24,7 @@ public class VehicleClientConfig:ClientDeviceConfig
 
 public abstract class VehicleClient : ClientDevice, IVehicleClient
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
     private readonly VehicleClientConfig _config;
     private readonly ParamsClientEx _params;
 
@@ -31,9 +32,10 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
         MavlinkClientIdentity identity,
         VehicleClientConfig config,
         IPacketSequenceCalculator seq, 
-        IScheduler? scheduler = null):base(connection,identity,config,seq,scheduler)
+        IScheduler? scheduler = null,
+        ILogger? logger = null):base(connection,identity,config,seq,scheduler,logger)
     {
-        
+        _logger = logger ?? NullLogger.Instance;
         _config = config;
         Commands = new CommandClient(connection,identity,seq,config.Command).DisposeItWith(Disposable);
         Offboard = new OffboardClient(connection, identity, seq).DisposeItWith(Disposable);
@@ -55,8 +57,8 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
         var customMode = new RxValue<IVehicleMode>().DisposeItWith(Disposable);
         Heartbeat
             .RawHeartbeat
-            .DistinctUntilChanged(_=> ((int) _.BaseMode * 397) ^ (int) _.CustomMode)
-            .Select(_=>InternalInterpretMode(_) ?? VehicleMode.Unknown)
+            .DistinctUntilChanged(p=> ((int) p.BaseMode * 397) ^ (int) p.CustomMode)
+            .Select(p=>InternalInterpretMode(p) ?? VehicleMode.Unknown)
             .Subscribe(customMode)
             .DisposeItWith(Disposable);
         CurrentMode = customMode;

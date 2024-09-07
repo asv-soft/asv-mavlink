@@ -24,7 +24,7 @@ public class ParamExtItem: DisposableOnceWithCancel,IParamExtItem
         Index = payload.ParamIndex;
         _isSynced = new RxValue<bool>(true).DisposeItWith(Disposable);
         _value = new RxValue<MavParamExtValue>(_remoteValue = MavParamExtHelper.CreateFromBuffer(payload.ParamValue, payload.ParamType)).DisposeItWith(Disposable);
-        _value.Subscribe(_ => _isSynced.OnNext(_remoteValue == _)).DisposeItWith(Disposable);
+        _value.Subscribe(v => _isSynced.OnNext(_remoteValue == v)).DisposeItWith(Disposable);
     }
     
     public ParamExtDescription Info { get; }

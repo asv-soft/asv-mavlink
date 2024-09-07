@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Asv.Mavlink.Server;
 using Asv.Mavlink.V2.AsvAudio;
 using Asv.Mavlink.V2.AsvRadio;
 using Asv.Mavlink.V2.Common;

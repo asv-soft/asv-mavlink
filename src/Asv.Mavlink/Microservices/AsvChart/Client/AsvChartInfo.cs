@@ -1,6 +1,4 @@
 using System;
-using System.Buffers;
-using System.Collections.Generic;
 using Asv.Mavlink.V2.AsvChart;
 
 namespace Asv.Mavlink;

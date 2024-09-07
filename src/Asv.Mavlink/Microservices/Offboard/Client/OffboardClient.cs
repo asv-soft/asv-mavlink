@@ -1,14 +1,20 @@
+using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink
 {
     
     public class OffboardClient : MavlinkMicroserviceClient, IOffboardClient
     {
-        public OffboardClient(IMavlinkV2Connection connection, MavlinkClientIdentity config,
-            IPacketSequenceCalculator seq):base("OFFBOARD", connection, config, seq)
+        public OffboardClient(
+            IMavlinkV2Connection connection, 
+            MavlinkClientIdentity config,
+            IPacketSequenceCalculator seq,
+            IScheduler? rxScheduler = null,
+            ILogger? logger = null):base("OFFBOARD", connection, config, seq,rxScheduler,logger)
         {
         }
 
@@ -16,24 +22,24 @@ namespace Asv.Mavlink
             float y, float z, float vx, float vy, float vz, float afx, float afy, float afz, float yaw, float yawRate,
             CancellationToken cancel)
         {
-            return InternalSend<SetPositionTargetLocalNedPacket>(_ =>
+            return InternalSend<SetPositionTargetLocalNedPacket>(p =>
             {
-                _.Payload.TimeBootMs = timeBootMs;
-                _.Payload.TargetComponent = Identity.TargetComponentId;
-                _.Payload.TargetSystem = Identity.TargetSystemId;
-                _.Payload.CoordinateFrame = coordinateFrame;
-                _.Payload.TypeMask = typeMask;
-                _.Payload.X = x;
-                _.Payload.Y = y;
-                _.Payload.Z = z;
-                _.Payload.Vx = vx;
-                _.Payload.Vy = vy;
-                _.Payload.Vz = vz;
-                _.Payload.Afx = afx;
-                _.Payload.Afy = afy;
-                _.Payload.Afz = afz;
-                _.Payload.Yaw = yaw;
-                _.Payload.YawRate = yawRate;
+                p.Payload.TimeBootMs = timeBootMs;
+                p.Payload.TargetComponent = Identity.TargetComponentId;
+                p.Payload.TargetSystem = Identity.TargetSystemId;
+                p.Payload.CoordinateFrame = coordinateFrame;
+                p.Payload.TypeMask = typeMask;
+                p.Payload.X = x;
+                p.Payload.Y = y;
+                p.Payload.Z = z;
+                p.Payload.Vx = vx;
+                p.Payload.Vy = vy;
+                p.Payload.Vz = vz;
+                p.Payload.Afx = afx;
+                p.Payload.Afy = afy;
+                p.Payload.Afz = afz;
+                p.Payload.Yaw = yaw;
+                p.Payload.YawRate = yawRate;
             }, cancel);
         }
         

@@ -15,7 +15,7 @@ public class ArdupilotCopterMode:VehicleMode
  
     static ArdupilotCopterMode()
     {
-        var wellKnownModes = new HashSet<CopterMode>(WellKnownModes.Select(_=>_.CustomMode));
+        var wellKnownModes = new HashSet<CopterMode>(WellKnownModes.Select(m=>m.CustomMode));
         var allModes = new List<IVehicleMode>();
         allModes.AddRange(WellKnownModes);
         foreach (var copterMode in Enum.GetValues<CopterMode>())

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reactive.Disposables;
 using System.Reactive.Subjects;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvAudio;

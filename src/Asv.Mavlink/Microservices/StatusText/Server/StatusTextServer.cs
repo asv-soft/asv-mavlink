@@ -6,7 +6,9 @@ using System.Reactive.Linq;
 using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink
 {
@@ -21,18 +23,24 @@ namespace Asv.Mavlink
         private readonly int _maxMessageSize = new StatustextPayload().Text.Length;
         private readonly StatusTextLoggerConfig _config;
         private readonly ConcurrentQueue<KeyValuePair<MavSeverity,string>> _messageQueue = new();
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _logger;
         private int _isSending;
 
-        public StatusTextServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkIdentity identity, StatusTextLoggerConfig config, IScheduler scheduler):   
-            base("STATUS",connection,identity,seq,scheduler)
+        public StatusTextServer(
+            IMavlinkV2Connection connection, 
+            IPacketSequenceCalculator seq,
+            MavlinkIdentity identity, 
+            StatusTextLoggerConfig config, 
+            IScheduler? scheduler = null,
+            ILogger? logger = null):   
+            base("STATUS",connection,identity,seq,scheduler,logger)
         {
+            _logger = logger ?? NullLogger.Instance;
             if (seq == null) throw new ArgumentNullException(nameof(seq));
             _config = config ?? throw new ArgumentNullException(nameof(config));
             if (connection == null) throw new ArgumentNullException(nameof(connection));
 
-            _logger.Debug($"Create status logger for [sys:{identity.SystemId}, com:{identity.ComponentId}] with send rate:{config.MaxSendRateHz} Hz, buffer size: {config.MaxQueueSize}");
+            _logger.ZLogDebug($"Create status logger for [sys:{identity.SystemId}, com:{identity.ComponentId}] with send rate:{config.MaxSendRateHz} Hz, buffer size: {config.MaxQueueSize}");
 
             Observable.Timer(TimeSpan.FromSeconds(1.0 / _config.MaxSendRateHz),
                 TimeSpan.FromSeconds(1.0 / _config.MaxSendRateHz)).Subscribe(TrySend)
@@ -48,17 +56,17 @@ namespace Asv.Mavlink
                 KeyValuePair<MavSeverity, string> res;
                 if (_messageQueue.TryDequeue(out res))
                 {
-                    await InternalSend<StatustextPacket>(_ =>
+                    await InternalSend<StatustextPacket>(p =>
                     {
-                        _.Payload.Severity = res.Key;
-                        MavlinkTypesHelper.SetString(_.Payload.Text, res.Value);
+                        p.Payload.Severity = res.Key;
+                        MavlinkTypesHelper.SetString(p.Payload.Text, res.Value);
                         
                     },DisposeCancel).ConfigureAwait(false);
                 }
             }
             catch (Exception e)
             {
-                _logger.Error( $"Error occured to send packet: {e.Message}");
+                _logger.ZLogWarning($"Error occured to send packet: {e.Message}");
             }
             finally
             {
@@ -68,23 +76,23 @@ namespace Asv.Mavlink
 
         public bool Log((MavSeverity severity, string message) msg)
         {
-            _logger.Trace($"{msg.severity:G} => {msg.message}");
+            _logger.ZLogTrace($"{msg.severity:G} => {msg.message}");
 
             if (msg.message == null)
             {
-                _logger.Warn("Sending message is null");
+                _logger.LogWarning("Sending message is null");
                 return false;
             }
             if (msg.message.Length > _maxMessageSize)
             {
                 var newMessage = msg.message.Substring(0, _maxMessageSize - 3) + "...";
-                _logger.Warn($"Reduced too long message for status text server");
+                _logger.ZLogWarning($"Reduced too long message for status text server");
                 _messageQueue.Enqueue(new KeyValuePair<MavSeverity, string>(msg.severity, newMessage));
                 return true;
             }
             if (_messageQueue.Count > _config.MaxQueueSize)
             {
-                _logger.Warn($"Message queue overflow (current size:{_messageQueue.Count}).");
+                _logger.ZLogWarning($"Message queue overflow (current size:{_messageQueue.Count}).");
                 return false;
             }
             _messageQueue.Enqueue(new KeyValuePair<MavSeverity, string>(msg.severity, msg.message));

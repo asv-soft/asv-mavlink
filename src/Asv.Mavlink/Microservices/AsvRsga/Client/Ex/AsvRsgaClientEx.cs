@@ -5,17 +5,23 @@ using Asv.Common;
 using Asv.Mavlink.V2.AsvRsga;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
 public class AsvRsgaClientEx : DisposableOnceWithCancel, IAsvRsgaClientEx
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
     private readonly ICommandClient _commandClient;
     private readonly SourceList<AsvRsgaCustomMode> _supportedModes;
-    public AsvRsgaClientEx(IAsvRsgaClient client, ICommandClient commandClient)
+    public AsvRsgaClientEx(
+        IAsvRsgaClient client, 
+        ICommandClient commandClient,
+        ILogger? logger = null)
     {
+        _logger = logger ?? NullLogger.Instance;
         _commandClient = commandClient;
         Base = client;
         _supportedModes = new SourceList<AsvRsgaCustomMode>().DisposeItWith(Disposable);
@@ -26,7 +32,7 @@ public class AsvRsgaClientEx : DisposableOnceWithCancel, IAsvRsgaClientEx
     {
         if (asv.Result != AsvRsgaRequestAck.AsvRsgaRequestAckOk)
         {
-            Logger.Warn($"Error to get compatibility:{asv.Result:G}");
+            _logger.ZLogWarning($"Error to get compatibility:{asv.Result:G}");
             return;
         }
         

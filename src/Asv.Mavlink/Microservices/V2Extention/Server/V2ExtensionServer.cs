@@ -5,30 +5,29 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink
 {
     public class V2ExtensionServer : MavlinkMicroserviceServer, IV2ExtensionServer
     {
-        private readonly IMavlinkV2Connection _connection;
-        private readonly IPacketSequenceCalculator _seq;
-        private readonly MavlinkIdentity _identity;
         private readonly RxValue<V2ExtensionPacket> _onData = new();
         private readonly CancellationTokenSource _disposeCancel = new();
 
-        public V2ExtensionServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkIdentity identity, IScheduler rxScheduler)
-        :base("V2EXT",connection,identity,seq,rxScheduler)
+        public V2ExtensionServer(
+            IMavlinkV2Connection connection, 
+            IPacketSequenceCalculator seq,
+            MavlinkIdentity identity, 
+            IScheduler? rxScheduler = null,
+            ILogger? logger = null)
+        :base("V2EXT",connection,identity,seq,rxScheduler,logger)
         {
-            _connection = connection;
-            _seq = seq;
-            _identity = identity;
             _onData.DisposeItWith(Disposable);
             connection
-                .Where(_ => _.MessageId == V2ExtensionPacket.PacketMessageId)
-                .Cast<V2ExtensionPacket>().Where(_ =>
-                    (_.Payload.TargetSystem == 0 || _.Payload.TargetSystem == _identity.SystemId) &&
-                    (_.Payload.TargetComponent == 0 || _.Payload.TargetComponent == _identity.ComponentId))
+                .Where(v => v.MessageId == V2ExtensionPacket.PacketMessageId)
+                .Cast<V2ExtensionPacket>().Where(p =>
+                    (p.Payload.TargetSystem == 0 || p.Payload.TargetSystem == identity.SystemId) &&
+                    (p.Payload.TargetComponent == 0 || p.Payload.TargetComponent == identity.ComponentId))
                 .Subscribe(_onData,_disposeCancel.Token);
         }
 

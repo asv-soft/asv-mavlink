@@ -1,9 +1,11 @@
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using ZLogger;
 
 namespace Asv.Mavlink
 {
@@ -69,7 +71,7 @@ namespace Asv.Mavlink
         /// <summary>
         /// Provides logging functionality.
         /// </summary>
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Represents a reactive value for holding the status payload of a radio.
@@ -110,18 +112,22 @@ namespace Asv.Mavlink
         /// - _extendedSystemState: An RxValue instance of type ExtendedSysStatePayload used for storing extended system state data.
         /// - _battery: An RxValue instance of type BatteryStatusPayload used for storing battery status data.
         /// /
-        public TelemetryClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq)
-            : base("RTT", connection, identity, seq)
+        public TelemetryClient(
+            IMavlinkV2Connection connection, 
+            MavlinkClientIdentity identity,
+            IPacketSequenceCalculator seq,
+            IScheduler? scheduler = null,
+            ILogger? logger = null)
+            : base("RTT", connection, identity, seq,scheduler,logger)
         {
             _radio = new RxValue<RadioStatusPayload>().DisposeItWith(Disposable);
-            InternalFilter<RadioStatusPacket>().Select(_=>_.Payload).Subscribe(_radio).DisposeItWith(Disposable);
+            InternalFilter<RadioStatusPacket>().Select(p=>p.Payload).Subscribe(_radio).DisposeItWith(Disposable);
             _systemStatus = new RxValue<SysStatusPayload>().DisposeItWith(Disposable);
-            InternalFilter<SysStatusPacket>().Select(_ => _.Payload).Subscribe(_systemStatus).DisposeItWith(Disposable);
+            InternalFilter<SysStatusPacket>().Select(p => p.Payload).Subscribe(_systemStatus).DisposeItWith(Disposable);
             _extendedSystemState = new RxValue<ExtendedSysStatePayload>().DisposeItWith(Disposable);
-            InternalFilter<ExtendedSysStatePacket>().Select(_ => _.Payload).Subscribe(_extendedSystemState).DisposeItWith(Disposable);
+            InternalFilter<ExtendedSysStatePacket>().Select(p => p.Payload).Subscribe(_extendedSystemState).DisposeItWith(Disposable);
             _battery = new RxValue<BatteryStatusPayload>().DisposeItWith(Disposable);
-            InternalFilter<BatteryStatusPacket>().Select(_ => _.Payload).Subscribe(_battery).DisposeItWith(Disposable);
+            InternalFilter<BatteryStatusPacket>().Select(p => p.Payload).Subscribe(_battery).DisposeItWith(Disposable);
         }
 
         /// <summary>
@@ -169,14 +175,14 @@ namespace Asv.Mavlink
         /// <returns>A task representing the asynchronous operation.</returns>
         public Task RequestDataStream(byte streamId, ushort rateHz, bool startStop, CancellationToken cancel = default)
         {
-            Logger.Debug($"{LogSend} {( startStop ? "Enable stream":"DisableStream")} with ID '{streamId}' and rate {rateHz} Hz");
-            return InternalSend<RequestDataStreamPacket>(_ =>
+            _logger.ZLogDebug($"{LogSend} {( startStop ? "Enable stream":"DisableStream")} with ID '{streamId}' and rate {rateHz} Hz");
+            return InternalSend<RequestDataStreamPacket>(p =>
             {
-                _.Payload.TargetSystem = Identity.TargetSystemId;
-                _.Payload.TargetComponent = Identity.TargetComponentId;
-                _.Payload.ReqMessageRate = rateHz;
-                _.Payload.StartStop = (byte)(startStop ? 1 : 0);
-                _.Payload.ReqStreamId = streamId;
+                p.Payload.TargetSystem = Identity.TargetSystemId;
+                p.Payload.TargetComponent = Identity.TargetComponentId;
+                p.Payload.ReqMessageRate = rateHz;
+                p.Payload.StartStop = (byte)(startStop ? 1 : 0);
+                p.Payload.ReqStreamId = streamId;
             }, cancel);
         }
     }

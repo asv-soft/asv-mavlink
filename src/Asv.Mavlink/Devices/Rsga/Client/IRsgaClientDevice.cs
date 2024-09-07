@@ -1,9 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Asv.Mavlink.Diagnostic.Client;
-using Asv.Mavlink.V2.AsvRsga;
-using Asv.Mavlink.V2.Common;
+﻿using Asv.Mavlink.Diagnostic.Client;
 
 namespace Asv.Mavlink;
 

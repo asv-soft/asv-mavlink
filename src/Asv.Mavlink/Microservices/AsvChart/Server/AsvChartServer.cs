@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvChart;
 using DynamicData;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -20,14 +22,21 @@ public class AsvChartServerConfig
 public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
 {
     private readonly AsvChartServerConfig _config;
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
     private readonly SourceCache<AsvChartInfo,ushort> _charts;
     private volatile ushort _chartHash = 0;
     private int _changeHashLock;
 
-    public AsvChartServer(AsvChartServerConfig config,IMavlinkV2Connection connection, MavlinkIdentity identity, IPacketSequenceCalculator seq, IScheduler rxScheduler)
+    public AsvChartServer(
+        AsvChartServerConfig config,
+        IMavlinkV2Connection connection, 
+        MavlinkIdentity identity, 
+        IPacketSequenceCalculator seq, 
+        IScheduler? rxScheduler = null,
+        ILogger? logger = null)
         :base("CHART", connection, identity, seq, rxScheduler)
     {
+        _logger = logger ?? NullLogger.Instance;
         _config = config;
         _charts = new SourceCache<AsvChartInfo,ushort>(x => x.Id)
             .DisposeItWith(Disposable);
@@ -63,7 +72,7 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
         }
         catch (Exception e)
         {
-            Logger.Error(e, "Error on update collection hash");
+            _logger.ZLogError(e, $"Error on update collection hash:{e.Message}");
         }
         finally
         {
@@ -166,7 +175,7 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
         }
         catch (Exception e)
         {
-            Logger.Error(e, "Error on request stream options");
+            _logger.ZLogError(e, $"Error on request stream options:{e.Message}");
             await InternalSend<AsvChartDataResponsePacket>(x =>
             {
                 x.Payload.Result = AsvChartRequestAck.AsvChartRequestAckFail;

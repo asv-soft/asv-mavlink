@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.Diagnostic.Client;
 using Asv.Mavlink.V2.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -23,15 +25,23 @@ public class RfsaClientDeviceConfig:ClientDeviceConfig
 public class RfsaClientDevice:ClientDevice, IRfsaClientDevice
 {
     private readonly RfsaClientDeviceConfig _config;
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
     private readonly ParamsClientEx _params;
     private readonly AsvChartClient _charts;
     private readonly DiagnosticClient _diagnostics;
 
-    public RfsaClientDevice(IMavlinkV2Connection link, MavlinkClientIdentity identity, RfsaClientDeviceConfig config, IPacketSequenceCalculator seq, IScheduler scheduler)
-        :base(link,identity,config,seq,scheduler)
+    public RfsaClientDevice(
+        IMavlinkV2Connection link, 
+        MavlinkClientIdentity identity, 
+        RfsaClientDeviceConfig config, 
+        IPacketSequenceCalculator seq, 
+        IScheduler? scheduler = null,
+        ILogger? logger = null)
+        :base(link,identity,config,seq,scheduler,logger)
     {
         _config = config;
+        _logger = logger ?? NullLogger.Instance;
+        scheduler ??= Scheduler.Default;
         Command = new CommandClient(link, identity, seq, config.Command).DisposeItWith(Disposable);
         var paramBase = new ParamsClient(link, identity, seq, config.Params).DisposeItWith(Disposable);
         _params = new ParamsClientEx(paramBase, config.Params).DisposeItWith(Disposable);
@@ -44,7 +54,7 @@ public class RfsaClientDevice:ClientDevice, IRfsaClientDevice
         _params.Init(MavParamHelper.ByteWiseEncoding, ArraySegment<ParamDescription>.Empty);
         try
         {
-            _logger.Trace($"Try to read serial number from param {_config.SerialNumberParamName}");
+            _logger.ZLogTrace($"Try to read serial number from param {_config.SerialNumberParamName}");
             Params.Filter(_config.SerialNumberParamName)
                 .Select(serial => $"RFSA [{(int)serial:D5}]")
                 .Subscribe(EditableName)
@@ -53,7 +63,7 @@ public class RfsaClientDevice:ClientDevice, IRfsaClientDevice
         }
         catch (Exception e)
         {
-            _logger.Warn($"Error to get serial number:{e.Message}");
+            _logger.ZLogWarning($"Error to get serial number:{e.Message}");
         }
     }
     public IParamsClientEx Params => _params;

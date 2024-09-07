@@ -7,6 +7,8 @@ using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Asv.Mavlink.Diagnostic.Client;
 
@@ -52,10 +54,18 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
     private readonly SourceCache<INamedProbe<float>,string> _floatProbes;
     private readonly SourceCache<INamedProbe<int>,string> _intProbes;
     private int _deleteProbesLock;
+    private readonly ILogger _logger;
 
-    public DiagnosticClient(DiagnosticClientConfig config, IMavlinkV2Connection connection, MavlinkClientIdentity identity, IPacketSequenceCalculator seq, IScheduler scheduler) 
-        : base("DIAG", connection, identity, seq)
+    public DiagnosticClient(
+        DiagnosticClientConfig config, 
+        IMavlinkV2Connection connection, 
+        MavlinkClientIdentity identity, 
+        IPacketSequenceCalculator seq, 
+        IScheduler? scheduler,
+        ILogger? logger = null) 
+        : base("DIAG", connection, identity, seq,scheduler,logger)
     {
+        _logger = logger ?? NullLogger.Instance;
         _config = config;
         _floatProbes = new SourceCache<INamedProbe<float>, string>(x => x.Name).DisposeItWith(Disposable);
         _intProbes = new SourceCache<INamedProbe<int>, string>(x => x.Name).DisposeItWith(Disposable);
@@ -68,7 +78,7 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
         if (config.DeleteProbesTimeoutMs > 0)
         {
             Observable.Timer(TimeSpan.FromMilliseconds(config.DeleteProbesTimeoutMs),TimeSpan.FromMilliseconds(config.DeleteProbesTimeoutMs))
-                .ObserveOn(scheduler)
+                .ObserveOn(Scheduler)
                 .Subscribe(RemoveOldItems).DisposeItWith(Disposable);    
         }
     }

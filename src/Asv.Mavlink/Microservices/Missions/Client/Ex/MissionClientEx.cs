@@ -8,7 +8,9 @@ using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.Vehicle;
 using DynamicData;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -19,7 +21,7 @@ public class MissionClientExConfig
 
 public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
 {
-    public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    public readonly ILogger _logger;
     private readonly IMissionClient _client;
     private readonly MissionClientExConfig _config;
     private readonly SourceCache<MissionItem, ushort> _missionSource;
@@ -27,13 +29,14 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
     private readonly RxValue<double> _allMissionDistance;
     private readonly TimeSpan _deviceUploadTimeout;
 
-    public MissionClientEx(IMissionClient client, MissionClientExConfig config = null)
+    public MissionClientEx(IMissionClient client, MissionClientExConfig config = null, ILogger? logger = null)
     {
+        _logger = logger ?? NullLogger.Instance;
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _config = config ?? new MissionClientExConfig();
         _client.DisposeItWith(Disposable);
         _deviceUploadTimeout = TimeSpan.FromMilliseconds(_config.DeviceUploadTimeoutMs);
-        _missionSource = new SourceCache<MissionItem, ushort>(_=>_.Index).DisposeItWith(Disposable);
+        _missionSource = new SourceCache<MissionItem, ushort>(i=>i.Index).DisposeItWith(Disposable);
         _isMissionSynced = new RxValue<bool>(false).DisposeItWith(Disposable);
         _allMissionDistance = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
         MissionItems = _missionSource.Connect().DisposeMany().Publish().RefCount();
@@ -55,7 +58,7 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
 
     public async Task<MissionItem[]> Download(CancellationToken cancel, Action<double> progress = null)
     {
-        Logger.Info($"Begin download mission");
+        _logger.ZLogInformation($"Begin download mission");
         progress?.Invoke(0);
         var count = await _client.MissionRequestCount(cancel).ConfigureAwait(false);
         var result = new MissionItem[count];
@@ -74,7 +77,7 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
 
     public async Task ClearRemote( CancellationToken cancel)
     {
-        Logger.Info($"Begin clear mission");
+        _logger.ZLogInformation($"Begin clear mission");
         _missionSource.Clear();
         await _client.ClearAll(MavMissionType.MavMissionTypeMission, cancel).ConfigureAwait(false);
         _isMissionSynced.OnNext(true);
@@ -82,7 +85,7 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
 
     public async Task Upload(CancellationToken cancel, Action<double> progress = null)
     {
-        Logger.Info($"Begin upload mission");
+        _logger.ZLogInformation($"Begin upload mission");
         progress?.Invoke(0);
         await _client.ClearAll(MavMissionType.MavMissionTypeMission ,cancel).ConfigureAwait(false);
 
@@ -96,13 +99,13 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
             {
                 if (DateTime.Now - lastUpdateTime > _deviceUploadTimeout)
                 {
-                    Logger.Warn($"Mission upload timeout");
+                    _logger.ZLogWarning($"Mission upload timeout");
                     tcs.TrySetException(new Exception($"Mission upload timeout"));
                 }
             });
         using var sub1 = _client.OnMissionRequest.Subscribe(req =>
         {
-            Logger.Debug($"UAV request {req.Seq} item");
+            _logger.ZLogDebug($"UAV request {req.Seq} item");
             lastUpdateTime = DateTime.Now;
             current++;
             progress?.Invoke((double)(current) / _missionSource.Count);
@@ -116,16 +119,16 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
 
         } );
 
-        using var sub2 =_client.OnMissionAck.Subscribe(_ =>
+        using var sub2 =_client.OnMissionAck.Subscribe(p =>
         {
             lastUpdateTime = DateTime.Now;
-            if (_.Type == MavMissionResult.MavMissionAccepted)
+            if (p.Type == MavMissionResult.MavMissionAccepted)
             {
                 tcs.TrySetResult(Unit.Default);
             }
             else
             {
-                tcs.TrySetException(new Exception($"Error to upload mission to vehicle:{_.Type:G}"));
+                tcs.TrySetException(new Exception($"Error to upload mission to vehicle:{p.Type:G}"));
             }
                 
         });
@@ -170,8 +173,8 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
     
     private void UpdateMissionsDistance()
     {
-        var missions = _missionSource.Items.Where(_ =>
-                _.Command.Value == MavCmd.MavCmdNavWaypoint || _.Command.Value == MavCmd.MavCmdNavSplineWaypoint)
+        var missions = _missionSource.Items.Where(i =>
+                i.Command.Value == MavCmd.MavCmdNavWaypoint || i.Command.Value == MavCmd.MavCmdNavSplineWaypoint)
             .ToArray();
         var dist = 0.0;
         for (var i = 0; i < missions.Length - 1; i++)

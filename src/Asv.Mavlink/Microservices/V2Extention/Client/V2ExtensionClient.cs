@@ -1,7 +1,9 @@
+using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink
 {
@@ -11,7 +13,12 @@ namespace Asv.Mavlink
         private readonly RxValue<V2ExtensionPacket> _onData = new();
         public static readonly int StaticMaxDataSize = new V2ExtensionPayload().GetMaxByteSize();
 
-        public V2ExtensionClient(IMavlinkV2Connection connection,MavlinkClientIdentity identity, IPacketSequenceCalculator seq):base("V2EXT", connection, identity, seq)
+        public V2ExtensionClient(
+            IMavlinkV2Connection connection,
+            MavlinkClientIdentity identity, 
+            IPacketSequenceCalculator seq,
+            IScheduler? scheduler = null,
+            ILogger? logger = null):base("V2EXT", connection, identity, seq,scheduler,logger)
         {
             _identity = identity;
             InternalFilter<V2ExtensionPacket>().Subscribe(_onData).DisposeItWith(Disposable);
@@ -23,13 +30,13 @@ namespace Asv.Mavlink
 
         public Task SendData(byte targetNetworkId,ushort messageType, byte[] data, CancellationToken cancel)
         {
-            return InternalSend<V2ExtensionPacket>(_ =>
+            return InternalSend<V2ExtensionPacket>(p =>
             {
-                _.Payload.MessageType = messageType;
-                _.Payload.Payload = data;
-                _.Payload.TargetComponent = _identity.TargetComponentId;
-                _.Payload.TargetSystem = _identity.TargetSystemId;
-                _.Payload.TargetNetwork = targetNetworkId;
+                p.Payload.MessageType = messageType;
+                p.Payload.Payload = data;
+                p.Payload.TargetComponent = _identity.TargetComponentId;
+                p.Payload.TargetSystem = _identity.TargetSystemId;
+                p.Payload.TargetNetwork = targetNetworkId;
             }, cancel);
             
         }

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvRadio;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
@@ -18,8 +19,14 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
     private readonly AsvRadioServerConfig _config;
     private readonly MavlinkPacketTransponder<AsvRadioStatusPacket,AsvRadioStatusPayload> _transponder;
 
-    public AsvRadioServer(IMavlinkV2Connection connection, MavlinkIdentity identity,AsvRadioServerConfig config, IPacketSequenceCalculator seq, IScheduler rxScheduler) 
-        : base(AsvRadioHelper.IfcName, connection, identity, seq, rxScheduler)
+    public AsvRadioServer(
+        IMavlinkV2Connection connection, 
+        MavlinkIdentity identity,
+        AsvRadioServerConfig config, 
+        IPacketSequenceCalculator seq, 
+        IScheduler? rxScheduler = null,
+        ILogger? logger = null) 
+        : base(AsvRadioHelper.IfcName, connection, identity, seq, rxScheduler,logger)
     {
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _transponder =

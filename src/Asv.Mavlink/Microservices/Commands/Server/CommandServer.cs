@@ -4,6 +4,8 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Asv.Mavlink
 {
@@ -15,18 +17,20 @@ namespace Asv.Mavlink
         private readonly IMavlinkV2Connection _connection;
         private readonly IPacketSequenceCalculator _seq;
         private readonly MavlinkIdentity _identity;
+        private readonly ILogger _logger;
 
         public CommandServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkIdentity identity, IScheduler rxScheduler)
-            : base("COMMAND", connection, identity, seq, rxScheduler)
+            MavlinkIdentity identity, IScheduler? rxScheduler,ILogger? logger = null)
+            : base("COMMAND", connection, identity, seq, rxScheduler,logger)
         {
+            _logger = logger ?? NullLogger.Instance;
             _connection = connection;
             _seq = seq;
             _identity = identity;
             OnCommandLong =
-                InternalFilter<CommandLongPacket>(_ => _.Payload.TargetSystem, _ => _.Payload.TargetComponent)
+                InternalFilter<CommandLongPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
                     .ObserveOn(Scheduler).Publish().RefCount();
-            OnCommandInt = InternalFilter<CommandIntPacket>(_ => _.Payload.TargetSystem, _ => _.Payload.TargetComponent)
+            OnCommandInt = InternalFilter<CommandIntPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
                 .ObserveOn(Scheduler).Publish().RefCount();
         }
 
@@ -36,14 +40,14 @@ namespace Asv.Mavlink
         public Task SendCommandAck(MavCmd cmd, DeviceIdentity responseTarget, CommandResult result,
             CancellationToken cancel = default)
         {
-            return InternalSend<CommandAckPacket>(_ =>
+            return InternalSend<CommandAckPacket>(p =>
             {
-                _.Payload.Command = cmd;
-                _.Payload.Result = result.ResultCode;
-                _.Payload.TargetSystem = responseTarget?.SystemId ?? 0;
-                _.Payload.TargetComponent = responseTarget?.ComponentId ?? 0;
-                _.Payload.Progress = result.Progress ?? 0;
-                _.Payload.ResultParam2 = result.ResultParam2 ?? 0;
+                p.Payload.Command = cmd;
+                p.Payload.Result = result.ResultCode;
+                p.Payload.TargetSystem = responseTarget?.SystemId ?? 0;
+                p.Payload.TargetComponent = responseTarget?.ComponentId ?? 0;
+                p.Payload.Progress = result.Progress ?? 0;
+                p.Payload.ResultParam2 = result.ResultParam2 ?? 0;
             }, cancel);
         }
 

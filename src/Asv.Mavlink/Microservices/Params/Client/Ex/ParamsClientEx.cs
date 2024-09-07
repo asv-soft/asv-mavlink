@@ -34,12 +34,12 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         Base = client;
         _paramsSource = new SourceCache<ParamItem, string>(x => x.Name).DisposeItWith(Disposable);
         _isSynced = new RxValue<bool>(false).DisposeItWith(Disposable);
-        Items = _paramsSource.Connect().Transform(_=>(IParamItem)_).RefCount();
+        Items = _paramsSource.Connect().Transform(i=>(IParamItem)i).RefCount();
         client.OnParamValue.Where(_=>IsInit).Buffer(TimeSpan.FromMilliseconds(100)).Subscribe(OnUpdate).DisposeItWith(Disposable);
         
         _remoteCount = new RxValue<ushort?>(null).DisposeItWith(Disposable);
         _localCount = new RxValue<ushort>(0).DisposeItWith(Disposable);
-        _paramsSource.CountChanged.Select(_=>(ushort)_).Subscribe(_localCount).DisposeItWith(Disposable);
+        _paramsSource.CountChanged.Select(i=>(ushort)i).Subscribe(_localCount).DisposeItWith(Disposable);
         _onValueChanged = new Subject<(string, MavParamValue)>().DisposeItWith(Disposable);
     }
 
@@ -48,7 +48,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
 
     public void Init(IMavParamEncoding converter, IEnumerable<ParamDescription> existDescription)
     {
-        _descriptions = existDescription.ToImmutableDictionary(_ => _.Name);
+        _descriptions = existDescription.ToImmutableDictionary(d => d.Name);
         _converter = converter;
         IsInit = true;
     }
@@ -57,13 +57,13 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
     private void OnUpdate(IList<ParamValuePayload> items)
     {
         if (items.Count == 0) return;
-        _paramsSource.Edit(_ =>
+        _paramsSource.Edit(u =>
         {
             foreach (var value in items)
             {
                 _remoteCount.Value = value.ParamCount;
                 var name = MavlinkTypesHelper.GetString(value.ParamId);
-                var exist = _.Lookup(name);
+                var exist = u.Lookup(name);
                 if (exist.HasValue)
                 {
                     exist.Value.Update(value);
@@ -79,7 +79,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
                         desc = CreateDefaultDescription(value);
                     }
                     var newItem = new ParamItem(Base, _converter, desc, value);
-                    _.AddOrUpdate(newItem);
+                    u.AddOrUpdate(newItem);
                     newItem.IsSynced.Subscribe(OnSyncedChanged);
                     if (_onValueChanged.HasObservers)
                     {
@@ -96,7 +96,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         if (value == false) _isSynced.OnNext(false);
         else
         {
-            var allSynced = _paramsSource.Items.All(_ => _.IsSynced.Value);
+            var allSynced = _paramsSource.Items.All(i => i.IsSynced.Value);
             if (allSynced) _isSynced.OnNext(true);
         }
     }
@@ -185,14 +185,14 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
         var lastUpdate = DateTime.Now;
         ushort? paramsCount = null;
-        using var c2 = Base.OnParamValue.Sample(TimeSpan.FromMilliseconds(50)).Subscribe(_ =>
+        using var c2 = Base.OnParamValue.Sample(TimeSpan.FromMilliseconds(50)).Subscribe(p =>
         {
-            paramsCount = _.ParamCount;
-            if (_paramsSource.Count == _.ParamCount)
+            paramsCount = p.ParamCount;
+            if (_paramsSource.Count == p.ParamCount)
             {
                 tcs.TrySetResult(true);
             }
-            progress.Report((double)_paramsSource.Count / _.ParamCount);
+            progress.Report((double)_paramsSource.Count / p.ParamCount);
             lastUpdate = DateTime.Now;
         });
         using var c3 = Observable.Timer(TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(100))
@@ -203,13 +203,13 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
                     tcs.TrySetResult(false);
                 }
             });
-        _paramsSource.Edit(_ =>
+        _paramsSource.Edit(u =>
         {
-            foreach (var item in _.Items)
+            foreach (var item in u.Items)
             {
                 item.Dispose();
             }
-            _.Clear();
+            u.Clear();
         });
         await Base.SendRequestList(linkedCancel.Token).ConfigureAwait(false);
         var readAllParams = await tcs.Task.ConfigureAwait(false);

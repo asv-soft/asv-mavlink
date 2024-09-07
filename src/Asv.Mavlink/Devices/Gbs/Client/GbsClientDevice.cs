@@ -4,7 +4,9 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Asv.Common;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -17,15 +19,19 @@ public class GbsClientDeviceConfig:ClientDeviceConfig
 public class GbsClientDevice : ClientDevice, IGbsClientDevice
 {
     private readonly GbsClientDeviceConfig _config;
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private readonly ParamsClientEx _params;
+    private readonly ILogger _logger;
+
     public GbsClientDevice(IMavlinkV2Connection connection,
         MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq,
         GbsClientDeviceConfig config,
-        IScheduler? scheduler = null) : base(connection, identity,config, seq, scheduler)
+        IScheduler? scheduler = null, 
+        ILogger? logger = null) : base(connection, identity,config, seq, scheduler, logger)
     {
         _config = config;
+        _logger = logger ?? NullLogger.Instance;
+        scheduler ??= Scheduler.Default;
         Command = new CommandClient(connection, identity, seq, config.Command).DisposeItWith(Disposable);
         var gbs = new AsvGbsClient(connection,identity,seq,scheduler).DisposeItWith(Disposable);
         Gbs = new AsvGbsExClient(gbs,Heartbeat,Command).DisposeItWith(Disposable);
@@ -44,7 +50,7 @@ public class GbsClientDevice : ClientDevice, IGbsClientDevice
         _params.Init(MavParamHelper.ByteWiseEncoding, ArraySegment<ParamDescription>.Empty);
         try
         {
-            _logger.Trace($"Try to read serial number from param {_config.SerialNumberParamName}");
+            _logger.ZLogInformation($"Try to read serial number from param {_config.SerialNumberParamName}");
             Params.Filter(_config.SerialNumberParamName)
                 .Select(serial => $"RTK GBS [{(int)serial:D5}]")
                 .Subscribe(EditableName)
@@ -53,7 +59,7 @@ public class GbsClientDevice : ClientDevice, IGbsClientDevice
         }
         catch (Exception e)
         {
-            _logger.Warn($"Error to get serial number:{e.Message}");
+            _logger.ZLogError(e, $"Error to get serial number:{e.Message}");
         }
     }
 

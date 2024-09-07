@@ -101,7 +101,7 @@ namespace Asv.Mavlink
             _decoder = new PacketV2Decoder().DisposeItWith(Disposable);
             register(_decoder);
             _decoder.DisposeItWith(Disposable);
-            DataStream.Subscribe(_=> _decoder.OnData(_)).DisposeItWith(Disposable); 
+            DataStream.Subscribe(b=> _decoder.OnData(b)).DisposeItWith(Disposable); 
             _sendPacketSubject = new Subject<IPacketV2<IPayload>>().DisposeItWith(Disposable);
             _recvPacketsSubject = new Subject<IPacketV2<IPayload>>().DisposeItWith(Disposable);
             _decoder.Where(TryDecodeV2ExtensionPackets).Subscribe(_recvPacketsSubject).DisposeItWith(Disposable); // we need only one subscription to decoder

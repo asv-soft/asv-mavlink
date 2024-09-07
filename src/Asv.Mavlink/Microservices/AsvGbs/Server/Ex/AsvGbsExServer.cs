@@ -6,7 +6,9 @@ using Asv.Common;
 using Asv.Mavlink.V2.AsvGbs;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Minimal;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
 using MavType = Asv.Mavlink.V2.Minimal.MavType;
 
@@ -15,14 +17,15 @@ namespace Asv.Mavlink;
 public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
 {
     private readonly int _maxMessageLength = new GpsRtcmDataPayload().Data.Length;
-    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private readonly ILogger _logger;
     private uint _seqNumber;
     public AsvGbsExServer(IAsvGbsServer server, 
         IHeartbeatServer heartbeatServer, 
-        ICommandServerEx<CommandLongPacket> commands)
+        ICommandServerEx<CommandLongPacket> commands,
+        ILogger? logger = null)
     {
         Base = server;
-
+        _logger ??= NullLogger.Instance;
         #region Commands
 
         commands[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunAutoMode] = async (id,args, cancel) =>
@@ -160,7 +163,7 @@ public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
     {
         if (length > _maxMessageLength * 4)
         {
-            _logger.Error($"RTCM message for DGPS is too large '{length}'");
+            _logger.ZLogError($"RTCM message for DGPS is too large '{length}'");
             return;
         }
 

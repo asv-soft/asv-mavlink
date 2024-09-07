@@ -19,7 +19,7 @@ public class AdsbServerDevice : ServerDevice, IAdsbServerDevice
     {
         var command = new CommandServer(connection,seq,identity,scheduler).DisposeItWith(Disposable);
         Adsb = new AdsbVehicleServer(connection, identity, seq, scheduler);
-        Heartbeat.Set(_ => _.Type = MavType.MavTypeAdsb);
+        Heartbeat.Set(p => p.Type = MavType.MavTypeAdsb);
     }
 
     public IAdsbVehicleServer Adsb { get; }
