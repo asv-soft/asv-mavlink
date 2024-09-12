@@ -19,26 +19,61 @@
         </enum>
         <!-- CUSTOM_MODE -->
         <enum name="ASV_RSGA_CUSTOM_MODE">
-            <description>A mapping of RSGA modes for custom_mode field of heartbeat.</description>
+            <description>A mapping of RSGA modes for custom_mode[0-7] bits field of heartbeat Max 255 items.</description>
+            <!--==================================================-->
+            <!--          IDLE MODE (0)                           -->
+            <!--==================================================-->
             <entry value="0" name="ASV_RSGA_CUSTOM_MODE_IDLE">
                 <description>Default mode. Do nothing.</description>
             </entry>
-            <entry value="1" name="ASV_RSGA_CUSTOM_MODE_TX_LLZ">
+            <!--==================================================-->
+            <!--          SIMPLE MODES (1-49)                     -->
+            <!--==================================================-->
+            <entry value="0" name="ASV_RSGA_CUSTOM_MODE_SPECTRUM">
+                <description>Spectrum analyzer.</description>
+            </entry>
+            <!--==================================================-->
+            <!--          NavAIDs BEACON MODES (50-69)            -->
+            <!--==================================================-->
+            <entry value="50" name="ASV_RSGA_CUSTOM_MODE_TX_LLZ">
                 <description>Localizer generator mode.</description>
             </entry>
-            <entry value="2" name="ASV_RSGA_CUSTOM_MODE_TX_GP">
+            <entry value="51" name="ASV_RSGA_CUSTOM_MODE_TX_GP">
                 <description>Glide Path generator mode.</description>
             </entry>
-            <entry value="3" name="ASV_RSGA_CUSTOM_MODE_TX_VOR">
+            <entry value="52" name="ASV_RSGA_CUSTOM_MODE_TX_VOR">
                 <description>VOR generator mode.</description>
             </entry>
-            <entry value="4" name="ASV_RSGA_CUSTOM_MODE_TX_MARKER">
+            <entry value="53" name="ASV_RSGA_CUSTOM_MODE_TX_MARKER">
                 <description>Marker generator mode.</description>
             </entry>
-            <entry value="5" name="ASV_RSGA_CUSTOM_MODE_DME_REQ">
+            <entry value="54" name="ASV_RSGA_CUSTOM_MODE_DME_REP">
                 <description>DME beacon mode.</description>
             </entry>
-
+            <entry value="55" name="ASV_RSGA_CUSTOM_MODE_TX_GBAS">
+                <description>GBAS generator mode.</description>
+            </entry>
+            <!--==================================================-->
+            <!--          NavAIDs PLANE MODES (70-99)             -->
+            <!--==================================================-->
+            <entry value="70" name="ASV_RSGA_CUSTOM_MODE_DME_REQ">
+                <description>DME plane mode.</description>
+            </entry>
+            <entry value="71" name="ASV_RSGA_CUSTOM_MODE_RX_LLZ">
+                <description>Localizer analyzer mode.</description>
+            </entry>
+            <entry value="72" name="ASV_RSGA_CUSTOM_MODE_RX_GP">
+                <description>Glide Path analyzer mode.</description>
+            </entry>
+            <entry value="73" name="ASV_RSGA_CUSTOM_MODE_RX_VOR">
+                <description>VOR analyzer mode.</description>
+            </entry>
+            <entry value="74" name="ASV_RSGA_CUSTOM_MODE_RX_MARKER">
+                <description>Marker analyzer mode.</description>
+            </entry>
+            <entry value="75" name="ASV_RSGA_CUSTOM_MODE_RX_GBAS">
+                <description>GBAS analyzer mode.</description>
+            </entry>
         </enum>
 
         <enum name="ASV_RSGA_REQUEST_ACK">

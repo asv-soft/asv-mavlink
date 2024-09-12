@@ -8,7 +8,7 @@ namespace Asv.Mavlink;
     /// Max size = 251
     /// https://mavlink.io/en/services/ftp.html
     /// </summary>
-    public class FtpMessagePayload
+    public class FtpMessagePayload:ISizedSpanSerializable
     {
         /// <summary>
         /// FTP message payload max size in bytes
@@ -54,6 +54,11 @@ namespace Asv.Mavlink;
             BinSerialize.WriteByte(ref buffer, Padding);
             BinSerialize.WriteUInt(ref buffer, Offset);
             BinSerialize.WriteBlock(ref buffer, Data);
+        }
+
+        public int GetByteSize()
+        {
+            return 12 + Data.Length;
         }
 
         /// <summary>
