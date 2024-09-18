@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
@@ -76,6 +78,16 @@ public interface IParamsServerEx
         return OnUpdated.Where(x => x.IsRemoteChange == false && x.Metadata.Name.Equals(param.Name));
     }
 
+    private static void CheckType(IMavParamTypeMetadata param, MavParamType type)
+    {
+        if (param.Type != type)
+        {
+            throw new ArgumentException($"Parameter must be of type {type:G}", nameof(param));
+        }
+    }
+    
+    #region Disposable on change
+
     public IDisposable SetOnChangeReal32(IMavParamTypeMetadata param, Action<float> setCallback)
     {
         CheckType(param, MavParamType.MavParamTypeReal32);
@@ -132,23 +144,126 @@ public interface IParamsServerEx
             .Where(x => x.Metadata.Name.Equals(param.Name))
             .Subscribe(x => setCallback(x.NewValue));
     }
-    
-    private static void CheckType(IMavParamTypeMetadata param, MavParamType type)
+
+    #endregion
+
+    #region On change
+
+    public async Task OnS8(IMavParamTypeMetadata param, ParamValueCallback<sbyte> setCallback, CancellationToken cancel)
     {
-        if (param.Type != type)
+        CheckType(param, MavParamType.MavParamTypeInt8);
+        await setCallback(this[param], true, cancel).ConfigureAwait(false);
+
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,cancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
         {
-            throw new ArgumentException($"Parameter must be of type {type:G}", nameof(param));
+            await setCallback(x.NewValue, false, cancel).ConfigureAwait(false);
         }
     }
     
+    public async Task OnU8(IMavParamTypeMetadata param, ParamValueCallback<byte> setCallback, CancellationToken cancel)
+    {
+        CheckType(param, MavParamType.MavParamTypeUint8);
+        await setCallback(this[param], true, cancel).ConfigureAwait(false);
+
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,cancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
+        {
+            await setCallback(x.NewValue, false, cancel).ConfigureAwait(false);
+        }
+    }
+    
+    public async Task OnS16(IMavParamTypeMetadata param, ParamValueCallback<short> setCallback, CancellationToken cancel)
+    {
+        CheckType(param, MavParamType.MavParamTypeInt16);
+        await setCallback(this[param], true, cancel).ConfigureAwait(false);
+
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,cancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
+        {
+            await setCallback(x.NewValue, false, cancel).ConfigureAwait(false);
+        }
+    }
+    
+    public async Task OnU16(IMavParamTypeMetadata param, ParamValueCallback<ushort> setCallback, CancellationToken cancel)
+    {
+        CheckType(param, MavParamType.MavParamTypeUint16);
+        await setCallback(this[param], true, cancel).ConfigureAwait(false);
+
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,cancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
+        {
+            await setCallback(x.NewValue, false, cancel).ConfigureAwait(false);
+        }
+    }
+    
+    public async Task OnS32(IMavParamTypeMetadata param, ParamValueCallback<int> setCallback, CancellationToken cancel)
+    {
+        CheckType(param, MavParamType.MavParamTypeInt32);
+        await setCallback(this[param], true, cancel).ConfigureAwait(false);
+
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,cancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
+        {
+            await setCallback(x.NewValue, false, cancel).ConfigureAwait(false);
+        }
+    }
+    
+    public async Task OnU32(IMavParamTypeMetadata param, ParamValueCallback<uint> setCallback, CancellationToken cancel)
+    {
+        CheckType(param, MavParamType.MavParamTypeUint32);
+        await setCallback(this[param], true, cancel).ConfigureAwait(false);
+
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,cancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
+        {
+            await setCallback(x.NewValue, false, cancel).ConfigureAwait(false);
+        }
+    }
+    
+    public async Task OnReal32(IMavParamTypeMetadata param, ParamValueCallback<float> setCallback, CancellationToken cancel)
+    {
+        CheckType(param, MavParamType.MavParamTypeReal32);
+        await setCallback(this[param], true, cancel).ConfigureAwait(false);
+
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,cancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
+        {
+            await setCallback(x.NewValue, false, cancel).ConfigureAwait(false);
+        }
+    }
+
+    #endregion
+   
     
 }
 
-/// <summary>
-/// Helper class for working with the Params Server Extension.
-/// </summary>
-public static class ParamsServerExHelper
-{
-    
-}
-
+public delegate Task ParamValueCallback<in T>(T value, bool firstChange, CancellationToken cancel);

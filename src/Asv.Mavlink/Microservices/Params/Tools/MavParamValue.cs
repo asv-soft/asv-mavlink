@@ -3,7 +3,7 @@ using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 
-public readonly struct MavParamValue:IComparable<MavParamValue>, IComparable,IEquatable<MavParamValue>
+public readonly struct MavParamValue: IComparable<MavParamValue>, IComparable,IEquatable<MavParamValue>
 {
     private readonly float? _realValue;
     private readonly long? _intValue;
