@@ -19,9 +19,9 @@ public class ParamsMicroserviceTest
         _output = output;
     }
     
-    public static readonly IMavParamTypeMetadata Param1 = MavParamFactory.CreateInt32("PARAM1", "Param 1");
-    public static readonly IMavParamTypeMetadata Param2 = MavParamFactory.CreateInt32("PARAM2", "Param 2");
-    public static readonly IMavParamTypeMetadata Param3 = MavParamFactory.CreateInt32("PARAM3", "Param 3");
+    public static readonly IMavParamTypeMetadata Param1 = MavParam.SysS32("PARAM1", "Param 1",String.Empty);
+    public static readonly IMavParamTypeMetadata Param2 = MavParam.SysS32("PARAM2", "Param 2",String.Empty);
+    public static readonly IMavParamTypeMetadata Param3 = MavParam.SysS32("PARAM3", "Param 3",String.Empty);
     
     [Fact]
     public async Task Read_All_Param_List()
@@ -166,7 +166,7 @@ public class ParamsMicroserviceTest
         var serverEx = new ParamsServerEx(server, statusServer, 
             new []
             {
-                MavParamFactory.CreateReal32("PARAM1", "Param 1"),
+                MavParam.SysU32("PARAM1", "Param 1",String.Empty),
                 Param2,
                 Param3,
             }, 
