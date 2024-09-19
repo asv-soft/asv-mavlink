@@ -1,4 +1,5 @@
 using System;
+using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
 
 namespace Asv.Mavlink
@@ -18,5 +19,15 @@ namespace Asv.Mavlink
         /// </summary>
         /// <param name="changeCallback">The action to be performed on the heart beat payload.</param>
         void Set(Action<HeartbeatPayload> changeCallback);
+
+        void SetCustomMode(Action<UintBitArray> changeCallback)
+        {
+            Set(x =>
+            {
+                var bitArray = new UintBitArray(x.CustomMode, 32);
+                changeCallback(bitArray);
+                x.CustomMode = bitArray.Value;
+            });
+        }
     }
 }

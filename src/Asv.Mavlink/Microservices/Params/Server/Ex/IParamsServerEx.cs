@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -76,6 +80,16 @@ public interface IParamsServerEx
         return OnUpdated.Where(x => x.IsRemoteChange == false && x.Metadata.Name.Equals(param.Name));
     }
 
+    private static void CheckType(IMavParamTypeMetadata param, MavParamType type)
+    {
+        if (param.Type != type)
+        {
+            throw new ArgumentException($"Parameter must be of type {type:G}", nameof(param));
+        }
+    }
+    
+    #region Disposable on change
+
     public IDisposable SetOnChangeReal32(IMavParamTypeMetadata param, Action<float> setCallback)
     {
         CheckType(param, MavParamType.MavParamTypeReal32);
@@ -132,23 +146,249 @@ public interface IParamsServerEx
             .Where(x => x.Metadata.Name.Equals(param.Name))
             .Subscribe(x => setCallback(x.NewValue));
     }
-    
-    private static void CheckType(IMavParamTypeMetadata param, MavParamType type)
+
+    #endregion
+
+    #region On change
+
+    public async Task OnS8(IMavParamTypeMetadata param,CancellationToken disposeCancel, ILogger logger, ParamValueCallback<sbyte> setCallback)
     {
-        if (param.Type != type)
+        CheckType(param, MavParamType.MavParamTypeInt8);
+        await setCallback(this[param], true, disposeCancel).ConfigureAwait(false);
+
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,disposeCancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
         {
-            throw new ArgumentException($"Parameter must be of type {type:G}", nameof(param));
+            try
+            {
+                await setCallback(x.NewValue, false, disposeCancel).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                logger.ZLogError(e, $"Error on set {param.Name}={x.NewValue}:{e.Message}");
+            }
+        }
+    }
+    
+    public void OnU8Event(IMavParamTypeMetadata param,CancellationToken disposeCancel, ILogger logger, Func<CancellationToken, Task> onEvent)
+    {
+        CheckType(param, MavParamType.MavParamTypeUint8);
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,disposeCancel);
+        this[param] = (byte)0;
+        return;
+
+        async void OnNext(ParamChangedEvent x)
+        {
+            try
+            {
+                if ((byte)x.OldValue != 0 || (byte)x.NewValue == 0) return;
+                this[param] = (byte)0;
+                await onEvent(disposeCancel).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                logger.ZLogError(e, $"Error on set {param.Name}={x.NewValue}:{e.Message}");
+            }
+        }
+    }
+    
+    public async Task OnU8Bool(IMavParamTypeMetadata param,CancellationToken disposeCancel, ILogger logger, ParamValueCallback<bool> setCallback)
+    {
+        CheckType(param, MavParamType.MavParamTypeUint8);
+        await setCallback((byte)this[param] != 0, true, disposeCancel).ConfigureAwait(false);
+
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,disposeCancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
+        {
+            try
+            {
+                await setCallback((byte)x.NewValue!= 0, false, disposeCancel).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                logger.ZLogError(e, $"Error on set {param.Name}={x.NewValue}:{e.Message}");
+            }
+        }
+    }
+    
+    public async Task OnU8Enum<TEnum>(IMavParamTypeMetadata param,CancellationToken disposeCancel, ILogger logger, ParamValueCallback<TEnum> setCallback)
+    {
+        CheckType(param, MavParamType.MavParamTypeUint8);
+        
+        await setCallback((TEnum)Convert.ChangeType((byte)this[param], typeof(TEnum)), true, disposeCancel).ConfigureAwait(false);
+
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,disposeCancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
+        {
+            try
+            {
+                await setCallback((TEnum)Convert.ChangeType((byte)x.NewValue, typeof(TEnum)), false, disposeCancel).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                logger.ZLogError(e, $"Error on set {param.Name}={x.NewValue}:{e.Message}");
+            }
+        }
+    }
+    
+    public async Task OnU8(IMavParamTypeMetadata param,CancellationToken disposeCancel, ILogger logger, ParamValueCallback<byte> setCallback)
+    {
+        CheckType(param, MavParamType.MavParamTypeUint8);
+        await setCallback(this[param], true, disposeCancel).ConfigureAwait(false);
+
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,disposeCancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
+        {
+            try
+            {
+                await setCallback(x.NewValue, false, disposeCancel).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                logger.ZLogError(e, $"Error on set {param.Name}={x.NewValue}:{e.Message}");
+            }
         }
     }
     
     
-}
+    
+    public async Task OnS16(IMavParamTypeMetadata param,CancellationToken disposeCancel, ILogger logger, ParamValueCallback<short> setCallback)
+    {
+        CheckType(param, MavParamType.MavParamTypeInt16);
+        await setCallback(this[param], true, disposeCancel).ConfigureAwait(false);
 
-/// <summary>
-/// Helper class for working with the Params Server Extension.
-/// </summary>
-public static class ParamsServerExHelper
-{
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,disposeCancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
+        {
+            try
+            {
+                await setCallback(x.NewValue, false, disposeCancel).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                logger.ZLogError(e, $"Error on set {param.Name}={x.NewValue}:{e.Message}");
+            }
+        }
+    }
+    
+    public async Task OnU16(IMavParamTypeMetadata param,CancellationToken disposeCancel, ILogger logger, ParamValueCallback<ushort> setCallback)
+    {
+        CheckType(param, MavParamType.MavParamTypeUint16);
+        await setCallback(this[param], true, disposeCancel).ConfigureAwait(false);
+
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,disposeCancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
+        {
+            try
+            {
+                await setCallback(x.NewValue, false, disposeCancel).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                logger.ZLogError(e, $"Error on set {param.Name}={x.NewValue}:{e.Message}");
+            }
+        }
+    }
+    
+    public async Task OnS32(IMavParamTypeMetadata param,CancellationToken disposeCancel, ILogger logger, ParamValueCallback<int> setCallback)
+    {
+        CheckType(param, MavParamType.MavParamTypeInt32);
+        await setCallback(this[param], true, disposeCancel).ConfigureAwait(false);
+
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,disposeCancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
+        {
+            try
+            {
+                await setCallback(x.NewValue, false, disposeCancel).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                logger.ZLogError(e, $"Error on set {param.Name}={x.NewValue}:{e.Message}");
+            }
+        }
+    }
+    
+    public async Task OnU32(IMavParamTypeMetadata param,CancellationToken disposeCancel, ILogger logger, ParamValueCallback<uint> setCallback)
+    {
+        CheckType(param, MavParamType.MavParamTypeUint32);
+        await setCallback(this[param], true, disposeCancel).ConfigureAwait(false);
+
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,disposeCancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
+        {
+            try
+            {
+                await setCallback(x.NewValue, false, disposeCancel).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                logger.ZLogError(e, $"Error on set {param.Name}={x.NewValue}:{e.Message}");
+            }
+        }
+    }
+    
+    public async Task OnR32(IMavParamTypeMetadata param, CancellationToken disposeCancel, ILogger logger, ParamValueCallback<float> setCallback)
+    {
+        CheckType(param, MavParamType.MavParamTypeReal32);
+        // first call without catch exception
+        await setCallback(this[param], true, disposeCancel).ConfigureAwait(false);
+
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .Subscribe(OnNext,disposeCancel);
+        return;
+
+        async void OnNext(ParamChangedEvent x)
+        {
+            try
+            {
+                await setCallback(x.NewValue, false, disposeCancel).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                logger.ZLogError(e, $"Error on set {param.Name}={x.NewValue}:{e.Message}");
+            }
+        }
+    }
+
+    #endregion
+   
     
 }
 
+public delegate Task ParamValueCallback<in T>(T value, bool firstChange, CancellationToken cancel);
