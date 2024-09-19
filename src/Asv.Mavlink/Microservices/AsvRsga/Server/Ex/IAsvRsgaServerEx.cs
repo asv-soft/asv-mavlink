@@ -6,7 +6,7 @@ using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 
-public delegate Task<MavResult> RsgaSetMode(AsvRsgaCustomMode mode,float param2 = float.NaN, float param3 = float.NaN, float param4 = float.NaN, float param5 = float.NaN, float param6 = float.NaN, float param7 = float.NaN, CancellationToken cancel = default);
+public delegate Task<MavResult> RsgaSetMode(AsvRsgaCustomMode mode, CancellationToken cancel = default);
 public delegate IEnumerable<AsvRsgaCustomMode> RsgaGetCompatibility();
 
 public interface IAsvRsgaServerEx

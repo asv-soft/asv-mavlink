@@ -28,7 +28,7 @@ public class AsvRsgaServerEx : DisposableOnceWithCancel, IAsvRsgaServerEx
             if (SetMode == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             RsgaHelper.GetArgsForSetMode(args.Payload, out var mode, out var p2, out var p3, out var p4, out var p5, out var p6, out var p7);
-            var result = await SetMode(mode, p2, p3, p4, p5, p6, p7, cs.Token).ConfigureAwait(false);
+            var result = await SetMode(mode, cs.Token).ConfigureAwait(false);
             return CommandResult.FromResult(result);
         };
     }

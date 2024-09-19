@@ -16,7 +16,7 @@ public static class MavParam
     public const string System = "System";
     public const string Developer = "Developer";
 
-    public static IMavParamTypeMetadata SysU8AsEvent(string name, string desc) => U8AsEvent(System, name, desc); 
+    public static IMavParamTypeMetadata SysU8AsCommand(string name, string desc) => U8AsEvent(System, name, desc); 
     public static IMavParamTypeMetadata AdvU8AsEvent(string name, string desc) => U8AsEvent(Advanced, name, desc);
     public static IMavParamTypeMetadata DevU8AsEvent(string name, string desc) => U8AsEvent(Developer, name, desc);
     

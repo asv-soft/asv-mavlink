@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
@@ -174,7 +175,7 @@ public interface IParamsServerEx
         }
     }
     
-    public void OnU8Event(IMavParamTypeMetadata param,CancellationToken disposeCancel, ILogger logger, Func<CancellationToken, Task> onEvent)
+    public void OnU8Command(IMavParamTypeMetadata param,CancellationToken disposeCancel, ILogger logger, Func<CancellationToken, Task> onEvent)
     {
         CheckType(param, MavParamType.MavParamTypeUint8);
         OnUpdated
@@ -222,10 +223,11 @@ public interface IParamsServerEx
     }
     
     public async Task OnU8Enum<TEnum>(IMavParamTypeMetadata param,CancellationToken disposeCancel, ILogger logger, ParamValueCallback<TEnum> setCallback)
+        where TEnum : struct, Enum
     {
         CheckType(param, MavParamType.MavParamTypeUint8);
-        
-        await setCallback((TEnum)Convert.ChangeType((byte)this[param], typeof(TEnum)), true, disposeCancel).ConfigureAwait(false);
+
+        await setCallback((TEnum)Enum.ToObject(typeof(TEnum), (byte)this[param]), true, disposeCancel).ConfigureAwait(false);
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
@@ -236,7 +238,7 @@ public interface IParamsServerEx
         {
             try
             {
-                await setCallback((TEnum)Convert.ChangeType((byte)x.NewValue, typeof(TEnum)), false, disposeCancel).ConfigureAwait(false);
+                await setCallback((TEnum)Enum.ToObject(typeof(TEnum), (byte)this[param]), false, disposeCancel).ConfigureAwait(false);
             }
             catch (Exception e)
             {
