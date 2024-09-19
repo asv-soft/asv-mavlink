@@ -16,11 +16,11 @@ public static class MavParam
     public const string System = "System";
     public const string Developer = "Developer";
 
-    public static IMavParamTypeMetadata SysU8AsCommand(string name, string desc) => U8AsEvent(System, name, desc); 
-    public static IMavParamTypeMetadata AdvU8AsEvent(string name, string desc) => U8AsEvent(Advanced, name, desc);
-    public static IMavParamTypeMetadata DevU8AsEvent(string name, string desc) => U8AsEvent(Developer, name, desc);
+    public static IMavParamTypeMetadata SysU8AsCommand(string name, string desc) => U8AsCommand(System, name, desc); 
+    public static IMavParamTypeMetadata AdvU8AsCommand(string name, string desc) => U8AsCommand(Advanced, name, desc);
+    public static IMavParamTypeMetadata DevU8AsCommand(string name, string desc) => U8AsCommand(Developer, name, desc);
     
-    public static IMavParamTypeMetadata U8AsEvent(string category, string name, string desc)
+    public static IMavParamTypeMetadata U8AsCommand(string category, string name, string desc)
     {
         return new MavParamTypeMetadata(name, MavParamType.MavParamTypeUint8)
         {
@@ -33,17 +33,18 @@ public static class MavParam
             MinValue = new((byte)0),
             DefaultValue = new((byte)0),
             MaxValue = new((byte)1),
+            Volatile = true,
         };
     }
     
-    public static IMavParamTypeMetadata SysU8AsEnum<TEnum>(string name,string desc,TEnum def = default)
-        where TEnum : struct, Enum => U8AsEnum<TEnum>(Developer, name, desc, def);
-    public static IMavParamTypeMetadata AdvU8AsEnum<TEnum>(string name,string desc,TEnum def = default)
-        where TEnum : struct, Enum => U8AsEnum<TEnum>(Developer, name, desc, def);
+    public static IMavParamTypeMetadata SysU8AsEnum<TEnum>(string name,string desc,TEnum def = default, bool vlt = false)
+        where TEnum : struct, Enum => U8AsEnum(Developer, name, desc, def,vlt);
+    public static IMavParamTypeMetadata AdvU8AsEnum<TEnum>(string name,string desc,TEnum def = default, bool vlt = false)
+        where TEnum : struct, Enum => U8AsEnum(Developer, name, desc, def,vlt);
 
-    public static IMavParamTypeMetadata DevU8AsEnum<TEnum>(string name, string desc, TEnum def = default)
-        where TEnum : struct, Enum => U8AsEnum<TEnum>(Developer, name, desc, def);
-    public static IMavParamTypeMetadata U8AsEnum<TEnum>(string category,string name,string desc,TEnum def = default)
+    public static IMavParamTypeMetadata DevU8AsEnum<TEnum>(string name, string desc, TEnum def = default, bool vlt = false)
+        where TEnum : struct, Enum => U8AsEnum(Developer, name, desc, def,vlt);
+    public static IMavParamTypeMetadata U8AsEnum<TEnum>(string category,string name,string desc,TEnum def = default, bool vlt = false)
         where TEnum : struct, Enum
     {
         if(!typeof(TEnum).IsEnum)
@@ -71,15 +72,20 @@ public static class MavParam
             MinValue = new((byte)0),
             DefaultValue = new MavParamValue(Convert.ToByte(def)),
             MaxValue = new((byte)1),
-            Values = list.ToArray()
+            Values = list.ToArray(),
+            Volatile = vlt,
+            
         };
     }
     
-    public static IMavParamTypeMetadata SysU8AsBool(string name,string desc,bool def = true) => U8AsBool(System, name, desc, def); 
-    public static IMavParamTypeMetadata AdvU8AsBool(string name,string desc,bool def = true) => U8AsBool(Advanced, name, desc, def);
-    public static IMavParamTypeMetadata DevU8AsBool(string name,string desc,bool def = true) => U8AsBool(Developer, name, desc, def);
+    public static IMavParamTypeMetadata SysU8AsBool(string name,string desc,bool def = true, bool vlt = false) 
+        => U8AsBool(System, name, desc, def,vlt); 
+    public static IMavParamTypeMetadata AdvU8AsBool(string name,string desc,bool def = true, bool vlt = false) 
+        => U8AsBool(Advanced, name, desc, def,vlt);
+    public static IMavParamTypeMetadata DevU8AsBool(string name,string desc,bool def = true, bool vlt = false) 
+        => U8AsBool(Developer, name, desc, def,vlt);
     
-    public static IMavParamTypeMetadata U8AsBool(string category,string name,string desc,bool def = true)
+    public static IMavParamTypeMetadata U8AsBool(string category,string name,string desc,bool def = true, bool vlt = false)
     {
         return new MavParamTypeMetadata(name, MavParamType.MavParamTypeUint8)
         {
@@ -92,22 +98,24 @@ public static class MavParam
             MinValue = new((byte)0),
             DefaultValue = new(def ? (byte)1 : (byte)0),
             MaxValue = new((byte)1),
+            Volatile = vlt,
         };
     }
 
     public static IMavParamTypeMetadata SysS32(string name, string desc, string unit, int def = 0,
-        int min = int.MinValue, int max = int.MaxValue, int inc = 1)
-        => S32(System, name, desc, unit, def, min, max, inc);
+        int min = int.MinValue, int max = int.MaxValue, int inc = 1, bool vlt = false)
+        => S32(System, name, desc, unit, def, min, max, inc,vlt);
     
     public static IMavParamTypeMetadata AdvS32(string name, string desc, string unit, int def = 0,
-        int min = int.MinValue, int max = int.MaxValue, int inc = 1)
-        => S32(Advanced, name, desc, unit, def, min, max, inc);
+        int min = int.MinValue, int max = int.MaxValue, int inc = 1, bool vlt = false)
+        => S32(Advanced, name, desc, unit, def, min, max, inc,vlt);
     
     public static IMavParamTypeMetadata DevS32(string name, string desc, string unit, int def = 0,
-        int min = int.MinValue, int max = int.MaxValue, int inc = 1)
-        => S32(Developer, name, desc, unit, def, min, max, inc);
+        int min = int.MinValue, int max = int.MaxValue, int inc = 1, bool vlt = false)
+        => S32(Developer, name, desc, unit, def, min, max, inc,vlt);
     
-    public static IMavParamTypeMetadata S32(string category,string name,string desc,string unit,int def = 0,int min = int.MinValue,int max = int.MaxValue, int inc = 1)
+    public static IMavParamTypeMetadata S32(string category,string name,string desc,string unit,int def = 0,
+        int min = int.MinValue,int max = int.MaxValue, int inc = 1, bool vlt = false)
     {
         return new MavParamTypeMetadata(name, MavParamType.MavParamTypeInt32)
         {
@@ -120,22 +128,24 @@ public static class MavParam
             MinValue = new(min),
             DefaultValue = new(def),
             MaxValue = new(max),
+            Volatile = vlt,
         };
     }
 
     public static IMavParamTypeMetadata SysU32(string name, string desc, string unit, uint def = 0,
-        uint min = uint.MinValue, uint max = uint.MaxValue, uint inc = 1)
-        => U32(System, name, desc, unit, def, min, max, inc);
+        uint min = uint.MinValue, uint max = uint.MaxValue, uint inc = 1, bool vlt = false)
+        => U32(System, name, desc, unit, def, min, max, inc,vlt);
     
     public static IMavParamTypeMetadata AdvU32(string name, string desc, string unit, uint def = 0,
-        uint min = uint.MinValue, uint max = uint.MaxValue, uint inc = 1)
-        => U32(Advanced, name, desc, unit, def, min, max, inc);
+        uint min = uint.MinValue, uint max = uint.MaxValue, uint inc = 1, bool vlt = false)
+        => U32(Advanced, name, desc, unit, def, min, max, inc,vlt);
     
     public static IMavParamTypeMetadata DevU32(string name, string desc, string unit, uint def = 0,
-        uint min = uint.MinValue, uint max = uint.MaxValue, uint inc = 1)
-        => U32(Developer, name, desc, unit, def, min, max, inc);
+        uint min = uint.MinValue, uint max = uint.MaxValue, uint inc = 1, bool vlt = false)
+        => U32(Developer, name, desc, unit, def, min, max, inc,vlt);
     
-    public static IMavParamTypeMetadata U32(string category,string name,string desc,string unit,uint def = 0,uint min = uint.MinValue,uint max = uint.MaxValue, uint inc = 1)
+    public static IMavParamTypeMetadata U32(string category,string name,string desc,string unit,
+        uint def = 0,uint min = uint.MinValue,uint max = uint.MaxValue, uint inc = 1, bool vlt = false)
     {
         return new MavParamTypeMetadata(name, MavParamType.MavParamTypeUint32)
         {
@@ -148,19 +158,21 @@ public static class MavParam
             MinValue = new(min),
             DefaultValue = new(def),
             MaxValue = new(max),
+            Volatile = vlt, 
         };
     }
 
     public static IMavParamTypeMetadata SysU16(string name, string desc, string unit, ushort def = 0,
-        ushort min = ushort.MinValue, ushort max = ushort.MaxValue, ushort inc = 1)
-        => U16(System, name, desc, unit, def, min, max, inc);
+        ushort min = ushort.MinValue, ushort max = ushort.MaxValue, ushort inc = 1, bool vlt = false)
+        => U16(System, name, desc, unit, def, min, max, inc,vlt);
     public static IMavParamTypeMetadata AdvU16(string name, string desc, string unit, ushort def = 0,
-        ushort min = ushort.MinValue, ushort max = ushort.MaxValue, ushort inc = 1)
-        => U16(Advanced, name, desc, unit, def, min, max, inc);
+        ushort min = ushort.MinValue, ushort max = ushort.MaxValue, ushort inc = 1, bool vlt = false)
+        => U16(Advanced, name, desc, unit, def, min, max, inc,vlt);
     public static IMavParamTypeMetadata DevU16(string name, string desc, string unit, ushort def = 0,
-        ushort min = ushort.MinValue, ushort max = ushort.MaxValue, ushort inc = 1)
-        => U16(Developer, name, desc, unit, def, min, max, inc);
-    public static IMavParamTypeMetadata U16(string category,string name,string desc,string unit,ushort def = 0,ushort min = ushort.MinValue,ushort max = ushort.MaxValue, ushort inc = 1)
+        ushort min = ushort.MinValue, ushort max = ushort.MaxValue, ushort inc = 1, bool vlt = false)
+        => U16(Developer, name, desc, unit, def, min, max, inc,vlt);
+    public static IMavParamTypeMetadata U16(string category,string name,string desc,string unit,ushort def = 0,
+        ushort min = ushort.MinValue,ushort max = ushort.MaxValue, ushort inc = 1, bool vlt = false)
     {
         return new MavParamTypeMetadata(name, MavParamType.MavParamTypeUint16)
         {
@@ -173,19 +185,21 @@ public static class MavParam
             MinValue = new(min),
             DefaultValue = new(def),
             MaxValue = new(max),
+            Volatile = vlt,
         };
     }
 
     public static IMavParamTypeMetadata SysS16(string name, string desc, string unit, short def = 0,
-        short min = short.MinValue, short max = short.MaxValue, short inc = 1)
-        => S16(System, name, desc, unit, def, min, max, inc);
+        short min = short.MinValue, short max = short.MaxValue, short inc = 1, bool vlt = false)
+        => S16(System, name, desc, unit, def, min, max, inc, vlt);
     public static IMavParamTypeMetadata AdvS16(string name, string desc, string unit, short def = 0,
-        short min = short.MinValue, short max = short.MaxValue, short inc = 1)
-        => S16(Advanced, name, desc, unit, def, min, max, inc);
+        short min = short.MinValue, short max = short.MaxValue, short inc = 1, bool vlt = false)
+        => S16(Advanced, name, desc, unit, def, min, max, inc, vlt);
     public static IMavParamTypeMetadata DevS16(string name, string desc, string unit, short def = 0,
-        short min = short.MinValue, short max = short.MaxValue, short inc = 1)
-        => S16(Developer, name, desc, unit, def, min, max, inc);
-    public static IMavParamTypeMetadata S16(string category,string name,string desc,string unit,short def = 0,short min = short.MinValue,short max = short.MaxValue, short inc = 1)
+        short min = short.MinValue, short max = short.MaxValue, short inc = 1, bool vlt = false)
+        => S16(Developer, name, desc, unit, def, min, max, inc,vlt);
+    public static IMavParamTypeMetadata S16(string category,string name,string desc,string unit,short def = 0,
+        short min = short.MinValue,short max = short.MaxValue, short inc = 1, bool vlt = false)
     {
         return new MavParamTypeMetadata(name, MavParamType.MavParamTypeInt16)
         {
@@ -198,19 +212,21 @@ public static class MavParam
             MinValue = new(min),
             DefaultValue = new(def),
             MaxValue = new(max),
+            Volatile = vlt,
         };
     }
 
     public static IMavParamTypeMetadata SysU8(string name, string desc, string unit, byte def = 0,
-        byte min = byte.MinValue, byte max = byte.MaxValue, byte inc = 1)
-        => U8(System, name, desc, unit, def, min, max, inc);
+        byte min = byte.MinValue, byte max = byte.MaxValue, byte inc = 1, bool vlt = false)
+        => U8(System, name, desc, unit, def, min, max, inc, vlt);
     public static IMavParamTypeMetadata AdvU8(string name, string desc, string unit, byte def = 0,
-        byte min = byte.MinValue, byte max = byte.MaxValue, byte inc = 1)
-        => U8(Advanced, name, desc, unit, def, min, max, inc);
+        byte min = byte.MinValue, byte max = byte.MaxValue, byte inc = 1, bool vlt = false)
+        => U8(Advanced, name, desc, unit, def, min, max, inc, vlt);
     public static IMavParamTypeMetadata DevU8(string name, string desc, string unit, byte def = 0,
-        byte min = byte.MinValue, byte max = byte.MaxValue, byte inc = 1)
-        => U8(Developer, name, desc, unit, def, min, max, inc);
-    public static IMavParamTypeMetadata U8(string category,string name,string desc,string unit,byte def = 0,byte min = byte.MinValue,byte max = byte.MaxValue, byte inc = 1)
+        byte min = byte.MinValue, byte max = byte.MaxValue, byte inc = 1, bool vlt = false)
+        => U8(Developer, name, desc, unit, def, min, max, inc, vlt);
+    public static IMavParamTypeMetadata U8(string category,string name,string desc,string unit,byte def = 0,
+        byte min = byte.MinValue,byte max = byte.MaxValue, byte inc = 1, bool vlt = false)
     {
         return new MavParamTypeMetadata(name, MavParamType.MavParamTypeUint8)
         {
@@ -223,19 +239,21 @@ public static class MavParam
             MinValue = new(min),
             DefaultValue = new(def),
             MaxValue = new(max),
+            Volatile = vlt,
         };
     }
 
     public static IMavParamTypeMetadata SysS8(string name, string desc, string unit, sbyte def = 0,
-        sbyte min = sbyte.MinValue, sbyte max = sbyte.MaxValue, sbyte inc = 1)
-        => S8(System, name, desc, unit, def, min, max, inc);
+        sbyte min = sbyte.MinValue, sbyte max = sbyte.MaxValue, sbyte inc = 1, bool vlt = false)
+        => S8(System, name, desc, unit, def, min, max, inc,vlt);
     public static IMavParamTypeMetadata AdvS8(string name, string desc, string unit, sbyte def = 0,
-        sbyte min = sbyte.MinValue, sbyte max = sbyte.MaxValue, sbyte inc = 1)
-        => S8(Advanced, name, desc, unit, def, min, max, inc);
+        sbyte min = sbyte.MinValue, sbyte max = sbyte.MaxValue, sbyte inc = 1, bool vlt = false)
+        => S8(Advanced, name, desc, unit, def, min, max, inc,vlt);
     public static IMavParamTypeMetadata DevS8(string name, string desc, string unit, sbyte def = 0,
-        sbyte min = sbyte.MinValue, sbyte max = sbyte.MaxValue, sbyte inc = 1)
-        => S8(Developer, name, desc, unit, def, min, max, inc);
-    public static IMavParamTypeMetadata S8(string category,string name,string desc,string unit,sbyte def = 0,sbyte min = sbyte.MinValue,sbyte max = sbyte.MaxValue, sbyte inc = 1)
+        sbyte min = sbyte.MinValue, sbyte max = sbyte.MaxValue, sbyte inc = 1, bool vlt = false)
+        => S8(Developer, name, desc, unit, def, min, max, inc,vlt);
+    public static IMavParamTypeMetadata S8(string category,string name,string desc,string unit,sbyte def = 0,
+        sbyte min = sbyte.MinValue,sbyte max = sbyte.MaxValue, sbyte inc = 1, bool vlt = false)
     {
         return new MavParamTypeMetadata(name, MavParamType.MavParamTypeInt8)
         {
@@ -248,19 +266,21 @@ public static class MavParam
             MinValue = new(min),
             DefaultValue = new(def),
             MaxValue = new(max),
+            Volatile = vlt,
         };
     }
 
     public static IMavParamTypeMetadata SysR32(string name, string desc, string unit, float def = 0.0f,
-        float min = float.MinValue, float max = float.MaxValue, float inc = 1.0f)
-        => R32(System, name, desc, unit, def, min, max, inc);
+        float min = float.MinValue, float max = float.MaxValue, float inc = 1.0f, bool vlt = false)
+        => R32(System, name, desc, unit, def, min, max, inc, vlt);
     public static IMavParamTypeMetadata AdvR32(string name, string desc, string unit, float def = 0.0f,
-        float min = float.MinValue, float max = float.MaxValue, float inc = 1.0f)
-        => R32(Advanced, name, desc, unit, def, min, max, inc);
+        float min = float.MinValue, float max = float.MaxValue, float inc = 1.0f, bool vlt = false)
+        => R32(Advanced, name, desc, unit, def, min, max, inc, vlt);
     public static IMavParamTypeMetadata DevR32(string name, string desc, string unit, float def = 0.0f,
-        float min = float.MinValue, float max = float.MaxValue, float inc = 1.0f)
-        => R32(Developer, name, desc, unit, def, min, max, inc);
-    public static IMavParamTypeMetadata R32(string category,string name,string desc,string unit,float def = 0.0f,float min = float.MinValue,float max = float.MaxValue, float inc = 1.0f)
+        float min = float.MinValue, float max = float.MaxValue, float inc = 1.0f, bool vlt = false)
+        => R32(Developer, name, desc, unit, def, min, max, inc, vlt);
+    public static IMavParamTypeMetadata R32(string category,string name,string desc,string unit,float def = 0.0f,
+        float min = float.MinValue,float max = float.MaxValue, float inc = 1.0f, bool vlt = false)
     {
         return new MavParamTypeMetadata(name, MavParamType.MavParamTypeReal32)
         {
@@ -273,6 +293,7 @@ public static class MavParam
             MinValue = new(min),
             DefaultValue = new(def),
             MaxValue = new(max),
+            Volatile = vlt,
         };
     }
     

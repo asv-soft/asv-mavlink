@@ -216,7 +216,11 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
                 throw new ArgumentException($"Error to set mavlink param '{name}' [{param.Item2.Type}]: {errorMsg}", nameof(value));
             }
             var oldValue = param.Item2.ReadFromConfig(_cfg, _serverCfg.CfgPrefix);
-            param.Item2.WriteToConfig(_cfg,value, _serverCfg.CfgPrefix);
+            if (param.Item2.Volatile == false)
+            {
+                param.Item2.WriteToConfig(_cfg,value, _serverCfg.CfgPrefix);
+            }
+                
             _onParamChangedSubject.OnNext(new ParamChangedEvent(param, oldValue, value, false));
             // TODO: put to queue and send in background using delay (throttle)
             SendParam(param, value, DisposeCancel).Wait();
