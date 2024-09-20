@@ -9,6 +9,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using Asv.Common;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using ZLogger;
 
 namespace Asv.Mavlink;
@@ -77,7 +78,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
 {
     private readonly string _rootFolder;
     private readonly IHierarchicalStoreFormat<TKey,TFile> _format;
-    private readonly ILogger _logger;
+    private readonly ILogger? _logger;
     private readonly object _sync = new();
     private readonly RxValue<ushort> _count;
     private readonly RxValue<ulong> _size;
@@ -86,8 +87,9 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     private int _checkCacheInProgress;
     private readonly TimeSpan _fileCacheTime;
 
-    public FileSystemHierarchicalStore(string rootFolder, IHierarchicalStoreFormat<TKey,TFile> format, TimeSpan? fileCacheTime)
+    public FileSystemHierarchicalStore(string rootFolder, IHierarchicalStoreFormat<TKey,TFile> format, TimeSpan? fileCacheTime, ILogger? logger = null)
     {
+        _logger = logger ?? NullLogger.Instance;
         if (format == null) throw new ArgumentNullException(nameof(format));
         format.DisposeItWith(Disposable);
         if (string.IsNullOrEmpty(rootFolder))
