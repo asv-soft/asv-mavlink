@@ -44,7 +44,7 @@ public class AsvRsgaExTest
         var origin = new HashSet<AsvRsgaCustomMode>(Enum.GetValues<AsvRsgaCustomMode>());
         serverEx.GetCompatibility = () => origin;
         var originMode = AsvRsgaCustomMode.AsvRsgaCustomModeTxGp;
-        serverEx.SetMode = async (mode, param2, param3, param4, param5, param6, param7, cancel) => 
+        serverEx.SetMode = async (mode, cancel) => 
         {
             Assert.Equal(originMode,mode);
             return MavResult.MavResultAccepted;
