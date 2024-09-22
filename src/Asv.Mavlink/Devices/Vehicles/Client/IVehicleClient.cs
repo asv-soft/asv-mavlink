@@ -42,7 +42,7 @@ public interface IVehicleClient:IClientDevice
     /// and performing various FTP operations such as uploading, downloading,
     /// and deleting files on an FTP server.
     /// </remarks>
-    IMavlinkFtpClient Ftp { get; }
+    IFtpClient Ftp { get; }
 
     /// <summary>
     /// Gets the GNSS client.

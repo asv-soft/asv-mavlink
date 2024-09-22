@@ -1,25 +1,26 @@
 using System;
 using System.Buffers;
-using System.Diagnostics;
-using System.Reactive.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.IO;
 
 namespace Asv.Mavlink;
 
-public interface IMavlinkFtpClient
+public interface IFtpClient
 {
+    Task<byte> ListDirectory(string path, uint offset, Memory<char> buffer, CancellationToken cancel = default);
     Task<OpenReadResult> OpenFileRead(string path, CancellationToken cancel = default);
-    Task<ReadResult> Read(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default);
+    Task<ReadResult> ReadFile(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default);
+    Task TerminateSession(byte session, CancellationToken cancel = default);
+    
+    
 }
 
 public readonly struct ReadResult(byte readCount, ReadRequest request)
 {
     public readonly ReadRequest Request = request;
     public readonly byte ReadCount = readCount;
+   
+    public override string ToString() => $"Request: {Request}, ReadCount: {ReadCount}";
 }
 
 public readonly struct ReadRequest(byte session, uint skip, byte take)

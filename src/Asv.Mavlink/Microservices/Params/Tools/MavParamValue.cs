@@ -220,6 +220,44 @@ public readonly struct MavParamValue: IComparable<MavParamValue>, IComparable,IE
         return !left.Equals(right);
     }
 
+    public string PrintValue()
+    {
+        switch (Type)
+        {
+            case MavParamType.MavParamTypeUint8:
+            case MavParamType.MavParamTypeInt8:
+            case MavParamType.MavParamTypeUint16:
+            case MavParamType.MavParamTypeInt16:
+            case MavParamType.MavParamTypeUint32:
+            case MavParamType.MavParamTypeInt32:
+                return $"{_intValue}";
+            case MavParamType.MavParamTypeReal32:
+                return $"{_realValue}";
+            case MavParamType.MavParamTypeUint64:
+            case MavParamType.MavParamTypeInt64:
+            case MavParamType.MavParamTypeReal64:
+                return "Not supported";
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    public static string PrintType(MavParamType type)
+    {
+        return type switch
+        {
+            MavParamType.MavParamTypeUint8 => "U8",
+            MavParamType.MavParamTypeInt8 => "I8",
+            MavParamType.MavParamTypeUint16 => "U16",
+            MavParamType.MavParamTypeInt16 => "I16",
+            MavParamType.MavParamTypeUint32 => "U32",
+            MavParamType.MavParamTypeInt32 => "R32",
+            MavParamType.MavParamTypeUint64 or MavParamType.MavParamTypeInt64 or MavParamType.MavParamTypeReal32
+                or MavParamType.MavParamTypeReal64 => "Not supported",
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        };
+    }
+    
     public override string ToString()
     {
         switch (Type)
@@ -230,9 +268,9 @@ public readonly struct MavParamValue: IComparable<MavParamValue>, IComparable,IE
             case MavParamType.MavParamTypeInt16:
             case MavParamType.MavParamTypeUint32:
             case MavParamType.MavParamTypeInt32:
-                return $"{_intValue}[{Type:G}]";
+                return $"{_intValue}[{PrintType(Type)}]";
             case MavParamType.MavParamTypeReal32:
-                return $"{_realValue}[{Type:G}]";
+                return $"{_realValue}[{PrintType(Type)}]";
             case MavParamType.MavParamTypeUint64:
             case MavParamType.MavParamTypeInt64:
             case MavParamType.MavParamTypeReal64:

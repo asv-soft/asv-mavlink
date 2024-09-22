@@ -19,7 +19,7 @@ public class FtpMicroserviceTest
         _output = output;
     }
 
-    private void SetUpMicroservice(out IMavlinkFtpClient client, out IMavlinkFtpServer server,
+    private void SetUpMicroservice(out IFtpClient client, out IFtpServer server,
         Func<IPacketV2<IPayload>,bool> clientToServer, Func<IPacketV2<IPayload>,bool> serverToClient)
     {
         var link = new VirtualMavlinkConnection(clientToServer,serverToClient);
@@ -33,11 +33,11 @@ public class FtpMicroserviceTest
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
 
         var clientSeq = new PacketSequenceCalculator();
-        client = new MavlinkFtpClient(new MavlinkFtpClientConfig(), link.Client, clientId, clientSeq,
+        client = new FtpClient(new MavlinkFtpClientConfig(), link.Client, clientId, clientSeq,
             TaskPoolScheduler.Default,new TestLogger(_output,"CLIENT"));
 
         var serverSeq = new PacketSequenceCalculator();
-        server = new MavlinkFtpServer(new MavlinkFtpServerConfig(), link.Server, serverId, serverSeq, TaskPoolScheduler.Default,new TestLogger(_output,"SERVER") );
+        server = new FtpServer(new MavlinkFtpServerConfig(), link.Server, serverId, serverSeq, TaskPoolScheduler.Default,new TestLogger(_output,"SERVER") );
     }
 
     [Theory]
@@ -99,7 +99,7 @@ public class FtpMicroserviceTest
 
         var originRequest = new ReadRequest(session,skip,take);
         using var buffer = MemoryPool<byte>.Shared.Rent(take);
-        var result = await client.Read(originRequest, buffer.Memory);
+        var result = await client.ReadFile(originRequest, buffer.Memory);
         
         Assert.Equal(1,called);
         Assert.Equal(originRequest,result.Request);
