@@ -11,6 +11,7 @@ namespace Asv.Mavlink;
 
 public static class MavlinkFtpHelper
 {
+    public const byte MaxDataSize = 239;
     public static Encoding FtpEncoding { get; } = Encoding.ASCII;
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -123,17 +124,17 @@ public static class MavlinkFtpHelper
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteContentOffset(this FileTransferProtocolPacket packet, in uint offset)
+    public static void WriteOffset(this FileTransferProtocolPacket packet, in uint offset)
     {
         Unsafe.As<byte, uint>(ref packet.Payload.Payload[8]) = offset;
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ReadContentOffset(this FileTransferProtocolPacket packet, out uint offset)
+    public static void ReadOffset(this FileTransferProtocolPacket packet, out uint offset)
     {
         offset = Unsafe.As<byte, uint>(ref packet.Payload.Payload[8]);
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint ReadContentOffset(this FileTransferProtocolPacket packet)
+    public static uint ReadOffset(this FileTransferProtocolPacket packet)
     {
         return Unsafe.As<byte, uint>(ref packet.Payload.Payload[8]);
     }
@@ -166,6 +167,13 @@ public static class MavlinkFtpHelper
         data = packet.Payload.Payload.AsSpan(12,size);
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte ReadData(this FileTransferProtocolPacket packet, Memory<byte> data)
+    {
+        var size = packet.ReadSize();
+        packet.Payload.Payload.AsSpan(12,size).CopyTo(data.Span);
+        return size;
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReadDataFirstByte(this FileTransferProtocolPacket packet)
     {
         return packet.Payload.Payload[12];
@@ -175,11 +183,7 @@ public static class MavlinkFtpHelper
     {
         return packet.Payload.Payload[13];
     }
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ReadData(this FileTransferProtocolPacket packet, byte[] data)
-    {
-        packet.Payload.Payload.CopyTo(data,12);
-    }
+    
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string ReadDataAsString(this FileTransferProtocolPacket packet)
@@ -237,10 +241,13 @@ public static class MavlinkFtpHelper
         };
     }
 
-    public static void CheckPath(string path)
+    public static void CheckFilePath(string path)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
-        // TODO: add additional check for file path
+        if (FtpEncoding.GetByteCount(path) > MaxDataSize)
+        {
+            throw new ArgumentOutOfRangeException(nameof(path), $"Max path size is {MaxDataSize}");
+        }
     }
 }
 
