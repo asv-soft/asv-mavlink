@@ -18,8 +18,9 @@ public class VehicleClientConfig:ClientDeviceConfig
     public ushort MavDataStreamExtendedStatusRateHz { get; set; } = 1;
     public ushort MavDataStreamPositionRateHz { get; set; } = 1;
     public CommandProtocolConfig Command { get; set; } = new();
-    public MissionClientConfig Missions { get; set; } = new();
+    public MissionClientExConfig Missions { get; set; } = new();
     public ParamsClientExConfig Params { get; set; } = new();
+    public MavlinkFtpClientConfig Ftp { get; set; } = new();
 }
 
 public abstract class VehicleClient : ClientDevice, IVehicleClient
@@ -37,22 +38,23 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
     {
         _logger = logger ?? NullLogger.Instance;
         _config = config;
-        Commands = new CommandClient(connection,identity,seq,config.Command).DisposeItWith(Disposable);
-        Offboard = new OffboardClient(connection, identity, seq).DisposeItWith(Disposable);
-        _params = new ParamsClientEx(new ParamsClient(Connection, Identity, Seq, _config.Params), _config.Params).DisposeItWith(Disposable);
-        Logging = new LoggingClient(connection, identity, seq).DisposeItWith(Disposable);
-        var missions = new MissionClient(connection, identity, seq, _config.Missions).DisposeItWith(Disposable);
-        Missions = new MissionClientEx(missions).DisposeItWith(Disposable);
-        Ftp = new FtpClient(connection, identity, new FtpConfig(), seq).DisposeItWith(Disposable);
-        var gnss = new GnssClient(connection, identity, seq).DisposeItWith(Disposable);
-        Gnss = new GnssClientEx(gnss).DisposeItWith(Disposable);
-        V2Extension = new V2ExtensionClient(connection, identity, seq).DisposeItWith(Disposable);
-        var pos = new PositionClient(connection, identity, seq).DisposeItWith(Disposable);
-        Position = new PositionClientEx(pos,Heartbeat,Commands,scheduler).DisposeItWith(Disposable);
-        var rtt = new TelemetryClient(connection, identity, seq).DisposeItWith(Disposable);
-        Rtt = new TelemetryClientEx(rtt).DisposeItWith(Disposable);
-        Debug = new DebugClient(connection, identity, seq).DisposeItWith(Disposable);
-        Dgps = new DgpsClient(connection, identity, seq).DisposeItWith(Disposable);
+        Commands = new CommandClient(connection,identity,seq,config.Command,scheduler,logger).DisposeItWith(Disposable);
+        Offboard = new OffboardClient(connection, identity, seq,scheduler,logger).DisposeItWith(Disposable);
+        _params = new ParamsClientEx(new ParamsClient(Connection, Identity, Seq, _config.Params,scheduler,logger), _config.Params,scheduler,logger).DisposeItWith(Disposable);
+        Logging = new LoggingClient(connection, identity, seq,scheduler,logger).DisposeItWith(Disposable);
+        var missions = new MissionClient(connection, identity, seq, _config.Missions,scheduler,logger).DisposeItWith(Disposable);
+        Missions = new MissionClientEx(missions, _config.Missions, scheduler,logger).DisposeItWith(Disposable);
+        Ftp = new MavlinkFtpClient(config.Ftp, connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
+        var gnss = new GnssClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
+        Gnss = new GnssClientEx(gnss, scheduler,logger).DisposeItWith(Disposable);
+        V2Extension = new V2ExtensionClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
+        var pos = new PositionClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
+        Position = new PositionClientEx(pos,Heartbeat,Commands, scheduler,logger).DisposeItWith(Disposable);
+        var rtt = new TelemetryClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
+        Rtt = new TelemetryClientEx(rtt, scheduler,logger).DisposeItWith(Disposable);
+        Debug = new DebugClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
+        Trace = new TraceStreamClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
+        Dgps = new DgpsClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
         
         var customMode = new RxValue<IVehicleMode>().DisposeItWith(Disposable);
         Heartbeat
@@ -85,8 +87,9 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
 
     public ICommandClient Commands { get; }
     public IDebugClient Debug { get; }
+    public ITraceStreamClient Trace { get; }
     public IDgpsClient Dgps { get; }
-    public IFtpClient Ftp { get; }
+    public IMavlinkFtpClient Ftp { get; }
     public IGnssClientEx Gnss { get; }
     public ILoggingClient Logging { get; }
     public IMissionClientEx Missions { get; }

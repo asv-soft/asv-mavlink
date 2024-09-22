@@ -66,7 +66,7 @@ namespace Asv.Mavlink
         
         protected IScheduler Scheduler { get; } 
 
-        protected string LogTargetName => _locTargetName ??= $"{Identity.TargetSystemId}:{Identity.TargetSystemId}";
+        protected string LogTargetName => _locTargetName ??= $"{Identity.TargetSystemId}:{Identity.TargetComponentId}";
         protected string LogLocalName => _logLocalName ??= $"{Identity.SystemId}:{Identity.ComponentId}";
         protected string LogSend => _logSend ??= $"[{LogLocalName}]=>[{LogTargetName}][{_ifcLogName}]:";
         protected string LogRecv => _logRecv ??= $"[{LogLocalName}]<=[{LogTargetName}][{_ifcLogName}]:";
@@ -205,7 +205,7 @@ namespace Asv.Mavlink
 
         protected async Task<TResult> InternalCall<TResult,TPacketSend,TPacketRecv>(
             Action<TPacketSend> fillPacket, Func<TPacketRecv,bool> filter, Func<TPacketRecv,TResult> resultGetter, int attemptCount = 5,
-            Action<TPacketSend,int>? fillOnConfirmation = null, int timeoutMs = 500,  CancellationToken cancel = default)
+            Action<TPacketSend,int>? fillOnConfirmation = null, int timeoutMs = 500, CancellationToken cancel = default)
             where TPacketSend : IPacketV2<IPayload>, new()
             where TPacketRecv : IPacketV2<IPayload>, new()
         {

@@ -27,6 +27,7 @@ public interface IVehicleClient:IClientDevice
     /// The debug client interface.
     /// </value>
     IDebugClient Debug { get; }
+    ITraceStreamClient Trace { get; }
 
     /// <summary>
     /// Gets or sets the Dgps client. </summary>
@@ -41,7 +42,7 @@ public interface IVehicleClient:IClientDevice
     /// and performing various FTP operations such as uploading, downloading,
     /// and deleting files on an FTP server.
     /// </remarks>
-    IFtpClient Ftp { get; }
+    IMavlinkFtpClient Ftp { get; }
 
     /// <summary>
     /// Gets the GNSS client.

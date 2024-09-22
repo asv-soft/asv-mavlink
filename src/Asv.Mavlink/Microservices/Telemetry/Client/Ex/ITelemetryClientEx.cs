@@ -1,6 +1,9 @@
 using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using Asv.Common;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Asv.Mavlink;
 
@@ -98,9 +101,14 @@ public class TelemetryClientEx : DisposableOnceWithCancel, ITelemetryClientEx
     /// /
     private readonly RxValue<double> _dropRateComm;
 
+    private readonly ILogger _logger;
+    private readonly IScheduler _scheduler;
+
     /// initialize various RxValue properties based on the data retrieved from the `SystemStatus` property of the `client` object.
-    public TelemetryClientEx(ITelemetryClient client)
+    public TelemetryClientEx(ITelemetryClient client, IScheduler? scheduler = null, ILogger? logger = null)
     {
+        _scheduler = scheduler ?? Scheduler.Default;
+        _logger = logger ?? NullLogger.Instance;
         Base = client;
         
         _batteryCharge = new RxValue<double>(double.NaN).DisposeItWith(Disposable);

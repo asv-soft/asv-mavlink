@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,23 +15,25 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class MissionClientExConfig
+public class MissionClientExConfig:MissionClientConfig
 {
     public int DeviceUploadTimeoutMs { get; set; } = 3000;
 }
 
 public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
 {
-    public readonly ILogger _logger;
+    private readonly ILogger _logger;
     private readonly IMissionClient _client;
     private readonly MissionClientExConfig _config;
     private readonly SourceCache<MissionItem, ushort> _missionSource;
     private readonly RxValue<bool> _isMissionSynced;
     private readonly RxValue<double> _allMissionDistance;
     private readonly TimeSpan _deviceUploadTimeout;
+    private readonly IScheduler _scheduler;
 
-    public MissionClientEx(IMissionClient client, MissionClientExConfig config = null, ILogger? logger = null)
+    public MissionClientEx(IMissionClient client, MissionClientExConfig? config = null, IScheduler? scheduler = null, ILogger? logger = null)
     {
+        _scheduler = scheduler ?? Scheduler.Default;
         _logger = logger ?? NullLogger.Instance;
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _config = config ?? new MissionClientExConfig();

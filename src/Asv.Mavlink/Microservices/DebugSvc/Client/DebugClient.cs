@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink
 {
     public class DebugClient: MavlinkMicroserviceClient, IDebugClient
     {
         public DebugClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq):base("DEBUG", connection, identity, seq)
+            IPacketSequenceCalculator seq, IScheduler? scheduler = null,ILogger? logger = null):base("DEBUG", connection, identity, seq,scheduler,logger)
         {
             DebugFloatArray = InternalFilter<DebugFloatArrayPacket>()
                 .Select(p => p.Payload)

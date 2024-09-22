@@ -1,4 +1,7 @@
+using System.Reactive.Concurrency;
 using Asv.Common;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Asv.Mavlink;
 
@@ -36,8 +39,13 @@ public interface IGnssClientEx
 /// </summary>
 public class GnssClientEx : DisposableOnceWithCancel, IGnssClientEx
 {
-    public GnssClientEx(IGnssClient client)
+    private readonly IScheduler _scheduler;
+    private readonly ILogger _logger;
+
+    public GnssClientEx(IGnssClient client, IScheduler? scheduler = null, ILogger? logger = null)
     {
+        _scheduler = scheduler ?? Scheduler.Default;
+        _logger = logger ?? NullLogger.Instance;
         Base = client;
         Main = new GnssStatusClient(client.Main).DisposeItWith(Disposable);
         Additional = new GnssStatusClient(client.Additional).DisposeItWith(Disposable);

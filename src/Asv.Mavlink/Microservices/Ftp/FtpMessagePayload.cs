@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -79,17 +80,17 @@ public static class MavlinkFtpHelper
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteRequestOpcode(this FileTransferProtocolPacket packet,in FtpOpcode offset)
+    public static void WriteOriginOpCode(this FileTransferProtocolPacket packet,in FtpOpcode offset)
     {
         packet.Payload.Payload[5] = (byte)offset;
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ReadRequestOffset(this FileTransferProtocolPacket packet, out FtpOpcode offset)
+    public static void ReadOriginOpCode(this FileTransferProtocolPacket packet, out FtpOpcode offset)
     {
         offset = (FtpOpcode)packet.Payload.Payload[5];
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static FtpOpcode ReadRequestOffset(this FileTransferProtocolPacket packet)
+    public static FtpOpcode ReadOriginOpCode(this FileTransferProtocolPacket packet)
     {
         return (FtpOpcode)packet.Payload.Payload[5];
     }
@@ -136,42 +137,86 @@ public static class MavlinkFtpHelper
     {
         return Unsafe.As<byte, uint>(ref packet.Payload.Payload[8]);
     }
-    
+
+    #region Data section
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteData(this FileTransferProtocolPacket packet, in ReadOnlySpan<byte> data)
     {
         data.CopyTo(packet.Payload.Payload.AsSpan(12));
+        packet.WriteSize((byte)data.Length);
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteDataAsByte(this FileTransferProtocolPacket packet, in byte firstByte)
+    {
+        packet.Payload.Payload[12] = firstByte;
+        packet.WriteSize(sizeof(byte));
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteDataAsTwoByte(this FileTransferProtocolPacket packet, in byte firstByte, in byte secondByte)
+    {
+        packet.Payload.Payload[12] = firstByte;
+        packet.Payload.Payload[12] = secondByte;
+        packet.WriteSize(sizeof(byte) * 2);
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ReadData(this FileTransferProtocolPacket packet, out ReadOnlySpan<byte> data)
     {
-        data = packet.Payload.Payload.AsSpan(12);
+        var size = packet.ReadSize();
+        data = packet.Payload.Payload.AsSpan(12,size);
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte ReadDataFirstByte(this FileTransferProtocolPacket packet)
+    {
+        return packet.Payload.Payload[12];
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte ReadDataSecondByte(this FileTransferProtocolPacket packet)
+    {
+        return packet.Payload.Payload[13];
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ReadData(this FileTransferProtocolPacket packet, byte[] data)
     {
         packet.Payload.Payload.CopyTo(data,12);
     }
+    
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool CheckNack(this FileTransferProtocolPacket packet, out NackError? error, out byte? additionalError)
+    public static string ReadDataAsString(this FileTransferProtocolPacket packet)
     {
-        var opCode = packet.ReadOpcode();
-        if (opCode != FtpOpcode.Nak)
-        {
-            error = NackError.None;
-            additionalError = 0;
-            return false;
-        }
         var size = packet.ReadSize();
-        error = (NackError)packet.Payload.Payload[12];
-        if (size == 2 && error == NackError.FailErrno)
+        return FtpEncoding.GetString(new ReadOnlySpan<byte>(packet.Payload.Payload, 12,size));
+    }
+    
+    public static void WriteDataAsString(this FileTransferProtocolPacket packet,string value)
+    {
+        var byteSize = FtpEncoding.GetByteCount(value);
+        var pathArray = ArrayPool<byte>.Shared.Rent(byteSize);
+        try
         {
-            additionalError = packet.Payload.Payload[13];
+            FtpEncoding.GetBytes(value, pathArray);
+            var pathSpan = new ReadOnlySpan<byte>(pathArray, 0, byteSize);
+            packet.WriteData(pathSpan);
+            packet.WriteSize((byte)byteSize);
         }
-        additionalError = 0;
-        return true;
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(pathArray);
+        }
     }
 
+    public static void WriteDataAsUint(this FileTransferProtocolPacket packet,uint value)
+    {
+        MemoryMarshal.Write(new Span<byte>(packet.Payload.Payload,12,4),value);
+        packet.WriteSize(sizeof(uint));
+    }
+    public static uint ReadDataAsUint(this FileTransferProtocolPacket packet)
+    {
+        return MemoryMarshal.Read<uint>(new ReadOnlySpan<byte>(packet.Payload.Payload,12,4));
+    }
+    
+    #endregion
+   
 
     public static string GetErrorMessage(NackError errorCode)
     {
@@ -190,6 +235,12 @@ public static class MavlinkFtpHelper
             NackError.FileNotFound => "The file or directory could not be found.",
             _ => throw new ArgumentOutOfRangeException(nameof(errorCode), errorCode, null)
         };
+    }
+
+    public static void CheckPath(string path)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        // TODO: add additional check for file path
     }
 }
 

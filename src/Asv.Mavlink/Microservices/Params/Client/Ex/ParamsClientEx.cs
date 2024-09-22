@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -9,6 +10,8 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Asv.Mavlink;
 
@@ -27,9 +30,13 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
     private readonly RxValue<ushort?> _remoteCount;
     private readonly RxValue<ushort> _localCount;
     private readonly Subject<(string, MavParamValue)> _onValueChanged;
+    private readonly ILogger _logger;
+    private readonly IScheduler _scheduler;
 
-    public ParamsClientEx(IParamsClient client, ParamsClientExConfig config)
+    public ParamsClientEx(IParamsClient client, ParamsClientExConfig config, IScheduler? scheduler = null, ILogger? logger = null)
     {
+        _logger = logger ?? NullLogger.Instance;
+        _scheduler = scheduler ?? Scheduler.Default;
         _config = config ?? throw new ArgumentNullException(nameof(config));
         Base = client;
         _paramsSource = new SourceCache<ParamItem, string>(x => x.Name).DisposeItWith(Disposable);
@@ -177,7 +184,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
 
     public IObservable<IChangeSet<IParamItem, string>> Items { get; }
     
-    public async Task ReadAll(IProgress<double> progress = null, CancellationToken cancel = default)
+    public async Task ReadAll(IProgress<double>? progress = null, CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();
         using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
