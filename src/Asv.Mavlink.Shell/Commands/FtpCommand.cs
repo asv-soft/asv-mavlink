@@ -8,7 +8,7 @@ namespace Asv.Mavlink.Shell;
 
 public class FtpCommand:ConsoleCommand
 {
-    private string _connectionString = "tcp://127.0.0.1:7343";
+    private string _connectionString = "tcp://127.0.0.1:5762";
     private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
     public FtpCommand()
@@ -31,11 +31,10 @@ public class FtpCommand:ConsoleCommand
         var identity = new MavlinkClientIdentity(255, 255, 1, 1);
         var seq = new PacketSequenceCalculator();
         using var ftpClient = new FtpClient(new MavlinkFtpClientConfig(), conn,identity,seq );
-        var charBuffer = new char[255];
-        var buffer = new Memory<char>(charBuffer);
+        var ftpEx = new FtpClientEx(ftpClient);
         try
         {
-            var result = await ftpClient.ListDirectory("/terrain", 0, buffer);
+            await ftpEx.RefreshEntries(FtpDirectory.Root);
         }
         catch (Exception e)
         {

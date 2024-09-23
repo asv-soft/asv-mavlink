@@ -2,17 +2,21 @@ using System;
 using System.Buffers;
 using System.Threading;
 using System.Threading.Tasks;
+using DotNext.Buffers;
 
 namespace Asv.Mavlink;
 
 public interface IFtpClient
 {
+    Task<byte> ListDirectory(string path, uint offset, IBufferWriter<byte> buffer, CancellationToken cancel = default);
+    Task<byte> ListDirectory(string path, uint offset, IBufferWriter<char> buffer, CancellationToken cancel = default);
     Task<byte> ListDirectory(string path, uint offset, Memory<char> buffer, CancellationToken cancel = default);
     Task<OpenReadResult> OpenFileRead(string path, CancellationToken cancel = default);
     Task<ReadResult> ReadFile(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default);
+    Task<ReadResult> ReadFile(ReadRequest request, IBufferWriter<byte> buffer, CancellationToken cancel = default);
     Task TerminateSession(byte session, CancellationToken cancel = default);
-    
-    
+
+   
 }
 
 public readonly struct ReadResult(byte readCount, ReadRequest request)

@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using Asv.IO;
 using Asv.Mavlink.V2.Common;
+using DotNext.Text;
 
 namespace Asv.Mavlink;
 
@@ -167,6 +168,16 @@ public static class MavlinkFtpHelper
         data = packet.Payload.Payload.AsSpan(12,size);
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte ReadData(this FileTransferProtocolPacket packet, IBufferWriter<byte> data)
+    {
+        var size = packet.ReadSize();
+        var buffer = data.GetSpan(size);
+        packet.Payload.Payload.AsSpan(12,size).CopyTo(buffer);
+        data.Advance(size);
+        return size;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReadData(this FileTransferProtocolPacket packet, Memory<byte> data)
     {
         var size = packet.ReadSize();
@@ -191,13 +202,25 @@ public static class MavlinkFtpHelper
         var size = packet.ReadSize();
         return FtpEncoding.GetString(new ReadOnlySpan<byte>(packet.Payload.Payload, 12,size));
     }
-    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReadDataAsString(this FileTransferProtocolPacket packet, Memory<char> buffer)
     {
         var size = packet.ReadSize();
         return (byte)FtpEncoding.GetChars(new ReadOnlySpan<byte>(packet.Payload.Payload, 12,size), buffer.Span);
     }
-    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte ReadDataAsString(this FileTransferProtocolPacket packet, Span<char> buffer)
+    {
+        var size = packet.ReadSize();
+        return (byte)FtpEncoding.GetChars(new ReadOnlySpan<byte>(packet.Payload.Payload, 12,size), buffer);
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte ReadDataAsString(this FileTransferProtocolPacket packet, IBufferWriter<char> data)
+    {
+        var size = packet.ReadSize();
+        var span = new ReadOnlySpan<byte>(packet.Payload.Payload, 12, size);
+        return (byte)FtpEncoding.GetChars(span, data);
+    }
     
     public static void WriteDataAsString(this FileTransferProtocolPacket packet,string value)
     {

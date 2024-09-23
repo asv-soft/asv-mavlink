@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,25 +48,43 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         return InternalFtpCall(FtpOpcode.TerminateSession,p => p.WriteSession(session), cancel);
     }
 
-    public Task<byte> ListDirectory(string path, uint offset, Memory<char> buffer, CancellationToken cancel = default)
+    #region ListDirectory
+
+    private async Task<FileTransferProtocolPacket> InternalListDirectory(string path, uint offset, CancellationToken cancel = default)
     {
         MavlinkFtpHelper.CheckFolderPath(path);
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.ListDirectory:G}({path})");
-        return InternalFtpCall(FtpOpcode.ListDirectory,p =>
+        var result = await InternalFtpCall(FtpOpcode.ListDirectory, p =>
         {
             p.WriteDataAsString(path);
             p.WriteOffset(offset);
-        }, cancel).ContinueWith(t =>
-        {
-            var result = t.Result;
-            var readCount = result.ReadDataAsString(buffer);
-            _logger.ZLogInformation($"{LogRecv} {FtpOpcode.ListDirectory:G}({path}): read={readCount}");
-            return readCount;
-        }, cancel);
+        }, cancel).ConfigureAwait(false);
+        _logger.ZLogInformation($"{LogRecv} {FtpOpcode.ListDirectory:G}({path}): read={result.ReadSize()}");
+        return result;
+    }
+    public async Task<byte> ListDirectory(string path, uint offset, IBufferWriter<byte> buffer, CancellationToken cancel = default)
+    {
+        var result = await InternalListDirectory(path, offset, cancel).ConfigureAwait(false);
+        return result.ReadData(buffer);
     }
 
-    
-    public async Task<ReadResult> ReadFile(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default)
+    public async Task<byte> ListDirectory(string path, uint offset, IBufferWriter<char> buffer, CancellationToken cancel = default)
+    {
+        var result = await InternalListDirectory(path, offset, cancel).ConfigureAwait(false);
+        return result.ReadDataAsString(buffer);
+    }
+
+    public async Task<byte> ListDirectory(string path, uint offset, Memory<char> buffer, CancellationToken cancel = default)
+    {
+        var result = await InternalListDirectory(path, offset, cancel).ConfigureAwait(false);
+        return result.ReadDataAsString(buffer);
+    }
+
+    #endregion
+
+    #region ReadFile
+
+    private async Task<FileTransferProtocolPacket> InternalReadFile(ReadRequest request, CancellationToken cancel = default)
     {
         if (request.Take > MavlinkFtpHelper.MaxDataSize)
         {
@@ -78,10 +97,24 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
             p.WriteSize(request.Take);
             p.WriteOffset(request.Skip);
         }, cancel, request.Session).ConfigureAwait(false);
+        _logger.ZLogTrace($"{LogRecv} {FtpOpcode.ReadFile:G}({request}): read={result.ReadSize()}");
+        return result;
+    }
+
+    public async Task<ReadResult> ReadFile(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default)
+    {
+        var result = await InternalReadFile(request, cancel).ConfigureAwait(false);
         var readCount = result.ReadData(buffer);
-        _logger.ZLogTrace($"{LogRecv} {FtpOpcode.ReadFile:G}({request}): read={readCount}");
         return new ReadResult(readCount, request);
     }
+    public async Task<ReadResult> ReadFile(ReadRequest request, IBufferWriter<byte> buffer, CancellationToken cancel = default)
+    {
+        var result = await InternalReadFile(request, cancel).ConfigureAwait(false);
+        var readCount = result.ReadData(buffer);
+        return new ReadResult(readCount, request);
+    }
+
+    #endregion
     
     public async Task<OpenReadResult> OpenFileRead(string path,CancellationToken cancel = default)
     {

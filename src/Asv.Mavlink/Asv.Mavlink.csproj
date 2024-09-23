@@ -65,6 +65,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Geodesy" Version="4.1.0" />
+    <PackageReference Include="DotNext.IO" Version="5.13.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="RS.Designer.cs">
