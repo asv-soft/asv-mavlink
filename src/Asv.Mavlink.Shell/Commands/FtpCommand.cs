@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
@@ -34,7 +35,12 @@ public class FtpCommand:ConsoleCommand
         var ftpEx = new FtpClientEx(ftpClient);
         try
         {
-            await ftpEx.RefreshEntries(FtpDirectory.Root);
+            await ftpEx.RefreshEntries(MavlinkFtpHelper.Root);
+            await ftpEx.RefreshEntries(MavlinkFtpHelper.Sys);
+            using var mem = File.OpenWrite("params.txt"); 
+            await ftpEx.DownloadFile(MavlinkFtpHelper.ParamFile, mem );
+            
+            
         }
         catch (Exception e)
         {

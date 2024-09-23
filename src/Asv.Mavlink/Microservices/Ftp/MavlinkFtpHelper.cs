@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -12,7 +13,19 @@ namespace Asv.Mavlink;
 
 public static class MavlinkFtpHelper
 {
+    public const char DirectorySeparator = '/';
     public const byte MaxDataSize = 239;
+    public const char FileSizeSeparator = '\t';
+    public const char DirectoryChar = 'D';
+    public const char FileChar = 'F';
+    public const char PathSeparator = '\0';
+    public const string SpecialPathCurrent = ".";
+    public const string SpecialPathBack = "..";
+    public static readonly ImmutableHashSet<string> IgnorePaths = new[] {SpecialPathCurrent, SpecialPathBack}.ToImmutableHashSet();
+    public static readonly FtpDirectory Root = new( string.Empty);
+    public static readonly FtpDirectory Sys = new( "@SYS");
+    public const string ParamFile = "@PARAM/param.pck?withdefaults=1";
+    
     public static Encoding FtpEncoding { get; } = Encoding.ASCII;
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

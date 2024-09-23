@@ -35,11 +35,11 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
     {
         _config = config;
         _logger = logger ?? NullLogger.Instance;
-        connection
+        /*connection
             .FilterVehicle(identity)
             .Filter<FileTransferProtocolPacket>()
             .Subscribe(x=>Interlocked.Exchange(ref _sequence, (uint)x.ReadOpcode()))
-            .DisposeItWith(Disposable);
+            .DisposeItWith(Disposable);*/
     }
     
     public Task TerminateSession(byte session, CancellationToken cancel = default)
@@ -173,7 +173,7 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         if (error == NackError.EOF)
         {
             logger.ZLogInformation($"Receive EOF to {originOpCode}");
-            throw new FtpNackException(originOpCode,error);
+            throw new FtpEndOfFileException(originOpCode);
         }
         if (size == 2 && error == NackError.FailErrno)
         {

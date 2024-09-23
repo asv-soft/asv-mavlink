@@ -8,57 +8,64 @@ using System.Threading.Tasks;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using System.IO.Pipelines;
-using DotNext.Buffers;
-using DotNext.IO;
 
 namespace Asv.Mavlink;
 
 public class FtpDirectory : IFtpEntry
 {
-    public static readonly IFtpEntry Root = new FtpDirectory();
     
-    public const char Separator = '/';
-    public FtpDirectory(IFtpEntry parent, ReadOnlySpan<char> data)
+    
+    public FtpDirectory(string name)
     {
-        Name =  data.ToString();
-        ParentPath = parent.Path;
-        Path = $"{ParentPath}{Separator}{Name}";
+        ParentId = string.Empty;
+        Name = name;
+        Id = $"{Name}{MavlinkFtpHelper.DirectorySeparator}";
+        Level = 0;
     }
 
-    private FtpDirectory()
+    public int Level { get;  }
+
+    public FtpDirectory(ReadOnlySpan<char> data,IFtpEntry parent)
     {
-        Name =  string.Empty;
-        ParentPath = string.Empty;
-        Path = $"{ParentPath}{Separator}{Name}";
+        Name =  data.Trim(MavlinkFtpHelper.DirectorySeparator).ToString();
+        ParentId = parent.Id;
+        Id = $"{ParentId}{Name}{MavlinkFtpHelper.DirectorySeparator}";
+        Level = parent.Level + 1;
     }
-    public string ParentPath { get; }
-    public string Path { get; }
+
+    
+    public string ParentId { get; }
+    public string Id { get; }
     public string Name { get; }
     public FtpEntryType Type => FtpEntryType.Directory;
     public uint Size { get; } = 0;
 
     public override string ToString()
     {
-        return Path;
+        return Id;
     }
 }
 public class FtpFile : IFtpEntry
 {
     public FtpFile(IFtpEntry parent, ReadOnlySpan<char> data)
     {
-        Name = data.ToString();
-        ParentPath = parent.Path;
-        Path = $"{ParentPath}{FtpDirectory.Separator}{Name}";
+        var tabIndex = data.IndexOf(MavlinkFtpHelper.FileSizeSeparator);
+        Name = data[..tabIndex].Trim(MavlinkFtpHelper.DirectorySeparator).ToString();
+        Size = uint.Parse(data[(tabIndex + 1)..]);
+        ParentId = parent.Id;
+        Id = $"{ParentId}{Name}";
+        Level = parent.Level + 1;
     }
-    public string ParentPath { get; }
-    public string Path { get; }
+    public string ParentId { get; }
+    public string Id { get; }
     public string Name { get; }
     public FtpEntryType Type => FtpEntryType.File;
     public uint Size { get; }
+    public int Level { get; }
+
     public override string ToString()
     {
-        return Path;
+        return Id;
     }
 }
 
@@ -71,67 +78,98 @@ public class FtpClientEx : IFtpClientEx
     {
         _logger = logger ?? NullLogger.Instance;
         Base = @base;
-        _entryCache = new SourceCache<IFtpEntry, string>(x => x.Path);
-        _entryCache.AddOrUpdate(FtpDirectory.Root);
+        _entryCache = new SourceCache<IFtpEntry, string>(x => x.Id);
+        _entryCache.AddOrUpdate(MavlinkFtpHelper.Root);
     }
-    
+
+    public IFtpEntry RootEntry => MavlinkFtpHelper.Root;
     public IFtpClient Base { get; }
     public IObservable<IChangeSet<IFtpEntry, string>> Entries => _entryCache.Connect();
 
-    public async Task RefreshEntries(IFtpEntry entry, CancellationToken cancel = default)
+    public async Task RefreshEntries(IFtpEntry entry, bool recursive = true, CancellationToken cancel = default)
     {
+        if (MavlinkFtpHelper.IgnorePaths.Contains(entry.Name)) return;
         var offset = 0U;
-        using var buffer = new SparseBufferWriter<char>();
         var parsedItems = new List<IFtpEntry>();
-        while (true)
+        var array = ArrayPool<char>.Shared.Rent(MavlinkFtpHelper.FtpEncoding.GetMaxCharCount(MavlinkFtpHelper.MaxDataSize));
+        try
         {
-            try
+            while (true)
             {
-                var size = await Base.ListDirectory(entry.Path, offset++, buffer, cancel).ConfigureAwait(false);
-                while (ParseEntry(entry, new SequenceReader<char>(buffer.ToReadOnlySequence()), out var parsed))
+                try
                 {
-                    Debug.Assert(parsed != null);
-                    _entryCache.AddOrUpdate(parsed);
-                    if (parsed.Type == FtpEntryType.Directory)
+                    byte charSize;
+                    if (entry == MavlinkFtpHelper.Root)
                     {
-                        parsedItems.Add(parsed);    
+                        charSize = await Base.ListDirectory(entry.Id, offset, array, cancel).ConfigureAwait(false);
                     }
+                    else
+                    {
+                        charSize = await Base.ListDirectory(entry.Id.TrimEnd(MavlinkFtpHelper.DirectorySeparator), offset, array, cancel).ConfigureAwait(false);    
+                    }
+                    
+                    var seq = new ReadOnlySequence<char>(array, 0, charSize);
+                    offset += ParseEntries(entry,seq,parsedItems);
                 }
-                if (size < MavlinkFtpHelper.MaxDataSize) break;
+                catch (FtpEndOfFileException)
+                {
+                    break;
+                }
             }
-            catch (FtpEndOfFileException)
-            {
-                break;
-            }
+        }
+        finally
+        {
+            ArrayPool<char>.Shared.Return(array);
         }
 
-        foreach (var item in parsedItems)
+        if (recursive)
         {
-            await RefreshEntries(item, cancel).ConfigureAwait(false);
+            foreach (var item in parsedItems)
+            {
+                await RefreshEntries(item,recursive, cancel).ConfigureAwait(false);
+            }    
         }
+        
     }
 
-    private static bool ParseEntry(IFtpEntry parent, SequenceReader<char> rdr, out IFtpEntry? entry)
+    private uint ParseEntries(IFtpEntry entry, ReadOnlySequence<char> data, List<IFtpEntry> parsedDirectoryItems)
     {
+        var rdr = new SequenceReader<char>(data);
+        var count = 0U;
+        while (ParseEntry(entry,ref rdr, out var parsed))
+        {
+            count++;
+            Debug.Assert(parsed != null);
+            _entryCache.AddOrUpdate(parsed);
+            if (parsed.Type == FtpEntryType.Directory)
+            {
+                parsedDirectoryItems.Add(parsed);
+            }
+        }
+        return count;
+    }
+
+    private static bool ParseEntry(IFtpEntry parent,ref SequenceReader<char> rdr, out IFtpEntry? entry)
+    {
+        entry = null;
         while (true)
         {
-            if (rdr.TryReadTo(out ReadOnlySpan<char> line, '\0') == false) continue;
+            if (rdr.TryReadTo(out ReadOnlySpan<char> line, MavlinkFtpHelper.PathSeparator) == false) return false;
             if (line.Length == 0) continue;
             switch (line[0])
             {
-                case 'D':
-                    line = line[1..].Trim('.');
+                case MavlinkFtpHelper.DirectoryChar:
+                    line = line[1..];
                     if (line.Length == 0) continue;
-                    entry = new FtpDirectory(parent, line);
+                    entry = new FtpDirectory(line,parent);
                     return true;
-                case 'F':
-                    line = line[1..].Trim('.');
+                case MavlinkFtpHelper.FileChar:
+                    line = line[1..];
                     if (line.Length == 0) continue;
                     entry = new FtpFile(parent, line);
                     return true;
             }
         }
-        return false;
     }
 
 
