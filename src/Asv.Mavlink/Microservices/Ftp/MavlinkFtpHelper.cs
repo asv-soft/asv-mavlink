@@ -3,11 +3,8 @@ using System.Buffers;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using System.Text;
-using Asv.IO;
 using Asv.Mavlink.V2.Common;
-using DotNext.Text;
 
 namespace Asv.Mavlink;
 
@@ -22,9 +19,63 @@ public static class MavlinkFtpHelper
     public const string SpecialPathCurrent = ".";
     public const string SpecialPathBack = "..";
     public static readonly ImmutableHashSet<string> IgnorePaths = new[] {SpecialPathCurrent, SpecialPathBack}.ToImmutableHashSet();
-    public static readonly FtpDirectory Root = new( string.Empty);
-    public static readonly FtpDirectory Sys = new( "@SYS");
-    public const string ParamFile = "@PARAM/param.pck?withdefaults=1";
+    
+    public static void CheckFilePath(string path)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        if (FtpEncoding.GetByteCount(path) > MaxDataSize)
+        {
+            throw new ArgumentOutOfRangeException(nameof(path), $"Max path size is {MaxDataSize}");
+        }
+    }
+
+    public static void CheckFolderPath(string path)
+    {
+        if (FtpEncoding.GetByteCount(path) > MaxDataSize)
+        {
+            throw new ArgumentOutOfRangeException(nameof(path), $"Max path size is {MaxDataSize}");
+        }
+    }
+
+    public static bool IsRootPath(ReadOnlySpan<char> path) => path.Trim() is [DirectorySeparator];
+
+    public static IFtpEntry CreateFtpDirectoryFromPath(string path)
+    {
+        var span = path.AsSpan();
+        if (IsRootPath(span))
+        {
+            return new FtpDirectory(string.Empty);
+        }
+        span = span.TrimEnd(DirectorySeparator);
+        var index = span.LastIndexOf(DirectorySeparator);
+        return index == -1 
+            ? new FtpDirectory(span.ToString()) 
+            : new FtpDirectory(span[(index + 1)..].ToString(), span[..index].ToString());
+    }
+    public static bool ParseFtpEntry(ref SequenceReader<char> rdr, string parentPath, out IFtpEntry? entry)
+    {
+        entry = null;
+        while (true)
+        {
+            if (rdr.TryReadTo(out ReadOnlySpan<char> line, PathSeparator) == false) return false;
+            if (line.IsEmpty) continue;
+            switch (line[0])
+            {
+                case DirectoryChar:
+                    line = line[1..];
+                    if (line.IsEmpty) continue;
+                    entry = new FtpDirectory(line.Trim().ToString(),parentPath);
+                    return true;
+                case FileChar:
+                    line = line[1..];
+                    if (line.IsEmpty) continue;
+                    var tabIndex = line.IndexOf(FileSizeSeparator);
+                    if (tabIndex == -1) continue;
+                    entry = new FtpFile(line[..tabIndex].Trim(DirectorySeparator).ToString(), uint.Parse(line[(tabIndex + 1)..]),parentPath);
+                    return true;
+            }
+        }
+    }
     
     public static Encoding FtpEncoding { get; } = Encoding.ASCII;
     
@@ -284,22 +335,7 @@ public static class MavlinkFtpHelper
         };
     }
 
-    public static void CheckFilePath(string path)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(path);
-        if (FtpEncoding.GetByteCount(path) > MaxDataSize)
-        {
-            throw new ArgumentOutOfRangeException(nameof(path), $"Max path size is {MaxDataSize}");
-        }
-    }
-
-    public static void CheckFolderPath(string path)
-    {
-        if (FtpEncoding.GetByteCount(path) > MaxDataSize)
-        {
-            throw new ArgumentOutOfRangeException(nameof(path), $"Max path size is {MaxDataSize}");
-        }
-    }
+    
 }
 
 /// <summary>

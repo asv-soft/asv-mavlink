@@ -13,60 +13,40 @@ namespace Asv.Mavlink;
 
 public class FtpDirectory : IFtpEntry
 {
-    
-    
-    public FtpDirectory(string name)
+    public FtpDirectory(string name, string parentPath)
     {
-        ParentId = string.Empty;
+        ParentPath = parentPath;
         Name = name;
-        Id = $"{Name}{MavlinkFtpHelper.DirectorySeparator}";
-        Level = 0;
+        Path = $"{ParentPath}{Name}{MavlinkFtpHelper.DirectorySeparator}";
     }
-
-    public int Level { get;  }
-
-    public FtpDirectory(ReadOnlySpan<char> data,IFtpEntry parent)
+    public FtpDirectory(string name)
+        :this(name,string.Empty)
     {
-        Name =  data.Trim(MavlinkFtpHelper.DirectorySeparator).ToString();
-        ParentId = parent.Id;
-        Id = $"{ParentId}{Name}{MavlinkFtpHelper.DirectorySeparator}";
-        Level = parent.Level + 1;
+        
     }
-
     
-    public string ParentId { get; }
-    public string Id { get; }
+    public string ParentPath { get; }
+    public string Path { get; }
     public string Name { get; }
     public FtpEntryType Type => FtpEntryType.Directory;
-    public uint Size { get; } = 0;
 
-    public override string ToString()
-    {
-        return Id;
-    }
+    public override string ToString() => $"[D] {Path}";
 }
 public class FtpFile : IFtpEntry
 {
-    public FtpFile(IFtpEntry parent, ReadOnlySpan<char> data)
+    public FtpFile(string name, uint size, string parentPath)
     {
-        var tabIndex = data.IndexOf(MavlinkFtpHelper.FileSizeSeparator);
-        Name = data[..tabIndex].Trim(MavlinkFtpHelper.DirectorySeparator).ToString();
-        Size = uint.Parse(data[(tabIndex + 1)..]);
-        ParentId = parent.Id;
-        Id = $"{ParentId}{Name}";
-        Level = parent.Level + 1;
+        Name = name;
+        Size = size;
+        ParentPath = parentPath;
+        Path = $"{ParentPath}{Name}";
     }
-    public string ParentId { get; }
-    public string Id { get; }
+    public string ParentPath { get; }
+    public string Path { get; }
     public string Name { get; }
     public FtpEntryType Type => FtpEntryType.File;
     public uint Size { get; }
-    public int Level { get; }
-
-    public override string ToString()
-    {
-        return Id;
-    }
+    public override string ToString() => $"[F] {Path} (size: {Size})";
 }
 
 public class FtpClientEx : IFtpClientEx
@@ -78,17 +58,16 @@ public class FtpClientEx : IFtpClientEx
     {
         _logger = logger ?? NullLogger.Instance;
         Base = @base;
-        _entryCache = new SourceCache<IFtpEntry, string>(x => x.Id);
-        _entryCache.AddOrUpdate(MavlinkFtpHelper.Root);
+        _entryCache = new SourceCache<IFtpEntry, string>(x => x.Path);
     }
 
-    public IFtpEntry RootEntry => MavlinkFtpHelper.Root;
     public IFtpClient Base { get; }
     public IObservable<IChangeSet<IFtpEntry, string>> Entries => _entryCache.Connect();
 
-    public async Task RefreshEntries(IFtpEntry entry, bool recursive = true, CancellationToken cancel = default)
+    public async Task Refresh(string path, bool recursive = true, CancellationToken cancel = default)
     {
-        if (MavlinkFtpHelper.IgnorePaths.Contains(entry.Name)) return;
+        var currentEntry = MavlinkFtpHelper.CreateFtpDirectoryFromPath(path);
+        _entryCache.AddOrUpdate(currentEntry);
         var offset = 0U;
         var parsedItems = new List<IFtpEntry>();
         var array = ArrayPool<char>.Shared.Rent(MavlinkFtpHelper.FtpEncoding.GetMaxCharCount(MavlinkFtpHelper.MaxDataSize));
@@ -99,17 +78,17 @@ public class FtpClientEx : IFtpClientEx
                 try
                 {
                     byte charSize;
-                    if (entry == MavlinkFtpHelper.Root)
+                    if (MavlinkFtpHelper.IsRootPath(path))
                     {
-                        charSize = await Base.ListDirectory(entry.Id, offset, array, cancel).ConfigureAwait(false);
+                        charSize = await Base.ListDirectory(path, offset, array, cancel).ConfigureAwait(false);
                     }
                     else
                     {
-                        charSize = await Base.ListDirectory(entry.Id.TrimEnd(MavlinkFtpHelper.DirectorySeparator), offset, array, cancel).ConfigureAwait(false);    
+                        charSize = await Base.ListDirectory(path.TrimEnd(MavlinkFtpHelper.DirectorySeparator), offset, array, cancel).ConfigureAwait(false);    
                     }
                     
                     var seq = new ReadOnlySequence<char>(array, 0, charSize);
-                    offset += ParseEntries(entry,seq,parsedItems);
+                    offset += ParseEntries(currentEntry.Path, seq, parsedItems);
                 }
                 catch (FtpEndOfFileException)
                 {
@@ -121,58 +100,69 @@ public class FtpClientEx : IFtpClientEx
         {
             ArrayPool<char>.Shared.Return(array);
         }
-
+        
         if (recursive)
         {
             foreach (var item in parsedItems)
             {
-                await RefreshEntries(item,recursive, cancel).ConfigureAwait(false);
+                await Refresh(item.Path,recursive, cancel).ConfigureAwait(false);
             }    
         }
         
     }
 
-    private uint ParseEntries(IFtpEntry entry, ReadOnlySequence<char> data, List<IFtpEntry> parsedDirectoryItems)
+    private uint ParseEntries(string parentPath, ReadOnlySequence<char> data, List<IFtpEntry> parsedDirectoryItems)
     {
         var rdr = new SequenceReader<char>(data);
         var count = 0U;
-        while (ParseEntry(entry,ref rdr, out var parsed))
+        while (MavlinkFtpHelper.ParseFtpEntry(ref rdr,parentPath, out var entry))
         {
             count++;
-            Debug.Assert(parsed != null);
-            _entryCache.AddOrUpdate(parsed);
-            if (parsed.Type == FtpEntryType.Directory)
+            Debug.Assert(entry != null);
+            if (MavlinkFtpHelper.IgnorePaths.Contains(entry.Name)) continue;
+            _entryCache.AddOrUpdate(entry);
+            if (entry.Type == FtpEntryType.Directory)
             {
-                parsedDirectoryItems.Add(parsed);
+                parsedDirectoryItems.Add(entry);
             }
         }
         return count;
     }
 
-    private static bool ParseEntry(IFtpEntry parent,ref SequenceReader<char> rdr, out IFtpEntry? entry)
+    public async Task DownloadFile(string filePath, IBufferWriter<byte> streamToSave, IProgress<double>? progress = null, CancellationToken cancel = default)
     {
-        entry = null;
-        while (true)
+        progress ??= new Progress<double>();
+        var file = await Base.OpenFileRead(filePath, cancel).ConfigureAwait(false);
+        var skip = 0;
+        var take = MavlinkFtpHelper.MaxDataSize;
+        progress.Report(0);
+        try
         {
-            if (rdr.TryReadTo(out ReadOnlySpan<char> line, MavlinkFtpHelper.PathSeparator) == false) return false;
-            if (line.Length == 0) continue;
-            switch (line[0])
+            while (true)
             {
-                case MavlinkFtpHelper.DirectoryChar:
-                    line = line[1..];
-                    if (line.Length == 0) continue;
-                    entry = new FtpDirectory(line,parent);
-                    return true;
-                case MavlinkFtpHelper.FileChar:
-                    line = line[1..];
-                    if (line.Length == 0) continue;
-                    entry = new FtpFile(parent, line);
-                    return true;
+                if (file.Size - skip < take)
+                {
+                    take = (byte)(file.Size - skip);
+                }
+                var request = new ReadRequest(file.Session, (uint)skip, take);
+                try
+                {
+                    var result = await Base.ReadFile(request, streamToSave, cancel).ConfigureAwait(false);
+                    skip += result.ReadCount;
+                    progress.Report((double)skip / file.Size);
+                    
+                }
+                catch (FtpEndOfFileException e)
+                {
+                    break;
+                }
             }
         }
+        finally
+        {
+            await Base.TerminateSession(file.Session, cancel).ConfigureAwait(false);
+        }
     }
-
-
     public async Task DownloadFile(string filePath,Stream streamToSave, IProgress<double>? progress = null, CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();

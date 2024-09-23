@@ -35,12 +35,10 @@ public class FtpCommand:ConsoleCommand
         var ftpEx = new FtpClientEx(ftpClient);
         try
         {
-            await ftpEx.RefreshEntries(MavlinkFtpHelper.Root);
-            await ftpEx.RefreshEntries(MavlinkFtpHelper.Sys);
-            using var mem = File.OpenWrite("params.txt"); 
-            await ftpEx.DownloadFile(MavlinkFtpHelper.ParamFile, mem );
-            
-            
+            await ftpEx.Refresh("/");
+            await ftpEx.Refresh("@SYS");
+            await using var mem = File.OpenWrite("params.txt"); 
+            await ftpEx.DownloadFile("@PARAM/param.pck?withdefaults=1", mem );
         }
         catch (Exception e)
         {

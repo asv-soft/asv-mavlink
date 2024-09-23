@@ -15,22 +15,21 @@ public enum FtpEntryType
 
 public interface IFtpEntry
 {
-    string ParentId { get; }
-    string Id { get; }
+    string ParentPath { get; }
+    string Path { get; }
     string Name { get; }
     FtpEntryType Type { get; }
-    uint Size { get; }
-    int Level { get;  }
 }
 
 
 
 public interface IFtpClientEx
 {
-    IFtpEntry RootEntry { get; }
     IFtpClient Base { get; }
     IObservable<IChangeSet<IFtpEntry,string>> Entries { get; }
-    Task RefreshEntries(IFtpEntry entry, bool recursive = true, CancellationToken cancel = default);
+    Task Refresh(string path, bool recursive = true, CancellationToken cancel = default);
     Task DownloadFile(string filePath, Stream streamToSave, IProgress<double>? progress = null,
+        CancellationToken cancel = default);
+    Task DownloadFile(string filePath, IBufferWriter<byte> streamToSave, IProgress<double>? progress = null,
         CancellationToken cancel = default);
 }

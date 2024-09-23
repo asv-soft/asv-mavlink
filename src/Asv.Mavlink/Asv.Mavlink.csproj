@@ -16,7 +16,7 @@
     <RepositoryUrl>https://github.com/asv-soft/asv-mavlink</RepositoryUrl>
     <PackageTags>mavlink;drone;PX4;Ardupilot;.net</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>Mavlink library for .NET 6.0, .NET 7.0 for vehicle control Px4, Ardupilot </Description>
+    <Description>Mavlink .NET library for vehicle control Px4, Ardupilot </Description>
     <PackageIcon>asv-mavlink-128.png</PackageIcon>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -24,36 +24,9 @@
     <Platforms>AnyCPU</Platforms>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net5.0|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net461|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net461|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5.0|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Release\Asv.Mavlink.xml</DocumentationFile>
-    <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
-  </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Asv.Cfg" Version="$(AsvCommonVersion)" />
     <PackageReference Include="Asv.Common" Version="$(AsvCommonVersion)" />
@@ -65,8 +38,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Geodesy" Version="4.1.0" />
-    <PackageReference Include="DotNext.IO" Version="5.13.0" />
-  </ItemGroup>
+      </ItemGroup>
   <ItemGroup>
     <Compile Update="RS.Designer.cs">
       <DesignTime>True</DesignTime>
