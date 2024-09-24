@@ -28,8 +28,9 @@ public static class MavlinkFtpHelper
             throw new ArgumentOutOfRangeException(nameof(path), $"Max path size is {MaxDataSize}");
         }
     }
+    
 
-    public static void CheckFolderPath(string path)
+    public static void CheckFolderPath(ReadOnlySpan<char> path)
     {
         if (FtpEncoding.GetByteCount(path) > MaxDataSize)
         {
@@ -173,6 +174,12 @@ public static class MavlinkFtpHelper
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool ReadBurstComplete(this FileTransferProtocolPacket packet)
+    {
+        return packet.Payload.Payload[6] != 0;
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WritePadding(this FileTransferProtocolPacket packet, in byte padding)
     {
         packet.Payload.Payload[7] = padding;
@@ -286,7 +293,7 @@ public static class MavlinkFtpHelper
         return (byte)FtpEncoding.GetChars(span, data);
     }
     
-    public static void WriteDataAsString(this FileTransferProtocolPacket packet,string value)
+    public static void WriteDataAsString(this FileTransferProtocolPacket packet,ReadOnlySpan<char> value)
     {
         var byteSize = FtpEncoding.GetByteCount(value);
         var pathArray = ArrayPool<byte>.Shared.Rent(byteSize);

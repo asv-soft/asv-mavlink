@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Asv.Mavlink;
 
-public delegate Task<OpenReadResult> OpenFileReadDelegate(string path, CancellationToken cancel = default);
+public delegate Task<ReadHandle> OpenFileReadDelegate(string path, CancellationToken cancel = default);
 public delegate Task<ReadResult> FileReadDelegate(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default);
 public delegate Task TerminateSessionDelegate(byte session, CancellationToken cancel = default);
 

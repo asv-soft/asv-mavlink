@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Asv.Mavlink.Shell
 {
-    public class TextRender
+    public static class TextRender
     {
         /// <summary>
         /// Example: ██████░░░░░░ 50%")]

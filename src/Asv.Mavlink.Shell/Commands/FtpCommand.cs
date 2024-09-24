@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Common;
 using Asv.IO;
 using ManyConsole;
 
@@ -9,7 +10,7 @@ namespace Asv.Mavlink.Shell;
 
 public class FtpCommand:ConsoleCommand
 {
-    private string _connectionString = "tcp://127.0.0.1:5762";
+    private string _connectionString = "tcp://127.0.0.1:7343";
     private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
     public FtpCommand()
@@ -31,14 +32,17 @@ public class FtpCommand:ConsoleCommand
         using var conn = MavlinkV2Connection.Create(port);
         var identity = new MavlinkClientIdentity(255, 255, 1, 1);
         var seq = new PacketSequenceCalculator();
-        using var ftpClient = new FtpClient(new MavlinkFtpClientConfig(), conn,identity,seq );
+        using var ftpClient = new FtpClient(new MavlinkFtpClientConfig(), conn,identity,seq,TimeProvider.System);
         var ftpEx = new FtpClientEx(ftpClient);
         try
         {
+            /*
             await ftpEx.Refresh("/");
             await ftpEx.Refresh("@SYS");
-            await using var mem = File.OpenWrite("params.txt"); 
-            await ftpEx.DownloadFile("@PARAM/param.pck?withdefaults=1", mem );
+            */
+            await using var mem = File.OpenWrite("test.txt");
+            await ftpEx.BurstDownloadFile("@PARAM/param.pck?withdefaults=1", mem, new CallbackProgress<double>(Console.WriteLine) );
+            //await ftpEx.BurstDownloadFile("/terrain/test.txt", mem, new CallbackProgress<double>(Console.WriteLine) );
         }
         catch (Exception e)
         {

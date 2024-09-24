@@ -33,7 +33,7 @@ public class FtpMicroserviceTest
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
 
         var clientSeq = new PacketSequenceCalculator();
-        client = new FtpClient(new MavlinkFtpClientConfig(), link.Client, clientId, clientSeq,
+        client = new FtpClient(new MavlinkFtpClientConfig(), link.Client, clientId, clientSeq, TimeProvider.System,
             TaskPoolScheduler.Default,new TestLogger(_output,"CLIENT"));
 
         var serverSeq = new PacketSequenceCalculator();
@@ -51,7 +51,7 @@ public class FtpMicroserviceTest
         {
             Assert.Equal(originPath,path);
             called++;
-            return Task.FromResult(new OpenReadResult(originSession,originFileSize));
+            return Task.FromResult(new ReadHandle(originSession,originFileSize));
         };
 
         var result = await client.OpenFileRead(originPath);
@@ -72,7 +72,7 @@ public class FtpMicroserviceTest
         {
             Assert.Equal(originPath,path);
             called++;
-            return Task.FromResult(new OpenReadResult(originSession,originFileSize));
+            return Task.FromResult(new ReadHandle(originSession,originFileSize));
         };
 
         var result = await client.OpenFileRead(originPath);

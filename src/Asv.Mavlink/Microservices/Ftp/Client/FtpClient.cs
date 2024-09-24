@@ -1,6 +1,7 @@
 using System;
 using System.Buffers;
 using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -16,31 +17,104 @@ public class MavlinkFtpClientConfig
     public int TimeoutMs { get; set; } = 500;
     public int CommandAttemptCount { get; set; } = 6;
     public byte TargetNetworkId { get; set; } = 0;
+    public int BurstTimeoutMs { get; set; } = 1000;
 }
 
 public class FtpClient : MavlinkMicroserviceClient, IFtpClient
 {
     private readonly MavlinkFtpClientConfig _config;
+    private readonly TimeProvider _timeProvider;
     private readonly ILogger _logger;
     private uint _sequence;
+    private readonly TimeSpan _burstTimeout;
 
     public FtpClient(
         MavlinkFtpClientConfig config,
         IMavlinkV2Connection connection,
         MavlinkClientIdentity identity, 
         IPacketSequenceCalculator seq,
+        TimeProvider timeProvider,
         IScheduler? scheduler = null,
         ILogger? logger = null
     ):base("FTP",connection,identity,seq,scheduler,logger)
     {
         _config = config;
+        _timeProvider = timeProvider;
         _logger = logger ?? NullLogger.Instance;
-        /*connection
-            .FilterVehicle(identity)
-            .Filter<FileTransferProtocolPacket>()
-            .Subscribe(x=>Interlocked.Exchange(ref _sequence, (uint)x.ReadOpcode()))
-            .DisposeItWith(Disposable);*/
+        _burstTimeout = TimeSpan.FromMilliseconds(config.BurstTimeoutMs);
     }
+
+    public async Task BurstReadFile(ReadRequest request, Action<FileTransferProtocolPacket> onBurstData, CancellationToken cancel = default)
+    {
+        if (request.Take > MavlinkFtpHelper.MaxDataSize)
+        {
+            throw new ArgumentOutOfRangeException(nameof(request.Take), $"Max data size is {MavlinkFtpHelper.MaxDataSize}");
+        }
+        var totalRead = 0U;
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.BurstReadFile:G} {request}");
+        
+        var tcs = new TaskCompletionSource();
+        await using var tcsCancel = cancel.Register(() => tcs.TrySetCanceled());
+        
+        // create timer to check if we skip burst complete packet
+        var lastUpdate = _timeProvider.GetTimestamp();
+        await using var timer = _timeProvider.CreateTimer(x=>
+        {
+            if (_timeProvider.GetElapsedTime(lastUpdate) <= _burstTimeout) return;
+            _logger.ZLogWarning($"Timeout while burst read {request} but not received burst complete packet.");
+            tcs.TrySetResult();
+        },null,_burstTimeout,_burstTimeout);
+        
+        using var stream = InternalFilteredVehiclePackets
+            .Filter<FileTransferProtocolPacket>()
+            .Where(p => p.ReadSession() == request.Session && p.ReadOriginOpCode() == FtpOpcode.BurstReadFile)
+            .Subscribe(x =>
+            {
+                lastUpdate = _timeProvider.GetTimestamp();
+                try
+                {
+                    InternalCheckNack(x,_logger);
+                }
+                catch (FtpNackEndOfFileException e)
+                {
+                    tcs.SetResult();
+                    return;
+                }
+                catch (Exception e)
+                {
+                    tcs.TrySetException(e);
+                    return;
+                }
+                onBurstData(x);
+                if (x.ReadBurstComplete())
+                {
+                    _logger.ZLogInformation($"{LogRecv} {FtpOpcode.BurstReadFile:G}({request}): burst read complete (read {totalRead} bytes)");
+                    tcs.TrySetResult();
+                }
+            });
+        await InternalFtpCall(FtpOpcode.BurstReadFile,p =>
+        {
+            p.WriteSession(request.Session);
+            p.WriteSize(request.Take);
+            p.WriteOffset(request.Skip);
+        }, cancel, request.Session).ConfigureAwait(false);
+        
+        
+        // https://mavlink.io/en/services/ftp.html#reading-a-file-burstreadfile
+        // ACK on success. The payload must specify fields: session = file session id, size = 4, data = length of file in burst.
+        // but Ardupilot doesn't send ACK
+        // here we just read first stream packet
+        /*var resultSize = result.ReadDataAsUint();
+        var size = result.ReadSize();
+        if (size != 4)
+            throw new FtpException("Unexpected result to BurstReadFile: ACK must be 4 byte length");*/
+
+        await tcs.Task.ConfigureAwait(false);  
+        
+        
+    }
+    
+   
     
     public Task TerminateSession(byte session, CancellationToken cancel = default)
     {
@@ -48,9 +122,7 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         return InternalFtpCall(FtpOpcode.TerminateSession,p => p.WriteSession(session), cancel);
     }
 
-    #region ListDirectory
-
-    private async Task<FileTransferProtocolPacket> InternalListDirectory(string path, uint offset, CancellationToken cancel = default)
+    public async Task<FileTransferProtocolPacket> ListDirectory(string path, uint offset, CancellationToken cancel = default)
     {
         MavlinkFtpHelper.CheckFolderPath(path);
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.ListDirectory:G}({path})");
@@ -62,29 +134,10 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _logger.ZLogInformation($"{LogRecv} {FtpOpcode.ListDirectory:G}({path}): read={result.ReadSize()}");
         return result;
     }
-    public async Task<byte> ListDirectory(string path, uint offset, IBufferWriter<byte> buffer, CancellationToken cancel = default)
-    {
-        var result = await InternalListDirectory(path, offset, cancel).ConfigureAwait(false);
-        return result.ReadData(buffer);
-    }
 
-    public async Task<byte> ListDirectory(string path, uint offset, IBufferWriter<char> buffer, CancellationToken cancel = default)
-    {
-        var result = await InternalListDirectory(path, offset, cancel).ConfigureAwait(false);
-        return result.ReadDataAsString(buffer);
-    }
+  
 
-    public async Task<byte> ListDirectory(string path, uint offset, Memory<char> buffer, CancellationToken cancel = default)
-    {
-        var result = await InternalListDirectory(path, offset, cancel).ConfigureAwait(false);
-        return result.ReadDataAsString(buffer);
-    }
-
-    #endregion
-
-    #region ReadFile
-
-    private async Task<FileTransferProtocolPacket> InternalReadFile(ReadRequest request, CancellationToken cancel = default)
+    public async Task<FileTransferProtocolPacket> ReadFile(ReadRequest request, CancellationToken cancel = default)
     {
         if (request.Take > MavlinkFtpHelper.MaxDataSize)
         {
@@ -100,23 +153,8 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _logger.ZLogTrace($"{LogRecv} {FtpOpcode.ReadFile:G}({request}): read={result.ReadSize()}");
         return result;
     }
-
-    public async Task<ReadResult> ReadFile(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default)
-    {
-        var result = await InternalReadFile(request, cancel).ConfigureAwait(false);
-        var readCount = result.ReadData(buffer);
-        return new ReadResult(readCount, request);
-    }
-    public async Task<ReadResult> ReadFile(ReadRequest request, IBufferWriter<byte> buffer, CancellationToken cancel = default)
-    {
-        var result = await InternalReadFile(request, cancel).ConfigureAwait(false);
-        var readCount = result.ReadData(buffer);
-        return new ReadResult(readCount, request);
-    }
-
-    #endregion
     
-    public async Task<OpenReadResult> OpenFileRead(string path,CancellationToken cancel = default)
+    public async Task<ReadHandle> OpenFileRead(string path,CancellationToken cancel = default)
     {
         MavlinkFtpHelper.CheckFilePath(path);
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.OpenFileRO:G}({path})"); 
@@ -133,9 +171,9 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         var sessionId = result.ReadSession();
         var fileSize = result.ReadDataAsUint();
         _logger.ZLogInformation($"{LogRecv} {FtpOpcode.OpenFileRO:G}({path}): session={sessionId}, size={fileSize}, '{path}'={fileSize}");
-        return new OpenReadResult(sessionId,fileSize); 
+        return new ReadHandle(sessionId,fileSize); 
     }
-    private async Task<FileTransferProtocolPacket> InternalFtpCall(FtpOpcode opCode,Action<FileTransferProtocolPacket> fillPacket, CancellationToken cancel, byte? filterSession = null)
+    private async Task<FileTransferProtocolPacket> InternalFtpCall(FtpOpcode opCode,Action<FileTransferProtocolPacket> fillPacket, CancellationToken cancel, byte? filterSession = null, Func<FileTransferProtocolPacket,bool>? additionalFilter = null)
     {
         var result = await InternalCall<FileTransferProtocolPacket,FileTransferProtocolPacket, FileTransferProtocolPacket>(p =>
             {
@@ -145,9 +183,14 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
                 p.Payload.TargetNetwork = _config.TargetNetworkId;
                 p.WriteSequenceNumber(NextSequence());
                 p.WriteOpcode(opCode);
-            }, filter:p=> filterSession.HasValue
-                ? p.ReadSession() == filterSession.Value && (p.ReadOpcode() == FtpOpcode.Ack || p.ReadOpcode() == FtpOpcode.Nak) && p.ReadOriginOpCode() == opCode
-                : (p.ReadOpcode() == FtpOpcode.Ack || p.ReadOpcode() == FtpOpcode.Nak) && p.ReadOriginOpCode() == opCode,
+            }, filter:p=>
+            {
+                if (p.ReadOpcode() != FtpOpcode.Ack && p.ReadOpcode() != FtpOpcode.Nak) return false;
+                if (p.ReadOriginOpCode() != opCode) return false;
+                if (filterSession != null && p.ReadSession() != filterSession) return false;
+                if (additionalFilter != null && !additionalFilter(p)) return false;
+                return true;
+            },
             resultGetter: p =>p, 
             timeoutMs: _config.TimeoutMs, 
             attemptCount: _config.CommandAttemptCount, 
@@ -173,7 +216,7 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         if (error == NackError.EOF)
         {
             logger.ZLogInformation($"Receive EOF to {originOpCode}");
-            throw new FtpEndOfFileException(originOpCode);
+            throw new FtpNackEndOfFileException(originOpCode);
         }
         if (size == 2 && error == NackError.FailErrno)
         {

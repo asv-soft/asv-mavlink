@@ -3,59 +3,28 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Mavlink.V2.Common;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class FtpDirectory : IFtpEntry
-{
-    public FtpDirectory(string name, string parentPath)
-    {
-        ParentPath = parentPath;
-        Name = name;
-        Path = $"{ParentPath}{Name}{MavlinkFtpHelper.DirectorySeparator}";
-    }
-    public FtpDirectory(string name)
-        :this(name,string.Empty)
-    {
-        
-    }
-    
-    public string ParentPath { get; }
-    public string Path { get; }
-    public string Name { get; }
-    public FtpEntryType Type => FtpEntryType.Directory;
-
-    public override string ToString() => $"[D] {Path}";
-}
-public class FtpFile : IFtpEntry
-{
-    public FtpFile(string name, uint size, string parentPath)
-    {
-        Name = name;
-        Size = size;
-        ParentPath = parentPath;
-        Path = $"{ParentPath}{Name}";
-    }
-    public string ParentPath { get; }
-    public string Path { get; }
-    public string Name { get; }
-    public FtpEntryType Type => FtpEntryType.File;
-    public uint Size { get; }
-    public override string ToString() => $"[F] {Path} (size: {Size})";
-}
-
 public class FtpClientEx : IFtpClientEx
 {
+    private readonly TimeProvider _timeProvider;
     private readonly ILogger _logger;
     private readonly SourceCache<IFtpEntry,string> _entryCache;
+    private static readonly TimeSpan DefaultBurstTimeout = TimeSpan.FromSeconds(5);
     
-    public FtpClientEx(IFtpClient @base, ILogger? logger = null)
+    public FtpClientEx(IFtpClient @base,TimeProvider? timeProvider = null, ILogger? logger = null)
     {
+        _timeProvider = timeProvider ?? TimeProvider.System;
         _logger = logger ?? NullLogger.Instance;
         Base = @base;
         _entryCache = new SourceCache<IFtpEntry, string>(x => x.Path);
@@ -64,6 +33,70 @@ public class FtpClientEx : IFtpClientEx
     public IFtpClient Base { get; }
     public IObservable<IChangeSet<IFtpEntry, string>> Entries => _entryCache.Connect();
 
+    public async Task BurstDownloadFile(string filePath,Stream streamToSave, IProgress<double>? progress = null, byte partSize = MavlinkFtpHelper.MaxDataSize, CancellationToken cancel = default)
+    {
+        if (partSize > MavlinkFtpHelper.MaxDataSize)
+        {
+            throw new ArgumentOutOfRangeException(nameof(partSize), $"Max data size is {MavlinkFtpHelper.MaxDataSize}");
+        }
+        progress ??= new Progress<double>();
+        var file = await Base.OpenFileRead(filePath, cancel).ConfigureAwait(false);
+        var total = 0U;
+        progress.Report(0);
+        
+        
+        var offsetsToRead = new HashSet<uint>((int)(file.Size / partSize +1));
+        for (var i = 0; i < file.Size; i+=partSize)
+        {
+            offsetsToRead.Add((uint)i);
+        }
+        var buffer = ArrayPool<byte>.Shared.Rent(partSize);
+        try
+        {
+            // start burst read
+            await Base.BurstReadFile(new ReadRequest(file.Session, 0, partSize), p =>
+            {
+                lock (buffer)
+                {
+                    var offset = p.ReadOffset();
+                    Debug.Assert(offsetsToRead.Remove(offset));
+                    var size = p.ReadSize();
+                    p.ReadData(buffer);
+                    progress.Report(Interlocked.Add(ref total, size) / (double)file.Size);
+                    streamToSave.Position = offset;
+                    streamToSave.Write(buffer, 0, size);
+                }
+            }, cancel).ConfigureAwait(false);
+           
+            // check if we skip some data
+            if (offsetsToRead.Count > 0)
+            {
+                _logger.ZLogWarning($"Burst read file {filePath} failed some packets (cnt {offsetsToRead.Count}). Try to read manually");
+                foreach (var offset in offsetsToRead)
+                {
+                    var request = new ReadRequest(file.Session, offset, partSize);
+                    try
+                    {
+                        var result2 = await Base.ReadFile(request, buffer, cancel).ConfigureAwait(false);
+                        streamToSave.Position = offset;
+                        await streamToSave.WriteAsync(buffer, 0, result2.ReadCount, cancel).ConfigureAwait(false);
+                        progress.Report(Interlocked.Add(ref total,result2.ReadCount)/(double)file.Size);
+                    }
+                    catch (FtpNackEndOfFileException)
+                    {
+                        break;
+                    }
+                }
+            }
+            progress.Report(1);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+            await Base.TerminateSession(file.Session, cancel).ConfigureAwait(false);
+        }
+    }
+    
     public async Task Refresh(string path, bool recursive = true, CancellationToken cancel = default)
     {
         var currentEntry = MavlinkFtpHelper.CreateFtpDirectoryFromPath(path);
@@ -80,17 +113,19 @@ public class FtpClientEx : IFtpClientEx
                     byte charSize;
                     if (MavlinkFtpHelper.IsRootPath(path))
                     {
+                        // special case for root path: we don't need to trim '/' on root path
                         charSize = await Base.ListDirectory(path, offset, array, cancel).ConfigureAwait(false);
                     }
                     else
                     {
+                        // path must be trimmed to avoid '/' at the end: e.g. /log/ -> /log
                         charSize = await Base.ListDirectory(path.TrimEnd(MavlinkFtpHelper.DirectorySeparator), offset, array, cancel).ConfigureAwait(false);    
                     }
                     
                     var seq = new ReadOnlySequence<char>(array, 0, charSize);
                     offset += ParseEntries(currentEntry.Path, seq, parsedItems);
                 }
-                catch (FtpEndOfFileException)
+                catch (FtpNackEndOfFileException)
                 {
                     break;
                 }
@@ -129,7 +164,8 @@ public class FtpClientEx : IFtpClientEx
         return count;
     }
 
-    public async Task DownloadFile(string filePath, IBufferWriter<byte> streamToSave, IProgress<double>? progress = null, CancellationToken cancel = default)
+    
+    public async Task DownloadFile(string filePath, IBufferWriter<byte> bufferToSave, IProgress<double>? progress = null, CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();
         var file = await Base.OpenFileRead(filePath, cancel).ConfigureAwait(false);
@@ -147,12 +183,12 @@ public class FtpClientEx : IFtpClientEx
                 var request = new ReadRequest(file.Session, (uint)skip, take);
                 try
                 {
-                    var result = await Base.ReadFile(request, streamToSave, cancel).ConfigureAwait(false);
+                    var result = await Base.ReadFile(request, bufferToSave, cancel).ConfigureAwait(false);
                     skip += result.ReadCount;
                     progress.Report((double)skip / file.Size);
                     
                 }
-                catch (FtpEndOfFileException e)
+                catch (FtpNackEndOfFileException e)
                 {
                     break;
                 }
@@ -163,6 +199,9 @@ public class FtpClientEx : IFtpClientEx
             await Base.TerminateSession(file.Session, cancel).ConfigureAwait(false);
         }
     }
+    
+    
+    
     public async Task DownloadFile(string filePath,Stream streamToSave, IProgress<double>? progress = null, CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();
@@ -189,7 +228,7 @@ public class FtpClientEx : IFtpClientEx
                     progress.Report((double)skip / file.Size);
                     
                 }
-                catch (FtpEndOfFileException e)
+                catch (FtpNackEndOfFileException e)
                 {
                     break;
                 }

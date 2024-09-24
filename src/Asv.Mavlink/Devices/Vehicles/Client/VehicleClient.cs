@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Collections.Generic;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -44,7 +45,7 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
         Logging = new LoggingClient(connection, identity, seq,scheduler,logger).DisposeItWith(Disposable);
         var missions = new MissionClient(connection, identity, seq, _config.Missions,scheduler,logger).DisposeItWith(Disposable);
         Missions = new MissionClientEx(missions, _config.Missions, scheduler,logger).DisposeItWith(Disposable);
-        Ftp = new FtpClient(config.Ftp, connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
+        Ftp = new FtpClient(config.Ftp, connection, identity, seq, TimeProvider.System, scheduler,logger).DisposeItWith(Disposable);
         var gnss = new GnssClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
         Gnss = new GnssClientEx(gnss, scheduler,logger).DisposeItWith(Disposable);
         V2Extension = new V2ExtensionClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);

@@ -22,7 +22,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
     private readonly MavlinkFtpServerConfig _config;
     private readonly ILogger _logger;
     private ushort? _lastRoSequenceNumber;
-    private OpenReadResult _lastResult;
+    private ReadHandle _lastHandle;
 
     public FtpServer(
         MavlinkFtpServerConfig config,
@@ -181,15 +181,15 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         else
         {
             _logger.ZLogInformation($"{LogRecv}OpenFileRead({path})");
-            _lastResult = await OpenFileRead(path, DisposeCancel).ConfigureAwait(false);
-            _logger.ZLogInformation($"{LogSend}Success OpenFileRead({path}): session={_lastResult.Session}, size={_lastResult.Size}");
+            _lastHandle = await OpenFileRead(path, DisposeCancel).ConfigureAwait(false);
+            _logger.ZLogInformation($"{LogSend}Success OpenFileRead({path}): session={_lastHandle.Session}, size={_lastHandle.Size}");
             _lastRoSequenceNumber = sequenceNumber;
         }
           
         await InternalFtpReply(input,FtpOpcode.Ack, p =>
         {
-            p.WriteSession(_lastResult.Session);
-            p.WriteDataAsUint(_lastResult.Size);
+            p.WriteSession(_lastHandle.Session);
+            p.WriteDataAsUint(_lastHandle.Size);
         }).ConfigureAwait(false);
         
         

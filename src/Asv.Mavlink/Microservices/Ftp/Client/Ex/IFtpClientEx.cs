@@ -30,6 +30,6 @@ public interface IFtpClientEx
     Task Refresh(string path, bool recursive = true, CancellationToken cancel = default);
     Task DownloadFile(string filePath, Stream streamToSave, IProgress<double>? progress = null,
         CancellationToken cancel = default);
-    Task DownloadFile(string filePath, IBufferWriter<byte> streamToSave, IProgress<double>? progress = null,
+    Task DownloadFile(string filePath, IBufferWriter<byte> bufferToSave, IProgress<double>? progress = null,
         CancellationToken cancel = default);
 }
