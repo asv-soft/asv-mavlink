@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Text;
+using Asv.IO;
 using ManyConsole;
 
 namespace Asv.Mavlink.Shell
