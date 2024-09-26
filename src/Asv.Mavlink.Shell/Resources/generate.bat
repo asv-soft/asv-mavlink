@@ -1,1 +1,1 @@
-mavgen-net.exe gen -t=standard.xml -i=in -o=out -e=cs csharp.tpl
+Asv.Mavlink.Shell gen -t=standard.xml -i=in -o=out -e=cs csharp.tpl
