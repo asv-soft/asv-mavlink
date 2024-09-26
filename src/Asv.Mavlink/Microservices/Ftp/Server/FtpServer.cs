@@ -14,7 +14,6 @@ namespace Asv.Mavlink;
 public class MavlinkFtpServerConfig
 {
     public byte NetworkId { get; set; } = 0;
-    
 }
 
 public class FtpServer : MavlinkMicroserviceServer, IFtpServer
@@ -54,6 +53,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
                     InternalTerminateSession(input);
                     break;
                 case FtpOpcode.ResetSessions:
+                    InternalResetSessions();
                     break;
                 case FtpOpcode.ListDirectory:
                     break;
@@ -63,61 +63,126 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
                 case FtpOpcode.ReadFile:
                     InternalFileRead(input);
                     break;
-                case FtpOpcode.CreateFile:
-                    break;
-                case FtpOpcode.WriteFile:
+                case FtpOpcode.CreateDirectory:
+                    InternalCreateDirectory(input);
                     break;
                 case FtpOpcode.RemoveFile:
-                    break;
-                case FtpOpcode.CreateDirectory:
-                    break;
-                case FtpOpcode.RemoveDirectory:
-                    break;
-                case FtpOpcode.OpenFileWO:
-                    break;
-                case FtpOpcode.TruncateFile:
-                    break;
-                case FtpOpcode.Rename:
-                    break;
-                case FtpOpcode.CalcFileCRC32:
-                    break;
-                case FtpOpcode.BurstReadFile:
-                    break;
-                case FtpOpcode.Ack:
-                    break;
-                case FtpOpcode.Nak:
+                    InternalRemoveFile(input);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
         }
         catch (FtpNackException e)
         {
             if (e.FsErrorCode != null)
             {
-                await ReplyNackFailErrno(input,e.FsErrorCode.Value,e).ConfigureAwait(false);
+                await ReplyNackFailErrno(input, e.FsErrorCode.Value, e).ConfigureAwait(false);
             }
             else
             {
-                await ReplyNack(input,e.NackError,e).ConfigureAwait(false);
+                await ReplyNack(input, e.NackError, e).ConfigureAwait(false);
             }
         }
         catch (Exception e)
         {
-            await ReplyNack(input,NackError.Fail,e).ConfigureAwait(false);
+            await ReplyNack(input, NackError.Fail, e).ConfigureAwait(false);
         }
-        
     }
+
+    #region Remove Directory
+
+    public RemoveDirectory? RemoveDirectory { get; set; }
+
+    private async void InternalRemoveDirectory(FileTransferProtocolPacket input)
+    {
+        if (RemoveDirectory is null)
+        {
+            throw new FtpNackException(FtpOpcode.Nak, NackError.UnknownCommand);
+        }
+
+        var path = input.ReadDataAsString();
+        await RemoveDirectory(path).ConfigureAwait(false);
+        await InternalFtpReply(input, FtpOpcode.Ack, p =>
+        {
+            p.WriteSize(0);
+        }).ConfigureAwait(false);
+    }
+
+    #endregion
+    
+    #region RemoveFile
+
+    public RemoveFile? RemoveFile { get; set; }
+
+    private async void InternalRemoveFile(FileTransferProtocolPacket input)
+    {
+        if (RemoveFile is null)
+        {
+            throw new FtpNackException(FtpOpcode.RemoveFile, NackError.UnknownCommand);
+        }
+
+        var path = input.ReadDataAsString();
+        await RemoveFile(path).ConfigureAwait(false);
+        _logger.ZLogInformation($"{LogRecv} Removed file: ({path})");
+        await InternalFtpReply(input, FtpOpcode.Ack, p =>
+        {
+            p.WriteSize(0);
+        }).ConfigureAwait(false);
+    }
+    
+    #endregion
+
+    #region ResetSessions
+
+    public ResetSessionsDelegate? ResetSessions { get; set; }
+
+    private async void InternalResetSessions()
+    {
+        if (ResetSessions is null)
+        {
+            throw new FtpNackException(FtpOpcode.ResetSessions, NackError.UnknownCommand);
+        }
+        await ResetSessions().ConfigureAwait(false);
+        _logger.ZLogInformation($"{LogSend}Success to reset Sessions!)");
+    }
+
+    #endregion
+
+    #region CreateDirectory
+
+    public CreateDirectory? CreateDirectory { get; set; }
+
+    private async void InternalCreateDirectory(FileTransferProtocolPacket input)
+    {
+        var session = input.ReadSession();
+        var path = input.ReadDataAsString();
+        var size = input.ReadSize();
+        MavlinkFtpHelper.CheckFilePath(path);
+        if (size > MavlinkFtpHelper.MaxDataSize)
+        {
+            throw new FtpNackException(FtpOpcode.CreateDirectory, NackError.InvalidDataSize);
+        }
+        _logger.ZLogInformation($"{LogRecv} Create directory path: ({path})");
+        CreateDirectory = (directory, cancel) => Task.FromResult(new CreateHandle(session, directory));
+        await CreateDirectory(path).ConfigureAwait(false);
+        await InternalFtpReply(input, FtpOpcode.Ack, p =>
+        {
+            p.WriteSize(0);
+        }).ConfigureAwait(false);
+    }
+
+    #endregion
 
     #region TerminateSession
 
     public TerminateSessionDelegate? TerminateSession { get; set; }
+    
     private async void InternalTerminateSession(FileTransferProtocolPacket input)
     {
         if (TerminateSession == null)
         {
-            throw new FtpNackException(FtpOpcode.TerminateSession,NackError.UnknownCommand);
+            throw new FtpNackException(FtpOpcode.TerminateSession, NackError.UnknownCommand);
         }
         var session = input.ReadSession();
         _logger.ZLogInformation($"{LogRecv}TerminateSession(session={session})");
@@ -129,25 +194,30 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     #region FileRead
 
-    public FileReadDelegate? FileRead {private get; set; }
+    public FileReadDelegate? FileRead { private get; set; }
+
     private async void InternalFileRead(FileTransferProtocolPacket input)
     {
         if (FileRead == null)
         {
-            throw new FtpNackException(FtpOpcode.ReadFile,NackError.UnknownCommand);
+            throw new FtpNackException(FtpOpcode.ReadFile, NackError.UnknownCommand);
         }
+
         var size = input.ReadSize();
         var session = input.ReadSession();
         var offset = input.ReadOffset();
         if (size > MavlinkFtpHelper.MaxDataSize)
         {
-            throw new FtpNackException(FtpOpcode.ReadFile,NackError.InvalidDataSize);
+            throw new FtpNackException(FtpOpcode.ReadFile, NackError.InvalidDataSize);
         }
+
         _logger.ZLogTrace($"{LogRecv}ReadFile(session={session}, offset={offset}, size={size})");
         using var buffer = MemoryPool<byte>.Shared.Rent(size);
-        var result = await FileRead(new ReadRequest(session, offset, size),buffer.Memory, DisposeCancel).ConfigureAwait(false);
-        _logger.ZLogTrace($"{LogSend}Success ReadFile(session={session}, offset={offset}, size={size}): readCount={result.ReadCount}");
-        await InternalFtpReply(input,FtpOpcode.Ack, p =>
+        var result = await FileRead(new ReadRequest(session, offset, size), buffer.Memory, DisposeCancel)
+            .ConfigureAwait(false);
+        _logger.ZLogTrace(
+            $"{LogSend}Success ReadFile(session={session}, offset={offset}, size={size}): readCount={result.ReadCount}");
+        await InternalFtpReply(input, FtpOpcode.Ack, p =>
         {
             p.WriteSession(session);
             p.WriteSize(result.ReadCount);
@@ -162,12 +232,12 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
     #region OpenFileRead
 
     public OpenFileReadDelegate? OpenFileRead { private get; set; }
-    
+
     private async void InternalOpenFileRo(FileTransferProtocolPacket input)
     {
         if (OpenFileRead == null)
         {
-            throw new FtpNackException(FtpOpcode.OpenFileRO,NackError.UnknownCommand);
+            throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.UnknownCommand);
         }
         var path = input.ReadDataAsString();
         MavlinkFtpHelper.CheckFilePath(path);
@@ -182,17 +252,16 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         {
             _logger.ZLogInformation($"{LogRecv}OpenFileRead({path})");
             _lastHandle = await OpenFileRead(path, DisposeCancel).ConfigureAwait(false);
-            _logger.ZLogInformation($"{LogSend}Success OpenFileRead({path}): session={_lastHandle.Session}, size={_lastHandle.Size}");
+            _logger.ZLogInformation(
+                $"{LogSend}Success OpenFileRead({path}): session={_lastHandle.Session}, size={_lastHandle.Size}");
             _lastRoSequenceNumber = sequenceNumber;
         }
-          
-        await InternalFtpReply(input,FtpOpcode.Ack, p =>
+
+        await InternalFtpReply(input, FtpOpcode.Ack, p =>
         {
             p.WriteSession(_lastHandle.Session);
             p.WriteDataAsUint(_lastHandle.Size);
         }).ConfigureAwait(false);
-        
-        
     }
 
     #endregion
@@ -204,34 +273,39 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         var originOpCode = req.ReadOriginOpCode();
         if (ex == null)
         {
-            _logger.ZLogError($"Error to execute {originOpCode:G}: {MavlinkFtpHelper.GetErrorMessage(err)}");    
+            _logger.ZLogError($"Error to execute {originOpCode:G}: {MavlinkFtpHelper.GetErrorMessage(err)}");
         }
         else
         {
-            _logger.ZLogError(ex,$"Error to execute {originOpCode:G}: {MavlinkFtpHelper.GetErrorMessage(err)}. Exception: {ex.Message}");
+            _logger.ZLogError(ex,
+                $"Error to execute {originOpCode:G}: {MavlinkFtpHelper.GetErrorMessage(err)}. Exception: {ex.Message}");
         }
-        
-        return InternalFtpReply(req,FtpOpcode.Nak,x => x.WriteDataAsByte((byte)err));
+
+        return InternalFtpReply(req, FtpOpcode.Nak, x => x.WriteDataAsByte((byte)err));
     }
+
     private Task ReplyNackFailErrno(FileTransferProtocolPacket req, byte fsErrorCode, Exception? ex = null)
     {
         var originOpCode = req.ReadOriginOpCode();
         var originSession = req.ReadSession();
         if (ex == null)
         {
-            _logger.ZLogError($"Error to execute {originOpCode:G}: {MavlinkFtpHelper.GetErrorMessage(NackError.FailErrno)} with fsError:{fsErrorCode}");    
+            _logger.ZLogError(
+                $"Error to execute {originOpCode:G}: {MavlinkFtpHelper.GetErrorMessage(NackError.FailErrno)} with fsError:{fsErrorCode}");
         }
         else
         {
-            _logger.ZLogError($"Error to execute {originOpCode:G}: {MavlinkFtpHelper.GetErrorMessage(NackError.FailErrno)} with fsError:{fsErrorCode}. Exception: {ex.Message}");
+            _logger.ZLogError(
+                $"Error to execute {originOpCode:G}: {MavlinkFtpHelper.GetErrorMessage(NackError.FailErrno)} with fsError:{fsErrorCode}. Exception: {ex.Message}");
         }
-        
-        return InternalFtpReply(req,FtpOpcode.Nak,x => x.WriteDataAsTwoByte((byte)NackError.FailErrno, fsErrorCode));
+
+        return InternalFtpReply(req, FtpOpcode.Nak, x => x.WriteDataAsTwoByte((byte)NackError.FailErrno, fsErrorCode));
     }
 
     #endregion
 
-    private Task InternalFtpReply(FileTransferProtocolPacket req, FtpOpcode replyOpCode,Action<FileTransferProtocolPacket> fillPacket)
+    private Task InternalFtpReply(FileTransferProtocolPacket req, FtpOpcode replyOpCode,
+        Action<FileTransferProtocolPacket> fillPacket)
     {
         return InternalSend<FileTransferProtocolPacket>(p =>
         {
@@ -242,11 +316,10 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
             var session = req.ReadSession();
             p.WriteSession(session);
             var originSeq = p.ReadSequenceNumber();
-            p.WriteSequenceNumber( (ushort)((originSeq + 1)% ushort.MaxValue));
+            p.WriteSequenceNumber((ushort)((originSeq + 1) % ushort.MaxValue));
             p.WriteOpcode(replyOpCode);
             var originOpCode = req.ReadOpcode();
             p.WriteOriginOpCode(originOpCode);
         }, cancel: DisposeCancel);
     }
-    
 }

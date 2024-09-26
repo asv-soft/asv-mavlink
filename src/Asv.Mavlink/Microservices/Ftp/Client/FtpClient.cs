@@ -44,6 +44,28 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _burstTimeout = TimeSpan.FromMilliseconds(config.BurstTimeoutMs);
     }
 
+    public Task ResetSessions(CancellationToken cancellationToken = default)
+    {
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.ResetSessions:G}(Reset all sessions)");
+        return InternalFtpCall(FtpOpcode.ResetSessions, packet =>{} , cancellationToken);
+    }
+
+    public async Task<FileTransferProtocolPacket> RemoveDirectory(string path, CancellationToken cancellationToken = default)
+    {
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.RemoveDirectory:G} {path}");
+        var result = await InternalFtpCall(FtpOpcode.RemoveDirectory, p => p.WriteDataAsString(path), cancellationToken).ConfigureAwait(false);
+        _logger.ZLogInformation($"{LogSend} {result.ReadOpcode():G} {result.ReadSize()}");
+        return result;
+    }
+
+    public async Task<FileTransferProtocolPacket> RemoveFile(string path, CancellationToken cancellationToken = default)
+    {
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.RemoveFile:G} {path}");
+        var result = await InternalFtpCall(FtpOpcode.RemoveFile, p => p.WriteDataAsString(path), cancellationToken).ConfigureAwait(false);
+        _logger.ZLogInformation($"{LogSend} {result.ReadOpcode():G} {result.ReadSize()}");
+        return result;
+    }
+
     public async Task BurstReadFile(ReadRequest request, Action<FileTransferProtocolPacket> onBurstData, CancellationToken cancel = default)
     {
         if (request.Take > MavlinkFtpHelper.MaxDataSize)
@@ -113,8 +135,14 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         
         
     }
-    
-   
+
+    public async Task<FileTransferProtocolPacket> CreateDirectory(string path, CancellationToken cancellationToken = default)
+    {
+        MavlinkFtpHelper.CheckFolderPath(path);
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.CreateDirectory:G}({path})");
+        var result = await InternalFtpCall(FtpOpcode.CreateDirectory,p => p.WriteDataAsString(path), cancellationToken);
+        return result;
+    }
     
     public Task TerminateSession(byte session, CancellationToken cancel = default)
     {
