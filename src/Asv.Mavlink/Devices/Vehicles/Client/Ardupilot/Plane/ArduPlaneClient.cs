@@ -9,6 +9,7 @@ using Asv.Common;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.Minimal;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using ZLogger;
 
 namespace Asv.Mavlink;
@@ -27,6 +28,7 @@ public class ArduPlaneClient : ArduVehicle
         IScheduler? scheduler = null,
         ILogger? logger = null) : base(connection, identity, config, seq, scheduler,logger)
     {
+        _logger = logger ?? NullLogger.Instance;
     }
 
     protected override async Task InternalInit()

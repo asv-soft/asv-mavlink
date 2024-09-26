@@ -34,7 +34,7 @@ public class RadioClientDevice : ClientDevice, IRadioClientDevice
         ILogger? logger = null)
         : base(connection, identity, config, seq, scheduler, logger)
     {
-        _logger ??= NullLogger.Instance;
+        _logger = logger ?? NullLogger.Instance;
         _config = config ?? throw new ArgumentNullException(nameof(config));
         Command = new CommandClient(connection, identity, seq, config.Command).DisposeItWith(Disposable);
         var client = new AsvRadioClient(connection, identity,seq).DisposeItWith(Disposable);
