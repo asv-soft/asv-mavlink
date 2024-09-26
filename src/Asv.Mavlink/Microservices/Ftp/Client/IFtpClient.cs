@@ -12,7 +12,7 @@ public interface IFtpClient
     Task<ReadHandle> OpenFileRead(string path, CancellationToken cancel = default);
 
     public Task<FileTransferProtocolPacket> CreateDirectory(string path, CancellationToken cancellationToken = default);
-    public Task ResetSessions(CancellationToken cancellationToken = default);
+    public Task<FileTransferProtocolPacket> ResetSessions(CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> RemoveDirectory(string path, CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> RemoveFile(string path, CancellationToken cancellationToken = default);
 

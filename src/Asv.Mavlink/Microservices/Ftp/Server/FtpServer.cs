@@ -53,7 +53,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
                     InternalTerminateSession(input);
                     break;
                 case FtpOpcode.ResetSessions:
-                    InternalResetSessions();
+                    InternalResetSessions(input);
                     break;
                 case FtpOpcode.ListDirectory:
                     break;
@@ -134,7 +134,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     public ResetSessionsDelegate? ResetSessions { get; set; }
 
-    private async void InternalResetSessions()
+    private async void InternalResetSessions(FileTransferProtocolPacket input)
     {
         if (ResetSessions is null)
         {
@@ -143,6 +143,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
         await ResetSessions().ConfigureAwait(false);
         _logger.ZLogInformation($"{LogSend}Success to reset Sessions!)");
+        await InternalFtpReply(input, FtpOpcode.Ack, p => { p.WriteSize(0); }).ConfigureAwait(false);
     }
 
     #endregion

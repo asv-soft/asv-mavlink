@@ -44,7 +44,7 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _burstTimeout = TimeSpan.FromMilliseconds(config.BurstTimeoutMs);
     }
 
-    public Task ResetSessions(CancellationToken cancellationToken = default)
+    public Task<FileTransferProtocolPacket> ResetSessions(CancellationToken cancellationToken = default)
     {
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.ResetSessions:G}(Reset all sessions)");
         return InternalFtpCall(FtpOpcode.ResetSessions, packet =>{} , cancellationToken);
