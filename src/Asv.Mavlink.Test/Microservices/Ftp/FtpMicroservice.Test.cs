@@ -80,7 +80,7 @@ public class FtpMicroserviceTest
     public async Task Client_call_RemoveDirectory(string directoryPath)
     {
         SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
-        server.CreateDirectory = (path, cancellationToken) => Task.FromResult(path);
+        server.RemoveDirectory = (path, cancellationToken) => Task.FromResult(path);
 
         var result = await client.RemoveDirectory(directoryPath);
         Assert.Equal((byte)0, result.ReadSize());
@@ -92,7 +92,7 @@ public class FtpMicroserviceTest
     public async Task Client_Call_RemoveFile(string directoryPath)
     {
         SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
-        server.CreateDirectory = (path, cancellationToken) => Task.FromResult(path);
+        server.RemoveFile = (path, cancellationToken) => Task.FromResult(path);
 
         var result = await client.RemoveFile(directoryPath);
         Assert.Equal((byte)0, result.ReadSize());

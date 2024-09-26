@@ -22,7 +22,7 @@ public interface IFtpServer
     ResetSessionsDelegate? ResetSessions { set; }
     CreateDirectory? CreateDirectory { set; get; }
     RemoveFile? RemoveFile { get; set; }
-    RemoveDirectory? RemoveDirectory { get; }
+    RemoveDirectory? RemoveDirectory { set; get; }
     
     
 }
