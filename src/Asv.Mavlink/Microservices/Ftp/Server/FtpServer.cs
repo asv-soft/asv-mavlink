@@ -110,7 +110,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         var path = input.ReadDataAsString();
         _logger.ZLogInformation($"{LogRecv}Start calcualte CRC for: ({path})");
         var result = await CalcFileCrc32(path).ConfigureAwait(false);
-        await InternalFtpReply(input, FtpOpcode.Ack, packet => packet.WriteDataAsString(result)).ConfigureAwait(false);
+        await InternalFtpReply(input, FtpOpcode.Ack, packet => packet.WriteDataAsInt(result)).ConfigureAwait(false);
     }
 
     #endregion

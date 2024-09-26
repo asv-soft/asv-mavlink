@@ -69,7 +69,7 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
     {
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.CalcFileCRC32:G} {path}");
         var result = await InternalFtpCall(FtpOpcode.CalcFileCRC32, p => p.WriteDataAsString(path), cancellationToken).ConfigureAwait(false);
-        var buffer = result.ReadDataAsString();
+        var buffer = result.ReadDataAsInt();
         _logger.ZLogInformation($"{LogSend} {result.ReadOpcode():G} {buffer})");
         return result;
     }
