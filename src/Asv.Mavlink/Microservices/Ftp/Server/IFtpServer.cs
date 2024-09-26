@@ -12,6 +12,7 @@ public delegate Task ResetSessionsDelegate( CancellationToken cancel = default);
 public delegate Task CreateDirectory(string path, CancellationToken cancel = default);
 public delegate Task RemoveFile(string path, CancellationToken cancel = default);
 public delegate Task RemoveDirectory(string path, CancellationToken cancel = default);
+public delegate Task<string> CalcFileCrc32(string path, CancellationToken cancel = default);
 
 
 public interface IFtpServer
@@ -23,6 +24,8 @@ public interface IFtpServer
     CreateDirectory? CreateDirectory { set; get; }
     RemoveFile? RemoveFile { get; set; }
     RemoveDirectory? RemoveDirectory { set; get; }
+    
+    CalcFileCrc32? CalcFileCrc32 { get; set; }
     
     
 }

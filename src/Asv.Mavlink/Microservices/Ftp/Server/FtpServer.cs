@@ -72,6 +72,9 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
                 case FtpOpcode.RemoveFile:
                     InternalRemoveFile(input);
                     break;
+                case FtpOpcode.CalcFileCRC32:
+                    InternalCalcFileCrc32(input);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -92,6 +95,25 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
             await ReplyNack(input, NackError.Fail, e).ConfigureAwait(false);
         }
     }
+
+    #region CalcFileCrc32
+
+    public CalcFileCrc32 CalcFileCrc32 { get; set; }
+
+    private async void InternalCalcFileCrc32(FileTransferProtocolPacket input)
+    {
+        if (CalcFileCrc32 is null)
+        {
+            throw new FtpNackException(FtpOpcode.Nak, NackError.UnknownCommand);
+        }
+
+        var path = input.ReadDataAsString();
+        _logger.ZLogInformation($"{LogRecv}Start calcualte CRC for: ({path})");
+        var result = await CalcFileCrc32(path).ConfigureAwait(false);
+        await InternalFtpReply(input, FtpOpcode.Ack, packet => packet.WriteDataAsString(result)).ConfigureAwait(false);
+    }
+
+    #endregion
 
     #region Remove Directory
 

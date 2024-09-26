@@ -1,11 +1,7 @@
 using System;
 using System.Buffers;
 using System.Reactive.Concurrency;
-using System.Reactive.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
-using Castle.Core.Logging;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -63,6 +59,17 @@ public class FtpMicroserviceTest
         Assert.Equal(originFileSize, result.Size);
     }
 
+    [Theory]
+    [InlineData("mftp://test.txt", -1177814316)]
+
+    public async Task Client_call_CalcFileCrc32(string path, int originCheckSum)
+    {
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+        server.CalcFileCrc32 = (path, cancellationToken) => Task.FromResult(originCheckSum.ToString());
+        var result = await client.CalcFileCrc32(path).ConfigureAwait(false);
+        Assert.Equal(result.ReadOpcode(), FtpOpcode.Ack);
+        Assert.Equal(result.ReadDataAsString(), originCheckSum.ToString());
+    }
     [Theory]
     [InlineData("mftp://directory//")]
     public async Task Client_call_CreateDirectory(string directoryPath)

@@ -4,7 +4,6 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -63,6 +62,15 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.RemoveFile:G} {path}");
         var result = await InternalFtpCall(FtpOpcode.RemoveFile, p => p.WriteDataAsString(path), cancellationToken).ConfigureAwait(false);
         _logger.ZLogInformation($"{LogSend} {result.ReadOpcode():G} {result.ReadSize()}");
+        return result;
+    }
+
+    public async Task<FileTransferProtocolPacket> CalcFileCrc32(string path, CancellationToken cancellationToken = default)
+    {
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.CalcFileCRC32:G} {path}");
+        var result = await InternalFtpCall(FtpOpcode.CalcFileCRC32, p => p.WriteDataAsString(path), cancellationToken).ConfigureAwait(false);
+        var buffer = result.ReadDataAsString();
+        _logger.ZLogInformation($"{LogSend} {result.ReadOpcode():G} {buffer})");
         return result;
     }
 
