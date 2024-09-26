@@ -163,6 +163,17 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
                     p.Payload.DataSize = (byte)lastPacketSize;
                     encodedData.Slice(packetIndex * AsvAudioHelper.MaxPacketStreamData,lastPacketSize).CopyTo(p.Payload.Data);
                 }, DisposeCancel).ConfigureAwait(false);
+                
+                await _sendPacketDelegate(p =>
+                {
+                    p.Payload.FrameSeq = frameIndex;
+                    p.Payload.TargetSystem = SystemId;
+                    p.Payload.TargetComponent = ComponentId;
+                    p.Payload.PktInFrame = (byte)packetsInFrame;
+                    p.Payload.PktSeq = packetIndex;
+                    p.Payload.DataSize = (byte)lastPacketSize;
+                    encodedData.Slice(packetIndex * AsvAudioHelper.MaxPacketStreamData,lastPacketSize).CopyTo(p.Payload.Data);
+                }, DisposeCancel).ConfigureAwait(false);
             }
         }
         catch (Exception e)
@@ -234,6 +245,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
                     {
                         _inputDecoderAudioStream.OnNext(new ReadOnlyMemory<byte>(stream.Data,0,stream.DataSize));   
                     }
+                    
                 }
                 catch (Exception e)
                 {
