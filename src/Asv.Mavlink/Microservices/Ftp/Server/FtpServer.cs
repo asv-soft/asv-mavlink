@@ -25,10 +25,10 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     public FtpServer(
         MavlinkFtpServerConfig config,
-        IMavlinkV2Connection connection, 
-        MavlinkIdentity identity, 
-        IPacketSequenceCalculator seq, 
-        IScheduler? rxScheduler = null, 
+        IMavlinkV2Connection connection,
+        MavlinkIdentity identity,
+        IPacketSequenceCalculator seq,
+        IScheduler? rxScheduler = null,
         ILogger? logger = null) : base("FTP", connection, identity, seq, rxScheduler, logger)
     {
         _config = config;
@@ -65,6 +65,9 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
                     break;
                 case FtpOpcode.CreateDirectory:
                     InternalCreateDirectory(input);
+                    break;
+                case FtpOpcode.RemoveDirectory:
+                    InternalRemoveDirectory(input);
                     break;
                 case FtpOpcode.RemoveFile:
                     InternalRemoveFile(input);
@@ -103,14 +106,11 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
         var path = input.ReadDataAsString();
         await RemoveDirectory(path).ConfigureAwait(false);
-        await InternalFtpReply(input, FtpOpcode.Ack, p =>
-        {
-            p.WriteSize(0);
-        }).ConfigureAwait(false);
+        await InternalFtpReply(input, FtpOpcode.Ack, p => { p.WriteSize(0); }).ConfigureAwait(false);
     }
 
     #endregion
-    
+
     #region RemoveFile
 
     public RemoveFile? RemoveFile { get; set; }
@@ -125,12 +125,9 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         var path = input.ReadDataAsString();
         await RemoveFile(path).ConfigureAwait(false);
         _logger.ZLogInformation($"{LogRecv} Removed file: ({path})");
-        await InternalFtpReply(input, FtpOpcode.Ack, p =>
-        {
-            p.WriteSize(0);
-        }).ConfigureAwait(false);
+        await InternalFtpReply(input, FtpOpcode.Ack, p => { p.WriteSize(0); }).ConfigureAwait(false);
     }
-    
+
     #endregion
 
     #region ResetSessions
@@ -143,6 +140,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         {
             throw new FtpNackException(FtpOpcode.ResetSessions, NackError.UnknownCommand);
         }
+
         await ResetSessions().ConfigureAwait(false);
         _logger.ZLogInformation($"{LogSend}Success to reset Sessions!)");
     }
@@ -163,13 +161,11 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         {
             throw new FtpNackException(FtpOpcode.CreateDirectory, NackError.InvalidDataSize);
         }
+
         _logger.ZLogInformation($"{LogRecv} Create directory path: ({path})");
         CreateDirectory = (directory, cancel) => Task.FromResult(new CreateHandle(session, directory));
         await CreateDirectory(path).ConfigureAwait(false);
-        await InternalFtpReply(input, FtpOpcode.Ack, p =>
-        {
-            p.WriteSize(0);
-        }).ConfigureAwait(false);
+        await InternalFtpReply(input, FtpOpcode.Ack, p => { p.WriteSize(0); }).ConfigureAwait(false);
     }
 
     #endregion
@@ -177,13 +173,14 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
     #region TerminateSession
 
     public TerminateSessionDelegate? TerminateSession { get; set; }
-    
+
     private async void InternalTerminateSession(FileTransferProtocolPacket input)
     {
         if (TerminateSession == null)
         {
             throw new FtpNackException(FtpOpcode.TerminateSession, NackError.UnknownCommand);
         }
+
         var session = input.ReadSession();
         _logger.ZLogInformation($"{LogRecv}TerminateSession(session={session})");
         await TerminateSession(session, DisposeCancel).ConfigureAwait(false);
@@ -239,6 +236,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         {
             throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.UnknownCommand);
         }
+
         var path = input.ReadDataAsString();
         MavlinkFtpHelper.CheckFilePath(path);
         var sequenceNumber = input.ReadSequenceNumber();
