@@ -75,6 +75,9 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
                 case FtpOpcode.CalcFileCRC32:
                     InternalCalcFileCrc32(input);
                     break;
+                case FtpOpcode.TruncateFile:
+                    InternalTruncateFile(input);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -108,9 +111,29 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         }
 
         var path = input.ReadDataAsString();
-        _logger.ZLogInformation($"{LogRecv}Start calcualte CRC for: ({path})");
+        _logger.ZLogInformation($"{LogRecv} Start calcualte CRC for: ({path})");
         var result = await CalcFileCrc32(path).ConfigureAwait(false);
         await InternalFtpReply(input, FtpOpcode.Ack, packet => packet.WriteDataAsInt(result)).ConfigureAwait(false);
+    }
+
+    #endregion
+
+    #region Truncate File
+
+    public TruncateFile? TruncateFile { get; set; }
+
+    private async void InternalTruncateFile(FileTransferProtocolPacket input)
+    {
+        if (TruncateFile is null)
+        {
+            throw new FtpNackException(FtpOpcode.TruncateFile, NackError.UnknownCommand);
+        }
+
+        var path = input.ReadDataAsString();
+        var offset = input.ReadOffset();
+        _logger.ZLogInformation($"{LogRecv} Truncate file: ({path}) to size {offset}");
+        await TruncateFile(new TruncateRequest(path, offset)).ConfigureAwait(false);
+        await InternalFtpReply(input, FtpOpcode.Ack, p => p.WriteSize(0)).ConfigureAwait(false);
     }
 
     #endregion

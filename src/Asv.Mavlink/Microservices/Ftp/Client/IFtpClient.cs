@@ -15,9 +15,9 @@ public interface IFtpClient
     public Task<FileTransferProtocolPacket> ResetSessions(CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> RemoveDirectory(string path, CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> RemoveFile(string path, CancellationToken cancellationToken = default);
-
     public Task<FileTransferProtocolPacket> CalcFileCrc32(string path, CancellationToken cancellationToken = default);
-
+    public Task<FileTransferProtocolPacket> TruncateFile(TruncateRequest request, CancellationToken cancellationToken = default);
+    
     
     Task BurstReadFile(ReadRequest request,
         Action<FileTransferProtocolPacket> onBurstData,
@@ -88,7 +88,14 @@ public readonly struct ReadHandle(byte session, uint size)
 
 public readonly struct CreateHandle(byte session, string path)
 {
-public readonly byte Session = session;
-public readonly string Path = path;
-public override string ToString() => $"CREATE_DIR(session: {Session}, path: {path})";
+    public readonly byte Session = session;
+    public readonly string Path = path;
+    public override string ToString() => $"CREATE_DIR(session: {Session}, path: {path})";
+}
+
+public readonly struct TruncateRequest(string path, uint offset)
+{
+    public readonly string Path = path;
+    public readonly uint Offset = offset;
+    public override string ToString() => $"READ_REQ(path: {Path}, offset: {Offset})";
 }

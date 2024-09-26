@@ -61,7 +61,6 @@ public class FtpMicroserviceTest
 
     [Theory]
     [InlineData("mftp://test.txt", -1177814316)]
-
     public async Task Client_call_CalcFileCrc32(string path, int originCheckSum)
     {
         SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
@@ -70,6 +69,30 @@ public class FtpMicroserviceTest
         Assert.Equal(result.ReadOpcode(), FtpOpcode.Ack);
         Assert.Equal(result.ReadDataAsInt(), originCheckSum);
     }
+    
+    [Theory]
+    [InlineData("mftp://test.txt", 10)]
+    public async Task Client_Call_TruncateFile_And_Server_Catch_It(string filePath, uint offset)
+    {
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+
+        var called = 0;
+
+        server.TruncateFile = (request, cancel) =>
+        {
+            Assert.Equal(filePath, request.Path);
+            Assert.Equal(offset, request.Offset);
+            called++;
+            return Task.FromResult(filePath);
+        };
+
+        var result = await client.TruncateFile(new TruncateRequest(filePath, offset)).ConfigureAwait(false);
+
+        Assert.Equal(1, called);
+        Assert.Equal((byte)0, result.ReadSize());
+        Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
+    }
+    
     [Theory]
     [InlineData("mftp://directory//")]
     public async Task Client_call_CreateDirectory(string directoryPath)

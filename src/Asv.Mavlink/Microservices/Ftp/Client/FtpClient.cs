@@ -65,6 +65,18 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         return result;
     }
 
+    public async Task<FileTransferProtocolPacket> TruncateFile(TruncateRequest request, CancellationToken cancellationToken = default)
+    {
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.TruncateFile:G} {request.ToString()}");
+        var result = await InternalFtpCall(FtpOpcode.TruncateFile, p =>
+        {
+            p.WriteDataAsString(request.Path);
+            p.WriteOffset(request.Offset);
+        }, cancellationToken).ConfigureAwait(false);
+        _logger.ZLogInformation($"{LogRecv} {FtpOpcode.TruncateFile:G} {request.Path}: truncated to {request.Offset}");
+        return result;
+    }
+
     public async Task<FileTransferProtocolPacket> CalcFileCrc32(string path, CancellationToken cancellationToken = default)
     {
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.CalcFileCRC32:G} {path}");
