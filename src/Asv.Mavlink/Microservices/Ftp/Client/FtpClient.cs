@@ -114,8 +114,18 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         
     }
     
-   
-    
+    public async Task<FileTransferProtocolPacket> Rename(string path1, string path2, CancellationToken cancel)
+    {
+        _logger.ZLogTrace($"{LogSend} {FtpOpcode.Rename:G}({path1}) to ({path2})");
+        var result = await InternalFtpCall(FtpOpcode.Rename, p =>
+        {
+            p.WriteDataAsString(path1);
+            p.WriteDataAsString(path2);
+        }, cancel).ConfigureAwait(false);
+        _logger.ZLogTrace($"{LogRecv} {FtpOpcode.Rename:G}({path1}) to ({path2}): read={result.ReadSize()}");
+        return result;
+    }
+
     public Task TerminateSession(byte session, CancellationToken cancel = default)
     {
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.TerminateSession:G}({session})");

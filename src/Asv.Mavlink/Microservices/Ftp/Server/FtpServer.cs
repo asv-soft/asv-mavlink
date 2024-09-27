@@ -78,6 +78,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
                 case FtpOpcode.TruncateFile:
                     break;
                 case FtpOpcode.Rename:
+                    InternalRename(input);
                     break;
                 case FtpOpcode.CalcFileCRC32:
                     break;
@@ -160,7 +161,6 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
     #endregion
 
     #region OpenFileRead
-
     public OpenFileReadDelegate? OpenFileRead { private get; set; }
     
     private async void InternalOpenFileRo(FileTransferProtocolPacket input)
@@ -193,6 +193,28 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         }).ConfigureAwait(false);
         
         
+    }
+
+    #endregion
+
+    #region RenameFile
+
+    public RenameDelegate? Rename { get; set; }
+    private async void InternalRename(FileTransferProtocolPacket input)
+    {
+        if (Rename is null)
+        {
+            throw new FtpNackException(FtpOpcode.Rename, NackError.UnknownCommand);
+        }
+
+        var path1 = input.ReadDataAsString();
+        var path2 = input.ReadDataAsString();
+        await Rename(path1, path2).ConfigureAwait(false);
+        _logger.ZLogInformation($"{LogRecv} Rename: ({path1}) to ({path2})");
+        await InternalFtpReply(input, FtpOpcode.Ack, p =>
+        {
+            p.WriteSize(0);
+        }).ConfigureAwait(false);
     }
 
     #endregion
