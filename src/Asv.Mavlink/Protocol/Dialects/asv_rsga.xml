@@ -27,13 +27,17 @@
                 <description>Default mode. Do nothing.</description>
             </entry>
             <!--==================================================-->
-            <!--          SIMPLE MODES (1-49)                     -->
+            <!--          COMMON GENERATOR MODES (1-24)           -->
             <!--==================================================-->
-            <entry value="0" name="ASV_RSGA_CUSTOM_MODE_SPECTRUM">
+            
+            <!--==================================================-->
+            <!--          COMMON ANALYZER MODES (25-49)           -->
+            <!--==================================================-->
+            <entry value="25" name="ASV_RSGA_CUSTOM_MODE_SPECTRUM">
                 <description>Spectrum analyzer.</description>
             </entry>
             <!--==================================================-->
-            <!--          NavAIDs BEACON MODES (50-69)            -->
+            <!--          NavAIDs BEACON MODES (50-74)            -->
             <!--==================================================-->
             <entry value="50" name="ASV_RSGA_CUSTOM_MODE_TX_LLZ">
                 <description>Localizer generator mode.</description>
@@ -54,25 +58,31 @@
                 <description>GBAS generator mode.</description>
             </entry>
             <!--==================================================-->
-            <!--          NavAIDs PLANE MODES (70-99)             -->
+            <!--          NavAIDs PLANE MODES (74-99)             -->
             <!--==================================================-->
-            <entry value="70" name="ASV_RSGA_CUSTOM_MODE_DME_REQ">
+            <entry value="74" name="ASV_RSGA_CUSTOM_MODE_DME_REQ">
                 <description>DME plane mode.</description>
             </entry>
-            <entry value="71" name="ASV_RSGA_CUSTOM_MODE_RX_LLZ">
+            <entry value="75" name="ASV_RSGA_CUSTOM_MODE_RX_LLZ">
                 <description>Localizer analyzer mode.</description>
             </entry>
-            <entry value="72" name="ASV_RSGA_CUSTOM_MODE_RX_GP">
+            <entry value="76" name="ASV_RSGA_CUSTOM_MODE_RX_GP">
                 <description>Glide Path analyzer mode.</description>
             </entry>
-            <entry value="73" name="ASV_RSGA_CUSTOM_MODE_RX_VOR">
+            <entry value="77" name="ASV_RSGA_CUSTOM_MODE_RX_VOR">
                 <description>VOR analyzer mode.</description>
             </entry>
-            <entry value="74" name="ASV_RSGA_CUSTOM_MODE_RX_MARKER">
+            <entry value="78" name="ASV_RSGA_CUSTOM_MODE_RX_MARKER">
                 <description>Marker analyzer mode.</description>
             </entry>
-            <entry value="75" name="ASV_RSGA_CUSTOM_MODE_RX_GBAS">
+            <entry value="79" name="ASV_RSGA_CUSTOM_MODE_RX_GBAS">
                 <description>GBAS analyzer mode.</description>
+            </entry>
+            <!--==================================================-->
+            <!--          SPECIAL MODES (100-124)                 -->
+            <!--==================================================-->
+            <entry value="100" name="ASV_RSGA_CUSTOM_MODE_RADIO">
+                <description>Audio radio station mode.</description>
             </entry>
         </enum>
 
