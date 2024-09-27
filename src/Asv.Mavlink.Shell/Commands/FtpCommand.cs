@@ -46,13 +46,24 @@ public class FtpCommand : ConsoleCommand
             await ftpEx.Refresh("/");
             await ftpEx.Refresh("@SYS");
             ftpEx.Entries.TransformToTree(x => x.ParentPath).Transform(x => new FtpEntry(x)).DisposeMany().Bind(out _tree).Subscribe();
+            
             var rootNode = new Tree("FTP Directory").Guide(TreeGuide.BoldLine).Style("green");
             var treeNode = rootNode.AddNode("root");
             foreach (var node in _tree)
             {
-                AddToTree(treeNode, node);
+                AddNodesToTree(treeNode, node);
             }
             AnsiConsole.Write(rootNode);
+            
+            var root = _tree.FirstOrDefault(e => e.IsRoot);
+            if (root != null)
+            {
+                await CreateNavigateDirectory(root);
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[red]Root directory not found.[/red]");
+            }
         }
         catch (Exception e)
         {
@@ -60,12 +71,46 @@ public class FtpCommand : ConsoleCommand
             throw;
         }
     }
-    private void AddToTree(TreeNode tree,  FtpEntry node)
+    private void AddNodesToTree(TreeNode tree,  FtpEntry node)
     {
         var treeNode = tree.AddNode(node.Key);
         foreach (var childrenItem in node.Items)
         {
-            AddToTree(treeNode, childrenItem);
+            AddNodesToTree(treeNode, childrenItem);
+        }
+    }
+    private async Task CreateNavigateDirectory(FtpEntry currentDirectory, FtpEntry? parentDirectory = null)
+    {
+        var choices = new List<FtpEntry>();
+        if (parentDirectory != null)
+        {
+            var parentEntry = new FtpEntry(new Node<IFtpEntry, string>(new FtpEntryModel
+            {
+                Name = "...",
+                Path = parentDirectory.Key,
+                ParentPath = currentDirectory.Item.ParentPath,
+                Type = FtpEntryType.Directory
+            }, currentDirectory.Node.Key));
+            choices.Add(parentEntry);
+        }
+
+        choices.AddRange(currentDirectory.Items);
+        var selection = AnsiConsole.Prompt(
+            new SelectionPrompt<FtpEntry>()
+                .Title($"[green]Current Directory:[/] [yellow]{currentDirectory.Key}[/]")
+                .AddChoices(choices)
+                .UseConverter(entry => entry.Item.Name + (entry.Item.Type == FtpEntryType.Directory ? "/" : "")));
+        if (selection.Item.Name == "...")
+        {
+            await CreateNavigateDirectory(parentDirectory!, new FtpEntry(parentDirectory.Node));
+        }
+        else if (selection.Item.Type == FtpEntryType.Directory)
+        {
+            await CreateNavigateDirectory(selection, currentDirectory);
+        }
+        else
+        {
+            AnsiConsole.MarkupLine($"[green]Selected file:[/] [yellow]{selection.Key}[/]");
         }
     }
 }

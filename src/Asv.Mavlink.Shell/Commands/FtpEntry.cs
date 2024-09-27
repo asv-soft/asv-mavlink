@@ -29,3 +29,11 @@ public class FtpEntry
     public Node<IFtpEntry, string> Node => _node;
     public ReadOnlyObservableCollection<FtpEntry> Items => _items;
 }
+
+public class FtpEntryModel : IFtpEntry
+{
+    public string ParentPath { get; set; } = string.Empty;
+    public string Path { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public FtpEntryType Type { get; set; } = FtpEntryType.Directory;
+}
