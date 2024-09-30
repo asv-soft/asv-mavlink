@@ -1,7 +1,10 @@
 using System;
 using System.Buffers;
+using System.Linq;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
+using Asv.IO;
+using Asv.Mavlink.V2.Common;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -181,7 +184,6 @@ public class FtpMicroserviceTest
         var originRequest = new ReadRequest(session, skip, take);
         using var buffer = MemoryPool<byte>.Shared.Rent(take);
         var result = await client.ReadFile(originRequest, buffer.Memory);
-
         
         Assert.Equal(1,called);
         Assert.Equal(originRequest,result.Request);
@@ -203,5 +205,60 @@ public class FtpMicroserviceTest
         Assert.Equal((byte)0, result.ReadSize());
         Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
     }   
+    
+    [Theory]
+    [InlineData(1, 0, 200)]
+    public async Task BurstReadFile_WithProperInput_Success(byte session, uint skip, byte take)
+    {
+        // Assert
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+        var originData = new byte[take];
+        Random.Shared.NextBytes(originData);
+        var called = 0;
+        var originRequest = new ReadRequest(session, skip, take);
+        var buffer1 = ArrayPool<byte>.Shared.Rent(take/2);
+        var buffer2 = ArrayPool<byte>.Shared.Rent(take - (take/2));
+        var packet1 = new FileTransferProtocolPacket();
+        var packet2 = new FileTransferProtocolPacket();
 
+        try
+        {
+            // Act
+            server.BurstReadFile = (req, buffer, cancel) =>
+            {
+                called++;
+                originData[..(originData.Length / 2)].CopyTo(buffer.Span);
+                return Task.FromResult(new BurstReadResult((byte)(originData.Length / 2), false, req));
+            };
+            await client.BurstReadFile(originRequest, p => { packet1 = p; });
+
+            server.BurstReadFile = (req, buffer, cancel) =>
+            {
+                called++;
+                originData[(originData.Length / 2)..].CopyTo(buffer.Span);
+                return Task.FromResult(new BurstReadResult((byte)(originData.Length - (originData.Length / 2)), true,
+                    req));
+            };
+            await client.BurstReadFile(originRequest, p => { packet2 = p; });
+            
+            // Assert
+            var readOffset = packet1.ReadOffset() + packet2.ReadOffset();
+            var readSize = packet1.ReadSize() + packet2.ReadSize();
+            packet1.ReadData(buffer1);
+            packet2.ReadData(buffer2);
+            var data1 = buffer1.AsMemory()[..(take / 2)].ToArray();
+            var data2 = buffer2.AsMemory()[..(take - (take / 2))].ToArray();
+            var fullData = data1.Concat(data2);
+            
+            Assert.Equal(2,called);
+            Assert.Equal(skip, readOffset);
+            Assert.Equal(originData.Length, readSize);
+            Assert.True(originData.SequenceEqual(fullData));
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer1);
+            ArrayPool<byte>.Shared.Return(buffer2);
+        }
+    }
 }

@@ -88,6 +88,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
                 case FtpOpcode.WriteFile:
                     break;
                 case FtpOpcode.BurstReadFile:
+                    InternalBurstReadFile(input);
                     break;
                 case FtpOpcode.Ack:
                 case FtpOpcode.Nak:
@@ -339,6 +340,43 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         await InternalFtpReply(input, FtpOpcode.Ack, p =>
         {
             p.WriteSize(0);
+        }).ConfigureAwait(false);
+    }
+
+    #endregion
+
+    #region BurstReadFile
+
+    public BurstReadFileDelegate? BurstReadFile { private get; set; }
+
+    private async void InternalBurstReadFile(FileTransferProtocolPacket input)
+    {
+        if (BurstReadFile is null)
+        {
+            throw new FtpNackException(FtpOpcode.BurstReadFile, NackError.UnknownCommand);
+        }
+        
+        var session = input.ReadSession();
+        var offset = input.ReadOffset();
+        var size = input.ReadSize();
+        if (size > MavlinkFtpHelper.MaxDataSize)
+        {
+            throw new FtpNackException(FtpOpcode.BurstReadFile, NackError.InvalidDataSize);
+        }
+        _logger.ZLogTrace($"{LogRecv}BurstReadFile(session={session}, offset={offset}, size={size})");
+        using var buffer = MemoryPool<byte>.Shared.Rent(size);
+        var result = await BurstReadFile(new ReadRequest(session, offset, size), buffer.Memory, DisposeCancel).ConfigureAwait(false);
+        _logger.ZLogTrace(
+            $"{LogSend}Success BurstReadFile(session={session}, offset={offset}, size={size}): readCount={result.ReadCount}, isLastChunk = {result.IsLastChunk}");
+        byte burstComplete = result.IsLastChunk ? (byte) 1 : (byte) 0;
+        await InternalFtpReply(input, FtpOpcode.Ack, p =>
+        {
+            p.WriteSession(session);
+            p.WriteBurstComplete(burstComplete);
+            p.WriteOffset(offset);
+            p.WriteSize(result.ReadCount);
+            // ReSharper disable once AccessToDisposedClosure
+            p.WriteData(buffer.Memory.Span[..result.ReadCount]);
         }).ConfigureAwait(false);
     }
 
