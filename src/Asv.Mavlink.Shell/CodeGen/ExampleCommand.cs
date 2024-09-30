@@ -1,16 +1,13 @@
 using System.IO;
+using ConsoleAppFramework;
 using ManyConsole;
 
 namespace Asv.Mavlink.Shell
 {
-    public class ExampleCommand:ConsoleCommand
+    public class ExampleCommand
     {
-        public ExampleCommand()
-        {
-            IsCommand("example", "Generate files for example usage");
-        }
-
-        public override int Run(string[] remainingArguments)
+        [Command("example")]
+        public  int Run(string[] remainingArguments)
         {
             Directory.CreateDirectory("in");
             File.WriteAllText("in/common.xml",Templates.common);
