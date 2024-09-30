@@ -23,6 +23,7 @@ public interface IFtpClient
         Action<FileTransferProtocolPacket> onBurstData,
         CancellationToken cancel = default);
     Task<FileTransferProtocolPacket> ReadFile(ReadRequest request, CancellationToken cancel = default);
+    Task<FileTransferProtocolPacket> Rename(string path1, string path2, CancellationToken cancel = default);
     Task TerminateSession(byte session, CancellationToken cancel = default);
     Task<FileTransferProtocolPacket> ListDirectory(string path, uint offset, CancellationToken cancel = default);
     public async Task<ReadResult> ReadFile(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default)
@@ -55,6 +56,15 @@ public interface IFtpClient
         return result.ReadDataAsString(buffer);
     }
    
+}
+
+public readonly struct RenameRequest(byte session, string newName, uint skip, byte take)
+{
+    public readonly byte Session = session;
+    public readonly string NewName = newName;
+    public readonly uint Skip = skip;
+    public readonly byte Take = take;
+    public override string ToString() => $"RENAME_REQ(newName: {NewName}, skip: {Skip}, take: {Take}, session:{Session})";
 }
 
 public readonly struct ReadRequest(byte session, uint skip, byte take)

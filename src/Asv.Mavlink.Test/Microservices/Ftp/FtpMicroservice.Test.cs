@@ -182,9 +182,26 @@ public class FtpMicroserviceTest
         using var buffer = MemoryPool<byte>.Shared.Rent(take);
         var result = await client.ReadFile(originRequest, buffer.Memory);
 
-        Assert.Equal(1, called);
-        Assert.Equal(originRequest, result.Request);
-        Assert.Equal(originData.Length, result.ReadCount);
-        Assert.Equal(originData, buffer.Memory.Slice(0, originData.Length).ToArray());
-    }
+        
+        Assert.Equal(1,called);
+        Assert.Equal(originRequest,result.Request);
+        Assert.Equal(originData.Length,result.ReadCount);
+        Assert.Equal(originData,buffer.Memory.Slice(0,originData.Length).ToArray());
+        
+    } 
+    
+    [Theory]
+    [InlineData("mftp://test.txt", "mftp://test1.txt")]
+    [InlineData("mftp://test", "mftp://test1")]
+    public async Task Rename_WithProperInput_Success(string defaultPath, string newPath)
+    {
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+
+        server.Rename = (path1, path2, cancel) => Task.FromResult((path1, path2, cancel));
+
+        var result = await client.Rename(defaultPath, newPath);
+        Assert.Equal((byte)0, result.ReadSize());
+        Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
+    }   
+
 }
