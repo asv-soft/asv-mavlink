@@ -71,10 +71,9 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
                     break;
                 case FtpOpcode.OpenFileWO:
                     break;
-                case FtpOpcode.TruncateFile:
-                    break;
                 case FtpOpcode.Rename:
                     InternalRename(input);
+                    break;
                 case FtpOpcode.RemoveFile:
                     InternalRemoveFile(input);
                     break;
@@ -84,6 +83,14 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
                 case FtpOpcode.TruncateFile:
                     InternalTruncateFile(input);
                     break;
+                case FtpOpcode.CreateFile:
+                    break;
+                case FtpOpcode.WriteFile:
+                    break;
+                case FtpOpcode.BurstReadFile:
+                    break;
+                case FtpOpcode.Ack:
+                case FtpOpcode.Nak:
                 default:
                     throw new ArgumentOutOfRangeException();
             }
