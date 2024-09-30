@@ -17,6 +17,8 @@ class Program
         
         var app = ConsoleApp.Create();
         app.Add<ExampleCommand>();
+        app.Add<FtpTreeDirectory>();
+        app.Add<FtpBrowserDirectory>();
         await app.RunAsync(args);
     }
 }
