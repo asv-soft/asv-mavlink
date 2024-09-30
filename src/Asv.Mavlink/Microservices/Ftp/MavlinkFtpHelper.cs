@@ -226,6 +226,13 @@ public static class MavlinkFtpHelper
         packet.WriteSize(sizeof(byte));
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteDataAsInt(this FileTransferProtocolPacket packet, in int data)
+    {
+        var byteArr = new ReadOnlySpan<byte>(BitConverter.GetBytes(data));
+        byteArr.CopyTo(packet.Payload.Payload.AsSpan(12));
+        packet.WriteSize(sizeof(int));
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteDataAsTwoByte(this FileTransferProtocolPacket packet, in byte firstByte, in byte secondByte)
     {
         packet.Payload.Payload[12] = firstByte;
@@ -278,6 +285,13 @@ public static class MavlinkFtpHelper
     {
         var size = packet.ReadSize();
         return (byte)FtpEncoding.GetChars(new ReadOnlySpan<byte>(packet.Payload.Payload, 12,size), buffer.Span);
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int ReadDataAsInt(this FileTransferProtocolPacket packet)
+    {
+        var size = packet.ReadSize();
+        ReadOnlySpan<byte> byteArr = packet.Payload.Payload.AsSpan(12, size);
+        return BitConverter.ToInt32(byteArr);
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReadDataAsString(this FileTransferProtocolPacket packet, Span<char> buffer)
