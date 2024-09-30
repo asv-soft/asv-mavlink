@@ -35,5 +35,5 @@ public class FtpEntryModel : IFtpEntry
     public string ParentPath { get; set; } = string.Empty;
     public string Path { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
-    public FtpEntryType Type { get; set; } = FtpEntryType.Directory;
+    public FtpEntryType Type { get; set; }
 }
