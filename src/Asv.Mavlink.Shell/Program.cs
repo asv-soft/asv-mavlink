@@ -16,7 +16,8 @@ class Program
         Console.OutputEncoding = Encoding.UTF8;
         
         var app = ConsoleApp.Create();
-        app.Add<ExampleCommand>();
+        //app.Add<ExampleCommand>();
+        app.Add<GenerateCommand>();
         await app.RunAsync(args);
     }
 }
