@@ -42,6 +42,10 @@ public class FtpBrowserDirectory
             Console.WriteLine(e);
             throw;
         }
+        finally
+        {
+            ConsoleAppHelper.WaitCancelPressOrProcessExit();
+        }
     }
 
     private async Task CreateFtpBrowser(ReadOnlyObservableCollection<FtpEntry> tree,
@@ -67,16 +71,6 @@ public class FtpBrowserDirectory
 
         while (true)
         {
-            AnsiConsole.MarkupLine("Display menu?");
-            if (Console.ReadKey(true).Key == ConsoleKey.F1)
-            {
-                if (currentDirectory != null && currentDirectory.Item.Type == FtpEntryType.Directory)
-                {
-                    await DirectoryOperationsMenu(currentDirectory);
-                }
-                continue;
-            }
-
             var selection = AnsiConsole.Prompt(
                 new SelectionPrompt<FtpEntry>()
                     .Title($"[blue]Current Directory:[/] [yellow]{(currentDirectory?.Key ?? "Root")}[/]")
@@ -91,8 +85,12 @@ public class FtpBrowserDirectory
                     break;
 
                 case { Type: FtpEntryType.Directory }:
-                    stack.Push(selection);
-                    await CreateFtpBrowser(tree, stack);
+                    var result = await DirectoryOperationsMenu(selection);
+                    if (result == "Open directory")
+                    {
+                        stack.Push(selection);
+                        await CreateFtpBrowser(tree, stack);
+                    }
                     break;
                 case { Type: FtpEntryType.File }:
                     AnsiConsole.MarkupLine($"[blue]Selected file:[/] [yellow]{selection.Key}[/]");
@@ -102,6 +100,7 @@ public class FtpBrowserDirectory
                     throw new Exception("Missing directory");
             }
         }
+        
     }
 
     public async Task FileOperationsMenu(FtpEntry file)
@@ -132,19 +131,21 @@ public class FtpBrowserDirectory
             case "Rename file":
                 await RenameImpl(file, token.Token); //TODO: Поправить, сейчас не отрабатывает
                 break;
+            case "Open directory":
+                break;
             case ".../":
                 await token.CancelAsync();
-                return;
+                break;
         }
     }
 
-    private async Task DirectoryOperationsMenu(FtpEntry directory)
+    private async Task<string> DirectoryOperationsMenu(FtpEntry directory)
     {
         var token = new CancellationTokenSource();
         var fileOperation = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title($"[blue]Select the operation for the file[/] [yellow]{directory.Item.Path}[/]:")
-                .AddChoices([".../", "Create directory", "Remove directory", "List directory", "Rename directory"])
+                .Title($"[blue]Select the operation for the directory[/] [yellow]{directory.Item.Path}[/]:")
+                .AddChoices(".../", "Open directory", "Create directory", "Remove directory", "List directory", "Rename directory")
         );
 
         switch (fileOperation)
@@ -154,19 +155,21 @@ public class FtpBrowserDirectory
                 break;
             case "Remove directory":
                 await _ftpClient.RemoveDirectory(directory.Item.Path, token.Token);
-                AnsiConsole.MarkupLine("[green]File was removed![/]");
+                AnsiConsole.MarkupLine("[green]Directory was removed![/]");
                 break;
             case "List directory":
                 await _ftpClient.ListDirectory(directory.Item.Path, 0, token.Token);
-                AnsiConsole.MarkupLine($"[green]List directory[/] [yellow] {directory.Item.Path}[/]");
+                AnsiConsole.MarkupLine($"[green]Directory listed:[/] [yellow] {directory.Item.Path}[/]");
                 break;
             case "Rename directory":
                 await RenameImpl(directory, token.Token); //TODO: Поправить, сейчас не отрабатывает
                 break;
+            case "Open directory":
+                return "Open directory";
             case ".../":
-                await token.CancelAsync();
                 break;
         }
+        return ".../";
     }
 
     private async Task RenameImpl(FtpEntry item, CancellationToken cancellationToken)
