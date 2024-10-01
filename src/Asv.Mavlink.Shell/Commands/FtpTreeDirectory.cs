@@ -14,7 +14,7 @@ public class FtpTreeDirectory
     private readonly string _connectionString = "tcp://127.0.0.1:5762";
     private ReadOnlyObservableCollection<FtpEntry> _tree;
 
-    [Command("FtpTree")]
+    [Command("ftp-tree")]
     public async Task RunFtpTree()
     {
         using var port = PortFactory.Create(_connectionString);

@@ -13,8 +13,9 @@ public class FtpBrowserDirectory
 {
     private readonly string _connectionString = "tcp://127.0.0.1:5762";
     private ReadOnlyObservableCollection<FtpEntry> _tree;
+    private FtpClient _ftpClient;
 
-    [Command("FtpBrowser")]
+    [Command("ftp-browser")]
     public async Task RunFtpBrowser()
     {
         using var port = PortFactory.Create(_connectionString);
@@ -22,8 +23,8 @@ public class FtpBrowserDirectory
         using var conn = MavlinkV2Connection.Create(port);
         var identity = new MavlinkClientIdentity(255, 255, 1, 1);
         var seq = new PacketSequenceCalculator();
-        using var ftpClient = new FtpClient(new MavlinkFtpClientConfig(), conn, identity, seq, TimeProvider.System);
-        var ftpEx = new FtpClientEx(ftpClient);
+        _ftpClient = new FtpClient(new MavlinkFtpClientConfig(), conn, identity, seq, TimeProvider.System);
+        var ftpEx = new FtpClientEx(_ftpClient);
         try
         {
             await ftpEx.Refresh("/");
@@ -45,7 +46,7 @@ public class FtpBrowserDirectory
         Stack<FtpEntry> stack = null)
     {
         stack ??= new Stack<FtpEntry>();
-        FtpEntry currentDirectory = stack.Count > 0 ? stack.Peek() : null;
+        var currentDirectory = stack.Count > 0 ? stack.Peek() : null;
         var choices = new List<FtpEntry>();
 
         if (stack.Count > 0 && currentDirectory != null)
@@ -64,7 +65,7 @@ public class FtpBrowserDirectory
 
         var selection = AnsiConsole.Prompt(
             new SelectionPrompt<FtpEntry>()
-                .Title($"[green]Current Directory:[/] [yellow]{(currentDirectory?.Key ?? "Root")}[/]")
+                .Title($"[blue]Current Directory:[/] [yellow]{(currentDirectory?.Key ?? "Root")}[/]")
                 .AddChoices(choices)
                 .UseConverter(entry => entry.Item.Name + (entry.Item.Type == FtpEntryType.Directory ? "/" : "")));
 
@@ -80,10 +81,39 @@ public class FtpBrowserDirectory
                 await CreateFtpBrowser(tree, stack);
                 break;
             case { Type: FtpEntryType.File }:
-                AnsiConsole.MarkupLine($"[green]Selected file:[/] [yellow]{selection.Key}[/]");
+                AnsiConsole.MarkupLine($"[blue]Selected file:[/] [yellow]{selection.Key}[/]");
+                await FileOperationsMenu(_ftpClient, selection.Item.Path);
                 break;
             default:
                 throw new Exception("Missing directory");
+        }
+    }
+    
+    public async Task FileOperationsMenu(IFtpClient ftpClient, string filePath)
+    {
+        var fileOperation = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title($"[blue]Select the operation for the file[/] [yellow]{filePath}[/]:")
+                .AddChoices(["List directory", "Remove File", "CreateDirectory", "Rename File", "Back"])
+        );
+
+        switch (fileOperation)
+        {
+            case "List directory":
+                await _ftpClient.ListDirectory(filePath, 5);
+                break;
+            case "Remove File":
+                await ftpClient.RemoveFile(filePath);
+                break;
+            case "CreateDirectory":
+                await _ftpClient.CreateDirectory(filePath);
+                break;
+            case "Rename File":
+                // await _ftpClient.Rename(filePath1, filePath2);
+                // break;
+                return;
+            case "Back":
+                return;
         }
     }
 }
