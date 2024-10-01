@@ -2,7 +2,7 @@
   "profiles": {
     "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "ftp"
+      "commandLineArgs": "packetviewer --connection tcp://127.0.0.1:5762"
     }
   }
 }

@@ -17,6 +17,7 @@ class Program
         
         var app = ConsoleApp.Create();
         app.Add<ExampleCommand>();
+        app.Add<PacketViewerCommand>();
         await app.RunAsync(args);
     }
 }
