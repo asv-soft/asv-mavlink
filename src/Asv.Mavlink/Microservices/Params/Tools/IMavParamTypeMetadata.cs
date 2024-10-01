@@ -71,7 +71,7 @@ public static class MavParam
             Increment = new MavParamValue((byte)1),
             MinValue = new((byte)0),
             DefaultValue = new MavParamValue(Convert.ToByte(def)),
-            MaxValue = new((byte)list.Count -1),
+            MaxValue = new((byte)(list.Count -1)),
             Values = list.ToArray(),
             Volatile = vlt,
             
