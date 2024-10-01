@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.Globalization;
 using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
@@ -220,8 +222,41 @@ public readonly struct MavParamValue: IComparable<MavParamValue>, IComparable,IE
         return !left.Equals(right);
     }
 
-    public string PrintValue()
+    public string PrintValue(string? formatString = null)
     {
+        if (formatString != null)
+        {
+            switch (Type)
+            {
+                case MavParamType.MavParamTypeUint8:
+                    Debug.Assert(_intValue != null, nameof(_intValue) + " != null");
+                    return ((byte)_intValue).ToString(formatString, CultureInfo.InvariantCulture);
+                case MavParamType.MavParamTypeInt8:
+                    Debug.Assert(_intValue != null, nameof(_intValue) + " != null");
+                    return ((sbyte)_intValue).ToString(formatString, CultureInfo.InvariantCulture);
+                case MavParamType.MavParamTypeUint16:
+                    Debug.Assert(_intValue != null, nameof(_intValue) + " != null");
+                    return ((ushort)_intValue).ToString(formatString, CultureInfo.InvariantCulture);
+                case MavParamType.MavParamTypeInt16:
+                    Debug.Assert(_intValue != null, nameof(_intValue) + " != null");
+                    return ((short)_intValue).ToString(formatString, CultureInfo.InvariantCulture);
+                case MavParamType.MavParamTypeUint32:
+                    Debug.Assert(_intValue != null, nameof(_intValue) + " != null");
+                    return ((uint)_intValue).ToString(formatString, CultureInfo.InvariantCulture);
+                case MavParamType.MavParamTypeInt32:
+                    Debug.Assert(_intValue != null, nameof(_intValue) + " != null");
+                    return ((int)_intValue).ToString(formatString, CultureInfo.InvariantCulture);
+                case MavParamType.MavParamTypeReal32:
+                    Debug.Assert(_realValue != null, nameof(_realValue) + " != null");
+                    return ((float)_realValue).ToString(formatString, CultureInfo.InvariantCulture);
+                case MavParamType.MavParamTypeUint64:
+                case MavParamType.MavParamTypeInt64:
+                case MavParamType.MavParamTypeReal64:
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         switch (Type)
         {
             case MavParamType.MavParamTypeUint8:
@@ -240,6 +275,7 @@ public readonly struct MavParamValue: IComparable<MavParamValue>, IComparable,IE
             default:
                 throw new ArgumentOutOfRangeException();
         }
+
     }
 
     public static string PrintType(MavParamType type)
@@ -251,8 +287,9 @@ public readonly struct MavParamValue: IComparable<MavParamValue>, IComparable,IE
             MavParamType.MavParamTypeUint16 => "U16",
             MavParamType.MavParamTypeInt16 => "I16",
             MavParamType.MavParamTypeUint32 => "U32",
-            MavParamType.MavParamTypeInt32 => "R32",
-            MavParamType.MavParamTypeUint64 or MavParamType.MavParamTypeInt64 or MavParamType.MavParamTypeReal32
+            MavParamType.MavParamTypeInt32 => "I32",
+            MavParamType.MavParamTypeReal32 => "R32",
+            MavParamType.MavParamTypeUint64 or MavParamType.MavParamTypeInt64 
                 or MavParamType.MavParamTypeReal64 => "Not supported",
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
@@ -279,4 +316,5 @@ public readonly struct MavParamValue: IComparable<MavParamValue>, IComparable,IE
                 throw new ArgumentOutOfRangeException();
         }
     }
+    
 }
