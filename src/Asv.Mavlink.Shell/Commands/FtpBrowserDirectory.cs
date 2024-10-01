@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
@@ -32,8 +33,8 @@ public class FtpBrowserDirectory
             await ftpEx.Refresh("@SYS");
             ftpEx.Entries.TransformToTree(x => x.ParentPath).Transform(x => new FtpEntry(x)).DisposeMany()
                 .Bind(out _tree).Subscribe();
-            
-            AnsiConsole.MarkupLine("Keymap: Reload: [red]F8[/]; Delete: [red]F10[/]; Copy: [red]F10[/];");
+
+            AnsiConsole.MarkupLine("Menu for directory: [red]F1[/]");
             await CreateFtpBrowser(_tree);
         }
         catch (Exception e)
@@ -42,7 +43,7 @@ public class FtpBrowserDirectory
             throw;
         }
     }
-    
+
     private async Task CreateFtpBrowser(ReadOnlyObservableCollection<FtpEntry> tree,
         Stack<FtpEntry> stack = null)
     {
@@ -64,109 +65,147 @@ public class FtpBrowserDirectory
         var currentItems = currentDirectory == null ? tree : currentDirectory.Items;
         choices.AddRange(currentItems);
 
-        var selection = AnsiConsole.Prompt(
-            new SelectionPrompt<FtpEntry>()
-                .Title($"[blue]Current Directory:[/] [yellow]{(currentDirectory?.Key ?? "Root")}[/]")
-                .AddChoices(choices)
-                .UseConverter(entry => entry.Item.Name + (entry.Item.Type == FtpEntryType.Directory ? "/" : "")));
-
-        switch (selection.Item)
+        while (true)
         {
-            case { Name: "..." }:
-                stack.Pop();
-                await CreateFtpBrowser(tree, stack);
-                break;
-
-            case { Type: FtpEntryType.Directory }:
-                if (Console.KeyAvailable)
+            AnsiConsole.MarkupLine("Display menu?");
+            if (Console.ReadKey(true).Key == ConsoleKey.F1)
+            {
+                if (currentDirectory != null && currentDirectory.Item.Type == FtpEntryType.Directory)
                 {
-                    var key = Console.ReadKey(true);
-                    if (key.Key == ConsoleKey.F1)
-                    {
-                        await DirectoryOperationsMenu(_ftpClient, selection);
-                        break;
-                    }
+                    await DirectoryOperationsMenu(currentDirectory);
                 }
-                stack.Push(selection);
-                await CreateFtpBrowser(tree, stack);
-                break;
-            case { Type: FtpEntryType.File }:
-                AnsiConsole.MarkupLine($"[blue]Selected file:[/] [yellow]{selection.Key}[/]");
-                await FileOperationsMenu(_ftpClient, selection);
-                break;
-            default:
-                throw new Exception("Missing directory");
+                continue;
+            }
+
+            var selection = AnsiConsole.Prompt(
+                new SelectionPrompt<FtpEntry>()
+                    .Title($"[blue]Current Directory:[/] [yellow]{(currentDirectory?.Key ?? "Root")}[/]")
+                    .AddChoices(choices)
+                    .UseConverter(entry => entry.Item.Name + (entry.Item.Type == FtpEntryType.Directory ? "/" : "")));
+
+            switch (selection.Item)
+            {
+                case { Name: "..." }:
+                    stack.Pop();
+                    await CreateFtpBrowser(tree, stack);
+                    break;
+
+                case { Type: FtpEntryType.Directory }:
+                    stack.Push(selection);
+                    await CreateFtpBrowser(tree, stack);
+                    break;
+                case { Type: FtpEntryType.File }:
+                    AnsiConsole.MarkupLine($"[blue]Selected file:[/] [yellow]{selection.Key}[/]");
+                    await FileOperationsMenu(selection);
+                    break;
+                default:
+                    throw new Exception("Missing directory");
+            }
         }
     }
-    
-    public async Task FileOperationsMenu(IFtpClient ftpClient, FtpEntry file)
+
+    public async Task FileOperationsMenu(FtpEntry file)
     {
+        var token = new CancellationTokenSource();
         var fileOperation = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title($"[blue]Select the operation for the file[/] [yellow]{file.Item.Path}[/]:")
-                .AddChoices(["Remove file", "Calculate CRC32", "Truncate file", "Read file", "Rename file", "Close"])
+                .AddChoices([".../", "Remove file", "Calculate CRC32", "Truncate file", "Read file", "Rename file"])
         );
 
         switch (fileOperation)
         {
             case "Remove file":
-                await _ftpClient.RemoveFile(file.Item.Path);
-                break;
-            case "Calculate CRC32":
-                await ftpClient.CalcFileCrc32(file.Item.Path);
+                await _ftpClient.RemoveFile(file.Item.Path, token.Token);
                 AnsiConsole.MarkupLine("[green]File was removed![/]");
                 break;
+            case "Calculate CRC32":
+                var crc32 = await _ftpClient.CalcFileCrc32(file.Item.Path, token.Token);
+                AnsiConsole.MarkupLine($"[yellow]CRC32[/]: [green]{crc32.ReadDataAsInt():X}[/]");
+                break;
             case "Truncate file":
-                await _ftpClient.TruncateFile(new TruncateRequest());
+                await Truncate(_ftpClient, file.Item.Path, token.Token); //TODO: Поправить, сейчас не отрабатывает
                 break;
             case "Read file":
-                await _ftpClient.ReadFile(new ReadRequest());
-                break; 
+                await ReadFile(_ftpClient, file.Item.Path); //TODO: Поправить, сейчас не отрабатывает
+                break;
             case "Rename file":
-                await RenameIml(file, new CancellationToken());
-                break; 
-            case "Close":
+                await RenameImpl(file, token.Token); //TODO: Поправить, сейчас не отрабатывает
+                break;
+            case ".../":
+                await token.CancelAsync();
                 return;
         }
     }
 
-    
-    private async Task DirectoryOperationsMenu(IFtpClient ftpClient, FtpEntry directory)
+    private async Task DirectoryOperationsMenu(FtpEntry directory)
     {
+        var token = new CancellationTokenSource();
         var fileOperation = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title($"[blue]Select the operation for the file[/] [yellow]{directory.Item.Path}[/]:")
-                .AddChoices(["Create directory", "Remove directory", "List directory", "Rename directory", "Close"])
+                .AddChoices([".../", "Create directory", "Remove directory", "List directory", "Rename directory"])
         );
 
         switch (fileOperation)
         {
             case "Create directory":
-                await _ftpClient.CreateDirectory(directory.Item.Path);
-                AnsiConsole.MarkupLine("[green]File was created![/]");
+                await CreateDirectoryImpl(_ftpClient, directory, token.Token);
                 break;
             case "Remove directory":
-                await ftpClient.RemoveDirectory(directory.Item.Path);
+                await _ftpClient.RemoveDirectory(directory.Item.Path, token.Token);
                 AnsiConsole.MarkupLine("[green]File was removed![/]");
                 break;
             case "List directory":
-                await _ftpClient.ListDirectory(directory.Item.Path, 0);
+                await _ftpClient.ListDirectory(directory.Item.Path, 0, token.Token);
                 AnsiConsole.MarkupLine($"[green]List directory[/] [yellow] {directory.Item.Path}[/]");
                 break;
             case "Rename directory":
-                await RenameIml(directory, new CancellationToken());
-                break; 
-            case "Close":
-                return;
+                await RenameImpl(directory, token.Token); //TODO: Поправить, сейчас не отрабатывает
+                break;
+            case ".../":
+                await token.CancelAsync();
+                break;
         }
     }
-    private async Task RenameIml(FtpEntry item, CancellationToken cancellationToken)
+
+    private async Task RenameImpl(FtpEntry item, CancellationToken cancellationToken)
     {
         var fileName = AnsiConsole.Prompt(
-            new TextPrompt<string>("New name: "));
+            new TextPrompt<string>("[blue]New name[/]: "));
         var lastIndex = item.Item.Path.LastIndexOf('/');
         var directoryPath = item.Item.Path[..(lastIndex + 1)];
-        await _ftpClient.Rename(item.Item.Path, directoryPath + fileName, new CancellationToken());
+        await _ftpClient.Rename(item.Item.Path, directoryPath + fileName, cancellationToken);
         AnsiConsole.MarkupLine($"[green]Directory was renamed![/]");
+    }
+
+    private async Task ReadFile(IFtpClient ftpClient, string filePath)
+    {
+        var handle = await ftpClient.OpenFileRead(filePath);
+        AnsiConsole.MarkupLine($"Открыт файл: {filePath}, Размер: {handle.Size} байт.");
+
+        var buffer = new byte[1024];
+        var request = new ReadRequest(handle.Session, 0, (byte)buffer.Length);
+        var result = await ftpClient.ReadFile(request, buffer);
+
+        AnsiConsole.MarkupLine($"Прочитано: {result.ReadCount} байт.");
+        AnsiConsole.WriteLine(Encoding.Default.GetString(buffer, 0, result.ReadCount));
+    }
+
+    private async Task Truncate(FtpClient ftpClient, string filePath, CancellationToken cancellationToken)
+    {
+        var newSize = AnsiConsole.Ask<uint>("Enter the new size for truncating the file:");
+        await ftpClient.TruncateFile(new TruncateRequest(filePath, newSize), cancellationToken);
+        AnsiConsole.MarkupLine($"[green]File {filePath} truncated to {newSize} bytes![/]");
+    }
+    
+    private async Task CreateDirectoryImpl(IFtpClient ftpClient, FtpEntry item, CancellationToken cancellationToken)
+    {
+        var dirName = AnsiConsole.Prompt(
+            new TextPrompt<string>("[blue]Name of new folder[/]: "));
+        var lastIndex = item.Item.Path.LastIndexOf('/');
+        var dirPath = item.Item.Path[..(lastIndex + 1)];
+        await ftpClient.CreateDirectory(dirPath + dirName, cancellationToken);
+        AnsiConsole.MarkupLine("[green]Directory was created![/]");
     }
 }
