@@ -19,14 +19,14 @@ namespace Asv.Mavlink.Shell
         /// Generate file form MAVLink XML message definitions.
         /// Example: gen -t=common.xml -i=in -o=out -e=cs csharp.tpl"
         /// </summary>
-        /// <param name="targetFile">OnTarget file name</param>
-        /// <param name="inputFolder">Folder with source XML files</param>
-        /// <param name="outputFolder">Output folder with results</param>
-        /// <param name="ext">Output files extentions</param>
-        /// <param name="templateFile">Liquid syntax template file, that used for generation</param>
+        /// <param name="ext">-e, Output files extensions</param>
+        /// <param name="templateFile">-template, Liquid syntax template file, that used for generation</param>
+        /// <param name="targetFile">-t, [Optional] OnTarget file name. By default standard.xml</param>
+        /// <param name="inputFolder">-i, [Optional] Folder with source XML files. By default "in" folder</param>
+        /// <param name="outputFolder">-o, [Optional] Output folder with results. By default "out" folder</param>
         [Command("gen")]
-        public async Task RunGenerate(string targetFile, string inputFolder, string outputFolder, string ext,
-            string templateFile)
+        public async Task RunGenerate(string ext,
+            string templateFile, string targetFile = null, string inputFolder = null, string outputFolder = null)
         {
             _targetFileName = targetFile ?? _targetFileName;
             _in = inputFolder ?? _in;
