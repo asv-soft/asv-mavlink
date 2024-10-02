@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <ProductVersion>3.10.4</ProductVersion>
+    <ProductVersion>3.10.4-dev.5</ProductVersion>
     <ProductPrevVersion>3.10.3</ProductPrevVersion>
 
     <AsvCommonVersion>3.0.0-dev.4</AsvCommonVersion>
