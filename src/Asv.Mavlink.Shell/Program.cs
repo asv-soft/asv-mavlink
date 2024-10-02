@@ -19,8 +19,7 @@
             app.Add<ExampleCommand>();
             app.Add<FtpTreeDirectory>();
             app.Add<FtpBrowserDirectory>();
-            await app.RunAsync(["ftp-browser"]); //TODO: убрать перед ПР
-            //await app.RunAsync(args);
+            await app.RunAsync(args);
         }
     }
 
