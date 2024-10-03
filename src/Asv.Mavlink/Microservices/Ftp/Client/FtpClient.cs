@@ -77,13 +77,13 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         return result;
     }
 
-    public async Task<FileTransferProtocolPacket> CalcFileCrc32(string path, CancellationToken cancellationToken = default)
+    public async Task<int> CalcFileCrc32(string path, CancellationToken cancellationToken = default)
     {
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.CalcFileCRC32:G} {path}");
         var result = await InternalFtpCall(FtpOpcode.CalcFileCRC32, p => p.WriteDataAsString(path), cancellationToken).ConfigureAwait(false);
         var buffer = result.ReadDataAsInt();
         _logger.ZLogInformation($"{LogSend} {result.ReadOpcode():G} {buffer})");
-        return result;
+        return buffer;
     }
 
     public async Task BurstReadFile(ReadRequest request, Action<FileTransferProtocolPacket> onBurstData, CancellationToken cancel = default)
