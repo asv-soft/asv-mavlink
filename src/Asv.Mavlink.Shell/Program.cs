@@ -22,6 +22,7 @@
             app.Add<FtpBrowserDirectory>();
             app.Add<DevicesInfoCommand>();
             app.Add<GenerateCommand>();
+            app.Add<VirtualAdsbCommand>();
             await app.RunAsync(args);
         }
     }

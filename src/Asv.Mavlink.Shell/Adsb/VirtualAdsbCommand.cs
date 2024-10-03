@@ -7,27 +7,27 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.Vehicle;
-using ManyConsole;
+using ConsoleAppFramework;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Spectre.Console;
 
 namespace Asv.Mavlink.Shell;
 
-public class VirtualAdsbCommand : ConsoleCommand,ILogger
+public class VirtualAdsbCommand
 {
     private string _file = "adsb.json";
 
-    public VirtualAdsbCommand()
+    /// <summary>
+    /// Generate virtual ADSB Vehicle.
+    /// </summary>
+    /// <param name="cfg">-cfg, File path with ADSB config. Will be created if not exist. Default 'adsb.json'</param>
+    [Command("adsb")]
+    public async Task RunAdsb(string cfg = null)
     {
-        IsCommand("adsb", "Generate virtual ADSB Vehicle");
-        HasOption("cfg=", $"File path with ADSB config. Will be created if not exist. Default '{_file}'", x => _file = x);
-        
-    }
-   
-    public override int Run(string[] remainingArguments)
-    {
-        return AnsiConsole.Progress()
+        _file = cfg ?? _file;
+
+        await AnsiConsole.Progress()
             .Columns(new ProgressColumn[] 
             {
                 new TaskDescriptionColumn(),    // Task description
@@ -36,36 +36,36 @@ public class VirtualAdsbCommand : ConsoleCommand,ILogger
                 new ElapsedTimeColumn(),        // Elapsed time
                 new SpinnerColumn(),            // Spinner
             })
-            .StartAsync(RunAsync).Result;
-
-        return -1;
+            .StartAsync(RunAsync);
     }
 
-    private async Task<int> RunAsync(ProgressContext ctx)
+    private async Task RunAsync(ProgressContext ctx)
     {
-        this.LogInformation("Check config file exist {ConfigFile}", _file);
+        AnsiConsole.MarkupLine($"[blue]info[/]: Check config file exist: [green]{_file}[/]");
+
         if (File.Exists(_file) == false)
         {
-            this.LogWarning("Create default config file {ConfigFile}", _file);
-            await File.WriteAllTextAsync(_file,JsonConvert.SerializeObject(AdsbCommandConfig.Default, Formatting.Indented));
+            AnsiConsole.MarkupLine($"[yellow]warn[/]: Creating default config file: {_file}");
+            await File.WriteAllTextAsync(_file, JsonConvert.SerializeObject(AdsbCommandConfig.Default, Formatting.Indented));
         }
+
         var config = JsonConvert.DeserializeObject<AdsbCommandConfig>(await File.ReadAllTextAsync(_file));
-        
-        if (config.Vehicles == null || config.Vehicles.Length == 0)
+
+        if (config?.Vehicles == null || config.Vehicles.Length == 0)
         {
-            this.LogError("Vehicles settings not found in the configuration file: {ConfigFile}", _file);
-            return -1;
+            AnsiConsole.MarkupLine($"[red]error[/]: Vehicles settings not found in the configuration file: [yellow]{_file}[/]");
+            return;
         }
-        
-        this.LogInformation("Start virtual ADSB receiver with SystemId:{SystemId}, ComponentId:{ComponentId}", config.SystemId, config.ComponentId);
+
+        AnsiConsole.MarkupLine($"[blue]info[/]: Start virtual ADSB receiver with SystemId: [yellow]{config.SystemId}[/], ComponentId: [yellow]{config.ComponentId}[/]");
 
         using var router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
         foreach (var port in config.Ports)
         {
-            this.LogInformation("Add connection port {PortName}: {PortConnectionString}", port.Name, port.ConnectionString);
+            AnsiConsole.MarkupLine($"[green]Add connection port {port.Name}[/]: [yellow]{port.ConnectionString}[/]");
             router.AddPort(port);
         }
-        
+
         var srv = new AdsbServerDevice(
             router,
             new PacketSequenceCalculator(),
@@ -73,12 +73,11 @@ public class VirtualAdsbCommand : ConsoleCommand,ILogger
             new AdsbServerDeviceConfig(),
             Scheduler.Default);
         srv.Start();
-        
-        this.LogInformation("Found config for {Count} vehicle", config.Vehicles.Length);
-        await Task.WhenAll(config.Vehicles.Select(x=>RunVehicleAsync(ctx, x,srv)));
-        this.LogInformation("Finish simulation");
-        
-        return 0;
+
+        AnsiConsole.MarkupLine($"[green]Found config for {config.Vehicles.Length} vehicles[/]");
+        await Task.WhenAll(config.Vehicles.Select(x => RunVehicleAsync(ctx, x, srv)));
+
+        AnsiConsole.MarkupLine("[green]Finish simulation![/]");
     }
 
     private async Task RunVehicleAsync(ProgressContext ctx, AdsbCommandVehicleConfig cfg, AdsbServerDevice srv)
@@ -86,7 +85,7 @@ public class VirtualAdsbCommand : ConsoleCommand,ILogger
         var vehicleTask = ctx.AddTask(cfg.CallSign);
         if (cfg.Route == null || cfg.Route.Length < 2)
         {
-            this.LogError("Vehicle {ConfigIcaoCodeSign} route must contain more than two points", cfg.CallSign);
+            AnsiConsole.MarkupLine($"[red]Vehicle {cfg.CallSign}[/] route must contain more than two points");
             return;
         }
 
@@ -97,13 +96,13 @@ public class VirtualAdsbCommand : ConsoleCommand,ILogger
             var point = cfg.Route[index];
             if (GeoPointLatitude.TryParse(point.Lat, out var lat) == false)
             {
-                var err = GeoPointLatitude.GetErrorMessage(point.Lat);
-                this.LogError("Config error {ConfigIcaoCodeSign}. route point '{Index}.{LatName}={LatString}' parse error:{Err}", cfg.CallSign, index, nameof(point.Lat),point.Lat, err);
+                AnsiConsole.MarkupLine($"[red]Config error {cfg.CallSign}[/]. Invalid latitude at route point {index}");
+                return;
             }
             if (GeoPointLatitude.TryParse(point.Lon, out var lon) == false)
             {
-                var err = GeoPointLongitude.GetErrorMessage(point.Lon);
-                this.LogError("Vehicle {ConfigIcaoCodeSign} route point '{Index}.{LonName}={LonString}' parse error:{Err}", cfg.CallSign, index, nameof(point.Lon),point.Lon, err);
+                AnsiConsole.MarkupLine($"[red]Config error {cfg.CallSign}[/]. Invalid longitude at route point {index}");
+                return;
             }
             route.Add(new GeoPoint(lat,lon,point.Alt));
         }
@@ -173,35 +172,4 @@ public class VirtualAdsbCommand : ConsoleCommand,ILogger
 
         return spatialDistance;
     }
-
-    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
-    {
-        switch (logLevel)
-        {
-            case LogLevel.Trace:
-                AnsiConsole.MarkupLine("[italic dim grey]trce[/]: " + formatter(state, exception));
-                break;
-            case LogLevel.Debug:
-                AnsiConsole.MarkupLine("[dim grey]dbug[/]: " + formatter(state, exception));
-                break;
-            case LogLevel.Information:
-                AnsiConsole.MarkupLine("[dim deepskyblue2]info[/]: " + formatter(state, exception));
-                break;
-            case LogLevel.Warning:
-                AnsiConsole.MarkupLine("[bold orange3]warn[/]: " + formatter(state, exception));
-                break;
-            case LogLevel.Error:
-                AnsiConsole.MarkupLine("[bold red]fail[/]: " + formatter(state, exception));
-                break;
-            case LogLevel.Critical:
-                AnsiConsole.MarkupLine("[bold underline red on white]crit[/]: " + formatter(state, exception));
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(logLevel));
-        }
-    }
-
-    public bool IsEnabled(LogLevel logLevel) => true;
-
-    public IDisposable BeginScope<TState>(TState state) where TState : notnull => null;
 }
