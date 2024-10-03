@@ -23,6 +23,7 @@
             app.Add<DevicesInfoCommand>();
             app.Add<GenerateCommand>();
             app.Add<VirtualAdsbCommand>();
+            app.Add<ExportSdrData>();
             await app.RunAsync(args);
         }
     }

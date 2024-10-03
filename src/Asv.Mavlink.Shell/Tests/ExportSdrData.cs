@@ -1,26 +1,26 @@
 using System;
 using System.IO;
 using Asv.Mavlink.V2.AsvSdr;
-using ManyConsole;
+using ConsoleAppFramework;
+using Spectre.Console;
 
 namespace Asv.Mavlink.Shell;
 
-public class ExportSdrData: ConsoleCommand
+public class ExportSdrData
 {
-    public ExportSdrData()
+
+    /// <summary>
+    /// Export sdt data to csv format
+    /// </summary>
+    /// <param name="inputFile">-i, Input file</param>
+    /// <param name="outputFile">-o, Output file</param>
+    [Command("export-sdr")]
+    public void RunExportSdrData(string inputFile, string outputFile = "out.csv")
     {
-        IsCommand("export-sdr");
-        AllowsAnyAdditionalArguments();
-    }
-    
-    
-    public override int Run(string[] remainingArguments)
-    {
-        
-        using (var file = File.OpenRead(remainingArguments[0]))
-        using (var outFile = new StreamWriter(File.OpenWrite("out.csv")))
-        {
+            using var file = File.OpenRead(inputFile);
+            using var outFile = new StreamWriter(File.OpenWrite(outputFile));
             var data = new byte[256];
+            
             while (file.Position < file.Length)
             {
                 file.Read(data, 0, data.Length);
@@ -29,7 +29,6 @@ public class ExportSdrData: ConsoleCommand
                 payload.Deserialize(ref span);
                 outFile.WriteLine($"{payload.Alt}\t{payload.TotalAm90}\t{payload.TotalAm150}\t{payload.TotalPower}\t{payload.ClrAm90}\t{payload.ClrAm150}\t{payload.ClrPower}\t{payload.CrsAm90}\t{payload.CrsAm150}\t{payload.CrsPower}".Replace(",", "."));
             }
-        }
-        return 0;
+            AnsiConsole.MarkupLine($"[green]Export completed[/]. Data saved to [yellow]{outputFile}[/]");
     }
 }
