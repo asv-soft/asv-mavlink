@@ -52,49 +52,49 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
                 case FtpOpcode.None:
                     break;
                 case FtpOpcode.TerminateSession:
-                    InternalTerminateSession(input);
+                    await InternalTerminateSession(input).ConfigureAwait(false);
                     break;
                 case FtpOpcode.ResetSessions:
-                    InternalResetSessions(input);
+                    await InternalResetSessions(input).ConfigureAwait(false);
                     break;
                 case FtpOpcode.ListDirectory:
-                    InternalListDirectory(input);
+                    await InternalListDirectory(input).ConfigureAwait(false);
                     break;
                 case FtpOpcode.OpenFileRO:
-                    InternalOpenFileRo(input);
+                    await InternalOpenFileRo(input).ConfigureAwait(false);
                     break;
                 case FtpOpcode.ReadFile:
-                    InternalFileRead(input);
+                    await InternalFileRead(input).ConfigureAwait(false);
                     break;
                 case FtpOpcode.CreateDirectory:
-                    InternalCreateDirectory(input);
+                    await InternalCreateDirectory(input).ConfigureAwait(false);
                     break;
                 case FtpOpcode.RemoveDirectory:
-                    InternalRemoveDirectory(input);
+                    await InternalRemoveDirectory(input).ConfigureAwait(false);
                     break;
                 case FtpOpcode.OpenFileWO:
-                    InternalOpenFileWrite(input);
+                    await InternalOpenFileWrite(input).ConfigureAwait(false);
                     break;
                 case FtpOpcode.Rename:
-                    InternalRename(input);
+                    await InternalRename(input).ConfigureAwait(false);
                     break;
                 case FtpOpcode.RemoveFile:
-                    InternalRemoveFile(input);
+                    await InternalRemoveFile(input).ConfigureAwait(false);
                     break;
                 case FtpOpcode.CalcFileCRC32:
-                    InternalCalcFileCrc32(input);
+                    await InternalCalcFileCrc32(input).ConfigureAwait(false);
                     break;
                 case FtpOpcode.TruncateFile:
-                    InternalTruncateFile(input);
+                    await InternalTruncateFile(input).ConfigureAwait(false);
                     break;
                 case FtpOpcode.CreateFile:
-                    InternalCreateFile(input);
+                    await InternalCreateFile(input).ConfigureAwait(false);
                     break;
                 case FtpOpcode.WriteFile:
-                    InternalWriteFile(input);
+                    await InternalWriteFile(input).ConfigureAwait(false);
                     break;
                 case FtpOpcode.BurstReadFile:
-                    InternalBurstReadFile(input);
+                    await InternalBurstReadFile(input).ConfigureAwait(false);
                     break;
                 case FtpOpcode.Ack:
                 case FtpOpcode.Nak:
@@ -123,7 +123,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     public CalcFileCrc32? CalcFileCrc32 { private get; set; }
 
-    private async void InternalCalcFileCrc32(FileTransferProtocolPacket input)
+    private async Task InternalCalcFileCrc32(FileTransferProtocolPacket input)
     {
         if (CalcFileCrc32 is null)
         {
@@ -142,7 +142,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     public TruncateFile? TruncateFile { private get; set; }
 
-    private async void InternalTruncateFile(FileTransferProtocolPacket input)
+    private async Task InternalTruncateFile(FileTransferProtocolPacket input)
     {
         if (TruncateFile is null)
         {
@@ -162,7 +162,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     public RemoveDirectory? RemoveDirectory { private get; set; }
 
-    private async void InternalRemoveDirectory(FileTransferProtocolPacket input)
+    private async Task InternalRemoveDirectory(FileTransferProtocolPacket input)
     {
         if (RemoveDirectory is null)
         {
@@ -180,7 +180,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
     
     public RemoveFile? RemoveFile { get; set; }
 
-    private async void InternalRemoveFile(FileTransferProtocolPacket input)
+    private async Task InternalRemoveFile(FileTransferProtocolPacket input)
     {
         if (RemoveFile is null)
         {
@@ -199,7 +199,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
     
     public ResetSessionsDelegate? ResetSessions { private get; set; }
 
-    private async void InternalResetSessions(FileTransferProtocolPacket input)
+    private async Task InternalResetSessions(FileTransferProtocolPacket input)
     {
         if (ResetSessions is null)
         {
@@ -217,7 +217,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     public ListDirectoryDelegate? ListDirectory { private get; set; }
 
-    private async void InternalListDirectory(FileTransferProtocolPacket input)
+    private async Task InternalListDirectory(FileTransferProtocolPacket input)
     {
         if (ListDirectory is null)
         {
@@ -244,7 +244,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     public CreateDirectory? CreateDirectory { private get; set; }
 
-    private async void InternalCreateDirectory(FileTransferProtocolPacket input)
+    private async Task InternalCreateDirectory(FileTransferProtocolPacket input)
     {
         if (CreateDirectory is null)
         {
@@ -265,7 +265,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     public CreateFile? CreateFile { private get; set; }
 
-    private async void InternalCreateFile(FileTransferProtocolPacket input)
+    private async Task InternalCreateFile(FileTransferProtocolPacket input)
     {
         if (CreateFile is null)
         {
@@ -290,7 +290,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     public TerminateSessionDelegate? TerminateSession { private get; set; }
 
-    private async void InternalTerminateSession(FileTransferProtocolPacket input)
+    private async Task InternalTerminateSession(FileTransferProtocolPacket input)
     {
         if (TerminateSession == null)
         {
@@ -309,7 +309,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
     
     public FileReadDelegate? FileRead { private get; set; }
 
-    private async void InternalFileRead(FileTransferProtocolPacket input)
+    private async Task InternalFileRead(FileTransferProtocolPacket input)
     {
         if (FileRead == null)
         {
@@ -345,7 +345,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
     #region OpenFileRead
     public OpenFileReadDelegate? OpenFileRead { private get; set; }
 
-    private async void InternalOpenFileRo(FileTransferProtocolPacket input)
+    private async Task InternalOpenFileRo(FileTransferProtocolPacket input)
     {
         if (OpenFileRead == null)
         {
@@ -383,7 +383,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
     
     public OpenFileWriteDelegate? OpenFileWrite { get; set; }
 
-    private async void InternalOpenFileWrite(FileTransferProtocolPacket input)
+    private async Task InternalOpenFileWrite(FileTransferProtocolPacket input)
     {
         if (OpenFileWrite == null)
         {
@@ -420,7 +420,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
     #region RenameFile
 
     public RenameDelegate? Rename { private get; set; }
-    private async void InternalRename(FileTransferProtocolPacket input)
+    private async Task InternalRename(FileTransferProtocolPacket input)
     {
         if (Rename is null)
         {
@@ -443,7 +443,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     public BurstReadFileDelegate? BurstReadFile { private get; set; }
 
-    private async void InternalBurstReadFile(FileTransferProtocolPacket input)
+    private async Task InternalBurstReadFile(FileTransferProtocolPacket input)
     {
         if (BurstReadFile is null)
         {
@@ -480,7 +480,7 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     public WriteFile? WriteFile { private get; set; }
 
-    private async void InternalWriteFile(FileTransferProtocolPacket input)
+    private async Task InternalWriteFile(FileTransferProtocolPacket input)
     {
         if (WriteFile is null)
         {
