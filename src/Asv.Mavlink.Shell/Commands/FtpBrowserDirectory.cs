@@ -120,8 +120,8 @@ public class FtpBrowserDirectory
                 break;
             case "Calculate CRC32":
                 var crc32 = await _ftpClient.CalcFileCrc32(file.Item.Path,
-                    token.Token); //TODO: Поправить реализацию, должен возвращать int
-                AnsiConsole.MarkupLine($"[yellow]CRC32[/]: [green]{crc32.ReadDataAsInt():X}[/]");
+                    token.Token);
+                AnsiConsole.MarkupLine($"[yellow]CRC32[/]: [green]{crc32}[/]");
                 break;
             case "Truncate file":
                 await Truncate(_ftpClient, file.Item.Path,
