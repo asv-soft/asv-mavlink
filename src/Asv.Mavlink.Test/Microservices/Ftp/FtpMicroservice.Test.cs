@@ -66,8 +66,7 @@ public class FtpMicroserviceTest
         SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
         server.CalcFileCrc32 = (path, cancellationToken) => Task.FromResult(originCheckSum);
         var result = await client.CalcFileCrc32(path).ConfigureAwait(false);
-        Assert.Equal(result.ReadOpcode(), FtpOpcode.Ack);
-        Assert.Equal(result.ReadDataAsInt(), originCheckSum);
+        Assert.Equal(result, originCheckSum);
     }
     
     [Theory]

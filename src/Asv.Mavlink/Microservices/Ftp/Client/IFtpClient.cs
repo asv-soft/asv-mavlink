@@ -15,7 +15,7 @@ public interface IFtpClient
     public Task<FileTransferProtocolPacket> ResetSessions(CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> RemoveDirectory(string path, CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> RemoveFile(string path, CancellationToken cancellationToken = default);
-    public Task<FileTransferProtocolPacket> CalcFileCrc32(string path, CancellationToken cancellationToken = default);
+    public Task<int> CalcFileCrc32(string path, CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> TruncateFile(TruncateRequest request, CancellationToken cancellationToken = default);
     
     
