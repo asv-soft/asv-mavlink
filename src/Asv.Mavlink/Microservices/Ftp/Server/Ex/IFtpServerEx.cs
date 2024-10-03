@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,16 +25,32 @@ public interface IFtpServerEx : IDisposable
 
 public class FtpSession : IDisposable
 {
+    private readonly ICollection<Stream> _affectedStreams;
     public byte Id { get; }
     public bool IsOccupied { get; private set; }
-
-    public ICollection<Stream> AffectedResources { get; }
     
     public FtpSession(byte id)
     {
         Id = id;
         IsOccupied = false;
-        AffectedResources = new List<Stream>();
+        _affectedStreams = new List<Stream>();
+    }
+
+    public void AddResource<TResource>(TResource resource)
+    {
+        if (!IsOccupied)
+        {
+            throw new Exception("Session is not in work"); // TODO: make proper exception class
+        }
+        
+        switch (resource)
+        {
+            case Stream stream:
+                _affectedStreams.Add(stream);
+                break;
+            default:
+                throw new Exception("Resource type is unknown for session"); // TODO: make proper exception class
+        }
     }
 
     public void Open()
@@ -54,11 +71,11 @@ public class FtpSession : IDisposable
         
     private void ReleaseAllResources()
     {
-        foreach (var resource in AffectedResources)
+        foreach (var resource in _affectedStreams)
         {
             resource.Dispose();
         }
             
-        AffectedResources.Clear();
+        _affectedStreams.Clear();
     }
 }
