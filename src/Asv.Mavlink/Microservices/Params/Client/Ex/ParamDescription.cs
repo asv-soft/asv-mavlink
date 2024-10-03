@@ -15,7 +15,7 @@ namespace Asv.Mavlink
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string Description { get; set; }
-        public List<ParamDescriptionValue> AvailableValues { get; } = new List<ParamDescriptionValue>();
+        public List<ParamDescriptionValue> AvailableValues { get; } = new();
         public decimal? Max { get; set; }
         public decimal? Min { get; set; }
         public string Units { get; set; }
