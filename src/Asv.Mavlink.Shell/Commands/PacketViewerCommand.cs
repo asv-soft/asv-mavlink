@@ -7,6 +7,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
+using BenchmarkDotNet.Engines;
 using ConsoleAppFramework;
 using DynamicData;
 using DynamicData.Binding;
@@ -74,8 +75,7 @@ public class PacketViewerCommand
             }
         });
     }
-
-
+    
     private void UpdateTable()
     {
         if (_isPause) return;
@@ -104,7 +104,7 @@ public class PacketViewerCommand
 
     private void UpdatePauseCellActive() => _table.UpdateCell(0, 2, $"[aqua]Pause[/]");
 
-    private void UpdatePauseCellInActive() => _table.UpdateCell(0, 2, $"Pause ");
+    private void UpdatePauseCellInActive() => _table.UpdateCell(0, 2, $"Pause");
 
     private void UpdateSizeCellActive() => _table.UpdateCell(0, 1, $"[aqua]Size:[/] {_consoleSize}");
 
@@ -121,8 +121,7 @@ public class PacketViewerCommand
         await Task.Delay(TimeSpan.FromMilliseconds(500));
         _table.UpdateCell(0, 3, $"End");
     }
-
-
+    
     private void InterceptConsoleActions()
     {
         while (true)
@@ -157,7 +156,6 @@ public class PacketViewerCommand
                                 break;
                         }
                     }
-
                     break;
                 }
                 case ConsoleKey.F7:
@@ -187,7 +185,6 @@ public class PacketViewerCommand
                                 break;
                         }
                     }
-
                     break;
                 }
                 case ConsoleKey.F8:
@@ -197,10 +194,10 @@ public class PacketViewerCommand
                     var keyPause = Console.ReadKey(true);
                     if (keyPause.Key is ConsoleKey.Enter or ConsoleKey.F8)
                     {
+                        HighlightSubmitCell();
                         UpdatePauseCellInActive();
                         _isPause = false;
                     }
-
                     break;
                 }
                 case ConsoleKey.F9:
@@ -211,6 +208,11 @@ public class PacketViewerCommand
                     _packetsSource.Dispose();
                     _actionsThread.Interrupt();
                     return;
+                }
+                case ConsoleKey.Enter:
+                {
+                    HighlightSubmitCell();
+                    break;
                 }
             }
         }
@@ -241,13 +243,13 @@ public class PacketViewerCommand
 
     private class PacketModel(IPacketV2<IPayload> packetV2)
     {
-        public string Type = packetV2.Name;
+        public readonly string Type = packetV2.Name;
         public DateTime Time { get; } = DateTime.Now;
-        public string Source = $"{packetV2.SystemId}, {packetV2.ComponentId}";
-        public string Message = $"{packetV2.Sequence:000}, {ConvertPacket(packetV2)}";
+        public readonly string Source = $"{packetV2.SystemId}, {packetV2.ComponentId}";
+        public readonly string Message = $"{packetV2.Sequence:000}, {ConvertPacket(packetV2)}";
         public string Description = ConvertPacket(packetV2, PacketFormatting.Indented);
         public Guid Id = Guid.NewGuid();
-        public int Size = packetV2.GetByteSize();
+        public readonly int Size = packetV2.GetByteSize();
     }
 
     private static string ConvertPacket(IPacketV2<IPayload> packet, PacketFormatting formatting = PacketFormatting.None)
@@ -256,20 +258,12 @@ public class PacketViewerCommand
         if (packet == null) throw new ArgumentException("Incoming packet was not initialized!");
         if (!CanConvert) throw new ArgumentException("Converter can not convert incoming packet!");
 
-        string result = string.Empty;
-
-        if (formatting == PacketFormatting.None)
+        var result = formatting switch
         {
-            result = JsonConvert.SerializeObject(packet.Payload, Formatting.None);
-        }
-        else if (formatting == PacketFormatting.Indented)
-        {
-            result = JsonConvert.SerializeObject(packet.Payload, Formatting.Indented);
-        }
-        else
-        {
-            throw new ArgumentException("Wrong packet formatting!");
-        }
+            PacketFormatting.None => JsonConvert.SerializeObject(packet.Payload, Formatting.None),
+            PacketFormatting.Indented => JsonConvert.SerializeObject(packet.Payload, Formatting.Indented),
+            _ => throw new ArgumentException("Wrong packet formatting!")
+        };
 
         return result;
     }
