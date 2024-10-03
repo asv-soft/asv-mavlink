@@ -35,6 +35,7 @@ public class FtpServerEx : IFtpServerEx
         
         Base = @base;
         Base.OpenFileRead = OpenFileRead;
+        Base.TerminateSession = TerminateSession;
     }
 
     public Task<ReadHandle> OpenFileRead(string path, CancellationToken cancellationToken = default)
@@ -69,9 +70,21 @@ public class FtpServerEx : IFtpServerEx
         throw new NotImplementedException();
     }
 
-    public Task TerminateSession(byte session, CancellationToken cancel = default)
+    public async Task TerminateSession(byte session, CancellationToken cancel = default)
     {
-        throw new NotImplementedException();
+        var existingSession =  _sessions.FirstOrDefault(s => s.Id == session);
+
+        if (existingSession is null)
+        {
+            throw new FtpNackException(FtpOpcode.TerminateSession, NackError.Fail);
+        }
+
+        if (!existingSession.IsOccupied)
+        {
+            throw new FtpNackException(FtpOpcode.TerminateSession, NackError.InvalidSession);
+        }
+        
+        await existingSession.CloseAsync().ConfigureAwait(false);
     }
 
     public Task ResetSessions(CancellationToken cancel = default)
@@ -123,6 +136,15 @@ public class FtpServerEx : IFtpServerEx
         foreach (var session in _sessions)
         {
             session.Close();
+        }
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        _entryCache.Dispose();
+        foreach (var session in _sessions)
+        {
+            await session.CloseAsync().ConfigureAwait(false);
         }
     }
 }

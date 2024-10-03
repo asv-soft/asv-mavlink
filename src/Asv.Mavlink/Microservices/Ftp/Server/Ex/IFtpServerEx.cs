@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Asv.Mavlink;
 
-public interface IFtpServerEx : IDisposable
+public interface IFtpServerEx : IDisposable, IAsyncDisposable
 {
     IFtpServer Base { get; }
     
@@ -23,7 +22,7 @@ public interface IFtpServerEx : IDisposable
     public Task TruncateFile(TruncateRequest request, CancellationToken cancel = default);
 }
 
-public class FtpSession : IDisposable
+public class FtpSession : IDisposable, IAsyncDisposable
 {
     private readonly ICollection<Stream> _affectedStreams;
     public byte Id { get; }
@@ -55,6 +54,11 @@ public class FtpSession : IDisposable
 
     public void Open()
     {
+        if (IsOccupied)
+        {
+            throw new Exception("Session is already opened"); // TODO: make proper exception class
+        }
+        
         IsOccupied = true;
     }
 
@@ -63,10 +67,21 @@ public class FtpSession : IDisposable
         IsOccupied = false;
         Dispose();
     }
+    
+    public async Task CloseAsync()
+    {
+        IsOccupied = false;
+        await DisposeAsync().ConfigureAwait(false);
+    }
         
     public void Dispose()
     {
         ReleaseAllResources();
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        await ReleaseAllResourcesAsync().ConfigureAwait(false);
     }
         
     private void ReleaseAllResources()
@@ -74,6 +89,16 @@ public class FtpSession : IDisposable
         foreach (var resource in _affectedStreams)
         {
             resource.Dispose();
+        }
+            
+        _affectedStreams.Clear();
+    }
+    
+    private async Task ReleaseAllResourcesAsync()
+    {
+        foreach (var resource in _affectedStreams)
+        {
+            await resource.DisposeAsync().ConfigureAwait(false);
         }
             
         _affectedStreams.Clear();
