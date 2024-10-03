@@ -26,6 +26,8 @@
             app.Add<ExportSdrData>();
             app.Add<MavlinkCommand>();
             app.Add<MavProxy>();
+            app.Add<BenchmarkBinSerializationCommand>();
+            app.Add<BenchmarkSerializationPacket>();
             await app.RunAsync(args);
         }
     }

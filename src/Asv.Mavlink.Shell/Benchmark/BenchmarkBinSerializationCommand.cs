@@ -4,23 +4,22 @@ using Asv.IO;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
+using ConsoleAppFramework;
 using ManyConsole;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 
 namespace Asv.Mavlink.Shell
 {
-    public class BenchmarkBinSerializationCommand : ConsoleCommand
+    public class BenchmarkBinSerializationCommand
     {
-        public BenchmarkBinSerializationCommand()
+        /// <summary>
+        /// Benchmark test
+        /// </summary>
+        [Command("benchmark-bin-serialize")]
+        public void RunBenchmarkBinSerialize()
         {
-            IsCommand("benchmark-bin-serialize", "Benchmark test");
-        }
-
-        public override int Run(string[] remainingArguments)
-        {
-            var summary = BenchmarkRunner.Run<BinSerialization>();
-            return 0;
+            BenchmarkRunner.Run<BinSerialization>();
         }
     }
 
