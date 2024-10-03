@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,19 +18,30 @@ namespace Asv.Mavlink.Shell;
 public class PacketViewerCommand
 {
     private Table _table;
-    private IMavlinkRouter _router;
+    private Table _packetTable;
     private Thread _actionsThread;
-    private SourceList<PacketModel> PacketsSource { get; set; } = new();
+    private IMavlinkRouter _router;
+    private bool _isCancel;
+    private bool _isSearching;
+    private bool _isPause;
+    private string _consoleSearch;
+    private string _consoleSize = "10";
+    private readonly SourceList<PacketModel> _packetsSource = new();
     private ReadOnlyObservableCollection<PacketModel> _packets;
-    private ReadOnlyObservableCollection<PacketModel> _filterByName = new(new ObservableCollection<PacketModel>());
-    private string consoleSearch;
-    private Subject<Func<PacketModel, bool>> _filterNameUpdate = new();
-    private bool _isFilterEnabled;
+    private readonly ConcurrentQueue<PacketModel> _outputCollection = new();
+    private readonly Subject<Func<PacketModel, bool>> _filterNameUpdate = new();
 
     [Command("packetviewer")]
     public void Run(string connection)
     {
-        UpdateTable();
+        _table = new Table().Expand()
+            .AddColumns("[red]F6[/]", "[red]F7[/]", "[red]F8[/]", "[red]F9[/]", "[red]ENTER[/]")
+            .ShowRowSeparators()
+            .Title("Packet Viewer")
+            .Border(TableBorder.Rounded);
+        _table.AddRow("Search:", $"Size:{_consoleSize}", "Pause", "End", "Submit");
+        _table.AddRow("", "", "", "", "");
+        _packetTable = new Table().AddColumns("Time", "Source", "Size", "Name", "Message").Expand();
         AnsiConsole.Status().Start("Create router...", ctx =>
         {
             ctx.Spinner(Spinner.Known.Aesthetic);
@@ -44,85 +56,186 @@ public class PacketViewerCommand
             _router.WrapToV2ExtensionEnabled = true;
         });
         _filterNameUpdate.OnNext(FilterBySourceType);
-        PacketsSource.LimitSizeTo(1000).Subscribe();
-        PacketsSource.Connect().Sort(SortExpressionComparer<PacketModel>.Descending(_ => _.Time)).Bind(out _packets)
-            .Subscribe(_ => OutputMessage(_packets.First()));
+        _packetsSource.LimitSizeTo(1000).Subscribe();
+        _packetsSource.Connect().Sort(SortExpressionComparer<PacketModel>.Descending(_ => _.Time)).Bind(out _packets)
+            .Subscribe(_ => SetPacketsInQueue(_packets.First()));
         _router.Buffer(TimeSpan.FromSeconds(1)).Select(GetPacketAndAddToCollection)
-            .Subscribe(PacketsSource.AddRange);
-        while (true)
+            .Subscribe(_packetsSource.AddRange);
+        _actionsThread = new Thread(InterceptConsoleActions);
+        _actionsThread.Start();
+        AnsiConsole.Live(_table).AutoClear(true).StartAsync(async ctx =>
         {
-            if (_isFilterEnabled is false)
+            while (_isCancel is false)
             {
-                _actionsThread = new Thread(InterceptConsoleActions);
-                _actionsThread.Start();
-                var ctx = AnsiConsole.Live(_table).AutoClear(true);
-                ctx.Start(WritePacketViewer);
+                await Task.Delay(TimeSpan.FromMilliseconds(35));
+                UpdateTable();
+                if (_table is null) continue;
+                ctx.Refresh();
             }
-            consoleSearch = AnsiConsole.Prompt(new TextPrompt<string>("Write Package Name:"));
-            UpdateTable();
-          
-            _isFilterEnabled = false;
-            //AnsiConsole.Clear(); console freezes after cleaning it idk where is the problem
-        }
+        });
     }
+
 
     private void UpdateTable()
     {
-        _table = new Table().Expand()
-            .AddColumns("Time", "Source", "Size", "Name", "Message")
-            .Title("[aqua]Packet Viewer[/]")
-            .Border(TableBorder.Rounded);
-    }
-
-    private void InterceptConsoleActions()
-    {
-        var actionsTable = new Table();
-        actionsTable.AddColumn("Filter");
-        actionsTable.AddRow(new Panel("[red]F[/]"));
-        AnsiConsole.Write(actionsTable);
-        var key = Console.ReadKey();
-        if (key.Key == ConsoleKey.F)
+        if (_isPause) return;
+        var dequeue = _outputCollection.TryDequeue(out var packetModel);
+        if (dequeue)
         {
-            _isFilterEnabled = true;
+            _packetTable.InsertRow(0, $"{packetModel.Time}", $"{packetModel.Source}", $"{packetModel.Size}",
+                $"{packetModel.Type}", $"{packetModel.Message}");
+            _table.UpdateCell(1, 0, _packetTable);
+        }
+
+        var parsed = int.TryParse(_consoleSize, out var size);
+        if (parsed is false) return;
+        if (_packetTable.Rows.Count <= size) return;
+        for (var i = size; i < _packetTable.Rows.Count; i++)
+        {
+            _packetTable.RemoveRow(i);
         }
     }
 
-    private void WritePacketViewer(LiveDisplayContext context)
+    private void UpdateSearchCellInActive() => _table.UpdateCell(0, 0, $"Search: {_consoleSearch}");
+
+    private void UpdateSearchCellActive() => _table.UpdateCell(0, 0, $"[aqua]Search:[/] {_consoleSearch}");
+
+    private void UpdateSizeCellInActive() => _table.UpdateCell(0, 1, $"Size: {_consoleSize}");
+
+    private void UpdatePauseCellActive() => _table.UpdateCell(0, 2, $"[aqua]Pause[/]");
+
+    private void UpdatePauseCellInActive() => _table.UpdateCell(0, 2, $"Pause ");
+
+    private void UpdateSizeCellActive() => _table.UpdateCell(0, 1, $"[aqua]Size:[/] {_consoleSize}");
+
+    private async Task HighlightSubmitCell()
     {
-        while (_isFilterEnabled is false)
+        _table.UpdateCell(0, 4, $"[aqua]Submit[/]");
+        await Task.Delay(TimeSpan.FromMilliseconds(500));
+        _table.UpdateCell(0, 4, $"Submit");
+    }
+
+    private async Task HighlightEndCell()
+    {
+        _table.UpdateCell(0, 3, $"[aqua]End[/]");
+        await Task.Delay(TimeSpan.FromMilliseconds(500));
+        _table.UpdateCell(0, 3, $"End");
+    }
+
+
+    private void InterceptConsoleActions()
+    {
+        while (true)
         {
-            Task.Delay(TimeSpan.FromSeconds(1));
-            if (_table is null) return;
-            context.Refresh();
+            var key = Console.ReadKey(true);
+            switch (key.Key)
+            {
+                case ConsoleKey.F6:
+                {
+                    _isSearching = true;
+                    UpdateSearchCellActive();
+                    UpdateSizeCellInActive();
+                    while (_isSearching)
+                    {
+                        var keysearch = Console.ReadKey(true);
+                        switch (keysearch.Key)
+                        {
+                            case ConsoleKey.Backspace when _consoleSearch == string.Empty || _consoleSearch is null:
+                                continue;
+                            case ConsoleKey.Backspace:
+                                _consoleSearch = _consoleSearch.Remove(_consoleSearch.Length - 1, 1);
+                                UpdateSearchCellActive();
+                                break;
+                            case ConsoleKey.Enter:
+                                _isSearching = false;
+                                UpdateSearchCellInActive();
+                                HighlightSubmitCell();
+                                break;
+                            default:
+                                _consoleSearch += keysearch.KeyChar;
+                                UpdateSearchCellActive();
+                                break;
+                        }
+                    }
+
+                    break;
+                }
+                case ConsoleKey.F7:
+                {
+                    _isSearching = false;
+                    UpdateSizeCellActive();
+                    UpdateSearchCellInActive();
+                    while (_isSearching is false)
+                    {
+                        var keysearch = Console.ReadKey(true);
+                        switch (keysearch.Key)
+                        {
+                            case ConsoleKey.Backspace when _consoleSize is "" or null:
+                                continue;
+                            case ConsoleKey.Backspace:
+                                _consoleSize = _consoleSize.Remove(_consoleSize.Length - 1, 1);
+                                UpdateSizeCellActive();
+                                break;
+                            case ConsoleKey.Enter:
+                                _isSearching = true;
+                                UpdateSizeCellInActive();
+                                HighlightSubmitCell();
+                                break;
+                            default:
+                                _consoleSize += keysearch.KeyChar;
+                                UpdateSizeCellActive();
+                                break;
+                        }
+                    }
+
+                    break;
+                }
+                case ConsoleKey.F8:
+                {
+                    _isPause = true;
+                    UpdatePauseCellActive();
+                    var keyPause = Console.ReadKey(true);
+                    if (keyPause.Key is ConsoleKey.Enter or ConsoleKey.F8)
+                    {
+                        UpdatePauseCellInActive();
+                        _isPause = false;
+                    }
+
+                    break;
+                }
+                case ConsoleKey.F9:
+                {
+                    HighlightEndCell();
+                    _isCancel = true;
+                    _router.Dispose();
+                    _packetsSource.Dispose();
+                    _actionsThread.Interrupt();
+                    return;
+                }
+            }
         }
     }
 
     private bool FilterBySourceType(PacketModel vm)
     {
-        if (consoleSearch is null) return true;
-        return vm.Type.Contains(consoleSearch, StringComparison.InvariantCultureIgnoreCase);
+        return _consoleSearch is null || vm.Type.Contains(_consoleSearch, StringComparison.InvariantCultureIgnoreCase);
     }
 
-    private void OutputMessage(PacketModel packet)
+    private void SetPacketsInQueue(PacketModel packet)
     {
         if (packet is null) return;
-        _table.InsertRow(0, $"{packet.Time}", $"{packet.Source}", $"{packet.Size}", $"{packet.Type}",
-            $"{packet.Message}");
-        if (_table.Rows.Count == 20)
-        {
-            _table.RemoveRow(19);
-        }
+        _outputCollection.Enqueue(packet);
     }
 
     private List<PacketModel> GetPacketAndAddToCollection(IList<IPacketV2<IPayload>> pkt)
     {
-        if (consoleSearch is null ||
-            pkt.Where(_ => _.Name.Contains(consoleSearch, StringComparison.InvariantCultureIgnoreCase)) is null)
+        if (_consoleSearch is null ||
+            pkt.Where(_ => _.Name.Contains(_consoleSearch, StringComparison.InvariantCultureIgnoreCase)) is null)
         {
             return pkt.Select(item => new PacketModel(item)).ToList();
         }
 
-        return pkt.Where(_ => _.Name.Contains(consoleSearch, StringComparison.InvariantCultureIgnoreCase))
+        return pkt.Where(_ => _.Name.Contains(_consoleSearch, StringComparison.InvariantCultureIgnoreCase))
             .Select(item => new PacketModel(item)).ToList();
     }
 
