@@ -7,7 +7,6 @@
 
     namespace Asv.Mavlink.Shell;
 
-
     class Program
     { 
         static async Task Main(string[] args)
@@ -22,6 +21,7 @@
             app.Add<FtpTreeDirectory>();
             app.Add<FtpBrowserDirectory>();
             app.Add<DevicesInfoCommand>();
+            app.Add<GenerateCommand>();
             await app.RunAsync(args);
         }
     }
