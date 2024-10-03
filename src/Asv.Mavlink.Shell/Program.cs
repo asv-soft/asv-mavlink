@@ -25,6 +25,7 @@
             app.Add<VirtualAdsbCommand>();
             app.Add<ExportSdrData>();
             app.Add<MavlinkCommand>();
+            app.Add<MavProxy>();
             await app.RunAsync(args);
         }
     }
