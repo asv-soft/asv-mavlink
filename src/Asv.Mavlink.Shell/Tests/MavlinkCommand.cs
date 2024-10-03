@@ -4,11 +4,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
+using ConsoleAppFramework;
 using ManyConsole;
 
 namespace Asv.Mavlink.Shell
 {
-    public class MavlinkCommand:ConsoleCommand
+    public class MavlinkCommand
     {
         private string _connectionString = "tcp://127.0.0.1:5760";
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
@@ -20,18 +21,16 @@ namespace Asv.Mavlink.Shell
         private int _packetCount;
         private int _lastPacketCount;
 
-        public MavlinkCommand()
+        /// <summary>
+        /// Listen MAVLink packages and print statistic
+        /// </summary>
+        /// <param name="connection">-cs, Connection string. Default "tcp://127.0.0.1:5760"</param>
+        [Command("mavlink")]
+        public void RunMavlink(string connection = null)
         {
-            IsCommand("mavlink", "Listen MAVLink packages and print statistic");
-            HasOption("cs=", $"Connection string. Default '{_connectionString}'", _ => _connectionString = _);
-        }
-
-        public override int Run(string[] remainingArguments)
-        {
+            _connectionString = connection ?? _connectionString;
             Task.Factory.StartNew(KeyListen);
             var conn = MavlinkV2Connection.Create(_connectionString);
-            
-
             
             conn.Subscribe(OnPacket);
             conn.DeserializePackageErrors.Subscribe(OnError);
@@ -40,7 +39,6 @@ namespace Asv.Mavlink.Shell
                 Redraw();
                 Task.Delay(3000,_cancel.Token).Wait();
             }
-            return 0;
         }
 
         private void OnError(DeserializePackageException ex)
