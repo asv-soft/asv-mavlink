@@ -20,6 +20,7 @@ public class PacketViewerCommand
 {
     private Table _table;
     private Table _packetTable;
+    private Table _headerTable;
     private Thread _actionsThread;
     private IMavlinkRouter _router;
     private bool _isCancel;
@@ -35,13 +36,13 @@ public class PacketViewerCommand
     [Command("packetviewer")]
     public void Run(string connection)
     {
-        _table = new Table().Expand()
-            .AddColumns("[red]F6[/]", "[red]F7[/]", "[red]F8[/]", "[red]F9[/]", "[red]ENTER[/]")
-            .ShowRowSeparators()
+        _headerTable = new Table().Expand().AddColumns("[red]F6[/]", "[red]F7[/]", "[red]F8[/]", "[red]F9[/]", "[red]ENTER[/]");
+        _headerTable.AddRow("Search:", $"Size:{_consoleSize}", "Pause", "End", "Submit"); 
+        _table = new Table().Expand().AddColumn("Controls")
             .Title("Packet Viewer")
             .Border(TableBorder.Rounded);
-        _table.AddRow("Search:", $"Size:{_consoleSize}", "Pause", "End", "Submit");
-        _table.AddRow("", "", "", "", "");
+        _table.AddRow(_headerTable);
+        _table.AddRow("");
         _packetTable = new Table().AddColumns("Time", "Source", "Size", "Name", "Message").Expand();
         AnsiConsole.Status().Start("Create router...", ctx =>
         {
@@ -96,30 +97,27 @@ public class PacketViewerCommand
         }
     }
 
-    private void UpdateSearchCellInActive() => _table.UpdateCell(0, 0, $"Search: {_consoleSearch}");
+    private void UpdateSearchCellInActive() => _headerTable.UpdateCell(0, 0, $"Search: {_consoleSearch}");
+    private void UpdateSearchCellActive() => _headerTable.UpdateCell(0, 0, $"[aqua]Search:[/] {_consoleSearch}");
+    private void UpdateSizeCellInActive() => _headerTable.UpdateCell(0, 1, $"Size: {_consoleSize}");
+    private void UpdateSizeCellActive() => _headerTable.UpdateCell(0, 1, $"[aqua]Size:[/] {_consoleSize}");
+    private void UpdatePauseCellActive() => _headerTable.UpdateCell(0, 2, $"[aqua]Pause[/]");
+    private void UpdatePauseCellInActive() => _headerTable.UpdateCell(0, 2, $"Pause");
 
-    private void UpdateSearchCellActive() => _table.UpdateCell(0, 0, $"[aqua]Search:[/] {_consoleSearch}");
-
-    private void UpdateSizeCellInActive() => _table.UpdateCell(0, 1, $"Size: {_consoleSize}");
-
-    private void UpdatePauseCellActive() => _table.UpdateCell(0, 2, $"[aqua]Pause[/]");
-
-    private void UpdatePauseCellInActive() => _table.UpdateCell(0, 2, $"Pause");
-
-    private void UpdateSizeCellActive() => _table.UpdateCell(0, 1, $"[aqua]Size:[/] {_consoleSize}");
+  
 
     private async Task HighlightSubmitCell()
     {
-        _table.UpdateCell(0, 4, $"[aqua]Submit[/]");
+        _headerTable.UpdateCell(0, 4, $"[aqua]Submit[/]");
         await Task.Delay(TimeSpan.FromMilliseconds(500));
-        _table.UpdateCell(0, 4, $"Submit");
+        _headerTable.UpdateCell(0, 4, $"Submit");
     }
 
     private async Task HighlightEndCell()
     {
-        _table.UpdateCell(0, 3, $"[aqua]End[/]");
+        _headerTable.UpdateCell(0, 3, $"[aqua]End[/]");
         await Task.Delay(TimeSpan.FromMilliseconds(500));
-        _table.UpdateCell(0, 3, $"End");
+        _headerTable.UpdateCell(0, 3, $"End");
     }
     
     private void InterceptConsoleActions()
