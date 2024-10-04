@@ -10,14 +10,16 @@ namespace Asv.Mavlink;
 public interface IFtpClient
 {
     Task<ReadHandle> OpenFileRead(string path, CancellationToken cancel = default);
+    Task<WriteHandle> OpenFileWrite(string path, CancellationToken cancel = default);
 
     public Task<FileTransferProtocolPacket> CreateDirectory(string path, CancellationToken cancellationToken = default);
+    public Task<FileTransferProtocolPacket> CreateFile(string path, CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> ResetSessions(CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> RemoveDirectory(string path, CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> RemoveFile(string path, CancellationToken cancellationToken = default);
-    public Task<int> CalcFileCrc32(string path, CancellationToken cancellationToken = default);
+    public Task<uint> CalcFileCrc32(string path, CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> TruncateFile(TruncateRequest request, CancellationToken cancellationToken = default);
-    
+    public Task<FileTransferProtocolPacket> WriteFile(WriteRequest request, Memory<byte> buffer, CancellationToken cancellationToken = default);
     
     Task BurstReadFile(ReadRequest request,
         Action<FileTransferProtocolPacket> onBurstData,
@@ -58,21 +60,20 @@ public interface IFtpClient
    
 }
 
-public readonly struct RenameRequest(byte session, string newName, uint skip, byte take)
-{
-    public readonly byte Session = session;
-    public readonly string NewName = newName;
-    public readonly uint Skip = skip;
-    public readonly byte Take = take;
-    public override string ToString() => $"RENAME_REQ(newName: {NewName}, skip: {Skip}, take: {Take}, session:{Session})";
-}
-
 public readonly struct ReadRequest(byte session, uint skip, byte take)
 {
     public readonly byte Session = session;
     public readonly uint Skip = skip;
     public readonly byte Take = take;
     public override string ToString() => $"READ_REQ(skip: {Skip}, take: {Take}, session:{Session})";
+}
+
+public readonly struct WriteRequest(byte session, uint skip, byte take)
+{
+    public readonly byte Session = session;
+    public readonly uint Skip = skip;
+    public readonly byte Take = take;
+    public override string ToString() => $"WRITE_REQ(skip: {Skip}, take: {Take}, session:{Session})";
 }
 
 public readonly struct ReadResult(byte readCount, ReadRequest request)
@@ -103,6 +104,13 @@ public readonly struct ReadHandle(byte session, uint size)
     public readonly byte Session = session;
     public readonly uint Size = size;
     public override string ToString() => $"READ_FILE(session: {Session}, size: {StringExtensions.BytesToString(Size)})";
+}
+
+public readonly struct WriteHandle(byte session, uint size)
+{
+    public readonly byte Session = session;
+    public readonly uint Size = size;
+    public override string ToString() => $"WRITE_FILE(session: {Session}, size: {StringExtensions.BytesToString(Size)})";
 }
 
 public readonly struct CreateHandle(byte session, string path)

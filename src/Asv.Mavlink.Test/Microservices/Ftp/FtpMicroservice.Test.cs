@@ -3,7 +3,6 @@ using System.Buffers;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
-using Asv.IO;
 using Asv.Mavlink.V2.Common;
 using Xunit;
 using Xunit.Abstractions;
@@ -106,7 +105,20 @@ public class FtpMicroserviceTest
         Assert.Equal((byte)0, result.ReadSize());
         Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
     }
+    
+    [Theory]
+    [InlineData("mftp://test.txt", 0)]
+    [InlineData("mftp://test.txt", byte.MaxValue)]
+    public async Task CreateFile_WithProperInput_Success(string filePath, byte session)
+    {
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+        server.CreateFile = (path, cancellationToken) => Task.FromResult(session);
 
+        var result = await client.CreateFile(filePath);
+        Assert.Equal((byte)0, result.ReadSession());
+        Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
+    }
+    
     [Theory]
     [InlineData("mftp://directory//")]
     public async Task Client_call_RemoveDirectory(string directoryPath)
@@ -163,6 +175,28 @@ public class FtpMicroserviceTest
         Assert.Equal(originSession, result.Session);
         Assert.Equal(originFileSize, result.Size);
     }
+    
+    [Theory]
+    [InlineData("mftp://test.txt", 0, uint.MaxValue)]
+    public async Task OpenFileWrite_WithProperInput_Success(string originPath,
+        byte originSession, uint originFileSize)
+    {
+        var skip = 3;
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => skip-- == 0);
+
+        var called = 0;
+        server.OpenFileWrite = (path, cancel) =>
+        {
+            Assert.Equal(originPath, path);
+            called++;
+            return Task.FromResult(new WriteHandle(originSession, originFileSize));
+        };
+
+        var result = await client.OpenFileWrite(originPath);
+        Assert.Equal(1, called);
+        Assert.Equal(originSession, result.Session);
+        Assert.Equal(originFileSize, result.Size);
+    }
 
     [Theory]
     [InlineData(1, 0, 200)]
@@ -188,7 +222,6 @@ public class FtpMicroserviceTest
         Assert.Equal(originRequest,result.Request);
         Assert.Equal(originData.Length,result.ReadCount);
         Assert.Equal(originData,buffer.Memory.Slice(0,originData.Length).ToArray());
-        
     } 
     
     [Theory]
@@ -203,7 +236,89 @@ public class FtpMicroserviceTest
         var result = await client.Rename(defaultPath, newPath);
         Assert.Equal((byte)0, result.ReadSize());
         Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
-    }   
+    }
+
+    [Theory]
+    [InlineData("mftp://test", 0)]
+    [InlineData("mftp://test", 45)]
+    [InlineData("mftp://test", uint.MaxValue)]
+    public async Task ListDirectory_WithProperInput_Success(string path, uint offset)
+    {
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+        var originData = new char[MavlinkFtpHelper.MaxDataSize];
+        for (var i = 0; i < originData.Length; i++)
+        {
+            originData[i] = (char)Random.Shared.Next(0, 32);
+        }
+
+        var called = 0;
+        server.ListDirectory = (path, offset, buffer, cancel) =>
+        {
+            called++;
+            originData.CopyTo(buffer.Span);
+            return Task.FromResult((byte) originData.Length);
+        };
+        
+        using var buffer = MemoryPool<char>.Shared.Rent(MavlinkFtpHelper.MaxDataSize);
+        var result = await client.ListDirectory(path, offset, buffer.Memory);
+        
+        Assert.Equal(1,called);
+        Assert.Equal(originData.Length,result);
+        Assert.True(originData.SequenceEqual(buffer.Memory.Slice(0,originData.Length).ToArray()));
+    }
+    
+    [Theory]
+    [InlineData(1, 0, 238)]
+    [InlineData(1, 0, 200)]
+    public async Task WriteFile_WithProperInput_Success(byte session, uint skip, byte take)
+    {
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+        var originData = new byte[take];
+        Random.Shared.NextBytes(originData);
+
+        var internalBuffer = new byte[take];
+        var called = 0;
+        server.WriteFile = (req, buffer, cancel) =>
+        {
+            called++;
+            buffer.Span[..take].CopyTo(internalBuffer);
+            return Task.CompletedTask;
+        };
+
+        var originRequest = new WriteRequest(session, skip, take);
+        using var buffer = MemoryPool<byte>.Shared.Rent(take);
+        originData.CopyTo(buffer.Memory.Span);
+        var result = await client.WriteFile(originRequest, buffer.Memory);
+        
+        Assert.Equal(1,called);
+        Assert.Equal((byte)0, result.ReadSize());
+        Assert.True(internalBuffer.SequenceEqual(originData));
+        Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
+    }
+    
+    [Theory]
+    [InlineData(1, 0, Byte.MaxValue)]
+    [InlineData(1, 0, MavlinkFtpHelper.MaxDataSize+1)]
+    public async Task WriteFile_WithWrongDataSize_ThrowsArgumentException(byte session, uint skip, byte take)
+    {
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+        var originData = new byte[take];
+        Random.Shared.NextBytes(originData);
+
+        var internalBuffer = new byte[take];
+        server.WriteFile = (req, buffer, cancel) =>
+        {
+            buffer.Span[..take].CopyTo(internalBuffer);
+            return Task.CompletedTask;
+        };
+
+        var originRequest = new WriteRequest(session, skip, take);
+        using var buffer = MemoryPool<byte>.Shared.Rent(take);
+        originData.CopyTo(buffer.Memory.Span);
+        await Assert.ThrowsAsync<ArgumentException>(
+            async () => await client.WriteFile(originRequest, buffer.Memory)
+        );
+    }
     
     [Theory]
     [InlineData(1, 0, 200)]
