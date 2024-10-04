@@ -1,10 +1,10 @@
 using System;
 using System.Buffers;
+using System.Linq;
 using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Asv.Common;
-using Castle.Core.Logging;
+using Asv.IO;
+using Asv.Mavlink.V2.Common;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -20,9 +20,9 @@ public class FtpMicroserviceTest
     }
 
     private void SetUpMicroservice(out IFtpClient client, out IFtpServer server,
-        Func<IPacketV2<IPayload>,bool> clientToServer, Func<IPacketV2<IPayload>,bool> serverToClient)
+        Func<IPacketV2<IPayload>, bool> clientToServer, Func<IPacketV2<IPayload>, bool> serverToClient)
     {
-        var link = new VirtualMavlinkConnection(clientToServer,serverToClient);
+        var link = new VirtualMavlinkConnection(clientToServer, serverToClient);
         var clientId = new MavlinkClientIdentity
         {
             SystemId = 1,
@@ -34,70 +34,153 @@ public class FtpMicroserviceTest
 
         var clientSeq = new PacketSequenceCalculator();
         client = new FtpClient(new MavlinkFtpClientConfig(), link.Client, clientId, clientSeq, TimeProvider.System,
-            TaskPoolScheduler.Default,new TestLogger(_output,"CLIENT"));
+            TaskPoolScheduler.Default, new TestLogger(_output, "CLIENT"));
 
         var serverSeq = new PacketSequenceCalculator();
-        server = new FtpServer(new MavlinkFtpServerConfig(), link.Server, serverId, serverSeq, TaskPoolScheduler.Default,new TestLogger(_output,"SERVER") );
+        server = new FtpServer(new MavlinkFtpServerConfig(), link.Server, serverId, serverSeq,
+            TaskPoolScheduler.Default, new TestLogger(_output, "SERVER"));
     }
 
     [Theory]
     [InlineData("mftp://test.txt", 0, uint.MaxValue)]
-    public async Task Client_Call_OpenFileRead_And_Server_Catch_It(string originPath, byte originSession,uint originFileSize)
+    public async Task Client_Call_OpenFileRead_And_Server_Catch_It(string originPath, byte originSession,
+        uint originFileSize)
     {
         SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
 
         var called = 0;
         server.OpenFileRead = (path, cancel) =>
         {
-            Assert.Equal(originPath,path);
+            Assert.Equal(originPath, path);
             called++;
-            return Task.FromResult(new ReadHandle(originSession,originFileSize));
+            return Task.FromResult(new ReadHandle(originSession, originFileSize));
         };
 
         var result = await client.OpenFileRead(originPath);
-        Assert.Equal(1,called);
-        Assert.Equal(originSession,result.Session);
-        Assert.Equal(originFileSize,result.Size);
-    }    
+        Assert.Equal(1, called);
+        Assert.Equal(originSession, result.Session);
+        Assert.Equal(originFileSize, result.Size);
+    }
+
+    [Theory]
+    [InlineData("mftp://test.txt", -1177814316)]
+    public async Task Client_call_CalcFileCrc32(string path, int originCheckSum)
+    {
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+        server.CalcFileCrc32 = (path, cancellationToken) => Task.FromResult(originCheckSum);
+        var result = await client.CalcFileCrc32(path).ConfigureAwait(false);
+        Assert.Equal(result, originCheckSum);
+    }
     
     [Theory]
+    [InlineData("mftp://test.txt", 10)]
+    public async Task Client_Call_TruncateFile_And_Server_Catch_It(string filePath, uint offset)
+    {
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+
+        var called = 0;
+
+        server.TruncateFile = (request, cancel) =>
+        {
+            Assert.Equal(filePath, request.Path);
+            Assert.Equal(offset, request.Offset);
+            called++;
+            return Task.FromResult(filePath);
+        };
+
+        var result = await client.TruncateFile(new TruncateRequest(filePath, offset)).ConfigureAwait(false);
+
+        Assert.Equal(1, called);
+        Assert.Equal((byte)0, result.ReadSize());
+        Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
+    }
+    
+    [Theory]
+    [InlineData("mftp://directory//")]
+    public async Task Client_call_CreateDirectory(string directoryPath)
+    {
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+        server.CreateDirectory = (path, cancellationToken) => Task.FromResult(path);
+
+        var result = await client.CreateDirectory(directoryPath);
+        Assert.Equal((byte)0, result.ReadSize());
+        Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
+    }
+
+    [Theory]
+    [InlineData("mftp://directory//")]
+    public async Task Client_call_RemoveDirectory(string directoryPath)
+    {
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+        server.RemoveDirectory = (path, cancellationToken) => Task.FromResult(path);
+
+        var result = await client.RemoveDirectory(directoryPath);
+        Assert.Equal((byte)0, result.ReadSize());
+        Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
+    }
+
+    [Theory]
+    [InlineData("mftp://test.txt")]
+    public async Task Client_Call_RemoveFile(string directoryPath)
+    {
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+        server.RemoveFile = (path, cancellationToken) => Task.FromResult(path);
+
+        var result = await client.RemoveFile(directoryPath);
+        Assert.Equal((byte)0, result.ReadSize());
+        Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
+    }
+
+    [Fact]
+    public async Task Client_Call_ResetSession()
+    {
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+        server.ResetSessions = (cancellationToken) => Task.FromResult(cancellationToken);
+        var res = await client.ResetSessions();
+        Assert.Equal(res.ReadOpcode(),FtpOpcode.Ack );
+    }
+    
+
+
+    [Theory]
     [InlineData("mftp://test.txt", 0, uint.MaxValue)]
-    public async Task Client_Call_OpenFileRead_With_Skip_One_Request_And_Server_Catch_It_Once(string originPath, byte originSession,uint originFileSize)
+    public async Task Client_Call_OpenFileRead_With_Skip_One_Request_And_Server_Catch_It_Once(string originPath,
+        byte originSession, uint originFileSize)
     {
         var skip = 3;
-        SetUpMicroservice(out var client, out var server, (packet) =>true, (packet) =>  skip-- == 0);
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => skip-- == 0);
 
         var called = 0;
         server.OpenFileRead = (path, cancel) =>
         {
-            Assert.Equal(originPath,path);
+            Assert.Equal(originPath, path);
             called++;
-            return Task.FromResult(new ReadHandle(originSession,originFileSize));
+            return Task.FromResult(new ReadHandle(originSession, originFileSize));
         };
 
         var result = await client.OpenFileRead(originPath);
-        Assert.Equal(1,called);
-        Assert.Equal(originSession,result.Session);
-        Assert.Equal(originFileSize,result.Size);
+        Assert.Equal(1, called);
+        Assert.Equal(originSession, result.Session);
+        Assert.Equal(originFileSize, result.Size);
     }
-    
+
     [Theory]
-    [InlineData(1, 0,200)]
-    public async Task Client_Call_FileRead_And_Server_Catch_It(byte session,uint skip,byte take)
+    [InlineData(1, 0, 200)]
+    public async Task Client_Call_FileRead_And_Server_Catch_It(byte session, uint skip, byte take)
     {
-        SetUpMicroservice(out var client, out var server, (packet) =>true, (packet) =>  true);
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
         var originData = new byte[take];
         Random.Shared.NextBytes(originData);
-        
+
         var called = 0;
-        server.FileRead = (req,buffer, cancel) =>
+        server.FileRead = (req, buffer, cancel) =>
         {
             called++;
             originData.CopyTo(buffer.Span);
-            return Task.FromResult(new ReadResult((byte)originData.Length,req));
+            return Task.FromResult(new ReadResult((byte)originData.Length, req));
         };
 
-        var originRequest = new ReadRequest(session,skip,take);
+        var originRequest = new ReadRequest(session, skip, take);
         using var buffer = MemoryPool<byte>.Shared.Rent(take);
         var result = await client.ReadFile(originRequest, buffer.Memory);
         
@@ -106,5 +189,75 @@ public class FtpMicroserviceTest
         Assert.Equal(originData.Length,result.ReadCount);
         Assert.Equal(originData,buffer.Memory.Slice(0,originData.Length).ToArray());
         
-    }    
+    } 
+    
+    [Theory]
+    [InlineData("mftp://test.txt", "mftp://test1.txt")]
+    [InlineData("mftp://test", "mftp://test1")]
+    public async Task Rename_WithProperInput_Success(string defaultPath, string newPath)
+    {
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+
+        server.Rename = (path1, path2, cancel) => Task.FromResult((path1, path2, cancel));
+
+        var result = await client.Rename(defaultPath, newPath);
+        Assert.Equal((byte)0, result.ReadSize());
+        Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
+    }   
+    
+    [Theory]
+    [InlineData(1, 0, 200)]
+    public async Task BurstReadFile_WithProperInput_Success(byte session, uint skip, byte take)
+    {
+        // Assert
+        SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
+        var originData = new byte[take];
+        Random.Shared.NextBytes(originData);
+        var called = 0;
+        var originRequest = new ReadRequest(session, skip, take);
+        var buffer1 = ArrayPool<byte>.Shared.Rent(take/2);
+        var buffer2 = ArrayPool<byte>.Shared.Rent(take - (take/2));
+        var packet1 = new FileTransferProtocolPacket();
+        var packet2 = new FileTransferProtocolPacket();
+
+        try
+        {
+            // Act
+            server.BurstReadFile = (req, buffer, cancel) =>
+            {
+                called++;
+                originData[..(originData.Length / 2)].CopyTo(buffer.Span);
+                return Task.FromResult(new BurstReadResult((byte)(originData.Length / 2), false, req));
+            };
+            await client.BurstReadFile(originRequest, p => { packet1 = p; });
+
+            server.BurstReadFile = (req, buffer, cancel) =>
+            {
+                called++;
+                originData[(originData.Length / 2)..].CopyTo(buffer.Span);
+                return Task.FromResult(new BurstReadResult((byte)(originData.Length - (originData.Length / 2)), true,
+                    req));
+            };
+            await client.BurstReadFile(originRequest, p => { packet2 = p; });
+            
+            // Assert
+            var readOffset = packet1.ReadOffset() + packet2.ReadOffset();
+            var readSize = packet1.ReadSize() + packet2.ReadSize();
+            packet1.ReadData(buffer1);
+            packet2.ReadData(buffer2);
+            var data1 = buffer1.AsMemory()[..(take / 2)].ToArray();
+            var data2 = buffer2.AsMemory()[..(take - (take / 2))].ToArray();
+            var fullData = data1.Concat(data2);
+            
+            Assert.Equal(2,called);
+            Assert.Equal(skip, readOffset);
+            Assert.Equal(originData.Length, readSize);
+            Assert.True(originData.SequenceEqual(fullData));
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer1);
+            ArrayPool<byte>.Shared.Return(buffer2);
+        }
+    }
 }

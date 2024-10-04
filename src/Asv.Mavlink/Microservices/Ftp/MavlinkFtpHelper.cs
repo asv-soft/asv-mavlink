@@ -49,9 +49,17 @@ public static class MavlinkFtpHelper
         }
         span = span.TrimEnd(DirectorySeparator);
         var index = span.LastIndexOf(DirectorySeparator);
-        return index == -1 
-            ? new FtpDirectory(span.ToString()) 
-            : new FtpDirectory(span[(index + 1)..].ToString(), span[..index].ToString());
+        if (index == -1)
+        {
+            return new FtpDirectory(span.ToString());
+        }
+        var directoryName = span[(index + 1)..].ToString();
+        var parentPath = span[..index].ToString();
+        if (parentPath == string.Empty && path.StartsWith(DirectorySeparator))
+        {
+            parentPath = DirectorySeparator.ToString();
+        }
+        return new FtpDirectory(directoryName, parentPath);
     }
     public static bool ParseFtpEntry(ref SequenceReader<char> rdr, string parentPath, out IFtpEntry? entry)
     {
@@ -226,6 +234,13 @@ public static class MavlinkFtpHelper
         packet.WriteSize(sizeof(byte));
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteDataAsInt(this FileTransferProtocolPacket packet, in int data)
+    {
+        var byteArr = new ReadOnlySpan<byte>(BitConverter.GetBytes(data));
+        byteArr.CopyTo(packet.Payload.Payload.AsSpan(12));
+        packet.WriteSize(sizeof(int));
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteDataAsTwoByte(this FileTransferProtocolPacket packet, in byte firstByte, in byte secondByte)
     {
         packet.Payload.Payload[12] = firstByte;
@@ -278,6 +293,13 @@ public static class MavlinkFtpHelper
     {
         var size = packet.ReadSize();
         return (byte)FtpEncoding.GetChars(new ReadOnlySpan<byte>(packet.Payload.Payload, 12,size), buffer.Span);
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int ReadDataAsInt(this FileTransferProtocolPacket packet)
+    {
+        var size = packet.ReadSize();
+        ReadOnlySpan<byte> byteArr = packet.Payload.Payload.AsSpan(12, size);
+        return BitConverter.ToInt32(byteArr);
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReadDataAsString(this FileTransferProtocolPacket packet, Span<char> buffer)

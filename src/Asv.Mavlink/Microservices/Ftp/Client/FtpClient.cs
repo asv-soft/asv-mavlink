@@ -4,7 +4,6 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -42,6 +41,49 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _timeProvider = timeProvider;
         _logger = logger ?? NullLogger.Instance;
         _burstTimeout = TimeSpan.FromMilliseconds(config.BurstTimeoutMs);
+    }
+
+    public Task<FileTransferProtocolPacket> ResetSessions(CancellationToken cancellationToken = default)
+    {
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.ResetSessions:G}(Reset all sessions)");
+        return InternalFtpCall(FtpOpcode.ResetSessions, packet =>{} , cancellationToken);
+    }
+
+    public async Task<FileTransferProtocolPacket> RemoveDirectory(string path, CancellationToken cancellationToken = default)
+    {
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.RemoveDirectory:G} {path}");
+        var result = await InternalFtpCall(FtpOpcode.RemoveDirectory, p => p.WriteDataAsString(path), cancellationToken).ConfigureAwait(false);
+        _logger.ZLogInformation($"{LogSend} {result.ReadOpcode():G} {result.ReadSize()}");
+        return result;
+    }
+
+    public async Task<FileTransferProtocolPacket> RemoveFile(string path, CancellationToken cancellationToken = default)
+    {
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.RemoveFile:G} {path}");
+        var result = await InternalFtpCall(FtpOpcode.RemoveFile, p => p.WriteDataAsString(path), cancellationToken).ConfigureAwait(false);
+        _logger.ZLogInformation($"{LogSend} {result.ReadOpcode():G} {result.ReadSize()}");
+        return result;
+    }
+
+    public async Task<FileTransferProtocolPacket> TruncateFile(TruncateRequest request, CancellationToken cancellationToken = default)
+    {
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.TruncateFile:G} {request.ToString()}");
+        var result = await InternalFtpCall(FtpOpcode.TruncateFile, p =>
+        {
+            p.WriteDataAsString(request.Path);
+            p.WriteOffset(request.Offset);
+        }, cancellationToken).ConfigureAwait(false);
+        _logger.ZLogInformation($"{LogRecv} {FtpOpcode.TruncateFile:G} {request.Path}: truncated to {request.Offset}");
+        return result;
+    }
+
+    public async Task<int> CalcFileCrc32(string path, CancellationToken cancellationToken = default)
+    {
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.CalcFileCRC32:G} {path}");
+        var result = await InternalFtpCall(FtpOpcode.CalcFileCRC32, p => p.WriteDataAsString(path), cancellationToken).ConfigureAwait(false);
+        var buffer = result.ReadDataAsInt();
+        _logger.ZLogInformation($"{LogSend} {result.ReadOpcode():G} {buffer})");
+        return buffer;
     }
 
     public async Task BurstReadFile(ReadRequest request, Action<FileTransferProtocolPacket> onBurstData, CancellationToken cancel = default)
@@ -113,9 +155,31 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         
         
     }
+
     
-   
+    public async Task<FileTransferProtocolPacket> Rename(string path1, string path2, CancellationToken cancel)
+    {
+        _logger.ZLogTrace($"{LogSend} {FtpOpcode.Rename:G}({path1}) to ({path2})");
+        var result = await InternalFtpCall(FtpOpcode.Rename, p =>
+        {
+            p.WriteDataAsString(path1);
+            p.WriteDataAsString(path2);
+        }, cancel).ConfigureAwait(false);
+        _logger.ZLogTrace($"{LogRecv} {FtpOpcode.Rename:G}({path1}) to ({path2}): read={result.ReadSize()}");
+        return result;
+    }
+
+
+
+    public async Task<FileTransferProtocolPacket> CreateDirectory(string path, CancellationToken cancellationToken = default)
+    {
+        MavlinkFtpHelper.CheckFolderPath(path);
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.CreateDirectory:G}({path})");
+        var result = await InternalFtpCall(FtpOpcode.CreateDirectory,p => p.WriteDataAsString(path), cancellationToken);
+        return result;
+    }
     
+
     public Task TerminateSession(byte session, CancellationToken cancel = default)
     {
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.TerminateSession:G}({session})");
