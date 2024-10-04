@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,54 +11,63 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Asv.Mavlink;
 
+public class MavlinkFtpServerExConfig
+{
+    public byte SessionsCount { get; set; } = 1;
+}
+
 public class FtpServerEx : IFtpServerEx
 {
     private readonly TimeProvider _timeProvider;
     private readonly ILogger _logger;
-    private readonly SourceCache<IFtpEntry,string> _entryCache;
-    private readonly List<FtpSession> _sessions;
-    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(5);
-    private IReadOnlyCollection<string> _rootDirectories;
+    private readonly MavlinkFtpServerExConfig _config;
+    private readonly ConcurrentBag<FtpSession> _sessions;
+    private readonly string _rootDirectory;
     public IFtpServer Base { get; }
     
     
-    public FtpServerEx(IFtpServer @base, IReadOnlyCollection<string> rootDirectories, TimeProvider? timeProvider = null, ILogger? logger = null)
+    public FtpServerEx(MavlinkFtpServerExConfig config, IFtpServer @base, string rootDirectory, TimeProvider? timeProvider = null, ILogger? logger = null)
     {
-        _rootDirectories = rootDirectories;
+        _config = config;
+        _rootDirectory = Path.GetFullPath(rootDirectory);
         _timeProvider = timeProvider ?? TimeProvider.System;
         _logger = logger ?? NullLogger.Instance;
-        _entryCache = new SourceCache<IFtpEntry, string>(x => x.Path);
-        _sessions = new List<FtpSession>(256);
-        for (byte i = 0; i < _sessions.Count; i++)
-        {
-            _sessions.Add(new FtpSession(i));
-        }
+        _sessions = [];
         
         Base = @base;
         Base.OpenFileRead = OpenFileRead;
         Base.TerminateSession = TerminateSession;
     }
 
-    public Task<ReadHandle> OpenFileRead(string path, CancellationToken cancellationToken = default)
+    public async Task<ReadHandle> OpenFileRead(string path, CancellationToken cancel = default)
     {
-        if (!File.Exists(path))
+        var filePath = Path.Combine(_rootDirectory, path);
+        if (!File.Exists(filePath))
         {
             throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.FileNotFound);
         }
         
-        var session = OpenSession();
-        var stream = File.OpenRead(path);
-        session.AddResource(stream);
-        var fileSize = (uint) new FileInfo(path).Length;
+        var session = OpenSession(FtpSession.SessionMode.OpenRead);
+        var stream = File.OpenRead(filePath);
+        var file = new FileInfo(filePath);
         
-        if (cancellationToken.IsCancellationRequested)
+        if (file.Length > byte.MaxValue)
         {
-            session.Close();
-            
-            throw new OperationCanceledException(cancellationToken);
+            throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.FileNotFound);
         }
 
-        return Task.FromResult(new ReadHandle(session.Id, fileSize));
+        session.Stream = stream;
+        
+        var fileSize = (uint) file.Length;
+        
+        if (cancel.IsCancellationRequested)
+        {
+            await session.CloseAsync().ConfigureAwait(false);
+
+            throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.None);
+        }
+
+        return new ReadHandle(session.Id, fileSize);
     }
 
     public Task<ReadResult> FileRead(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default)
@@ -72,24 +82,40 @@ public class FtpServerEx : IFtpServerEx
 
     public async Task TerminateSession(byte session, CancellationToken cancel = default)
     {
-        var existingSession =  _sessions.FirstOrDefault(s => s.Id == session);
+        var existingSession =  _sessions.FirstOrDefault(s => s.Id == session && s.Mode == FtpSession.SessionMode.OpenRead);
 
         if (existingSession is null)
         {
             throw new FtpNackException(FtpOpcode.TerminateSession, NackError.Fail);
         }
 
-        if (!existingSession.IsOccupied)
+        if (existingSession.Mode == FtpSession.SessionMode.Free)
         {
             throw new FtpNackException(FtpOpcode.TerminateSession, NackError.InvalidSession);
+        }
+        
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.TerminateSession, NackError.None);
         }
         
         await existingSession.CloseAsync().ConfigureAwait(false);
     }
 
-    public Task ResetSessions(CancellationToken cancel = default)
+    public async Task ResetSessions(CancellationToken cancel = default)
     {
-        throw new NotImplementedException();
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.ResetSessions, NackError.None);
+        }
+        
+        foreach (var session in _sessions)
+        {
+            if (session.Mode == FtpSession.SessionMode.OpenRead)
+            {
+                await session.CloseAsync().ConfigureAwait(false);
+            }
+        }
     }
 
     public Task CreateDirectory(string path, CancellationToken cancel = default)
@@ -117,34 +143,46 @@ public class FtpServerEx : IFtpServerEx
         throw new NotImplementedException();
     }
 
-    private FtpSession OpenSession()
+    private FtpSession OpenSession(FtpSession.SessionMode mode = FtpSession.SessionMode.Unknown)
     {
-        var availableSession = _sessions.FirstOrDefault(s => s.IsOccupied == false);
+        var freeSession = _sessions.FirstOrDefault(s => s.Mode == FtpSession.SessionMode.Free);
 
-        if (availableSession is null)
+        if (freeSession is not null)
+        {
+            freeSession.Open(mode);
+            return freeSession;
+        }
+        
+        if (_sessions.Count > byte.MaxValue)
         {
             throw new FtpNackException(FtpOpcode.Nak, NackError.NoSessionsAvailable);
         }
-        
-        availableSession.Open();
-        return availableSession;
+
+        var maxSessionNumber = _sessions.Max(s => s.Id);
+        var session = new FtpSession((byte)(maxSessionNumber + 1));
+        session.Open(mode);
+
+        _sessions.Add(new FtpSession((byte)(maxSessionNumber+1)));
+        return session;
     }
 
     public void Dispose()
     {
-        _entryCache.Dispose();
         foreach (var session in _sessions)
         {
             session.Close();
         }
+        
+        _sessions.Clear();
     }
     
     public async ValueTask DisposeAsync()
     {
-        _entryCache.Dispose();
         foreach (var session in _sessions)
         {
             await session.CloseAsync().ConfigureAwait(false);
         }
+        
+        _sessions.Clear();
     }
 }

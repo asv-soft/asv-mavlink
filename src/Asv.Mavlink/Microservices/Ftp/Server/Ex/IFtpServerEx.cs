@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -24,53 +25,58 @@ public interface IFtpServerEx : IDisposable, IAsyncDisposable
 
 public class FtpSession : IDisposable, IAsyncDisposable
 {
-    private readonly ICollection<Stream> _affectedStreams;
+    public enum SessionMode
+    {
+        Free,
+        Unknown,
+        OpenRead,
+        OpenWrite,
+    }
+    
+    private Stream? _stream;
+    public Stream? Stream
+    {
+        get => _stream;
+        set
+        {
+            if (Mode == SessionMode.Free )
+            {
+                throw new Exception("Session is not in work"); // TODO: make proper exception class
+            }
+            
+            _stream = value;
+        }
+    }
+    
     public byte Id { get; }
-    public bool IsOccupied { get; private set; }
+    public SessionMode Mode { get; private set; }
+    public bool IsSignedOnClose { get; private set; }
     
     public FtpSession(byte id)
     {
         Id = id;
-        IsOccupied = false;
-        _affectedStreams = new List<Stream>();
+        Mode = SessionMode.Free;
     }
 
-    public void AddResource<TResource>(TResource resource)
+    public void Open(SessionMode mode = SessionMode.Unknown)
     {
-        if (!IsOccupied)
-        {
-            throw new Exception("Session is not in work"); // TODO: make proper exception class
-        }
-        
-        switch (resource)
-        {
-            case Stream stream:
-                _affectedStreams.Add(stream);
-                break;
-            default:
-                throw new Exception("Resource type is unknown for session"); // TODO: make proper exception class
-        }
-    }
-
-    public void Open()
-    {
-        if (IsOccupied)
+        if (Mode != SessionMode.Free)
         {
             throw new Exception("Session is already opened"); // TODO: make proper exception class
         }
         
-        IsOccupied = true;
+        Mode = mode;
     }
 
     public void Close()
     {
-        IsOccupied = false;
+        Mode = SessionMode.Free;
         Dispose();
     }
     
     public async Task CloseAsync()
     {
-        IsOccupied = false;
+        Mode = SessionMode.Free;
         await DisposeAsync().ConfigureAwait(false);
     }
         
@@ -86,21 +92,16 @@ public class FtpSession : IDisposable, IAsyncDisposable
         
     private void ReleaseAllResources()
     {
-        foreach (var resource in _affectedStreams)
-        {
-            resource.Dispose();
-        }
-            
-        _affectedStreams.Clear();
+        _stream?.Dispose();
     }
     
     private async Task ReleaseAllResourcesAsync()
     {
-        foreach (var resource in _affectedStreams)
+        if (_stream is null)
         {
-            await resource.DisposeAsync().ConfigureAwait(false);
+            return;
         }
-            
-        _affectedStreams.Clear();
+        
+        await _stream.DisposeAsync().ConfigureAwait(false);
     }
 }
