@@ -90,6 +90,160 @@ Asv.Mavlink.Shell.exe gen -t=[mavlink-xml-file] -i=[mavlink-xml-folder] -o=[outp
     }
 ```
 
+
+## CLI: Ftp tree
+
+This command provides a tree representation of all available files and directories on the drone's FTP server. It allows users to see the entire file structure in a hierarchical format, making it easy to browse and understand the file layout without navigating through individual folders.
+
+```bash
+Asv.Mavlink.Shell.exe ftp-tree
+```
+
+### Features:
+- Display the full directory structure of the drone's file system in a tree format.
+- Automatically refreshes and loads the / and @SYS directories.
+- Displays directories and files with visual guides for better clarity.
+
+![image](https://github.com/asv-soft/asv-drones-docs/blob/main/.gitbook/assets/asv-drones-mavlink-ftp-treecommand.png?raw=true)
+
+
+## CLI: Ftp browser
+
+This command is a file manager for interacting with a drone's file system via FTP. It allows users to browse directories, view files, and perform various file operations (e.g., download, rename, remove, etc.) in an interactive console environment. The tool is designed for MAVLink-based systems and provides an intuitive way to manage the drone’s files and directories.
+
+```bash
+Asv.Mavlink.Shell.exe ftp-browser
+```
+### Features:
+- FTP Connection: The command connects to a drone via TCP using a specified connection string, establishing an FTP client for file interactions.
+- Tree Navigation: The file system is presented in a hierarchical structure using a tree model. The user can browse through directories interactively.
+- File and Directory Operations: The user can:
+    - Open directories.
+    - Remove, rename, or create directories.
+    - Perform file operations such as downloading, removing, truncating, renaming, and calculating CRC32.
+![image](https://github.com/asv-soft/asv-drones-docs/blob/main/.gitbook/assets/asv-drones-mavlink-ftp-browser-command.png?raw=true)
+
+
+## CLI: Export sdr data
+
+This command extracts SDR (Software Defined Radio) data from a binary file and exports it into a CSV format. The SDR data is deserialized using the AsvSdrRecordDataLlzPayload class, and each record is written as a row in the CSV file with specific data fields such as altitude, signal strength, and power levels.
+
+### Features:
+
+- Reads binary SDR data from an input file.
+- Exports the data to a CSV file for further analysis or storage.
+- Provides a simple and automated way to convert SDR logs into human-readable tabular data.
+```bash
+Asv.Mavlink.Shell.exe export-sdr
+```
+
+You may also use some parameters in the command.
+```bash
+Usage: export-sdr [options...] [-h|--help] [--version]
+
+Export sdt data to csv format
+
+Options:
+-i|--input-file <string>     Input file (Required)
+-o|--output-file <string>    Output file (Default: @"out.csv")
+```
+
+
+## CLI: Mavlink
+
+This command listens to incoming MAVLink packets and displays statistics on the received messages. It allows monitoring of the communication between a ground station and an unmanned vehicle, showing information like the frequency of each type of message and the last few received packets.
+
+### Features:
+
+- Connects to a MAVLink stream via the provided connection string.
+- Displays statistics such as message ID, message frequency, and the last received packets
+- Continually updates the display with real-time data and allows the user to stop the process by pressing 'Q'.
+
+```bash
+Asv.Mavlink.Shell.exe mavlink
+```
+
+You may also use some parameters in the command.
+```bash
+Usage: mavlink [options...] [-h|--help] [--version]
+
+Listen MAVLink packages and print statistic
+
+Options:
+  -cs|--connection <string>    Connection string. Default "tcp://127.0.0.1:5760" (Default: null)
+```
+
+![image](https://github.com/asv-soft/asv-drones-docs/blob/main/.gitbook/assets/asv-drones-mavlink-mavlink-command.png?raw=true)
+
+
+
+## CLI: Proxy
+
+This command is used to connect a vehicle with multiple ground stations, creating a hub that routes MAVLink messages between them. It provides flexible filtering options to log specific MAVLink messages, and can output the filtered data to a file. It supports multiple connections (UDP or serial) and can operate in silent mode (without printing to the console).
+### Features:
+
+- Connects to multiple MAVLink streams, allowing you to route messages between different systems (e.g., vehicle and multiple ground stations).
+- Supports filtering by system ID, message ID, message name (using regex), and message content (JSON text).
+- Can log filtered MAVLink messages to a file.
+- Allows disabling console output for silent operation.
+- Automatically propagates MAVLink messages between the connected links.
+
+```bash
+Asv.Mavlink.Shell.exe proxy -l tcp://127.0.0.1:5762 -l tcp://127.0.0.1:7341 -o out.txt
+```
+
+You may also use some parameters in the command.
+```bash
+Usage: proxy [options...] [-h|--help] [--version]
+
+Used for connecting vehicle and several ground station
+     Example: proxy -l udp://192.168.0.140:14560 -l udp://192.168.0.140:14550 -o out.txt
+
+Options:
+  -l|--links <string[]>            Add connection to hub. Can be used multiple times. Example: udp://192.168.0.140:45560 or serial://COM5?br=57600 (Required)
+  -o|--output-file <string>        Write filtered message to file (Default: null)
+  -silent|--silent                 Disable print filtered message to screen (Optional)
+  -sys|--sys-ids <int[]>           Filter for logging: system id field (Example: -sys 1 -sys 255) (Default: null)
+  -id|--msg-ids <int[]>            Filter for logging: message id field (Example: -id 1 -mid 255) (Default: null)
+  -name|--name-pattern <string>    Filter for logging: regex message name filter (Example: -name MAV_CMD_D) (Default: null)
+  -txt|--text-pattern <string>     Filter for logging: regex json text filter (Example: -txt MAV_CMD_D) (Default: null)
+  -from|--directions <int[]>       Filter for packet direction: select only input packets from the specified direction (Default: null)
+```
+
+## CLI: Benchmark-serialization
+
+This command benchmarks the serialization and deserialization performance of MAVLink packets. It uses BenchmarkDotNet to measure the efficiency of the serialization process, focusing on how MAVLink packets are serialized and deserialized using spans.### Features:
+
+- Connects to multiple MAVLink streams, allowing you to route messages between different systems (e.g., vehicle and multiple ground stations).
+- Supports filtering by system ID, message ID, message name (using regex), and message content (JSON text).
+- Can log filtered MAVLink messages to a file.
+- Allows disabling console output for silent operation.
+- Automatically propagates MAVLink messages between the connected links.
+
+```bash
+Asv.Mavlink.Shell.exe benchmark-serialization
+```
+
+![image](https://github.com/asv-soft/asv-drones-docs/blob/main/.gitbook/assets/asv-drones-mavlink-benchmark-serialization-command.png?raw=true)
+
+
+## CLI: Benchmark-serialization
+
+This command benchmarks the serialization and deserialization performance of MAVLink packets. It uses BenchmarkDotNet to measure the efficiency of the serialization process, focusing on how MAVLink packets are serialized and deserialized using spans.### Features:
+
+- Connects to multiple MAVLink streams, allowing you to route messages between different systems (e.g., vehicle and multiple ground stations).
+- Supports filtering by system ID, message ID, message name (using regex), and message content (JSON text).
+- Can log filtered MAVLink messages to a file.
+- Allows disabling console output for silent operation.
+- Automatically propagates MAVLink messages between the connected links.
+
+```bash
+Asv.Mavlink.Shell.exe benchmark-bin-serialize
+```
+
+![image](https://github.com/asv-soft/asv-drones-docs/blob/main/.gitbook/assets/asv-drones-mavlink-benchmark-serialization-command.png?raw=true)
+
+
 ## CLI: Devices info
 This command shows info about the mavlink device and all other mavlink devices that are connected to it.
 
