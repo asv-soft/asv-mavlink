@@ -4,14 +4,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
-using BenchmarkDotNet.Engines;
 using ConsoleAppFramework;
 using DynamicData;
 using DynamicData.Binding;
-using Newtonsoft.Json;
 using Spectre.Console;
 
 namespace Asv.Mavlink.Shell;
@@ -28,22 +25,29 @@ public class PacketViewerCommand
     private bool _isPause;
     private string _consoleSearch;
     private string _consoleSize = "10";
-    private readonly SourceList<PacketModel> _packetsSource = new();
-    private ReadOnlyObservableCollection<PacketModel> _packets;
-    private readonly ConcurrentQueue<PacketModel> _outputCollection = new();
-    private readonly Subject<Func<PacketModel, bool>> _filterNameUpdate = new();
+    private readonly SourceList<KeyValuePair<DateTime,string>> _packetsSource = new();
+    private ReadOnlyObservableCollection<KeyValuePair<DateTime,string>> _packets;
+    private readonly ConcurrentQueue<KeyValuePair<DateTime,string>> _outputCollection = new();
+    private PacketPrinter _printer;
 
     [Command("packetviewer")]
     public void Run(string connection)
     {
-        _headerTable = new Table().Expand().AddColumns("[red]F6[/]", "[red]F7[/]", "[red]F8[/]", "[red]F9[/]", "[red]ENTER[/]");
+        _printer = new PacketPrinter(new List<IPacketPrinterHandler>()
+        {
+            new DefaultPacketHandler(),
+            new FtpPacketHandler(),
+            new StatusTextHandler(),
+            new ParamSetPacketHandler(),
+            new ParamValuePacketHandler()
+        });
+        _headerTable = new Table().Expand().AddColumns("[red]F6[/]", "[red]F7[/]", "[red]F8[/]", "[red]F9[/]", "[red]ENTER[/]").Title("[aqua]Controls[/]");
         _headerTable.AddRow("Search:", $"Size:{_consoleSize}", "Pause", "End", "Submit"); 
-        _table = new Table().Expand().AddColumn("Controls")
-            .Title("Packet Viewer")
-            .Border(TableBorder.Rounded);
+        _table = new Table().Expand().AddColumn("[aqua]Packet Viewer[/]")//.BorderColor(Color.Aqua)
+            .Border(TableBorder.None);
         _table.AddRow(_headerTable);
         _table.AddRow("");
-        _packetTable = new Table().AddColumns("Time", "Source", "Size", "Name", "Message").Expand();
+        _packetTable = new Table().AddColumns("Time", "Packet").Expand().Title("[aqua]Packets[/]");
         AnsiConsole.Status().Start("Create router...", ctx =>
         {
             ctx.Spinner(Spinner.Known.Aesthetic);
@@ -57,9 +61,8 @@ public class PacketViewerCommand
             });
             _router.WrapToV2ExtensionEnabled = true;
         });
-        _filterNameUpdate.OnNext(FilterBySourceType);
         _packetsSource.LimitSizeTo(1000).Subscribe();
-        _packetsSource.Connect().Sort(SortExpressionComparer<PacketModel>.Descending(_ => _.Time)).Bind(out _packets)
+        _packetsSource.Connect().Sort(SortExpressionComparer<KeyValuePair<DateTime,string>>.Descending(_ => _.Key)).Bind(out _packets)
             .Subscribe(_ => SetPacketsInQueue(_packets.First()));
         _router.Buffer(TimeSpan.FromSeconds(1)).Select(GetPacketAndAddToCollection)
             .Subscribe(_packetsSource.AddRange);
@@ -83,8 +86,7 @@ public class PacketViewerCommand
         var dequeue = _outputCollection.TryDequeue(out var packetModel);
         if (dequeue)
         {
-            _packetTable.InsertRow(0, $"{packetModel.Time}", $"{packetModel.Source}", $"{packetModel.Size}",
-                $"{packetModel.Type}", $"{packetModel.Message}");
+            _packetTable.InsertRow(0, $"{packetModel.Key}", $"{packetModel.Value}");
             _table.UpdateCell(1, 0, _packetTable);
         }
 
@@ -103,8 +105,6 @@ public class PacketViewerCommand
     private void UpdateSizeCellActive() => _headerTable.UpdateCell(0, 1, $"[aqua]Size:[/] {_consoleSize}");
     private void UpdatePauseCellActive() => _headerTable.UpdateCell(0, 2, $"[aqua]Pause[/]");
     private void UpdatePauseCellInActive() => _headerTable.UpdateCell(0, 2, $"Pause");
-
-  
 
     private async Task HighlightSubmitCell()
     {
@@ -215,67 +215,25 @@ public class PacketViewerCommand
             }
         }
     }
-
-    private bool FilterBySourceType(PacketModel vm)
+    
+    private void SetPacketsInQueue(KeyValuePair<DateTime,string> packet)
     {
-        return _consoleSearch is null || vm.Type.Contains(_consoleSearch, StringComparison.InvariantCultureIgnoreCase);
-    }
-
-    private void SetPacketsInQueue(PacketModel packet)
-    {
-        if (packet is null) return;
         _outputCollection.Enqueue(packet);
     }
 
-    private List<PacketModel> GetPacketAndAddToCollection(IList<IPacketV2<IPayload>> pkt)
+    private List<KeyValuePair<DateTime,string>> GetPacketAndAddToCollection(IList<IPacketV2<IPayload>> pkt)
     {
-        if (_consoleSearch is null ||
-            pkt.Where(_ => _.Name.Contains(_consoleSearch, StringComparison.InvariantCultureIgnoreCase)) is null)
+        var result = new List<KeyValuePair<DateTime, string>>();
+        var filtered = pkt.Where(_ => _.Name.Contains(_consoleSearch, StringComparison.InvariantCultureIgnoreCase));
+        if (_consoleSearch is null)
         {
-            return pkt.Select(item => new PacketModel(item)).ToList();
+            result.AddRange(pkt.Select(item => _printer.Print(item)).Select(prnt => new KeyValuePair<DateTime, string>(DateTime.Now, prnt)));
+        }
+        else
+        {
+            result.AddRange(filtered.Select(item => _printer.Print(item)).Select(prnt => new KeyValuePair<DateTime, string>(DateTime.Now, prnt)));
         }
 
-        return pkt.Where(_ => _.Name.Contains(_consoleSearch, StringComparison.InvariantCultureIgnoreCase))
-            .Select(item => new PacketModel(item)).ToList();
-    }
-
-    private class PacketModel(IPacketV2<IPayload> packetV2)
-    {
-        public readonly string Type = packetV2.Name;
-        public DateTime Time { get; } = DateTime.Now;
-        public readonly string Source = $"{packetV2.SystemId}, {packetV2.ComponentId}";
-        public readonly string Message = $"{packetV2.Sequence:000}, {ConvertPacket(packetV2)}";
-        public string Description = ConvertPacket(packetV2, PacketFormatting.Indented);
-        public Guid Id = Guid.NewGuid();
-        public readonly int Size = packetV2.GetByteSize();
-    }
-
-    private static string ConvertPacket(IPacketV2<IPayload> packet, PacketFormatting formatting = PacketFormatting.None)
-    {
-        var CanConvert = packet != null;
-        if (packet == null) throw new ArgumentException("Incoming packet was not initialized!");
-        if (!CanConvert) throw new ArgumentException("Converter can not convert incoming packet!");
-
-        var result = formatting switch
-        {
-            PacketFormatting.None => JsonConvert.SerializeObject(packet.Payload, Formatting.None),
-            PacketFormatting.Indented => JsonConvert.SerializeObject(packet.Payload, Formatting.Indented),
-            _ => throw new ArgumentException("Wrong packet formatting!")
-        };
-
         return result;
-    }
-
-    private enum PacketFormatting
-    {
-        /// <summary>
-        /// One-line formatting
-        /// </summary>
-        None,
-
-        /// <summary>
-        /// Represents the formatting options for packet content.
-        /// </summary>
-        Indented
     }
 }
