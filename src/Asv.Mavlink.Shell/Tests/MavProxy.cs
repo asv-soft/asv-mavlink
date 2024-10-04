@@ -26,7 +26,6 @@ public class MavProxy
     private bool _silentMode;
     private Regex _textFilter;
 
-    //TODO: Проверить команду, не понятно как должна работать
     /// <summary>
     /// Used for connecting vehicle and several ground station
     /// Example: proxy -l udp://192.168.0.140:14560 -l udp://192.168.0.140:14550 -o out.txt
