@@ -41,8 +41,13 @@ public class FtpServerEx : IFtpServerEx
         Base.TerminateSession = TerminateSession;
     }
 
-    public async Task<ReadHandle> OpenFileRead(string path, CancellationToken cancel = default)
+    public Task<ReadHandle> OpenFileRead(string path, CancellationToken cancel = default)
     {
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.None);
+        }
+        
         var filePath = Path.Combine(_rootDirectory, path);
         if (!File.Exists(filePath))
         {
@@ -61,19 +66,17 @@ public class FtpServerEx : IFtpServerEx
         session.Stream = stream;
         
         var fileSize = (uint) file.Length;
-        
-        if (cancel.IsCancellationRequested)
-        {
-            await session.CloseAsync().ConfigureAwait(false);
 
-            throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.None);
-        }
-
-        return new ReadHandle(session.Id, fileSize);
+        return Task.FromResult(new ReadHandle(session.Id, fileSize));
     }
 
     public async Task<ReadResult> FileRead(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default)
     {
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.ReadFile, NackError.None);
+        }
+        
         var session = _sessions.FirstOrDefault(s => s.Id == request.Session);
 
         if (session is null)
@@ -84,13 +87,6 @@ public class FtpServerEx : IFtpServerEx
         if (session.Stream is null)
         {
             throw new FtpNackException(FtpOpcode.ReadFile, NackError.FileNotFound);
-        }
-        
-        if (cancel.IsCancellationRequested)
-        {
-            await session.CloseAsync().ConfigureAwait(false);
-
-            throw new FtpNackException(FtpOpcode.ReadFile, NackError.None);
         }
         
         var bytes = ArrayPool<byte>.Shared.Rent(request.Take);
@@ -116,6 +112,11 @@ public class FtpServerEx : IFtpServerEx
 
     public async Task TerminateSession(byte session, CancellationToken cancel = default)
     {
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.TerminateSession, NackError.None);
+        }
+        
         var existingSession =  _sessions.FirstOrDefault(s => s.Id == session && s.Mode == FtpSession.SessionMode.OpenRead);
 
         if (existingSession is null)
@@ -126,11 +127,6 @@ public class FtpServerEx : IFtpServerEx
         if (existingSession.Mode == FtpSession.SessionMode.Free)
         {
             throw new FtpNackException(FtpOpcode.TerminateSession, NackError.InvalidSession);
-        }
-        
-        if (cancel.IsCancellationRequested)
-        {
-            throw new FtpNackException(FtpOpcode.TerminateSession, NackError.None);
         }
         
         await existingSession.CloseAsync().ConfigureAwait(false);
@@ -159,6 +155,11 @@ public class FtpServerEx : IFtpServerEx
 
     public Task RemoveFile(string path, CancellationToken cancel = default)
     {
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.RemoveFile, NackError.None);
+        }
+        
         var filePath = Path.Combine(_rootDirectory, path);
         if (!File.Exists(filePath))
         {
@@ -167,16 +168,16 @@ public class FtpServerEx : IFtpServerEx
         
         File.Delete(filePath);
         
-        if (cancel.IsCancellationRequested)
-        {
-            throw new FtpNackException(FtpOpcode.RemoveFile, NackError.None);
-        }
-        
         return Task.CompletedTask;
     }
 
     public Task RemoveDirectory(string path, CancellationToken cancel = default)
     {
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.RemoveDirectory, NackError.None);
+        }
+        
         var directoryPath = Path.Combine(_rootDirectory, path);
         if (!Directory.Exists(directoryPath))
         {
@@ -193,23 +194,33 @@ public class FtpServerEx : IFtpServerEx
         return Task.CompletedTask;
     }
 
-    public async Task<int> CalcFileCrc32(string path, CancellationToken cancel = default)
+    public async Task<uint> CalcFileCrc32(string path, CancellationToken cancel = default)
     {
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.CalcFileCRC32, NackError.None);
+        }
+        
         var filePath = Path.Combine(_rootDirectory, path);
         if (!File.Exists(filePath))
         {
-            throw new FtpNackException(FtpOpcode.RemoveFile, NackError.FileNotFound);
+            throw new FtpNackException(FtpOpcode.CalcFileCRC32, NackError.FileNotFound);
         }
 
         var fileBytes = await File.ReadAllBytesAsync(filePath, cancel).ConfigureAwait(false);
         
-        var crc32 = Crc32.Hash(fileBytes);
+        var crc32 = Crc32Mavlink.Accumulate(fileBytes);
 
-        return crc32; // TODO: спросить почему инт возвращается
+        return crc32;
     }
 
     public Task TruncateFile(TruncateRequest request, CancellationToken cancel = default)
     {
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.TruncateFile, NackError.None);
+        }
+        
         var filePath = Path.Combine(_rootDirectory, request.Path);
         if (!File.Exists(filePath))
         {
@@ -217,11 +228,6 @@ public class FtpServerEx : IFtpServerEx
         }
         
         var stream = File.Open(filePath, FileMode.Truncate, FileAccess.Write, FileShare.Read);
-        
-        if (cancel.IsCancellationRequested)
-        {
-            throw new FtpNackException(FtpOpcode.TruncateFile, NackError.None);
-        }
         
         stream.SetLength(request.Offset);
         stream.Close();

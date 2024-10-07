@@ -15,11 +15,11 @@ public interface IFtpServerEx : IDisposable, IAsyncDisposable
     public Task<ReadResult> FileRead(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default);
     public Task Rename(string path1, string path2, CancellationToken cancel = default);
     public Task TerminateSession(byte session, CancellationToken cancel = default);
-    public Task ResetSessions( CancellationToken cancel = default);
+    public Task ResetSessions(CancellationToken cancel = default);
     public Task CreateDirectory(string path, CancellationToken cancel = default);
     public Task RemoveFile(string path, CancellationToken cancel = default);
     public Task RemoveDirectory(string path, CancellationToken cancel = default);
-    public Task<int> CalcFileCrc32(string path, CancellationToken cancel = default);
+    public Task<uint> CalcFileCrc32(string path, CancellationToken cancel = default);
     public Task TruncateFile(TruncateRequest request, CancellationToken cancel = default);
 }
 
