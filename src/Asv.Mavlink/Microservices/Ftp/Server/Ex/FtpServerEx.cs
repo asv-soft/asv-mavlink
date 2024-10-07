@@ -37,7 +37,7 @@ public class FtpServerEx : IFtpServerEx
         Base.OpenFileRead = OpenFileRead;
         Base.TerminateSession = TerminateSession;
         Base.CreateDirectory = CreateDirectory;
-        Base.CalcFileCrc32 = CalcFileCrc32;
+        // Base.CalcFileCrc32 = CalcFileCrc32;
         Base.TruncateFile = TruncateFile;
         Base.Rename = Rename;
         Base.FileRead = FileRead;
@@ -53,16 +53,17 @@ public class FtpServerEx : IFtpServerEx
         {
             throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.None);
         }
-        
-        var filePath = Path.Combine(_rootDirectory, path);
-        if (!File.Exists(filePath))
+
+        var relativePath = Path.GetRelativePath(_rootDirectory, path);
+        var fullPath = Path.Combine(_rootDirectory, relativePath);
+        if (!File.Exists(fullPath))
         {
             throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.FileNotFound);
         }
         
         var session = OpenSession(FtpSession.SessionMode.OpenRead);
-        var stream = File.OpenRead(filePath);
-        var file = new FileInfo(filePath);
+        var stream = File.OpenRead(fullPath);
+        var file = new FileInfo(fullPath);
         
         if (file.Length > byte.MaxValue)
         {
@@ -152,7 +153,12 @@ public class FtpServerEx : IFtpServerEx
             throw new FtpNackException(FtpOpcode.TerminateSession, NackError.None);
         }
         
-        var existingSession =  _sessions.FirstOrDefault(s => s.Id == session && s.Mode == FtpSession.SessionMode.OpenRead);
+        var existingSession =  _sessions.FirstOrDefault(
+            s => s.Id == session && 
+                 s.Mode is 
+                     FtpSession.SessionMode.OpenRead or 
+                     FtpSession.SessionMode.OpenWrite
+        );
 
         if (existingSession is null)
         {
@@ -176,7 +182,7 @@ public class FtpServerEx : IFtpServerEx
         
         foreach (var session in _sessions)
         {
-            if (session.Mode == FtpSession.SessionMode.OpenRead)
+            if (session.Mode is FtpSession.SessionMode.OpenRead or FtpSession.SessionMode.OpenWrite)
             {
                 await session.CloseAsync().ConfigureAwait(false);
             }
@@ -340,11 +346,20 @@ public class FtpServerEx : IFtpServerEx
             throw new FtpNackException(FtpOpcode.Nak, NackError.NoSessionsAvailable);
         }
 
-        var maxSessionNumber = _sessions.Max(s => s.Id);
+        var maxSessionNumber = -1;
+        if (_sessions.IsEmpty)
+        {
+            maxSessionNumber = -1;
+        }
+        else
+        {
+            maxSessionNumber = _sessions.Max(s => s.Id);
+        }
+        
         var session = new FtpSession((byte)(maxSessionNumber + 1));
         session.Open(mode);
 
-        _sessions.Add(new FtpSession((byte)(maxSessionNumber+1)));
+        _sessions.Add(session);
         return session;
     }
 
