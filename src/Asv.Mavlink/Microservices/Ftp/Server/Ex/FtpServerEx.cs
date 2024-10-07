@@ -53,17 +53,16 @@ public class FtpServerEx : IFtpServerEx
         {
             throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.None);
         }
-
-        var relativePath = Path.GetRelativePath(_rootDirectory, path);
-        var fullPath = Path.Combine(_rootDirectory, relativePath);
-        if (!File.Exists(fullPath))
+        
+        var filePath = Path.Combine(_rootDirectory, path);
+        if (!File.Exists(filePath))
         {
             throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.FileNotFound);
         }
         
         var session = OpenSession(FtpSession.SessionMode.OpenRead);
-        var stream = File.OpenRead(fullPath);
-        var file = new FileInfo(fullPath);
+        var stream = File.OpenRead(filePath);
+        var file = new FileInfo(filePath);
         
         if (file.Length > byte.MaxValue)
         {
