@@ -1,7 +1,9 @@
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Hashing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,9 +72,41 @@ public class FtpServerEx : IFtpServerEx
         return new ReadHandle(session.Id, fileSize);
     }
 
-    public Task<ReadResult> FileRead(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default)
+    public async Task<ReadResult> FileRead(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default)
     {
-        throw new NotImplementedException();
+        var session = _sessions.FirstOrDefault(s => s.Id == request.Session);
+
+        if (session is null)
+        {
+            throw new FtpNackException(FtpOpcode.ReadFile, NackError.InvalidSession);
+        }
+
+        if (session.Stream is null)
+        {
+            throw new FtpNackException(FtpOpcode.ReadFile, NackError.FileNotFound);
+        }
+        
+        if (cancel.IsCancellationRequested)
+        {
+            await session.CloseAsync().ConfigureAwait(false);
+
+            throw new FtpNackException(FtpOpcode.ReadFile, NackError.None);
+        }
+        
+        var bytes = ArrayPool<byte>.Shared.Rent(request.Take);
+        try
+        {
+            var size = await session.Stream.ReadAsync(bytes, (int)request.Skip, request.Take, cancel)
+                .ConfigureAwait(false);
+            var realBytes = bytes[..size];
+            realBytes.CopyTo(buffer);
+
+            return new ReadResult((byte) size, request);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(bytes);
+        }
     }
 
     public Task Rename(string path1, string path2, CancellationToken cancel = default)
@@ -159,14 +193,40 @@ public class FtpServerEx : IFtpServerEx
         return Task.CompletedTask;
     }
 
-    public Task<int> CalcFileCrc32(string path, CancellationToken cancel = default)
+    public async Task<int> CalcFileCrc32(string path, CancellationToken cancel = default)
     {
-        throw new NotImplementedException();
+        var filePath = Path.Combine(_rootDirectory, path);
+        if (!File.Exists(filePath))
+        {
+            throw new FtpNackException(FtpOpcode.RemoveFile, NackError.FileNotFound);
+        }
+
+        var fileBytes = await File.ReadAllBytesAsync(filePath, cancel).ConfigureAwait(false);
+        
+        var crc32 = Crc32.Hash(fileBytes);
+
+        return crc32; // TODO: спросить почему инт возвращается
     }
 
     public Task TruncateFile(TruncateRequest request, CancellationToken cancel = default)
     {
-        throw new NotImplementedException();
+        var filePath = Path.Combine(_rootDirectory, request.Path);
+        if (!File.Exists(filePath))
+        {
+            throw new FtpNackException(FtpOpcode.RemoveFile, NackError.FileNotFound);
+        }
+        
+        var stream = File.Open(filePath, FileMode.Truncate, FileAccess.Write, FileShare.Read);
+        
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.TruncateFile, NackError.None);
+        }
+        
+        stream.SetLength(request.Offset);
+        stream.Close();
+        
+        return Task.CompletedTask;
     }
 
     private FtpSession OpenSession(FtpSession.SessionMode mode = FtpSession.SessionMode.Unknown)
