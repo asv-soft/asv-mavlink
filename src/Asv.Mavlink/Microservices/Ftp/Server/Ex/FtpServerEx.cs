@@ -125,12 +125,38 @@ public class FtpServerEx : IFtpServerEx
 
     public Task RemoveFile(string path, CancellationToken cancel = default)
     {
-        throw new NotImplementedException();
+        var filePath = Path.Combine(_rootDirectory, path);
+        if (!File.Exists(filePath))
+        {
+            throw new FtpNackException(FtpOpcode.RemoveFile, NackError.FileNotFound);
+        }
+        
+        File.Delete(filePath);
+        
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.RemoveFile, NackError.None);
+        }
+        
+        return Task.CompletedTask;
     }
 
     public Task RemoveDirectory(string path, CancellationToken cancel = default)
     {
-        throw new NotImplementedException();
+        var directoryPath = Path.Combine(_rootDirectory, path);
+        if (!Directory.Exists(directoryPath))
+        {
+            throw new FtpNackException(FtpOpcode.RemoveDirectory, NackError.FileNotFound);
+        }
+
+        if (Directory.EnumerateFileSystemEntries(directoryPath).Any())
+        {
+            throw new FtpNackException(FtpOpcode.RemoveDirectory, NackError.Fail);
+        }
+        
+        Directory.Delete(directoryPath);
+
+        return Task.CompletedTask;
     }
 
     public Task<int> CalcFileCrc32(string path, CancellationToken cancel = default)
