@@ -15,12 +15,10 @@ namespace Asv.Mavlink;
 
 public class MavlinkFtpServerExConfig
 {
-    public byte SessionsCount { get; set; } = 1;
 }
 
 public class FtpServerEx : IFtpServerEx
 {
-    private readonly TimeProvider _timeProvider;
     private readonly ILogger _logger;
     private readonly MavlinkFtpServerExConfig _config;
     private readonly ConcurrentBag<FtpSession> _sessions;
@@ -28,17 +26,25 @@ public class FtpServerEx : IFtpServerEx
     public IFtpServer Base { get; }
     
     
-    public FtpServerEx(MavlinkFtpServerExConfig config, IFtpServer @base, string rootDirectory, TimeProvider? timeProvider = null, ILogger? logger = null)
+    public FtpServerEx(MavlinkFtpServerExConfig config, IFtpServer @base, string rootDirectory, ILogger? logger = null)
     {
         _config = config;
         _rootDirectory = Path.GetFullPath(rootDirectory);
-        _timeProvider = timeProvider ?? TimeProvider.System;
         _logger = logger ?? NullLogger.Instance;
         _sessions = [];
         
         Base = @base;
         Base.OpenFileRead = OpenFileRead;
         Base.TerminateSession = TerminateSession;
+        Base.CreateDirectory = CreateDirectory;
+        Base.CalcFileCrc32 = CalcFileCrc32;
+        Base.TruncateFile = TruncateFile;
+        Base.Rename = Rename;
+        Base.FileRead = FileRead;
+        Base.ResetSessions = ResetSessions;
+        Base.BurstReadFile = BurstReadFile;
+        Base.RemoveDirectory = RemoveDirectory;
+        Base.RemoveFile = RemoveFile;
     }
 
     public Task<ReadHandle> OpenFileRead(string path, CancellationToken cancel = default)
@@ -92,7 +98,14 @@ public class FtpServerEx : IFtpServerEx
         var bytes = ArrayPool<byte>.Shared.Rent(request.Take);
         try
         {
-            var size = await session.Stream.ReadAsync(bytes, (int)request.Skip, request.Take, cancel)
+            if (request.Skip > session.Stream.Length)
+            {
+                throw new FtpNackEndOfFileException(FtpOpcode.ReadFile);
+            }
+            
+            var offset = Convert.ToInt32(request.Skip);
+            var take = request.Take;
+            var size = await session.Stream.ReadAsync(bytes, offset, take, cancel)
                 .ConfigureAwait(false);
             var realBytes = bytes[..size];
             realBytes.CopyTo(buffer);
@@ -107,7 +120,29 @@ public class FtpServerEx : IFtpServerEx
 
     public Task Rename(string path1, string path2, CancellationToken cancel = default)
     {
-        throw new NotImplementedException();
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.Rename, NackError.None);
+        }
+        
+        var fullPath1 = Path.Combine(_rootDirectory, path1);
+        if (!Path.Exists(fullPath1))
+        {
+            throw new FtpNackException(FtpOpcode.Rename, NackError.FileNotFound);
+        }
+        
+        var fullPath2 = Path.Combine(_rootDirectory, path2);
+
+        if (Path.HasExtension(path1))
+        {
+            File.Move(fullPath1, fullPath2);
+        }
+        else
+        {
+            Directory.Move(fullPath1, fullPath2);
+        }
+        
+        return Task.CompletedTask;
     }
 
     public async Task TerminateSession(byte session, CancellationToken cancel = default)
@@ -150,7 +185,19 @@ public class FtpServerEx : IFtpServerEx
 
     public Task CreateDirectory(string path, CancellationToken cancel = default)
     {
-        throw new NotImplementedException();
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.CreateDirectory, NackError.None);
+        }
+
+        if (Directory.Exists(path))
+        {
+            throw new FtpNackException(FtpOpcode.CreateDirectory, NackError.FileExists);
+        }
+
+        Directory.CreateDirectory(path);
+        
+        return Task.CompletedTask;
     }
 
     public Task RemoveFile(string path, CancellationToken cancel = default)
@@ -233,6 +280,49 @@ public class FtpServerEx : IFtpServerEx
         stream.Close();
         
         return Task.CompletedTask;
+    }
+
+    public async Task<BurstReadResult> BurstReadFile(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default)
+    {
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.BurstReadFile, NackError.None);
+        }
+        
+        var session = _sessions.FirstOrDefault(s => s.Id == request.Session);
+
+        if (session is null)
+        {
+            throw new FtpNackException(FtpOpcode.BurstReadFile, NackError.InvalidSession);
+        }
+
+        if (session.Stream is null)
+        {
+            throw new FtpNackException(FtpOpcode.BurstReadFile, NackError.FileNotFound);
+        }
+        
+        var bytes = ArrayPool<byte>.Shared.Rent(request.Take);
+        try
+        {
+            var isLastChunk = false;
+            var offset = Convert.ToInt32(request.Skip);
+            var take = request.Take;
+            var size = await session.Stream.ReadAsync(bytes, offset, take, cancel)
+                .ConfigureAwait(false);
+            var realBytes = bytes[..size];
+            realBytes.CopyTo(buffer);
+
+            if (offset + take > session.Stream.Length)
+            {
+                isLastChunk = true;
+            }
+
+            return new BurstReadResult((byte) size, isLastChunk,  request);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(bytes);
+        }
     }
 
     private FtpSession OpenSession(FtpSession.SessionMode mode = FtpSession.SessionMode.Unknown)

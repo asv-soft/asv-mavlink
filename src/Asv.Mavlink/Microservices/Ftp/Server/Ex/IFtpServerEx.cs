@@ -21,6 +21,7 @@ public interface IFtpServerEx : IDisposable, IAsyncDisposable
     public Task RemoveDirectory(string path, CancellationToken cancel = default);
     public Task<uint> CalcFileCrc32(string path, CancellationToken cancel = default);
     public Task TruncateFile(TruncateRequest request, CancellationToken cancel = default);
+    public Task<BurstReadResult> BurstReadFile(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default);
 }
 
 public class FtpSession : IDisposable, IAsyncDisposable
