@@ -2,6 +2,7 @@ using System;
 using System.Buffers;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 
@@ -15,6 +16,7 @@ public delegate Task RemoveFile(string path, CancellationToken cancel = default)
 public delegate Task RemoveDirectory(string path, CancellationToken cancel = default);
 public delegate Task<int> CalcFileCrc32(string path, CancellationToken cancel = default);
 public delegate Task TruncateFile(TruncateRequest request, CancellationToken cancel = default);
+public delegate Task<BurstReadResult> BurstReadFileDelegate(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default);
 
 public interface IFtpServer
 {
@@ -28,4 +30,5 @@ public interface IFtpServer
     RemoveDirectory? RemoveDirectory { set; get; }
     CalcFileCrc32? CalcFileCrc32 { get; set; }
     TruncateFile? TruncateFile { get; set; }
+    BurstReadFileDelegate? BurstReadFile { set; }
 }

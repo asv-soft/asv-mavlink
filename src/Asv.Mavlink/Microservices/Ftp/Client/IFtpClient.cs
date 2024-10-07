@@ -15,7 +15,7 @@ public interface IFtpClient
     public Task<FileTransferProtocolPacket> ResetSessions(CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> RemoveDirectory(string path, CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> RemoveFile(string path, CancellationToken cancellationToken = default);
-    public Task<FileTransferProtocolPacket> CalcFileCrc32(string path, CancellationToken cancellationToken = default);
+    public Task<int> CalcFileCrc32(string path, CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> TruncateFile(TruncateRequest request, CancellationToken cancellationToken = default);
     
     
@@ -81,6 +81,15 @@ public readonly struct ReadResult(byte readCount, ReadRequest request)
     public readonly byte ReadCount = readCount;
    
     public override string ToString() => $"READ_RESP(read: {ReadCount}, {Request})";
+}
+
+public readonly struct BurstReadResult(byte readCount, bool isLastChunk, ReadRequest request)
+{
+    public readonly ReadRequest Request = request;
+    public readonly byte ReadCount = readCount;
+    public readonly bool IsLastChunk = isLastChunk;
+   
+    public override string ToString() => $"BURSTREAD_RESP(read: {ReadCount}, {Request}, {IsLastChunk})";
 }
 
 public readonly struct CrcDelegate(string crc)
