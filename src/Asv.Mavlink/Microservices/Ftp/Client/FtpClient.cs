@@ -76,14 +76,28 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _logger.ZLogInformation($"{LogRecv} {FtpOpcode.TruncateFile:G} {request.Path}: truncated to {request.Offset}");
         return result;
     }
+    
+    public async Task<FileTransferProtocolPacket> WriteFile(WriteRequest request, Memory<byte> buffer, CancellationToken cancellationToken = default)
+    {
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.WriteFile:G} {request.ToString()}");
+        var result = await InternalFtpCall(FtpOpcode.WriteFile, p =>
+        {
+            p.WriteData(buffer.Span[..request.Take]);
+            p.WriteSize(request.Take);
+            p.WriteOffset(request.Skip);
+        }, cancellationToken).ConfigureAwait(false);
+        _logger
+            .ZLogInformation($"{LogRecv} {FtpOpcode.WriteFile:G} size: {request.Take}, offset: {request.Skip}, session: {request.Session}");
+        return result;
+    }
 
-    public async Task<int> CalcFileCrc32(string path, CancellationToken cancellationToken = default)
+    public async Task<uint> CalcFileCrc32(string path, CancellationToken cancellationToken = default)
     {
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.CalcFileCRC32:G} {path}");
         var result = await InternalFtpCall(FtpOpcode.CalcFileCRC32, p => p.WriteDataAsString(path), cancellationToken).ConfigureAwait(false);
-        var buffer = result.ReadDataAsInt();
-        _logger.ZLogInformation($"{LogSend} {result.ReadOpcode():G} {buffer})");
-        return buffer;
+        var crc32 = result.ReadDataAsUint();
+        _logger.ZLogInformation($"{LogSend} {result.ReadOpcode():G} {crc32})");
+        return crc32;
     }
 
     public async Task BurstReadFile(ReadRequest request, Action<FileTransferProtocolPacket> onBurstData, CancellationToken cancel = default)
@@ -151,11 +165,8 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         if (size != 4)
             throw new FtpException("Unexpected result to BurstReadFile: ACK must be 4 byte length");*/
 
-        await tcs.Task.ConfigureAwait(false);  
-        
-        
+        await tcs.Task.ConfigureAwait(false);
     }
-
     
     public async Task<FileTransferProtocolPacket> Rename(string path1, string path2, CancellationToken cancel)
     {
@@ -168,17 +179,30 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _logger.ZLogTrace($"{LogRecv} {FtpOpcode.Rename:G}({path1}) to ({path2}): read={result.ReadSize()}");
         return result;
     }
-
-
-
+    
     public async Task<FileTransferProtocolPacket> CreateDirectory(string path, CancellationToken cancellationToken = default)
     {
         MavlinkFtpHelper.CheckFolderPath(path);
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.CreateDirectory:G}({path})");
-        var result = await InternalFtpCall(FtpOpcode.CreateDirectory,p => p.WriteDataAsString(path), cancellationToken);
+        var result = await InternalFtpCall(
+            FtpOpcode.CreateDirectory,
+            p => p.WriteDataAsString(path), 
+            cancellationToken)
+            .ConfigureAwait(false);
         return result;
     }
     
+    public async Task<FileTransferProtocolPacket> CreateFile(string path, CancellationToken cancellationToken = default)
+    {
+        MavlinkFtpHelper.CheckFilePath(path);
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.CreateFile:G}({path})");
+        var result = await InternalFtpCall(
+                FtpOpcode.CreateFile,
+                p => p.WriteDataAsString(path), 
+                cancellationToken)
+            .ConfigureAwait(false);
+        return result;
+    }
 
     public Task TerminateSession(byte session, CancellationToken cancel = default)
     {
@@ -198,8 +222,6 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _logger.ZLogInformation($"{LogRecv} {FtpOpcode.ListDirectory:G}({path}): read={result.ReadSize()}");
         return result;
     }
-
-  
 
     public async Task<FileTransferProtocolPacket> ReadFile(ReadRequest request, CancellationToken cancel = default)
     {
@@ -223,7 +245,7 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         MavlinkFtpHelper.CheckFilePath(path);
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.OpenFileRO:G}({path})"); 
         var result = await InternalFtpCall(FtpOpcode.OpenFileRO,p => p.WriteDataAsString(path), cancel).ConfigureAwait(false);
-        InternalCheckNack(result,_logger);
+        InternalCheckNack(result, _logger);
         var resultSize = result.ReadSize();
         // ACK on success. The payload must specify fields: session = file session id, size = 4, data = length of file that has been opened.
         if (resultSize != 4)
@@ -237,6 +259,30 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _logger.ZLogInformation($"{LogRecv} {FtpOpcode.OpenFileRO:G}({path}): session={sessionId}, size={fileSize}, '{path}'={fileSize}");
         return new ReadHandle(sessionId,fileSize); 
     }
+    
+    public async Task<WriteHandle> OpenFileWrite(string path, CancellationToken cancel = default)
+    {
+        MavlinkFtpHelper.CheckFilePath(path);
+        _logger.ZLogInformation($"{LogSend} {FtpOpcode.OpenFileWO:G}({path})"); 
+        var result = await InternalFtpCall(
+            FtpOpcode.OpenFileWO, 
+            p => p.WriteDataAsString(path), cancel)
+            .ConfigureAwait(false);
+        InternalCheckNack(result, _logger);
+        var resultSize = result.ReadSize();
+        // ACK on success. The payload must specify fields: session = file session id, size = 4, data = length of file that has been opened.
+        if (resultSize != 4)
+        {
+            _logger.ZLogError($"Unexpected error to {FtpOpcode.OpenFileWO:G}: ACK must be {4} byte length");
+            throw new FtpException($"Unexpected error to {FtpOpcode.OpenFileWO:G}: ACK must be {4} byte length");
+        }
+
+        var sessionId = result.ReadSession();
+        var fileSize = result.ReadDataAsUint();
+        _logger.ZLogInformation($"{LogRecv} {FtpOpcode.OpenFileWO:G}({path}): session={sessionId}, size={fileSize}, '{path}'={fileSize}");
+        return new WriteHandle(sessionId,fileSize); 
+    }
+    
     private async Task<FileTransferProtocolPacket> InternalFtpCall(FtpOpcode opCode,Action<FileTransferProtocolPacket> fillPacket, CancellationToken cancel, byte? filterSession = null, Func<FileTransferProtocolPacket,bool>? additionalFilter = null)
     {
         var result = await InternalCall<FileTransferProtocolPacket,FileTransferProtocolPacket, FileTransferProtocolPacket>(p =>
@@ -262,6 +308,7 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         InternalCheckNack(result,_logger);
         return result;
     }
+    
     private static void InternalCheckNack(FileTransferProtocolPacket result, ILogger logger)
     {
         var opCode = result.ReadOpcode();
