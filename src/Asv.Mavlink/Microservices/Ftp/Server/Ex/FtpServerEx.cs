@@ -331,7 +331,7 @@ public class FtpServerEx : IFtpServerEx
         var filePath = _fileSystem.Path.Combine(_rootDirectory, request.Path);
         if (!_fileSystem.File.Exists(filePath))
         {
-            throw new FtpNackException(FtpOpcode.RemoveFile, NackError.FileNotFound);
+            throw new FtpNackException(FtpOpcode.TruncateFile, NackError.FileNotFound);
         }
         
         var stream = _fileSystem.File.Open(filePath, FileMode.Truncate, FileAccess.Write, FileShare.Read);
@@ -385,9 +385,37 @@ public class FtpServerEx : IFtpServerEx
         }
     }
 
-    public Task WriteFile(WriteRequest request, Memory<byte> buffer, CancellationToken cancel = default)
+    public async Task WriteFile(WriteRequest request, Memory<byte> buffer, CancellationToken cancel = default)
     {
-        throw new NotImplementedException();
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.WriteFile, NackError.None);
+        }
+        
+        var session = _sessions.FirstOrDefault(s => s.Id == request.Session);
+
+        if (session is null)
+        {
+            throw new FtpNackException(FtpOpcode.WriteFile, NackError.InvalidSession);
+        }
+
+        if (session.Stream is null)
+        {
+            throw new FtpNackException(FtpOpcode.WriteFile, NackError.FileNotFound);
+        }
+        
+        var bytes = ArrayPool<byte>.Shared.Rent(request.Take);
+        try
+        {
+            var offset = Convert.ToInt32(request.Skip);
+            var take = request.Take;
+            await session.Stream.WriteAsync(bytes, offset, take, cancel)
+                .ConfigureAwait(false);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(bytes);
+        }
     }
 
     private FtpSession OpenSession(FtpSession.SessionMode mode = FtpSession.SessionMode.Unknown)
