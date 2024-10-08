@@ -62,8 +62,8 @@ public class FtpMicroserviceTest
     }
 
     [Theory]
-    [InlineData("mftp://test.txt", -1177814316)]
-    public async Task Client_call_CalcFileCrc32(string path, int originCheckSum)
+    [InlineData("mftp://test.txt", 1177814316)]
+    public async Task Client_call_CalcFileCrc32(string path, uint originCheckSum)
     {
         SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
         server.CalcFileCrc32 = (path, cancellationToken) => Task.FromResult(originCheckSum);
