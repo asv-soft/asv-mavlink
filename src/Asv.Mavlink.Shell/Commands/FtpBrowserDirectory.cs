@@ -13,15 +13,18 @@ namespace Asv.Mavlink.Shell;
 
 public class FtpBrowserDirectory
 {
-    private readonly string _connectionString = "tcp://127.0.0.1:5762";
     private ReadOnlyObservableCollection<FtpEntry> _tree;
     private FtpClient _ftpClient;
     private FtpClientEx _ftpClientEx;
 
+    /// <summary>
+    /// File manager for interacting with a drone's file system via FTP
+    /// </summary>
+    /// <param name="connection">-cs, The address of the connection to the mavlink device</param>
     [Command("ftp-browser")]
-    public async Task RunFtpBrowser()
+    public async Task RunFtpBrowser(string connection)
     {
-        using var port = PortFactory.Create(_connectionString);
+        using var port = PortFactory.Create(connection);
         port.Enable();
         using var conn = MavlinkV2Connection.Create(port);
         var identity = new MavlinkClientIdentity(255, 255, 1, 1);
@@ -35,12 +38,11 @@ public class FtpBrowserDirectory
             _ftpClientEx.Entries.TransformToTree(x => x.ParentPath).Transform(x => new FtpEntry(x)).DisposeMany()
                 .Bind(out _tree).Subscribe();
 
-            AnsiConsole.MarkupLine("Menu for directory: [red]F1[/]");
             await CreateFtpBrowser(_tree);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            AnsiConsole.WriteException(e);
             throw;
         }
     }
