@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
-using ManyConsole;
+using ConsoleAppFramework;
+using Spectre.Console;
 
 namespace Asv.Mavlink.Shell
 {
-    public class MavlinkCommand:ConsoleCommand
+    public class MavlinkCommand
     {
         private string _connectionString = "tcp://127.0.0.1:5760";
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
@@ -20,27 +20,24 @@ namespace Asv.Mavlink.Shell
         private int _packetCount;
         private int _lastPacketCount;
 
-        public MavlinkCommand()
+        /// <summary>
+        /// Listen MAVLink packages and print statistic
+        /// </summary>
+        /// <param name="connection">-cs, Connection string. Default "tcp://127.0.0.1:5760"</param>
+        [Command("mavlink")]
+        public void RunMavlink(string connection = null)
         {
-            IsCommand("mavlink", "Listen MAVLink packages and print statistic");
-            HasOption("cs=", $"Connection string. Default '{_connectionString}'", _ => _connectionString = _);
-        }
-
-        public override int Run(string[] remainingArguments)
-        {
+            _connectionString = connection ?? _connectionString;
             Task.Factory.StartNew(KeyListen);
             var conn = MavlinkV2Connection.Create(_connectionString);
-            
 
-            
             conn.Subscribe(OnPacket);
             conn.DeserializePackageErrors.Subscribe(OnError);
             while (!_cancel.IsCancellationRequested)
             {
                 Redraw();
-                Task.Delay(3000,_cancel.Token).Wait();
+                Task.Delay(3000, _cancel.Token).Wait();
             }
-            return 0;
         }
 
         private void OnError(DeserializePackageException ex)
@@ -81,21 +78,36 @@ namespace Asv.Mavlink.Shell
             var time = DateTime.Now - _lastUpdate;
             foreach (var item in items)
             {
-                item.Freq = (item.Count/ time.TotalSeconds).ToString("0.0 Hz");
+                item.Freq = (item.Count / time.TotalSeconds).ToString("0.0 Hz");
                 item.Count = 0;
             }
             _lastUpdate = DateTime.Now;
-            Console.Clear();
-            Console.WriteLine("Press Q for exit");
-            Console.WriteLine("MAVLink inspector {0:0.0 Hz}:", ((_packetCount - _lastPacketCount) / time.TotalSeconds));
-            TextTable.PrintTableFromObject(Console.WriteLine,new  DoubleTextTableBorder(),1,int.MaxValue,items.OrderBy(_=>_.Msg),_=>_.Msg,_=>_.Message,_=>_.Freq);
-            Console.WriteLine("Last {0} packets of {1}:",packets.Length, _packetCount);
+
+            AnsiConsole.Clear();
+            AnsiConsole.MarkupLine("[bold]Press [red]Q[/] to exit[/]");
+            AnsiConsole.MarkupLine(
+                $"[bold]MAVLink inspector [blue]{((_packetCount - _lastPacketCount) / time.TotalSeconds):0.0} Hz[/]:[/]");
+
+            var table = new Table();
+            table.AddColumns("[blue]Msg[/]", "[blue]Message[/]", "[yellow]Frequency[/]");
+            foreach (var item in items.OrderBy(_ => _.Msg))
+            {
+                table.AddRow(
+                    new Markup($"[blue]{item.Message}[/]"),
+                    new Markup($"[blue]{item.Msg.ToString()}[/]"),
+                    new Markup($"[yellow]{item.Freq}[/]"));
+            }
+
+            AnsiConsole.Write(table);
+
+            AnsiConsole.MarkupLine($"[bold]Last [yellow]{packets.Length}[/] packets of [yellow]{_packetCount}[/]:[/]");
             _lastPacketCount = _packetCount;
+
             foreach (var packetV2 in packets)
             {
-                Console.WriteLine(packetV2);
+                AnsiConsole.WriteLine($"{packetV2}");
+                ;
             }
-            
         }
 
         private void KeyListen()
@@ -123,7 +135,7 @@ namespace Asv.Mavlink.Shell
                 var exist = _items.FirstOrDefault(_ => packet.MessageId == _.Msg);
                 if (exist == null)
                 {
-                    _items.Add(new DisplayRow {Msg = packet.MessageId, Message = packet.Name});
+                    _items.Add(new DisplayRow { Msg = packet.MessageId, Message = packet.Name });
                 }
                 else
                 {
@@ -144,6 +156,4 @@ namespace Asv.Mavlink.Shell
             public int Msg { get; set; }
         }
     }
-
-   
 }
