@@ -26,8 +26,6 @@ public class PacketViewerCommand
     private string _consoleSearch;
     private string _consoleSize = "10";
     private readonly SourceList<KeyValuePair<DateTime,string>> _packetsSource = new();
-    private ReadOnlyObservableCollection<KeyValuePair<DateTime,string>> _packets;
-    private readonly ConcurrentQueue<KeyValuePair<DateTime,string>> _outputCollection = new();
     private PacketPrinter _printer;
 
     [Command("packetviewer")]
@@ -47,7 +45,8 @@ public class PacketViewerCommand
             .Border(TableBorder.None);
         _table.AddRow(_headerTable);
         _table.AddRow("");
-        _packetTable = new Table().AddColumns("Time", "Packet").Expand().Title("[aqua]Packets[/]");
+        
+        _packetTable = new Table().AddColumns("Time", "Type", "Source","Size", "Sequence", "Message").Expand().Title("[aqua]Packets[/]");
         AnsiConsole.Status().Start("Create router...", ctx =>
         {
             ctx.Spinner(Spinner.Known.Aesthetic);
@@ -61,11 +60,11 @@ public class PacketViewerCommand
             });
             _router.WrapToV2ExtensionEnabled = true;
         });
-        _packetsSource.LimitSizeTo(1000).Subscribe();
-        _packetsSource.Connect().Sort(SortExpressionComparer<KeyValuePair<DateTime,string>>.Descending(_ => _.Key)).Bind(out _packets)
-            .Subscribe(_ => SetPacketsInQueue(_packets.First()));
-        _router.Buffer(TimeSpan.FromSeconds(1)).Select(GetPacketAndAddToCollection)
-            .Subscribe(_packetsSource.AddRange);
+        _router.Buffer(TimeSpan.FromSeconds(1))
+            .Subscribe(_ =>
+            {
+                GetPacketAndUpdateTable(_);
+            });
         _actionsThread = new Thread(InterceptConsoleActions);
         _actionsThread.Start();
         AnsiConsole.Live(_table).AutoClear(true).StartAsync(async ctx =>
@@ -73,31 +72,13 @@ public class PacketViewerCommand
             while (_isCancel is false)
             {
                 await Task.Delay(TimeSpan.FromMilliseconds(35));
-                UpdateTable();
                 if (_table is null) continue;
                 ctx.Refresh();
             }
         });
     }
     
-    private void UpdateTable()
-    {
-        if (_isPause) return;
-        var dequeue = _outputCollection.TryDequeue(out var packetModel);
-        if (dequeue)
-        {
-            _packetTable.InsertRow(0, $"{packetModel.Key}", $"{packetModel.Value}");
-            _table.UpdateCell(1, 0, _packetTable);
-        }
-
-        var parsed = int.TryParse(_consoleSize, out var size);
-        if (parsed is false) return;
-        if (_packetTable.Rows.Count <= size) return;
-        for (var i = size; i < _packetTable.Rows.Count; i++)
-        {
-            _packetTable.RemoveRow(i);
-        }
-    }
+   
 
     private void UpdateSearchCellInActive() => _headerTable.UpdateCell(0, 0, $"Search: {_consoleSearch}");
     private void UpdateSearchCellActive() => _headerTable.UpdateCell(0, 0, $"[aqua]Search:[/] {_consoleSearch}");
@@ -216,24 +197,34 @@ public class PacketViewerCommand
         }
     }
     
-    private void SetPacketsInQueue(KeyValuePair<DateTime,string> packet)
+    private void GetPacketAndUpdateTable(IList<IPacketV2<IPayload>> pkt)
     {
-        _outputCollection.Enqueue(packet);
-    }
-
-    private List<KeyValuePair<DateTime,string>> GetPacketAndAddToCollection(IList<IPacketV2<IPayload>> pkt)
-    {
-        var result = new List<KeyValuePair<DateTime, string>>();
+        
+        if (_isPause) return;
+        var result = new List<IPacketV2<IPayload>>();
         var filtered = pkt.Where(_ => _.Name.Contains(_consoleSearch, StringComparison.InvariantCultureIgnoreCase));
         if (_consoleSearch is null)
         {
-            result.AddRange(pkt.Select(item => _printer.Print(item)).Select(prnt => new KeyValuePair<DateTime, string>(DateTime.Now, prnt)));
+            
+            result.AddRange(pkt);
         }
         else
         {
-            result.AddRange(filtered.Select(item => _printer.Print(item)).Select(prnt => new KeyValuePair<DateTime, string>(DateTime.Now, prnt)));
+           result.AddRange(pkt.Where(_=>_.Name.Contains(_consoleSearch)));
         }
 
-        return result;
+        foreach (var packet in result)
+        {
+            var msg = _printer.Print(packet);
+            _packetTable.InsertRow(0, $@"{DateTime.Now}", $"{packet.Name}", $"{packet.ComponentId},{packet.SystemId}", $"{packet.GetByteSize()}", Markup.Escape($"{packet.Sequence}"),  Markup.Escape($"{msg}"));
+            _table.UpdateCell(1, 0, _packetTable);      
+        }
+        var parsed = int.TryParse(_consoleSize, out var size);
+        if (parsed is false) return;
+        if (_packetTable.Rows.Count <= size) return;
+        for (var i = size; i < _packetTable.Rows.Count; i++)
+        {
+            _packetTable.RemoveRow(i);
+        }
     }
 }

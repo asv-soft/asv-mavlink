@@ -17,7 +17,7 @@ public class DefaultPacketHandler : IPacketPrinterHandler
         if (packet == null) throw new ArgumentException("Incoming packet was not initialized!");
         if (!canConvert) throw new ArgumentException("Converter can not convert incoming packet!");
         
-        return $"Type: {packet.Name}, Source: {packet.SystemId}:{packet.ComponentId}, Size:{packet.GetByteSize()}, Sequence: {packet.Sequence:000} Message:{ConvertPacket(packet, formatting)}";
+        return $"{ConvertPacket(packet, formatting)}";
     }
     private static string ConvertPacket(IPacketV2<IPayload> packet, PacketFormatting formatting = PacketFormatting.None)
     {
