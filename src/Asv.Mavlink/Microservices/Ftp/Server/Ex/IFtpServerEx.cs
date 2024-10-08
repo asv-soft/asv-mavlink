@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,19 +10,23 @@ public interface IFtpServerEx : IDisposable, IAsyncDisposable
     IFtpServer Base { get; }
     
     public Task<ReadHandle> OpenFileRead(string path, CancellationToken cancel = default);
+    public Task<WriteHandle> OpenFileWrite(string path, CancellationToken cancel = default);
     public Task<ReadResult> FileRead(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default);
     public Task Rename(string path1, string path2, CancellationToken cancel = default);
     public Task TerminateSession(byte session, CancellationToken cancel = default);
     public Task ResetSessions(CancellationToken cancel = default);
+    public Task<byte> ListDirectory(string path, uint offset, Memory<char> buffer, CancellationToken cancel = default);
     public Task CreateDirectory(string path, CancellationToken cancel = default);
+    public Task<byte> CreateFile(string path, CancellationToken cancel = default);
     public Task RemoveFile(string path, CancellationToken cancel = default);
     public Task RemoveDirectory(string path, CancellationToken cancel = default);
     public Task<uint> CalcFileCrc32(string path, CancellationToken cancel = default);
     public Task TruncateFile(TruncateRequest request, CancellationToken cancel = default);
     public Task<BurstReadResult> BurstReadFile(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default);
+    public Task WriteFile(WriteRequest request, Memory<byte> buffer, CancellationToken cancel = default);
 }
 
-public class FtpSession : IDisposable, IAsyncDisposable
+public sealed class FtpSession : IDisposable, IAsyncDisposable
 {
     public enum SessionMode
     {
