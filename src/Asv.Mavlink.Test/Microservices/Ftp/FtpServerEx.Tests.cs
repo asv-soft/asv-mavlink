@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.IO.Abstractions.TestingHelpers;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using Xunit;
@@ -16,16 +17,16 @@ public class FtpServerExTests
         _output = output;
     }
 
-    private string SetUpRootFolder()
+    private MockFileSystem SetUpFileSystem(string root)
     {
-        var tempFolder = Path.Combine(Path.GetTempPath(), "temp");
-        if (Directory.Exists(tempFolder))
+        var mockFileCfg = new MockFileSystemOptions
         {
-            Directory.Delete(tempFolder, true);
-        }
-        
-        Directory.CreateDirectory(tempFolder);
-        return tempFolder;
+            CurrentDirectory = root
+        };
+        var fileSystem = new MockFileSystem(mockFileCfg);
+        fileSystem.AddDirectory(mockFileCfg.CurrentDirectory);
+
+        return fileSystem;
     }
     
     private void SetUpMicroservice(out IFtpClient client, out IFtpServer server,
@@ -53,18 +54,24 @@ public class FtpServerExTests
     [Fact]
     public async Task OpenFileRead_WithEmptyFile_Success()
     {
-        //Arrange
+        // Arrange
         var fileName = "test.txt";
-        var root = SetUpRootFolder();
-        var filePath = Path.Combine(root, fileName);
-        var stream = File.Create(filePath);
-        stream.Close();
+        var root = Path.Combine("D:", "file");
+        var fileSystem = SetUpFileSystem(root);
+        var fileDir = fileSystem.Path.Combine(root, "file");
+        var filePath = fileSystem.Path.Combine(fileDir, fileName);
+        fileSystem.AddFile(filePath, new MockFileData(string.Empty));
         SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
-        var cfg = new MavlinkFtpServerExConfig();
-        var serverEx = new FtpServerEx(cfg, server, root);
+        var cfg = new MavlinkFtpServerExConfig
+        {
+            RootDirectory = root,
+        };
+        var serverEx = new FtpServerEx(cfg, server, fileSystem);
 
-        var result = await serverEx.OpenFileRead(fileName);
+        // Act
+        var result = await serverEx.OpenFileRead(filePath);
         
+        // Assert
         Assert.Equal(0, result.Session);
         Assert.Equal(0u, result.Size);
     }
