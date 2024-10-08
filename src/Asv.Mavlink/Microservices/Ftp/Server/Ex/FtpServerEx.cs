@@ -86,10 +86,6 @@ public class FtpServerEx : IFtpServerEx
         }
         
         var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
-        if (!_fileSystem.File.Exists(fullPath))
-        {
-            throw new FtpNackException(FtpOpcode.OpenFileWO, NackError.FileNotFound);
-        }
         
         var session = OpenSession(FtpSession.SessionMode.OpenWrite);
         var stream = _fileSystem.File.OpenWrite(fullPath);
@@ -185,9 +181,7 @@ public class FtpServerEx : IFtpServerEx
         
         var existingSession =  _sessions.FirstOrDefault(
             s => s.Id == session && 
-                 s.Mode is 
-                     FtpSession.SessionMode.OpenRead or 
-                     FtpSession.SessionMode.OpenWrite
+                 s.Mode is not FtpSession.SessionMode.Free
         );
 
         if (existingSession is null)
@@ -212,7 +206,7 @@ public class FtpServerEx : IFtpServerEx
         
         foreach (var session in _sessions)
         {
-            if (session.Mode is FtpSession.SessionMode.OpenRead or FtpSession.SessionMode.OpenWrite)
+            if (session.Mode is not FtpSession.SessionMode.Free)
             {
                 await session.CloseAsync().ConfigureAwait(false);
             }
@@ -244,7 +238,26 @@ public class FtpServerEx : IFtpServerEx
 
     public Task<byte> CreateFile(string path, CancellationToken cancel = default)
     {
-        throw new NotImplementedException();
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.CreateFile, NackError.None);
+        }
+        
+        var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
+        if (_fileSystem.File.Exists(fullPath))
+        {
+            var stream = _fileSystem.File.Open(fullPath, FileMode.Truncate, FileAccess.Write, FileShare.Read);
+            stream.SetLength(0);
+            stream.Close();
+
+            throw new FtpNackException(FtpOpcode.CreateFile, NackError.FileExists);
+        }
+
+        var file = _fileSystem.File.Create(fullPath);
+        var session = OpenSession(FtpSession.SessionMode.OpenReadWrite);
+        session.Stream = file;
+        
+        return Task.FromResult(session.Id);
     }
 
     public Task RemoveFile(string path, CancellationToken cancel = default)

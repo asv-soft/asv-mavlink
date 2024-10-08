@@ -34,6 +34,7 @@ public sealed class FtpSession : IDisposable, IAsyncDisposable
         Unknown,
         OpenRead,
         OpenWrite,
+        OpenReadWrite,
     }
     
     private Stream? _stream;
