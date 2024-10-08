@@ -1,11 +1,11 @@
-    using System;
-    using System.Reflection;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Asv.IO;
-    using ConsoleAppFramework;
+using System;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using Asv.IO;
+using ConsoleAppFramework;
 
-    namespace Asv.Mavlink.Shell;
+namespace Asv.Mavlink.Shell;
 
     class Program
     { 
@@ -28,7 +28,9 @@
             app.Add<MavProxy>();
             app.Add<BenchmarkBinSerializationCommand>();
             app.Add<BenchmarkSerializationPacket>();
+            app.Add<PacketViewerCommand>();
             await app.RunAsync(args);
         }
     }
+}
 
