@@ -7,7 +7,7 @@ namespace Asv.Mavlink.Shell
     public class ExampleCommand
     {
         [Command("example")]
-        public  int Run(string[] remainingArguments)
+        public  int Run()
         {
             Directory.CreateDirectory("in");
             File.WriteAllText("in/common.xml",Templates.common);
