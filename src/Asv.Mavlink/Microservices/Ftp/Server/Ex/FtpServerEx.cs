@@ -38,7 +38,7 @@ public class FtpServerEx : IFtpServerEx
         Base.OpenFileRead = OpenFileRead;
         Base.TerminateSession = TerminateSession;
         Base.CreateDirectory = CreateDirectory;
-        // Base.CalcFileCrc32 = CalcFileCrc32;
+        Base.CalcFileCrc32 = CalcFileCrc32;
         Base.TruncateFile = TruncateFile;
         Base.Rename = Rename;
         Base.FileRead = FileRead;
@@ -76,6 +76,36 @@ public class FtpServerEx : IFtpServerEx
         var fileSize = (uint) file.Length;
 
         return Task.FromResult(new ReadHandle(session.Id, fileSize));
+    }
+
+    public Task<WriteHandle> OpenFileWrite(string path, CancellationToken cancel = default)
+    {
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.OpenFileWO, NackError.None);
+        }
+        
+        var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
+        if (!_fileSystem.File.Exists(fullPath))
+        {
+            throw new FtpNackException(FtpOpcode.OpenFileWO, NackError.FileNotFound);
+        }
+        
+        var session = OpenSession(FtpSession.SessionMode.OpenWrite);
+        var stream = _fileSystem.File.OpenWrite(fullPath);
+        var info = new FileInfo(fullPath);
+        var file = _fileSystem.FileInfo.Wrap(info);
+        
+        if (file.Length > byte.MaxValue)
+        {
+            throw new FtpNackException(FtpOpcode.OpenFileWO, NackError.FileNotFound);
+        }
+
+        session.Stream = stream;
+        
+        var fileSize = (uint) file.Length;
+
+        return Task.FromResult(new WriteHandle(session.Id, fileSize));
     }
 
     public async Task<ReadResult> FileRead(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default)
@@ -189,6 +219,11 @@ public class FtpServerEx : IFtpServerEx
         }
     }
 
+    public Task<byte> ListDirectory(string path, uint offset, Memory<char> buffer, CancellationToken cancel = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task CreateDirectory(string path, CancellationToken cancel = default)
     {
         if (cancel.IsCancellationRequested)
@@ -205,6 +240,11 @@ public class FtpServerEx : IFtpServerEx
         _fileSystem.Directory.CreateDirectory(fullPath);
         
         return Task.CompletedTask;
+    }
+
+    public Task<byte> CreateFile(string path, CancellationToken cancel = default)
+    {
+        throw new NotImplementedException();
     }
 
     public Task RemoveFile(string path, CancellationToken cancel = default)
@@ -330,6 +370,11 @@ public class FtpServerEx : IFtpServerEx
         {
             ArrayPool<byte>.Shared.Return(bytes);
         }
+    }
+
+    public Task WriteFile(WriteRequest request, Memory<byte> buffer, CancellationToken cancel = default)
+    {
+        throw new NotImplementedException();
     }
 
     private FtpSession OpenSession(FtpSession.SessionMode mode = FtpSession.SessionMode.Unknown)
