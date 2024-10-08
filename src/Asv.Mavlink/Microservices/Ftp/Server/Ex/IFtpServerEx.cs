@@ -42,7 +42,7 @@ public class FtpSession : IDisposable, IAsyncDisposable
         {
             if (Mode == SessionMode.Free )
             {
-                throw new Exception("Session is not in work"); // TODO: make proper exception class
+                throw new FtpException("Session is not at work");
             }
             
             _stream = value;
@@ -63,7 +63,7 @@ public class FtpSession : IDisposable, IAsyncDisposable
     {
         if (Mode != SessionMode.Free)
         {
-            throw new Exception("Session is already opened"); // TODO: make proper exception class
+            throw new FtpException("Session is already opened");
         }
         
         Mode = mode;
