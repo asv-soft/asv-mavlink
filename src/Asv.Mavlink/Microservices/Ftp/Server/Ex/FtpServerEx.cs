@@ -1,13 +1,16 @@
 using System;
 using System.Buffers;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Primitives;
 
 namespace Asv.Mavlink;
 
@@ -46,6 +49,10 @@ public class FtpServerEx : IFtpServerEx
         Base.BurstReadFile = BurstReadFile;
         Base.RemoveDirectory = RemoveDirectory;
         Base.RemoveFile = RemoveFile;
+        Base.ListDirectory = ListDirectory;
+        Base.OpenFileWrite = OpenFileWrite;
+        Base.WriteFile = WriteFile;
+        Base.CreateFile = CreateFile;
     }
 
     public Task<ReadHandle> OpenFileRead(string path, CancellationToken cancel = default)
@@ -215,7 +222,94 @@ public class FtpServerEx : IFtpServerEx
 
     public Task<byte> ListDirectory(string path, uint offset, Memory<char> buffer, CancellationToken cancel = default)
     {
-        throw new NotImplementedException();
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.ListDirectory, NackError.None);
+        }
+
+        var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
+        if (!_fileSystem.Path.Exists(fullPath))
+        {
+            throw new FtpNackException(FtpOpcode.ListDirectory, NackError.FileNotFound);
+        }
+
+        if (offset > int.MaxValue)
+        {
+            offset = int.MaxValue;
+        }
+        
+        var infos = new List<IFileSystemInfo>();
+        uint currentIndex = 0;
+        var dirInfo = new DirectoryInfo(fullPath);
+        IFileSystemInfo? firstEntry = null;
+        var directory = _fileSystem.DirectoryInfo.Wrap(dirInfo);
+        foreach (var info in directory.EnumerateFileSystemInfos())
+        {
+            if (currentIndex == offset)
+            {
+                firstEntry = info;
+            }
+            
+            if (currentIndex > offset)
+            {
+                infos.Add(info);
+            }
+            currentIndex++;
+        }
+
+        var result = new List<string>();
+
+        char type;
+        if (offset > 0)
+        {
+            type = 'S';
+        }
+        else
+        {
+            type = firstEntry!.Extension.Length > 0 ? 'F' : 'D';
+        }
+        
+        if (firstEntry!.Extension.Length > 0)
+        {
+            var firstFile = firstEntry as IFileInfo;
+            result.Add($"{type}{firstFile!.Name}\\t{firstFile.Length}\\0");
+        }
+        else
+        {
+            result.Add($"{type}{firstEntry.Name}\\0");
+        }
+        
+        foreach (var entry in infos)
+        {
+            if (entry.Extension.Length > 0)
+            {
+                var file = (IFileInfo) entry;
+                result.Add($"F{file.Name}\\t{file.Length}\\0");
+                continue;
+            }
+            
+            result.Add($"D{entry.Name}\\0");
+        }
+
+        var sb = new StringBuilder(0, MavlinkFtpHelper.MaxDataSize);
+        foreach (var str in result)
+        {
+            if (sb.Length + str.Length > sb.MaxCapacity)
+            {
+                break;
+            }
+            
+            sb.Append(str);
+        }
+
+        if (sb.Length == 0)
+        {
+            throw new FtpNackException(FtpOpcode.ListDirectory, NackError.Fail);
+        }
+        
+        sb.ToString().CopyTo(buffer.Span);
+        
+        return Task.FromResult((byte) sb.Length);
     }
 
     public Task CreateDirectory(string path, CancellationToken cancel = default)
