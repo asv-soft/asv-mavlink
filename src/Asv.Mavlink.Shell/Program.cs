@@ -32,4 +32,5 @@ namespace Asv.Mavlink.Shell;
             await app.RunAsync(args);
         }
     }
+}
 

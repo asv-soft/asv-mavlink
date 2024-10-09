@@ -3,21 +3,20 @@ using Asv.Mavlink.V2.Test;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
+using ConsoleAppFramework;
 using ManyConsole;
 
 namespace Asv.Mavlink.Shell
 {
-    public class BenchmarkSerializationPacket : ConsoleCommand
+    public class BenchmarkSerializationPacket
     {
-        public BenchmarkSerializationPacket()
-        {
-            IsCommand("benchmark-serialization", "Benchmark serialization packet test");
-        }
-
-        public override int Run(string[] remainingArguments)
-        {
-            var summary = BenchmarkRunner.Run<SerializationPacket>();
-            return 0;
+        /// <summary>
+        /// Benchmark serialization packet test
+        /// </summary>
+        [Command("benchmark-serialization")]
+        public void RunBenchmarkSerialization()
+        { 
+            BenchmarkRunner.Run<SerializationPacket>();
         }
     }
 

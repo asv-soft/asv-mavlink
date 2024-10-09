@@ -11,13 +11,16 @@ namespace Asv.Mavlink.Shell;
 
 public class FtpTreeDirectory
 {
-    private readonly string _connectionString = "tcp://127.0.0.1:5762";
     private ReadOnlyObservableCollection<FtpEntry> _tree;
 
+    /// <summary>
+    /// Tree representation of all available files and directories on the drone's FTP server
+    /// </summary>
+    /// <param name="connection">-cs, The address of the connection to the mavlink device</param>
     [Command("ftp-tree")]
-    public async Task RunFtpTree()
+    public async Task RunFtpTree(string connection)
     {
-        using var port = PortFactory.Create(_connectionString);
+        using var port = PortFactory.Create(connection);
         port.Enable();
         using var conn = MavlinkV2Connection.Create(port);
         var identity = new MavlinkClientIdentity(255, 255, 1, 1);
@@ -36,7 +39,7 @@ public class FtpTreeDirectory
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            AnsiConsole.WriteException(e);
             throw;
         }
     }
