@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading;
@@ -99,6 +100,16 @@ public class FtpClientEx : IFtpClientEx
     
     public async Task Refresh(string path, bool recursive = true, CancellationToken cancel = default)
     {
+        var existingEntries = _entryCache.Items
+            .Where(entry => entry.Path.StartsWith(path, StringComparison.OrdinalIgnoreCase))
+            .Select(entry => entry.Path)
+            .ToList();
+        
+        foreach (var entryPath in existingEntries)
+        {
+            _entryCache.RemoveKey(entryPath);
+        }
+        
         var currentEntry = MavlinkFtpHelper.CreateFtpDirectoryFromPath(path);
         _entryCache.AddOrUpdate(currentEntry);
         var offset = 0U;
