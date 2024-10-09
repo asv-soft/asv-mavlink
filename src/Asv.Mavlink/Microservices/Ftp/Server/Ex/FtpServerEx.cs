@@ -232,11 +232,6 @@ public class FtpServerEx : IFtpServerEx
         {
             throw new FtpNackException(FtpOpcode.ListDirectory, NackError.FileNotFound);
         }
-
-        if (offset > int.MaxValue)
-        {
-            offset = int.MaxValue;
-        }
         
         var infos = new List<IFileSystemInfo>();
         uint currentIndex = 0;
