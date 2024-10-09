@@ -1,9 +1,10 @@
 using System;
+using System.Composition;
 using System.Text;
 using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
-
+[Export(typeof(IPacketPrinterHandler))]
 public class StatusTextHandler : IPacketPrinterHandler
 {
     public int Order => int.MaxValue/2;

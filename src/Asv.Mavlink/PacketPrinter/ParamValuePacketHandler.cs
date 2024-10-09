@@ -1,9 +1,10 @@
 using System;
+using System.Composition;
 using System.Diagnostics;
 using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
-
+[Export(typeof(IPacketPrinterHandler))]
 public class ParamValuePacketHandler : IPacketPrinterHandler
 {
     readonly IMavParamEncoding _cstyleEncoding = new MavParamCStyleEncoding();

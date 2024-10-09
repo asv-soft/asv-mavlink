@@ -1,8 +1,9 @@
 using System;
 using Newtonsoft.Json;
+using System.Composition;
 
 namespace Asv.Mavlink;
-
+[Export(typeof(IPacketPrinterHandler))]
 public class DefaultPacketHandler : IPacketPrinterHandler
 {
     public int Order => int.MaxValue;

@@ -1,9 +1,10 @@
+using System.Composition;
 using System.Text;
 using Asv.Mavlink.V2.Common;
 using Newtonsoft.Json;
 
 namespace Asv.Mavlink;
-
+[Export(typeof(IPacketPrinterHandler))]
 public class FtpPacketHandler: IPacketPrinterHandler
 {
     public int Order  => int.MaxValue/2;

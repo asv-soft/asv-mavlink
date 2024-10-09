@@ -32,6 +32,7 @@
     <PackageReference Include="Asv.Common" Version="$(AsvCommonVersion)" />
     <PackageReference Include="Asv.IO" Version="$(AsvCommonVersion)" />
     <PackageReference Include="DynamicData" Version="$(DynamicDataVersion)" />
+    <PackageReference Include="System.Composition" Version="9.0.0-rc.2.24473.5" />
     <PackageReference Include="ZLogger" Version="$(ZLoggerVersion)" />
     <PackageReference Include="Microsoft.DotNet.ApiCompat.Task" Version="$(ApiCompatVersion)" >
       <!--using api compatibility purely as a development harness-->
