@@ -238,7 +238,14 @@ public class FtpServerEx : IFtpServerEx
         var dirInfo = new DirectoryInfo(fullPath);
         IFileSystemInfo? firstEntry = null;
         var directory = _fileSystem.DirectoryInfo.Wrap(dirInfo);
-        foreach (var info in directory.EnumerateFileSystemInfos())
+        var dirInfos = directory.GetFileSystemInfos();
+
+        if (offset >= dirInfos.Length)
+        {
+            throw new FtpNackEndOfFileException(FtpOpcode.ListDirectory);
+        }
+        
+        foreach (var info in dirInfos)
         {
             if (currentIndex == offset)
             {
