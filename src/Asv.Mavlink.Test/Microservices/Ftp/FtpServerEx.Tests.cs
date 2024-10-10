@@ -2,10 +2,12 @@ using System;
 using System.Buffers;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
-using System.Linq;
 using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DynamicData;
+using Microsoft.Extensions.Time.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -14,9 +16,11 @@ namespace Asv.Mavlink.Test;
 public class FtpServerExTests
 {
     private readonly ITestOutputHelper _output;
+    private readonly FakeTimeProvider _fakeTime;
 
     public FtpServerExTests(ITestOutputHelper output)
     {
+        _fakeTime = new FakeTimeProvider();
         _output = output;
     }
 
@@ -43,6 +47,28 @@ public class FtpServerExTests
             TargetComponentId = 4
         };
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
+
+        var serverSeq = new PacketSequenceCalculator();
+        server = new FtpServer(new MavlinkFtpServerConfig(), link.Server, serverId, serverSeq,
+            TaskPoolScheduler.Default, new TestLogger(_output, "SERVER"));
+    }
+    
+    private void SetUpClientAndServer(out IFtpClient client, out IFtpServer server,
+        Func<IPacketV2<IPayload>, bool> clientToServer, Func<IPacketV2<IPayload>, bool> serverToClient)
+    {
+        var link = new VirtualMavlinkConnection(clientToServer, serverToClient);
+        var clientId = new MavlinkClientIdentity
+        {
+            SystemId = 1,
+            ComponentId = 2,
+            TargetSystemId = 3,
+            TargetComponentId = 4
+        };
+        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
+
+        var clientSeq = new PacketSequenceCalculator();
+        client = new FtpClient(new MavlinkFtpClientConfig(), link.Client, clientId, clientSeq, TimeProvider.System,
+            TaskPoolScheduler.Default, new TestLogger(_output, "CLIENT"));
 
         var serverSeq = new PacketSequenceCalculator();
         server = new FtpServer(new MavlinkFtpServerConfig(), link.Server, serverId, serverSeq,
@@ -108,6 +134,72 @@ public class FtpServerExTests
     #endregion
 
     #region ListDirectory
+
+    [Fact]
+    public async Task ListDirectory_WithClientEx_Success()
+    {
+        // Arrange
+        var root = Path.Combine("D:", "temp");
+        var fileSystem = SetUpFileSystem(root);
+        SetUpClientAndServer(out var client, out var server, (packet) => true, (packet) => true);
+        var fileDir = fileSystem.Path.Combine(root, "files");
+        var filePath = fileSystem.Path.Combine(fileDir, "test.txt");
+        var filePath2 = fileSystem.Path.Combine(fileDir, "test2.txt");
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder1"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder2"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder3"));
+        fileSystem.AddFile(filePath, new MockFileData("Something"));
+        fileSystem.AddFile(filePath2, new MockFileData(string.Empty));
+        var clientEx = new FtpClientEx(client, _fakeTime);
+        var cfg = new MavlinkFtpServerExConfig
+        {
+            RootDirectory = root,
+        };
+        var serverEx = new FtpServerEx(cfg, server, fileSystem);
+        
+        // Act
+        await clientEx.Refresh(fileDir);
+        
+        // Assert
+        clientEx.Entries.Do(_ => {}).Bind(out var result).Subscribe();
+        Assert.Equal(9, result.Count);
+    }
+    
+    [Theory]
+    [InlineData(0, "DFolder1\0DFolder2\0DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]
+    [InlineData(1, "DFolder2\0DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]
+    [InlineData(2, "DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]
+    [InlineData(3, "Ftest.txt\t9\0Ftest2.txt\t0\0")]
+    [InlineData(4, "Ftest2.txt\t0\0")]
+    public async Task ListDirectory_WithOffset_Success(uint offset, string realListOfEntries)
+    {
+        // Arrange
+        var root = Path.Combine("D:", "temp");
+        var fileSystem = SetUpFileSystem(root);
+        SetUpServer(out var server);
+        var fileDir = fileSystem.Path.Combine(root, "files");
+        var filePath = fileSystem.Path.Combine(fileDir, "test.txt");
+        var filePath2 = fileSystem.Path.Combine(fileDir, "test2.txt");
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder1"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder2"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder3"));
+        fileSystem.AddFile(filePath, new MockFileData("Something"));
+        fileSystem.AddFile(filePath2, new MockFileData(string.Empty));
+        var cfg = new MavlinkFtpServerExConfig
+        {
+            RootDirectory = root,
+        };
+        var serverEx = new FtpServerEx(cfg, server, fileSystem);
+        using var memory = MemoryPool<char>.Shared.Rent();
+
+        // Act
+        var result = await serverEx.ListDirectory(fileDir, offset, memory.Memory, CancellationToken.None);
+        
+        // Assert
+        var listOfEntries = memory.Memory[..result].ToString();
+        Assert.Equal(realListOfEntries.Length, result);
+        Assert.Equal(realListOfEntries, listOfEntries);
+    }
 
     [Fact]
     public async Task ListDirectory_PastTheEndOfFile_ThrowsEOF()
@@ -237,42 +329,6 @@ public class FtpServerExTests
         // Assert
         var listOfEntries = memory.Memory[..result] + memory2.Memory[..result2].ToString();
         Assert.Equal(realListOfEntries.Length, listOfEntries.Length);
-        Assert.Equal(realListOfEntries, listOfEntries);
-    }
-    
-    [Theory]
-    [InlineData(0, "DFolder1\0DFolder2\0DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]
-    [InlineData(1, "DFolder2\0DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]
-    [InlineData(2, "DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]
-    [InlineData(3, "Ftest.txt\t9\0Ftest2.txt\t0\0")]
-    [InlineData(4, "Ftest2.txt\t0\0")]
-    public async Task ListDirectory_WithOffset_Success(uint offset, string realListOfEntries)
-    {
-        // Arrange
-        var root = Path.Combine("D:", "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
-        var fileDir = fileSystem.Path.Combine(root, "files");
-        var filePath = fileSystem.Path.Combine(fileDir, "test.txt");
-        var filePath2 = fileSystem.Path.Combine(fileDir, "test2.txt");
-        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder1"));
-        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder2"));
-        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder3"));
-        fileSystem.AddFile(filePath, new MockFileData("Something"));
-        fileSystem.AddFile(filePath2, new MockFileData(string.Empty));
-        var cfg = new MavlinkFtpServerExConfig
-        {
-            RootDirectory = root,
-        };
-        var serverEx = new FtpServerEx(cfg, server, fileSystem);
-        using var memory = MemoryPool<char>.Shared.Rent();
-
-        // Act
-        var result = await serverEx.ListDirectory(fileDir, offset, memory.Memory, CancellationToken.None);
-        
-        // Assert
-        var listOfEntries = memory.Memory[..result].ToString();
-        Assert.Equal(realListOfEntries.Length, result);
         Assert.Equal(realListOfEntries, listOfEntries);
     }
 
