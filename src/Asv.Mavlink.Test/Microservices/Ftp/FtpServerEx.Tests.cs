@@ -133,6 +133,57 @@ public class FtpServerExTests
         await Assert.ThrowsAsync<FtpNackEndOfFileException>(async () => await serverEx.ListDirectory(fileDir, 5, memory.Memory, CancellationToken.None));
     }
     
+    [Fact]
+    public async Task ListDirectory_TooManyEntries_Success()
+    {
+        // Arrange
+        var realListOfEntries =
+            "DFolder1\0DFolder2\0DFolder3\0DFolder11" +
+            "\0DFolder22\0DFolder33\0DFolder111\0DFolder222" +
+            "\0DFolder333\0DFolder1111\0DFolder2222\0DFolder3333" +
+            "\0DFolder11111\0DFolder22222\0DFolder33333\0DFolder111111" +
+            "\0DFolder222222\0DFolder333333\0DFolder1111111\0DFolder2222222\0";
+        var root = Path.Combine("D:", "temp");
+        var fileSystem = SetUpFileSystem(root);
+        SetUpServer(out var server);
+        var fileDir = fileSystem.Path.Combine(root, "files");
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder1"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder2"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder3"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder11"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder22"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder33"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder111"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder222"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder333"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder1111"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder2222"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder3333"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder11111"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder22222"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder33333"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder111111"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder222222"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder333333"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder1111111"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder2222222"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder3333333"));
+        var cfg = new MavlinkFtpServerExConfig
+        {
+            RootDirectory = root,
+        };
+        var serverEx = new FtpServerEx(cfg, server, fileSystem);
+        using var memory = MemoryPool<char>.Shared.Rent();
+
+        // Act
+        var result = await serverEx.ListDirectory(fileDir, 0, memory.Memory, CancellationToken.None);
+        
+        // Assert
+        var listOfEntries = memory.Memory[..result].ToString();
+        Assert.Equal(realListOfEntries.Length, result);
+        Assert.Equal(realListOfEntries, listOfEntries);
+    }
+    
     [Theory]
     [InlineData(0, "DFolder1\0DFolder2\0DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]
     [InlineData(1, "DFolder2\0DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]

@@ -255,7 +255,6 @@ public class FtpServerEx : IFtpServerEx
         }
 
         var result = new List<string>();
-        
         foreach (var entry in infos)
         {
             if (entry.Extension.Length > 0)
