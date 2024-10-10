@@ -250,6 +250,7 @@ public class FtpServerEx : IFtpServerEx
             {
                 infos.Add(info);
             }
+            
             currentIndex++;
         }
 

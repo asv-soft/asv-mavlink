@@ -108,15 +108,45 @@ public class FtpServerExTests
     #region ListDirectory
 
     [Fact]
-    public async Task ListDirectory_LittleAmountOfEntries_Success()
+    public async Task ListDirectory_PastTheEndOfFile_ThrowsEOF()
     {
         // Arrange
-        var fileName = "test.txt";
         var root = Path.Combine("D:", "temp");
         var fileSystem = SetUpFileSystem(root);
         SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, "files");
-        var filePath = fileSystem.Path.Combine(fileDir, fileName);
+        var filePath = fileSystem.Path.Combine(fileDir, "test.txt");
+        var filePath2 = fileSystem.Path.Combine(fileDir, "test2.txt");
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder1"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder2"));
+        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder3"));
+        fileSystem.AddFile(filePath, new MockFileData("Something"));
+        fileSystem.AddFile(filePath2, new MockFileData(string.Empty));
+        var cfg = new MavlinkFtpServerExConfig
+        {
+            RootDirectory = root,
+        };
+        var serverEx = new FtpServerEx(cfg, server, fileSystem);
+        using var memory = MemoryPool<char>.Shared.Rent();
+
+        // Act + Assert
+        await Assert.ThrowsAsync<FtpNackEndOfFileException>(async () => await serverEx.ListDirectory(fileDir, 5, memory.Memory, CancellationToken.None));
+    }
+    
+    [Theory]
+    [InlineData(0, "DFolder1\0DFolder2\0DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]
+    [InlineData(1, "DFolder2\0DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]
+    [InlineData(2, "DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]
+    [InlineData(3, "Ftest.txt\t9\0Ftest2.txt\t0\0")]
+    [InlineData(4, "Ftest2.txt\t0\0")]
+    public async Task ListDirectory_WithOffset_Success(uint offset, string realListOfEntries)
+    {
+        // Arrange
+        var root = Path.Combine("D:", "temp");
+        var fileSystem = SetUpFileSystem(root);
+        SetUpServer(out var server);
+        var fileDir = fileSystem.Path.Combine(root, "files");
+        var filePath = fileSystem.Path.Combine(fileDir, "test.txt");
         var filePath2 = fileSystem.Path.Combine(fileDir, "test2.txt");
         fileSystem.AddDirectory(Path.Combine(fileDir, "Folder1"));
         fileSystem.AddDirectory(Path.Combine(fileDir, "Folder2"));
@@ -131,10 +161,12 @@ public class FtpServerExTests
         using var memory = MemoryPool<char>.Shared.Rent();
 
         // Act
-        var result = await serverEx.ListDirectory(fileDir, 0, memory.Memory, CancellationToken.None);
+        var result = await serverEx.ListDirectory(fileDir, offset, memory.Memory, CancellationToken.None);
         
         // Assert
-        Assert.Equal(52, result);
+        var listOfEntries = memory.Memory[..result].ToString();
+        Assert.Equal(realListOfEntries.Length, result);
+        Assert.Equal(realListOfEntries, listOfEntries);
     }
 
     #endregion
