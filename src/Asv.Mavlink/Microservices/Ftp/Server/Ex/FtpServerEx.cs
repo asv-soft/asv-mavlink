@@ -233,10 +233,9 @@ public class FtpServerEx : IFtpServerEx
             throw new FtpNackException(FtpOpcode.ListDirectory, NackError.FileNotFound);
         }
         
-        var infos = new List<IFileSystemInfo>();
         uint currentIndex = 0;
+        var infos = new List<IFileSystemInfo>();
         var dirInfo = new DirectoryInfo(fullPath);
-        IFileSystemInfo? firstEntry = null;
         var directory = _fileSystem.DirectoryInfo.Wrap(dirInfo);
         var dirInfos = directory.GetFileSystemInfos();
 
@@ -247,12 +246,7 @@ public class FtpServerEx : IFtpServerEx
         
         foreach (var info in dirInfos)
         {
-            if (currentIndex == offset)
-            {
-                firstEntry = info;
-            }
-            
-            if (currentIndex > offset)
+            if (currentIndex >= offset)
             {
                 infos.Add(info);
             }
@@ -260,26 +254,6 @@ public class FtpServerEx : IFtpServerEx
         }
 
         var result = new List<string>();
-
-        char type;
-        if (offset > 0)
-        {
-            type = 'S';
-        }
-        else
-        {
-            type = firstEntry!.Extension.Length > 0 ? 'F' : 'D';
-        }
-        
-        if (firstEntry!.Extension.Length > 0)
-        {
-            var firstFile = firstEntry as IFileInfo;
-            result.Add($"{type}{firstFile!.Name}\\t{firstFile.Length}\\0");
-        }
-        else
-        {
-            result.Add($"{type}{firstEntry.Name}\\0");
-        }
         
         foreach (var entry in infos)
         {
