@@ -29,7 +29,7 @@ public class FtpServerEx : IFtpServerEx
     public IFtpServer Base { get; }
     
     
-    public FtpServerEx(MavlinkFtpServerExConfig config, IFtpServer @base, IFileSystem? fileSystem, ILogger? logger = null)
+    public FtpServerEx(MavlinkFtpServerExConfig config, IFtpServer @base, IFileSystem? fileSystem = null, ILogger? logger = null)
     {
         _config = config;
         _rootDirectory = _config.RootDirectory;
