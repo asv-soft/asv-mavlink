@@ -260,11 +260,11 @@ public class FtpServerEx : IFtpServerEx
             if (entry.Extension.Length > 0)
             {
                 var file = (IFileInfo) entry;
-                result.Add($"F{file.Name}\\t{file.Length}\\0");
+                result.Add($"F{file.Name}\t{file.Length}\0");
                 continue;
             }
             
-            result.Add($"D{entry.Name}\\0");
+            result.Add($"D{entry.Name}\0");
         }
 
         var sb = new StringBuilder(0, MavlinkFtpHelper.MaxDataSize);

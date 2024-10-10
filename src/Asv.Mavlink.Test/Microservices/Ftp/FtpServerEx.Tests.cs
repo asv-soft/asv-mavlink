@@ -134,7 +134,7 @@ public class FtpServerExTests
         var result = await serverEx.ListDirectory(fileDir, 0, memory.Memory, CancellationToken.None);
         
         // Assert
-        Assert.Equal(59, result);
+        Assert.Equal(52, result);
     }
 
     #endregion
