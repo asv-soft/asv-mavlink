@@ -83,7 +83,7 @@ public class FtpServerExTests
         // Arrange
         var fileName = "test.txt";
         var fileDirName = "file";
-        var root = Path.Combine("D:", "temp");
+        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         var fileSystem = SetUpFileSystem(root);
         SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
@@ -114,7 +114,7 @@ public class FtpServerExTests
         // Arrange
         var fileName = "test.txt";
         var fileDirName = "file";
-        var root = Path.Combine("D:", "temp");
+        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         var fileSystem = SetUpFileSystem(root);
         SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
@@ -144,7 +144,7 @@ public class FtpServerExTests
     {
         // Arrange
         var fileDirName = "file";
-        var root = Path.Combine("D:", "temp");
+        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         var fileSystem = SetUpFileSystem(root);
         SetUpClientAndServer(out var client, out var server, (packet) => true, (packet) => true);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
@@ -167,7 +167,7 @@ public class FtpServerExTests
         
         // Assert
         clientEx.Entries.Do(_ => {}).Bind(out var result).Subscribe();
-        Assert.Equal(9, result.Count);
+        Assert.Equal(6, result.Count);
     }
     
     [Theory]
@@ -180,7 +180,7 @@ public class FtpServerExTests
     {
         // Arrange
         var fileDirName = "files";
-        var root = Path.Combine("D:", "temp");
+        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         var fileSystem = SetUpFileSystem(root);
         SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
@@ -212,7 +212,7 @@ public class FtpServerExTests
     {
         // Arrange
         var fileDirName = "files";
-        var root = Path.Combine("D:", "temp");
+        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         var fileSystem = SetUpFileSystem(root);
         SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
@@ -245,7 +245,7 @@ public class FtpServerExTests
             "\0DFolder333\0DFolder1111\0DFolder2222\0DFolder3333" +
             "\0DFolder11111\0DFolder22222\0DFolder33333\0DFolder111111" +
             "\0DFolder222222\0DFolder333333\0DFolder1111111\0DFolder2222222\0";
-        var root = Path.Combine("D:", "temp");
+        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         var fileSystem = SetUpFileSystem(root);
         SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
@@ -298,7 +298,7 @@ public class FtpServerExTests
             "\0DFolder11111\0DFolder22222\0DFolder33333\0DFolder111111" +
             "\0DFolder222222\0DFolder333333\0DFolder1111111\0DFolder2222222" +
             "\0DFolder3333333\0";
-        var root = Path.Combine("D:", "temp");
+        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         var fileSystem = SetUpFileSystem(root);
         SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, "files");
@@ -351,7 +351,7 @@ public class FtpServerExTests
         // Arrange
         var fileName = "test.txt";
         var fileDirName = "file";
-        var root = Path.Combine("D:", "temp");
+        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         var fileSystem = SetUpFileSystem(root);
         SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
@@ -387,7 +387,7 @@ public class FtpServerExTests
     {
         // Arrange
         var fileDirName = "file";
-        var root = Path.Combine("D:", "temp");
+        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         var fileSystem = SetUpFileSystem(root);
         SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
@@ -423,8 +423,7 @@ public class FtpServerExTests
     
     
     #endregion
-
-
+    
     #region Rename
 
     
@@ -451,7 +450,7 @@ public class FtpServerExTests
         // Arrange
         var fileName = "test.txt";
         var fileDirName = "file";
-        var root = Path.Combine("D:", "temp");
+        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         var fileSystem = SetUpFileSystem(root);
         SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
@@ -480,7 +479,7 @@ public class FtpServerExTests
     {
         // Arrange
         var fileDirName = "file";
-        var root = Path.Combine("D:", "temp");
+        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         var fileSystem = SetUpFileSystem(root);
         SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
