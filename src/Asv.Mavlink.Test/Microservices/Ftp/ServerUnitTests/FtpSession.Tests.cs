@@ -8,14 +8,14 @@ using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-public class FtpSession_Tests
+public class FtpSessionTests
 {
     private readonly FakeTimeProvider _fakeTime;
     private readonly ITestOutputHelper _output;
     private FtpServerEx _serverEx;
     private string _filePath;
-
-    public FtpSession_Tests()
+    
+    public FtpSessionTests()
     {
         FtpServerExTests test = new FtpServerExTests(_output);
         var fileName = "test.txt";
@@ -35,7 +35,7 @@ public class FtpSession_Tests
     }
 
     [Fact]
-    public async Task Open_File_Read_Max_Amount()
+    public async Task OpenFileRead_MaxAmount_Success()
     {
         // Act
         var result = await OpenAmountOfSessions(255);
@@ -44,7 +44,7 @@ public class FtpSession_Tests
     }
 
     [Fact]
-    public async Task Open_File_Read_More_Than_Max_Amount()
+    public async Task OpenFileRead_MoreThanMaxAmount_Failure()
     {
         //Act
         var result = await OpenAmountOfSessions(256);
@@ -53,7 +53,7 @@ public class FtpSession_Tests
     }
 
     [Fact]
-    public async Task Reset_Opened_Sessions_And_Open_Them_Again()
+    public async Task ResetSessions_SessionsReset_Success()
     {
         //Act
         var openResult = await OpenAmountOfSessions(255);
@@ -65,7 +65,7 @@ public class FtpSession_Tests
     }
 
     [Fact]
-    public async Task Open_File_Read_From_Different_Sessions()
+    public async Task OpenFileRead_FromDifferentSession_Success()
     {
         //Act
         await OpenAmountOfSessions(254);

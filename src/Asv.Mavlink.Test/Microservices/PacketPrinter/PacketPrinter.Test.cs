@@ -11,15 +11,10 @@ public class PacketPrinter_Test
 {
     private PacketPrinter printer;
     private Collection<IPacketPrinterHandler> handlers= new ();
-    public PacketPrinter_Test()
-    {
-        
-    }
-
+    
     [Fact]
     private void CommonPacketHandlerTest()
     {
-        
         var handler = new ParamValuePacketHandler();
         handlers.Add(handler);
         printer = new PacketPrinter(handlers);
