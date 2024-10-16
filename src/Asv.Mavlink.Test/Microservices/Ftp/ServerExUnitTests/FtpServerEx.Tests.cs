@@ -2,7 +2,6 @@ using System;
 using System.Buffers;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,62 +16,13 @@ public class FtpServerExTests
 {
     private readonly ITestOutputHelper _output;
     private readonly FakeTimeProvider _fakeTime;
+    private FtpServerExHelper _helper;
 
     public FtpServerExTests(ITestOutputHelper output)
     {
+        _helper = new FtpServerExHelper();
         _fakeTime = new FakeTimeProvider();
         _output = output;
-    }
-
-    public MockFileSystem SetUpFileSystem(string root)
-    {
-        var mockFileCfg = new MockFileSystemOptions
-        {
-            CurrentDirectory = root
-        };
-        var fileSystem = new MockFileSystem(mockFileCfg);
-        fileSystem.AddDirectory(mockFileCfg.CurrentDirectory);
-
-        return fileSystem;
-    }
-
-    public void SetUpServer(out IFtpServer server)
-    {
-        var link = new VirtualMavlinkConnection(_ => true, _ => true);
-        var clientId = new MavlinkClientIdentity
-        {
-            SystemId = 1,
-            ComponentId = 2,
-            TargetSystemId = 3,
-            TargetComponentId = 4
-        };
-        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
-
-        var serverSeq = new PacketSequenceCalculator();
-        server = new FtpServer(new MavlinkFtpServerConfig(), link.Server, serverId, serverSeq,
-            TaskPoolScheduler.Default, new TestLogger(_output, "SERVER"));
-    }
-
-    private void SetUpClientAndServer(out IFtpClient client, out IFtpServer server,
-        Func<IPacketV2<IPayload>, bool> clientToServer, Func<IPacketV2<IPayload>, bool> serverToClient)
-    {
-        var link = new VirtualMavlinkConnection(clientToServer, serverToClient);
-        var clientId = new MavlinkClientIdentity
-        {
-            SystemId = 1,
-            ComponentId = 2,
-            TargetSystemId = 3,
-            TargetComponentId = 4
-        };
-        var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
-
-        var clientSeq = new PacketSequenceCalculator();
-        client = new FtpClient(new MavlinkFtpClientConfig(), link.Client, clientId, clientSeq, TimeProvider.System,
-            TaskPoolScheduler.Default, new TestLogger(_output, "CLIENT"));
-
-        var serverSeq = new PacketSequenceCalculator();
-        server = new FtpServer(new MavlinkFtpServerConfig(), link.Server, serverId, serverSeq,
-            TaskPoolScheduler.Default, new TestLogger(_output, "SERVER"));
     }
 
     #region OpenFileRead
@@ -84,8 +34,8 @@ public class FtpServerExTests
         var fileName = "test.txt";
         var fileDirName = "file";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         var relativeFilePath = Path.Combine(fileDirName, fileName);
         var filePath = fileSystem.Path.Combine(fileDir, fileName);
@@ -104,6 +54,37 @@ public class FtpServerExTests
         Assert.Equal(0u, result.Size);
     }
 
+    [Theory]
+    [InlineData("1234567890")]
+    [InlineData(
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vestibulum vel lorem sed pretium. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Sed condimentum tempus est, vel volutpat dui euismod eu. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.")]
+    [InlineData("**(*(*@@&#&!#&!@^#__)_+[][][][]")]
+    public async Task OpenFileRead_WithDataInFile_Success(string fileData)
+    {
+        // Arrange
+        var fileName = "test.txt";
+        var fileDirName = "file";
+        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
+        var fileDir = fileSystem.Path.Combine(root, fileDirName);
+        var relativeFilePath = Path.Combine(fileDirName, fileName);
+        var filePath = fileSystem.Path.Combine(fileDir, fileName);
+        fileSystem.AddFile(filePath, new MockFileData(fileData));
+        var cfg = new MavlinkFtpServerExConfig
+        {
+            RootDirectory = root,
+        };
+        var serverEx = new FtpServerEx(cfg, server, fileSystem);
+
+        // Act
+        var result = await serverEx.OpenFileRead(relativeFilePath);
+        Assert.True(fileSystem.File.Exists(relativeFilePath));
+        // Assert
+        Assert.Equal(0, result.Session);
+        Assert.Equal((uint)fileData.Length, result.Size);
+    }
+
     #endregion
 
     #region OpenFileWrite
@@ -115,8 +96,8 @@ public class FtpServerExTests
         var fileName = "test.txt";
         var fileDirName = "file";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         var relativeFilePath = Path.Combine(fileDirName, fileName);
         var filePath = fileSystem.Path.Combine(fileDir, fileName);
@@ -145,8 +126,8 @@ public class FtpServerExTests
         // Arrange
         var fileDirName = "file";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpClientAndServer(out var client, out var server, (packet) => true, (packet) => true);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpClientAndServer(out var client, out var server, (packet) => true, (packet) => true);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         var filePath = fileSystem.Path.Combine(fileDir, "test.txt");
         var filePath2 = fileSystem.Path.Combine(fileDir, "test2.txt");
@@ -181,8 +162,8 @@ public class FtpServerExTests
         // Arrange
         var fileDirName = "files";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         var filePath = fileSystem.Path.Combine(fileDir, "test.txt");
         var filePath2 = fileSystem.Path.Combine(fileDir, "test2.txt");
@@ -213,8 +194,8 @@ public class FtpServerExTests
         // Arrange
         var fileDirName = "files";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         var filePath = fileSystem.Path.Combine(fileDir, "test.txt");
         var filePath2 = fileSystem.Path.Combine(fileDir, "test2.txt");
@@ -247,8 +228,8 @@ public class FtpServerExTests
             "\0DFolder11111\0DFolder22222\0DFolder33333\0DFolder111111" +
             "\0DFolder222222\0DFolder333333\0DFolder1111111\0DFolder2222222\0";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         fileSystem.AddDirectory(Path.Combine(fileDir, "Folder1"));
         fileSystem.AddDirectory(Path.Combine(fileDir, "Folder2"));
@@ -300,8 +281,8 @@ public class FtpServerExTests
             "\0DFolder222222\0DFolder333333\0DFolder1111111\0DFolder2222222" +
             "\0DFolder3333333\0";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, "files");
         fileSystem.AddDirectory(Path.Combine(fileDir, "Folder1"));
         fileSystem.AddDirectory(Path.Combine(fileDir, "Folder2"));
@@ -353,8 +334,8 @@ public class FtpServerExTests
         var fileName = "test.txt";
         var fileDirName = "file";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         var relativeFilePath = Path.Combine(fileDirName, fileName);
         fileSystem.AddDirectory(fileDir);
@@ -384,8 +365,8 @@ public class FtpServerExTests
         var fileName1 = "test1.txt";
         var fileDirName = "file";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         var filePath = fileSystem.Path.Combine(fileDir, fileName);
         var relativeFilePath1 = Path.Combine(fileDirName, fileName1);
@@ -419,8 +400,8 @@ public class FtpServerExTests
         // Arrange
         var fileDirName = "file";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         var cfg = new MavlinkFtpServerExConfig
         {
@@ -440,14 +421,14 @@ public class FtpServerExTests
     #region CalcCrc32
 
     [Fact]
-    public async Task CalcCrc32_CalculateCyclicRedundancyCheck_Success()
+    public async Task CalcCrc32_CalculateCyclicRedundancyCheck_Success() 
     {
         // Arrange
         var fileName = "test.txt";
         var fileDirName = "file";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         var filePath = fileSystem.Path.Combine(fileDir, fileName);
         var relativeFilePath = Path.Combine(fileDirName, fileName);
@@ -476,8 +457,8 @@ public class FtpServerExTests
         var fileName1 = "test1.txt";
         var fileDirName = "file";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         var filePath = fileSystem.Path.Combine(fileDir, fileName);
         var filePath1 = fileSystem.Path.Combine(fileDir, fileName1);
@@ -499,15 +480,8 @@ public class FtpServerExTests
         await serverEx.OpenFileRead(relativeFilePath1);
         await serverEx.TerminateSession(0);
         // Assert
-        try
-        {
-            await serverEx.FileRead(request, buffer);
-        }
-        catch (Exception)
-        {
-            Assert.True(true);
-        }
 
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => { await serverEx.FileRead(request, buffer); });
         var result1 = await serverEx.FileRead(request1, buffer);
         Assert.True(result1.ReadCount == 5);
     }
@@ -523,8 +497,8 @@ public class FtpServerExTests
         var fileName = "test.txt";
         var fileDirName = "file";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         var filePath = fileSystem.Path.Combine(fileDir, fileName);
         var relativeFilePath = Path.Combine(fileDirName, fileName);
@@ -536,20 +510,17 @@ public class FtpServerExTests
         var serverEx = new FtpServerEx(cfg, server, fileSystem);
         var request = new ReadRequest(0, 0, 5);
         var buffer = new byte[2];
-        // Act
 
+        // Act
         await serverEx.OpenFileRead(relativeFilePath);
         await serverEx.ResetSessions();
-        try
+
+        //Assert
+        var result = await Assert.ThrowsAsync<FtpNackException>(async () =>
         {
             await serverEx.FileRead(request, buffer);
-        }
-        catch (Exception e)
-        {
-            // Assert
-            _output.WriteLine($"{e.Source} {e.Message}");
-            Assert.True(true);
-        }
+        });
+        _output.WriteLine($"{result.Source} {result.Message}");
     }
 
     #endregion
@@ -563,8 +534,8 @@ public class FtpServerExTests
         var fileName = "test.txt";
         var fileDirName = "file";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         var filePath = fileSystem.Path.Combine(fileDir, fileName);
         var beginFilePath = Path.Combine(fileDirName, fileName);
@@ -576,9 +547,11 @@ public class FtpServerExTests
             RootDirectory = root,
         };
         var serverEx = new FtpServerEx(cfg, server, fileSystem);
+
         // Act
         await serverEx.Rename(beginFilePath, finalPath);
         var result = await serverEx.OpenFileRead(finalPath);
+
         // Assert
         Assert.True(result.Size == 5);
     }
@@ -594,8 +567,8 @@ public class FtpServerExTests
         var fileName = "test.txt";
         var fileDirName = "file";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         var filePath = fileSystem.Path.Combine(fileDir, fileName);
         var relativeFilePath = Path.Combine(fileDirName, fileName);
@@ -607,9 +580,11 @@ public class FtpServerExTests
         var serverEx = new FtpServerEx(cfg, server, fileSystem);
         var request = new ReadRequest(0, 0, 3);
         var buffer = new byte[5];
+
         // Act
         await serverEx.OpenFileRead(relativeFilePath);
         var result = await serverEx.FileRead(request, buffer);
+
         // Assert
         Assert.Equal(request.Take, result.ReadCount);
     }
@@ -618,7 +593,6 @@ public class FtpServerExTests
 
     #region BurstReadFile
 
-   
     #endregion
 
     #region RemoveFile
@@ -630,8 +604,8 @@ public class FtpServerExTests
         var fileName = "test.txt";
         var fileDirName = "file";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         var relativeFilePath = Path.Combine(fileDirName, fileName);
         var filePath = fileSystem.Path.Combine(fileDir, fileName);
@@ -649,6 +623,37 @@ public class FtpServerExTests
         Assert.False(fileSystem.File.Exists(filePath));
     }
 
+    [Theory]
+    [InlineData("test1.txt")]
+    [InlineData("path/test1.txt")]
+    [InlineData("path/path/test1.txt")]
+    public async Task RemoveFile_FileExists_Fault(string wrongFileName)
+    {
+        // Arrange
+        var fileName = "test.txt";
+        var fileDirName = "file";
+        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
+        var fileDir = fileSystem.Path.Combine(root, fileDirName);
+        var relativeFilePath = Path.Combine(fileDirName, wrongFileName);
+        var filePath = fileSystem.Path.Combine(fileDir, fileName);
+        fileSystem.AddFile(filePath, new MockFileData(string.Empty));
+        var cfg = new MavlinkFtpServerExConfig
+        {
+            RootDirectory = root,
+        };
+        var serverEx = new FtpServerEx(cfg, server, fileSystem);
+
+        // Act & Assert
+        Assert.False(fileSystem.File.Exists(relativeFilePath));
+        var result = await Assert.ThrowsAsync<FtpNackException>(async () =>
+        {
+            await serverEx.RemoveFile(relativeFilePath);
+        });
+        _output.WriteLine($"{result.Message}");
+    }
+
     #endregion
 
     #region RemoveDirectory
@@ -659,8 +664,8 @@ public class FtpServerExTests
         // Arrange
         var fileDirName = "file";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         fileSystem.AddDirectory(fileDir);
         var cfg = new MavlinkFtpServerExConfig
@@ -676,35 +681,93 @@ public class FtpServerExTests
         Assert.False(fileSystem.Directory.Exists(fileDir));
     }
 
-    #endregion
-
-    #region TruncateFile
-    
-    [Fact]
-    public async Task TruncateFile_TruncatePart_Success()
+    [Theory]
+    [InlineData("*")]
+    [InlineData("/root/")]
+    [InlineData("ade,q;l,")]
+    [InlineData(".txt")]
+    [InlineData("1233434")]
+    public async Task RemoveDirectory_PathExists_Fault(string wrongPath)
     {
         // Arrange
-        var fileName = "test.txt";
         var fileDirName = "file";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = SetUpFileSystem(root);
-        SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
-        var relativeFilePath = Path.Combine(fileDirName, fileName);
-        var filePath = fileSystem.Path.Combine(fileDir, fileName);
-        fileSystem.AddFile(filePath, new MockFileData("1234567890"));
+        fileSystem.AddDirectory(fileDir);
         var cfg = new MavlinkFtpServerExConfig
         {
             RootDirectory = root,
         };
         var serverEx = new FtpServerEx(cfg, server, fileSystem);
-        var request = new TruncateRequest(relativeFilePath, 5);
+        fileDir = fileSystem.Path.Combine(root, wrongPath);
+        // Act & Assert
+        var result =
+            await Assert.ThrowsAsync<FtpNackException>(async () => { await serverEx.RemoveDirectory(fileDir); });
+        _output.WriteLine($"{result.Message}");
+    }
+
+    #endregion
+
+    #region TruncateFile
+
+    [Theory]
+    [InlineData("1234567", 1)]
+    [InlineData("1234567", 5)]
+    [InlineData("1234567", 7)]
+    public async Task TruncateFile_TruncatePart_Success(string mockData, byte trimlength)
+    {
+        // Arrange
+        var fileName = "test.txt";
+        var fileDirName = "file";
+        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
+        var fileDir = fileSystem.Path.Combine(root, fileDirName);
+        var relativeFilePath = Path.Combine(fileDirName, fileName);
+        var filePath = fileSystem.Path.Combine(fileDir, fileName);
+        fileSystem.AddFile(filePath, new MockFileData(mockData));
+        var cfg = new MavlinkFtpServerExConfig
+        {
+            RootDirectory = root,
+        };
+        var serverEx = new FtpServerEx(cfg, server, fileSystem);
+        var request = new TruncateRequest(relativeFilePath, trimlength);
         // Act
         await serverEx.TruncateFile(request);
         var result = await serverEx.OpenFileRead(relativeFilePath);
         // Assert
         _output.WriteLine($"{result.Size}=={request.Offset}");
         Assert.True(result.Size == request.Offset);
+    }
+
+    [Theory]
+    [InlineData("1234567", 8)]
+    [InlineData("1234567", 0)]
+    [InlineData("", 3)]
+    public async Task TruncateFile_TruncatePart_Fault(string mockData, byte trimlength)
+    {
+        // Arrange
+        var fileName = "test.txt";
+        var fileDirName = "file";
+        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
+        var fileDir = fileSystem.Path.Combine(root, fileDirName);
+        var relativeFilePath = Path.Combine(fileDirName, fileName);
+        var filePath = fileSystem.Path.Combine(fileDir, fileName);
+        fileSystem.AddFile(filePath, new MockFileData(mockData));
+        var cfg = new MavlinkFtpServerExConfig
+        {
+            RootDirectory = root,
+        };
+        var serverEx = new FtpServerEx(cfg, server, fileSystem);
+        var request = new TruncateRequest(relativeFilePath, trimlength);
+        //Act & Assert
+
+        var result = await Assert.ThrowsAsync<FtpNackException>(async () => { await serverEx.TruncateFile(request); });
+        _output.WriteLine($"{result.Message}");
     }
 
     #endregion
