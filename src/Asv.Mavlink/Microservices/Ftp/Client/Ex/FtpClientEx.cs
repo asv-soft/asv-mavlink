@@ -223,7 +223,7 @@ public class FtpClientEx : IFtpClientEx
         var buffer = ArrayPool<byte>.Shared.Rent(MavlinkFtpHelper.MaxDataSize);
         try
         {
-            while (true)
+            while (buffer.Length <= streamToSave.Length)
             {
                 if (file.Size - skip < take)
                 {
@@ -239,7 +239,7 @@ public class FtpClientEx : IFtpClientEx
                     progress.Report((double)skip / file.Size);
                     
                 }
-                catch (FtpNackEndOfFileException e)
+                catch (FtpNackEndOfFileException)
                 {
                     break;
                 }
