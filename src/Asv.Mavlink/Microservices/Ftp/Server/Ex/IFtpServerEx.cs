@@ -54,7 +54,6 @@ public sealed class FtpSession : IDisposable, IAsyncDisposable
     
     public byte Id { get; }
     public SessionMode Mode { get; private set; }
-    public bool IsSignedOnClose { get; private set; }
     
     public FtpSession(byte id)
     {

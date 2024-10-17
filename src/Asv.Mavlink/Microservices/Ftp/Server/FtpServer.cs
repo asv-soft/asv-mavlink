@@ -14,6 +14,7 @@ namespace Asv.Mavlink;
 public class MavlinkFtpServerConfig
 {
     public byte NetworkId { get; set; } = 0;
+    public int BurstReadChunkDelayMs { get; set; } = 30;
 }
 
 public class FtpServer : MavlinkMicroserviceServer, IFtpServer
@@ -256,7 +257,10 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
         _logger.ZLogInformation($"{LogRecv} Create directory path: ({path})");
         await CreateDirectory(path, DisposeCancel).ConfigureAwait(false);
-        await InternalFtpReply(input, FtpOpcode.Ack, p => { p.WriteSize(0); }).ConfigureAwait(false);
+        await InternalFtpReply(input, FtpOpcode.Ack, p =>
+        {
+            p.WriteSize(0);
+        }).ConfigureAwait(false);
     }
 
     #endregion
@@ -301,6 +305,10 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         _logger.ZLogInformation($"{LogRecv}TerminateSession(session={session})");
         await TerminateSession(session, DisposeCancel).ConfigureAwait(false);
         _logger.ZLogInformation($"{LogSend}Success TerminateSession(session={session})");
+        await InternalFtpReply(input, FtpOpcode.Ack, p =>
+        {
+            p.WriteSize(0);
+        }).ConfigureAwait(false);
     }
 
     #endregion
@@ -458,20 +466,28 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
             throw new FtpNackException(FtpOpcode.BurstReadFile, NackError.InvalidDataSize);
         }
         _logger.ZLogTrace($"{LogRecv}BurstReadFile(session={session}, offset={offset}, size={size})");
-        using var buffer = MemoryPool<byte>.Shared.Rent(size);
-        var result = await BurstReadFile(new ReadRequest(session, offset, size), buffer.Memory, DisposeCancel).ConfigureAwait(false);
-        _logger.ZLogTrace(
-            $"{LogSend}Success BurstReadFile(session={session}, offset={offset}, size={size}): readCount={result.ReadCount}, isLastChunk = {result.IsLastChunk}");
-        byte burstComplete = result.IsLastChunk ? (byte) 1 : (byte) 0;
-        await InternalFtpReply(input, FtpOpcode.Ack, p =>
+        var isOver = false;
+        while (!isOver)
         {
-            p.WriteSession(session);
-            p.WriteBurstComplete(burstComplete);
-            p.WriteOffset(offset);
-            p.WriteSize(result.ReadCount);
-            // ReSharper disable once AccessToDisposedClosure
-            p.WriteData(buffer.Memory.Span[..result.ReadCount]);
-        }).ConfigureAwait(false);
+            using var buffer = MemoryPool<byte>.Shared.Rent(size);
+            var result = await BurstReadFile(new ReadRequest(session, offset, size), buffer.Memory, DisposeCancel).ConfigureAwait(false);
+            _logger.ZLogTrace(
+                $"{LogSend}Success BurstReadFile(session={session}, offset={offset}, size={size}): readCount={result.ReadCount}, isLastChunk = {result.IsLastChunk}");
+            var burstComplete = result.IsLastChunk ? (byte) 1 : (byte) 0;
+            var currentOffset = offset;
+            await InternalFtpReply(input, FtpOpcode.Ack, p =>
+            {
+                p.WriteSession(session);
+                p.WriteBurstComplete(burstComplete);
+                p.WriteOffset(currentOffset);
+                p.WriteSize(result.ReadCount);
+                // ReSharper disable once AccessToDisposedClosure
+                p.WriteData(buffer.Memory.Span[..result.ReadCount]);
+            }).ConfigureAwait(false);
+            isOver = result.IsLastChunk;
+            offset += result.ReadCount;
+            await Task.Delay(_config.BurstReadChunkDelayMs).ConfigureAwait(false);
+        }
     }
 
     #endregion
