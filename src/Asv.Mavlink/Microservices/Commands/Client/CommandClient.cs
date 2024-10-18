@@ -21,15 +21,16 @@ namespace Asv.Mavlink
         private readonly ILogger _logger; 
         private readonly CommandProtocolConfig _config;
 
-        public CommandClient(
-            IMavlinkV2Connection connection, 
+        public CommandClient(IMavlinkV2Connection connection,
             MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, 
+            IPacketSequenceCalculator seq,
             CommandProtocolConfig config,
+            TimeProvider? timeProvider = null,
             IScheduler? scheduler = null,
-            ILogger? logger = null):base("COMMAND", connection, identity, seq,scheduler,logger)
+            ILoggerFactory? logFactory = null):base("COMMAND", connection, identity, seq, timeProvider,scheduler,logFactory)
         {
-            _logger = logger ?? NullLogger.Instance;
+            logFactory ??=NullLoggerFactory.Instance;
+            _logger = logFactory.CreateLogger<CommandClient>();
             _config = config ?? throw new ArgumentNullException(nameof(config));
             OnCommandAck = InternalFilter<CommandAckPacket>().Select(p => p.Payload);
         }

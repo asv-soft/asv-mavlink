@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
+using Microsoft.Extensions.Time.Testing;
 using Xunit;
 
 namespace Asv.Mavlink.Test;
@@ -22,19 +23,18 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
             TargetComponentId = 4
         };
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
-    
+        var fake = new FakeTimeProvider();
         var server = new AdsbServerDevice(
             link.Server,
             new PacketSequenceCalculator(),
             serverId,
-            new AdsbServerDeviceConfig(), 
-            Scheduler.Default);
+            new AdsbServerDeviceConfig(),fake);
     
         var client = new AdsbClientDevice(
             link.Client,
             clientId,
             new PacketSequenceCalculator(),
-            new AdsbClientDeviceConfig(), Scheduler.Default);
+            new AdsbClientDeviceConfig(),fake);
         
         server.Start();
         
@@ -54,7 +54,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
             _.IcaoAddress = 1313;
         });
 
-        IAdsbVehicle target = new AdsbVehicle(new AdsbVehiclePayload());
+        IAdsbVehicle target = new AdsbVehicle(new AdsbVehiclePayload(),fake.GetTimestamp() );
         client.Adsb.Targets
             .Transform(_ => target = _)
             .Subscribe();
@@ -87,19 +87,18 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
             TargetComponentId = 4
         };
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
-        
+        var fake = new FakeTimeProvider();
         var server = new AdsbServerDevice(
             link.Server,
             new PacketSequenceCalculator(),
             serverId,
-            new AdsbServerDeviceConfig(), 
-            Scheduler.Default);
+            new AdsbServerDeviceConfig(),fake);
     
         var client = new AdsbClientDevice(
             link.Client,
             clientId,
             new PacketSequenceCalculator(),
-            new AdsbClientDeviceConfig(), Scheduler.Default);
+            new AdsbClientDeviceConfig(),fake);
         
         server.Start();
         
@@ -118,7 +117,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
             _.VerVelocity = (int)(75 * 1e2);
             _.IcaoAddress = 1313;
         });
-        await Task.Delay(500);
+        fake.Advance(TimeSpan.FromSeconds(0.6));
         
         await server.Adsb.Send(_ =>
         {
@@ -135,7 +134,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
             _.VerVelocity = (int)(75 * 1e2);
             _.IcaoAddress = 2323;
         });
-        await Task.Delay(500);
+        fake.Advance(TimeSpan.FromSeconds(0.6));
         
         await server.Adsb.Send(_ =>
         {
@@ -152,12 +151,12 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
             _.VerVelocity = (int)(75 * 1e2);
             _.IcaoAddress = 3333;
         });
-        await Task.Delay(500);
+        fake.Advance(TimeSpan.FromSeconds(0.6));
     
         client.Adsb.Targets
             .Bind(out var targets)
             .Subscribe();
-        await Task.Delay(1000);
+        fake.Advance(TimeSpan.FromSeconds(1.1));
         
         Assert.True(targets.Count == 3);
     }
@@ -174,19 +173,25 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
             TargetComponentId = 4
         };
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
-        
+        var fake = new FakeTimeProvider();
         var server = new AdsbServerDevice(
             link.Server,
             new PacketSequenceCalculator(),
             serverId,
-            new AdsbServerDeviceConfig(), 
-            Scheduler.Default);
+            new AdsbServerDeviceConfig(),fake);
     
         var client = new AdsbClientDevice(
             link.Client,
             clientId,
             new PacketSequenceCalculator(),
-            new AdsbClientDeviceConfig(), Scheduler.Default);
+            new AdsbClientDeviceConfig
+            {
+                Adsb =
+                {
+                    CheckOldDevicesMs = 3000,
+                    TargetTimeoutMs = 5000
+                }
+            },fake);
         
         server.Start();
         
@@ -205,7 +210,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
             _.VerVelocity = (int)(75 * 1e2);
             _.IcaoAddress = 1313;
         });
-        await Task.Delay(3100);
+        fake.Advance(TimeSpan.FromSeconds(1));
         
         await server.Adsb.Send(_ =>
         {
@@ -222,7 +227,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
             _.VerVelocity = (int)(75 * 1e2);
             _.IcaoAddress = 2323;
         });
-        await Task.Delay(3100);
+        fake.Advance(TimeSpan.FromSeconds(1));
         
         await server.Adsb.Send(_ =>
         {
@@ -239,7 +244,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
             _.VerVelocity = (int)(75 * 1e2);
             _.IcaoAddress = 3333;
         });
-
+        fake.Advance(TimeSpan.FromSeconds(1));
         client.Adsb.Targets
             .Bind(out var targets)
             .Subscribe()
@@ -247,11 +252,11 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
         
         Assert.Equal(3, targets.Count);
         
-        await Task.Delay(6100);
+        fake.Advance(TimeSpan.FromSeconds(5));
         
         Assert.Equal(2, targets.Count);
 
-        await Task.Delay(5100);
+        fake.Advance(TimeSpan.FromSeconds(5.1));
         
         Assert.Single(targets);
     }

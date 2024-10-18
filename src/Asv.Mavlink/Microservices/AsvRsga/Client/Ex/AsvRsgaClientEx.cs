@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -19,9 +20,12 @@ public class AsvRsgaClientEx : DisposableOnceWithCancel, IAsvRsgaClientEx
     public AsvRsgaClientEx(
         IAsvRsgaClient client, 
         ICommandClient commandClient,
-        ILogger? logger = null)
+        TimeProvider? timeProvider = null,
+        IScheduler? scheduler = null,
+        ILoggerFactory? logFactory = null)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<AsvRsgaClientEx>();
         _commandClient = commandClient;
         Base = client;
         _supportedModes = new SourceList<AsvRsgaCustomMode>().DisposeItWith(Disposable);

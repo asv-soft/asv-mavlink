@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices.JavaScript;
@@ -22,7 +23,14 @@ public class PacketPrinter_Test
       {
           ComponentId = 1,
           SystemId = 2, 
-          
+          Payload =
+          {
+                ParamId = "test".ToCharArray(),
+                ParamType = MavParamType.MavParamTypeInt8,
+                ParamValue = 1.0f,
+                ParamCount = 1,
+                ParamIndex = 1
+          }
       });
       Assert.NotEqual(string.Empty,result);
     }

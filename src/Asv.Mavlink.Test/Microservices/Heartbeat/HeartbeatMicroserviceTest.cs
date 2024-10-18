@@ -1,8 +1,10 @@
+using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
+using Microsoft.Extensions.Time.Testing;
 using Xunit;
 
 namespace Asv.Mavlink.Test;
@@ -13,19 +15,18 @@ public class HeartbeatMicroserviceTest
     public async Task Server_Send_Heartbeat_Packet_And_Client_Catch_It()
     {
         var link = new VirtualMavlinkConnection();
-        
+        var fakeTime = new FakeTimeProvider();
         var serverHeartbeat = new HeartbeatServer(
             link.Server, 
             new PacketSequenceCalculator(), 
             new MavlinkIdentity(13,13), 
-            new MavlinkHeartbeatServerConfig(), 
-            TaskPoolScheduler.Default);
+            new MavlinkHeartbeatServerConfig(), fakeTime);
         
         var clientHeartbeat = new HeartbeatClient(
             link.Client, 
             new MavlinkClientIdentity{SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13},
             new PacketSequenceCalculator(),
-            new HeartbeatClientConfig(), TaskPoolScheduler.Default);
+            new HeartbeatClientConfig(),fakeTime);
         
         serverHeartbeat.Set(_=>
         {
@@ -36,8 +37,9 @@ public class HeartbeatMicroserviceTest
             _.MavlinkVersion = 3;
         });
         serverHeartbeat.Start();
+        fakeTime.Advance(TimeSpan.FromSeconds(1.1));
         await clientHeartbeat.Link.FirstAsync(_ => _ == LinkState.Connected);
-        await Task.Delay(1000);
+        fakeTime.Advance(TimeSpan.FromSeconds(1.1));
         Assert.Equal(MavAutopilot.MavAutopilotGeneric, clientHeartbeat.RawHeartbeat.Value.Autopilot);
         Assert.Equal(MavModeFlag.MavModeFlagManualInputEnabled, clientHeartbeat.RawHeartbeat.Value.BaseMode);
         Assert.Equal(123U, clientHeartbeat.RawHeartbeat.Value.CustomMode);

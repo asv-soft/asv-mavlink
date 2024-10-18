@@ -25,11 +25,13 @@ public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
         IMavlinkV2Connection connection, 
         MavlinkIdentity identity,
         IPacketSequenceCalculator seq, 
+        TimeProvider? timeProvider = null,
         IScheduler? rxScheduler = null,
-        ILogger? logger = null) :
-        base("MISSION", connection, identity, seq, rxScheduler,logger)
+        ILoggerFactory? logFactory = null) :
+        base("MISSION", connection, identity, seq, timeProvider, rxScheduler,logFactory)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<MissionServerEx>();
         Base = baseIfc;
         _statusLogger = status ?? throw new ArgumentNullException(nameof(status));
         _missionSource = new SourceCache<ServerMissionItem, ushort>(x => x.Seq).DisposeItWith(Disposable);

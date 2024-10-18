@@ -31,7 +31,7 @@ public class CommandMicroserviceTest
     private static CommandServer CreateCommandServer(VirtualMavlinkConnection link,MavlinkClientIdentity clientId)
     {
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
-        var server = new CommandServer(link.Server, new PacketSequenceCalculator(), serverId, TaskPoolScheduler.Default);
+        var server = new CommandServer(link.Server, new PacketSequenceCalculator(), serverId);
         return server;
     }
     

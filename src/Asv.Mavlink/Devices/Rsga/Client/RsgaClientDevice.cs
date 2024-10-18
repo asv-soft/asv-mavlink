@@ -35,20 +35,22 @@ public class RsgaClientDevice : ClientDevice, IRsgaClientDevice
         MavlinkClientIdentity identity, 
         RsgaClientDeviceConfig config, 
         IPacketSequenceCalculator seq, 
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null, 
-        ILogger? logger = null)
-        :base(link,identity,config,seq,scheduler,logger)
+        ILoggerFactory? logFactory = null)
+        :base(link,identity,config,seq,timeProvider,scheduler,logFactory)
     {
         _config = config;
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<RsgaClientDevice>();
         scheduler ??= Scheduler.Default;
-        _command = new CommandClient(link, identity, seq, config.Command).DisposeItWith(Disposable);
-        var paramBase = new ParamsClient(link, identity, seq, config.Params).DisposeItWith(Disposable);
-        _params = new ParamsClientEx(paramBase, config.Params).DisposeItWith(Disposable);
-        _charts = new AsvChartClient(config.Charts, link, identity, seq).DisposeItWith(Disposable);
-        _diagnostics = new DiagnosticClient(config.Diagnostics, link, identity, seq, scheduler).DisposeItWith(Disposable);
-        var rsga = new AsvRsgaClient(link,identity, seq).DisposeItWith(Disposable);
-        _rsga = new AsvRsgaClientEx(rsga,_command).DisposeItWith((Disposable));
+        _command = new CommandClient(link, identity, seq, config.Command,timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
+        var paramBase = new ParamsClient(link, identity, seq, config.Params, timeProvider, scheduler, logFactory).DisposeItWith(Disposable);
+        _params = new ParamsClientEx(paramBase, config.Params,timeProvider, scheduler, logFactory).DisposeItWith(Disposable);
+        _charts = new AsvChartClient(config.Charts, link, identity, seq, timeProvider, scheduler, logFactory).DisposeItWith(Disposable);
+        _diagnostics = new DiagnosticClient(config.Diagnostics, link, identity, seq, timeProvider, scheduler, logFactory).DisposeItWith(Disposable);
+        var rsga = new AsvRsgaClient(link,identity, seq,timeProvider, scheduler, logFactory).DisposeItWith(Disposable);
+        _rsga = new AsvRsgaClientEx(rsga,_command, timeProvider, scheduler, logFactory).DisposeItWith((Disposable));
     }
     
     protected override async Task InternalInit()

@@ -23,10 +23,11 @@ public class FtpClientEx : IFtpClientEx
     private readonly SourceCache<IFtpEntry,string> _entryCache;
     private static readonly TimeSpan DefaultBurstTimeout = TimeSpan.FromSeconds(5);
     
-    public FtpClientEx(IFtpClient @base,TimeProvider? timeProvider = null, ILogger? logger = null)
+    public FtpClientEx(IFtpClient @base,TimeProvider? timeProvider = null, ILoggerFactory? logFactory = null)
     {
         _timeProvider = timeProvider ?? TimeProvider.System;
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<FtpClientEx>();
         Base = @base;
         _entryCache = new SourceCache<IFtpEntry, string>(x => x.Path);
     }

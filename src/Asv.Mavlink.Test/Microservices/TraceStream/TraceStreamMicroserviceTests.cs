@@ -40,7 +40,7 @@ public class TraceStreamMicroserviceTests
             MaxQueueSize = 100,
             MaxSendRateHz = 10
         };
-        return new TraceStreamServer(link.Server, seqCalculator, identity, config, Scheduler.Default);
+        return new TraceStreamServer(link.Server, seqCalculator, identity, config);
     }
 
     #endregion
@@ -316,8 +316,7 @@ public class TraceStreamMicroserviceTests
             var server = new TraceStreamServer(null,
                 new PacketSequenceCalculator(),
                 new MavlinkIdentity(),
-                new TraceStreamConfig(),
-                Scheduler.Default);
+                new TraceStreamConfig());
         });
     }
 
@@ -331,8 +330,7 @@ public class TraceStreamMicroserviceTests
             var server = new TraceStreamServer(link.Server,
                 null,
                 new MavlinkIdentity(),
-                new TraceStreamConfig(),
-                Scheduler.Default);
+                new TraceStreamConfig());
         });
     }
 
@@ -346,25 +344,11 @@ public class TraceStreamMicroserviceTests
             var server = new TraceStreamServer(link.Server,
                 new PacketSequenceCalculator(),
                 new MavlinkIdentity(),
-                null,
-                Scheduler.Default);
-        });
-    }
-
-    [Fact]
-    public void TraceStreamServer_Should_Throw_ArgumentNullException_If_Scheduler_Is_Null()
-    {
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            var link = new VirtualMavlinkConnection();
-
-            var server = new TraceStreamServer(link.Server,
-                new PacketSequenceCalculator(),
-                new MavlinkIdentity(),
-                new TraceStreamConfig(),
                 null);
         });
     }
+
+   
 
     [Fact]
     public void TraceStreamServer_Should_Handle_Debug_MemoryVectorMessage_Queue_Overflow()
@@ -375,7 +359,7 @@ public class TraceStreamMicroserviceTests
         var server = new TraceStreamServer(link.Server,
             new PacketSequenceCalculator(),
             new MavlinkIdentity(),
-            new TraceStreamConfig(), Scheduler.Default);
+            new TraceStreamConfig());
         for (int i = 0; i < 101; i++)
         {
             server.AddMessage(message);

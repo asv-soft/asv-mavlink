@@ -1,12 +1,29 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Disposables;
-using System.Text;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
+public class TestLoggerFactory(ITestOutputHelper testOutputHelper, string prefix) : ILoggerFactory
+{
+    private readonly string _prefix = prefix;
+
+    public void Dispose()
+    {
+        
+    }
+
+    public ILogger CreateLogger(string categoryName)
+    {
+        return new TestLogger(testOutputHelper, $"{prefix}.{categoryName}");
+    }
+
+    public void AddProvider(ILoggerProvider provider)
+    {
+        
+    }
+}
 
 public class TestLogger(ITestOutputHelper testOutputHelper, string? categoryName) : ILogger
 {

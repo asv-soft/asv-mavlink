@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,9 +38,13 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         IAsvSdrClient client, 
         IHeartbeatClient heartbeatClient, 
         ICommandClient commandClient, 
-        AsvSdrClientExConfig config, ILogger? logger = null)
+        AsvSdrClientExConfig config,
+        TimeProvider? timeProvider = null,
+        IScheduler? scheduler = null,
+        ILoggerFactory? logFactory = null)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<AsvSdrClientEx>();
         _commandClient = commandClient;
         _config = config;
         Base = client;

@@ -52,19 +52,25 @@ namespace Asv.Mavlink
         protected MavlinkMicroserviceClient(string ifcLogName, IMavlinkV2Connection connection,
             MavlinkClientIdentity identity,
             IPacketSequenceCalculator seq,
+            TimeProvider? timeProvider = null,
             IScheduler? scheduler = null,
-            ILogger? logger = null)
+            ILoggerFactory? logFactory = null)
         {
             Scheduler = scheduler ?? System.Reactive.Concurrency.Scheduler.Default;
-            _loggerBase = logger ?? NullLogger.Instance;
+            logFactory??=NullLoggerFactory.Instance;
+            _loggerBase = logFactory.CreateLogger<MavlinkMicroserviceClient>();
             Connection = connection ?? throw new ArgumentNullException(nameof(connection));
             Identity = identity ?? throw new ArgumentNullException(nameof(identity));
             Sequence = seq ?? throw new ArgumentNullException(nameof(seq));
+            TimeProvider = timeProvider ?? TimeProvider.System;
             _ifcLogName = ifcLogName;
             InternalFilteredVehiclePackets = Connection.Where(FilterVehicle).Publish().RefCount();
         }
         
         protected IScheduler Scheduler { get; } 
+        protected IPacketSequenceCalculator Sequence { get; }
+        protected TimeProvider TimeProvider { get; }
+        protected IMavlinkV2Connection Connection { get; }
 
         protected string LogTargetName => _locTargetName ??= $"{Identity.TargetSystemId}:{Identity.TargetComponentId}";
         protected string LogLocalName => _logLocalName ??= $"{Identity.SystemId}:{Identity.ComponentId}";
@@ -101,14 +107,6 @@ namespace Asv.Mavlink
         }
         public MavlinkClientIdentity Identity { get; }
 
-        protected IPacketSequenceCalculator Sequence { get; }
-
-        protected IMavlinkV2Connection Connection { get; }
-
-
-
-       
-
         protected Task InternalSend<TPacketSend>(Action<TPacketSend> fillPacket, CancellationToken cancel = default)
             where TPacketSend : IPacketV2<IPayload>, new()
         {
@@ -124,10 +122,10 @@ namespace Asv.Mavlink
         protected async Task<TResult> InternalSendAndWaitAnswer<TResult>(IPacketV2<IPayload> packet,
             CancellationToken cancel, FilterDelegate<TResult> filterAndResultGetter, int timeoutMs = 1000)
         {
-            if (filterAndResultGetter == null) throw new ArgumentNullException(nameof(filterAndResultGetter));
+            ArgumentNullException.ThrowIfNull(filterAndResultGetter);
             _loggerBase.ZLogTrace($"{LogSend} call {packet.Name}");
             using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
-            linkedCancel.CancelAfter(timeoutMs);
+            linkedCancel.CancelAfter(TimeSpan.FromMilliseconds(timeoutMs), TimeProvider);
             var tcs = new TaskCompletionSource<TResult>();
             await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
 
@@ -188,7 +186,7 @@ namespace Asv.Mavlink
             var p = new TAnswerPacket();
             _loggerBase.ZLogTrace($"{LogSend} call {p.Name}");
             using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
-            linkedCancel.CancelAfter(timeoutMs);
+            linkedCancel.CancelAfter(timeoutMs, TimeProvider);
             var tcs = new TaskCompletionSource<TAnswerPacket>();
             await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
 

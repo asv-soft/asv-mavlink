@@ -45,7 +45,7 @@ namespace Asv.Mavlink
         /// The dueTime parameter specifies the amount of time to delay before the first invocation of the method. Specify TimeSpan.Zero to invoke the method immediately.
         /// The period parameter specifies the time interval between invocations of the method. Specify TimeSpan.Zero to disable periodic invocations.
         /// </remarks>
-        void Start(DateTimeOffset dueTime,TimeSpan period);
+        void Start(TimeSpan dueTime, TimeSpan period);
 
         /// <summary>
         /// Gets a value indicating whether the property is started or not.

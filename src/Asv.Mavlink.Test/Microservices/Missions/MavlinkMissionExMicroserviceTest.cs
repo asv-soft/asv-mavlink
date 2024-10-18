@@ -17,9 +17,9 @@ public class MavlinkMissionExMicroserviceTest
         var serverSeq = new PacketSequenceCalculator();
         var serverId = new MavlinkIdentity(13,13);
         var statusServer = new StatusTextServer(link.Server, serverSeq,
-            serverId, new StatusTextLoggerConfig(), Scheduler.Default);
-        var server = new MissionServer(link.Server, serverId, serverSeq, TaskPoolScheduler.Default);
-        serverEx = new MissionServerEx(server, statusServer, link.Server, serverId, serverSeq, Scheduler.Default);
+            serverId, new StatusTextLoggerConfig());
+        var server = new MissionServer(link.Server, serverId, serverSeq);
+        serverEx = new MissionServerEx(server, statusServer, link.Server, serverId, serverSeq);
         
         var clientSeq = new PacketSequenceCalculator();
         var clientId = new MavlinkClientIdentity{SystemId = 1, ComponentId = 1, TargetComponentId = 13, TargetSystemId = 13};

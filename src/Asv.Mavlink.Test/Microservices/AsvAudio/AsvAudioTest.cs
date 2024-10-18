@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Asv.Mavlink.V2.AsvAudio;
 using DynamicData;
 using DynamicData.Binding;
+using Microsoft.Extensions.Time.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -35,13 +36,14 @@ public class AsvAudioTest
         var rawPart = new RawCodecFactoryPart();
         var cfg = new AudioServiceConfig();
         var factory = new CompositeAudioCodecFactory(new []{rawPart});
-        var device1 = new AudioService(factory, link.Client, new MavlinkIdentity(1,1), new PacketSequenceCalculator(), cfg);
-        var device2 = new AudioService(factory, link.Server, new MavlinkIdentity(2,2), new PacketSequenceCalculator(), cfg);
+        var fake = new FakeTimeProvider();
+        var device1 = new AudioService(factory, link.Client, new MavlinkIdentity(1,1), new PacketSequenceCalculator(), cfg, fake);
+        var device2 = new AudioService(factory, link.Server, new MavlinkIdentity(2,2), new PacketSequenceCalculator(), cfg, fake);
         
         device1.GoOnline("device1", AsvAudioCodec.AsvAudioCodecRaw8000Mono , true, true);
         device2.GoOnline("device2", AsvAudioCodec.AsvAudioCodecRaw8000Mono, true, true);
 
-        await Task.Delay(2000);
+        fake.Advance(TimeSpan.FromSeconds(2.2));
         
         using var subscribe1 = device1.Devices.BindToObservableList(out var device1List).Subscribe();
         using var subscribe2 = device2.Devices.BindToObservableList(out var device2List).Subscribe();
@@ -52,8 +54,7 @@ public class AsvAudioTest
         var audio2 = device2List.Items.First();
 
         var tcs = new TaskCompletionSource();
-        var cancel = new CancellationTokenSource();
-        cancel.CancelAfter(TimeSpan.FromSeconds(10));
+        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(10),fake);
         await using var c1 = cancel.Token.Register(()=>tcs.TrySetCanceled(), false);
         
         var data = new byte[dataLength];

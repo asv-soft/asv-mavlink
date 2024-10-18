@@ -10,24 +10,23 @@ namespace Asv.Mavlink
 {
     public class LoggingClient:MavlinkMicroserviceClient, ILoggingClient
     {
-        private readonly CancellationTokenSource _disposeCancel = new();
-        private readonly RxValue<LoggingDataPayload> _loggingData = new();
+        private readonly RxValueBehaviour<LoggingDataPayload?> _loggingData;
 
         public LoggingClient(
             IMavlinkV2Connection connection, 
             MavlinkClientIdentity identity,
             IPacketSequenceCalculator seq,
+            TimeProvider? timeProvider = null,
             IScheduler? scheduler = null,
-            ILogger? logger = null):base("LOG", connection, identity, seq,scheduler,logger)
+            ILoggerFactory? logFactory = null):base("LOG", connection, identity, seq, timeProvider,scheduler,logFactory)
         {
-
+            _loggingData = new RxValueBehaviour<LoggingDataPayload?>(default).DisposeItWith(Disposable);
             InternalFilter<LoggingDataPacket>()
                 .Where(p=>p.Payload.TargetSystem == identity.SystemId && p.Payload.TargetComponent == identity.ComponentId)
                 .Select(p=>p.Payload)
-                .Subscribe(_loggingData, _disposeCancel.Token);
-            Disposable.Add(_loggingData);
+                .Subscribe(_loggingData).DisposeItWith(Disposable);
         }
 
-        public IRxValue<LoggingDataPayload> RawLoggingData => _loggingData;
+        public IRxValue<LoggingDataPayload?> RawLoggingData => _loggingData;
     }
 }

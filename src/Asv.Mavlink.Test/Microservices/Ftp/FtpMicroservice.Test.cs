@@ -33,11 +33,11 @@ public class FtpMicroserviceTest
 
         var clientSeq = new PacketSequenceCalculator();
         client = new FtpClient(new MavlinkFtpClientConfig(), link.Client, clientId, clientSeq, TimeProvider.System,
-            TaskPoolScheduler.Default, new TestLogger(_output, "CLIENT"));
+            TaskPoolScheduler.Default, new TestLoggerFactory(_output, "CLIENT"));
 
         var serverSeq = new PacketSequenceCalculator();
         server = new FtpServer(new MavlinkFtpServerConfig(), link.Server, serverId, serverSeq,
-            TaskPoolScheduler.Default, new TestLogger(_output, "SERVER"));
+            TimeProvider.System, Scheduler.Default,new TestLoggerFactory(_output, "SERVER")); //TODO: change to FakeTimeProvider
     }
 
     [Theory]

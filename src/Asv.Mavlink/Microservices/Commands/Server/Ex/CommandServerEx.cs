@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Concurrent;
+using System.Reactive.Concurrency;
 using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using ZLogger;
 
 namespace Asv.Mavlink;
@@ -18,9 +20,18 @@ public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, IC
     private int _isBusy;
     private int _lastCommand = -1;
 
-    protected CommandServerEx(ICommandServer server, IObservable<TArgPacket> commandsPipe, Func<TArgPacket,ushort> cmdGetter, Func<TArgPacket,byte> confirmationGetter)
+    protected CommandServerEx(
+        ICommandServer server,
+        IObservable<TArgPacket> commandsPipe, 
+        Func<TArgPacket,ushort> cmdGetter, 
+        Func<TArgPacket,byte> confirmationGetter,
+        TimeProvider? timeProvider = null, 
+        IScheduler? scheduler= null, 
+        ILoggerFactory? loggerFactory= null)
     {
         Base = server;
+        loggerFactory ??= NullLoggerFactory.Instance;
+        _logger = loggerFactory.CreateLogger(GetType());
         _cmdGetter = cmdGetter;
         _confirmationGetter = confirmationGetter;
         commandsPipe.Subscribe(OnRequest).DisposeItWith(Disposable);

@@ -1,3 +1,4 @@
+using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using Asv.Common;
@@ -18,8 +19,10 @@ public class TraceStreamClient : MavlinkMicroserviceClient, ITraceStreamClient
         IMavlinkV2Connection connection, 
         MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq,
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null) : base("TRACESTREAM", connection, identity, seq,scheduler,logger)
+        ILoggerFactory? logFactory = null) 
+        : base("TRACESTREAM", connection, identity, seq, timeProvider,scheduler,logFactory)
     {
         Name = new RxValue<string>($"[{identity.TargetSystemId},{identity.TargetComponentId}]")
             .DisposeItWith(Disposable);

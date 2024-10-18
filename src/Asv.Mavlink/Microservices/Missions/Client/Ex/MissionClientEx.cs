@@ -31,10 +31,16 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
     private readonly TimeSpan _deviceUploadTimeout;
     private readonly IScheduler _scheduler;
 
-    public MissionClientEx(IMissionClient client, MissionClientExConfig? config = null, IScheduler? scheduler = null, ILogger? logger = null)
+    public MissionClientEx(
+        IMissionClient client, 
+        MissionClientExConfig? config = null, 
+        TimeProvider? timeProvider = null,
+        IScheduler? scheduler = null, 
+        ILoggerFactory? logFactory = null)
     {
         _scheduler = scheduler ?? Scheduler.Default;
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<MissionClientEx>();
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _config = config ?? new MissionClientExConfig();
         _client.DisposeItWith(Disposable);

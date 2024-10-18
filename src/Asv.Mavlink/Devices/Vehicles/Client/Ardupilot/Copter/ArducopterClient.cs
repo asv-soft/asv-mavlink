@@ -23,11 +23,13 @@ public class ArduCopterClient:ArduVehicle
         MavlinkClientIdentity identity, 
         VehicleClientConfig config, 
         IPacketSequenceCalculator seq, 
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null) 
-        : base(connection, identity, config, seq, scheduler,logger)
+        ILoggerFactory? logFactory = null) 
+        : base(connection, identity, config, seq,timeProvider, scheduler,logFactory)
     {
-        _logger = logger ?? NullLogger.Instance;        
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<ArduCopterClient>();        
 
     }
 

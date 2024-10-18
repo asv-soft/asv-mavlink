@@ -35,18 +35,20 @@ public class RfsaClientDevice:ClientDevice, IRfsaClientDevice
         MavlinkClientIdentity identity, 
         RfsaClientDeviceConfig config, 
         IPacketSequenceCalculator seq, 
-        IScheduler? scheduler = null,
-        ILogger? logger = null)
-        :base(link,identity,config,seq,scheduler,logger)
+        TimeProvider? timeProvider = null,
+        IScheduler? scheduler = null, 
+        ILoggerFactory? loggerFactory = null)
+        :base(link,identity,config,seq,timeProvider, scheduler,loggerFactory)
     {
         _config = config;
-        _logger = logger ?? NullLogger.Instance;
+        loggerFactory ??= NullLoggerFactory.Instance;
+        _logger = loggerFactory.CreateLogger<RfsaClientDevice>();
         scheduler ??= Scheduler.Default;
-        Command = new CommandClient(link, identity, seq, config.Command).DisposeItWith(Disposable);
-        var paramBase = new ParamsClient(link, identity, seq, config.Params).DisposeItWith(Disposable);
-        _params = new ParamsClientEx(paramBase, config.Params).DisposeItWith(Disposable);
-        _charts = new AsvChartClient(config.Charts, link, identity, seq).DisposeItWith(Disposable);
-        _diagnostics = new DiagnosticClient(config.Diagnostics, link, identity, seq, scheduler).DisposeItWith(Disposable);
+        Command = new CommandClient(link, identity, seq, config.Command,timeProvider, scheduler, loggerFactory).DisposeItWith(Disposable);
+        var paramBase = new ParamsClient(link, identity, seq, config.Params, timeProvider, scheduler, loggerFactory).DisposeItWith(Disposable);
+        _params = new ParamsClientEx(paramBase, config.Params, timeProvider, scheduler, loggerFactory).DisposeItWith(Disposable);
+        _charts = new AsvChartClient(config.Charts, link, identity, seq, timeProvider, scheduler, loggerFactory).DisposeItWith(Disposable);
+        _diagnostics = new DiagnosticClient(config.Diagnostics, link, identity, seq,timeProvider, scheduler, loggerFactory).DisposeItWith(Disposable);
     }
     
     protected override async Task InternalInit()
@@ -81,7 +83,7 @@ public class RfsaClientDevice:ClientDevice, IRfsaClientDevice
     public async Task<MavResult> Disable(CancellationToken cancel = default)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var result = await Command.CommandLong(item => RfsaHelper.SetArgsForDisableCommand(item),cs.Token).ConfigureAwait(false);
+        var result = await Command.CommandLong(RfsaHelper.SetArgsForDisableCommand,cs.Token).ConfigureAwait(false);
         return result.Result;
     }
 

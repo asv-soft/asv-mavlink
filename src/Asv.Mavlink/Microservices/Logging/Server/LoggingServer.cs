@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
 
-namespace Asv.Mavlink.Server
+namespace Asv.Mavlink
 {
     /// <summary>
     /// Represents a logging server that is responsible for sending logging data.
@@ -44,8 +44,10 @@ namespace Asv.Mavlink.Server
             IMavlinkV2Connection connection, 
             IPacketSequenceCalculator seq,
             MavlinkIdentity identity, 
+            TimeProvider? timeProvider = null,
             IScheduler? scheduler = null,
-            ILogger? logger = null) : base("LOG",connection,identity, seq,scheduler,logger)
+            ILoggerFactory? logFactory = null) 
+            : base("LOG",connection,identity, seq,timeProvider,scheduler,logFactory)
         {
         }
 

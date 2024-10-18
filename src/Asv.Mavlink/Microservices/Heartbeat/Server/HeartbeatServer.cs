@@ -20,12 +20,13 @@ namespace Asv.Mavlink
             IPacketSequenceCalculator seq, 
             MavlinkIdentity identity, 
             MavlinkHeartbeatServerConfig config, 
+            TimeProvider? timeProvider = null,
             IScheduler? rxScheduler = null,
-            ILogger? logger = null) 
-            : base("HEARTBEAT", connection, identity, seq, rxScheduler,logger)
+            ILoggerFactory? logFactory = null) 
+            : base("HEARTBEAT", connection, identity, seq, timeProvider,rxScheduler,logFactory)
         {
             _config = config;
-            _transponder = new MavlinkPacketTransponder<HeartbeatPacket,HeartbeatPayload>(connection, identity, seq)
+            _transponder = new MavlinkPacketTransponder<HeartbeatPacket,HeartbeatPayload>(connection, identity, seq,timeProvider,logFactory)
                 .DisposeItWith(Disposable);
         }
 

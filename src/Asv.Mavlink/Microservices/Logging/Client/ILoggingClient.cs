@@ -18,6 +18,6 @@ namespace Asv.Mavlink
         /// <remarks>
         /// This property provides access to the raw logging data in the form of an <see cref="IRxValue{T}"/> where T is <see cref="LoggingDataPayload"/>.
         /// </remarks>
-        IRxValue<LoggingDataPayload> RawLoggingData { get; }
+        IRxValue<LoggingDataPayload?> RawLoggingData { get; }
     }
 }

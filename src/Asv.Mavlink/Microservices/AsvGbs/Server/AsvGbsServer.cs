@@ -25,13 +25,14 @@ namespace Asv.Mavlink
             IPacketSequenceCalculator seq,
             MavlinkIdentity identity,
             AsvGbsServerConfig config, 
-            IScheduler? rxScheduler,
-            ILogger? logger = null)
-            : base("GBS", connection, identity, seq, rxScheduler,logger)
+            TimeProvider? timeProvider = null,
+            IScheduler? rxScheduler = null,
+            ILoggerFactory? logFactory = null)
+            : base("GBS", connection, identity, seq, timeProvider, rxScheduler,logFactory)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _transponder =
-                new MavlinkPacketTransponder<AsvGbsOutStatusPacket, AsvGbsOutStatusPayload>(connection, identity, seq)
+                new MavlinkPacketTransponder<AsvGbsOutStatusPacket, AsvGbsOutStatusPayload>(connection, identity, seq,timeProvider,logFactory)
                     .DisposeItWith(Disposable);
         }
 

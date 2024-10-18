@@ -21,8 +21,8 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
 {
     private readonly ClientDeviceConfig _config;
     private readonly IScheduler? _scheduler;
-    private readonly RxValue<InitState> _onInit;
-    private readonly RxValue<string> _name;
+    private readonly RxValueBehaviour<InitState> _onInit;
+    private readonly RxValueBehaviour<string> _name;
     private bool _needToRequestAgain = true;
     private int _isRequestInfoIsInProgressOrAlreadySuccess;
     private readonly ILogger _loggerBase;
@@ -31,20 +31,22 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
         MavlinkClientIdentity identity,
         ClientDeviceConfig config,
         IPacketSequenceCalculator seq,
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null, 
-        ILogger? logger = null)
+        ILoggerFactory? logFactory = null)
     {
-        _loggerBase = logger ?? NullLogger.Instance;
+        logFactory ??= NullLoggerFactory.Instance;
+        _loggerBase = logFactory.CreateLogger<ClientDevice>();
         Connection = connection;
         _config = config;
         _scheduler = scheduler;
         Identity = identity;
         Seq = seq;
 
-        Heartbeat = new HeartbeatClient(connection,identity,seq,config.Heartbeat, scheduler)
+        Heartbeat = new HeartbeatClient(connection,identity,seq,config.Heartbeat,timeProvider, scheduler, logFactory)
             .DisposeItWith(Disposable);
         
-        _onInit = new RxValue<InitState>(InitState.WaitConnection)
+        _onInit = new RxValueBehaviour<InitState>(InitState.WaitConnection)
             .DisposeItWith(Disposable);
         Heartbeat.Link.DistinctUntilChanged()
             .Where(s => s == LinkState.Disconnected)
@@ -52,19 +54,28 @@ public abstract class ClientDevice: DisposableOnceWithCancel, IClientDevice
         
         if (scheduler != null)
         {
-            Heartbeat.Link.DistinctUntilChanged().Where(_ => _needToRequestAgain).Where(s => s == LinkState.Connected)
+            Heartbeat.Link.DistinctUntilChanged()
+                .Where(_ => _needToRequestAgain)
+                .Where(s => s == LinkState.Connected)
                 // only one time
-                .Delay(TimeSpan.FromMilliseconds(100),scheduler).Subscribe(_ => TryReconnect()).DisposeItWith(Disposable);
+                .Delay(TimeSpan.FromMilliseconds(100),scheduler)
+                .Subscribe(_ => TryReconnect())
+                .DisposeItWith(Disposable);
         }
         else
         {
-            Heartbeat.Link.DistinctUntilChanged().Where(_ => _needToRequestAgain).Where(s => s == LinkState.Connected)
+            Heartbeat.Link
+                .DistinctUntilChanged()
+                .Where(_ => _needToRequestAgain)
+                .Where(s => s == LinkState.Connected)
                 // only one time
-                .Delay(TimeSpan.FromMilliseconds(100)).Subscribe(_ => TryReconnect()).DisposeItWith(Disposable);
+                .Delay(TimeSpan.FromMilliseconds(100))
+                .Subscribe(_ => TryReconnect())
+                .DisposeItWith(Disposable);
         }
        
         StatusText = new StatusTextClient(connection,identity,seq).DisposeItWith(Disposable);
-        _name = new RxValue<string>().DisposeItWith(Disposable);
+        _name = new RxValueBehaviour<string>(string.Empty).DisposeItWith(Disposable);
     }
 
     protected abstract string DefaultName { get; }

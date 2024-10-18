@@ -88,9 +88,9 @@ namespace Asv.Mavlink
     public class MavlinkRouter:DisposableOnceWithCancel, IMavlinkRouter, IDataStream
     {
         public const string DefaultName = "MavlinkRouter";
-        public static MavlinkRouter CreateDefault(IScheduler? scheduler = null,ILogger? logger = null)
+        public static MavlinkRouter CreateDefault(IScheduler? scheduler = null,ILoggerFactory? logFactory = null)
         {
-            return new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects,DefaultName,scheduler,logger);
+            return new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects,DefaultName,scheduler,logFactory);
         }
        
         private readonly Action<IPacketDecoder<IPacketV2<IPayload>>> _register;
@@ -111,9 +111,10 @@ namespace Asv.Mavlink
         private readonly Subject<Guid> _onConfigChanged = new();
         private readonly PacketV2Decoder _decoder;
 
-        public MavlinkRouter(Action<IPacketDecoder<IPacketV2<IPayload>>> register,string? name=DefaultName, IScheduler? publishScheduler = null, ILogger? logger = null)
+        public MavlinkRouter(Action<IPacketDecoder<IPacketV2<IPayload>>> register,string? name=DefaultName, IScheduler? publishScheduler = null, ILoggerFactory? logFactory = null)
         {
-            _logger = logger ?? NullLogger.Instance;
+            logFactory??=NullLoggerFactory.Instance;
+            _logger = logFactory.CreateLogger<MavlinkRouter>();
             Name = name ?? DefaultName;
             _register = register;
             _publishScheduler = publishScheduler;

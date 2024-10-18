@@ -23,9 +23,10 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
         AsvSdrCalibTablePayload payload, 
         IAsvSdrClient ifc, 
         TimeSpan deviceUploadTimeout,
-        ILogger? logger = null)
+        ILoggerFactory? logFactory = null)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<AsvSdrClientCalibrationTable>();
         _ifc = ifc;
         _deviceUploadTimeout = deviceUploadTimeout;
         _remoteSize = new RxValue<ushort>(payload.RowCount).DisposeItWith(Disposable);

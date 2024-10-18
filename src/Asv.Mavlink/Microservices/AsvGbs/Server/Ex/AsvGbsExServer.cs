@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +23,9 @@ public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
     public AsvGbsExServer(IAsvGbsServer server, 
         IHeartbeatServer heartbeatServer, 
         ICommandServerEx<CommandLongPacket> commands,
-        ILogger? logger = null)
+        TimeProvider? timeProvider = null,
+        IScheduler? scheduler = null,
+        ILoggerFactory? logFactory = null)
     {
         Base = server;
         _logger ??= NullLogger.Instance;

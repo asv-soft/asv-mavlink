@@ -39,7 +39,7 @@ namespace Asv.Mavlink.Test
             
             var cfg = new InMemoryConfiguration(); 
             var mode = AsvGbsCustomMode.AsvGbsCustomModeAuto;
-            IGbsServerDevice serverDevice = new GbsServerDevice(link.Server, serverId,new PacketSequenceCalculator(),Scheduler.Default,new GbsServerDeviceConfig(), new List<IMavParamTypeMetadata>(), new MavParamCStyleEncoding(),cfg);
+            IGbsServerDevice serverDevice = new GbsServerDevice(link.Server, serverId,new PacketSequenceCalculator(),new GbsServerDeviceConfig(), new List<IMavParamTypeMetadata>(), new MavParamCStyleEncoding(),cfg);
             serverDevice.Gbs.AccuracyMeter.OnNext(0.15);
             serverDevice.Gbs.ObservationSec.OnNext(1);
             serverDevice.Gbs.DgpsRate.OnNext(2);
@@ -54,7 +54,7 @@ namespace Asv.Mavlink.Test
             serverDevice.Gbs.CustomMode.OnNext(mode);
             serverDevice.Gbs.Position.OnNext(new GeoPoint(lat,lon,alt));
             
-            IGbsClientDevice clientDevice = new GbsClientDevice(link.Client,clientId, new PacketSequenceCalculator(), new GbsClientDeviceConfig(), Scheduler.Default);
+            IGbsClientDevice clientDevice = new GbsClientDevice(link.Client,clientId, new PacketSequenceCalculator(), new GbsClientDeviceConfig());
             serverDevice.Heartbeat.Set(_ => _.CustomMode = (uint)mode);
             serverDevice.Gbs.Base.Set(_ =>
             {
@@ -94,7 +94,7 @@ namespace Asv.Mavlink.Test
             var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
             
             var called = false;
-            var serverDevice = new GbsServerDevice(link.Server, serverId,new PacketSequenceCalculator(),Scheduler.Default, new GbsServerDeviceConfig(), new List<IMavParamTypeMetadata>(), new MavParamCStyleEncoding(),new InMemoryConfiguration());
+            var serverDevice = new GbsServerDevice(link.Server, serverId,new PacketSequenceCalculator(), new GbsServerDeviceConfig(), new List<IMavParamTypeMetadata>(), new MavParamCStyleEncoding(),new InMemoryConfiguration());
             serverDevice.Gbs.StartAutoMode = (dur, acc, cancel) =>
             {
                 called = true;
@@ -115,7 +115,7 @@ namespace Asv.Mavlink.Test
             serverDevice.Gbs.ImesSatellites.OnNext(10);
             serverDevice.Gbs.CustomMode.OnNext(AsvGbsCustomMode.AsvGbsCustomModeIdle);
             serverDevice.Gbs.Position.OnNext(GeoPoint.Zero);
-            var clientDevice = new GbsClientDevice(link.Client,clientId, new PacketSequenceCalculator(), new GbsClientDeviceConfig(), Scheduler.Default);
+            var clientDevice = new GbsClientDevice(link.Client,clientId, new PacketSequenceCalculator(), new GbsClientDeviceConfig());
             serverDevice.Start();
             clientDevice.WaitUntilConnect();
             await Task.Delay(2000);

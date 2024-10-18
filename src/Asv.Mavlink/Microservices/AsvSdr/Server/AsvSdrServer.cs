@@ -21,16 +21,20 @@ namespace Asv.Mavlink
         private readonly MavlinkPacketTransponder<AsvSdrOutStatusPacket, AsvSdrOutStatusPayload> _transponder;
 
         public AsvSdrServer(IMavlinkV2Connection connection,
-            MavlinkIdentity identity,AsvSdrServerConfig config, IPacketSequenceCalculator seq,
-            IScheduler? rxScheduler,
-            ILogger? logger = null) 
-            : base("SDR", connection, identity, seq, rxScheduler,logger)
+            MavlinkIdentity identity,
+            AsvSdrServerConfig config, 
+            IPacketSequenceCalculator seq,
+            TimeProvider? timeProvider = null,
+            IScheduler? rxScheduler = null,
+            ILoggerFactory? logFactory = null) 
+            : base("SDR", connection, identity, seq,timeProvider, rxScheduler,logFactory)
         {
             
             _config = config ?? throw new ArgumentNullException(nameof(config));
-            _logger = logger ?? NullLogger.Instance;
+            logFactory??=NullLoggerFactory.Instance;
+            _logger = logFactory.CreateLogger<AsvSdrServer>();
             _transponder =
-                new MavlinkPacketTransponder<AsvSdrOutStatusPacket, AsvSdrOutStatusPayload>(connection, identity, seq)
+                new MavlinkPacketTransponder<AsvSdrOutStatusPacket, AsvSdrOutStatusPayload>(connection, identity, seq,timeProvider,logFactory)
                     .DisposeItWith(Disposable);
             _transponder.Set(x =>
             {

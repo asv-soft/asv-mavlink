@@ -28,12 +28,17 @@ public class FtpServerEx : IFtpServerEx
     public IFtpServer Base { get; }
     
     
-    public FtpServerEx(MavlinkFtpServerExConfig config, IFtpServer @base, IFileSystem? fileSystem = null, ILogger? logger = null)
+    public FtpServerEx(MavlinkFtpServerExConfig config, 
+        IFtpServer @base, 
+        IFileSystem? fileSystem = null, 
+        TimeProvider? timeProvider = null,
+        ILoggerFactory? logFactory = null)
     {
         _config = config;
         _rootDirectory = _config.RootDirectory;
         _fileSystem = fileSystem ?? new FileSystem(); // if file system that was passed here is null we use default system.io
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<FtpServerEx>();
         _sessions = [];
         
         Base = @base;

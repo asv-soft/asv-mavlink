@@ -34,28 +34,30 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
         MavlinkClientIdentity identity,
         VehicleClientConfig config,
         IPacketSequenceCalculator seq, 
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null):base(connection,identity,config,seq,scheduler,logger)
+        ILoggerFactory? logFactory = null):base(connection,identity,config,seq,timeProvider,scheduler,logFactory)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory ??= NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<VehicleClient>();
         _config = config;
-        Commands = new CommandClient(connection,identity,seq,config.Command,scheduler,logger).DisposeItWith(Disposable);
-        Offboard = new OffboardClient(connection, identity, seq,scheduler,logger).DisposeItWith(Disposable);
-        _params = new ParamsClientEx(new ParamsClient(Connection, Identity, Seq, _config.Params,scheduler,logger), _config.Params,scheduler,logger).DisposeItWith(Disposable);
-        Logging = new LoggingClient(connection, identity, seq,scheduler,logger).DisposeItWith(Disposable);
-        var missions = new MissionClient(connection, identity, seq, _config.Missions,scheduler,logger).DisposeItWith(Disposable);
-        Missions = new MissionClientEx(missions, _config.Missions, scheduler,logger).DisposeItWith(Disposable);
-        Ftp = new FtpClient(config.Ftp, connection, identity, seq, TimeProvider.System, scheduler,logger).DisposeItWith(Disposable);
-        var gnss = new GnssClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
-        Gnss = new GnssClientEx(gnss, scheduler,logger).DisposeItWith(Disposable);
-        V2Extension = new V2ExtensionClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
-        var pos = new PositionClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
-        Position = new PositionClientEx(pos,Heartbeat,Commands, scheduler,logger).DisposeItWith(Disposable);
-        var rtt = new TelemetryClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
-        Rtt = new TelemetryClientEx(rtt, scheduler,logger).DisposeItWith(Disposable);
-        Debug = new DebugClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
-        Trace = new TraceStreamClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
-        Dgps = new DgpsClient(connection, identity, seq, scheduler,logger).DisposeItWith(Disposable);
+        Commands = new CommandClient(connection,identity,seq,config.Command,timeProvider,scheduler,logFactory).DisposeItWith(Disposable);
+        Offboard = new OffboardClient(connection, identity, seq,timeProvider,scheduler,logFactory).DisposeItWith(Disposable);
+        _params = new ParamsClientEx(new ParamsClient(Connection, Identity, Seq, _config.Params,timeProvider,scheduler,logFactory), _config.Params,timeProvider,scheduler,logFactory).DisposeItWith(Disposable);
+        Logging = new LoggingClient(connection, identity, seq,timeProvider,scheduler,logFactory).DisposeItWith(Disposable);
+        var missions = new MissionClient(connection, identity, seq, _config.Missions,timeProvider,scheduler,logFactory).DisposeItWith(Disposable);
+        Missions = new MissionClientEx(missions, _config.Missions,timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
+        Ftp = new FtpClient(config.Ftp, connection, identity, seq, timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
+        var gnss = new GnssClient(connection, identity, seq,timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
+        Gnss = new GnssClientEx(gnss,timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
+        V2Extension = new V2ExtensionClient(connection, identity, seq,timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
+        var pos = new PositionClient(connection, identity, seq,timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
+        Position = new PositionClientEx(pos,Heartbeat,Commands,timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
+        var rtt = new TelemetryClient(connection, identity, seq,timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
+        Rtt = new TelemetryClientEx(rtt,timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
+        Debug = new DebugClient(connection, identity, seq,timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
+        Trace = new TraceStreamClient(connection, identity, seq,timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
+        Dgps = new DgpsClient(connection, identity, seq,timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
         
         var customMode = new RxValue<IVehicleMode>().DisposeItWith(Disposable);
         Heartbeat

@@ -1,3 +1,4 @@
+using System;
 using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,8 +14,10 @@ namespace Asv.Mavlink
             IMavlinkV2Connection connection, 
             MavlinkClientIdentity config,
             IPacketSequenceCalculator seq,
+            TimeProvider? timeProvider = null,
             IScheduler? rxScheduler = null,
-            ILogger? logger = null):base("OFFBOARD", connection, config, seq,rxScheduler,logger)
+            ILoggerFactory? logFactory = null)
+            :base("OFFBOARD", connection, config, seq,timeProvider,rxScheduler,logFactory)
         {
         }
 

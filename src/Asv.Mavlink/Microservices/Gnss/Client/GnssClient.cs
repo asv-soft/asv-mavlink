@@ -1,3 +1,4 @@
+using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using Asv.Common;
@@ -15,8 +16,9 @@ public class GnssClient : MavlinkMicroserviceClient, IGnssClient
         IMavlinkV2Connection connection, 
         MavlinkClientIdentity identity, 
         IPacketSequenceCalculator seq,
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null) : base("RTT:GNSS", connection, identity, seq,scheduler,logger)
+        ILoggerFactory? logFactory = null) : base("RTT:GNSS", connection, identity, seq,timeProvider,scheduler,logFactory)
     {
         _gnss1 = new RxValue<GpsRawIntPayload>().DisposeItWith(Disposable);
         _gnss2 = new RxValue<Gps2RawPayload>().DisposeItWith(Disposable);

@@ -31,15 +31,17 @@ public class SdrClientDevice : ClientDevice, ISdrClientDevice
         MavlinkClientIdentity identity, 
         SdrClientDeviceConfig config, 
         IPacketSequenceCalculator seq, 
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null) : base(connection, identity, config, seq, scheduler,logger)
+        ILoggerFactory? logFactory = null) : base(connection, identity, config, seq,timeProvider, scheduler,logFactory)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??= NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<SdrClientDevice>();
         _config = config;
-        Command = new CommandClient(connection, identity, seq, config.Command).DisposeItWith(Disposable);
-        Sdr = new AsvSdrClientEx(new AsvSdrClient(connection, identity, seq), Heartbeat, Command,config.SdrEx).DisposeItWith(Disposable);
-        Missions = new MissionClientEx(new MissionClient(connection, identity, seq,config.Missions), config.MissionsEx).DisposeItWith(Disposable);
-        _params = new ParamsClientEx(new ParamsClient(connection, identity, seq,config.Params), config.ParamsEx).DisposeItWith(Disposable);
+        Command = new CommandClient(connection, identity, seq, config.Command, timeProvider, scheduler, logFactory).DisposeItWith(Disposable);
+        Sdr = new AsvSdrClientEx(new AsvSdrClient(connection, identity, seq), Heartbeat, Command,config.SdrEx, timeProvider, scheduler, logFactory).DisposeItWith(Disposable);
+        Missions = new MissionClientEx(new MissionClient(connection, identity, seq,config.Missions,timeProvider, scheduler, logFactory), config.MissionsEx, timeProvider, scheduler, logFactory).DisposeItWith(Disposable);
+        _params = new ParamsClientEx(new ParamsClient(connection, identity, seq,config.Params), config.ParamsEx, timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
     }
 
     protected override string DefaultName => $"SDR [{Identity.TargetSystemId:00},{Identity.TargetComponentId:00}]";

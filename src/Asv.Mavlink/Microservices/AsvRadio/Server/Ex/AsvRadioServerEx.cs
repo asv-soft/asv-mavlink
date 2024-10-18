@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,10 +50,13 @@ public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
         IHeartbeatServer heartbeat, 
         ICommandServerEx<CommandLongPacket> commands, 
         IStatusTextServer statusText, 
-        ILogger? logger = null)
+        TimeProvider? timeProvider = null,
+        IScheduler? scheduler = null,
+        ILoggerFactory? logFactory = null)
     {
-        _logger = logger ?? NullLogger.Instance;
-        if (commands == null) throw new ArgumentNullException(nameof(commands));
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<AsvRadioServerEx>();
+        ArgumentNullException.ThrowIfNull(commands);
         _capabilities = capabilities ?? throw new ArgumentNullException(nameof(capabilities));
         _codecs = codecs ?? throw new ArgumentNullException(nameof(codecs));
         _heartbeat = heartbeat ?? throw new ArgumentNullException(nameof(heartbeat));

@@ -32,11 +32,13 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
         IMavlinkV2Connection connection, 
         MavlinkIdentity identity, 
         IPacketSequenceCalculator seq, 
+        TimeProvider? timeProvider = null,
         IScheduler? rxScheduler = null,
-        ILogger? logger = null)
-        :base("CHART", connection, identity, seq, rxScheduler)
+        ILoggerFactory? logFactory = null)
+        :base("CHART", connection, identity, seq,timeProvider, rxScheduler, logFactory)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<AsvChartServer>();
         _config = config;
         _charts = new SourceCache<AsvChartInfo,ushort>(x => x.Id)
             .DisposeItWith(Disposable);

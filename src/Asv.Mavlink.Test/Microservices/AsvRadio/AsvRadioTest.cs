@@ -19,7 +19,7 @@ public class AsvRadioTest
     {
         var link = new VirtualMavlinkConnection();
         var client = new AsvRadioClient(link.Client, new MavlinkClientIdentity(1,1,2,2),new PacketSequenceCalculator());
-        var server = new AsvRadioServer(link.Server, new MavlinkIdentity(2,2), new AsvRadioServerConfig(), new PacketSequenceCalculator(),Scheduler.Default);
+        var server = new AsvRadioServer(link.Server, new MavlinkIdentity(2,2), new AsvRadioServerConfig(), new PacketSequenceCalculator());
         
         var tcs = new TaskCompletionSource<AsvRadioStatusPayload>();
         var cancel = new CancellationTokenSource();
@@ -69,7 +69,7 @@ public class AsvRadioTest
     {
         var link = new VirtualMavlinkConnection();
         var client = new AsvRadioClient(link.Client, new MavlinkClientIdentity(1,1,2,2),new PacketSequenceCalculator());
-        var server = new AsvRadioServer(link.Server, new MavlinkIdentity(2,2), new AsvRadioServerConfig(), new PacketSequenceCalculator(),Scheduler.Default);
+        var server = new AsvRadioServer(link.Server, new MavlinkIdentity(2,2), new AsvRadioServerConfig(), new PacketSequenceCalculator());
         
 
 
@@ -109,7 +109,7 @@ public class AsvRadioTest
     {
         var link = new VirtualMavlinkConnection();
         var client = new AsvRadioClient(link.Client, new MavlinkClientIdentity(1,1,2,2),new PacketSequenceCalculator());
-        var server = new AsvRadioServer(link.Server, new MavlinkIdentity(2,2), new AsvRadioServerConfig(), new PacketSequenceCalculator(),Scheduler.Default);
+        var server = new AsvRadioServer(link.Server, new MavlinkIdentity(2,2), new AsvRadioServerConfig(), new PacketSequenceCalculator());
         
         var origin = new AsvRadioCodecCapabilitiesResponsePayload
         {

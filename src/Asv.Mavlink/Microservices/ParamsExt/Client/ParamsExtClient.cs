@@ -52,14 +52,16 @@ public class ParamsExtClient : MavlinkMicroserviceClient, IParamsExtClient
         MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq, 
         ParamsExtClientConfig config,
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null)
-        : base("PARAMS_EXT", connection, identity, seq,scheduler,logger)
+        ILoggerFactory? logFactory = null)
+        : base("PARAMS_EXT", connection, identity, seq, timeProvider,scheduler,logFactory)
     {
         ArgumentNullException.ThrowIfNull(seq);
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(connection);
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<ParamsExtClient>();
         _config = config ?? throw new ArgumentNullException(nameof(config));
         
         _onParamExtValue = new Subject<ParamExtValuePayload>().DisposeItWith(Disposable);

@@ -15,9 +15,10 @@ public class MissionServer : MavlinkMicroserviceServer, IMissionServer
         IMavlinkV2Connection connection, 
         MavlinkIdentity identity, 
         IPacketSequenceCalculator seq, 
+        TimeProvider? timeProvider = null,
         IScheduler? rxScheduler = null,
-        ILogger? logger = null)
-        : base("MISSION", connection, identity, seq, rxScheduler,logger)
+        ILoggerFactory? logFactory = null)
+        : base("MISSION", connection, identity, seq, timeProvider, rxScheduler,logFactory)
     {
        
     }

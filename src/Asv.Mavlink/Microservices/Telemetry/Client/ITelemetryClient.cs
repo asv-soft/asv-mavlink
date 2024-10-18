@@ -1,3 +1,4 @@
+using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
@@ -5,6 +6,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using ZLogger;
 
 namespace Asv.Mavlink
@@ -116,10 +118,13 @@ namespace Asv.Mavlink
             IMavlinkV2Connection connection, 
             MavlinkClientIdentity identity,
             IPacketSequenceCalculator seq,
+            TimeProvider? timeProvider = null,
             IScheduler? scheduler = null,
-            ILogger? logger = null)
-            : base("RTT", connection, identity, seq,scheduler,logger)
+            ILoggerFactory? logFactory = null)
+            : base("RTT", connection, identity, seq, timeProvider,scheduler,logFactory)
         {
+            logFactory ??= NullLoggerFactory.Instance;
+            _logger = logFactory.CreateLogger<TelemetryClient>();
             _radio = new RxValue<RadioStatusPayload>().DisposeItWith(Disposable);
             InternalFilter<RadioStatusPacket>().Select(p=>p.Payload).Subscribe(_radio).DisposeItWith(Disposable);
             _systemStatus = new RxValue<SysStatusPayload>().DisposeItWith(Disposable);

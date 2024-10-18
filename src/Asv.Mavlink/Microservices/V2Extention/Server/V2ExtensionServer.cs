@@ -18,9 +18,10 @@ namespace Asv.Mavlink
             IMavlinkV2Connection connection, 
             IPacketSequenceCalculator seq,
             MavlinkIdentity identity, 
+            TimeProvider? timeProvider = null,
             IScheduler? rxScheduler = null,
-            ILogger? logger = null)
-        :base("V2EXT",connection,identity,seq,rxScheduler,logger)
+            ILoggerFactory? logFactory = null)
+        :base("V2EXT",connection,identity,seq,timeProvider,rxScheduler,logFactory)
         {
             _onData.DisposeItWith(Disposable);
             connection

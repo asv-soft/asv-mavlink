@@ -29,9 +29,10 @@ public class PacketV2Decoder : DisposableOnceWithCancel, IPacketDecoder<IPacketV
         FillSignature
     }
 
-    public PacketV2Decoder(ILogger? logger = null)
+    public PacketV2Decoder(ILoggerFactory? logFactory = null)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<PacketV2Decoder>();
         // the first byte is always STX
         _buffer[0] = PacketV2Helper.MagicMarkerV2;
         _decodeErrorSubject = new Subject<DeserializePackageException>().DisposeItWith(Disposable);
@@ -112,7 +113,7 @@ public class PacketV2Decoder : DisposableOnceWithCancel, IPacketDecoder<IPacketV
         return DecodeStep.Sync;
     }
 
-    private IPacketV2<IPayload> CreatePacket(int messageId)
+    private IPacketV2<IPayload>? CreatePacket(int messageId)
     {
         return _dict.TryGetValue(messageId, out var func) ? func() : null;
     }
@@ -157,7 +158,7 @@ public class PacketV2Decoder : DisposableOnceWithCancel, IPacketDecoder<IPacketV
         _dict.Add(pkt.MessageId,factory);
     }
 
-    public IPacketV2<IPayload> Create(int id)
+    public IPacketV2<IPayload>? Create(int id)
     {
         return _dict.TryGetValue(id, out var factory) == false ? null : factory();
     }

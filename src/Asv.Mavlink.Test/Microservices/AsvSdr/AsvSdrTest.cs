@@ -31,7 +31,7 @@ public class AsvSdrTest
         
         serverSdr = new AsvSdrServer(link.Server,
             serverId, new AsvSdrServerConfig(),
-            new PacketSequenceCalculator(), Scheduler.Default);
+            new PacketSequenceCalculator());
         
         clientSdr = new AsvSdrClient(link.Client,clientId, new PacketSequenceCalculator());
 

@@ -70,8 +70,7 @@ public class VirtualAdsbCommand
             router,
             new PacketSequenceCalculator(),
             new MavlinkIdentity(config.SystemId, config.ComponentId),
-            new AdsbServerDeviceConfig(),
-            Scheduler.Default);
+            new AdsbServerDeviceConfig());
         srv.Start();
 
         AnsiConsole.MarkupLine($"[green]Found config for {config.Vehicles.Length} vehicles[/]");

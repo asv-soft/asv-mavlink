@@ -3,6 +3,7 @@ using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
@@ -14,14 +15,20 @@ public class ParamsExtServer : MavlinkMicroserviceServer, IParamsExtServer
     /// <param name="connection">The IMavlinkV2Connection object.</param>
     /// <param name="seq">The IPacketSequenceCalculator object.</param>
     /// <param name="identity">The MavlinkIdentity object.</param>
+    /// <param name="timeProvider"></param>
     /// <param name="scheduler">The IScheduler object.</param>
-    public ParamsExtServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-        MavlinkIdentity identity, IScheduler scheduler)
-        : base("PARAMS_EXT", connection, identity, seq, scheduler)
+    /// <param name="logFactory"></param>
+    public ParamsExtServer(
+        IMavlinkV2Connection connection, 
+        IPacketSequenceCalculator seq,
+        MavlinkIdentity identity,
+        TimeProvider? timeProvider = null,
+        IScheduler? scheduler = null,
+        ILoggerFactory? logFactory = null)
+        : base("PARAMS_EXT", connection, identity, seq, timeProvider, scheduler,logFactory)
     {
-        if (seq == null) throw new ArgumentNullException(nameof(seq));
-        if (connection == null) throw new ArgumentNullException(nameof(connection));
-        if (scheduler == null) throw new ArgumentNullException(nameof(scheduler));
+        ArgumentNullException.ThrowIfNull(seq);
+        ArgumentNullException.ThrowIfNull(connection);
 
         OnParamExtSet = InternalFilter<ParamExtSetPacket>(
             packet => packet.Payload.TargetSystem,

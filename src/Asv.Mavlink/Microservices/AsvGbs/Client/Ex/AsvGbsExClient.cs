@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,9 +35,12 @@ public class AsvGbsExClient: DisposableOnceWithCancel, IAsvGbsExClient
         IAsvGbsClient asvGbs, 
         IHeartbeatClient heartbeat, 
         ICommandClient command,
-        ILogger? logger = null)
+        TimeProvider? timeProvider = null,
+        IScheduler? scheduler = null,
+        ILoggerFactory? logFactory = null)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<AsvGbsExClient>();
         ArgumentNullException.ThrowIfNull(heartbeat);
         _command = command ?? throw new ArgumentNullException(nameof(command));
         Base = asvGbs ?? throw new ArgumentNullException(nameof(asvGbs));

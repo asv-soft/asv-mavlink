@@ -87,9 +87,10 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     private int _checkCacheInProgress;
     private readonly TimeSpan _fileCacheTime;
 
-    public FileSystemHierarchicalStore(string rootFolder, IHierarchicalStoreFormat<TKey,TFile> format, TimeSpan? fileCacheTime, ILogger? logger = null)
+    public FileSystemHierarchicalStore(string rootFolder, IHierarchicalStoreFormat<TKey,TFile> format, TimeSpan? fileCacheTime, ILoggerFactory? logFactory = null)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<FileSystemHierarchicalStore<TKey, TFile>>();
         if (format == null) throw new ArgumentNullException(nameof(format));
         format.DisposeItWith(Disposable);
         if (string.IsNullOrEmpty(rootFolder))

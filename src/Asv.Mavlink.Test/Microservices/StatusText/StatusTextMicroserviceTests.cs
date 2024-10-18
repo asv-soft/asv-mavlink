@@ -71,8 +71,7 @@ public class StatusTextMicroserviceTests
             var server = new StatusTextServer(null,
                 new PacketSequenceCalculator(),
                 new MavlinkIdentity(),
-                new StatusTextLoggerConfig(),
-                Scheduler.Default);
+                new StatusTextLoggerConfig());
         });
     }
     
@@ -86,8 +85,7 @@ public class StatusTextMicroserviceTests
             var server = new StatusTextServer(link.Client,
                 null,
                 new MavlinkIdentity(),
-                new StatusTextLoggerConfig(),
-                Scheduler.Default);
+                new StatusTextLoggerConfig());
         });
     }
     
@@ -101,25 +99,11 @@ public class StatusTextMicroserviceTests
             var server = new StatusTextServer(link.Client,
                 new PacketSequenceCalculator(),
                 new MavlinkIdentity(),
-                null,
-                Scheduler.Default);
-        });
-    }
-    
-    [Fact]
-    public void Server_Service_Should_Throw_Argument_Null_Exception_If_Scheduler_Is_Null()
-    {
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            var link = new VirtualMavlinkConnection();
-
-            var server = new StatusTextServer(link.Client,
-                new PacketSequenceCalculator(),
-                new MavlinkIdentity(),
-                new StatusTextLoggerConfig(),
                 null);
         });
     }
+    
+   
 
     #endregion
 
@@ -142,7 +126,7 @@ public class StatusTextMicroserviceTests
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
 
         var server = new StatusTextServer(link.Server, new PacketSequenceCalculator(),
-            serverId, new StatusTextLoggerConfig(), Scheduler.Default);
+            serverId, new StatusTextLoggerConfig());
 
         var client = new StatusTextClient(link.Client, clientId,
             new PacketSequenceCalculator());
@@ -168,7 +152,7 @@ public class StatusTextMicroserviceTests
         var serverIdentity = new MavlinkIdentity(1, 2);
 
         var server = new StatusTextServer(link.Server, new PacketSequenceCalculator(),
-            serverIdentity, new StatusTextLoggerConfig(), Scheduler.Default);
+            serverIdentity, new StatusTextLoggerConfig());
 
         var client = new StatusTextClient(link.Client, clientIdentity,
             new PacketSequenceCalculator());
@@ -192,7 +176,7 @@ public class StatusTextMicroserviceTests
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
         
         var server = new StatusTextServer(link.Server, new PacketSequenceCalculator(),
-            serverId, new StatusTextLoggerConfig(), Scheduler.Default);
+            serverId, new StatusTextLoggerConfig());
 
         var client = new StatusTextClient(link.Client, clientId,
             new PacketSequenceCalculator());
@@ -238,7 +222,7 @@ public class StatusTextMicroserviceTests
         };
         
         var server = new StatusTextServer(link.Server, new PacketSequenceCalculator(),
-            serverIdentity, new StatusTextLoggerConfig(), Scheduler.Default);
+            serverIdentity, new StatusTextLoggerConfig());
 
         var client = new StatusTextClient(link.Client, clientIdentity,
             new PacketSequenceCalculator());

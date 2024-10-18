@@ -1,3 +1,4 @@
+using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using Asv.Common;
@@ -14,8 +15,10 @@ public class StatusTextClient : MavlinkMicroserviceClient, IStatusTextClient
         IMavlinkV2Connection connection, 
         MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq,
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null) : base("STATUS", connection, identity, seq,scheduler,logger)
+        ILoggerFactory? logFactory = null) 
+        : base("STATUS", connection, identity, seq, timeProvider,scheduler,logFactory)
     {
         Name = new RxValue<string>($"[{identity.TargetSystemId},{identity.TargetComponentId}]").DisposeItWith(Disposable);
         _onMessage = new RxValue<StatusMessage>().DisposeItWith(Disposable);

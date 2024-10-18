@@ -17,9 +17,14 @@ namespace Asv.Mavlink
         private readonly int _maxNamedValueKeyLength = new NamedValueFloatPayload().Name.Length;
         private readonly DateTime _bootTime;
 
-        public DebugServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkIdentity identity, IScheduler? rxScheduler,ILogger? logger = null) 
-            : base("DEBUG", connection, identity, seq, rxScheduler,logger)
+        public DebugServer(
+            IMavlinkV2Connection connection,
+            IPacketSequenceCalculator seq,
+            MavlinkIdentity identity,
+            TimeProvider? timeProvider = null,
+            IScheduler? rxScheduler = null,
+            ILoggerFactory? logFactory = null) 
+            : base("DEBUG", connection, identity, seq, timeProvider, rxScheduler,logFactory)
         {
             _connection = connection;
             _seq = seq;

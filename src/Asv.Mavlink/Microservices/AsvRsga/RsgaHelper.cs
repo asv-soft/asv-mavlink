@@ -37,11 +37,11 @@ public class RsgaHelper
 
     public static void SetSupportedModes(AsvRsgaCompatibilityResponsePayload payload, IEnumerable<AsvRsgaCustomMode> modes)
     {
-        var arr = new BitArray(payload.SupportedModes.Length * sizeof(byte));
+        var arr = new BitArray(payload.SupportedModes.Length * 8);
         foreach (var mode in modes)
         {
             var index = (int)mode;
-            if (index < 0 || index >= arr.Length)
+            if (index < 0 || index >= arr.Length * sizeof(byte))
                 throw new ArgumentOutOfRangeException(nameof(modes));
             arr[index] = true;
         }

@@ -56,16 +56,17 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
     private int _deleteProbesLock;
     private readonly ILogger _logger;
 
-    public DiagnosticClient(
-        DiagnosticClientConfig config, 
-        IMavlinkV2Connection connection, 
-        MavlinkClientIdentity identity, 
-        IPacketSequenceCalculator seq, 
-        IScheduler? scheduler,
-        ILogger? logger = null) 
-        : base("DIAG", connection, identity, seq,scheduler,logger)
+    public DiagnosticClient(DiagnosticClientConfig config,
+        IMavlinkV2Connection connection,
+        MavlinkClientIdentity identity,
+        IPacketSequenceCalculator seq,
+        TimeProvider? timeProvider = null,
+        IScheduler? scheduler = null,
+        ILoggerFactory? logFactory = null) 
+        : base("DIAG", connection, identity, seq,timeProvider,scheduler,logFactory)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<DiagnosticClient>();
         _config = config;
         _floatProbes = new SourceCache<INamedProbe<float>, string>(x => x.Name).DisposeItWith(Disposable);
         _intProbes = new SourceCache<INamedProbe<int>, string>(x => x.Name).DisposeItWith(Disposable);

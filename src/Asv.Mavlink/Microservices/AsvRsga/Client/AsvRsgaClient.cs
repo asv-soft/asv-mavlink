@@ -16,13 +16,13 @@ public class AsvRsgaClient: MavlinkMicroserviceClient, IAsvRsgaClient
     private uint _requestCounter;
 
 
-    public AsvRsgaClient(
-        IMavlinkV2Connection connection, 
-        MavlinkClientIdentity identity, 
+    public AsvRsgaClient(IMavlinkV2Connection connection,
+        MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq,
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null) 
-        : base("RSGA", connection, identity, seq,scheduler,logger)
+        ILoggerFactory? logFactory = null) 
+        : base("RSGA", connection, identity, seq,timeProvider,scheduler,logFactory)
     {
         _onCompatibilityRequest = new Subject<AsvRsgaCompatibilityResponsePayload>().DisposeItWith(Disposable);
         InternalFilter<AsvRsgaCompatibilityResponsePacket>()

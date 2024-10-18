@@ -24,7 +24,7 @@ public class FtpServerExTests
         _output = output;
     }
 
-    private MockFileSystem SetUpFileSystem(string root)
+    internal MockFileSystem SetUpFileSystem(string root)
     {
         var mockFileCfg = new MockFileSystemOptions
         {
@@ -35,8 +35,8 @@ public class FtpServerExTests
 
         return fileSystem;
     }
-    
-    private void SetUpServer(out IFtpServer server)
+
+    internal void SetUpServer(out IFtpServer server)
     {
         var link = new VirtualMavlinkConnection(_ => true, _ => true);
         var clientId = new MavlinkClientIdentity
@@ -50,7 +50,7 @@ public class FtpServerExTests
 
         var serverSeq = new PacketSequenceCalculator();
         server = new FtpServer(new MavlinkFtpServerConfig(), link.Server, serverId, serverSeq,
-            TaskPoolScheduler.Default, new TestLogger(_output, "SERVER"));
+            TimeProvider.System,Scheduler.Default,new TestLoggerFactory(_output, "SERVER"));
     }
     
     private void SetUpClientAndServer(MavlinkFtpClientConfig clientCfg, MavlinkFtpServerConfig serverCfg, out IFtpClient client, out IFtpServer server,
@@ -68,11 +68,11 @@ public class FtpServerExTests
 
         var clientSeq = new PacketSequenceCalculator();
         client = new FtpClient(clientCfg, link.Client, clientId, clientSeq, TimeProvider.System,
-            TaskPoolScheduler.Default, new TestLogger(_output, "CLIENT"));
+            TaskPoolScheduler.Default, new TestLoggerFactory(_output, "CLIENT"));
 
         var serverSeq = new PacketSequenceCalculator();
-        server = new FtpServer(serverCfg, link.Server, serverId, serverSeq,
-            TaskPoolScheduler.Default, new TestLogger(_output, "SERVER"));
+        server = new FtpServer(serverCfg, link.Server, serverId, serverSeq, TimeProvider.System,
+            TaskPoolScheduler.Default, new TestLoggerFactory(_output, "SERVER"));
     }
 
     #region OpenFileRead

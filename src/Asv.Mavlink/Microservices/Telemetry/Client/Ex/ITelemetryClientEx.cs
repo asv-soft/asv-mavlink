@@ -105,10 +105,11 @@ public class TelemetryClientEx : DisposableOnceWithCancel, ITelemetryClientEx
     private readonly IScheduler _scheduler;
 
     /// initialize various RxValue properties based on the data retrieved from the `SystemStatus` property of the `client` object.
-    public TelemetryClientEx(ITelemetryClient client, IScheduler? scheduler = null, ILogger? logger = null)
+    public TelemetryClientEx(ITelemetryClient client,TimeProvider? timeProvider = null, IScheduler? scheduler = null, ILoggerFactory? logFactory = null)
     {
         _scheduler = scheduler ?? Scheduler.Default;
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<TelemetryClientEx>();
         Base = client;
         
         _batteryCharge = new RxValue<double>(double.NaN).DisposeItWith(Disposable);

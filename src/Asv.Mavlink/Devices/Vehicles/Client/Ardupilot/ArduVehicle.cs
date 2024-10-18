@@ -1,3 +1,4 @@
+using System;
 using System.Reactive.Concurrency;
 using Microsoft.Extensions.Logging;
 
@@ -10,9 +11,10 @@ public abstract class ArduVehicle:VehicleClient
         MavlinkClientIdentity identity, 
         VehicleClientConfig config, 
         IPacketSequenceCalculator seq, 
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null) 
-        : base(connection, identity, config, seq, scheduler,logger)
+        ILoggerFactory? logFactory = null)
+        : base(connection, identity, config, seq,timeProvider, scheduler, logFactory)
     {
     }
 }

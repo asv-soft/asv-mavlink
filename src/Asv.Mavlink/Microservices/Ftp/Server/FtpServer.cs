@@ -31,11 +31,14 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         IMavlinkV2Connection connection,
         MavlinkIdentity identity,
         IPacketSequenceCalculator seq,
+        TimeProvider? timeProvider = null,
         IScheduler? rxScheduler = null,
-        ILogger? logger = null) : base("FTP", connection, identity, seq, rxScheduler, logger)
+        ILoggerFactory? logFactory = null) 
+        : base("FTP", connection, identity, seq, timeProvider, rxScheduler, logFactory)
     {
         _config = config;
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<FtpServer>();
         connection
             .Filter<FileTransferProtocolPacket>()
             .Where(x => x.Payload.TargetComponent == identity.ComponentId &&
