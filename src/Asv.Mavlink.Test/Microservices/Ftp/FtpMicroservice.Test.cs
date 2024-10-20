@@ -1,9 +1,9 @@
 using System;
 using System.Buffers;
+using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -62,8 +62,8 @@ public class FtpMicroserviceTest
     }
 
     [Theory]
-    [InlineData("mftp://test.txt", -1177814316)]
-    public async Task Client_call_CalcFileCrc32(string path, int originCheckSum)
+    [InlineData("mftp://test.txt", 1177814316)]
+    public async Task Client_call_CalcFileCrc32(string path, uint originCheckSum)
     {
         SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
         server.CalcFileCrc32 = (path, cancellationToken) => Task.FromResult(originCheckSum);
@@ -321,58 +321,58 @@ public class FtpMicroserviceTest
     }
     
     [Theory]
-    [InlineData(1, 0, 200)]
-    public async Task BurstReadFile_WithProperInput_Success(byte session, uint skip, byte take)
+    [InlineData(1, 0, 10, 200)]
+    public async Task BurstReadFile_WithProperInput_Success(byte session, uint skip, byte take, byte originArrSize)
     {
         // Assert
         SetUpMicroservice(out var client, out var server, (packet) => true, (packet) => true);
-        var originData = new byte[take];
+        var originData = new byte[originArrSize];
         Random.Shared.NextBytes(originData);
+        var originStream = new MemoryStream(originData);
         var called = 0;
         var originRequest = new ReadRequest(session, skip, take);
-        var buffer1 = ArrayPool<byte>.Shared.Rent(take/2);
-        var buffer2 = ArrayPool<byte>.Shared.Rent(take - (take/2));
-        var packet1 = new FileTransferProtocolPacket();
-        var packet2 = new FileTransferProtocolPacket();
+        server.BurstReadFile = async (req, buffer, cancel) =>
+        {
+            var bytes = ArrayPool<byte>.Shared.Rent(req.Take);
+            try
+            {
+                called++;
+                var isLastChunk = req.Skip + req.Take >= originStream.Length;
 
+                originStream.Position = req.Skip;
+                var size = await originStream.ReadAsync(bytes, 0, req.Take, cancel)
+                    .ConfigureAwait(false);
+                var realBytes = bytes[..size];
+                realBytes.CopyTo(buffer);
+
+                return new BurstReadResult((byte)size, isLastChunk, req);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(bytes);
+            }
+        };
+        
+        // Act
         try
         {
-            // Act
-            server.BurstReadFile = (req, buffer, cancel) =>
+            var fullResult = new byte[originArrSize];
+            await client.BurstReadFile(originRequest, packet =>
             {
-                called++;
-                originData[..(originData.Length / 2)].CopyTo(buffer.Span);
-                return Task.FromResult(new BurstReadResult((byte)(originData.Length / 2), false, req));
-            };
-            await client.BurstReadFile(originRequest, p => { packet1 = p; });
-
-            server.BurstReadFile = (req, buffer, cancel) =>
-            {
-                called++;
-                originData[(originData.Length / 2)..].CopyTo(buffer.Span);
-                return Task.FromResult(new BurstReadResult((byte)(originData.Length - (originData.Length / 2)), true,
-                    req));
-            };
-            await client.BurstReadFile(originRequest, p => { packet2 = p; });
+                var offset = Convert.ToInt32(packet.ReadOffset());
+                var size = packet.ReadSize();
+                var resultBuf = new byte[size];
+                packet.ReadData(resultBuf);
+                Array.Copy(resultBuf, 0, fullResult, offset, size);
+            });
             
             // Assert
-            var readOffset = packet1.ReadOffset() + packet2.ReadOffset();
-            var readSize = packet1.ReadSize() + packet2.ReadSize();
-            packet1.ReadData(buffer1);
-            packet2.ReadData(buffer2);
-            var data1 = buffer1.AsMemory()[..(take / 2)].ToArray();
-            var data2 = buffer2.AsMemory()[..(take - (take / 2))].ToArray();
-            var fullData = data1.Concat(data2);
-            
-            Assert.Equal(2,called);
-            Assert.Equal(skip, readOffset);
-            Assert.Equal(originData.Length, readSize);
-            Assert.True(originData.SequenceEqual(fullData));
+            Assert.True(originData.SequenceEqual(fullResult));
+            Assert.Equal(originArrSize / take, called);
         }
         finally
         {
-            ArrayPool<byte>.Shared.Return(buffer1);
-            ArrayPool<byte>.Shared.Return(buffer2);
+            originStream.Close();
         }
     }
 }

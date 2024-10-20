@@ -31,6 +31,8 @@
     <PackageReference Include="Asv.Common" Version="$(AsvCommonVersion)" />
     <PackageReference Include="Asv.IO" Version="$(AsvCommonVersion)" />
     <PackageReference Include="DynamicData" Version="$(DynamicDataVersion)" />
+    <PackageReference Include="System.IO.Abstractions" Version="21.0.29" />
+    <PackageReference Include="TestableIO.System.IO.Abstractions.Extensions" Version="2.2.5" />
     <PackageReference Include="ZLogger" Version="$(ZLoggerVersion)" />
     <PackageReference Include="Microsoft.DotNet.ApiCompat.Task" Version="$(ApiCompatVersion)" >
       <!--using api compatibility purely as a development harness-->
