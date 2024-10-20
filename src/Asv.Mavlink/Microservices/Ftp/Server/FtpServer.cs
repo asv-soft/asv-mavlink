@@ -576,8 +576,6 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
             p.Payload.TargetComponent = req.ComponentId;
             p.Payload.TargetSystem = req.SystemId;
             p.Payload.TargetNetwork = req.Payload.TargetNetwork;
-            var session = req.ReadSession();
-            p.WriteSession(session);
             var originSeq = p.ReadSequenceNumber();
             p.WriteSequenceNumber((ushort)((originSeq + 1) % ushort.MaxValue));
             p.WriteOpcode(replyOpCode);

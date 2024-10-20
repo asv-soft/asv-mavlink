@@ -24,7 +24,7 @@ public class FtpServerExTests
         _output = output;
     }
 
-    private MockFileSystem SetUpFileSystem(string root)
+    public MockFileSystem SetUpFileSystem(string root)
     {
         var mockFileCfg = new MockFileSystemOptions
         {
@@ -35,8 +35,8 @@ public class FtpServerExTests
 
         return fileSystem;
     }
-    
-    private void SetUpServer(out IFtpServer server)
+
+    public void SetUpServer(out IFtpServer server)
     {
         var link = new VirtualMavlinkConnection(_ => true, _ => true);
         var clientId = new MavlinkClientIdentity

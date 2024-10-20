@@ -4,11 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reactive;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -211,8 +208,6 @@ public class FtpClientEx : IFtpClientEx
         }
     }
     
-    
-    
     public async Task DownloadFile(string filePath,Stream streamToSave, IProgress<double>? progress = null, CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();
@@ -237,7 +232,6 @@ public class FtpClientEx : IFtpClientEx
                     await streamToSave.WriteAsync(mem, cancel).ConfigureAwait(false);
                     skip += result.ReadCount;
                     progress.Report((double)skip / file.Size);
-                    
                 }
                 catch (FtpNackEndOfFileException e)
                 {
@@ -250,6 +244,35 @@ public class FtpClientEx : IFtpClientEx
             ArrayPool<byte>.Shared.Return(buffer);
             await Base.TerminateSession(file.Session, cancel).ConfigureAwait(false);
         }
-        
+    }
+    
+    public async Task UploadFile(string filePath, Stream streamToUpload, IProgress<double>? progress = null, CancellationToken cancel = default)
+    {
+        progress ??= new Progress<double>();
+        var file = await Base.OpenFileWrite(filePath, cancel).ConfigureAwait(false);
+        var totalWritten = 0L;
+        var buffer = ArrayPool<byte>.Shared.Rent(MavlinkFtpHelper.MaxDataSize);
+
+        try
+        {
+            while (true)
+            {
+                var bytesRead = await streamToUpload.ReadAsync(buffer.AsMemory(0, MavlinkFtpHelper.MaxDataSize), cancel).ConfigureAwait(false);
+                if (bytesRead == 0) break;
+
+                var request = new WriteRequest(file.Session, (uint)totalWritten, (byte)bytesRead);
+                var memory = new Memory<byte>(buffer, 0, bytesRead);
+
+                await Base.WriteFile(request, memory, cancel).ConfigureAwait(false);
+
+                totalWritten += bytesRead;
+                progress.Report((double)totalWritten / streamToUpload.Length);
+            }
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+            await Base.TerminateSession(file.Session, cancel).ConfigureAwait(false);
+        }
     }
 }

@@ -82,9 +82,10 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.WriteFile:G} {request.ToString()}");
         var result = await InternalFtpCall(FtpOpcode.WriteFile, p =>
         {
-            p.WriteData(buffer.Span[..request.Take]);
-            p.WriteSize(request.Take);
-            p.WriteOffset(request.Skip);
+            p.WriteSession(request.Session);                    // Byte 2
+            p.WriteSize(request.Take);                          // Byte 4
+            p.WriteOffset(request.Skip);                        // Bytes 8-11
+            p.WriteData(buffer.Span[..request.Take]);        // Bytes 12+
         }, cancellationToken).ConfigureAwait(false);
         _logger
             .ZLogInformation($"{LogRecv} {FtpOpcode.WriteFile:G} size: {request.Take}, offset: {request.Skip}, session: {request.Session}");

@@ -1,9 +1,13 @@
 using System;
 using System.Buffers;
 using System.IO;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
+using System.Threading;
 using System.Threading.Tasks;
+using DynamicData;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -115,7 +119,7 @@ public class FtpMicroserviceTest
         server.CreateFile = (path, cancellationToken) => Task.FromResult(session);
 
         var result = await client.CreateFile(filePath);
-        Assert.Equal((byte)0, result.ReadSession());
+        Assert.Equal(session, result.ReadSession());
         Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
     }
     
@@ -374,5 +378,57 @@ public class FtpMicroserviceTest
         {
             originStream.Close();
         }
+    }
+
+    [Fact]
+    public async Task Client_Call_UploadFile_And_Server_Catch_It()
+    {
+        SetUpMicroservice(out var client, out var server, packet => true, packet => true);
+
+        const string testFilePath = "mftp://upload/test.txt";
+        var testData = new byte[500];
+        new Random().NextBytes(testData);
+        using var streamToUpload = new MemoryStream(testData);
+
+        const byte expectedSession = 1;
+        var expectedFileSize = (uint)testData.Length;
+
+        var openFileWriteCalled = 0;
+        var writeFileCalled = 0;
+        var terminateSessionCalled = 0;
+
+        server.OpenFileWrite = (path, cancel) =>
+        {
+            openFileWriteCalled++;
+            Assert.Equal(testFilePath, path);
+            return Task.FromResult(new WriteHandle(expectedSession, expectedFileSize));
+        };
+
+        var receivedData = new byte[testData.Length];
+        server.WriteFile = (request, data, cancel) =>
+        {
+            writeFileCalled++;
+            Assert.Equal(expectedSession, request.Session);
+            var expectedDataLength = request.Take;
+            _output.WriteLine($"Write exceeds buffer size. Written={request.Skip + data.Length}. To be write={receivedData.Length}");
+            data[..expectedDataLength].CopyTo(receivedData.AsMemory((int)request.Skip, expectedDataLength));
+            return Task.CompletedTask;
+        };
+
+        server.TerminateSession = (session, cancel) =>
+        {
+            terminateSessionCalled++;
+            Assert.Equal(expectedSession, session);
+            return Task.CompletedTask;
+        };
+
+        var ftpClientEx = new FtpClientEx(client);
+        await ftpClientEx.UploadFile(testFilePath, streamToUpload);
+
+        Assert.Equal(1, openFileWriteCalled);
+        Assert.True(writeFileCalled > 0);
+        Assert.Equal(1, terminateSessionCalled);
+        Assert.Equal(testData.Length, receivedData.Length);
+        Assert.Equal(testData.ToArray(), receivedData);
     }
 }
