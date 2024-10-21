@@ -77,7 +77,7 @@ public class ServerMissionItem
 /// <summary>
 /// Interface for a mission server that handles mission related communication.
 /// </summary>
-public interface IMissionServer
+public interface IMissionServer:IMavlinkMicroserviceServer
 {
     /// <summary>
     /// Event that is raised whenever the mission count is updated.
@@ -128,6 +128,8 @@ public interface IMissionServer
     /// An <see cref="IObservable{T}"/> of type <see cref="MissionSetCurrentPacket"/> that can be subscribed to receive notifications when the event is raised.
     /// </value>
     IObservable<MissionSetCurrentPacket> OnMissionSetCurrent { get; }
+
+    
 
     /// <summary>
     /// Sends a mission acknowledgment message to the specified target system and component IDs.

@@ -5,7 +5,7 @@ using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 
-public interface IParamsExtClient
+public interface IParamsExtClient: IMavlinkMicroserviceClient
 {
     /// <summary>
     /// Gets the observable sequence of ParamExtValuePayload objects.
@@ -16,7 +16,7 @@ public interface IParamsExtClient
     /// Gets the observable sequence of ParamExtAckPayload objects.
     /// </summary>
     IObservable<ParamExtAckPayload> OnParamExtAck { get; }
-    
+
     /// <summary>
     /// Sends request to read all parameters.
     /// </summary>

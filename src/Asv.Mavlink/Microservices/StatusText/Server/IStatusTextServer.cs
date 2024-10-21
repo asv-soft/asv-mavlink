@@ -5,7 +5,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Represents a status text server that can be used to log messages with different severity levels.
     /// </summary>
-    public interface IStatusTextServer
+    public interface IStatusTextServer:IMavlinkMicroserviceServer
     {
         /// <summary>
         /// Logs a message with the given severity.

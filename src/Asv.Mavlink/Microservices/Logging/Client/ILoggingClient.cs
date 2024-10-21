@@ -7,7 +7,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Represents a logging client that enables interaction with logging data.
     /// </summary>
-    public interface ILoggingClient:IDisposable
+    public interface ILoggingClient:IMavlinkMicroserviceClient
     {
         /// <summary>
         /// Gets the raw logging data property.

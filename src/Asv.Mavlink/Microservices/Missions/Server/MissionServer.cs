@@ -7,21 +7,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
-public class MissionServer : MavlinkMicroserviceServer, IMissionServer
+public class MissionServer(MavlinkIdentity identity, ICoreServices core)
+    : MavlinkMicroserviceServer("MISSION", identity, core), IMissionServer
 {
     private ushort _currentMissionIndex;
-
-    public MissionServer(
-        IMavlinkV2Connection connection, 
-        MavlinkIdentity identity, 
-        IPacketSequenceCalculator seq, 
-        TimeProvider? timeProvider = null,
-        IScheduler? rxScheduler = null,
-        ILoggerFactory? logFactory = null)
-        : base("MISSION", connection, identity, seq, timeProvider, rxScheduler,logFactory)
-    {
-       
-    }
 
 
     public IObservable<MissionCountPacket> OnMissionCount =>

@@ -2,7 +2,7 @@ using Asv.Common;
 
 namespace Asv.Mavlink;
 
-public interface ITraceStreamClient
+public interface ITraceStreamClient: IMavlinkMicroserviceClient
 {
     /// <summary>
     /// Gets the editable value for Name.
@@ -23,7 +23,7 @@ public interface ITraceStreamClient
     /// <returns>
     /// An IRxValue object that emits DebugVectorMessage values.
     /// </returns>
-    IRxValue<DebugVectorMessage> OnDebugVectorMessage { get; }
+    IRxValue<DebugVectorMessage?> OnDebugVectorMessage { get; }
 
     /// <summary>
     /// Gets the value of the OnMemoryVectorMessage property.
@@ -34,7 +34,7 @@ public interface ITraceStreamClient
     /// <returns>
     /// An IRxValue object that emits MemoryVectorMessage values.
     /// </returns>
-    IRxValue<MemoryVectorMessage> OnMemoryVectorMessage { get; }
+    IRxValue<MemoryVectorMessage?> OnMemoryVectorMessage { get; }
 
     /// <summary>
     /// Gets the value of the OnNamedValueIntMessage property.
@@ -45,7 +45,7 @@ public interface ITraceStreamClient
     /// <returns>
     /// An IRxValue object that emits NamedValueIntMessage values.
     /// </returns>
-    IRxValue<NamedValueIntMessage> OnNamedValueIntMessage { get; }
+    IRxValue<NamedValueIntMessage?> OnNamedValueIntMessage { get; }
 
     /// <summary>
     /// Gets the value of the OnNamedValueFloatMessage property.
@@ -56,7 +56,7 @@ public interface ITraceStreamClient
     /// <returns>
     /// An IRxValue object that emits NamedValueFloatMessage values.
     /// </returns>
-    IRxValue<NamedValueFloatMessage> OnNamedValueFloatMessage { get; }
+    IRxValue<NamedValueFloatMessage?> OnNamedValueFloatMessage { get; }
 
     #endregion
 }

@@ -21,7 +21,6 @@ public class MavlinkFtpServerExConfig
 public class FtpServerEx : IFtpServerEx
 {
     private readonly ILogger _logger;
-    private readonly MavlinkFtpServerExConfig _config;
     private readonly IFileSystem _fileSystem;
     private readonly ConcurrentBag<FtpSession> _sessions;
     private readonly string _rootDirectory;
@@ -30,17 +29,12 @@ public class FtpServerEx : IFtpServerEx
     
     public FtpServerEx(MavlinkFtpServerExConfig config, 
         IFtpServer @base, 
-        IFileSystem? fileSystem = null, 
-        TimeProvider? timeProvider = null,
-        ILoggerFactory? logFactory = null)
+        IFileSystem? fileSystem = null)
     {
-        _config = config;
-        _rootDirectory = _config.RootDirectory;
+        _rootDirectory = config.RootDirectory;
         _fileSystem = fileSystem ?? new FileSystem(); // if file system that was passed here is null we use default system.io
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<FtpServerEx>();
+        _logger = @base.Core.Log.CreateLogger<FtpServerEx>();
         _sessions = [];
-        
         Base = @base;
         Base.OpenFileRead = OpenFileRead;
         Base.TerminateSession = TerminateSession;

@@ -8,15 +8,16 @@ namespace Asv.Mavlink;
 /// <summary>
 /// Represents a client for accessing position-related data and commands for a vehicle.
 /// </summary>
-public interface IPositionClient
+public interface IPositionClient: IMavlinkMicroserviceClient
 {
+    ICoreServices Core { get; }
     /// <summary>
     /// Gets the RX value for GlobalPosition of type GlobalPositionIntPayload.
     /// </summary>
     /// <remarks>
     /// This property represents the current global position.
     /// </remarks>
-    IRxValue<GlobalPositionIntPayload> GlobalPosition { get; }
+    IRxValue<GlobalPositionIntPayload?> GlobalPosition { get; }
 
     /// <summary>
     /// Gets the home position of the property Home.
@@ -24,7 +25,7 @@ public interface IPositionClient
     /// <value>
     /// The home position represented by an IRxValue of HomePositionPayload.
     /// </value>
-    IRxValue<HomePositionPayload> Home { get; }
+    IRxValue<HomePositionPayload?> Home { get; }
 
     /// <summary>
     /// Gets the target position value.
@@ -32,7 +33,7 @@ public interface IPositionClient
     /// <returns>
     /// The RxValue object that represents the target position value.
     /// </returns>
-    IRxValue<PositionTargetGlobalIntPayload> Target { get; }
+    IRxValue<PositionTargetGlobalIntPayload?> Target { get; }
 
     /// <summary>
     /// Gets the observable altitude value.
@@ -40,7 +41,7 @@ public interface IPositionClient
     /// <value>
     /// The observable altitude value.
     /// </value>
-    IRxValue<AltitudePayload> Altitude { get; }
+    IRxValue<AltitudePayload?> Altitude { get; }
 
     /// <summary>
     /// Gets the RxValue for VfrHud.
@@ -50,7 +51,7 @@ public interface IPositionClient
     /// information received from a VFR (Visual Flight Rules) Heads-Up Display (HUD).
     /// </remarks>
     /// <returns>The IRxValue interface for VfrHudPayload.</returns>
-    IRxValue<VfrHudPayload> VfrHud { get; }
+    IRxValue<VfrHudPayload?> VfrHud { get; }
 
     /// <summary>
     /// Gets the reactive value representing the high resolution IMU payload.
@@ -58,13 +59,13 @@ public interface IPositionClient
     /// <value>
     /// The reactive value holding the high resolution IMU payload.
     /// </value>
-    IRxValue<HighresImuPayload> Imu { get; }
+    IRxValue<HighresImuPayload?> Imu { get; }
 
     /// <summary>
     /// Gets the RX value of the current Attitude payload.
     /// </summary>
     /// <returns>The RX value of the Attitude payload.</returns>
-    IRxValue<AttitudePayload> Attitude { get; }
+    IRxValue<AttitudePayload?> Attitude { get; }
 
     /// <summary>
     /// Sets a desired vehicle position, velocity, and/or acceleration in a global coordinate system (WGS84). Used by an external controller to command the vehicle (manual controller or

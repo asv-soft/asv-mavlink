@@ -8,7 +8,7 @@ using ZLogger;
 
 namespace Asv.Mavlink
 {
-    public class MavlinkPacketTransponder<TPacket,TPayload> : DisposableOnceWithCancel, IMavlinkPacketTransponder<TPacket,TPayload>
+    public class MavlinkPacketTransponder<TPacket,TPayload> : IMavlinkPacketTransponder<TPacket,TPayload>, IDisposable
         where TPacket : IPacketV2<TPayload>, new()
         where TPayload : IPayload, new()
     {
@@ -22,19 +22,15 @@ namespace Asv.Mavlink
         private TPacket _packet;
         private ITimer? _timer;
         private readonly TimeProvider _timeProvider;
+        private readonly CancellationTokenSource _disposeCancel;
 
-        public MavlinkPacketTransponder(
-            IMavlinkV2Connection connection, 
-            MavlinkIdentity identityConfig, 
-            IPacketSequenceCalculator seq,
-            TimeProvider? timeProvider = null,
-            ILoggerFactory? logFactory = null)
+        public MavlinkPacketTransponder(MavlinkIdentity identityConfig, ICoreServices core)
         {
-            logFactory??=NullLoggerFactory.Instance;
-            _logger = logFactory.CreateLogger<IMavlinkPacketTransponder<TPacket,TPayload>>();
-            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            _seq = seq ?? throw new ArgumentNullException(nameof(seq));
-            _timeProvider = timeProvider ?? TimeProvider.System;
+            _logger = core.Log.CreateLogger<IMavlinkPacketTransponder<TPacket,TPayload>>();
+            _connection = core.Connection;
+            _seq = core.Sequence;
+            _timeProvider = core.TimeProvider;
+            _disposeCancel = new CancellationTokenSource();
             _packet = new TPacket
             {
                 CompatFlags = 0,
@@ -67,7 +63,7 @@ namespace Asv.Mavlink
             {
                 _dataLock.EnterReadLock();
                 ((IPacketV2<IPayload>) _packet).Sequence = _seq.GetNextSequenceNumber();
-                _connection.Send((IPacketV2<IPayload>)_packet, DisposeCancel).Wait();
+                _connection.Send((IPacketV2<IPayload>)_packet, DisposeCancel).Wait(DisposeCancel);
                 LogSuccess();
             }
             catch (Exception e)
@@ -81,6 +77,8 @@ namespace Asv.Mavlink
                 Interlocked.Exchange(ref _isSending, 0);
             }
         }
+
+        private CancellationToken DisposeCancel => _disposeCancel.Token;
 
         private void LogError(Exception e)
         {
@@ -137,12 +135,12 @@ namespace Asv.Mavlink
             }
         }
 
-        protected override void InternalDisposeOnce()
+        public void Dispose()
         {
-            base.InternalDisposeOnce();
             _dataLock.Dispose();
             Stop();
             _state?.Dispose();
+            _disposeCancel.Dispose();
         }
     }
 }

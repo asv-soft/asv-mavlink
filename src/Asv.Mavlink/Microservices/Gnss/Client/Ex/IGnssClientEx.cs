@@ -40,14 +40,8 @@ public interface IGnssClientEx
 /// </summary>
 public class GnssClientEx : DisposableOnceWithCancel, IGnssClientEx
 {
-    private readonly IScheduler _scheduler;
-    private readonly ILogger _logger;
-
-    public GnssClientEx(IGnssClient client, TimeProvider? timeProvider = null, IScheduler? scheduler = null, ILoggerFactory? logFactory = null)
+    public GnssClientEx(IGnssClient client)
     {
-        _scheduler = scheduler ?? Scheduler.Default;
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<GnssClientEx>();
         Base = client;
         Main = new GnssStatusClient(client.Main).DisposeItWith(Disposable);
         Additional = new GnssStatusClient(client.Additional).DisposeItWith(Disposable);

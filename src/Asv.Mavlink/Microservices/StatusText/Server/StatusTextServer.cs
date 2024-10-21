@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Threading;
-using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using ZLogger;
 
 namespace Asv.Mavlink
@@ -25,31 +21,21 @@ namespace Asv.Mavlink
         private readonly ConcurrentQueue<KeyValuePair<MavSeverity,string>> _messageQueue = new();
         private readonly ILogger _logger;
         private int _isSending;
+        private readonly ITimer _timer;
 
-        public StatusTextServer(
-            IMavlinkV2Connection connection, 
-            IPacketSequenceCalculator seq,
-            MavlinkIdentity identity, 
-            StatusTextLoggerConfig config, 
-            TimeProvider? timeProvider = null,
-            IScheduler? scheduler = null,
-            ILoggerFactory? logFactory = null):   
-            base("STATUS",connection,identity,seq, timeProvider,scheduler,logFactory)
+        public StatusTextServer(MavlinkIdentity identity, StatusTextLoggerConfig config, ICoreServices core):   
+            base("STATUS",identity,core)
         {
-            logFactory??=NullLoggerFactory.Instance;
-            _logger = logFactory.CreateLogger<StatusTextServer>();
-            ArgumentNullException.ThrowIfNull(seq);
+            _logger = core.Log.CreateLogger<StatusTextServer>();
             _config = config ?? throw new ArgumentNullException(nameof(config));
-            ArgumentNullException.ThrowIfNull(connection);
 
             _logger.ZLogDebug($"Create status logger for [sys:{identity.SystemId}, com:{identity.ComponentId}] with send rate:{config.MaxSendRateHz} Hz, buffer size: {config.MaxQueueSize}");
 
-            Observable.Timer(TimeSpan.FromSeconds(1.0 / _config.MaxSendRateHz),
-                TimeSpan.FromSeconds(1.0 / _config.MaxSendRateHz)).Subscribe(TrySend)
-                .DisposeItWith(Disposable);
+            var time = TimeSpan.FromSeconds(1.0 / _config.MaxSendRateHz);
+            _timer = core.TimeProvider.CreateTimer(TrySend,null,time, time);
         }
 
-        private async void TrySend(long l)
+        private async void TrySend(object? state)
         {
             if (Interlocked.CompareExchange(ref _isSending,1,0) == 1) return;
 
@@ -106,7 +92,12 @@ namespace Asv.Mavlink
             return Log((severity, message));
         }
 
-       
+
+        public override void Dispose()
+        {
+            _timer.Dispose();
+            base.Dispose();
+        }
     }
 
     

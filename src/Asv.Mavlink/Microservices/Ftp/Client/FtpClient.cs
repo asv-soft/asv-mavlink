@@ -27,20 +27,12 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
     private uint _sequence;
     private readonly TimeSpan _burstTimeout;
 
-    public FtpClient(
-        MavlinkFtpClientConfig config,
-        IMavlinkV2Connection connection,
-        MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null
-    ) : base("FTP", connection, identity, seq, timeProvider, scheduler, logFactory)
+    public FtpClient(MavlinkClientIdentity identity,
+        MavlinkFtpClientConfig config,ICoreServices core) 
+        : base("FTP", identity, core)
     {
         _config = config;
-        _timeProvider = timeProvider ?? TimeProvider.System;
-        logFactory ??= NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<FtpClient>();
+        _logger = core.Log.CreateLogger<FtpClient>();
         _burstTimeout = TimeSpan.FromMilliseconds(config.BurstTimeoutMs);
     }
 
@@ -289,8 +281,8 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         var result = await InternalCall<FileTransferProtocolPacket,FileTransferProtocolPacket, FileTransferProtocolPacket>(p =>
             {
                 fillPacket(p);
-                p.Payload.TargetComponent = Identity.TargetComponentId;
-                p.Payload.TargetSystem = Identity.TargetSystemId;
+                p.Payload.TargetComponent = Identity.Target.ComponentId;
+                p.Payload.TargetSystem = Identity.Target.SystemId;
                 p.Payload.TargetNetwork = _config.TargetNetworkId;
                 p.WriteSequenceNumber(NextSequence());
                 p.WriteOpcode(opCode);

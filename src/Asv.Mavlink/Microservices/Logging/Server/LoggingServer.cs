@@ -9,7 +9,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Represents a logging server that is responsible for sending logging data.
     /// </summary>
-    public interface ILoggingServer:IDisposable
+    public interface ILoggingServer:IMavlinkMicroserviceServer
     {
         /// <summary>
         /// Gets the maximum data length for the property.
@@ -32,24 +32,14 @@ namespace Asv.Mavlink
     /// <summary>
     /// Represents a logging server that sends logging data through a Mavlink connection.
     /// </summary>
-    public class LoggingServer: MavlinkMicroserviceServer, ILoggingServer
+    public class LoggingServer(MavlinkIdentity identity, ICoreServices core)
+        : MavlinkMicroserviceServer("LOG", identity, core), ILoggingServer
     {
         /// <summary>
         /// Maximum length of the data payload for logging.
         /// </summary>
         private static readonly int _maxDataLength = new LoggingDataPayload().Data.Length;
 
-       
-        public LoggingServer(
-            IMavlinkV2Connection connection, 
-            IPacketSequenceCalculator seq,
-            MavlinkIdentity identity, 
-            TimeProvider? timeProvider = null,
-            IScheduler? scheduler = null,
-            ILoggerFactory? logFactory = null) 
-            : base("LOG",connection,identity, seq,timeProvider,scheduler,logFactory)
-        {
-        }
 
         /// <summary>
         /// Gets the maximum length of the data.

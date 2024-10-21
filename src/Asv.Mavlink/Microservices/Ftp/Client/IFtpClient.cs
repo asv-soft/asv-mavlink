@@ -7,7 +7,7 @@ using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 
-public interface IFtpClient
+public interface IFtpClient:IMavlinkMicroserviceClient
 {
     Task<ReadHandle> OpenFileRead(string path, CancellationToken cancel = default);
     Task<WriteHandle> OpenFileWrite(string path, CancellationToken cancel = default);

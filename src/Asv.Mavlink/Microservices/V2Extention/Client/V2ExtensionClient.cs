@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -13,17 +14,14 @@ namespace Asv.Mavlink
         private readonly MavlinkClientIdentity _identity;
         private readonly RxValue<V2ExtensionPacket> _onData = new();
         public static readonly int StaticMaxDataSize = new V2ExtensionPayload().GetMaxByteSize();
+        private readonly IDisposable _disposeIt;
 
-        public V2ExtensionClient(
-            IMavlinkV2Connection connection,
-            MavlinkClientIdentity identity, 
-            IPacketSequenceCalculator seq,
-            TimeProvider? timeProvider = null,
-            IScheduler? scheduler = null,
-            ILoggerFactory? logFactory = null):base("V2EXT", connection, identity, seq, timeProvider,scheduler,logFactory)
+        public V2ExtensionClient(MavlinkClientIdentity identity, 
+            ICoreServices core):base("V2EXT", identity, core)
         {
             _identity = identity;
-            InternalFilter<V2ExtensionPacket>().Subscribe(_onData).DisposeItWith(Disposable);
+            var d1 = InternalFilter<V2ExtensionPacket>().Subscribe(_onData);
+            _disposeIt = Disposable.Combine(_onData, d1);
         }
        
         public int MaxDataSize => StaticMaxDataSize;
@@ -36,11 +34,17 @@ namespace Asv.Mavlink
             {
                 p.Payload.MessageType = messageType;
                 p.Payload.Payload = data;
-                p.Payload.TargetComponent = _identity.TargetComponentId;
-                p.Payload.TargetSystem = _identity.TargetSystemId;
+                p.Payload.TargetComponent = _identity.Target.ComponentId;
+                p.Payload.TargetSystem = _identity.Target.SystemId;
                 p.Payload.TargetNetwork = targetNetworkId;
             }, cancel);
             
+        }
+        
+        public override void Dispose()
+        {
+            _disposeIt.Dispose();
+            base.Dispose();
         }
     }
 

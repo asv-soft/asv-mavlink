@@ -9,16 +9,8 @@ namespace Asv.Mavlink
     /// <summary>
     /// Represents a client for interacting with missions.
     /// </summary>
-    public interface IMissionClient:IDisposable
+    public interface IMissionClient: IMavlinkMicroserviceClient
     {
-        /// <summary>
-        /// Gets the identity of the Mavlink client.
-        /// </summary>
-        /// <value>
-        /// The identity of the Mavlink client.
-        /// </value>
-        MavlinkClientIdentity Identity { get; }
-
         /// <summary>
         /// Gets the current mission value.
         /// </summary>

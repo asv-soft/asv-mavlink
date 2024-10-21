@@ -7,7 +7,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Represents a client that sends and receives heartbeats.
     /// </summary>
-    public interface IHeartbeatClient : IDisposable
+    public interface IHeartbeatClient : IMavlinkMicroserviceClient
     {
         /// <summary>
         /// Gets the full ID of the property.

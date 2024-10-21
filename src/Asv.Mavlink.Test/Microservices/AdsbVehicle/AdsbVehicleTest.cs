@@ -188,7 +188,7 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
             {
                 Adsb =
                 {
-                    CheckOldDevicesMs = 3000,
+                    CheckOldDevicesMs = 1000,
                     TargetTimeoutMs = 5000
                 }
             },fake);
@@ -252,12 +252,12 @@ public class AdsbVehicleTest : DisposableOnceWithCancel
         
         Assert.Equal(3, targets.Count);
         
-        fake.Advance(TimeSpan.FromSeconds(5));
+        fake.Advance(TimeSpan.FromSeconds(3.1));
         
         Assert.Equal(2, targets.Count);
 
         fake.Advance(TimeSpan.FromSeconds(5.1));
         
-        Assert.Single(targets);
+        Assert.Empty(targets);
     }
 }

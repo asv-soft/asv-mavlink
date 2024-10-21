@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Concurrency;
-using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
@@ -11,6 +10,7 @@ using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink;
@@ -38,7 +38,7 @@ public class ParamsServerExConfig
     public string CfgPrefix { get; set; } = "MAV_CFG_";
 }
 
-public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
+public class ParamsServerEx: IParamsServerEx,IDisposable
 {
     private readonly IParamsServer _server;
     private readonly IStatusTextServer _statusTextServer;
@@ -47,44 +47,46 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
     private readonly ParamsServerExConfig _serverCfg;
 
     private readonly ILogger _logger;
-    private readonly Subject<Exception> _onErrorSubject;
+    private readonly System.Reactive.Subjects.Subject<Exception> _onErrorSubject;
     private int _sendingInProgressFlag;
     private readonly ImmutableDictionary<string,(ushort,IMavParamTypeMetadata)> _paramDict;
     private readonly ImmutableList<IMavParamTypeMetadata> _paramList;
-    private readonly Subject<ParamChangedEvent> _onParamChangedSubject;
+    private readonly System.Reactive.Subjects.Subject<ParamChangedEvent> _onParamChangedSubject;
+    private readonly IDisposable _disposeIt;
+    private readonly CancellationTokenSource _disposableCancel;
+
     public ParamsServerEx(
         IParamsServer server, 
         IStatusTextServer statusTextServer, 
         IEnumerable<IMavParamTypeMetadata> paramDescriptions, 
         IMavParamEncoding encoding, 
         IConfiguration cfg, 
-        ParamsServerExConfig serverCfg,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null)
+        ParamsServerExConfig serverCfg)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<ParamsServerEx>();
+        _disposableCancel = new CancellationTokenSource();
+        _logger = server.Core.Log.CreateLogger<ParamsServerEx>();
         _server = server;
         _statusTextServer = statusTextServer ?? throw new ArgumentNullException(nameof(statusTextServer));
         _encoding = encoding;
         _cfg = cfg;
         _serverCfg = serverCfg;
-        _onErrorSubject = new Subject<Exception>().DisposeItWith(Disposable);
+        _onErrorSubject = new System.Reactive.Subjects.Subject<Exception>();
         _paramList = paramDescriptions.OrderBy(m=>m.Name).ToImmutableList();
-        var dict = new Dictionary<string, (ushort,IMavParamTypeMetadata)>();
+        var dict = ImmutableDictionary.CreateBuilder<string, (ushort,IMavParamTypeMetadata)>();
         for (var i = 0; i < _paramList.Count; i++)
         {
             dict.Add(_paramList[i].Name,((ushort)i,_paramList[i]));
         }
-        _paramDict = dict.ToImmutableDictionary();
-        _onParamChangedSubject = new Subject<ParamChangedEvent>().DisposeItWith(Disposable);
+        _paramDict = dict.ToImmutable();
+        _onParamChangedSubject = new System.Reactive.Subjects.Subject<ParamChangedEvent>();
         
-        server.OnParamSet.Subscribe(OnParamSet).DisposeItWith(Disposable);
-        server.OnParamRequestList.Subscribe(OnParamRequestList).DisposeItWith(Disposable);
-        server.OnParamRequestRead.Subscribe(OnParamRequestRead).DisposeItWith(Disposable);
+        var d1 = server.OnParamSet.Subscribe(OnParamSet);
+        var d2 = server.OnParamRequestList.Subscribe(OnParamRequestList);
+        var d3 = server.OnParamRequestRead.Subscribe(OnParamRequestRead);
+        _disposeIt = Disposable.Combine(_onErrorSubject, _onParamChangedSubject, d1, d2, d3,_disposableCancel);
     }
 
+    private CancellationToken DisposeCancel => _disposableCancel.Token;
     private async void OnParamRequestRead(ParamRequestReadPacket _)
     {
         (ushort,IMavParamTypeMetadata) param;
@@ -242,4 +244,10 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
 
     public IReadOnlyList<IMavParamTypeMetadata> AllParamsList => _paramList;
     public IReadOnlyDictionary<string,(ushort,IMavParamTypeMetadata)> AllParamsDict => _paramDict;
+
+    public void Dispose()
+    {
+        _disposableCancel.Cancel(false);
+        _disposeIt.Dispose();
+    }
 }

@@ -14,55 +14,47 @@ namespace Asv.Mavlink;
 public class PositionClient : MavlinkMicroserviceClient, IPositionClient
 {
     private readonly ILogger _logger;
-    private readonly RxValue<GlobalPositionIntPayload> _globalPosition;
-    private readonly RxValue<HomePositionPayload> _home;
-    private readonly RxValue<PositionTargetGlobalIntPayload> _target;
-    private readonly RxValue<AltitudePayload> _altitude;
-    private readonly RxValue<VfrHudPayload> _vfrHud;
-    private readonly RxValue<HighresImuPayload> _imu;
-    private readonly RxValue<AttitudePayload> _attitude;
+    private readonly RxValueBehaviour<GlobalPositionIntPayload?> _globalPosition;
+    private readonly RxValueBehaviour<HomePositionPayload?> _home;
+    private readonly RxValueBehaviour<PositionTargetGlobalIntPayload?> _target;
+    private readonly RxValueBehaviour<AltitudePayload?> _altitude;
+    private readonly RxValueBehaviour<VfrHudPayload?> _vfrHud;
+    private readonly RxValueBehaviour<HighresImuPayload?> _imu;
+    private readonly RxValueBehaviour<AttitudePayload?> _attitude;
 
-
-    public PositionClient(
-        IMavlinkV2Connection connection,
-        MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null)
-        : base("CTRL", connection, identity, seq,timeProvider,scheduler,logFactory)
+    public PositionClient(MavlinkClientIdentity identity, ICoreServices core)
+        : base("CTRL", identity, core)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<PositionClient>();
-        _target = new RxValue<PositionTargetGlobalIntPayload>().DisposeItWith(Disposable);
+        _logger = core.Log.CreateLogger<PositionClient>();
+        _target = new RxValueBehaviour<PositionTargetGlobalIntPayload?>(default);
         InternalFilter<PositionTargetGlobalIntPacket>()
-            .Select(p => p.Payload).Subscribe(_target).DisposeItWith(Disposable);
-        _home = new RxValue<HomePositionPayload>().DisposeItWith(Disposable);
+            .Select(p => p.Payload).Subscribe(_target);
+        _home = new RxValueBehaviour<HomePositionPayload?>(default);
         InternalFilter<HomePositionPacket>()
-            .Select(p => p.Payload).Subscribe(_home).DisposeItWith(Disposable);
-        _globalPosition = new RxValue<GlobalPositionIntPayload>().DisposeItWith(Disposable);
+            .Select(p => p.Payload).Subscribe(_home);
+        _globalPosition = new RxValueBehaviour<GlobalPositionIntPayload?>(default);
         InternalFilter<GlobalPositionIntPacket>()
-            .Select(p => p.Payload).Subscribe(_globalPosition).DisposeItWith(Disposable);
-        _altitude = new RxValue<AltitudePayload>().DisposeItWith(Disposable);
+            .Select(p => p.Payload).Subscribe(_globalPosition);
+        _altitude = new RxValueBehaviour<AltitudePayload?>(default);
         InternalFilter<AltitudePacket>()
-            .Select(p => p.Payload).Subscribe(_altitude).DisposeItWith(Disposable);
-        _vfrHud = new RxValue<VfrHudPayload>().DisposeItWith(Disposable);
+            .Select(p => p.Payload).Subscribe(_altitude);
+        _vfrHud = new RxValueBehaviour<VfrHudPayload?>(default);
         InternalFilter<VfrHudPacket>()
-            .Select(p => p.Payload).Subscribe(_vfrHud).DisposeItWith(Disposable);
-        _imu = new RxValue<HighresImuPayload>().DisposeItWith(Disposable);
+            .Select(p => p.Payload).Subscribe(_vfrHud);
+        _imu = new RxValueBehaviour<HighresImuPayload?>(default);
         InternalFilter<HighresImuPacket>()
-            .Select(p => p.Payload).Subscribe(_imu).DisposeItWith(Disposable);
-        _attitude = new RxValue<AttitudePayload>().DisposeItWith(Disposable);
+            .Select(p => p.Payload).Subscribe(_imu);
+        _attitude = new RxValueBehaviour<AttitudePayload?>(default);
         InternalFilter<AttitudePacket>()
-            .Select(p => p.Payload).Subscribe(_attitude).DisposeItWith(Disposable);
+            .Select(p => p.Payload).Subscribe(_attitude);
     }
-    public IRxValue<GlobalPositionIntPayload> GlobalPosition => _globalPosition;
-    public IRxValue<HomePositionPayload> Home => _home;
-    public IRxValue<PositionTargetGlobalIntPayload> Target => _target;
-    public IRxValue<AltitudePayload> Altitude => _altitude;
-    public IRxValue<VfrHudPayload> VfrHud => _vfrHud;
-    public IRxValue<HighresImuPayload> Imu => _imu;
-    public IRxValue<AttitudePayload> Attitude => _attitude;
+    public IRxValue<GlobalPositionIntPayload?> GlobalPosition => _globalPosition;
+    public IRxValue<HomePositionPayload?> Home => _home;
+    public IRxValue<PositionTargetGlobalIntPayload?> Target => _target;
+    public IRxValue<AltitudePayload?> Altitude => _altitude;
+    public IRxValue<VfrHudPayload?> VfrHud => _vfrHud;
+    public IRxValue<HighresImuPayload?> Imu => _imu;
+    public IRxValue<AttitudePayload?> Attitude => _attitude;
 
     public Task SetTargetGlobalInt(uint timeBootMs, MavFrame coordinateFrame, int latInt, int lonInt, float alt,
         float vx, float vy, float vz, float afx, float afy, float afz, float yaw,
@@ -72,8 +64,8 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
         return InternalSend<SetPositionTargetGlobalIntPacket>(p =>
         {
             p.Payload.TimeBootMs = timeBootMs;
-            p.Payload.TargetSystem = Identity.TargetSystemId;
-            p.Payload.TargetComponent = Identity.TargetComponentId;
+            p.Payload.TargetSystem = Identity.Target.SystemId;
+            p.Payload.TargetComponent = Identity.Target.ComponentId;
             p.Payload.CoordinateFrame = coordinateFrame;
             p.Payload.LatInt = latInt;
             p.Payload.LonInt = lonInt;

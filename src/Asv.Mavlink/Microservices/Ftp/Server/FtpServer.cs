@@ -25,26 +25,18 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
     private ushort? _lastWoSequenceNumber;
     private ReadHandle _lastReadHandle;
     private WriteHandle _lastWriteHandle;
+    private readonly IDisposable _filter;
 
-    public FtpServer(
-        MavlinkFtpServerConfig config,
-        IMavlinkV2Connection connection,
-        MavlinkIdentity identity,
-        IPacketSequenceCalculator seq,
-        TimeProvider? timeProvider = null,
-        IScheduler? rxScheduler = null,
-        ILoggerFactory? logFactory = null) 
-        : base("FTP", connection, identity, seq, timeProvider, rxScheduler, logFactory)
+    public FtpServer(MavlinkIdentity identity, MavlinkFtpServerConfig config, ICoreServices core) 
+        : base("FTP", identity, core)
     {
         _config = config;
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<FtpServer>();
-        connection
+        _logger = core.Log.CreateLogger<FtpServer>();
+        _filter = core.Connection
             .Filter<FileTransferProtocolPacket>()
             .Where(x => x.Payload.TargetComponent == identity.ComponentId &&
                         x.Payload.TargetSystem == identity.SystemId && _config.NetworkId == x.Payload.TargetNetwork)
-            .Subscribe(OnFtpMessage)
-            .DisposeItWith(Disposable);
+            .Subscribe(OnFtpMessage);
     }
 
     private async void OnFtpMessage(FileTransferProtocolPacket input)
@@ -587,5 +579,11 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
             var originOpCode = req.ReadOpcode();
             p.WriteOriginOpCode(originOpCode);
         }, cancel: DisposeCancel);
+    }
+
+    public override void Dispose()
+    {
+        _filter.Dispose();
+        base.Dispose();
     }
 }

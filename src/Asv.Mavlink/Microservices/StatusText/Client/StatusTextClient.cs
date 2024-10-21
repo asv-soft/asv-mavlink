@@ -4,31 +4,34 @@ using System.Reactive.Linq;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using R3;
 
 namespace Asv.Mavlink;
 
 public class StatusTextClient : MavlinkMicroserviceClient, IStatusTextClient
 {
-    private readonly RxValue<StatusMessage> _onMessage;
+    private readonly RxValueBehaviour<StatusMessage?> _onMessage;
+    private readonly RxValueBehaviour<string> _name;
+    private readonly IDisposable _disposeIt;
 
-    public StatusTextClient(
-        IMavlinkV2Connection connection, 
-        MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null) 
-        : base("STATUS", connection, identity, seq, timeProvider,scheduler,logFactory)
+    public StatusTextClient(MavlinkClientIdentity identity,ICoreServices core) 
+        : base("STATUS",identity,core)
     {
-        Name = new RxValue<string>($"[{identity.TargetSystemId},{identity.TargetComponentId}]").DisposeItWith(Disposable);
-        _onMessage = new RxValue<StatusMessage>().DisposeItWith(Disposable);
-        InternalFilter<StatustextPacket>()
-            .Select(p => new StatusMessage { Sender = Name.Value, Text = MavlinkTypesHelper.GetString(p.Payload.Text), Type = p.Payload.Severity  })
-            .Subscribe(_onMessage)
-            .DisposeItWith(Disposable);
+        _name = new RxValueBehaviour<string>($"[{identity.Target.SystemId},{identity.Target.ComponentId}]");
+        _onMessage = new RxValueBehaviour<StatusMessage?>(default);
+        var d1 = InternalFilter<StatustextPacket>()
+            .Select(p => new StatusMessage
+                { Sender = Name.Value, Text = MavlinkTypesHelper.GetString(p.Payload.Text), Type = p.Payload.Severity })
+            .Subscribe(_onMessage);
+        _disposeIt = Disposable.Combine(_name,_onMessage, d1);
     }
 
-    public IRxEditableValue<string> Name { get; }
+    public IRxEditableValue<string> Name => _name;
 
-    public IRxValue<StatusMessage> OnMessage => _onMessage;
+    public IRxValue<StatusMessage?> OnMessage => _onMessage;
+    public override void Dispose()
+    {
+        _disposeIt.Dispose();
+        base.Dispose();
+    }
 }

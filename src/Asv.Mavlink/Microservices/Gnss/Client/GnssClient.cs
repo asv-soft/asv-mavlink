@@ -4,29 +4,32 @@ using System.Reactive.Linq;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using R3;
 
 namespace Asv.Mavlink;
 
 public class GnssClient : MavlinkMicroserviceClient, IGnssClient
 {
-    private readonly RxValue<GpsRawIntPayload> _gnss1;
-    private readonly RxValue<Gps2RawPayload> _gnss2;
+    private readonly RxValueBehaviour<GpsRawIntPayload?> _gnss1;
+    private readonly RxValueBehaviour<Gps2RawPayload?> _gnss2;
+    private readonly IDisposable _disposeIt;
 
-    public GnssClient(
-        IMavlinkV2Connection connection, 
-        MavlinkClientIdentity identity, 
-        IPacketSequenceCalculator seq,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null) : base("RTT:GNSS", connection, identity, seq,timeProvider,scheduler,logFactory)
+    public GnssClient(MavlinkClientIdentity identity,ICoreServices core) : base("GNSS", identity, core)
     {
-        _gnss1 = new RxValue<GpsRawIntPayload>().DisposeItWith(Disposable);
-        _gnss2 = new RxValue<Gps2RawPayload>().DisposeItWith(Disposable);
-        InternalFilter<GpsRawIntPacket>().Select(p => p.Payload)
-            .Subscribe(_gnss1).DisposeItWith(Disposable);
-        InternalFilter<Gps2RawPacket>().Select(p => p.Payload)
-            .Subscribe(_gnss2).DisposeItWith(Disposable);
+        _gnss1 = new RxValueBehaviour<GpsRawIntPayload?>(default);
+        _gnss2 = new RxValueBehaviour<Gps2RawPayload?>(default);
+        var d1 = InternalFilter<GpsRawIntPacket>().Select(p => p.Payload)
+            .Subscribe(_gnss1);
+        var d2 = InternalFilter<Gps2RawPacket>().Select(p => p.Payload)
+            .Subscribe(_gnss2);
+        _disposeIt = Disposable.Combine(_gnss1, _gnss2, d1, d2);
     }
-    public IRxValue<GpsRawIntPayload> Main => _gnss1;
-    public IRxValue<Gps2RawPayload> Additional => _gnss2;
+    public IRxValue<GpsRawIntPayload?> Main => _gnss1;
+    public IRxValue<Gps2RawPayload?> Additional => _gnss2;
+
+    public override void Dispose()
+    {
+        _disposeIt.Dispose();
+        base.Dispose();
+    }
 }

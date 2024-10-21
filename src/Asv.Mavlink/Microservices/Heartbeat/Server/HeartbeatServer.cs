@@ -15,19 +15,12 @@ namespace Asv.Mavlink
     {
         private readonly MavlinkHeartbeatServerConfig _config;
         private readonly MavlinkPacketTransponder<HeartbeatPacket, HeartbeatPayload> _transponder;
-        public HeartbeatServer(
-            IMavlinkV2Connection connection, 
-            IPacketSequenceCalculator seq, 
-            MavlinkIdentity identity, 
-            MavlinkHeartbeatServerConfig config, 
-            TimeProvider? timeProvider = null,
-            IScheduler? rxScheduler = null,
-            ILoggerFactory? logFactory = null) 
-            : base("HEARTBEAT", connection, identity, seq, timeProvider,rxScheduler,logFactory)
+        public HeartbeatServer(MavlinkIdentity identity, MavlinkHeartbeatServerConfig config, ICoreServices core) 
+            : base("HEARTBEAT", identity, core)
         {
             _config = config;
-            _transponder = new MavlinkPacketTransponder<HeartbeatPacket,HeartbeatPayload>(connection, identity, seq,timeProvider,logFactory)
-                .DisposeItWith(Disposable);
+            _transponder = new MavlinkPacketTransponder<HeartbeatPacket, HeartbeatPayload>(identity, core);
+
         }
 
         public void Set(Action<HeartbeatPayload> changeCallback)
@@ -38,6 +31,12 @@ namespace Asv.Mavlink
         public void Start()
         {
             _transponder.Start(TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(_config.HeartbeatRateMs));
+        }
+
+        public override void Dispose()
+        {
+            _transponder.Dispose();
+            base.Dispose();
         }
     }
 }

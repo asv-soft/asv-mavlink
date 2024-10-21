@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
@@ -11,7 +10,10 @@ using Asv.Mavlink.Vehicle;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
+using ObservableExtensions = System.ObservableExtensions;
+using Unit = System.Reactive.Unit;
 
 namespace Asv.Mavlink;
 
@@ -20,7 +22,7 @@ public class MissionClientExConfig:MissionClientConfig
     public int DeviceUploadTimeoutMs { get; set; } = 3000;
 }
 
-public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
+public class MissionClientEx : IMissionClientEx, IDisposable
 {
     private readonly ILogger _logger;
     private readonly IMissionClient _client;
@@ -29,27 +31,24 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
     private readonly RxValue<bool> _isMissionSynced;
     private readonly RxValue<double> _allMissionDistance;
     private readonly TimeSpan _deviceUploadTimeout;
-    private readonly IScheduler _scheduler;
+    private readonly IDisposable _disposeIt;
+    private CancellationTokenSource _disposeCancel;
 
     public MissionClientEx(
         IMissionClient client, 
-        MissionClientExConfig? config = null, 
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null, 
-        ILoggerFactory? logFactory = null)
+        MissionClientExConfig config)
     {
-        _scheduler = scheduler ?? Scheduler.Default;
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<MissionClientEx>();
+        _logger = client.Core.Log.CreateLogger<MissionClientEx>();
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _config = config ?? new MissionClientExConfig();
-        _client.DisposeItWith(Disposable);
+        _config = config ?? throw new ArgumentNullException(nameof(config));
+        _disposeCancel = new CancellationTokenSource();
         _deviceUploadTimeout = TimeSpan.FromMilliseconds(_config.DeviceUploadTimeoutMs);
-        _missionSource = new SourceCache<MissionItem, ushort>(i=>i.Index).DisposeItWith(Disposable);
-        _isMissionSynced = new RxValue<bool>(false).DisposeItWith(Disposable);
-        _allMissionDistance = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
+        _missionSource = new SourceCache<MissionItem, ushort>(i=>i.Index);
+        _isMissionSynced = new RxValue<bool>(false);
+        _allMissionDistance = new RxValue<double>(double.NaN);
         MissionItems = _missionSource.Connect().DisposeMany().Publish().RefCount();
-        _isMissionSynced.Subscribe(_ => UpdateMissionsDistance()).DisposeItWith(Disposable);
+        _isMissionSynced.Subscribe(_ => UpdateMissionsDistance());
+        _disposeIt = Disposable.Combine(_missionSource, _isMissionSynced, _allMissionDistance, _isMissionSynced,_disposeCancel);
     }
     
     public IMissionClient Base => _client;
@@ -103,15 +102,14 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
         var current = 0;
         var lastUpdateTime = DateTime.Now;
-        using var checkTimer = Observable.Timer(_deviceUploadTimeout, _deviceUploadTimeout)
-            .Subscribe(_ =>
+        using var checkTimer = Base.Core.TimeProvider.CreateTimer(x =>
+        {
+            if (DateTime.Now - lastUpdateTime > _deviceUploadTimeout)
             {
-                if (DateTime.Now - lastUpdateTime > _deviceUploadTimeout)
-                {
-                    _logger.ZLogWarning($"Mission upload timeout");
-                    tcs.TrySetException(new Exception($"Mission upload timeout"));
-                }
-            });
+                _logger.ZLogWarning($"Mission upload timeout");
+                tcs.TrySetException(new Exception($"Mission upload timeout"));
+            }
+        }, null, _deviceUploadTimeout, _deviceUploadTimeout); 
         using var sub1 = _client.OnMissionRequest.Subscribe(req =>
         {
             _logger.ZLogDebug($"UAV request {req.Seq} item");
@@ -147,13 +145,15 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
         _isMissionSynced.OnNext(true);
     }
 
+    private CancellationToken DisposeCancel => _disposeCancel.Token;
+
     public MissionItem Create()
     {
         return AddMissionItem(new MissionItemIntPayload
         {
             Seq = (ushort)_missionSource.Count,
-            TargetComponent = _client.Identity.ComponentId,
-            TargetSystem = _client.Identity.SystemId,
+            TargetComponent = _client.Identity.Self.ComponentId,
+            TargetSystem = _client.Identity.Self.SystemId,
         });
     }
 
@@ -176,7 +176,7 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
         missionItem.OnChanged.Subscribe(_ =>
         {
             _isMissionSynced.OnNext(false);
-        }).DisposeItWith(Disposable);
+        });// subscribe will be disposed by MissionItem 
         return missionItem;
     }
     
@@ -192,6 +192,10 @@ public class MissionClientEx : DisposableOnceWithCancel, IMissionClientEx
         }
         _allMissionDistance.OnNext(dist / 1000.0);
     }
-    
-    
+
+    public void Dispose()
+    {
+        _disposeCancel.Cancel(false);
+        _disposeIt.Dispose();
+    }
 }

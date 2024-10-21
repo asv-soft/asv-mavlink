@@ -7,7 +7,7 @@ namespace Asv.Mavlink;
 
 /// Represents a client for handling parameters.
 /// /
-public interface IParamsClient
+public interface IParamsClient: IMavlinkMicroserviceClient
 {
     /// <summary>
     /// Property that represents an observable sequence of ParamValuePayload objects.

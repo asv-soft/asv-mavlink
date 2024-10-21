@@ -8,6 +8,7 @@ using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink
@@ -25,25 +26,18 @@ namespace Asv.Mavlink
         private readonly ILogger _logger;
         private readonly RxValue<ushort> _missionCurrent;
         private readonly RxValue<ushort> _missionReached;
+        private readonly IDisposable _disposeIt;
 
-        public MissionClient(IMavlinkV2Connection mavlink, 
-            MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, 
-            MissionClientConfig config,
-            TimeProvider? timeProvider = null,
-            IScheduler? scheduler = null,
-            ILoggerFactory? logFactory = null) 
-            : base("MISSION",mavlink, identity, seq,timeProvider,scheduler,logFactory)
+        public MissionClient(MavlinkClientIdentity identity, MissionClientConfig config, ICoreServices core) 
+            : base("MISSION",identity, core)
         {
-            logFactory??=NullLoggerFactory.Instance;
-            _logger = logFactory.CreateLogger<MissionClient>();
+            _logger = core.Log.CreateLogger<MissionClient>();
             _config = config;
-            _missionCurrent = new RxValue<ushort>().DisposeItWith(Disposable);
-            _missionReached = new RxValue<ushort>().DisposeItWith(Disposable);
-            InternalFilter<MissionCurrentPacket>().Select(p => p.Payload.Seq).Subscribe(_missionCurrent)
-                .DisposeItWith(Disposable);
-            InternalFilter<MissionItemReachedPacket>().Select(p => p.Payload.Seq).Subscribe(_missionReached)
-                .DisposeItWith(Disposable);
+            _missionCurrent = new RxValue<ushort>();
+            _missionReached = new RxValue<ushort>();
+            var d1 = InternalFilter<MissionCurrentPacket>().Select(p => p.Payload.Seq).Subscribe(_missionCurrent);
+            var d2 = InternalFilter<MissionItemReachedPacket>().Select(p => p.Payload.Seq).Subscribe(_missionReached);
+            _disposeIt = Disposable.Combine(_missionCurrent, _missionReached, d1, d2);
         }
 
         public async Task MissionSetCurrent(ushort missionItemsIndex, CancellationToken cancel)
@@ -52,8 +46,8 @@ namespace Asv.Mavlink
             var result = await InternalCall<int, MissionSetCurrentPacket, MissionCurrentPacket>(p =>
             {
                 p.Payload.Seq = missionItemsIndex;
-                p.Payload.TargetComponent = Identity.TargetComponentId;
-                p.Payload.TargetSystem = Identity.TargetSystemId;
+                p.Payload.TargetComponent = Identity.Target.ComponentId;
+                p.Payload.TargetSystem = Identity.Target.SystemId;
             }, null, p => p.Payload.Seq, _config.AttemptToCallCount, timeoutMs: _config.CommandTimeoutMs, cancel: cancel).ConfigureAwait(false);
             // Debug.Assert(result == missionItemsIndex);
         }
@@ -63,8 +57,8 @@ namespace Asv.Mavlink
             _logger.ZLogDebug($"{LogSend} Begin request items count with {_config.AttemptToCallCount} attempts");
             var result = await InternalCall<int, MissionRequestListPacket, MissionCountPacket>(p =>
             {
-                p.Payload.TargetComponent = Identity.TargetComponentId;
-                p.Payload.TargetSystem = Identity.TargetSystemId;
+                p.Payload.TargetComponent = Identity.Target.ComponentId;
+                p.Payload.TargetSystem = Identity.Target.SystemId;
             }, null, p => p.Payload.Count, _config.AttemptToCallCount, timeoutMs: _config.CommandTimeoutMs, cancel: cancel).ConfigureAwait(false);
             _logger.ZLogInformation($"{LogRecv} Mission item count: {result} items");
             return result;
@@ -81,8 +75,8 @@ namespace Asv.Mavlink
             _logger.ZLogDebug($"{LogSend} Begin request mission item {index} with {_config.AttemptToCallCount} attempts");
             var result = await InternalCall<MissionItemIntPayload, MissionRequestIntPacket, MissionItemIntPacket>(p =>
             {
-                p.Payload.TargetComponent = Identity.TargetComponentId;
-                p.Payload.TargetSystem = Identity.TargetSystemId;
+                p.Payload.TargetComponent = Identity.Target.ComponentId;
+                p.Payload.TargetSystem = Identity.Target.SystemId;
                 p.Payload.Seq = index;
                 p.Payload.MissionType = MavMissionType.MavMissionTypeMission;
             }, null, p => p.Payload, _config.AttemptToCallCount, timeoutMs: _config.CommandTimeoutMs, cancel: cancel).ConfigureAwait(false);
@@ -98,8 +92,8 @@ namespace Asv.Mavlink
 
             return InternalSend<MissionItemPacket>(p =>
             {
-                p.Payload.TargetComponent = Identity.TargetComponentId;
-                p.Payload.TargetSystem = Identity.TargetSystemId;
+                p.Payload.TargetComponent = Identity.Target.ComponentId;
+                p.Payload.TargetSystem = Identity.Target.SystemId;
                 p.Payload.Seq = seq;
                 p.Payload.Frame = frame;
                 p.Payload.Command = cmd;
@@ -124,8 +118,8 @@ namespace Asv.Mavlink
             _logger.ZLogInformation($"{LogSend} Clear all mission items");
             var result = await InternalCall<MavMissionResult, MissionClearAllPacket, MissionAckPacket>(p =>
             {
-                p.Payload.TargetComponent = Identity.TargetComponentId;
-                p.Payload.TargetSystem = Identity.TargetSystemId;
+                p.Payload.TargetComponent = Identity.Target.ComponentId;
+                p.Payload.TargetSystem = Identity.Target.SystemId;
                 p.Payload.MissionType = type;
             }, null, p => p.Payload.Type, _config.AttemptToCallCount, timeoutMs: _config.CommandTimeoutMs, cancel: cancel).ConfigureAwait(false);
             CheckResult(result, "MissionClearAll");
@@ -138,8 +132,8 @@ namespace Asv.Mavlink
             {
                 p.Payload.Count = count;
                 p.Payload.MissionType = MavMissionType.MavMissionTypeMission;
-                p.Payload.TargetComponent = Identity.TargetComponentId;
-                p.Payload.TargetSystem = Identity.TargetSystemId;
+                p.Payload.TargetComponent = Identity.Target.ComponentId;
+                p.Payload.TargetSystem = Identity.Target.SystemId;
             },  cancel: cancel);
         }
 
@@ -150,8 +144,8 @@ namespace Asv.Mavlink
             // Ardupilot has custom implementation see =>  https://mavlink.io/en/services/mission.html#flight-plan-missions
             return InternalSend<MissionItemIntPacket>(p =>
             {
-                p.Payload.TargetComponent = Identity.TargetComponentId;
-                p.Payload.TargetSystem = Identity.TargetSystemId;
+                p.Payload.TargetComponent = Identity.Target.ComponentId;
+                p.Payload.TargetSystem = Identity.Target.SystemId;
                 p.Payload.Seq = missionItem.Payload.Seq;
                 p.Payload.Frame = missionItem.Payload.Frame;
                 p.Payload.Command = missionItem.Payload.Command;
@@ -172,8 +166,8 @@ namespace Asv.Mavlink
             _logger.ZLogInformation($"{LogSend} Write mission item");
             return InternalSend<MissionItemIntPacket>(p =>
             {
-                p.Payload.TargetComponent = Identity.TargetComponentId;
-                p.Payload.TargetSystem = Identity.TargetSystemId;
+                p.Payload.TargetComponent = Identity.Target.ComponentId;
+                p.Payload.TargetSystem = Identity.Target.SystemId;
                 fillCallback(p.Payload);
             }, cancel);
         }
@@ -182,6 +176,12 @@ namespace Asv.Mavlink
         {
             if (result == MavMissionResult.MavMissionAccepted) return;
             throw new MavlinkException($"{LogSend} Error to {actionName}:{result:G}");
+        }
+
+        public override void Dispose()
+        {
+            _disposeIt.Dispose();
+            base.Dispose();
         }
     }
 }

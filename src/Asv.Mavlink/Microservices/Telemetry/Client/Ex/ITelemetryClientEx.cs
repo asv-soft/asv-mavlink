@@ -4,6 +4,7 @@ using System.Reactive.Linq;
 using Asv.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -74,55 +75,31 @@ public interface ITelemetryClientEx
 /// <summary>
 /// Represents an extended telemetry client that provides additional telemetry data.
 /// </summary>
-public class TelemetryClientEx : DisposableOnceWithCancel, ITelemetryClientEx
+public class TelemetryClientEx : ITelemetryClientEx,IDisposable
 {
-    /// <summary>
-    /// Stores the current value of the battery charge.
-    /// </summary>
-    private readonly RxValue<double> _batteryCharge;
+    private readonly RxValueBehaviour<double> _batteryCharge;
+    private readonly RxValueBehaviour<double> _batteryCurrent;
+    private readonly RxValueBehaviour<double> _batteryVoltage;
+    private readonly RxValueBehaviour<double> _cpuLoad;
+    private readonly RxValueBehaviour<double> _dropRateComm;
+    private readonly IDisposable _disposeIt;
 
-    /// <summary>
-    /// This is a private readonly variable that represents the current value of the battery.
-    /// </summary>
-    private readonly RxValue<double> _batteryCurrent;
-
-    /// <summary>
-    /// Represents the voltage level of a battery.
-    /// </summary>
-    private readonly RxValue<double> _batteryVoltage;
-
-    /// <summary>
-    /// Represents the current CPU load.
-    /// </summary>
-    private readonly RxValue<double> _cpuLoad;
-
-    /// Private readonly field for storing the drop rate for communication. </summary> <remarks>
-    /// This variable represents the drop rate for communication. </remarks> <seealso cref="RxValue{T}"/>
-    /// /
-    private readonly RxValue<double> _dropRateComm;
-
-    private readonly ILogger _logger;
-    private readonly IScheduler _scheduler;
-
-    /// initialize various RxValue properties based on the data retrieved from the `SystemStatus` property of the `client` object.
-    public TelemetryClientEx(ITelemetryClient client,TimeProvider? timeProvider = null, IScheduler? scheduler = null, ILoggerFactory? logFactory = null)
+    public TelemetryClientEx(ITelemetryClient client)
     {
-        _scheduler = scheduler ?? Scheduler.Default;
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<TelemetryClientEx>();
         Base = client;
+
+        _batteryCharge = new RxValueBehaviour<double>(double.NaN);
+        var d1 = client.SystemStatus.Select(p=>p.BatteryRemaining < 0 ? Double.NaN : p.BatteryRemaining / 100.0d).Subscribe(_batteryCharge);
+        _batteryCurrent = new RxValueBehaviour<double>(double.NaN);
+        var d2 = client.SystemStatus.Select(p=>p.CurrentBattery < 0 ? Double.NaN : p.CurrentBattery / 100.0d).Subscribe(_batteryCurrent);
+        _batteryVoltage = new RxValueBehaviour<double>(double.NaN);
+        var d3 = client.SystemStatus.Select(p=>p.VoltageBattery / 1000.0d).Subscribe(_batteryVoltage);
         
-        _batteryCharge = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
-        client.SystemStatus.Select(p=>p.BatteryRemaining < 0 ? Double.NaN : p.BatteryRemaining / 100.0d).Subscribe(_batteryCharge).DisposeItWith(Disposable);
-        _batteryCurrent = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
-        client.SystemStatus.Select(p=>p.CurrentBattery < 0 ? Double.NaN : p.CurrentBattery / 100.0d).Subscribe(_batteryCurrent).DisposeItWith(Disposable);
-        _batteryVoltage = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
-        client.SystemStatus.Select(p=>p.VoltageBattery / 1000.0d).Subscribe(_batteryVoltage).DisposeItWith(Disposable);
-        
-        _cpuLoad = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
-        client.SystemStatus.Select(p=>p.Load/1000D).Subscribe(_cpuLoad).DisposeItWith(Disposable);
-        _dropRateComm = new RxValue<double>(double.NaN).DisposeItWith(Disposable);
-        client.SystemStatus.Select(p => p.DropRateComm / 1000D).Subscribe(_dropRateComm).DisposeItWith(Disposable);
+        _cpuLoad = new RxValueBehaviour<double>(double.NaN);
+        var d4 = client.SystemStatus.Select(p=>p.Load/1000D).Subscribe(_cpuLoad);
+        _dropRateComm = new RxValueBehaviour<double>(double.NaN);
+        var d5 = client.SystemStatus.Select(p => p.DropRateComm / 1000D).Subscribe(_dropRateComm);
+        _disposeIt = Disposable.Combine(_batteryCharge,_batteryCurrent,_batteryVoltage,_cpuLoad,_dropRateComm, d1, d2, d3, d4, d5);
     }
 
     /// <summary>
@@ -171,4 +148,9 @@ public class TelemetryClientEx : DisposableOnceWithCancel, ITelemetryClientEx
     /// An object that implements the <see cref="IRxValue{Double}"/> interface, representing the drop rate of communication.
     /// </value>
     public IRxValue<double> DropRateCommunication => _dropRateComm;
+
+    public void Dispose()
+    {
+        _disposeIt.Dispose();
+    }
 }

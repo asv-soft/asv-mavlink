@@ -10,51 +10,38 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-
-public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
+public interface IMavlinkMicroserviceServer
 {
-    private readonly ILogger _loggerBase;
-    private readonly string _ifcLogName;
-    private string _logLocalName;
-    private string _logSend;
-    private string _logRecv;
+    ICoreServices Core { get; }
 
-    protected MavlinkMicroserviceServer(
-        string ifcLogName, 
-        IMavlinkV2Connection connection,
-        MavlinkIdentity identity,
-        IPacketSequenceCalculator seq, 
-        TimeProvider? timeProvider = null,
-        IScheduler? rxScheduler = null,
-        ILoggerFactory? logFactory = null)
-    {
-       logFactory??=NullLoggerFactory.Instance;
-        _loggerBase = logFactory.CreateLogger<MavlinkMicroserviceServer>();
-        
-        Connection = connection ?? throw new ArgumentNullException(nameof(connection));
-        Identity = identity;
-        PacketSequence = seq ?? throw new ArgumentNullException(nameof(seq));
-        _ifcLogName = ifcLogName;
-        Scheduler = rxScheduler ?? System.Reactive.Concurrency.Scheduler.Default;
-    }
+    MavlinkIdentity Identity { get; }
+}
+
+public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdentity identity, ICoreServices core)
+    : IMavlinkMicroserviceServer, IDisposable
+{
+    private readonly ILogger _loggerBase = core.Log.CreateLogger<MavlinkMicroserviceServer>();
+    private string? _logLocalName;
+    private string? _logSend;
+    private string? _logRecv;
+    private readonly CancellationTokenSource _disposeCancel = new();
 
     protected string LogLocalName => _logLocalName ??= $"{Identity.SystemId}:{Identity.ComponentId}";
-    protected string LogSend => _logSend ??= $"[{LogLocalName}]=>[{_ifcLogName}]:";
-    protected string LogRecv => _logRecv ??= $"[{LogLocalName}]<=[{_ifcLogName}]:";
+    protected string LogSend => _logSend ??= $"[{LogLocalName}]=>[{ifcLogName}]:";
+    protected string LogRecv => _logRecv ??= $"[{LogLocalName}]<=[{ifcLogName}]:";
 
-    protected IMavlinkV2Connection Connection { get; }
+    public ICoreServices Core { get; } = core;
 
-    protected MavlinkIdentity Identity { get; }
+    public MavlinkIdentity Identity { get; } = identity;
 
-    protected IPacketSequenceCalculator PacketSequence { get; }
+    protected CancellationToken DisposeCancel => _disposeCancel.Token;
 
-    protected IScheduler Scheduler { get; }
 
     protected IObservable<TPacket> InternalFilter<TPacket>(Func<TPacket, byte> targetSystemGetter,
         Func<TPacket, byte> targetComponentGetter)
         where TPacket : IPacketV2<IPayload>, new()
     {
-        return Connection.Filter<TPacket>().Where(v =>
+        return Core.Connection.Filter<TPacket>().Where(v =>
             Identity.SystemId == targetSystemGetter(v) && Identity.ComponentId == targetComponentGetter(v));
     }
 
@@ -66,12 +53,12 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
     }
     protected Task InternalSend(int messageId, Action<IPacketV2<IPayload>> fillPacket, CancellationToken cancel = default)
     {
-        var pkt = Connection.CreatePacketByMessageId(messageId);
+        var pkt = Core.Connection.CreatePacketByMessageId(messageId);
         fillPacket(pkt);
         pkt.ComponentId = Identity.ComponentId;
         pkt.SystemId = Identity.SystemId;
-        pkt.Sequence = PacketSequence.GetNextSequenceNumber();
-        return Connection.Send(pkt, cancel);
+        pkt.Sequence = Core.Sequence.GetNextSequenceNumber();
+        return Core.Connection.Send(pkt, cancel);
     }
     
     protected Task InternalSend<TPacketSend>(Action<TPacketSend> fillPacket, CancellationToken cancel = default)
@@ -81,8 +68,8 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
         fillPacket(packet);
         packet.ComponentId = Identity.ComponentId;
         packet.SystemId = Identity.SystemId;
-        packet.Sequence = PacketSequence.GetNextSequenceNumber();
-        return Connection.Send(packet, cancel);
+        packet.Sequence = Core.Sequence.GetNextSequenceNumber();
+        return Core.Connection.Send(packet, cancel);
     }
 
     protected async Task<TAnswerPacket> InternalSendAndWaitAnswer<TAnswerPacket>(IPacketV2<IPayload> packet,
@@ -95,7 +82,7 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
     {
         var p = new TAnswerPacket();
         _loggerBase.ZLogTrace($"{LogSend} call {p.Name}");
-        using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
+        using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, _disposeCancel.Token);
         linkedCancel.CancelAfter(timeoutMs);
         var tcs = new TaskCompletionSource<TAnswerPacket>();
         using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
@@ -104,8 +91,8 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
         using var subscribe = InternalFilterFirstAsync(targetSystemGetter,targetComponentGetter,filter).Subscribe(v => tcs.TrySetResult(v));
         packet.ComponentId = Identity.ComponentId;
         packet.SystemId = Identity.SystemId;
-        packet.Sequence = PacketSequence.GetNextSequenceNumber();
-        await Connection.Send(packet, linkedCancel.Token).ConfigureAwait(false);
+        packet.Sequence = Core.Sequence.GetNextSequenceNumber();
+        await Core.Connection.Send(packet, linkedCancel.Token).ConfigureAwait(false);
         var result = await tcs.Task.ConfigureAwait(false);
         _loggerBase.ZLogTrace($"{LogRecv} ok {packet.Name}<=={p.Name}");
         return result;
@@ -155,5 +142,9 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
         throw new TimeoutException($"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
     }
 
-   
+    public virtual void Dispose()
+    {
+        _disposeCancel.Cancel(false);
+        _disposeCancel.Dispose();
+    }
 }

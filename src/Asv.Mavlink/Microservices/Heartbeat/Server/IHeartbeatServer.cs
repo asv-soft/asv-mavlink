@@ -7,7 +7,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Defines the interface for a heartbeat server.
     /// </summary>
-    public interface IHeartbeatServer:IDisposable
+    public interface IHeartbeatServer:IMavlinkMicroserviceServer
     {
         /// <summary>
         /// Starts the execution of the program.

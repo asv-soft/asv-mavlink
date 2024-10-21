@@ -6,7 +6,7 @@ namespace Asv.Mavlink;
 /// <summary>
 /// Represents a client that can display status text.
 /// </summary>
-public interface IStatusTextClient
+public interface IStatusTextClient: IMavlinkMicroserviceClient
 {
     /// <summary>
     /// Gets the editable value for Name.
@@ -25,7 +25,7 @@ public interface IStatusTextClient
     /// <returns>
     /// An IRxValue object that emits StatusMessage values.
     /// </returns>
-    IRxValue<StatusMessage> OnMessage { get; }
+    IRxValue<StatusMessage?> OnMessage { get; }
 }
 
 /// <summary>

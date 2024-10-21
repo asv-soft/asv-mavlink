@@ -27,8 +27,7 @@ public interface IMissionClientEx
     /// <param name="progress">Optional. The callback to report progress during the download.</param>
     /// <returns>A task representing the asynchronous operation. The task result contains an array of downloaded mission items.</returns>
     /// <remarks>
-    /// The <paramref name="cancel"/> parameter is used to cancel the download operation. If cancellation is requested, the task will be cancelled and an <see cref="OperationCanceledException
-    /// "/> will be thrown.
+    /// The <paramref name="cancel"/> parameter is used to cancel the download operation. If cancellation is requested, the task will be cancelled and an <see cref="OperationCanceledException"/> will be thrown.
     /// The <paramref name="progress"/> parameter can be used to track progress during the download. The callback will be called with a value between 0.0 and 1.0 indicating the progress
     /// percentage.
     /// </remarks>

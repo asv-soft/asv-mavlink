@@ -9,7 +9,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Represents a client that implements parts of the V2 payload specs in V1 frames for transitional support.
     /// </summary>
-    public interface IV2ExtensionClient : IDisposable
+    public interface IV2ExtensionClient : IMavlinkMicroserviceClient
     {
         /// <summary>
         /// Gets the maximum size of data allowed.

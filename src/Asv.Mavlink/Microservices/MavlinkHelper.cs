@@ -22,7 +22,7 @@ namespace Asv.Mavlink
 
         public static IObservable<IPacketV2<IPayload>> FilterVehicle(this IObservable<IPacketV2<IPayload>> src, MavlinkClientIdentity identity)
         {
-            return src.Where(v => FilterVehicle(v, identity.TargetSystemId,identity.TargetComponentId));
+            return src.Where(v => FilterVehicle(v, identity.Target.SystemId,identity.Target.ComponentId));
         }
 
         public static IObservable<IPacketV2<IPayload>> FilterVehicle(this IObservable<IPacketV2<IPayload>> src, byte targetSystemId, byte targetComponentId)

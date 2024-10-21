@@ -8,7 +8,7 @@ namespace Asv.Mavlink;
 /// <summary>
 /// Represents a server that handles parameter operations.
 /// </summary>
-public interface IParamsServer
+public interface IParamsServer:IMavlinkMicroserviceServer
 {
     /// <summary>
     /// Sends a parameter value to the server.

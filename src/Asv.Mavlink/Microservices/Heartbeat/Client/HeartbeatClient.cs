@@ -11,6 +11,7 @@ using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink
@@ -40,29 +41,22 @@ namespace Asv.Mavlink
         private readonly List<byte> _lastPacketList = new();
         private readonly TimeProvider _timeProvider;
         private readonly object _sync = new();
+        private readonly IDisposable _disposeIt;
 
 
-        public HeartbeatClient(
-            IMavlinkV2Connection connection, 
-            MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, 
-            HeartbeatClientConfig config, 
-            TimeProvider? timeProvider = null,
-            IScheduler? scheduler = null,
-            ILoggerFactory? logFactory = null)
-            :base("HEARTBEAT", connection, identity, seq,timeProvider,scheduler,logFactory)
+        public HeartbeatClient(MavlinkClientIdentity identity, HeartbeatClientConfig config,  ICoreServices core)
+            :base("HEARTBEAT", identity, core)
         {
-            _scheduler = scheduler ?? System.Reactive.Concurrency.Scheduler.Immediate;
-            logFactory??=NullLoggerFactory.Instance;
-            ILogger logger = logFactory.CreateLogger<HeartbeatClient>();
+            ILogger logger = core.Log.CreateLogger<HeartbeatClient>();
             logger.ZLogTrace(
                 $"ctor: ID={identity},timeout:{config.HeartbeatTimeoutMs} ms, rate:{config.RateMovingAverageFilter}, warn after {config.LinkQualityWarningSkipCount} skip");
             ArgumentNullException.ThrowIfNull(config);
-            _timeProvider = timeProvider ?? TimeProvider.System;
-            FullId = MavlinkHelper.ConvertToFullId(identity.TargetComponentId, identity.TargetSystemId);
-            _rxRate = new IncrementalRateCounter(config.RateMovingAverageFilter,timeProvider);
+            var builder = Disposable.CreateBuilder();
+            _timeProvider = core.TimeProvider;
+            FullId = MavlinkHelper.ConvertToFullId(identity.Target.ComponentId, identity.Target.SystemId);
+            _rxRate = new IncrementalRateCounter(config.RateMovingAverageFilter,core.TimeProvider);
             _heartBeatTimeoutMs = TimeSpan.FromMilliseconds(config.HeartbeatTimeoutMs);
-            InternalFilteredVehiclePackets
+             InternalFilteredVehiclePackets
                 .Select(x => x.Sequence)
                 .Subscribe(x =>
                 {
@@ -72,30 +66,29 @@ namespace Asv.Mavlink
                     }
                     
                     Interlocked.Increment(ref _totalRateCounter);
-                }).DisposeItWith(Disposable);
+                });
 
-            _heartBeat = new RxValueBehaviour<HeartbeatPayload>(new HeartbeatPayload()).DisposeItWith(Disposable);
+            _heartBeat = new RxValueBehaviour<HeartbeatPayload>(new HeartbeatPayload()).AddTo(ref builder);
             InternalFilter<HeartbeatPacket>()
                 .Select(p => p.Payload)
-                .Subscribe(_heartBeat).DisposeItWith(Disposable);
+                .Subscribe(_heartBeat).AddTo(ref builder);
 
             _packetRate = new RxValueBehaviour<double>(0)
-                .DisposeItWith(Disposable);
+                .AddTo(ref builder);
             _link = new LinkIndicator(config.LinkQualityWarningSkipCount)
-                .DisposeItWith(Disposable);
+                .AddTo(ref builder);
             _linkQuality = new RxValueBehaviour<double>(0)
-                .DisposeItWith(Disposable);
+                .AddTo(ref builder);
             _timeProvider
                 .CreateTimer(CheckConnection, null, CheckConnectionDelay, CheckConnectionDelay)
-                .DisposeItWith(Disposable);
+                .AddTo(ref builder);
             
             RawHeartbeat.Subscribe(_ =>
             {
-                if (IsDisposed) return;
                 Interlocked.Exchange(ref _lastHeartbeat,_timeProvider.GetTimestamp());
                 _link.Upgrade();
-            }).DisposeItWith(Disposable);
-            
+            }).AddTo(ref builder);
+            _disposeIt = builder.Build();
         }
 
         private void CalculateLinqQuality()
@@ -144,6 +137,12 @@ namespace Asv.Mavlink
                     _linkQuality.OnNext(0);
                 });
             }
+        }
+
+        public override void Dispose()
+        {
+            _disposeIt.Dispose();
+            base.Dispose();
         }
     }
 }

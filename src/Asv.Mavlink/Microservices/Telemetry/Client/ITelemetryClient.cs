@@ -7,6 +7,7 @@ using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink
@@ -14,7 +15,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Represents a telemetry client that is responsible for retrieving and managing telemetry data.
     /// </summary>
-    public interface ITelemetryClient
+    public interface ITelemetryClient: IMavlinkMicroserviceClient
     {
         /// <summary>
         /// Represents the radio property.
@@ -98,6 +99,8 @@ namespace Asv.Mavlink
         /// </summary>
         private readonly RxValue<BatteryStatusPayload> _battery;
 
+        private readonly IDisposable _disposeIt;
+
         /// TelemetryClient class is responsible for handling telemetry data received from an MAVLink connection.
         /// It extends the base class "RTT".
         /// Constructors:
@@ -114,25 +117,19 @@ namespace Asv.Mavlink
         /// - _extendedSystemState: An RxValue instance of type ExtendedSysStatePayload used for storing extended system state data.
         /// - _battery: An RxValue instance of type BatteryStatusPayload used for storing battery status data.
         /// /
-        public TelemetryClient(
-            IMavlinkV2Connection connection, 
-            MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq,
-            TimeProvider? timeProvider = null,
-            IScheduler? scheduler = null,
-            ILoggerFactory? logFactory = null)
-            : base("RTT", connection, identity, seq, timeProvider,scheduler,logFactory)
+        public TelemetryClient(MavlinkClientIdentity identity, ICoreServices core)
+            : base("RTT", identity, core)
         {
-            logFactory ??= NullLoggerFactory.Instance;
-            _logger = logFactory.CreateLogger<TelemetryClient>();
-            _radio = new RxValue<RadioStatusPayload>().DisposeItWith(Disposable);
-            InternalFilter<RadioStatusPacket>().Select(p=>p.Payload).Subscribe(_radio).DisposeItWith(Disposable);
-            _systemStatus = new RxValue<SysStatusPayload>().DisposeItWith(Disposable);
-            InternalFilter<SysStatusPacket>().Select(p => p.Payload).Subscribe(_systemStatus).DisposeItWith(Disposable);
-            _extendedSystemState = new RxValue<ExtendedSysStatePayload>().DisposeItWith(Disposable);
-            InternalFilter<ExtendedSysStatePacket>().Select(p => p.Payload).Subscribe(_extendedSystemState).DisposeItWith(Disposable);
-            _battery = new RxValue<BatteryStatusPayload>().DisposeItWith(Disposable);
-            InternalFilter<BatteryStatusPacket>().Select(p => p.Payload).Subscribe(_battery).DisposeItWith(Disposable);
+            _logger = core.Log.CreateLogger<TelemetryClient>();
+            _radio = new RxValue<RadioStatusPayload>();
+            var d1 = InternalFilter<RadioStatusPacket>().Select(p=>p.Payload).Subscribe(_radio);
+            _systemStatus = new RxValue<SysStatusPayload>();
+            var d2 = InternalFilter<SysStatusPacket>().Select(p => p.Payload).Subscribe(_systemStatus);
+            _extendedSystemState = new RxValue<ExtendedSysStatePayload>();
+            var d3 = InternalFilter<ExtendedSysStatePacket>().Select(p => p.Payload).Subscribe(_extendedSystemState);
+            _battery = new RxValue<BatteryStatusPayload>();
+            var d4 = InternalFilter<BatteryStatusPacket>().Select(p => p.Payload).Subscribe(_battery);
+            _disposeIt = Disposable.Combine(_radio, _systemStatus, _extendedSystemState, _battery, d1, d2, d3, d4);
         }
 
         /// <summary>
@@ -183,12 +180,18 @@ namespace Asv.Mavlink
             _logger.ZLogDebug($"{LogSend} {( startStop ? "Enable stream":"DisableStream")} with ID '{streamId}' and rate {rateHz} Hz");
             return InternalSend<RequestDataStreamPacket>(p =>
             {
-                p.Payload.TargetSystem = Identity.TargetSystemId;
-                p.Payload.TargetComponent = Identity.TargetComponentId;
+                p.Payload.TargetSystem = Identity.Target.SystemId;
+                p.Payload.TargetComponent = Identity.Target.ComponentId;
                 p.Payload.ReqMessageRate = rateHz;
                 p.Payload.StartStop = (byte)(startStop ? 1 : 0);
                 p.Payload.ReqStreamId = streamId;
             }, cancel);
+        }
+
+        public override void Dispose()
+        {
+            _disposeIt.Dispose();
+            base.Dispose();
         }
     }
 }

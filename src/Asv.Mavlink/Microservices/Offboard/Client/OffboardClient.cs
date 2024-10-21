@@ -8,19 +8,9 @@ using Microsoft.Extensions.Logging;
 namespace Asv.Mavlink
 {
     
-    public class OffboardClient : MavlinkMicroserviceClient, IOffboardClient
+    public class OffboardClient(MavlinkClientIdentity config, ICoreServices core)
+        : MavlinkMicroserviceClient("OFFBOARD", config, core), IOffboardClient
     {
-        public OffboardClient(
-            IMavlinkV2Connection connection, 
-            MavlinkClientIdentity config,
-            IPacketSequenceCalculator seq,
-            TimeProvider? timeProvider = null,
-            IScheduler? rxScheduler = null,
-            ILoggerFactory? logFactory = null)
-            :base("OFFBOARD", connection, config, seq,timeProvider,rxScheduler,logFactory)
-        {
-        }
-
         public Task SetPositionTargetLocalNed(uint timeBootMs, MavFrame coordinateFrame, PositionTargetTypemask typeMask, float x,
             float y, float z, float vx, float vy, float vz, float afx, float afy, float afz, float yaw, float yawRate,
             CancellationToken cancel)
@@ -28,8 +18,8 @@ namespace Asv.Mavlink
             return InternalSend<SetPositionTargetLocalNedPacket>(p =>
             {
                 p.Payload.TimeBootMs = timeBootMs;
-                p.Payload.TargetComponent = Identity.TargetComponentId;
-                p.Payload.TargetSystem = Identity.TargetSystemId;
+                p.Payload.TargetComponent = Identity.Target.ComponentId;
+                p.Payload.TargetSystem = Identity.Target.SystemId;
                 p.Payload.CoordinateFrame = coordinateFrame;
                 p.Payload.TypeMask = typeMask;
                 p.Payload.X = x;

@@ -29,33 +29,23 @@ public class TraceStreamServer : MavlinkMicroserviceServer, ITraceStreamServer
     private readonly TraceStreamConfig _config;
     private readonly ConcurrentQueue<ITraceMessage> _messageQueue = new();
     private readonly ILogger _logger;
+    private readonly ITimer _timer;
 
     public TraceStreamServer(
-        IMavlinkV2Connection connection, 
-        IPacketSequenceCalculator seq,
         MavlinkIdentity identity,
         TraceStreamConfig config, 
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null) :
-        base("TRACESTREAM", connection, identity, seq, timeProvider, scheduler,logFactory)
+        ICoreServices core) :
+        base("TRACESTREAM", identity, core)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<TraceStreamServer>();
-        if (seq == null) throw new ArgumentNullException(nameof(seq));
+        _logger = core.Log.CreateLogger<TraceStreamServer>();
         _config = config ?? throw new ArgumentNullException(nameof(config));
-        if (connection == null) throw new ArgumentNullException(nameof(connection));
-
         _logger.ZLogDebug(
             $"Create status logger for [sys:{identity.SystemId}, com:{identity.ComponentId}] with send rate:{config.MaxSendRateHz} Hz, buffer size: {config.MaxQueueSize}");
-
-        Observable.Timer(TimeSpan.FromSeconds(1.0 / _config.MaxSendRateHz),
-                TimeSpan.FromSeconds(1.0 / _config.MaxSendRateHz))
-            .Subscribe(TrySend)
-            .DisposeItWith(Disposable);
+        var time = TimeSpan.FromSeconds(1.0 / _config.MaxSendRateHz);
+        _timer = core.TimeProvider.CreateTimer(TrySend, null, time, time);
     }
 
-    private async void TrySend(long l)
+    private async void TrySend(object? state)
     {
         if (Interlocked.CompareExchange(ref _isSending, 1, 0) == 1) return;
         try
@@ -200,5 +190,11 @@ public class TraceStreamServer : MavlinkMicroserviceServer, ITraceStreamServer
         }
         _messageQueue.Enqueue(namedValueFloatMessage);
         return true;
+    }
+
+    public override void Dispose()
+    {
+        _timer?.Dispose();
+        base.Dispose();
     }
 }

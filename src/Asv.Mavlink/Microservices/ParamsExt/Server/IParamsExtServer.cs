@@ -5,7 +5,7 @@ using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;
 
-public interface IParamsExtServer
+public interface IParamsExtServer:IMavlinkMicroserviceServer
 {
     /// <summary>
     /// Sends a ParamExtAckPacket with the specified changeCallback and cancellation token.

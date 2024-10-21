@@ -1,6 +1,6 @@
 namespace Asv.Mavlink;
 
-public interface ITraceStreamServer
+public interface ITraceStreamServer:IMavlinkMicroserviceServer
 {
     /// <summary>
     /// Sends a DebugVectorMessage.

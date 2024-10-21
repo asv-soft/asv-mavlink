@@ -8,6 +8,7 @@ using Asv.Mavlink.V2.Common;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink;
@@ -18,35 +19,29 @@ public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
     private readonly ILogger _logger;
     private readonly SourceCache<ServerMissionItem, ushort> _missionSource;
     private double _busy;
+    private readonly IDisposable _disposeIt;
 
-    public MissionServerEx(
-        IMissionServer baseIfc, 
-        IStatusTextServer status,
-        IMavlinkV2Connection connection, 
-        MavlinkIdentity identity,
-        IPacketSequenceCalculator seq, 
-        TimeProvider? timeProvider = null,
-        IScheduler? rxScheduler = null,
-        ILoggerFactory? logFactory = null) :
-        base("MISSION", connection, identity, seq, timeProvider, rxScheduler,logFactory)
+    public MissionServerEx(IMissionServer baseIfc, IStatusTextServer status) :
+        base("MISSION", baseIfc.Identity, baseIfc.Core)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<MissionServerEx>();
+        _logger = baseIfc.Core.Log.CreateLogger<MissionServerEx>();
         Base = baseIfc;
+        var builder = Disposable.CreateBuilder();
         _statusLogger = status ?? throw new ArgumentNullException(nameof(status));
-        _missionSource = new SourceCache<ServerMissionItem, ushort>(x => x.Seq).DisposeItWith(Disposable);
+        _missionSource = new SourceCache<ServerMissionItem, ushort>(x => x.Seq).AddTo(ref builder);
 
-        Current = new RxValue<ushort>(0).DisposeItWith(Disposable);
-        Current.Subscribe(x=>Base.SendMissionCurrent(x)).DisposeItWith(Disposable);
+        Current = new RxValueBehaviour<ushort>(0).AddTo(ref builder);
+        Current.Subscribe(x=>Base.SendMissionCurrent(x)).AddTo(ref builder);
 
-        Reached = new RxValue<ushort>().DisposeItWith(Disposable);
-        Reached.Subscribe(x=>Base.SendReached(x)).DisposeItWith(Disposable);
+        Reached = new RxValueBehaviour<ushort>(0).AddTo(ref builder);
+        Reached.Subscribe(x=>Base.SendReached(x)).AddTo(ref builder);
         
-        baseIfc.OnMissionCount.Subscribe(UploadMission).DisposeItWith(Disposable);
-        baseIfc.OnMissionRequestList.Subscribe(DownloadMission).DisposeItWith(Disposable);
-        baseIfc.OnMissionRequestInt.Subscribe(ReadMissionItem).DisposeItWith(Disposable);
-        baseIfc.OnMissionClearAll.Subscribe(ClearAll).DisposeItWith(Disposable);
-        baseIfc.OnMissionSetCurrent.Subscribe(SetCurrent).DisposeItWith(Disposable);
+        baseIfc.OnMissionCount.Subscribe(UploadMission).AddTo(ref builder);
+        baseIfc.OnMissionRequestList.Subscribe(DownloadMission).AddTo(ref builder);
+        baseIfc.OnMissionRequestInt.Subscribe(ReadMissionItem).AddTo(ref builder);
+        baseIfc.OnMissionClearAll.Subscribe(ClearAll).AddTo(ref builder);
+        baseIfc.OnMissionSetCurrent.Subscribe(SetCurrent).AddTo(ref builder);
+        _disposeIt = builder.Build();
     }
 
     private void SetCurrent(MissionSetCurrentPacket req)
@@ -136,19 +131,23 @@ public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
     public IObservable<IChangeSet<ServerMissionItem, ushort>> Items => _missionSource.Connect();
     public void AddItems(IEnumerable<ServerMissionItem> items)
     {
-        if(items != null)
-            _missionSource.AddOrUpdate(items);
+        _missionSource.AddOrUpdate(items);
     }
 
     public void RemoveItems(IEnumerable<ServerMissionItem> items)
     {
-        if(items != null)
-            _missionSource.Remove(items);
+        _missionSource.Remove(items);
     }
 
     public ImmutableArray<ServerMissionItem> GetItemsSnapshot()
     {
-        return  _missionSource.Items.ToImmutableArray();
+        return  [.._missionSource.Items];
+    }
+
+    public override void Dispose()
+    {
+        _disposeIt.Dispose();
+        base.Dispose();
     }
 }
 

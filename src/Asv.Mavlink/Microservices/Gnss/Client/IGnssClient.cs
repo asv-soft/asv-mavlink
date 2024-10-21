@@ -6,7 +6,7 @@ namespace Asv.Mavlink;
 /// <summary>
 /// Represents a client for receiving GNSS data.
 /// </summary>
-public interface IGnssClient
+public interface IGnssClient:IMavlinkMicroserviceClient
 {
     /// <summary>
     /// Gets the main property of the class.
@@ -15,7 +15,7 @@ public interface IGnssClient
     /// <returns>
     /// The IRxValue object that contains a GpsRawIntPayload value.
     /// </returns>
-    IRxValue<GpsRawIntPayload> Main { get; }
+    IRxValue<GpsRawIntPayload?> Main { get; }
 
     /// <summary>
     /// Gets the additional information related to GPS raw payload.
@@ -23,5 +23,5 @@ public interface IGnssClient
     /// <value>
     /// The additional information related to GPS raw payload.
     /// </value>
-    IRxValue<Gps2RawPayload> Additional { get; }
+    IRxValue<Gps2RawPayload?> Additional { get; }
 }

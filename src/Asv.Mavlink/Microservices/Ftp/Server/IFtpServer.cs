@@ -20,7 +20,7 @@ public delegate Task TruncateFile(TruncateRequest request, CancellationToken can
 public delegate Task<BurstReadResult> BurstReadFileDelegate(ReadRequest request, Memory<byte> buffer, CancellationToken cancel = default);
 public delegate Task WriteFile(WriteRequest request, Memory<byte> buffer, CancellationToken cancel = default);
 
-public interface IFtpServer
+public interface IFtpServer:IMavlinkMicroserviceServer
 {
     RenameDelegate? Rename { set; }
     OpenFileReadDelegate? OpenFileRead { set; }

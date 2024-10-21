@@ -9,7 +9,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Represents a V2 extension server that communicates with clients by implementing parts of the V2 payload specifications in V1 frames for transitional support.
     /// </summary>
-    public interface IV2ExtensionServer : IDisposable
+    public interface IV2ExtensionServer : IMavlinkMicroserviceServer
     {
         /// <summary>
         /// Gets the property OnData which is of type IRxValue&lt;V2ExtensionPacket&gt;.

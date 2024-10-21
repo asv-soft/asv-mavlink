@@ -9,27 +9,10 @@ namespace Asv.Mavlink;
 
 public class ParamsExtServer : MavlinkMicroserviceServer, IParamsExtServer
 {
-    /// <summary>
-    /// Initializes a new instance of the ParamsExtServer class.
-    /// </summary>
-    /// <param name="connection">The IMavlinkV2Connection object.</param>
-    /// <param name="seq">The IPacketSequenceCalculator object.</param>
-    /// <param name="identity">The MavlinkIdentity object.</param>
-    /// <param name="timeProvider"></param>
-    /// <param name="scheduler">The IScheduler object.</param>
-    /// <param name="logFactory"></param>
-    public ParamsExtServer(
-        IMavlinkV2Connection connection, 
-        IPacketSequenceCalculator seq,
-        MavlinkIdentity identity,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null)
-        : base("PARAMS_EXT", connection, identity, seq, timeProvider, scheduler,logFactory)
+    
+    public ParamsExtServer(MavlinkIdentity identity,ICoreServices core)
+        : base("PARAMS_EXT",identity, core)
     {
-        ArgumentNullException.ThrowIfNull(seq);
-        ArgumentNullException.ThrowIfNull(connection);
-
         OnParamExtSet = InternalFilter<ParamExtSetPacket>(
             packet => packet.Payload.TargetSystem,
             packet => packet.Payload.TargetComponent);
@@ -40,6 +23,8 @@ public class ParamsExtServer : MavlinkMicroserviceServer, IParamsExtServer
             packet => packet.Payload.TargetSystem,
             packet => packet.Payload.TargetComponent);
     }
+
+    
 
     public Task SendParamExtAck(Action<ParamExtAckPayload> changeCallback, CancellationToken cancel = default) =>
         InternalSend<ParamExtAckPacket>(packet => changeCallback(packet.Payload), cancel);

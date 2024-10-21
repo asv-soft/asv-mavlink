@@ -9,12 +9,8 @@ namespace Asv.Mavlink
 {
     public class ParamsServer: MavlinkMicroserviceServer, IParamsServer
     {
-        public ParamsServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkIdentity identity,
-            TimeProvider? timeProvider = null,
-            IScheduler? scheduler = null,
-            ILoggerFactory? logFactory = null)
-            : base("PARAM",connection, identity, seq, timeProvider, scheduler,logFactory)
+        public ParamsServer(MavlinkIdentity identity, ICoreServices core)
+            : base("PARAM", identity, core)
         {
             OnParamRequestRead =
                 InternalFilter<ParamRequestReadPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);

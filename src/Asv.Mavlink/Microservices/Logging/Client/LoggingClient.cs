@@ -11,22 +11,28 @@ namespace Asv.Mavlink
     public class LoggingClient:MavlinkMicroserviceClient, ILoggingClient
     {
         private readonly RxValueBehaviour<LoggingDataPayload?> _loggingData;
+        private readonly IDisposable _filter;
 
-        public LoggingClient(
-            IMavlinkV2Connection connection, 
-            MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq,
-            TimeProvider? timeProvider = null,
-            IScheduler? scheduler = null,
-            ILoggerFactory? logFactory = null):base("LOG", connection, identity, seq, timeProvider,scheduler,logFactory)
+        public LoggingClient(MavlinkClientIdentity identity, ICoreServices core):base("LOG", identity, core)
         {
-            _loggingData = new RxValueBehaviour<LoggingDataPayload?>(default).DisposeItWith(Disposable);
-            InternalFilter<LoggingDataPacket>()
-                .Where(p=>p.Payload.TargetSystem == identity.SystemId && p.Payload.TargetComponent == identity.ComponentId)
-                .Select(p=>p.Payload)
-                .Subscribe(_loggingData).DisposeItWith(Disposable);
+            _loggingData = new RxValueBehaviour<LoggingDataPayload?>(default);
+            _filter = InternalFilter<LoggingDataPacket>()
+                .Where(p => p.Payload.TargetSystem == identity.Self.SystemId &&
+                            p.Payload.TargetComponent == identity.Self.ComponentId)
+                .Select(p => p.Payload)
+                .Subscribe(_loggingData);
+            
         }
 
         public IRxValue<LoggingDataPayload?> RawLoggingData => _loggingData;
+
+        public override void Dispose()
+        {
+            _loggingData.Dispose();
+            _filter.Dispose();
+            base.Dispose();
+        }
     }
+    
+    
 }

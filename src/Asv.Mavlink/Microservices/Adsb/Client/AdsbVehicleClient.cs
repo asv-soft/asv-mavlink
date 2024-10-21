@@ -149,5 +149,6 @@ public class AdsbVehicle : DisposableOnceWithCancel, IAdsbVehicle
         _verVelocity.OnNext(payload.VerVelocity * 1e-2);
         _flags.OnNext(payload.Flags);
         _squawk.OnNext(payload.Squawk);
+        Interlocked.Exchange(ref _lastHit, dateTime);
     }
 }

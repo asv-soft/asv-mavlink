@@ -18,17 +18,14 @@ namespace Asv.Mavlink;
 
 public class FtpClientEx : IFtpClientEx
 {
-    private readonly TimeProvider _timeProvider;
     private readonly ILogger _logger;
     private readonly SourceCache<IFtpEntry,string> _entryCache;
     private static readonly TimeSpan DefaultBurstTimeout = TimeSpan.FromSeconds(5);
     
-    public FtpClientEx(IFtpClient @base,TimeProvider? timeProvider = null, ILoggerFactory? logFactory = null)
+    public FtpClientEx(IFtpClient client)
     {
-        _timeProvider = timeProvider ?? TimeProvider.System;
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<FtpClientEx>();
-        Base = @base;
+        _logger = client.Core.Log.CreateLogger<FtpClientEx>();
+        Base = client;
         _entryCache = new SourceCache<IFtpEntry, string>(x => x.Path);
     }
 
@@ -55,16 +52,18 @@ public class FtpClientEx : IFtpClientEx
         var buffer = ArrayPool<byte>.Shared.Rent(partSize);
         try
         {
+            // TODO: add timeout handle
+            
             // start burst read
             await Base.BurstReadFile(new ReadRequest(file.Session, 0, partSize), p =>
             {
+                var offset = p.ReadOffset();
+                Debug.Assert(offsetsToRead.Remove(offset));
+                var size = p.ReadSize();
+                p.ReadData(buffer);
+                progress.Report(Interlocked.Add(ref total, size) / (double)file.Size);
                 lock (buffer)
                 {
-                    var offset = p.ReadOffset();
-                    Debug.Assert(offsetsToRead.Remove(offset));
-                    var size = p.ReadSize();
-                    p.ReadData(buffer);
-                    progress.Report(Interlocked.Add(ref total, size) / (double)file.Size);
                     streamToSave.Position = offset;
                     streamToSave.Write(buffer, 0, size);
                 }

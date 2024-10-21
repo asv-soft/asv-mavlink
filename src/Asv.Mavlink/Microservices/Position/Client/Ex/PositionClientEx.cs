@@ -1,6 +1,5 @@
 #nullable enable
 using System;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,110 +7,105 @@ using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Minimal;
 using Asv.Mavlink.Vehicle;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 
 namespace Asv.Mavlink;
 
-public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
+public class PositionClientEx : IPositionClientEx,IDisposable
 {
-    public readonly ILogger _logger;
+    private static readonly TimeSpan ArmedTimeCheckInterval = TimeSpan.FromSeconds(1);
     private readonly ICommandClient _commandClient;
-    private readonly RxValue<GeoPoint?> _target;
-    private readonly RxValue<GeoPoint?> _home;
-    private readonly RxValue<GeoPoint> _current;
-    private readonly RxValue<double> _homeDistance;
-    private readonly RxValue<double> _targetDistance;
-    private readonly RxValue<bool> _isArmed;
-    private readonly RxValue<TimeSpan> _armedTime;
-    private readonly RxValue<GeoPoint?> _roi;
+    private readonly RxValueBehaviour<GeoPoint?> _target;
+    private readonly RxValueBehaviour<GeoPoint?> _home;
+    private readonly RxValueBehaviour<GeoPoint> _current;
+    private readonly RxValueBehaviour<double> _homeDistance;
+    private readonly RxValueBehaviour<double> _targetDistance;
+    private readonly RxValueBehaviour<bool> _isArmed;
+    private readonly RxValueBehaviour<TimeSpan> _armedTime;
+    private readonly RxValueBehaviour<GeoPoint?> _roi;
     private long _lastArmedTime;
-    private readonly RxValue<double> _altitudeAboveHome;
-    private readonly RxValue<double> _pitch;
-    private readonly RxValue<double> _pitchSpeed;
-    private readonly RxValue<double> _roll;
-    private readonly RxValue<double> _rollSpeed;
-    private readonly RxValue<double> _yaw;
-    private readonly RxValue<double> _yawSpeed;
+    private readonly RxValueBehaviour<double> _altitudeAboveHome;
+    private readonly RxValueBehaviour<double> _pitch;
+    private readonly RxValueBehaviour<double> _pitchSpeed;
+    private readonly RxValueBehaviour<double> _roll;
+    private readonly RxValueBehaviour<double> _rollSpeed;
+    private readonly RxValueBehaviour<double> _yaw;
+    private readonly RxValueBehaviour<double> _yawSpeed;
+    private readonly IDisposable _disposeIt;
 
 
     public PositionClientEx(
         IPositionClient client, 
         IHeartbeatClient heartbeatClient, 
-        ICommandClient commandClient,
-        TimeProvider? timeProvider = null, 
-        IScheduler? scheduler = null, 
-        ILoggerFactory? logFactory = null)
+        ICommandClient commandClient)
     {
         _commandClient = commandClient;
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<PositionClientEx>();
         Base = client;
+        var builder = Disposable.CreateBuilder();
+        _pitch = new RxValueBehaviour<double>(double.NaN).AddTo(ref builder);
+        client.Attitude.Select(p => GeoMath.RadiansToDegrees(p.Pitch)).Subscribe(_pitch).AddTo(ref builder);
+        _pitchSpeed = new RxValueBehaviour<double>(double.NaN).AddTo(ref builder);
+        client.Attitude.Select(p => (double)p.Pitchspeed).Subscribe(_pitchSpeed).AddTo(ref builder);
         
-        _pitch = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        client.Attitude.Select(p => GeoMath.RadiansToDegrees(p.Pitch)).Subscribe(_pitch).DisposeItWith(Disposable);
-        _pitchSpeed = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        client.Attitude.Select(p => (double)p.Pitchspeed).Subscribe(_pitchSpeed).DisposeItWith(Disposable);
+        _roll = new RxValueBehaviour<double>(double.NaN).AddTo(ref builder);
+        client.Attitude.Select(p => GeoMath.RadiansToDegrees(p.Roll)).Subscribe(_roll).AddTo(ref builder);
+        _rollSpeed = new RxValueBehaviour<double>(double.NaN).AddTo(ref builder);
+        client.Attitude.Select(p => (double)p.Rollspeed).Subscribe(_rollSpeed).AddTo(ref builder);
         
-        _roll = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        client.Attitude.Select(p => GeoMath.RadiansToDegrees(p.Roll)).Subscribe(_roll).DisposeItWith(Disposable);
-        _rollSpeed = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        client.Attitude.Select(p => (double)p.Rollspeed).Subscribe(_rollSpeed).DisposeItWith(Disposable);
+        _yaw = new RxValueBehaviour<double>(double.NaN).AddTo(ref builder);
+        client.Attitude.Select(p => GeoMath.RadiansToDegrees(p.Yaw)).Subscribe(_yaw).AddTo(ref builder);
+        _yawSpeed = new RxValueBehaviour<double>(double.NaN).AddTo(ref builder);
+        client.Attitude.Select(p => (double)p.Yawspeed).Subscribe(_yawSpeed).AddTo(ref builder);
         
-        _yaw = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        client.Attitude.Select(p => GeoMath.RadiansToDegrees(p.Yaw)).Subscribe(_yaw).DisposeItWith(Disposable);
-        _yawSpeed = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        client.Attitude.Select(p => (double)p.Yawspeed).Subscribe(_yawSpeed).DisposeItWith(Disposable);
-        
-        _target = new RxValue<GeoPoint?>(null).DisposeItWith(Disposable);
+        _target = new RxValueBehaviour<GeoPoint?>(null).AddTo(ref builder);
         client.Target.Where(p => p.CoordinateFrame == MavFrame.MavFrameGlobal)
             .Select(p =>(GeoPoint?) new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.LatInt)  , MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.LonInt), p.Alt))
-            .Subscribe(_target).DisposeItWith(Disposable);
+            .Subscribe(_target).AddTo(ref builder);
         
-        _home = new RxValue<GeoPoint?>(null).DisposeItWith(Disposable);
+        _home = new RxValueBehaviour<GeoPoint?>(null).AddTo(ref builder);
         client.Home.Select(p => (GeoPoint?)new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Latitude), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Longitude), MavlinkTypesHelper.AltFromMmToDoubleMeter(p.Altitude)))
-            .Subscribe(_home).DisposeItWith(Disposable);
+            .Subscribe(_home).AddTo(ref builder);
         
-        _current = new RxValue<GeoPoint>(GeoPoint.Zero).DisposeItWith(Disposable);
+        _current = new RxValueBehaviour<GeoPoint>(GeoPoint.Zero).AddTo(ref builder);
         client.GlobalPosition.Select(p=>new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lat), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lon), MavlinkTypesHelper.AltFromMmToDoubleMeter(p.Alt)))
-            .Subscribe(_current).DisposeItWith(Disposable);
+            .Subscribe(_current).AddTo(ref builder);
         
-        _homeDistance = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
+        _homeDistance = new RxValueBehaviour<double>(double.NaN).AddTo(ref builder);
         _current.CombineLatest(_home)
             // ReSharper disable once PossibleInvalidOperationException
             .Select(t => GeoMath.Distance(t.First, t.Second))
-            .Subscribe(_homeDistance).DisposeItWith(Disposable);
+            .Subscribe(_homeDistance).AddTo(ref builder);
         
-        _targetDistance = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
+        _targetDistance = new RxValueBehaviour<double>(double.NaN).AddTo(ref builder);
         _current.CombineLatest(_target)
             // ReSharper disable once PossibleInvalidOperationException
             .Select(t => GeoMath.Distance(t.First, t.Second))
-            .Subscribe(_targetDistance).DisposeItWith(Disposable);
+            .Subscribe(_targetDistance).AddTo(ref builder);
 
-        _isArmed = new RxValue<bool>(false).DisposeItWith(Disposable);
-        _armedTime = new RxValue<TimeSpan>(TimeSpan.Zero).DisposeItWith(Disposable);
-        heartbeatClient.RawHeartbeat.Select(p => p.BaseMode.HasFlag(MavModeFlag.MavModeFlagSafetyArmed)).Subscribe(_isArmed).DisposeItWith(Disposable);
-        var timer = scheduler == null ? Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1)): Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1),scheduler);
-        timer.Where(_=>IsArmed.Value).Subscribe(_ =>
-        {
-            var lastBin = Interlocked.Read(ref _lastArmedTime);
-            if (lastBin == 0)
-            {
-                _armedTime.OnNext(TimeSpan.Zero);
-                return;
-            }
-            var last = DateTime.FromBinary(lastBin);
-            var now = DateTime.Now;
-            var delay = (now - last);
-            _armedTime.OnNext(delay);
-        }).DisposeItWith(Disposable);
+        _isArmed = new RxValueBehaviour<bool>(false).AddTo(ref builder);
+        _armedTime = new RxValueBehaviour<TimeSpan>(TimeSpan.Zero).AddTo(ref builder);
+        heartbeatClient.RawHeartbeat.Select(p => p.BaseMode.HasFlag(MavModeFlag.MavModeFlagSafetyArmed)).Subscribe(_isArmed).AddTo(ref builder);
+        
+        client.Core.TimeProvider.CreateTimer(CheckArmedTime,null,ArmedTimeCheckInterval, ArmedTimeCheckInterval).AddTo(ref builder);
         _isArmed.DistinctUntilChanged().Where(_ => _isArmed.Value)
-            .Subscribe(_ => Interlocked.Exchange(ref _lastArmedTime,DateTime.Now.ToBinary())).DisposeItWith(Disposable);
+            .Subscribe(_ => Interlocked.Exchange(ref _lastArmedTime,client.Core.TimeProvider.GetTimestamp())).AddTo(ref builder);
         
-        _roi = new RxValue<GeoPoint?>(null).DisposeItWith(Disposable);
+        _roi = new RxValueBehaviour<GeoPoint?>(null).AddTo(ref builder);
         
-        _altitudeAboveHome = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);
-        client.GlobalPosition.Select(p=>p.RelativeAlt/1000D).Subscribe(_altitudeAboveHome).DisposeItWith(Disposable);
+        _altitudeAboveHome = new RxValueBehaviour<double>(double.NaN).AddTo(ref builder);
+        client.GlobalPosition.Select(p=>p.RelativeAlt/1000D).Subscribe(_altitudeAboveHome).AddTo(ref builder);
+        _disposeIt = builder.Build();
+    }
+
+    private void CheckArmedTime(object? state)
+    {
+        var lastBin = Interlocked.Read(ref _lastArmedTime);
+        if (lastBin == 0)
+        {
+            _armedTime.OnNext(TimeSpan.Zero);
+            return;
+        }
+        _armedTime.OnNext(Base.Core.TimeProvider.GetElapsedTime(lastBin));
     }
 
     public IPositionClient Base { get; }
@@ -178,5 +172,10 @@ public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
     public Task QLand(NavVtolLandOptions landOptions, double approachAlt, CancellationToken cancel)
     {
         return _commandClient.CommandLong(MavCmd.MavCmdNavVtolLand, (float)landOptions, 0, (float)approachAlt, 0, 0, 0, 0, cancel);
+    }
+
+    public void Dispose()
+    {
+        _disposeIt.Dispose();
     }
 }

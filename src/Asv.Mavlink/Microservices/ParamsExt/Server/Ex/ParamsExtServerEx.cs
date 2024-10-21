@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Concurrency;
-using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
@@ -11,6 +10,7 @@ using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink;
@@ -21,52 +21,52 @@ public class ParamsExtServerExConfig
     public string CfgPrefix { get; set; } = "MAV_CFG_";
 }
 
-public class ParamsExtServerEx : DisposableOnceWithCancel, IParamsExtServerEx
+public class ParamsExtServerEx : IParamsExtServerEx,IDisposable
 {
     private readonly ILogger _logger;
 
-    private readonly Subject<Exception> _onErrorSubject;
+    private readonly System.Reactive.Subjects.Subject<Exception> _onErrorSubject;
     private int _sendingInProgressFlag;
     private readonly ImmutableDictionary<string, (ushort, IMavParamExtTypeMetadata)> _paramDict;
     private readonly ImmutableList<IMavParamExtTypeMetadata> _paramList;
-    private readonly Subject<ParamExtChangedEvent> _onParamChangedSubject;
+    private readonly System.Reactive.Subjects.Subject<ParamExtChangedEvent> _onParamChangedSubject;
 
     private readonly IParamsExtServer _server;
     private readonly IStatusTextServer _statusTextServer;
     private readonly IConfiguration _cfg;
     private readonly ParamsExtServerExConfig _serverCfg;
+    private readonly IDisposable _disposeIt;
+    private CancellationTokenSource _disposeCancel;
 
     public ParamsExtServerEx(
         IParamsExtServer server, 
         IStatusTextServer statusTextServer,
         IEnumerable<IMavParamExtTypeMetadata> paramDescriptions, 
         IConfiguration cfg,
-        ParamsExtServerExConfig serverCfg,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null)
+        ParamsExtServerExConfig serverCfg)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<ParamsExtServer>();
+        _logger = server.Core.Log.CreateLogger<ParamsExtServer>();
         _server = server ?? throw new ArgumentNullException(nameof(server));
         _statusTextServer = statusTextServer ?? throw new ArgumentNullException(nameof(statusTextServer));
         _cfg = cfg ?? throw new ArgumentNullException(nameof(cfg));
         _serverCfg = serverCfg ?? throw new ArgumentNullException(nameof(serverCfg));
+        _disposeCancel = new CancellationTokenSource();
 
-        _onErrorSubject = new Subject<Exception>().DisposeItWith(Disposable);
+        _onErrorSubject = new System.Reactive.Subjects.Subject<Exception>();
         _paramList = paramDescriptions.OrderBy(metadata => metadata.Name).ToImmutableList();
-        var dict = new Dictionary<string, (ushort, IMavParamExtTypeMetadata)>();
+        var builder = ImmutableDictionary.CreateBuilder<string, (ushort, IMavParamExtTypeMetadata)>();
         for (var i = 0; i < _paramList.Count; i++)
         {
-            dict.Add(_paramList[i].Name, ((ushort)i, _paramList[i]));
+            builder.Add(_paramList[i].Name, ((ushort)i, _paramList[i]));
         }
 
-        _paramDict = dict.ToImmutableDictionary();
-        _onParamChangedSubject = new Subject<ParamExtChangedEvent>().DisposeItWith(Disposable);
+        _paramDict = builder.ToImmutable();
+        _onParamChangedSubject = new System.Reactive.Subjects.Subject<ParamExtChangedEvent>();
 
-        server.OnParamExtSet.Subscribe(OnParamSet).DisposeItWith(Disposable);
-        server.OnParamExtRequestList.Subscribe(OnParamRequestList).DisposeItWith(Disposable);
-        server.OnParamExtRequestRead.Subscribe(OnParamRequestRead).DisposeItWith(Disposable);
+        var d1 = server.OnParamExtSet.Subscribe(OnParamSet);
+        var d2 = server.OnParamExtRequestList.Subscribe(OnParamRequestList);
+        var d3 = server.OnParamExtRequestRead.Subscribe(OnParamRequestRead);
+        _disposeIt = Disposable.Combine(_disposeCancel,_onErrorSubject,_onParamChangedSubject, d1, d2, d3);
     }
 
 
@@ -224,9 +224,17 @@ public class ParamsExtServerEx : DisposableOnceWithCancel, IParamsExtServerEx
         }
     }
 
+    public CancellationToken DisposeCancel => _disposeCancel.Token;
+
     public MavParamExtValue this[IMavParamExtTypeMetadata param]
     {
         get => this[param.Name];
         set => this[param.Name] = value;
+    }
+
+    public void Dispose()
+    {
+        _disposeCancel.Cancel(false);
+        _disposeIt.Dispose();
     }
 }
