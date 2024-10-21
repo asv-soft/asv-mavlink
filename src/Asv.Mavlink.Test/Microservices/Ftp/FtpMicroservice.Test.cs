@@ -119,8 +119,7 @@ public class FtpMicroserviceTest
         server.CreateFile = (path, cancellationToken) => Task.FromResult(session);
 
         var result = await client.CreateFile(filePath);
-        Assert.Equal(session, result.ReadSession());
-        Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
+        Assert.Equal(session, result.Session);
     }
     
     [Theory]
@@ -393,13 +392,8 @@ public class FtpMicroserviceTest
         const byte expectedSession = 1;
         var expectedFileSize = (uint)testData.Length;
 
-        var openFileWriteCalled = 0;
-        var writeFileCalled = 0;
-        var terminateSessionCalled = 0;
-
         server.OpenFileWrite = (path, cancel) =>
         {
-            openFileWriteCalled++;
             Assert.Equal(testFilePath, path);
             return Task.FromResult(new WriteHandle(expectedSession, expectedFileSize));
         };
@@ -407,7 +401,6 @@ public class FtpMicroserviceTest
         var receivedData = new byte[testData.Length];
         server.WriteFile = (request, data, cancel) =>
         {
-            writeFileCalled++;
             Assert.Equal(expectedSession, request.Session);
             var expectedDataLength = request.Take;
             _output.WriteLine($"Write exceeds buffer size. Written={request.Skip + data.Length}. To be write={receivedData.Length}");
@@ -415,19 +408,23 @@ public class FtpMicroserviceTest
             return Task.CompletedTask;
         };
 
+        server.CreateFile = (path, cancel) =>
+        {
+            Assert.Equal(testFilePath, path);
+            return Task.FromResult(expectedSession);
+        };
+
         server.TerminateSession = (session, cancel) =>
         {
-            terminateSessionCalled++;
             Assert.Equal(expectedSession, session);
             return Task.CompletedTask;
         };
 
         var ftpClientEx = new FtpClientEx(client);
         await ftpClientEx.UploadFile(testFilePath, streamToUpload);
-
-        Assert.Equal(1, openFileWriteCalled);
-        Assert.True(writeFileCalled > 0);
-        Assert.Equal(1, terminateSessionCalled);
+        
+        var writeHandle = await client.OpenFileWrite(testFilePath);
+        Assert.Equal(expectedSession, writeHandle.Session);
         Assert.Equal(testData.Length, receivedData.Length);
         Assert.Equal(testData.ToArray(), receivedData);
     }

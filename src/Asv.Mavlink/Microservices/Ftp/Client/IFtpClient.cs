@@ -13,7 +13,7 @@ public interface IFtpClient
     Task<WriteHandle> OpenFileWrite(string path, CancellationToken cancel = default);
 
     public Task<FileTransferProtocolPacket> CreateDirectory(string path, CancellationToken cancellationToken = default);
-    public Task<FileTransferProtocolPacket> CreateFile(string path, CancellationToken cancellationToken = default);
+    public Task<CreateHandle> CreateFile(string path, CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> ResetSessions(CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> RemoveDirectory(string path, CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> RemoveFile(string path, CancellationToken cancellationToken = default);
@@ -117,7 +117,7 @@ public readonly struct CreateHandle(byte session, string path)
 {
     public readonly byte Session = session;
     public readonly string Path = path;
-    public override string ToString() => $"CREATE_DIR(session: {Session}, path: {path})";
+    public override string ToString() => $"CREATE(session: {Session}, path: {Path})";
 }
 
 public readonly struct TruncateRequest(string path, uint offset)

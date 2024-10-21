@@ -249,7 +249,8 @@ public class FtpClientEx : IFtpClientEx
     public async Task UploadFile(string filePath, Stream streamToUpload, IProgress<double>? progress = null, CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();
-        var file = await Base.OpenFileWrite(filePath, cancel).ConfigureAwait(false);
+        var writeHandle = await Base.OpenFileWrite(filePath, cancel).ConfigureAwait(false);
+        var session = writeHandle.Session;
         var totalWritten = 0L;
         var buffer = ArrayPool<byte>.Shared.Rent(MavlinkFtpHelper.MaxDataSize);
 
@@ -257,10 +258,11 @@ public class FtpClientEx : IFtpClientEx
         {
             while (true)
             {
-                var bytesRead = await streamToUpload.ReadAsync(buffer.AsMemory(0, MavlinkFtpHelper.MaxDataSize), cancel).ConfigureAwait(false);
+                int maxChunkSize = Math.Min(MavlinkFtpHelper.MaxDataSize, byte.MaxValue);
+                var bytesRead = await streamToUpload.ReadAsync(buffer.AsMemory(0, maxChunkSize), cancel).ConfigureAwait(false);
                 if (bytesRead == 0) break;
 
-                var request = new WriteRequest(file.Session, (uint)totalWritten, (byte)bytesRead);
+                var request = new WriteRequest(session, (uint)totalWritten, (byte)bytesRead);
                 var memory = new Memory<byte>(buffer, 0, bytesRead);
 
                 await Base.WriteFile(request, memory, cancel).ConfigureAwait(false);
@@ -272,7 +274,7 @@ public class FtpClientEx : IFtpClientEx
         finally
         {
             ArrayPool<byte>.Shared.Return(buffer);
-            await Base.TerminateSession(file.Session, cancel).ConfigureAwait(false);
+            await Base.TerminateSession(session, cancel).ConfigureAwait(false);
         }
     }
 }

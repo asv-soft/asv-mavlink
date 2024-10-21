@@ -193,7 +193,7 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         return result;
     }
     
-    public async Task<FileTransferProtocolPacket> CreateFile(string path, CancellationToken cancellationToken = default)
+    public async Task<CreateHandle> CreateFile(string path, CancellationToken cancellationToken = default)
     {
         MavlinkFtpHelper.CheckFilePath(path);
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.CreateFile:G}({path})");
@@ -202,7 +202,9 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
                 p => p.WriteDataAsString(path), 
                 cancellationToken)
             .ConfigureAwait(false);
-        return result;
+        var sessionId = result.ReadSession();
+        _logger.ZLogInformation($"{LogRecv} {FtpOpcode.CreateFile:G}({path}): session={sessionId}");
+        return new CreateHandle(sessionId, path);
     }
 
     public Task TerminateSession(byte session, CancellationToken cancel = default)
@@ -247,15 +249,16 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _logger.ZLogInformation($"{LogSend} {FtpOpcode.OpenFileRO:G}({path})"); 
         var result = await InternalFtpCall(FtpOpcode.OpenFileRO,p => p.WriteDataAsString(path), cancel).ConfigureAwait(false);
         InternalCheckNack(result, _logger);
-        var resultSize = result.ReadSize();
         // ACK on success. The payload must specify fields: session = file session id, size = 4, data = length of file that has been opened.
+        
+
+        var sessionId = result.ReadSession();
+        var resultSize = result.ReadSize();
         if (resultSize != 4)
         {
             _logger.ZLogError($"Unexpected error to {FtpOpcode.OpenFileRO:G}: ACK must be {4} byte length");
             throw new FtpException($"Unexpected error to {FtpOpcode.OpenFileRO:G}: ACK must be {4} byte length");
         }
-
-        var sessionId = result.ReadSession();
         var fileSize = result.ReadDataAsUint();
         _logger.ZLogInformation($"{LogRecv} {FtpOpcode.OpenFileRO:G}({path}): session={sessionId}, size={fileSize}, '{path}'={fileSize}");
         return new ReadHandle(sessionId,fileSize); 
