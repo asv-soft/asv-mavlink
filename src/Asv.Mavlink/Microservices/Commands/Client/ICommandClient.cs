@@ -8,7 +8,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Represents a command client that is capable of sending commands to an external system.
     /// </summary>
-    public interface ICommandClient
+    public interface ICommandClient:IMavlinkMicroserviceClient
     {
         /// <summary>
         /// Gets the observable sequence for receiving command acknowledgement payloads.

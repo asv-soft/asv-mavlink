@@ -11,6 +11,7 @@ using Asv.Mavlink.V2.AsvChart;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink;
@@ -32,42 +33,35 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
     private ushort _lastCollectionHash;
     private readonly RxValue<bool> _isSynced;
 
-    public AsvChartClient(AsvChartClientConfig config,
-        IMavlinkV2Connection connection,
-        MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null)
-        : base("CHART", connection, identity, seq, timeProvider, scheduler, logFactory)
+    public AsvChartClient(MavlinkClientIdentity identity,AsvChartClientConfig config,ICoreServices core)
+        : base("CHART", identity,core)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<AsvChartClient>();
-        _signals = new SourceCache<AsvChartInfo, ushort>(x=>x.Id).DisposeItWith(Disposable);
+        _logger = core.Log.CreateLogger<AsvChartClient>();
+        _signals = new SourceCache<AsvChartInfo, ushort>(x=>x.Id);
         _maxTimeToWaitForResponseForList = TimeSpan.FromMilliseconds(config.MaxTimeToWaitForResponseForListMs);
         OnChartInfo = InternalFilter<AsvChartInfoPacket>().Select(x => new AsvChartInfo(x.Payload));
-        OnChartInfo
-            .Subscribe(_signals.AddOrUpdate)
-            .DisposeItWith(Disposable);
+        var d1 = OnChartInfo
+            .Subscribe(_signals.AddOrUpdate);
         Charts = _signals.Connect().RefCount();
-        InternalFilter<AsvChartDataPacket>().Subscribe(InternalOnDataRecv).DisposeItWith(Disposable);
+        var d2 = InternalFilter<AsvChartDataPacket>().Subscribe(InternalOnDataRecv);
         OnStreamOptions = InternalFilter<AsvChartDataResponsePacket>().Select(x => new AsvChartOptions(x));
         OnUpdateEvent = InternalFilter<AsvChartInfoUpdatedEventPacket>().Select(x => x.Payload);
-        _isSynced = new RxValue<bool>(false).DisposeItWith(Disposable);
-        OnUpdateEvent.Select(x=>x.ChatListHash == _lastCollectionHash).Subscribe(_isSynced).DisposeItWith(Disposable);
+        _isSynced = new RxValue<bool>(false);
+        var d3 = OnUpdateEvent.Select(x=>x.ChatListHash == _lastCollectionHash).Subscribe(_isSynced);
+        Disposable.Combine(_signals,_isSynced,d1,d2,d3);
     }
     public async Task<bool> ReadAllInfo(IProgress<double> progress = null, CancellationToken cancel = default)
     {
-        var lastUpdate = DateTime.Now;
+        var lastUpdate = Core.TimeProvider.GetTimestamp();
         _signals.Clear();
         using var request = OnChartInfo
-            .Do(_=>lastUpdate = DateTime.Now)
+            .Do(_=>lastUpdate = Core.TimeProvider.GetTimestamp())
             .Subscribe();
         var requestId =  (byte)(Interlocked.Increment(ref _seq) % 255);
         var requestAck = await InternalCall<AsvChartInfoResponsePayload, AsvChartInfoRequestPacket, AsvChartInfoResponsePacket>(x =>
         {
-            x.Payload.TargetComponent = Identity.TargetComponentId;
-            x.Payload.TargetSystem = Identity.TargetSystemId;
+            x.Payload.TargetComponent = Identity.Target.ComponentId;
+            x.Payload.TargetSystem = Identity.Target.SystemId;
             x.Payload.RequestId = requestId;
             x.Payload.Skip = 0;
             x.Payload.Count = ushort.MaxValue;
@@ -77,9 +71,9 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
         if (requestAck.Result == AsvChartRequestAck.AsvChartRequestAckFail) 
             throw new Exception("Request fail");
         
-        while (DateTime.Now - lastUpdate < _maxTimeToWaitForResponseForList && _signals.Count < requestAck.ItemsCount)
+        while (Core.TimeProvider.GetElapsedTime(lastUpdate) < _maxTimeToWaitForResponseForList && _signals.Count < requestAck.ItemsCount)
         {
-            await Task.Delay(_maxTimeToWaitForResponseForList/10, cancel).ConfigureAwait(false);
+            await Task.Delay(_maxTimeToWaitForResponseForList/10, Core.TimeProvider, cancel).ConfigureAwait(false);
             progress?.Report((double)requestAck.ItemsCount/_signals.Count);
         }
         var result = _signals.Count == requestAck.ItemsCount;
@@ -94,8 +88,8 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
         if (info.HasValue == false) throw new Exception($"Chart with id {options.ChartId} not found");
         return InternalCall<AsvChartOptions,AsvChartDataRequestPacket,AsvChartDataResponsePacket>(x=>
         {
-            x.Payload.TargetSystem = Identity.TargetSystemId;
-            x.Payload.TargetComponent = Identity.TargetComponentId;
+            x.Payload.TargetSystem = Identity.Target.SystemId;
+            x.Payload.TargetComponent = Identity.Target.ComponentId;
             x.Payload.ChatId = options.ChartId;
             x.Payload.DataTrigger = options.Trigger;
             x.Payload.DataRate = options.Rate;

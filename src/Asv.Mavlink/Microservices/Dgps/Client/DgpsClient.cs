@@ -16,17 +16,10 @@ namespace Asv.Mavlink
         private readonly ILogger _logger;
         private uint _seqNumber;
 
-        public DgpsClient(
-            IMavlinkV2Connection connection, 
-            MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq,
-            TimeProvider? timeProvider = null,
-            IScheduler? scheduler = null,
-            ILoggerFactory? logFactory = null)
-            :base("DGPS", connection, identity, seq, timeProvider, scheduler, logFactory)
+        public DgpsClient(MavlinkClientIdentity identity, ICoreServices core)
+            :base("DGPS", identity, core)
         {
-            logFactory ??= NullLoggerFactory.Instance;
-            _logger = logFactory.CreateLogger<DgpsClient>();
+            _logger = core.Log.CreateLogger<DgpsClient>();
         }
 
         public async Task SendRtcmData(byte[] data, int length, CancellationToken cancel)

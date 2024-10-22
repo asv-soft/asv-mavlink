@@ -14,20 +14,16 @@ public class AsvRsgaClient: MavlinkMicroserviceClient, IAsvRsgaClient
 {
     private readonly Subject<AsvRsgaCompatibilityResponsePayload> _onCompatibilityRequest;
     private uint _requestCounter;
+    private readonly IDisposable _onCompatibilityRequestSubscribe;
 
 
-    public AsvRsgaClient(IMavlinkV2Connection connection,
-        MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null) 
-        : base("RSGA", connection, identity, seq,timeProvider,scheduler,logFactory)
+    public AsvRsgaClient(MavlinkClientIdentity identity, ICoreServices core) 
+        : base("RSGA", identity, core)
     {
-        _onCompatibilityRequest = new Subject<AsvRsgaCompatibilityResponsePayload>().DisposeItWith(Disposable);
-        InternalFilter<AsvRsgaCompatibilityResponsePacket>()
+        _onCompatibilityRequest = new Subject<AsvRsgaCompatibilityResponsePayload>();
+        _onCompatibilityRequestSubscribe = InternalFilter<AsvRsgaCompatibilityResponsePacket>()
             .Select(x => x.Payload)
-            .Subscribe(_onCompatibilityRequest).DisposeItWith(Disposable);
+            .Subscribe(_onCompatibilityRequest);
     }
 
     public IObservable<AsvRsgaCompatibilityResponsePayload> OnCompatibilityResponse => _onCompatibilityRequest;
@@ -39,8 +35,8 @@ public class AsvRsgaClient: MavlinkMicroserviceClient, IAsvRsgaClient
                 AsvRsgaCompatibilityResponsePacket>(
                 x =>
                 {
-                    x.Payload.TargetSystem = Identity.TargetSystemId;
-                    x.Payload.TargetComponent = Identity.TargetComponentId;
+                    x.Payload.TargetSystem = Identity.Target.SystemId;
+                    x.Payload.TargetComponent = Identity.Target.ComponentId;
                     x.Payload.RequestId = reqId;
                 }, x => x.Payload.RequestId == reqId, x => x.Payload, cancel: cancel);
     }
@@ -49,4 +45,10 @@ public class AsvRsgaClient: MavlinkMicroserviceClient, IAsvRsgaClient
         return (ushort)(Interlocked.Increment(ref _requestCounter)%ushort.MaxValue);
     }
 
+    public override void Dispose()
+    {
+        _onCompatibilityRequestSubscribe.Dispose();
+        _onCompatibilityRequest.Dispose();
+        base.Dispose();
+    }
 }

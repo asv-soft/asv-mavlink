@@ -14,29 +14,17 @@ namespace Asv.Mavlink
 
     public class CommandServer : MavlinkMicroserviceServer, ICommandServer
     {
-        private readonly IMavlinkV2Connection _connection;
-        private readonly IPacketSequenceCalculator _seq;
-        private readonly MavlinkIdentity _identity;
-        private readonly ILogger _logger;
+        private readonly ILogger<CommandServer> _logger;
 
-        public CommandServer(
-            IMavlinkV2Connection connection, 
-            IPacketSequenceCalculator seq,
-            MavlinkIdentity identity,TimeProvider? timeProvider = null,
-            IScheduler? rxScheduler = null,
-            ILoggerFactory? logFactory = null)
-            : base("COMMAND", connection, identity, seq, timeProvider, rxScheduler,logFactory)
+        public CommandServer(MavlinkIdentity identity,ICoreServices core)
+            : base("COMMAND", identity,core)
         {
-            logFactory??=NullLoggerFactory.Instance;
-            _logger = logFactory.CreateLogger<CommandServer>();
-            _connection = connection;
-            _seq = seq;
-            _identity = identity;
+            _logger = core.Log.CreateLogger<CommandServer>();
             OnCommandLong =
                 InternalFilter<CommandLongPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
-                    .ObserveOn(Scheduler).Publish().RefCount();
+                    .ObserveOn(Core.Scheduler).Publish().RefCount();
             OnCommandInt = InternalFilter<CommandIntPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
-                .ObserveOn(Scheduler).Publish().RefCount();
+                .ObserveOn(Core.Scheduler).Publish().RefCount();
         }
 
         public IObservable<CommandLongPacket> OnCommandLong { get; }

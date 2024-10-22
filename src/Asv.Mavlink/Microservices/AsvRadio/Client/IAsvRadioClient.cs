@@ -5,7 +5,7 @@ using Asv.Mavlink.V2.AsvRadio;
 
 namespace Asv.Mavlink;
 
-public interface IAsvRadioClient
+public interface IAsvRadioClient:IMavlinkMicroserviceClient
 {
     IObservable<AsvRadioStatusPayload> Status { get; }
     Task<AsvRadioCapabilitiesResponsePayload> RequestCapabilities(CancellationToken cancel = default);

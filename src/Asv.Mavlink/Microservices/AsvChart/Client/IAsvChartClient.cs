@@ -9,7 +9,7 @@ namespace Asv.Mavlink;
 
 public delegate void OnDataReceivedDelegate(DateTime time, ReadOnlyMemory<float> data, AsvChartInfo info);
 
-public interface IAsvChartClient
+public interface IAsvChartClient:IMavlinkMicroserviceClient
 {
     Task<bool> ReadAllInfo(IProgress<double> progress = null, CancellationToken cancel = default);
     Task<AsvChartOptions> RequestStream(AsvChartOptions options, CancellationToken cancel = default);

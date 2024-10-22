@@ -21,16 +21,10 @@ namespace Asv.Mavlink
         private readonly ILogger _logger; 
         private readonly CommandProtocolConfig _config;
 
-        public CommandClient(IMavlinkV2Connection connection,
-            MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq,
-            CommandProtocolConfig config,
-            TimeProvider? timeProvider = null,
-            IScheduler? scheduler = null,
-            ILoggerFactory? logFactory = null):base("COMMAND", connection, identity, seq, timeProvider,scheduler,logFactory)
+        public CommandClient(MavlinkClientIdentity identity, CommandProtocolConfig config,ICoreServices core)
+            :base("COMMAND", identity, core)
         {
-            logFactory ??=NullLoggerFactory.Instance;
-            _logger = logFactory.CreateLogger<CommandClient>();
+            _logger = core.Log.CreateLogger<CommandClient>();
             _config = config ?? throw new ArgumentNullException(nameof(config));
             OnCommandAck = InternalFilter<CommandAckPacket>().Select(p => p.Payload);
         }
@@ -42,8 +36,8 @@ namespace Asv.Mavlink
             _logger.ZLogTrace($"{LogSend}{command:G}({frame:G},{param1},{param2},{param3},{param4},{x},{y},{z},{current},{autocontinue})");
             return InternalSend<CommandIntPacket>((packet) =>
             {
-                packet.Payload.TargetComponent = Identity.TargetComponentId;
-                packet.Payload.TargetSystem = Identity.TargetSystemId;
+                packet.Payload.TargetComponent = Identity.Target.ComponentId;
+                packet.Payload.TargetSystem = Identity.Target.SystemId;
                 packet.Payload.Command = command;
                 packet.Payload.Frame = frame;
                 packet.Payload.Param1 = param1;
@@ -65,8 +59,8 @@ namespace Asv.Mavlink
             var result = await InternalCall<CommandAckPayload, CommandIntPacket, CommandAckPacket>((packet) =>
             {
                 packet.Payload.Command = command;
-                packet.Payload.TargetComponent = Identity.TargetComponentId;
-                packet.Payload.TargetSystem = Identity.TargetSystemId;
+                packet.Payload.TargetComponent = Identity.Target.ComponentId;
+                packet.Payload.TargetSystem = Identity.Target.SystemId;
                 packet.Payload.Frame = frame;
                 packet.Payload.Param1 = param1;
                 packet.Payload.Param2 = param2;
@@ -88,8 +82,8 @@ namespace Asv.Mavlink
             await InternalSend<CommandLongPacket>((packet) =>
             {
                 packet.Payload.Command = command;
-                packet.Payload.TargetComponent = Identity.TargetComponentId;
-                packet.Payload.TargetSystem = Identity.TargetSystemId;
+                packet.Payload.TargetComponent = Identity.Target.ComponentId;
+                packet.Payload.TargetSystem = Identity.Target.SystemId;
                 packet.Payload.Confirmation = 0;
                 packet.Payload.Param1 = param1;
                 packet.Payload.Param2 = param2;
@@ -110,8 +104,8 @@ namespace Asv.Mavlink
             string commandTxt = String.Empty;
             var result = await InternalCall<CommandAckPayload, CommandLongPacket, CommandAckPacket>((packet) =>
             {
-                packet.Payload.TargetComponent = Identity.TargetComponentId;
-                packet.Payload.TargetSystem = Identity.TargetSystemId;
+                packet.Payload.TargetComponent = Identity.Target.ComponentId;
+                packet.Payload.TargetSystem = Identity.Target.SystemId;
                 packet.Payload.Confirmation = 0;
                 edit(packet.Payload);
                 command = packet.Payload.Command;
@@ -128,8 +122,8 @@ namespace Asv.Mavlink
             var result = await InternalCall<CommandAckPayload, CommandLongPacket, CommandAckPacket>((packet) =>
             {
                 packet.Payload.Command = command;
-                packet.Payload.TargetComponent = Identity.TargetComponentId;
-                packet.Payload.TargetSystem = Identity.TargetSystemId;
+                packet.Payload.TargetComponent = Identity.Target.ComponentId;
+                packet.Payload.TargetSystem = Identity.Target.SystemId;
                 packet.Payload.Confirmation = 0;
                 packet.Payload.Param1 = param1;
                 packet.Payload.Param2 = param2;
@@ -152,8 +146,8 @@ namespace Asv.Mavlink
             var result = await InternalCall<TAnswerPacket, CommandLongPacket, TAnswerPacket>((packet) =>
             {
                 packet.Payload.Command = command;
-                packet.Payload.TargetComponent = Identity.TargetComponentId;
-                packet.Payload.TargetSystem = Identity.TargetSystemId;
+                packet.Payload.TargetComponent = Identity.Target.ComponentId;
+                packet.Payload.TargetSystem = Identity.Target.SystemId;
                 packet.Payload.Confirmation = 0;
                 packet.Payload.Param1 = param1;
                 packet.Payload.Param2 = param2;

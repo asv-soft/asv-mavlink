@@ -17,22 +17,15 @@ public class DiagnosticServerConfig
 public class DiagnosticServer: MavlinkMicroserviceServer, IDiagnosticServer
 {
     private readonly DiagnosticServerConfig _config;
-    private readonly DateTime _bootTime;
-    private readonly ConcurrentDictionary<string,DateTime> _lastSendFloatTime = new();
-    private readonly ConcurrentDictionary<string,DateTime> _lastSendIntTime = new();
+    private readonly long _bootTime;
+    private readonly ConcurrentDictionary<string,long> _lastSendFloatTime = new();
+    private readonly ConcurrentDictionary<string,long> _lastSendIntTime = new();
 
-    public DiagnosticServer(
-        DiagnosticServerConfig config,
-        IMavlinkV2Connection connection, 
-        MavlinkIdentity identity, 
-        IPacketSequenceCalculator seq, 
-        TimeProvider? timeProvider = null,
-        IScheduler? rxScheduler = null,
-        ILoggerFactory? logFactory = null) 
-        : base("DIAG", connection, identity, seq, timeProvider, rxScheduler,logFactory)
+    public DiagnosticServer(MavlinkIdentity identity, DiagnosticServerConfig config,ICoreServices core) 
+        : base("DIAG", identity, core)
     {
         _config = config;
-        _bootTime = DateTime.Now;
+        _bootTime = core.TimeProvider.GetTimestamp();
         IsEnabled = config.IsEnabled;
     }
 
@@ -49,7 +42,7 @@ public class DiagnosticServer: MavlinkMicroserviceServer, IDiagnosticServer
 
         if (_lastSendFloatTime.TryGetValue(name, out var lastSendTime))
         {
-            if ((DateTime.Now - lastSendTime).TotalMilliseconds < _config.MaxSendIntervalMs)
+            if (Core.TimeProvider.GetElapsedTime(lastSendTime).TotalMilliseconds < _config.MaxSendIntervalMs)
             {
                 return;
             }
@@ -57,10 +50,10 @@ public class DiagnosticServer: MavlinkMicroserviceServer, IDiagnosticServer
         await InternalSend<NamedValueFloatPacket>(packet =>
         {
             MavlinkTypesHelper.SetString(packet.Payload.Name, name);
-            packet.Payload.TimeBootMs = (uint)(DateTime.Now - _bootTime).TotalMilliseconds;
+            packet.Payload.TimeBootMs = (uint)Core.TimeProvider.GetElapsedTime(_bootTime).TotalMilliseconds;
             packet.Payload.Value = value;
         }, cancel).ConfigureAwait(false);
-        _lastSendFloatTime.AddOrUpdate(name, DateTime.Now, (_, _) => DateTime.Now);
+        _lastSendFloatTime.AddOrUpdate(name, Core.TimeProvider.GetTimestamp(), (_, _) => Core.TimeProvider.GetTimestamp());
     }
     public async Task Send(string name, int value,CancellationToken cancel = default)
     {
@@ -73,7 +66,7 @@ public class DiagnosticServer: MavlinkMicroserviceServer, IDiagnosticServer
 
         if (_lastSendIntTime.TryGetValue(name, out var lastSendTime))
         {
-            if ((DateTime.Now - lastSendTime).TotalMilliseconds < _config.MaxSendIntervalMs)
+            if (Core.TimeProvider.GetElapsedTime(lastSendTime).TotalMilliseconds < _config.MaxSendIntervalMs)
             {
                 return;
             }
@@ -81,11 +74,11 @@ public class DiagnosticServer: MavlinkMicroserviceServer, IDiagnosticServer
         await InternalSend<NamedValueIntPacket>(packet =>
         {
             MavlinkTypesHelper.SetString(packet.Payload.Name, name);
-            packet.Payload.TimeBootMs = (uint)(DateTime.Now - _bootTime).TotalMilliseconds;
+            packet.Payload.TimeBootMs = (uint)Core.TimeProvider.GetElapsedTime(_bootTime).TotalMilliseconds;
             packet.Payload.Value = value;
         }, cancel).ConfigureAwait(false);
         
-        _lastSendIntTime.AddOrUpdate(name, DateTime.Now, (_, _) => DateTime.Now);
+        _lastSendIntTime.AddOrUpdate(name, Core.TimeProvider.GetTimestamp(), (_, _) => Core.TimeProvider.GetTimestamp());
     }
     
     public Task Send(string name, ushort arrayId, float[] data, CancellationToken cancel = default)
@@ -105,7 +98,7 @@ public class DiagnosticServer: MavlinkMicroserviceServer, IDiagnosticServer
         }
         return InternalSend<DebugFloatArrayPacket>(packet =>
         {
-            packet.Payload.TimeUsec = (uint)(DateTime.Now - _bootTime).TotalMilliseconds;
+            packet.Payload.TimeUsec = (uint)(uint)Core.TimeProvider.GetElapsedTime(_bootTime).TotalMilliseconds;
             packet.Payload.ArrayId = arrayId;
             MavlinkTypesHelper.SetString(packet.Payload.Name, name);
             data.CopyTo(packet.Payload.Data,0);

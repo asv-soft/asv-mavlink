@@ -6,7 +6,7 @@ using Asv.Common;
      /// <summary>
      /// This interface represents an AsvGbs client.
      /// </summary>
-     public interface IAsvGbsClient
+     public interface IAsvGbsClient:IMavlinkMicroserviceClient
      {
          /// <summary>
          /// Gets the raw status of the AsvGbsOutStatusPayload.

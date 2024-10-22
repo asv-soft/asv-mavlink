@@ -19,20 +19,12 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
     private readonly AsvRadioServerConfig _config;
     private readonly MavlinkPacketTransponder<AsvRadioStatusPacket,AsvRadioStatusPayload> _transponder;
 
-    public AsvRadioServer(
-        IMavlinkV2Connection connection, 
-        MavlinkIdentity identity,
-        AsvRadioServerConfig config, 
-        IPacketSequenceCalculator seq, 
-        TimeProvider? timeProvider = null,
-        IScheduler? rxScheduler = null,
-        ILoggerFactory? logFactory = null) 
-        : base(AsvRadioHelper.IfcName, connection, identity, seq, timeProvider, rxScheduler, logFactory)
+    public AsvRadioServer(MavlinkIdentity identity, AsvRadioServerConfig config, ICoreServices core)     
+        : base(AsvRadioHelper.IfcName, identity,core)
     {
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _transponder =
-            new MavlinkPacketTransponder<AsvRadioStatusPacket, AsvRadioStatusPayload>(connection, identity, seq,timeProvider,logFactory)
-                .DisposeItWith(Disposable);
+            new MavlinkPacketTransponder<AsvRadioStatusPacket, AsvRadioStatusPayload>(identity, core);
         
         OnCapabilitiesRequest = InternalFilter<AsvRadioCapabilitiesRequestPacket>(x=>x.Payload.TargetSystem,x=>x.Payload.TargetComponent)
             .Select(x => x.Payload).Publish().RefCount();
@@ -66,5 +58,11 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
     {
         if (setValueCallback == null) throw new ArgumentNullException(nameof(setValueCallback));
         return InternalSend<AsvRadioCodecCapabilitiesResponsePacket>(x => { setValueCallback(x.Payload); }, cancel);
+    }
+
+    public override void Dispose()
+    {
+        _transponder.Dispose();
+        base.Dispose();
     }
 }

@@ -10,7 +10,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, ICommandServerEx<TArgPacket>
+public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>, IDisposable
     where TArgPacket : IPacketV2<IPayload>
 {
     private readonly Func<TArgPacket,ushort> _cmdGetter;
@@ -19,23 +19,22 @@ public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, IC
     private readonly ILogger _logger;
     private int _isBusy;
     private int _lastCommand = -1;
+    private readonly IDisposable _subscribe;
+    private CancellationTokenSource _disposeCancel;
 
     protected CommandServerEx(
         ICommandServer server,
         IObservable<TArgPacket> commandsPipe, 
         Func<TArgPacket,ushort> cmdGetter, 
-        Func<TArgPacket,byte> confirmationGetter,
-        TimeProvider? timeProvider = null, 
-        IScheduler? scheduler= null, 
-        ILoggerFactory? loggerFactory= null)
+        Func<TArgPacket,byte> confirmationGetter )
     {
         Base = server;
-        loggerFactory ??= NullLoggerFactory.Instance;
-        _logger = loggerFactory.CreateLogger(GetType());
+        _disposeCancel = new CancellationTokenSource();
+        _logger = server.Core.Log.CreateLogger<CommandServerEx<TArgPacket>>();
         _cmdGetter = cmdGetter;
         _confirmationGetter = confirmationGetter;
-        commandsPipe.Subscribe(OnRequest).DisposeItWith(Disposable);
-        Disposable.AddAction(() => _registry.Clear());
+        _subscribe = commandsPipe.Subscribe(OnRequest);
+        
     }
 
     public ICommandServer Base { get; }
@@ -94,5 +93,14 @@ public abstract class CommandServerEx<TArgPacket> : DisposableOnceWithCancel, IC
         }
     }
 
-    
+    private CancellationToken DisposeCancel => _disposeCancel.Token;
+
+
+    public void Dispose()
+    {
+        _disposeCancel.Cancel();
+        _disposeCancel.Dispose();
+        _registry.Clear();
+        _subscribe.Dispose();
+    }
 }

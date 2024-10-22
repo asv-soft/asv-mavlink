@@ -38,10 +38,7 @@ public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
     public AsvRadioClientEx(
         IAsvRadioClient client, 
         IHeartbeatClient heartbeatClient, 
-        ICommandClient commandClient,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null, 
-        ILoggerFactory? loggerFactory = null)
+        ICommandClient commandClient)
     {
         _commandClient = commandClient ?? throw new ArgumentNullException(nameof(commandClient));
         Base = client ?? throw new ArgumentNullException(nameof(client));

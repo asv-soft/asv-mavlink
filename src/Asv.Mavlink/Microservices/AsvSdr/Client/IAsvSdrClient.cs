@@ -9,13 +9,8 @@ namespace Asv.Mavlink
    /// <summary>
    /// Provides the interface for a SDR payload client with Mavlink interface.
    /// </summary>
-   public interface IAsvSdrClient
+   public interface IAsvSdrClient:IMavlinkMicroserviceClient
    {
-       /// <summary>
-       /// An Identity of the Mavlink client.
-       /// </summary>
-       MavlinkClientIdentity Identity { get; }
-
        /// <summary>
        /// Generates Request Index.
        /// </summary>
@@ -24,7 +19,7 @@ namespace Asv.Mavlink
        /// <summary>
        /// Gets the status of the SDR out payload.
        /// </summary>
-       IRxValue<AsvSdrOutStatusPayload> Status { get; }
+       IRxValue<AsvSdrOutStatusPayload?> Status { get; }
 
        /// <summary>
        /// Observes the Signal Raw Payload.

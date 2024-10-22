@@ -5,7 +5,7 @@ using Asv.Mavlink.V2.AsvRadio;
 
 namespace Asv.Mavlink;
 
-public interface IAsvRadioServer
+public interface IAsvRadioServer:IMavlinkMicroserviceServer
 {
     void Start();
     void Set(Action<AsvRadioStatusPayload> changeCallback);

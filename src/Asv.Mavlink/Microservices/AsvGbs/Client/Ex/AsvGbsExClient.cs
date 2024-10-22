@@ -8,11 +8,12 @@ using Asv.Mavlink.V2.AsvGbs;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
 
 namespace Asv.Mavlink;
 
-public class AsvGbsExClient: DisposableOnceWithCancel, IAsvGbsExClient
+public class AsvGbsExClient: IAsvGbsExClient, IDisposable
 {
     private readonly ILogger _logger;
     private readonly ICommandClient _command;
@@ -29,50 +30,52 @@ public class AsvGbsExClient: DisposableOnceWithCancel, IAsvGbsExClient
     private readonly RxValue<byte> _internalQzssSatellites;
     private readonly RxValue<byte> _internalSbasSatellites;
     private readonly RxValue<byte> _internalImesSatellites;
-    
+    private readonly IDisposable _disposeIt;
+    private readonly CancellationTokenSource _disposedCancel;
+
 
     public AsvGbsExClient(
-        IAsvGbsClient asvGbs, 
+        IAsvGbsClient client, 
         IHeartbeatClient heartbeat, 
-        ICommandClient command,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null)
+        ICommandClient command)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<AsvGbsExClient>();
+        _logger = client.Core.Log.CreateLogger<AsvGbsExClient>();
         ArgumentNullException.ThrowIfNull(heartbeat);
         _command = command ?? throw new ArgumentNullException(nameof(command));
-        Base = asvGbs ?? throw new ArgumentNullException(nameof(asvGbs));
-        _internalCustomMode = new RxValue<AsvGbsCustomMode>(AsvGbsCustomMode.AsvGbsCustomModeLoading).DisposeItWith(Disposable);
-        _internalPosition = new RxValue<GeoPoint>(GeoPoint.Zero).DisposeItWith(Disposable);
-        _internalAccuracyMeter = new RxValue<double>(0).DisposeItWith(Disposable);
-        _internalObservationSec = new RxValue<ushort>(0).DisposeItWith(Disposable);
-        _internalDgpsRate = new RxValue<ushort>(0).DisposeItWith(Disposable);
-        _internalAllSatellites = new RxValue<byte>(0).DisposeItWith(Disposable);
-        _internalGalSatellites = new RxValue<byte>(0).DisposeItWith(Disposable);
-        _internalBeidouSatellites = new RxValue<byte>(0).DisposeItWith(Disposable);
-        _internalGlonassSatellites = new RxValue<byte>(0).DisposeItWith(Disposable);
-        _internalGpsSatellites = new RxValue<byte>(0).DisposeItWith(Disposable);
-        _internalQzssSatellites = new RxValue<byte>(0).DisposeItWith(Disposable);
-        _internalSbasSatellites = new RxValue<byte>(0).DisposeItWith(Disposable);
-        _internalImesSatellites = new RxValue<byte>(0).DisposeItWith(Disposable);
-        Base.RawStatus.Select(ConvertLocation).Subscribe(_internalPosition).DisposeItWith(Disposable);
-        Base.RawStatus.Select(p=>Math.Round(p.Accuracy/100.0,2)).Subscribe(_internalAccuracyMeter).DisposeItWith(Disposable);
-        Base.RawStatus.Select(p=>p.Observation).Subscribe(_internalObservationSec).DisposeItWith(Disposable);
-        Base.RawStatus.Select(p=>p.DgpsRate).Subscribe(_internalDgpsRate).DisposeItWith(Disposable);
-        Base.RawStatus.Select(p => p.SatAll).Subscribe(_internalAllSatellites).DisposeItWith(Disposable);
-        Base.RawStatus.Select(p => p.SatGal).Subscribe(_internalGalSatellites).DisposeItWith(Disposable);
-        Base.RawStatus.Select(p => p.SatBdu).Subscribe(_internalBeidouSatellites).DisposeItWith(Disposable);
-        Base.RawStatus.Select(p => p.SatGlo).Subscribe(_internalGlonassSatellites).DisposeItWith(Disposable);
-        Base.RawStatus.Select(p => p.SatGps).Subscribe(_internalGpsSatellites).DisposeItWith(Disposable);
-        Base.RawStatus.Select(p => p.SatQzs).Subscribe(_internalQzssSatellites).DisposeItWith(Disposable);
-        Base.RawStatus.Select(p => p.SatSbs).Subscribe(_internalSbasSatellites).DisposeItWith(Disposable);
-        Base.RawStatus.Select(p => p.SatIme).Subscribe(_internalImesSatellites).DisposeItWith(Disposable);
+        Base = client ?? throw new ArgumentNullException(nameof(client));
+        var builder = Disposable.CreateBuilder();
+        _disposedCancel = new CancellationTokenSource().AddTo(ref builder);
+        _internalCustomMode = new RxValue<AsvGbsCustomMode>(AsvGbsCustomMode.AsvGbsCustomModeLoading).AddTo(ref builder);
+        _internalPosition = new RxValue<GeoPoint>(GeoPoint.Zero).AddTo(ref builder);
+        _internalAccuracyMeter = new RxValue<double>(0).AddTo(ref builder);
+        _internalObservationSec = new RxValue<ushort>(0).AddTo(ref builder);
+        _internalDgpsRate = new RxValue<ushort>(0).AddTo(ref builder);
+        _internalAllSatellites = new RxValue<byte>(0).AddTo(ref builder);
+        _internalGalSatellites = new RxValue<byte>(0).AddTo(ref builder);
+        _internalBeidouSatellites = new RxValue<byte>(0).AddTo(ref builder);
+        _internalGlonassSatellites = new RxValue<byte>(0).AddTo(ref builder);
+        _internalGpsSatellites = new RxValue<byte>(0).AddTo(ref builder);
+        _internalQzssSatellites = new RxValue<byte>(0).AddTo(ref builder);
+        _internalSbasSatellites = new RxValue<byte>(0).AddTo(ref builder);
+        _internalImesSatellites = new RxValue<byte>(0).AddTo(ref builder);
+        Base.RawStatus.Select(ConvertLocation).Subscribe(_internalPosition).AddTo(ref builder);
+        Base.RawStatus.Select(p=>Math.Round(p.Accuracy/100.0,2)).Subscribe(_internalAccuracyMeter).AddTo(ref builder);
+        Base.RawStatus.Select(p=>p.Observation).Subscribe(_internalObservationSec).AddTo(ref builder);
+        Base.RawStatus.Select(p=>p.DgpsRate).Subscribe(_internalDgpsRate).AddTo(ref builder);
+        Base.RawStatus.Select(p => p.SatAll).Subscribe(_internalAllSatellites).AddTo(ref builder);
+        Base.RawStatus.Select(p => p.SatGal).Subscribe(_internalGalSatellites).AddTo(ref builder);
+        Base.RawStatus.Select(p => p.SatBdu).Subscribe(_internalBeidouSatellites).AddTo(ref builder);
+        Base.RawStatus.Select(p => p.SatGlo).Subscribe(_internalGlonassSatellites).AddTo(ref builder);
+        Base.RawStatus.Select(p => p.SatGps).Subscribe(_internalGpsSatellites).AddTo(ref builder);
+        Base.RawStatus.Select(p => p.SatQzs).Subscribe(_internalQzssSatellites).AddTo(ref builder);
+        Base.RawStatus.Select(p => p.SatSbs).Subscribe(_internalSbasSatellites).AddTo(ref builder);
+        Base.RawStatus.Select(p => p.SatIme).Subscribe(_internalImesSatellites).AddTo(ref builder);
         heartbeat.RawHeartbeat
             .Select(p => (AsvGbsCustomMode)p.CustomMode)
             .Subscribe(_internalCustomMode)
-            .DisposeItWith(Disposable);
+            .AddTo(ref builder);
+        
+        _disposeIt = builder.Build();
     }
 
     private static GeoPoint ConvertLocation(AsvGbsOutStatusPayload payload)
@@ -126,7 +129,9 @@ public class AsvGbsExClient: DisposableOnceWithCancel, IAsvGbsExClient
              cs.Token).ConfigureAwait(false);
         return ack.Result;
     }
-    
+
+    private CancellationToken DisposeCancel => _disposedCancel.Token;
+
     public IRxValue<AsvGbsCustomMode> CustomMode => _internalCustomMode;
     public IRxValue<GeoPoint> Position => _internalPosition;
     public IRxValue<double> AccuracyMeter => _internalAccuracyMeter;
@@ -140,4 +145,10 @@ public class AsvGbsExClient: DisposableOnceWithCancel, IAsvGbsExClient
     public IRxValue<byte> QzssSatellites => _internalQzssSatellites;
     public IRxValue<byte> SbasSatellites => _internalSbasSatellites;
     public IRxValue<byte> ImesSatellites => _internalImesSatellites;
+
+    public void Dispose()
+    {
+        _disposedCancel.Cancel();
+        _disposeIt.Dispose();
+    }
 }

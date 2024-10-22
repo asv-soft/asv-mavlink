@@ -22,13 +22,10 @@ public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
     private uint _seqNumber;
     public AsvGbsExServer(IAsvGbsServer server, 
         IHeartbeatServer heartbeatServer, 
-        ICommandServerEx<CommandLongPacket> commands,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null)
+        ICommandServerEx<CommandLongPacket> commands)
     {
         Base = server;
-        _logger ??= NullLogger.Instance;
+        _logger = server.Core.Log.CreateLogger<AsvGbsExServer>();
         #region Commands
 
         commands[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunAutoMode] = async (id,args, cancel) =>

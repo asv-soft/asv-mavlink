@@ -49,13 +49,9 @@ public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
         IAsvRadioServer server, 
         IHeartbeatServer heartbeat, 
         ICommandServerEx<CommandLongPacket> commands, 
-        IStatusTextServer statusText, 
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null)
+        IStatusTextServer statusText)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<AsvRadioServerEx>();
+        _logger = server.Core.Log.CreateLogger<AsvRadioServerEx>();
         ArgumentNullException.ThrowIfNull(commands);
         _capabilities = capabilities ?? throw new ArgumentNullException(nameof(capabilities));
         _codecs = codecs ?? throw new ArgumentNullException(nameof(codecs));

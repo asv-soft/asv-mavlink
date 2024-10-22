@@ -22,27 +22,12 @@ public interface IClientDevice
     ushort FullId { get; }
 
     /// <summary>
-    /// Gets the instance of the IMavlinkV2Connection interface.
-    /// </summary>
-    /// <value>
-    /// An instance of the IMavlinkV2Connection interface.
-    /// </value>
-    IMavlinkV2Connection Connection { get; }
-
-    /// <summary>
-    /// Gets the property Seq which represents an IPacketSequenceCalculator object.
-    /// </summary>
-    /// <value>
-    /// An IPacketSequenceCalculator object.
-    /// </value>
-    IPacketSequenceCalculator Seq { get; }
-
-    /// <summary>
     /// Gets the identity of the Mavlink client.
     /// </summary>
     /// <returns>The identity of the Mavlink client.</returns>
     MavlinkClientIdentity Identity { get; }
 
+    ICoreServices Core { get; }
     /// <summary>
     /// Gets the device class.
     /// </summary>

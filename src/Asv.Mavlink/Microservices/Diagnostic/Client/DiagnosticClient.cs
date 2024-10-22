@@ -9,12 +9,15 @@ using Asv.Mavlink.V2.Common;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
+using ZLogger;
 
 namespace Asv.Mavlink.Diagnostic.Client;
 
 public class DiagnosticClientConfig
 {
     public int DeleteProbesTimeoutMs { get; set; } = 60_000;
+    public int CheckProbesDelayMs { get; set; } = 10_000;
     public int MaxCollectionSize { get; set; } = 100;
 }
 
@@ -22,29 +25,29 @@ public class DiagnosticClientConfig
 internal class ClientNamedProbe<T> : INamedProbe<T>
 {
     private readonly RxValue<(TimeSpan,T)> _value;
-    private DateTime _lastUpdate;
+    private long _lastUpdate;
 
 
-    public ClientNamedProbe(string name, T value, uint payloadTimeBootMs)
+    public ClientNamedProbe(string name, T value, uint payloadTimeBootMs, long updateLocalTimestamp)
     {
         Name = name;
         _value = new RxValue<(TimeSpan,T)>(new (TimeSpan.FromMilliseconds(payloadTimeBootMs),value));
-        _lastUpdate = DateTime.Now;
+        _lastUpdate = updateLocalTimestamp;
     }
 
     public string Name { get; }
     public IRxValue<(TimeSpan,T)> Value => _value;
     
-    public DateTime LastUpdate => _lastUpdate;
+    public long LastUpdateTimestamp => _lastUpdate;
     public void Dispose()
     {
         _value.Dispose();
     }
 
-    public void Update(T payloadValue, uint payloadTimeBootMs)
+    public void Update(T payloadValue, uint payloadTimeBootMs, long updateLocalTimestamp)
     {
         _value.OnNext(new (TimeSpan.FromMilliseconds(payloadTimeBootMs), payloadValue));
-        _lastUpdate = DateTime.Now;
+        _lastUpdate = updateLocalTimestamp;
     }
 }
 
@@ -55,50 +58,64 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
     private readonly SourceCache<INamedProbe<int>,string> _intProbes;
     private int _deleteProbesLock;
     private readonly ILogger _logger;
+    private readonly IDisposable _disposeIt;
 
-    public DiagnosticClient(DiagnosticClientConfig config,
-        IMavlinkV2Connection connection,
-        MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null) 
-        : base("DIAG", connection, identity, seq,timeProvider,scheduler,logFactory)
+    public DiagnosticClient(MavlinkClientIdentity identity,DiagnosticClientConfig config,ICoreServices core) 
+        : base("DIAG", identity, core)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<DiagnosticClient>();
+        _logger = core.Log.CreateLogger<DiagnosticClient>();
         _config = config;
-        _floatProbes = new SourceCache<INamedProbe<float>, string>(x => x.Name).DisposeItWith(Disposable);
-        _intProbes = new SourceCache<INamedProbe<int>, string>(x => x.Name).DisposeItWith(Disposable);
+        _floatProbes = new SourceCache<INamedProbe<float>, string>(x => x.Name);
+        _intProbes = new SourceCache<INamedProbe<int>, string>(x => x.Name);
         FloatProbes = _floatProbes.Connect().RefCount();
         IntProbes = _intProbes.Connect().RefCount();
-        InternalFilter<NamedValueFloatPacket>()
-            .Subscribe(OnRecvFloat).DisposeItWith(Disposable);
-        InternalFilter<NamedValueIntPacket>()
-            .Subscribe(OnRecvInt).DisposeItWith(Disposable);
+        var d1 = InternalFilter<NamedValueFloatPacket>()
+            .Subscribe(OnRecvFloat);
+        var d2 = InternalFilter<NamedValueIntPacket>()
+            .Subscribe(OnRecvInt);
         if (config.DeleteProbesTimeoutMs > 0)
         {
-            Observable.Timer(TimeSpan.FromMilliseconds(config.DeleteProbesTimeoutMs),TimeSpan.FromMilliseconds(config.DeleteProbesTimeoutMs))
-                .ObserveOn(Scheduler)
-                .Subscribe(RemoveOldItems).DisposeItWith(Disposable);    
+            var time = TimeSpan.FromMilliseconds(config.DeleteProbesTimeoutMs);
+            var timer = core.TimeProvider.CreateTimer(RemoveOldItems, null, time, time);
+            _disposeIt = Disposable.Combine(_floatProbes,_intProbes,d1,d2,timer);
+        }
+        else
+        {
+            _disposeIt = Disposable.Combine(_floatProbes,_intProbes,d1,d2);
         }
     }
 
-    private void RemoveOldItems(long l)
+    private void RemoveOldItems(object? state)
     {
         if (Interlocked.Exchange(ref _deleteProbesLock, 1) == 1) return;
         try
         {
-            _floatProbes.Edit(x =>
+            if (_floatProbes.Count != 0)
             {
-                var itemsToDelete = x.Items.Cast<ClientNamedProbe<float>>().Where(y => y.LastUpdate.Add(TimeSpan.FromMilliseconds(_config.DeleteProbesTimeoutMs)) < DateTime.Now)
-                    .ToImmutableArray();
-                x.Remove(itemsToDelete);
-            });
+                _floatProbes.Edit(x =>
+                {
+                    var itemsToDelete = x.Items
+                        .Cast<ClientNamedProbe<float>>()
+                        .Where(y => Core.TimeProvider.GetElapsedTime(y.LastUpdateTimestamp).TotalMilliseconds > _config.DeleteProbesTimeoutMs)
+                        .ToImmutableArray();
+                    if (itemsToDelete.Length != 0)
+                    {
+                        _logger.ZLogTrace($"Remove {string.Join(',',itemsToDelete.Select(p=>p.Name))} float probes by timeout {_config.DeleteProbesTimeoutMs} ms");
+                    }
+                    x.Remove(itemsToDelete);
+                });    
+            }
+            
             _intProbes.Edit(x =>
             {
-                var itemsToDelete = x.Items.Cast<ClientNamedProbe<int>>().Where(y => y.LastUpdate.Add(TimeSpan.FromMilliseconds(_config.DeleteProbesTimeoutMs)) < DateTime.Now)
+                var itemsToDelete = x.Items
+                    .Cast<ClientNamedProbe<int>>()
+                    .Where(y => Core.TimeProvider.GetElapsedTime(y.LastUpdateTimestamp).TotalMilliseconds > _config.DeleteProbesTimeoutMs)
                     .ToImmutableArray();
+                if (itemsToDelete.Length != 0)
+                {
+                    _logger.ZLogTrace($"Remove {string.Join(',',itemsToDelete.Select(p=>p.Name))} int probes by timeout {_config.DeleteProbesTimeoutMs} ms");
+                }
                 x.Remove(itemsToDelete);
             });
         }
@@ -117,14 +134,14 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
             if (found.HasValue)
             {
                 var probe = (ClientNamedProbe<int>)found.Value;
-                probe.Update(namedValueFloatPacket.Payload.Value, namedValueFloatPacket.Payload.TimeBootMs);
+                probe.Update(namedValueFloatPacket.Payload.Value, namedValueFloatPacket.Payload.TimeBootMs, Core.TimeProvider.GetTimestamp());
             }
             else
             {
-                x.AddOrUpdate(new ClientNamedProbe<int>(name, namedValueFloatPacket.Payload.Value, namedValueFloatPacket.Payload.TimeBootMs));
+                x.AddOrUpdate(new ClientNamedProbe<int>(name, namedValueFloatPacket.Payload.Value, namedValueFloatPacket.Payload.TimeBootMs,Core.TimeProvider.GetTimestamp()));
                 if (_config.MaxCollectionSize > 0 && x.Count > _config.MaxCollectionSize)
                 {
-                    var itemsToDelete = x.Items.Cast<ClientNamedProbe<int>>().OrderBy(y => y.LastUpdate)
+                    var itemsToDelete = x.Items.Cast<ClientNamedProbe<int>>().OrderBy(y => y.LastUpdateTimestamp)
                         .Take(_config.MaxCollectionSize - x.Count).ToImmutableArray();
                     x.Remove(itemsToDelete);
                 }
@@ -140,14 +157,14 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
             if (found.HasValue)
             {
                 var probe = (ClientNamedProbe<float>)found.Value;
-                probe.Update(namedValueFloatPacket.Payload.Value, namedValueFloatPacket.Payload.TimeBootMs);
+                probe.Update(namedValueFloatPacket.Payload.Value, namedValueFloatPacket.Payload.TimeBootMs,Core.TimeProvider.GetTimestamp());
             }
             else
             {
-                x.AddOrUpdate(new ClientNamedProbe<float>(name, namedValueFloatPacket.Payload.Value, namedValueFloatPacket.Payload.TimeBootMs));
+                x.AddOrUpdate(new ClientNamedProbe<float>(name, namedValueFloatPacket.Payload.Value, namedValueFloatPacket.Payload.TimeBootMs,Core.TimeProvider.GetTimestamp()));
                 if (_config.MaxCollectionSize > 0 && x.Count > _config.MaxCollectionSize)
                 {
-                    var itemsToDelete = x.Items.Cast<ClientNamedProbe<float>>().OrderBy(y => y.LastUpdate)
+                    var itemsToDelete = x.Items.Cast<ClientNamedProbe<float>>().OrderBy(y => y.LastUpdateTimestamp)
                         .Take(_config.MaxCollectionSize - x.Count).ToImmutableArray();
                     x.Remove(itemsToDelete);
                 }
@@ -162,4 +179,10 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
         InternalFilter<DebugFloatArrayPacket>().Select(x => x.Payload);
     public IObservable<MemoryVectPayload> MemoryVector => 
         InternalFilter<MemoryVectPacket>().Select(x => x.Payload);
+
+    public override void Dispose()
+    {
+        _disposeIt.Dispose();
+        base.Dispose();
+    }
 }

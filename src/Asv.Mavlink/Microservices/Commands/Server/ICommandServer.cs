@@ -7,7 +7,7 @@ namespace Asv.Mavlink
 {
     /// Represents a command server that receives and sends commands.
     /// /
-    public interface ICommandServer
+    public interface ICommandServer:IMavlinkMicroserviceServer
     {
         /// <summary>
         /// Gets the event stream for receiving CommandLong packets.

@@ -6,7 +6,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Represents a GPS client.
     /// </summary>
-    public interface IDgpsClient
+    public interface IDgpsClient:IMavlinkMicroserviceClient
     {
         /// <summary>
         /// Sends RTCM data to a specific destination. </summary> <param name="data">The byte array containing the RTCM data to be sent.</param> <param name="length">The length of the RTCM data in bytes.</param> <param name="cancel">A CancellationToken that can be used to cancel the operation.</param> <returns>

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Asv.Mavlink.Diagnostic.Server;
 
-public interface IDiagnosticServer
+public interface IDiagnosticServer:IMavlinkMicroserviceServer
 {
     bool IsEnabled { get; set; }
     Task Send(string name, float value,CancellationToken cancel = default);

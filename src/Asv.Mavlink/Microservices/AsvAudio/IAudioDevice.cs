@@ -74,6 +74,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
 {
     private readonly ILogger _logger;
     private readonly Func<Action<AsvAudioStreamPacket>, CancellationToken, Task> _sendPacketDelegate;
+    private readonly ICoreServices _core;
     private readonly RxValue<string> _name;
     private long _lastHit;
     private readonly Subject<Unit> _onLinePing;
@@ -93,16 +94,16 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
         Func<Action<AsvAudioStreamPacket>, 
             CancellationToken, Task> sendPacketDelegate,
         OnRecvAudioDelegate onRecvAudioDelegate,
-        ILoggerFactory? logFactory = null)
+        ICoreServices core)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<AudioDevice>();
+        _logger = core.Log.CreateLogger<AudioDevice>();
         ArgumentNullException.ThrowIfNull(factory);
         ArgumentNullException.ThrowIfNull(packet);
         _inputEncoderAudioStream = new Subject<ReadOnlyMemory<byte>>().DisposeItWith(Disposable);
         _inputDecoderAudioStream = new Subject<ReadOnlyMemory<byte>>().DisposeItWith(Disposable);
         
         _sendPacketDelegate = sendPacketDelegate ?? throw new ArgumentNullException(nameof(sendPacketDelegate));
+        _core = core;
         var onRecvAudioDelegate1 = onRecvAudioDelegate ?? throw new ArgumentNullException(nameof(onRecvAudioDelegate));
         SystemId = packet.SystemId;
         ComponentId = packet.ComponentId;
@@ -187,13 +188,12 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
     private void Touch()
     {
         if (IsDisposed) return;
-        Interlocked.Exchange(ref _lastHit, DateTime.Now.ToBinary());
+        Interlocked.Exchange(ref _lastHit, _core.TimeProvider.GetTimestamp());
         _onLinePing.OnNext(Unit.Default);
     }
-    public DateTime GetLastHit()
+    public long GetLastHit()
     {
-        var lastHit = Interlocked.CompareExchange(ref _lastHit, 0, 0);
-        return DateTime.FromBinary(lastHit);
+        return Interlocked.CompareExchange(ref _lastHit, 0, 0);
     }
     internal void Update(AsvAudioOnlinePayload pktPayload)
     {

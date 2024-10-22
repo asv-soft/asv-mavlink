@@ -8,7 +8,7 @@ namespace Asv.Mavlink;
 /// <summary>
 /// Represents a client for retrieving ADS-B vehicle data.
 /// </summary>
-public interface IAdsbVehicleClient : IDisposable
+public interface IAdsbVehicleClient : IMavlinkMicroserviceClient
 {
     /// <summary>
     /// Gets an observable sequence of AdsbVehiclePayload, representing the events when a target is detected.

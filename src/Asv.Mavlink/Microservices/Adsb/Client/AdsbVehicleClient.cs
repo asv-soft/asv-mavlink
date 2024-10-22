@@ -1,14 +1,13 @@
 ﻿#nullable enable
 using System;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
 using Microsoft.Extensions.Logging;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -20,35 +19,29 @@ public class AdsbVehicleClientConfig
 
 public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
 {
-    private readonly IScheduler? _scheduler;
-    private readonly Subject<AdsbVehiclePayload> _onAdsbTarget;
+    private readonly System.Reactive.Subjects.Subject<AdsbVehiclePayload> _onAdsbTarget;
     private readonly SourceCache<AdsbVehicle, uint> _targetSource;
     private readonly RxValue<TimeSpan> _targetTimeout;
+    private readonly IDisposable _disposeIt;
 
 
-    public AdsbVehicleClient(
-        IMavlinkV2Connection connection, 
-        MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq, 
-        AdsbVehicleClientConfig config,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null) : base("ADSB", connection, identity, seq,timeProvider,scheduler, logFactory)
+    public AdsbVehicleClient(MavlinkClientIdentity identity, AdsbVehicleClientConfig config,ICoreServices core) 
+        : base("ADSB", identity, core)
     {
-        _scheduler = scheduler ?? System.Reactive.Concurrency.Scheduler.Default;
-        timeProvider ??= TimeProvider.System;
-        _onAdsbTarget = new Subject<AdsbVehiclePayload>().DisposeItWith(Disposable);
-        InternalFilter<AdsbVehiclePacket>()
+        _onAdsbTarget = new System.Reactive.Subjects.Subject<AdsbVehiclePayload>();
+        var d1 = InternalFilter<AdsbVehiclePacket>()
             .Select(p => p.Payload)
-            .Subscribe(_onAdsbTarget).DisposeItWith(Disposable);
+            .Subscribe(_onAdsbTarget);
 
         _targetTimeout =
-            new RxValue<TimeSpan>(TimeSpan.FromMilliseconds(config.TargetTimeoutMs)).DisposeItWith(Disposable);
-        _targetSource = new SourceCache<AdsbVehicle, uint>(v => v.IcaoAddress).DisposeItWith(Disposable);
+            new RxValue<TimeSpan>(TimeSpan.FromMilliseconds(config.TargetTimeoutMs));
+        _targetSource = new SourceCache<AdsbVehicle, uint>(v => v.IcaoAddress);
         Targets = _targetSource.Connect().Transform(v => (IAdsbVehicle)v);
-        _onAdsbTarget.Subscribe(UpdateTarget).DisposeItWith(Disposable);
-        timeProvider.CreateTimer(DeleteOldTargets, null, TimeSpan.FromMilliseconds(config.CheckOldDevicesMs), TimeSpan.FromMilliseconds(config.CheckOldDevicesMs))
-            .DisposeItWith(Disposable);
+        var d2 =_onAdsbTarget.Subscribe(UpdateTarget);
+        var d3  = core.TimeProvider.CreateTimer(DeleteOldTargets, null,
+            TimeSpan.FromMilliseconds(config.CheckOldDevicesMs), TimeSpan.FromMilliseconds(config.CheckOldDevicesMs));
+        _disposeIt = Disposable.Combine(_onAdsbTarget, _targetTimeout, _targetSource, d1, d2, d3);
+
     }
 
     private void DeleteOldTargets(object? state)
@@ -56,7 +49,7 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
         if (_targetSource.Count == 0) return;
         _targetSource.Edit(update =>
         {
-            var itemsToDelete = update.Items.Where(device => (TimeProvider.GetElapsedTime(device.GetLastHit()) > _targetTimeout.Value))
+            var itemsToDelete = update.Items.Where(device => Core.TimeProvider.GetElapsedTime(device.GetLastHit()) > _targetTimeout.Value)
                 .ToList();
             foreach (var item in itemsToDelete)
             {
@@ -74,11 +67,11 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
             var lookup = u.Lookup(payload.IcaoAddress);
             if (lookup.HasValue)
             {
-                lookup.Value.InternalUpdate(payload, TimeProvider.GetTimestamp());
+                lookup.Value.InternalUpdate(payload, Core.TimeProvider.GetTimestamp());
             }
             else
             {
-                u.AddOrUpdate(new AdsbVehicle(payload,TimeProvider.GetTimestamp()));
+                u.AddOrUpdate(new AdsbVehicle(payload,Core.TimeProvider.GetTimestamp()));
             }
         });
     }
@@ -86,6 +79,12 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
     public IObservable<AdsbVehiclePayload> OnTarget => _onAdsbTarget;
     public IObservable<IChangeSet<IAdsbVehicle, uint>> Targets { get; }
     public IRxEditableValue<TimeSpan> TargetTimeout => _targetTimeout;
+
+    public override void Dispose()
+    {
+        _disposeIt.Dispose();
+        base.Dispose();
+    }
 }
 
 public class AdsbVehicle : DisposableOnceWithCancel, IAdsbVehicle
@@ -151,4 +150,6 @@ public class AdsbVehicle : DisposableOnceWithCancel, IAdsbVehicle
         _squawk.OnNext(payload.Squawk);
         Interlocked.Exchange(ref _lastHit, dateTime);
     }
+    
+     
 }

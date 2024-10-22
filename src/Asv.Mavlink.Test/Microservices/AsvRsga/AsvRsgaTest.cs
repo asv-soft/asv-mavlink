@@ -40,7 +40,7 @@ public class AsvRsgaTest
 
         server.OnCompatibilityRequest.Subscribe(x =>
         {
-            server.SendCompatilityResponse(inner =>
+            server.SendCompatibilityResponse(inner =>
             {
                 inner.RequestId = x.RequestId;
                 RsgaHelper.SetSupportedModes(inner, origin);

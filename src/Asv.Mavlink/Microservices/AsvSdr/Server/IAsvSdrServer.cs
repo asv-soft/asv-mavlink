@@ -8,7 +8,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Interface for the ASV SDR server.
     /// </summary>
-    public interface IAsvSdrServer
+    public interface IAsvSdrServer:IMavlinkMicroserviceServer
     {
         /// Summary:
         /// Starts the execution of some process.

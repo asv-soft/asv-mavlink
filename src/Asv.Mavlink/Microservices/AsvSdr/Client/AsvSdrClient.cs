@@ -1,38 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvSdr;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Asv.Mavlink;
 
 public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
 {
     private readonly MavlinkClientIdentity _identity;
-    private readonly RxValue<AsvSdrOutStatusPayload> _status;
+    private readonly RxValueBehaviour<AsvSdrOutStatusPayload?> _status;
     private uint _requestCounter;
     private readonly ILogger _logger;
+    private readonly IDisposable _statusSubscribe;
 
-    public AsvSdrClient(
-        IMavlinkV2Connection connection, 
-        MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null)
-        : base("SDR", connection, identity, seq,timeProvider,scheduler,logFactory)
+    public AsvSdrClient(MavlinkClientIdentity identity,
+        ICoreServices core)
+        : base("SDR", identity, core)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<AsvSdrClient>();
+        _logger = core.Log.CreateLogger<AsvSdrClient>();
         _identity = identity;
-        _status = new RxValue<AsvSdrOutStatusPayload>().DisposeItWith(Disposable);
-        InternalFilter<AsvSdrOutStatusPacket>().Select(p => p.Payload).Subscribe(_status).DisposeItWith(Disposable);
+        _status = new RxValueBehaviour<AsvSdrOutStatusPayload?>(default);
+        _statusSubscribe = InternalFilter<AsvSdrOutStatusPacket>().Select(p => p.Payload).Subscribe(_status);
         var dataPacketsHashSet = new HashSet<int>();
         foreach (var item in Enum.GetValues(typeof(AsvSdrCustomMode)).Cast<uint>())
         {
@@ -69,7 +62,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         
     }
 
-    public IRxValue<AsvSdrOutStatusPayload> Status => _status;
+    public IRxValue<AsvSdrOutStatusPayload?> Status => _status;
 
     public IObservable<(Guid, AsvSdrRecordPayload)> OnRecord { get; }
 
@@ -78,8 +71,8 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         var id = GenerateRequestIndex();
         return InternalCall<AsvSdrRecordResponsePayload, AsvSdrRecordRequestPacket, AsvSdrRecordResponsePacket>(p =>
         {
-            p.Payload.TargetComponent = _identity.TargetComponentId;
-            p.Payload.TargetSystem = _identity.TargetSystemId;
+            p.Payload.TargetComponent = _identity.Target.ComponentId;
+            p.Payload.TargetSystem = _identity.Target.SystemId;
             p.Payload.Skip = skip;
             p.Payload.Count = count;
             p.Payload.RequestId = id;
@@ -99,8 +92,8 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         var id = GenerateRequestIndex();
         return InternalCall<AsvSdrRecordDeleteResponsePayload, AsvSdrRecordDeleteRequestPacket, AsvSdrRecordDeleteResponsePacket>(p =>
         {
-            p.Payload.TargetComponent = _identity.TargetComponentId;
-            p.Payload.TargetSystem = _identity.TargetSystemId;
+            p.Payload.TargetComponent = _identity.Target.ComponentId;
+            p.Payload.TargetSystem = _identity.Target.SystemId;
             p.Payload.RequestId = id;
             recordId.TryWriteBytes(p.Payload.RecordGuid);
         },p=> p.Payload.RequestId == id,resultGetter:p=>p.Payload,cancel: cancel);
@@ -111,8 +104,8 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         var id = GenerateRequestIndex();
         return InternalCall<AsvSdrRecordTagResponsePayload, AsvSdrRecordTagRequestPacket, AsvSdrRecordTagResponsePacket>(p =>
         {
-            p.Payload.TargetComponent = _identity.TargetComponentId;
-            p.Payload.TargetSystem = _identity.TargetSystemId;
+            p.Payload.TargetComponent = _identity.Target.ComponentId;
+            p.Payload.TargetSystem = _identity.Target.SystemId;
             recordId.TryWriteBytes(p.Payload.RecordGuid);
             p.Payload.Skip = skip;
             p.Payload.Count = count;
@@ -127,8 +120,8 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         var id = GenerateRequestIndex();
         return InternalCall<AsvSdrRecordTagDeleteResponsePayload, AsvSdrRecordTagDeleteRequestPacket, AsvSdrRecordTagDeleteResponsePacket>(p =>
         {
-            p.Payload.TargetComponent = _identity.TargetComponentId;
-            p.Payload.TargetSystem = _identity.TargetSystemId;
+            p.Payload.TargetComponent = _identity.Target.ComponentId;
+            p.Payload.TargetSystem = _identity.Target.SystemId;
             tagId.RecordGuid.TryWriteBytes(p.Payload.RecordGuid);
             tagId.TagGuid.TryWriteBytes(p.Payload.TagGuid);
             p.Payload.RequestId = id;
@@ -140,8 +133,8 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         var id = GenerateRequestIndex();
         return InternalCall<AsvSdrRecordDataResponsePayload, AsvSdrRecordDataRequestPacket, AsvSdrRecordDataResponsePacket>(p =>
         {
-            p.Payload.TargetComponent = _identity.TargetComponentId;
-            p.Payload.TargetSystem = _identity.TargetSystemId;
+            p.Payload.TargetComponent = _identity.Target.ComponentId;
+            p.Payload.TargetSystem = _identity.Target.SystemId;
             recordId.TryWriteBytes(p.Payload.RecordGuid);
             p.Payload.Skip = skip;
             p.Payload.Count = count;
@@ -159,8 +152,8 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         var result = await InternalCall<(AsvSdrCalibTablePayload,AsvSdrCalibAccPayload), AsvSdrCalibTableReadPacket>(
             arg =>
             {
-                arg.Payload.TargetComponent = _identity.TargetComponentId;
-                arg.Payload.TargetSystem = _identity.TargetSystemId;
+                arg.Payload.TargetComponent = _identity.Target.ComponentId;
+                arg.Payload.TargetSystem = _identity.Target.SystemId;
                 arg.Payload.RequestId = id;
                 arg.Payload.TableIndex = tableIndex;
             }, (IPacketV2<IPayload> input, out (AsvSdrCalibTablePayload, AsvSdrCalibAccPayload) tuple) =>
@@ -195,8 +188,8 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         var result = await InternalCall<(AsvSdrCalibTableRowPayload,AsvSdrCalibAccPayload), AsvSdrCalibTableRowReadPacket>(
             arg =>
             {
-                arg.Payload.TargetComponent = _identity.TargetComponentId;
-                arg.Payload.TargetSystem = _identity.TargetSystemId;
+                arg.Payload.TargetComponent = _identity.Target.ComponentId;
+                arg.Payload.TargetSystem = _identity.Target.SystemId;
                 arg.Payload.RequestId = id;
                 arg.Payload.TableIndex = tableIndex;
                 arg.Payload.RowIndex = rowIndex;
@@ -233,8 +226,8 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         var id = GenerateRequestIndex();
         return InternalSend<AsvSdrCalibTableUploadStartPacket>(p =>
         {
-            p.Payload.TargetComponent = _identity.TargetComponentId;
-            p.Payload.TargetSystem = _identity.TargetSystemId;
+            p.Payload.TargetComponent = _identity.Target.ComponentId;
+            p.Payload.TargetSystem = _identity.Target.SystemId;
             p.Payload.RequestId = id;
             argsFill(p.Payload);
         },cancel: cancel);
@@ -250,4 +243,11 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     #endregion
 
     public IObservable<AsvSdrSignalRawPayload> OnSignal { get; }
+
+    public override void Dispose()
+    {
+        _statusSubscribe.Dispose();
+        _status.Dispose();
+        base.Dispose();
+    }
 }

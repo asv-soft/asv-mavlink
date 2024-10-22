@@ -13,7 +13,7 @@ public interface INamedProbe<T>:IDisposable
 
 
 
-public interface IDiagnosticClient
+public interface IDiagnosticClient: IMavlinkMicroserviceClient
 {
     IObservable<IChangeSet<INamedProbe<float>,string>> FloatProbes { get; }
     IObservable<IChangeSet<INamedProbe<int>,string>> IntProbes { get; }

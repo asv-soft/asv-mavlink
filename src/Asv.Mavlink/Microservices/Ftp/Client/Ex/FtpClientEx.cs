@@ -16,7 +16,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class FtpClientEx : IFtpClientEx
+public class FtpClientEx : IFtpClientEx, IDisposable
 {
     private readonly ILogger _logger;
     private readonly SourceCache<IFtpEntry,string> _entryCache;
@@ -251,5 +251,10 @@ public class FtpClientEx : IFtpClientEx
             await Base.TerminateSession(file.Session, cancel).ConfigureAwait(false);
         }
         
+    }
+
+    public void Dispose()
+    {
+        _entryCache.Dispose();
     }
 }

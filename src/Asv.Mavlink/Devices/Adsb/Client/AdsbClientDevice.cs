@@ -13,28 +13,34 @@ public class AdsbClientDeviceConfig : ClientDeviceConfig
     public AdsbVehicleClientConfig Adsb { get; set; } = new();
 }
 
-public class AdsbClientDevice : ClientDevice, IAdsbClientDevice
+public class AdsbClientDevice(MavlinkClientIdentity identity, AdsbClientDeviceConfig config, ICoreServices core)
+    : ClientDevice(identity, config, core), IAdsbClientDevice
 {
-    public AdsbClientDevice(IMavlinkV2Connection connection,
-        MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq,
-        AdsbClientDeviceConfig config,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null, 
-        ILoggerFactory? loggerFactory = null)
-        : base(connection, identity, config, seq,timeProvider, scheduler, loggerFactory)
-    {
-        loggerFactory ??= NullLoggerFactory.Instance;
-        Adsb = new AdsbVehicleClient(connection, identity, seq, config.Adsb, timeProvider, scheduler,loggerFactory).DisposeItWith(Disposable);
-    }
+    private readonly AdsbVehicleClient _adsb = new(identity, config.Adsb, core);
+    private bool _disposedValue;
 
-    protected override string DefaultName => $"ADSB [{Identity.TargetSystemId:00},{Identity.TargetComponentId:00}]";
+    
 
     protected override Task InternalInit()
     {
         return Task.CompletedTask;
     }
-
     public override DeviceClass Class => DeviceClass.Adsb;
-    public IAdsbVehicleClient Adsb { get; }
+    public IAdsbVehicleClient Adsb => _adsb;
+    protected override void Dispose(bool disposing)
+    {
+        if (_disposedValue)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            // dispose managed state (managed objects).
+            _adsb.Dispose();
+        }
+        _disposedValue = true;
+        // free unmanaged resources (unmanaged objects) and override a finalizer below.
+        // set large fields to null.
+    }
 }

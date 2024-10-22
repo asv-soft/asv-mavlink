@@ -21,19 +21,14 @@ namespace Asv.Mavlink
         private readonly MavlinkPacketTransponder<AsvGbsOutStatusPacket,AsvGbsOutStatusPayload> _transponder;
 
         public AsvGbsServer(
-            IMavlinkV2Connection connection, 
-            IPacketSequenceCalculator seq,
             MavlinkIdentity identity,
             AsvGbsServerConfig config, 
-            TimeProvider? timeProvider = null,
-            IScheduler? rxScheduler = null,
-            ILoggerFactory? logFactory = null)
-            : base("GBS", connection, identity, seq, timeProvider, rxScheduler,logFactory)
+            ICoreServices core)
+            : base("GBS", identity, core)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _transponder =
-                new MavlinkPacketTransponder<AsvGbsOutStatusPacket, AsvGbsOutStatusPayload>(connection, identity, seq,timeProvider,logFactory)
-                    .DisposeItWith(Disposable);
+                new MavlinkPacketTransponder<AsvGbsOutStatusPacket, AsvGbsOutStatusPayload>(identity, core);
         }
 
         public void Start()
@@ -49,6 +44,12 @@ namespace Asv.Mavlink
         public Task SendDgps(Action<GpsRtcmDataPacket> changeCallback, CancellationToken cancel = default)
         {
             return InternalSend(changeCallback, cancel);
+        }
+
+        public override void Dispose()
+        {
+            _transponder.Dispose();
+            base.Dispose();
         }
     }
 }

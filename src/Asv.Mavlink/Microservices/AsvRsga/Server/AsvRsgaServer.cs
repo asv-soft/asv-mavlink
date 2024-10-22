@@ -13,27 +13,29 @@ namespace Asv.Mavlink;
 public class AsvRsgaServer:MavlinkMicroserviceServer,IAsvRsgaServer
 {
     private readonly Subject<AsvRsgaCompatibilityRequestPayload> _onCompatibilityRequest;
+    private readonly IDisposable _subscribe;
 
-    public AsvRsgaServer(
-        IMavlinkV2Connection connection, 
-        MavlinkIdentity identity, 
-        IPacketSequenceCalculator seq, 
-        TimeProvider? timeProvider = null,
-        IScheduler? rxScheduler = null,
-        ILoggerFactory? logFactory = null)
-        : base("RSGA", connection, identity, seq,timeProvider, rxScheduler,logFactory)
+    public AsvRsgaServer(MavlinkIdentity identity,ICoreServices core)
+        : base("RSGA", identity, core)
     {
-        _onCompatibilityRequest = new Subject<AsvRsgaCompatibilityRequestPayload>().DisposeItWith(Disposable);
-        InternalFilter<AsvRsgaCompatibilityRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
+        _onCompatibilityRequest = new Subject<AsvRsgaCompatibilityRequestPayload>();
+        _subscribe = InternalFilter<AsvRsgaCompatibilityRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
             .Select(x => x.Payload)
-            .Subscribe(_onCompatibilityRequest).DisposeItWith(Disposable);
+            .Subscribe(_onCompatibilityRequest);
 
     }
 
     public IObservable<AsvRsgaCompatibilityRequestPayload> OnCompatibilityRequest => _onCompatibilityRequest;
 
-    public Task SendCompatilityResponse(Action<AsvRsgaCompatibilityResponsePayload> fillCallback, CancellationToken cancel = default)
+    public Task SendCompatibilityResponse(Action<AsvRsgaCompatibilityResponsePayload> fillCallback, CancellationToken cancel = default)
     {
         return InternalSend<AsvRsgaCompatibilityResponsePacket>(x => fillCallback(x.Payload), cancel);
+    }
+
+    public override void Dispose()
+    {
+        _onCompatibilityRequest.Dispose();
+        _subscribe.Dispose();
+        base.Dispose();
     }
 }

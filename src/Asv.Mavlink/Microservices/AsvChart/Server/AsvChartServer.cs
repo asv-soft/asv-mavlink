@@ -9,6 +9,7 @@ using Asv.Mavlink.V2.AsvChart;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink;
@@ -26,33 +27,25 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
     private readonly SourceCache<AsvChartInfo,ushort> _charts;
     private volatile ushort _chartHash = 0;
     private int _changeHashLock;
+    private readonly IDisposable _disposeIt;
 
-    public AsvChartServer(
-        AsvChartServerConfig config,
-        IMavlinkV2Connection connection, 
-        MavlinkIdentity identity, 
-        IPacketSequenceCalculator seq, 
-        TimeProvider? timeProvider = null,
-        IScheduler? rxScheduler = null,
-        ILoggerFactory? logFactory = null)
-        :base("CHART", connection, identity, seq,timeProvider, rxScheduler, logFactory)
+    public AsvChartServer(MavlinkIdentity identity, AsvChartServerConfig config, ICoreServices core)
+        :base("CHART", identity, core)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<AsvChartServer>();
+        _logger = Core.Log.CreateLogger<AsvChartServer>();
         _config = config;
-        _charts = new SourceCache<AsvChartInfo,ushort>(x => x.Id)
-            .DisposeItWith(Disposable);
+        _charts = new SourceCache<AsvChartInfo, ushort>(x => x.Id);
+
+        var d1 = InternalFilter<AsvChartInfoRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
+            .Subscribe(OnRequestSignalInfo);
+        var d2 = InternalFilter<AsvChartDataRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
+            .Subscribe(OnRequestChartData);
         
-        InternalFilter<AsvChartInfoRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
-            .Subscribe(OnRequestSignalInfo)
-            .DisposeItWith(Disposable);
-        InternalFilter<AsvChartDataRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
-            .Subscribe(OnRequestChartData)
-            .DisposeItWith(Disposable);
+        // TODO: must using TimeProvider
+        var d3= _charts.Connect().Sample(TimeSpan.FromMilliseconds(_config.SendCollectionUpdateMs))
+            .Subscribe(InternalUpdateCollectionHash);
 
-        _charts.Connect().Sample(TimeSpan.FromMilliseconds(_config.SendCollectionUpdateMs))
-            .Subscribe(InternalUpdateCollectionHash).DisposeItWith(Disposable);
-
+        _disposeIt = Disposable.Combine(_charts,d2,d1,d3); 
     }
 
     private async void InternalUpdateCollectionHash(IChangeSet<AsvChartInfo, ushort> changeSet)
@@ -202,5 +195,11 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
             if (_config.SendSignalDelayMs > 0)
                 await Task.Delay(_config.SendSignalDelayMs).ConfigureAwait(false);
         }
+    }
+
+    public override void Dispose()
+    {
+        _disposeIt.Dispose();
+        base.Dispose();
     }
 }

@@ -18,13 +18,9 @@ public class AsvRsgaServerEx : DisposableOnceWithCancel, IAsvRsgaServerEx
     public AsvRsgaServerEx(
         IAsvRsgaServer server, 
         IStatusTextServer status, 
-        ICommandServerEx<CommandLongPacket> commands,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null)
+        ICommandServerEx<CommandLongPacket> commands )
     {
-        logFactory ??= NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<AsvRsgaServerEx>();
+        _logger = server.Core.Log.CreateLogger<AsvRsgaServerEx>();
         Base = server;
         server.OnCompatibilityRequest.Subscribe(OnCompatibilityRequest).DisposeItWith(Disposable);
         commands[(MavCmd)V2.AsvRsga.MavCmd.MavCmdAsvRsgaSetMode] = async (id,args, cancel) =>
@@ -51,7 +47,7 @@ public class AsvRsgaServerEx : DisposableOnceWithCancel, IAsvRsgaServerEx
                     modes.Add(mode);
                 }
             }
-            await Base.SendCompatilityResponse(tx =>
+            await Base.SendCompatibilityResponse(tx =>
             {
                 tx.RequestId = rx.RequestId;
                 tx.Result = AsvRsgaRequestAck.AsvRsgaRequestAckOk;
@@ -61,7 +57,7 @@ public class AsvRsgaServerEx : DisposableOnceWithCancel, IAsvRsgaServerEx
         catch (Exception e)
         {
             _logger.ZLogError(e,$"Error to get compatibility:{e.Message}");
-            await Base.SendCompatilityResponse(tx =>
+            await Base.SendCompatibilityResponse(tx =>
             {
                 tx.RequestId = rx.RequestId;
                 tx.Result = AsvRsgaRequestAck.AsvRsgaRequestAckFail;

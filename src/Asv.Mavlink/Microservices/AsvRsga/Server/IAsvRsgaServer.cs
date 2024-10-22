@@ -7,8 +7,8 @@ namespace Asv.Mavlink;
 
 
 
-public interface IAsvRsgaServer
+public interface IAsvRsgaServer:IMavlinkMicroserviceServer
 {
     IObservable<AsvRsgaCompatibilityRequestPayload> OnCompatibilityRequest { get; }
-    Task SendCompatilityResponse(Action<AsvRsgaCompatibilityResponsePayload> fillCallback, CancellationToken cancel = default);
+    Task SendCompatibilityResponse(Action<AsvRsgaCompatibilityResponsePayload> fillCallback, CancellationToken cancel = default);
 }

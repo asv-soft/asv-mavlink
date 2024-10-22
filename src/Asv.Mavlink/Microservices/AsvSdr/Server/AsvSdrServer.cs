@@ -20,22 +20,14 @@ namespace Asv.Mavlink
         private readonly ILogger _logger;
         private readonly MavlinkPacketTransponder<AsvSdrOutStatusPacket, AsvSdrOutStatusPayload> _transponder;
 
-        public AsvSdrServer(IMavlinkV2Connection connection,
-            MavlinkIdentity identity,
-            AsvSdrServerConfig config, 
-            IPacketSequenceCalculator seq,
-            TimeProvider? timeProvider = null,
-            IScheduler? rxScheduler = null,
-            ILoggerFactory? logFactory = null) 
-            : base("SDR", connection, identity, seq,timeProvider, rxScheduler,logFactory)
+        public AsvSdrServer(MavlinkIdentity identity, AsvSdrServerConfig config, ICoreServices core) 
+            : base("SDR", identity, core)
         {
-            
             _config = config ?? throw new ArgumentNullException(nameof(config));
-            logFactory??=NullLoggerFactory.Instance;
-            _logger = logFactory.CreateLogger<AsvSdrServer>();
+            _logger = core.Log.CreateLogger<AsvSdrServer>();
             _transponder =
-                new MavlinkPacketTransponder<AsvSdrOutStatusPacket, AsvSdrOutStatusPayload>(connection, identity, seq,timeProvider,logFactory)
-                    .DisposeItWith(Disposable);
+                new MavlinkPacketTransponder<AsvSdrOutStatusPacket, AsvSdrOutStatusPayload>(identity, core);
+                    
             _transponder.Set(x =>
             {
                 x.SignalOverflow = float.NaN;
@@ -63,6 +55,8 @@ namespace Asv.Mavlink
                 InternalFilter<AsvSdrCalibTableUploadStartPacket>(p => p.Payload.TargetSystem,
                         p => p.Payload.TargetComponent)
                     .Publish().RefCount();
+            
+            
         }
 
         public void Start()
@@ -137,7 +131,7 @@ namespace Asv.Mavlink
         {
             if (mode == AsvSdrCustomMode.AsvSdrCustomModeIdle)
                 throw new ArgumentException("Can't create message for IDLE mode", nameof(mode));
-            return Connection.CreatePacketByMessageId((int)mode);
+            return Core.Connection.CreatePacketByMessageId((int)mode);
         }
 
         #region Calibration
@@ -191,5 +185,11 @@ namespace Asv.Mavlink
         }
 
         #endregion
+
+        public override void Dispose()
+        {
+            _transponder.Dispose();
+            base.Dispose();
+        }
     }
 }

@@ -17,15 +17,9 @@ public class AsvRsgaClientEx : DisposableOnceWithCancel, IAsvRsgaClientEx
     private readonly ILogger _logger;
     private readonly ICommandClient _commandClient;
     private readonly SourceList<AsvRsgaCustomMode> _supportedModes;
-    public AsvRsgaClientEx(
-        IAsvRsgaClient client, 
-        ICommandClient commandClient,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null)
+    public AsvRsgaClientEx(IAsvRsgaClient client, ICommandClient commandClient)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<AsvRsgaClientEx>();
+        _logger = client.Core.Log.CreateLogger<AsvRsgaClientEx>();
         _commandClient = commandClient;
         Base = client;
         _supportedModes = new SourceList<AsvRsgaCustomMode>().DisposeItWith(Disposable);

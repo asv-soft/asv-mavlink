@@ -1,7 +1,5 @@
 using System;
-using System.Reactive.Concurrency;
-using Asv.Common;
-using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace Asv.Mavlink;
 
@@ -11,33 +9,59 @@ public class ServerDeviceConfig
     public StatusTextLoggerConfig StatusText { get; set; } = new();
 }
 
-public class ServerDevice: DisposableOnceWithCancel, IServerDevice
+public class ServerDevice(MavlinkIdentity identity, ServerDeviceConfig config, ICoreServices core)
+    : IServerDevice, IDisposable, IAsyncDisposable
 {
-    public ServerDevice(IMavlinkV2Connection connection,
-        IPacketSequenceCalculator seq, 
-        MavlinkIdentity identity,
-        ServerDeviceConfig config,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null)
-    {
-        Connection = connection;
-        Seq = seq;
-        Identity = identity;
-        Scheduler = scheduler ?? System.Reactive.Concurrency.Scheduler.Default;
-        Heartbeat =
-            new HeartbeatServer(connection, seq, identity, config.Heartbeat, timeProvider, scheduler, logFactory).DisposeItWith(Disposable);
-        StatusText = new StatusTextServer(connection, seq, identity, config.StatusText, timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
-    }
-    public IMavlinkV2Connection Connection { get; }
-    public IPacketSequenceCalculator Seq { get; }
-    public IScheduler Scheduler { get; }
-    public MavlinkIdentity Identity { get; }
-    public IStatusTextServer StatusText { get; }
-    public IHeartbeatServer Heartbeat { get; }
-    
+    private readonly HeartbeatServer _heartbeat = new(identity, config.Heartbeat, core);
+    private readonly StatusTextServer _statusText = new(identity, config.StatusText,core);
+
+    public ICoreServices Core { get; } = core;
+    public MavlinkIdentity Identity { get; } = identity;
+
+    public IStatusTextServer StatusText => _statusText;
+
+    public IHeartbeatServer Heartbeat => _heartbeat;
+
     public virtual void Start()
     {
         Heartbeat.Start();
+    }
+
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _heartbeat.Dispose();
+            _statusText.Dispose();
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual async ValueTask DisposeAsyncCore()
+    {
+        await CastAndDispose(_heartbeat).ConfigureAwait(false);
+        await CastAndDispose(_statusText).ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await DisposeAsyncCore().ConfigureAwait(false);
+        GC.SuppressFinalize(this);
     }
 }

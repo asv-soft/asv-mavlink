@@ -105,8 +105,8 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
             {
                 arg.RowIndex = req.RowIndex;
                 arg.TableIndex = Index;
-                arg.TargetComponent = _ifc.Identity.TargetComponentId;
-                arg.TargetSystem = _ifc.Identity.TargetSystemId;
+                arg.TargetComponent = _ifc.Identity.Target.ComponentId;
+                arg.TargetSystem = _ifc.Identity.Target.SystemId;
                 arg.RefFreq = value.FrequencyHz;
                 arg.RefPower = value.RefPower;
                 arg.RefValue = value.RefValue;

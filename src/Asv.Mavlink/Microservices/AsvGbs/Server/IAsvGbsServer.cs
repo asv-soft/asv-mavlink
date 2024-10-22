@@ -9,7 +9,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Interface that defines the server for AsvGbs.
     /// </summary>
-    public interface IAsvGbsServer
+    public interface IAsvGbsServer: IMavlinkMicroserviceServer
     {
         /// <summary>
         /// Starts the AsvGbs server.

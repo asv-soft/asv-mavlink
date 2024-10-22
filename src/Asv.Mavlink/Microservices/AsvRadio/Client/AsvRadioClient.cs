@@ -11,13 +11,8 @@ namespace Asv.Mavlink;
 public class AsvRadioClient : MavlinkMicroserviceClient, IAsvRadioClient
 {
     
-    public AsvRadioClient(IMavlinkV2Connection connection,
-        MavlinkClientIdentity identity,
-        IPacketSequenceCalculator seq,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null) 
-        : base(AsvRadioHelper.IfcName, connection, identity, seq,timeProvider,scheduler, logFactory)
+    public AsvRadioClient(MavlinkClientIdentity identity, ICoreServices core) 
+        : base(AsvRadioHelper.IfcName, identity, core)
     {
         Status = InternalFilter<AsvRadioStatusPacket>()
             .Select(p => p.Payload).Publish().RefCount();
@@ -29,8 +24,8 @@ public class AsvRadioClient : MavlinkMicroserviceClient, IAsvRadioClient
     {
         return InternalCall<AsvRadioCapabilitiesResponsePayload, AsvRadioCapabilitiesRequestPacket, AsvRadioCapabilitiesResponsePacket>(x =>
         {
-            x.Payload.TargetComponent = Identity.TargetComponentId;
-            x.Payload.TargetSystem = Identity.TargetSystemId;
+            x.Payload.TargetComponent = Identity.Target.ComponentId;
+            x.Payload.TargetSystem = Identity.Target.SystemId;
         },_=> true, resultGetter:x=>x.Payload,cancel: cancel);
     }
 
@@ -39,8 +34,8 @@ public class AsvRadioClient : MavlinkMicroserviceClient, IAsvRadioClient
     {
         return InternalCall<AsvRadioCodecCapabilitiesResponsePayload, AsvRadioCodecCapabilitiesRequestPacket, AsvRadioCodecCapabilitiesResponsePacket>(x =>
         {
-            x.Payload.TargetComponent = Identity.TargetComponentId;
-            x.Payload.TargetSystem = Identity.TargetSystemId;
+            x.Payload.TargetComponent = Identity.Target.ComponentId;
+            x.Payload.TargetSystem = Identity.Target.SystemId;
             x.Payload.Skip = (ushort)skip;
             x.Payload.Count = (byte)count;
         },x=> x.Payload.Skip == skip, resultGetter:x=>x.Payload,cancel: cancel);
