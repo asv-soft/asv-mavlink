@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-rc'
 
 env:
   PATH_TO_PROJECTS: ${{ github.workspace }}\src
@@ -58,6 +60,11 @@ jobs:
         run: |
           cd src    
           dotnet build -c Release --no-restore    
+      
+      - name: Test projects
+        run: | 
+          cd src
+          dotnet test 
 
       - name: Packing projects to Nuget
         run: |
