@@ -29,6 +29,7 @@ class Program
         app.Add<BenchmarkBinSerializationCommand>();
         app.Add<BenchmarkSerializationPacket>();
         app.Add<PacketViewerCommand>();
+        app.Add<GenerateDiagnosticsCommand>();
         await app.RunAsync(args);
     }
 }
