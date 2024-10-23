@@ -3,13 +3,11 @@ using System;
 using System.Buffers;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Abstractions;
 using Asv.Common;
 using Asv.IO;
 
 namespace Asv.Mavlink;
-
-
-
 
 public class ListDataFile<TMetadata> : DisposableOnce, IListDataFile<TMetadata> 
     where TMetadata : ISizedSpanSerializable, new()
@@ -33,9 +31,9 @@ public class ListDataFile<TMetadata> : DisposableOnce, IListDataFile<TMetadata>
         BinSerialize.WriteUShort(ref buffer,crc);
     }
 
-    public static ListDataFileFormat? ReadHeader(string filePath)
+    public ListDataFileFormat? ReadHeader(string filePath)
     {
-        using var file = File.OpenRead(filePath);
+        using var file = _fileSystem.File.OpenRead(filePath);
         return ReadHeader(file);
     }
     public static void WriteHeader(Stream stream, ListDataFileFormat header)
@@ -88,7 +86,7 @@ public class ListDataFile<TMetadata> : DisposableOnce, IListDataFile<TMetadata>
             
             return header;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return null;
         }
@@ -114,10 +112,13 @@ public class ListDataFile<TMetadata> : DisposableOnce, IListDataFile<TMetadata>
     private readonly int _startRowByteIndex;
     private readonly int _stopRowByteIndex;
     private TMetadata _metadata;
+    private IFileSystem _fileSystem;
 
-    public ListDataFile(Stream stream, ListDataFileFormat header, bool disposeSteam)
+    public ListDataFile(Stream stream, ListDataFileFormat header, bool disposeSteam, IFileSystem? fileSystem = null)
     {
-        if (header == null) throw new ArgumentNullException(nameof(header));
+        ArgumentNullException.ThrowIfNull(header);
+        fileSystem ??= new FileSystem();
+        _fileSystem = fileSystem;
         header.Validate();
         Header = header;
         _stream = stream ?? throw new ArgumentNullException(nameof(stream));
@@ -129,7 +130,7 @@ public class ListDataFile<TMetadata> : DisposableOnce, IListDataFile<TMetadata>
         _rowDataSize = header.ItemMaxSize;
         _rowSize = (ushort)(1U /*StartRowMagicByte*/ + _rowDataSize /*MAX DATA SIZE*/ + 1U /*StopRowMagicByte*/ + 2U) /*CRC*/;
         _startRowByteIndex = 0;
-        _stopRowByteIndex = (int)(_rowSize - 3);
+        _stopRowByteIndex = (_rowSize - 3);
 
         var data = ArrayPool<byte>.Shared.Rent(ListDataFileFormat.MaxSize);
         for (var i = 0; i < ListDataFileFormat.MaxSize; i++)
