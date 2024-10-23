@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reactive.Concurrency;
 using System.Text;
 using System.Threading.Tasks;
@@ -82,6 +83,10 @@ internal class Metric
     
     public class MetricEqualityComparer : IEqualityComparer<Metric>
     {
+        public static readonly Lazy<MetricEqualityComparer> Instance = new (() => new MetricEqualityComparer());
+
+        private MetricEqualityComparer() { }
+        
         public bool Equals(Metric? x, Metric? y)
         {
             if (ReferenceEquals(x, y))
@@ -99,14 +104,19 @@ internal class Metric
 
         public int GetHashCode(Metric obj)
         {
-            return obj.Name.GetHashCode() ^ obj.Type.GetHashCode();
+            ArgumentNullException.ThrowIfNull(obj);
+
+            var hashName = obj.Name.GetHashCode();
+            var hashType = obj.Type.GetHashCode();
+            
+            return (hashName * 397) ^ hashType;
         }
     }
 }
 
 internal class DiagnosticsConfig
 {
-    internal ISet<Metric> Metrics { get; private set; } = new HashSet<Metric>(new Metric.MetricEqualityComparer());
+    internal ISet<Metric> Metrics { get; set; } = new HashSet<Metric>(Metric.MetricEqualityComparer.Instance.Value);
 }
 
 public class GenerateDiagnosticsCommand
@@ -117,16 +127,16 @@ public class GenerateDiagnosticsCommand
         DefaultConfigFileName
     );
 
-    private readonly ISet<Metric> _exampleMetrics = new HashSet<Metric>(new Metric.MetricEqualityComparer())
+    private readonly Metric[] _exampleMetrics =
     {
-        new Metric
+        new()
         {
             Name = "Metric int",
             Type = MetricType.Int,
             Max = $"{int.MinValue}",
             Min = $"{int.MaxValue}",
         },
-        new Metric
+        new()
         { 
             Name = "Metric float", 
             Type = MetricType.Float, 
@@ -170,6 +180,7 @@ public class GenerateDiagnosticsCommand
         }
 
         var cfg = cfgJson.Get<DiagnosticsConfig>();
+        cfg.Metrics = cfg.Metrics.OrderBy(x => x.Name).ToHashSet(Metric.MetricEqualityComparer.Instance.Value);
 
         if (connectionString is not null)
         {
