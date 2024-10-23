@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
+using Asv.Mavlink.Diagnostic.Client;
 
 namespace Asv.Mavlink;
 
@@ -17,17 +18,7 @@ public interface IVehicleClient:IClientDevice
     /// <returns>The ICommandClient property.</returns>
     ICommandClient Commands { get; }
 
-    /// <summary>
-    /// Gets the debug client for the current software.
-    /// </summary>
-    /// <remarks>
-    /// The debug client provides debugging functionality and allows interaction with the debugger.
-    /// </remarks>
-    /// <value>
-    /// The debug client interface.
-    /// </value>
-    IDebugClient Debug { get; }
-    ITraceStreamClient Trace { get; }
+    IDiagnosticClient Diagnostic { get; }
 
     /// <summary>
     /// Gets or sets the Dgps client. </summary>

@@ -74,6 +74,7 @@
     <Folder Include="Devices\Rsga\Server\" />
     <Folder Include="Devices\Vehicles\Client\Px4\Plane\" />
     <Folder Include="Devices\Vehicles\Server\" />
+    <Folder Include="Devices\_Server\" />
     <Folder Include="Microservices\Commands\Client\Ex\" />
     <Folder Include="Microservices\Dgps\Server\" />
     <Folder Include="Microservices\Gnss\Server\" />

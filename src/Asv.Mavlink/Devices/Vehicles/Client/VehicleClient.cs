@@ -6,6 +6,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
+using Asv.Mavlink.Diagnostic.Client;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Minimal;
 using Microsoft.Extensions.Logging;
@@ -30,16 +31,10 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
     private readonly VehicleClientConfig _config;
     private readonly ParamsClientEx _params;
 
-    protected VehicleClient(IMavlinkV2Connection connection,
-        MavlinkClientIdentity identity,
-        VehicleClientConfig config,
-        IPacketSequenceCalculator seq, 
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null):base(connection,identity,config,seq,timeProvider,scheduler,logFactory)
+    protected VehicleClient(MavlinkClientIdentity identity, VehicleClientConfig config, ICoreServices core)
+        :base(identity,config,core)
     {
-        logFactory ??= NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<VehicleClient>();
+        _logger = core.Log.CreateLogger<VehicleClient>();
         _config = config;
         Commands = new CommandClient(connection,identity,seq,config.Command,timeProvider,scheduler,logFactory).DisposeItWith(Disposable);
         Offboard = new OffboardClient(connection, identity, seq,timeProvider,scheduler,logFactory).DisposeItWith(Disposable);
@@ -89,8 +84,7 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
     protected abstract Task<IReadOnlyCollection<ParamDescription>> GetParamDescription();
 
     public ICommandClient Commands { get; }
-    public IDebugClient Debug { get; }
-    public ITraceStreamClient Trace { get; }
+    public IDiagnosticClient Diagnostic { get; }
     public IDgpsClient Dgps { get; }
     public IFtpClient Ftp { get; }
     public IGnssClientEx Gnss { get; }
