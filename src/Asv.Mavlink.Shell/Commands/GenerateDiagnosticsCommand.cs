@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reactive.Concurrency;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.Cfg.Json;
@@ -13,11 +11,12 @@ using Asv.IO;
 using Asv.Mavlink.Diagnostic.Server;
 using ConsoleAppFramework;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Spectre.Console;
 
 namespace Asv.Mavlink.Shell;
 
-[Newtonsoft.Json.JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(StringEnumConverter))]
 internal enum MetricType
 {
     Int,
@@ -149,7 +148,7 @@ public class GenerateDiagnosticsCommand
     /// <param name="configFilePath">-cfp, location of the config file for the generator</param>
     /// <returns></returns>
     [Command("generate-diagnostics")]
-    public int Run(string? connectionString, string? configFilePath = null)
+    public int Run(string? connectionString = null, string? configFilePath = null)
     {
         RunAsync(connectionString, configFilePath).Wait();
         ConsoleAppHelper.WaitCancelPressOrProcessExit();
