@@ -5,13 +5,16 @@ using System.IO;
 using System.Reactive.Concurrency;
 using System.Text;
 using System.Threading.Tasks;
+using Asv.Cfg;
+using Asv.Cfg.Json;
 using Asv.IO;
 using Asv.Mavlink.Diagnostic.Server;
 using ConsoleAppFramework;
+using Newtonsoft.Json;
 
 namespace Asv.Mavlink.Shell;
 
-file enum MetricType
+internal enum MetricType
 {
     Int,
     Float,
@@ -90,11 +93,36 @@ internal class Metric
 
 public class DiagnosticsConfig
 {
-    public string DefaultConfigFileName { get; set; } = "exampleConfig.txt";
+    internal ISet<Metric> Metrics { get; private set; } = new HashSet<Metric>(new Metric.MetricEqualityComparer());
 }
 
 public class GenerateDiagnosticsCommand
 {
+    private const string DefaultConfigFileName = "exampleConfig.json";
+    private static readonly string DefaultConfigFileFullPath = Path.Join(
+        Directory.GetCurrentDirectory(),
+        DefaultConfigFileName
+    );
+
+    private readonly ISet<Metric> _exampleMetrics = new HashSet<Metric>(new Metric.MetricEqualityComparer())
+    {
+        new Metric
+        {
+            Name = "Metric int",
+            Type = MetricType.Int,
+            Max = $"{int.MinValue}",
+            Min = $"{int.MaxValue}",
+        },
+        new Metric
+        { 
+            Name = "Metric float", 
+            Type = MetricType.Float, 
+            Max = $"{float.MaxValue}", 
+            Min = $"{float.MinValue}",
+        },
+        // TODO: Create examples for other types later
+    };
+    
     private MavlinkRouter _router;
     private DiagnosticsConfig _config;
     
@@ -121,7 +149,19 @@ public class GenerateDiagnosticsCommand
 
     private async Task RunAsync(string? connectionString, string? customConfigFilePath = null)
     {
-        var metrics = new HashSet<Metric>(new Metric.MetricEqualityComparer());
+        var cfgJson = new JsonOneFileConfiguration(
+            customConfigFilePath ?? DefaultConfigFileFullPath,
+            true,
+            null
+        );
+
+        if (customConfigFilePath is null)
+        {
+            var json = JsonConvert.SerializeObject(_exampleMetrics, Formatting.Indented);
+            await File.WriteAllTextAsync(DefaultConfigFileFullPath, json);
+        }
+        
+        var cfg = cfgJson.Get<DiagnosticsConfig>();
 
         var cfgFilePath = customConfigFilePath ?? CreateDefaultConfigFile();
 
@@ -129,9 +169,6 @@ public class GenerateDiagnosticsCommand
         {
             throw new FileNotFoundException("Could not find config file", cfgFilePath);
         }
-        
-        using var reader = new StreamReader(cfgFilePath);
-        await ParseCfgAsync(reader, metrics);
         
         if (connectionString is not null)
         {
@@ -146,7 +183,7 @@ public class GenerateDiagnosticsCommand
             ushort arrayId = 0;
             while (runForever)
             {
-                foreach (var metric in metrics)
+                foreach (var metric in cfg.Metrics)
                 {
                     switch (metric.Type)
                     {
@@ -169,35 +206,71 @@ public class GenerateDiagnosticsCommand
             }
         }
     }
-
-    private async Task ParseCfgAsync(StreamReader reader, HashSet<Metric> metrics)
+    
+    private async Task ParseCfgAsync(StreamReader reader, HashSet<Metric> metrics) //TODO: if cfg works with json => delete method
     {
         var metricSb = new StringBuilder();
         while (reader.EndOfStream)
         {
             var b = reader.Read();
 
-            if (b == ';')
+            string? name = null;
+            MetricType? type = null;
+            string? max = null;
+            string? min = null;
+
+            switch (b)
             {
-                
-                
-                metricSb.Clear();
-                continue;
+                case '_' when name is null:
+                    name = metricSb.ToString();
+                    metrics.Clear();
+                    continue;
+                case '_' when type is null:
+                    // type = metricSb.ToString();
+                    metrics.Clear();
+                    continue;
+                case '_' when max is null:
+                    max = metricSb.ToString();
+                    metrics.Clear();
+                    continue;
+                case '_' when min is null:
+                    min = metricSb.ToString();
+                    metrics.Clear();
+                    continue;
+                case ';':
+                    if (name is null || type is null || max is null || min is null)
+                    {
+                        throw new FormatException("Invalid format of the config file");
+                    }
+
+                    var metric = new Metric
+                    {
+                        Name = name,
+                        Type = type.Value,
+                        Max = max,
+                        Min = min
+                    };
+                    metrics.Add(metric);
+                    
+                    continue;
+                default:
+                    metricSb.Append((char)b);
+                    continue;
             }
-            
         }
     }
 
-    private string CreateDefaultConfigFile()
+    private string CreateDefaultConfigFile() //TODO: if cfg works with json => delete method
     {
-        var configFilePath = Path.Join(Directory.GetCurrentDirectory(), _config.DefaultConfigFileName);
-
-        if (!File.Exists(configFilePath))
-        {
-            File.Create(configFilePath);
-        }
-
-        return configFilePath;
+        // var configFilePath = Path.Join(Directory.GetCurrentDirectory(), _config.DefaultConfigFileName);
+        //
+        // if (!File.Exists(configFilePath))
+        // {
+        //     File.Create(configFilePath);
+        // }
+        //
+        // return configFilePath;
+        throw new NotImplementedException();
     }
 
     private DiagnosticServer SetUpConnection(string? connectionString)
@@ -213,7 +286,7 @@ public class GenerateDiagnosticsCommand
         _router.AddPort(portConfig);
         
         var cfg = new DiagnosticServerConfig();
-        var serverId = new MavlinkIdentity(1, 2); // TODO: Узнать как определить уникальный айдишник
+        var serverId = new MavlinkIdentity(1, 2); // TODO: find out how to define unique id
         
         var server = new DiagnosticServer(
             cfg,
