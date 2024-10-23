@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reactive.Concurrency;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.Cfg.Json;
@@ -11,9 +13,11 @@ using Asv.IO;
 using Asv.Mavlink.Diagnostic.Server;
 using ConsoleAppFramework;
 using Newtonsoft.Json;
+using Spectre.Console;
 
 namespace Asv.Mavlink.Shell;
 
+[Newtonsoft.Json.JsonConverter(typeof(JsonStringEnumConverter))]
 internal enum MetricType
 {
     Int,
@@ -79,8 +83,18 @@ internal class Metric
     
     public class MetricEqualityComparer : IEqualityComparer<Metric>
     {
-        public bool Equals(Metric x, Metric y)
+        public bool Equals(Metric? x, Metric? y)
         {
+            if (ReferenceEquals(x, y))
+            {
+                return true;
+            }
+
+            if (x is null || y is null)
+            {
+                return false;
+            }
+            
             return x.Name == y.Name && x.Type == y.Type;
         }
 
@@ -91,7 +105,7 @@ internal class Metric
     }
 }
 
-public class DiagnosticsConfig
+internal class DiagnosticsConfig
 {
     internal ISet<Metric> Metrics { get; private set; } = new HashSet<Metric>(new Metric.MetricEqualityComparer());
 }
@@ -125,6 +139,8 @@ public class GenerateDiagnosticsCommand
     
     private MavlinkRouter _router;
     private DiagnosticsConfig _config;
+    private IDiagnosticServer? _server;
+    private uint _refreshRate = 30;
     
     /// <summary>
     /// Command creates fake diagnostics data from file and opens a mavlink connection.
@@ -135,16 +151,9 @@ public class GenerateDiagnosticsCommand
     [Command("generate-diagnostics")]
     public int Run(string? connectionString, string? configFilePath = null)
     {
-        try
-        {
-            RunAsync(connectionString, configFilePath).Wait();
-            ConsoleAppHelper.WaitCancelPressOrProcessExit();
-            return 0;
-        }
-        catch (Exception)
-        {
-            return 1;
-        }
+        RunAsync(connectionString, configFilePath).Wait();
+        ConsoleAppHelper.WaitCancelPressOrProcessExit();
+        return 0;
     }
 
     private async Task RunAsync(string? connectionString, string? customConfigFilePath = null)
@@ -160,53 +169,105 @@ public class GenerateDiagnosticsCommand
             var json = JsonConvert.SerializeObject(_exampleMetrics, Formatting.Indented);
             await File.WriteAllTextAsync(DefaultConfigFileFullPath, json);
         }
-        
+
         var cfg = cfgJson.Get<DiagnosticsConfig>();
 
-        var cfgFilePath = customConfigFilePath ?? CreateDefaultConfigFile();
-
-        if (!File.Exists(cfgFilePath))
-        {
-            throw new FileNotFoundException("Could not find config file", cfgFilePath);
-        }
-        
         if (connectionString is not null)
         {
-            var server = SetUpConnection(connectionString);
+            _server = SetUpConnection(connectionString);
+        }
 
-            var runForever = true;
-            Console.CancelKeyPress += (_, _) =>
-            {
-                runForever = false;
-            };
+        var table = new Table();
+        table.Title("[[ [yellow]Diagnostics info[/] ]]");
+        table.AddColumn("Name");
+        table.AddColumn("Type");
+        table.AddColumn("Value");
 
-            ushort arrayId = 0;
-            while (runForever)
-            {
-                foreach (var metric in cfg.Metrics)
+        try
+        {
+            await AnsiConsole.Live(table)
+                .AutoClear(false)
+                .Overflow(VerticalOverflow.Ellipsis)
+                .Cropping(VerticalOverflowCropping.Top)
+                .StartAsync(async ctx =>
                 {
-                    switch (metric.Type)
+                    var runForever = true;
+                    Console.CancelKeyPress += (_, _) => { runForever = false; };
+
+                    while (runForever)
                     {
-                        case MetricType.Int:
-                            await server.Send(metric.Name, metric.RandomIntValue());
-                            break;
-                        case MetricType.Float:
-                            await server.Send(metric.Name, metric.RandomFloatValue());
-                            break;
-                        case MetricType.FloatArray:
-                            await server.Send(metric.Name, arrayId++, metric.RandomFloatArrayValue());
-                            break;
-                        case MetricType.SByteArray:
-                            throw new NotImplementedException("SByte array is not supported right now");
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                }
-            }
+                        table.Rows.Clear();
+                        await RenderRows(table, cfg.Metrics);
+                        ctx.Refresh();
+                        await Task.Delay(TimeSpan.FromMilliseconds(_refreshRate));
+                    } 
+                });
+        }
+        finally
+        {
+            AnsiConsole.Markup("\nDone");
+            _router.Dispose();
         }
     }
     
+    private async Task RenderRows(Table table, ISet<Metric> metrics)
+    {
+        foreach (var metric in metrics)
+        {
+            switch (metric.Type)
+            {
+                case MetricType.Int:
+                    var valueInt = metric.RandomIntValue();
+
+                    if (_server is not null)
+                    {
+                        await _server.Send(metric.Name, valueInt);
+                    }
+                    
+                    table.AddRow(
+                        $"[red]{metric}[/]",
+                        $"{metric.Type.ToString()}",
+                        $"[green]{valueInt}[/]"
+                    );
+                    break;
+                case MetricType.Float:
+                    var valueFloat = metric.RandomFloatValue();
+                    
+                    if (_server is not null)
+                    {
+                        await _server.Send(metric.Name, valueFloat);
+                    }
+
+                    table.AddRow(
+                        $"[red]{metric}[/]",
+                        $"{metric.Type.ToString()}",
+                        $"[green]{valueFloat}[/]"
+                    );
+                    break;
+                case MetricType.FloatArray:
+                    var valueFloatArray = metric.RandomFloatArrayValue();
+
+                    if (_server is not null)
+                    {
+                        await _server.Send(metric.Name, (ushort)Random.Shared.Next(0, ushort.MaxValue),
+                            valueFloatArray);
+                    }
+
+                    table.AddRow(
+                        $"[red]{metric}[/]",
+                        $"{metric.Type.ToString()}",
+                        $"[green]{string.Join("; ", valueFloatArray)}[/]"
+                    );
+                    break;
+                case MetricType.SByteArray:
+                    throw new NotImplementedException("SByte array is not supported right now");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+    }
+
     private async Task ParseCfgAsync(StreamReader reader, HashSet<Metric> metrics) //TODO: if cfg works with json => delete method
     {
         var metricSb = new StringBuilder();
@@ -273,7 +334,7 @@ public class GenerateDiagnosticsCommand
         throw new NotImplementedException();
     }
 
-    private DiagnosticServer SetUpConnection(string? connectionString)
+    private IDiagnosticServer SetUpConnection(string? connectionString)
     {
         _router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects, publishScheduler: Scheduler.Default);
         _router.WrapToV2ExtensionEnabled = true;
