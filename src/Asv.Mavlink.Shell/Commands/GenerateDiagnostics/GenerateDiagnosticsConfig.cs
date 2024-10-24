@@ -9,7 +9,7 @@ public class GenerateDiagnosticsConfig
         Port = new MavlinkPortConfig
         {
             ConnectionString = "tcp://127.0.0.1:7342?srv=true",
-            Name = "Diagnostics Server",
+            Name = "Diagnostic Server",
             IsEnabled = true
         },
         Metrics = {
