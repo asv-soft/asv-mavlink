@@ -6,17 +6,23 @@ public class GenerateDiagnosticsConfig
 {
     public static readonly GenerateDiagnosticsConfig Default = new()
     {
+        Port = new MavlinkPortConfig
+        {
+            ConnectionString = "tcp://127.0.0.1:7342?srv=true",
+            Name = "Diagnostics Server",
+            IsEnabled = true
+        },
         Metrics = {
             new Metric
             {
-                Name = "Metric int",
+                Name = "M_int",
                 Type = MetricType.Int,
                 Max = $"{1000}",
                 Min = $"{-1000}",
             },
             new Metric
             { 
-                Name = "Metric float", 
+                Name = "M_float", 
                 Type = MetricType.Float, 
                 Max = $"{4000.0}", 
                 Min = $"{-4000.0}",
@@ -28,8 +34,9 @@ public class GenerateDiagnosticsConfig
         ComponentId = 2,
     };
     
-    public int ServerMaxSendIntervalMs { get; set; }
+    public required MavlinkPortConfig Port { get; set; }
+    public required int ServerMaxSendIntervalMs { get; set; }
     public ISet<Metric> Metrics { get; set; } = new HashSet<Metric>(Metric.MetricEqualityComparer.Instance.Value);
-    public byte SystemId { get; set; }
-    public byte ComponentId { get; set; }
+    public required byte SystemId { get; set; }
+    public required byte ComponentId { get; set; }
 }

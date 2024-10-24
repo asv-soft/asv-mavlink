@@ -15,24 +15,21 @@ namespace Asv.Mavlink.Shell;
 
 public class GenerateDiagnostics
 {
-    private string _file = "exampleConfig.json";
+    private string _file = "exampleDiagnosticsConfig.json";
     private IDiagnosticServer? _server;
-    private string? _connectionString;
     private uint _refreshRate;
     
     /// <summary>
     /// Command creates fake diagnostics data from file and opens a mavlink connection.
     /// </summary>
-    /// <param name="connectionString">-cs, Address of the generator</param>
     /// <param name="cfgPath">-cfg, location of the config file for the generator</param>
     /// <param name="refreshRate">-r, (in ms) States how fast should the console be refreshed</param>
     /// <returns></returns>
     [Command("generate-diagnostics")]
-    public int Run(string? connectionString = null, string? cfgPath = null, uint refreshRate = 2000)
+    public int Run(string? cfgPath = null, uint refreshRate = 2000)
     {
         _file = cfgPath ?? _file;
         _refreshRate = refreshRate;
-        _connectionString = connectionString;
         
         RunAsync().Wait();
         ConsoleAppHelper.WaitCancelPressOrProcessExit();
@@ -51,8 +48,17 @@ public class GenerateDiagnostics
         }
 
         var cfg = JsonConvert.DeserializeObject<GenerateDiagnosticsConfig>(await File.ReadAllTextAsync(_file));
+
+        if (cfg is null)
+        {
+            AnsiConsole.MarkupLine("[red]error[/]: Unable to load cfg[/]");
+            return;
+        }
         
-        if (cfg?.Metrics is null || cfg.Metrics.Count == 0)
+        AnsiConsole.MarkupLine($"[blue]info[/]: Start Diagnostics server with SystemId: [yellow]{cfg.SystemId}[/], ComponentId: [yellow]{cfg.ComponentId}[/]");
+        _server = SetUpConnection(cfg);
+        
+        if (cfg.Metrics is null || cfg.Metrics.Count == 0)
         {
             AnsiConsole.MarkupLine($"[red]error[/]: Metrics setting not found in the configuration file: [yellow]{_file}[/]");
             return;
@@ -71,12 +77,6 @@ public class GenerateDiagnostics
 
         try
         {
-            if (_connectionString is not null)
-            {
-                AnsiConsole.MarkupLine($"[blue]info[/]: Start Diagnostics server with SystemId: [yellow]{cfg.SystemId}[/], ComponentId: [yellow]{cfg.ComponentId}[/]");
-                _server = SetUpConnection(_connectionString, cfg);
-            }
-            
             await AnsiConsole.Live(table)
                 .AutoClear(false)
                 .Overflow(VerticalOverflow.Ellipsis)
@@ -114,10 +114,7 @@ public class GenerateDiagnostics
                 case MetricType.Int:
                     var valueInt = metric.RandomIntValue();
 
-                    if (_server is not null)
-                    {
-                        await _server.Send(metric.Name, valueInt);
-                    }
+                    await _server!.Send(metric.Name, valueInt);
                     
                     table.AddRow(
                         $"[red]{metric.Name}[/]",
@@ -128,10 +125,7 @@ public class GenerateDiagnostics
                 case MetricType.Float:
                     var valueFloat = metric.RandomFloatValue();
                     
-                    if (_server is not null)
-                    {
-                        await _server.Send(metric.Name, valueFloat);
-                    }
+                    await _server!.Send(metric.Name, valueFloat);
 
                     table.AddRow(
                         $"[red]{metric.Name}[/]",
@@ -142,11 +136,8 @@ public class GenerateDiagnostics
                 case MetricType.FloatArray:
                     var valueFloatArray = metric.RandomFloatArrayValue();
 
-                    if (_server is not null)
-                    {
-                        await _server.Send(metric.Name, (ushort)Random.Shared.Next(0, ushort.MaxValue),
-                            valueFloatArray);
-                    }
+                    await _server!.Send(metric.Name, (ushort)Random.Shared.Next(0, ushort.MaxValue),
+                        valueFloatArray);
 
                     table.AddRow(
                         $"[red]{metric.Name}[/]",
@@ -162,17 +153,11 @@ public class GenerateDiagnostics
         }
     }
 
-    private IDiagnosticServer SetUpConnection(string connectionString, GenerateDiagnosticsConfig config)
+    private IDiagnosticServer SetUpConnection(GenerateDiagnosticsConfig config)
     {
         using var router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects, publishScheduler: Scheduler.Default);
         router.WrapToV2ExtensionEnabled = true;
-        var portConfig = new MavlinkPortConfig
-        {
-            ConnectionString = connectionString,
-            IsEnabled = true,
-            Name = "DiagnosticsServer"
-        };
-        router.AddPort(portConfig);
+        router.AddPort(config.Port);
         
         var server = new DiagnosticServer(
             new DiagnosticServerConfig {MaxSendIntervalMs = config.ServerMaxSendIntervalMs},
