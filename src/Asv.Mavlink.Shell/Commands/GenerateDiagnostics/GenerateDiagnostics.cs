@@ -24,13 +24,13 @@ public class GenerateDiagnostics
     /// Command creates fake diagnostics data from file and opens a mavlink connection.
     /// </summary>
     /// <param name="connectionString">-cs, Address of the generator</param>
-    /// <param name="cfg">-cfg, location of the config file for the generator</param>
+    /// <param name="cfgPath">-cfg, location of the config file for the generator</param>
     /// <param name="refreshRate">-r, (in ms) States how fast should the console be refreshed</param>
     /// <returns></returns>
     [Command("generate-diagnostics")]
-    public int Run(string? connectionString = null, string? cfg = null, uint refreshRate = 2000)
+    public int Run(string? connectionString = null, string? cfgPath = null, uint refreshRate = 2000)
     {
-        _file = cfg ?? _file;
+        _file = cfgPath ?? _file;
         _refreshRate = refreshRate;
         _connectionString = connectionString;
         
@@ -43,7 +43,7 @@ public class GenerateDiagnostics
     {
         AnsiConsole.MarkupLine($"[blue]info[/]: Check config file exist: [green]{_file}[/]");
         
-        if (File.Exists(_file))
+        if (!File.Exists(_file))
         {
             AnsiConsole.MarkupLine($"[yellow]warn[/]: Creating default config file: {_file}");
             var json = JsonConvert.SerializeObject(GenerateDiagnosticsConfig.Default, Formatting.Indented);
