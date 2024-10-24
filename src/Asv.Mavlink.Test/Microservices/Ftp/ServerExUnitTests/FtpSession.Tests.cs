@@ -8,7 +8,7 @@ namespace Asv.Mavlink.Test;
 
 public class FtpSessionTests
 {
-    private FtpServerExHelper _helper;
+    private FtpServerExHelper _helper = new ();
     private FtpServerEx _serverEx;
     private string _filePath;
     

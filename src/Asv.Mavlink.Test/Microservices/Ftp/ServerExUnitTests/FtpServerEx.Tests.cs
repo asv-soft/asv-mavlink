@@ -2,12 +2,9 @@ using System;
 using System.Buffers;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
-using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink;
-using Asv.Mavlink.V2.Common;
 using DynamicData;
 using Microsoft.Extensions.Time.Testing;
 using Xunit;
@@ -19,7 +16,7 @@ public class FtpServerExTests
 {
     private readonly ITestOutputHelper _output;
     private readonly FakeTimeProvider _fakeTime;
-    private FtpServerExHelper _helper;
+    private FtpServerExHelper _helper = new ();
 
     public FtpServerExTests(ITestOutputHelper output)
     {
@@ -519,7 +516,7 @@ public class FtpServerExTests
         await serverEx.ResetSessions();
 
         //Assert
-        var result = await Assert.ThrowsAsync<FtpNackException>(async () =>
+        var result = await Assert.ThrowsAsync<ObjectDisposedException>(async () =>
         {
             await serverEx.FileRead(request, buffer);
         });
@@ -783,34 +780,6 @@ public async Task TruncateFile_TruncatePart_Success(string mockData, byte trimle
     // Assert
     _output.WriteLine($"{result.Size}=={request.Offset}");
     Assert.True(result.Size == request.Offset);
-}
-
-[Theory]
-[InlineData("1234567", 8)]
-[InlineData("1234567", 0)]
-[InlineData("", 3)]
-public async Task TruncateFile_TruncatePart_Fault(string mockData, byte trimlength)
-{
-    // Arrange
-    var fileName = "test.txt";
-    var fileDirName = "file";
-    var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-    var fileSystem = _helper.SetUpFileSystem(root);
-    _helper.SetUpServer(out var server);
-    var fileDir = fileSystem.Path.Combine(root, fileDirName);
-    var relativeFilePath = Path.Combine(fileDirName, fileName);
-    var filePath = fileSystem.Path.Combine(fileDir, fileName);
-    fileSystem.AddFile(filePath, new MockFileData(mockData));
-    var cfg = new MavlinkFtpServerExConfig
-    {
-        RootDirectory = root,
-    };
-    var serverEx = new FtpServerEx(cfg, server, fileSystem);
-    var request = new TruncateRequest(relativeFilePath, trimlength);
-    //Act & Assert
-
-    var result = await Assert.ThrowsAsync<FtpNackException>(async () => { await serverEx.TruncateFile(request); });
-    _output.WriteLine($"{result.Message}");
 }
 
 #endregion

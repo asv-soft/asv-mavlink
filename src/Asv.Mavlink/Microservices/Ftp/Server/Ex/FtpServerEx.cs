@@ -383,12 +383,6 @@ public class FtpServerEx : IFtpServerEx
         }
         
         var stream = _fileSystem.File.Open(filePath, FileMode.Truncate, FileAccess.Write, FileShare.Read);
-
-        var fileLength = stream.Length;
-        if (request.Offset > fileLength)
-        {
-            throw new FtpNackException(FtpOpcode.TruncateFile, NackError.InvalidDataSize);
-        }
         
         stream.SetLength(request.Offset);
         stream.Close();

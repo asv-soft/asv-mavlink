@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Time.Testing;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
@@ -43,6 +44,7 @@ public class FtpServerExHelper
     public void SetUpClientAndServer(out IFtpClient client, out IFtpServer server,
         Func<IPacketV2<IPayload>, bool> clientToServer, Func<IPacketV2<IPayload>, bool> serverToClient)
     {
+        var timeProvider = new FakeTimeProvider();
         var link = new VirtualMavlinkConnection(clientToServer, serverToClient);
         var clientId = new MavlinkClientIdentity
         {
@@ -54,7 +56,7 @@ public class FtpServerExHelper
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
 
         var clientSeq = new PacketSequenceCalculator();
-        client = new FtpClient(new MavlinkFtpClientConfig(), link.Client, clientId, clientSeq, TimeProvider.System,
+        client = new FtpClient(new MavlinkFtpClientConfig(), link.Client, clientId, clientSeq, timeProvider,
             TaskPoolScheduler.Default, new TestLogger(_output, "CLIENT"));
 
         var serverSeq = new PacketSequenceCalculator();
