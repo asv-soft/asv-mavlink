@@ -5,11 +5,7 @@
 /// </summary>
 public interface IAdsbServerDevice : IServerDevice
 {
-    /// <summary>
-    /// Gets the Adsb vehicle server.
-    /// </summary>
-    /// <value>
-    /// The Adsb vehicle server.
-    /// </value>
     IAdsbVehicleServer Adsb { get; }
+    IParamsServerEx Params { get; }
+    
 }

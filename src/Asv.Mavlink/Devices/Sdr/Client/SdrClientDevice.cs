@@ -11,7 +11,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class SdrClientDeviceConfig:ClientDeviceConfig
+public class SdrClientDeviceConfig:ClientDeviceBaseConfig
 {
     public CommandProtocolConfig Command { get; set; } = new();
     public AsvSdrClientExConfig SdrEx { get; set; } = new();

@@ -30,26 +30,17 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
     private readonly RxValue<ushort?> _remoteCount;
     private readonly RxValue<ushort> _localCount;
     private readonly Subject<(string, MavParamValue)> _onValueChanged;
-    private readonly ILogger _logger;
-    private readonly IScheduler _scheduler;
+    private readonly ILogger<ParamsClientEx> _logger;
 
-    public ParamsClientEx(
-        IParamsClient client, 
-        ParamsClientExConfig config, 
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null, 
-        ILoggerFactory? logFactory = null)
+    public ParamsClientEx(IParamsClient client, ParamsClientExConfig config,IMavParamEncoding converter,IEnumerable<ParamDescription> existDescription)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<ParamsClientEx>();
-        _scheduler = scheduler ?? Scheduler.Default;
+        _logger = client.Core.Log.CreateLogger<ParamsClientEx>();
         _config = config ?? throw new ArgumentNullException(nameof(config));
         Base = client;
         _paramsSource = new SourceCache<ParamItem, string>(x => x.Name).DisposeItWith(Disposable);
         _isSynced = new RxValue<bool>(false).DisposeItWith(Disposable);
         Items = _paramsSource.Connect().Transform(i=>(IParamItem)i).RefCount();
-        client.OnParamValue.Where(_=>IsInit).Buffer(TimeSpan.FromMilliseconds(100)).Subscribe(OnUpdate).DisposeItWith(Disposable);
-        
+        client.OnParamValue.Buffer(TimeSpan.FromMilliseconds(100)).Subscribe(OnUpdate).DisposeItWith(Disposable);
         _remoteCount = new RxValue<ushort?>(null).DisposeItWith(Disposable);
         _localCount = new RxValue<ushort>(0).DisposeItWith(Disposable);
         _paramsSource.CountChanged.Select(i=>(ushort)i).Subscribe(_localCount).DisposeItWith(Disposable);
@@ -57,15 +48,6 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
     }
 
     public IObservable<(string, MavParamValue)> OnValueChanged => _onValueChanged;
-    public bool IsInit { get; set; }
-
-    public void Init(IMavParamEncoding converter, IEnumerable<ParamDescription> existDescription)
-    {
-        _descriptions = existDescription.ToImmutableDictionary(d => d.Name);
-        _converter = converter;
-        IsInit = true;
-    }
-
     public IParamsClient Base { get; }
     private void OnUpdate(IList<ParamValuePayload> items)
     {
@@ -256,5 +238,12 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         var floatValue = _converter.ConvertToMavlinkUnion(value);
         var result = await Base.Write(name,value.Type,floatValue, cancel).ConfigureAwait(false);
         return _converter.ConvertFromMavlinkUnion(result.ParamValue, result.ParamType);
+    }
+
+    public MavlinkClientIdentity Identity => Base.Identity;
+    public ICoreServices Core => Base.Core;
+    public Task Init(CancellationToken cancel = default)
+    {
+        return Task.CompletedTask;
     }
 }

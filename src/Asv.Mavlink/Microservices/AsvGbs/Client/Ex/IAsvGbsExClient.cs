@@ -9,7 +9,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Interface for the ASV GBS Extended Client.
     /// </summary>
-    public interface IAsvGbsExClient
+    public interface IAsvGbsExClient:IMavlinkMicroserviceClient
     {
         /// <summary>
         /// Gets the base client for the ASV GBS.

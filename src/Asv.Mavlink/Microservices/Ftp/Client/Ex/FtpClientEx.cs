@@ -16,7 +16,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class FtpClientEx : IFtpClientEx, IDisposable
+public class FtpClientEx : IFtpClientEx, IDisposable, IMavlinkMicroserviceClient
 {
     private readonly ILogger _logger;
     private readonly SourceCache<IFtpEntry,string> _entryCache;

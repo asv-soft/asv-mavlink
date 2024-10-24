@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
@@ -17,7 +18,7 @@ namespace Asv.Mavlink;
 
 public interface IClientDeviceBrowser
 {
-    IObservable<IChangeSet<IClientDevice, ushort>> Devices { get; }
+    IObservable<IChangeSet<IClientDevice, MavlinkIdentity>> Devices { get; }
     BindableReactiveProperty<TimeSpan> DeviceTimeout { get; }
 }
 
@@ -29,20 +30,22 @@ public class DeviceBrowserConfig
 
 public sealed class ClientDeviceBrowser : IClientDeviceBrowser, IDisposable,IAsyncDisposable
 {
+    private readonly IClientDeviceFactory _factory;
     private readonly ICoreServices _core;
-    private readonly SourceCache<IClientDevice,ushort> _deviceCache;
-    private readonly ConcurrentDictionary<ushort,long> _lastUpdateTime = new ();
+    private readonly SourceCache<IClientDevice,MavlinkIdentity> _deviceCache;
+    private readonly ConcurrentDictionary<MavlinkIdentity,long> _lastUpdateTime = new ();
     
     private readonly IDisposable _subscribe1;
     private readonly ILogger _logger;
     private readonly BindableReactiveProperty<TimeSpan> _deviceTimeout;
     private readonly ITimer _timer;
 
-    public ClientDeviceBrowser(DeviceBrowserConfig config,ICoreServices core)
+    public ClientDeviceBrowser(IClientDeviceFactory factory, DeviceBrowserConfig config,ICoreServices core)
     {
+        _factory = factory;
         _core = core;
         _logger = core.Log.CreateLogger<ClientDeviceBrowser>();
-        _deviceCache = new SourceCache<IClientDevice, ushort>(x => x.FullId);
+        _deviceCache = new SourceCache<IClientDevice, MavlinkIdentity>(x => x.Identity.Target);
         _deviceTimeout = new BindableReactiveProperty<TimeSpan>(TimeSpan.FromMilliseconds(config.DeviceTimeoutMs));
         _subscribe1 = core.Connection
             .Filter<HeartbeatPacket>()
@@ -51,7 +54,7 @@ public sealed class ClientDeviceBrowser : IClientDeviceBrowser, IDisposable,IAsy
             .Connect()
             .DisposeMany()
             // filter only devices that was init
-            .FilterOnObservable(x=>x.OnInit.AsSystemObservable().Select(s=>s == InitState.Complete))
+            .FilterOnObservable(x=>x.IsInitComplete.AsSystemObservable())
             .ObserveOn(core.Scheduler)
             .RefCount();
         _timer = core.TimeProvider.CreateTimer(RemoveOldDevices, null, TimeSpan.FromMilliseconds(config.DeviceCheckIntervalMs), TimeSpan.FromMilliseconds(config.DeviceCheckIntervalMs));
@@ -71,9 +74,7 @@ public sealed class ClientDeviceBrowser : IClientDeviceBrowser, IDisposable,IAsy
             }
         });
     }
-
     public BindableReactiveProperty<TimeSpan> DeviceTimeout => _deviceTimeout;
-    
     private void UpdateDevice(HeartbeatPacket packet)
     {
         _lastUpdateTime.AddOrUpdate(packet.FullId, _core.TimeProvider.GetTimestamp(),
@@ -83,12 +84,18 @@ public sealed class ClientDeviceBrowser : IClientDeviceBrowser, IDisposable,IAsy
         {
             var item = update.Lookup(packet.FullId);
             if (item.HasValue) return;
-            update.AddOrUpdate(ClientDeviceFactory.Create(packet, _core));
+            var device = _factory.Create(packet, _core);
+            if (device == null)
+            {
+                _logger.ZLogWarning($"Device provider for {packet.FullId} not found");
+                return;
+            }
+            update.AddOrUpdate(device);
             _logger.ZLogInformation($"Found new device {packet.FullId}");
         });
     }
     
-    public IObservable<IChangeSet<IClientDevice,ushort>> Devices { get; }
+    public IObservable<IChangeSet<IClientDevice,MavlinkIdentity>> Devices { get; }
 
     public void Dispose()
     {

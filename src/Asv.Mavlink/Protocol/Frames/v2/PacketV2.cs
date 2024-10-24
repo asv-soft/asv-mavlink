@@ -8,7 +8,7 @@ namespace Asv.Mavlink
     {
         private readonly Signature _signature = new();
         public byte Magic => PacketV2Helper.MagicMarkerV2;
-        public object Tag { get; set; }
+        public object? Tag { get; set; }
         public abstract byte GetCrcEtra();
         public abstract int MessageId { get; }
         public byte IncompatFlags { get; set; }
@@ -17,7 +17,7 @@ namespace Asv.Mavlink
         ///
         public byte SystemId { get; set; }
         public byte ComponentId { get; set; }
-        public ushort FullId => MavlinkHelper.ConvertToFullId(ComponentId , SystemId);
+        public MavlinkIdentity FullId => new(SystemId, ComponentId);
         public abstract TPayload Payload { get; }
         public abstract string Name { get; }
         public abstract bool WrapToV2Extension { get; }

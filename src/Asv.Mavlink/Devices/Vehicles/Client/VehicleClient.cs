@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Asv.Mavlink;
 
-public class VehicleClientConfig:ClientDeviceConfig
+public class VehicleClientConfig:ClientDeviceBaseConfig
 {
     public ushort MavDataStreamAllRateHz { get; set; } = 1;
     public ushort MavDataStreamExtendedStatusRateHz { get; set; } = 1;

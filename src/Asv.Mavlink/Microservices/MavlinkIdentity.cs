@@ -2,15 +2,11 @@ using System;
 
 namespace Asv.Mavlink;
 
-public class MavlinkIdentity:IEquatable<MavlinkIdentity>
+public class MavlinkIdentity(byte systemId, byte componentId) : IEquatable<MavlinkIdentity>
 {
-    public MavlinkIdentity(byte systemId, byte componentId)
-    {
-        SystemId = systemId;
-        ComponentId = componentId;
-    }
-    public byte ComponentId { get; }
-    public byte SystemId { get; }
+    public ushort FullId { get; } = MavlinkHelper.ConvertToFullId(componentId, systemId);
+    public byte ComponentId { get; } = componentId;
+    public byte SystemId { get; } = systemId;
 
     public bool Equals(MavlinkIdentity? other)
     {

@@ -15,6 +15,7 @@ namespace Asv.Mavlink
     {
         MavlinkClientIdentity Identity { get; }
         ICoreServices Core { get; }
+        Task Init(CancellationToken cancel = default);
     }
     
     public delegate bool FilterDelegate<TResult>(IPacketV2<IPayload> inputPacket, out TResult result);
@@ -41,6 +42,11 @@ namespace Asv.Mavlink
 
         public MavlinkClientIdentity Identity { get; }
         public ICoreServices Core { get; }
+        public virtual Task Init(CancellationToken cancel = default)
+        {
+            return Task.CompletedTask;
+        }
+
         protected CancellationToken DisposeCancel => _disposeCancel.Token;
 
         protected string LogTargetName => _locTargetName ??= $"{Identity.Target.SystemId}:{Identity.Target.ComponentId}";

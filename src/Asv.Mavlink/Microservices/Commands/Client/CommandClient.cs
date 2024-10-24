@@ -140,7 +140,6 @@ namespace Asv.Mavlink
         public async Task<TAnswerPacket> CommandLongAndWaitPacket<TAnswerPacket>(MavCmd command, float param1, float param2, float param3,
             float param4, float param5, float param6, float param7, CancellationToken cancel) 
             where TAnswerPacket : IPacketV2<IPayload>, new()
-
         {
             _logger.ZLogTrace($"{LogSend}{command:G}({param1},{param1},{param2},{param3},{param4},{param5},{param6},{param7})");
             var result = await InternalCall<TAnswerPacket, CommandLongPacket, TAnswerPacket>((packet) =>

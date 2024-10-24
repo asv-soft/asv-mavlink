@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
-public interface IAsvRadioClientEx
+public interface IAsvRadioClientEx:IMavlinkMicroserviceClient
 {
     IRxValue<AsvRadioCustomMode> CustomMode { get; }
     IAsvRadioClient Base { get; }
@@ -97,4 +97,10 @@ public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
 
     public IRxValue<AsvRadioCustomMode> CustomMode => _customMode;
     public IAsvRadioClient Base { get; }
+    public MavlinkClientIdentity Identity => Base.Identity;
+    public ICoreServices Core => Base.Core;
+    public Task Init(CancellationToken cancel = default)
+    {
+        return Task.CompletedTask;
+    }
 }

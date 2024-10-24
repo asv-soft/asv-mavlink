@@ -40,13 +40,13 @@ public class MavlinkRouterTest
         var clientDevice = new AbstractClientDevice(
             client,
             clientId,
-            new ClientDeviceConfig(),
+            new ClientDeviceBaseConfig(),
             new PacketSequenceCalculator());
 
         var serverDevice = new AbstractClientDevice(
             server,
             serverId,
-            new ClientDeviceConfig(),
+            new ClientDeviceBaseConfig(),
             new PacketSequenceCalculator());
         
         clientDevice.WaitUntilConnect();
@@ -100,13 +100,13 @@ public class MavlinkRouterTest
         var clientDevice = new AbstractClientDevice(
             client,
             clientId,
-            new ClientDeviceConfig(),
+            new ClientDeviceBaseConfig(),
             new PacketSequenceCalculator());
 
         var serverDevice = new AbstractClientDevice(
             server,
             serverId,
-            new ClientDeviceConfig(),
+            new ClientDeviceBaseConfig(),
             new PacketSequenceCalculator());
         
         clientDevice.WaitUntilConnect();

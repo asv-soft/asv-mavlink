@@ -10,7 +10,7 @@ using System;
      /// <summary>
      /// Exposes members to interact with parameters.
      /// </summary>
-     public interface IParamsClientEx
+     public interface IParamsClientEx:IMavlinkMicroserviceClient
      {
          /// <summary>
          /// Base param client interface from which this extension interface is derived.
@@ -28,11 +28,6 @@ using System;
          /// whenever a value is changed.
          /// </remarks>
          IObservable<(string, MavParamValue)> OnValueChanged { get; }
-
-         /// <summary>
-         /// Gets or Sets the initialization status.
-         /// </summary>
-         bool IsInit { get; set; }
 
          /// <summary>
          /// True if params synced with remote device and local cache

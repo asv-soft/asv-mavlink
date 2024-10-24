@@ -22,7 +22,7 @@ public class BaseDevicesTest(ITestOutputHelper output)
             
             var clientDevice = new AbstractClientDevice(link.Client,
                 null,
-                new ClientDeviceConfig(),
+                new ClientDeviceBaseConfig(),
                 new PacketSequenceCalculator());
         });
         return Task.CompletedTask;
@@ -45,7 +45,7 @@ public class BaseDevicesTest(ITestOutputHelper output)
             
             var clientDevice = new AbstractClientDevice(link.Client,
                 clientId,
-                new ClientDeviceConfig
+                new ClientDeviceBaseConfig
                 {
                     Heartbeat = null
                 },
@@ -61,7 +61,7 @@ public class BaseDevicesTest(ITestOutputHelper output)
         {
             var clientDevice = new AbstractClientDevice(null,
                 new MavlinkClientIdentity(),
-                new ClientDeviceConfig
+                new ClientDeviceBaseConfig
                 {
                     Heartbeat = null
                 },
@@ -151,7 +151,7 @@ public class BaseDevicesTest(ITestOutputHelper output)
             };
             var clientDevice = new AbstractClientDevice(link.Client,
                 clientId,
-                new ClientDeviceConfig(),
+                new ClientDeviceBaseConfig(),
                 null);
         });
     }
@@ -177,7 +177,7 @@ public class BaseDevicesTest(ITestOutputHelper output)
             serverId, new ServerDeviceConfig());
         
         var clientDevice = new AbstractClientDevice(link.Client, clientId,
-            new ClientDeviceConfig(), new PacketSequenceCalculator());
+            new ClientDeviceBaseConfig(), new PacketSequenceCalculator());
         
         serverDevice.Start();
         
@@ -211,7 +211,7 @@ public class BaseDevicesTest(ITestOutputHelper output)
             serverId, new ServerDeviceConfig());
         
         var clientDevice = new AbstractClientDevice(link.Client, clientId,
-            new ClientDeviceConfig(), new PacketSequenceCalculator());
+            new ClientDeviceBaseConfig(), new PacketSequenceCalculator());
         
         serverDevice.Start();
         
@@ -274,7 +274,7 @@ public class BaseDevicesTest(ITestOutputHelper output)
             },fake);
         
         var clientDevice = new AbstractClientDevice(link.Client, clientId,
-            new ClientDeviceConfig(), new PacketSequenceCalculator(),fake);
+            new ClientDeviceBaseConfig(), new PacketSequenceCalculator(),fake);
         
         serverDevice.Start();
         
@@ -313,7 +313,7 @@ public class BaseDevicesTest(ITestOutputHelper output)
             serverId, new ServerDeviceConfig(),fake);
         
         var clientDevice = new AbstractClientDevice(link.Client, clientId,
-            new ClientDeviceConfig(), new PacketSequenceCalculator(),fake);
+            new ClientDeviceBaseConfig(), new PacketSequenceCalculator(),fake);
         
         serverDevice.Start();
         
@@ -379,7 +379,7 @@ public class BaseDevicesTest(ITestOutputHelper output)
         serverDevice.Heartbeat.Set(_ => _.CustomMode = (uint)mode);
         
         var clientDevice = new AbstractClientDevice(link.Client, clientId,
-            new ClientDeviceConfig(), new PacketSequenceCalculator(),fake);
+            new ClientDeviceBaseConfig(), new PacketSequenceCalculator(),fake);
         
         serverDevice.Start();
         
@@ -419,7 +419,7 @@ public class BaseDevicesTest(ITestOutputHelper output)
 
         var clientDevice = new AbstractClientDevice(link.Client,
             clientId,
-            new ClientDeviceConfig(), new PacketSequenceCalculator(),fake);
+            new ClientDeviceBaseConfig(), new PacketSequenceCalculator(),fake);
 
         serverDevice.Start();
         
@@ -437,7 +437,7 @@ public class BaseDevicesTest(ITestOutputHelper output)
     }
     
     private AbstractClientDevice CreateClientDevice(VirtualMavlinkConnection link, PacketSequenceCalculator seq, 
-        MavlinkClientIdentity identity, ClientDeviceConfig cfg)
+        MavlinkClientIdentity identity, ClientDeviceBaseConfig cfg)
     {
         return new AbstractClientDevice(link.Client,
             identity, cfg, seq);
@@ -456,7 +456,7 @@ public class AbstractClientDevice : ClientDevice, IClientDevice
 {
     public AbstractClientDevice(IMavlinkV2Connection connection, 
         MavlinkClientIdentity identity, 
-        ClientDeviceConfig config, 
+        ClientDeviceBaseConfig config, 
         IPacketSequenceCalculator seq,
         TimeProvider? timeProvider = null,
         IScheduler? rxScheduler = null,
