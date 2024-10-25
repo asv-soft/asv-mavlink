@@ -74,9 +74,12 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
 {
     private readonly ILogger _logger;
     private readonly Func<Action<AsvAudioStreamPacket>, CancellationToken, Task> _sendPacketDelegate;
+    private readonly OnRecvAudioDelegate _onRecvAudioDelegate;
     private readonly RxValue<string> _name;
     private long _lastHit;
     private readonly Subject<Unit> _onLinePing;
+    private readonly IAudioDecoder _decoder;
+    private readonly IAudioEncoder _encoder;
     private uint _frameCounter = 0;
     private readonly SortedDictionary<byte, AsvAudioStreamPayload> _frameBuffer = new();
     
@@ -85,7 +88,6 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
     private readonly Subject<ReadOnlyMemory<byte>> _inputDecoderAudioStream;
     private PacketCounter? _counter;
     private int _lastFrameSeq;
-    private int _lastPacketSync;
 
     public AudioDevice(IAudioCodecFactory factory, 
         AsvAudioCodec outputCodecInfo, 
@@ -93,26 +95,25 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
         Func<Action<AsvAudioStreamPacket>, 
             CancellationToken, Task> sendPacketDelegate,
         OnRecvAudioDelegate onRecvAudioDelegate,
-        ILoggerFactory? logFactory = null)
+        ILogger? logger = null)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<AudioDevice>();
-        ArgumentNullException.ThrowIfNull(factory);
-        ArgumentNullException.ThrowIfNull(packet);
+        _logger = logger ?? NullLogger.Instance;
+        if (factory == null) throw new ArgumentNullException(nameof(factory));
+        if (packet == null) throw new ArgumentNullException(nameof(packet));
         _inputEncoderAudioStream = new Subject<ReadOnlyMemory<byte>>().DisposeItWith(Disposable);
         _inputDecoderAudioStream = new Subject<ReadOnlyMemory<byte>>().DisposeItWith(Disposable);
         
         _sendPacketDelegate = sendPacketDelegate ?? throw new ArgumentNullException(nameof(sendPacketDelegate));
-        var onRecvAudioDelegate1 = onRecvAudioDelegate ?? throw new ArgumentNullException(nameof(onRecvAudioDelegate));
+        _onRecvAudioDelegate = onRecvAudioDelegate ?? throw new ArgumentNullException(nameof(onRecvAudioDelegate));
         SystemId = packet.SystemId;
         ComponentId = packet.ComponentId;
         FullId = packet.FullId;
         _name = new RxValue<string>(MavlinkTypesHelper.GetString(packet.Payload.Name)).DisposeItWith(Disposable);
         _onLinePing = new Subject<Unit>().DisposeItWith(Disposable);
-        var encoder = factory.CreateEncoder(outputCodecInfo,_inputEncoderAudioStream).DisposeItWith(Disposable);
-        encoder.Subscribe(InternalSendEncodedAudio).DisposeItWith(Disposable);
-        var decoder = factory.CreateDecoder(packet.Payload.Codec,_inputDecoderAudioStream).DisposeItWith(Disposable);
-        decoder.Subscribe(x=>onRecvAudioDelegate1(this,x)).DisposeItWith(Disposable);
+        _encoder = factory.CreateEncoder(outputCodecInfo,_inputEncoderAudioStream).DisposeItWith(Disposable);
+        _encoder.Subscribe(InternalSendEncodedAudio).DisposeItWith(Disposable);
+        _decoder = factory.CreateDecoder(packet.Payload.Codec,_inputDecoderAudioStream).DisposeItWith(Disposable);
+        _decoder.Subscribe(x=>_onRecvAudioDelegate(this,x)).DisposeItWith(Disposable);
         
         RxCodec = packet.Payload.Codec;
         Touch();
@@ -163,7 +164,16 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
                     encodedData.Slice(packetIndex * AsvAudioHelper.MaxPacketStreamData,lastPacketSize).CopyTo(p.Payload.Data);
                 }, DisposeCancel).ConfigureAwait(false);
                 
-                
+                await _sendPacketDelegate(p =>
+                {
+                    p.Payload.FrameSeq = frameIndex;
+                    p.Payload.TargetSystem = SystemId;
+                    p.Payload.TargetComponent = ComponentId;
+                    p.Payload.PktInFrame = (byte)packetsInFrame;
+                    p.Payload.PktSeq = packetIndex;
+                    p.Payload.DataSize = (byte)lastPacketSize;
+                    encodedData.Slice(packetIndex * AsvAudioHelper.MaxPacketStreamData,lastPacketSize).CopyTo(p.Payload.Data);
+                }, DisposeCancel).ConfigureAwait(false);
             }
         }
         catch (Exception e)
@@ -209,25 +219,27 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
             _logger.LogWarning("Recv strange packet with PktInFrame = 0");
             return;
         }
-
-        if (_lastFrameSeq == stream.FrameSeq && _lastPacketSync == stream.PktSeq)
-        {
-            // skip same frame
-            return;
-        }
-        _lastPacketSync = stream.PktSeq;
         lock (_sync)
         {
             if (stream.PktInFrame == 1)
             {
+                if (_lastFrameSeq == stream.FrameSeq)
+                {
+                    // skip same frame
+                    return;
+                }
+                _lastFrameSeq = stream.FrameSeq;
                 _counter ??= new PacketCounter((byte)(stream.FrameSeq - 1));
-                
                 var missed = _counter.CheckIncrement(stream.FrameSeq);
                 try
                 {
                     if (missed > 0)
                     {
-                        _logger.ZLogTrace($"Missed packets {missed}");
+                        if (missed > 1)
+                        {
+                            _logger.ZLogTrace($"Missed packets {missed}. Set to 1");
+                            missed = 1;
+                        }
                         _inputDecoderAudioStream.OnNext(ReadOnlyMemory<byte>.Empty);
                     }
                     else
@@ -240,7 +252,6 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
                 {
                     _logger.ZLogError(e,$"Error to process audio stream packet:{e.Message}");
                 }
-                _lastFrameSeq = stream.FrameSeq;
             }
             else
             {

@@ -134,10 +134,11 @@ public class AdsbVehicle : DisposableOnceWithCancel, IAdsbVehicle
     public IRxValue<TimeSpan> Tslc => _tslc;
     public long GetLastHit()
     {
-        return Interlocked.CompareExchange(ref _lastHit, 0, 0);
+        return Interlocked.Read(ref _lastHit);
     }
     public void InternalUpdate(AdsbVehiclePayload payload, long dateTime)
     {
+        Interlocked.Exchange(ref _lastHit, dateTime);
         if (IcaoAddress != payload.IcaoAddress) throw new InvalidOperationException("IcaoAddress not equal");
         _callSign.OnNext(MavlinkTypesHelper.GetString(payload.Callsign));
         _location.OnNext(new GeoPoint(payload.Lat * 1e-7, payload.Lon * 1e-7, payload.Altitude * 1e-3 ));
@@ -148,6 +149,7 @@ public class AdsbVehicle : DisposableOnceWithCancel, IAdsbVehicle
         _horVelocity.OnNext(payload.HorVelocity * 1e-2);
         _verVelocity.OnNext(payload.VerVelocity * 1e-2);
         _flags.OnNext(payload.Flags);
+        
         _squawk.OnNext(payload.Squawk);
     }
 }

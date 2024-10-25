@@ -160,7 +160,7 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
                 {
 
                     var newItem = new AudioDevice(_codecFactory, _codec.Value.Value, pkt, SendAudioStream,
-                        InternalOnReceiveAudio, _logFactory);
+                        InternalOnReceiveAudio, _logFactory.CreateLogger<AudioDevice>());
                     update.AddOrUpdate(newItem);
                 }
             }
