@@ -38,16 +38,13 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         IAsvSdrClient client, 
         IHeartbeatClient heartbeatClient, 
         ICommandClient commandClient, 
-        AsvSdrClientExConfig config,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null)
+        AsvSdrClientExConfig config)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<AsvSdrClientEx>();
+        Base = client;
+        _logger = client.Core.Log.CreateLogger<AsvSdrClientEx>();
         _commandClient = commandClient;
         _config = config;
-        Base = client;
+        
         _maxTimeToWaitForResponseForList = TimeSpan.FromMilliseconds(config.MaxTimeToWaitForResponseForListMs);
         _customMode = new RxValue<AsvSdrCustomMode>();
         heartbeatClient.RawHeartbeat
@@ -250,5 +247,11 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
 
 
     public IObservable<IChangeSet<AsvSdrClientCalibrationTable,string>> CalibrationTables { get; }
-    
+
+    public MavlinkClientIdentity Identity => Base.Identity;
+    public ICoreServices Core => Base.Core;
+    public Task Init(CancellationToken cancel = default)
+    {
+        return Task.CompletedTask;
+    }
 }

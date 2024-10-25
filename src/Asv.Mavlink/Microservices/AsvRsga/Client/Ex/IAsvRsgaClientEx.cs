@@ -7,7 +7,7 @@ using DynamicData;
 
 namespace Asv.Mavlink;
 
-public interface IAsvRsgaClientEx
+public interface IAsvRsgaClientEx:IMavlinkMicroserviceClient
 {
     IAsvRsgaClient Base { get; }
     IObservable<IChangeSet<AsvRsgaCustomMode>> AvailableModes { get; }

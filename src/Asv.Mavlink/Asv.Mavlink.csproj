@@ -69,11 +69,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Devices\Rfsa\Client\" />
-    <Folder Include="Devices\Rfsa\Server\" />
-    <Folder Include="Devices\Rsga\Server\" />
     <Folder Include="Devices\Vehicles\Client\Px4\Plane\" />
     <Folder Include="Devices\Vehicles\Server\" />
+    <Folder Include="Devices\_Client\Vehicles\" />
     <Folder Include="Microservices\Commands\Client\Ex\" />
     <Folder Include="Microservices\Dgps\Server\" />
     <Folder Include="Microservices\Gnss\Server\" />

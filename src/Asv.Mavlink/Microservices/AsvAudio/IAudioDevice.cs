@@ -62,7 +62,7 @@ public class PacketCounter(byte initialCounter = 0)
 
 public interface IAudioDevice
 {
-    ushort FullId { get; }
+    MavlinkIdentity FullId { get; }
     IObservable<Unit> OnLinePing { get; }
     IRxValue<string> Name { get; }
     void SendAudio(ReadOnlyMemory<byte> pcmRawAudioData);
@@ -120,7 +120,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
     }
     public byte SystemId { get; }
     public byte ComponentId { get; }
-    public ushort FullId { get; }
+    public MavlinkIdentity FullId { get; }
     public IObservable<Unit> OnLinePing => _onLinePing;
     public IRxValue<string> Name => _name;
     

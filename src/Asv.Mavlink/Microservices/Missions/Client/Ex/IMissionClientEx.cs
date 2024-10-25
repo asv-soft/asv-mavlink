@@ -10,7 +10,7 @@ namespace Asv.Mavlink;
 /// <summary>
 /// Represents an extended interface for interacting with mission clients.
 /// </summary>
-public interface IMissionClientEx
+public interface IMissionClientEx:IMavlinkMicroserviceClient
 {
     /// <summary>
     /// Gets the base mission client.
@@ -31,7 +31,7 @@ public interface IMissionClientEx
     /// The <paramref name="progress"/> parameter can be used to track progress during the download. The callback will be called with a value between 0.0 and 1.0 indicating the progress
     /// percentage.
     /// </remarks>
-    Task<MissionItem[]> Download(CancellationToken cancel, Action<double> progress = null);
+    Task<MissionItem[]> Download(CancellationToken cancel, Action<double>? progress = null);
 
     /// <summary>
     /// Uploads a file to the server.

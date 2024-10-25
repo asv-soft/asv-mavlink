@@ -9,7 +9,7 @@ using DynamicData;
 
 namespace Asv.Mavlink;
 
-public interface IAsvSdrClientEx
+public interface IAsvSdrClientEx:IMavlinkMicroserviceClient
 {
     /// <summary>
     /// Gets an instance of IAsvSdrClient.

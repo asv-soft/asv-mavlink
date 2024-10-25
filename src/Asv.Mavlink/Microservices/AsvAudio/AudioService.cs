@@ -21,7 +21,7 @@ public class AudioService : IAudioService,IDisposable
     private readonly IAudioCodecFactory _codecFactory;
     private readonly MavlinkIdentity _identity;
     private readonly ICoreServices _core;
-    private readonly SourceCache<AudioDevice,ushort> _deviceCache;
+    private readonly SourceCache<AudioDevice,MavlinkIdentity> _deviceCache;
     private readonly MavlinkPacketTransponder<AsvAudioOnlinePacket,AsvAudioOnlinePayload> _transponder;
     private readonly RxValue<bool> _isOnline;
     private readonly RxValue<AsvAudioCodec?> _codec;
@@ -46,7 +46,7 @@ public class AudioService : IAudioService,IDisposable
 
         var builder = Disposable.CreateBuilder();
         
-        _deviceCache = new SourceCache<AudioDevice,ushort>(x => x.FullId).AddTo(ref builder);
+        _deviceCache = new SourceCache<AudioDevice,MavlinkIdentity>(x => x.FullId).AddTo(ref builder);
         Devices = _deviceCache.Connect().Transform(x=>(IAudioDevice)x);
         core.Connection.Filter<AsvAudioOnlinePacket>().Where(_=>IsOnline.Value).Subscribe(OnRecvDeviceOnline).AddTo(ref builder);
         core.Connection.Filter<AsvAudioStreamPacket>().Where(_=>IsOnline.Value).Subscribe(OnRecvAudioStream).AddTo(ref builder);
@@ -200,7 +200,7 @@ public class AudioService : IAudioService,IDisposable
     public IRxValue<AsvAudioCodec?> Codec => _codec;
     public IRxEditableValue<bool> SpeakerEnabled => _speakerEnabled;
     public IRxEditableValue<bool> MicEnabled => _micEnabled;
-    public IObservable<IChangeSet<IAudioDevice, ushort>> Devices { get; }
+    public IObservable<IChangeSet<IAudioDevice, MavlinkIdentity>> Devices { get; }
     public OnRecvAudioDelegate OnReceiveAudio { get; set; }
   
     public void SendAll(ReadOnlyMemory<byte> pcmRawAudioData)

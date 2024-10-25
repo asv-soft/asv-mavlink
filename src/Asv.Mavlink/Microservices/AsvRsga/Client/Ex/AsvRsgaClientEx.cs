@@ -56,4 +56,11 @@ public class AsvRsgaClientEx : DisposableOnceWithCancel, IAsvRsgaClientEx
         var result = await _commandClient.CommandLong(item => RsgaHelper.SetArgsForSetMode(item, mode),cs.Token).ConfigureAwait(false);
         return result.Result;
     }
+
+    public MavlinkClientIdentity Identity =>Base.Identity;
+    public ICoreServices Core => Base.Core;
+    public Task Init(CancellationToken cancel = default)
+    {
+        return Task.CompletedTask;
+    }
 }

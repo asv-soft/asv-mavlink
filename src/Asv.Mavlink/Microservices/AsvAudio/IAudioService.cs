@@ -22,7 +22,7 @@ public interface IAudioService
     IRxValue<AsvAudioCodec?> Codec { get; }
     IRxEditableValue<bool> SpeakerEnabled { get; }
     IRxEditableValue<bool> MicEnabled { get; }
-    IObservable<IChangeSet<IAudioDevice, ushort>> Devices { get; }
+    IObservable<IChangeSet<IAudioDevice, MavlinkIdentity>> Devices { get; }
     OnRecvAudioDelegate OnReceiveAudio { get; set; }
     void SendAll(ReadOnlyMemory<byte> pcmRawAudioData);
 }

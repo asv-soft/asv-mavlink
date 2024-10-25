@@ -257,4 +257,11 @@ public class FtpClientEx : IFtpClientEx, IDisposable, IMavlinkMicroserviceClient
     {
         _entryCache.Dispose();
     }
+
+    public MavlinkClientIdentity Identity => Base.Identity;
+    public ICoreServices Core => Base.Core;
+    public Task Init(CancellationToken cancel = default)
+    {
+        return Task.CompletedTask;
+    }
 }
