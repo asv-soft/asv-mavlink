@@ -1,11 +1,11 @@
 using System;
-using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -18,7 +18,7 @@ public class MavlinkFtpServerExConfig
     public required string RootDirectory { get; init; }
 }
 
-public class FtpServerEx : IFtpServerEx
+public partial class FtpServerEx : IFtpServerEx
 {
     private readonly ILogger _logger;
     private readonly MavlinkFtpServerExConfig _config;
@@ -67,6 +67,11 @@ public class FtpServerEx : IFtpServerEx
         }
         
         var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
+        if (!fullPath.Contains(_rootDirectory))
+        {
+            fullPath = _rootDirectory;
+        }
+        
         if (!_fileSystem.File.Exists(fullPath))
         {
             throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.FileNotFound);
@@ -90,6 +95,10 @@ public class FtpServerEx : IFtpServerEx
         }
         
         var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
+        if (!fullPath.Contains(_rootDirectory))
+        {
+            fullPath = _rootDirectory;
+        }
         
         var session = OpenSession(FtpSession.SessionMode.OpenWrite);
         var stream = _fileSystem.File.OpenWrite(fullPath);
@@ -140,12 +149,22 @@ public class FtpServerEx : IFtpServerEx
         }
         
         var fullPath1 = _fileSystem.Path.Combine(_rootDirectory, path1);
+        if (!fullPath1.Contains(_rootDirectory))
+        {
+            fullPath1 = _rootDirectory;
+        }
+        
         if (!_fileSystem.Path.Exists(fullPath1))
         {
             throw new FtpNackException(FtpOpcode.Rename, NackError.FileNotFound);
         }
 
         var fullPath2 = _fileSystem.Path.Combine(_rootDirectory, path2);
+        if (!fullPath2.Contains(_rootDirectory))
+        {
+            fullPath2 = _rootDirectory;
+        }
+        
         if (_fileSystem.Path.HasExtension(fullPath2))
         {
             _fileSystem.File.Move(fullPath1, fullPath2);
@@ -207,6 +226,11 @@ public class FtpServerEx : IFtpServerEx
         }
 
         var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
+        if (!fullPath.Contains(_rootDirectory))
+        {
+            fullPath = _rootDirectory;
+        }
+        
         if (!_fileSystem.Path.Exists(fullPath))
         {
             throw new FtpNackException(FtpOpcode.ListDirectory, NackError.FileNotFound);
@@ -275,6 +299,11 @@ public class FtpServerEx : IFtpServerEx
         }
         
         var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
+        if (!fullPath.Contains(_rootDirectory))
+        {
+            fullPath = _rootDirectory;
+        }
+        
         if (_fileSystem.Directory.Exists(fullPath))
         {
             throw new FtpNackException(FtpOpcode.CreateDirectory, NackError.FileExists);
@@ -293,6 +322,11 @@ public class FtpServerEx : IFtpServerEx
         }
         
         var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
+        if (!fullPath.Contains(_rootDirectory))
+        {
+            fullPath = _rootDirectory;
+        }
+        
         if (_fileSystem.File.Exists(fullPath))
         {
             var stream = _fileSystem.File.Open(fullPath, FileMode.Truncate, FileAccess.Write, FileShare.Read);
@@ -317,6 +351,11 @@ public class FtpServerEx : IFtpServerEx
         }
         
         var filePath = _fileSystem.Path.Combine(_rootDirectory, path);
+        if (!filePath.Contains(_rootDirectory))
+        {
+            filePath = _rootDirectory;
+        }
+        
         if (!_fileSystem.File.Exists(filePath))
         {
             throw new FtpNackException(FtpOpcode.RemoveFile, NackError.FileNotFound);
@@ -335,6 +374,11 @@ public class FtpServerEx : IFtpServerEx
         }
         
         var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
+        if (!fullPath.Contains(_rootDirectory))
+        {
+            fullPath = _rootDirectory;
+        }
+        
         if (!_fileSystem.Directory.Exists(fullPath))
         {
             throw new FtpNackException(FtpOpcode.RemoveDirectory, NackError.FileNotFound);
@@ -358,6 +402,11 @@ public class FtpServerEx : IFtpServerEx
         }
         
         var filePath = _fileSystem.Path.Combine(_rootDirectory, path);
+        if (!filePath.Contains(_rootDirectory))
+        {
+            filePath = _rootDirectory;
+        }
+        
         if (!_fileSystem.File.Exists(filePath))
         {
             throw new FtpNackException(FtpOpcode.CalcFileCRC32, NackError.FileNotFound);
