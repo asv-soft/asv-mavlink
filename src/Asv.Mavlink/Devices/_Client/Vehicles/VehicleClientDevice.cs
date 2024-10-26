@@ -10,7 +10,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class VehicleClientV2Config: ClientDeviceBaseConfig
+public class VehicleClientDeviceConfig: ClientDeviceBaseConfig
 {
     public ParamsClientExConfig Params { get; set; } = new();
     public CommandProtocolConfig Command { get; set; } = new();
@@ -21,22 +21,22 @@ public class VehicleClientV2Config: ClientDeviceBaseConfig
     public ushort MavDataStreamExtendedStatusRateHz { get; set; } = 1;
     public ushort MavDataStreamPositionRateHz { get; set; } = 1;
 }
-public class VehicleClientV2: ClientDevice
+public class VehicleClientDevice: ClientDevice
 {
-    private readonly VehicleClientV2Config _config;
-    private readonly ILogger<VehicleClientV2> _logger;
+    private readonly VehicleClientDeviceConfig _deviceConfig;
+    private readonly ILogger<VehicleClientDevice> _logger;
     private AutopilotVersionPacket? _autopilotVersion;
 
-    protected VehicleClientV2(MavlinkClientIdentity identity, VehicleClientV2Config config, ICoreServices core, DeviceClass @class) 
-        : base(identity, config, core,@class )
+    protected VehicleClientDevice(MavlinkClientIdentity identity, VehicleClientDeviceConfig deviceConfig, ICoreServices core, DeviceClass @class) 
+        : base(identity, deviceConfig, core,@class )
     {
-        _config = config;
-        _logger = core.Log.CreateLogger<VehicleClientV2>();
+        _deviceConfig = deviceConfig;
+        _logger = core.Log.CreateLogger<VehicleClientDevice>();
     }
 
     protected override async Task InitBeforeMicroservices(CancellationToken cancel)
     {
-        using var client = new CommandClient(Identity, _config.Commands, Core);
+        using var client = new CommandClient(Identity, _deviceConfig.Commands, Core);
         try
         {
             _logger.LogTrace("Try to read AutopilotVersion for checking capabilities");
@@ -52,7 +52,7 @@ public class VehicleClientV2: ClientDevice
     protected override IEnumerable<IMavlinkMicroserviceClient> CreateMicroservices()
     {
         yield return new StatusTextClient(Identity, Core);
-        var paramBase = new ParamsClient(Identity, _config.Params, Core);
+        var paramBase = new ParamsClient(Identity, _deviceConfig.Params, Core);
         yield return paramBase;
         if (_autopilotVersion != null)
         {
@@ -60,24 +60,24 @@ public class VehicleClientV2: ClientDevice
             if (_autopilotVersion.Payload.Capabilities.HasFlag(MavProtocolCapability
                     .MavProtocolCapabilityParamEncodeBytewise))
             {
-                yield return new ParamsClientEx(paramBase, _config.Params, MavParamHelper.ByteWiseEncoding,
+                yield return new ParamsClientEx(paramBase, _deviceConfig.Params, MavParamHelper.ByteWiseEncoding,
                     GetParamDescriptions());
             }
             else
             {
-                yield return new ParamsClientEx(paramBase, _config.Params, MavParamHelper.CStyleEncoding,
+                yield return new ParamsClientEx(paramBase, _deviceConfig.Params, MavParamHelper.CStyleEncoding,
                     GetParamDescriptions());
             }
             
         }
-        var cmd = new CommandClient(Identity,_config.Command,Core);
+        var cmd = new CommandClient(Identity,_deviceConfig.Command,Core);
         yield return cmd;
         yield return new OffboardClient(Identity, Core);
         yield return new LoggingClient(Identity, Core);
-        var missions = new MissionClient(Identity, _config.Missions,Core);
+        var missions = new MissionClient(Identity, _deviceConfig.Missions,Core);
         yield return missions;
-        yield return new MissionClientEx(missions, _config.Missions);
-        yield return new FtpClient(Identity,_config.Ftp,Core);
+        yield return new MissionClientEx(missions, _deviceConfig.Missions);
+        yield return new FtpClient(Identity,_deviceConfig.Ftp,Core);
         var gnssBase = new GnssClient(Identity,Core);
         yield return gnssBase;
         yield return new GnssClientEx(gnssBase);
@@ -89,7 +89,7 @@ public class VehicleClientV2: ClientDevice
         yield return rtt;
         yield return new TelemetryClientEx(rtt);
         yield return new DgpsClient(Identity,Core);
-        yield return new DiagnosticClient(Identity, _config.Diagnostic, Core);
+        yield return new DiagnosticClient(Identity, _deviceConfig.Diagnostic, Core);
     }
 
     protected virtual IEnumerable<ParamDescription> GetParamDescriptions()
@@ -102,9 +102,9 @@ public class VehicleClientV2: ClientDevice
         var rtt = this.GetMicroservice<ITelemetryClient>();
         if (rtt != null)
         {
-            await rtt.RequestDataStream((int)MavDataStream.MavDataStreamAll, _config.MavDataStreamAllRateHz , true, cancel).ConfigureAwait(false);
-            await rtt.RequestDataStream((int)MavDataStream.MavDataStreamExtendedStatus, _config.MavDataStreamExtendedStatusRateHz, true, cancel).ConfigureAwait(false);
-            await rtt.RequestDataStream((int)MavDataStream.MavDataStreamPosition,_config.MavDataStreamPositionRateHz , true, cancel).ConfigureAwait(false);    
+            await rtt.RequestDataStream((int)MavDataStream.MavDataStreamAll, _deviceConfig.MavDataStreamAllRateHz , true, cancel).ConfigureAwait(false);
+            await rtt.RequestDataStream((int)MavDataStream.MavDataStreamExtendedStatus, _deviceConfig.MavDataStreamExtendedStatusRateHz, true, cancel).ConfigureAwait(false);
+            await rtt.RequestDataStream((int)MavDataStream.MavDataStreamPosition,_deviceConfig.MavDataStreamPositionRateHz , true, cancel).ConfigureAwait(false);    
         }
     }
 }

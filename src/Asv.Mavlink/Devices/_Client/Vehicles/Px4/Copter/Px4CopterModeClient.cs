@@ -19,12 +19,6 @@ public class Px4CopterModeClient  : ModeClient
         var wellKnownModes = new HashSet<uint>(WellKnownModes.Select(x=>x.CustomMode));
         var allModes = new List<OpMode>();
         allModes.AddRange(WellKnownModes);
-        foreach (var copterMode in Enum.GetValues<CopterMode>())
-        {
-            if (wellKnownModes.Contains((uint)copterMode)) continue;
-            // this is not "well known" mode, try to create description from enum
-            allModes.Add(new ArdupilotCopterMode(copterMode.ToString("G"), string.Empty, copterMode));
-        }
         AllModes = [..allModes];
     }
     
@@ -46,73 +40,73 @@ public class Px4CopterModeClient  : ModeClient
         }
     }
 
-        public static OpMode Manual = new("Manual", "Manual", false,
+        public static readonly OpMode Manual = new("Manual", "Manual", false,
         MavModeFlag.MavModeFlagCustomModeEnabled | MavModeFlag.MavModeFlagStabilizeEnabled | MavModeFlag.MavModeFlagManualInputEnabled,
         (uint)CustomMainMode.Px4CustomMainModeManual,
         (uint)CustomSubMode.Empty);
 
-        public static OpMode Stabilized = new("Stabilized","Stabilized",false,
+        public static readonly OpMode Stabilized = new("Stabilized","Stabilized",false,
             MavModeFlag.MavModeFlagCustomModeEnabled | MavModeFlag.MavModeFlagStabilizeEnabled |
             MavModeFlag.MavModeFlagManualInputEnabled,
             (uint)CustomMainMode.Px4CustomMainModeStabilized,
             (uint)CustomSubMode.Empty);
 
-        public static OpMode Acro = new("Acro", "Acro", false,
+        public static readonly OpMode Acro = new("Acro", "Acro", false,
             MavModeFlag.MavModeFlagCustomModeEnabled | MavModeFlag.MavModeFlagManualInputEnabled,
             (uint)CustomMainMode.Px4CustomMainModeAcro,
             (uint)CustomSubMode.Empty);
 
-        public static OpMode Rattitude = new("Rattitude", "Rattitude", false,
+        public static readonly OpMode Rattitude = new("Rattitude", "Rattitude", false,
             MavModeFlag.MavModeFlagCustomModeEnabled | MavModeFlag.MavModeFlagManualInputEnabled,
             (uint)CustomMainMode.Px4CustomMainModeRattitude,
             (uint)CustomSubMode.Empty);
         
-        public static OpMode  Altctl = new("Altctl","Altctl",false, 
+        public static readonly OpMode  Altctl = new("Altctl","Altctl",false, 
             MavModeFlag.MavModeFlagCustomModeEnabled | MavModeFlag.MavModeFlagStabilizeEnabled | MavModeFlag.MavModeFlagManualInputEnabled,
             (uint)CustomMainMode.Px4CustomMainModeAltctl,
             (uint)CustomSubMode.Empty);
         
-        public static OpMode  Posctl = new("Posctl","Posctl",false,
+        public static readonly OpMode  Posctl = new("Posctl","Posctl",false,
             MavModeFlag.MavModeFlagCustomModeEnabled | MavModeFlag.MavModeFlagStabilizeEnabled | MavModeFlag.MavModeFlagManualInputEnabled,
             (uint)CustomMainMode.Px4CustomMainModePosctl,
             (uint)CustomSubMode.Empty);
         
-        public static OpMode  Loiter = new("Loiter","Loiter",false,
+        public static readonly OpMode  Loiter = new("Loiter","Loiter",false,
             MavModeFlag.MavModeFlagCustomModeEnabled | MavModeFlag.MavModeFlagAutoEnabled | MavModeFlag.MavModeFlagStabilizeEnabled | MavModeFlag.MavModeFlagGuidedEnabled,
             (uint)CustomMainMode.Px4CustomMainModeAuto,
             (uint)CustomSubMode.Px4CustomSubModeAutoLoiter);
         
-        public static OpMode  Mission = new("Mission","Mission",false,
+        public static readonly OpMode  Mission = new("Mission","Mission",false,
             MavModeFlag.MavModeFlagCustomModeEnabled | MavModeFlag.MavModeFlagAutoEnabled | MavModeFlag.MavModeFlagStabilizeEnabled | MavModeFlag.MavModeFlagGuidedEnabled,
             (uint)CustomMainMode.Px4CustomMainModeAuto,
             (uint)CustomSubMode.Px4CustomSubModeAutoMission);
         
-        public static OpMode  RTL = new("RTL","RTL",false,
+        public static readonly OpMode  RTL = new("RTL","RTL",false,
             MavModeFlag.MavModeFlagCustomModeEnabled | MavModeFlag.MavModeFlagAutoEnabled | MavModeFlag.MavModeFlagStabilizeEnabled | MavModeFlag.MavModeFlagGuidedEnabled,
             (uint)CustomMainMode.Px4CustomMainModeAuto,
-            (uint)CustomSubMode.Px4CustomSubModeAutoRTL);
+            (uint)CustomSubMode.Px4CustomSubModeAutoRtl);
         
-        public static OpMode  Followme = new("Followme","Followme",false,
+        public static readonly OpMode  Followme = new("Followme","Followme",false,
             MavModeFlag.MavModeFlagCustomModeEnabled | MavModeFlag.MavModeFlagAutoEnabled | MavModeFlag.MavModeFlagStabilizeEnabled | MavModeFlag.MavModeFlagGuidedEnabled,
             (uint)CustomMainMode.Px4CustomMainModeAuto,
             (uint)CustomSubMode.Px4CustomSubModeAutoFollowTarget);
         
-        public static OpMode  Offboard = new("Offboard","Offboard",false,
+        public static readonly OpMode  Offboard = new("Offboard","Offboard",false,
             MavModeFlag.MavModeFlagCustomModeEnabled | MavModeFlag.MavModeFlagAutoEnabled | MavModeFlag.MavModeFlagStabilizeEnabled | MavModeFlag.MavModeFlagGuidedEnabled,
             (uint)CustomMainMode.Px4CustomMainModeOffboard,
             (uint)CustomSubMode.Empty);
         
-        public static OpMode  TakeOff = new("TakeOff","TakeOff",true,
+        public static readonly OpMode  TakeOff = new("TakeOff","TakeOff",true,
             MavModeFlag.MavModeFlagCustomModeEnabled | MavModeFlag.MavModeFlagAutoEnabled | MavModeFlag.MavModeFlagStabilizeEnabled | MavModeFlag.MavModeFlagGuidedEnabled,
             (uint)CustomMainMode.Px4CustomMainModeAuto,
             (uint)CustomSubMode.Px4CustomSubModeAutoTakeoff);
         
-        public static OpMode  Land = new("Land","Land",true,
+        public static readonly OpMode  Land = new("Land","Land",true,
             MavModeFlag.MavModeFlagCustomModeEnabled | MavModeFlag.MavModeFlagAutoEnabled | MavModeFlag.MavModeFlagStabilizeEnabled | MavModeFlag.MavModeFlagGuidedEnabled,
             (uint)CustomMainMode.Px4CustomMainModeAuto,
             (uint)CustomSubMode.Px4CustomSubModeAutoLand);
         
-        public static OpMode  Rtgs = new("Rtgs","Rtgs",true,
+        public static readonly OpMode  Rtgs = new("Rtgs","Rtgs",true,
             MavModeFlag.MavModeFlagCustomModeEnabled | MavModeFlag.MavModeFlagAutoEnabled | MavModeFlag.MavModeFlagStabilizeEnabled | MavModeFlag.MavModeFlagGuidedEnabled,
             (uint)CustomMainMode.Px4CustomMainModeAuto,
             (uint)CustomSubMode.Px4CustomSubModeAutoRtgs);
@@ -162,7 +156,7 @@ public class Px4CopterModeClient  : ModeClient
                         return Loiter;
                     case CustomSubMode.Px4CustomSubModeAutoFollowTarget:
                         return Followme;
-                    case CustomSubMode.Px4CustomSubModeAutoRTL:
+                    case CustomSubMode.Px4CustomSubModeAutoRtl:
                         return RTL;
                     case CustomSubMode.Px4CustomSubModeAutoLand:
                         return Land;
@@ -184,7 +178,7 @@ public class Px4CopterModeClient  : ModeClient
 }
 
 
-public enum Px4CustomMainMode
+public enum CustomMainMode
 {
     Empty = 0,
     Px4CustomMainModeManual = 1,
@@ -197,7 +191,7 @@ public enum Px4CustomMainMode
     Px4CustomMainModeRattitude = 8,
 }
 
-public enum Px4CustomSubMode
+public enum CustomSubMode
 {
     Empty = 0,
     Px4CustomSubModeAutoReady = 1,

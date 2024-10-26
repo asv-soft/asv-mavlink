@@ -67,7 +67,7 @@ namespace Asv.Mavlink.Shell
         {
             Task.Factory.StartNew(_ => KeyListen(), _cancel.Token);
             Console.CancelKeyPress += Console_CancelKeyPress;
-            return new ArduCopterClient(MavlinkV2Connection.Create(cs), new MavlinkClientIdentity{ComponentId = 15,SystemId = 15,TargetComponentId = 1,TargetSystemId = 1},new VehicleClientConfig(), new PacketSequenceCalculator());
+            return new ArduCopterClient(MavlinkV2Connection.Create(cs), new MavlinkClientIdentity{ComponentId = 15,SystemId = 15,TargetComponentId = 1,TargetSystemId = 1},new VehicleClientDeviceConfig(), new PacketSequenceCalculator());
         }
 
         protected override async Task<int> RunAsync(IVehicleClient vehicle)

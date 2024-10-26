@@ -1,18 +1,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Asv.Mavlink;
 
-public class ArduPlaneClientV2: ArduVehicleClient
+public class Px4CopterClientDevice:Px4VehicleClientDevice
 {
-    protected ArduPlaneClientV2(MavlinkClientIdentity identity, VehicleClientV2Config config, ICoreServices core) 
-        : base(identity, config, core, DeviceClass.Copter)
+    public Px4CopterClientDevice(MavlinkClientIdentity identity, VehicleClientDeviceConfig deviceConfig, ICoreServices core) 
+        : base(identity, deviceConfig, core, DeviceClass.Copter)
     {
         
     }
-
+    
     protected override IEnumerable<IMavlinkMicroserviceClient> CreateMicroservices()
     {
         ICommandClient? cmd = null;
@@ -25,6 +23,6 @@ public class ArduPlaneClientV2: ArduVehicleClient
             yield return client;
         }
         Debug.Assert(cmd != null);
-        yield return new ArduPlaneModeClient(Heartbeat, cmd);
+        yield return new Px4CopterModeClient(Heartbeat, cmd);
     }
 }

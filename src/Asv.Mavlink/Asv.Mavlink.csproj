@@ -69,8 +69,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Devices\Vehicles\Client\Px4\Plane\" />
-    <Folder Include="Devices\Vehicles\Server\" />
     <Folder Include="Microservices\Commands\Client\Ex\" />
     <Folder Include="Microservices\Control\Server\" />
     <Folder Include="Microservices\Dgps\Server\" />

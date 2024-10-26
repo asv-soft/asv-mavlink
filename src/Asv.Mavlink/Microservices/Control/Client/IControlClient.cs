@@ -4,29 +4,31 @@ using Asv.Common;
 
 namespace Asv.Mavlink;
 
+public static class ControlClientHelper
+{
+    public static async Task EnsureAutoMode(this IControlClient client, CancellationToken cancel = default)
+    {
+        if (await client.IsAutoMode(cancel).ConfigureAwait(false))
+        {
+            await client.SetAutoMode(cancel).ConfigureAwait(false);
+        }
+    }
+
+    public static async Task EnsureGuidedMode(this IControlClient client, CancellationToken cancel = default)
+    {
+        if (await client.IsGuidedMode(cancel).ConfigureAwait(false))
+        {
+            await client.SetGuidedMode(cancel).ConfigureAwait(false);
+        }
+    }
+}
+
 public interface IControlClient:IMavlinkMicroserviceClient
 {
-    Task EnsureInAutoMode(CancellationToken cancel = default);
-    
-    ValueTask<bool> CheckAutoMode(CancellationToken cancel);
-    /// <summary>
-    /// Ensures that the application is in guided mode.
-    /// </summary>
-    /// <param name="cancel">
-    /// A cancellation token that can be used to cancel the operation.
-    /// </param>
-    /// <returns>
-    /// A task representing the asynchronous operation.
-    /// </returns>
-    Task EnsureInGuidedMode(CancellationToken cancel);
-
-    /// <summary>
-    /// Checks the status of the guided mode.
-    /// </summary>
-    /// <param name="cancel">The cancellation token to cancel the operation if needed.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains a boolean value indicating if the guided mode is enabled or not.</returns>
-    Task<bool> CheckGuidedMode(CancellationToken cancel);
-
+    ValueTask<bool> IsAutoMode(CancellationToken cancel = default);
+    Task SetAutoMode(CancellationToken cancel = default);
+    public ValueTask<bool> IsGuidedMode(CancellationToken cancel = default);
+    Task SetGuidedMode(CancellationToken cancel = default);
     /// <summary>
     /// Navigates to the specified GeoPoint. </summary> <param name="point">The GeoPoint to navigate to.</param> <param name="cancel">The cancellation token to cancel the navigation (optional).</param> <returns>
     /// A Task representing the asynchronous operation.
@@ -51,13 +53,6 @@ public interface IControlClient:IMavlinkMicroserviceClient
     /// <param name="cancel">An optional cancellation token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     Task DoRtl(CancellationToken cancel = default);
-
-    /// <summary>
-    /// Sets the auto mode.
-    /// </summary>
-    /// <param name="cancel">The cancellation token (optional).</param>
-    /// <returns>A Task representing the asynchronous operation.</returns>
-    Task SetAutoMode(CancellationToken cancel = default);
 
     /// <summary>
     /// Initiates the takeoff process and ascends to the specified altitude in meters.

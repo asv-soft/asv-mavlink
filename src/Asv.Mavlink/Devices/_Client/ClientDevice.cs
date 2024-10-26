@@ -21,7 +21,7 @@ public class ClientDeviceBaseConfig
 
 public abstract class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
 {
-    private readonly ClientDeviceBaseConfig _config;
+    private readonly ClientDeviceBaseConfig _deviceConfig;
     private readonly ICoreServices _core;
     private readonly ReactiveProperty<InitState> _initState;
     private readonly ReactiveProperty<string> _name;
@@ -35,15 +35,15 @@ public abstract class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
     private readonly CancellationTokenSource _disposableCancel = new();
     private ImmutableArray<IMavlinkMicroserviceClient> _microservices = ImmutableArray<IMavlinkMicroserviceClient>.Empty;
 
-    protected ClientDevice(MavlinkClientIdentity identity, ClientDeviceBaseConfig config, ICoreServices core, DeviceClass deviceClass)
+    protected ClientDevice(MavlinkClientIdentity identity, ClientDeviceBaseConfig deviceConfig, ICoreServices core, DeviceClass deviceClass)
     {
         _loggerBase = core.Log.CreateLogger<ClientDevice>();
-        _config = config;
+        _deviceConfig = deviceConfig;
         _core = core;
         Class = deviceClass;
 
         Identity = identity;
-        _heartbeat = new HeartbeatClient(identity, config.Heartbeat, core);
+        _heartbeat = new HeartbeatClient(identity, deviceConfig.Heartbeat, core);
         _initState = new ReactiveProperty<InitState>(Mavlink.InitState.WaitConnection);
         _subscribe1 = Heartbeat.Link.DistinctUntilChanged()
             .Where(s => s == LinkState.Disconnected)
@@ -89,7 +89,7 @@ public abstract class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
             _loggerBase.ZLogError(e, $"Error to init device:{e.Message}");
             _initState.OnNext(Mavlink.InitState.Failed);
             _reconnectionTimer = _core.TimeProvider.CreateTimer(TryReconnect, null,
-                TimeSpan.FromMilliseconds(_config.RequestInitDataDelayAfterFailMs),Timeout.InfiniteTimeSpan);
+                TimeSpan.FromMilliseconds(_deviceConfig.RequestInitDataDelayAfterFailMs),Timeout.InfiniteTimeSpan);
             DisposeMicroservices(microservices);
         }
         finally
