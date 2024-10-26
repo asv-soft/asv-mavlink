@@ -20,14 +20,19 @@ public interface IClientDevice
     ReadOnlyReactiveProperty<string> Name { get; }
     IHeartbeatClient Heartbeat { get; }
     IEnumerable<IMavlinkMicroserviceClient> Microservices { get; }
-
-    public TMicroservice? GetMicroservice<TMicroservice>() where TMicroservice :  IMavlinkMicroserviceClient
-    {
-        return (TMicroservice?)Microservices.FirstOrDefault(x=> x is TMicroservice);
-    }
     MavlinkClientIdentity Identity => Heartbeat.Identity;
     public Observable<bool> IsInitComplete => InitState.Select(s => s == Mavlink.InitState.Complete);
-    public async Task WaitUntilConnect(int timeoutMs = 3000, TimeProvider? timeProvider = null)
+    
+}
+
+public static class ClientDeviceHelper
+{
+    public static TMicroservice? GetMicroservice<TMicroservice>(this IClientDevice src) where TMicroservice :  IMavlinkMicroserviceClient
+    {
+        return (TMicroservice?)src.Microservices.FirstOrDefault(x=> x is TMicroservice);
+    }
+    
+    public static async Task WaitUntilConnect(this IClientDevice src, int timeoutMs = 3000, TimeProvider? timeProvider = null)
     {
         using var cancel = new CancellationTokenSource();
         if (timeProvider != null)
@@ -38,16 +43,15 @@ public interface IClientDevice
         {
             cancel.CancelAfter(timeoutMs);
         }
-        await Heartbeat.Link.Where(s => s == LinkState.Connected).FirstAsync();
+        await src.Heartbeat.Link.Where(s => s == LinkState.Connected).FirstAsync();
     }
     
-    public async void WaitUntilConnectAndInit(int timeoutMs = 3000)
+    public static async void WaitUntilConnectAndInit(this IClientDevice src, int timeoutMs = 3000)
     {
-        await WaitUntilConnect(timeoutMs).ConfigureAwait(false);
-        await InitState.FirstAsync(s => s == Mavlink.InitState.Complete).ConfigureAwait(false);
+        await src.WaitUntilConnect(timeoutMs).ConfigureAwait(false);
+        await src.InitState.FirstAsync(s => s == Mavlink.InitState.Complete).ConfigureAwait(false);
     }
 }
-
 
 /// <summary>
 /// Represents the initialization state of a process.

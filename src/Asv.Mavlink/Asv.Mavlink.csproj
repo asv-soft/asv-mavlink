@@ -71,10 +71,11 @@
   <ItemGroup>
     <Folder Include="Devices\Vehicles\Client\Px4\Plane\" />
     <Folder Include="Devices\Vehicles\Server\" />
-    <Folder Include="Devices\_Client\Vehicles\" />
     <Folder Include="Microservices\Commands\Client\Ex\" />
+    <Folder Include="Microservices\Control\Server\" />
     <Folder Include="Microservices\Dgps\Server\" />
     <Folder Include="Microservices\Gnss\Server\" />
+    <Folder Include="Microservices\Mode\Server\" />
     <Folder Include="Microservices\Offboard\Server\" />
     <Folder Include="Microservices\Position\Server\" />
     <Folder Include="Microservices\Telemetry\Server\" />

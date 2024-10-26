@@ -7,7 +7,7 @@ using Asv.Mavlink.V2.Ardupilotmega;
 
 namespace Asv.Mavlink;
 
-public class ArdupilotCopterMode:VehicleMode
+public class ArdupilotCopterMode:OpMode
 {
     #region Static
     

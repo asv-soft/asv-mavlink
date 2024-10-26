@@ -2,16 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using R3;
 using ZLogger;
-using ObservableExtensions = System.ObservableExtensions;
 
 namespace Asv.Mavlink;
 
@@ -19,7 +16,7 @@ public class ClientDeviceBaseConfig
 {
     public int RequestInitDataDelayAfterFailMs { get; set; } = 5000;
     public HeartbeatClientConfig Heartbeat { get; set; } = new();
-   
+    public CommandProtocolConfig Commands { get; set; } = new();
 }
 
 public abstract class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
@@ -70,23 +67,25 @@ public abstract class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
         }
         _initState.OnNext(Mavlink.InitState.InProgress);
         List<IMavlinkMicroserviceClient> microservices = new();
+        using var reconnectCancel = new CancellationTokenSource();
+        using var combine = CancellationTokenSource.CreateLinkedTokenSource(DisposableCancel, reconnectCancel.Token);
         try
         {
-            await InitBeforeMicroservices(DisposableCancel).ConfigureAwait(false);
-            
+            await InitBeforeMicroservices(combine.Token).ConfigureAwait(false);
             foreach (var client in CreateMicroservices())
             {
                 microservices.Add(client);
-                await client.Init(DisposableCancel).ConfigureAwait(false);
+                await client.Init(combine.Token).ConfigureAwait(false);
             }
             _initState.OnNext(Mavlink.InitState.Complete);
             _needToRequestAgain = false;
             microservices.Add(_heartbeat);
             _microservices = [..microservices];
-            await InitAfterMicroservices(DisposableCancel).ConfigureAwait(false);
+            await InitAfterMicroservices(combine.Token).ConfigureAwait(false);
         }
         catch (Exception e)
         {
+            combine.Cancel(false);
             _loggerBase.ZLogError(e, $"Error to init device:{e.Message}");
             _initState.OnNext(Mavlink.InitState.Failed);
             _reconnectionTimer = _core.TimeProvider.CreateTimer(TryReconnect, null,

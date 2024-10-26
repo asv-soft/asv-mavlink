@@ -9,7 +9,7 @@ namespace Asv.Mavlink;
 /// <summary>
 /// Represents an extended interface for controlling the position of a client.
 /// </summary>
-public interface IPositionClientEx
+public interface IPositionClientEx : IMavlinkMicroserviceClient
 {
     /// <summary>
     /// Gets the client for interacting with Position data.

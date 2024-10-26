@@ -22,7 +22,7 @@ namespace Asv.Mavlink
         /// <summary>
         /// ComponentId | SystemId << 8 as ushort
         /// </summary>
-        ushort FullId { get; }
+        MavlinkIdentity FullId { get; }
         /// <summary>
         /// Type of the system (quadrotor, helicopter, etc.). Components use the same type as their associated system.
         /// OriginName: type, Units: , IsExtended: false
@@ -65,7 +65,7 @@ namespace Asv.Mavlink
     /// </summary>
     public interface IMavlinkDeviceBrowser
     {
-        IObservable<IChangeSet<IMavlinkDevice,ushort>> Devices { get; }
+        IObservable<IChangeSet<IMavlinkDevice, MavlinkIdentity>> Devices { get; }
         /// <summary>
         /// Current device timeout
         /// </summary>

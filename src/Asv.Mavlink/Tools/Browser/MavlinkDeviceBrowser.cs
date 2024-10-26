@@ -71,7 +71,7 @@ namespace Asv.Mavlink
 
         public byte SystemId { get; }
         public byte ComponentId { get; }
-        public ushort FullId => MavlinkHelper.ConvertToFullId(ComponentId , SystemId);
+        public MavlinkIdentity FullId => new(SystemId,ComponentId);
         public MavType Type { get; }
         public MavAutopilot Autopilot { get; }
         public byte MavlinkVersion { get; }
@@ -91,7 +91,7 @@ namespace Asv.Mavlink
     {
         private readonly ILogger _logger;
         private readonly RxValue<TimeSpan> _deviceTimeout;
-        private readonly SourceCache<MavlinkDevice,ushort> _deviceCache;
+        private readonly SourceCache<MavlinkDevice,MavlinkIdentity> _deviceCache;
 
         public MavlinkDeviceBrowser(IMavlinkV2Connection connection, TimeSpan deviceTimeout, IScheduler? scheduler = null, ILoggerFactory? logFactory = null)
         {
@@ -105,7 +105,7 @@ namespace Asv.Mavlink
                 .Timer(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3))
                 .Subscribe(RemoveOldDevice)
                 .DisposeItWith(Disposable);
-            _deviceCache = new SourceCache<MavlinkDevice, ushort>(x => x.FullId).DisposeItWith(Disposable);
+            _deviceCache = new SourceCache<MavlinkDevice, MavlinkIdentity>(x => x.FullId).DisposeItWith(Disposable);
             _deviceTimeout = new RxValue<TimeSpan>(deviceTimeout).DisposeItWith(Disposable);
             
             if (scheduler != null)
@@ -150,7 +150,7 @@ namespace Asv.Mavlink
                 }
             });
         }
-        public IObservable<IChangeSet<IMavlinkDevice, ushort>> Devices { get; }
+        public IObservable<IChangeSet<IMavlinkDevice, MavlinkIdentity>> Devices { get; }
         public IRxEditableValue<TimeSpan> DeviceTimeout => _deviceTimeout;
 
        

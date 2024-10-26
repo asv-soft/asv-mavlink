@@ -1,6 +1,8 @@
 using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Asv.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -11,7 +13,7 @@ namespace Asv.Mavlink;
 /// <summary>
 /// Represents an extended TelemetryClient interface.
 /// </summary>
-public interface ITelemetryClientEx
+public interface ITelemetryClientEx:IMavlinkMicroserviceClient
 {
     /// <summary>
     /// Property that returns an instance of ITelemetryClient.
@@ -149,6 +151,12 @@ public class TelemetryClientEx : ITelemetryClientEx,IDisposable
     /// </value>
     public IRxValue<double> DropRateCommunication => _dropRateComm;
 
+    public MavlinkClientIdentity Identity => Base.Identity;
+    public ICoreServices Core => Base.Core;
+    public Task Init(CancellationToken cancel = default)
+    {
+        return Task.CompletedTask;
+    }
     public void Dispose()
     {
         _disposeIt.Dispose();

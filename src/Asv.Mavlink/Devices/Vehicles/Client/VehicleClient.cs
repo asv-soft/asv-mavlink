@@ -58,7 +58,7 @@ public abstract class VehicleClient : ClientDevice, IVehicleClient
         Heartbeat
             .RawHeartbeat
             .DistinctUntilChanged(p=> ((int) p.BaseMode * 397) ^ (int) p.CustomMode)
-            .Select(p=>InternalInterpretMode(p) ?? VehicleMode.Unknown)
+            .Select(p=>InternalInterpretMode(p) ?? OpMode.Unknown)
             .Subscribe(customMode)
             .DisposeItWith(Disposable);
         CurrentMode = customMode;

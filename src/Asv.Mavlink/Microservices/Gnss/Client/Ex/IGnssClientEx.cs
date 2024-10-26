@@ -1,5 +1,7 @@
 using System;
 using System.Reactive.Concurrency;
+using System.Threading;
+using System.Threading.Tasks;
 using Asv.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -9,7 +11,7 @@ namespace Asv.Mavlink;
 /// <summary>
 /// Represents a GNSS client with extended functionalities.
 /// </summary>
-public interface IGnssClientEx
+public interface IGnssClientEx:IMavlinkMicroserviceClient
 {
     /// <summary>
     /// Gets the main object implementing the IGnssStatusClient interface.
@@ -70,4 +72,11 @@ public class GnssClientEx : DisposableOnceWithCancel, IGnssClientEx
     /// The additional GNSS status client.
     /// </value>
     public IGnssStatusClient Additional { get; }
+
+    public MavlinkClientIdentity Identity => Base.Identity;
+    public ICoreServices Core => Base.Core;
+    public Task Init(CancellationToken cancel = default)
+    {
+        return Task.CompletedTask;
+    }
 }
