@@ -5,8 +5,9 @@ using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-public class TestLoggerFactory(ITestOutputHelper testOutputHelper, string prefix) : ILoggerFactory
+public class TestLoggerFactory(ITestOutputHelper testOutputHelper, TimeProvider time, string prefix) : ILoggerFactory
 {
+    public TimeProvider Time { get; } = time;
     private readonly string _prefix = prefix;
 
     public void Dispose()
@@ -16,7 +17,7 @@ public class TestLoggerFactory(ITestOutputHelper testOutputHelper, string prefix
 
     public ILogger CreateLogger(string categoryName)
     {
-        return new TestLogger(testOutputHelper, $"{prefix}.{categoryName}");
+        return new TestLogger(testOutputHelper,Time, $"{prefix}.{categoryName}");
     }
 
     public void AddProvider(ILoggerProvider provider)
@@ -25,7 +26,7 @@ public class TestLoggerFactory(ITestOutputHelper testOutputHelper, string prefix
     }
 }
 
-public class TestLogger(ITestOutputHelper testOutputHelper, string? categoryName) : ILogger
+public class TestLogger(ITestOutputHelper testOutputHelper, TimeProvider time, string? categoryName) : ILogger
 {
     public bool IsEnabled(LogLevel logLevel) => logLevel != LogLevel.None;
 
@@ -35,7 +36,7 @@ public class TestLogger(ITestOutputHelper testOutputHelper, string? categoryName
     {
         try
         {
-            testOutputHelper.WriteLine($"{DateTime.Now:HH:mm:ss.fff,15} |={ConvertToStr(logLevel)}=| {categoryName,-8} | {formatter(state, exception)}");
+            testOutputHelper.WriteLine($"{time.GetLocalNow().DateTime:HH:mm:ss.fff,15} |={ConvertToStr(logLevel)}=| {categoryName,-8} | {formatter(state, exception)}");
         }
         catch
         {

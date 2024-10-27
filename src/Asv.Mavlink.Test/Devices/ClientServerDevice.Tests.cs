@@ -24,11 +24,11 @@ public class ClientServerDeviceTests
         var meter = new DefaultMeterFactory();
         
         var clientSeq = new PacketSequenceCalculator();
-        var clientLog = new TestLoggerFactory(output, "CLIENT");
+        var clientLog = new TestLoggerFactory(output,_timeClient, "CLIENT");
         var clientCore = new CoreServices(link.Client,clientSeq, clientLog, _timeClient, meter);
         
         var serverSeq = new PacketSequenceCalculator();
-        var serverLog = new TestLoggerFactory(output, "SERVER");
+        var serverLog = new TestLoggerFactory(output,_timeServer, "SERVER");
         var serverCore = new CoreServices(link.Server,serverSeq, serverLog, _timeServer, meter);
         var serverId = new MavlinkClientIdentity(1, 2, 3, 4);
         

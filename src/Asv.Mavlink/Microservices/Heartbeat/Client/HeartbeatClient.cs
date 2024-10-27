@@ -75,7 +75,7 @@ namespace Asv.Mavlink
             _linkQuality = new RxValueBehaviour<double>(0)
                 .AddTo(ref builder);
             _timeProvider
-                .CreateTimer(CheckConnection, null, CheckConnectionDelay, CheckConnectionDelay)
+                .CreateTimer(CheckConnection, null, TimeSpan.Zero, CheckConnectionDelay)
                 .AddTo(ref builder);
             
             // we need skip first packet because it's not a real packet
