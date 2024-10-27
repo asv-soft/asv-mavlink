@@ -28,7 +28,7 @@ public class FtpClientEx : IFtpClientEx, IDisposable, IMavlinkMicroserviceClient
         Base = client;
         _entryCache = new SourceCache<IFtpEntry, string>(x => x.Path);
     }
-
+    public string Name => $"{Base.Name}Ex";
     public IFtpClient Base { get; }
     public IObservable<IChangeSet<IFtpEntry, string>> Entries => _entryCache.Connect();
 

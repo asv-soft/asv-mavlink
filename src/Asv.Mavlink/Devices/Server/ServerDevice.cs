@@ -1,5 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -9,14 +11,26 @@ public class ServerDeviceConfig
     public StatusTextLoggerConfig StatusText { get; set; } = new();
 }
 
-public class ServerDevice(MavlinkIdentity identity, ServerDeviceConfig config, ICoreServices core)
-    : IServerDevice, IDisposable, IAsyncDisposable
+public class ServerDevice : IServerDevice, IDisposable, IAsyncDisposable
 {
-    private readonly HeartbeatServer _heartbeat = new(identity, config.Heartbeat, core);
-    private readonly StatusTextServer _statusText = new(identity, config.StatusText,core);
+    private readonly HeartbeatServer _heartbeat;
+    private readonly StatusTextServer _statusText;
+    private readonly ILogger<ServerDevice> _logger;
 
-    public ICoreServices Core { get; } = core;
-    public MavlinkIdentity Identity { get; } = identity;
+    public ServerDevice(MavlinkIdentity identity, ServerDeviceConfig config, ICoreServices core)
+    {
+        ArgumentNullException.ThrowIfNull(core);
+        ArgumentNullException.ThrowIfNull(config);
+        ArgumentNullException.ThrowIfNull(identity);
+        _logger = core.Log.CreateLogger<ServerDevice>();
+        _heartbeat = new(identity, config.Heartbeat, core);
+        _statusText = new(identity, config.StatusText,core);
+        Core = core;
+        Identity = identity;
+    }
+
+    public ICoreServices Core { get; }
+    public MavlinkIdentity Identity { get; }
 
     public IStatusTextServer StatusText => _statusText;
 
@@ -24,6 +38,7 @@ public class ServerDevice(MavlinkIdentity identity, ServerDeviceConfig config, I
 
     public virtual void Start()
     {
+        
         Heartbeat.Start();
     }
 

@@ -338,56 +338,47 @@ namespace Asv.Mavlink
 
         public IObservable<IPacketV2<IPayload>> OnSendPacket => _onSendPacketSubject;
 
-        public Task Send(IPacketV2<IPayload> packet, CancellationToken cancel)
+        public async Task Send(IPacketV2<IPayload> packet, CancellationToken cancel)
         {
-            if (IsDisposed) return Task.CompletedTask;
+            if (IsDisposed) return;
             _onSendPacketSubject.OnNext(packet);
-            return Task.Run(() =>
+            if (packet.WrapToV2Extension && WrapToV2ExtensionEnabled)
             {
-                if (packet.WrapToV2Extension && WrapToV2ExtensionEnabled)
+                var wrappedPacket = new V2ExtensionPacket
                 {
-                    var wrappedPacket = new V2ExtensionPacket
+                    Tag = packet.Tag,
+                    IncompatFlags = packet.IncompatFlags,
+                    CompatFlags = packet.CompatFlags,
+                    Sequence = packet.Sequence,
+                    SystemId = packet.SystemId,
+                    ComponentId = packet.ComponentId,
+                    Payload =
                     {
-                        Tag = packet.Tag,
-                        IncompatFlags = packet.IncompatFlags,
-                        CompatFlags = packet.CompatFlags,
-                        Sequence = packet.Sequence,
-                        SystemId = packet.SystemId,
-                        ComponentId = packet.ComponentId,
-                        Payload =
-                        {
-                            // broadcast
-                            TargetComponent = 0,
-                            TargetSystem = 0,
-                            TargetNetwork = 0,
-                            MessageType = V2ExtensionFeature.V2ExtensionMessageId
-                        }
-                    };
-                    var span = new Span<byte>(wrappedPacket.Payload.Payload);
-                    var size = span.Length;
-                    packet.Serialize(ref span);
-                    size -= span.Length;
-                    var arr = wrappedPacket.Payload.Payload;
-                    Array.Resize(ref arr, size);
-                    wrappedPacket.Payload.Payload = arr;
-                    packet = wrappedPacket;
-                }
+                        // broadcast
+                        TargetComponent = 0,
+                        TargetSystem = 0,
+                        TargetNetwork = 0,
+                        MessageType = V2ExtensionFeature.V2ExtensionMessageId
+                    }
+                };
                 
-                var data = ArrayPool<byte>.Shared.Rent(packet.GetMaxByteSize());
-                try
-                {
-                    var span = new Span<byte>(data);
-                    var size = span.Length;
-                    packet.Serialize(ref span);
-                    size -= span.Length;
-                    
-                    Send(data, size, cancel).Wait(cancel);
-                }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(data);
-                }
-            }, cancel);
+                var size = packet.Serialize(wrappedPacket.Payload.Payload);
+                var arr = wrappedPacket.Payload.Payload;
+                Array.Resize(ref arr, size);
+                wrappedPacket.Payload.Payload = arr;
+                packet = wrappedPacket;
+            }
+                
+            var data = ArrayPool<byte>.Shared.Rent(packet.GetMaxByteSize());
+            try
+            {
+                var size = packet.Serialize(data);
+                await Send(data, size, cancel).ConfigureAwait(false);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(data);
+            }
         }
 
         public IDataStream DataStream => this;

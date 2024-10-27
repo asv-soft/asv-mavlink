@@ -52,7 +52,7 @@ public class AudioService : IAudioService,IDisposable
         core.Connection.Filter<AsvAudioStreamPacket>().Where(_=>IsOnline.Value).Subscribe(OnRecvAudioStream).AddTo(ref builder);
         
         core.TimeProvider.CreateTimer(RemoveOldDevice, null, TimeSpan.FromMilliseconds(config.RemoveDeviceCheckDelayMs), TimeSpan.FromMilliseconds(config.RemoveDeviceCheckDelayMs)).AddTo(ref builder);
-        Devices = _deviceCache.Connect().ObserveOn(core.Scheduler).Transform(x => (IAudioDevice)x).RefCount();
+        Devices = _deviceCache.Connect().Transform(x => (IAudioDevice)x).RefCount();
         
         _transponder = new MavlinkPacketTransponder<AsvAudioOnlinePacket,AsvAudioOnlinePayload>(identity,core)
             .AddTo(ref builder);

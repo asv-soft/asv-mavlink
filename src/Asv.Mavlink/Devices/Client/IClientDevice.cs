@@ -32,24 +32,25 @@ public static class ClientDeviceHelper
         return (TMicroservice?)src.Microservices.FirstOrDefault(x=> x is TMicroservice);
     }
     
-    public static async Task WaitUntilConnect(this IClientDevice src, int timeoutMs = 3000, TimeProvider? timeProvider = null)
+    public static async Task WaitUntilConnect(this IClientDevice src, int timeoutMs = 3000)
     {
-        using var cancel = new CancellationTokenSource();
-        if (timeProvider != null)
-        {
-            cancel.CancelAfter(timeoutMs, timeProvider);
-        }
-        else
-        {
-            cancel.CancelAfter(timeoutMs);
-        }
-        await src.Heartbeat.Link.Where(s => s == LinkState.Connected).FirstAsync();
+        using var cancel = new CancellationTokenSource(TimeSpan.FromMilliseconds(timeoutMs),src.Heartbeat.Core.TimeProvider);
+        var tcs = new TaskCompletionSource();
+        cancel.Token.Register(() => tcs.TrySetCanceled());
+        using var c = src.Heartbeat.Link.Where(s => s == LinkState.Connected)
+            .Subscribe(x => tcs.TrySetResult());
+        await tcs.Task.ConfigureAwait(false);
     }
     
     public static async void WaitUntilConnectAndInit(this IClientDevice src, int timeoutMs = 3000)
     {
         await src.WaitUntilConnect(timeoutMs).ConfigureAwait(false);
-        await src.InitState.FirstAsync(s => s == Mavlink.InitState.Complete).ConfigureAwait(false);
+        using var cancel = new CancellationTokenSource(TimeSpan.FromMilliseconds(timeoutMs),src.Heartbeat.Core.TimeProvider);
+        var tcs = new TaskCompletionSource();
+        cancel.Token.Register(() => tcs.TrySetCanceled());
+        using var c = src.InitState.Where(s => s == Mavlink.InitState.Complete)
+            .Subscribe(x => tcs.TrySetResult());
+        await tcs.Task.ConfigureAwait(false);
     }
 }
 

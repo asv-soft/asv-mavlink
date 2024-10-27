@@ -22,9 +22,9 @@ namespace Asv.Mavlink
             _logger = core.Log.CreateLogger<CommandServer>();
             OnCommandLong =
                 InternalFilter<CommandLongPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
-                    .ObserveOn(Core.Scheduler).Publish().RefCount();
+                    .Publish().RefCount();
             OnCommandInt = InternalFilter<CommandIntPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
-                .ObserveOn(Core.Scheduler).Publish().RefCount();
+                .Publish().RefCount();
         }
 
         public IObservable<CommandLongPacket> OnCommandLong { get; }

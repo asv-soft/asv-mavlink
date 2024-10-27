@@ -77,7 +77,7 @@ public class AsvGbsExClient: IAsvGbsExClient, IDisposable
         
         _disposeIt = builder.Build();
     }
-
+    public string Name => $"{Base.Name}Ex";
     private static GeoPoint ConvertLocation(AsvGbsOutStatusPayload payload)
     {
         return new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(payload.Lat), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(payload.Lng), MavlinkTypesHelper.AltFromMmToDoubleMeter(payload.Alt));

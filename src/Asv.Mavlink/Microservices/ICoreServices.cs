@@ -15,7 +15,6 @@ public interface ICoreServices
     IPacketSequenceCalculator Sequence { get; }
     ILoggerFactory Log { get; }
     TimeProvider TimeProvider { get; }
-    IScheduler Scheduler { get; }
     IMeterFactory Metrics { get; }
 }
 
@@ -26,7 +25,6 @@ public class CoreServices(
     IPacketSequenceCalculator sequence,
     ILoggerFactory logFactory,
     TimeProvider timeProvider,
-    IScheduler scheduler,
     IMeterFactory metrics)
     : ICoreServices
 {
@@ -34,6 +32,5 @@ public class CoreServices(
     public IPacketSequenceCalculator Sequence { get; } = sequence;
     public ILoggerFactory Log { get; } = logFactory;
     public TimeProvider TimeProvider { get; } = timeProvider;
-    public IScheduler Scheduler { get; } = scheduler;
     public IMeterFactory Metrics { get; } = metrics;
 }

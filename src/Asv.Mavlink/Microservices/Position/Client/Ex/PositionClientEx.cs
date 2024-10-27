@@ -97,6 +97,8 @@ public class PositionClientEx : IPositionClientEx,IDisposable
         _disposeIt = builder.Build();
     }
 
+    public string Name => $"{Base.Name}Ex";
+    
     private void CheckArmedTime(object? state)
     {
         var lastBin = Interlocked.Read(ref _lastArmedTime);

@@ -13,6 +13,7 @@ namespace Asv.Mavlink
 {
     public interface IMavlinkMicroserviceClient
     {
+        string Name { get; }
         MavlinkClientIdentity Identity { get; }
         ICoreServices Core { get; }
         Task Init(CancellationToken cancel = default);
@@ -24,8 +25,6 @@ namespace Asv.Mavlink
     {
         private readonly string _ifcLogName;
         private readonly ILogger _loggerBase;
-        private string? _locTargetName;
-        private string? _logLocalName;
         private string? _logSend;
         private string? _logRecv;
         private readonly CancellationTokenSource _disposeCancel = new();
@@ -49,10 +48,9 @@ namespace Asv.Mavlink
 
         protected CancellationToken DisposeCancel => _disposeCancel.Token;
 
-        protected string LogTargetName => _locTargetName ??= $"{Identity.Target.SystemId}:{Identity.Target.ComponentId}";
-        protected string LogLocalName => _logLocalName ??= $"{Identity.Self.SystemId}:{Identity.Self.ComponentId}";
-        protected string LogSend => _logSend ??= $"[{LogLocalName}]=>[{LogTargetName}][{_ifcLogName}]:";
-        protected string LogRecv => _logRecv ??= $"[{LogLocalName}]<=[{LogTargetName}][{_ifcLogName}]:";
+        public string Name => _ifcLogName;
+        protected string LogSend => _logSend ??= $"{Identity.Self}=>{Identity.Target}[{_ifcLogName}]:";
+        protected string LogRecv => _logRecv ??= $"{Identity.Self}=>{Identity.Target}[{_ifcLogName}]:";
 
         protected IObservable<TPacket> InternalFilter<TPacket>()
             where TPacket : IPacketV2<IPayload>, new()

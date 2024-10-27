@@ -49,7 +49,7 @@ public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
             .DisposeItWith(Disposable);
         _capabilities = new RxValueBehaviour<AsvRadioCapabilities?>(default).DisposeItWith(Disposable);
     }
-
+    public string Name => $"{Base.Name}Ex";
     public IRxValue<AsvRadioCapabilities?> Capabilities => _capabilities;
 
     public async Task<MavResult> EnableRadio(uint frequencyHz, AsvRadioModulation modulation,float referenceRxPowerDbm,float txPowerDbm,  AsvAudioCodec codec, CancellationToken cancel)

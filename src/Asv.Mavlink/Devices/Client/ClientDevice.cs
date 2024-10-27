@@ -19,7 +19,7 @@ public class ClientDeviceBaseConfig
     public CommandProtocolConfig Commands { get; set; } = new();
 }
 
-public abstract class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
+public class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
 {
     private readonly ClientDeviceBaseConfig _deviceConfig;
     private readonly ICoreServices _core;
@@ -27,7 +27,7 @@ public abstract class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
     private readonly ReactiveProperty<string> _name;
     private bool _needToRequestAgain = true;
     private int _isTryReconnectInProgress;
-    private readonly ILogger _loggerBase;
+    private readonly ILogger _logger;
     private readonly HeartbeatClient _heartbeat;
     private readonly IDisposable _subscribe1;
     private readonly IDisposable _subscribe2;
@@ -35,14 +35,14 @@ public abstract class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
     private readonly CancellationTokenSource _disposableCancel = new();
     private ImmutableArray<IMavlinkMicroserviceClient> _microservices = ImmutableArray<IMavlinkMicroserviceClient>.Empty;
 
-    protected ClientDevice(MavlinkClientIdentity identity, ClientDeviceBaseConfig deviceConfig, ICoreServices core, DeviceClass deviceClass)
+    public ClientDevice(MavlinkClientIdentity identity, ClientDeviceBaseConfig deviceConfig, ICoreServices core, DeviceClass deviceClass)
     {
-        _loggerBase = core.Log.CreateLogger<ClientDevice>();
-        _deviceConfig = deviceConfig;
+        ArgumentNullException.ThrowIfNull(core);
+        Identity = identity ?? throw new ArgumentNullException(nameof(identity));
+        _deviceConfig = deviceConfig ?? throw new ArgumentNullException(nameof(deviceConfig));
+        _logger = core.Log.CreateLogger<ClientDevice>();
         _core = core;
         Class = deviceClass;
-
-        Identity = identity;
         _heartbeat = new HeartbeatClient(identity, deviceConfig.Heartbeat, core);
         _initState = new ReactiveProperty<InitState>(Mavlink.InitState.WaitConnection);
         _subscribe1 = Heartbeat.Link.DistinctUntilChanged()
@@ -62,7 +62,7 @@ public abstract class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
     {
         if (Interlocked.Exchange(ref _isTryReconnectInProgress, 1) != 0)
         {
-            _loggerBase.LogTrace("Skip double reconnect");
+            _logger.LogTrace("Skip double reconnect");
             return;
         }
         _initState.OnNext(Mavlink.InitState.InProgress);
@@ -86,7 +86,7 @@ public abstract class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
         catch (Exception e)
         {
             combine.Cancel(false);
-            _loggerBase.ZLogError(e, $"Error to init device:{e.Message}");
+            _logger.ZLogError(e, $"Error to init device:{e.Message}");
             _initState.OnNext(Mavlink.InitState.Failed);
             _reconnectionTimer = _core.TimeProvider.CreateTimer(TryReconnect, null,
                 TimeSpan.FromMilliseconds(_deviceConfig.RequestInitDataDelayAfterFailMs),Timeout.InfiniteTimeSpan);
@@ -98,11 +98,16 @@ public abstract class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
         }
     }
     protected CancellationToken DisposableCancel => _disposableCancel.Token;
+
     /// <summary>
     /// This method is called before the microservices are created
     /// Can be called multiple times, if initialization fails.
     /// </summary>
-    protected abstract Task InitBeforeMicroservices(CancellationToken cancel);
+    protected virtual Task InitBeforeMicroservices(CancellationToken cancel)
+    {
+        return Task.CompletedTask;
+    }
+
     /// <summary>
     /// Defines an abstract method that should be implemented to create a collection of microservices associated with the client device.
     /// Can be called multiple times, if initialization fails.
@@ -110,14 +115,20 @@ public abstract class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
     /// <returns>
     /// An enumerable collection of IMavlinkMicroserviceClient instances representing the microservices.
     /// </returns>
-    protected abstract IEnumerable<IMavlinkMicroserviceClient> CreateMicroservices();
+    protected virtual IEnumerable<IMavlinkMicroserviceClient> CreateMicroservices()
+    {
+        yield break;
+    }
 
     /// <summary>
     /// This method is called after the microservices have been created and initialized.
     /// Can be called multiple times, if initialization fails.
     /// </summary>
     /// <returns>A Task representing the asynchronous operation.</returns>
-    protected abstract Task InitAfterMicroservices(CancellationToken cancel);
+    protected virtual Task InitAfterMicroservices(CancellationToken cancel)
+    {
+        return Task.CompletedTask;
+    }
 
     public DeviceClass Class { get; }
     public ReadOnlyReactiveProperty<string> Name => _name;
@@ -184,7 +195,7 @@ public abstract class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
             }
             catch (Exception e)
             {
-                _loggerBase.ZLogError(e, $"Error to dispose microservice:{e.Message}");
+                _logger.ZLogError(e, $"Error to dispose microservice:{e.Message}");
             }
         }
     }
@@ -201,7 +212,7 @@ public abstract class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
             }
             catch (Exception e)
             {
-                _loggerBase.ZLogError(e, $"Error to dispose microservice:{e.Message}");
+                _logger.ZLogError(e, $"Error to dispose microservice:{e.Message}");
             }
         }
     }

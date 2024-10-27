@@ -51,6 +51,7 @@ public class MissionClientEx : IMissionClientEx, IDisposable
         _disposeIt = Disposable.Combine(_missionSource, _isMissionSynced, _allMissionDistance, _isMissionSynced,_disposeCancel);
     }
     
+    public string Name => $"{Base.Name}Ex";
     public IMissionClient Base => _client;
     
     public IObservable<IChangeSet<MissionItem, ushort>> MissionItems { get; }

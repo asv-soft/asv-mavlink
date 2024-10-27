@@ -69,7 +69,6 @@ namespace Asv.Mavlink
             catch (Exception e)
             {
                 LogError(e);
-               
             }
             finally
             {
@@ -137,10 +136,12 @@ namespace Asv.Mavlink
 
         public void Dispose()
         {
-            _dataLock.Dispose();
-            Stop();
-            _state?.Dispose();
+            _disposeCancel.Cancel(false);
             _disposeCancel.Dispose();
+            Stop();
+            _dataLock.Dispose();
+            _state?.Dispose();
+            
         }
     }
 }

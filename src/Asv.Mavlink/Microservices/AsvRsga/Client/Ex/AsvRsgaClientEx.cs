@@ -40,7 +40,7 @@ public class AsvRsgaClientEx : DisposableOnceWithCancel, IAsvRsgaClientEx
             inner.AddRange(RsgaHelper.GetSupportedModes(asv));
         });
     }
-
+    public string Name => $"{Base.Name}Ex";
     public IAsvRsgaClient Base { get; }
 
     public IObservable<IChangeSet<AsvRsgaCustomMode>> AvailableModes => _supportedModes.Connect();

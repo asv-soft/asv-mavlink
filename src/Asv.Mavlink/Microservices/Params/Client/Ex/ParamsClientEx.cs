@@ -46,7 +46,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         _paramsSource.CountChanged.Select(i=>(ushort)i).Subscribe(_localCount).DisposeItWith(Disposable);
         _onValueChanged = new Subject<(string, MavParamValue)>().DisposeItWith(Disposable);
     }
-
+    public string Name => $"{Base.Name}Ex";
     public IObservable<(string, MavParamValue)> OnValueChanged => _onValueChanged;
     public IParamsClient Base { get; }
     private void OnUpdate(IList<ParamValuePayload> items)

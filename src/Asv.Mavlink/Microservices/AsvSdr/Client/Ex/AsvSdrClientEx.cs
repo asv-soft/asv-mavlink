@@ -113,7 +113,7 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
             }
         })).DisposeItWith(Disposable);
     }
-
+    public string Name => $"{Base.Name}Ex";
     public IRxValue<Guid> CurrentRecord => _currentRecord;
 
     public IRxValue<bool> IsRecordStarted => _isRecordStarted;

@@ -51,7 +51,7 @@ public class MavlinkClientIdentity(byte systemId, byte componentId, byte targetS
     
     public override string ToString()
     {
-        return $"[{Self}]=>[{Target}]";
+        return $"{Self}=>{Target}";
     }
 
     public bool Equals(MavlinkClientIdentity? other)

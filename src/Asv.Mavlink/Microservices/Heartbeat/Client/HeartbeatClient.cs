@@ -1,6 +1,5 @@
 #nullable enable
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,7 +9,6 @@ using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using R3;
 using ZLogger;
 
@@ -27,8 +25,6 @@ namespace Asv.Mavlink
     {
         
         private static readonly TimeSpan CheckConnectionDelay = TimeSpan.FromSeconds(1);
-        
-        private readonly IScheduler _scheduler;
         private readonly CircularBuffer2<double> _valueBuffer = new(5);
         private readonly IncrementalRateCounter _rxRate;
         private readonly RxValueBehaviour<HeartbeatPayload> _heartBeat;
@@ -42,21 +38,21 @@ namespace Asv.Mavlink
         private readonly TimeProvider _timeProvider;
         private readonly object _sync = new();
         private readonly IDisposable _disposeIt;
+        private readonly ILogger<HeartbeatClient> _logger;
 
 
-        public HeartbeatClient(MavlinkClientIdentity identity, HeartbeatClientConfig config,  ICoreServices core)
+        public HeartbeatClient(MavlinkClientIdentity identity, HeartbeatClientConfig config, ICoreServices core)
             :base("HEARTBEAT", identity, core)
         {
-            ILogger logger = core.Log.CreateLogger<HeartbeatClient>();
-            logger.ZLogTrace(
-                $"ctor: ID={identity},timeout:{config.HeartbeatTimeoutMs} ms, rate:{config.RateMovingAverageFilter}, warn after {config.LinkQualityWarningSkipCount} skip");
+            _logger = core.Log.CreateLogger<HeartbeatClient>();
+            _logger.ZLogTrace($"{Name} ID={identity},timeout:{config.HeartbeatTimeoutMs} ms, rate:{config.RateMovingAverageFilter}, warn after {config.LinkQualityWarningSkipCount} skip");
             ArgumentNullException.ThrowIfNull(config);
             var builder = Disposable.CreateBuilder();
             _timeProvider = core.TimeProvider;
             FullId = MavlinkHelper.ConvertToFullId(identity.Target.ComponentId, identity.Target.SystemId);
             _rxRate = new IncrementalRateCounter(config.RateMovingAverageFilter,core.TimeProvider);
             _heartBeatTimeoutMs = TimeSpan.FromMilliseconds(config.HeartbeatTimeoutMs);
-             InternalFilteredVehiclePackets
+            InternalFilteredVehiclePackets
                 .Select(x => x.Sequence)
                 .Subscribe(x =>
                 {
@@ -64,7 +60,6 @@ namespace Asv.Mavlink
                     {
                         _lastPacketList.Add(x);    
                     }
-                    
                     Interlocked.Increment(ref _totalRateCounter);
                 });
 
@@ -83,12 +78,33 @@ namespace Asv.Mavlink
                 .CreateTimer(CheckConnection, null, CheckConnectionDelay, CheckConnectionDelay)
                 .AddTo(ref builder);
             
-            RawHeartbeat.Subscribe(_ =>
+            // we need skip first packet because it's not a real packet
+            RawHeartbeat.Skip(1).Subscribe(_ =>
             {
                 Interlocked.Exchange(ref _lastHeartbeat,_timeProvider.GetTimestamp());
                 _link.Upgrade();
             }).AddTo(ref builder);
+
+            _link.DistinctUntilChanged().Skip(1).Subscribe(x =>
+            {
+                switch(x)
+                {
+                    case LinkState.Disconnected:
+                        _logger.ZLogError($"Link {Identity} changed to {x:G}");
+                        break;
+                    case LinkState.Downgrade:
+                        _logger.ZLogWarning($"Link {Identity} changed to {x:G}");
+                        break;
+                    case LinkState.Connected:
+                        _logger.ZLogInformation($"Link {Identity} changed to {x:G}");
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(x), x, null);
+                }
+            }).AddTo(ref builder);
+            
             _disposeIt = builder.Build();
+            
         }
 
         private void CalculateLinqQuality()
@@ -126,16 +142,13 @@ namespace Asv.Mavlink
         {
             CalculateLinqQuality();
             var rate = _rxRate.Calculate(Interlocked.Read(ref _totalRateCounter));
-            _scheduler.Schedule(() => _packetRate.OnNext(rate));
+            _packetRate.OnNext(rate);
             if (_timeProvider.GetElapsedTime(_lastHeartbeat) <= _heartBeatTimeoutMs) return;
             _link.Downgrade();
             if (_link.Value == LinkState.Disconnected)
             {
-                _scheduler.Schedule(() =>
-                {
-                    _packetRate.OnNext(0);
-                    _linkQuality.OnNext(0);
-                });
+                _packetRate.OnNext(0);
+                _linkQuality.OnNext(0);
             }
         }
 

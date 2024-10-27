@@ -151,6 +151,7 @@ public class TelemetryClientEx : ITelemetryClientEx,IDisposable
     /// </value>
     public IRxValue<double> DropRateCommunication => _dropRateComm;
 
+    public string Name => $"{Base.Name}Ex";
     public MavlinkClientIdentity Identity => Base.Identity;
     public ICoreServices Core => Base.Core;
     public Task Init(CancellationToken cancel = default)

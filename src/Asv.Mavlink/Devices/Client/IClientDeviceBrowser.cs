@@ -55,7 +55,6 @@ public sealed class ClientDeviceBrowser : IClientDeviceBrowser, IDisposable,IAsy
             .DisposeMany()
             // filter only devices that was init
             .FilterOnObservable(x=>x.IsInitComplete.AsSystemObservable())
-            .ObserveOn(core.Scheduler)
             .RefCount();
         _timer = core.TimeProvider.CreateTimer(RemoveOldDevices, null, TimeSpan.FromMilliseconds(config.DeviceCheckIntervalMs), TimeSpan.FromMilliseconds(config.DeviceCheckIntervalMs));
     }
