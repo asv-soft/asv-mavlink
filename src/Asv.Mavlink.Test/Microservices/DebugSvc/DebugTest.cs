@@ -22,7 +22,7 @@ public class DebugTest
         
         
         var client = new DebugClient(link.Client, clientId, new PacketSequenceCalculator());
-        var server = new DebugServer(link.Server, new PacketSequenceCalculator(), serverId, Scheduler.Default);
+        var server = new DebugServer(link.Server, new PacketSequenceCalculator(), serverId);
 
         var completed = false;
         client.DebugFloatArray.Subscribe(_=>

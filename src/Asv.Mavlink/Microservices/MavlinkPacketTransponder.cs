@@ -15,22 +15,26 @@ namespace Asv.Mavlink
         private readonly IMavlinkV2Connection _connection;
         private readonly IPacketSequenceCalculator _seq;
         private readonly object _sync = new();
-        private IDisposable _timerSubscribe;
         private readonly ILogger _logger;
         private readonly ReaderWriterLockSlim _dataLock = new();
         private int _isSending;
         private readonly RxValue<PacketTransponderState> _state = new();
         private TPacket _packet;
+        private ITimer? _timer;
+        private readonly TimeProvider _timeProvider;
 
         public MavlinkPacketTransponder(
             IMavlinkV2Connection connection, 
             MavlinkIdentity identityConfig, 
             IPacketSequenceCalculator seq,
-            ILogger? logger = null)
+            TimeProvider? timeProvider = null,
+            ILoggerFactory? logFactory = null)
         {
-            _logger = logger ?? NullLogger.Instance;
+            logFactory??=NullLoggerFactory.Instance;
+            _logger = logFactory.CreateLogger<IMavlinkPacketTransponder<TPacket,TPayload>>();
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
             _seq = seq ?? throw new ArgumentNullException(nameof(seq));
+            _timeProvider = timeProvider ?? TimeProvider.System;
             _packet = new TPacket
             {
                 CompatFlags = 0,
@@ -40,23 +44,18 @@ namespace Asv.Mavlink
             };
         }
 
-        public void Start(TimeSpan dueTime,TimeSpan period)
+        public void Start(TimeSpan dueTime, TimeSpan period)
         {
             if (_packet == null) throw new Exception($"You need call '{nameof(Set)}' method< before call start");
             lock (_sync)
             {
-                if (IsStarted)
-                {
-                    _timerSubscribe?.Dispose();
-                    _timerSubscribe = null;
-                }
-
+                _timer?.Dispose();
+                _timer = _timeProvider.CreateTimer(OnTick,null,dueTime, period);
                 IsStarted = true;
-                _timerSubscribe = Observable.Timer(dueTime, period).Subscribe(OnTick);
             }
         }
 
-        private void OnTick(long l)
+        private void OnTick(object? state)
         {
             if (Interlocked.CompareExchange(ref _isSending, 1, 0) == 1)
             {
@@ -104,10 +103,8 @@ namespace Asv.Mavlink
             _logger.ZLogWarning($"{new TPacket().Name} skipped sending: previous command has not yet been executed");
         }
 
-        public void Start(DateTimeOffset dueTime, TimeSpan period)
-        {
-            throw new NotImplementedException();
-        }
+
+       
 
         public bool IsStarted { get; private set; }
 
@@ -117,8 +114,8 @@ namespace Asv.Mavlink
         {
             lock (_sync)
             {
-                _timerSubscribe?.Dispose();
-                _timerSubscribe = null;
+                _timer?.Dispose();
+                _timer = null;
                 IsStarted = false;
             }
         }

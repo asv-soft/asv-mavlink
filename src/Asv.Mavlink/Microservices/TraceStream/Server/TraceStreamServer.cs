@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -34,11 +35,13 @@ public class TraceStreamServer : MavlinkMicroserviceServer, ITraceStreamServer
         IPacketSequenceCalculator seq,
         MavlinkIdentity identity,
         TraceStreamConfig config, 
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null) :
-        base("TRACESTREAM", connection, identity, seq, scheduler,logger)
+        ILoggerFactory? logFactory = null) :
+        base("TRACESTREAM", connection, identity, seq, timeProvider, scheduler,logFactory)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<TraceStreamServer>();
         if (seq == null) throw new ArgumentNullException(nameof(seq));
         _config = config ?? throw new ArgumentNullException(nameof(config));
         if (connection == null) throw new ArgumentNullException(nameof(connection));
@@ -110,11 +113,7 @@ public class TraceStreamServer : MavlinkMicroserviceServer, ITraceStreamServer
     public bool AddMessage(DebugVectorMessage debugVectorMessage)
     {
         _logger.ZLogTrace($"{debugVectorMessage}");
-        if (debugVectorMessage == null)
-        {
-            _logger.LogWarning("Sending message is null");
-            return false;
-        }
+        Debug.Assert(debugVectorMessage!=null);
         if (debugVectorMessage.Name.Length > NameMaxLength)
         {
             var newName = debugVectorMessage.Name.Substring(0, NameMaxLength);
@@ -135,11 +134,7 @@ public class TraceStreamServer : MavlinkMicroserviceServer, ITraceStreamServer
     public bool AddMessage(MemoryVectorMessage memoryVectorMessage)
     {
         _logger.ZLogTrace($"{memoryVectorMessage}");
-        if (memoryVectorMessage == null)
-        {
-            _logger.LogWarning("Sending message is null");
-            return false;
-        }
+        Debug.Assert(memoryVectorMessage!=null);
         if (memoryVectorMessage.Value.Length > MemoryVectorValueMaxLength)
         {
             var newValue = memoryVectorMessage.Value.Take(MemoryVectorValueMaxLength).ToArray();

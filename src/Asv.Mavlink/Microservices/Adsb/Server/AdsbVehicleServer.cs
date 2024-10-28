@@ -14,9 +14,10 @@ public class AdsbVehicleServer : MavlinkMicroserviceServer, IAdsbVehicleServer
         IMavlinkV2Connection connection, 
         MavlinkIdentity identity, 
         IPacketSequenceCalculator seq, 
+        TimeProvider? timeProvider = null,
         IScheduler? rxScheduler = null,
-        ILogger? logger = null) 
-        : base("ADSB", connection, identity, seq, rxScheduler,logger)
+        ILoggerFactory? logFactory = null) 
+        : base("ADSB", connection, identity, seq, timeProvider, rxScheduler,logFactory)
     {
     }
     

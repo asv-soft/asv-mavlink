@@ -93,9 +93,10 @@ namespace Asv.Mavlink
         private readonly RxValue<TimeSpan> _deviceTimeout;
         private readonly SourceCache<MavlinkDevice,ushort> _deviceCache;
 
-        public MavlinkDeviceBrowser(IMavlinkV2Connection connection, TimeSpan deviceTimeout, IScheduler? scheduler = null, ILogger? logger = null)
+        public MavlinkDeviceBrowser(IMavlinkV2Connection connection, TimeSpan deviceTimeout, IScheduler? scheduler = null, ILoggerFactory? logFactory = null)
         {
-            _logger = logger ?? NullLogger.Instance;
+            logFactory??=NullLoggerFactory.Instance;
+            _logger = logFactory.CreateLogger<MavlinkDeviceBrowser>();
             connection
                 .Filter<HeartbeatPacket>()
                 .Subscribe(UpdateDevice)

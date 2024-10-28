@@ -25,7 +25,7 @@ public class AsvRsgaTest
         client = new AsvRsgaClient(link.Client,clientId,clientSeq);
         var serverSeq = new PacketSequenceCalculator();
         server = new AsvRsgaServer(link.Server,
-            new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId), serverSeq, Scheduler.Default);
+            new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId), serverSeq);
     }
 
     [Fact]

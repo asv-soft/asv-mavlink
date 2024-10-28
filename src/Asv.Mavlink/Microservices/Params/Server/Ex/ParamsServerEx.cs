@@ -59,10 +59,12 @@ public class ParamsServerEx: DisposableOnceWithCancel, IParamsServerEx
         IMavParamEncoding encoding, 
         IConfiguration cfg, 
         ParamsServerExConfig serverCfg,
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null)
+        ILoggerFactory? logFactory = null)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<ParamsServerEx>();
         _server = server;
         _statusTextServer = statusTextServer ?? throw new ArgumentNullException(nameof(statusTextServer));
         _encoding = encoding;

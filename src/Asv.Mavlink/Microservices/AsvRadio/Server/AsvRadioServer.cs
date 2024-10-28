@@ -24,13 +24,14 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
         MavlinkIdentity identity,
         AsvRadioServerConfig config, 
         IPacketSequenceCalculator seq, 
+        TimeProvider? timeProvider = null,
         IScheduler? rxScheduler = null,
-        ILogger? logger = null) 
-        : base(AsvRadioHelper.IfcName, connection, identity, seq, rxScheduler,logger)
+        ILoggerFactory? logFactory = null) 
+        : base(AsvRadioHelper.IfcName, connection, identity, seq, timeProvider, rxScheduler, logFactory)
     {
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _transponder =
-            new MavlinkPacketTransponder<AsvRadioStatusPacket, AsvRadioStatusPayload>(connection, identity, seq)
+            new MavlinkPacketTransponder<AsvRadioStatusPacket, AsvRadioStatusPayload>(connection, identity, seq,timeProvider,logFactory)
                 .DisposeItWith(Disposable);
         
         OnCapabilitiesRequest = InternalFilter<AsvRadioCapabilitiesRequestPacket>(x=>x.Payload.TargetSystem,x=>x.Payload.TargetComponent)

@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Asv.Common;
 using Asv.Mavlink.V2.AsvAudio;
 using Asv.Mavlink.V2.AsvRadio;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
@@ -30,19 +32,25 @@ public interface IAsvRadioClientEx
 public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
 {
     private readonly ICommandClient _commandClient;
-    private readonly RxValue<AsvRadioCustomMode> _customMode;
-    private readonly RxValue<AsvRadioCapabilities?> _capabilities;
+    private readonly RxValueBehaviour<AsvRadioCustomMode> _customMode;
+    private readonly RxValueBehaviour<AsvRadioCapabilities?> _capabilities;
 
-    public AsvRadioClientEx(IAsvRadioClient client, IHeartbeatClient heartbeatClient, ICommandClient commandClient)
+    public AsvRadioClientEx(
+        IAsvRadioClient client, 
+        IHeartbeatClient heartbeatClient, 
+        ICommandClient commandClient,
+        TimeProvider? timeProvider = null,
+        IScheduler? scheduler = null, 
+        ILoggerFactory? loggerFactory = null)
     {
         _commandClient = commandClient ?? throw new ArgumentNullException(nameof(commandClient));
         Base = client ?? throw new ArgumentNullException(nameof(client));
-        _customMode = new RxValue<AsvRadioCustomMode>().DisposeItWith(Disposable);;
+        _customMode = new RxValueBehaviour<AsvRadioCustomMode>(AsvRadioCustomMode.AsvRadioCustomModeIdle).DisposeItWith(Disposable);;
         heartbeatClient.RawHeartbeat
             .Select(x => (AsvRadioCustomMode)x.CustomMode)
             .Subscribe(_customMode)
             .DisposeItWith(Disposable);
-        _capabilities = new RxValue<AsvRadioCapabilities?>(default).DisposeItWith(Disposable);
+        _capabilities = new RxValueBehaviour<AsvRadioCapabilities?>(default).DisposeItWith(Disposable);
     }
 
     public IRxValue<AsvRadioCapabilities?> Capabilities => _capabilities;

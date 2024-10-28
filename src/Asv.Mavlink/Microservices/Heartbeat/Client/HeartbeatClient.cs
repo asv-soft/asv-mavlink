@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -9,6 +10,8 @@ using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink
 {
@@ -21,85 +24,93 @@ namespace Asv.Mavlink
     
     public class HeartbeatClient : MavlinkMicroserviceClient, IHeartbeatClient
     {
-        private readonly ILogger _logger;
+        
+        private static readonly TimeSpan CheckConnectionDelay = TimeSpan.FromSeconds(1);
+        
+        private readonly IScheduler _scheduler;
         private readonly CircularBuffer2<double> _valueBuffer = new(5);
         private readonly IncrementalRateCounter _rxRate;
-        private readonly RxValue<HeartbeatPayload> _heartBeat;
-        private readonly RxValue<double> _packetRate;
-        private readonly RxValue<double> _linkQuality;
+        private readonly RxValueBehaviour<HeartbeatPayload> _heartBeat;
+        private readonly RxValueBehaviour<double> _packetRate;
+        private readonly RxValueBehaviour<double> _linkQuality;
         private readonly LinkIndicator _link;
-        private DateTime _lastHeartbeat;
-        private int _prev;
+        private long _lastHeartbeat;
         private long _totalRateCounter;
         private readonly TimeSpan _heartBeatTimeoutMs;
         private readonly List<byte> _lastPacketList = new();
-        private readonly object _lastPacketListLock = new();
+        private readonly TimeProvider _timeProvider;
+        private readonly object _sync = new();
+
 
         public HeartbeatClient(
             IMavlinkV2Connection connection, 
             MavlinkClientIdentity identity,
             IPacketSequenceCalculator seq, 
             HeartbeatClientConfig config, 
+            TimeProvider? timeProvider = null,
             IScheduler? scheduler = null,
-            ILogger? logger = null):base("HEARTBEAT", connection, identity, seq,scheduler,logger)
+            ILoggerFactory? logFactory = null)
+            :base("HEARTBEAT", connection, identity, seq,timeProvider,scheduler,logFactory)
         {
-            if (config == null) throw new ArgumentNullException(nameof(config));
+            _scheduler = scheduler ?? System.Reactive.Concurrency.Scheduler.Immediate;
+            logFactory??=NullLoggerFactory.Instance;
+            ILogger logger = logFactory.CreateLogger<HeartbeatClient>();
+            logger.ZLogTrace(
+                $"ctor: ID={identity},timeout:{config.HeartbeatTimeoutMs} ms, rate:{config.RateMovingAverageFilter}, warn after {config.LinkQualityWarningSkipCount} skip");
+            ArgumentNullException.ThrowIfNull(config);
+            _timeProvider = timeProvider ?? TimeProvider.System;
             FullId = MavlinkHelper.ConvertToFullId(identity.TargetComponentId, identity.TargetSystemId);
-            _rxRate = new IncrementalRateCounter(config.RateMovingAverageFilter);
+            _rxRate = new IncrementalRateCounter(config.RateMovingAverageFilter,timeProvider);
             _heartBeatTimeoutMs = TimeSpan.FromMilliseconds(config.HeartbeatTimeoutMs);
             InternalFilteredVehiclePackets
                 .Select(x => x.Sequence)
                 .Subscribe(x =>
                 {
-                    lock (_lastPacketListLock)
+                    lock (_sync)
                     {
                         _lastPacketList.Add(x);    
                     }
+                    
                     Interlocked.Increment(ref _totalRateCounter);
                 }).DisposeItWith(Disposable);
 
-            _heartBeat = new RxValue<HeartbeatPayload>().DisposeItWith(Disposable);
+            _heartBeat = new RxValueBehaviour<HeartbeatPayload>(new HeartbeatPayload()).DisposeItWith(Disposable);
             InternalFilter<HeartbeatPacket>()
                 .Select(p => p.Payload)
                 .Subscribe(_heartBeat).DisposeItWith(Disposable);
 
-            _packetRate = new RxValue<double>().DisposeItWith(Disposable);
-            _link = new LinkIndicator(config.LinkQualityWarningSkipCount).DisposeItWith(Disposable);
-            _linkQuality = new RxValue<double>(1).DisposeItWith(Disposable);
-            if (scheduler != null)
-            {
-                Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), scheduler)
-                    .Subscribe(CheckConnection)
-                    .DisposeItWith(Disposable);    
-            }
-            else
-            {
-                Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1))
-                    .Subscribe(CheckConnection)
-                    .DisposeItWith(Disposable);
-            }
+            _packetRate = new RxValueBehaviour<double>(0)
+                .DisposeItWith(Disposable);
+            _link = new LinkIndicator(config.LinkQualityWarningSkipCount)
+                .DisposeItWith(Disposable);
+            _linkQuality = new RxValueBehaviour<double>(0)
+                .DisposeItWith(Disposable);
+            _timeProvider
+                .CreateTimer(CheckConnection, null, CheckConnectionDelay, CheckConnectionDelay)
+                .DisposeItWith(Disposable);
             
             RawHeartbeat.Subscribe(_ =>
             {
                 if (IsDisposed) return;
-                _lastHeartbeat = DateTime.Now;
+                Interlocked.Exchange(ref _lastHeartbeat,_timeProvider.GetTimestamp());
                 _link.Upgrade();
             }).DisposeItWith(Disposable);
-            Disposable.Add(_link);
+            
         }
 
         private void CalculateLinqQuality()
         {
+            var count = 0;
             byte first;
             byte last;
-            var count = 0;
-            lock (_lastPacketListLock)
+            lock (_sync)
             {
                 first = _lastPacketList.FirstOrDefault();
                 last = _lastPacketList.LastOrDefault();
                 count = _lastPacketList.Count;
-                _lastPacketList.Clear();
+                _lastPacketList.Clear();    
             }
+            
             if (count == 0) return;
             
             var seq = last - first + 1;
@@ -118,18 +129,20 @@ namespace Asv.Mavlink
         public IRxValue<double> LinkQuality => _linkQuality;
         public IRxValue<LinkState> Link => _link;
 
-        private void CheckConnection(long value)
+        private void CheckConnection(object? state)
         {
             CalculateLinqQuality();
-            _packetRate.OnNext(_rxRate.Calculate(Interlocked.Read(ref _totalRateCounter)));
-            if (DateTime.Now - _lastHeartbeat > _heartBeatTimeoutMs)
+            var rate = _rxRate.Calculate(Interlocked.Read(ref _totalRateCounter));
+            _scheduler.Schedule(() => _packetRate.OnNext(rate));
+            if (_timeProvider.GetElapsedTime(_lastHeartbeat) <= _heartBeatTimeoutMs) return;
+            _link.Downgrade();
+            if (_link.Value == LinkState.Disconnected)
             {
-                _link.Downgrade();
-                if (_link.Value == LinkState.Disconnected)
+                _scheduler.Schedule(() =>
                 {
                     _packetRate.OnNext(0);
                     _linkQuality.OnNext(0);
-                }
+                });
             }
         }
     }

@@ -23,11 +23,13 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         IMavlinkV2Connection connection, 
         MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq,
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null)
-        : base("SDR", connection, identity, seq,scheduler,logger)
+        ILoggerFactory? logFactory = null)
+        : base("SDR", connection, identity, seq,timeProvider,scheduler,logFactory)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<AsvSdrClient>();
         _identity = identity;
         _status = new RxValue<AsvSdrOutStatusPayload>().DisposeItWith(Disposable);
         InternalFilter<AsvSdrOutStatusPacket>().Select(p => p.Payload).Subscribe(_status).DisposeItWith(Disposable);

@@ -4,20 +4,15 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Time.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-public class BaseDevicesTest
+public class BaseDevicesTest(ITestOutputHelper output)
 {
-    private readonly ITestOutputHelper _output;
-
-    public BaseDevicesTest(ITestOutputHelper output)
-    {
-        _output = output;
-    }
-    
     [Fact]
     public Task ClientDeviceIdentityArgumentNullExceptionTest()
     {
@@ -28,8 +23,7 @@ public class BaseDevicesTest
             var clientDevice = new AbstractClientDevice(link.Client,
                 null,
                 new ClientDeviceConfig(),
-                new PacketSequenceCalculator(),
-                Scheduler.Default);
+                new PacketSequenceCalculator());
         });
         return Task.CompletedTask;
     }
@@ -55,8 +49,7 @@ public class BaseDevicesTest
                 {
                     Heartbeat = null
                 },
-                new PacketSequenceCalculator(),
-                Scheduler.Default);
+                new PacketSequenceCalculator());
         });
         return Task.CompletedTask;
     }
@@ -72,8 +65,7 @@ public class BaseDevicesTest
                 {
                     Heartbeat = null
                 },
-                new PacketSequenceCalculator(),
-                Scheduler.Default);
+                new PacketSequenceCalculator());
         });
         return Task.CompletedTask;
     }
@@ -86,8 +78,7 @@ public class BaseDevicesTest
             var serverDevice = new ServerDevice(null,
                 new PacketSequenceCalculator(),
                 new MavlinkIdentity(),
-                new ServerDeviceConfig(),
-                Scheduler.Default);
+                new ServerDeviceConfig());
         });
         return Task.CompletedTask;
     }
@@ -102,8 +93,7 @@ public class BaseDevicesTest
             var serverDevice = new ServerDevice(link.Server,
                 null,
                 new MavlinkIdentity(),
-                new ServerDeviceConfig(),
-                Scheduler.Default);
+                new ServerDeviceConfig());
         });
         return Task.CompletedTask;
     }
@@ -141,26 +131,9 @@ public class BaseDevicesTest
                 new ServerDeviceConfig
                 {
                     StatusText = null
-                },
-                Scheduler.Default);
+                });
         });
         return Task.CompletedTask;
-    }
-    
-    [Fact]
-    public void ServerDeviceSchedulerArgumentNullExceptionTest()
-    {
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            var link = new VirtualMavlinkConnection();
-            
-            var serverDevice = new ServerDevice(link.Server,
-                new PacketSequenceCalculator(),
-                new MavlinkIdentity(),
-                new ServerDeviceConfig(),
-                null);
-        });
-        
     }
     
     [Fact]
@@ -179,8 +152,7 @@ public class BaseDevicesTest
             var clientDevice = new AbstractClientDevice(link.Client,
                 clientId,
                 new ClientDeviceConfig(),
-                null,
-                Scheduler.Default);
+                null);
         });
     }
     
@@ -202,22 +174,22 @@ public class BaseDevicesTest
         };
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
         var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
-            serverId, new ServerDeviceConfig(), Scheduler.Default);
+            serverId, new ServerDeviceConfig());
         
         var clientDevice = new AbstractClientDevice(link.Client, clientId,
-            new ClientDeviceConfig(), new PacketSequenceCalculator(), Scheduler.Default);
+            new ClientDeviceConfig(), new PacketSequenceCalculator());
         
         serverDevice.Start();
         
         clientDevice.WaitUntilConnect();
         
-        await Task.Delay(2000);
+        
         
         serverDevice.StatusText.Log(MavSeverity.MavSeverityDebug, messageText);
         
         var message = await clientDevice.StatusText.OnMessage.FirstAsync();
         
-        _output.WriteLine($"Client status message: {message.Text}");
+        output.WriteLine($"Client status message: {message.Text}");
         
         Assert.Equal(messageText, message.Text);
     }
@@ -236,10 +208,10 @@ public class BaseDevicesTest
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
         
         var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
-            serverId, new ServerDeviceConfig(), Scheduler.Default);
+            serverId, new ServerDeviceConfig());
         
         var clientDevice = new AbstractClientDevice(link.Client, clientId,
-            new ClientDeviceConfig(), new PacketSequenceCalculator(), Scheduler.Default);
+            new ClientDeviceConfig(), new PacketSequenceCalculator());
         
         serverDevice.Start();
         
@@ -255,7 +227,7 @@ public class BaseDevicesTest
             {
                 isOverloaded = true;
                 
-                _output.WriteLine($"Breaked on: {i}");
+                output.WriteLine($"Breaked on: {i}");
                 
                 overloadIndex = i;
                 
@@ -269,7 +241,7 @@ public class BaseDevicesTest
         
         var message = await clientDevice.StatusText.OnMessage.FirstAsync();
         
-        _output.WriteLine($"Client status message: {message.Text}");
+        output.WriteLine($"Client status message: {message.Text}");
         
         Assert.Equal("Message 0", message.Text);
     }
@@ -290,7 +262,7 @@ public class BaseDevicesTest
             TargetComponentId = 4
         };
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
-        
+        var fake = new FakeTimeProvider();
         var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(), 
             serverId,
             new ServerDeviceConfig()
@@ -299,28 +271,27 @@ public class BaseDevicesTest
                 {
                     HeartbeatRateMs = 100
                 }
-            },
-            Scheduler.Default);
+            },fake);
         
         var clientDevice = new AbstractClientDevice(link.Client, clientId,
-            new ClientDeviceConfig(), new PacketSequenceCalculator(), Scheduler.Default);
+            new ClientDeviceConfig(), new PacketSequenceCalculator(),fake);
         
         serverDevice.Start();
         
         clientDevice.WaitUntilConnect();
         
-        await Task.Delay(3_100);
+        fake.Advance(TimeSpan.FromSeconds(3));
 
         var linkQuality = clientDevice.Heartbeat.LinkQuality.Value;
         
-        _output.WriteLine($"Client connection quality: {linkQuality}");
+        output.WriteLine($"Client connection quality: {linkQuality}");
         
-        _output.WriteLine($"Rx packets: {clientDevice.Connection.RxPackets}");
+        output.WriteLine($"Rx packets: {clientDevice.Connection.RxPackets}");
         
-        _output.WriteLine($"Tx packets: {serverDevice.Connection.TxPackets}");
+        output.WriteLine($"Tx packets: {serverDevice.Connection.TxPackets}");
         
         Assert.InRange(linkQuality,0.4,0.7); 
-        _output.WriteLine($"Linq quality {linkQuality:F2}");
+        output.WriteLine($"Linq quality {linkQuality:F2}");
     }
     
     [Fact]
@@ -337,54 +308,54 @@ public class BaseDevicesTest
             TargetComponentId = 4
         };
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
-        
+        var fake = new FakeTimeProvider();
         var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
-            serverId, new ServerDeviceConfig(), Scheduler.Default);
+            serverId, new ServerDeviceConfig(),fake);
         
         var clientDevice = new AbstractClientDevice(link.Client, clientId,
-            new ClientDeviceConfig(), new PacketSequenceCalculator(), Scheduler.Default);
+            new ClientDeviceConfig(), new PacketSequenceCalculator(),fake);
         
         serverDevice.Start();
         
         clientDevice.WaitUntilConnect();
         
-        await Task.Delay(4000);
+        fake.Advance(TimeSpan.FromSeconds(5));
         
         var linkStatus = await clientDevice.Heartbeat.Link.FirstAsync();
         
         Assert.Equal(LinkState.Connected, linkStatus);
         
-        _output.WriteLine($"Client connection state: {linkStatus}");
+        output.WriteLine($"Client connection state: {linkStatus}");
 
         canSend = false;
         
-        await Task.Delay(10000);
+        fake.Advance(TimeSpan.FromSeconds(11));
         
         linkStatus = await clientDevice.Heartbeat.Link.FirstAsync();
         
         Assert.Equal(LinkState.Disconnected, linkStatus);
         
-        _output.WriteLine($"Client connection state: {linkStatus}");
+        output.WriteLine($"Client connection state: {linkStatus}");
         
         canSend = true;
         
-        await Task.Delay(3000);
+        fake.Advance(TimeSpan.FromSeconds(4));
         
         linkStatus = await clientDevice.Heartbeat.Link.FirstAsync();
         
         Assert.Equal(LinkState.Connected, linkStatus);
         
-        _output.WriteLine($"Client connection state: {linkStatus}");
+        output.WriteLine($"Client connection state: {linkStatus}");
         
         canSend = false;
         
-        await Task.Delay(3000);
+        fake.Advance(TimeSpan.FromSeconds(2.5));
         
         linkStatus = await clientDevice.Heartbeat.Link.FirstAsync();
         
         Assert.Equal(LinkState.Downgrade, linkStatus);
         
-        _output.WriteLine($"Client connection state: {linkStatus}");
+        output.WriteLine($"Client connection state: {linkStatus}");
     }
 
     [Fact]
@@ -401,28 +372,28 @@ public class BaseDevicesTest
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
         
         var mode = 23;
-        
+        var fake = new FakeTimeProvider();
         var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
-            serverId, new ServerDeviceConfig(), Scheduler.Default);
+            serverId, new ServerDeviceConfig(),fake);
         
         serverDevice.Heartbeat.Set(_ => _.CustomMode = (uint)mode);
         
         var clientDevice = new AbstractClientDevice(link.Client, clientId,
-            new ClientDeviceConfig(), new PacketSequenceCalculator(), Scheduler.Default);
+            new ClientDeviceConfig(), new PacketSequenceCalculator(),fake);
         
         serverDevice.Start();
         
         clientDevice.WaitUntilConnect();
         
-        await Task.Delay(2000);
+        fake.Advance(TimeSpan.FromSeconds(3));
         
         var clientState = await clientDevice.Heartbeat.RawHeartbeat.FirstAsync();
         
         Assert.Equal((uint)mode, clientState.CustomMode);
         
-        _output.WriteLine($"Server custom mode: {mode}");
+        output.WriteLine($"Server custom mode: {mode}");
         
-        _output.WriteLine($"Client custom mode: {clientState.CustomMode}");
+        output.WriteLine($"Client custom mode: {clientState.CustomMode}");
     }
     
     [Fact]
@@ -442,41 +413,41 @@ public class BaseDevicesTest
         };
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
 
+        var fake = new FakeTimeProvider();
         var serverDevice = new ServerDevice(link.Server, new PacketSequenceCalculator(),
-            serverId, new ServerDeviceConfig(),
-            Scheduler.Default);
+            serverId, new ServerDeviceConfig(),fake);
 
         var clientDevice = new AbstractClientDevice(link.Client,
             clientId,
-            new ClientDeviceConfig(), new PacketSequenceCalculator(), Scheduler.Default);
+            new ClientDeviceConfig(), new PacketSequenceCalculator(),fake);
 
         serverDevice.Start();
         
         clientDevice.WaitUntilConnect();
         
-        await Task.Delay(5000);
+        fake.Advance(TimeSpan.FromSeconds(4.1));
 
         Assert.NotEqual(serverDevice.Connection.TxPackets, clientDevice.Connection.RxPackets);
         
-        _output.WriteLine($"Total packets count: {packetsCount}");
+        output.WriteLine($"Total packets count: {packetsCount}");
         
-        _output.WriteLine($"Server tx packets: {serverDevice.Connection.TxPackets}");
+        output.WriteLine($"Server tx packets: {serverDevice.Connection.TxPackets}");
         
-        _output.WriteLine($"Client rx packets: {clientDevice.Connection.RxPackets}");
+        output.WriteLine($"Client rx packets: {clientDevice.Connection.RxPackets}");
     }
     
     private AbstractClientDevice CreateClientDevice(VirtualMavlinkConnection link, PacketSequenceCalculator seq, 
         MavlinkClientIdentity identity, ClientDeviceConfig cfg)
     {
         return new AbstractClientDevice(link.Client,
-            identity, cfg, seq, Scheduler.Default);
+            identity, cfg, seq);
     }
     
     private ServerDevice CreateServerDevice(VirtualMavlinkConnection link, PacketSequenceCalculator seq, 
         MavlinkIdentity identity, ServerDeviceConfig cfg)
     {
         return new ServerDevice(link.Server,
-            seq, identity, cfg, Scheduler.Default);
+            seq, identity, cfg);
     }
 
 }
@@ -486,9 +457,11 @@ public class AbstractClientDevice : ClientDevice, IClientDevice
     public AbstractClientDevice(IMavlinkV2Connection connection, 
         MavlinkClientIdentity identity, 
         ClientDeviceConfig config, 
-        IPacketSequenceCalculator seq, 
-        IScheduler scheduler) 
-        : base(connection, identity, config, seq, scheduler)
+        IPacketSequenceCalculator seq,
+        TimeProvider? timeProvider = null,
+        IScheduler? rxScheduler = null,
+        ILoggerFactory? logFactory = null) 
+        : base(connection, identity, config, seq,timeProvider,rxScheduler,logFactory)
     {
         
     }

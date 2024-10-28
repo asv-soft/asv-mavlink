@@ -39,6 +39,7 @@ public class AudioServiceConfig
 {
     public int DeviceTimeoutMs { get; set; } = 10_000;
     public int OnlineRateMs { get; set; } = 1_000;
+    public int RemoveDeviceCheckDelayMs { get; set; } = 3_000;
 }
 
 public class AudioService : DisposableOnceWithCancel, IAudioService
@@ -57,6 +58,8 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
     
     private readonly TimeSpan _deviceTimeout;
     private readonly TimeSpan _onlineRate;
+    private readonly ILoggerFactory _logFactory;
+    private readonly TimeProvider _timeProvider;
 
 
     public AudioService(
@@ -65,10 +68,13 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
         MavlinkIdentity identity, 
         IPacketSequenceCalculator seq,
         AudioServiceConfig config, 
+        TimeProvider? timeProvider = null,
         IScheduler? publishScheduler = null,
-        ILogger? logger = null)
+        ILoggerFactory? logFactory = null)
     {
-        _logger = logger ?? NullLogger.Instance;
+        _timeProvider = timeProvider ?? TimeProvider.System;
+        _logFactory= logFactory ?? NullLoggerFactory.Instance;
+        _logger = _logFactory.CreateLogger<AudioService>();
         _codecFactory = codecFactory ?? throw new ArgumentNullException(nameof(codecFactory));
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _identity = identity;
@@ -78,22 +84,15 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
         _onlineRate = TimeSpan.FromMilliseconds(config1.OnlineRateMs);
         _deviceCache = new SourceCache<AudioDevice,ushort>(x => x.FullId).DisposeItWith(Disposable);
         Devices = _deviceCache.Connect().Transform(x=>(IAudioDevice)x);
-        connection.Subscribe(x =>
-        {
-
-        });
         connection.Filter<AsvAudioOnlinePacket>().Where(_=>IsOnline.Value).Subscribe(OnRecvDeviceOnline).DisposeItWith(Disposable);
         connection.Filter<AsvAudioStreamPacket>().Where(_=>IsOnline.Value).Subscribe(OnRecvAudioStream).DisposeItWith(Disposable);
         
-        Observable
-            .Timer(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3))
-            .Subscribe(RemoveOldDevice)
-            .DisposeItWith(Disposable);
+        _timeProvider.CreateTimer(RemoveOldDevice, null, TimeSpan.FromMilliseconds(config.RemoveDeviceCheckDelayMs), TimeSpan.FromMilliseconds(config.RemoveDeviceCheckDelayMs)).DisposeItWith(Disposable);
         Devices = publishScheduler != null 
             ? _deviceCache.Connect().ObserveOn(publishScheduler).Transform(x => (IAudioDevice)x).RefCount() 
             : _deviceCache.Connect().Transform(x => (IAudioDevice)x).RefCount();
         
-        _transponder = new MavlinkPacketTransponder<AsvAudioOnlinePacket,AsvAudioOnlinePayload>(connection, identity, seq)
+        _transponder = new MavlinkPacketTransponder<AsvAudioOnlinePacket,AsvAudioOnlinePayload>(connection, identity, seq,timeProvider,logFactory)
             .DisposeItWith(Disposable);
         _isOnline = new RxValue<bool>(false).DisposeItWith(Disposable);
         _codec = new RxValue<AsvAudioCodec?>().DisposeItWith(Disposable);
@@ -124,6 +123,9 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
 
         
     }
+
+ 
+
 
     private void OnRecvAudioStream(AsvAudioStreamPacket pkt)
     {
@@ -158,7 +160,7 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
                 {
 
                     var newItem = new AudioDevice(_codecFactory, _codec.Value.Value, pkt, SendAudioStream,
-                        InternalOnReceiveAudio);
+                        InternalOnReceiveAudio, _logFactory.CreateLogger<AudioDevice>());
                     update.AddOrUpdate(newItem);
                 }
             }
@@ -186,7 +188,7 @@ public class AudioService : DisposableOnceWithCancel, IAudioService
            return _connection.Send(pkt, cancel);   
     }
 
-    private void RemoveOldDevice(long l)
+    private void RemoveOldDevice(object? state)
     {
         _deviceCache.Edit(update =>
         {

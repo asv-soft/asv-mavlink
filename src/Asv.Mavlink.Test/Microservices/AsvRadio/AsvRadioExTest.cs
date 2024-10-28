@@ -32,12 +32,12 @@ public class AsvRadioExTest
         
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
         var serverSeq = new PacketSequenceCalculator();
-        var heartBeatServer = new HeartbeatServer(link.Server, serverSeq, serverId, new MavlinkHeartbeatServerConfig(), Scheduler.Default);
-        var commandServer = new CommandServer(link.Server, serverSeq, serverId, Scheduler.Default);
+        var heartBeatServer = new HeartbeatServer(link.Server, serverSeq, serverId, new MavlinkHeartbeatServerConfig());
+        var commandServer = new CommandServer(link.Server, serverSeq, serverId);
         var commandLongServerEx = new CommandLongServerEx(commandServer);
-        var status = new StatusTextServer(link.Server, serverSeq, serverId, new StatusTextLoggerConfig(), Scheduler.Default);
+        var status = new StatusTextServer(link.Server, serverSeq, serverId, new StatusTextLoggerConfig());
         
-        var server = new AsvRadioServer(link.Server, serverId, new AsvRadioServerConfig(), new PacketSequenceCalculator(),Scheduler.Default);
+        var server = new AsvRadioServer(link.Server, serverId, new AsvRadioServerConfig(), new PacketSequenceCalculator());
         serverEx = new AsvRadioServerEx(cap,codecs, server, heartBeatServer,commandLongServerEx,status);
         
         serverEx.Start();

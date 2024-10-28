@@ -18,9 +18,10 @@ public class AsvRsgaServer:MavlinkMicroserviceServer,IAsvRsgaServer
         IMavlinkV2Connection connection, 
         MavlinkIdentity identity, 
         IPacketSequenceCalculator seq, 
+        TimeProvider? timeProvider = null,
         IScheduler? rxScheduler = null,
-        ILogger? logger = null) 
-        : base("RSGA", connection, identity, seq, rxScheduler,logger)
+        ILoggerFactory? logFactory = null)
+        : base("RSGA", connection, identity, seq,timeProvider, rxScheduler,logFactory)
     {
         _onCompatibilityRequest = new Subject<AsvRsgaCompatibilityRequestPayload>().DisposeItWith(Disposable);
         InternalFilter<AsvRsgaCompatibilityRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)

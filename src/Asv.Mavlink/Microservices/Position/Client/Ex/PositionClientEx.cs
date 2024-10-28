@@ -35,10 +35,17 @@ public class PositionClientEx : DisposableOnceWithCancel, IPositionClientEx
     private readonly RxValue<double> _yawSpeed;
 
 
-    public PositionClientEx(IPositionClient client, IHeartbeatClient heartbeatClient, ICommandClient commandClient, IScheduler? scheduler = null, ILogger? logger = null)
+    public PositionClientEx(
+        IPositionClient client, 
+        IHeartbeatClient heartbeatClient, 
+        ICommandClient commandClient,
+        TimeProvider? timeProvider = null, 
+        IScheduler? scheduler = null, 
+        ILoggerFactory? logFactory = null)
     {
         _commandClient = commandClient;
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<PositionClientEx>();
         Base = client;
         
         _pitch = new RxValue<double>(Double.NaN).DisposeItWith(Disposable);

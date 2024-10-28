@@ -9,8 +9,14 @@ namespace Asv.Mavlink
 {
     public class DebugClient: MavlinkMicroserviceClient, IDebugClient
     {
-        public DebugClient(IMavlinkV2Connection connection, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, IScheduler? scheduler = null,ILogger? logger = null):base("DEBUG", connection, identity, seq,scheduler,logger)
+        public DebugClient(
+            IMavlinkV2Connection connection, 
+            MavlinkClientIdentity identity,
+            IPacketSequenceCalculator seq,
+            TimeProvider? timeProvider = null, 
+            IScheduler? scheduler = null,
+            ILoggerFactory? logFactory = null)
+            :base("DEBUG", connection, identity, seq,timeProvider,scheduler,logFactory)
         {
             DebugFloatArray = InternalFilter<DebugFloatArrayPacket>()
                 .Select(p => p.Payload)

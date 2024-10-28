@@ -219,27 +219,28 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
             _logger.LogWarning("Recv strange packet with PktInFrame = 0");
             return;
         }
-
-        if (_lastFrameSeq == stream.FrameSeq)
-        {
-            // skip same frame
-            return;
-        }
         lock (_sync)
         {
             if (stream.PktInFrame == 1)
             {
+                if (_lastFrameSeq == stream.FrameSeq)
+                {
+                    // skip same frame
+                    return;
+                }
+                _lastFrameSeq = stream.FrameSeq;
                 _counter ??= new PacketCounter((byte)(stream.FrameSeq - 1));
                 var missed = _counter.CheckIncrement(stream.FrameSeq);
                 try
                 {
                     if (missed > 0)
                     {
-                        for (var i = 0; i < missed; i++)
+                        if (missed > 1)
                         {
-                            _logger.ZLogTrace($"Missed packets {missed}");
-                            _inputDecoderAudioStream.OnNext(ReadOnlyMemory<byte>.Empty);        
+                            _logger.ZLogTrace($"Missed packets {missed}. Set to 1");
+                            missed = 1;
                         }
+                        _inputDecoderAudioStream.OnNext(ReadOnlyMemory<byte>.Empty);
                     }
                     else
                     {
@@ -258,6 +259,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
                 {
                     _frameBuffer.Clear();
                 }
+                _lastFrameSeq = stream.FrameSeq;
                 if (!_frameBuffer.TryAdd(stream.PktSeq, stream)) return;
                 if (_frameBuffer.Count < stream.PktInFrame) return;
                 var frameSize = _frameBuffer.Sum(x => x.Value.DataSize);
@@ -282,7 +284,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
                     ArrayPool<byte>.Shared.Return(frameData);
                 }
             }
-            _lastFrameSeq = stream.FrameSeq;
+            
         }
     }
 }

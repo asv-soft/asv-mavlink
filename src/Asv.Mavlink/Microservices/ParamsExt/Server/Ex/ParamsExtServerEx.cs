@@ -42,10 +42,12 @@ public class ParamsExtServerEx : DisposableOnceWithCancel, IParamsExtServerEx
         IEnumerable<IMavParamExtTypeMetadata> paramDescriptions, 
         IConfiguration cfg,
         ParamsExtServerExConfig serverCfg,
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null)
+        ILoggerFactory? logFactory = null)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<ParamsExtServer>();
         _server = server ?? throw new ArgumentNullException(nameof(server));
         _statusTextServer = statusTextServer ?? throw new ArgumentNullException(nameof(statusTextServer));
         _cfg = cfg ?? throw new ArgumentNullException(nameof(cfg));

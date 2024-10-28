@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
+using Microsoft.Extensions.Time.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -39,10 +40,9 @@ public class ParamsMicroserviceTest
         var statusServer = new StatusTextServer(link.Server, 
             srvSeq, 
             srvId, 
-            new StatusTextLoggerConfig(),
-            Scheduler.Default);
+            new StatusTextLoggerConfig());
         
-        var server = new ParamsServer(link.Server,srvSeq,srvId,Scheduler.Default);
+        var server = new ParamsServer(link.Server,srvSeq,srvId);
         
         var serverEx = new ParamsServerEx(server, statusServer, 
             new []
@@ -94,10 +94,9 @@ public class ParamsMicroserviceTest
         var statusServer = new StatusTextServer(link.Server, 
             srvSeq, 
             srvId, 
-            new StatusTextLoggerConfig(),
-            Scheduler.Default);
+            new StatusTextLoggerConfig());
         
-        var server = new ParamsServer(link.Server,srvSeq,srvId,Scheduler.Default);
+        var server = new ParamsServer(link.Server,srvSeq,srvId);
         
         var serverEx = new ParamsServerEx(server, statusServer, 
             new []
@@ -135,7 +134,7 @@ public class ParamsMicroserviceTest
         var oldValue = (int)serverEx[Param1];
         
         serverEx[Param1] = 1;
-        await Task.Delay(1000);
+        
         Assert.Equal(1, readParams[Param1.Name].ParamValue);
         
         _output.WriteLine($"updated: {readParams[Param1.Name].ParamValue}");
@@ -158,25 +157,24 @@ public class ParamsMicroserviceTest
         var statusServer = new StatusTextServer(link.Server, 
             srvSeq, 
             srvId, 
-            new StatusTextLoggerConfig(),
-            Scheduler.Default);
-        
-        var server = new ParamsServer(link.Server, srvSeq, srvId, Scheduler.Default);
+            new StatusTextLoggerConfig());
+        var fake = new FakeTimeProvider();
+        var server = new ParamsServer(link.Server, srvSeq, srvId,fake);
         
         var serverEx = new ParamsServerEx(server, statusServer, 
             new []
             {
-                MavParam.SysU32("PARAM1", "Param 1",String.Empty),
+                MavParam.SysR32("PARAM1", "Param 1",String.Empty),
                 Param2,
                 Param3,
             }, 
-            encoding, srvCfg, new ParamsServerExConfig { SendingParamItemDelayMs = 50 });
+            encoding, srvCfg, new ParamsServerExConfig { SendingParamItemDelayMs = 50 },fake);
         
         var client = new ParamsClient(link.Client, 
             new(2,2,1,1), 
-            new PacketSequenceCalculator(), new ParamsClientExConfig());
+            new PacketSequenceCalculator(), new ParamsClientExConfig(),fake);
         
-        var clientEx = new ParamsClientEx(client, new ParamsClientExConfig());
+        var clientEx = new ParamsClientEx(client, new ParamsClientExConfig(),fake);
         
         clientEx.Init(encoding, new List<ParamDescription>());
         
@@ -220,10 +218,9 @@ public class ParamsMicroserviceTest
         var statusServer = new StatusTextServer(link.Server, 
             srvSeq, 
             srvId, 
-            new StatusTextLoggerConfig(),
-            Scheduler.Default);
+            new StatusTextLoggerConfig());
         
-        var server = new ParamsServer(link.Server,srvSeq,srvId,Scheduler.Default);
+        var server = new ParamsServer(link.Server,srvSeq,srvId);
         
         var serverEx = new ParamsServerEx(server, statusServer, 
             new []

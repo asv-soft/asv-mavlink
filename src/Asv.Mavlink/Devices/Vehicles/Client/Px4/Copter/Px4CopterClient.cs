@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
@@ -12,8 +14,10 @@ public class Px4CopterClient(
     MavlinkClientIdentity identity,
     VehicleClientConfig config,
     IPacketSequenceCalculator seq,
-    IScheduler scheduler)
-    : Px4VehicleClient(connection, identity, config, seq, scheduler)
+    TimeProvider? timeProvider = null,
+    IScheduler? scheduler = null,
+    ILoggerFactory? logFactory = null)
+    : Px4VehicleClient(connection, identity, config, seq, timeProvider, scheduler,logFactory)
 {
     protected override string DefaultName => $"PX4 [{Identity.TargetSystemId:00},{Identity.TargetComponentId:00}]";
     public override DeviceClass Class => DeviceClass.Copter;

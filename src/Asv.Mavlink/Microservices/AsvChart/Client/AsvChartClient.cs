@@ -32,15 +32,17 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
     private ushort _lastCollectionHash;
     private readonly RxValue<bool> _isSynced;
 
-    public AsvChartClient(
-        AsvChartClientConfig config,
-        IMavlinkV2Connection connection, 
-        MavlinkClientIdentity identity, 
+    public AsvChartClient(AsvChartClientConfig config,
+        IMavlinkV2Connection connection,
+        MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq,
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null): base("CHART", connection, identity, seq,scheduler, logger)
+        ILoggerFactory? logFactory = null)
+        : base("CHART", connection, identity, seq, timeProvider, scheduler, logFactory)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<AsvChartClient>();
         _signals = new SourceCache<AsvChartInfo, ushort>(x=>x.Id).DisposeItWith(Disposable);
         _maxTimeToWaitForResponseForList = TimeSpan.FromMilliseconds(config.MaxTimeToWaitForResponseForListMs);
         OnChartInfo = InternalFilter<AsvChartInfoPacket>().Select(x => new AsvChartInfo(x.Payload));

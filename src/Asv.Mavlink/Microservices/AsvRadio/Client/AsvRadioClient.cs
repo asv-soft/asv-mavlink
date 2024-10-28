@@ -11,13 +11,13 @@ namespace Asv.Mavlink;
 public class AsvRadioClient : MavlinkMicroserviceClient, IAsvRadioClient
 {
     
-    public AsvRadioClient(
-        IMavlinkV2Connection connection, 
-        MavlinkClientIdentity identity, 
+    public AsvRadioClient(IMavlinkV2Connection connection,
+        MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq,
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null) 
-        : base(AsvRadioHelper.IfcName, connection, identity, seq,scheduler, logger)
+        ILoggerFactory? logFactory = null) 
+        : base(AsvRadioHelper.IfcName, connection, identity, seq,timeProvider,scheduler, logFactory)
     {
         Status = InternalFilter<AsvRadioStatusPacket>()
             .Select(p => p.Payload).Publish().RefCount();

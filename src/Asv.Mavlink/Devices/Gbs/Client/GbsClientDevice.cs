@@ -26,17 +26,20 @@ public class GbsClientDevice : ClientDevice, IGbsClientDevice
         MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq,
         GbsClientDeviceConfig config,
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null, 
-        ILogger? logger = null) : base(connection, identity,config, seq, scheduler, logger)
+        ILoggerFactory? loggerFactory = null) 
+        : base(connection, identity,config, seq,timeProvider, scheduler, loggerFactory)
     {
         _config = config;
-        _logger = logger ?? NullLogger.Instance;
+        loggerFactory ??= NullLoggerFactory.Instance;
+        _logger = loggerFactory.CreateLogger<GbsClientDevice>();
         scheduler ??= Scheduler.Default;
-        Command = new CommandClient(connection, identity, seq, config.Command).DisposeItWith(Disposable);
-        var gbs = new AsvGbsClient(connection,identity,seq,scheduler).DisposeItWith(Disposable);
-        Gbs = new AsvGbsExClient(gbs,Heartbeat,Command).DisposeItWith(Disposable);
-        var paramBase = new ParamsClient(connection, identity, seq, config.Params).DisposeItWith(Disposable);
-        _params = new ParamsClientEx(paramBase, config.Params).DisposeItWith(Disposable);
+        Command = new CommandClient(connection, identity, seq, config.Command,timeProvider, scheduler,loggerFactory).DisposeItWith(Disposable);
+        var gbs = new AsvGbsClient(connection,identity,seq,timeProvider, scheduler,loggerFactory).DisposeItWith(Disposable);
+        Gbs = new AsvGbsExClient(gbs,Heartbeat,Command,timeProvider, scheduler,loggerFactory).DisposeItWith(Disposable);
+        var paramBase = new ParamsClient(connection, identity, seq, config.Params,timeProvider, scheduler,loggerFactory).DisposeItWith(Disposable);
+        _params = new ParamsClientEx(paramBase, config.Params,timeProvider, scheduler,loggerFactory).DisposeItWith(Disposable);
     }
 
     public IParamsClientEx Params => _params;

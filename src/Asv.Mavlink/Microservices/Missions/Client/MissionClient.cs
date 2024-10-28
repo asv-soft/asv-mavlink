@@ -26,12 +26,17 @@ namespace Asv.Mavlink
         private readonly RxValue<ushort> _missionCurrent;
         private readonly RxValue<ushort> _missionReached;
 
-        public MissionClient(IMavlinkV2Connection mavlink, MavlinkClientIdentity identity,
-            IPacketSequenceCalculator seq, MissionClientConfig config,
+        public MissionClient(IMavlinkV2Connection mavlink, 
+            MavlinkClientIdentity identity,
+            IPacketSequenceCalculator seq, 
+            MissionClientConfig config,
+            TimeProvider? timeProvider = null,
             IScheduler? scheduler = null,
-            ILogger? logger = null) : base("MISSION",mavlink, identity, seq,scheduler,logger)
+            ILoggerFactory? logFactory = null) 
+            : base("MISSION",mavlink, identity, seq,timeProvider,scheduler,logFactory)
         {
-            _logger = logger ?? NullLogger.Instance;
+            logFactory??=NullLoggerFactory.Instance;
+            _logger = logFactory.CreateLogger<MissionClient>();
             _config = config;
             _missionCurrent = new RxValue<ushort>().DisposeItWith(Disposable);
             _missionReached = new RxValue<ushort>().DisposeItWith(Disposable);

@@ -31,14 +31,16 @@ namespace Asv.Mavlink
             IPacketSequenceCalculator seq,
             MavlinkIdentity identity, 
             StatusTextLoggerConfig config, 
+            TimeProvider? timeProvider = null,
             IScheduler? scheduler = null,
-            ILogger? logger = null):   
-            base("STATUS",connection,identity,seq,scheduler,logger)
+            ILoggerFactory? logFactory = null):   
+            base("STATUS",connection,identity,seq, timeProvider,scheduler,logFactory)
         {
-            _logger = logger ?? NullLogger.Instance;
-            if (seq == null) throw new ArgumentNullException(nameof(seq));
+            logFactory??=NullLoggerFactory.Instance;
+            _logger = logFactory.CreateLogger<StatusTextServer>();
+            ArgumentNullException.ThrowIfNull(seq);
             _config = config ?? throw new ArgumentNullException(nameof(config));
-            if (connection == null) throw new ArgumentNullException(nameof(connection));
+            ArgumentNullException.ThrowIfNull(connection);
 
             _logger.ZLogDebug($"Create status logger for [sys:{identity.SystemId}, com:{identity.ComponentId}] with send rate:{config.MaxSendRateHz} Hz, buffer size: {config.MaxQueueSize}");
 

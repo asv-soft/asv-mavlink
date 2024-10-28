@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
@@ -38,7 +39,7 @@ public interface IHierarchicalStoreFormat<TKey, out TFile> : IDisposable where T
     /// <param name="id">[out] When this method returns, contains the unique identifier of the folder if it is found; otherwise, the default value for the type of the identifier.</param>
     /// <param name="displayName">[out] When this method returns, contains the display name of the folder if it is found; otherwise, null.</param>
     /// <returns>Returns true if the folder information is successfully retrieved; otherwise, false.</returns>
-    bool TryGetFolderInfo(DirectoryInfo folderInfo, out TKey id, out string? displayName);
+    bool TryGetFolderInfo(IDirectoryInfo? folderInfo, out TKey id, out string? displayName);
 
     /// <summary>
     /// Get the folder name in the file system.
@@ -71,25 +72,28 @@ public interface IHierarchicalStoreFormat<TKey, out TFile> : IDisposable where T
     void CheckFolderDisplayName(string name);
 }
 
-
-public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,IHierarchicalStore<TKey, TFile> 
+public class FileSystemHierarchicalStore<TKey, TFile> : DisposableOnceWithCancel, IHierarchicalStore<TKey, TFile>
     where TKey : notnull
     where TFile : IDisposable
 {
     private readonly string _rootFolder;
-    private readonly IHierarchicalStoreFormat<TKey,TFile> _format;
+    private readonly IHierarchicalStoreFormat<TKey, TFile> _format;
     private readonly ILogger? _logger;
     private readonly object _sync = new();
     private readonly RxValue<ushort> _count;
     private readonly RxValue<ulong> _size;
-    private readonly Dictionary<TKey,FileSystemHierarchicalStoreEntry<TKey>> _entries;
-    private readonly List<CachedFile<TKey,TFile>> _fileCache = new();
+    private readonly Dictionary<TKey, FileSystemHierarchicalStoreEntry<TKey>> _entries;
+    private readonly List<CachedFile<TKey, TFile>> _fileCache = new();
     private int _checkCacheInProgress;
     private readonly TimeSpan _fileCacheTime;
+    private IFileSystem _fileSystem;
 
-    public FileSystemHierarchicalStore(string rootFolder, IHierarchicalStoreFormat<TKey,TFile> format, TimeSpan? fileCacheTime, ILogger? logger = null)
+    public FileSystemHierarchicalStore(string rootFolder, IHierarchicalStoreFormat<TKey, TFile> format,
+        TimeSpan? fileCacheTime, ILoggerFactory? logFactory = null, IFileSystem? fileSystem = null)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory ??= NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<FileSystemHierarchicalStore<TKey, TFile>>();
+        fileSystem ??= new FileSystem();
         if (format == null) throw new ArgumentNullException(nameof(format));
         format.DisposeItWith(Disposable);
         if (string.IsNullOrEmpty(rootFolder))
@@ -97,25 +101,29 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         _fileCacheTime = fileCacheTime ?? TimeSpan.Zero;
         if (_fileCacheTime != TimeSpan.Zero)
         {
-            Observable.Timer(_fileCacheTime, _fileCacheTime).Subscribe(CheckFileCacheForRottenFiles).DisposeItWith(Disposable);
+            Observable.Timer(_fileCacheTime, _fileCacheTime).Subscribe(CheckFileCacheForRottenFiles)
+                .DisposeItWith(Disposable);
         }
+
         _rootFolder = rootFolder;
+        _fileSystem = fileSystem;
+        _fileSystem.Directory.CreateDirectory(_rootFolder);
         _format = format ?? throw new ArgumentNullException(nameof(format));
         _entries = new Dictionary<TKey, FileSystemHierarchicalStoreEntry<TKey>>(_format.KeyComparer);
-        if (Directory.Exists(rootFolder) == false)
+        if (_fileSystem.Directory.Exists(rootFolder) == false)
         {
             _logger.ZLogWarning($"Directory '{rootFolder}' not exist. Try create");
-            Directory.CreateDirectory(rootFolder);
+            _fileSystem.Directory.CreateDirectory(rootFolder);
         }
+
         _count = new RxValue<ushort>().DisposeItWith(Disposable);
         _size = new RxValue<ulong>().DisposeItWith(Disposable);
-        
-        InternalUpdateEntries();
-        
-        Disposable.AddAction(ClearFileCache);
 
+        InternalUpdateEntries();
+
+        Disposable.AddAction(ClearFileCache);
     }
-    
+
     public IRxValue<ushort> Count => _count;
 
     /// <summary>
@@ -131,9 +139,9 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         lock (_sync)
         {
             InternalUpdateEntries();
-        }    
+        }
     }
-    
+
     #region Internal update items
 
     /// <summary>
@@ -146,20 +154,23 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         {
             _entries.Add(entry.Id, entry);
         }
-        InternalUpdateStatistics();    
+
+        InternalUpdateStatistics();
     }
-    
-    private IEnumerable<FileSystemHierarchicalStoreEntry<TKey>> InternalGetEntries(FileSystemHierarchicalStoreEntry<TKey>? parentFolder)
+
+    private IEnumerable<FileSystemHierarchicalStoreEntry<TKey>> InternalGetEntries(
+        FileSystemHierarchicalStoreEntry<TKey>? parentFolder)
     {
-        foreach (var directory in Directory.EnumerateDirectories(parentFolder?.FullPath ?? _rootFolder))
+        foreach (var directory in _fileSystem.Directory.EnumerateDirectories(parentFolder?.FullPath ?? _rootFolder))
         {
-            var folderInfo = new DirectoryInfo(directory);
+            var folderInfo = new DirectoryInfoWrapper(_fileSystem, new DirectoryInfo(directory));
             Debug.Assert(folderInfo.Exists);
-            if (_format.TryGetFolderInfo(folderInfo,out var id, out var displayName) == false)
+            if (_format.TryGetFolderInfo(folderInfo, out var id, out var displayName) == false)
             {
                 _logger.ZLogWarning($"Skip store folder '{folderInfo.FullName}'");
                 continue;
             }
+
             Debug.Assert(displayName.IsNullOrWhiteSpace() == false);
             var entry = new FileSystemHierarchicalStoreEntry<TKey>(id, displayName, FolderStoreEntryType.Folder,
                 parentFolder == null ? _format.RootFolderId : parentFolder.Id, folderInfo.FullName);
@@ -170,7 +181,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             }
         }
 
-        foreach (var file in Directory.EnumerateFiles(parentFolder?.FullPath ?? _rootFolder))
+        foreach (var file in _fileSystem.Directory.EnumerateFiles(parentFolder?.FullPath ?? _rootFolder))
         {
             var fileInfo = new FileInfo(file);
             Debug.Assert(fileInfo.Exists);
@@ -179,18 +190,19 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
                 _logger.ZLogWarning($"Skip store file '{fileInfo.FullName}'");
                 continue;
             }
-            
+
             Debug.Assert(displayName.IsNullOrWhiteSpace() == false);
             var entry = new FileSystemHierarchicalStoreEntry<TKey>(id, displayName, FolderStoreEntryType.File,
                 parentFolder == null ? _format.RootFolderId : parentFolder.Id, fileInfo.FullName);
             yield return entry;
         }
     }
-    
+
     private void InternalUpdateStatistics()
     {
         _count.Value = (ushort)_entries.Count(x => x.Value.Type == FolderStoreEntryType.File);
-        _size.Value = (ulong)_entries.Where(x => x.Value.Type == FolderStoreEntryType.File).Sum(x => new FileInfo(x.Value.FullPath).Length);
+        _size.Value = (ulong)_entries.Where(x => x.Value.Type == FolderStoreEntryType.File)
+            .Sum(x => new FileInfo(x.Value.FullPath).Length);
         //Logger.Info($"Update statistics: items:{_count.Value}, size:{_size.Value}");
     }
 
@@ -224,9 +236,8 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
                 }
             }
         }
-        
     }
-    
+
     #endregion
 
     #region Entries
@@ -256,6 +267,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
                 entry = localEntry;
                 return true;
             }
+
             entry = default;
             return false;
         }
@@ -270,16 +282,17 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     }
 
     #endregion
-   
+
     #region Folders
 
     public TKey RootFolderId => _format.RootFolderId;
-    
+
     public IReadOnlyList<IHierarchicalStoreEntry<TKey>> GetFolders()
     {
         lock (_sync)
         {
-            return _entries.Where(x => x.Value.Type == FolderStoreEntryType.Folder).Select(x=>x.Value).ToImmutableList();
+            return _entries.Where(x => x.Value.Type == FolderStoreEntryType.Folder).Select(x => x.Value)
+                .ToImmutableList();
         }
     }
 
@@ -303,9 +316,10 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     /// </exception>
     public TKey CreateFolder(TKey id, string name, TKey parentId)
     {
-        if (string.IsNullOrEmpty(name)) throw new ArgumentException("Folder name cannot be null or empty.", nameof(name));
+        if (string.IsNullOrEmpty(name))
+            throw new ArgumentException("Folder name cannot be null or empty.", nameof(name));
         _format.CheckFolderDisplayName(name);
-        lock (_sync)    
+        lock (_sync)
         {
             var rootFolder = _rootFolder;
             if (!_entries.ContainsKey(parentId) && !_format.KeyComparer.Equals(parentId, RootFolderId))
@@ -313,37 +327,39 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
                 _logger.ZLogError($"Folder with id {parentId} does not exist");
                 throw new HierarchicalStoreException(name);
             }
+
             if (_entries.TryGetValue(parentId, out var parent))
             {
                 rootFolder = parent.FullPath;
                 parentId = parent.Id;
             }
+
             if (_entries.ContainsKey(id))
             {
                 _logger.ZLogError($"Folder with id {id} already exist");
                 throw new HierarchicalStoreFolderAlreadyExistException(name);
             }
-            
-            var newFolderNameInFileSystem = _format.GetFileSystemFolderName(id,name);
-           
+
+            var newFolderNameInFileSystem = _format.GetFileSystemFolderName(id, name);
+
             if (_entries.Where(x => _format.KeyComparer.Equals(x.Value.ParentId, parentId))
                 .Any(x => x.Value.Name == name))
             {
                 _logger.ZLogError($"Folder with name='{name}' already exist at {rootFolder}");
                 throw new HierarchicalStoreFolderAlreadyExistException(name);
             }
-            
-            var newFolderPath = Path.Combine(rootFolder, newFolderNameInFileSystem);
-            var info = Directory.CreateDirectory(newFolderPath);
+
+            var newFolderPath = _fileSystem.Path.Combine(rootFolder, newFolderNameInFileSystem);
+            var info = _fileSystem.Directory.CreateDirectory(newFolderPath);
             Debug.Assert(info.Exists);
             Debug.Assert(_format.TryGetFolderInfo(info, out var newId, out var displayName));
-            Debug.Assert(_format.KeyComparer.Equals(newId,id));
+            Debug.Assert(_format.KeyComparer.Equals(newId, id));
             Debug.Assert(displayName == name);
             var newEntry =
                 new FileSystemHierarchicalStoreEntry<TKey>(id, name, FolderStoreEntryType.Folder, parentId,
                     newFolderPath);
             _logger.ZLogInformation($"Create folder {name}");
-            _entries.Add(id,newEntry);
+            _entries.Add(id, newEntry);
             return id;
         }
     }
@@ -354,7 +370,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         {
             _logger.ZLogInformation($"Delete folder {id}");
             if (_entries.TryGetValue(id, out var entry) == false)
-            { 
+            {
                 throw new HierarchicalStoreException($"Folder with id='{id}' not found");
             }
 
@@ -362,6 +378,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             {
                 throw new HierarchicalStoreException($"Entry '{id}' is not folder");
             }
+
             var files = InternalGetSubFiles(id);
             foreach (var file in files)
             {
@@ -370,7 +387,8 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
                     throw new HierarchicalStoreException("Can't rename folder: file in folder currently in use");
                 }
             }
-            Directory.Delete(entry.FullPath,true);
+
+            _fileSystem.Directory.Delete(entry.FullPath, true);
             InternalUpdateEntries();
         }
     }
@@ -396,7 +414,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         {
             _logger.ZLogInformation($"Rename folder {id} to {newName}");
             if (_entries.TryGetValue(id, out var entry) == false)
-            {   
+            {
                 throw new HierarchicalStoreException($"Folder with id '{id}' not found");
             }
 
@@ -415,17 +433,19 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             }
 
             var folderNameAtFileSystem = _format.GetFileSystemFolderName(id, newName);
-            
-            var newFolderPath= Path.Combine(parentFolder, folderNameAtFileSystem);
+
+            var newFolderPath = Path.Combine(parentFolder, folderNameAtFileSystem);
             var files = InternalGetSubFiles(id);
             foreach (var file in files)
             {
                 if (TryImmediatelyRemoveFromCache(file) == false)
                 {
-                    throw new HierarchicalStoreException($"Can't rename folder: file '{file}' in folder currently in use");
+                    throw new HierarchicalStoreException(
+                        $"Can't rename folder: file '{file}' in folder currently in use");
                 }
             }
-            Directory.Move(entry.FullPath,newFolderPath);
+
+            _fileSystem.Directory.Move(entry.FullPath, newFolderPath);
             InternalUpdateEntries();
         }
     }
@@ -451,6 +471,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             {
                 throw new HierarchicalStoreException($"Folder with id='{id}' not found");
             }
+
             if (entry.Type != FolderStoreEntryType.Folder)
             {
                 throw new HierarchicalStoreException($"Entry '{id}' is not folder");
@@ -465,23 +486,24 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             {
                 throw new HierarchicalStoreException("Parent entry is not folder");
             }
+
             var nameAtFileSystem = _format.GetFileSystemFolderName(entry.Id, entry.Name);
-            var newFullPath = Path.Combine(newParent.FullPath, nameAtFileSystem);
-            Directory.Move(entry.FullPath, newFullPath);
+            var newFullPath = _fileSystem.Path.Combine(newParent.FullPath, nameAtFileSystem);
+            _fileSystem.Directory.Move(entry.FullPath, newFullPath);
             InternalUpdateEntries();
         }
     }
-    
+
     #endregion
-    
+
     #region Files
-    
+
     public IReadOnlyList<IHierarchicalStoreEntry<TKey>> GetFiles()
     {
         lock (_sync)
         {
             return _entries.Where(x => x.Value.Type == FolderStoreEntryType.File)
-                .Select(x=>x.Value).ToImmutableList();
+                .Select(x => x.Value).ToImmutableList();
         }
     }
 
@@ -494,14 +516,13 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             if (commonEntry.Type != FolderStoreEntryType.File) return false;
             entry = commonEntry;
             return true;
-
         }
     }
 
     public void DeleteFile(TKey id)
     {
         lock (_sync)
-        {   
+        {
             _logger.ZLogInformation($"Delete file {id}");
             if (_entries.TryGetValue(id, out var entry) == false)
             {
@@ -512,12 +533,14 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             {
                 throw new HierarchicalStoreException($"Entry '{id}' is not file");
             }
+
             // we need to remove file from cache, if we want to modify it
             if (TryImmediatelyRemoveFromCache(id) == false)
             {
                 throw new HierarchicalStoreException($"Can't delete file '{id}': it is currently in use");
             }
-            File.Delete(entry.FullPath);
+
+            _fileSystem.File.Delete(entry.FullPath);
             _entries.Remove(id);
         }
     }
@@ -551,6 +574,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             {
                 throw new HierarchicalStoreException("Entry '{id}' is not file");
             }
+
             var parentFolder = _rootFolder;
             if (_entries.TryGetValue(entry.ParentId, out var parent))
             {
@@ -559,9 +583,9 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
                     parentFolder = parent.FullPath;
                 }
             }
-            
-            var nameAtFileSystem = _format.GetFileSystemFileName(id,newName);
-            var newFilePath = Path.Combine(parentFolder, nameAtFileSystem);
+
+            var nameAtFileSystem = _format.GetFileSystemFileName(id, newName);
+            var newFilePath = _fileSystem.Path.Combine(parentFolder, nameAtFileSystem);
             // we need to remove file from cache, if we want to modify it
             if (TryImmediatelyRemoveFromCache(id) == false)
             {
@@ -570,10 +594,13 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
 
             if (newFilePath.Equals(entry.FullPath) == false)
             {
-                File.Move(entry.FullPath,newFilePath);
+                _fileSystem.File.Move(entry.FullPath, newFilePath);
             }
+
             _entries.Remove(id);
-            _entries.Add(id,new FileSystemHierarchicalStoreEntry<TKey>(id,newName, FolderStoreEntryType.File,entry.ParentId,newFilePath));
+            _entries.Add(id,
+                new FileSystemHierarchicalStoreEntry<TKey>(id, newName, FolderStoreEntryType.File, entry.ParentId,
+                    newFilePath));
             return id;
         }
     }
@@ -595,6 +622,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             {
                 throw new HierarchicalStoreException($"File with id='{id}' not found");
             }
+
             if (entry.Type != FolderStoreEntryType.File)
             {
                 throw new HierarchicalStoreException($"Entry '{id}' is not file");
@@ -607,20 +635,23 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
                 {
                     throw new HierarchicalStoreException("Parent entry is not folder");
                 }
+
                 parentPath = newParent.FullPath;
             }
-            var nameAtFileSystem = _format.GetFileSystemFileName(id,entry.Name);
-            var newFilePath = Path.Combine(parentPath, nameAtFileSystem);
+
+            var nameAtFileSystem = _format.GetFileSystemFileName(id, entry.Name);
+            var newFilePath = _fileSystem.Path.Combine(parentPath, nameAtFileSystem);
             // we need to remove file from cache, if we want to modify it
             if (TryImmediatelyRemoveFromCache(id) == false)
             {
                 throw new HierarchicalStoreException("Can't rename file: it is currently in use");
             }
-           
+
             if (newFilePath.Equals(entry.FullPath) == false)
             {
-                File.Move(entry.FullPath,newFilePath);    
+                _fileSystem.File.Move(entry.FullPath, newFilePath);
             }
+
             InternalUpdateEntries();
         }
     }
@@ -634,13 +665,14 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
                 _logger.ZLogError($"File with id '{id}' not found");
                 throw new FileNotFoundException($"File with [{id}] not found");
             }
-            
-            var fileInfo =  new FileInfo(entry.FullPath);
+
+            var fileInfo = new FileInfo(entry.FullPath);
             if (fileInfo.Exists == false)
             {
                 _logger.ZLogError($"File with [{id}]{fileInfo.FullName} not found");
                 throw new FileNotFoundException($"File with [{id}]{fileInfo.FullName} not found", fileInfo.FullName);
             }
+
             return GetOrAddFileToCache(entry);
         }
     }
@@ -664,7 +696,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
                 _logger.ZLogError($"Entry '{id}' already exist");
                 throw new HierarchicalStoreException($"Entry {id} already exist");
             }
-            
+
             var rootFolder = _rootFolder;
             if (_entries.TryGetValue(parentId, out var parent) == false)
             {
@@ -675,20 +707,23 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             {
                 rootFolder = parent.FullPath;
             }
-            var fileNameAtFileSystem = _format.GetFileSystemFileName(id,name);
-            var newFilePath = Path.Combine(rootFolder, fileNameAtFileSystem);
+
+            var fileNameAtFileSystem = _format.GetFileSystemFileName(id, name);
+            var newFilePath = _fileSystem.Path.Combine(rootFolder, fileNameAtFileSystem);
             var fileInfo = new FileInfo(newFilePath);
             if (fileInfo.Exists)
             {
                 _logger.ZLogError($"File [{id}]{fileInfo.FullName} already exist");
                 throw new HierarchicalStoreException($"File [{id}]{fileInfo.FullName} already exist");
             }
-            var file = _format.CreateFile(File.Open(fileInfo.FullName, FileMode.OpenOrCreate, FileAccess.ReadWrite), id, name);
-            var wrapper = new CachedFile<TKey,TFile>(id,name, parentId,file,OnFileDisposed);
+
+            var file = _format.CreateFile(
+                _fileSystem.File.Open(fileInfo.FullName, FileMode.OpenOrCreate, FileAccess.ReadWrite), id, name);
+            var wrapper = new CachedFile<TKey, TFile>(id, name, parentId, file, OnFileDisposed);
             var entry = new FileSystemHierarchicalStoreEntry<TKey>(id, name, FolderStoreEntryType.File, parentId,
                 fileInfo.FullName);
-            _entries.Add(id,entry);
-            return AddFileToCache(entry,wrapper);
+            _entries.Add(id, entry);
+            return AddFileToCache(entry, wrapper);
         }
     }
 
@@ -702,6 +737,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         {
             file.ImmediateDispose();
         }
+
         _fileCache.Clear();
     }
 
@@ -710,7 +746,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         if (_fileCache.Count == 0) return true;
         var item = _fileCache.FirstOrDefault(file => file.Id.Equals(id));
         if (item == null) return true;
-            
+
         if (item.RefCount != 0) return false;
         _logger.ZLogTrace($"Immediately remove file from cache: '{item.Id}'");
         item.ImmediateDispose();
@@ -728,7 +764,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         }
         else
         {
-            var stream = File.Open(entry.FullPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            var stream = _fileSystem.File.Open(entry.FullPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             var file = _format.OpenFile(stream);
             exist = new CachedFile<TKey, TFile>(entry.Id, entry.Name, entry.ParentId, file, OnFileDisposed);
             exist.AddRef();
@@ -738,15 +774,16 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
 
         return exist;
     }
-    
-    private ICachedFile<TKey, TFile> AddFileToCache(FileSystemHierarchicalStoreEntry<TKey> entry, CachedFile<TKey, TFile> wrapper)
+
+    private ICachedFile<TKey, TFile> AddFileToCache(FileSystemHierarchicalStoreEntry<TKey> entry,
+        CachedFile<TKey, TFile> wrapper)
     {
         wrapper.AddRef();
         _logger.ZLogTrace($"Add file '{entry.Name}'[{entry.Id}] to cache (ref count={wrapper.RefCount})");
         _fileCache.Add(wrapper);
         return wrapper;
     }
-    
+
 
     private void OnFileDisposed(CachedFile<TKey, TFile> file)
     {
@@ -769,8 +806,8 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     /// <param name="delay">The delay in milliseconds to wait before checking the cache again if it is already in progress.</param>
     private void CheckFileCacheForRottenFiles(long delay)
     {
-        if (Interlocked.CompareExchange(ref _checkCacheInProgress,1,0) != 0) return;
-        
+        if (Interlocked.CompareExchange(ref _checkCacheInProgress, 1, 0) != 0) return;
+
         try
         {
             // check before lock (optimization)
@@ -793,13 +830,13 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         }
         catch (Exception ex)
         {
-            _logger.ZLogError(ex,$"CheckFileCacheForRottenFiles error:{ex.Message}");
+            _logger.ZLogError(ex, $"CheckFileCacheForRottenFiles error:{ex.Message}");
         }
         finally
         {
             Interlocked.Exchange(ref _checkCacheInProgress, 0);
         }
     }
-    
+
     #endregion
 }

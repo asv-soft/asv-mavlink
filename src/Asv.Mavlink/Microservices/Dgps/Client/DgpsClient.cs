@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using ZLogger;
 
 namespace Asv.Mavlink
@@ -19,10 +20,13 @@ namespace Asv.Mavlink
             IMavlinkV2Connection connection, 
             MavlinkClientIdentity identity,
             IPacketSequenceCalculator seq,
+            TimeProvider? timeProvider = null,
             IScheduler? scheduler = null,
-            ILogger? logger = null):base("DGPS", connection, identity, seq, scheduler, logger)
+            ILoggerFactory? logFactory = null)
+            :base("DGPS", connection, identity, seq, timeProvider, scheduler, logFactory)
         {
-        
+            logFactory ??= NullLoggerFactory.Instance;
+            _logger = logFactory.CreateLogger<DgpsClient>();
         }
 
         public async Task SendRtcmData(byte[] data, int length, CancellationToken cancel)

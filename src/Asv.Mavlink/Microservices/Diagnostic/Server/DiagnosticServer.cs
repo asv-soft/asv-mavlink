@@ -26,8 +26,10 @@ public class DiagnosticServer: MavlinkMicroserviceServer, IDiagnosticServer
         IMavlinkV2Connection connection, 
         MavlinkIdentity identity, 
         IPacketSequenceCalculator seq, 
+        TimeProvider? timeProvider = null,
         IScheduler? rxScheduler = null,
-        ILogger? logger = null) : base("DIAG", connection, identity, seq, rxScheduler,logger)
+        ILoggerFactory? logFactory = null) 
+        : base("DIAG", connection, identity, seq, timeProvider, rxScheduler,logFactory)
     {
         _config = config;
         _bootTime = DateTime.Now;

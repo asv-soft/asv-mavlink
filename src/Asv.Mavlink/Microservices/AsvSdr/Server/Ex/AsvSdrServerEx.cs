@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,11 +29,14 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
         IStatusTextServer status, 
         IHeartbeatServer heartbeat, 
         ICommandServerEx<CommandLongPacket> commands,
-        ILogger? logger = null)
+        TimeProvider? timeProvider = null,
+        IScheduler? scheduler = null,
+        ILoggerFactory? logFactory = null)
     {
-        _logger = logger ?? NullLogger.Instance;
-        if (heartbeat == null) throw new ArgumentNullException(nameof(heartbeat));
-        if (commands == null) throw new ArgumentNullException(nameof(commands));
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<AsvSdrServerEx>();
+        ArgumentNullException.ThrowIfNull(heartbeat);
+        ArgumentNullException.ThrowIfNull(commands);
         _status = status ?? throw new ArgumentNullException(nameof(status));
         Base = server ?? throw new ArgumentNullException(nameof(server));
 

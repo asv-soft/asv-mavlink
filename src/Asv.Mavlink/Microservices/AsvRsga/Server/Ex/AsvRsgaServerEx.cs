@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reactive.Concurrency;
 using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvRsga;
@@ -18,9 +19,12 @@ public class AsvRsgaServerEx : DisposableOnceWithCancel, IAsvRsgaServerEx
         IAsvRsgaServer server, 
         IStatusTextServer status, 
         ICommandServerEx<CommandLongPacket> commands,
-        ILogger? logger = null)
+        TimeProvider? timeProvider = null,
+        IScheduler? scheduler = null,
+        ILoggerFactory? logFactory = null)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory ??= NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<AsvRsgaServerEx>();
         Base = server;
         server.OnCompatibilityRequest.Subscribe(OnCompatibilityRequest).DisposeItWith(Disposable);
         commands[(MavCmd)V2.AsvRsga.MavCmd.MavCmdAsvRsgaSetMode] = async (id,args, cancel) =>

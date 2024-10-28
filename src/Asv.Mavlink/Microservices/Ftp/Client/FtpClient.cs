@@ -30,16 +30,17 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
     public FtpClient(
         MavlinkFtpClientConfig config,
         IMavlinkV2Connection connection,
-        MavlinkClientIdentity identity, 
+        MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq,
-        TimeProvider timeProvider,
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null
-    ):base("FTP",connection,identity,seq,scheduler,logger)
+        ILoggerFactory? logFactory = null
+    ) : base("FTP", connection, identity, seq, timeProvider, scheduler, logFactory)
     {
         _config = config;
-        _timeProvider = timeProvider;
-        _logger = logger ?? NullLogger.Instance;
+        _timeProvider = timeProvider ?? TimeProvider.System;
+        logFactory ??= NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<FtpClient>();
         _burstTimeout = TimeSpan.FromMilliseconds(config.BurstTimeoutMs);
     }
 

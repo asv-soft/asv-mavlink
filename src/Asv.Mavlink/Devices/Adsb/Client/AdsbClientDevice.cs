@@ -1,7 +1,10 @@
 ﻿#nullable enable
+using System;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using Asv.Common;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Asv.Mavlink;
 
@@ -16,9 +19,13 @@ public class AdsbClientDevice : ClientDevice, IAdsbClientDevice
         MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq,
         AdsbClientDeviceConfig config,
-        IScheduler? scheduler = null) : base(connection, identity, config, seq, scheduler)
+        TimeProvider? timeProvider = null,
+        IScheduler? scheduler = null, 
+        ILoggerFactory? loggerFactory = null)
+        : base(connection, identity, config, seq,timeProvider, scheduler, loggerFactory)
     {
-        Adsb = new AdsbVehicleClient(connection, identity, seq, config.Adsb, scheduler).DisposeItWith(Disposable);
+        loggerFactory ??= NullLoggerFactory.Instance;
+        Adsb = new AdsbVehicleClient(connection, identity, seq, config.Adsb, timeProvider, scheduler,loggerFactory).DisposeItWith(Disposable);
     }
 
     protected override string DefaultName => $"ADSB [{Identity.TargetSystemId:00},{Identity.TargetComponentId:00}]";

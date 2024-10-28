@@ -38,7 +38,7 @@ public class AsvChartTest
         serverEx = new AsvChartServer(new AsvChartServerConfig
         {
             SendSignalDelayMs = 0,
-        }, link.Server, serverId, serverSeq, Scheduler.Default);
+        }, link.Server, serverId, serverSeq);
         
     }
     

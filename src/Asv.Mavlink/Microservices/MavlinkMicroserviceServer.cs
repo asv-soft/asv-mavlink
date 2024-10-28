@@ -24,10 +24,12 @@ public abstract class MavlinkMicroserviceServer : DisposableOnceWithCancel
         IMavlinkV2Connection connection,
         MavlinkIdentity identity,
         IPacketSequenceCalculator seq, 
+        TimeProvider? timeProvider = null,
         IScheduler? rxScheduler = null,
-        ILogger? logger = null)
+        ILoggerFactory? logFactory = null)
     {
-        _loggerBase = logger ?? NullLogger.Instance;
+       logFactory??=NullLoggerFactory.Instance;
+        _loggerBase = logFactory.CreateLogger<MavlinkMicroserviceServer>();
         
         Connection = connection ?? throw new ArgumentNullException(nameof(connection));
         Identity = identity;

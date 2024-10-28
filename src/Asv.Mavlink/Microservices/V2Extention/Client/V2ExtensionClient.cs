@@ -1,3 +1,4 @@
+using System;
 using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,8 +18,9 @@ namespace Asv.Mavlink
             IMavlinkV2Connection connection,
             MavlinkClientIdentity identity, 
             IPacketSequenceCalculator seq,
+            TimeProvider? timeProvider = null,
             IScheduler? scheduler = null,
-            ILogger? logger = null):base("V2EXT", connection, identity, seq,scheduler,logger)
+            ILoggerFactory? logFactory = null):base("V2EXT", connection, identity, seq, timeProvider,scheduler,logFactory)
         {
             _identity = identity;
             InternalFilter<V2ExtensionPacket>().Subscribe(_onData).DisposeItWith(Disposable);

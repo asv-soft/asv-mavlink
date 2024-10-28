@@ -1,3 +1,4 @@
+using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
@@ -26,11 +27,13 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
         IMavlinkV2Connection connection,
         MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq,
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null)
-        : base("CTRL", connection, identity, seq,scheduler,logger)
+        ILoggerFactory? logFactory = null)
+        : base("CTRL", connection, identity, seq,timeProvider,scheduler,logFactory)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<PositionClient>();
         _target = new RxValue<PositionTargetGlobalIntPayload>().DisposeItWith(Disposable);
         InternalFilter<PositionTargetGlobalIntPacket>()
             .Select(p => p.Payload).Subscribe(_target).DisposeItWith(Disposable);

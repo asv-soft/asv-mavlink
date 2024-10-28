@@ -33,9 +33,15 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
     private readonly ILogger _logger;
     private readonly IScheduler _scheduler;
 
-    public ParamsClientEx(IParamsClient client, ParamsClientExConfig config, IScheduler? scheduler = null, ILogger? logger = null)
+    public ParamsClientEx(
+        IParamsClient client, 
+        ParamsClientExConfig config, 
+        TimeProvider? timeProvider = null,
+        IScheduler? scheduler = null, 
+        ILoggerFactory? logFactory = null)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<ParamsClientEx>();
         _scheduler = scheduler ?? Scheduler.Default;
         _config = config ?? throw new ArgumentNullException(nameof(config));
         Base = client;

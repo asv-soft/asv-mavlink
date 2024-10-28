@@ -30,17 +30,19 @@ public class RadioClientDevice : ClientDevice, IRadioClientDevice
         MavlinkClientIdentity identity, 
         IPacketSequenceCalculator seq,
         RadioClientDeviceConfig config, 
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null, 
-        ILogger? logger = null)
-        : base(connection, identity, config, seq, scheduler, logger)
+        ILoggerFactory? loggerFactory = null)
+        : base(connection, identity, config, seq,timeProvider, scheduler, loggerFactory)
     {
-        _logger = logger ?? NullLogger.Instance;
+        loggerFactory ??= NullLoggerFactory.Instance;
+        _logger = loggerFactory.CreateLogger<RadioClientDevice>();
         _config = config ?? throw new ArgumentNullException(nameof(config));
-        Command = new CommandClient(connection, identity, seq, config.Command).DisposeItWith(Disposable);
-        var client = new AsvRadioClient(connection, identity,seq).DisposeItWith(Disposable);
-        Radio = new AsvRadioClientEx(client, Heartbeat, Command).DisposeItWith(Disposable);
-        var param = new ParamsClient(connection, identity, seq, config.Params).DisposeItWith(Disposable);
-        _params = new ParamsClientEx(param, config.Params).DisposeItWith(Disposable);
+        Command = new CommandClient(connection, identity, seq, config.Command,timeProvider,scheduler,loggerFactory).DisposeItWith(Disposable);
+        var client = new AsvRadioClient(connection, identity,seq,timeProvider,scheduler,loggerFactory).DisposeItWith(Disposable);
+        Radio = new AsvRadioClientEx(client, Heartbeat, Command,timeProvider,scheduler,loggerFactory).DisposeItWith(Disposable);
+        var param = new ParamsClient(connection, identity, seq, config.Params,timeProvider,scheduler,loggerFactory).DisposeItWith(Disposable);
+        _params = new ParamsClientEx(param, config.Params,timeProvider,scheduler,loggerFactory).DisposeItWith(Disposable);
     }
     
     public IAsvRadioClientEx Radio { get; }

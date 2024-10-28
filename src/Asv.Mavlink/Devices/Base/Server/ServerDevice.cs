@@ -1,5 +1,7 @@
+using System;
 using System.Reactive.Concurrency;
 using Asv.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
@@ -15,15 +17,17 @@ public class ServerDevice: DisposableOnceWithCancel, IServerDevice
         IPacketSequenceCalculator seq, 
         MavlinkIdentity identity,
         ServerDeviceConfig config,
-        IScheduler scheduler)
+        TimeProvider? timeProvider = null,
+        IScheduler? scheduler = null,
+        ILoggerFactory? logFactory = null)
     {
         Connection = connection;
         Seq = seq;
         Identity = identity;
-        Scheduler = scheduler;
+        Scheduler = scheduler ?? System.Reactive.Concurrency.Scheduler.Default;
         Heartbeat =
-            new HeartbeatServer(connection, seq, identity, config.Heartbeat, scheduler).DisposeItWith(Disposable);
-        StatusText = new StatusTextServer(connection, seq, identity, config.StatusText, scheduler).DisposeItWith(Disposable);
+            new HeartbeatServer(connection, seq, identity, config.Heartbeat, timeProvider, scheduler, logFactory).DisposeItWith(Disposable);
+        StatusText = new StatusTextServer(connection, seq, identity, config.StatusText, timeProvider, scheduler,logFactory).DisposeItWith(Disposable);
     }
     public IMavlinkV2Connection Connection { get; }
     public IPacketSequenceCalculator Seq { get; }

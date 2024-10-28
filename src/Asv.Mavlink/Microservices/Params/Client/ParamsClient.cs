@@ -24,16 +24,17 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
     private readonly ILogger _logger;
     private readonly Subject<ParamValuePayload> _onParamValue;
 
-    public ParamsClient(
-        IMavlinkV2Connection connection, 
-        MavlinkClientIdentity identity, 
+    public ParamsClient(IMavlinkV2Connection connection,
+        MavlinkClientIdentity identity,
         IPacketSequenceCalculator seq,
         ParameterClientConfig config,
+        TimeProvider? timeProvider = null,
         IScheduler? scheduler = null,
-        ILogger? logger = null) 
-        : base("PARAMS", connection, identity, seq,scheduler,logger)
+        ILoggerFactory? logFactory = null) 
+        : base("PARAMS", connection, identity, seq,timeProvider,scheduler,logFactory)
     {
-        _logger = logger ?? NullLogger.Instance;
+        logFactory??=NullLoggerFactory.Instance;
+        _logger = logFactory.CreateLogger<ParamsClient>();
         _config = config;
         _onParamValue = new Subject<ParamValuePayload>().DisposeItWith(Disposable);
         InternalFilter<ParamValuePacket>().Select(p => p.Payload).Subscribe(_onParamValue)

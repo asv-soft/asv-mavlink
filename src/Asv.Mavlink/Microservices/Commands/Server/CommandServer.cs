@@ -19,11 +19,16 @@ namespace Asv.Mavlink
         private readonly MavlinkIdentity _identity;
         private readonly ILogger _logger;
 
-        public CommandServer(IMavlinkV2Connection connection, IPacketSequenceCalculator seq,
-            MavlinkIdentity identity, IScheduler? rxScheduler,ILogger? logger = null)
-            : base("COMMAND", connection, identity, seq, rxScheduler,logger)
+        public CommandServer(
+            IMavlinkV2Connection connection, 
+            IPacketSequenceCalculator seq,
+            MavlinkIdentity identity,TimeProvider? timeProvider = null,
+            IScheduler? rxScheduler = null,
+            ILoggerFactory? logFactory = null)
+            : base("COMMAND", connection, identity, seq, timeProvider, rxScheduler,logFactory)
         {
-            _logger = logger ?? NullLogger.Instance;
+            logFactory??=NullLoggerFactory.Instance;
+            _logger = logFactory.CreateLogger<CommandServer>();
             _connection = connection;
             _seq = seq;
             _identity = identity;
