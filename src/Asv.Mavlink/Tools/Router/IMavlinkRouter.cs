@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using Asv.IO;
 using System;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -186,7 +187,7 @@ namespace Asv.Mavlink
         /// <summary>
         /// Event for new port added
         /// </summary>
-        IObservable<Guid> OnAddPort { get; }
+        Observable<Guid> OnAddPort { get; }
         /// <summary>
         /// Remove port
         /// </summary>
@@ -196,7 +197,7 @@ namespace Asv.Mavlink
         /// <summary>
         /// Event for port removed
         /// </summary>
-        IObservable<Guid> OnRemovePort { get; }
+        Observable<Guid> OnRemovePort { get; }
         /// <summary>
         /// Return all ports
         /// </summary>
@@ -229,6 +230,6 @@ namespace Asv.Mavlink
         /// <summary>
         /// Event for port config changed
         /// </summary>
-        IObservable<Guid> OnConfigChanged { get; }
+        Observable<Guid> OnConfigChanged { get; }
     }
 }

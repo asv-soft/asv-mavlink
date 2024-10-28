@@ -1,12 +1,8 @@
 #nullable enable
 using System;
 using System.Buffers;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.AsvAudio;
@@ -25,12 +21,12 @@ using Asv.Mavlink.V2.Minimal;
 using Asv.Mavlink.V2.Storm32;
 using Asv.Mavlink.V2.Ualberta;
 using Asv.Mavlink.V2.Uavionix;
+using R3;
 
 namespace Asv.Mavlink
 {
-    public class MavlinkV2Connection : DisposableOnceWithCancel, IMavlinkV2Connection
+    public sealed class MavlinkV2Connection : IMavlinkV2Connection
     {
-
         #region Static
 
         public static IMavlinkV2Connection Create(IDataStream dataStream, bool disposeDataStream = false)
@@ -76,7 +72,8 @@ namespace Asv.Mavlink
         private long _rxPackets;
         private long _skipPackets;
         private readonly Subject<IPacketV2<IPayload>> _sendPacketSubject;
-        private readonly Subject<IPacketV2<IPayload>> _recvPacketsSubject;
+        private readonly IDisposable _sub1;
+        private readonly IDisposable _sub2;
 
         public MavlinkV2Connection(string connectionString, Action<IPacketDecoder<IPacketV2<IPayload>>> register):this(ConnectionStringConvert(connectionString),register,true)
         {
@@ -92,37 +89,35 @@ namespace Asv.Mavlink
         public MavlinkV2Connection(IDataStream dataStream, Action<IPacketDecoder<IPacketV2<IPayload>>> register, bool disposeDataStream = false)
         {
             DataStream = dataStream;
-            if (disposeDataStream && DataStream is IDisposable disposableStrm)
-            {
-                disposableStrm.DisposeItWith(Disposable);
-            }
-            _decoder = new PacketV2Decoder().DisposeItWith(Disposable);
+            _decoder = new PacketV2Decoder();
             register(_decoder);
-            _decoder.DisposeItWith(Disposable);
-            DataStream.Subscribe(b=> _decoder.OnData(b)).DisposeItWith(Disposable); 
-            _sendPacketSubject = new Subject<IPacketV2<IPayload>>().DisposeItWith(Disposable);
-            _recvPacketsSubject = new Subject<IPacketV2<IPayload>>().DisposeItWith(Disposable);
-            _decoder.Where(TryDecodeV2ExtensionPackets).Subscribe(_recvPacketsSubject).DisposeItWith(Disposable); // we need only one subscription to decoder
-            _recvPacketsSubject.Subscribe(_ => Interlocked.Increment(ref _rxPackets)).DisposeItWith(Disposable);
-            _sendPacketSubject.Subscribe(_ => Interlocked.Increment(ref _txPackets)).DisposeItWith(Disposable);
-            _decoder.OutError.Subscribe(_ => Interlocked.Increment(ref _skipPackets)).DisposeItWith(Disposable);
+            _sub1 = DataStream.Subscribe(b=> _decoder.OnData(b)); 
+            _sendPacketSubject = new Subject<IPacketV2<IPayload>>();
+            RxPipe = _decoder.OnPacket
+                .Do(x => Interlocked.Increment(ref _rxPackets))
+                .Where(TryDecodeV2ExtensionPackets).Publish().RefCount();
+            // ReSharper disable once HeapView.CanAvoidClosure
+            _sub2 = _decoder.OutError.Subscribe(_ => Interlocked.Increment(ref _skipPackets));
         }
 
         public bool WrapToV2ExtensionEnabled { get; set; } = false;
         public long RxPackets => Interlocked.Read(ref _rxPackets);
         public long TxPackets => Interlocked.Read(ref _txPackets);
         public long SkipPackets => Interlocked.Read(ref _skipPackets);
-        public IObservable<DeserializePackageException> DeserializePackageErrors => _decoder.OutError;
-        public IObservable<IPacketV2<IPayload>> OnSendPacket => _sendPacketSubject;
+        public Observable<DeserializePackageException> DeserializePackageErrors => _decoder.OutError;
+        public Observable<IPacketV2<IPayload>> TxPipe => _sendPacketSubject;
+        public Observable<IPacketV2<IPayload>> RxPipe { get; }
+
         public IDataStream DataStream { get; }
-        public IPacketV2<IPayload> CreatePacketByMessageId(int messageId)
+        public IPacketV2<IPayload>? CreatePacketByMessageId(int messageId)
         {
             return _decoder.Create(messageId);
         }
 
         public async Task Send(IPacketV2<IPayload> packet, CancellationToken cancel)
         {
-            if (IsDisposed) return;
+            if (_sendPacketSubject.IsDisposed) return;
+            Interlocked.Increment(ref _txPackets);
             _sendPacketSubject.OnNext(packet);
             if (packet.WrapToV2Extension && WrapToV2ExtensionEnabled)
             {
@@ -164,7 +159,6 @@ namespace Asv.Mavlink
             }
         }
 
-        public IDisposable Subscribe(IObserver<IPacketV2<IPayload>> observer) => _recvPacketsSubject.Subscribe(observer);
 
         private bool TryDecodeV2ExtensionPackets(IPacketV2<IPayload> arg)
         {
@@ -174,6 +168,36 @@ namespace Asv.Mavlink
             return false;
 
         }
+
+        #region Dispose
+
+        public void Dispose()
+        {
+            _decoder.Dispose();
+            _sendPacketSubject.Dispose();
+            _sub1.Dispose();
+            _sub2.Dispose();
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await _decoder.DisposeAsync().ConfigureAwait(false);
+            await CastAndDispose(_sendPacketSubject).ConfigureAwait(false);
+            await CastAndDispose(_sub1).ConfigureAwait(false);
+            await CastAndDispose(_sub2).ConfigureAwait(false);
+
+            return;
+
+            static async ValueTask CastAndDispose(IDisposable resource)
+            {
+                if (resource is IAsyncDisposable resourceAsyncDisposable)
+                    await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    resource.Dispose();
+            }
+        }
+
+        #endregion
     }
 }
 

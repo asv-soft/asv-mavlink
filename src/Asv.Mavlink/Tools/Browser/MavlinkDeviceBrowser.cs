@@ -1,11 +1,8 @@
 ﻿#nullable enable
 using System;
 using System.Linq;
-using System.Reactive;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Threading;
+using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
 using DynamicData;
@@ -13,15 +10,16 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 using ZLogger;
+using R3;
 
 namespace Asv.Mavlink
 {
-    public class MavlinkDevice : DisposableOnceWithCancel, IMavlinkDevice
+    public sealed class MavlinkDevice : IMavlinkDevice, IDisposable, IAsyncDisposable
     {
         private long _lastHit;
-        private readonly RxValue<MavModeFlag> _baseMode;
-        private readonly RxValue<uint> _customMode;
-        private readonly RxValue<MavState> _status;
+        private readonly ReactiveProperty<MavModeFlag> _baseMode;
+        private readonly ReactiveProperty<uint> _customMode;
+        private readonly ReactiveProperty<MavState> _status;
         private readonly Subject<Unit> _ping = new();
 
         public MavlinkDevice(HeartbeatPacket packet)
@@ -31,9 +29,9 @@ namespace Asv.Mavlink
             MavlinkVersion = packet.Payload.MavlinkVersion;
             Autopilot = packet.Payload.Autopilot;
             Type = packet.Payload.Type;
-            _baseMode = new RxValue<MavModeFlag>(packet.Payload.BaseMode).DisposeItWith(Disposable);
-            _customMode = new RxValue<uint>(packet.Payload.CustomMode).DisposeItWith(Disposable);
-            _status = new RxValue<MavState>(packet.Payload.SystemStatus).DisposeItWith(Disposable);
+            _baseMode = new ReactiveProperty<MavModeFlag>(packet.Payload.BaseMode);
+            _customMode = new ReactiveProperty<uint>(packet.Payload.CustomMode);
+            _status = new ReactiveProperty<MavState>(packet.Payload.SystemStatus);
             Update(packet.Payload);
         }
 
@@ -75,51 +73,68 @@ namespace Asv.Mavlink
         public MavType Type { get; }
         public MavAutopilot Autopilot { get; }
         public byte MavlinkVersion { get; }
-        public IRxValue<MavModeFlag> BaseMode => _baseMode;
-        public IRxValue<uint> CustomMode => _customMode;
-        public IRxValue<MavState> SystemStatus => _status;
+        public ReactiveProperty<MavModeFlag> BaseMode => _baseMode;
+        public ReactiveProperty<uint> CustomMode => _customMode;
+        public ReactiveProperty<MavState> SystemStatus => _status;
 
-        public IObservable<Unit> Ping => _ping;
+        public Observable<Unit> Ping => _ping;
 
         public override string ToString()
         {
             return $"{Type:G}.{Autopilot:G}[{SystemId}:{ComponentId}]";
         }
+
+        public void Dispose()
+        {
+            _baseMode.Dispose();
+            _customMode.Dispose();
+            _status.Dispose();
+            _ping.Dispose();
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await CastAndDispose(_baseMode).ConfigureAwait(false);
+            await CastAndDispose(_customMode).ConfigureAwait(false);
+            await CastAndDispose(_status).ConfigureAwait(false);
+            await CastAndDispose(_ping).ConfigureAwait(false);
+
+            return;
+
+            static async ValueTask CastAndDispose(IDisposable resource)
+            {
+                if (resource is IAsyncDisposable resourceAsyncDisposable)
+                    await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    resource.Dispose();
+            }
+        }
     }
 
-    public class MavlinkDeviceBrowser : DisposableOnceWithCancel, IMavlinkDeviceBrowser
+    public sealed class MavlinkDeviceBrowser : IMavlinkDeviceBrowser, IDisposable,IAsyncDisposable
     {
         private readonly ILogger _logger;
-        private readonly RxValue<TimeSpan> _deviceTimeout;
+        private readonly ReactiveProperty<TimeSpan> _deviceTimeout;
         private readonly SourceCache<MavlinkDevice,MavlinkIdentity> _deviceCache;
+        private readonly ITimer _timer;
+        private readonly IDisposable _sub1;
 
-        public MavlinkDeviceBrowser(IMavlinkV2Connection connection, TimeSpan deviceTimeout, IScheduler? scheduler = null, ILoggerFactory? logFactory = null)
+        public MavlinkDeviceBrowser(IMavlinkV2Connection connection, TimeSpan deviceTimeout, TimeProvider? timeProvider = null, ILoggerFactory? logFactory = null)
         {
             logFactory??=NullLoggerFactory.Instance;
             _logger = logFactory.CreateLogger<MavlinkDeviceBrowser>();
-            connection
+            _sub1 = connection
                 .Filter<HeartbeatPacket>()
-                .Subscribe(UpdateDevice)
-                .DisposeItWith(Disposable);
-            Observable
-                .Timer(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3))
-                .Subscribe(RemoveOldDevice)
-                .DisposeItWith(Disposable);
-            _deviceCache = new SourceCache<MavlinkDevice, MavlinkIdentity>(x => x.FullId).DisposeItWith(Disposable);
-            _deviceTimeout = new RxValue<TimeSpan>(deviceTimeout).DisposeItWith(Disposable);
-            
-            if (scheduler != null)
-            {
-                Devices = _deviceCache.Connect().ObserveOn(scheduler).Transform(d => (IMavlinkDevice)d).RefCount();    
-            }
-            else
-            {
-                Devices = _deviceCache.Connect().Transform(d => (IMavlinkDevice)d).RefCount();
-            }
-            
+                .Subscribe(UpdateDevice);
+            timeProvider ??= TimeProvider.System;
+            _timer = timeProvider.CreateTimer(RemoveOldDevice,null,TimeSpan.FromSeconds(3),TimeSpan.FromSeconds(3));
+           
+            _deviceCache = new SourceCache<MavlinkDevice, MavlinkIdentity>(x => x.FullId);
+            _deviceTimeout = new ReactiveProperty<TimeSpan>(deviceTimeout);
+            Devices = _deviceCache.Connect().DisposeMany().Transform(d => (IMavlinkDevice)d).RefCount();
         }
 
-        private void RemoveOldDevice(long l)
+        private void RemoveOldDevice(object? state)
         {
             _deviceCache.Edit(update =>
             {
@@ -151,8 +166,35 @@ namespace Asv.Mavlink
             });
         }
         public IObservable<IChangeSet<IMavlinkDevice, MavlinkIdentity>> Devices { get; }
-        public IRxEditableValue<TimeSpan> DeviceTimeout => _deviceTimeout;
+        public ReactiveProperty<TimeSpan> DeviceTimeout => _deviceTimeout;
 
-       
+
+        public void Dispose()
+        {
+            _deviceCache.Clear();
+            _deviceTimeout.Dispose();
+            _deviceCache.Dispose();
+            _timer.Dispose();
+            _sub1.Dispose();
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            _deviceCache.Clear();
+            await CastAndDispose(_deviceTimeout).ConfigureAwait(false);
+            await CastAndDispose(_deviceCache).ConfigureAwait(false);
+            await _timer.DisposeAsync().ConfigureAwait(false);
+            await CastAndDispose(_sub1).ConfigureAwait(false);
+
+            return;
+
+            static async ValueTask CastAndDispose(IDisposable resource)
+            {
+                if (resource is IAsyncDisposable resourceAsyncDisposable)
+                    await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    resource.Dispose();
+            }
+        }
     }
 }

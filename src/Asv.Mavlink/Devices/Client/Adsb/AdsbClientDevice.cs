@@ -7,7 +7,7 @@ using Asv.Cfg;
 
 namespace Asv.Mavlink;
 
-public class AdsbClientDeviceConfig : ClientDeviceBaseConfig
+public class AdsbClientDeviceConfig : ClientDeviceConfig
 {
     public AdsbVehicleClientConfig Adsb { get; set; } = new();
     public ParamsClientExConfig Params { get; set; } = new();

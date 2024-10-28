@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
-public class RfsaClientDeviceConfig:ClientDeviceBaseConfig
+public class RfsaClientDeviceConfig:ClientDeviceConfig
 {
     public ParamsClientExConfig Params { get; set; } = new();
     public AsvChartClientConfig Charts { get; set; } = new();

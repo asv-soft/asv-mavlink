@@ -12,7 +12,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class RsgaClientDeviceConfig:ClientDeviceBaseConfig
+public class RsgaClientDeviceConfig:ClientDeviceConfig
 {
     public ParamsClientExConfig Params { get; set; } = new();
     public AsvChartClientConfig Charts { get; set; } = new();

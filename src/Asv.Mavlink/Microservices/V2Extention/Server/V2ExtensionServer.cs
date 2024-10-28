@@ -1,33 +1,30 @@
 using System;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using Microsoft.Extensions.Logging;
 using R3;
 
 namespace Asv.Mavlink
 {
     public class V2ExtensionServer : MavlinkMicroserviceServer, IV2ExtensionServer
     {
-        private readonly RxValue<V2ExtensionPacket> _onData;
-        private readonly IDisposable _disposeIt;
+        
+
+        private readonly ReactiveProperty<V2ExtensionPacket> _onData;
+        private readonly IDisposable _sub1;
 
         public V2ExtensionServer(MavlinkIdentity identity,ICoreServices core )
         :base("V2EXT",identity,core)
         {
-            _onData = new RxValue<V2ExtensionPacket>();
-            var d1 = core.Connection.Filter<V2ExtensionPacket>()
-                .Where(p =>
-                    (p.Payload.TargetSystem == 0 || p.Payload.TargetSystem == identity.SystemId) &&
-                    (p.Payload.TargetComponent == 0 || p.Payload.TargetComponent == identity.ComponentId))
-                .Subscribe(_onData);
-            _disposeIt = Disposable.Combine(_onData, d1);
+            _onData = new ReactiveProperty<V2ExtensionPacket>();
+            _sub1 = core.Connection.Filter<V2ExtensionPacket>()
+                .Where(identity,(p,i) =>
+                    (p.Payload.TargetSystem == 0 || p.Payload.TargetSystem == i.SystemId) &&
+                    (p.Payload.TargetComponent == 0 || p.Payload.TargetComponent == i.ComponentId))
+                .Subscribe(_onData.AsObserver());
         }
 
-        public IRxValue<V2ExtensionPacket> OnData => _onData;
+        public ReadOnlyReactiveProperty<V2ExtensionPacket> OnData => _onData;
 
         public Task SendData(byte targetSystemId,byte targetComponentId,byte targetNetworkId,ushort messageType, byte[] data, CancellationToken cancel)
         {
@@ -41,11 +38,38 @@ namespace Asv.Mavlink
             }, cancel);
         }
 
-        public override void Dispose()
+        #region Dispose
+
+        protected override void Dispose(bool disposing)
         {
-            _disposeIt.Dispose();
-            base.Dispose();
+            if (disposing)
+            {
+                _onData.Dispose();
+                _sub1.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
+
+        protected override async ValueTask DisposeAsyncCore()
+        {
+            await CastAndDispose(_onData).ConfigureAwait(false);
+            await CastAndDispose(_sub1).ConfigureAwait(false);
+
+            await base.DisposeAsyncCore().ConfigureAwait(false);
+
+            return;
+
+            static async ValueTask CastAndDispose(IDisposable resource)
+            {
+                if (resource is IAsyncDisposable resourceAsyncDisposable)
+                    await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    resource.Dispose();
+            }
+        }
+
+        #endregion
     }
 
     

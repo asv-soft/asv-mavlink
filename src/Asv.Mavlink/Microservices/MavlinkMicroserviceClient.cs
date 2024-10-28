@@ -1,12 +1,9 @@
 #nullable enable
 using System;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink
@@ -21,7 +18,7 @@ namespace Asv.Mavlink
     
     public delegate bool FilterDelegate<TResult>(IPacketV2<IPayload> inputPacket, out TResult result);
     
-    public abstract class MavlinkMicroserviceClient:IMavlinkMicroserviceClient,IDisposable
+    public abstract class MavlinkMicroserviceClient:IMavlinkMicroserviceClient,IDisposable, IAsyncDisposable
     {
         private readonly string _ifcLogName;
         private readonly ILogger _loggerBase;
@@ -36,7 +33,7 @@ namespace Asv.Mavlink
             Core = core ?? throw new ArgumentNullException(nameof(core));
             _loggerBase = Core.Log.CreateLogger<MavlinkMicroserviceClient>();
             _ifcLogName = ifcLogName;
-            InternalFilteredVehiclePackets = core.Connection.Where(FilterVehicle).Publish().RefCount();
+            InternalFilteredVehiclePackets = core.Connection.RxPipe.Where(FilterVehicle).Publish().RefCount();
         }
 
         public MavlinkClientIdentity Identity { get; }
@@ -52,28 +49,26 @@ namespace Asv.Mavlink
         protected string LogSend => _logSend ??= $"{Identity.Self}=>{Identity.Target}[{_ifcLogName}]:";
         protected string LogRecv => _logRecv ??= $"{Identity.Self}=>{Identity.Target}[{_ifcLogName}]:";
 
-        protected IObservable<TPacket> InternalFilter<TPacket>()
+        protected Observable<TPacket> InternalFilter<TPacket>()
             where TPacket : IPacketV2<IPayload>, new()
         {
             var id = new TPacket().MessageId;
-            return InternalFilteredVehiclePackets.Where(v=>v.MessageId == id).Cast<TPacket>();
+            return InternalFilteredVehiclePackets.Where(id, (v,i)=>v.MessageId == i).Cast<IPacketV2<IPayload>,TPacket>();
         }
 
-        protected IObservable<TPacket> InternalFilterFirstAsync<TPacket>(Func<TPacket, bool> filter)
+        protected Observable<TPacket> InternalFilterFirstAsync<TPacket>(Func<TPacket, bool> filter)
             where TPacket : IPacketV2<IPayload>, new()
         {
-            var id = new TPacket().MessageId;
-            return InternalFilteredVehiclePackets.Where(v => v.MessageId == id).Cast<TPacket>().FirstAsync(filter);
+            return InternalFilter(filter).Take(1);
         }
 
-        protected IObservable<TPacket> InternalFilter<TPacket>(Func<TPacket, bool> filter)
+        protected Observable<TPacket> InternalFilter<TPacket>(Func<TPacket, bool> filter)
             where TPacket : IPacketV2<IPayload>, new()
         {
-            var id = new TPacket().MessageId;
-            return InternalFilteredVehiclePackets.Where(v => v.MessageId == id).Cast<TPacket>().Where(filter);
+            return InternalFilter<TPacket>().Where(filter);
         }
 
-        protected IObservable<IPacketV2<IPayload>> InternalFilteredVehiclePackets { get; }
+        protected Observable<IPacketV2<IPayload>> InternalFilteredVehiclePackets { get; }
         private bool FilterVehicle(IPacketV2<IPayload> packetV2)
         {
             if (Identity.Target.SystemId != packetV2.SystemId) return false;
@@ -212,10 +207,32 @@ namespace Asv.Mavlink
             throw new TimeoutException($"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
         }
 
-        public virtual void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
-            _disposeCancel.Cancel();
-            _disposeCancel.Dispose();
+            if (disposing)
+            {
+                _disposeCancel.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual async ValueTask DisposeAsyncCore()
+        {
+            if (_disposeCancel is IAsyncDisposable disposeCancelAsyncDisposable)
+                await disposeCancelAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                _disposeCancel.Dispose();
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsyncCore().ConfigureAwait(false);
+            GC.SuppressFinalize(this);
         }
     }
 }

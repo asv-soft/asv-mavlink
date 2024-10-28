@@ -1,40 +1,41 @@
 using System;
 using System.Buffers;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.IO;
+using R3;
 
 namespace Asv.Mavlink;
 
-public class VirtualMavlinkConnection:DisposableOnceWithCancel
+public sealed class VirtualMavlinkConnection:IDisposable, IAsyncDisposable
 {
-    public VirtualMavlinkConnection(Func<IPacketV2<IPayload>, bool>? clientToServerFilter = null,Func<IPacketV2<IPayload>, bool>? serverToClientFilter = null,Action<IPacketDecoder<IPacketV2<IPayload>>> registerDialects = null)
+    private readonly IDisposable _disposeItAll;
+
+    public VirtualMavlinkConnection(Func<IPacketV2<IPayload>, bool>? clientToServerFilter = null,Func<IPacketV2<IPayload>, bool>? serverToClientFilter = null,Action<IPacketDecoder<IPacketV2<IPayload>>>? registerDialects = null)
     {
         ClientToServerFilter = clientToServerFilter ?? (_ => true);
         ServerToClientFilter = serverToClientFilter ?? (_ => true);
+        var builder = Disposable.CreateBuilder();
         var dialects = registerDialects ?? MavlinkV2Connection.RegisterDefaultDialects;
         
-        var serverStream = new VirtualDataStream("server").DisposeItWith(Disposable);
-        Server = MavlinkV2Connection.Create(serverStream,dialects,false).DisposeItWith(Disposable);
-        var clientStream = new VirtualDataStream("client").DisposeItWith(Disposable);
-        Client = MavlinkV2Connection.Create(clientStream,dialects,false).DisposeItWith(Disposable);
+        var serverStream = new VirtualDataStream("server").AddTo(ref builder);
+        Server = MavlinkV2Connection.Create(serverStream,dialects,false).AddTo(ref builder);
+        var clientStream = new VirtualDataStream("client").AddTo(ref builder);
+        Client = MavlinkV2Connection.Create(clientStream,dialects,false).AddTo(ref builder);
         
-        var serverToClient = new PacketV2Decoder().DisposeItWith(Disposable);
+        var serverToClient = new PacketV2Decoder().AddTo(ref builder);
         dialects(serverToClient);
-        serverStream.TxPipe.Subscribe(serverToClient.OnData).DisposeItWith(Disposable);
-        serverToClient.Where(ClientToServerFilter).Select(Serialize).Subscribe(clientStream.RxPipe)
-            .DisposeItWith(Disposable);
+        serverStream.TxPipe.Subscribe(serverToClient.OnData).AddTo(ref builder);
+        serverToClient.OnPacket.Where(ClientToServerFilter).Select(Serialize).Subscribe(clientStream.RxPipe)
+            .AddTo(ref builder);
         
-        var clientToServer = new PacketV2Decoder().DisposeItWith(Disposable);
+        var clientToServer = new PacketV2Decoder().AddTo(ref builder);
         dialects(clientToServer);
-        clientStream.TxPipe.Subscribe(clientToServer.OnData).DisposeItWith(Disposable);
-        clientToServer.Where(ServerToClientFilter).Select(Serialize).Subscribe(serverStream.RxPipe)
-            .DisposeItWith(Disposable);
+        clientStream.TxPipe.Subscribe(clientToServer.OnData).AddTo(ref builder);
+        clientToServer.OnPacket.Where(ServerToClientFilter).Select(Serialize).Subscribe(serverStream.RxPipe)
+            .AddTo(ref builder);
         
+        _disposeItAll = builder.Build();
         
     }
 
@@ -61,27 +62,41 @@ public class VirtualMavlinkConnection:DisposableOnceWithCancel
     public IMavlinkV2Connection Server { get; }
 
     public IMavlinkV2Connection Client { get; }
+
+    public void Dispose()
+    {
+        _disposeItAll.Dispose();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_disposeItAll is IAsyncDisposable disposeItAllAsyncDisposable)
+            await disposeItAllAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+        else
+            _disposeItAll.Dispose();
+    }
 }
 
-public class VirtualDataStream : DisposableOnceWithCancel, IDataStream
+public sealed class VirtualDataStream : IDataStream, IDisposable,IAsyncDisposable
 {
-    private readonly string _name;
     private long _rxBytes;
     private long _txBytes;
     private readonly Subject<byte[]> _txPipe;
     private readonly Subject<byte[]> _rxPipe;
+    private readonly IDisposable _sub1;
 
     public VirtualDataStream(string name)
     {
-        _name = name;
-        _txPipe = new Subject<byte[]>().DisposeItWith(Disposable);
-        _rxPipe = new Subject<byte[]>().DisposeItWith(Disposable);
-        _rxPipe.Subscribe(b => Interlocked.Add(ref _rxBytes, b.Length));
+        Name = name;
+        _txPipe = new Subject<byte[]>();
+        _rxPipe = new Subject<byte[]>();
+        _sub1 = _rxPipe
+            .Subscribe(this,(b, ctx) => Interlocked.Add(ref ctx._rxBytes, b.Length));
     }
 
     public IDisposable Subscribe(IObserver<byte[]> observer)
     {
-        return _rxPipe.Subscribe(observer);
+        return _rxPipe.Subscribe(observer.ToObserver());
     }
 
     public Task<bool> Send(byte[] data, int count, CancellationToken cancel)
@@ -100,12 +115,37 @@ public class VirtualDataStream : DisposableOnceWithCancel, IDataStream
         return Task.FromResult(true);
     }
 
-    public IObserver<byte[]> RxPipe => _rxPipe;
-    public IObservable<byte[]> TxPipe => _txPipe;
+    public Observer<byte[]> RxPipe => _rxPipe.AsObserver();
+    public Observable<byte[]> TxPipe => _txPipe;
 
-    public string Name => _name;
+    public string Name { get; }
 
     public long RxBytes => _rxBytes;
 
     public long TxBytes => _txBytes;
+
+    #region Dispose
+    public void Dispose()
+    {
+        _txPipe.Dispose();
+        _rxPipe.Dispose();
+        _sub1.Dispose();
+    }
+    public async ValueTask DisposeAsync()
+    {
+        await CastAndDispose(_txPipe).ConfigureAwait(false);
+        await CastAndDispose(_rxPipe).ConfigureAwait(false);
+        await CastAndDispose(_sub1).ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+    #endregion
 }

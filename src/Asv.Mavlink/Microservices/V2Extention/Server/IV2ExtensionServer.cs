@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -20,7 +21,7 @@ namespace Asv.Mavlink
         /// <returns>
         /// The IRxValue&lt;V2ExtensionPacket&gt; object.
         /// </returns>
-        IRxValue<V2ExtensionPacket> OnData { get; }
+        ReadOnlyReactiveProperty<V2ExtensionPacket> OnData { get; }
 
         /// <summary>
         /// Sends data to a target system.

@@ -8,6 +8,7 @@ using Asv.Mavlink.V2.UnitTestMessage;
 using DeepEqual.Syntax;
 using Xunit;
 using Xunit.Abstractions;
+using R3;
 
 
 namespace Asv.Mavlink.Test

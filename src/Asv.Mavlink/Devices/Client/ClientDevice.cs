@@ -12,7 +12,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class ClientDeviceBaseConfig
+public class ClientDeviceConfig
 {
     public int RequestInitDataDelayAfterFailMs { get; set; } = 5000;
     public HeartbeatClientConfig Heartbeat { get; set; } = new();
@@ -20,7 +20,7 @@ public class ClientDeviceBaseConfig
 
 public class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
 {
-    private readonly ClientDeviceBaseConfig _deviceConfig;
+    private readonly ClientDeviceConfig _deviceConfig;
     private readonly ICoreServices _core;
     private readonly ReactiveProperty<InitState> _initState;
     private readonly ReactiveProperty<string> _name;
@@ -34,7 +34,7 @@ public class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
     private readonly CancellationTokenSource _disposableCancel = new();
     private ImmutableArray<IMavlinkMicroserviceClient> _microservices = ImmutableArray<IMavlinkMicroserviceClient>.Empty;
 
-    public ClientDevice(MavlinkClientIdentity identity, ClientDeviceBaseConfig deviceConfig, ICoreServices core, DeviceClass deviceClass)
+    public ClientDevice(MavlinkClientIdentity identity, ClientDeviceConfig deviceConfig, ICoreServices core, DeviceClass deviceClass)
     {
         ArgumentNullException.ThrowIfNull(core);
         Identity = identity ?? throw new ArgumentNullException(nameof(identity));

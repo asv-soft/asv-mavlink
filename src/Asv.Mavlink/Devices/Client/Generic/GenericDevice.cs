@@ -9,7 +9,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class GenericDeviceConfig:ClientDeviceBaseConfig
+public class GenericDeviceConfig:ClientDeviceConfig
 {
     public CommandProtocolConfig Commands { get; set; } = new();
     public MavlinkFtpClientConfig Ftp { get; set; } = new();

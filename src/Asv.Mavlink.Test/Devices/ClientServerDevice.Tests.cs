@@ -2,6 +2,7 @@ using System;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using Asv.Common;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Time.Testing;
 using Xunit;
@@ -9,72 +10,72 @@ using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-public class ClientServerDeviceTests
+[TestSubject(typeof(ClientDevice))]
+[TestSubject(typeof(ServerDevice))]
+public class ClientServerDeviceTests(ITestOutputHelper log)
+    : ClientServerTestBase<ClientDevice, ServerDevice>(log)
 {
-    private readonly ClientDevice _client;
-    private readonly ServerDevice _server;
-    private readonly FakeTimeProvider _clientTime;
-    private readonly FakeTimeProvider _timeServer;
-
-    public ClientServerDeviceTests(ITestOutputHelper output)
+    private readonly ServerDeviceConfig _serverConfig = new()
     {
-        var link = new VirtualMavlinkConnection();
-        
-        _timeServer = new FakeTimeProvider();
-        var meter = new DefaultMeterFactory();
-        
-        var clientSeq = new PacketSequenceCalculator();
-        _clientTime = new FakeTimeProvider();
-        var clientLog = new TestLoggerFactory(output,_clientTime, "CLIENT");
-        var clientCore = new CoreServices(link.Client,clientSeq, clientLog, _clientTime, meter);
-        
-        var serverSeq = new PacketSequenceCalculator();
-        var serverLog = new TestLoggerFactory(output,_timeServer, "SERVER");
-        var serverCore = new CoreServices(link.Server,serverSeq, serverLog, _timeServer, meter);
-        var serverId = new MavlinkClientIdentity(1, 2, 3, 4);
-        
-        _client = new ClientDevice(serverId, new ClientDeviceBaseConfig
+        Heartbeat =
         {
-            Heartbeat =
-            {
-                HeartbeatTimeoutMs = 1000,
-                LinkQualityWarningSkipCount = 3,
-                RateMovingAverageFilter = 3,
-            }
-        },clientCore, DeviceClass.Copter);
-        _server = new ServerDevice(serverId.Target, new ServerDeviceConfig
+            HeartbeatRateMs = 1000,
+        },
+        StatusText =
         {
-            Heartbeat =
-            {
-                HeartbeatRateMs = 1000,
-            }
-        },serverCore);
-        _server.Start();
+            MaxQueueSize = 100,
+            MaxSendRateHz = 10
+        }
+
+    };
+
+    private readonly ClientDeviceConfig _clientConfig = new()
+    {
+        Heartbeat =
+        {
+            HeartbeatTimeoutMs = 2000,
+            LinkQualityWarningSkipCount = 3,
+            RateMovingAverageFilter = 10,
+            PrintStatisticsToLogDelayMs = 10_000,
+            PrintLinkStateToLog = true
+        }
+    };
+
+    protected override ServerDevice CreateServer(MavlinkIdentity identity, ICoreServices core)
+    {
+        return new ServerDevice(identity,_serverConfig,core);
+    }
+
+    protected override ClientDevice CreateClient(MavlinkClientIdentity identity, ICoreServices core)
+    {
+        return new ClientDevice(identity,_clientConfig,core, DeviceClass.Copter);
     }
     
     [Fact]
-    public async Task Heartbeat_ClientConnectToServer_Success()
+    public async Task HeartbeatClientConnectToServer_Success()
     {
-        Assert.Equal(LinkState.Disconnected,_client.Heartbeat.Link.Value);
-        _timeServer.Advance(TimeSpan.FromSeconds(1.1));
-        _clientTime.Advance(TimeSpan.FromSeconds(1.1));
-        await _client.WaitUntilConnect();
-        await _server.DisposeAsync();
-        Assert.Equal(LinkState.Connected,_client.Heartbeat.Link.Value);
-        _timeServer.Advance(TimeSpan.FromSeconds(1.1));
-        _clientTime.Advance(TimeSpan.FromSeconds(1.1));
+        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.Value);
+        ServerTime.Advance(TimeSpan.FromSeconds(1.1));
+        ClientTime.Advance(TimeSpan.FromSeconds(1.1));
+        await Client.WaitUntilConnect();
+        await Server.DisposeAsync();
+        Assert.Equal(LinkState.Connected,Client.Heartbeat.Link.Value);
+        ServerTime.Advance(TimeSpan.FromSeconds(1.1));
+        ClientTime.Advance(TimeSpan.FromSeconds(1.1));
         
-        Assert.Equal(LinkState.Downgrade,_client.Heartbeat.Link.Value);
-        _timeServer.Advance(TimeSpan.FromSeconds(1.1));
-        _clientTime.Advance(TimeSpan.FromSeconds(1.1));
+        Assert.Equal(LinkState.Downgrade,Client.Heartbeat.Link.Value);
+        ServerTime.Advance(TimeSpan.FromSeconds(1.1));
+        ClientTime.Advance(TimeSpan.FromSeconds(1.1));
         
-        Assert.Equal(LinkState.Downgrade,_client.Heartbeat.Link.Value);
-        _timeServer.Advance(TimeSpan.FromSeconds(1.1));
-        _clientTime.Advance(TimeSpan.FromSeconds(1.1));
-        Assert.Equal(LinkState.Disconnected,_client.Heartbeat.Link.Value);
-        _timeServer.Advance(TimeSpan.FromSeconds(1.1));
-        _clientTime.Advance(TimeSpan.FromSeconds(1.1));
+        Assert.Equal(LinkState.Downgrade,Client.Heartbeat.Link.Value);
+        ServerTime.Advance(TimeSpan.FromSeconds(1.1));
+        ClientTime.Advance(TimeSpan.FromSeconds(1.1));
+        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.Value);
+        ServerTime.Advance(TimeSpan.FromSeconds(1.1));
+        ClientTime.Advance(TimeSpan.FromSeconds(1.1));
         
-        Assert.Equal(LinkState.Disconnected,_client.Heartbeat.Link.Value);
+        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.Value);
     }
+
+    
 }

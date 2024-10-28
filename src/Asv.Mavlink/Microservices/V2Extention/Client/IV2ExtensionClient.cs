@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -26,7 +27,7 @@ namespace Asv.Mavlink
         /// This property represents a reactive value that provides a stream of V2ExtensionPacket objects.
         /// The property can be subscribed to in order to receive updates whenever new data is available.
         /// </remarks>
-        IRxValue<V2ExtensionPacket> OnData { get; }
+        ReadOnlyReactiveProperty<V2ExtensionPacket> OnData { get; }
 
         /// <summary>
         /// Sends data to the target network ID using the specified message type.

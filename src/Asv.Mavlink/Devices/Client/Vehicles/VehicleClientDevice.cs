@@ -10,7 +10,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class VehicleClientDeviceConfig: ClientDeviceBaseConfig
+public class VehicleClientDeviceConfig: ClientDeviceConfig
 {
     public ParamsClientExConfig Params { get; set; } = new();
     public CommandProtocolConfig Command { get; set; } = new();

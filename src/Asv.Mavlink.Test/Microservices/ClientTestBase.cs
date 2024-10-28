@@ -11,21 +11,17 @@ public abstract class ClientTestBase<TClient>
     {
         Log = log;
         Link = link ?? new VirtualMavlinkConnection();
-        ClientTime = new FakeTimeProvider();
-        ClientSeq = new PacketSequenceCalculator();
-        ClientCore = new CoreServices(Link.Client, ClientSeq, new TestLoggerFactory(log, ClientTime, "CLIENT"), ClientTime, new DefaultMeterFactory());
+        Time = new FakeTimeProvider();
+        Seq = new PacketSequenceCalculator();
+        Identity = new MavlinkClientIdentity(1, 2, 3, 4);
+        Core = new CoreServices(Link.Client, Seq, new TestLoggerFactory(log, Time, "CLIENT"), Time, new DefaultMeterFactory());
     }
-
     protected abstract TClient CreateClient(MavlinkClientIdentity identity, CoreServices core);
-    public ITestOutputHelper Log { get; }
-
-    protected TClient Client => _client ??= CreateClient(new MavlinkClientIdentity(1,2,3,4), ClientCore);
-
-    protected CoreServices ClientCore { get; }
-
-    protected PacketSequenceCalculator ClientSeq { get; }
-
-    protected FakeTimeProvider ClientTime { get; }
-
+    protected MavlinkClientIdentity Identity { get; }
+    protected ITestOutputHelper Log { get; }
+    protected TClient Client => _client ??= CreateClient(Identity, Core);
+    protected CoreServices Core { get; }
+    protected PacketSequenceCalculator Seq { get; }
+    protected FakeTimeProvider Time { get; }
     protected VirtualMavlinkConnection Link { get; }
 }

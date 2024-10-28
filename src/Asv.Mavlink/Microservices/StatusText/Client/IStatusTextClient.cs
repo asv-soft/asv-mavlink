@@ -14,7 +14,7 @@ public interface IStatusTextClient: IMavlinkMicroserviceClient
     /// <value>
     /// The editable value for Name.
     /// </value>
-    IRxEditableValue<string> Name { get; }
+    IRxEditableValue<string> DeviceName { get; }
 
     /// <summary>
     /// Gets the value of the OnMessage property.

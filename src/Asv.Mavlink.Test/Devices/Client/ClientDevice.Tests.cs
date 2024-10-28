@@ -1,6 +1,7 @@
 using System;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Time.Testing;
 using Xunit;
@@ -8,9 +9,10 @@ using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
+[TestSubject(typeof(ClientDevice))]
 public class ClientDeviceTests(ITestOutputHelper log) : ClientTestBase<ClientDevice>(log)
 {
-    ClientDeviceBaseConfig _config = new ClientDeviceBaseConfig
+    readonly ClientDeviceConfig _config = new ClientDeviceConfig
     {
         Heartbeat = new HeartbeatClientConfig
         {
@@ -33,9 +35,9 @@ public class ClientDeviceTests(ITestOutputHelper log) : ClientTestBase<ClientDev
     [Fact]
     public void Ctor_WithNullArgs_Fail()
     {
-        Assert.Throws<ArgumentNullException>(() => new ClientDevice(null, new ClientDeviceBaseConfig(),ClientCore, DeviceClass.Copter));
-        Assert.Throws<ArgumentNullException>(() => new ClientDevice(new MavlinkClientIdentity(1,2,3,4), null,ClientCore, DeviceClass.Copter));
-        Assert.Throws<ArgumentNullException>(() => new ClientDevice(new MavlinkClientIdentity(1,2,3,4), new ClientDeviceBaseConfig(),null, DeviceClass.Copter));
+        Assert.Throws<ArgumentNullException>(() => new ClientDevice(null, new ClientDeviceConfig(),Core, DeviceClass.Copter));
+        Assert.Throws<ArgumentNullException>(() => new ClientDevice(new MavlinkClientIdentity(1,2,3,4), null,Core, DeviceClass.Copter));
+        Assert.Throws<ArgumentNullException>(() => new ClientDevice(new MavlinkClientIdentity(1,2,3,4), new ClientDeviceConfig(),null, DeviceClass.Copter));
     }
     
     [Fact]
@@ -49,7 +51,7 @@ public class ClientDeviceTests(ITestOutputHelper log) : ClientTestBase<ClientDev
         
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var device = new ClientDevice(new MavlinkClientIdentity(1,2,3,4), new ClientDeviceBaseConfig
+            var device = new ClientDevice(new MavlinkClientIdentity(1,2,3,4), new ClientDeviceConfig
             {
                 Heartbeat = null!
             },core, DeviceClass.Copter);

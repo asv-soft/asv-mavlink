@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Reactive;
 using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
 using DynamicData;
+using R3;
+using Unit = System.Reactive.Unit;
 
 namespace Asv.Mavlink
 {
@@ -42,21 +43,21 @@ namespace Asv.Mavlink
         /// System mode bitmap.
         /// OriginName: base_mode, Units: , IsExtended: false
         /// </summary>
-        IRxValue<MavModeFlag> BaseMode { get; }
+        ReactiveProperty<MavModeFlag> BaseMode { get; }
         /// <summary>
         /// A bitfield for use for autopilot-specific flags
         /// OriginName: custom_mode, Units: , IsExtended: false
         /// </summary>
-        IRxValue<uint> CustomMode { get; }
+        ReactiveProperty<uint> CustomMode { get; }
         /// <summary>
         /// System status flag.
         /// OriginName: system_status, Units: , IsExtended: false
         /// </summary>
-        IRxValue<MavState> SystemStatus { get; }
+        ReactiveProperty<MavState> SystemStatus { get; }
         /// <summary>
         /// Ping sequence 
         /// </summary>
-        IObservable<Unit> Ping { get; }
+        Observable<R3.Unit> Ping { get; }
     }
 
 
@@ -69,7 +70,7 @@ namespace Asv.Mavlink
         /// <summary>
         /// Current device timeout
         /// </summary>
-        IRxEditableValue<TimeSpan> DeviceTimeout { get; }
+        ReactiveProperty<TimeSpan> DeviceTimeout { get; }
     }
 
 

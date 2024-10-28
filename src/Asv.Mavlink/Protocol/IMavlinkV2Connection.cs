@@ -1,8 +1,8 @@
 using System;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -10,25 +10,25 @@ namespace Asv.Mavlink
     /// <summary>
     /// Connection for Mavlink V2
     /// </summary>
-    public interface IMavlinkV2Connection:IObservable<IPacketV2<IPayload>>, IDisposable
+    public interface IMavlinkV2Connection: IDisposable, IAsyncDisposable
     {
         /// <summary>
         /// Devices in network could not understand unknown messages (cause https://github.com/mavlink/mavlink/issues/1166) and will not forwarding it.
         /// This flag indicates that the message is not standard and we need to wrap this message into a V2_EXTENSION message for the routers to successfully transmit over the network.
         /// </summary>
         bool WrapToV2ExtensionEnabled { get; set; }
-        
         long RxPackets { get; }
         long TxPackets { get; }
         long SkipPackets { get; }
         /// <summary>
         /// Event for deserialize package errors
         /// </summary>
-        IObservable<DeserializePackageException> DeserializePackageErrors { get; }
+        Observable<DeserializePackageException> DeserializePackageErrors { get; }
         /// <summary>
         /// Event for transfer packet
         /// </summary>
-        IObservable<IPacketV2<IPayload>> OnSendPacket { get; }
+        Observable<IPacketV2<IPayload>> TxPipe { get; }
+        Observable<IPacketV2<IPayload>> RxPipe { get; }
         /// <summary>
         /// Send packet
         /// </summary>
@@ -45,7 +45,7 @@ namespace Asv.Mavlink
         /// </summary>
         /// <param name="messageId"></param>
         /// <returns></returns>
-        IPacketV2<IPayload> CreatePacketByMessageId(int messageId);
+        IPacketV2<IPayload>? CreatePacketByMessageId(int messageId);
     }
 
     /// <summary>
@@ -53,6 +53,13 @@ namespace Asv.Mavlink
     /// </summary>
     public static class MavlinkV2Helper
     {
+        
+        public static Observable<TPacket> Filter<TPacket>(this IMavlinkV2Connection src) 
+            where TPacket : IPacketV2<IPayload>, new()
+        {
+            var origin = new TPacket();
+            return src.RxPipe.Where(origin,(p,o) => o.MessageId == p.MessageId).Cast<IPacketV2<IPayload>,TPacket>();
+        }
         /// <summary>
         /// This method sends a packet over an IMavlinkV2Connection and waits for an answer packet. </summary> <param name="src">The IMavlinkV2Connection instance to send the packet over.</param> <param name="packet">The packet to send.</param> <param name="targetSystem">The target system ID.</param> <param name="targetComponent">The target component ID.</param> <param name="cancel">The cancellation token to cancel the operation.</param> <param name="filter">An optional filter function to filter the answer packet.</param> <typeparam name="TAnswerPacket">The type of the answer packet.</typeparam> <typeparam name="TAnswerPayload">The type of the payload in the answer packet.</typeparam> <returns>The answer packet received.</returns>
         /// /
@@ -61,14 +68,16 @@ namespace Asv.Mavlink
             CancellationToken cancel, Func<TAnswerPacket, bool> filter = null)
             where TAnswerPacket : IPacketV2<TAnswerPayload>, new() where TAnswerPayload : IPayload
         {
-            var p = new TAnswerPacket();
+            var origin = new TAnswerPacket();
             var tcs = new TaskCompletionSource<TAnswerPacket>();
-            using var c1 = cancel.Register(()=>tcs.TrySetCanceled());
+            await using var c1 = cancel.Register(()=>tcs.TrySetCanceled());
             filter ??= (_ => true);
-            using var subscribe = src.Where(v => v.ComponentId == targetComponent && v.SystemId == targetSystem && v.MessageId == p.MessageId)
-                .Cast<TAnswerPacket>()
-                .FirstAsync(filter)
-                .Subscribe(v=>tcs.TrySetResult(v));
+            using var subscribe = src.RxPipe
+                .Where(origin,(v,o) => v.ComponentId == targetComponent && v.SystemId == targetSystem && v.MessageId == o.MessageId)
+                .Cast<IPacketV2<IPayload>,TAnswerPacket>()
+                .Where(filter)
+                .TakeLast(1)
+                .Subscribe(tcs,(p,x)=>x.TrySetResult(p));
             await src.Send(packet, cancel).ConfigureAwait(false);
             return await tcs.Task.ConfigureAwait(false);
         }

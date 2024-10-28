@@ -1,11 +1,7 @@
 using System;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
-using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Time.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -50,7 +46,7 @@ public class HeartbeatClientTests(ITestOutputHelper log) : ClientTestBase<Heartb
             {
                 seq.GetNextSequenceNumber();
             }
-            ClientTime.Advance(TimeSpan.FromSeconds(0.05));
+            Time.Advance(TimeSpan.FromSeconds(0.05));
         }
         Assert.Equal(quality,Client.LinkQuality.Value, 1);
         Log.WriteLine($"RESULT: {quality:F3} ~ {Client.LinkQuality.Value:F3}");
@@ -75,7 +71,7 @@ public class HeartbeatClientTests(ITestOutputHelper log) : ClientTestBase<Heartb
                 Sequence = seq.GetNextSequenceNumber(),
             };
             await Link.Server.Send(p, default);
-            ClientTime.Advance(TimeSpan.FromMilliseconds(delayMs));
+            Time.Advance(TimeSpan.FromMilliseconds(delayMs));
         }
         Assert.Equal(rate,Client.PacketRateHz.Value, 1);
         Log.WriteLine($"RESULT: {rate:F3} ~ {Client.PacketRateHz.Value:F3}");
@@ -102,7 +98,7 @@ public class HeartbeatClientTests(ITestOutputHelper log) : ClientTestBase<Heartb
                 Sequence = seq.GetNextSequenceNumber(),
             };
             await Link.Server.Send(p, default);
-            ClientTime.Advance(TimeSpan.FromMilliseconds(100));
+            Time.Advance(TimeSpan.FromMilliseconds(100));
         }
         Assert.Equal(packets,count);
     }

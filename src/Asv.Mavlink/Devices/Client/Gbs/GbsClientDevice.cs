@@ -13,7 +13,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class GbsClientDeviceConfig:ClientDeviceBaseConfig
+public class GbsClientDeviceConfig:ClientDeviceConfig
 {
     public CommandProtocolConfig Command { get; set; } = new();
     public ParamsClientExConfig Params { get; set; } = new();

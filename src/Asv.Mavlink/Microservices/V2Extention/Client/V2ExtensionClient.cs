@@ -11,22 +11,23 @@ namespace Asv.Mavlink
 {
     public class V2ExtensionClient : MavlinkMicroserviceClient, IV2ExtensionClient
     {
-        private readonly MavlinkClientIdentity _identity;
-        private readonly RxValue<V2ExtensionPacket> _onData = new();
         public static readonly int StaticMaxDataSize = new V2ExtensionPayload().GetMaxByteSize();
-        private readonly IDisposable _disposeIt;
+        
+        private readonly MavlinkClientIdentity _identity;
+        private readonly ReactiveProperty<V2ExtensionPacket> _onData;
+        private readonly IDisposable _subscribe;
 
         public V2ExtensionClient(MavlinkClientIdentity identity, 
             ICoreServices core):base("V2EXT", identity, core)
         {
             _identity = identity;
-            var d1 = InternalFilter<V2ExtensionPacket>().Subscribe(_onData);
-            _disposeIt = Disposable.Combine(_onData, d1);
+            _onData = new ReactiveProperty<V2ExtensionPacket>();
+            _subscribe = InternalFilter<V2ExtensionPacket>().Subscribe(_onData.AsObserver());
         }
        
         public int MaxDataSize => StaticMaxDataSize;
 
-        public IRxValue<V2ExtensionPacket> OnData => _onData;
+        public ReadOnlyReactiveProperty<V2ExtensionPacket> OnData => _onData;
 
         public Task SendData(byte targetNetworkId,ushort messageType, byte[] data, CancellationToken cancel)
         {
@@ -40,12 +41,39 @@ namespace Asv.Mavlink
             }, cancel);
             
         }
-        
-        public override void Dispose()
+
+        #region Dispose
+
+        protected override void Dispose(bool disposing)
         {
-            _disposeIt.Dispose();
-            base.Dispose();
+            if (disposing)
+            {
+                _onData.Dispose();
+                _subscribe.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
+
+        protected override async ValueTask DisposeAsyncCore()
+        {
+            await CastAndDispose(_onData).ConfigureAwait(false);
+            await CastAndDispose(_subscribe).ConfigureAwait(false);
+
+            await base.DisposeAsyncCore().ConfigureAwait(false);
+
+            return;
+
+            static async ValueTask CastAndDispose(IDisposable resource)
+            {
+                if (resource is IAsyncDisposable resourceAsyncDisposable)
+                    await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    resource.Dispose();
+            }
+        }
+
+        #endregion
     }
 
     

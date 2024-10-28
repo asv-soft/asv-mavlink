@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-public class HeartbeatTests(ITestOutputHelper output) : ComplexTestBase<HeartbeatClient, HeartbeatServer>(output)
+public class HeartbeatTests(ITestOutputHelper output) : ClientServerTestBase<HeartbeatClient, HeartbeatServer>(output)
 {
     private readonly HeartbeatClientConfig _clientConfig = new();
     private readonly MavlinkHeartbeatServerConfig _serverConfig = new();

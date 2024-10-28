@@ -1,11 +1,8 @@
 using System;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink;
@@ -18,7 +15,7 @@ public interface IMavlinkMicroserviceServer
 }
 
 public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdentity identity, ICoreServices core)
-    : IMavlinkMicroserviceServer, IDisposable
+    : IMavlinkMicroserviceServer, IDisposable, IAsyncDisposable
 {
     private readonly ILogger _loggerBase = core.Log.CreateLogger<MavlinkMicroserviceServer>();
     private string? _logLocalName;
@@ -37,7 +34,7 @@ public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdenti
     protected CancellationToken DisposeCancel => _disposeCancel.Token;
 
 
-    protected IObservable<TPacket> InternalFilter<TPacket>(Func<TPacket, byte> targetSystemGetter,
+    protected Observable<TPacket> InternalFilter<TPacket>(Func<TPacket, byte> targetSystemGetter,
         Func<TPacket, byte> targetComponentGetter)
         where TPacket : IPacketV2<IPayload>, new()
     {
@@ -45,16 +42,16 @@ public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdenti
             Identity.SystemId == targetSystemGetter(v) && Identity.ComponentId == targetComponentGetter(v));
     }
 
-    protected IObservable<TPacket> InternalFilterFirstAsync<TPacket>(Func<TPacket, byte> targetSystemGetter,
+    protected Observable<TPacket> InternalFilterFirstAsync<TPacket>(Func<TPacket, byte> targetSystemGetter,
         Func<TPacket, byte> targetComponentGetter, Func<TPacket, bool> filter)
         where TPacket : IPacketV2<IPayload>, new()
     {
-        return InternalFilter(targetSystemGetter, targetComponentGetter).FirstAsync(filter);
+        return InternalFilter(targetSystemGetter, targetComponentGetter).Take(1);
     }
     protected Task InternalSend(int messageId, Action<IPacketV2<IPayload>> fillPacket, CancellationToken cancel = default)
     {
         var pkt = Core.Connection.CreatePacketByMessageId(messageId);
-        fillPacket(pkt);
+        fillPacket(pkt ?? throw new InvalidOperationException($"Packet {messageId} not found"));
         pkt.ComponentId = Identity.ComponentId;
         pkt.SystemId = Identity.SystemId;
         pkt.Sequence = Core.Sequence.GetNextSequenceNumber();
@@ -142,9 +139,31 @@ public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdenti
         throw new TimeoutException($"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
     }
 
-    public virtual void Dispose()
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _disposeCancel.Cancel(false);
+            _disposeCancel.Dispose();
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual ValueTask DisposeAsyncCore()
     {
         _disposeCancel.Cancel(false);
         _disposeCancel.Dispose();
+        return ValueTask.CompletedTask;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await DisposeAsyncCore().ConfigureAwait(false);
+        GC.SuppressFinalize(this);
     }
 }

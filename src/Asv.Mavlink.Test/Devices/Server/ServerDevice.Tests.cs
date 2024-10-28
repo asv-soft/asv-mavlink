@@ -1,14 +1,15 @@
 using System;
-using System.Reactive.Concurrency;
-using System.Threading.Tasks;
 using Asv.Mavlink.V2.Minimal;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Time.Testing;
 using Xunit;
 using Xunit.Abstractions;
+using R3;
 
 namespace Asv.Mavlink.Test;
 
+[TestSubject(typeof(ServerDevice))]
 public class ServerDeviceTests(ITestOutputHelper log):ServerTestBase<ServerDevice>(log)
 {
     protected override ServerDevice CreateClient(MavlinkIdentity identity, CoreServices core)

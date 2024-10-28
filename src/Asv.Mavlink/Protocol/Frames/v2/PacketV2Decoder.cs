@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using Asv.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class PacketV2Decoder : DisposableOnceWithCancel, IPacketDecoder<IPacketV2<IPayload>>
+public sealed class PacketV2Decoder : IPacketDecoder<IPacketV2<IPayload>>
 {
     private readonly byte[] _buffer = new byte[PacketV2Helper.PacketV2MaxSize];
     private DecodeStep _decodeStep;
@@ -35,8 +36,8 @@ public class PacketV2Decoder : DisposableOnceWithCancel, IPacketDecoder<IPacketV
         _logger = logFactory.CreateLogger<PacketV2Decoder>();
         // the first byte is always STX
         _buffer[0] = PacketV2Helper.MagicMarkerV2;
-        _decodeErrorSubject = new Subject<DeserializePackageException>().DisposeItWith(Disposable);
-        _packetSubject = new Subject<IPacketV2<IPayload>>().DisposeItWith(Disposable);
+        _decodeErrorSubject = new Subject<DeserializePackageException>();
+        _packetSubject = new Subject<IPacketV2<IPayload>>();
     }
 
     public void OnData(byte[] buffer)
@@ -150,7 +151,8 @@ public class PacketV2Decoder : DisposableOnceWithCancel, IPacketDecoder<IPacketV
             
     }
 
-    public IObservable<DeserializePackageException> OutError => _decodeErrorSubject;
+    public Observable<DeserializePackageException> OutError => _decodeErrorSubject;
+    public Observable<IPacketV2<IPayload>> OnPacket => _packetSubject;
 
     public void Register(Func<IPacketV2<IPayload>> factory)
     {
@@ -163,12 +165,25 @@ public class PacketV2Decoder : DisposableOnceWithCancel, IPacketDecoder<IPacketV
         return _dict.TryGetValue(id, out var factory) == false ? null : factory();
     }
 
-    public IDisposable Subscribe(IObserver<IPacketV2<IPayload>> observer)
+    public void Dispose()
     {
-        return _packetSubject.IgnoreObserverExceptions().Subscribe(observer);
+        _decodeErrorSubject.Dispose();
+        _packetSubject.Dispose();
     }
 
+    public async ValueTask DisposeAsync()
+    {
+        await CastAndDispose(_decodeErrorSubject).ConfigureAwait(false);
+        await CastAndDispose(_packetSubject).ConfigureAwait(false);
 
+        return;
 
-       
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
 }

@@ -21,12 +21,12 @@ public class StatusTextClient : MavlinkMicroserviceClient, IStatusTextClient
         _onMessage = new RxValueBehaviour<StatusMessage?>(default);
         var d1 = InternalFilter<StatustextPacket>()
             .Select(p => new StatusMessage
-                { Sender = Name.Value, Text = MavlinkTypesHelper.GetString(p.Payload.Text), Type = p.Payload.Severity })
+                { Sender = DeviceName.Value, Text = MavlinkTypesHelper.GetString(p.Payload.Text), Type = p.Payload.Severity })
             .Subscribe(_onMessage);
         _disposeIt = Disposable.Combine(_name,_onMessage, d1);
     }
 
-    public IRxEditableValue<string> Name => _name;
+    public IRxEditableValue<string> DeviceName => _name;
 
     public IRxValue<StatusMessage?> OnMessage => _onMessage;
     public override void Dispose()
