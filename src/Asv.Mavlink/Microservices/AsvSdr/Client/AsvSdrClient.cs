@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvSdr;
 using Microsoft.Extensions.Logging;
+using R3;
 
 namespace Asv.Mavlink;
 
 public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
 {
     private readonly MavlinkClientIdentity _identity;
-    private readonly RxValueBehaviour<AsvSdrOutStatusPayload?> _status;
+    private readonly ReactiveProperty<AsvSdrOutStatusPayload?> _status;
     private uint _requestCounter;
     private readonly ILogger _logger;
     private readonly IDisposable _statusSubscribe;
@@ -24,7 +25,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     {
         _logger = core.Log.CreateLogger<AsvSdrClient>();
         _identity = identity;
-        _status = new RxValueBehaviour<AsvSdrOutStatusPayload?>(default);
+        _status = new ReactiveProperty<AsvSdrOutStatusPayload?>(default);
         _statusSubscribe = InternalFilter<AsvSdrOutStatusPacket>().Select(p => p.Payload).Subscribe(_status);
         var dataPacketsHashSet = new HashSet<int>();
         foreach (var item in Enum.GetValues(typeof(AsvSdrCustomMode)).Cast<uint>())
@@ -62,7 +63,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         
     }
 
-    public IRxValue<AsvSdrOutStatusPayload?> Status => _status;
+    public ReadOnlyReactiveProperty<AsvSdrOutStatusPayload?> Status => _status;
 
     public IObservable<(Guid, AsvSdrRecordPayload)> OnRecord { get; }
 

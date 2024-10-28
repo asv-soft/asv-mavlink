@@ -1,5 +1,6 @@
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -15,7 +16,7 @@ public interface IGnssClient:IMavlinkMicroserviceClient
     /// <returns>
     /// The IRxValue object that contains a GpsRawIntPayload value.
     /// </returns>
-    IRxValue<GpsRawIntPayload?> Main { get; }
+    ReadOnlyReactiveProperty<GpsRawIntPayload?> Main { get; }
 
     /// <summary>
     /// Gets the additional information related to GPS raw payload.
@@ -23,5 +24,5 @@ public interface IGnssClient:IMavlinkMicroserviceClient
     /// <value>
     /// The additional information related to GPS raw payload.
     /// </value>
-    IRxValue<Gps2RawPayload?> Additional { get; }
+    ReadOnlyReactiveProperty<Gps2RawPayload?> Additional { get; }
 }

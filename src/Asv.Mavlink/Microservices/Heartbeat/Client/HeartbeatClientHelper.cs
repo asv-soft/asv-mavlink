@@ -1,15 +1,15 @@
 using System;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Threading;
 using Asv.Common;
+using R3;
 
 namespace Asv.Mavlink;
 
 public static class HeartbeatClientHelper
 {
         
-    public static IObservable<LinkState> WhenRepairConnection(this IRxValue<LinkState> src, TimeSpan lostTime,
+    public static IObservable<LinkState> WhenRepairConnection(this ReadOnlyReactiveProperty<LinkState> src, TimeSpan lostTime,
         CancellationToken cancel = default)
     {
         return new LostConnectionSubject(src, cancel, lostTime);
@@ -18,11 +18,11 @@ public static class HeartbeatClientHelper
     public class LostConnectionSubject : DisposableOnceWithCancel, IObservable<LinkState>
     {
         private readonly TimeSpan _lostTime;
-        private readonly Subject<LinkState> _rx = new();
+        private readonly System.Reactive.Subjects.Subject<LinkState> _rx = new();
         private LinkState _prevState = LinkState.Disconnected;
         private DateTime _lastTimeDisconnected = DateTime.MinValue;
 
-        public LostConnectionSubject(IRxValue<LinkState> src, CancellationToken cancel, TimeSpan lostTime)
+        public LostConnectionSubject(ReadOnlyReactiveProperty<LinkState> src, CancellationToken cancel, TimeSpan lostTime)
         {
             _lostTime = lostTime;
             src.DistinctUntilChanged().Subscribe(OnChange, cancel);

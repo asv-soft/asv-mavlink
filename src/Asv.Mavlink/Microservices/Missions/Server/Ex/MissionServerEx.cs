@@ -30,10 +30,10 @@ public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
         _statusLogger = status ?? throw new ArgumentNullException(nameof(status));
         _missionSource = new SourceCache<ServerMissionItem, ushort>(x => x.Seq).AddTo(ref builder);
 
-        Current = new RxValueBehaviour<ushort>(0).AddTo(ref builder);
+        Current = new ReactiveProperty<ushort>(0).AddTo(ref builder);
         Current.Subscribe(x=>Base.SendMissionCurrent(x)).AddTo(ref builder);
 
-        Reached = new RxValueBehaviour<ushort>(0).AddTo(ref builder);
+        Reached = new ReactiveProperty<ushort>(0).AddTo(ref builder);
         Reached.Subscribe(x=>Base.SendReached(x)).AddTo(ref builder);
         
         baseIfc.OnMissionCount.Subscribe(UploadMission).AddTo(ref builder);

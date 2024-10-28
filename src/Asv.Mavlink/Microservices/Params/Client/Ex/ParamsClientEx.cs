@@ -4,7 +4,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -12,6 +11,8 @@ using Asv.Mavlink.V2.Common;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
+using ObservableExtensions = System.ObservableExtensions;
 
 namespace Asv.Mavlink;
 
@@ -25,11 +26,11 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
     private IMavParamEncoding _converter;
     private readonly ParamsClientExConfig _config;
     private readonly SourceCache<ParamItem, string> _paramsSource;
-    private readonly RxValue<bool> _isSynced;
+    private readonly ReactiveProperty<bool> _isSynced;
     private ImmutableDictionary<string,ParamDescription> _descriptions;
-    private readonly RxValue<ushort?> _remoteCount;
-    private readonly RxValue<ushort> _localCount;
-    private readonly Subject<(string, MavParamValue)> _onValueChanged;
+    private readonly ReactiveProperty<ushort?> _remoteCount;
+    private readonly ReactiveProperty<ushort> _localCount;
+    private readonly System.Reactive.Subjects.Subject<(string, MavParamValue)> _onValueChanged;
     private readonly ILogger<ParamsClientEx> _logger;
 
     public ParamsClientEx(IParamsClient client, ParamsClientExConfig config,IMavParamEncoding converter,IEnumerable<ParamDescription> existDescription)
@@ -38,13 +39,13 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         _config = config ?? throw new ArgumentNullException(nameof(config));
         Base = client;
         _paramsSource = new SourceCache<ParamItem, string>(x => x.Name).DisposeItWith(Disposable);
-        _isSynced = new RxValue<bool>(false).DisposeItWith(Disposable);
+        _isSynced = new ReactiveProperty<bool>(false).DisposeItWith(Disposable);
         Items = _paramsSource.Connect().Transform(i=>(IParamItem)i).RefCount();
         client.OnParamValue.Buffer(TimeSpan.FromMilliseconds(100)).Subscribe(OnUpdate).DisposeItWith(Disposable);
-        _remoteCount = new RxValue<ushort?>(null).DisposeItWith(Disposable);
-        _localCount = new RxValue<ushort>(0).DisposeItWith(Disposable);
+        _remoteCount = new ReactiveProperty<ushort?>(null).DisposeItWith(Disposable);
+        _localCount = new ReactiveProperty<ushort>(0).DisposeItWith(Disposable);
         _paramsSource.CountChanged.Select(i=>(ushort)i).Subscribe(_localCount).DisposeItWith(Disposable);
-        _onValueChanged = new Subject<(string, MavParamValue)>().DisposeItWith(Disposable);
+        _onValueChanged = new System.Reactive.Subjects.Subject<(string, MavParamValue)>().DisposeItWith(Disposable);
     }
     public string Name => $"{Base.Name}Ex";
     public IObservable<(string, MavParamValue)> OnValueChanged => _onValueChanged;
@@ -168,7 +169,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
 
     }
 
-    public IRxValue<bool> IsSynced => _isSynced;
+    public ReadOnlyReactiveProperty<bool> IsSynced => _isSynced;
 
     public IObservable<IChangeSet<IParamItem, string>> Items { get; }
     
@@ -190,8 +191,8 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
             progress.Report((double)_paramsSource.Count / p.ParamCount);
             lastUpdate = DateTime.Now;
         });
-        using var c3 = Observable.Timer(TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(100))
-            .Subscribe(_ =>
+        using var c3 = ObservableExtensions
+            .Subscribe<long>(Observable.Timer(TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(100)), _ =>
             {
                 if (DateTime.Now - lastUpdate > TimeSpan.FromMilliseconds(_config.ReadListTimeoutMs))
                 {
@@ -223,9 +224,9 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         _isSynced.OnNext(true);
     }
 
-    public IRxValue<ushort?> RemoteCount => _remoteCount;
+    public ReadOnlyReactiveProperty<ushort?> RemoteCount => _remoteCount;
 
-    public IRxValue<ushort> LocalCount => _localCount;
+    public ReadOnlyReactiveProperty<ushort> LocalCount => _localCount;
     
     public async Task<MavParamValue> ReadOnce(string name, CancellationToken cancel = default)
     {

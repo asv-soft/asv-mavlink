@@ -28,8 +28,8 @@ public class MissionClientEx : IMissionClientEx, IDisposable
     private readonly IMissionClient _client;
     private readonly MissionClientExConfig _config;
     private readonly SourceCache<MissionItem, ushort> _missionSource;
-    private readonly RxValue<bool> _isMissionSynced;
-    private readonly RxValue<double> _allMissionDistance;
+    private readonly ReactiveProperty<bool> _isMissionSynced;
+    private readonly ReactiveProperty<double> _allMissionDistance;
     private readonly TimeSpan _deviceUploadTimeout;
     private readonly IDisposable _disposeIt;
     private CancellationTokenSource _disposeCancel;
@@ -44,8 +44,8 @@ public class MissionClientEx : IMissionClientEx, IDisposable
         _disposeCancel = new CancellationTokenSource();
         _deviceUploadTimeout = TimeSpan.FromMilliseconds(_config.DeviceUploadTimeoutMs);
         _missionSource = new SourceCache<MissionItem, ushort>(i=>i.Index);
-        _isMissionSynced = new RxValue<bool>(false);
-        _allMissionDistance = new RxValue<double>(double.NaN);
+        _isMissionSynced = new ReactiveProperty<bool>(false);
+        _allMissionDistance = new ReactiveProperty<double>(double.NaN);
         MissionItems = _missionSource.Connect().DisposeMany().Publish().RefCount();
         _isMissionSynced.Subscribe(_ => UpdateMissionsDistance());
         _disposeIt = Disposable.Combine(_missionSource, _isMissionSynced, _allMissionDistance, _isMissionSynced,_disposeCancel);
@@ -55,10 +55,10 @@ public class MissionClientEx : IMissionClientEx, IDisposable
     public IMissionClient Base => _client;
     
     public IObservable<IChangeSet<MissionItem, ushort>> MissionItems { get; }
-    public IRxValue<bool> IsSynced => _isMissionSynced;
-    public IRxValue<ushort> Current => _client.MissionCurrent;
-    public IRxValue<ushort> Reached => _client.MissionReached;
-    public IRxValue<double> AllMissionsDistance => _allMissionDistance;
+    public ReadOnlyReactiveProperty<bool> IsSynced => _isMissionSynced;
+    public ReadOnlyReactiveProperty<ushort> Current => _client.MissionCurrent;
+    public ReadOnlyReactiveProperty<ushort> Reached => _client.MissionReached;
+    public ReadOnlyReactiveProperty<double> AllMissionsDistance => _allMissionDistance;
     
     public Task SetCurrent(ushort index, CancellationToken cancel = default)
     {

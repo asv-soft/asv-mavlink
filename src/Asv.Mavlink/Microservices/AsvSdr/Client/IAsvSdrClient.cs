@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvSdr;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -19,7 +20,7 @@ namespace Asv.Mavlink
        /// <summary>
        /// Gets the status of the SDR out payload.
        /// </summary>
-       IRxValue<AsvSdrOutStatusPayload?> Status { get; }
+       ReadOnlyReactiveProperty<AsvSdrOutStatusPayload?> Status { get; }
 
        /// <summary>
        /// Observes the Signal Raw Payload.

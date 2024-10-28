@@ -15,7 +15,7 @@ namespace Asv.Mavlink
         {
             Payload = item ?? throw new ArgumentNullException(nameof(item));
             _onChanged = new Subject<Unit>().DisposeItWith(Disposable);
-            Location = new RxValue<GeoPoint>(new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(item.X), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(item.Y), item.Z)).DisposeItWith(Disposable);
+            Location = new ReactiveProperty<GeoPoint>(new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(item.X), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(item.Y), item.Z)).DisposeItWith(Disposable);
             Location.Subscribe(x =>
             {
                 Edit(p=>
@@ -26,31 +26,31 @@ namespace Asv.Mavlink
                 });
             }).DisposeItWith(Disposable);
 
-            AutoContinue = new RxValue<bool>(item.Autocontinue != 0).DisposeItWith(Disposable);
+            AutoContinue = new ReactiveProperty<bool>(item.Autocontinue != 0).DisposeItWith(Disposable);
             AutoContinue.Subscribe(b =>Edit(p=>p.Autocontinue = (byte)(b ? 1 : 0))).DisposeItWith(Disposable);
 
-            Command = new RxValue<MavCmd>(item.Command).DisposeItWith(Disposable);
+            Command = new ReactiveProperty<MavCmd>(item.Command).DisposeItWith(Disposable);
             Command.Subscribe(c => Edit(p=>p.Command = c)).DisposeItWith(Disposable);
 
-            Current = new RxValue<bool>(item.Current != 0).DisposeItWith(Disposable);
+            Current = new ReactiveProperty<bool>(item.Current != 0).DisposeItWith(Disposable);
             Current.Subscribe(b => Edit(p=>p.Current = (byte)(b ? 1 : 0))).DisposeItWith(Disposable);
 
-            Frame = new RxValue<MavFrame>(item.Frame).DisposeItWith(Disposable);
+            Frame = new ReactiveProperty<MavFrame>(item.Frame).DisposeItWith(Disposable);
             Frame.Subscribe(f => Edit(p=>p.Frame = f)).DisposeItWith(Disposable);
 
-            MissionType = new RxValue<MavMissionType>(item.MissionType).DisposeItWith(Disposable);
+            MissionType = new ReactiveProperty<MavMissionType>(item.MissionType).DisposeItWith(Disposable);
             MissionType.Subscribe(t => Edit(p=>p.MissionType = t)).DisposeItWith(Disposable);
 
-            Param1 = new RxValue<float>(item.Param1).DisposeItWith(Disposable);
+            Param1 = new ReactiveProperty<float>(item.Param1).DisposeItWith(Disposable);
             Param1.Subscribe(f => Edit(p=>p.Param1 = f)).DisposeItWith(Disposable);
 
-            Param2 = new RxValue<float>(item.Param2).DisposeItWith(Disposable);
+            Param2 = new ReactiveProperty<float>(item.Param2).DisposeItWith(Disposable);
             Param2.Subscribe(f => Edit(p=>p.Param2 = f)).DisposeItWith(Disposable);
 
-            Param3 = new RxValue<float>(item.Param3).DisposeItWith(Disposable);
+            Param3 = new ReactiveProperty<float>(item.Param3).DisposeItWith(Disposable);
             Param3.Subscribe(f => Edit(p=>p.Param3 = f)).DisposeItWith(Disposable);
 
-            Param4 = new RxValue<float>(item.Param4).DisposeItWith(Disposable);
+            Param4 = new ReactiveProperty<float>(item.Param4).DisposeItWith(Disposable);
             Param4.Subscribe(f => Edit(p=>p.Param4 = f)).DisposeItWith(Disposable);
 
             

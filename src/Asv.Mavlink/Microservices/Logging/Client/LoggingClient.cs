@@ -5,17 +5,18 @@ using System.Threading;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using R3;
 
 namespace Asv.Mavlink
 {
     public class LoggingClient:MavlinkMicroserviceClient, ILoggingClient
     {
-        private readonly RxValueBehaviour<LoggingDataPayload?> _loggingData;
+        private readonly ReactiveProperty<LoggingDataPayload?> _loggingData;
         private readonly IDisposable _filter;
 
         public LoggingClient(MavlinkClientIdentity identity, ICoreServices core):base("LOG", identity, core)
         {
-            _loggingData = new RxValueBehaviour<LoggingDataPayload?>(default);
+            _loggingData = new ReactiveProperty<LoggingDataPayload?>(default);
             _filter = InternalFilter<LoggingDataPacket>()
                 .Where(p => p.Payload.TargetSystem == identity.Self.SystemId &&
                             p.Payload.TargetComponent == identity.Self.ComponentId)
@@ -24,7 +25,7 @@ namespace Asv.Mavlink
             
         }
 
-        public IRxValue<LoggingDataPayload?> RawLoggingData => _loggingData;
+        public ReadOnlyReactiveProperty<LoggingDataPayload?> RawLoggingData => _loggingData;
 
         public override void Dispose()
         {

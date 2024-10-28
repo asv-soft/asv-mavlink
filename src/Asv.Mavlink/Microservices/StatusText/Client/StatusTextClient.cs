@@ -1,37 +1,72 @@
 using System;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
-using Asv.Common;
+using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
-using Microsoft.Extensions.Logging;
 using R3;
 
 namespace Asv.Mavlink;
 
-public class StatusTextClient : MavlinkMicroserviceClient, IStatusTextClient
+public sealed class StatusTextClient : MavlinkMicroserviceClient, IStatusTextClient
 {
-    private readonly RxValueBehaviour<StatusMessage?> _onMessage;
-    private readonly RxValueBehaviour<string> _name;
-    private readonly IDisposable _disposeIt;
+    
+
+    private readonly Subject<StatusMessage> _onMessage;
+    private readonly ReactiveProperty<string> _name;
+    private readonly IDisposable _sub;
 
     public StatusTextClient(MavlinkClientIdentity identity,ICoreServices core) 
         : base("STATUS",identity,core)
     {
-        _name = new RxValueBehaviour<string>($"[{identity.Target.SystemId},{identity.Target.ComponentId}]");
-        _onMessage = new RxValueBehaviour<StatusMessage?>(default);
-        var d1 = InternalFilter<StatustextPacket>()
-            .Select(p => new StatusMessage
-                { Sender = DeviceName.Value, Text = MavlinkTypesHelper.GetString(p.Payload.Text), Type = p.Payload.Severity })
-            .Subscribe(_onMessage);
-        _disposeIt = Disposable.Combine(_name,_onMessage, d1);
+        _name = new ReactiveProperty<string>($"[{identity.Target.SystemId},{identity.Target.ComponentId}]");
+        _onMessage = new Subject<StatusMessage>();
+        _sub = InternalFilter<StatustextPacket>()
+            .Select(Convert)
+            .Subscribe(_onMessage.AsObserver());
     }
 
-    public IRxEditableValue<string> DeviceName => _name;
-
-    public IRxValue<StatusMessage?> OnMessage => _onMessage;
-    public override void Dispose()
+    private StatusMessage Convert(StatustextPacket p)
     {
-        _disposeIt.Dispose();
-        base.Dispose();
+        return new StatusMessage
+        {
+            Sender = DeviceName.Value, Text = MavlinkTypesHelper.GetString(p.Payload.Text), Type = p.Payload.Severity
+        };
     }
+
+    public ReactiveProperty<string> DeviceName => _name;
+
+    public Observable<StatusMessage> OnMessage => _onMessage;
+
+    #region Dispose
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _onMessage.Dispose();
+            _name.Dispose();
+            _sub.Dispose();
+        }
+
+        base.Dispose(disposing);
+    }
+
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        await CastAndDispose(_onMessage).ConfigureAwait(false);
+        await CastAndDispose(_name).ConfigureAwait(false);
+        await CastAndDispose(_sub).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

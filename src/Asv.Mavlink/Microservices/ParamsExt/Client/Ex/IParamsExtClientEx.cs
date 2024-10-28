@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using DynamicData;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -12,11 +13,11 @@ public interface IParamsExtClientEx
 
     IParamsExtClient Base { get; }
 
-    IRxValue<bool> IsSynced { get; }
+    ReadOnlyReactiveProperty<bool> IsSynced { get; }
 
-    IRxValue<ushort> LocalCount { get; }
+    ReadOnlyReactiveProperty<ushort> LocalCount { get; }
 
-    IRxValue<ushort?> RemoteCount { get; }
+    ReadOnlyReactiveProperty<ushort?> RemoteCount { get; }
 
     IObservable<MavParamExtValue> Filter(string name);
     

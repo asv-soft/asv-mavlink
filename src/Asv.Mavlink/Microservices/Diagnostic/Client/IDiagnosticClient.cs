@@ -2,13 +2,14 @@ using System;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
+using R3;
 
 namespace Asv.Mavlink.Diagnostic.Client;
 
 public interface INamedProbe<T>:IDisposable
 {
     public string Name { get; }
-    public IRxValue<(TimeSpan, T)> Value { get; }
+    public ReadOnlyReactiveProperty<(TimeSpan, T)> Value { get; }
 }
 
 

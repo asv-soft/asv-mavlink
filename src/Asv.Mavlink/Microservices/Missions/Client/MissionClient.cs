@@ -24,8 +24,8 @@ namespace Asv.Mavlink
     {
         private readonly MissionClientConfig _config;
         private readonly ILogger _logger;
-        private readonly RxValue<ushort> _missionCurrent;
-        private readonly RxValue<ushort> _missionReached;
+        private readonly ReactiveProperty<ushort> _missionCurrent;
+        private readonly ReactiveProperty<ushort> _missionReached;
         private readonly IDisposable _disposeIt;
 
         public MissionClient(MavlinkClientIdentity identity, MissionClientConfig config, ICoreServices core) 
@@ -33,8 +33,8 @@ namespace Asv.Mavlink
         {
             _logger = core.Log.CreateLogger<MissionClient>();
             _config = config;
-            _missionCurrent = new RxValue<ushort>();
-            _missionReached = new RxValue<ushort>();
+            _missionCurrent = new ReactiveProperty<ushort>();
+            _missionReached = new ReactiveProperty<ushort>();
             var d1 = InternalFilter<MissionCurrentPacket>().Select(p => p.Payload.Seq).Subscribe(_missionCurrent);
             var d2 = InternalFilter<MissionItemReachedPacket>().Select(p => p.Payload.Seq).Subscribe(_missionReached);
             _disposeIt = Disposable.Combine(_missionCurrent, _missionReached, d1, d2);
@@ -65,8 +65,8 @@ namespace Asv.Mavlink
         }
 
         public new MavlinkClientIdentity Identity => base.Identity;
-        public IRxValue<ushort> MissionCurrent => _missionCurrent;
-        public IRxValue<ushort> MissionReached => _missionReached;
+        public ReadOnlyReactiveProperty<ushort> MissionCurrent => _missionCurrent;
+        public ReadOnlyReactiveProperty<ushort> MissionReached => _missionReached;
         public IObservable<MissionRequestPayload> OnMissionRequest => InternalFilter<MissionRequestPacket>(_=>true).Select(p=>p.Payload);
         public IObservable<MissionAckPayload> OnMissionAck => InternalFilter<MissionAckPacket>(_ => true).Select(p => p.Payload);
         public async Task<MissionItemIntPayload> MissionRequestItem(ushort index, CancellationToken cancel)

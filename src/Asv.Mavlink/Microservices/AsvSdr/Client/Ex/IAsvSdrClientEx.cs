@@ -6,6 +6,7 @@ using Asv.Common;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -23,20 +24,20 @@ public interface IAsvSdrClientEx:IMavlinkMicroserviceClient
     /// </summary>
     /// <value>
     /// The supported
-    IRxValue<AsvSdrCustomModeFlag> SupportedModes { get; }
+    ReadOnlyReactiveProperty<AsvSdrCustomModeFlag> SupportedModes { get; }
 
     /// <summary>
     /// Gets the custom mode value.
     /// </summary>
     /// <returns>The custom mode value.</returns>
-    IRxValue<AsvSdrCustomMode> CustomMode { get; }
+    ReadOnlyReactiveProperty<AsvSdrCustomMode> CustomMode { get; }
 
     /// <summary>
     /// Gets the value representing the count of records.
     /// </summary>
     /// <remarks>
     /// This property provides access to the number of records
-    IRxValue<ushort> RecordsCount { get; }
+    ReadOnlyReactiveProperty<ushort> RecordsCount { get; }
     IObservable<IChangeSet<IAsvSdrClientRecord,Guid>> Records { get; }
 
     /// <summary>
@@ -44,13 +45,13 @@ public interface IAsvSdrClientEx:IMavlinkMicroserviceClient
     /// </summary>
     /// <returns>
     /// An interface representing a reactive value of type Guid
-    IRxValue<Guid> CurrentRecord { get; }
+    ReadOnlyReactiveProperty<Guid> CurrentRecord { get; }
 
     /// <summary>
     /// Gets the value indicating whether the record has started.
     /// </summary>
     /// <returns>An IRxValue representing the current status of the recording. True if recording has started
-    IRxValue<bool> IsRecordStarted { get; }
+    ReadOnlyReactiveProperty<bool> IsRecordStarted { get; }
 
     /// <summary>
     /// Deletes the specified record.
@@ -116,8 +117,8 @@ public interface IAsvSdrClientEx:IMavlinkMicroserviceClient
     /// </summary>
     /// <returns>
     /// An
-    IRxValue<AsvSdrCalibState> CalibrationState { get; }
-    IRxValue<ushort> CalibrationTableRemoteCount { get; }
+    ReadOnlyReactiveProperty<AsvSdrCalibState> CalibrationState { get; }
+    ReadOnlyReactiveProperty<ushort> CalibrationTableRemoteCount { get; }
 
     /// <summary>
     /// Reads the calibration table list.

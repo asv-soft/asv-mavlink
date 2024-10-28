@@ -4,6 +4,7 @@ using System;
  using System.Threading.Tasks;
  using Asv.Common;
  using DynamicData;
+ using R3;
 
  namespace Asv.Mavlink
  {
@@ -32,7 +33,7 @@ using System;
          /// <summary>
          /// True if params synced with remote device and local cache
          /// </summary>
-         IRxValue<bool> IsSynced { get; }
+         ReadOnlyReactiveProperty<bool> IsSynced { get; }
 
          /// <summary>
          /// Collection of parameters items from the remote device.
@@ -50,12 +51,12 @@ using System;
          /// <summary>
          /// Count of params on remote device
          /// </summary>
-         IRxValue<ushort?> RemoteCount { get; }
+         ReadOnlyReactiveProperty<ushort?> RemoteCount { get; }
 
          /// <summary>
          /// Count of params in local cache
          /// </summary>
-         IRxValue<ushort> LocalCount { get; }
+         ReadOnlyReactiveProperty<ushort> LocalCount { get; }
 
          /// <summary>
          /// Read params once from remote device, update local value and return result

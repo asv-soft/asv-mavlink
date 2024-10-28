@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
 using ZLogger;
@@ -16,6 +17,8 @@ namespace Asv.Mavlink
 
     public class StatusTextServer : MavlinkMicroserviceServer, IStatusTextServer
     {
+        
+
         private readonly int _maxMessageSize = new StatustextPayload().Text.Length;
         private readonly StatusTextLoggerConfig _config;
         private readonly ConcurrentQueue<KeyValuePair<MavSeverity,string>> _messageQueue = new();
@@ -41,8 +44,7 @@ namespace Asv.Mavlink
 
             try
             {
-                KeyValuePair<MavSeverity, string> res;
-                if (_messageQueue.TryDequeue(out res))
+                if (_messageQueue.TryDequeue(out var res))
                 {
                     await InternalSend<StatustextPacket>(p =>
                     {
@@ -66,14 +68,14 @@ namespace Asv.Mavlink
         {
             _logger.ZLogTrace($"{msg.severity:G} => {msg.message}");
 
-            if (msg.message == null)
+            if (string.IsNullOrWhiteSpace(msg.message))
             {
-                _logger.LogWarning("Sending message is null");
+                _logger.LogWarning("Message is null => skip it...");
                 return false;
             }
             if (msg.message.Length > _maxMessageSize)
             {
-                var newMessage = msg.message.Substring(0, _maxMessageSize - 3) + "...";
+                var newMessage = $"{msg.message[..(_maxMessageSize - 3)]}...";
                 _logger.ZLogWarning($"Reduced too long message for status text server");
                 _messageQueue.Enqueue(new KeyValuePair<MavSeverity, string>(msg.severity, newMessage));
                 return true;
@@ -92,12 +94,28 @@ namespace Asv.Mavlink
             return Log((severity, message));
         }
 
+        #region Dispose
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _timer.Dispose();
-            base.Dispose();
+            if (disposing)
+            {
+                _messageQueue.Clear();
+                _timer.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
+
+        protected override async ValueTask DisposeAsyncCore()
+        {
+            _messageQueue.Clear();
+            await _timer.DisposeAsync().ConfigureAwait(false);
+            await base.DisposeAsyncCore().ConfigureAwait(false);
+        }
+
+        #endregion
+
     }
 
     

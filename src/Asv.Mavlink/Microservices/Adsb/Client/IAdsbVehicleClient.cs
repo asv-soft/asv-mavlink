@@ -2,6 +2,7 @@
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -60,7 +61,7 @@ public interface IAdsbVehicle
     /// <returns>
     /// An <see cref="IRxValue{T}"/> representing the call sign.
     /// </returns>
-    IRxValue<string> CallSign { get; }
+    ReadOnlyReactiveProperty<string> CallSign { get; }
 
     /// <summary>
     /// The property Location represents the current location as a geographical point.
@@ -68,7 +69,7 @@ public interface IAdsbVehicle
     /// <returns>
     /// An IRxValue object containing a GeoPoint value.
     /// </returns>
-    IRxValue<GeoPoint> Location { get; }
+    ReadOnlyReactiveProperty<GeoPoint> Location { get; }
 
     /// <summary>
     /// Represents the type of altitude for ADS-B data.
@@ -76,7 +77,7 @@ public interface IAdsbVehicle
     /// <value>
     /// An object that provides an observable stream of <see cref="AdsbAltitudeType"/> values.
     /// </value>
-    IRxValue<AdsbAltitudeType> AltitudeType { get; }
+    ReadOnlyReactiveProperty<AdsbAltitudeType> AltitudeType { get; }
 
     /// <summary>
     /// Gets the heading value.
@@ -85,13 +86,13 @@ public interface IAdsbVehicle
     /// The heading value represents the direction in which an object is pointing.
     /// </remarks>
     /// <returns>The heading value.</returns>
-    IRxValue<double> Heading { get; }
+    ReadOnlyReactiveProperty<double> Heading { get; }
 
     /// <summary>
     /// Represents the emitter type of an ADS-B message.
     /// </summary>
     /// <returns>The emitter type as an observable value.</returns>
-    IRxValue<AdsbEmitterType> EmitterType { get; }
+    ReadOnlyReactiveProperty<AdsbEmitterType> EmitterType { get; }
 
     /// <summary>
     /// Gets the time since the last communication.
@@ -100,17 +101,17 @@ public interface IAdsbVehicle
     /// The time since the last communication as an <see cref="IRxValue{T}"/> instance
     /// representing a <see cref="TimeSpan"/>.
     /// </value>
-    IRxValue<TimeSpan> Tslc { get; }
+    ReadOnlyReactiveProperty<TimeSpan> Tslc { get; }
 
     /// <summary>
     /// The Flags property represents the flags associated with an Adsb message.
     /// </summary>
     /// <remarks>
-    /// The value of this property is of type IRxValue<AdsbFlags>, which is an interface
+    /// The value of this property is of type ReadOnlyReactiveProperty<AdsbFlags>, which is an interface
     /// representing a reactive value that can be observed for changes. The AdsbFlags
     /// enumeration contains various flags that can be set or unset.
     /// </remarks>
-    IRxValue<AdsbFlags> Flags { get; }
+    ReadOnlyReactiveProperty<AdsbFlags> Flags { get; }
 
     /// <summary>
     /// Gets the horizontal velocity.
@@ -120,17 +121,17 @@ public interface IAdsbVehicle
     /// The value is of type double and can be retrieved using an IRxValue wrapper.
     /// </remarks>
     /// <returns>
-    /// An instance of IRxValue<double> that represents the horizontal velocity.
+    /// An instance of ReadOnlyReactiveProperty<double> that represents the horizontal velocity.
     /// </returns>
-    IRxValue<double> HorVelocity { get; }
+    ReadOnlyReactiveProperty<double> HorVelocity { get; }
 
     /// <summary>
     /// Gets the vertical velocity of an object.
     /// </summary>
     /// <returns>
-    /// An IRxValue<double> representing the vertical velocity of the object.
+    /// An ReadOnlyReactiveProperty<double> representing the vertical velocity of the object.
     /// </returns>
-    IRxValue<double> VerVelocity { get; }
+    ReadOnlyReactiveProperty<double> VerVelocity { get; }
 
     /// <summary>
     /// Gets the value of the Squawk property.
@@ -138,6 +139,6 @@ public interface IAdsbVehicle
     /// <returns>
     /// The value of the Squawk property.
     /// </returns>
-    IRxValue<ushort> Squawk { get; }
+    ReadOnlyReactiveProperty<ushort> Squawk { get; }
 }
 

@@ -12,8 +12,8 @@ namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(ClientDevice))]
 [TestSubject(typeof(ServerDevice))]
-public class ClientServerDeviceTests(ITestOutputHelper log)
-    : ClientServerTestBase<ClientDevice, ServerDevice>(log)
+public class ComplexDeviceTests(ITestOutputHelper log)
+    : ComplexTestBase<ClientDevice, ServerDevice>(log)
 {
     private readonly ServerDeviceConfig _serverConfig = new()
     {
@@ -54,27 +54,27 @@ public class ClientServerDeviceTests(ITestOutputHelper log)
     [Fact]
     public async Task HeartbeatClientConnectToServer_Success()
     {
-        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.Value);
+        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.CurrentValue);
         ServerTime.Advance(TimeSpan.FromSeconds(1.1));
         ClientTime.Advance(TimeSpan.FromSeconds(1.1));
         await Client.WaitUntilConnect();
         await Server.DisposeAsync();
-        Assert.Equal(LinkState.Connected,Client.Heartbeat.Link.Value);
+        Assert.Equal(LinkState.Connected,Client.Heartbeat.Link.CurrentValue);
         ServerTime.Advance(TimeSpan.FromSeconds(1.1));
         ClientTime.Advance(TimeSpan.FromSeconds(1.1));
         
-        Assert.Equal(LinkState.Downgrade,Client.Heartbeat.Link.Value);
+        Assert.Equal(LinkState.Downgrade,Client.Heartbeat.Link.CurrentValue);
         ServerTime.Advance(TimeSpan.FromSeconds(1.1));
         ClientTime.Advance(TimeSpan.FromSeconds(1.1));
         
-        Assert.Equal(LinkState.Downgrade,Client.Heartbeat.Link.Value);
+        Assert.Equal(LinkState.Downgrade,Client.Heartbeat.Link.CurrentValue);
         ServerTime.Advance(TimeSpan.FromSeconds(1.1));
         ClientTime.Advance(TimeSpan.FromSeconds(1.1));
-        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.Value);
+        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.CurrentValue);
         ServerTime.Advance(TimeSpan.FromSeconds(1.1));
         ClientTime.Advance(TimeSpan.FromSeconds(1.1));
         
-        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.Value);
+        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.CurrentValue);
     }
 
     

@@ -1,10 +1,12 @@
 using System;
+using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-public class StatusTextClientTests(ITestOutputHelper log, VirtualMavlinkConnection? link = null)
+[TestSubject(typeof(StatusTextClient))]
+public class StatusTextClientTest(ITestOutputHelper log, VirtualMavlinkConnection? link = null)
     : ClientTestBase<StatusTextClient>(log, link)
 {
     protected override StatusTextClient CreateClient(MavlinkClientIdentity identity, CoreServices core) => new(identity, core);
@@ -26,4 +28,5 @@ public class StatusTextClientTests(ITestOutputHelper log, VirtualMavlinkConnecti
             var client = new StatusTextClient(Identity, null);
         });
     }
+
 }

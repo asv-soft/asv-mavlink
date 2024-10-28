@@ -1,5 +1,6 @@
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -14,7 +15,7 @@ public interface IStatusTextClient: IMavlinkMicroserviceClient
     /// <value>
     /// The editable value for Name.
     /// </value>
-    IRxEditableValue<string> DeviceName { get; }
+    ReactiveProperty<string> DeviceName { get; }
 
     /// <summary>
     /// Gets the value of the OnMessage property.
@@ -25,7 +26,7 @@ public interface IStatusTextClient: IMavlinkMicroserviceClient
     /// <returns>
     /// An IRxValue object that emits StatusMessage values.
     /// </returns>
-    IRxValue<StatusMessage?> OnMessage { get; }
+    Observable<StatusMessage> OnMessage { get; }
 }
 
 /// <summary>

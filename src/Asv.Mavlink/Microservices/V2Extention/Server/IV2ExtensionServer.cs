@@ -21,7 +21,7 @@ namespace Asv.Mavlink
         /// <returns>
         /// The IRxValue&lt;V2ExtensionPacket&gt; object.
         /// </returns>
-        ReadOnlyReactiveProperty<V2ExtensionPacket> OnData { get; }
+        Observable<V2ExtensionPacket> OnData { get; }
 
         /// <summary>
         /// Sends data to a target system.

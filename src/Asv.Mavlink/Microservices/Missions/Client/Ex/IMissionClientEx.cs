@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using DynamicData;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -84,7 +85,7 @@ public interface IMissionClientEx:IMavlinkMicroserviceClient
     /// <value>
     /// The interface for observing the synchronization state.
     /// </value>
-    IRxValue<bool> IsSynced { get; }
+    ReadOnlyReactiveProperty<bool> IsSynced { get; }
 
     /// <summary>
     /// Sets the current position to the specified index.
@@ -101,7 +102,7 @@ public interface IMissionClientEx:IMavlinkMicroserviceClient
     /// Gets the current value of the property.
     /// @return The current value of the property as an IRxValue of type ushort.
     /// /
-    IRxValue<ushort> Current { get; }
+    ReadOnlyReactiveProperty<ushort> Current { get; }
 
     /// <summary>
     /// Gets the value indicating if a particular condition has been reached.
@@ -110,13 +111,13 @@ public interface IMissionClientEx:IMavlinkMicroserviceClient
     /// The <see cref="IRxValue{T}"/> representing the condition being reached. The value will be
     /// updated whenever the condition is reached.
     /// </value>
-    IRxValue<ushort> Reached { get; }
+    ReadOnlyReactiveProperty<ushort> Reached { get; }
 
     /// <summary>
     /// Gets the total distance of all missions.
     /// </summary>
     /// <returns>An <see cref="IRxValue"/> object representing the total distance.</returns>
-    IRxValue<double> AllMissionsDistance { get; }
+    ReadOnlyReactiveProperty<double> AllMissionsDistance { get; }
 }
 
 /// <summary>

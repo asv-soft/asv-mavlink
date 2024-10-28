@@ -10,6 +10,7 @@ using Asv.Mavlink.V2.Common;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -23,14 +24,14 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
     private readonly ICommandClient _commandClient;
     private readonly AsvSdrClientExConfig _config;
     private readonly TimeSpan _maxTimeToWaitForResponseForList;
-    private readonly RxValue<AsvSdrCustomMode> _customMode;
-    private readonly RxValue<ushort> _recordsCount;
-    private readonly RxValue<AsvSdrCustomModeFlag> _supportedModes;
+    private readonly ReactiveProperty<AsvSdrCustomMode> _customMode;
+    private readonly ReactiveProperty<ushort> _recordsCount;
+    private readonly ReactiveProperty<AsvSdrCustomModeFlag> _supportedModes;
     private readonly SourceCache<AsvSdrClientRecord,Guid> _records;
-    private readonly RxValue<bool> _isRecordStarted;
-    private readonly RxValue<Guid> _currentRecord;
-    private readonly RxValue<ushort> _calibrationTableRemoteCount;
-    private readonly RxValue<AsvSdrCalibState> _calibrationState;
+    private readonly ReactiveProperty<bool> _isRecordStarted;
+    private readonly ReactiveProperty<Guid> _currentRecord;
+    private readonly ReactiveProperty<ushort> _calibrationTableRemoteCount;
+    private readonly ReactiveProperty<AsvSdrCalibState> _calibrationState;
     private readonly ISourceCache<AsvSdrClientCalibrationTable,string> _calibrationTables;
     private readonly ILogger _logger;
 
@@ -46,23 +47,23 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         _config = config;
         
         _maxTimeToWaitForResponseForList = TimeSpan.FromMilliseconds(config.MaxTimeToWaitForResponseForListMs);
-        _customMode = new RxValue<AsvSdrCustomMode>();
+        _customMode = new ReactiveProperty<AsvSdrCustomMode>();
         heartbeatClient.RawHeartbeat
             .Select(p => (AsvSdrCustomMode)p.CustomMode)
             .Subscribe(_customMode)
             .DisposeItWith(Disposable);
 
-        _recordsCount = new RxValue<ushort>()
+        _recordsCount = new ReactiveProperty<ushort>()
             .DisposeItWith(Disposable);
-        _supportedModes = new RxValue<AsvSdrCustomModeFlag>()
+        _supportedModes = new ReactiveProperty<AsvSdrCustomModeFlag>()
             .DisposeItWith(Disposable);
-        _currentRecord = new RxValue<Guid>()
+        _currentRecord = new ReactiveProperty<Guid>()
             .DisposeItWith(Disposable);
-        _isRecordStarted = new RxValue<bool>(false)
+        _isRecordStarted = new ReactiveProperty<bool>(false)
             .DisposeItWith(Disposable);
-        _calibrationTableRemoteCount = new RxValue<ushort>()
+        _calibrationTableRemoteCount = new ReactiveProperty<ushort>()
             .DisposeItWith(Disposable);
-        _calibrationState = new RxValue<AsvSdrCalibState>()
+        _calibrationState = new ReactiveProperty<AsvSdrCalibState>()
             .DisposeItWith(Disposable);
         
         client.Status.Subscribe(p =>
@@ -114,9 +115,9 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         })).DisposeItWith(Disposable);
     }
     public string Name => $"{Base.Name}Ex";
-    public IRxValue<Guid> CurrentRecord => _currentRecord;
+    public ReadOnlyReactiveProperty<Guid> CurrentRecord => _currentRecord;
 
-    public IRxValue<bool> IsRecordStarted => _isRecordStarted;
+    public ReadOnlyReactiveProperty<bool> IsRecordStarted => _isRecordStarted;
 
     public async Task DeleteRecord(Guid recordName, CancellationToken cancel)
     {
@@ -151,10 +152,10 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         return _records.Count == requestAck.ItemsCount;
     }
     public IAsvSdrClient Base { get; }
-    public IRxValue<AsvSdrCustomModeFlag> SupportedModes => _supportedModes;
-    public IRxValue<AsvSdrCustomMode> CustomMode => _customMode;
+    public ReadOnlyReactiveProperty<AsvSdrCustomModeFlag> SupportedModes => _supportedModes;
+    public ReadOnlyReactiveProperty<AsvSdrCustomMode> CustomMode => _customMode;
     
-    public IRxValue<ushort> RecordsCount => _recordsCount;
+    public ReadOnlyReactiveProperty<ushort> RecordsCount => _recordsCount;
     public IObservable<IChangeSet<IAsvSdrClientRecord,Guid>> Records { get; }
     
     public async Task<MavResult> SetMode(AsvSdrCustomMode mode, ulong frequencyHz, float recordRate, uint sendingThinningRatio, float referencePowerDbm,
@@ -222,8 +223,8 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         return result.Result;
     }
 
-    public IRxValue<ushort> CalibrationTableRemoteCount => _calibrationTableRemoteCount;
-    public IRxValue<AsvSdrCalibState> CalibrationState => _calibrationState;
+    public ReadOnlyReactiveProperty<ushort> CalibrationTableRemoteCount => _calibrationTableRemoteCount;
+    public ReadOnlyReactiveProperty<AsvSdrCalibState> CalibrationState => _calibrationState;
     public async Task ReadCalibrationTableList(IProgress<double>? progress = null, CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();

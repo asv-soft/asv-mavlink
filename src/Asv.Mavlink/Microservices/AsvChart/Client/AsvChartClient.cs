@@ -31,7 +31,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
     private ulong _currentFrameId;
     private readonly SortedList<ushort,AsvChartDataPayload> _frameBuffer = new();
     private ushort _lastCollectionHash;
-    private readonly RxValue<bool> _isSynced;
+    private readonly ReactiveProperty<bool> _isSynced;
 
     public AsvChartClient(MavlinkClientIdentity identity,AsvChartClientConfig config,ICoreServices core)
         : base("CHART", identity,core)
@@ -46,7 +46,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
         var d2 = InternalFilter<AsvChartDataPacket>().Subscribe(InternalOnDataRecv);
         OnStreamOptions = InternalFilter<AsvChartDataResponsePacket>().Select(x => new AsvChartOptions(x));
         OnUpdateEvent = InternalFilter<AsvChartInfoUpdatedEventPacket>().Select(x => x.Payload);
-        _isSynced = new RxValue<bool>(false);
+        _isSynced = new ReactiveProperty<bool>(false);
         var d3 = OnUpdateEvent.Select(x=>x.ChatListHash == _lastCollectionHash).Subscribe(_isSynced);
         Disposable.Combine(_signals,_isSynced,d1,d2,d3);
     }
@@ -102,7 +102,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
     public OnDataReceivedDelegate OnDataReceived { get; set; }
     public IObservable<AsvChartOptions> OnStreamOptions { get; }
     public IObservable<AsvChartInfoUpdatedEventPayload> OnUpdateEvent { get; }
-    public IRxValue<bool> IsSynced => _isSynced;
+    public ReadOnlyReactiveProperty<bool> IsSynced => _isSynced;
 
     private void InternalOnDataRecv(AsvChartDataPacket data)
     {

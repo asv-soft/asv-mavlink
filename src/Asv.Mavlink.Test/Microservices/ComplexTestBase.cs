@@ -3,12 +3,12 @@ using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-public abstract class ClientServerTestBase<TClient,TServer>
+public abstract class ComplexTestBase<TClient,TServer>
 {
     private TClient? _client;
     private TServer? _server;
 
-    protected ClientServerTestBase(ITestOutputHelper log)
+    protected ComplexTestBase(ITestOutputHelper log)
     {
         Link = new VirtualMavlinkConnection();
         Log = log;

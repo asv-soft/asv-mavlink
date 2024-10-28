@@ -1,5 +1,6 @@
 using Asv.Common;
  using Asv.Mavlink.V2.AsvGbs;
+ using R3;
 
  namespace Asv.Mavlink
  {
@@ -11,6 +12,6 @@ using Asv.Common;
          /// <summary>
          /// Gets the raw status of the AsvGbsOutStatusPayload.
          /// </summary>
-         IRxValue<AsvGbsOutStatusPayload> RawStatus { get; }
+         ReadOnlyReactiveProperty<AsvGbsOutStatusPayload> RawStatus { get; }
      }
  }

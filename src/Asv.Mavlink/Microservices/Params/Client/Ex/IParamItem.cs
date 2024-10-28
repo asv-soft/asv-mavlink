@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -48,7 +49,7 @@ public interface IParamItem
     /// <value>
     /// The <see cref="IRxValue{T}"/> that represents whether the data is synchronized or not.
     /// </value>
-    IRxValue<bool> IsSynced { get; }
+    ReadOnlyReactiveProperty<bool> IsSynced { get; }
 
     /// Gets the value of the property.
     /// @returns The value of the property as an instance of IRxEditableValue<MavParamValue>.

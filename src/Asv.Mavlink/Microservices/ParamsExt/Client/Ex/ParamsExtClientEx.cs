@@ -23,10 +23,10 @@ public class ParamsExtClientEx : IParamsExtClientEx,IDisposable
     private static readonly TimeSpan CheckTimeout = TimeSpan.FromMilliseconds(100);
     private readonly ParamsExtClientExConfig _config;
     private readonly SourceCache<ParamExtItem, string> _paramsSource;
-    private readonly RxValueBehaviour<bool> _isSynced;
+    private readonly ReactiveProperty<bool> _isSynced;
     private ImmutableDictionary<string, ParamExtDescription> _descriptions;
-    private readonly RxValueBehaviour<ushort?> _remoteCount;
-    private readonly RxValueBehaviour<ushort> _localCount;
+    private readonly ReactiveProperty<ushort?> _remoteCount;
+    private readonly ReactiveProperty<ushort> _localCount;
     private readonly System.Reactive.Subjects.Subject<(string, MavParamExtValue)> _onValueChanged;
     private readonly IDisposable _disposeIt;
     private readonly CancellationTokenSource _disposeCancel;
@@ -37,13 +37,13 @@ public class ParamsExtClientEx : IParamsExtClientEx,IDisposable
         Base = client;
         _disposeCancel = new CancellationTokenSource();
         _paramsSource = new SourceCache<ParamExtItem, string>(x => x.Name);
-        _isSynced = new RxValueBehaviour<bool>(false);
+        _isSynced = new ReactiveProperty<bool>(false);
         Items = _paramsSource.Connect().Transform(i => (IParamExtItem)i).RefCount();
         // TODO: replace buffer to use TimeProvider
         var d1 = client.OnParamExtValue.Where(_ => IsInit).Buffer(TimeSpan.FromMilliseconds(100)).Subscribe(OnUpdate);
 
-        _remoteCount = new RxValueBehaviour<ushort?>(null);
-        _localCount = new RxValueBehaviour<ushort>(0);
+        _remoteCount = new ReactiveProperty<ushort?>(null);
+        _localCount = new ReactiveProperty<ushort>(0);
         var d2 = _paramsSource.CountChanged.Select(i => (ushort)i).Subscribe(_localCount);
         _onValueChanged = new System.Reactive.Subjects.Subject<(string, MavParamExtValue)>();
         
@@ -173,7 +173,7 @@ public class ParamsExtClientEx : IParamsExtClientEx,IDisposable
         return desc;
     }
 
-    public IRxValue<bool> IsSynced => _isSynced;
+    public ReadOnlyReactiveProperty<bool> IsSynced => _isSynced;
 
     public IObservable<IChangeSet<IParamExtItem, string>> Items { get; }
 
@@ -227,9 +227,9 @@ public class ParamsExtClientEx : IParamsExtClientEx,IDisposable
             .Select(x => x.Item2);
     }
     
-    public IRxValue<ushort?> RemoteCount => _remoteCount;
+    public ReadOnlyReactiveProperty<ushort?> RemoteCount => _remoteCount;
 
-    public IRxValue<ushort> LocalCount => _localCount;
+    public ReadOnlyReactiveProperty<ushort> LocalCount => _localCount;
 
     public async Task<MavParamExtValue> ReadOnce(string name, CancellationToken cancel = default)
     {

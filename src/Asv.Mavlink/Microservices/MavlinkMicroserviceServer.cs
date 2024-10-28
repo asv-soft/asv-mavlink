@@ -38,15 +38,19 @@ public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdenti
         Func<TPacket, byte> targetComponentGetter)
         where TPacket : IPacketV2<IPayload>, new()
     {
-        return Core.Connection.Filter<TPacket>().Where(v =>
-            Identity.SystemId == targetSystemGetter(v) && Identity.ComponentId == targetComponentGetter(v));
+        return Core.Connection.Filter<TPacket>().Where((targetSystemGetter,targetComponentGetter),(v, f) =>
+        {
+            var sys = f.targetSystemGetter(v);
+            var com = f.targetComponentGetter(v);
+            return (Identity.SystemId == sys || sys == 0) && (Identity.ComponentId == com || com == 0);
+        });
     }
 
     protected Observable<TPacket> InternalFilterFirstAsync<TPacket>(Func<TPacket, byte> targetSystemGetter,
         Func<TPacket, byte> targetComponentGetter, Func<TPacket, bool> filter)
         where TPacket : IPacketV2<IPayload>, new()
     {
-        return InternalFilter(targetSystemGetter, targetComponentGetter).Take(1);
+        return InternalFilter(targetSystemGetter, targetComponentGetter).Where(filter).Take(1);
     }
     protected Task InternalSend(int messageId, Action<IPacketV2<IPayload>> fillPacket, CancellationToken cancel = default)
     {

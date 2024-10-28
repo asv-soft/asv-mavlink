@@ -53,7 +53,7 @@ public sealed class TelemetryClientEx : ITelemetryClientEx,IDisposable, IAsyncDi
     /// </summary>
     /// <remarks>
     /// This property represents the current charge level of the battery.
-    /// It is an IRxValue<double>, which allows for subscribing to changes in the battery charge level.
+    /// It is an ReadOnlyReactiveProperty<double>, which allows for subscribing to changes in the battery charge level.
     /// </remarks>
     public ReadOnlyReactiveProperty<double> BatteryCharge => _batteryCharge;
 

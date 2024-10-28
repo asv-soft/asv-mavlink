@@ -21,7 +21,7 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
 {
     private readonly System.Reactive.Subjects.Subject<AdsbVehiclePayload> _onAdsbTarget;
     private readonly SourceCache<AdsbVehicle, uint> _targetSource;
-    private readonly RxValue<TimeSpan> _targetTimeout;
+    private readonly ReactiveProperty<TimeSpan> _targetTimeout;
     private readonly IDisposable _disposeIt;
 
 
@@ -34,7 +34,7 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
             .Subscribe(_onAdsbTarget);
 
         _targetTimeout =
-            new RxValue<TimeSpan>(TimeSpan.FromMilliseconds(config.TargetTimeoutMs));
+            new ReactiveProperty<TimeSpan>(TimeSpan.FromMilliseconds(config.TargetTimeoutMs));
         _targetSource = new SourceCache<AdsbVehicle, uint>(v => v.IcaoAddress);
         Targets = _targetSource.Connect().Transform(v => (IAdsbVehicle)v);
         var d2 =_onAdsbTarget.Subscribe(UpdateTarget);
@@ -90,47 +90,47 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
 public class AdsbVehicle : DisposableOnceWithCancel, IAdsbVehicle
 {
     private long _lastHit;
-    private readonly RxValue<string> _callSign;
-    private readonly RxValue<GeoPoint> _location;
-    private readonly RxValue<double> _heading;
-    private readonly RxValue<AdsbEmitterType> _emitterType;
-    private readonly RxValue<AdsbAltitudeType> _altitudeType;
-    private readonly RxValue<TimeSpan> _tslc;
+    private readonly ReactiveProperty<string> _callSign;
+    private readonly ReactiveProperty<GeoPoint> _location;
+    private readonly ReactiveProperty<double> _heading;
+    private readonly ReactiveProperty<AdsbEmitterType> _emitterType;
+    private readonly ReactiveProperty<AdsbAltitudeType> _altitudeType;
+    private readonly ReactiveProperty<TimeSpan> _tslc;
     private readonly uint _icaoAddress;
-    private readonly RxValue<AdsbFlags> _flags;
-    private readonly RxValue<double> _horVelocity;
-    private readonly RxValue<double> _verVelocity;
-    private readonly RxValue<ushort> _squawk;
+    private readonly ReactiveProperty<AdsbFlags> _flags;
+    private readonly ReactiveProperty<double> _horVelocity;
+    private readonly ReactiveProperty<double> _verVelocity;
+    private readonly ReactiveProperty<ushort> _squawk;
 
     public AdsbVehicle(AdsbVehiclePayload payload, long currentTime)
     {
         if (payload == null) throw new ArgumentNullException(nameof(payload));
         
         _icaoAddress = payload.IcaoAddress;
-        _heading = new RxValue<double>().DisposeItWith(Disposable);
-        _emitterType = new RxValue<AdsbEmitterType>().DisposeItWith(Disposable);
-        _altitudeType = new RxValue<AdsbAltitudeType>().DisposeItWith(Disposable);
-        _tslc = new RxValue<TimeSpan>().DisposeItWith(Disposable);
-        _horVelocity = new RxValue<double>().DisposeItWith(Disposable);
-        _flags = new RxValue<AdsbFlags>().DisposeItWith(Disposable);
-        _verVelocity = new RxValue<double>().DisposeItWith(Disposable);
-        _callSign = new RxValue<string>().DisposeItWith(Disposable);
-        _location = new RxValue<GeoPoint>().DisposeItWith(Disposable);
-        _squawk = new RxValue<ushort>().DisposeItWith(Disposable);
+        _heading = new ReactiveProperty<double>().DisposeItWith(Disposable);
+        _emitterType = new ReactiveProperty<AdsbEmitterType>().DisposeItWith(Disposable);
+        _altitudeType = new ReactiveProperty<AdsbAltitudeType>().DisposeItWith(Disposable);
+        _tslc = new ReactiveProperty<TimeSpan>().DisposeItWith(Disposable);
+        _horVelocity = new ReactiveProperty<double>().DisposeItWith(Disposable);
+        _flags = new ReactiveProperty<AdsbFlags>().DisposeItWith(Disposable);
+        _verVelocity = new ReactiveProperty<double>().DisposeItWith(Disposable);
+        _callSign = new ReactiveProperty<string>().DisposeItWith(Disposable);
+        _location = new ReactiveProperty<GeoPoint>().DisposeItWith(Disposable);
+        _squawk = new ReactiveProperty<ushort>().DisposeItWith(Disposable);
         InternalUpdate(payload,currentTime);
     }
     
     public uint IcaoAddress => _icaoAddress;
-    public IRxValue<GeoPoint> Location => _location;
-    public IRxValue<AdsbAltitudeType> AltitudeType => _altitudeType;
-    public IRxValue<double> Heading => _heading;
-    public IRxValue<double> HorVelocity => _horVelocity;
-    public IRxValue<double> VerVelocity => _verVelocity;
-    public IRxValue<AdsbFlags> Flags => _flags;
-    public IRxValue<ushort> Squawk => _squawk;
-    public IRxValue<string> CallSign => _callSign;
-    public IRxValue<AdsbEmitterType> EmitterType => _emitterType;
-    public IRxValue<TimeSpan> Tslc => _tslc;
+    public ReadOnlyReactiveProperty<GeoPoint> Location => _location;
+    public ReadOnlyReactiveProperty<AdsbAltitudeType> AltitudeType => _altitudeType;
+    public ReadOnlyReactiveProperty<double> Heading => _heading;
+    public ReadOnlyReactiveProperty<double> HorVelocity => _horVelocity;
+    public ReadOnlyReactiveProperty<double> VerVelocity => _verVelocity;
+    public ReadOnlyReactiveProperty<AdsbFlags> Flags => _flags;
+    public ReadOnlyReactiveProperty<ushort> Squawk => _squawk;
+    public ReadOnlyReactiveProperty<string> CallSign => _callSign;
+    public ReadOnlyReactiveProperty<AdsbEmitterType> EmitterType => _emitterType;
+    public ReadOnlyReactiveProperty<TimeSpan> Tslc => _tslc;
     public long GetLastHit()
     {
         return Interlocked.CompareExchange(ref _lastHit, 0, 0);

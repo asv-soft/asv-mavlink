@@ -3,12 +3,13 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
+using R3;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-public class HeartbeatTests(ITestOutputHelper output) : ClientServerTestBase<HeartbeatClient, HeartbeatServer>(output)
+public class HeartbeatComplexTest(ITestOutputHelper output) : ComplexTestBase<HeartbeatClient, HeartbeatServer>(output)
 {
     private readonly HeartbeatClientConfig _clientConfig = new();
     private readonly MavlinkHeartbeatServerConfig _serverConfig = new();
@@ -30,14 +31,14 @@ public class HeartbeatTests(ITestOutputHelper output) : ClientServerTestBase<Hea
         Server.Start();
         ServerTime.Advance(TimeSpan.FromSeconds(1.1));
         ClientTime.Advance(TimeSpan.FromSeconds(1.1));
-        await Client.Link.FirstAsync(_ => _ == LinkState.Connected);
+        await Client.Link.FirstAsync(x => x == LinkState.Connected);
         
-        Assert.NotNull(Client.RawHeartbeat.Value);
-        Assert.Equal(MavAutopilot.MavAutopilotGeneric, Client.RawHeartbeat.Value.Autopilot);
-        Assert.Equal(MavModeFlag.MavModeFlagManualInputEnabled, Client.RawHeartbeat.Value.BaseMode);
-        Assert.Equal(123U, Client.RawHeartbeat.Value.CustomMode);
-        Assert.Equal(MavState.MavStateActive, Client.RawHeartbeat.Value.SystemStatus);
-        Assert.Equal(3, Client.RawHeartbeat.Value.MavlinkVersion);
+        Assert.NotNull(Client.RawHeartbeat.CurrentValue);
+        Assert.Equal(MavAutopilot.MavAutopilotGeneric, Client.RawHeartbeat.CurrentValue.Autopilot);
+        Assert.Equal(MavModeFlag.MavModeFlagManualInputEnabled, Client.RawHeartbeat.CurrentValue.BaseMode);
+        Assert.Equal(123U, Client.RawHeartbeat.CurrentValue.CustomMode);
+        Assert.Equal(MavState.MavStateActive, Client.RawHeartbeat.CurrentValue.SystemStatus);
+        Assert.Equal(3, Client.RawHeartbeat.CurrentValue.MavlinkVersion);
     }
 
    

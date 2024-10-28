@@ -29,9 +29,9 @@ namespace Asv.Mavlink
         private static readonly TimeSpan CheckConnectionDelay = TimeSpan.FromSeconds(1);
         private readonly CircularBuffer2<double> _valueBuffer = new(5);
         private readonly IncrementalRateCounter _rxRate;
-        private readonly RxValueBehaviour<HeartbeatPayload?> _heartBeat;
-        private readonly RxValueBehaviour<double> _packetRate;
-        private readonly RxValueBehaviour<double> _linkQuality;
+        private readonly ReactiveProperty<HeartbeatPayload> _heartBeat;
+        private readonly ReactiveProperty<double> _packetRate;
+        private readonly ReactiveProperty<double> _linkQuality;
         private readonly LinkIndicator _link;
         private long _lastHeartbeat;
         private long _totalRateCounter;
@@ -64,17 +64,17 @@ namespace Asv.Mavlink
                     }
                     Interlocked.Increment(ref _totalRateCounter);
                 }).AddTo(ref builder);
-            _heartBeat = new RxValueBehaviour<HeartbeatPayload?>(null).AddTo(ref builder);
+            _heartBeat = new ReactiveProperty<HeartbeatPayload>().AddTo(ref builder);
             InternalFilter<HeartbeatPacket>()
                 .Select(p => p.Payload)
-                .Subscribe(_heartBeat)
+                .Subscribe(_heartBeat.AsObserver())
                 .AddTo(ref builder);
 
-            _packetRate = new RxValueBehaviour<double>(0)
+            _packetRate = new ReactiveProperty<double>(0)
                 .AddTo(ref builder);
             _link = new LinkIndicator(config.LinkQualityWarningSkipCount)
                 .AddTo(ref builder);
-            _linkQuality = new RxValueBehaviour<double>(0)
+            _linkQuality = new ReactiveProperty<double>()
                 .AddTo(ref builder);
             _timeProvider
                 .CreateTimer(CheckConnection, null, TimeSpan.Zero, CheckConnectionDelay)
@@ -150,10 +150,10 @@ namespace Asv.Mavlink
         }
 
         public ushort FullId { get; }
-        public IRxValue<HeartbeatPayload?> RawHeartbeat => _heartBeat;
-        public IRxValue<double> PacketRateHz => _packetRate;
-        public IRxValue<double> LinkQuality => _linkQuality;
-        public IRxValue<LinkState> Link => _link;
+        public ReadOnlyReactiveProperty<HeartbeatPayload?> RawHeartbeat => _heartBeat;
+        public ReadOnlyReactiveProperty<double> PacketRateHz => _packetRate;
+        public ReadOnlyReactiveProperty<double> LinkQuality => _linkQuality;
+        public ReadOnlyReactiveProperty<LinkState> Link => _link;
 
         private void CheckConnection(object? state)
         {

@@ -4,6 +4,7 @@ using System.Threading;
 using Asv.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink
@@ -12,24 +13,22 @@ namespace Asv.Mavlink
         where TPacket : IPacketV2<TPayload>, new()
         where TPayload : IPayload, new()
     {
-        private readonly IMavlinkV2Connection _connection;
-        private readonly IPacketSequenceCalculator _seq;
+        private readonly ICoreServices _core;
         private readonly object _sync = new();
         private readonly ILogger _logger;
         private readonly ReaderWriterLockSlim _dataLock = new();
         private int _isSending;
-        private readonly RxValue<PacketTransponderState> _state = new();
+        private readonly ReactiveProperty<PacketTransponderState> _state = new();
         private TPacket _packet;
         private ITimer? _timer;
-        private readonly TimeProvider _timeProvider;
         private readonly CancellationTokenSource _disposeCancel;
 
         public MavlinkPacketTransponder(MavlinkIdentity identityConfig, ICoreServices core)
         {
+            ArgumentNullException.ThrowIfNull(identityConfig);
+            _core = core ?? throw new ArgumentNullException(nameof(core));
             _logger = core.Log.CreateLogger<IMavlinkPacketTransponder<TPacket,TPayload>>();
-            _connection = core.Connection;
-            _seq = core.Sequence;
-            _timeProvider = core.TimeProvider;
+            
             _disposeCancel = new CancellationTokenSource();
             _packet = new TPacket
             {
@@ -46,7 +45,7 @@ namespace Asv.Mavlink
             lock (_sync)
             {
                 _timer?.Dispose();
-                _timer = _timeProvider.CreateTimer(OnTick,null,dueTime, period);
+                _timer = _core.TimeProvider.CreateTimer(OnTick,null,dueTime, period);
                 IsStarted = true;
             }
         }
@@ -62,8 +61,8 @@ namespace Asv.Mavlink
             try
             {
                 _dataLock.EnterReadLock();
-                ((IPacketV2<IPayload>) _packet).Sequence = _seq.GetNextSequenceNumber();
-                _connection.Send((IPacketV2<IPayload>)_packet, DisposeCancel).Wait(DisposeCancel);
+                ((IPacketV2<IPayload>) _packet).Sequence = _core.Sequence.GetNextSequenceNumber();
+                _core.Connection.Send((IPacketV2<IPayload>)_packet, DisposeCancel).Wait(DisposeCancel);
                 LogSuccess();
             }
             catch (Exception e)
@@ -99,13 +98,9 @@ namespace Asv.Mavlink
             _state.OnNext(PacketTransponderState.Skipped);
             _logger.ZLogWarning($"{new TPacket().Name} skipped sending: previous command has not yet been executed");
         }
-
-
-       
-
         public bool IsStarted { get; private set; }
 
-        public IRxValue<PacketTransponderState> State => _state;
+        public ReadOnlyReactiveProperty<PacketTransponderState> State => _state;
 
         public void Stop()
         {
@@ -140,7 +135,7 @@ namespace Asv.Mavlink
             _disposeCancel.Dispose();
             Stop();
             _dataLock.Dispose();
-            _state?.Dispose();
+            _state.Dispose();
             
         }
     }

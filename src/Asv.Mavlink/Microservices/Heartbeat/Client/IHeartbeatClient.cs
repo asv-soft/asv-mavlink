@@ -1,6 +1,7 @@
 using System;
 using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -23,18 +24,18 @@ namespace Asv.Mavlink
         /// <value>
         /// The raw heartbeat value.
         /// </value>
-        IRxValue<HeartbeatPayload?> RawHeartbeat { get; }
+        ReadOnlyReactiveProperty<HeartbeatPayload?> RawHeartbeat { get; }
 
         /// <summary>
         /// Gets the packet rate in Hz.
         /// </summary>
         /// <returns>The value of the packet rate in Hz.</returns>
-        IRxValue<double> PacketRateHz { get; }
+        ReadOnlyReactiveProperty<double> PacketRateHz { get; }
 
         /// <summary>
         /// Gets the quality of the link as an interface to receive a read-only observable stream of double values.
         /// </summary>
-        IRxValue<double> LinkQuality { get; }
+        ReadOnlyReactiveProperty<double> LinkQuality { get; }
 
         /// <summary>
         /// Gets the RxValue instance representing the state of a link.
@@ -42,7 +43,7 @@ namespace Asv.Mavlink
         /// <value>
         /// The RxValue instance representing the state of the link.
         /// </value>
-        IRxValue<LinkState> Link { get; }
+        ReadOnlyReactiveProperty<LinkState> Link { get; }
     }
 
     

@@ -10,6 +10,7 @@ using System.Threading;
 using Asv.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink;
@@ -81,8 +82,8 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     private readonly TimeProvider _timeProvider;
     private readonly ILogger _logger;
     private readonly object _sync = new();
-    private readonly RxValue<ushort> _count;
-    private readonly RxValue<ulong> _size;
+    private readonly ReactiveProperty<ushort> _count;
+    private readonly ReactiveProperty<ulong> _size;
     private readonly Dictionary<TKey,FileSystemHierarchicalStoreEntry<TKey>> _entries;
     private readonly List<CachedFile<TKey,TFile>> _fileCache = new();
     private int _checkCacheInProgress;
@@ -111,8 +112,8 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
             _logger.ZLogWarning($"Directory '{rootFolder}' not exist. Try create");
             Directory.CreateDirectory(rootFolder);
         }
-        _count = new RxValue<ushort>().DisposeItWith(Disposable);
-        _size = new RxValue<ulong>().DisposeItWith(Disposable);
+        _count = new ReactiveProperty<ushort>().DisposeItWith(Disposable);
+        _size = new ReactiveProperty<ulong>().DisposeItWith(Disposable);
         
         InternalUpdateEntries();
         
@@ -120,7 +121,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
 
     }
     
-    public IRxValue<ushort> Count => _count;
+    public ReadOnlyReactiveProperty<ushort> Count => _count;
 
     /// <summary>
     /// Gets the size value as an observable.
@@ -128,7 +129,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     /// <value>
     /// An instance of <see cref="IRxValue{ulong}"/> representing the size value.
     /// </value>
-    public IRxValue<ulong> Size => _size;
+    public ReadOnlyReactiveProperty<ulong> Size => _size;
 
     public void UpdateEntries()
     {

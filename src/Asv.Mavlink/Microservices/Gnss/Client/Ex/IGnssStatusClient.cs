@@ -17,7 +17,7 @@ public interface IGnssStatusClient
     /// <returns>
     /// An <see cref="IRxValue{T}"/> representing the ground velocity.
     /// </returns>
-    IRxValue<double> GroundVelocity { get; }
+    ReadOnlyReactiveProperty<double> GroundVelocity { get; }
 
     /// <summary>
     /// Gets the property that represents the GPS information.
@@ -29,13 +29,13 @@ public interface IGnssStatusClient
     /// <returns>
     /// An IRxValue object of type GpsInfo that contains the GPS information.
     /// </returns>
-    IRxValue<GpsInfo?> Info { get; }
+    ReadOnlyReactiveProperty<GpsInfo?> Info { get; }
 
     /// <summary>
     /// Gets the position.
     /// </summary>
     /// <returns>The position.</returns>
-    IRxValue<GeoPoint> Position { get; }
+    ReadOnlyReactiveProperty<GeoPoint> Position { get; }
 }
 
 /// <summary>
@@ -46,17 +46,17 @@ public class GnssStatusClient : IGnssStatusClient, IDisposable
     /// <summary>
     /// Represents the current ground velocity.
     /// </summary>
-    private readonly RxValueBehaviour<double> _groundVelocity;
+    private readonly ReactiveProperty<double> _groundVelocity;
 
     /// <summary>
     /// Represents a reactive value of type GpsInfo.
     /// </summary>
-    private readonly RxValueBehaviour<GpsInfo?> _info;
+    private readonly ReactiveProperty<GpsInfo?> _info;
 
     /// <summary>
     /// Represents the current position as a GeoPoint.
     /// </summary>
-    private readonly RxValueBehaviour<GeoPoint> _position;
+    private readonly ReactiveProperty<GeoPoint> _position;
 
     private readonly IDisposable _disposeIt;
 
@@ -65,11 +65,11 @@ public class GnssStatusClient : IGnssStatusClient, IDisposable
     /// /
     public GnssStatusClient(IObservable<GpsRawIntPayload> pipe)
     {
-        _info = new RxValueBehaviour<GpsInfo?>(null);
+        _info = new ReactiveProperty<GpsInfo?>(null);
         var d1 = pipe.Select(p => new GpsInfo(p)).Subscribe(_info);
-        _groundVelocity = new RxValueBehaviour<double>(double.NaN);
+        _groundVelocity = new ReactiveProperty<double>(double.NaN);
         var d2 = pipe.Select(p => p.Vel / 100D).Subscribe(_groundVelocity);
-        _position = new RxValueBehaviour<GeoPoint>(GeoPoint.Zero);
+        _position = new ReactiveProperty<GeoPoint>(GeoPoint.Zero);
         var d3 = pipe.Select(p => new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lat),
                 MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lon),
                 MavlinkTypesHelper.AltFromMmToDoubleMeter(p.Alt)))
@@ -83,11 +83,11 @@ public class GnssStatusClient : IGnssStatusClient, IDisposable
     /// <param name="pipe">The observable pipe to receive GPS2RawPayload data.</param>
     public GnssStatusClient(IObservable<Gps2RawPayload> pipe)
     {
-        _info = new RxValueBehaviour<GpsInfo>(null);
+        _info = new ReactiveProperty<GpsInfo>(null);
         var d1 = pipe.Select(p => new GpsInfo(p)).Subscribe(_info);
-        _groundVelocity = new RxValueBehaviour<double>(Double.NaN);
+        _groundVelocity = new ReactiveProperty<double>(Double.NaN);
         var d2 = pipe.Select(p => p.Vel / 100D).Subscribe(_groundVelocity);
-        _position = new RxValueBehaviour<GeoPoint>(GeoPoint.Zero);
+        _position = new ReactiveProperty<GeoPoint>(GeoPoint.Zero);
         var d3 = pipe.Select(p => new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lat),
                 MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lon),
                 MavlinkTypesHelper.AltFromMmToDoubleMeter(p.Alt)))
@@ -107,7 +107,7 @@ public class GnssStatusClient : IGnssStatusClient, IDisposable
     /// <returns>
     /// An <see cref="IRxValue{T}"/> object representing the ground velocity.
     /// </returns>
-    public IRxValue<double> GroundVelocity => _groundVelocity;
+    public ReadOnlyReactiveProperty<double> GroundVelocity => _groundVelocity;
 
     /// <summary>
     /// Gets the GPS information.
@@ -118,7 +118,7 @@ public class GnssStatusClient : IGnssStatusClient, IDisposable
     /// <remarks>
     /// This property provides access to the GPS information represented by an <see cref="IRxValue{T}"/> of type <see cref="GpsInfo"/>.
     /// </remarks>
-    public IRxValue<GpsInfo?> Info => _info;
+    public ReadOnlyReactiveProperty<GpsInfo?> Info => _info;
 
     /// <summary>
     /// Gets the position value as an instance of <see cref="IRxValue{GeoPoint}"/>.
@@ -126,7 +126,7 @@ public class GnssStatusClient : IGnssStatusClient, IDisposable
     /// <value>
     /// The position value.
     /// </value>
-    public IRxValue<GeoPoint> Position => _position;
+    public ReadOnlyReactiveProperty<GeoPoint> Position => _position;
 
     public void Dispose()
     {

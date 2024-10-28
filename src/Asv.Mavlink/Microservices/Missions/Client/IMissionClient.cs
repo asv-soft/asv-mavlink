@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -15,7 +16,7 @@ namespace Asv.Mavlink
         /// Gets the current mission value.
         /// </summary>
         /// <value>The current mission value.</value>
-        IRxValue<ushort> MissionCurrent { get; }
+        ReadOnlyReactiveProperty<ushort> MissionCurrent { get; }
 
         /// <summary>
         /// Drone receives message and attempts to update the current mission sequence number.
@@ -34,7 +35,7 @@ namespace Asv.Mavlink
         /// <returns>
         /// The interface representing the mission reached property.
         /// </returns>
-        IRxValue<ushort> MissionReached { get; }
+        ReadOnlyReactiveProperty<ushort> MissionReached { get; }
 
         /// <summary>
         /// Gets an observable stream of mission request payloads.

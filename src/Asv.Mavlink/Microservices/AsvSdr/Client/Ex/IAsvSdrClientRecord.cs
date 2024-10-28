@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvSdr;
 using DynamicData;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -24,12 +25,12 @@ public interface IAsvSdrClientRecord
     /// <value>
     /// The data type of the value as an <see cref="IRxValue{T}"/> where T is <see cref="AsvSdrCustomMode"/>.
     /// </value>
-    IRxValue<AsvSdrCustomMode> DataType { get; }
+    ReadOnlyReactiveProperty<AsvSdrCustomMode> DataType { get; }
 
     /// Gets the value of the Name property. </summary> <value>
     /// The value of the Name property. </value>
     /// /
-    IRxValue<string> Name { get; }
+    ReadOnlyReactiveProperty<string> Name { get; }
 
     /// <summary>
     /// Gets the frequency of the signal.
@@ -37,7 +38,7 @@ public interface IAsvSdrClientRecord
     /// <returns>
     /// The frequency represented by an <see cref="IRxValue"/> of type <see cref="ulong"/>.
     /// </returns>
-    IRxValue<ulong> Frequency { get; }
+    ReadOnlyReactiveProperty<ulong> Frequency { get; }
 
     /// <summary>
     /// Gets the RxValue representing the creation date and time of an object.
@@ -45,7 +46,7 @@ public interface IAsvSdrClientRecord
     /// <returns>
     /// The RxValue object that represents the creation date and time of an object.
     /// </returns>
-    IRxValue<DateTime> Created { get; }
+    ReadOnlyReactiveProperty<DateTime> Created { get; }
 
     /// <summary>
     /// Gets the number of tags.
@@ -56,7 +57,7 @@ public interface IAsvSdrClientRecord
     /// <returns>
     /// An interface representing a reactive value of type ushort, indicating the number of tags.
     /// </returns>
-    IRxValue<ushort> TagsCount { get; }
+    ReadOnlyReactiveProperty<ushort> TagsCount { get; }
 
     /// <summary>
     /// Gets the data count property.
@@ -67,7 +68,7 @@ public interface IAsvSdrClientRecord
     /// <value>
     /// An <see cref="IRxValue{T}"/> object representing the data count.
     /// </value>
-    IRxValue<uint> DataCount { get; }
+    ReadOnlyReactiveProperty<uint> DataCount { get; }
 
     /// <summary>
     /// Gets the byte size of the value.
@@ -78,7 +79,7 @@ public interface IAsvSdrClientRecord
     /// <returns>
     /// An IRxValue of type uint representing the byte size of the value.
     /// </returns>
-    IRxValue<uint> ByteSize { get; }
+    ReadOnlyReactiveProperty<uint> ByteSize { get; }
 
     /// <summary>
     /// Gets the duration of this object.
@@ -89,7 +90,7 @@ public interface IAsvSdrClientRecord
     /// <returns>
     /// An <see cref="IRxValue{TimeSpan}"/> representing the duration.
     /// </returns>
-    IRxValue<TimeSpan> Duration { get; }
+    ReadOnlyReactiveProperty<TimeSpan> Duration { get; }
 
     /// <summary>
     /// Gets an observable sequence of changes to the collection of tags.

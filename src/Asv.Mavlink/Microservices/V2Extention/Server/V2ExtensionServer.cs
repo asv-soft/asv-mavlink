@@ -6,26 +6,19 @@ using R3;
 
 namespace Asv.Mavlink
 {
-    public class V2ExtensionServer : MavlinkMicroserviceServer, IV2ExtensionServer
+    public sealed class V2ExtensionServer : MavlinkMicroserviceServer, IV2ExtensionServer
     {
-        
-
-        private readonly ReactiveProperty<V2ExtensionPacket> _onData;
-        private readonly IDisposable _sub1;
+        private readonly Subject<V2ExtensionPacket> _onData;
+        private readonly IDisposable _sub;
 
         public V2ExtensionServer(MavlinkIdentity identity,ICoreServices core )
-        :base("V2EXT",identity,core)
+            :base("V2EXT",identity,core)
         {
-            _onData = new ReactiveProperty<V2ExtensionPacket>();
-            _sub1 = core.Connection.Filter<V2ExtensionPacket>()
-                .Where(identity,(p,i) =>
-                    (p.Payload.TargetSystem == 0 || p.Payload.TargetSystem == i.SystemId) &&
-                    (p.Payload.TargetComponent == 0 || p.Payload.TargetComponent == i.ComponentId))
+            _onData = new Subject<V2ExtensionPacket>(); 
+            _sub = InternalFilter<V2ExtensionPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
                 .Subscribe(_onData.AsObserver());
         }
-
-        public ReadOnlyReactiveProperty<V2ExtensionPacket> OnData => _onData;
-
+        public Observable<V2ExtensionPacket> OnData => _onData;
         public Task SendData(byte targetSystemId,byte targetComponentId,byte targetNetworkId,ushort messageType, byte[] data, CancellationToken cancel)
         {
             return InternalSend<V2ExtensionPacket>(packet =>
@@ -45,7 +38,7 @@ namespace Asv.Mavlink
             if (disposing)
             {
                 _onData.Dispose();
-                _sub1.Dispose();
+                _sub.Dispose();
             }
 
             base.Dispose(disposing);
@@ -54,7 +47,7 @@ namespace Asv.Mavlink
         protected override async ValueTask DisposeAsyncCore()
         {
             await CastAndDispose(_onData).ConfigureAwait(false);
-            await CastAndDispose(_sub1).ConfigureAwait(false);
+            await CastAndDispose(_sub).ConfigureAwait(false);
 
             await base.DisposeAsyncCore().ConfigureAwait(false);
 
@@ -68,7 +61,6 @@ namespace Asv.Mavlink
                     resource.Dispose();
             }
         }
-
         #endregion
     }
 

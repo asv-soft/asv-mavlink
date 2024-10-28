@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvAudio;
 using DynamicData;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -18,8 +19,8 @@ public interface IAudioService
     IEnumerable<AsvAudioCodec> AvailableCodecs { get; }
     void GoOnline(string name, AsvAudioCodec codec, bool speakerEnabled, bool micEnabled);
     void GoOffline();
-    IRxValue<bool> IsOnline { get; }
-    IRxValue<AsvAudioCodec?> Codec { get; }
+    ReadOnlyReactiveProperty<bool> IsOnline { get; }
+    ReadOnlyReactiveProperty<AsvAudioCodec?> Codec { get; }
     IRxEditableValue<bool> SpeakerEnabled { get; }
     IRxEditableValue<bool> MicEnabled { get; }
     IObservable<IChangeSet<IAudioDevice, MavlinkIdentity>> Devices { get; }

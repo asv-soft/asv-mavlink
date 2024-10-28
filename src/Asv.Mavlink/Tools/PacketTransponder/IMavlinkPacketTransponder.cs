@@ -1,5 +1,6 @@
 using System;
 using Asv.Common;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -66,7 +67,7 @@ namespace Asv.Mavlink
         /// <returns>
         /// An <see cref="IRxValue{T}"/> instance representing the state of the packet transponder.
         /// </returns>
-        IRxValue<PacketTransponderState> State { get; }
+        ReadOnlyReactiveProperty<PacketTransponderState> State { get; }
 
         /// <summary>
         /// Stops the execution of the program.

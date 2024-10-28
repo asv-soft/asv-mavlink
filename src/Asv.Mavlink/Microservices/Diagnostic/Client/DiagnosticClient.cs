@@ -24,19 +24,19 @@ public class DiagnosticClientConfig
 
 internal class ClientNamedProbe<T> : INamedProbe<T>
 {
-    private readonly RxValue<(TimeSpan,T)> _value;
+    private readonly ReactiveProperty<(TimeSpan,T)> _value;
     private long _lastUpdate;
 
 
     public ClientNamedProbe(string name, T value, uint payloadTimeBootMs, long updateLocalTimestamp)
     {
         Name = name;
-        _value = new RxValue<(TimeSpan,T)>(new (TimeSpan.FromMilliseconds(payloadTimeBootMs),value));
+        _value = new ReactiveProperty<(TimeSpan,T)>(new (TimeSpan.FromMilliseconds(payloadTimeBootMs),value));
         _lastUpdate = updateLocalTimestamp;
     }
 
     public string Name { get; }
-    public IRxValue<(TimeSpan,T)> Value => _value;
+    public ReadOnlyReactiveProperty<(TimeSpan,T)> Value => _value;
     
     public long LastUpdateTimestamp => _lastUpdate;
     public void Dispose()

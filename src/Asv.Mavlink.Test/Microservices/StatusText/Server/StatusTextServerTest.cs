@@ -1,10 +1,12 @@
 using System;
+using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-public class StatusTextServerTests(ITestOutputHelper log, VirtualMavlinkConnection? link = null)
+[TestSubject(typeof(StatusTextServer))]
+public class StatusTextServerTest(ITestOutputHelper log, VirtualMavlinkConnection? link = null)
     : ServerTestBase<StatusTextServer>(log, link)
 {
     private StatusTextLoggerConfig _config = new()

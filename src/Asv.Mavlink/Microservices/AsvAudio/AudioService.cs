@@ -23,10 +23,10 @@ public class AudioService : IAudioService,IDisposable
     private readonly ICoreServices _core;
     private readonly SourceCache<AudioDevice,MavlinkIdentity> _deviceCache;
     private readonly MavlinkPacketTransponder<AsvAudioOnlinePacket,AsvAudioOnlinePayload> _transponder;
-    private readonly RxValue<bool> _isOnline;
-    private readonly RxValue<AsvAudioCodec?> _codec;
-    private readonly RxValue<bool> _speakerEnabled;
-    private readonly RxValue<bool> _micEnabled;
+    private readonly ReactiveProperty<bool> _isOnline;
+    private readonly ReactiveProperty<AsvAudioCodec?> _codec;
+    private readonly ReactiveProperty<bool> _speakerEnabled;
+    private readonly ReactiveProperty<bool> _micEnabled;
     
     private readonly TimeSpan _deviceTimeout;
     private readonly TimeSpan _onlineRate;
@@ -56,9 +56,9 @@ public class AudioService : IAudioService,IDisposable
         
         _transponder = new MavlinkPacketTransponder<AsvAudioOnlinePacket,AsvAudioOnlinePayload>(identity,core)
             .AddTo(ref builder);
-        _isOnline = new RxValue<bool>(false).AddTo(ref builder);
-        _codec = new RxValue<AsvAudioCodec?>().AddTo(ref builder);
-        _speakerEnabled = new RxValue<bool>(false).AddTo(ref builder);
+        _isOnline = new ReactiveProperty<bool>(false).AddTo(ref builder);
+        _codec = new ReactiveProperty<AsvAudioCodec?>().AddTo(ref builder);
+        _speakerEnabled = new ReactiveProperty<bool>(false).AddTo(ref builder);
         _speakerEnabled.Subscribe(speakerEnabled=>_transponder.Set(p=>
         {
             if (speakerEnabled)
@@ -70,7 +70,7 @@ public class AudioService : IAudioService,IDisposable
                 p.Mode &= ~AsvAudioModeFlag.AsvAudioModeFlagSpeakerOn;
             }
         })).AddTo(ref builder);
-        _micEnabled = new RxValue<bool>(false).AddTo(ref builder);
+        _micEnabled = new ReactiveProperty<bool>(false).AddTo(ref builder);
         _micEnabled.Subscribe(micEnabled=>_transponder.Set(p=>
         {
             if (micEnabled)
@@ -196,8 +196,8 @@ public class AudioService : IAudioService,IDisposable
         _transponder.Stop();
     }
 
-    public IRxValue<bool> IsOnline => _isOnline;
-    public IRxValue<AsvAudioCodec?> Codec => _codec;
+    public ReadOnlyReactiveProperty<bool> IsOnline => _isOnline;
+    public ReadOnlyReactiveProperty<AsvAudioCodec?> Codec => _codec;
     public IRxEditableValue<bool> SpeakerEnabled => _speakerEnabled;
     public IRxEditableValue<bool> MicEnabled => _micEnabled;
     public IObservable<IChangeSet<IAudioDevice, MavlinkIdentity>> Devices { get; }

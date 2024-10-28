@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvGbs;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -19,67 +20,67 @@ namespace Asv.Mavlink
         /// <summary>
         /// Gets the custom mode value.
         /// </summary>
-        IRxValue<AsvGbsCustomMode> CustomMode { get; }
+        ReadOnlyReactiveProperty<AsvGbsCustomMode> CustomMode { get; }
 
         /// <summary>
         /// Gets the geoposition value.
         /// </summary>
-        IRxValue<GeoPoint> Position { get; }
+        ReadOnlyReactiveProperty<GeoPoint> Position { get; }
 
         /// <summary>
         /// Gets the accuracy value in meters.
         /// </summary>
-        IRxValue<double> AccuracyMeter { get; }
+        ReadOnlyReactiveProperty<double> AccuracyMeter { get; }
 
         /// <summary>
         /// Gets the value for observation per second.
         /// </summary>
-        IRxValue<ushort> ObservationSec { get; }
+        ReadOnlyReactiveProperty<ushort> ObservationSec { get; }
 
         /// <summary>
         /// Gets the rate of DPBS.
         /// </summary>
-        IRxValue<ushort> DgpsRate { get; }
+        ReadOnlyReactiveProperty<ushort> DgpsRate { get; }
 
         /// <summary>
         /// Gets the number of all satellites.
         /// </summary>
-        IRxValue<byte> AllSatellites { get; }
+        ReadOnlyReactiveProperty<byte> AllSatellites { get; }
 
         /// <summary>
         /// Gets the number of Galileo satellites.
         /// </summary>
-        IRxValue<byte> GalSatellites { get; }
+        ReadOnlyReactiveProperty<byte> GalSatellites { get; }
 
         /// <summary>
         /// Gets the number of Beidou satellites.
         /// </summary>
-        IRxValue<byte> BeidouSatellites { get; }
+        ReadOnlyReactiveProperty<byte> BeidouSatellites { get; }
 
         /// <summary>
         /// Gets the number of GLONASS satellites.
         /// </summary>
-        IRxValue<byte> GlonassSatellites { get; }
+        ReadOnlyReactiveProperty<byte> GlonassSatellites { get; }
 
         /// <summary>
         /// Gets the number of GPS satellites.
         /// </summary>
-        IRxValue<byte> GpsSatellites { get; }
+        ReadOnlyReactiveProperty<byte> GpsSatellites { get; }
 
         /// <summary>
         /// Gets the number of QZSS satellites.
         /// </summary>
-        IRxValue<byte> QzssSatellites { get; }
+        ReadOnlyReactiveProperty<byte> QzssSatellites { get; }
 
         /// <summary>
         /// Gets the number of SBAS satellites.
         /// </summary>
-        IRxValue<byte> SbasSatellites { get; }
+        ReadOnlyReactiveProperty<byte> SbasSatellites { get; }
 
         /// <summary>
         /// Gets the number of IMES satellites.
         /// </summary>
-        IRxValue<byte> ImesSatellites { get; }
+        ReadOnlyReactiveProperty<byte> ImesSatellites { get; }
 
         /// <summary>
         /// Start auto mode asynchronously.

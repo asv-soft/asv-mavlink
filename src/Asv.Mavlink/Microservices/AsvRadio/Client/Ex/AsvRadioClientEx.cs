@@ -10,15 +10,16 @@ using Asv.Mavlink.V2.AsvAudio;
 using Asv.Mavlink.V2.AsvRadio;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using R3;
 
 namespace Asv.Mavlink;
 
 public interface IAsvRadioClientEx:IMavlinkMicroserviceClient
 {
-    IRxValue<AsvRadioCustomMode> CustomMode { get; }
+    ReadOnlyReactiveProperty<AsvRadioCustomMode> CustomMode { get; }
     IAsvRadioClient Base { get; }
 
-    IRxValue<AsvRadioCapabilities?> Capabilities { get; }
+    ReadOnlyReactiveProperty<AsvRadioCapabilities?> Capabilities { get; }
     
     Task<MavResult> EnableRadio(uint frequencyHz, AsvRadioModulation modulation, float referenceRxPowerDbm,
         float txPowerDbm, AsvAudioCodec codec, CancellationToken cancel = default);
@@ -32,8 +33,8 @@ public interface IAsvRadioClientEx:IMavlinkMicroserviceClient
 public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
 {
     private readonly ICommandClient _commandClient;
-    private readonly RxValueBehaviour<AsvRadioCustomMode> _customMode;
-    private readonly RxValueBehaviour<AsvRadioCapabilities?> _capabilities;
+    private readonly ReactiveProperty<AsvRadioCustomMode> _customMode;
+    private readonly ReactiveProperty<AsvRadioCapabilities?> _capabilities;
 
     public AsvRadioClientEx(
         IAsvRadioClient client, 
@@ -42,15 +43,15 @@ public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
     {
         _commandClient = commandClient ?? throw new ArgumentNullException(nameof(commandClient));
         Base = client ?? throw new ArgumentNullException(nameof(client));
-        _customMode = new RxValueBehaviour<AsvRadioCustomMode>(AsvRadioCustomMode.AsvRadioCustomModeIdle).DisposeItWith(Disposable);;
+        _customMode = new ReactiveProperty<AsvRadioCustomMode>(AsvRadioCustomMode.AsvRadioCustomModeIdle).DisposeItWith(Disposable);;
         heartbeatClient.RawHeartbeat
             .Select(x => (AsvRadioCustomMode)x.CustomMode)
             .Subscribe(_customMode)
             .DisposeItWith(Disposable);
-        _capabilities = new RxValueBehaviour<AsvRadioCapabilities?>(default).DisposeItWith(Disposable);
+        _capabilities = new ReactiveProperty<AsvRadioCapabilities?>(default).DisposeItWith(Disposable);
     }
     public string Name => $"{Base.Name}Ex";
-    public IRxValue<AsvRadioCapabilities?> Capabilities => _capabilities;
+    public ReadOnlyReactiveProperty<AsvRadioCapabilities?> Capabilities => _capabilities;
 
     public async Task<MavResult> EnableRadio(uint frequencyHz, AsvRadioModulation modulation,float referenceRxPowerDbm,float txPowerDbm,  AsvAudioCodec codec, CancellationToken cancel)
     {
@@ -95,7 +96,7 @@ public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
         return result;
     }
 
-    public IRxValue<AsvRadioCustomMode> CustomMode => _customMode;
+    public ReadOnlyReactiveProperty<AsvRadioCustomMode> CustomMode => _customMode;
     public IAsvRadioClient Base { get; }
     public MavlinkClientIdentity Identity => Base.Identity;
     public ICoreServices Core => Base.Core;

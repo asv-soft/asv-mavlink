@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvChart;
 using DynamicData;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -18,7 +19,7 @@ public interface IAsvChartClient:IMavlinkMicroserviceClient
     OnDataReceivedDelegate OnDataReceived { get; set; }
     IObservable<AsvChartOptions> OnStreamOptions { get; }
     IObservable<AsvChartInfoUpdatedEventPayload> OnUpdateEvent { get; }
-    IRxValue<bool> IsSynced { get; }
+    ReadOnlyReactiveProperty<bool> IsSynced { get; }
     
     Task<AsvChartOptions> RequestStream(ushort signalId, AsvChartDataTrigger trigger, float rateMs, CancellationToken cancel = default)
     {

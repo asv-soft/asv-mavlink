@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -11,7 +12,7 @@ public class ParamItem: DisposableOnceWithCancel,IParamItem
     private readonly IParamsClient _client;
     private readonly IMavParamEncoding _converter;
     private readonly ParamValuePayload _payload;
-    private readonly RxValue<bool> _isSynced;
+    private readonly ReactiveProperty<bool> _isSynced;
     private readonly IRxEditableValue<MavParamValue> _value;
     private MavParamValue _remoteValue;
 
@@ -24,8 +25,8 @@ public class ParamItem: DisposableOnceWithCancel,IParamItem
         Name = MavlinkTypesHelper.GetString(payload.ParamId);
         Type = payload.ParamType;
         Index = payload.ParamIndex;
-        _isSynced = new RxValue<bool>(true).DisposeItWith(Disposable);
-        _value = new RxValue<MavParamValue>(_remoteValue = converter.ConvertFromMavlinkUnion(payload.ParamValue,payload.ParamType)).DisposeItWith(Disposable);
+        _isSynced = new ReactiveProperty<bool>(true).DisposeItWith(Disposable);
+        _value = new ReactiveProperty<MavParamValue>(_remoteValue = converter.ConvertFromMavlinkUnion(payload.ParamValue,payload.ParamType)).DisposeItWith(Disposable);
         _value.Subscribe(v => _isSynced.OnNext(_remoteValue == v)).DisposeItWith(Disposable);
         Disposable.AddAction(() =>
         {
@@ -39,7 +40,7 @@ public class ParamItem: DisposableOnceWithCancel,IParamItem
     public MavParamType Type { get; }
     public ushort Index { get; }
     
-    public IRxValue<bool> IsSynced => _isSynced;
+    public ReadOnlyReactiveProperty<bool> IsSynced => _isSynced;
     public IRxEditableValue<MavParamValue> Value => _value;
 
     public async Task Read(CancellationToken cancel)

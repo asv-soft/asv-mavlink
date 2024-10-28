@@ -3,15 +3,15 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
-using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvAudio;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
+using Unit = System.Reactive.Unit;
 
 namespace Asv.Mavlink;
 
@@ -64,7 +64,7 @@ public interface IAudioDevice
 {
     MavlinkIdentity FullId { get; }
     IObservable<Unit> OnLinePing { get; }
-    IRxValue<string> Name { get; }
+    ReadOnlyReactiveProperty<string> Name { get; }
     void SendAudio(ReadOnlyMemory<byte> pcmRawAudioData);
     AsvAudioCodec RxCodec { get; }
 }
@@ -75,15 +75,15 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
     private readonly ILogger _logger;
     private readonly Func<Action<AsvAudioStreamPacket>, CancellationToken, Task> _sendPacketDelegate;
     private readonly ICoreServices _core;
-    private readonly RxValue<string> _name;
+    private readonly ReactiveProperty<string> _name;
     private long _lastHit;
-    private readonly Subject<Unit> _onLinePing;
+    private readonly System.Reactive.Subjects.Subject<Unit> _onLinePing;
     private uint _frameCounter = 0;
     private readonly SortedDictionary<byte, AsvAudioStreamPayload> _frameBuffer = new();
     
     private readonly object _sync = new();
-    private readonly Subject<ReadOnlyMemory<byte>> _inputEncoderAudioStream;
-    private readonly Subject<ReadOnlyMemory<byte>> _inputDecoderAudioStream;
+    private readonly System.Reactive.Subjects.Subject<ReadOnlyMemory<byte>> _inputEncoderAudioStream;
+    private readonly System.Reactive.Subjects.Subject<ReadOnlyMemory<byte>> _inputDecoderAudioStream;
     private PacketCounter? _counter;
     private int _lastFrameSeq;
     private int _lastPacketSync;
@@ -99,8 +99,8 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
         _logger = core.Log.CreateLogger<AudioDevice>();
         ArgumentNullException.ThrowIfNull(factory);
         ArgumentNullException.ThrowIfNull(packet);
-        _inputEncoderAudioStream = new Subject<ReadOnlyMemory<byte>>().DisposeItWith(Disposable);
-        _inputDecoderAudioStream = new Subject<ReadOnlyMemory<byte>>().DisposeItWith(Disposable);
+        _inputEncoderAudioStream = new System.Reactive.Subjects.Subject<ReadOnlyMemory<byte>>().DisposeItWith(Disposable);
+        _inputDecoderAudioStream = new System.Reactive.Subjects.Subject<ReadOnlyMemory<byte>>().DisposeItWith(Disposable);
         
         _sendPacketDelegate = sendPacketDelegate ?? throw new ArgumentNullException(nameof(sendPacketDelegate));
         _core = core;
@@ -108,8 +108,8 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
         SystemId = packet.SystemId;
         ComponentId = packet.ComponentId;
         FullId = packet.FullId;
-        _name = new RxValue<string>(MavlinkTypesHelper.GetString(packet.Payload.Name)).DisposeItWith(Disposable);
-        _onLinePing = new Subject<Unit>().DisposeItWith(Disposable);
+        _name = new ReactiveProperty<string>(MavlinkTypesHelper.GetString(packet.Payload.Name)).DisposeItWith(Disposable);
+        _onLinePing = new System.Reactive.Subjects.Subject<Unit>().DisposeItWith(Disposable);
         var encoder = factory.CreateEncoder(outputCodecInfo,_inputEncoderAudioStream).DisposeItWith(Disposable);
         encoder.Subscribe(InternalSendEncodedAudio).DisposeItWith(Disposable);
         var decoder = factory.CreateDecoder(packet.Payload.Codec,_inputDecoderAudioStream).DisposeItWith(Disposable);
@@ -122,7 +122,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
     public byte ComponentId { get; }
     public MavlinkIdentity FullId { get; }
     public IObservable<Unit> OnLinePing => _onLinePing;
-    public IRxValue<string> Name => _name;
+    public ReadOnlyReactiveProperty<string> Name => _name;
     
     private async void InternalSendEncodedAudio(ReadOnlyMemory<byte> encodedData)
     {

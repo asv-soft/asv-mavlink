@@ -51,7 +51,7 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
             p.MavlinkVersion = 3;
             p.CustomMode = (uint)AsvSdrCustomMode.AsvSdrCustomModeIdle;
         });
-        CustomMode = new RxValue<AsvSdrCustomMode>().DisposeItWith(Disposable);
+        CustomMode = new ReactiveProperty<AsvSdrCustomMode>().DisposeItWith(Disposable);
         CustomMode.DistinctUntilChanged().Subscribe(mode => heartbeat.Set(p =>
         {
             p.CustomMode = (uint)mode;

@@ -17,19 +17,19 @@ public class AsvGbsExClient: IAsvGbsExClient, IDisposable
 {
     private readonly ILogger _logger;
     private readonly ICommandClient _command;
-    private readonly RxValue<AsvGbsCustomMode> _internalCustomMode;
-    private readonly RxValue<GeoPoint> _internalPosition;
-    private readonly RxValue<double> _internalAccuracyMeter;
-    private readonly RxValue<ushort> _internalObservationSec;
-    private readonly RxValue<ushort> _internalDgpsRate;
-    private readonly RxValue<byte> _internalAllSatellites;
-    private readonly RxValue<byte> _internalGalSatellites;
-    private readonly RxValue<byte> _internalBeidouSatellites;
-    private readonly RxValue<byte> _internalGlonassSatellites;
-    private readonly RxValue<byte> _internalGpsSatellites;
-    private readonly RxValue<byte> _internalQzssSatellites;
-    private readonly RxValue<byte> _internalSbasSatellites;
-    private readonly RxValue<byte> _internalImesSatellites;
+    private readonly ReactiveProperty<AsvGbsCustomMode> _internalCustomMode;
+    private readonly ReactiveProperty<GeoPoint> _internalPosition;
+    private readonly ReactiveProperty<double> _internalAccuracyMeter;
+    private readonly ReactiveProperty<ushort> _internalObservationSec;
+    private readonly ReactiveProperty<ushort> _internalDgpsRate;
+    private readonly ReactiveProperty<byte> _internalAllSatellites;
+    private readonly ReactiveProperty<byte> _internalGalSatellites;
+    private readonly ReactiveProperty<byte> _internalBeidouSatellites;
+    private readonly ReactiveProperty<byte> _internalGlonassSatellites;
+    private readonly ReactiveProperty<byte> _internalGpsSatellites;
+    private readonly ReactiveProperty<byte> _internalQzssSatellites;
+    private readonly ReactiveProperty<byte> _internalSbasSatellites;
+    private readonly ReactiveProperty<byte> _internalImesSatellites;
     private readonly IDisposable _disposeIt;
     private readonly CancellationTokenSource _disposedCancel;
 
@@ -45,19 +45,19 @@ public class AsvGbsExClient: IAsvGbsExClient, IDisposable
         Base = client ?? throw new ArgumentNullException(nameof(client));
         var builder = Disposable.CreateBuilder();
         _disposedCancel = new CancellationTokenSource().AddTo(ref builder);
-        _internalCustomMode = new RxValue<AsvGbsCustomMode>(AsvGbsCustomMode.AsvGbsCustomModeLoading).AddTo(ref builder);
-        _internalPosition = new RxValue<GeoPoint>(GeoPoint.Zero).AddTo(ref builder);
-        _internalAccuracyMeter = new RxValue<double>(0).AddTo(ref builder);
-        _internalObservationSec = new RxValue<ushort>(0).AddTo(ref builder);
-        _internalDgpsRate = new RxValue<ushort>(0).AddTo(ref builder);
-        _internalAllSatellites = new RxValue<byte>(0).AddTo(ref builder);
-        _internalGalSatellites = new RxValue<byte>(0).AddTo(ref builder);
-        _internalBeidouSatellites = new RxValue<byte>(0).AddTo(ref builder);
-        _internalGlonassSatellites = new RxValue<byte>(0).AddTo(ref builder);
-        _internalGpsSatellites = new RxValue<byte>(0).AddTo(ref builder);
-        _internalQzssSatellites = new RxValue<byte>(0).AddTo(ref builder);
-        _internalSbasSatellites = new RxValue<byte>(0).AddTo(ref builder);
-        _internalImesSatellites = new RxValue<byte>(0).AddTo(ref builder);
+        _internalCustomMode = new ReactiveProperty<AsvGbsCustomMode>(AsvGbsCustomMode.AsvGbsCustomModeLoading).AddTo(ref builder);
+        _internalPosition = new ReactiveProperty<GeoPoint>(GeoPoint.Zero).AddTo(ref builder);
+        _internalAccuracyMeter = new ReactiveProperty<double>(0).AddTo(ref builder);
+        _internalObservationSec = new ReactiveProperty<ushort>(0).AddTo(ref builder);
+        _internalDgpsRate = new ReactiveProperty<ushort>(0).AddTo(ref builder);
+        _internalAllSatellites = new ReactiveProperty<byte>(0).AddTo(ref builder);
+        _internalGalSatellites = new ReactiveProperty<byte>(0).AddTo(ref builder);
+        _internalBeidouSatellites = new ReactiveProperty<byte>(0).AddTo(ref builder);
+        _internalGlonassSatellites = new ReactiveProperty<byte>(0).AddTo(ref builder);
+        _internalGpsSatellites = new ReactiveProperty<byte>(0).AddTo(ref builder);
+        _internalQzssSatellites = new ReactiveProperty<byte>(0).AddTo(ref builder);
+        _internalSbasSatellites = new ReactiveProperty<byte>(0).AddTo(ref builder);
+        _internalImesSatellites = new ReactiveProperty<byte>(0).AddTo(ref builder);
         Base.RawStatus.Select(ConvertLocation).Subscribe(_internalPosition).AddTo(ref builder);
         Base.RawStatus.Select(p=>Math.Round(p.Accuracy/100.0,2)).Subscribe(_internalAccuracyMeter).AddTo(ref builder);
         Base.RawStatus.Select(p=>p.Observation).Subscribe(_internalObservationSec).AddTo(ref builder);
@@ -132,19 +132,19 @@ public class AsvGbsExClient: IAsvGbsExClient, IDisposable
 
     private CancellationToken DisposeCancel => _disposedCancel.Token;
 
-    public IRxValue<AsvGbsCustomMode> CustomMode => _internalCustomMode;
-    public IRxValue<GeoPoint> Position => _internalPosition;
-    public IRxValue<double> AccuracyMeter => _internalAccuracyMeter;
-    public IRxValue<ushort> ObservationSec => _internalObservationSec;
-    public IRxValue<ushort> DgpsRate => _internalDgpsRate;
-    public IRxValue<byte> AllSatellites => _internalAllSatellites;
-    public IRxValue<byte> GalSatellites => _internalGalSatellites;
-    public IRxValue<byte> BeidouSatellites => _internalBeidouSatellites;
-    public IRxValue<byte> GlonassSatellites => _internalGlonassSatellites;
-    public IRxValue<byte> GpsSatellites => _internalGpsSatellites;
-    public IRxValue<byte> QzssSatellites => _internalQzssSatellites;
-    public IRxValue<byte> SbasSatellites => _internalSbasSatellites;
-    public IRxValue<byte> ImesSatellites => _internalImesSatellites;
+    public ReadOnlyReactiveProperty<AsvGbsCustomMode> CustomMode => _internalCustomMode;
+    public ReadOnlyReactiveProperty<GeoPoint> Position => _internalPosition;
+    public ReadOnlyReactiveProperty<double> AccuracyMeter => _internalAccuracyMeter;
+    public ReadOnlyReactiveProperty<ushort> ObservationSec => _internalObservationSec;
+    public ReadOnlyReactiveProperty<ushort> DgpsRate => _internalDgpsRate;
+    public ReadOnlyReactiveProperty<byte> AllSatellites => _internalAllSatellites;
+    public ReadOnlyReactiveProperty<byte> GalSatellites => _internalGalSatellites;
+    public ReadOnlyReactiveProperty<byte> BeidouSatellites => _internalBeidouSatellites;
+    public ReadOnlyReactiveProperty<byte> GlonassSatellites => _internalGlonassSatellites;
+    public ReadOnlyReactiveProperty<byte> GpsSatellites => _internalGpsSatellites;
+    public ReadOnlyReactiveProperty<byte> QzssSatellites => _internalQzssSatellites;
+    public ReadOnlyReactiveProperty<byte> SbasSatellites => _internalSbasSatellites;
+    public ReadOnlyReactiveProperty<byte> ImesSatellites => _internalImesSatellites;
 
     public void Dispose()
     {

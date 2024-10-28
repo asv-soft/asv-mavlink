@@ -2,12 +2,13 @@ using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Minimal;
+using R3;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-public class HeartbeatClientTests(ITestOutputHelper log) : ClientTestBase<HeartbeatClient>(log)
+public class HeartbeatClientTest(ITestOutputHelper log) : ClientTestBase<HeartbeatClient>(log)
 {
   
     private readonly HeartbeatClientConfig _config = new()
@@ -30,7 +31,7 @@ public class HeartbeatClientTests(ITestOutputHelper log) : ClientTestBase<Heartb
     [InlineData(1000,2,0.33)]
     public async Task LinkQuality_Changed_Success(int packetCount, int skip, double quality)
     {
-        Assert.Equal(0,Client.LinkQuality.Value);
+        Assert.Equal(0,Client.LinkQuality.CurrentValue);
         var seq = new PacketSequenceCalculator();
         
         for (var i = 0; i < packetCount; i++)
@@ -48,8 +49,8 @@ public class HeartbeatClientTests(ITestOutputHelper log) : ClientTestBase<Heartb
             }
             Time.Advance(TimeSpan.FromSeconds(0.05));
         }
-        Assert.Equal(quality,Client.LinkQuality.Value, 1);
-        Log.WriteLine($"RESULT: {quality:F3} ~ {Client.LinkQuality.Value:F3}");
+        Assert.Equal(quality,Client.LinkQuality.CurrentValue, 1);
+        Log.WriteLine($"RESULT: {quality:F3} ~ {Client.LinkQuality.CurrentValue:F3}");
     }
     
     
@@ -59,7 +60,7 @@ public class HeartbeatClientTests(ITestOutputHelper log) : ClientTestBase<Heartb
     [InlineData(10,100)]
     public async Task PacketRateHz_Changed_Success(int delayMs, double rate)
     {
-        Assert.Equal(0,Client.PacketRateHz.Value);
+        Assert.Equal(0,Client.PacketRateHz.CurrentValue);
         var seq = new PacketSequenceCalculator();
         
         for (var i = 0; i < 1000; i++)
@@ -73,8 +74,8 @@ public class HeartbeatClientTests(ITestOutputHelper log) : ClientTestBase<Heartb
             await Link.Server.Send(p, default);
             Time.Advance(TimeSpan.FromMilliseconds(delayMs));
         }
-        Assert.Equal(rate,Client.PacketRateHz.Value, 1);
-        Log.WriteLine($"RESULT: {rate:F3} ~ {Client.PacketRateHz.Value:F3}");
+        Assert.Equal(rate,Client.PacketRateHz.CurrentValue, 1);
+        Log.WriteLine($"RESULT: {rate:F3} ~ {Client.PacketRateHz.CurrentValue:F3}");
     }
     
     [Theory]

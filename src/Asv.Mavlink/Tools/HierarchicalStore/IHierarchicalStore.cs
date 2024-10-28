@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Asv.Common;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -19,13 +20,13 @@ public interface IHierarchicalStore<TKey, out TFile>: IDisposable
     /// <value>
     /// The value representing the count.
     /// </value>
-    IRxValue<ushort> Count { get; }
+    ReadOnlyReactiveProperty<ushort> Count { get; }
 
     /// <summary>
     /// Gets the size of the object.
     /// </summary>
     /// <returns>An object implementing the IRxValue interface that represents the size of the object.</returns>
-    IRxValue<ulong> Size { get; }
+    ReadOnlyReactiveProperty<ulong> Size { get; }
 
     #region Entries
 

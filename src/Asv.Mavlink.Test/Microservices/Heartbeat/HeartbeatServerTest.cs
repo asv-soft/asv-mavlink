@@ -2,7 +2,7 @@ using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-public class HeartbeatServerTests(ITestOutputHelper log) : ServerTestBase<HeartbeatServer>(log)
+public class HeartbeatServerTest(ITestOutputHelper log) : ServerTestBase<HeartbeatServer>(log)
 {
     private readonly MavlinkHeartbeatServerConfig _config = new()
     {

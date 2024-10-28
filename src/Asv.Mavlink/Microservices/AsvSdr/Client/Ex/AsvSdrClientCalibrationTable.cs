@@ -1,5 +1,4 @@
 using System;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,17 +6,20 @@ using Asv.Common;
 using Asv.Mavlink.V2.AsvSdr;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
+using ObservableExtensions = System.ObservableExtensions;
+using Unit = System.Reactive.Unit;
 
 namespace Asv.Mavlink;
 
 public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
 {
     private readonly IAsvSdrClient _ifc;
-    private readonly RxValue<ushort> _remoteSize;
+    private readonly ReactiveProperty<ushort> _remoteSize;
     private readonly ILogger _logger;
     private readonly TimeSpan _deviceUploadTimeout;
-    private readonly RxValue<CalibrationTableMetadata> _metadata;
+    private readonly ReactiveProperty<CalibrationTableMetadata> _metadata;
 
     public AsvSdrClientCalibrationTable(
         AsvSdrCalibTablePayload payload, 
@@ -29,15 +31,15 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
         _logger = logFactory.CreateLogger<AsvSdrClientCalibrationTable>();
         _ifc = ifc;
         _deviceUploadTimeout = deviceUploadTimeout;
-        _remoteSize = new RxValue<ushort>(payload.RowCount).DisposeItWith(Disposable);
-        _metadata = new RxValue<CalibrationTableMetadata>(new CalibrationTableMetadata(payload)).DisposeItWith(Disposable);
+        _remoteSize = new ReactiveProperty<ushort>(payload.RowCount).DisposeItWith(Disposable);
+        _metadata = new ReactiveProperty<CalibrationTableMetadata>(new CalibrationTableMetadata(payload)).DisposeItWith(Disposable);
         Name = MavlinkTypesHelper.GetString(payload.TableName);
         Index = payload.TableIndex;
     }
     public string Name { get; }
     public ushort Index { get; }
 
-    public IRxValue<ushort> RemoteSize => _remoteSize;
+    public ReadOnlyReactiveProperty<ushort> RemoteSize => _remoteSize;
     public IRxEditableValue<CalibrationTableMetadata> Metadata => _metadata;
 
     internal void Update(AsvSdrCalibTablePayload payload)
@@ -79,8 +81,8 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
         
         var lastUpdateTime = DateTime.Now;
-        using var checkTimer = Observable.Timer(_deviceUploadTimeout, _deviceUploadTimeout)
-            .Subscribe(_ =>
+        using var checkTimer = ObservableExtensions
+            .Subscribe<long>(Observable.Timer(_deviceUploadTimeout, _deviceUploadTimeout), _ =>
             {
                 if (DateTime.Now - lastUpdateTime > _deviceUploadTimeout)
                 {

@@ -1,6 +1,7 @@
 using System;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -18,6 +19,6 @@ namespace Asv.Mavlink
         /// <remarks>
         /// This property provides access to the raw logging data in the form of an <see cref="IRxValue{T}"/> where T is <see cref="LoggingDataPayload"/>.
         /// </remarks>
-        IRxValue<LoggingDataPayload?> RawLoggingData { get; }
+        ReadOnlyReactiveProperty<LoggingDataPayload?> RawLoggingData { get; }
     }
 }
