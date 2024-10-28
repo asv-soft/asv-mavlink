@@ -2,27 +2,23 @@ using System;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Time.Testing;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
 public class FtpSessionTests
 {
-    private readonly FakeTimeProvider _fakeTime;
-    private readonly ITestOutputHelper _output;
+    private FtpServerExHelper _helper = new ();
     private FtpServerEx _serverEx;
     private string _filePath;
     
     public FtpSessionTests()
     {
-        FtpServerExTests test = new FtpServerExTests(_output);
         var fileName = "test.txt";
         var fileDirName = "file";
         var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = test.SetUpFileSystem(root);
-        test.SetUpServer(out var server);
+        var fileSystem = _helper.SetUpFileSystem(root);
+        _helper.SetUpServer(out var server);
         var fileDir = fileSystem.Path.Combine(root, fileDirName);
         _filePath = Path.Combine(fileDirName, fileName);
         var filePath = fileSystem.Path.Combine(fileDir, fileName);
@@ -78,7 +74,7 @@ public class FtpSessionTests
     {
         try
         {
-            for (int i = 0; i <= numberOfSessions; i++)
+            for (int i = 0; i <= numberOfSessions; i++) 
             {
                 await _serverEx.OpenFileRead(_filePath);
             }

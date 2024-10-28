@@ -372,6 +372,10 @@ public class FtpServerEx : IFtpServerEx
 
     public Task TruncateFile(TruncateRequest request, CancellationToken cancel = default)
     {
+        if (request.Offset == 0 )
+        {
+            throw new FtpNackException(FtpOpcode.TruncateFile, NackError.InvalidDataSize);
+        }
         if (cancel.IsCancellationRequested)
         {
             throw new FtpNackException(FtpOpcode.TruncateFile, NackError.None);
