@@ -13,19 +13,20 @@ public class ClientServerDeviceTests
 {
     private readonly ClientDevice _client;
     private readonly ServerDevice _server;
-    private readonly FakeTimeProvider _timeClient;
+    private readonly FakeTimeProvider _clientTime;
     private readonly FakeTimeProvider _timeServer;
 
     public ClientServerDeviceTests(ITestOutputHelper output)
     {
         var link = new VirtualMavlinkConnection();
-        _timeClient = new FakeTimeProvider();
+        
         _timeServer = new FakeTimeProvider();
         var meter = new DefaultMeterFactory();
         
         var clientSeq = new PacketSequenceCalculator();
-        var clientLog = new TestLoggerFactory(output,_timeClient, "CLIENT");
-        var clientCore = new CoreServices(link.Client,clientSeq, clientLog, _timeClient, meter);
+        _clientTime = new FakeTimeProvider();
+        var clientLog = new TestLoggerFactory(output,_clientTime, "CLIENT");
+        var clientCore = new CoreServices(link.Client,clientSeq, clientLog, _clientTime, meter);
         
         var serverSeq = new PacketSequenceCalculator();
         var serverLog = new TestLoggerFactory(output,_timeServer, "SERVER");
@@ -56,23 +57,23 @@ public class ClientServerDeviceTests
     {
         Assert.Equal(LinkState.Disconnected,_client.Heartbeat.Link.Value);
         _timeServer.Advance(TimeSpan.FromSeconds(1.1));
-        _timeClient.Advance(TimeSpan.FromSeconds(1.1));
+        _clientTime.Advance(TimeSpan.FromSeconds(1.1));
         await _client.WaitUntilConnect();
         await _server.DisposeAsync();
         Assert.Equal(LinkState.Connected,_client.Heartbeat.Link.Value);
         _timeServer.Advance(TimeSpan.FromSeconds(1.1));
-        _timeClient.Advance(TimeSpan.FromSeconds(1.1));
+        _clientTime.Advance(TimeSpan.FromSeconds(1.1));
         
         Assert.Equal(LinkState.Downgrade,_client.Heartbeat.Link.Value);
         _timeServer.Advance(TimeSpan.FromSeconds(1.1));
-        _timeClient.Advance(TimeSpan.FromSeconds(1.1));
+        _clientTime.Advance(TimeSpan.FromSeconds(1.1));
         
         Assert.Equal(LinkState.Downgrade,_client.Heartbeat.Link.Value);
         _timeServer.Advance(TimeSpan.FromSeconds(1.1));
-        _timeClient.Advance(TimeSpan.FromSeconds(1.1));
+        _clientTime.Advance(TimeSpan.FromSeconds(1.1));
         Assert.Equal(LinkState.Disconnected,_client.Heartbeat.Link.Value);
         _timeServer.Advance(TimeSpan.FromSeconds(1.1));
-        _timeClient.Advance(TimeSpan.FromSeconds(1.1));
+        _clientTime.Advance(TimeSpan.FromSeconds(1.1));
         
         Assert.Equal(LinkState.Disconnected,_client.Heartbeat.Link.Value);
     }

@@ -17,9 +17,11 @@ public class VehicleClientDeviceConfig: ClientDeviceBaseConfig
     public MissionClientExConfig Missions { get; set; } = new();
     public MavlinkFtpClientConfig Ftp { get; set; } = new();
     public DiagnosticClientConfig Diagnostic { get; set; } = new();
+    
     public ushort MavDataStreamAllRateHz { get; set; } = 1;
     public ushort MavDataStreamExtendedStatusRateHz { get; set; } = 1;
     public ushort MavDataStreamPositionRateHz { get; set; } = 1;
+    
 }
 public class VehicleClientDevice: ClientDevice
 {
@@ -36,7 +38,7 @@ public class VehicleClientDevice: ClientDevice
 
     protected override async Task InitBeforeMicroservices(CancellationToken cancel)
     {
-        using var client = new CommandClient(Identity, _deviceConfig.Commands, Core);
+        using var client = new CommandClient(Identity, _deviceConfig.Command, Core);
         try
         {
             _logger.LogTrace("Try to read AutopilotVersion for checking capabilities");

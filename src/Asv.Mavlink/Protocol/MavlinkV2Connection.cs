@@ -30,18 +30,17 @@ namespace Asv.Mavlink
 {
     public class MavlinkV2Connection : DisposableOnceWithCancel, IMavlinkV2Connection
     {
-        private readonly IScheduler? _publishScheduler;
 
         #region Static
 
-        public static IMavlinkV2Connection Create(IDataStream dataStream, bool disposeDataStream = false,IScheduler? publishScheduler = null)
+        public static IMavlinkV2Connection Create(IDataStream dataStream, bool disposeDataStream = false)
         {
-            return new MavlinkV2Connection(dataStream, RegisterDefaultDialects,disposeDataStream,publishScheduler);
+            return new MavlinkV2Connection(dataStream, RegisterDefaultDialects,disposeDataStream);
         }
         
-        public static IMavlinkV2Connection Create(IDataStream dataStream,Action<IPacketDecoder<IPacketV2<IPayload>>> register, bool disposeDataStream = false,IScheduler? publishScheduler = null)
+        public static IMavlinkV2Connection Create(IDataStream dataStream,Action<IPacketDecoder<IPacketV2<IPayload>>> register, bool disposeDataStream = false)
         {
-            return new MavlinkV2Connection(dataStream, register,disposeDataStream,publishScheduler);
+            return new MavlinkV2Connection(dataStream, register,disposeDataStream);
         }
         
         public static IMavlinkV2Connection Create(string connectionString)
@@ -90,9 +89,8 @@ namespace Asv.Mavlink
             return p;
         }
 
-        public MavlinkV2Connection(IDataStream dataStream, Action<IPacketDecoder<IPacketV2<IPayload>>> register, bool disposeDataStream = false, IScheduler? publishScheduler = null)
+        public MavlinkV2Connection(IDataStream dataStream, Action<IPacketDecoder<IPacketV2<IPayload>>> register, bool disposeDataStream = false)
         {
-            _publishScheduler = publishScheduler;
             DataStream = dataStream;
             if (disposeDataStream && DataStream is IDisposable disposableStrm)
             {
@@ -122,62 +120,51 @@ namespace Asv.Mavlink
             return _decoder.Create(messageId);
         }
 
-        public Task Send(IPacketV2<IPayload> packet, CancellationToken cancel)
+        public async Task Send(IPacketV2<IPayload> packet, CancellationToken cancel)
         {
-            if (IsDisposed) return Task.CompletedTask;
+            if (IsDisposed) return;
             _sendPacketSubject.OnNext(packet);
-            return Task.Run(() =>
+            if (packet.WrapToV2Extension && WrapToV2ExtensionEnabled)
             {
-                if (packet.WrapToV2Extension && WrapToV2ExtensionEnabled)
+                var wrappedPacket = new V2ExtensionPacket
                 {
-                    var wrappedPacket = new V2ExtensionPacket
+                    Tag = packet.Tag,
+                    IncompatFlags = packet.IncompatFlags,
+                    CompatFlags = packet.CompatFlags,
+                    Sequence = packet.Sequence,
+                    SystemId = packet.SystemId,
+                    ComponentId = packet.ComponentId,
+                    Payload =
                     {
-                        Tag = packet.Tag,
-                        IncompatFlags = packet.IncompatFlags,
-                        CompatFlags = packet.CompatFlags,
-                        Sequence = packet.Sequence,
-                        SystemId = packet.SystemId,
-                        ComponentId = packet.ComponentId,
-                        Payload =
-                        {
-                            // broadcast
-                            TargetComponent = 0,
-                            TargetSystem = 0,
-                            TargetNetwork = 0,
-                            MessageType = V2ExtensionFeature.V2ExtensionMessageId
-                        }
-                    };
-                    var span = new Span<byte>(wrappedPacket.Payload.Payload);
-                    var size = span.Length;
-                    packet.Serialize(ref span);
-                    size -= span.Length;
-                    var arr = wrappedPacket.Payload.Payload;
-                    Array.Resize(ref arr, size);
-                    wrappedPacket.Payload.Payload = arr;
-                    packet = wrappedPacket;
-                }
+                        // broadcast
+                        TargetComponent = 0,
+                        TargetSystem = 0,
+                        TargetNetwork = 0,
+                        MessageType = V2ExtensionFeature.V2ExtensionMessageId
+                    }
+                };
                 
-                var data = ArrayPool<byte>.Shared.Rent(packet.GetMaxByteSize());
-                try
-                {
-                    var span = new Span<byte>(data);
-                    var size = span.Length;
-                    packet.Serialize(ref span);
-                    size -= span.Length;
-                    DataStream.Send(data,size,cancel).Wait(cancel);
-                }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(data);
-                }
+                var size = packet.Serialize(wrappedPacket.Payload.Payload);
+                var arr = wrappedPacket.Payload.Payload;
+                Array.Resize(ref arr, size);
+                wrappedPacket.Payload.Payload = arr;
+                packet = wrappedPacket;
+            }
                 
-            },cancel);
+            var data = ArrayPool<byte>.Shared.Rent(packet.GetMaxByteSize());
+            try
+            {
+                
+                var size = packet.Serialize(data);
+                await DataStream.Send(data,size,cancel).ConfigureAwait(false);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(data);
+            }
         }
 
-        public IDisposable Subscribe(IObserver<IPacketV2<IPayload>> observer)
-        {
-            return _publishScheduler != null ? _recvPacketsSubject.ObserveOn(_publishScheduler).Subscribe(observer) : _recvPacketsSubject.Subscribe(observer);
-        }
+        public IDisposable Subscribe(IObserver<IPacketV2<IPayload>> observer) => _recvPacketsSubject.Subscribe(observer);
 
         private bool TryDecodeV2ExtensionPackets(IPacketV2<IPayload> arg)
         {

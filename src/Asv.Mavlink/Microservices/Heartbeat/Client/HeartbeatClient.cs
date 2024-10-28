@@ -19,6 +19,8 @@ namespace Asv.Mavlink
         public int HeartbeatTimeoutMs { get; set; } = 2000;
         public int LinkQualityWarningSkipCount { get; set; } = 3;
         public int RateMovingAverageFilter { get; set; } = 3;
+        public int PrintStatisticsToLogDelayMs { get; set; } = 10_000;
+        public bool PrintLinkStateToLog { get; set; } = true;
     }
     
     public class HeartbeatClient : MavlinkMicroserviceClient, IHeartbeatClient
@@ -27,7 +29,7 @@ namespace Asv.Mavlink
         private static readonly TimeSpan CheckConnectionDelay = TimeSpan.FromSeconds(1);
         private readonly CircularBuffer2<double> _valueBuffer = new(5);
         private readonly IncrementalRateCounter _rxRate;
-        private readonly RxValueBehaviour<HeartbeatPayload> _heartBeat;
+        private readonly RxValueBehaviour<HeartbeatPayload?> _heartBeat;
         private readonly RxValueBehaviour<double> _packetRate;
         private readonly RxValueBehaviour<double> _linkQuality;
         private readonly LinkIndicator _link;
@@ -61,12 +63,12 @@ namespace Asv.Mavlink
                         _lastPacketList.Add(x);    
                     }
                     Interlocked.Increment(ref _totalRateCounter);
-                });
-
-            _heartBeat = new RxValueBehaviour<HeartbeatPayload>(new HeartbeatPayload()).AddTo(ref builder);
+                }).AddTo(ref builder);
+            _heartBeat = new RxValueBehaviour<HeartbeatPayload?>(null).AddTo(ref builder);
             InternalFilter<HeartbeatPacket>()
                 .Select(p => p.Payload)
-                .Subscribe(_heartBeat).AddTo(ref builder);
+                .Subscribe(_heartBeat)
+                .AddTo(ref builder);
 
             _packetRate = new RxValueBehaviour<double>(0)
                 .AddTo(ref builder);
@@ -85,26 +87,41 @@ namespace Asv.Mavlink
                 _link.Upgrade();
             }).AddTo(ref builder);
 
-            _link.DistinctUntilChanged().Skip(1).Subscribe(x =>
+            if (config.PrintLinkStateToLog)
             {
-                switch(x)
-                {
-                    case LinkState.Disconnected:
-                        _logger.ZLogError($"Link {Identity} changed to {x:G}");
-                        break;
-                    case LinkState.Downgrade:
-                        _logger.ZLogWarning($"Link {Identity} changed to {x:G}");
-                        break;
-                    case LinkState.Connected:
-                        _logger.ZLogInformation($"Link {Identity} changed to {x:G}");
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(x), x, null);
-                }
-            }).AddTo(ref builder);
+                _link.DistinctUntilChanged().Skip(1).Subscribe(PrintLinkToLog).AddTo(ref builder);
+            }
+            if (config.PrintStatisticsToLogDelayMs > 0)
+            {
+                var delay = TimeSpan.FromMilliseconds(config.PrintStatisticsToLogDelayMs);
+                _timeProvider.CreateTimer(PrintRateAndQualityToLog, null,delay,delay).AddTo(ref builder);
+            }
             
             _disposeIt = builder.Build();
             
+        }
+
+        private void PrintRateAndQualityToLog(object? state)
+        {
+            _logger.ZLogInformation($"Link {Identity} rate={PacketRateHz.Value:F2} Hz, quality={LinkQuality.Value:P0}");
+        }
+
+        private void PrintLinkToLog(LinkState x)
+        {
+            switch (x)
+            {
+                case LinkState.Disconnected:
+                    _logger.ZLogError($"Link {Identity} changed to {x:G}");
+                    break;
+                case LinkState.Downgrade:
+                    _logger.ZLogWarning($"Link {Identity} changed to {x:G}");
+                    break;
+                case LinkState.Connected:
+                    _logger.ZLogInformation($"Link {Identity} changed to {x:G}");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(x), x, null);
+            }
         }
 
         private void CalculateLinqQuality()
@@ -133,7 +150,7 @@ namespace Asv.Mavlink
         }
 
         public ushort FullId { get; }
-        public IRxValue<HeartbeatPayload> RawHeartbeat => _heartBeat;
+        public IRxValue<HeartbeatPayload?> RawHeartbeat => _heartBeat;
         public IRxValue<double> PacketRateHz => _packetRate;
         public IRxValue<double> LinkQuality => _linkQuality;
         public IRxValue<LinkState> Link => _link;

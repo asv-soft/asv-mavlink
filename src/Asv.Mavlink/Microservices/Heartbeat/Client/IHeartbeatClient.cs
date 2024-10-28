@@ -23,7 +23,7 @@ namespace Asv.Mavlink
         /// <value>
         /// The raw heartbeat value.
         /// </value>
-        IRxValue<HeartbeatPayload> RawHeartbeat { get; }
+        IRxValue<HeartbeatPayload?> RawHeartbeat { get; }
 
         /// <summary>
         /// Gets the packet rate in Hz.

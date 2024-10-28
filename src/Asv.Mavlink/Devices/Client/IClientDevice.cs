@@ -22,7 +22,7 @@ public interface IClientDevice
     IEnumerable<IMavlinkMicroserviceClient> Microservices { get; }
     MavlinkClientIdentity Identity => Heartbeat.Identity;
     public Observable<bool> IsInitComplete => InitState.Select(s => s == Mavlink.InitState.Complete);
-    
+    public ICoreServices Core => Heartbeat.Core;
 }
 
 public static class ClientDeviceHelper

@@ -78,7 +78,8 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
 {
     private readonly string _rootFolder;
     private readonly IHierarchicalStoreFormat<TKey,TFile> _format;
-    private readonly ILogger? _logger;
+    private readonly TimeProvider _timeProvider;
+    private readonly ILogger _logger;
     private readonly object _sync = new();
     private readonly RxValue<ushort> _count;
     private readonly RxValue<ulong> _size;
@@ -87,21 +88,23 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     private int _checkCacheInProgress;
     private readonly TimeSpan _fileCacheTime;
 
-    public FileSystemHierarchicalStore(string rootFolder, IHierarchicalStoreFormat<TKey,TFile> format, TimeSpan? fileCacheTime, ILoggerFactory? logFactory = null)
+    public FileSystemHierarchicalStore(string rootFolder, IHierarchicalStoreFormat<TKey,TFile> format, TimeSpan? fileCacheTime, TimeProvider? timeProvider = null, ILoggerFactory? logFactory = null)
     {
         logFactory??=NullLoggerFactory.Instance;
         _logger = logFactory.CreateLogger<FileSystemHierarchicalStore<TKey, TFile>>();
         if (format == null) throw new ArgumentNullException(nameof(format));
+        _timeProvider = timeProvider ?? TimeProvider.System;
         format.DisposeItWith(Disposable);
         if (string.IsNullOrEmpty(rootFolder))
             throw new ArgumentException($"{nameof(rootFolder)} cannot be null or empty.", nameof(rootFolder));
         _fileCacheTime = fileCacheTime ?? TimeSpan.Zero;
         if (_fileCacheTime != TimeSpan.Zero)
         {
-            Observable.Timer(_fileCacheTime, _fileCacheTime).Subscribe(CheckFileCacheForRottenFiles).DisposeItWith(Disposable);
+            _timeProvider.CreateTimer(CheckFileCacheForRottenFiles,null,_fileCacheTime,_fileCacheTime).DisposeItWith(Disposable);
         }
         _rootFolder = rootFolder;
         _format = format ?? throw new ArgumentNullException(nameof(format));
+        
         _entries = new Dictionary<TKey, FileSystemHierarchicalStoreEntry<TKey>>(_format.KeyComparer);
         if (Directory.Exists(rootFolder) == false)
         {
@@ -685,7 +688,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
                 throw new HierarchicalStoreException($"File [{id}]{fileInfo.FullName} already exist");
             }
             var file = _format.CreateFile(File.Open(fileInfo.FullName, FileMode.OpenOrCreate, FileAccess.ReadWrite), id, name);
-            var wrapper = new CachedFile<TKey,TFile>(id,name, parentId,file,OnFileDisposed);
+            var wrapper = new CachedFile<TKey,TFile>(id,name, parentId,file,OnFileDisposed, _timeProvider);
             var entry = new FileSystemHierarchicalStoreEntry<TKey>(id, name, FolderStoreEntryType.File, parentId,
                 fileInfo.FullName);
             _entries.Add(id,entry);
@@ -731,7 +734,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
         {
             var stream = File.Open(entry.FullPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             var file = _format.OpenFile(stream);
-            exist = new CachedFile<TKey, TFile>(entry.Id, entry.Name, entry.ParentId, file, OnFileDisposed);
+            exist = new CachedFile<TKey, TFile>(entry.Id, entry.Name, entry.ParentId, file, OnFileDisposed, _timeProvider);
             exist.AddRef();
             _logger.ZLogTrace($"Add file '{entry.Name}'[{entry.Id}] to cache (ref count={exist.RefCount})");
             _fileCache.Add(exist);
@@ -768,7 +771,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
     /// Checks the file cache for rotten files and removes them.
     /// </summary>
     /// <param name="delay">The delay in milliseconds to wait before checking the cache again if it is already in progress.</param>
-    private void CheckFileCacheForRottenFiles(long delay)
+    private void CheckFileCacheForRottenFiles(object? state)
     {
         if (Interlocked.CompareExchange(ref _checkCacheInProgress,1,0) != 0) return;
         
@@ -782,7 +785,7 @@ public class FileSystemHierarchicalStore<TKey, TFile>:DisposableOnceWithCancel,I
                 if (_fileCache.Count == 0) return;
                 // try to remove all files with ref count == 0 and dead time > cache time
                 var list = _fileCache.Where(file => file.RefCount == 0)
-                    .Where(file => DateTime.Now - file.DeadTimeBegin > _fileCacheTime).ToImmutableList();
+                    .Where(file => _timeProvider.GetElapsedTime(file.DeadTimeBegin) > _fileCacheTime).ToImmutableList();
                 if (list.Count == 0) return;
                 foreach (var file in list)
                 {

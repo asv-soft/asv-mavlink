@@ -10,11 +10,13 @@ public class CachedFile<TKey, TFile>: ICachedFile<TKey, TFile>
     where TFile : IDisposable
 {
     private readonly Action<CachedFile<TKey, TFile>> _disposedCallback;
+    private readonly TimeProvider _timeProvider;
     private int _refCount;
 
-    public CachedFile(TKey id, string name, TKey parentId, TFile file, Action<CachedFile<TKey, TFile>> disposedCallback)
+    public CachedFile(TKey id, string name, TKey parentId, TFile file, Action<CachedFile<TKey, TFile>> disposedCallback, TimeProvider timeProvider)
     {
         _disposedCallback = disposedCallback;
+        _timeProvider = timeProvider;
         Id = id;
         Name = name;
         ParentId = parentId;
@@ -27,7 +29,7 @@ public class CachedFile<TKey, TFile>: ICachedFile<TKey, TFile>
         Debug.Assert(refCount >= 0);
         if (refCount == 0)
         {
-            DeadTimeBegin = DateTime.Now;
+            DeadTimeBegin = _timeProvider.GetTimestamp();
             _disposedCallback(this);
         }
     }
@@ -36,7 +38,7 @@ public class CachedFile<TKey, TFile>: ICachedFile<TKey, TFile>
     public string Name { get; }
     public TKey ParentId { get; }
     public TFile File { get; }
-    public DateTime DeadTimeBegin { get; private set; }
+    public long DeadTimeBegin { get; private set; }
     public int RefCount => _refCount;
     public void AddRef()
     {

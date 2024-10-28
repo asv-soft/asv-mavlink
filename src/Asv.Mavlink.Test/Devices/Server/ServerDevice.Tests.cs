@@ -5,11 +5,17 @@ using Asv.Mavlink.V2.Minimal;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Time.Testing;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-public class ServerDeviceTests
+public class ServerDeviceTests(ITestOutputHelper log):ServerTestBase<ServerDevice>(log)
 {
+    protected override ServerDevice CreateClient(MavlinkIdentity identity, CoreServices core)
+    {
+        throw new NotImplementedException();
+    }
+    
     [Fact]
     public void Ctor_WithDefaultArgs_Success()
     {
@@ -65,5 +71,6 @@ public class ServerDeviceTests
         Assert.Equal(4,comId);
         
     }
+
     
 }

@@ -12,32 +12,34 @@ namespace Asv.Mavlink;
 
 public class VirtualMavlinkConnection:DisposableOnceWithCancel
 {
-    public VirtualMavlinkConnection(Func<IPacketV2<IPayload>, bool> clientToServerFilter = null,Func<IPacketV2<IPayload>, bool> serverToClientFilter = null,Action<IPacketDecoder<IPacketV2<IPayload>>> registerDialects = null)
+    public VirtualMavlinkConnection(Func<IPacketV2<IPayload>, bool>? clientToServerFilter = null,Func<IPacketV2<IPayload>, bool>? serverToClientFilter = null,Action<IPacketDecoder<IPacketV2<IPayload>>> registerDialects = null)
     {
-        clientToServerFilter ??= _ => true;
-        serverToClientFilter ??= _ => true;
+        ClientToServerFilter = clientToServerFilter ?? (_ => true);
+        ServerToClientFilter = serverToClientFilter ?? (_ => true);
         var dialects = registerDialects ?? MavlinkV2Connection.RegisterDefaultDialects;
         
         var serverStream = new VirtualDataStream("server").DisposeItWith(Disposable);
-        Server = MavlinkV2Connection.Create(serverStream,dialects,false,TaskPoolScheduler.Default).DisposeItWith(Disposable);
+        Server = MavlinkV2Connection.Create(serverStream,dialects,false).DisposeItWith(Disposable);
         var clientStream = new VirtualDataStream("client").DisposeItWith(Disposable);
-        Client = MavlinkV2Connection.Create(clientStream,dialects,false,TaskPoolScheduler.Default).DisposeItWith(Disposable);
+        Client = MavlinkV2Connection.Create(clientStream,dialects,false).DisposeItWith(Disposable);
         
         var serverToClient = new PacketV2Decoder().DisposeItWith(Disposable);
         dialects(serverToClient);
         serverStream.TxPipe.Subscribe(serverToClient.OnData).DisposeItWith(Disposable);
-        serverToClient.Where(serverToClientFilter).Select(Serialize).Subscribe(clientStream.RxPipe)
+        serverToClient.Where(ClientToServerFilter).Select(Serialize).Subscribe(clientStream.RxPipe)
             .DisposeItWith(Disposable);
         
         var clientToServer = new PacketV2Decoder().DisposeItWith(Disposable);
         dialects(clientToServer);
         clientStream.TxPipe.Subscribe(clientToServer.OnData).DisposeItWith(Disposable);
-        clientToServer.Where(clientToServerFilter).Select(Serialize).Subscribe(serverStream.RxPipe)
+        clientToServer.Where(ServerToClientFilter).Select(Serialize).Subscribe(serverStream.RxPipe)
             .DisposeItWith(Disposable);
         
         
     }
 
+    public Func<IPacketV2<IPayload>, bool> ClientToServerFilter { get; set; }
+    public Func<IPacketV2<IPayload>, bool> ServerToClientFilter { get; set; }
     private byte[] Serialize(IPacketV2<IPayload> packet)
     {
         var data = ArrayPool<byte>.Shared.Rent(packet.GetMaxByteSize());

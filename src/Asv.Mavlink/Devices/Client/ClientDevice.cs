@@ -16,7 +16,6 @@ public class ClientDeviceBaseConfig
 {
     public int RequestInitDataDelayAfterFailMs { get; set; } = 5000;
     public HeartbeatClientConfig Heartbeat { get; set; } = new();
-    public CommandProtocolConfig Commands { get; set; } = new();
 }
 
 public class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
