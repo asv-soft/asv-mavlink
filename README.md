@@ -246,24 +246,6 @@ Asv.Mavlink.Shell.exe benchmark-serialization
 
 ![image](https://github.com/asv-soft/asv-drones-docs/blob/main/.gitbook/assets/asv-drones-mavlink-benchmark-serialization-command.png?raw=true)
 
-
-## CLI: Benchmark-serialization
-
-This command benchmarks the serialization and deserialization performance of MAVLink packets. It uses BenchmarkDotNet to measure the efficiency of the serialization process, focusing on how MAVLink packets are serialized and deserialized using spans.### Features:
-
-- Connects to multiple MAVLink streams, allowing you to route messages between different systems (e.g., vehicle and multiple ground stations).
-- Supports filtering by system ID, message ID, message name (using regex), and message content (JSON text).
-- Can log filtered MAVLink messages to a file.
-- Allows disabling console output for silent operation.
-- Automatically propagates MAVLink messages between the connected links.
-
-```bash
-Asv.Mavlink.Shell.exe benchmark-bin-serialize
-```
-
-![image](https://github.com/asv-soft/asv-drones-docs/blob/main/.gitbook/assets/asv-drones-mavlink-benchmark-serialization-command.png?raw=true)
-
-
 ## CLI: Devices info
 This command shows info about the mavlink device and all other mavlink devices that are connected to it.
 
@@ -317,7 +299,7 @@ This command generates fake diagnostic with customizable frequency.
 Asv.Mavlink.Shell.exe generate-diagnostics
 ```
 
-![image](img/screenshot-generate-diag.png)
+![image](https://github.com/asv-soft/asv-drones-docs/blob/main/.gitbook/assets/screenshot-generate-diag.png?raw=true)
 
 The program generates a default configuration file by default, but you can provide a custom configuration. 
 Simply pass the path to your configuration file as a command-line parameter.
@@ -350,8 +332,7 @@ This command creates Diagnostic client and prints all diagnostics that the clien
 ```bash
 Asv.Mavlink.Shell.exe test-diagnostics -cs tcp://127.0.0.1:7342?srv=true -tsid 1 -tcid 241 -r 3000
 ```
-
-![image](img/screenshot-test-diag.png)
+![image](https://github.com/asv-soft/asv-drones-docs/blob/main/.gitbook/assets/screenshot-test-diag.png?raw=true)
 
 All the possible parameters for the command:
 ```bash
