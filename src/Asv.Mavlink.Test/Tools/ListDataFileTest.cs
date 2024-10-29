@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.IO.Abstractions.TestingHelpers;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
 using DeepEqual.Syntax;
@@ -9,6 +10,8 @@ namespace Asv.Mavlink.Test;
 
 public class ListDataFileTest
 {
+    private static MockFileSystem _fileSystem = new ();
+
     public static readonly ListDataFileFormat FileFormat1 = new()
     {
         Version = "1.0.0",
@@ -16,7 +19,7 @@ public class ListDataFileTest
         MetadataMaxSize = 1024 * 4,
         ItemMaxSize = 256
     };
-    
+
     public static readonly ListDataFileFormat FileFormat2 = new()
     {
         Version = "1.0.0",
@@ -24,26 +27,26 @@ public class ListDataFileTest
         MetadataMaxSize = 1024 * 4,
         ItemMaxSize = 256
     };
-    
+
     [Fact]
     public void Test_Null_Reference()
     {
         using var strm = new MemoryStream();
         Assert.Throws<ArgumentNullException>(() =>
         {
-            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(null,FileFormat1, false);    
+            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(null, FileFormat1, false,_fileSystem);
         });
         Assert.Throws<ArgumentNullException>(() =>
         {
-            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(new MemoryStream(),null, false);    
+            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(new MemoryStream(), null, false,_fileSystem);
         });
     }
-    
+
     [Fact]
     public void Check_Metadata_Serialization()
     {
         using var strm = new MemoryStream();
-        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, AsvSdrHelper.FileFormat,false);
+        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, AsvSdrHelper.FileFormat, false,_fileSystem);
         var payload = new AsvSdrRecordPayload
         {
             Frequency = 1,
@@ -55,13 +58,13 @@ public class ListDataFileTest
             TagCount = 1,
         };
         var name = "test";
-        MavlinkTypesHelper.SetGuid(payload.RecordGuid,Guid.NewGuid());
-        MavlinkTypesHelper.SetString(payload.RecordName,name);
-        
-        file.EditMetadata(_=>
+        MavlinkTypesHelper.SetGuid(payload.RecordGuid, Guid.NewGuid());
+        MavlinkTypesHelper.SetString(payload.RecordName, name);
+
+        file.EditMetadata(_ =>
         {
-            payload.RecordGuid.CopyTo(_.Info.RecordGuid,0);
-            payload.RecordName.CopyTo(_.Info.RecordName,0);
+            payload.RecordGuid.CopyTo(_.Info.RecordGuid, 0);
+            payload.RecordName.CopyTo(_.Info.RecordName, 0);
             _.Info.Frequency = payload.Frequency;
             _.Info.Size = payload.Size;
             _.Info.CreatedUnixUs = payload.CreatedUnixUs;
@@ -70,7 +73,7 @@ public class ListDataFileTest
             _.Info.DurationSec = payload.DurationSec;
             _.Info.TagCount = payload.TagCount;
         });
-        
+
         file.EditMetadata(_ =>
         {
             Assert.Equal(payload.RecordGuid, _.Info.RecordGuid);
@@ -84,18 +87,18 @@ public class ListDataFileTest
             Assert.Equal(payload.TagCount, _.Info.TagCount);
         });
     }
-    
+
     [Fact]
     public void Check_Data_Serialization()
     {
         using var strm = new MemoryStream();
-        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1,false);
-        
+        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false,_fileSystem);
+
         Assert.False(file.Exist(0));
-        
+
         var ilsRead = new AsvSdrRecordDataLlzPayload();
         Assert.False(file.Read(0, ilsRead));
-        
+
         var ils = new AsvSdrRecordDataLlzPayload
         {
             TimeUnixUsec = 15,
@@ -152,13 +155,13 @@ public class ListDataFileTest
         };
         file.Write(10, ils);
         file.Write(20, ils);
-        
+
         var ilsRead2 = new AsvSdrRecordDataLlzPayload();
         Assert.True(file.Read(10, ilsRead2));
         ils.ShouldDeepEqual(ilsRead2);
         Assert.True(file.Read(20, ilsRead2));
         ils.ShouldDeepEqual(ilsRead2);
-        
+
         Assert.False(file.Read(9, ilsRead2));
         Assert.False(file.Exist(5));
     }
@@ -167,38 +170,34 @@ public class ListDataFileTest
     public static void Edit_Metadata_Null_Argument()
     {
         using var strm = new MemoryStream();
-        IListDataFile<AsvSdrRecordFileMetadata> file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1,false);
+        IListDataFile<AsvSdrRecordFileMetadata> file =
+            new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
 
-        Assert.Throws<NullReferenceException>(() =>
-        {
-            file.EditMetadata(null);
-        });
+        Assert.Throws<NullReferenceException>(() => { file.EditMetadata(null); });
     }
-    
+
     [Fact]
     public static void Write_Null_Argument()
     {
         using var strm = new MemoryStream();
-        IListDataFile<AsvSdrRecordFileMetadata> file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1,false);
+        IListDataFile<AsvSdrRecordFileMetadata> file =
+            new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
 
-        Assert.Throws<NullReferenceException>(() =>
-        {
-            file.Write(0, null);
-        });
+        Assert.Throws<NullReferenceException>(() => { file.Write(0, null); });
     }
 
     [Fact]
     public static void Different_Headers_Read()
     {
         using var strm = new MemoryStream();
-        
-        var file1 = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1,false);
-        
+
+        var file1 = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
+
         file1.Dispose();
 
         Assert.Throws<Exception>(() =>
         {
-            var file2 = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat2,false);
+            var file2 = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat2, false, _fileSystem);
         });
     }
 
@@ -217,12 +216,12 @@ public class ListDataFileTest
             };
         });
     }
-    
+
     [Fact]
     public static void Null_Version_Header()
     {
         using var strm = new MemoryStream();
-        
+
         var format = new ListDataFileFormat()
         {
             Version = null,
@@ -230,18 +229,18 @@ public class ListDataFileTest
             MetadataMaxSize = 1234,
             ItemMaxSize = 567
         };
-        
+
         Assert.Throws<InvalidOperationException>(() =>
         {
-            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false);
+            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false, _fileSystem);
         });
     }
-    
+
     [Fact]
     public static void Empty_Type_Header()
     {
         using var strm = new MemoryStream();
-        
+
         var format = new ListDataFileFormat()
         {
             Version = "1.0.0",
@@ -249,18 +248,18 @@ public class ListDataFileTest
             MetadataMaxSize = 1234,
             ItemMaxSize = 567
         };
-        
+
         Assert.Throws<InvalidOperationException>(() =>
         {
-            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false);
+            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false, _fileSystem);
         });
     }
-    
+
     [Fact]
     public static void Null_Type_Header()
     {
         using var strm = new MemoryStream();
-        
+
         var format = new ListDataFileFormat()
         {
             Version = "1.0.0",
@@ -268,20 +267,20 @@ public class ListDataFileTest
             MetadataMaxSize = 1234,
             ItemMaxSize = 567
         };
-        
+
         Assert.Throws<InvalidOperationException>(() =>
         {
-            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false);
+            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false, _fileSystem);
         });
     }
-    
+
     [Theory]
     [InlineData("1.0.0", "type", 0, 53)]
     [InlineData("1.0.0", "type", 1241, 0)]
     public static void Max_Size_Header_Tests(string version, string type, ushort metadataMaxSize, ushort itemMaxSize)
     {
         using var strm = new MemoryStream();
-        
+
         var format = new ListDataFileFormat()
         {
             Version = version,
@@ -289,26 +288,20 @@ public class ListDataFileTest
             MetadataMaxSize = metadataMaxSize,
             ItemMaxSize = itemMaxSize
         };
-        
+
         Assert.Throws<InvalidOperationException>(() =>
         {
-            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false);
+            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false, _fileSystem);
         });
     }
-    
+
     [Fact]
     public static void Null_Edit_Metadata_Info_Record_Name()
     {
         using var strm = new MemoryStream();
-        
-        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false);
-        
-        Assert.Throws<NullReferenceException>(() =>
-        {
-            file.EditMetadata(_ =>
-            {
-                _.Info.RecordName = null;
-            }); 
-        });
+
+        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
+
+        Assert.Throws<NullReferenceException>(() => { file.EditMetadata(_ => { _.Info.RecordName = null; }); });
     }
 }
