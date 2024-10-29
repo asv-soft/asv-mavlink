@@ -25,6 +25,7 @@ public class FtpServerEx : IFtpServerEx
     private readonly IFileSystem _fileSystem;
     private readonly ConcurrentBag<FtpSession> _sessions;
     private readonly string _rootDirectory;
+    private bool _disposed;
     public IFtpServer Base { get; }
     
     
@@ -479,23 +480,49 @@ public class FtpServerEx : IFtpServerEx
         return session;
     }
 
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed) return;
+        if (disposing)
+        {
+            foreach (var session in _sessions)
+            {
+                session.Close();
+            }
+            _sessions.Clear();
+        }
+
+        _disposed = true;
+    }
+
     public void Dispose()
     {
-        foreach (var session in _sessions)
-        {
-            session.Close();
-        }
-        
-        _sessions.Clear();
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
-    
+
+    protected virtual async ValueTask DisposeAsyncCore()
+    {
+        if (!_disposed)
+        {
+            foreach (var session in _sessions)
+            {
+                await session.CloseAsync().ConfigureAwait(false);
+            }
+            _sessions.Clear();
+
+            _disposed = true;
+        }
+    }
+
     public async ValueTask DisposeAsync()
     {
-        foreach (var session in _sessions)
-        {
-            await session.CloseAsync().ConfigureAwait(false);
-        }
-        
-        _sessions.Clear();
+        await DisposeAsyncCore().ConfigureAwait(false);
+        GC.SuppressFinalize(this);
+    }
+
+    ~FtpServerEx()
+    {
+        Dispose(disposing: false);
     }
 }
