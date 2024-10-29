@@ -88,6 +88,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
     private readonly Subject<ReadOnlyMemory<byte>> _inputDecoderAudioStream;
     private PacketCounter? _counter;
     private int _lastFrameSeq;
+    private int _lastPacketSync;
 
     public AudioDevice(IAudioCodecFactory factory, 
         AsvAudioCodec outputCodecInfo, 
@@ -163,17 +164,6 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
                     p.Payload.DataSize = (byte)lastPacketSize;
                     encodedData.Slice(packetIndex * AsvAudioHelper.MaxPacketStreamData,lastPacketSize).CopyTo(p.Payload.Data);
                 }, DisposeCancel).ConfigureAwait(false);
-                
-                await _sendPacketDelegate(p =>
-                {
-                    p.Payload.FrameSeq = frameIndex;
-                    p.Payload.TargetSystem = SystemId;
-                    p.Payload.TargetComponent = ComponentId;
-                    p.Payload.PktInFrame = (byte)packetsInFrame;
-                    p.Payload.PktSeq = packetIndex;
-                    p.Payload.DataSize = (byte)lastPacketSize;
-                    encodedData.Slice(packetIndex * AsvAudioHelper.MaxPacketStreamData,lastPacketSize).CopyTo(p.Payload.Data);
-                }, DisposeCancel).ConfigureAwait(false);
             }
         }
         catch (Exception e)
@@ -219,27 +209,25 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
             _logger.LogWarning("Recv strange packet with PktInFrame = 0");
             return;
         }
+
+        if (_lastFrameSeq == stream.FrameSeq && _lastPacketSync == stream.PktSeq)
+        {
+            // skip same frame
+            return;
+        }
+        _lastPacketSync = stream.PktSeq;
         lock (_sync)
         {
             if (stream.PktInFrame == 1)
             {
-                if (_lastFrameSeq == stream.FrameSeq)
-                {
-                    // skip same frame
-                    return;
-                }
-                _lastFrameSeq = stream.FrameSeq;
                 _counter ??= new PacketCounter((byte)(stream.FrameSeq - 1));
+                
                 var missed = _counter.CheckIncrement(stream.FrameSeq);
                 try
                 {
                     if (missed > 0)
                     {
-                        if (missed > 1)
-                        {
-                            _logger.ZLogTrace($"Missed packets {missed}. Set to 1");
-                            missed = 1;
-                        }
+                        _logger.ZLogTrace($"Missed packets {missed}");
                         _inputDecoderAudioStream.OnNext(ReadOnlyMemory<byte>.Empty);
                     }
                     else
@@ -252,6 +240,7 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
                 {
                     _logger.ZLogError(e,$"Error to process audio stream packet:{e.Message}");
                 }
+                _lastFrameSeq = stream.FrameSeq;
             }
             else
             {
@@ -286,5 +275,6 @@ public class AudioDevice : DisposableOnceWithCancel, IAudioDevice
             }
             
         }
+
     }
 }

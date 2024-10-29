@@ -37,8 +37,8 @@ public class FtpServerExHelper
         var serverId = new MavlinkIdentity(clientId.TargetSystemId, clientId.TargetComponentId);
 
         var serverSeq = new PacketSequenceCalculator();
-        server = new FtpServer(new MavlinkFtpServerConfig(), link.Server, serverId, serverSeq,
-            TaskPoolScheduler.Default, new TestLogger(_output, "SERVER"));
+        server = new FtpServer(new MavlinkFtpServerConfig(), link.Server, serverId, serverSeq,TimeProvider.System,
+            TaskPoolScheduler.Default, new TestLoggerFactory(_output, "SERVER"));
     }
 
     public void SetUpClientAndServer(out IFtpClient client, out IFtpServer server,
@@ -57,11 +57,11 @@ public class FtpServerExHelper
 
         var clientSeq = new PacketSequenceCalculator();
         client = new FtpClient(new MavlinkFtpClientConfig(), link.Client, clientId, clientSeq, timeProvider,
-            TaskPoolScheduler.Default, new TestLogger(_output, "CLIENT"));
+            TaskPoolScheduler.Default, new TestLoggerFactory(_output, "CLIENT"));
 
         var serverSeq = new PacketSequenceCalculator();
-        server = new FtpServer(new MavlinkFtpServerConfig(), link.Server, serverId, serverSeq,
-            TaskPoolScheduler.Default, new TestLogger(_output, "SERVER"));
+        server = new FtpServer(new MavlinkFtpServerConfig(), link.Server, serverId, serverSeq,timeProvider,
+            TaskPoolScheduler.Default, new TestLoggerFactory(_output, "SERVER"));
     }
 
     public async Task<string> ConvertStreamToString(Stream stream, long offset)
