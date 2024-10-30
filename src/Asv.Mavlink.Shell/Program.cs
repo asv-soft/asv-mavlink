@@ -29,6 +29,7 @@ class Program
         app.Add<BenchmarkBinSerializationCommand>();
         app.Add<BenchmarkSerializationPacket>();
         app.Add<PacketViewerCommand>();
+        app.Add<CreateVirtualFtpServerCommand>();
         app.Add<GenerateDiagnostics>();
         app.Add<TestGenerateDiagnosticsCommand>();
         await app.RunAsync(args);

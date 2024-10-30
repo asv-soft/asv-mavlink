@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Asv.Mavlink.Diagnostic.Server;
 
 namespace Asv.Mavlink.Shell;
 
@@ -32,13 +33,17 @@ public class GenerateDiagnosticsConfig
             },
             // TODO: Create examples for other types later
         },
-        ServerMaxSendIntervalMs = 100,
         SystemId = 1,
         ComponentId = 241,
+        ServerConfig = new DiagnosticServerConfig()
+        {
+            IsEnabled = true,
+            MaxSendIntervalMs = 100
+        },
     };
     
+    public required DiagnosticServerConfig ServerConfig { get; set; }
     public required MavlinkPortConfig[] Ports { get; set; }
-    public required int ServerMaxSendIntervalMs { get; set; }
     public ISet<Metric> Metrics { get; set; } = new HashSet<Metric>(Metric.MetricEqualityComparer.Instance.Value);
     public required byte SystemId { get; set; }
     public required byte ComponentId { get; set; }

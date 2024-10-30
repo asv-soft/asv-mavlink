@@ -165,7 +165,7 @@ public class GenerateDiagnostics
         }
         
         var server = new DiagnosticServer(
-            new DiagnosticServerConfig {MaxSendIntervalMs = config.ServerMaxSendIntervalMs},
+            config.ServerConfig,
             _router, 
             new MavlinkIdentity(config.SystemId, config.ComponentId), 
             new PacketSequenceCalculator(), 
