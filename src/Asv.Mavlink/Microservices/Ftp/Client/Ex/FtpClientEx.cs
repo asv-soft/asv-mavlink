@@ -198,7 +198,6 @@ public class FtpClientEx : IFtpClientEx
                     var result = await Base.ReadFile(request, bufferToSave, cancel).ConfigureAwait(false);
                     skip += result.ReadCount;
                     progress.Report((double)skip / file.Size);
-                    
                 }
                 catch (FtpNackEndOfFileException e)
                 {
