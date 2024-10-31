@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -86,7 +87,7 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// This event provides an observable stream of <see cref="MissionCountPacket"/> objects,
     /// which contain information about the current mission count.
     /// </remarks>
-    IObservable<MissionCountPacket> OnMissionCount { get; }
+    Observable<MissionCountPacket> OnMissionCount { get; }
 
     /// <summary>
     /// Gets an observable sequence of MissionRequestListPacket that represents the event raised when a mission request list is received.
@@ -94,7 +95,7 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// <remarks>
     /// Subscribing to this event allows you to listen for incoming mission request list packets.
     /// </remarks>
-    IObservable<MissionRequestListPacket> OnMissionRequestList { get; }
+    Observable<MissionRequestListPacket> OnMissionRequestList { get; }
 
     /// <summary>
     /// Gets an observable sequence of <see cref="MissionRequestIntPacket"/> for mission requests of type int.
@@ -108,7 +109,7 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// An <see cref="IObservable{T}"/> of <see cref="MissionRequestIntPacket"/>, representing the observable
     /// sequence of mission request packets of type int.
     /// </value>
-    IObservable<MissionRequestIntPacket> OnMissionRequestInt { get; }
+    Observable<MissionRequestIntPacket> OnMissionRequestInt { get; }
 
     /// <summary>
     /// Gets an observable sequence of MissionClearAllPacket events.
@@ -119,7 +120,7 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// <returns>
     /// An IObservable<MissionClearAllPacket> that can be subscribed to receive MissionClearAllPacket events.
     /// </returns>
-    IObservable<MissionClearAllPacket> OnMissionClearAll { get; }
+    Observable<MissionClearAllPacket> OnMissionClearAll { get; }
 
     /// <summary>
     /// Represents an event that is raised when a mission is set as the current mission.
@@ -127,7 +128,7 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// <value>
     /// An <see cref="IObservable{T}"/> of type <see cref="MissionSetCurrentPacket"/> that can be subscribed to receive notifications when the event is raised.
     /// </value>
-    IObservable<MissionSetCurrentPacket> OnMissionSetCurrent { get; }
+    Observable<MissionSetCurrentPacket> OnMissionSetCurrent { get; }
 
     
 

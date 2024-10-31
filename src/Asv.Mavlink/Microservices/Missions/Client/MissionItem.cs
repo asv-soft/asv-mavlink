@@ -1,74 +1,82 @@
 ﻿using System;
-using System.Reactive;
-using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using R3;
+using Unit = System.Reactive.Unit;
 
 namespace Asv.Mavlink
 {
-    public class MissionItem : DisposableOnceWithCancel
+    public sealed class MissionItem : IDisposable,IAsyncDisposable
     {
         internal readonly MissionItemIntPayload Payload;
         private readonly Subject<Unit> _onChanged;
+        private readonly IDisposable _sub1;
+        private readonly IDisposable _sub2;
+        private readonly IDisposable _sub3;
+        private readonly IDisposable _sub4;
+        private readonly IDisposable _sub5;
+        private readonly IDisposable _sub6;
+        private readonly IDisposable _sub7;
+        private readonly IDisposable _sub8;
+        private readonly IDisposable _sub9;
 
         public MissionItem(MissionItemIntPayload item)
         {
             Payload = item ?? throw new ArgumentNullException(nameof(item));
-            _onChanged = new Subject<Unit>().DisposeItWith(Disposable);
-            Location = new ReactiveProperty<GeoPoint>(new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(item.X), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(item.Y), item.Z)).DisposeItWith(Disposable);
-            Location.Subscribe(x =>
+            _onChanged = new Subject<Unit>();
+            Location = new ReactiveProperty<GeoPoint>(new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(item.X), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(item.Y), item.Z));
+            _sub1 = Location.Subscribe(Edit,(x,cb) =>
             {
-                Edit(p=>
+                cb(p=>
                 {
                     p.X = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(x.Latitude);
                     p.Y = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(x.Longitude);
                     p.Z = (float)x.Altitude;
                 });
-            }).DisposeItWith(Disposable);
+            });
 
-            AutoContinue = new ReactiveProperty<bool>(item.Autocontinue != 0).DisposeItWith(Disposable);
-            AutoContinue.Subscribe(b =>Edit(p=>p.Autocontinue = (byte)(b ? 1 : 0))).DisposeItWith(Disposable);
+            AutoContinue = new ReactiveProperty<bool>(item.Autocontinue != 0);
+            _sub2 = AutoContinue.Subscribe(Edit,(b,cb) =>cb(p=>p.Autocontinue = (byte)(b ? 1 : 0)));
 
-            Command = new ReactiveProperty<MavCmd>(item.Command).DisposeItWith(Disposable);
-            Command.Subscribe(c => Edit(p=>p.Command = c)).DisposeItWith(Disposable);
+            Command = new ReactiveProperty<MavCmd>(item.Command);
+            _sub3 = Command.Subscribe(Edit,(c,cb) => cb(p=>p.Command = c));
 
-            Current = new ReactiveProperty<bool>(item.Current != 0).DisposeItWith(Disposable);
-            Current.Subscribe(b => Edit(p=>p.Current = (byte)(b ? 1 : 0))).DisposeItWith(Disposable);
+            Current = new ReactiveProperty<bool>(item.Current != 0);
+            _sub3 = Current.Subscribe(Edit,(b,cb) => cb(p=>p.Current = (byte)(b ? 1 : 0)));
 
-            Frame = new ReactiveProperty<MavFrame>(item.Frame).DisposeItWith(Disposable);
-            Frame.Subscribe(f => Edit(p=>p.Frame = f)).DisposeItWith(Disposable);
+            Frame = new ReactiveProperty<MavFrame>(item.Frame);
+            _sub4 = Frame.Subscribe(Edit,(f,cb) => cb(p=>p.Frame = f));
 
-            MissionType = new ReactiveProperty<MavMissionType>(item.MissionType).DisposeItWith(Disposable);
-            MissionType.Subscribe(t => Edit(p=>p.MissionType = t)).DisposeItWith(Disposable);
+            MissionType = new ReactiveProperty<MavMissionType>(item.MissionType);
+            _sub5 = MissionType.Subscribe(Edit,(t,cb) => cb(p=>p.MissionType = t));
 
-            Param1 = new ReactiveProperty<float>(item.Param1).DisposeItWith(Disposable);
-            Param1.Subscribe(f => Edit(p=>p.Param1 = f)).DisposeItWith(Disposable);
+            Param1 = new ReactiveProperty<float>(item.Param1);
+            _sub6 = Param1.Subscribe(Edit,(f,cb) => cb(p=>p.Param1 = f));
 
-            Param2 = new ReactiveProperty<float>(item.Param2).DisposeItWith(Disposable);
-            Param2.Subscribe(f => Edit(p=>p.Param2 = f)).DisposeItWith(Disposable);
+            Param2 = new ReactiveProperty<float>(item.Param2);
+            _sub7 = Param2.Subscribe(Edit,(f,cb) => cb(p=>p.Param2 = f));
 
-            Param3 = new ReactiveProperty<float>(item.Param3).DisposeItWith(Disposable);
-            Param3.Subscribe(f => Edit(p=>p.Param3 = f)).DisposeItWith(Disposable);
+            Param3 = new ReactiveProperty<float>(item.Param3);
+            _sub8 = Param3.Subscribe(Edit,(f,cb) => cb(p=>p.Param3 = f));
 
-            Param4 = new ReactiveProperty<float>(item.Param4).DisposeItWith(Disposable);
-            Param4.Subscribe(f => Edit(p=>p.Param4 = f)).DisposeItWith(Disposable);
-
-            
+            Param4 = new ReactiveProperty<float>(item.Param4);
+            _sub9 = Param4.Subscribe(Edit,(f,cb) => cb(p=>p.Param4 = f));
         }
 
         public ushort Index => Payload.Seq;
 
-        public IRxEditableValue<GeoPoint> Location { get; }
-        public IRxEditableValue<bool> AutoContinue { get; }
-        public IRxEditableValue<MavCmd> Command { get; }
-        public IRxEditableValue<bool> Current { get; }
-        public IRxEditableValue<MavFrame> Frame { get; }
-        public IRxEditableValue<MavMissionType> MissionType { get; }
-        public IRxEditableValue<float> Param1 { get; }
-        public IRxEditableValue<float> Param2 { get; }
-        public IRxEditableValue<float> Param3 { get; }
-        public IRxEditableValue<float> Param4 { get; }
-        public IObservable<Unit> OnChanged => _onChanged;
+        public ReactiveProperty<GeoPoint> Location { get; }
+        public ReactiveProperty<bool> AutoContinue { get; }
+        public ReactiveProperty<MavCmd> Command { get; }
+        public ReactiveProperty<bool> Current { get; }
+        public ReactiveProperty<MavFrame> Frame { get; }
+        public ReactiveProperty<MavMissionType> MissionType { get; }
+        public ReactiveProperty<float> Param1 { get; }
+        public ReactiveProperty<float> Param2 { get; }
+        public ReactiveProperty<float> Param3 { get; }
+        public ReactiveProperty<float> Param4 { get; }
+        public Observable<Unit> OnChanged => _onChanged;
 
         public void Edit(Action<MissionItemIntPayload> editCallback)
         {
@@ -76,11 +84,73 @@ namespace Asv.Mavlink
             _onChanged.OnNext(Unit.Default);
         }
         
-        public object Tag { get; set; }
+        public object? Tag { get; set; }
 
         public override string ToString()
         {
             return $"Mission Item: {Command} target: {Location})";
         }
+
+        #region Dispose
+
+        public void Dispose()
+        {
+            _onChanged.Dispose();
+            _sub1.Dispose();
+            _sub2.Dispose();
+            _sub3.Dispose();
+            _sub4.Dispose();
+            _sub5.Dispose();
+            _sub6.Dispose();
+            _sub7.Dispose();
+            _sub8.Dispose();
+            _sub9.Dispose();
+            Location.Dispose();
+            AutoContinue.Dispose();
+            Command.Dispose();
+            Current.Dispose();
+            Frame.Dispose();
+            MissionType.Dispose();
+            Param1.Dispose();
+            Param2.Dispose();
+            Param3.Dispose();
+            Param4.Dispose();
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await CastAndDispose(_onChanged).ConfigureAwait(false);
+            await CastAndDispose(_sub1).ConfigureAwait(false);
+            await CastAndDispose(_sub2).ConfigureAwait(false);
+            await CastAndDispose(_sub3).ConfigureAwait(false);
+            await CastAndDispose(_sub4).ConfigureAwait(false);
+            await CastAndDispose(_sub5).ConfigureAwait(false);
+            await CastAndDispose(_sub6).ConfigureAwait(false);
+            await CastAndDispose(_sub7).ConfigureAwait(false);
+            await CastAndDispose(_sub8).ConfigureAwait(false);
+            await CastAndDispose(_sub9).ConfigureAwait(false);
+            await CastAndDispose(Location).ConfigureAwait(false);
+            await CastAndDispose(AutoContinue).ConfigureAwait(false);
+            await CastAndDispose(Command).ConfigureAwait(false);
+            await CastAndDispose(Current).ConfigureAwait(false);
+            await CastAndDispose(Frame).ConfigureAwait(false);
+            await CastAndDispose(MissionType).ConfigureAwait(false);
+            await CastAndDispose(Param1).ConfigureAwait(false);
+            await CastAndDispose(Param2).ConfigureAwait(false);
+            await CastAndDispose(Param3).ConfigureAwait(false);
+            await CastAndDispose(Param4).ConfigureAwait(false);
+
+            return;
+
+            static async ValueTask CastAndDispose(IDisposable resource)
+            {
+                if (resource is IAsyncDisposable resourceAsyncDisposable)
+                    await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    resource.Dispose();
+            }
+        }
+
+        #endregion
     }
 }

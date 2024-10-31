@@ -20,20 +20,18 @@ namespace Asv.Mavlink
     {
         private readonly MissionClientConfig _config;
         private readonly ILogger _logger;
-        private readonly ReactiveProperty<ushort> _missionCurrent;
-        private readonly ReactiveProperty<ushort> _missionReached;
-        private readonly IDisposable _disposeIt;
 
         public MissionClient(MavlinkClientIdentity identity, MissionClientConfig config, ICoreServices core) 
             : base("MISSION",identity, core)
         {
             _logger = core.Log.CreateLogger<MissionClient>();
             _config = config;
-            _missionCurrent = new ReactiveProperty<ushort>();
-            _missionReached = new ReactiveProperty<ushort>();
-            var d1 = InternalFilter<MissionCurrentPacket>().Select(p => p.Payload.Seq).Subscribe(_missionCurrent);
-            var d2 = InternalFilter<MissionItemReachedPacket>().Select(p => p.Payload.Seq).Subscribe(_missionReached);
-            _disposeIt = Disposable.Combine(_missionCurrent, _missionReached, d1, d2);
+            MissionCurrent = InternalFilter<MissionCurrentPacket>().Select(p => p.Payload.Seq)
+                .ToReadOnlyReactiveProperty();
+            MissionReached = InternalFilter<MissionItemReachedPacket>().Select(p => p.Payload.Seq)
+                .ToReadOnlyReactiveProperty();
+            OnMissionRequest = InternalFilter<MissionRequestPacket>(_=>true).Select(p=>p.Payload);
+            OnMissionAck = InternalFilter<MissionAckPacket>(_ => true).Select(p => p.Payload);
         }
 
         public async Task MissionSetCurrent(ushort missionItemsIndex, CancellationToken cancel)
@@ -61,10 +59,10 @@ namespace Asv.Mavlink
         }
 
         public new MavlinkClientIdentity Identity => base.Identity;
-        public ReadOnlyReactiveProperty<ushort> MissionCurrent => _missionCurrent;
-        public ReadOnlyReactiveProperty<ushort> MissionReached => _missionReached;
-        public IObservable<MissionRequestPayload> OnMissionRequest => InternalFilter<MissionRequestPacket>(_=>true).Select(p=>p.Payload);
-        public IObservable<MissionAckPayload> OnMissionAck => InternalFilter<MissionAckPacket>(_ => true).Select(p => p.Payload);
+        public ReadOnlyReactiveProperty<ushort> MissionCurrent { get; }
+        public ReadOnlyReactiveProperty<ushort> MissionReached { get; }
+        public Observable<MissionRequestPayload> OnMissionRequest { get; }
+        public Observable<MissionAckPayload> OnMissionAck { get; }
         public async Task<MissionItemIntPayload> MissionRequestItem(ushort index, CancellationToken cancel)
         {
             // MISSION_REQUEST_INT
@@ -174,10 +172,37 @@ namespace Asv.Mavlink
             throw new MavlinkException($"{LogSend} Error to {actionName}:{result:G}");
         }
 
-        public override void Dispose()
+        #region Dispose
+
+        protected override void Dispose(bool disposing)
         {
-            _disposeIt.Dispose();
-            base.Dispose();
+            if (disposing)
+            {
+                MissionCurrent.Dispose();
+                MissionReached.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
+
+        protected override async ValueTask DisposeAsyncCore()
+        {
+            await CastAndDispose(MissionCurrent).ConfigureAwait(false);
+            await CastAndDispose(MissionReached).ConfigureAwait(false);
+
+            await base.DisposeAsyncCore().ConfigureAwait(false);
+
+            return;
+
+            static async ValueTask CastAndDispose(IDisposable resource)
+            {
+                if (resource is IAsyncDisposable resourceAsyncDisposable)
+                    await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    resource.Dispose();
+            }
+        }
+
+        #endregion
     }
 }

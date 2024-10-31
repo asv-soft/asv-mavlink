@@ -16,8 +16,6 @@ public class ParameterClientConfig
 
 public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
 {
-    
-
     private readonly ParameterClientConfig _config;
     private readonly ILogger _logger;
     private readonly Subject<ParamValuePayload> _onParamValue;

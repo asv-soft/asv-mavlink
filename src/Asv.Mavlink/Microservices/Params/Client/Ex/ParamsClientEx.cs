@@ -44,8 +44,8 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
         _paramsSource = new ObservableDictionary<string, ParamItem>();
         _isSynced = new BindableReactiveProperty<bool>(false);
         _sub1 = client.OnParamValue.Chunk(TimeSpan.FromMilliseconds(config.ChunkUpdateBufferMs),client.Core.TimeProvider).Subscribe(OnUpdate);
-        RemoteCount = client.OnParamValue.Select(x => (int)x.ParamCount).ToReadOnlyBindableReactiveProperty(-1);
-        LocalCount = _paramsSource.ObserveCountChanged().ToReadOnlyBindableReactiveProperty();
+        RemoteCount = client.OnParamValue.Select(x => (int)x.ParamCount).ToReadOnlyReactiveProperty(-1);
+        LocalCount = _paramsSource.ObserveCountChanged().ToReadOnlyReactiveProperty();
         _onValueChanged = new Subject<(string, MavParamValue)>();
     }
     public string Name => $"{Base.Name}Ex";
@@ -53,11 +53,11 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
     public MavlinkClientIdentity Identity => Base.Identity;
     public ICoreServices Core => Base.Core;
     public Task Init(CancellationToken cancel = default) => Task.CompletedTask;
-    public IReadOnlyBindableReactiveProperty<int> RemoteCount { get; }
-    public IReadOnlyBindableReactiveProperty<int> LocalCount { get; }
+    public ReadOnlyReactiveProperty<int> RemoteCount { get; }
+    public ReadOnlyReactiveProperty<int> LocalCount { get; }
     public Observable<(string, MavParamValue)> OnValueChanged => _onValueChanged;
     private CancellationToken DisposeCancel => _disposeCancel.Token;
-    public IReadOnlyBindableReactiveProperty<bool> IsSynced => _isSynced;
+    public ReadOnlyReactiveProperty<bool> IsSynced => _isSynced;
     public IReadOnlyObservableDictionary<string, ParamItem> Items => _paramsSource;
     private void OnUpdate(IList<ParamValuePayload> items)
     {
@@ -200,15 +200,15 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
         progress.Report(1);
         _isSynced.OnNext(true);
         if (readAllParams == true) return;
-        if (RemoteCount.Value != LocalCount.Value)
+        if (RemoteCount.CurrentValue != LocalCount.CurrentValue)
         {
             if (readMissedOneByOne == false) return;
             // read no all params=>try to read one by one
-            for (ushort i = 0; i < RemoteCount.Value; i++)
+            for (ushort i = 0; i < RemoteCount.CurrentValue; i++)
             {
                 var result = await Base.Read(i, linkedCancel.Token).ConfigureAwait(false);
-                if (RemoteCount.Value != LocalCount.Value) return;
-                progress.Report((double)LocalCount.Value / RemoteCount.Value);
+                if (RemoteCount.CurrentValue != LocalCount.CurrentValue) return;
+                progress.Report((double)LocalCount.CurrentValue / RemoteCount.CurrentValue);
             }
         }
     }

@@ -170,7 +170,7 @@ namespace Asv.Mavlink
         }
 
         protected async Task<TResult> InternalCall<TResult,TPacketSend,TPacketRecv>(
-            Action<TPacketSend> fillPacket, Func<TPacketRecv,bool> filter, Func<TPacketRecv,TResult> resultGetter, int attemptCount = 5,
+            Action<TPacketSend> fillPacket, Func<TPacketRecv,bool>? filter, Func<TPacketRecv,TResult> resultGetter, int attemptCount = 5,
             Action<TPacketSend,int>? fillOnConfirmation = null, int timeoutMs = 1000, CancellationToken cancel = default)
             where TPacketSend : IPacketV2<IPayload>, new()
             where TPacketRecv : IPacketV2<IPayload>, new()

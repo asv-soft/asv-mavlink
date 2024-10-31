@@ -1,12 +1,13 @@
 using System;
+using R3;
 
 namespace Asv.Mavlink;
 
 public interface IParamsExtServerEx
 {
-    IObservable<Exception> OnError { get; }
+    Observable<Exception> OnError { get; }
     
-    IObservable<ParamExtChangedEvent> OnUpdated { get; }
+    Observable<ParamExtChangedEvent> OnUpdated { get; }
 
     MavParamExtValue this[string name] { get; set; }
 

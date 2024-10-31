@@ -15,22 +15,9 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
     private static readonly TimeSpan ArmedTimeCheckInterval = TimeSpan.FromSeconds(1);
     private readonly ICommandClient _commandClient;
     private long _lastArmedTime;
-    private readonly IReadOnlyBindableReactiveProperty<double> _pitch;
-    private readonly IReadOnlyBindableReactiveProperty<double> _pitchSpeed;
-    private readonly IReadOnlyBindableReactiveProperty<double> _roll;
-    private readonly IReadOnlyBindableReactiveProperty<double> _rollSpeed;
-    private readonly IReadOnlyBindableReactiveProperty<double> _yaw;
-    private readonly IReadOnlyBindableReactiveProperty<double> _yawSpeed;
-    private readonly IReadOnlyBindableReactiveProperty<GeoPoint?> _target;
-    private readonly IReadOnlyBindableReactiveProperty<GeoPoint?> _home;
-    private readonly IReadOnlyBindableReactiveProperty<GeoPoint> _current;
-    private readonly IReadOnlyBindableReactiveProperty<double> _homeDistance;
-    private readonly IReadOnlyBindableReactiveProperty<double> _targetDistance;
-    private readonly IReadOnlyBindableReactiveProperty<bool> _isArmed;
     private readonly BindableReactiveProperty<TimeSpan> _armedTime;
     private readonly ITimer _armedTimer;
     private readonly BindableReactiveProperty<GeoPoint?> _roi;
-    private readonly IReadOnlyBindableReactiveProperty<double> _altitudeAboveHome;
 
 
     public PositionClientEx(
@@ -40,66 +27,66 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
     {
         _commandClient = commandClient;
         Base = client;
-        _pitch = client.Attitude.Select(p => GeoMath.RadiansToDegrees(p.Pitch))
-            .ToReadOnlyBindableReactiveProperty(double.NaN);
+        Pitch = client.Attitude.Select(p => GeoMath.RadiansToDegrees(p.Pitch))
+            .ToReadOnlyReactiveProperty(double.NaN);
         
-        _pitchSpeed = client.Attitude
+        PitchSpeed = client.Attitude
             .Select(p => (double)p.Pitchspeed)
-            .ToReadOnlyBindableReactiveProperty(double.NaN);
+            .ToReadOnlyReactiveProperty(double.NaN);
         
-        _roll = client.Attitude
+        Roll = client.Attitude
             .Select(p => GeoMath.RadiansToDegrees(p.Roll))
-            .ToReadOnlyBindableReactiveProperty(double.NaN);
+            .ToReadOnlyReactiveProperty(double.NaN);
         
-        _rollSpeed = client.Attitude
+        RollSpeed = client.Attitude
             .Select(p => (double)p.Rollspeed)
-            .ToReadOnlyBindableReactiveProperty(double.NaN);
+            .ToReadOnlyReactiveProperty(double.NaN);
         
-        _yaw = client.Attitude
+        Yaw = client.Attitude
             .Select(p => GeoMath.RadiansToDegrees(p.Yaw))
-            .ToReadOnlyBindableReactiveProperty(double.NaN);
+            .ToReadOnlyReactiveProperty(double.NaN);
         
-        _yawSpeed = client.Attitude
+        YawSpeed = client.Attitude
             .Select(p => (double)p.Yawspeed)
-            .ToReadOnlyBindableReactiveProperty(double.NaN);
+            .ToReadOnlyReactiveProperty(double.NaN);
         
-        _target = client.Target
+        Target = client.Target
             .Where(p => p.CoordinateFrame == MavFrame.MavFrameGlobal)
             .Select(p =>(GeoPoint?) new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.LatInt)  , MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.LonInt), p.Alt))
-            .ToReadOnlyBindableReactiveProperty();
+            .ToReadOnlyReactiveProperty();
         
-        _home = client.Home
+        Home = client.Home
             .Select(p => (GeoPoint?)new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Latitude), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Longitude), MavlinkTypesHelper.AltFromMmToDoubleMeter(p.Altitude)))
-            .ToReadOnlyBindableReactiveProperty();
+            .ToReadOnlyReactiveProperty();
         
-        _current = client.GlobalPosition
+        Current = client.GlobalPosition
             .Select(p=>new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lat), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lon), MavlinkTypesHelper.AltFromMmToDoubleMeter(p.Alt)))
-            .ToReadOnlyBindableReactiveProperty(null);
+            .ToReadOnlyReactiveProperty(null);
         
-        _homeDistance = _current.AsObservable()
-            .CombineLatest(_home.AsObservable(), (c, h) => GeoMath.Distance(c, h))
-            .ToReadOnlyBindableReactiveProperty(double.NaN);
+        HomeDistance = Current.AsObservable()
+            .CombineLatest(Home.AsObservable(), (c, h) => GeoMath.Distance(c, h))
+            .ToReadOnlyReactiveProperty(double.NaN);
 
-        _targetDistance = _current.AsObservable()
-            .CombineLatest(_target.AsObservable(), (c, h) => GeoMath.Distance(c, h))
-            .ToReadOnlyBindableReactiveProperty();
+        TargetDistance = Current.AsObservable()
+            .CombineLatest(Target.AsObservable(), (c, h) => GeoMath.Distance(c, h))
+            .ToReadOnlyReactiveProperty();
 
-        _isArmed = heartbeatClient.RawHeartbeat
+        IsArmed = heartbeatClient.RawHeartbeat
             .Select(p => p.BaseMode.HasFlag(MavModeFlag.MavModeFlagSafetyArmed))
-            .ToReadOnlyBindableReactiveProperty();
+            .ToReadOnlyReactiveProperty();
         
         _armedTime = new BindableReactiveProperty<TimeSpan>(TimeSpan.Zero);
 
         _armedTimer =
             client.Core.TimeProvider.CreateTimer(CheckArmedTime, null, ArmedTimeCheckInterval, ArmedTimeCheckInterval);
-        _isArmed.AsObservable().Where(_ => _)
+        IsArmed.AsObservable().Where(_ => _)
             .Subscribe(_ => Interlocked.Exchange(ref _lastArmedTime,client.Core.TimeProvider.GetTimestamp()));
 
         _roi = new BindableReactiveProperty<GeoPoint?>(null);
         
-        _altitudeAboveHome = client.GlobalPosition
+        AltitudeAboveHome = client.GlobalPosition
             .Select(p=>p.RelativeAlt/1000D)
-            .ToReadOnlyBindableReactiveProperty(double.NaN);
+            .ToReadOnlyReactiveProperty(double.NaN);
         }
 
     public string Name => $"{Base.Name}Ex";
@@ -117,26 +104,38 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
 
     public IPositionClient Base { get; }
 
-    public IReadOnlyBindableReactiveProperty<double> Pitch => _pitch;
-    public IReadOnlyBindableReactiveProperty<double> PitchSpeed => _pitchSpeed;
-    public IReadOnlyBindableReactiveProperty<double> Roll => _roll;
-    public IReadOnlyBindableReactiveProperty<double> RollSpeed => _rollSpeed;
-    public IReadOnlyBindableReactiveProperty<double> Yaw => _yaw;
-    public IReadOnlyBindableReactiveProperty<double> YawSpeed => _yawSpeed;
+    public ReadOnlyReactiveProperty<double> Pitch { get; }
 
-    public IReadOnlyBindableReactiveProperty<GeoPoint> Current => _current;
-    public IReadOnlyBindableReactiveProperty<GeoPoint?> Target => _target;
-    public IReadOnlyBindableReactiveProperty<GeoPoint?> Home => _home;
-    public IReadOnlyBindableReactiveProperty<double> AltitudeAboveHome => _altitudeAboveHome;
-    public IReadOnlyBindableReactiveProperty<double> HomeDistance => _homeDistance;
-    public IReadOnlyBindableReactiveProperty<double> TargetDistance => _targetDistance;
-    public IReadOnlyBindableReactiveProperty<bool> IsArmed => _isArmed;
-    public IReadOnlyBindableReactiveProperty<TimeSpan> ArmedTime => _armedTime;
-    public IReadOnlyBindableReactiveProperty<GeoPoint?> Roi => _roi;
+    public ReadOnlyReactiveProperty<double> PitchSpeed { get; }
+
+    public ReadOnlyReactiveProperty<double> Roll { get; }
+
+    public ReadOnlyReactiveProperty<double> RollSpeed { get; }
+
+    public ReadOnlyReactiveProperty<double> Yaw { get; }
+
+    public ReadOnlyReactiveProperty<double> YawSpeed { get; }
+
+    public ReadOnlyReactiveProperty<GeoPoint> Current { get; }
+
+    public ReadOnlyReactiveProperty<GeoPoint?> Target { get; }
+
+    public ReadOnlyReactiveProperty<GeoPoint?> Home { get; }
+
+    public ReadOnlyReactiveProperty<double> AltitudeAboveHome { get; }
+
+    public ReadOnlyReactiveProperty<double> HomeDistance { get; }
+
+    public ReadOnlyReactiveProperty<double> TargetDistance { get; }
+
+    public ReadOnlyReactiveProperty<bool> IsArmed { get; }
+
+    public ReadOnlyReactiveProperty<TimeSpan> ArmedTime => _armedTime;
+    public ReadOnlyReactiveProperty<GeoPoint?> Roi => _roi;
     
     public async Task ArmDisarm(bool isArm, CancellationToken cancel)
     {
-        if (_isArmed.Value == isArm) return;
+        if (IsArmed.CurrentValue == isArm) return;
         await _commandClient.CommandLongAndCheckResult(MavCmd.MavCmdComponentArmDisarm, isArm ? 1 : 0, 0, 0,
             0, 0, 0, 0, cancel).ConfigureAwait(false);
         
@@ -192,42 +191,42 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
 
     public void Dispose()
     {
-        _pitch.Dispose();
-        _pitchSpeed.Dispose();
-        _roll.Dispose();
-        _rollSpeed.Dispose();
-        _yaw.Dispose();
-        _yawSpeed.Dispose();
-        _target.Dispose();
-        _home.Dispose();
-        _current.Dispose();
-        _homeDistance.Dispose();
-        _targetDistance.Dispose();
-        _isArmed.Dispose();
+        Pitch.Dispose();
+        PitchSpeed.Dispose();
+        Roll.Dispose();
+        RollSpeed.Dispose();
+        Yaw.Dispose();
+        YawSpeed.Dispose();
+        Target.Dispose();
+        Home.Dispose();
+        Current.Dispose();
+        HomeDistance.Dispose();
+        TargetDistance.Dispose();
+        IsArmed.Dispose();
         _armedTime.Dispose();
         _armedTimer.Dispose();
         _roi.Dispose();
-        _altitudeAboveHome.Dispose();
+        AltitudeAboveHome.Dispose();
     }
 
     public async ValueTask DisposeAsync()
     {
-        await CastAndDispose(_pitch).ConfigureAwait(false);
-        await CastAndDispose(_pitchSpeed).ConfigureAwait(false);
-        await CastAndDispose(_roll).ConfigureAwait(false);
-        await CastAndDispose(_rollSpeed).ConfigureAwait(false);
-        await CastAndDispose(_yaw).ConfigureAwait(false);
-        await CastAndDispose(_yawSpeed).ConfigureAwait(false);
-        await CastAndDispose(_target).ConfigureAwait(false);
-        await CastAndDispose(_home).ConfigureAwait(false);
-        await CastAndDispose(_current).ConfigureAwait(false);
-        await CastAndDispose(_homeDistance).ConfigureAwait(false);
-        await CastAndDispose(_targetDistance).ConfigureAwait(false);
-        await CastAndDispose(_isArmed).ConfigureAwait(false);
+        await CastAndDispose(Pitch).ConfigureAwait(false);
+        await CastAndDispose(PitchSpeed).ConfigureAwait(false);
+        await CastAndDispose(Roll).ConfigureAwait(false);
+        await CastAndDispose(RollSpeed).ConfigureAwait(false);
+        await CastAndDispose(Yaw).ConfigureAwait(false);
+        await CastAndDispose(YawSpeed).ConfigureAwait(false);
+        await CastAndDispose(Target).ConfigureAwait(false);
+        await CastAndDispose(Home).ConfigureAwait(false);
+        await CastAndDispose(Current).ConfigureAwait(false);
+        await CastAndDispose(HomeDistance).ConfigureAwait(false);
+        await CastAndDispose(TargetDistance).ConfigureAwait(false);
+        await CastAndDispose(IsArmed).ConfigureAwait(false);
         await CastAndDispose(_armedTime).ConfigureAwait(false);
         await _armedTimer.DisposeAsync().ConfigureAwait(false);
         await CastAndDispose(_roi).ConfigureAwait(false);
-        await CastAndDispose(_altitudeAboveHome).ConfigureAwait(false);
+        await CastAndDispose(AltitudeAboveHome).ConfigureAwait(false);
 
         return;
 

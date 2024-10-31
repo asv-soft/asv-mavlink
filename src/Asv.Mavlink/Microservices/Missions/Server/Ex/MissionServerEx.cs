@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading;
-using Asv.Common;
+using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using ObservableCollections;
 using R3;
 using ZLogger;
 
@@ -14,37 +15,41 @@ public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
 {
     private readonly IStatusTextServer _statusLogger;
     private readonly ILogger _logger;
-    private readonly SourceCache<ServerMissionItem, ushort> _missionSource;
+    private readonly ObservableList<ServerMissionItem> _missionSource;
     private double _busy;
-    private readonly IDisposable _disposeIt;
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
+    private readonly IDisposable _sub4;
+    private readonly IDisposable _sub5;
+    private readonly IDisposable _sub6;
+    private readonly IDisposable _sub7;
 
     public MissionServerEx(IMissionServer baseIfc, IStatusTextServer status) :
         base("MISSION", baseIfc.Identity, baseIfc.Core)
     {
         _logger = baseIfc.Core.Log.CreateLogger<MissionServerEx>();
         Base = baseIfc;
-        var builder = Disposable.CreateBuilder();
         _statusLogger = status ?? throw new ArgumentNullException(nameof(status));
-        _missionSource = new SourceCache<ServerMissionItem, ushort>(x => x.Seq).AddTo(ref builder);
+        _missionSource = new ObservableList<ServerMissionItem>();
 
-        Current = new ReactiveProperty<ushort>(0).AddTo(ref builder);
-        Current.Subscribe(x=>Base.SendMissionCurrent(x)).AddTo(ref builder);
+        Current = new ReactiveProperty<ushort>(0);
+        _sub1 = Current.Subscribe(Base,(x,b)=>b.SendMissionCurrent(x));
 
-        Reached = new ReactiveProperty<ushort>(0).AddTo(ref builder);
-        Reached.Subscribe(x=>Base.SendReached(x)).AddTo(ref builder);
+        Reached = new ReactiveProperty<ushort>(0);
+        _sub1 = Current.Subscribe(Base,(x,b)=>b.SendMissionCurrent(x));
+        _sub2 = Reached.Subscribe(Base,(x,b)=>b.SendReached(x));
         
-        baseIfc.OnMissionCount.Subscribe(UploadMission).AddTo(ref builder);
-        baseIfc.OnMissionRequestList.Subscribe(DownloadMission).AddTo(ref builder);
-        baseIfc.OnMissionRequestInt.Subscribe(ReadMissionItem).AddTo(ref builder);
-        baseIfc.OnMissionClearAll.Subscribe(ClearAll).AddTo(ref builder);
-        baseIfc.OnMissionSetCurrent.Subscribe(SetCurrent).AddTo(ref builder);
-        _disposeIt = builder.Build();
+        _sub3 = baseIfc.OnMissionCount.Subscribe(UploadMission);
+        _sub4 = baseIfc.OnMissionRequestList.Subscribe(DownloadMission);
+        _sub5 = baseIfc.OnMissionRequestInt.Subscribe(ReadMissionItem);
+        _sub6 = baseIfc.OnMissionClearAll.Subscribe(ClearAll);
+        _sub7 = baseIfc.OnMissionSetCurrent.Subscribe(SetCurrent);
     }
 
     private void SetCurrent(MissionSetCurrentPacket req)
     {
-        var item = _missionSource.Lookup(req.Payload.Seq);
-        if (item.HasValue == false)
+        if (req.Payload.Seq >= _missionSource.Count)
         {
             _logger.ZLogWarning($"{LogRecv}: '{req.Payload.Seq}' not found");
             _statusLogger.Info($"{LogSend}: item '{req.Payload.Seq}' not found");
@@ -71,15 +76,14 @@ public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
             await Base.SendMissionAck(MavMissionResult.MavMissionUnsupported, req.SystemId, req.ComponentId).ConfigureAwait(false);
             return;
         }
-
-        var item = _missionSource.Lookup(req.Payload.Seq);
-        if (item.HasValue == false)
+        
+        if (req.Payload.Seq >= _missionSource.Count)
         {
             await Base.SendMissionAck(MavMissionResult.MavMissionInvalid, req.SystemId, req.ComponentId).ConfigureAwait(false);
             return;
         }
-
-        await Base.SendMissionItemInt(item.Value).ConfigureAwait(false);
+        var item = _missionSource[req.Payload.Seq];
+        await Base.SendMissionItemInt(item).ConfigureAwait(false);
     }
     private async void DownloadMission(MissionRequestListPacket req)
     {
@@ -106,7 +110,7 @@ public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
                 {
                     _statusLogger.Info($"{LogSend}: uploaded '{(i + 1) / count:P0}' items");
                 }
-                _missionSource.AddOrUpdate(item);
+                _missionSource.Add(item);
             }
             _statusLogger.Info($"{LogSend}: uploaded '{count}' items");
             await Base.SendMissionAck(MavMissionResult.MavMissionAccepted, req.SystemId, req.ComponentId).ConfigureAwait(false);
@@ -123,28 +127,82 @@ public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
     }
 
     public IMissionServer Base { get; }
-    public IRxEditableValue<ushort> Current { get; }
-    public IRxEditableValue<ushort> Reached { get; }
-    public IObservable<IChangeSet<ServerMissionItem, ushort>> Items => _missionSource.Connect();
+    public ReactiveProperty<ushort> Current { get; }
+    public ReactiveProperty<ushort> Reached { get; }
+    public IReadOnlyObservableList<ServerMissionItem> Items => _missionSource;
     public void AddItems(IEnumerable<ServerMissionItem> items)
     {
-        _missionSource.AddOrUpdate(items);
+        EnsureIndexCorrected();
+        _missionSource.AddRange(items);
     }
 
     public void RemoveItems(IEnumerable<ServerMissionItem> items)
     {
-        _missionSource.Remove(items);
+        foreach (var item in items)
+        {
+            _missionSource.Remove(item);    
+        }
+        EnsureIndexCorrected();
+    }
+
+    private void EnsureIndexCorrected()
+    {
+        for (var i = 0; i < _missionSource.Count; i++)
+        {
+            _missionSource[i].Seq = (ushort)i;
+        }
     }
 
     public ImmutableArray<ServerMissionItem> GetItemsSnapshot()
     {
-        return  [.._missionSource.Items];
+        EnsureIndexCorrected();
+        return [.._missionSource];
+    }
+    #region Dispose
+    
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _sub1.Dispose();
+            _sub2.Dispose();
+            _sub3.Dispose();
+            _sub4.Dispose();
+            _sub5.Dispose();
+            _sub6.Dispose();
+            _sub7.Dispose();
+            Current.Dispose();
+            Reached.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 
-    public override void Dispose()
+    protected override async ValueTask DisposeAsyncCore()
     {
-        _disposeIt.Dispose();
-        base.Dispose();
+        await CastAndDispose(_sub1).ConfigureAwait(false);
+        await CastAndDispose(_sub2).ConfigureAwait(false);
+        await CastAndDispose(_sub3).ConfigureAwait(false);
+        await CastAndDispose(_sub4).ConfigureAwait(false);
+        await CastAndDispose(_sub5).ConfigureAwait(false);
+        await CastAndDispose(_sub6).ConfigureAwait(false);
+        await CastAndDispose(_sub7).ConfigureAwait(false);
+        await CastAndDispose(Current).ConfigureAwait(false);
+        await CastAndDispose(Reached).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
     }
+    
+    #endregion
 }
 

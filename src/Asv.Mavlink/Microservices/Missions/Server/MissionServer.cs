@@ -2,30 +2,29 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink;
 
-public class MissionServer(MavlinkIdentity identity, ICoreServices core)
-    : MavlinkMicroserviceServer("MISSION", identity, core), IMissionServer
+public class MissionServer : MavlinkMicroserviceServer, IMissionServer
 {
     private ushort _currentMissionIndex;
 
+    public MissionServer(MavlinkIdentity identity, ICoreServices core) : base("MISSION", identity, core)
+    {
+        OnMissionRequestList = InternalFilter<MissionRequestListPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
+        OnMissionRequestInt = InternalFilter<MissionRequestIntPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
+        OnMissionClearAll = InternalFilter<MissionClearAllPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
+        OnMissionSetCurrent = InternalFilter<MissionSetCurrentPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
+        OnMissionCount = InternalFilter<MissionCountPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
+    }
 
-    public IObservable<MissionCountPacket> OnMissionCount =>
-        InternalFilter<MissionCountPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
 
-    public IObservable<MissionRequestListPacket> OnMissionRequestList =>
-        InternalFilter<MissionRequestListPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
-
-    public IObservable<MissionRequestIntPacket> OnMissionRequestInt =>
-        InternalFilter<MissionRequestIntPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
-
-    public IObservable<MissionClearAllPacket> OnMissionClearAll =>
-        InternalFilter<MissionClearAllPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
-
-    public IObservable<MissionSetCurrentPacket> OnMissionSetCurrent =>
-        InternalFilter<MissionSetCurrentPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
-
+    public Observable<MissionCountPacket> OnMissionCount { get; }
+    public Observable<MissionRequestListPacket> OnMissionRequestList { get; }
+    public Observable<MissionRequestIntPacket> OnMissionRequestInt { get; }
+    public Observable<MissionClearAllPacket> OnMissionClearAll { get; }
+    public Observable<MissionSetCurrentPacket> OnMissionSetCurrent { get; }
     public Task SendMissionAck(MavMissionResult result, byte targetSystemId = 0, byte targetComponentId = 0,
         MavMissionType? type = null)
     {

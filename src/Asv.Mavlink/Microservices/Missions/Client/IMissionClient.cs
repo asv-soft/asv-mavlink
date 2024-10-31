@@ -40,7 +40,7 @@ namespace Asv.Mavlink
         /// Gets an observable stream of mission request payloads.
         /// </summary>
         /// <returns>An IObservable stream of MissionRequestPayload objects.</returns>
-        IObservable<MissionRequestPayload> OnMissionRequest { get; }
+        Observable<MissionRequestPayload> OnMissionRequest { get; }
 
         /// <summary>
         /// Gets the observable sequence that emits MissionAckPayload when a mission acknowledgement is received.
@@ -48,7 +48,7 @@ namespace Asv.Mavlink
         /// <value>
         /// The observable sequence that emits MissionAckPayload when a mission acknowledgement is received.
         /// </value>
-        IObservable<MissionAckPayload> OnMissionAck { get; }
+        Observable<MissionAckPayload> OnMissionAck { get; }
 
         /// <summary>
         /// Requests a mission item of the specified <paramref name="index"/>.

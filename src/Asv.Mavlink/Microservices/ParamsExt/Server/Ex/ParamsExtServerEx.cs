@@ -22,11 +22,11 @@ public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDi
 {
     private readonly ILogger _logger;
 
-    private readonly System.Reactive.Subjects.Subject<Exception> _onErrorSubject;
+    private readonly Subject<Exception> _onErrorSubject;
     private int _sendingInProgressFlag;
     private readonly ImmutableDictionary<string, (ushort, IMavParamExtTypeMetadata)> _paramDict;
     private readonly ImmutableList<IMavParamExtTypeMetadata> _paramList;
-    private readonly System.Reactive.Subjects.Subject<ParamExtChangedEvent> _onParamChangedSubject;
+    private readonly Subject<ParamExtChangedEvent> _onParamChangedSubject;
 
     private readonly IParamsExtServer _server;
     private readonly IStatusTextServer _statusTextServer;
@@ -51,7 +51,7 @@ public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDi
         _serverCfg = serverCfg ?? throw new ArgumentNullException(nameof(serverCfg));
         _disposeCancel = new CancellationTokenSource();
 
-        _onErrorSubject = new System.Reactive.Subjects.Subject<Exception>();
+        _onErrorSubject = new Subject<Exception>();
         _paramList = paramDescriptions.OrderBy(metadata => metadata.Name).ToImmutableList();
         var builder = ImmutableDictionary.CreateBuilder<string, (ushort, IMavParamExtTypeMetadata)>();
         for (var i = 0; i < _paramList.Count; i++)
@@ -63,7 +63,7 @@ public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDi
         
         _logger.ZLogDebug($"Create params server for [sys:{server.Identity.SystemId}, com:{server.Identity.ComponentId}] with {_paramDict.Count} params");
         
-        _onParamChangedSubject = new System.Reactive.Subjects.Subject<ParamExtChangedEvent>();
+        _onParamChangedSubject = new Subject<ParamExtChangedEvent>();
 
         _sub1 = server.OnParamExtSet.Subscribe(OnParamSet);
         _sub2 = server.OnParamExtRequestList.Subscribe(OnParamRequestList);
@@ -189,8 +189,8 @@ public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDi
         }, cancel).ConfigureAwait(false);
     }
 
-    public IObservable<Exception> OnError => _onErrorSubject;
-    public IObservable<ParamExtChangedEvent> OnUpdated => _onParamChangedSubject;
+    public Observable<Exception> OnError => _onErrorSubject;
+    public Observable<ParamExtChangedEvent> OnUpdated => _onParamChangedSubject;
 
     public MavParamExtValue this[string name]
     {

@@ -32,7 +32,7 @@ using System;
          /// <summary>
          /// True if params synced with remote device and local cache
          /// </summary>
-         IReadOnlyBindableReactiveProperty<bool> IsSynced { get; }
+         ReadOnlyReactiveProperty<bool> IsSynced { get; }
 
          /// <summary>
          /// Collection of parameters items from the remote device.
@@ -50,12 +50,12 @@ using System;
          /// <summary>
          /// Count of params on remote device
          /// </summary>
-         IReadOnlyBindableReactiveProperty<int> RemoteCount { get; }
+         ReadOnlyReactiveProperty<int> RemoteCount { get; }
 
          /// <summary>
          /// Count of params in local cache
          /// </summary>
-         IReadOnlyBindableReactiveProperty<int> LocalCount { get; }
+         ReadOnlyReactiveProperty<int> LocalCount { get; }
 
          /// <summary>
          /// Read params once from remote device, update local value and return result
