@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using Asv.Cfg;
-using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
-using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 

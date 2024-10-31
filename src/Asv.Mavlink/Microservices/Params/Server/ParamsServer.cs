@@ -1,9 +1,8 @@
 using System;
-using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
-using Microsoft.Extensions.Logging;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -26,9 +25,9 @@ namespace Asv.Mavlink
             return InternalSend<ParamValuePacket>(p=>changeCallback(p.Payload), cancel);
         }
 
-        public IObservable<ParamRequestReadPacket> OnParamRequestRead { get; }
-        public IObservable<ParamRequestListPacket> OnParamRequestList { get; }
-        public IObservable<ParamSetPacket> OnParamSet { get; }
+        public Observable<ParamRequestReadPacket> OnParamRequestRead { get; }
+        public Observable<ParamRequestListPacket> OnParamRequestList { get; }
+        public Observable<ParamSetPacket> OnParamSet { get; }
         
     }
 }

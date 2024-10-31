@@ -31,7 +31,7 @@
     <PackageReference Include="Asv.Cfg" Version="$(AsvCommonVersion)" />
     <PackageReference Include="Asv.Common" Version="$(AsvCommonVersion)" />
     <PackageReference Include="Asv.IO" Version="$(AsvCommonVersion)" />
-    <PackageReference Include="DynamicData" Version="$(DynamicDataVersion)" />
+    <PackageReference Include="ObservableCollections.R3" Version="3.3.1" />
     <PackageReference Include="R3" Version="1.2.9" />
     <PackageReference Include="TestableIO.System.IO.Abstractions" Version="21.0.29" />
     <PackageReference Include="ZLogger" Version="$(ZLoggerVersion)" />
@@ -74,7 +74,6 @@
     <Folder Include="Microservices\Dgps\Server\" />
     <Folder Include="Microservices\Gnss\Server\" />
     <Folder Include="Microservices\Mode\Server\" />
-    <Folder Include="Microservices\Offboard\Server\" />
     <Folder Include="Microservices\Position\Server\" />
     <Folder Include="Microservices\Telemetry\Server\" />
   </ItemGroup>

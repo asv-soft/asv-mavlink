@@ -6,8 +6,8 @@ using Xunit.Abstractions;
 namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(StatusTextClient))]
-public class StatusTextClientTest(ITestOutputHelper log, VirtualMavlinkConnection? link = null)
-    : ClientTestBase<StatusTextClient>(log, link)
+public class StatusTextClientTest(ITestOutputHelper log)
+    : ClientTestBase<StatusTextClient>(log)
 {
     protected override StatusTextClient CreateClient(MavlinkClientIdentity identity, CoreServices core) => new(identity, core);
     

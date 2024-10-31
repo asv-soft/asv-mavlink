@@ -6,7 +6,6 @@
     <AsvCommonVersion>3.0.0-dev.4</AsvCommonVersion>
     <ZLoggerVersion>2.5.5</ZLoggerVersion>
     <ApiCompatVersion>8.0.200</ApiCompatVersion>
-    <DynamicDataVersion>8.4.1</DynamicDataVersion>
     <ConsoleAppFrameworkVersion>5.2.4</ConsoleAppFrameworkVersion>
   </PropertyGroup>
 </Project>

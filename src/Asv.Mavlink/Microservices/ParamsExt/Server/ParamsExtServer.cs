@@ -1,9 +1,8 @@
 using System;
-using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
-using Microsoft.Extensions.Logging;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -32,7 +31,7 @@ public class ParamsExtServer : MavlinkMicroserviceServer, IParamsExtServer
     public Task SendParamExtValue(Action<ParamExtValuePayload> changeCallback, CancellationToken cancel = default) =>
         InternalSend<ParamExtValuePacket>(packet => changeCallback(packet.Payload), cancel);
 
-    public IObservable<ParamExtSetPacket> OnParamExtSet { get; }
-    public IObservable<ParamExtRequestListPacket> OnParamExtRequestList { get; }
-    public IObservable<ParamExtRequestReadPacket> OnParamExtRequestRead { get; }
+    public Observable<ParamExtSetPacket> OnParamExtSet { get; }
+    public Observable<ParamExtRequestListPacket> OnParamExtRequestList { get; }
+    public Observable<ParamExtRequestReadPacket> OnParamExtRequestRead { get; }
 }

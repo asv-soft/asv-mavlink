@@ -1,13 +1,10 @@
 using System;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvGbs;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using R3;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
 

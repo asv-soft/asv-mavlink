@@ -6,8 +6,8 @@ using Xunit.Abstractions;
 namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(StatusTextServer))]
-public class StatusTextServerTest(ITestOutputHelper log, VirtualMavlinkConnection? link = null)
-    : ServerTestBase<StatusTextServer>(log, link)
+public class StatusTextServerTest(ITestOutputHelper log)
+    : ServerTestBase<StatusTextServer>(log)
 {
     private StatusTextLoggerConfig _config = new()
     {

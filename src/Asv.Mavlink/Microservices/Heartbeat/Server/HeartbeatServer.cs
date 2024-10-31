@@ -1,8 +1,5 @@
 using System;
-using System.Reactive.Concurrency;
-using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
-using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink
 {

@@ -1,5 +1,3 @@
-using System.Reactive.Concurrency;
-
 namespace Asv.Mavlink;
 
 /// <summary>

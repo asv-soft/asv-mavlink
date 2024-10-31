@@ -1,5 +1,4 @@
 using System;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +7,6 @@ using Asv.Mavlink.V2.AsvGbs;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Minimal;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using ZLogger;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
 using MavType = Asv.Mavlink.V2.Minimal.MavType;

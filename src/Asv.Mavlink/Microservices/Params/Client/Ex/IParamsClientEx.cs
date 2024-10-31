@@ -2,8 +2,7 @@ using System;
  using System.Reactive.Linq;
  using System.Threading;
  using System.Threading.Tasks;
- using Asv.Common;
- using DynamicData;
+ using ObservableCollections;
  using R3;
 
  namespace Asv.Mavlink
@@ -28,35 +27,35 @@ using System;
          /// Subscribing to the observable sequence returned by this property allows users to receive notifications
          /// whenever a value is changed.
          /// </remarks>
-         IObservable<(string, MavParamValue)> OnValueChanged { get; }
+         Observable<(string, MavParamValue)> OnValueChanged { get; }
 
          /// <summary>
          /// True if params synced with remote device and local cache
          /// </summary>
-         ReadOnlyReactiveProperty<bool> IsSynced { get; }
+         IReadOnlyBindableReactiveProperty<bool> IsSynced { get; }
 
          /// <summary>
          /// Collection of parameters items from the remote device.
          /// </summary>
-         IObservable<IChangeSet<IParamItem, string>> Items { get; }
+         IReadOnlyObservableDictionary<string, ParamItem> Items { get; }
 
          /// <summary>
          /// Send request to remote device for read all parameters and populate local cache (Items)
          /// </summary>
          /// <param name="progress">IProgress to track the progress of operation.</param>
+         /// <param name="readMissedOneByOne">If true, finally read one by one skipped params</param>
          /// <param name="cancel">CancellationToken to cancel the operation.</param>
          /// <returns>A Task representing the asynchronous operation.</returns>
-         Task ReadAll(IProgress<double> progress = null, CancellationToken cancel = default);
-
+         Task ReadAll(IProgress<double>? progress = null,bool readMissedOneByOne = true,  CancellationToken cancel = default);
          /// <summary>
          /// Count of params on remote device
          /// </summary>
-         ReadOnlyReactiveProperty<ushort?> RemoteCount { get; }
+         IReadOnlyBindableReactiveProperty<int> RemoteCount { get; }
 
          /// <summary>
          /// Count of params in local cache
          /// </summary>
-         ReadOnlyReactiveProperty<ushort> LocalCount { get; }
+         IReadOnlyBindableReactiveProperty<int> LocalCount { get; }
 
          /// <summary>
          /// Read params once from remote device, update local value and return result
@@ -80,7 +79,7 @@ using System;
          /// </summary>
          /// <param name="name">Name of the parameter</param>
          /// <returns>An observable sequence of MavParamValue when the value of the parameter changes.</returns>
-         public IObservable<MavParamValue> Filter(string name)
+         public Observable<MavParamValue> Filter(string name)
          {
              MavParamHelper.CheckParamName(name);
              return OnValueChanged.Where(x => x.Item1.Equals(name, StringComparison.InvariantCultureIgnoreCase))

@@ -1,11 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Reactive.Concurrency;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Asv.Mavlink;
 

@@ -6,8 +6,8 @@ namespace Asv.Mavlink;
 
 public interface IAudioCodecFactory
 {
-    IAudioEncoder CreateEncoder(AsvAudioCodec codec, IObservable<ReadOnlyMemory<byte>> input);
-    IAudioDecoder CreateDecoder(AsvAudioCodec codec, IObservable<ReadOnlyMemory<byte>> input);
+    IAudioEncoder CreateEncoder(AsvAudioCodec codec, Observable<ReadOnlyMemory<byte>> input);
+    IAudioDecoder CreateDecoder(AsvAudioCodec codec, Observable<ReadOnlyMemory<byte>> input);
     IEnumerable<AsvAudioCodec> AvailableCodecs { get; }
 
 }

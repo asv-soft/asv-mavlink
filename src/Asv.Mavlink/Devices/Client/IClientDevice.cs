@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using DynamicData.Binding;
 using R3;
 
 namespace Asv.Mavlink;
@@ -21,7 +19,7 @@ public interface IClientDevice
     IHeartbeatClient Heartbeat { get; }
     IEnumerable<IMavlinkMicroserviceClient> Microservices { get; }
     MavlinkClientIdentity Identity => Heartbeat.Identity;
-    public Observable<bool> IsInitComplete => InitState.Select(s => s == Mavlink.InitState.Complete);
+    public Observable<bool> OnInitComplete => InitState.Select(s => s == Mavlink.InitState.Complete);
     public ICoreServices Core => Heartbeat.Core;
 }
 

@@ -1,103 +1,81 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using DynamicData;
+using ObservableCollections;
 using R3;
-using ObservableExtensions = System.ObservableExtensions;
 
 namespace Asv.Mavlink;
 
 public class ParamsExtClientExConfig : ParamsExtClientConfig
 {
     public int ReadListTimeoutMs { get; set; } = 5000;
+    public int ChunkUpdateBufferMs { get; set; } = 100;
 }
 
-public class ParamsExtClientEx : IParamsExtClientEx,IDisposable
+public class ParamsExtClientEx : IParamsExtClientEx,IDisposable, IAsyncDisposable
 {
     private static readonly TimeSpan CheckTimeout = TimeSpan.FromMilliseconds(100);
     private readonly ParamsExtClientExConfig _config;
-    private readonly SourceCache<ParamExtItem, string> _paramsSource;
-    private readonly ReactiveProperty<bool> _isSynced;
-    private ImmutableDictionary<string, ParamExtDescription> _descriptions;
-    private readonly ReactiveProperty<ushort?> _remoteCount;
-    private readonly ReactiveProperty<ushort> _localCount;
-    private readonly System.Reactive.Subjects.Subject<(string, MavParamExtValue)> _onValueChanged;
-    private readonly IDisposable _disposeIt;
+    private readonly ObservableDictionary<string,ParamExtItem> _paramsSource;
+    private readonly BindableReactiveProperty<bool> _isSynced;
+    private readonly Subject<(string, MavParamExtValue)> _onValueChanged;
     private readonly CancellationTokenSource _disposeCancel;
+    private readonly IDisposable _sub1;
+    private readonly ImmutableDictionary<string,ParamExtDescription> _existDescription;
 
-    public ParamsExtClientEx(IParamsExtClient client, ParamsExtClientExConfig config)
+
+    public ParamsExtClientEx(IParamsExtClient client, ParamsExtClientExConfig config,IEnumerable<ParamExtDescription> existDescription)
     {
         _config = config ?? throw new ArgumentNullException(nameof(config));
+        _existDescription = existDescription.ToImmutableDictionary(x=>x.Name,x=>x);
         Base = client;
         _disposeCancel = new CancellationTokenSource();
-        _paramsSource = new SourceCache<ParamExtItem, string>(x => x.Name);
-        _isSynced = new ReactiveProperty<bool>(false);
-        Items = _paramsSource.Connect().Transform(i => (IParamExtItem)i).RefCount();
-        // TODO: replace buffer to use TimeProvider
-        var d1 = client.OnParamExtValue.Where(_ => IsInit).Buffer(TimeSpan.FromMilliseconds(100)).Subscribe(OnUpdate);
-
-        _remoteCount = new ReactiveProperty<ushort?>(null);
-        _localCount = new ReactiveProperty<ushort>(0);
-        var d2 = _paramsSource.CountChanged.Select(i => (ushort)i).Subscribe(_localCount);
-        _onValueChanged = new System.Reactive.Subjects.Subject<(string, MavParamExtValue)>();
-        
-        _disposeIt = Disposable.Combine(_disposeCancel,_paramsSource, _isSynced,_remoteCount,_localCount,_onValueChanged, d1, d2);
+        _paramsSource = new ObservableDictionary<string, ParamExtItem>();
+        _isSynced = new BindableReactiveProperty<bool>(false);
+        _sub1 = client.OnParamExtValue.Chunk(TimeSpan.FromMilliseconds(config.ChunkUpdateBufferMs),client.Core.TimeProvider).Subscribe(OnUpdate);
+        RemoteCount = client.OnParamExtValue.Select(x => (int)x.ParamCount).ToReadOnlyBindableReactiveProperty(-1);
+        LocalCount = _paramsSource.ObserveCountChanged().ToReadOnlyBindableReactiveProperty();
+        _onValueChanged = new Subject<(string, MavParamExtValue)>();
     }
 
-    public IObservable<(string, MavParamExtValue)> OnValueChanged => _onValueChanged;
-    public bool IsInit { get; set; }
-    
-    private CancellationToken DisposeCancel => _disposeCancel.Token;
-
-    public void Init(IEnumerable<ParamExtDescription> existDescription)
-    {
-        _descriptions = existDescription.ToImmutableDictionary(d => d.Name);
-        IsInit = true;
-    }
-
+    public string Name => $"{Base.Name}Ex";
     public IParamsExtClient Base { get; }
+    public MavlinkClientIdentity Identity => Base.Identity;
+    public ICoreServices Core => Base.Core;
+    public Task Init(CancellationToken cancel = default) => Task.CompletedTask;
+    public IReadOnlyBindableReactiveProperty<int> RemoteCount { get; }
+    public IReadOnlyBindableReactiveProperty<int> LocalCount { get; }
+    public Observable<(string, MavParamExtValue)> OnValueChanged => _onValueChanged;
+    private CancellationToken DisposeCancel => _disposeCancel.Token;
+    public IReadOnlyBindableReactiveProperty<bool> IsSynced => _isSynced;
+    public IReadOnlyObservableDictionary<string, ParamExtItem> Items => _paramsSource;
 
     private void OnUpdate(IList<ParamExtValuePayload> items)
     {
         if (items.Count == 0) return;
-        _paramsSource.Edit(u =>
+        
+        foreach (var value in items)
         {
-            foreach (var value in items)
+            var name = MavlinkTypesHelper.GetString(value.ParamId);
+            if (_paramsSource.TryGetValue(name, out var item) == false)
             {
-                _remoteCount.OnNext(value.ParamCount);
-                var name = MavlinkTypesHelper.GetString(value.ParamId);
-                var exist = u.Lookup(name);
-                if (exist.HasValue)
+                if (_existDescription.TryGetValue(name, out var desc) == false)
                 {
-                    exist.Value.Update(value);
-                    if (_onValueChanged.HasObservers)
-                    {
-                        _onValueChanged.OnNext((name, MavParamExtHelper.CreateFromBuffer(value.ParamValue, value.ParamType)));
-                    }
+                    desc = CreateDefaultDescription(value);
                 }
-                else
-                {
-                    if (_descriptions.TryGetValue(name, out var desc) == false)
-                    {
-                        desc = CreateDefaultDescription(value);
-                    }
-
-                    var newItem = new ParamExtItem(Base, desc, value);
-                    u.AddOrUpdate(newItem);
-                    newItem.IsSynced.Subscribe(OnSyncedChanged);
-                    if (_onValueChanged.HasObservers)
-                    {
-                        _onValueChanged.OnNext((name, MavParamExtHelper.CreateFromBuffer(value.ParamValue, value.ParamType)));
-                    }
-                }
+                item = new ParamExtItem(Base, desc, value);
+                _paramsSource.Add(name,item);
             }
-        });
+            item.InternalUpdate(value);
+            item.IsSynced.AsObservable().Subscribe(OnSyncedChanged);
+            _onValueChanged.OnNext((name, MavParamExtHelper.CreateFromBuffer(value.ParamValue, value.ParamType)));
+        }
+        
     }
 
     private void OnSyncedChanged(bool value)
@@ -105,7 +83,7 @@ public class ParamsExtClientEx : IParamsExtClientEx,IDisposable
         if (value == false) _isSynced.OnNext(false);
         else
         {
-            var allSynced = _paramsSource.Items.All(i => i.IsSynced.Value);
+            var allSynced = _paramsSource.All(i => i.Value.IsSynced.Value);
             if (allSynced) _isSynced.OnNext(true);
         }
     }
@@ -173,10 +151,7 @@ public class ParamsExtClientEx : IParamsExtClientEx,IDisposable
         return desc;
     }
 
-    public ReadOnlyReactiveProperty<bool> IsSynced => _isSynced;
-
-    public IObservable<IChangeSet<IParamExtItem, string>> Items { get; }
-
+  
     public async Task ReadAll(IProgress<double>? progress = null, CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();
@@ -184,10 +159,9 @@ public class ParamsExtClientEx : IParamsExtClientEx,IDisposable
         var tcs = new TaskCompletionSource<bool>();
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
         var lastUpdate = Base.Core.TimeProvider.GetTimestamp();
-        ushort? paramsCount = null;
         using var c2 = Base.OnParamExtValue.Subscribe(p =>
         {
-            paramsCount = p.ParamCount;
+            _ = p.ParamCount;
             if (_paramsSource.Count == p.ParamCount)
             {
                 tcs.TrySetResult(true);
@@ -196,7 +170,7 @@ public class ParamsExtClientEx : IParamsExtClientEx,IDisposable
             Interlocked.Exchange(ref lastUpdate, Base.Core.TimeProvider.GetTimestamp());
         });
         var timeout = TimeSpan.FromMilliseconds(_config.ReadListTimeoutMs);
-        using var c3 = Base.Core.TimeProvider.CreateTimer(_ =>
+        await using var c3 = Base.Core.TimeProvider.CreateTimer(_ =>
         {
             var last = Interlocked.Read(ref lastUpdate);
             if (Base.Core.TimeProvider.GetElapsedTime(last) > timeout)
@@ -204,33 +178,27 @@ public class ParamsExtClientEx : IParamsExtClientEx,IDisposable
                 tcs.TrySetResult(false);
             }
         },null,CheckTimeout,CheckTimeout);
-          
-        _paramsSource.Edit(u =>
-        {
-            foreach (var item in u.Items)
-            {
-                item.Dispose();
-            }
 
-            u.Clear();
-        });
+        var cached = _paramsSource.ToImmutableArray();
+        _paramsSource.Clear();
+        foreach (var item in cached)
+        {
+            await item.Value.DisposeAsync().ConfigureAwait(false);
+        }
         await Base.SendRequestList(linkedCancel.Token).ConfigureAwait(false);
         var readAllParams = await tcs.Task.ConfigureAwait(false);
         progress.Report(1);
         _isSynced.OnNext(true);
     }
 
-    public IObservable<MavParamExtValue> Filter(string name)
+    public Observable<MavParamExtValue> Filter(string name)
     {
         MavParamHelper.CheckParamName(name);
         return OnValueChanged.Where(x => x.Item1.Equals(name, StringComparison.InvariantCultureIgnoreCase))
             .Select(x => x.Item2);
     }
     
-    public ReadOnlyReactiveProperty<ushort?> RemoteCount => _remoteCount;
-
-    public ReadOnlyReactiveProperty<ushort> LocalCount => _localCount;
-
+   
     public async Task<MavParamExtValue> ReadOnce(string name, CancellationToken cancel = default)
     {
         var result = await Base.Read(name, cancel).ConfigureAwait(false);
@@ -244,9 +212,40 @@ public class ParamsExtClientEx : IParamsExtClientEx,IDisposable
         return MavParamExtHelper.CreateFromBuffer(result.ParamValue, result.ParamType);
     }
 
+    #region Dispose
+
     public void Dispose()
     {
-        _disposeCancel.Cancel(false);
-        _disposeIt.Dispose();
+        _isSynced.Dispose();
+        _onValueChanged.Dispose();
+        _disposeCancel.Dispose();
+        _sub1.Dispose();
+        RemoteCount.Dispose();
+        LocalCount.Dispose();
     }
+
+    public async ValueTask DisposeAsync()
+    {
+        await CastAndDispose(_isSynced).ConfigureAwait(false);
+        await CastAndDispose(_onValueChanged).ConfigureAwait(false);
+        await CastAndDispose(_disposeCancel).ConfigureAwait(false);
+        await CastAndDispose(_sub1).ConfigureAwait(false);
+        await CastAndDispose(RemoteCount).ConfigureAwait(false);
+        await CastAndDispose(LocalCount).ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
+
+    
+   
 }

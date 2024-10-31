@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -24,7 +25,7 @@ public interface IParamsServer:IMavlinkMicroserviceServer
     /// <value>
     /// The observable sequence for handling param request read packets.
     /// </value>
-    IObservable<ParamRequestReadPacket> OnParamRequestRead { get; }
+    Observable<ParamRequestReadPacket> OnParamRequestRead { get; }
 
     /// <summary>
     /// Event fired when a param request list packet is received.
@@ -32,7 +33,7 @@ public interface IParamsServer:IMavlinkMicroserviceServer
     /// <remarks>
     /// This event provides an IObservable<ParamRequestListPacket> that can be subscribed to receive param request list packets.
     /// </remarks>
-    IObservable<ParamRequestListPacket> OnParamRequestList { get; }
+    Observable<ParamRequestListPacket> OnParamRequestList { get; }
 
     /// <summary>
     /// Represents an event that occurs when a parameter set packet is received. </summary>
@@ -42,5 +43,5 @@ public interface IParamsServer:IMavlinkMicroserviceServer
     /// An IObservable of ParamSetPacket representing the event stream
     /// of parameter set packets being received. </value>
     /// /
-    IObservable<ParamSetPacket> OnParamSet { get; }
+    Observable<ParamSetPacket> OnParamSet { get; }
 }

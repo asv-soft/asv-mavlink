@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using DynamicData;
 
 namespace Asv.Mavlink;
 

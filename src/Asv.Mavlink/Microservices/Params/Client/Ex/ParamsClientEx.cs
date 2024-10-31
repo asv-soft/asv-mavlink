@@ -2,15 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using DynamicData;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+using ObservableCollections;
 using R3;
 using ObservableExtensions = System.ObservableExtensions;
 
@@ -19,72 +15,69 @@ namespace Asv.Mavlink;
 public class ParamsClientExConfig:ParameterClientConfig
 {
     public int ReadListTimeoutMs { get; set; } = 5000;
+    public int ChunkUpdateBufferMs { get; set; } = 100;
 }
 
-public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
+public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposable
 {
-    private IMavParamEncoding _converter;
+    
+
+    private static readonly TimeSpan CheckTimeout = TimeSpan.FromMilliseconds(100);
     private readonly ParamsClientExConfig _config;
-    private readonly SourceCache<ParamItem, string> _paramsSource;
-    private readonly ReactiveProperty<bool> _isSynced;
-    private ImmutableDictionary<string,ParamDescription> _descriptions;
-    private readonly ReactiveProperty<ushort?> _remoteCount;
-    private readonly ReactiveProperty<ushort> _localCount;
-    private readonly System.Reactive.Subjects.Subject<(string, MavParamValue)> _onValueChanged;
+    private readonly IMavParamEncoding _converter;
+    private readonly ObservableDictionary<string,ParamItem> _paramsSource;
+    private readonly BindableReactiveProperty<bool> _isSynced;
+    private readonly Subject<(string, MavParamValue)> _onValueChanged;
     private readonly ILogger<ParamsClientEx> _logger;
+    private readonly CancellationTokenSource _disposeCancel;
+    private readonly IDisposable _sub1;
+    private readonly ImmutableDictionary<string,ParamDescription> _existDescription;
 
     public ParamsClientEx(IParamsClient client, ParamsClientExConfig config,IMavParamEncoding converter,IEnumerable<ParamDescription> existDescription)
     {
         _logger = client.Core.Log.CreateLogger<ParamsClientEx>();
         _config = config ?? throw new ArgumentNullException(nameof(config));
+        _converter = converter ?? throw new ArgumentNullException(nameof(converter));
+        _existDescription = existDescription.ToImmutableDictionary(x=>x.Name,x=>x);;
         Base = client;
-        _paramsSource = new SourceCache<ParamItem, string>(x => x.Name).DisposeItWith(Disposable);
-        _isSynced = new ReactiveProperty<bool>(false).DisposeItWith(Disposable);
-        Items = _paramsSource.Connect().Transform(i=>(IParamItem)i).RefCount();
-        client.OnParamValue.Buffer(TimeSpan.FromMilliseconds(100)).Subscribe(OnUpdate).DisposeItWith(Disposable);
-        _remoteCount = new ReactiveProperty<ushort?>(null).DisposeItWith(Disposable);
-        _localCount = new ReactiveProperty<ushort>(0).DisposeItWith(Disposable);
-        _paramsSource.CountChanged.Select(i=>(ushort)i).Subscribe(_localCount).DisposeItWith(Disposable);
-        _onValueChanged = new System.Reactive.Subjects.Subject<(string, MavParamValue)>().DisposeItWith(Disposable);
+        _disposeCancel = new CancellationTokenSource();
+        _paramsSource = new ObservableDictionary<string, ParamItem>();
+        _isSynced = new BindableReactiveProperty<bool>(false);
+        _sub1 = client.OnParamValue.Chunk(TimeSpan.FromMilliseconds(config.ChunkUpdateBufferMs),client.Core.TimeProvider).Subscribe(OnUpdate);
+        RemoteCount = client.OnParamValue.Select(x => (int)x.ParamCount).ToReadOnlyBindableReactiveProperty(-1);
+        LocalCount = _paramsSource.ObserveCountChanged().ToReadOnlyBindableReactiveProperty();
+        _onValueChanged = new Subject<(string, MavParamValue)>();
     }
     public string Name => $"{Base.Name}Ex";
-    public IObservable<(string, MavParamValue)> OnValueChanged => _onValueChanged;
     public IParamsClient Base { get; }
+    public MavlinkClientIdentity Identity => Base.Identity;
+    public ICoreServices Core => Base.Core;
+    public Task Init(CancellationToken cancel = default) => Task.CompletedTask;
+    public IReadOnlyBindableReactiveProperty<int> RemoteCount { get; }
+    public IReadOnlyBindableReactiveProperty<int> LocalCount { get; }
+    public Observable<(string, MavParamValue)> OnValueChanged => _onValueChanged;
+    private CancellationToken DisposeCancel => _disposeCancel.Token;
+    public IReadOnlyBindableReactiveProperty<bool> IsSynced => _isSynced;
+    public IReadOnlyObservableDictionary<string, ParamItem> Items => _paramsSource;
     private void OnUpdate(IList<ParamValuePayload> items)
     {
         if (items.Count == 0) return;
-        _paramsSource.Edit(u =>
+        foreach (var value in items)
         {
-            foreach (var value in items)
+            var name = MavlinkTypesHelper.GetString(value.ParamId);
+            if (_paramsSource.TryGetValue(name, out var item) == false)
             {
-                _remoteCount.Value = value.ParamCount;
-                var name = MavlinkTypesHelper.GetString(value.ParamId);
-                var exist = u.Lookup(name);
-                if (exist.HasValue)
+                if (_existDescription.TryGetValue(name, out var desc) == false)
                 {
-                    exist.Value.Update(value);
-                    if (_onValueChanged.HasObservers)
-                    {
-                        _onValueChanged.OnNext((name, _converter.ConvertFromMavlinkUnion(value.ParamValue, value.ParamType)));
-                    }
+                    desc = CreateDefaultDescription(value);
                 }
-                else
-                {
-                    if (_descriptions.TryGetValue(name, out var desc) == false)
-                    {
-                        desc = CreateDefaultDescription(value);
-                    }
-                    var newItem = new ParamItem(Base, _converter, desc, value);
-                    u.AddOrUpdate(newItem);
-                    newItem.IsSynced.Subscribe(OnSyncedChanged);
-                    if (_onValueChanged.HasObservers)
-                    {
-                        _onValueChanged.OnNext((name, _converter.ConvertFromMavlinkUnion(value.ParamValue, value.ParamType)));
-                    }
-                }
+                item = new ParamItem(Base, _converter, desc, value);
+                _paramsSource.Add(name,item);
             }
-            
-        });
+            item.InternalUpdate(value);
+            item.IsSynced.AsObservable().Subscribe(OnSyncedChanged);
+            _onValueChanged.OnNext((name, item.Value.Value));
+        }
     }
 
     private void OnSyncedChanged(bool value)
@@ -92,7 +85,7 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         if (value == false) _isSynced.OnNext(false);
         else
         {
-            var allSynced = _paramsSource.Items.All(i => i.IsSynced.Value);
+            var allSynced = _paramsSource.All(i => i.Value.IsSynced.Value);
             if (allSynced) _isSynced.OnNext(true);
         }
     }
@@ -169,71 +162,61 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
 
     }
 
-    public ReadOnlyReactiveProperty<bool> IsSynced => _isSynced;
-
-    public IObservable<IChangeSet<IParamItem, string>> Items { get; }
     
-    public async Task ReadAll(IProgress<double>? progress = null, CancellationToken cancel = default)
+    public async Task ReadAll(IProgress<double>? progress = null, bool readMissedOneByOne = true, CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();
         using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
         var tcs = new TaskCompletionSource<bool>();
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
-        var lastUpdate = DateTime.Now;
-        ushort? paramsCount = null;
-        using var c2 = Base.OnParamValue.Sample(TimeSpan.FromMilliseconds(50)).Subscribe(p =>
+        var lastUpdate = Base.Core.TimeProvider.GetTimestamp();
+        using var c2 = Base.OnParamValue.Subscribe(p =>
         {
-            paramsCount = p.ParamCount;
+            _ = p.ParamCount;
             if (_paramsSource.Count == p.ParamCount)
             {
                 tcs.TrySetResult(true);
             }
             progress.Report((double)_paramsSource.Count / p.ParamCount);
-            lastUpdate = DateTime.Now;
+            Interlocked.Exchange(ref lastUpdate, Base.Core.TimeProvider.GetTimestamp());
         });
-        using var c3 = ObservableExtensions
-            .Subscribe<long>(Observable.Timer(TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(100)), _ =>
-            {
-                if (DateTime.Now - lastUpdate > TimeSpan.FromMilliseconds(_config.ReadListTimeoutMs))
-                {
-                    tcs.TrySetResult(false);
-                }
-            });
-        _paramsSource.Edit(u =>
+        var timeout = TimeSpan.FromMilliseconds(_config.ReadListTimeoutMs);
+        await using var c3 = Base.Core.TimeProvider.CreateTimer(_ =>
         {
-            foreach (var item in u.Items)
+            var last = Interlocked.Read(ref lastUpdate);
+            if (Base.Core.TimeProvider.GetElapsedTime(last) > timeout)
             {
-                item.Dispose();
+                tcs.TrySetResult(false);
             }
-            u.Clear();
-        });
+        },null,CheckTimeout,CheckTimeout);
+        var cached = _paramsSource.ToImmutableArray();
+        _paramsSource.Clear();
+        foreach (var item in cached)
+        {
+            await item.Value.DisposeAsync().ConfigureAwait(false);
+        }
         await Base.SendRequestList(linkedCancel.Token).ConfigureAwait(false);
         var readAllParams = await tcs.Task.ConfigureAwait(false);
-        // if (readAllParams == true) return;
-        // if (paramsCount.HasValue == false) throw new Exception("Can't read params: collection is empty or connection error");
-        // // read no all params=>try to read one by one
-        // c3.Dispose();
-        // for (ushort i = 0; i < paramsCount; i++)
-        // {
-        //     if (_missionSource.Lookup(i).HasValue) continue;
-        //     var result = await Base.Read(i,linkedCancel.Token).ConfigureAwait(false);
-        //     if (_missionSource.Count == result.ParamCount) return;
-        //     progress.Report((double)_missionSource.Count / result.ParamCount);
-        // }
         progress.Report(1);
         _isSynced.OnNext(true);
+        if (readAllParams == true) return;
+        if (RemoteCount.Value != LocalCount.Value)
+        {
+            if (readMissedOneByOne == false) return;
+            // read no all params=>try to read one by one
+            for (ushort i = 0; i < RemoteCount.Value; i++)
+            {
+                var result = await Base.Read(i, linkedCancel.Token).ConfigureAwait(false);
+                if (RemoteCount.Value != LocalCount.Value) return;
+                progress.Report((double)LocalCount.Value / RemoteCount.Value);
+            }
+        }
     }
-
-    public ReadOnlyReactiveProperty<ushort?> RemoteCount => _remoteCount;
-
-    public ReadOnlyReactiveProperty<ushort> LocalCount => _localCount;
-    
     public async Task<MavParamValue> ReadOnce(string name, CancellationToken cancel = default)
     {
         var result = await Base.Read(name,cancel).ConfigureAwait(false);
         return _converter.ConvertFromMavlinkUnion(result.ParamValue, result.ParamType);
     }
-
     public async Task<MavParamValue> WriteOnce(string name, MavParamValue value, CancellationToken cancel = default)
     {
         var floatValue = _converter.ConvertToMavlinkUnion(value);
@@ -241,10 +224,37 @@ public class ParamsClientEx : DisposableOnceWithCancel, IParamsClientEx
         return _converter.ConvertFromMavlinkUnion(result.ParamValue, result.ParamType);
     }
 
-    public MavlinkClientIdentity Identity => Base.Identity;
-    public ICoreServices Core => Base.Core;
-    public Task Init(CancellationToken cancel = default)
+    #region Dispose
+
+    public void Dispose()
     {
-        return Task.CompletedTask;
+        _isSynced.Dispose();
+        _onValueChanged.Dispose();
+        _disposeCancel.Dispose();
+        _sub1.Dispose();
+        RemoteCount.Dispose();
+        LocalCount.Dispose();
     }
+
+    public async ValueTask DisposeAsync()
+    {
+        await CastAndDispose(_isSynced).ConfigureAwait(false);
+        await CastAndDispose(_onValueChanged).ConfigureAwait(false);
+        await CastAndDispose(_disposeCancel).ConfigureAwait(false);
+        await CastAndDispose(_sub1).ConfigureAwait(false);
+        await CastAndDispose(RemoteCount).ConfigureAwait(false);
+        await CastAndDispose(LocalCount).ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

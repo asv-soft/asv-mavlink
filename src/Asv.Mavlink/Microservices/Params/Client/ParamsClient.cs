@@ -1,12 +1,8 @@
 using System;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using R3;
 using ZLogger;
 
@@ -20,23 +16,23 @@ public class ParameterClientConfig
 
 public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
 {
+    
+
     private readonly ParameterClientConfig _config;
     private readonly ILogger _logger;
-    private readonly System.Reactive.Subjects.Subject<ParamValuePayload> _onParamValue;
-    private readonly IDisposable _disposeIt;
+    private readonly Subject<ParamValuePayload> _onParamValue;
+    private readonly IDisposable _sub1;
 
     public ParamsClient(MavlinkClientIdentity identity, ParameterClientConfig config, ICoreServices core) 
         : base("PARAMS",  identity, core)
     {
         _logger = core.Log.CreateLogger<ParamsClient>();
         _config = config;
-        _onParamValue = new System.Reactive.Subjects.Subject<ParamValuePayload>();
-        var d1 = InternalFilter<ParamValuePacket>().Select(p => p.Payload).Subscribe(_onParamValue);
-        _disposeIt = Disposable.Combine(_onParamValue, d1);
-
+        _onParamValue = new Subject<ParamValuePayload>();
+        _sub1 = InternalFilter<ParamValuePacket>().Select(p => p.Payload).Subscribe(_onParamValue.AsObserver());
     }
 
-    public IObservable<ParamValuePayload> OnParamValue => _onParamValue;
+    public Observable<ParamValuePayload> OnParamValue => _onParamValue;
     
     public Task SendRequestList(CancellationToken cancel = default)
     {
@@ -88,9 +84,37 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
             _config.ReadAttemptCount, timeoutMs: _config.ReadTimeouMs, cancel: cancel);
     }
 
-    public override void Dispose()
+    #region Dispose
+
+    protected override void Dispose(bool disposing)
     {
-        _disposeIt.Dispose();
-        base.Dispose();
+        if (disposing)
+        {
+            _onParamValue.Dispose();
+            _sub1.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
+
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        await CastAndDispose(_onParamValue).ConfigureAwait(false);
+        await CastAndDispose(_sub1).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
+
 }

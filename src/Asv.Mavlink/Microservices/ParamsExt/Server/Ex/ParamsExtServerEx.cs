@@ -2,14 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
-using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using R3;
 using ZLogger;
 
@@ -21,7 +18,7 @@ public class ParamsExtServerExConfig
     public string CfgPrefix { get; set; } = "MAV_CFG_";
 }
 
-public class ParamsExtServerEx : IParamsExtServerEx,IDisposable
+public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDisposable
 {
     private readonly ILogger _logger;
 
@@ -35,8 +32,10 @@ public class ParamsExtServerEx : IParamsExtServerEx,IDisposable
     private readonly IStatusTextServer _statusTextServer;
     private readonly IConfiguration _cfg;
     private readonly ParamsExtServerExConfig _serverCfg;
-    private readonly IDisposable _disposeIt;
-    private CancellationTokenSource _disposeCancel;
+    private readonly CancellationTokenSource _disposeCancel;
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
 
     public ParamsExtServerEx(
         IParamsExtServer server, 
@@ -61,12 +60,14 @@ public class ParamsExtServerEx : IParamsExtServerEx,IDisposable
         }
 
         _paramDict = builder.ToImmutable();
+        
+        _logger.ZLogDebug($"Create params server for [sys:{server.Identity.SystemId}, com:{server.Identity.ComponentId}] with {_paramDict.Count} params");
+        
         _onParamChangedSubject = new System.Reactive.Subjects.Subject<ParamExtChangedEvent>();
 
-        var d1 = server.OnParamExtSet.Subscribe(OnParamSet);
-        var d2 = server.OnParamExtRequestList.Subscribe(OnParamRequestList);
-        var d3 = server.OnParamExtRequestRead.Subscribe(OnParamRequestRead);
-        _disposeIt = Disposable.Combine(_disposeCancel,_onErrorSubject,_onParamChangedSubject, d1, d2, d3);
+        _sub1 = server.OnParamExtSet.Subscribe(OnParamSet);
+        _sub2 = server.OnParamExtRequestList.Subscribe(OnParamRequestList);
+        _sub3 = server.OnParamExtRequestRead.Subscribe(OnParamRequestRead);
     }
 
 
@@ -109,7 +110,7 @@ public class ParamsExtServerEx : IParamsExtServerEx,IDisposable
             _statusTextServer.Error($"Skip duplicate request");
             return;
         }
-
+        _logger.LogDebug($"Send all params to client");
         try
         {
             for (var index = 0; index < _paramList.Count; index++)
@@ -224,7 +225,7 @@ public class ParamsExtServerEx : IParamsExtServerEx,IDisposable
         }
     }
 
-    public CancellationToken DisposeCancel => _disposeCancel.Token;
+    private CancellationToken DisposeCancel => _disposeCancel.Token;
 
     public MavParamExtValue this[IMavParamExtTypeMetadata param]
     {
@@ -234,7 +235,35 @@ public class ParamsExtServerEx : IParamsExtServerEx,IDisposable
 
     public void Dispose()
     {
+        _onErrorSubject.Dispose();
+        _onParamChangedSubject.Dispose();
+        _cfg.Dispose();
         _disposeCancel.Cancel(false);
-        _disposeIt.Dispose();
+        _disposeCancel.Dispose();
+        _sub1.Dispose();
+        _sub2.Dispose();
+        _sub3.Dispose();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await CastAndDispose(_onErrorSubject).ConfigureAwait(false);
+        await CastAndDispose(_onParamChangedSubject).ConfigureAwait(false);
+        await CastAndDispose(_cfg).ConfigureAwait(false);
+        _disposeCancel.Cancel(false);
+        await CastAndDispose(_disposeCancel).ConfigureAwait(false);
+        await CastAndDispose(_sub1).ConfigureAwait(false);
+        await CastAndDispose(_sub2).ConfigureAwait(false);
+        await CastAndDispose(_sub3).ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
     }
 }

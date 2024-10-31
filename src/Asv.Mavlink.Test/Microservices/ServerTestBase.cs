@@ -7,10 +7,10 @@ public abstract class ServerTestBase<TServer>
 {
     private TServer? _server;
 
-    protected ServerTestBase(ITestOutputHelper log, VirtualMavlinkConnection? link = null)
+    protected ServerTestBase(ITestOutputHelper log)
     {
         Log = log;
-        Link = link ?? new VirtualMavlinkConnection();
+        Link = new VirtualMavlinkConnection();
         ServerTime = new FakeTimeProvider();
         Seq = new PacketSequenceCalculator();
         Identity = new MavlinkIdentity(3, 4);

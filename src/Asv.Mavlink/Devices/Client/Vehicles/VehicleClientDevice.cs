@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.Mavlink.Diagnostic.Client;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;

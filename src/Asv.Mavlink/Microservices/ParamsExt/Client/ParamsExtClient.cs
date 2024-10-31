@@ -1,12 +1,8 @@
 using System;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using R3;
 using ZLogger;
 
@@ -34,20 +30,16 @@ public class ParamsExtClientConfig
 /// </remarks>
 public class ParamsExtClient : MavlinkMicroserviceClient, IParamsExtClient
 {
+    
+
     private readonly ILogger _logger;
 
     private readonly ParamsExtClientConfig _config;
-    private readonly System.Reactive.Subjects.Subject<ParamExtValuePayload> _onParamExtValue;
-    private readonly System.Reactive.Subjects.Subject<ParamExtAckPayload> _onParamExtAck;
-    private readonly IDisposable _disposeIt;
+    private readonly Subject<ParamExtValuePayload> _onParamExtValue;
+    private readonly Subject<ParamExtAckPayload> _onParamExtAck;
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
 
-    /// <summary>
-    /// Represents a client for interacting with the ParametersExtended service.
-    /// </summary>
-    /// <remarks>
-    /// This client provides methods for reading and writing parameters.
-    /// It communicates with the service using the MAVLink protocol.
-    /// </remarks>
     public ParamsExtClient(MavlinkClientIdentity identity, ParamsExtClientConfig config,
         ICoreServices core)
         : base("PARAMS_EXT", identity, core)
@@ -55,17 +47,16 @@ public class ParamsExtClient : MavlinkMicroserviceClient, IParamsExtClient
         _logger = core.Log.CreateLogger<ParamsExtClient>();
         _config = config ?? throw new ArgumentNullException(nameof(config));
 
-        _onParamExtValue = new System.Reactive.Subjects.Subject<ParamExtValuePayload>();
-        var d1 = InternalFilter<ParamExtValuePacket>().Select(p => p.Payload).Subscribe(_onParamExtValue);
+        _onParamExtValue = new Subject<ParamExtValuePayload>();
+        _sub1 = InternalFilter<ParamExtValuePacket>().Select(p => p.Payload).Subscribe(_onParamExtValue.AsObserver());
         
-        _onParamExtAck = new System.Reactive.Subjects.Subject<ParamExtAckPayload>();
-        var d2 = InternalFilter<ParamExtAckPacket>().Select(p => p.Payload).Subscribe(_onParamExtAck);
-        _disposeIt = Disposable.Combine(_onParamExtValue,_onParamExtAck, d1,d2);
+        _onParamExtAck = new Subject<ParamExtAckPayload>();
+        _sub2 = InternalFilter<ParamExtAckPacket>().Select(p => p.Payload).Subscribe(_onParamExtAck.AsObserver());
     }
 
-    public IObservable<ParamExtValuePayload> OnParamExtValue => _onParamExtValue;
+    public Observable<ParamExtValuePayload> OnParamExtValue => _onParamExtValue;
     
-    public IObservable<ParamExtAckPayload> OnParamExtAck => _onParamExtAck;
+    public Observable<ParamExtAckPayload> OnParamExtAck => _onParamExtAck;
 
     public Task SendRequestList(CancellationToken cancel = default)
     {
@@ -121,9 +112,40 @@ public class ParamsExtClient : MavlinkMicroserviceClient, IParamsExtClient
             timeoutMs: _config.ReadTimeouMs, cancel: cancel);
     }
 
-    public override void Dispose()
+    #region Dispose
+
+    protected override void Dispose(bool disposing)
     {
-        _disposeIt.Dispose();
-        base.Dispose();
+        if (disposing)
+        {
+            _onParamExtValue.Dispose();
+            _onParamExtAck.Dispose();
+            _sub1.Dispose();
+            _sub2.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
+
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        await CastAndDispose(_onParamExtValue).ConfigureAwait(false);
+        await CastAndDispose(_onParamExtAck).ConfigureAwait(false);
+        await CastAndDispose(_sub1).ConfigureAwait(false);
+        await CastAndDispose(_sub2).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

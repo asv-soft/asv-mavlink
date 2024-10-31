@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -19,7 +20,7 @@ public interface IParamsClient: IMavlinkMicroserviceClient
     /// </remarks>
     /// <seealso cref="ParamValuePayload"/>
     /// <seealso cref="IObservable{T}"/>
-    IObservable<ParamValuePayload> OnParamValue { get; }
+    Observable<ParamValuePayload> OnParamValue { get; }
 
     /// <summary>
     /// Sends a request list asynchronously.

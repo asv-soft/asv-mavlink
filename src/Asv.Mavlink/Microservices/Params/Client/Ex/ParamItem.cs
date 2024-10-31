@@ -7,54 +7,41 @@ using R3;
 
 namespace Asv.Mavlink;
 
-public class ParamItem: DisposableOnceWithCancel,IParamItem
+public sealed class ParamItem: IDisposable,IAsyncDisposable
 {
     private readonly IParamsClient _client;
     private readonly IMavParamEncoding _converter;
-    private readonly ParamValuePayload _payload;
-    private readonly ReactiveProperty<bool> _isSynced;
-    private readonly IRxEditableValue<MavParamValue> _value;
     private MavParamValue _remoteValue;
+    private readonly BindableReactiveProperty<MavParamValue> _value;
 
     public ParamItem(IParamsClient client, IMavParamEncoding converter, ParamDescription paramDescriptions, ParamValuePayload payload)
     {
         _client = client;
         _converter = converter;
-        _payload = payload;
         Info = paramDescriptions;
         Name = MavlinkTypesHelper.GetString(payload.ParamId);
         Type = payload.ParamType;
         Index = payload.ParamIndex;
-        _isSynced = new ReactiveProperty<bool>(true).DisposeItWith(Disposable);
-        _value = new ReactiveProperty<MavParamValue>(_remoteValue = converter.ConvertFromMavlinkUnion(payload.ParamValue,payload.ParamType)).DisposeItWith(Disposable);
-        _value.Subscribe(v => _isSynced.OnNext(_remoteValue == v)).DisposeItWith(Disposable);
-        Disposable.AddAction(() =>
-        {
-            
-        });
+        _value = new BindableReactiveProperty<MavParamValue>(_remoteValue = converter.ConvertFromMavlinkUnion(payload.ParamValue,payload.ParamType));
+        IsSynced = _value.Select(x => _remoteValue == x).ToReadOnlyBindableReactiveProperty();
     }
     
     public ParamDescription Info { get; }
-    
     public string Name { get; }
     public MavParamType Type { get; }
     public ushort Index { get; }
-    
-    public ReadOnlyReactiveProperty<bool> IsSynced => _isSynced;
-    public IRxEditableValue<MavParamValue> Value => _value;
-
+    public IReadOnlyBindableReactiveProperty<bool> IsSynced { get; }
+    public BindableReactiveProperty<MavParamValue> Value => _value;
     public async Task Read(CancellationToken cancel)
     {
         var res = await _client.Read(Name, cancel).ConfigureAwait(false);
-        Update(res);
+        InternalUpdate(res);
     }
-    
     public async Task Write(CancellationToken cancel)
     {
         await _client.Write(Name, Type, _converter.ConvertToMavlinkUnion(Value.Value), cancel).ConfigureAwait(false);
     }
-
-    internal void Update(ParamValuePayload payload)
+    internal void InternalUpdate(ParamValuePayload payload)
     {
         var name = MavlinkTypesHelper.GetString(payload.ParamId);
         if (name != Name) throw new Exception($"Invalid index: want {Name} but got {name}");
@@ -72,4 +59,30 @@ public class ParamItem: DisposableOnceWithCancel,IParamItem
             
         }
     }
+
+    #region Dispose
+
+    public void Dispose()
+    {
+        _value.Dispose();
+        IsSynced.Dispose();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await CastAndDispose(_value).ConfigureAwait(false);
+        await CastAndDispose(IsSynced).ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

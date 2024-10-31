@@ -1,6 +1,5 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using R3;
 
@@ -91,4 +90,26 @@ public interface IPositionClient: IMavlinkMicroserviceClient
     Task SetTargetGlobalInt(uint timeBootMs, MavFrame coordinateFrame, int latInt, int lonInt, float alt,
         float vx, float vy, float vz, float afx, float afy, float afz, float yaw,
         float yawRate, PositionTargetTypemask typeMask, CancellationToken cancel = default);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="timeBootMs">Timestamp (time since system boot).</param>
+    /// <param name="coordinateFrame"> Valid options are: MAV_FRAME_LOCAL_NED = 1, MAV_FRAME_LOCAL_OFFSET_NED = 7, MAV_FRAME_BODY_NED = 8, MAV_FRAME_BODY_OFFSET_NED = 9</param>
+    /// <param name="typeMask">Bitmap to indicate which dimensions should be ignored by the vehicle.</param>
+    /// <param name="x">X Position in NED frame</param>
+    /// <param name="y">Y Position in NED frame</param>
+    /// <param name="z">Z Position in NED frame (note, altitude is negative in NED)</param>
+    /// <param name="vx">X velocity in NED frame</param>
+    /// <param name="vy">Y velocity in NED frame</param>
+    /// <param name="vz">Z velocity in NED frame</param>
+    /// <param name="afx">X acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N</param>
+    /// <param name="afy">Y acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N</param>
+    /// <param name="afz">Z acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N</param>
+    /// <param name="yaw">yaw setpoint</param>
+    /// <param name="yawRate">yaw rate setpoint</param>
+    /// <param name="cancel"></param>
+    /// <returns></returns>
+    Task SetPositionTargetLocalNed(uint timeBootMs, MavFrame coordinateFrame, PositionTargetTypemask typeMask, float x,
+        float y, float z, float vx, float vy, float vz, float afx, float afy, float afz, float yaw, float yawRate,
+        CancellationToken cancel);
 }

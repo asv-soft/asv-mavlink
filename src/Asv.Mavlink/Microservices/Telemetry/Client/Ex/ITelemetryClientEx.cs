@@ -1,8 +1,4 @@
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using Asv.Common;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using R3;
 
 namespace Asv.Mavlink;

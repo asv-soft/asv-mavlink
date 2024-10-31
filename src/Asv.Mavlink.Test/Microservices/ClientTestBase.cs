@@ -7,10 +7,10 @@ public abstract class ClientTestBase<TClient>
 {
     private TClient? _client;
 
-    protected ClientTestBase(ITestOutputHelper log, VirtualMavlinkConnection? link = null)
+    protected ClientTestBase(ITestOutputHelper log)
     {
         Log = log;
-        Link = link ?? new VirtualMavlinkConnection();
+        Link = new VirtualMavlinkConnection();
         Time = new FakeTimeProvider();
         Seq = new PacketSequenceCalculator();
         Identity = new MavlinkClientIdentity(1, 2, 3, 4);

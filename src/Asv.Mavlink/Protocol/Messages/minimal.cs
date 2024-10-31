@@ -23,10 +23,6 @@
 // This code was generate by tool Asv.Mavlink.Shell version 3.10.4+c1002429a625f2cf26c5bd2680700906e0b44d76
 
 using System;
-using System.Text;
-using System.ComponentModel;
-using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.V2.Minimal

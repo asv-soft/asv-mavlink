@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Asv.Mavlink;
-using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.Minimal;
 
 namespace Asv.Mavlink;
