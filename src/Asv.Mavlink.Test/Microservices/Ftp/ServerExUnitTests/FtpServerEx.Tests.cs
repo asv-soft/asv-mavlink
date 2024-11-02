@@ -120,37 +120,7 @@ public class FtpServerExTests
 
     #region ListDirectory
 
-    [Fact]
-    public async Task ListDirectory_WithClientEx_Success()
-    {
-        // Arrange
-        var fileDirName = "file";
-        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        var fileSystem = _helper.SetUpFileSystem(root);
-        _helper.SetUpClientAndServer(out var client, out var server, (packet) => true, (packet) => true);
-        var fileDir = fileSystem.Path.Combine(root, fileDirName);
-        var filePath = fileSystem.Path.Combine(fileDir, "test.txt");
-        var filePath2 = fileSystem.Path.Combine(fileDir, "test2.txt");
-        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder1"));
-        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder2"));
-        fileSystem.AddDirectory(Path.Combine(fileDir, "Folder3"));
-        fileSystem.AddFile(filePath, new MockFileData("Something"));
-        fileSystem.AddFile(filePath2, new MockFileData(string.Empty));
-        var clientEx = new FtpClientEx(client, _fakeTime);
-        var cfg = new MavlinkFtpServerExConfig
-        {
-            RootDirectory = root,
-        };
-        var serverEx = new FtpServerEx(cfg, server, fileSystem);
-
-        // Act
-        await clientEx.Refresh(fileDirName);
-
-        // Assert
-        clientEx.Entries.Do(_ => { }).Bind(out var result).Subscribe();
-        Assert.Equal(6, result.Count);
-    }
-
+    
     [Theory]
     [InlineData(0, "DFolder1\0DFolder2\0DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]
     [InlineData(1, "DFolder2\0DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]

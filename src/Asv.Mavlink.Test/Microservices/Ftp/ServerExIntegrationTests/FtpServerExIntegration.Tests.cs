@@ -22,6 +22,7 @@ public class FtpServerExIntegrationTests
     private FtpServerExHelper _helper;
     private ITestOutputHelper _output;
     private const byte _fileSize = 5;
+
     public FtpServerExIntegrationTests(ITestOutputHelper output)
     {
         _helper = new FtpServerExHelper();
@@ -41,8 +42,9 @@ public class FtpServerExIntegrationTests
 
         _helper.SetUpClientAndServer(out var client, out var server, (packet) => true, (packet) => true);
         _serverEx = new FtpServerEx(cfg, server, fileSystem);
-        _clientEx = new FtpClientEx(client,_fakeTime);
+        _clientEx = new FtpClientEx(client, _fakeTime);
     }
+
     [Fact]
     public async Task DownloadFile_ClientExAtemptToDownloadFile_Success()
     {
@@ -54,7 +56,7 @@ public class FtpServerExIntegrationTests
         await _clientEx.DownloadFile(_filePath, buffer);
         await _clientEx.Base.OpenFileRead(_filePath);
         var result = await _clientEx.Base.ReadFile(request);
-        Assert.True(size==result.ReadSize());
+        Assert.True(size == result.ReadSize());
     }
 
     [Fact]
@@ -71,28 +73,39 @@ public class FtpServerExIntegrationTests
     public async Task ListDirectory_ClientRefreshServer_Success()
     {
         // Act
-        await _clientEx.Refresh(_filePath);
+        await _clientEx.Refresh("file");
         // Assert
         _clientEx.Entries.Do(_ => { }).Bind(out var result).Subscribe();
-        Assert.Single(result);
+        Assert.Equal(2, result.Count);
     }
+
+    [Fact]
+    public async Task Refresh_ClientTryToRefreshRootWithDirectorySeparatorChar_Success()
+    {
+        // Act
+        await _clientEx.Refresh("/");
+        // Assert
+        _clientEx.Entries.Do(_ => { }).Bind(out var result).Subscribe();
+        Assert.Equal(2, result.Count);
+    }
+
     [Fact]
     public async Task ListDirectory_ClientWithClientEx_Fault()
     {
         // Arrange
         using var memory = MemoryPool<char>.Shared.Rent();
         // Act
-        await _clientEx.Refresh(_filePath);
+        await _clientEx.Refresh("file");
         // Assert
-        _clientEx.Entries.Do(_ => { }).Bind(out var result).Subscribe(); 
-        await Assert.ThrowsAsync<FtpNackException>(async () =>
+        _clientEx.Entries.Do(_ => { }).Bind(out var result).Subscribe();
+        await Assert.ThrowsAsync<DirectoryNotFoundException>(async () =>
             await _serverEx.ListDirectory(_filePath, 5, memory.Memory, CancellationToken.None));
     }
 
     [Fact]
     public async Task CreateFile_ClientCreateNewFile_Success()
     {
-        var path  =  Path.Combine(_directoryPath, "test1.txt");
+        var path = Path.Combine(_directoryPath, "test1.txt");
         var result = await _clientEx.Base.CreateFile(path);
         Assert.Equal(0, result.ReadSize());
     }
@@ -109,19 +122,19 @@ public class FtpServerExIntegrationTests
         await _clientEx.Base.TerminateSession(0);
         await _clientEx.Base.OpenFileRead(_filePath);
         var readResult = await _clientEx.Base.ReadFile(readRequest, readBuffer);
-        Assert.Equal(readResult.ReadCount,readBuffer.Length);
+        Assert.Equal(readResult.ReadCount, readBuffer.Length);
     }
 
     [Fact]
     public async Task CreateDirectory_ClientCreateDirectory_Success()
     {
         // Arrange
-        var directory = _directoryPath + "dir";
+        var directory = Path.Combine(_directoryPath, "dir");
         using var memory = MemoryPool<char>.Shared.Rent();
         await _clientEx.Base.CreateDirectory(directory);
-
-       var result =  await _serverEx.ListDirectory(directory, 5, memory.Memory, CancellationToken.None);
-       Assert.Equal(0,result);
+        await Assert.ThrowsAsync<FtpNackException>(async () =>
+        {
+            await _serverEx.ListDirectory(directory, 0, memory.Memory, CancellationToken.None);
+        });
     }
-    
 }
