@@ -12,10 +12,17 @@ namespace Asv.Mavlink;
 public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
 {
     private readonly MavlinkClientIdentity _identity;
-    private readonly ReactiveProperty<AsvSdrOutStatusPayload?> _status;
     private uint _requestCounter;
     private readonly ILogger _logger;
-    private readonly IDisposable _statusSubscribe;
+    private readonly Subject<(Guid, AsvSdrRecordPayload)> _onRecord;
+    private readonly Subject<(TagId, AsvSdrRecordTagPayload)> _onRecordTag;
+    private readonly Subject<(Guid, AsvSdrRecordDeleteResponsePayload)> _onDeleteRecord;
+    private readonly Subject<(TagId, AsvSdrRecordTagDeleteResponsePayload)> _onDeleteRecordTag;
+    private readonly Subject<IPacketV2<IPayload>> _onRecordData;
+    private readonly Subject<AsvSdrCalibTablePayload> _onCalibrationTable;
+    private readonly Subject<AsvSdrCalibTableUploadReadCallbackPayload> _onCalibrationTableRowUploadCallback;
+    private readonly Subject<AsvSdrCalibAccPayload> _onCalibrationAcc;
+    private readonly Subject<AsvSdrSignalRawPayload> _onSignal;
 
     public AsvSdrClient(MavlinkClientIdentity identity,
         ICoreServices core)
@@ -23,48 +30,66 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     {
         _logger = core.Log.CreateLogger<AsvSdrClient>();
         _identity = identity;
-        _status = new ReactiveProperty<AsvSdrOutStatusPayload?>(default);
-        _statusSubscribe = InternalFilter<AsvSdrOutStatusPacket>().Select(p => p.Payload).Subscribe(_status);
+        Status = InternalFilter<AsvSdrOutStatusPacket>().Select(p => p?.Payload)
+            .ToReadOnlyReactiveProperty();
+        
         var dataPacketsHashSet = new HashSet<int>();
         foreach (var item in Enum.GetValues(typeof(AsvSdrCustomMode)).Cast<uint>())
         {
             dataPacketsHashSet.Add((int)item);
         }
         dataPacketsHashSet.Remove((int)AsvSdrCustomMode.AsvSdrCustomModeIdle); // from IDLE we can't get any data
-        
-        OnRecord = InternalFilter<AsvSdrRecordPacket>()
+
+        _onRecord = new Subject<(Guid, AsvSdrRecordPayload)>();
+        InternalFilter<AsvSdrRecordPacket>()
             .Select(p => (new Guid(p.Payload.RecordGuid), p.Payload))
-            .Publish().RefCount();
-        OnRecordTag = InternalFilter<AsvSdrRecordTagPacket>().Select(p => (new TagId(p.Payload),p.Payload))
-            .Publish().RefCount();
-        
-        OnDeleteRecordTag = InternalFilter<AsvSdrRecordTagDeleteResponsePacket>()
+            .Subscribe(_onRecord.AsObserver());
+
+        _onRecordTag = new Subject<(TagId, AsvSdrRecordTagPayload)>();
+        InternalFilter<AsvSdrRecordTagPacket>().Select(p => (new TagId(p.Payload), p.Payload))
+            .Subscribe(_onRecordTag.AsObserver());
+
+        _onDeleteRecordTag = new Subject<(TagId, AsvSdrRecordTagDeleteResponsePayload)>();
+        InternalFilter<AsvSdrRecordTagDeleteResponsePacket>()
             .Select(p => (new TagId(p.Payload), p.Payload))
-            .Publish().RefCount();
-        OnDeleteRecord = InternalFilter<AsvSdrRecordDeleteResponsePacket>().Select(p => (new Guid(p.Payload.RecordGuid),p.Payload))
-            .Publish().RefCount();
-        
-        
-        
-        OnRecordData = InternalFilteredVehiclePackets.Where(x=>dataPacketsHashSet.Contains(x.MessageId));
-        
-        OnCalibrationTableRowUploadCallback = InternalFilter<AsvSdrCalibTableUploadReadCallbackPacket>().Select(p => p.Payload)
-            .Publish().RefCount();
-        OnCalibrationAcc = InternalFilter<AsvSdrCalibAccPacket>().Select(p => p.Payload)
-            .Publish().RefCount();
-        
-        OnCalibrationTable = InternalFilter<AsvSdrCalibTablePacket>().Select(p => p.Payload)
-            .Publish().RefCount();
-        
-        OnSignal = InternalFilter<AsvSdrSignalRawPacket>().Select(x=>x.Payload).Publish().RefCount();
-        
-        
+            .Subscribe(_onDeleteRecordTag.AsObserver());
+
+        _onDeleteRecord = new Subject<(Guid, AsvSdrRecordDeleteResponsePayload)>();
+        InternalFilter<AsvSdrRecordDeleteResponsePacket>().Select(p => (new Guid(p.Payload.RecordGuid), p.Payload))
+            .Subscribe(_onDeleteRecord.AsObserver());
+
+        _onRecordData = new Subject<IPacketV2<IPayload>>();
+        InternalFilteredVehiclePackets.Where(x=>dataPacketsHashSet.Contains(x.MessageId))
+            .Subscribe(_onRecordData.AsObserver());
+
+        _onCalibrationTableRowUploadCallback = new Subject<AsvSdrCalibTableUploadReadCallbackPayload>();
+        InternalFilter<AsvSdrCalibTableUploadReadCallbackPacket>().Select(p => p.Payload)
+            .Subscribe(_onCalibrationTableRowUploadCallback.AsObserver());
+
+        _onCalibrationAcc = new Subject<AsvSdrCalibAccPayload>();
+        InternalFilter<AsvSdrCalibAccPacket>().Select(p => p.Payload)
+            .Subscribe(_onCalibrationAcc.AsObserver());
+
+        _onCalibrationTable = new Subject<AsvSdrCalibTablePayload>();
+        InternalFilter<AsvSdrCalibTablePacket>().Select(p => p.Payload)
+            .Subscribe(_onCalibrationTable.AsObserver());
+
+        _onSignal = new Subject<AsvSdrSignalRawPayload>();
+        InternalFilter<AsvSdrSignalRawPacket>().Select(x => x.Payload)
+            .Subscribe(_onSignal.AsObserver());
+
+
     }
-
-    public ReadOnlyReactiveProperty<AsvSdrOutStatusPayload?> Status => _status;
-
-    public IObservable<(Guid, AsvSdrRecordPayload)> OnRecord { get; }
-
+    public ReadOnlyReactiveProperty<AsvSdrOutStatusPayload?> Status { get; }
+    public Observable<(Guid, AsvSdrRecordPayload)> OnRecord => _onRecord;
+    public Observable<(TagId, AsvSdrRecordTagPayload)> OnRecordTag => _onRecordTag;
+    public Observable<(Guid, AsvSdrRecordDeleteResponsePayload)> OnDeleteRecord => _onDeleteRecord;
+    public Observable<(TagId, AsvSdrRecordTagDeleteResponsePayload)> OnDeleteRecordTag => _onDeleteRecordTag;
+    public Observable<IPacketV2<IPayload>> OnRecordData => _onRecordData;
+    public Observable<AsvSdrCalibTablePayload> OnCalibrationTable => _onCalibrationTable;
+    public Observable<AsvSdrCalibTableUploadReadCallbackPayload> OnCalibrationTableRowUploadCallback => _onCalibrationTableRowUploadCallback;
+    public Observable<AsvSdrCalibAccPayload> OnCalibrationAcc => _onCalibrationAcc;
+    public Observable<AsvSdrSignalRawPayload> OnSignal => _onSignal;
     public Task<AsvSdrRecordResponsePayload> GetRecordList(ushort skip, ushort count, CancellationToken cancel = default)
     {
         var id = GenerateRequestIndex();
@@ -82,10 +107,6 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     {
         return (ushort)(Interlocked.Increment(ref _requestCounter)%ushort.MaxValue);
     }
-
-    public IObservable<(TagId, AsvSdrRecordTagPayload)> OnRecordTag { get; } 
-    public IObservable<(Guid, AsvSdrRecordDeleteResponsePayload)> OnDeleteRecord { get; }
-    
     public Task<AsvSdrRecordDeleteResponsePayload> DeleteRecord(Guid recordId, CancellationToken cancel = default)
     {
         var id = GenerateRequestIndex();
@@ -97,7 +118,6 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
             recordId.TryWriteBytes(p.Payload.RecordGuid);
         },p=> p.Payload.RequestId == id,resultGetter:p=>p.Payload,cancel: cancel);
     }
-
     public Task<AsvSdrRecordTagResponsePayload> GetRecordTagList(Guid recordId, ushort skip, ushort count, CancellationToken cancel = default)
     {
         var id = GenerateRequestIndex();
@@ -111,9 +131,6 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
             p.Payload.RequestId = id;
         },p=>p.Payload.RequestId==id,resultGetter:p=>p.Payload,cancel: cancel);
     }
-
-    public IObservable<(TagId, AsvSdrRecordTagDeleteResponsePayload)> OnDeleteRecordTag { get; }
-
     public Task<AsvSdrRecordTagDeleteResponsePayload> DeleteRecordTag(TagId tagId, CancellationToken cancel = default)
     {
         var id = GenerateRequestIndex();
@@ -141,8 +158,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         },p=>p.Payload.RequestId == id,resultGetter:p=>p.Payload,cancel: cancel);
     }
 
-    public IObservable<IPacketV2<IPayload>> OnRecordData { get; }
-    public IObservable<AsvSdrCalibTablePayload> OnCalibrationTable { get; }
+    
 
     #region Calibration
     public async Task<AsvSdrCalibTablePayload> ReadCalibrationTable(ushort tableIndex, CancellationToken cancel = default)
@@ -232,8 +248,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         },cancel: cancel);
     }
 
-    public IObservable<AsvSdrCalibTableUploadReadCallbackPayload> OnCalibrationTableRowUploadCallback { get; }
-    public IObservable<AsvSdrCalibAccPayload> OnCalibrationAcc { get; }
+    
     public Task SendCalibrationTableRowUploadItem(Action<AsvSdrCalibTableRowPayload> argsFill, CancellationToken cancel = default)
     {
         return InternalSend<AsvSdrCalibTableRowPacket>(p => { argsFill(p.Payload); },cancel: cancel);
@@ -241,12 +256,53 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     
     #endregion
 
-    public IObservable<AsvSdrSignalRawPayload> OnSignal { get; }
+    #region Dispose
 
-    public override void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _statusSubscribe.Dispose();
-        _status.Dispose();
-        base.Dispose();
+        if (disposing)
+        {
+            _onRecord.Dispose();
+            _onRecordTag.Dispose();
+            _onDeleteRecord.Dispose();
+            _onDeleteRecordTag.Dispose();
+            _onRecordData.Dispose();
+            _onCalibrationTable.Dispose();
+            _onCalibrationTableRowUploadCallback.Dispose();
+            _onCalibrationAcc.Dispose();
+            _onSignal.Dispose();
+            Status.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
+
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        await CastAndDispose(_onRecord).ConfigureAwait(false);
+        await CastAndDispose(_onRecordTag).ConfigureAwait(false);
+        await CastAndDispose(_onDeleteRecord).ConfigureAwait(false);
+        await CastAndDispose(_onDeleteRecordTag).ConfigureAwait(false);
+        await CastAndDispose(_onRecordData).ConfigureAwait(false);
+        await CastAndDispose(_onCalibrationTable).ConfigureAwait(false);
+        await CastAndDispose(_onCalibrationTableRowUploadCallback).ConfigureAwait(false);
+        await CastAndDispose(_onCalibrationAcc).ConfigureAwait(false);
+        await CastAndDispose(_onSignal).ConfigureAwait(false);
+        await CastAndDispose(Status).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
+    
 }

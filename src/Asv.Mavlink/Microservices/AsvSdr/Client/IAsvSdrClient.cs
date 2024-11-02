@@ -24,7 +24,7 @@ namespace Asv.Mavlink
        /// <summary>
        /// Observes the Signal Raw Payload.
        /// </summary>
-       IObservable<AsvSdrSignalRawPayload> OnSignal { get; }
+       Observable<AsvSdrSignalRawPayload> OnSignal { get; }
 
        // Records
        /// <summary>
@@ -36,7 +36,7 @@ namespace Asv.Mavlink
        /// <summary>
        /// Observes the SDR Record Payload.
        /// </summary>
-       IObservable<(Guid, AsvSdrRecordPayload)> OnRecord { get; }
+       Observable<(Guid, AsvSdrRecordPayload)> OnRecord { get; }
 
        /// <summary>
        /// Deletes a record.
@@ -46,7 +46,7 @@ namespace Asv.Mavlink
        /// <summary>
        /// Observes the deletion of a record.
        /// </summary>
-       IObservable<(Guid, AsvSdrRecordDeleteResponsePayload)> OnDeleteRecord { get; }
+       Observable<(Guid, AsvSdrRecordDeleteResponsePayload)> OnDeleteRecord { get; }
 
        // Tags
        /// <summary>
@@ -58,7 +58,7 @@ namespace Asv.Mavlink
        /// <summary>
        /// Observes the Record Tag Payload.
        /// </summary>
-       IObservable<(TagId, AsvSdrRecordTagPayload)> OnRecordTag { get; }
+       Observable<(TagId, AsvSdrRecordTagPayload)> OnRecordTag { get; }
 
        /// <summary>
        /// Deletes a Record's Tag.
@@ -68,7 +68,7 @@ namespace Asv.Mavlink
        /// <summary>
        /// Observes the deletion of a Record's Tag.
        /// </summary>
-       IObservable<(TagId, AsvSdrRecordTagDeleteResponsePayload)> OnDeleteRecordTag { get; }
+       Observable<(TagId, AsvSdrRecordTagDeleteResponsePayload)> OnDeleteRecordTag { get; }
 
        // Record data
        /// <summary>
@@ -80,13 +80,13 @@ namespace Asv.Mavlink
        /// <summary>
        /// Observes the Record's Data.
        /// </summary>
-       IObservable<IPacketV2<IPayload>> OnRecordData { get; }
+       Observable<IPacketV2<IPayload>> OnRecordData { get; }
 
        // Calibration
        /// <summary>
        /// Observes the Calibration Table Payload.
        /// </summary>
-       IObservable<AsvSdrCalibTablePayload> OnCalibrationTable { get; }
+       Observable<AsvSdrCalibTablePayload> OnCalibrationTable { get; }
 
        /// <summary>
        /// Reads the Calibration Table.
@@ -108,12 +108,12 @@ namespace Asv.Mavlink
        /// <summary>
        /// Observes the Calibration Table Row Upload Callback Payload.
        /// </summary>
-       IObservable<AsvSdrCalibTableUploadReadCallbackPayload> OnCalibrationTableRowUploadCallback { get; }
+       Observable<AsvSdrCalibTableUploadReadCallbackPayload> OnCalibrationTableRowUploadCallback { get; }
 
        /// <summary>
        /// Observes the Calibration Acceleration Payload.
        /// </summary>
-       IObservable<AsvSdrCalibAccPayload> OnCalibrationAcc { get; }
+       Observable<AsvSdrCalibAccPayload> OnCalibrationAcc { get; }
 
        /// <summary>
        /// Sends the upload item of a Calibration Table's Row.

@@ -1,43 +1,44 @@
 #nullable enable
 using System;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Minimal;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+using R3;
 using ZLogger;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
 using MavType = Asv.Mavlink.V2.Minimal.MavType;
 
 namespace Asv.Mavlink;
 
-public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
+public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
 {
     private readonly IStatusTextServer _status;
+    private readonly ICommandServerEx<CommandLongPacket> _commands;
     private double _signalSendingFlag;
     private int _calibrationTableUploadFlag;
     private readonly ILogger _logger;
+    private readonly CancellationTokenSource _disposeCancel;
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
+    private readonly IDisposable _sub4;
 
     public AsvSdrServerEx(
         IAsvSdrServer server, 
         IStatusTextServer status, 
         IHeartbeatServer heartbeat, 
-        ICommandServerEx<CommandLongPacket> commands,
-        TimeProvider? timeProvider = null,
-        IScheduler? scheduler = null,
-        ILoggerFactory? logFactory = null)
+        ICommandServerEx<CommandLongPacket> commands)
     {
-        logFactory??=NullLoggerFactory.Instance;
-        _logger = logFactory.CreateLogger<AsvSdrServerEx>();
+        _logger = server.Core.Log.CreateLogger<AsvSdrServerEx>();
         ArgumentNullException.ThrowIfNull(heartbeat);
         ArgumentNullException.ThrowIfNull(commands);
         _status = status ?? throw new ArgumentNullException(nameof(status));
+        _commands = commands;
+        _disposeCancel = new CancellationTokenSource();
         Base = server ?? throw new ArgumentNullException(nameof(server));
 
         #region Heartbeat
@@ -51,11 +52,11 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
             p.MavlinkVersion = 3;
             p.CustomMode = (uint)AsvSdrCustomMode.AsvSdrCustomModeIdle;
         });
-        CustomMode = new ReactiveProperty<AsvSdrCustomMode>().DisposeItWith(Disposable);
-        CustomMode.DistinctUntilChanged().Subscribe(mode => heartbeat.Set(p =>
+        CustomMode = new ReactiveProperty<AsvSdrCustomMode>();
+        _sub1 = CustomMode.Subscribe(mode => heartbeat.Set(p =>
         {
             p.CustomMode = (uint)mode;
-        })).DisposeItWith(Disposable);
+        }));
 
         #endregion
         
@@ -133,10 +134,13 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
             return CommandResult.FromResult(result);
         };
 
-        Base.OnCalibrationTableReadRequest.Subscribe(OnCalibrationReadTable).DisposeItWith(Disposable);
-        Base.OnCalibrationTableRowReadRequest.Subscribe(OnCalibrationReadTableRow).DisposeItWith(Disposable);
-        Base.OnCalibrationTableUploadStart.Subscribe(OnCalibrationTableUploadStart).DisposeItWith(Disposable);
+        _sub2 = Base.OnCalibrationTableReadRequest.Subscribe(OnCalibrationReadTable);
+        _sub3 =Base.OnCalibrationTableRowReadRequest.Subscribe(OnCalibrationReadTableRow);
+        _sub4 =Base.OnCalibrationTableUploadStart.Subscribe(OnCalibrationTableUploadStart);
     }
+    public IAsvSdrServer Base { get; }
+    public ReactiveProperty<AsvSdrCustomMode> CustomMode { get; }
+    private CancellationToken DisposeCancel => _disposeCancel.Token; 
 
     private async void OnCalibrationTableUploadStart(AsvSdrCalibTableUploadStartPacket args)
     {
@@ -207,8 +211,6 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
         }
     }
 
-    
-
     private void OnCalibrationReadTable(AsvSdrCalibTableReadPayload args)
     {
         if (TryReadCalibrationTableInfo == null)
@@ -239,15 +241,15 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
         }
     }
 
-    public SetModeDelegate SetMode { get; set; }
-    public StartRecordDelegate StartRecord { get; set; }
-    public StopRecordDelegate StopRecord { get; set; }
-    public CurrentRecordSetTagDelegate CurrentRecordSetTag { get; set; }
-    public SystemControlActionDelegate SystemControlAction { get; set; }
-    public StartMissionDelegate StartMission { get; set; }
-    public StopMissionDelegate StopMission { get; set; }
-    public StartCalibrationDelegate StartCalibration { get; set; }
-    public StopCalibrationDelegate StopCalibration { get; set; }
+    public SetModeDelegate? SetMode { get; set; }
+    public StartRecordDelegate? StartRecord { get; set; }
+    public StopRecordDelegate? StopRecord { get; set; }
+    public CurrentRecordSetTagDelegate? CurrentRecordSetTag { get; set; }
+    public SystemControlActionDelegate? SystemControlAction { get; set; }
+    public StartMissionDelegate? StartMission { get; set; }
+    public StopMissionDelegate? StopMission { get; set; }
+    public StartCalibrationDelegate? StartCalibration { get; set; }
+    public StopCalibrationDelegate? StopCalibration { get; set; }
     public TryReadCalibrationTableInfoDelegate? TryReadCalibrationTableInfo { get; set; }
     public TryReadCalibrationTableRowDelegate? TryReadCalibrationTableRow { get; set; }
     public WriteCalibrationDelegate? WriteCalibrationTable { get; set; }
@@ -451,6 +453,59 @@ public class AsvSdrServerEx : DisposableOnceWithCancel, IAsvSdrServerEx
         }
     }
 
-    public IAsvSdrServer Base { get; }
-    public IRxEditableValue<AsvSdrCustomMode> CustomMode { get; }
+    #region Dispose
+
+    public void Dispose()
+    {
+        _disposeCancel.Dispose();
+        _sub1.Dispose();
+        _sub2.Dispose();
+        _sub3.Dispose();
+        _sub4.Dispose();
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSetMode] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartRecord] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopRecord] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartMission] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopMission] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration] = null;
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await CastAndDispose(_disposeCancel).ConfigureAwait(false);
+        await CastAndDispose(_sub1).ConfigureAwait(false);
+        await CastAndDispose(_sub2).ConfigureAwait(false);
+        await CastAndDispose(_sub3).ConfigureAwait(false);
+        await CastAndDispose(_sub4).ConfigureAwait(false);
+        
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSetMode] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartRecord] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopRecord] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartMission] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopMission] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration] = null;
+        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration] = null;
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

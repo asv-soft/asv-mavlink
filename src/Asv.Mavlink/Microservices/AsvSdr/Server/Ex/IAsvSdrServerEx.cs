@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 
 namespace Asv.Mavlink;
@@ -143,7 +144,7 @@ public interface IAsvSdrServerEx
     /// </remarks>
     /// <seealso cref="IRxEditableValue{T}" />
     /// <seealso cref="AsvSdrCustomMode" />
-    IRxEditableValue<AsvSdrCustomMode> CustomMode { get; }
+    ReactiveProperty<AsvSdrCustomMode> CustomMode { get; }
 
     /// <summary>
     /// Property to set the mode using a delegate function.
@@ -181,13 +182,13 @@ public interface IAsvSdrServerEx
     /// In this example, the ChangeMode function is defined as the delegate type SetModeDelegate.
     /// The SetMode property of the MyObject class is assigned the ChangeMode function, effectively changing the mode of the object.
     /// </example>
-    SetModeDelegate SetMode { set; }
+    SetModeDelegate? SetMode { set; }
 
     /// <summary>
     /// Delegate for setting the value of StartRecord.
     /// </summary>
     /// <param name="startRecord">The value to be set for StartRecord.</param>
-    StartRecordDelegate StartRecord { set; }
+    StartRecordDelegate? StartRecord { set; }
 
     /// <summary>
     /// Delegate that sets the stop record function.
@@ -195,14 +196,14 @@ public interface IAsvSdrServerEx
     /// <param name="stopRecord">
     /// The stop record delegate to set.
     /// </param>
-    StopRecordDelegate StopRecord { set; }
+    StopRecordDelegate? StopRecord { set; }
 
     /// <summary>
     /// Specifies a delegate that is used to set the current record set tag. </summary> <remarks>
     /// This delegate is typically used to set a custom tag on the current record set.
     /// Implementations of this delegate should take a string parameter, which represents the tag to set. </remarks>
     /// /
-    CurrentRecordSetTagDelegate CurrentRecordSetTag { set; }
+    CurrentRecordSetTagDelegate? CurrentRecordSetTag { set; }
 
     /// <summary>
     /// Delegate used to handle system control actions.
@@ -221,7 +222,7 @@ public interface IAsvSdrServerEx
     /// };
     /// </code>
     /// </example>
-    SystemControlActionDelegate SystemControlAction { set; }
+    SystemControlActionDelegate? SystemControlAction { set; }
 
     /// <summary>
     /// Gets or sets the StartMission delegate.
@@ -229,19 +230,19 @@ public interface IAsvSdrServerEx
     /// <value>
     /// The StartMission delegate.
     /// </value>
-    StartMissionDelegate StartMission { set; }
+    StartMissionDelegate? StartMission { set; }
 
     /// <summary>
     /// Delegate for stopping a mission.
     /// </summary>
     /// <param name="mission">The mission to be stopped.</param>
-    StopMissionDelegate StopMission { set; }
+    StopMissionDelegate? StopMission { set; }
 
     /// <summary>
     /// Delegate for starting calibration.
     /// </summary>
     /// <param name="calibrationData">The calibration data to be used for the calibration process.</param>
-    StartCalibrationDelegate StartCalibration { set; }
+    StartCalibrationDelegate? StartCalibration { set; }
 
     /// <summary>
     /// Sets the delegate to be called when the calibration process is stopped.
@@ -253,7 +254,7 @@ public interface IAsvSdrServerEx
     /// <param name="StopCalibration">
     /// The delegate to be called when the calibration process is stopped.
     /// </param>
-    StopCalibrationDelegate StopCalibration { set; }
+    StopCalibrationDelegate? StopCalibration { set; }
 
     /// <summary>
     /// Gets or sets the delegate used to try reading calibration table information.
