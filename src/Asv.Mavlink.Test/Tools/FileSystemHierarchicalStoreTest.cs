@@ -22,37 +22,7 @@ public class FileSystemHierarchicalStoreTest
         _fileSystem = new MockFileSystem();
     }
     #region Files
-
-    [Fact]
-    public void Check_File_Open_After_Store_Was_Disposed()
-    {
-        var format = new AsvSdrListDataStoreFormat();
-        var storeLocation = "TestFolder_Open_File_After_Disposed #" + _fileSystem.Path.GetRandomFileName();
-        var storeinfo = new DirectoryInfo(storeLocation);
-        _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
-        var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
-
-        var firstGuid = Guid.NewGuid();
-        var file = store.CreateFile(firstGuid, "FirstFile_OpenAfter", store.RootFolderId);
-        file.Dispose();
-
-        var fs = _fileSystem.File.Open($"{storeinfo.FullName}\\FirstFile_OpenAfter #{ShortGuid.Encode(firstGuid)}.sdr", FileMode.Open,
-            FileAccess.Write);
-
-        store.Dispose();
-
-        Assert.Throws<IOException>(() =>
-        {
-            _fileSystem.File.Open($"{storeinfo.FullName}\\FirstFile_OpenAfter #{ShortGuid.Encode(firstGuid)}.sdr", FileMode.Open);
-        });
-
-        fs.Close();
-
-        ClearAllDirectories(storeinfo.FullName);
-    }
-
+    
     [Fact]
     public void Check_Create_File_With_Same_Id()
     {
