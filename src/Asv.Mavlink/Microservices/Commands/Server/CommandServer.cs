@@ -3,29 +3,34 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using R3;
 
 namespace Asv.Mavlink
 {
-
-
-
     public class CommandServer : MavlinkMicroserviceServer, ICommandServer
     {
         private readonly ILogger<CommandServer> _logger;
+        private readonly Subject<CommandLongPacket> _onCommandLong;
+        private readonly Subject<CommandIntPacket> _onCommandInt;
+        private readonly IDisposable _obs1;
+        private readonly IDisposable _obs2;
 
         public CommandServer(MavlinkIdentity identity,ICoreServices core)
             : base("COMMAND", identity,core)
         {
             _logger = core.Log.CreateLogger<CommandServer>();
-            OnCommandLong =
-                InternalFilter<CommandLongPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
-                    .Publish().RefCount();
-            OnCommandInt = InternalFilter<CommandIntPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
-                .Publish().RefCount();
+            _onCommandLong = new Subject<CommandLongPacket>();
+            _obs1 = InternalFilter<CommandLongPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
+                .Subscribe(_onCommandLong.AsObserver());
+            _onCommandInt = new Subject<CommandIntPacket>();
+            _obs2 = InternalFilter<CommandIntPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
+                .Subscribe(_onCommandInt.AsObserver());
+
         }
 
-        public IObservable<CommandLongPacket> OnCommandLong { get; }
-        public IObservable<CommandIntPacket> OnCommandInt { get; }
+        public Observable<CommandLongPacket> OnCommandLong => _onCommandLong;
+
+        public Observable<CommandIntPacket> OnCommandInt => _onCommandInt;
 
         public Task SendCommandAck(MavCmd cmd, DeviceIdentity responseTarget, CommandResult result,
             CancellationToken cancel = default)
@@ -41,6 +46,42 @@ namespace Asv.Mavlink
             }, cancel);
         }
 
+        #region Dispose
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _onCommandLong.Dispose();
+                _onCommandInt.Dispose();
+                _obs1.Dispose();
+                _obs2.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
+        protected override async ValueTask DisposeAsyncCore()
+        {
+            await CastAndDispose(_onCommandLong).ConfigureAwait(false);
+            await CastAndDispose(_onCommandInt).ConfigureAwait(false);
+            await CastAndDispose(_obs1).ConfigureAwait(false);
+            await CastAndDispose(_obs2).ConfigureAwait(false);
+
+            await base.DisposeAsyncCore().ConfigureAwait(false);
+
+            return;
+
+            static async ValueTask CastAndDispose(IDisposable resource)
+            {
+                if (resource is IAsyncDisposable resourceAsyncDisposable)
+                    await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    resource.Dispose();
+            }
+        }
+
+        #endregion
     }
 
 

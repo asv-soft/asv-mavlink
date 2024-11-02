@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
+using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink;
 
-public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>, IDisposable
+public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>, IDisposable, IAsyncDisposable
     where TArgPacket : IPacketV2<IPayload>
 {
     private readonly Func<TArgPacket,ushort> _cmdGetter;
@@ -17,11 +19,11 @@ public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>
     private int _isBusy;
     private int _lastCommand = -1;
     private readonly IDisposable _subscribe;
-    private CancellationTokenSource _disposeCancel;
+    private readonly CancellationTokenSource _disposeCancel;
 
     protected CommandServerEx(
         ICommandServer server,
-        IObservable<TArgPacket> commandsPipe, 
+        Observable<TArgPacket> commandsPipe, 
         Func<TArgPacket,ushort> cmdGetter, 
         Func<TArgPacket,byte> confirmationGetter )
     {
@@ -92,12 +94,31 @@ public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>
 
     private CancellationToken DisposeCancel => _disposeCancel.Token;
 
+    #region Dispose
 
     public void Dispose()
     {
-        _disposeCancel.Cancel();
-        _disposeCancel.Dispose();
-        _registry.Clear();
         _subscribe.Dispose();
+        _disposeCancel.Cancel(false);
+        _disposeCancel.Dispose();
     }
+
+    public async ValueTask DisposeAsync()
+    {
+        await CastAndDispose(_subscribe).ConfigureAwait(false);
+        _disposeCancel.Cancel(false);
+        await CastAndDispose(_disposeCancel).ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

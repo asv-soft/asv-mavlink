@@ -33,7 +33,6 @@ public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdenti
 
     protected CancellationToken DisposeCancel => _disposeCancel.Token;
 
-
     protected Observable<TPacket> InternalFilter<TPacket>(Func<TPacket, byte> targetSystemGetter,
         Func<TPacket, byte> targetComponentGetter)
         where TPacket : IPacketV2<IPayload>, new()

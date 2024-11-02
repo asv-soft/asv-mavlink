@@ -1,8 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Vehicle;
 using Microsoft.Extensions.Logging;
+using ObservableCollections;
 using R3;
 using ZLogger;
 using Unit = System.Reactive.Unit;
@@ -14,17 +19,16 @@ public class MissionClientExConfig:MissionClientConfig
     public int DeviceUploadTimeoutMs { get; set; } = 3000;
 }
 
-public class MissionClientEx : IMissionClientEx, IDisposable
+public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDisposable
 {
     private readonly ILogger _logger;
     private readonly IMissionClient _client;
-    private readonly MissionClientExConfig _config;
-    private readonly SourceCache<MissionItem, ushort> _missionSource;
+    private readonly ObservableList<MissionItem> _missionSource;
     private readonly ReactiveProperty<bool> _isMissionSynced;
     private readonly ReactiveProperty<double> _allMissionDistance;
     private readonly TimeSpan _deviceUploadTimeout;
-    private readonly IDisposable _disposeIt;
-    private CancellationTokenSource _disposeCancel;
+    private readonly CancellationTokenSource _disposeCancel;
+    private readonly IDisposable _obs1;
 
     public MissionClientEx(
         IMissionClient client, 
@@ -32,21 +36,18 @@ public class MissionClientEx : IMissionClientEx, IDisposable
     {
         _logger = client.Core.Log.CreateLogger<MissionClientEx>();
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _config = config ?? throw new ArgumentNullException(nameof(config));
+        var config1 = config ?? throw new ArgumentNullException(nameof(config));
         _disposeCancel = new CancellationTokenSource();
-        _deviceUploadTimeout = TimeSpan.FromMilliseconds(_config.DeviceUploadTimeoutMs);
-        _missionSource = new SourceCache<MissionItem, ushort>(i=>i.Index);
+        _deviceUploadTimeout = TimeSpan.FromMilliseconds(config1.DeviceUploadTimeoutMs);
+        _missionSource = new ObservableList<MissionItem>();
         _isMissionSynced = new ReactiveProperty<bool>(false);
         _allMissionDistance = new ReactiveProperty<double>(double.NaN);
-        MissionItems = _missionSource.Connect().DisposeMany().Publish().RefCount();
-        _isMissionSynced.Subscribe(_ => UpdateMissionsDistance());
-        _disposeIt = Disposable.Combine(_missionSource, _isMissionSynced, _allMissionDistance, _isMissionSynced,_disposeCancel);
+        _obs1 = _isMissionSynced.Subscribe(_ => UpdateMissionsDistance());
+        
     }
-    
     public string Name => $"{Base.Name}Ex";
     public IMissionClient Base => _client;
-    
-    public IObservable<IChangeSet<MissionItem, ushort>> MissionItems { get; }
+    public IReadOnlyObservableList<MissionItem> MissionItems => _missionSource;
     public ReadOnlyReactiveProperty<bool> IsSynced => _isMissionSynced;
     public ReadOnlyReactiveProperty<ushort> Current => _client.MissionCurrent;
     public ReadOnlyReactiveProperty<ushort> Reached => _client.MissionReached;
@@ -57,7 +58,7 @@ public class MissionClientEx : IMissionClientEx, IDisposable
         return _client.MissionSetCurrent(index, cancel);
     }
 
-    public async Task<MissionItem[]> Download(CancellationToken cancel, Action<double> progress = null)
+    public async Task<MissionItem[]> Download(CancellationToken cancel, Action<double>? progress = null)
     {
         _logger.ZLogInformation($"Begin download mission");
         progress?.Invoke(0);
@@ -109,13 +110,13 @@ public class MissionClientEx : IMissionClientEx, IDisposable
             lastUpdateTime = DateTime.Now;
             current++;
             progress?.Invoke((double)(current) / _missionSource.Count);
-            var item = _missionSource.Lookup(req.Seq);
-            if (item.HasValue == false)
+            var item = _missionSource.FirstOrDefault(i => i.Index == req.Seq);
+            if (item == null)
             {
                 tcs.TrySetException(new Exception($"Requested mission item with index '{req.Seq}' not found in local store"));
                 return;
             }
-            _client.WriteMissionItem(item.Value, cancel);
+            _client.WriteMissionItem(item, cancel);
 
         } );
 
@@ -153,19 +154,31 @@ public class MissionClientEx : IMissionClientEx, IDisposable
     public void Remove(ushort index)
     {
         _isMissionSynced.OnNext(false);
-        _missionSource.RemoveKey(index);
+        _missionSource.RemoveAt(index);
+        EnsureIndex();
+    }
+
+    private void EnsureIndex()
+    {
+        for (var i = 0; i < _missionSource.Count; i++)
+        {
+            var i1 = i;
+            _missionSource[i].Edit(x=>x.Seq = (ushort)i1);
+        }
     }
 
     public void ClearLocal()
     {
         _isMissionSynced.OnNext(false);
         _missionSource.Clear();
+        EnsureIndex();
     }
 
     private MissionItem AddMissionItem(MissionItemIntPayload item)
     {
         var missionItem = new MissionItem(item);
-        _missionSource.AddOrUpdate(missionItem);
+        _missionSource.Add(missionItem);
+        EnsureIndex();
         missionItem.OnChanged.Subscribe(_ =>
         {
             _isMissionSynced.OnNext(false);
@@ -175,7 +188,7 @@ public class MissionClientEx : IMissionClientEx, IDisposable
     
     private void UpdateMissionsDistance()
     {
-        var missions = _missionSource.Items.Where(i =>
+        var missions = _missionSource.Where(i =>
                 i.Command.Value == MavCmd.MavCmdNavWaypoint || i.Command.Value == MavCmd.MavCmdNavSplineWaypoint)
             .ToArray();
         var dist = 0.0;
@@ -186,12 +199,6 @@ public class MissionClientEx : IMissionClientEx, IDisposable
         _allMissionDistance.OnNext(dist / 1000.0);
     }
 
-    public void Dispose()
-    {
-        _disposeCancel.Cancel(false);
-        _disposeIt.Dispose();
-    }
-
     public MavlinkClientIdentity Identity => Base.Identity;
     public ICoreServices Core => Base.Core;
 
@@ -199,4 +206,40 @@ public class MissionClientEx : IMissionClientEx, IDisposable
     {
         return Task.CompletedTask;
     }
+    #region Dispose
+    public void Dispose()
+    {
+        _isMissionSynced.Dispose();
+        _allMissionDistance.Dispose();
+        _disposeCancel.Dispose();
+        _obs1.Dispose();
+        foreach (var item in _missionSource)
+        {
+            item.Dispose();
+        }
+    }
+    public async ValueTask DisposeAsync()
+    {
+        await CastAndDispose(_isMissionSynced).ConfigureAwait(false);
+        await CastAndDispose(_allMissionDistance).ConfigureAwait(false);
+        await CastAndDispose(_disposeCancel).ConfigureAwait(false);
+        await CastAndDispose(_obs1).ConfigureAwait(false);
+
+        var cached = _missionSource.ToImmutableArray();
+        _missionSource.Clear();
+        foreach (var item in cached)
+        {
+            await item.DisposeAsync().ConfigureAwait(false);
+        }
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+    #endregion
 }

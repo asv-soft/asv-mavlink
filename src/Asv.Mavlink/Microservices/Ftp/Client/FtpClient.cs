@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink;
@@ -18,7 +19,6 @@ public class MavlinkFtpClientConfig
 public class FtpClient : MavlinkMicroserviceClient, IFtpClient
 {
     private readonly MavlinkFtpClientConfig _config;
-    private readonly TimeProvider _timeProvider;
     private readonly ILogger _logger;
     private uint _sequence;
     private readonly TimeSpan _burstTimeout;
@@ -102,20 +102,18 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         await using var tcsCancel = cancel.Register(() => tcs.TrySetCanceled());
         
         // create timer to check if we skip burst complete packet
-        var lastUpdate = _timeProvider.GetTimestamp();
-        await using var timer = _timeProvider.CreateTimer(x=>
+        var lastUpdate = Core.TimeProvider.GetTimestamp();
+        await using var timer = Core.TimeProvider.CreateTimer(x=>
         {
-            if (_timeProvider.GetElapsedTime(lastUpdate) <= _burstTimeout) return;
+            if (Core.TimeProvider.GetElapsedTime(lastUpdate) <= _burstTimeout) return;
             _logger.ZLogWarning($"Timeout while burst read {request} but not received burst complete packet.");
             tcs.TrySetResult();
         },null,_burstTimeout,_burstTimeout);
         
-        using var stream = InternalFilteredVehiclePackets
-            .Filter<FileTransferProtocolPacket>()
-            .Where(p => p.ReadSession() == request.Session && p.ReadOriginOpCode() == FtpOpcode.BurstReadFile)
+        using var stream = InternalFilter<FileTransferProtocolPacket>(p => p.ReadSession() == request.Session && p.ReadOriginOpCode() == FtpOpcode.BurstReadFile)
             .Subscribe(x =>
             {
-                lastUpdate = _timeProvider.GetTimestamp();
+                lastUpdate = Core.TimeProvider.GetTimestamp();
                 try
                 {
                     InternalCheckNack(x,_logger);

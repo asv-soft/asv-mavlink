@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Asv.Mavlink.V2.Minimal;
 
 namespace Asv.Mavlink
@@ -8,17 +9,10 @@ namespace Asv.Mavlink
         public int HeartbeatRateMs { get; set; } = 1000;
     }
 
-    public class HeartbeatServer: MavlinkMicroserviceServer,IHeartbeatServer
+    public class HeartbeatServer(MavlinkIdentity identity, MavlinkHeartbeatServerConfig config, ICoreServices core)
+        : MavlinkMicroserviceServer("HEARTBEAT", identity, core), IHeartbeatServer
     {
-        private readonly MavlinkHeartbeatServerConfig _config;
-        private readonly MavlinkPacketTransponder<HeartbeatPacket, HeartbeatPayload> _transponder;
-        public HeartbeatServer(MavlinkIdentity identity, MavlinkHeartbeatServerConfig config, ICoreServices core) 
-            : base("HEARTBEAT", identity, core)
-        {
-            _config = config;
-            _transponder = new MavlinkPacketTransponder<HeartbeatPacket, HeartbeatPayload>(identity, core);
-
-        }
+        private readonly MavlinkPacketTransponder<HeartbeatPacket, HeartbeatPayload> _transponder = new(identity, core);
 
         public void Set(Action<HeartbeatPayload> changeCallback)
         {
@@ -27,13 +21,31 @@ namespace Asv.Mavlink
 
         public void Start()
         {
-            _transponder.Start(TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(_config.HeartbeatRateMs));
+            _transponder.Start(TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(config.HeartbeatRateMs));
         }
 
-        public override void Dispose()
+        #region Dispose
+
+        protected override void Dispose(bool disposing)
         {
-            _transponder.Dispose();
-            base.Dispose();
+            if (disposing)
+            {
+                _transponder.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
+
+        protected override async ValueTask DisposeAsyncCore()
+        {
+            if (_transponder is IAsyncDisposable transponderAsyncDisposable)
+                await transponderAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                _transponder.Dispose();
+
+            await base.DisposeAsyncCore().ConfigureAwait(false);
+        }
+
+        #endregion
     }
 }

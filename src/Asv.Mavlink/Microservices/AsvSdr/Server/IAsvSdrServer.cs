@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.AsvSdr;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -49,7 +50,7 @@ namespace Asv.Mavlink
         /// <value>
         /// An IObservable<AsvSdrRecordRequestPayload> representing the OnRecordRequest sequence.
         /// </value>
-        IObservable<AsvSdrRecordRequestPayload> OnRecordRequest { get; }
+        Observable<AsvSdrRecordRequestPayload> OnRecordRequest { get; }
 
         /// <summary>
         /// Sends a record response.
@@ -83,7 +84,7 @@ namespace Asv.Mavlink
         /// This event provides an <see cref="IObservable{T}"/> that emits instances of <see cref="AsvSdrRecordDeleteRequestPayload"/>.
         /// Subscribing to this observable allows the application to receive and handle delete requests for records.
         /// </remarks>
-        IObservable<AsvSdrRecordDeleteRequestPayload> OnRecordDeleteRequest { get; }
+        Observable<AsvSdrRecordDeleteRequestPayload> OnRecordDeleteRequest { get; }
 
         /// <summary>
         /// Sends a record delete response via a callback method and optional cancellation token.
@@ -103,7 +104,7 @@ namespace Asv.Mavlink
         /// This property provides an observable sequence that emits a <see cref="AsvSdrRecordTagRequestPayload"/> payload when a record tagging request is received.
         /// The observer can subscribe to this sequence to handle the request.
         /// </remarks>
-        IObservable<AsvSdrRecordTagRequestPayload> OnRecordTagRequest { get; }
+        Observable<AsvSdrRecordTagRequestPayload> OnRecordTagRequest { get; }
 
         /// <summary>
         /// Sends a record tag response payload to the specified value callback.
@@ -142,7 +143,7 @@ namespace Asv.Mavlink
         /// <returns>
         /// An IObservable of AsvSdrRecordTagDeleteRequestPayload representing the OnRecordTagDeleteRequest property.
         /// </returns>
-        IObservable<AsvSdrRecordTagDeleteRequestPayload> OnRecordTagDeleteRequest { get; }
+        Observable<AsvSdrRecordTagDeleteRequestPayload> OnRecordTagDeleteRequest { get; }
 
         /// <summary>
         /// Sends a record tag delete request to the server and asynchronously waits for the response. </summary> <param name="setValueCallback">A callback function to handle the response payload of the record tag delete.</param> <param name="cancel">A cancellation token to cancel the operation.</param> <returns>A task representing the asynchronous operation. The task completes when the response is received.</returns>
@@ -162,7 +163,7 @@ namespace Asv.Mavlink
         /// An IObservable<AsvSdrRecordDataRequestPayload> representing the observable sequence
         /// of record data requests.
         /// /
-        IObservable<AsvSdrRecordDataRequestPayload> OnRecordDataRequest { get; }
+        Observable<AsvSdrRecordDataRequestPayload> OnRecordDataRequest { get; }
 
         /// <summary>
         /// Sends a record data response and sets the value callback for received payload.
@@ -231,7 +232,7 @@ namespace Asv.Mavlink
         /// An <see cref="IObservable{T}"/> of type <see cref="AsvSdrCalibTableReadPayload"/> representing the event triggered when a
         /// calibration table read request is received.
         /// </value>
-        IObservable<AsvSdrCalibTableReadPayload> OnCalibrationTableReadRequest { get; }
+        Observable<AsvSdrCalibTableReadPayload> OnCalibrationTableReadRequest { get; }
 
         /// <summary>
         /// Sends a calibration table read response.
@@ -247,7 +248,7 @@ namespace Asv.Mavlink
         /// <value>
         /// An observable sequence of <see cref="AsvSdrCalibTableRowReadPayload"/> objects.
         /// </value>
-        IObservable<AsvSdrCalibTableRowReadPayload> OnCalibrationTableRowReadRequest { get; }
+        Observable<AsvSdrCalibTableRowReadPayload> OnCalibrationTableRowReadRequest { get; }
 
         /// <summary>
         /// Sends the calibration table row read response.
@@ -273,7 +274,7 @@ namespace Asv.Mavlink
         /// An <see cref="IObservable{T}"/> of type <see cref="AsvSdrCalibTableUploadStartPacket"/>
         /// that emits the start packets when a calibration table upload is initiated.
         /// </returns>
-        IObservable<AsvSdrCalibTableUploadStartPacket> OnCalibrationTableUploadStart { get; }
+        Observable<AsvSdrCalibTableUploadStartPacket> OnCalibrationTableUploadStart { get; }
 
         /// <summary>
         /// A method that sends a request to read a calibration table row from a target system. </summary> <param name="targetSysId">The target system ID.</param> <param name="targetCompId">The target component ID.</param> <param name="reqId">The request ID.</param> <param name="tableIndex">The index of the calibration table.</param> <param name="rowIndex">The index of the row within the calibration table.</param> <param name="cancel">A cancellation token to cancel the operation.</param> <returns>A task representing the asynchronous operation. The task result contains the calibration table row.</returns>

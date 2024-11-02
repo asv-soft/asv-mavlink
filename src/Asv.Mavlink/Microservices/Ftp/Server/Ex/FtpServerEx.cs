@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
-public class MavlinkFtpServerExConfig
+public class MavlinkFtpServerExConfig:MavlinkFtpServerConfig
 {
     public required string RootDirectory { get; init; }
 }
@@ -25,8 +25,8 @@ public class FtpServerEx : IFtpServerEx
     public IFtpServer Base { get; }
     
     
-    public FtpServerEx(MavlinkFtpServerExConfig config, 
-        IFtpServer @base, 
+    public FtpServerEx(IFtpServer @base, 
+        MavlinkFtpServerExConfig config,
         IFileSystem? fileSystem = null)
     {
         _rootDirectory = config.RootDirectory;
@@ -467,23 +467,57 @@ public class FtpServerEx : IFtpServerEx
         return session;
     }
 
+    #region Dispose
+
     public void Dispose()
     {
         foreach (var session in _sessions)
         {
             session.Close();
         }
+
+        Base.Rename = null;
+        Base.OpenFileRead = null;
+        Base.OpenFileWrite = null;
+        Base.FileRead = null;
+        Base.TerminateSession = null;
+        Base.ListDirectory = null;
+        Base.ResetSessions = null;
+        Base.CreateDirectory = null;
+        Base.CreateFile = null;
+        Base.RemoveFile = null;
+        Base.RemoveDirectory = null;
+        Base.CalcFileCrc32 = null;
+        Base.TruncateFile = null;
+        Base.BurstReadFile = null;
+        Base.WriteFile = null;
         
         _sessions.Clear();
     }
     
     public async ValueTask DisposeAsync()
     {
+        Base.Rename = null;
+        Base.OpenFileRead = null;
+        Base.OpenFileWrite = null;
+        Base.FileRead = null;
+        Base.TerminateSession = null;
+        Base.ListDirectory = null;
+        Base.ResetSessions = null;
+        Base.CreateDirectory = null;
+        Base.CreateFile = null;
+        Base.RemoveFile = null;
+        Base.RemoveDirectory = null;
+        Base.CalcFileCrc32 = null;
+        Base.TruncateFile = null;
+        Base.BurstReadFile = null;
+        Base.WriteFile = null;
         foreach (var session in _sessions)
         {
             await session.CloseAsync().ConfigureAwait(false);
         }
-        
         _sessions.Clear();
     }
+
+    #endregion
 }

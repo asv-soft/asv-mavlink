@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 using R3;
 
@@ -6,26 +7,49 @@ namespace Asv.Mavlink;
 
 public class GnssClient : MavlinkMicroserviceClient, IGnssClient
 {
-    private readonly ReactiveProperty<GpsRawIntPayload?> _gnss1;
-    private readonly ReactiveProperty<Gps2RawPayload?> _gnss2;
-    private readonly IDisposable _disposeIt;
-
     public GnssClient(MavlinkClientIdentity identity,ICoreServices core) : base("GNSS", identity, core)
     {
-        _gnss1 = new ReactiveProperty<GpsRawIntPayload?>(default);
-        _gnss2 = new ReactiveProperty<Gps2RawPayload?>(default);
-        var d1 = InternalFilter<GpsRawIntPacket>().Select(p => p.Payload)
-            .Subscribe(_gnss1);
-        var d2 = InternalFilter<Gps2RawPacket>().Select(p => p.Payload)
-            .Subscribe(_gnss2);
-        _disposeIt = Disposable.Combine(_gnss1, _gnss2, d1, d2);
+        Main = InternalFilter<GpsRawIntPacket>()
+            .Select(p => p?.Payload)
+            .ToReadOnlyReactiveProperty();
+        Additional = InternalFilter<Gps2RawPacket>()
+            .Select(p => p?.Payload)
+            .ToReadOnlyReactiveProperty();
     }
-    public ReadOnlyReactiveProperty<GpsRawIntPayload?> Main => _gnss1;
-    public ReadOnlyReactiveProperty<Gps2RawPayload?> Additional => _gnss2;
 
-    public override void Dispose()
+    public ReadOnlyReactiveProperty<GpsRawIntPayload?> Main { get; }
+    public ReadOnlyReactiveProperty<Gps2RawPayload?> Additional { get; }
+
+    #region Dispose
+
+    protected override void Dispose(bool disposing)
     {
-        _disposeIt.Dispose();
-        base.Dispose();
+        if (disposing)
+        {
+            Main.Dispose();
+            Additional.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
+
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        await CastAndDispose(Main).ConfigureAwait(false);
+        await CastAndDispose(Additional).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

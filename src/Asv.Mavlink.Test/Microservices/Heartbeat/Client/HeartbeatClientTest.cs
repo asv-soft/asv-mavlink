@@ -104,5 +104,4 @@ public class HeartbeatClientTest(ITestOutputHelper log) : ClientTestBase<Heartbe
         Assert.Equal(packets,count);
     }
 
-    
 }

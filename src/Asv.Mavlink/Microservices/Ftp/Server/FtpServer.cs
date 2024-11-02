@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink;
@@ -13,7 +14,7 @@ public class MavlinkFtpServerConfig
     public int BurstReadChunkDelayMs { get; set; } = 30;
 }
 
-public class FtpServer : MavlinkMicroserviceServer, IFtpServer
+public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
 {
     private readonly MavlinkFtpServerConfig _config;
     private readonly ILogger _logger;
@@ -577,9 +578,28 @@ public class FtpServer : MavlinkMicroserviceServer, IFtpServer
         }, cancel: DisposeCancel);
     }
 
-    public override void Dispose()
+    #region Dispose
+
+    protected override void Dispose(bool disposing)
     {
-        _filter.Dispose();
-        base.Dispose();
+        if (disposing)
+        {
+            _filter.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
+
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        if (_filter is IAsyncDisposable filterAsyncDisposable)
+            await filterAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+        else
+            _filter.Dispose();
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
+    }
+
+    #endregion
+
 }

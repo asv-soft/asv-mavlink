@@ -3,29 +3,30 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using ObservableCollections;
 using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class FtpClientEx : IFtpClientEx, IDisposable, IMavlinkMicroserviceClient
+public class FtpClientEx : IFtpClientEx, IMavlinkMicroserviceClient,IDisposable,IAsyncDisposable
 {
     private readonly ILogger _logger;
-    private readonly SourceCache<IFtpEntry,string> _entryCache;
+    private readonly ObservableDictionary<string,IFtpEntry> _entryCache;
     private static readonly TimeSpan DefaultBurstTimeout = TimeSpan.FromSeconds(5);
     
     public FtpClientEx(IFtpClient client)
     {
         _logger = client.Core.Log.CreateLogger<FtpClientEx>();
         Base = client;
-        _entryCache = new SourceCache<IFtpEntry, string>(x => x.Path);
+        _entryCache = new ObservableDictionary<string, IFtpEntry>();
     }
     public string Name => $"{Base.Name}Ex";
     public IFtpClient Base { get; }
-    public IObservable<IChangeSet<IFtpEntry, string>> Entries => _entryCache.Connect();
-
+    public IReadOnlyObservableDictionary<string,IFtpEntry> Entries => _entryCache;
     public async Task BurstDownloadFile(string filePath,Stream streamToSave, IProgress<double>? progress = null, byte partSize = MavlinkFtpHelper.MaxDataSize, CancellationToken cancel = default)
     {
         if (partSize > MavlinkFtpHelper.MaxDataSize)
@@ -46,8 +47,6 @@ public class FtpClientEx : IFtpClientEx, IDisposable, IMavlinkMicroserviceClient
         var buffer = ArrayPool<byte>.Shared.Rent(partSize);
         try
         {
-            // TODO: add timeout handle
-            
             // start burst read
             await Base.BurstReadFile(new ReadRequest(file.Session, 0, partSize), p =>
             {
@@ -94,18 +93,18 @@ public class FtpClientEx : IFtpClientEx, IDisposable, IMavlinkMicroserviceClient
     
     public async Task Refresh(string path, bool recursive = true, CancellationToken cancel = default)
     {
-        var existingEntries = _entryCache.Items
-            .Where(entry => entry.Path.StartsWith(path, StringComparison.OrdinalIgnoreCase))
-            .Select(entry => entry.Path)
+        var existingEntries = _entryCache
+            .Where(entry => entry.Value.Path.StartsWith(path, StringComparison.OrdinalIgnoreCase))
+            .Select(entry => entry.Value.Path)
             .ToList();
         
         foreach (var entryPath in existingEntries)
         {
-            _entryCache.RemoveKey(entryPath);
+            _entryCache.Remove(entryPath);
         }
         
         var currentEntry = MavlinkFtpHelper.CreateFtpDirectoryFromPath(path);
-        _entryCache.AddOrUpdate(currentEntry);
+        _entryCache.Add(currentEntry.Path,currentEntry);
         var offset = 0U;
         var parsedItems = new List<IFtpEntry>();
         var array = ArrayPool<char>.Shared.Rent(MavlinkFtpHelper.FtpEncoding.GetMaxCharCount(MavlinkFtpHelper.MaxDataSize));
@@ -160,7 +159,7 @@ public class FtpClientEx : IFtpClientEx, IDisposable, IMavlinkMicroserviceClient
             count++;
             Debug.Assert(entry != null);
             if (MavlinkFtpHelper.IgnorePaths.Contains(entry.Name)) continue;
-            _entryCache.AddOrUpdate(entry);
+            _entryCache.Add(entry.Path,entry);
             if (entry.Type == FtpEntryType.Directory)
             {
                 parsedDirectoryItems.Add(entry);
@@ -246,16 +245,21 @@ public class FtpClientEx : IFtpClientEx, IDisposable, IMavlinkMicroserviceClient
         }
         
     }
-
-    public void Dispose()
-    {
-        _entryCache.Dispose();
-    }
-
     public MavlinkClientIdentity Identity => Base.Identity;
     public ICoreServices Core => Base.Core;
     public Task Init(CancellationToken cancel = default)
     {
         return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        _entryCache.Clear();
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        _entryCache.Clear();
+        return ValueTask.CompletedTask;
     }
 }

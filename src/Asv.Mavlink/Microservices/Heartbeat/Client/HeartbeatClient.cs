@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Minimal;
 using Microsoft.Extensions.Logging;
@@ -24,11 +25,9 @@ namespace Asv.Mavlink
     
     public class HeartbeatClient : MavlinkMicroserviceClient, IHeartbeatClient
     {
-        
         private static readonly TimeSpan CheckConnectionDelay = TimeSpan.FromSeconds(1);
         private readonly CircularBuffer2<double> _valueBuffer = new(5);
         private readonly IncrementalRateCounter _rxRate;
-        private readonly ReactiveProperty<HeartbeatPayload> _heartBeat;
         private readonly ReactiveProperty<double> _packetRate;
         private readonly ReactiveProperty<double> _linkQuality;
         private readonly LinkIndicator _link;
@@ -38,8 +37,12 @@ namespace Asv.Mavlink
         private readonly List<byte> _lastPacketList = new();
         private readonly TimeProvider _timeProvider;
         private readonly object _sync = new();
-        private readonly IDisposable _disposeIt;
         private readonly ILogger<HeartbeatClient> _logger;
+        private readonly ReadOnlyReactiveProperty<HeartbeatPayload?> _heartBeat;
+        private readonly IDisposable _obs1;
+        private readonly IDisposable _obs2;
+        private readonly IDisposable? _obs3;
+        private readonly ITimer? _obs4;
 
 
         public HeartbeatClient(MavlinkClientIdentity identity, HeartbeatClientConfig config, ICoreServices core)
@@ -48,12 +51,11 @@ namespace Asv.Mavlink
             _logger = core.Log.CreateLogger<HeartbeatClient>();
             _logger.ZLogTrace($"{Name} ID={identity},timeout:{config.HeartbeatTimeoutMs} ms, rate:{config.RateMovingAverageFilter}, warn after {config.LinkQualityWarningSkipCount} skip");
             ArgumentNullException.ThrowIfNull(config);
-            var builder = Disposable.CreateBuilder();
             _timeProvider = core.TimeProvider;
             FullId = MavlinkHelper.ConvertToFullId(identity.Target.ComponentId, identity.Target.SystemId);
             _rxRate = new IncrementalRateCounter(config.RateMovingAverageFilter,core.TimeProvider);
             _heartBeatTimeoutMs = TimeSpan.FromMilliseconds(config.HeartbeatTimeoutMs);
-            InternalFilteredVehiclePackets
+            _obs1 = InternalFilteredVehiclePackets
                 .Select(x => x.Sequence)
                 .Subscribe(x =>
                 {
@@ -62,47 +64,40 @@ namespace Asv.Mavlink
                         _lastPacketList.Add(x);    
                     }
                     Interlocked.Increment(ref _totalRateCounter);
-                }).AddTo(ref builder);
-            _heartBeat = new ReactiveProperty<HeartbeatPayload>().AddTo(ref builder);
-            InternalFilter<HeartbeatPacket>()
+                });
+            _heartBeat = InternalFilter<HeartbeatPacket>()
                 .Select(p => p.Payload)
-                .Subscribe(_heartBeat.AsObserver())
-                .AddTo(ref builder);
+                .ToReadOnlyReactiveProperty();
 
-            _packetRate = new ReactiveProperty<double>(0)
-                .AddTo(ref builder);
-            _link = new LinkIndicator(config.LinkQualityWarningSkipCount)
-                .AddTo(ref builder);
-            _linkQuality = new ReactiveProperty<double>()
-                .AddTo(ref builder);
+            _packetRate = new ReactiveProperty<double>(0);
+            _link = new LinkIndicator(config.LinkQualityWarningSkipCount);
+            Link = _link.ToObservable().ToReadOnlyReactiveProperty();
+            
+            _linkQuality = new ReactiveProperty<double>();
             _timeProvider
-                .CreateTimer(CheckConnection, null, TimeSpan.Zero, CheckConnectionDelay)
-                .AddTo(ref builder);
+                .CreateTimer(CheckConnection, null, TimeSpan.Zero, CheckConnectionDelay);
             
             // we need skip first packet because it's not a real packet
-            RawHeartbeat.Skip(1).Subscribe(_ =>
+            _obs2 = RawHeartbeat.Skip(1).Subscribe(_ =>
             {
-                Interlocked.Exchange(ref _lastHeartbeat,_timeProvider.GetTimestamp());
+                Interlocked.Exchange(ref _lastHeartbeat, _timeProvider.GetTimestamp());
                 _link.Upgrade();
-            }).AddTo(ref builder);
+            });
 
             if (config.PrintLinkStateToLog)
             {
-                _link.DistinctUntilChanged().Skip(1).Subscribe(PrintLinkToLog).AddTo(ref builder);
+                _obs3 = _link.DistinctUntilChanged().Skip(1).Subscribe(PrintLinkToLog);
             }
             if (config.PrintStatisticsToLogDelayMs > 0)
             {
                 var delay = TimeSpan.FromMilliseconds(config.PrintStatisticsToLogDelayMs);
-                _timeProvider.CreateTimer(PrintRateAndQualityToLog, null,delay,delay).AddTo(ref builder);
+                _obs4 = _timeProvider.CreateTimer(PrintRateAndQualityToLog, null,delay,delay);
             }
-            
-            _disposeIt = builder.Build();
-            
         }
 
         private void PrintRateAndQualityToLog(object? state)
         {
-            _logger.ZLogInformation($"Link {Identity} rate={PacketRateHz.Value:F2} Hz, quality={LinkQuality.Value:P0}");
+            _logger.ZLogInformation($"Link {Identity} rate={PacketRateHz.CurrentValue:F2} Hz, quality={LinkQuality.CurrentValue:P0}");
         }
 
         private void PrintLinkToLog(LinkState x)
@@ -152,7 +147,7 @@ namespace Asv.Mavlink
         public ReadOnlyReactiveProperty<HeartbeatPayload?> RawHeartbeat => _heartBeat;
         public ReadOnlyReactiveProperty<double> PacketRateHz => _packetRate;
         public ReadOnlyReactiveProperty<double> LinkQuality => _linkQuality;
-        public ReadOnlyReactiveProperty<LinkState> Link => _link;
+        public ReadOnlyReactiveProperty<LinkState> Link { get; }
 
         private void CheckConnection(object? state)
         {
@@ -168,10 +163,51 @@ namespace Asv.Mavlink
             }
         }
 
-        public override void Dispose()
+        #region Dispose
+
+        protected override void Dispose(bool disposing)
         {
-            _disposeIt.Dispose();
-            base.Dispose();
+            if (disposing)
+            {
+                _packetRate.Dispose();
+                _linkQuality.Dispose();
+                _link.Dispose();
+                _heartBeat.Dispose();
+                _obs1.Dispose();
+                _obs2.Dispose();
+                _obs3?.Dispose();
+                _obs4?.Dispose();
+                Link.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
+
+        protected override async ValueTask DisposeAsyncCore()
+        {
+            await CastAndDispose(_packetRate).ConfigureAwait(false);
+            await CastAndDispose(_linkQuality).ConfigureAwait(false);
+            await CastAndDispose(_link).ConfigureAwait(false);
+            await CastAndDispose(_heartBeat).ConfigureAwait(false);
+            await CastAndDispose(_obs1).ConfigureAwait(false);
+            await CastAndDispose(_obs2).ConfigureAwait(false);
+            if (_obs3 != null) await CastAndDispose(_obs3).ConfigureAwait(false);
+            if (_obs4 != null) await _obs4.DisposeAsync().ConfigureAwait(false);
+            await CastAndDispose(Link).ConfigureAwait(false);
+
+            await base.DisposeAsyncCore().ConfigureAwait(false);
+
+            return;
+
+            static async ValueTask CastAndDispose(IDisposable resource)
+            {
+                if (resource is IAsyncDisposable resourceAsyncDisposable)
+                    await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    resource.Dispose();
+            }
+        }
+
+        #endregion
     }
 }

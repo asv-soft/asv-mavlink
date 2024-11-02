@@ -8,32 +8,24 @@ namespace Asv.Mavlink;
 public static class HeartbeatClientHelper
 {
         
-    public static IObservable<LinkState> WhenRepairConnection(this ReadOnlyReactiveProperty<LinkState> src, TimeSpan lostTime,
+    public static Observable<LinkState> WhenRepairConnection(this ReadOnlyReactiveProperty<LinkState> src, TimeSpan lostTime,
         CancellationToken cancel = default)
     {
         return new LostConnectionSubject(src, cancel, lostTime);
     }
     
-    public class LostConnectionSubject : DisposableOnceWithCancel, IObservable<LinkState>
+    public class LostConnectionSubject : Observable<LinkState>
     {
         private readonly TimeSpan _lostTime;
-        private readonly System.Reactive.Subjects.Subject<LinkState> _rx = new();
+        private readonly Subject<LinkState> _rx = new();
         private LinkState _prevState = LinkState.Disconnected;
         private DateTime _lastTimeDisconnected = DateTime.MinValue;
+        private readonly IDisposable _sub1;
 
         public LostConnectionSubject(ReadOnlyReactiveProperty<LinkState> src, CancellationToken cancel, TimeSpan lostTime)
         {
             _lostTime = lostTime;
-            src.DistinctUntilChanged().Subscribe(OnChange, cancel);
-            cancel.Register(() =>
-            {
-                _rx.OnCompleted();
-                _rx.Dispose();
-                Dispose();
-            }).DisposeItWith(Disposable);
-
-            // first time rise
-            OnChange(src.Value);
+            _sub1 = src.DistinctUntilChanged().Subscribe(OnChange);
         }
 
         private void OnChange(LinkState linkState)
@@ -60,7 +52,7 @@ public static class HeartbeatClientHelper
             _prevState = linkState;
         }
 
-        public IDisposable Subscribe(IObserver<LinkState> observer)
+        protected override IDisposable SubscribeCore(Observer<LinkState> observer)
         {
             return _rx.Subscribe(observer);
         }

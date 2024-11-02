@@ -11,7 +11,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
+public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
 {
     private readonly IStatusTextServer _statusLogger;
     private readonly ILogger _logger;

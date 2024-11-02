@@ -4,30 +4,11 @@ using Asv.Common;
 
 namespace Asv.Mavlink;
 
-public static class ControlClientHelper
-{
-    public static async Task EnsureAutoMode(this IControlClient client, CancellationToken cancel = default)
-    {
-        if (await client.IsAutoMode(cancel).ConfigureAwait(false))
-        {
-            await client.SetAutoMode(cancel).ConfigureAwait(false);
-        }
-    }
-
-    public static async Task EnsureGuidedMode(this IControlClient client, CancellationToken cancel = default)
-    {
-        if (await client.IsGuidedMode(cancel).ConfigureAwait(false))
-        {
-            await client.SetGuidedMode(cancel).ConfigureAwait(false);
-        }
-    }
-}
-
 public interface IControlClient:IMavlinkMicroserviceClient
 {
     ValueTask<bool> IsAutoMode(CancellationToken cancel = default);
     Task SetAutoMode(CancellationToken cancel = default);
-    public ValueTask<bool> IsGuidedMode(CancellationToken cancel = default);
+    ValueTask<bool> IsGuidedMode(CancellationToken cancel = default);
     Task SetGuidedMode(CancellationToken cancel = default);
     /// <summary>
     /// Navigates to the specified GeoPoint. </summary> <param name="point">The GeoPoint to navigate to.</param> <param name="cancel">The cancellation token to cancel the navigation (optional).</param> <returns>

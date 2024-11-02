@@ -16,7 +16,7 @@ namespace Asv.Mavlink
         public int AttemptToCallCount { get; set; } = 3;
     }
 
-    public class MissionClient : MavlinkMicroserviceClient, IMissionClient
+    public sealed class MissionClient : MavlinkMicroserviceClient, IMissionClient
     {
         private readonly MissionClientConfig _config;
         private readonly ILogger _logger;

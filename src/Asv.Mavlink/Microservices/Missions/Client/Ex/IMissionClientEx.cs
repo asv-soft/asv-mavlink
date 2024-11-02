@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using ObservableCollections;
 using R3;
 
 namespace Asv.Mavlink;
@@ -76,7 +77,7 @@ public interface IMissionClientEx:IMavlinkMicroserviceClient
     /// <returns>
     /// An IObservable<IChangeSet<MissionItem, ushort>> representing the stream of changes to the MissionItems collection.
     /// </returns>
-    IObservable<IChangeSet<MissionItem, ushort>> MissionItems { get; }
+    IReadOnlyObservableList<MissionItem> MissionItems { get; }
 
     /// <summary>
     /// Gets the interface for observing the synchronization state.

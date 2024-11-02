@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -16,7 +17,7 @@ namespace Asv.Mavlink
         /// <value>
         /// The observable sequence for receiving command acknowledgement payloads.
         /// </value>
-        IObservable<CommandAckPayload> OnCommandAck { get; }
+        Observable<CommandAckPayload> OnCommandAck { get; }
 
         /// <summary>
         /// Sends a command with long parameter to the vehicle.

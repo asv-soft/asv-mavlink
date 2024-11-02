@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -19,7 +20,7 @@ namespace Asv.Mavlink
         /// <returns>
         /// An <see cref="IObservable{T}"/> of <see cref="CommandLongPacket"/> representing the event stream for receiving CommandLong packets.
         /// </returns>
-        IObservable<CommandLongPacket> OnCommandLong { get; }
+        Observable<CommandLongPacket> OnCommandLong { get; }
 
         /// <summary>
         /// Gets an observable sequence of CommandIntPacket events.
@@ -27,7 +28,7 @@ namespace Asv.Mavlink
         /// <remarks>
         /// This property returns an IObservable<CommandIntPacket> that can be subscribed to in order to receive CommandIntPacket events.
         /// </remarks>
-        IObservable<CommandIntPacket> OnCommandInt { get; }
+        Observable<CommandIntPacket> OnCommandInt { get; }
 
         /// <summary>
         /// Sends a command acknowledgement with the specified parameters.
@@ -43,40 +44,6 @@ namespace Asv.Mavlink
         /// It is an asynchronous operation that returns a task representing the completion of the send operation.
         /// </remarks>
         Task SendCommandAck(MavCmd cmd, DeviceIdentity responseTarget, CommandResult result, CancellationToken cancel = default);
-    }
-
-    /// <summary>
-    /// Helper class containing extension methods for ICommandServer interface.
-    /// </summary>
-    public static class CommandServerHelper
-    {
-        /// <summary>
-        /// Sends command acknowledge accepted to the command server.
-        /// </summary>
-        /// <param name="server">The command server.</param>
-        /// <param name="req">The command request packet.</param>
-        /// <param name="result">The mav result.</param>
-        /// <param name="cancel">The cancellation token.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public static Task SendCommandAckAccepted(this ICommandServer server, CommandIntPacket req, MavResult result, CancellationToken cancel = default)
-        {
-            return server.SendCommandAck(req.Payload.Command, new DeviceIdentity(req.SystemId,req.ComponentId), CommandResult.FromResult(result), cancel);
-        }
-
-        /// <summary>
-        /// Sends a command acknowledgment indicating that the command has been accepted.
-        /// </summary>
-        /// <param name="server">The command server.</param>
-        /// <param name="req">The command long packet.</param>
-        /// <param name="result">The result of the command.</param>
-        /// <param name="cancel">The cancellation token (optional).</param>
-        /// <returns>
-        /// A task that represents the asynchronous operation.
-        /// </returns>
-        public static Task SendCommandAckAccepted(this ICommandServer server, CommandLongPacket req, MavResult result, CancellationToken cancel = default)
-        {
-            return server.SendCommandAck(req.Payload.Command, new DeviceIdentity(req.SystemId,req.ComponentId), CommandResult.FromResult(result), cancel);
-        }
     }
 
     /// Represents the result of a command execution.

@@ -3,6 +3,7 @@ using System.Buffers;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using ObservableCollections;
 
 namespace Asv.Mavlink;
 
@@ -25,7 +26,7 @@ public interface IFtpEntry
 public interface IFtpClientEx
 {
     IFtpClient Base { get; }
-    IObservable<IChangeSet<IFtpEntry,string>> Entries { get; }
+    IReadOnlyObservableDictionary<string, IFtpEntry> Entries { get; }
     Task Refresh(string path, bool recursive = true, CancellationToken cancel = default);
     Task DownloadFile(string filePath, Stream streamToSave, IProgress<double>? progress = null,
         CancellationToken cancel = default);

@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink
@@ -17,13 +18,16 @@ namespace Asv.Mavlink
     {
         private readonly ILogger _logger; 
         private readonly CommandProtocolConfig _config;
+        private readonly Subject<CommandAckPayload> _onCommandAck;
+        private readonly IDisposable _sub1;
 
         public CommandClient(MavlinkClientIdentity identity, CommandProtocolConfig config,ICoreServices core)
             :base("COMMAND", identity, core)
         {
             _logger = core.Log.CreateLogger<CommandClient>();
             _config = config ?? throw new ArgumentNullException(nameof(config));
-            OnCommandAck = InternalFilter<CommandAckPacket>().Select(p => p.Payload);
+            _onCommandAck = new Subject<CommandAckPayload>();
+            _sub1 = InternalFilter<CommandAckPacket>().Select(p => p.Payload).Subscribe(_onCommandAck.AsObserver());
         }
 
         public Task SendCommandInt(MavCmd command, MavFrame frame, bool current, bool autocontinue,
@@ -93,7 +97,7 @@ namespace Asv.Mavlink
             _logger.ZLogTrace($"{LogSend}{command:G}{param1},{param1},{param2},{param3},{param4},{param5},{param6},{param7}");
         }
 
-        public IObservable<CommandAckPayload> OnCommandAck { get; }
+        public Observable<CommandAckPayload> OnCommandAck => _onCommandAck;
 
         public async Task<CommandAckPayload> CommandLong(Action<CommandLongPayload> edit, CancellationToken cancel = default)
         {
@@ -156,6 +160,39 @@ namespace Asv.Mavlink
             _logger.ZLogTrace($"{LogRecv}{command:G}({param1},{param2},{param3},{param4},{param5},{param6},{param7}) => {result.Name})");
             return result;
         }
-        
+
+
+        #region Dispose
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _onCommandAck.Dispose();
+                _sub1.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
+        protected override async ValueTask DisposeAsyncCore()
+        {
+            await CastAndDispose(_onCommandAck).ConfigureAwait(false);
+            await CastAndDispose(_sub1).ConfigureAwait(false);
+
+            await base.DisposeAsyncCore().ConfigureAwait(false);
+
+            return;
+
+            static async ValueTask CastAndDispose(IDisposable resource)
+            {
+                if (resource is IAsyncDisposable resourceAsyncDisposable)
+                    await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    resource.Dispose();
+            }
+        }
+
+        #endregion
     }
 }

@@ -63,9 +63,7 @@ namespace Asv.Mavlink
             Param4 = new ReactiveProperty<float>(item.Param4);
             _sub9 = Param4.Subscribe(Edit,(f,cb) => cb(p=>p.Param4 = f));
         }
-
         public ushort Index => Payload.Seq;
-
         public ReactiveProperty<GeoPoint> Location { get; }
         public ReactiveProperty<bool> AutoContinue { get; }
         public ReactiveProperty<MavCmd> Command { get; }

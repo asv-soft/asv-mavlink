@@ -1,5 +1,6 @@
 using System;
 using Asv.Mavlink.V2.Common;
+using ObservableCollections;
 using R3;
 
 namespace Asv.Mavlink.Diagnostic.Client;
@@ -14,9 +15,9 @@ public interface INamedProbe<T>:IDisposable
 
 public interface IDiagnosticClient: IMavlinkMicroserviceClient
 {
-    IObservable<IChangeSet<INamedProbe<float>,string>> FloatProbes { get; }
-    IObservable<IChangeSet<INamedProbe<int>,string>> IntProbes { get; }
+    IReadOnlyObservableDictionary<string,INamedProbe<float>> FloatProbes { get; }
+    IReadOnlyObservableDictionary<string,INamedProbe<int>> IntProbes { get; }
     
-    IObservable<DebugFloatArrayPayload> DebugFloatArray { get; }
-    IObservable<MemoryVectPayload> MemoryVector { get; }
+    Observable<DebugFloatArrayPayload> DebugFloatArray { get; }
+    Observable<MemoryVectPayload> MemoryVector { get; }
 }

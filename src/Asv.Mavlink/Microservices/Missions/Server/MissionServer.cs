@@ -6,7 +6,7 @@ using R3;
 
 namespace Asv.Mavlink;
 
-public class MissionServer : MavlinkMicroserviceServer, IMissionServer
+public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
 {
     private ushort _currentMissionIndex;
 
