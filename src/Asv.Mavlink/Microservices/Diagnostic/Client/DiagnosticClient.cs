@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
 using ObservableCollections;
@@ -57,7 +58,12 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
     private readonly ILogger _logger;
     private readonly IDisposable _sub1;
     private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
+    private readonly IDisposable _sub4;
     private readonly ITimer _timer;
+    private readonly Subject<NamedValueIntPayload> _intSubject;
+    private readonly Subject<NamedValueFloatPayload> _floatSubject;
+   
 
     public DiagnosticClient(MavlinkClientIdentity identity,DiagnosticClientConfig config,ICoreServices core) 
         : base("DIAG", identity, core)
@@ -65,11 +71,18 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
         _logger = core.Log.CreateLogger<DiagnosticClient>();
         _config = config;
         _floatProbes = new ObservableDictionary<string,INamedProbe<float>>();
-        _intProbes = new ObservableDictionary<string,INamedProbe<int>>();
+        _floatSubject = new Subject<NamedValueFloatPayload>();
         _sub1 = InternalFilter<NamedValueFloatPacket>()
-            .Subscribe(OnRecvFloat);
-        _sub2 = InternalFilter<NamedValueIntPacket>()
-            .Subscribe(OnRecvInt);
+            .Select(x => x.Payload)
+            .Subscribe(_floatSubject.AsObserver());
+        _sub2 = _floatSubject.Subscribe(OnRecvFloat);  
+        
+        _intProbes = new ObservableDictionary<string,INamedProbe<int>>();
+        _intSubject = new Subject<NamedValueIntPayload>();
+        _sub3 = InternalFilter<NamedValueIntPacket>()
+            .Select(x => x.Payload)
+            .Subscribe(_intSubject.AsObserver());
+        _sub4 = _intSubject.Subscribe(OnRecvInt);
         
         var time = TimeSpan.FromMilliseconds(config.DeleteProbesTimeoutMs);
         DebugFloatArray = InternalFilter<DebugFloatArrayPacket>().Select(x => x.Payload);
@@ -93,9 +106,10 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
                     _logger.ZLogTrace($"Remove {string.Join(',',itemsToDelete.Select(p=>p.Name))} float probes by timeout {_config.DeleteProbesTimeoutMs} ms");
                 }
 
-                foreach (var key in itemsToDelete.Select(x=>x.Name))
+                foreach (var item in itemsToDelete)
                 {
-                    _floatProbes.Remove(key);
+                    item.Dispose();
+                    _floatProbes.Remove(item.Name);
                 }
             }
             if (_intProbes.Count != 0)
@@ -108,9 +122,10 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
                 {
                     _logger.ZLogTrace($"Remove {string.Join(',',itemsToDelete.Select(p=>p.Name))} int probes by timeout {_config.DeleteProbesTimeoutMs} ms");
                 }
-                foreach (var key in itemsToDelete.Select(x=>x.Name))
+                foreach (var item in itemsToDelete)
                 {
-                    _intProbes.Remove(key);
+                    item.Dispose();
+                    _intProbes.Remove(item.Name);
                 }
             }
         }
@@ -120,17 +135,17 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
         }
     }
 
-    private void OnRecvInt(NamedValueIntPacket namedValueFloatPacket)
+    private void OnRecvInt(NamedValueIntPayload namedValueFloatPacket)
     {
-        var name = MavlinkTypesHelper.GetString(namedValueFloatPacket.Payload.Name);
+        var name = MavlinkTypesHelper.GetString(namedValueFloatPacket.Name);
         if (_intProbes.TryGetValue(name, out var found) == true)
         {
             var probe = (ClientNamedProbe<int>)found;
-            probe.Update(namedValueFloatPacket.Payload.Value, namedValueFloatPacket.Payload.TimeBootMs, Core.TimeProvider.GetTimestamp());
+            probe.Update(namedValueFloatPacket.Value, namedValueFloatPacket.TimeBootMs, Core.TimeProvider.GetTimestamp());
         }
         else
         {
-            _intProbes.Add(name, new ClientNamedProbe<int>(name, namedValueFloatPacket.Payload.Value, namedValueFloatPacket.Payload.TimeBootMs,Core.TimeProvider.GetTimestamp()));
+            _intProbes.Add(name, new ClientNamedProbe<int>(name, namedValueFloatPacket.Value, namedValueFloatPacket.TimeBootMs,Core.TimeProvider.GetTimestamp()));
         }
         if (_config.MaxCollectionSize > 0 && _intProbes.Count > _config.MaxCollectionSize)
         {
@@ -138,41 +153,45 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
                 .Select(x=>x.Value)
                 .Cast<ClientNamedProbe<int>>()
                 .OrderBy(y => y.LastUpdateTimestamp)
-                .Take(_config.MaxCollectionSize - _intProbes.Count).ToImmutableArray();
-            foreach (var key in itemsToDelete.Select(x=>x.Name))
+                .Take(_intProbes.Count - _config.MaxCollectionSize).ToImmutableArray();
+            foreach (var item in itemsToDelete)
             {
-                _intProbes.Remove(key);
+                item.Dispose();
+                _intProbes.Remove(item.Name);
             }
         }
     }
-    private void OnRecvFloat(NamedValueFloatPacket namedValueFloatPacket)
+    private void OnRecvFloat(NamedValueFloatPayload namedValueFloatPacket)
     {
-        var name = MavlinkTypesHelper.GetString(namedValueFloatPacket.Payload.Name);
+        var name = MavlinkTypesHelper.GetString(namedValueFloatPacket.Name);
         if (_floatProbes.TryGetValue(name, out var found) == true)
         {
             var probe = (ClientNamedProbe<float>)found;
-            probe.Update(namedValueFloatPacket.Payload.Value, namedValueFloatPacket.Payload.TimeBootMs, Core.TimeProvider.GetTimestamp());
+            probe.Update(namedValueFloatPacket.Value, namedValueFloatPacket.TimeBootMs, Core.TimeProvider.GetTimestamp());
         }
         else
         {
-            _floatProbes.Add(name, new ClientNamedProbe<float>(name, namedValueFloatPacket.Payload.Value, namedValueFloatPacket.Payload.TimeBootMs,Core.TimeProvider.GetTimestamp()));
+            _floatProbes.Add(name, new ClientNamedProbe<float>(name, namedValueFloatPacket.Value, namedValueFloatPacket.TimeBootMs,Core.TimeProvider.GetTimestamp()));
         }
         if (_config.MaxCollectionSize > 0 && _floatProbes.Count > _config.MaxCollectionSize)
         {
             var itemsToDelete = _floatProbes
                 .Select(x=>x.Value)
-                .Cast<ClientNamedProbe<int>>()
+                .Cast<ClientNamedProbe<float>>()
                 .OrderBy(y => y.LastUpdateTimestamp)
-                .Take(_config.MaxCollectionSize - _floatProbes.Count).ToImmutableArray();
-            foreach (var key in itemsToDelete.Select(x=>x.Name))
+                .Take(_floatProbes.Count - _config.MaxCollectionSize).ToImmutableArray();
+            foreach (var item in itemsToDelete)
             {
-                _floatProbes.Remove(key);
+                item.Dispose();
+                _floatProbes.Remove(item.Name);
             }
         }
     }
 
     public IReadOnlyObservableDictionary<string, INamedProbe<float>> FloatProbes => _floatProbes;
     public IReadOnlyObservableDictionary<string, INamedProbe<int>> IntProbes => _intProbes;
+    public Observable<NamedValueIntPayload> OnIntProbe => _intSubject;
+    public Observable<NamedValueFloatPayload> OnFloatProbe => _floatSubject;
     public Observable<DebugFloatArrayPayload> DebugFloatArray { get; }
     public Observable<MemoryVectPayload> MemoryVector { get; }
 
@@ -184,7 +203,17 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
         {
             _sub1.Dispose();
             _sub2.Dispose();
+            _sub3.Dispose();
+            _sub4.Dispose();
             _timer.Dispose();
+            
+            _intSubject.Dispose();
+            _floatSubject.Dispose();
+            _intProbes.ForEach(x => x.Value.Dispose());
+            _intProbes.Clear();
+            _floatProbes.ForEach(x => x.Value.Dispose());
+            _floatProbes.Clear();
+            
         }
 
         base.Dispose(disposing);
@@ -195,7 +224,14 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
         await CastAndDispose(_sub1).ConfigureAwait(false);
         await CastAndDispose(_sub2).ConfigureAwait(false);
         await _timer.DisposeAsync().ConfigureAwait(false);
-
+        await CastAndDispose(_intSubject).ConfigureAwait(false);
+        await CastAndDispose(_floatSubject).ConfigureAwait(false);
+        
+        _intProbes.ForEach(x => x.Value.Dispose());
+        _intProbes.Clear();
+        _floatProbes.ForEach(x => x.Value.Dispose());
+        _floatProbes.Clear();
+        
         await base.DisposeAsyncCore().ConfigureAwait(false);
 
         return;

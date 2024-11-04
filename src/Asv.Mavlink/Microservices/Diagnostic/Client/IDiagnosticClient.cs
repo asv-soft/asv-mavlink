@@ -17,7 +17,8 @@ public interface IDiagnosticClient: IMavlinkMicroserviceClient
 {
     IReadOnlyObservableDictionary<string,INamedProbe<float>> FloatProbes { get; }
     IReadOnlyObservableDictionary<string,INamedProbe<int>> IntProbes { get; }
-    
+    Observable<NamedValueIntPayload> OnIntProbe { get; }
+    Observable<NamedValueFloatPayload> OnFloatProbe { get; }
     Observable<DebugFloatArrayPayload> DebugFloatArray { get; }
     Observable<MemoryVectPayload> MemoryVector { get; }
 }
