@@ -49,7 +49,7 @@ public interface IHierarchicalStoreFormat<TKey, out TFile> : IDisposable where T
     /// <summary>
     /// Try to get file information.
     /// </summary>
-    bool TryGetFileInfo(FileInfo fileInfo, out TKey id, out string displayName);
+    bool TryGetFileInfo(IFileInfo fileInfo, out TKey id, out string displayName);
 
     /// <summary>
     /// Get file name from the file system.
@@ -163,7 +163,7 @@ public class FileSystemHierarchicalStore<TKey, TFile> : DisposableOnceWithCancel
     {
         foreach (var directory in _fileSystem.Directory.EnumerateDirectories(parentFolder?.FullPath ?? _rootFolder))
         {
-            var folderInfo = new DirectoryInfoWrapper(_fileSystem, new DirectoryInfo(directory));
+            var folderInfo =_fileSystem.DirectoryInfo.Wrap(new DirectoryInfo(directory));
             Debug.Assert(folderInfo.Exists);
             if (_format.TryGetFolderInfo(folderInfo, out var id, out var displayName) == false)
             {
@@ -183,7 +183,8 @@ public class FileSystemHierarchicalStore<TKey, TFile> : DisposableOnceWithCancel
 
         foreach (var file in _fileSystem.Directory.EnumerateFiles(parentFolder?.FullPath ?? _rootFolder))
         {
-            var fileInfo = new FileInfo(file);
+            var fileInfo = _fileSystem.FileInfo.Wrap(new FileInfo(file));
+            
             Debug.Assert(fileInfo.Exists);
             if (_format.TryGetFileInfo(fileInfo, out var id, out var displayName) == false)
             {
@@ -202,7 +203,7 @@ public class FileSystemHierarchicalStore<TKey, TFile> : DisposableOnceWithCancel
     {
         _count.Value = (ushort)_entries.Count(x => x.Value.Type == FolderStoreEntryType.File);
         _size.Value = (ulong)_entries.Where(x => x.Value.Type == FolderStoreEntryType.File)
-            .Sum(x => new FileInfo(x.Value.FullPath).Length);
+            .Sum(x => _fileSystem.FileInfo.Wrap( new FileInfo(x.Value.FullPath)).Length);
         //Logger.Info($"Update statistics: items:{_count.Value}, size:{_size.Value}");
     }
 
@@ -666,7 +667,7 @@ public class FileSystemHierarchicalStore<TKey, TFile> : DisposableOnceWithCancel
                 throw new FileNotFoundException($"File with [{id}] not found");
             }
 
-            var fileInfo = new FileInfo(entry.FullPath);
+            var fileInfo =_fileSystem.FileInfo.Wrap( new FileInfo(entry.FullPath));
             if (fileInfo.Exists == false)
             {
                 _logger.ZLogError($"File with [{id}]{fileInfo.FullName} not found");
@@ -710,7 +711,7 @@ public class FileSystemHierarchicalStore<TKey, TFile> : DisposableOnceWithCancel
 
             var fileNameAtFileSystem = _format.GetFileSystemFileName(id, name);
             var newFilePath = _fileSystem.Path.Combine(rootFolder, fileNameAtFileSystem);
-            var fileInfo = new FileInfo(newFilePath);
+            var fileInfo = _fileSystem.FileInfo.Wrap(new FileInfo(newFilePath));
             if (fileInfo.Exists)
             {
                 _logger.ZLogError($"File [{id}]{fileInfo.FullName} already exist");

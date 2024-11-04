@@ -96,7 +96,7 @@ public abstract class GuidHierarchicalStoreFormat<TFile> : IHierarchicalStoreFor
         return $"{displayName} #{ShortGuid.Encode(id)}";
     }
 
-    public bool TryGetFileInfo(FileInfo fileInfo, out Guid id, out string displayName)
+    public bool TryGetFileInfo(IFileInfo fileInfo, out Guid id, out string displayName)
     {
         var ext = Path.GetExtension(fileInfo.Name);
         if (ext != _defaultFileExt)
