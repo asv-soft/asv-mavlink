@@ -66,7 +66,7 @@ namespace Asv.Mavlink
                     Interlocked.Increment(ref _totalRateCounter);
                 });
             _heartBeat = InternalFilter<HeartbeatPacket>()
-                .Select(p => p.Payload)
+                .Select(p => p?.Payload)
                 .ToReadOnlyReactiveProperty();
 
             _packetRate = new ReactiveProperty<double>(0);

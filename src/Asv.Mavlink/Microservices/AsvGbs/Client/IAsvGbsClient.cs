@@ -11,6 +11,6 @@ using Asv.Mavlink.V2.AsvGbs;
          /// <summary>
          /// Gets the raw status of the AsvGbsOutStatusPayload.
          /// </summary>
-         ReadOnlyReactiveProperty<AsvGbsOutStatusPayload> RawStatus { get; }
+         ReadOnlyReactiveProperty<AsvGbsOutStatusPayload?> RawStatus { get; }
      }
  }

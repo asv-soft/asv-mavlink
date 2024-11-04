@@ -7,17 +7,32 @@ using Asv.Mavlink.V2.AsvGbs;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Minimal;
 using Microsoft.Extensions.Logging;
+using R3;
 using ZLogger;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
 using MavType = Asv.Mavlink.V2.Minimal.MavType;
 
 namespace Asv.Mavlink;
 
-public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
+public class AsvGbsExServer: IAsvGbsServerEx, IDisposable,IAsyncDisposable
 {
     private readonly int _maxMessageLength = new GpsRtcmDataPayload().Data.Length;
     private readonly ILogger _logger;
     private uint _seqNumber;
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
+    private readonly IDisposable _sub4;
+    private readonly IDisposable _sub5;
+    private readonly IDisposable _sub6;
+    private readonly IDisposable _sub7;
+    private readonly IDisposable _sub8;
+    private readonly IDisposable _sub9;
+    private readonly IDisposable _sub10;
+    private readonly IDisposable _sub11;
+    private readonly IDisposable _sub12;
+    private readonly IDisposable _sub13;
+
     public AsvGbsExServer(IAsvGbsServer server, 
         IHeartbeatServer heartbeatServer, 
         ICommandServerEx<CommandLongPacket> commands)
@@ -53,69 +68,69 @@ public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
 
         #region Telemetry
 
-        Position = new ReactiveProperty<GeoPoint>().DisposeItWith(Disposable);
-        Position.Subscribe(x => server.Set(status =>
+        Position = new ReactiveProperty<GeoPoint>();
+        _sub1 = Position.Subscribe(x => server.Set(status =>
         {
             status.Lat = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(x.Latitude);
             status.Lng = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(x.Longitude);
             status.Alt = MavlinkTypesHelper.AltFromDoubleMeterToInt32Mm(x.Altitude);
-        })).DisposeItWith(Disposable);
+        }));
 
-        AccuracyMeter = new ReactiveProperty<double>().DisposeItWith(Disposable);
-        AccuracyMeter.Select(d=>(ushort)Math.Round(d*100,0)).DistinctUntilChanged().Subscribe(x => server.Set(status =>
+        AccuracyMeter = new ReactiveProperty<double>();
+        _sub2 =AccuracyMeter.Select(d=>(ushort)Math.Round(d*100,0)).Subscribe(x => server.Set(status =>
         {
             status.Accuracy = x;
-        })).DisposeItWith(Disposable);
-        ObservationSec = new ReactiveProperty<ushort>().DisposeItWith(Disposable);
-        ObservationSec.DistinctUntilChanged().Subscribe(x => server.Set(status =>
+        }));
+        ObservationSec = new ReactiveProperty<ushort>();
+        _sub3 = ObservationSec.Subscribe(x => server.Set(status =>
         {
             status.Observation = x;
-        })).DisposeItWith(Disposable);
-        DgpsRate = new ReactiveProperty<ushort>().DisposeItWith(Disposable);
-        DgpsRate.DistinctUntilChanged().Subscribe(x => server.Set(status =>
+        }));
+        DgpsRate = new ReactiveProperty<ushort>();
+        _sub4 = DgpsRate.Subscribe(x => server.Set(status =>
         {
             status.DgpsRate = x;
-        })).DisposeItWith(Disposable);
-        AllSatellites = new ReactiveProperty<byte>().DisposeItWith(Disposable);
-        AllSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
+        }));
+        AllSatellites = new ReactiveProperty<byte>();
+        _sub5 = AllSatellites.Subscribe(b => server.Set(status =>
         {
             status.SatAll = b;
-        })).DisposeItWith(Disposable);
-        GalSatellites = new ReactiveProperty<byte>().DisposeItWith(Disposable);
-        GalSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
+        }));
+        GalSatellites = new ReactiveProperty<byte>();
+        _sub6 = GalSatellites.Subscribe(b => server.Set(status =>
         {
             status.SatGal = b;
-        })).DisposeItWith(Disposable);
-        BeidouSatellites = new ReactiveProperty<byte>().DisposeItWith(Disposable);
-        BeidouSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
+        }));
+        BeidouSatellites = new ReactiveProperty<byte>();
+        _sub7 = BeidouSatellites.Subscribe(b => server.Set(status =>
         {
             status.SatBdu = b;
-        })).DisposeItWith(Disposable);
-        GlonassSatellites = new ReactiveProperty<byte>().DisposeItWith(Disposable);
-        GlonassSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
+        }));
+        GlonassSatellites = new ReactiveProperty<byte>();
+        _sub8 = GlonassSatellites.Subscribe(b => server.Set(status =>
         {
             status.SatGlo = b;
-        })).DisposeItWith(Disposable);
-        GpsSatellites = new ReactiveProperty<byte>().DisposeItWith(Disposable);
-        GpsSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
+        }));
+        GpsSatellites = new ReactiveProperty<byte>();
+        _sub9 = GpsSatellites.Subscribe(b => server.Set(status =>
         {
             status.SatGps = b;
-        })).DisposeItWith(Disposable);
-        QzssSatellites = new ReactiveProperty<byte>().DisposeItWith(Disposable);
-        QzssSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
+        }));
+        QzssSatellites = new ReactiveProperty<byte>();
+        _sub10 = QzssSatellites.Subscribe(b => server.Set(status =>
         {
             status.SatQzs = b;
-        })).DisposeItWith(Disposable);
-        SbasSatellites = new ReactiveProperty<byte>().DisposeItWith(Disposable);
-        SbasSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
+        }));
+        SbasSatellites = new ReactiveProperty<byte>();
+        _sub11 = SbasSatellites.Subscribe(b => server.Set(status =>
         {
             status.SatSbs = b;
-        })).DisposeItWith(Disposable);
-        ImesSatellites = new ReactiveProperty<byte>().DisposeItWith(Disposable);
-        ImesSatellites.DistinctUntilChanged().Subscribe(b => server.Set(status =>
+        }));
+        ImesSatellites = new ReactiveProperty<byte>();
+        _sub12 =ImesSatellites.Subscribe(b => server.Set(status =>
         {
             status.SatIme = b;
-        })).DisposeItWith(Disposable);
+        }));
 
         #endregion
 
@@ -130,32 +145,32 @@ public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
             p.MavlinkVersion = 3;
             p.CustomMode = (uint)V2.AsvGbs.AsvGbsCustomMode.AsvGbsCustomModeLoading;
         });
-        CustomMode = new ReactiveProperty<AsvGbsCustomMode>().DisposeItWith(Disposable);
-        CustomMode.DistinctUntilChanged().Subscribe(mode => heartbeatServer.Set(p =>
+        CustomMode = new ReactiveProperty<AsvGbsCustomMode>();
+        _sub13 = CustomMode.Subscribe(mode => heartbeatServer.Set(p =>
         {
             p.CustomMode = (uint)mode;
-        })).DisposeItWith(Disposable);
+        }));
 
         #endregion
     }
 
     public IAsvGbsServer Base { get; }
-    public IRxEditableValue<AsvGbsCustomMode> CustomMode { get; }
-    public IRxEditableValue<GeoPoint> Position { get; }
-    public IRxEditableValue<double> AccuracyMeter { get; }
-    public IRxEditableValue<ushort> ObservationSec { get; }
-    public IRxEditableValue<ushort> DgpsRate { get; }
-    public IRxEditableValue<byte> AllSatellites { get; }
-    public IRxEditableValue<byte> GalSatellites { get; }
-    public IRxEditableValue<byte> BeidouSatellites { get; }
-    public IRxEditableValue<byte> GlonassSatellites { get; }
-    public IRxEditableValue<byte> GpsSatellites { get; }
-    public IRxEditableValue<byte> QzssSatellites { get; }
-    public IRxEditableValue<byte> SbasSatellites { get; }
-    public IRxEditableValue<byte> ImesSatellites { get; }
-    public StartAutoModeDelegate StartAutoMode { get; set; }
-    public StartFixedModeDelegate StartFixedMode { get; set; }
-    public StartIdleModeDelegate StartIdleMode { get; set; }
+    public ReactiveProperty<AsvGbsCustomMode> CustomMode { get; }
+    public ReactiveProperty<GeoPoint> Position { get; }
+    public ReactiveProperty<double> AccuracyMeter { get; }
+    public ReactiveProperty<ushort> ObservationSec { get; }
+    public ReactiveProperty<ushort> DgpsRate { get; }
+    public ReactiveProperty<byte> AllSatellites { get; }
+    public ReactiveProperty<byte> GalSatellites { get; }
+    public ReactiveProperty<byte> BeidouSatellites { get; }
+    public ReactiveProperty<byte> GlonassSatellites { get; }
+    public ReactiveProperty<byte> GpsSatellites { get; }
+    public ReactiveProperty<byte> QzssSatellites { get; }
+    public ReactiveProperty<byte> SbasSatellites { get; }
+    public ReactiveProperty<byte> ImesSatellites { get; }
+    public StartAutoModeDelegate? StartAutoMode { get; set; }
+    public StartFixedModeDelegate? StartFixedMode { get; set; }
+    public StartIdleModeDelegate? StartIdleMode { get; set; }
     
     public async Task SendRtcmData(byte[] data, int length, CancellationToken cancel)
     {
@@ -194,4 +209,78 @@ public class AsvGbsExServer: DisposableOnceWithCancel,IAsvGbsServerEx
             }, cancel).ConfigureAwait(false);
         }
     }
+
+    #region Dispose
+
+    public void Dispose()
+    {
+        _sub1.Dispose();
+        _sub2.Dispose();
+        _sub3.Dispose();
+        _sub4.Dispose();
+        _sub5.Dispose();
+        _sub6.Dispose();
+        _sub7.Dispose();
+        _sub8.Dispose();
+        _sub9.Dispose();
+        _sub10.Dispose();
+        _sub11.Dispose();
+        _sub12.Dispose();
+        _sub13.Dispose();
+        CustomMode.Dispose();
+        Position.Dispose();
+        AccuracyMeter.Dispose();
+        ObservationSec.Dispose();
+        DgpsRate.Dispose();
+        AllSatellites.Dispose();
+        GalSatellites.Dispose();
+        BeidouSatellites.Dispose();
+        GlonassSatellites.Dispose();
+        GpsSatellites.Dispose();
+        QzssSatellites.Dispose();
+        SbasSatellites.Dispose();
+        ImesSatellites.Dispose();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await CastAndDispose(_sub1).ConfigureAwait(false);
+        await CastAndDispose(_sub2).ConfigureAwait(false);
+        await CastAndDispose(_sub3).ConfigureAwait(false);
+        await CastAndDispose(_sub4).ConfigureAwait(false);
+        await CastAndDispose(_sub5).ConfigureAwait(false);
+        await CastAndDispose(_sub6).ConfigureAwait(false);
+        await CastAndDispose(_sub7).ConfigureAwait(false);
+        await CastAndDispose(_sub8).ConfigureAwait(false);
+        await CastAndDispose(_sub9).ConfigureAwait(false);
+        await CastAndDispose(_sub10).ConfigureAwait(false);
+        await CastAndDispose(_sub11).ConfigureAwait(false);
+        await CastAndDispose(_sub12).ConfigureAwait(false);
+        await CastAndDispose(_sub13).ConfigureAwait(false);
+        await CastAndDispose(CustomMode).ConfigureAwait(false);
+        await CastAndDispose(Position).ConfigureAwait(false);
+        await CastAndDispose(AccuracyMeter).ConfigureAwait(false);
+        await CastAndDispose(ObservationSec).ConfigureAwait(false);
+        await CastAndDispose(DgpsRate).ConfigureAwait(false);
+        await CastAndDispose(AllSatellites).ConfigureAwait(false);
+        await CastAndDispose(GalSatellites).ConfigureAwait(false);
+        await CastAndDispose(BeidouSatellites).ConfigureAwait(false);
+        await CastAndDispose(GlonassSatellites).ConfigureAwait(false);
+        await CastAndDispose(GpsSatellites).ConfigureAwait(false);
+        await CastAndDispose(QzssSatellites).ConfigureAwait(false);
+        await CastAndDispose(SbasSatellites).ConfigureAwait(false);
+        await CastAndDispose(ImesSatellites).ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

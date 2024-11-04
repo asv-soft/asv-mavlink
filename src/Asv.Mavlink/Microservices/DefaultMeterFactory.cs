@@ -8,8 +8,6 @@ namespace Asv.Mavlink;
 
 public class DefaultMeterFactory : IMeterFactory
 {
-    
-    
     private readonly Dictionary<string, List<FactoryMeter>> _cachedMeters = new();
     private bool _disposed;
     public void Dispose()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Asv.Mavlink.V2.AsvGbs;
 using R3;
 
@@ -6,23 +7,39 @@ namespace Asv.Mavlink
 {
     public class AsvGbsClient:MavlinkMicroserviceClient, IAsvGbsClient
     {
-        private readonly ReactiveProperty<AsvGbsOutStatusPayload> _status;
-        private readonly IDisposable _statusSubscribe;
+       
 
         public AsvGbsClient(MavlinkClientIdentity identity,ICoreServices core) 
             : base("GBS", identity, core)
         {
-            _status = new ReactiveProperty<AsvGbsOutStatusPayload>(new AsvGbsOutStatusPayload());
-            _statusSubscribe = InternalFilter<AsvGbsOutStatusPacket>().Select(p=>p.Payload).Subscribe(_status);
+            RawStatus = InternalFilter<AsvGbsOutStatusPacket>().Select(p => p?.Payload)
+                .ToReadOnlyReactiveProperty();
         }
-        public ReadOnlyReactiveProperty<AsvGbsOutStatusPayload> RawStatus => _status;
+        public ReadOnlyReactiveProperty<AsvGbsOutStatusPayload?> RawStatus { get; }
 
-        public override void Dispose()
+        #region Dispose
+
+        protected override void Dispose(bool disposing)
         {
-            _statusSubscribe.Dispose();
-            _status.Dispose();
-            base.Dispose();
+            if (disposing)
+            {
+                RawStatus.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
+
+        protected override async ValueTask DisposeAsyncCore()
+        {
+            if (RawStatus is IAsyncDisposable rawStatusAsyncDisposable)
+                await rawStatusAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                RawStatus.Dispose();
+
+            await base.DisposeAsyncCore().ConfigureAwait(false);
+        }
+
+        #endregion
     }
     
     

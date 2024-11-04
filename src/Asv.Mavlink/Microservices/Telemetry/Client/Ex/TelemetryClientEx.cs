@@ -27,16 +27,16 @@ public sealed class TelemetryClientEx : ITelemetryClientEx,IDisposable, IAsyncDi
         Base = client;
 
         _batteryCharge = new ReactiveProperty<double>(double.NaN);
-        _sub1 = client.SystemStatus.Select(p=>p.BatteryRemaining < 0 ? double.NaN : p.BatteryRemaining / 100.0d).Subscribe(_batteryCharge.AsObserver());
+        _sub1 = client.SystemStatus.Select(p=>p?.BatteryRemaining < 0 ? double.NaN : (p?.BatteryRemaining ?? 0) / 100.0d).Subscribe(_batteryCharge.AsObserver());
         _batteryCurrent = new ReactiveProperty<double>(double.NaN);
-        _sub2 = client.SystemStatus.Select(p=>p.CurrentBattery < 0 ? double.NaN : p.CurrentBattery / 100.0d).Subscribe(_batteryCurrent.AsObserver());
+        _sub2 = client.SystemStatus.Select(p=>p?.CurrentBattery < 0 ? double.NaN : (p?.CurrentBattery ?? 0) / 100.0d).Subscribe(_batteryCurrent.AsObserver());
         _batteryVoltage = new ReactiveProperty<double>(double.NaN);
-        _sub3 = client.SystemStatus.Select(p=>p.VoltageBattery / 1000.0d).Subscribe(_batteryVoltage.AsObserver());
+        _sub3 = client.SystemStatus.Select(p=>(p?.VoltageBattery ?? 0) / 1000.0d).Subscribe(_batteryVoltage.AsObserver());
         
         _cpuLoad = new ReactiveProperty<double>(double.NaN);
-        _sub4 = client.SystemStatus.Select(p=>p.Load/1000D).Subscribe(_cpuLoad.AsObserver());
+        _sub4 = client.SystemStatus.Select(p=>(p?.Load ?? 0)/1000D).Subscribe(_cpuLoad.AsObserver());
         _dropRateComm = new ReactiveProperty<double>(double.NaN);
-        _sub5 = client.SystemStatus.Select(p => p.DropRateComm / 1000D).Subscribe(_dropRateComm.AsObserver());
+        _sub5 = client.SystemStatus.Select(p => (p?.DropRateComm ?? 0) / 1000D).Subscribe(_dropRateComm.AsObserver());
     }
 
     /// <summary>

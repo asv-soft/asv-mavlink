@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvGbs;
 using Asv.Mavlink.V2.Common;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -41,82 +42,82 @@ namespace Asv.Mavlink
         /// <summary>
         /// Gets the custom mode.
         /// </summary>
-        IRxEditableValue<AsvGbsCustomMode> CustomMode { get; }
+        ReactiveProperty<AsvGbsCustomMode> CustomMode { get; }
 
         /// <summary>
         /// Gets the position.
         /// </summary>
-        IRxEditableValue<GeoPoint> Position { get; }
+        ReactiveProperty<GeoPoint> Position { get; }
 
         /// <summary>
         /// Gets the accuracy in meters.
         /// </summary>
-        IRxEditableValue<double> AccuracyMeter { get; }
+        ReactiveProperty<double> AccuracyMeter { get; }
 
         /// <summary>
         /// Gets the number of seconds since the observation.
         /// </summary>
-        IRxEditableValue<ushort> ObservationSec { get; }
+        ReactiveProperty<ushort> ObservationSec { get; }
 
         /// <summary>
         /// Gets the DGPS rate.
         /// </summary>
-        IRxEditableValue<ushort> DgpsRate { get; }
+        ReactiveProperty<ushort> DgpsRate { get; }
 
         /// <summary>
         /// Gets the number of all satellites.
         /// </summary>
-        IRxEditableValue<byte> AllSatellites { get; }
+        ReactiveProperty<byte> AllSatellites { get; }
 
         /// <summary>
         /// Gets the number of GAL satellites.
         /// </summary>
-        IRxEditableValue<byte> GalSatellites { get; }
+        ReactiveProperty<byte> GalSatellites { get; }
 
         /// <summary>
         /// Gets the number of Beidou satellites.
         /// </summary>
-        IRxEditableValue<byte> BeidouSatellites { get; }
+        ReactiveProperty<byte> BeidouSatellites { get; }
 
         /// <summary>
         /// Gets the number of Glonass satellites.
         /// </summary>
-        IRxEditableValue<byte> GlonassSatellites { get; }
+        ReactiveProperty<byte> GlonassSatellites { get; }
 
         /// <summary>
         /// Gets the number of GPS satellites.
         /// </summary>
-        IRxEditableValue<byte> GpsSatellites { get; }
+        ReactiveProperty<byte> GpsSatellites { get; }
 
         /// <summary>
         /// Gets the number of QZSS satellites.
         /// </summary>
-        IRxEditableValue<byte> QzssSatellites { get; }
+        ReactiveProperty<byte> QzssSatellites { get; }
 
         /// <summary>
         /// Gets the number of SBAS satellites.
         /// </summary>
-        IRxEditableValue<byte> SbasSatellites { get; }
+        ReactiveProperty<byte> SbasSatellites { get; }
 
         /// <summary>
         /// Gets the number of IMES satellites.
         /// </summary>
-        IRxEditableValue<byte> ImesSatellites { get; }
+        ReactiveProperty<byte> ImesSatellites { get; }
 
         /// <summary>
         /// Gets or sets the delegate for starting auto mode.
         /// </summary>
-        StartAutoModeDelegate StartAutoMode { set; }
+        StartAutoModeDelegate? StartAutoMode { set; }
 
         /// <summary>
         /// Gets or sets the delegate for starting fixed mode.
         /// </summary>
-        StartFixedModeDelegate StartFixedMode { set; }
+        StartFixedModeDelegate? StartFixedMode { set; }
 
         /// <summary>
         /// Gets or sets the delegate for starting idle mode.
         /// </summary>
-        StartIdleModeDelegate StartIdleMode { set; }
+        StartIdleModeDelegate? StartIdleMode { set; }
 
         /// <summary>
         /// Method to send RTCM data.

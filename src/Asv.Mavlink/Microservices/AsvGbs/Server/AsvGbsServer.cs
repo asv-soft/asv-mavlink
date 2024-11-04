@@ -14,6 +14,8 @@ namespace Asv.Mavlink
 
     public class AsvGbsServer:MavlinkMicroserviceServer, IAsvGbsServer
     {
+        
+
         private readonly AsvGbsServerConfig _config;
         private readonly MavlinkPacketTransponder<AsvGbsOutStatusPacket,AsvGbsOutStatusPayload> _transponder;
 
@@ -42,11 +44,30 @@ namespace Asv.Mavlink
         {
             return InternalSend(changeCallback, cancel);
         }
+        
+        #region Dispose
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _transponder.Dispose();
-            base.Dispose();
+            if (disposing)
+            {
+                _transponder.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
+
+        protected override async ValueTask DisposeAsyncCore()
+        {
+            if (_transponder is IAsyncDisposable transponderAsyncDisposable)
+                await transponderAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                _transponder.Dispose();
+
+            await base.DisposeAsyncCore().ConfigureAwait(false);
+        }
+
+        #endregion
+
     }
 }

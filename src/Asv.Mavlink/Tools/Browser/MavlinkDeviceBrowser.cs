@@ -16,9 +16,9 @@ namespace Asv.Mavlink
     public sealed class MavlinkDevice : IDisposable, IAsyncDisposable
     {
         private long _lastHit;
-        private readonly BindableReactiveProperty<MavModeFlag> _baseMode;
-        private readonly BindableReactiveProperty<uint> _customMode;
-        private readonly BindableReactiveProperty<MavState> _status;
+        private readonly ReactiveProperty<MavModeFlag> _baseMode;
+        private readonly ReactiveProperty<uint> _customMode;
+        private readonly ReactiveProperty<MavState> _status;
         private readonly Subject<Unit> _ping = new();
 
         public MavlinkDevice(HeartbeatPacket packet)
@@ -28,9 +28,9 @@ namespace Asv.Mavlink
             MavlinkVersion = packet.Payload.MavlinkVersion;
             Autopilot = packet.Payload.Autopilot;
             Type = packet.Payload.Type;
-            _baseMode = new BindableReactiveProperty<MavModeFlag>(packet.Payload.BaseMode);
-            _customMode = new BindableReactiveProperty<uint>(packet.Payload.CustomMode);
-            _status = new BindableReactiveProperty<MavState>(packet.Payload.SystemStatus);
+            _baseMode = new ReactiveProperty<MavModeFlag>(packet.Payload.BaseMode);
+            _customMode = new ReactiveProperty<uint>(packet.Payload.CustomMode);
+            _status = new ReactiveProperty<MavState>(packet.Payload.SystemStatus);
         }
 
         internal void Update(HeartbeatPayload packetPayload,long time)
@@ -49,9 +49,9 @@ namespace Asv.Mavlink
         public MavType Type { get; }
         public MavAutopilot Autopilot { get; }
         public byte MavlinkVersion { get; }
-        public IReadOnlyBindableReactiveProperty<MavModeFlag> BaseMode => _baseMode;
-        public IReadOnlyBindableReactiveProperty<uint> CustomMode => _customMode;
-        public IReadOnlyBindableReactiveProperty<MavState> SystemStatus => _status;
+        public ReadOnlyReactiveProperty<MavModeFlag> BaseMode => _baseMode;
+        public ReadOnlyReactiveProperty<uint> CustomMode => _customMode;
+        public ReadOnlyReactiveProperty<MavState> SystemStatus => _status;
         public Observable<Unit> Ping => _ping;
 
         public override string ToString()

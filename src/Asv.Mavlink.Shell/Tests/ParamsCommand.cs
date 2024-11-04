@@ -1,28 +1,19 @@
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Threading;
-using System.Threading.Tasks;
-using Asv.Common;
-
 namespace Asv.Mavlink.Shell
 {
-    public class ParamsCommand : VehicleCommandBase
+    /*public class ParamsCommand : VehicleCommandBase
     {
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
         private readonly Subject<ConsoleKeyInfo> _userInput = new Subject<ConsoleKeyInfo>();
         private int _pageSize = 30;
         private string _search;
         private int _skip;
-        private ReadOnlyObservableCollection<IParamItem> _list;
+        //private ReadOnlyObservableCollection<IParamItem> _list;
 
         public ParamsCommand()
         {
             IsCommand("params", "Read all params from Vehicle");
             HasOption("p|pageSize=", $"max size of rows in table. Default={_pageSize}", (int p) => _pageSize = p);
-            _userInput.Where(_=>_.Key == ConsoleKey.Backspace && !string.IsNullOrEmpty(_search)).Subscribe(_=>
+            /*_userInput.Where(_=>_.Key == ConsoleKey.Backspace && !string.IsNullOrEmpty(_search)).Subscribe(_=>
             {
                 _skip = 0;
                 _search = _search.Substring(0, _search.Length - 1);
@@ -44,7 +35,12 @@ namespace Asv.Mavlink.Shell
                 _skip -= _pageSize;
                 if (_skip < 0) _skip = 0; 
                 Redraw();
-            });
+            });#1#
+        }
+        
+        protected override int RunWithDevice(IClientDevice device, string[] remainingArguments)
+        {
+            return 0;
         }
 
         private void KeyListen()
@@ -56,17 +52,12 @@ namespace Asv.Mavlink.Shell
             }
         }
 
+        /*
         private void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
             if (e.Cancel) _cancel.Cancel(false);
         }
 
-        protected override IVehicleClient CreateVehicle(string cs)
-        {
-            Task.Factory.StartNew(_ => KeyListen(), _cancel.Token);
-            Console.CancelKeyPress += Console_CancelKeyPress;
-            return new ArduCopterClient(MavlinkV2Connection.Create(cs), new MavlinkClientIdentity{ComponentId = 15,SystemId = 15,TargetComponentId = 1,TargetSystemId = 1},new VehicleClientDeviceConfig(), new PacketSequenceCalculator());
-        }
 
         protected override async Task<int> RunAsync(IVehicleClient vehicle)
         {
@@ -97,7 +88,8 @@ namespace Asv.Mavlink.Shell
             Console.WriteLine($"Show [{_skip} - {_skip + _pageSize}] of {items.Length}. All {Vehicle.Params.RemoteCount.Value} items: ");
             TextTable.PrintTableFromObject(Console.WriteLine, new DoubleTextTableBorder(), 1, int.MaxValue, items.Skip(_skip).Take(_pageSize) );
             Console.SetCursorPosition(left,top);
-        }
+        }#1#
 
-    }
+        
+    }*/
 }

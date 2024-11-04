@@ -1,6 +1,7 @@
 ﻿using System;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
+using ObservableCollections;
 using R3;
 
 namespace Asv.Mavlink;
@@ -14,19 +15,12 @@ public interface IAdsbVehicleClient : IMavlinkMicroserviceClient
     /// Gets an observable sequence of AdsbVehiclePayload, representing the events when a target is detected.
     /// </summary>
     /// <value>The observable sequence of AdsbVehiclePayload.</value>
-    IObservable<AdsbVehiclePayload> OnTarget { get; }
+    Observable<AdsbVehiclePayload> OnTarget { get; }
 
     /// <summary>
     /// Gets the property representing the collection of aircraft targets.
     /// </summary>
-    /// <remarks>
-    /// The collection contains <see cref="IChangeSet{TObject, TKey}"/> objects that represent changes to the aircraft targets.
-    /// Each change set contains <see cref="IAdsbVehicle"/> objects which represent the aircraft targets.
-    /// </remarks>
-    /// <returns>
-    /// An <see cref="IObservable{T}"/> representing the property that emits changes to the aircraft targets.
-    /// </returns>
-    IObservable<IChangeSet<IAdsbVehicle, uint>> Targets { get; }
+    IReadOnlyObservableDictionary<uint,IAdsbVehicle> Targets { get; }
 
     /// <summary>
     /// Gets the target timeout for the editable value.
@@ -38,7 +32,7 @@ public interface IAdsbVehicleClient : IMavlinkMicroserviceClient
     /// <returns>
     /// The target timeout for the editable value, specified as a TimeSpan.
     /// </returns>
-    IRxEditableValue<TimeSpan> TargetTimeout { get; }
+    ReactiveProperty<TimeSpan> TargetTimeout { get; }
 }
 
 /// <summary>

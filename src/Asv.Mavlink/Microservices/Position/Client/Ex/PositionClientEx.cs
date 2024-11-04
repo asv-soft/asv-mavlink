@@ -27,40 +27,40 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
     {
         _commandClient = commandClient;
         Base = client;
-        Pitch = client.Attitude.Select(p => GeoMath.RadiansToDegrees(p.Pitch))
+        Pitch = client.Attitude.Select(p => GeoMath.RadiansToDegrees(p?.Pitch ?? 0.0))
             .ToReadOnlyReactiveProperty(double.NaN);
         
         PitchSpeed = client.Attitude
-            .Select(p => (double)p.Pitchspeed)
+            .Select(p => (double)(p?.Pitchspeed ?? 0.0))
             .ToReadOnlyReactiveProperty(double.NaN);
         
         Roll = client.Attitude
-            .Select(p => GeoMath.RadiansToDegrees(p.Roll))
+            .Select(p => GeoMath.RadiansToDegrees(p?.Roll ?? 0.0))
             .ToReadOnlyReactiveProperty(double.NaN);
         
         RollSpeed = client.Attitude
-            .Select(p => (double)p.Rollspeed)
+            .Select(p => (double)(p?.Rollspeed ?? 0.0))
             .ToReadOnlyReactiveProperty(double.NaN);
         
         Yaw = client.Attitude
-            .Select(p => GeoMath.RadiansToDegrees(p.Yaw))
-            .ToReadOnlyReactiveProperty(double.NaN);
+            .Select(p => GeoMath.RadiansToDegrees(p?.Yaw ?? 0))
+            .ToReadOnlyReactiveProperty();
         
         YawSpeed = client.Attitude
-            .Select(p => (double)p.Yawspeed)
-            .ToReadOnlyReactiveProperty(double.NaN);
+            .Select(p => (double)(p?.Yawspeed ?? 0.0))
+            .ToReadOnlyReactiveProperty();
         
         Target = client.Target
-            .Where(p => p.CoordinateFrame == MavFrame.MavFrameGlobal)
-            .Select(p =>(GeoPoint?) new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.LatInt)  , MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.LonInt), p.Alt))
+            .Where(p => p?.CoordinateFrame == MavFrame.MavFrameGlobal)
+            .Select(p =>(GeoPoint?) new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.LatInt ?? 0)  , MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.LonInt ?? 0), p?.Alt ?? 0))
             .ToReadOnlyReactiveProperty();
         
         Home = client.Home
-            .Select(p => (GeoPoint?)new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Latitude), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Longitude), MavlinkTypesHelper.AltFromMmToDoubleMeter(p.Altitude)))
+            .Select(p => (GeoPoint?)new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.Latitude ?? 0), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.Longitude?? 0), MavlinkTypesHelper.AltFromMmToDoubleMeter(p?.Altitude ?? 0)))
             .ToReadOnlyReactiveProperty();
         
         Current = client.GlobalPosition
-            .Select(p=>new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lat), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p.Lon), MavlinkTypesHelper.AltFromMmToDoubleMeter(p.Alt)))
+            .Select(p=>new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.Lat ?? 0), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.Lon ?? 0), MavlinkTypesHelper.AltFromMmToDoubleMeter(p?.Alt ?? 0)))
             .ToReadOnlyReactiveProperty(null);
         
         HomeDistance = Current.AsObservable()
@@ -85,7 +85,7 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
         _roi = new BindableReactiveProperty<GeoPoint?>(null);
         
         AltitudeAboveHome = client.GlobalPosition
-            .Select(p=>p.RelativeAlt/1000D)
+            .Select(p=>(p?.RelativeAlt ?? 0)/1000D)
             .ToReadOnlyReactiveProperty(double.NaN);
         }
 

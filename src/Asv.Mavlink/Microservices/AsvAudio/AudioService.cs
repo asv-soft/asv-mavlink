@@ -1,33 +1,46 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvAudio;
 using Microsoft.Extensions.Logging;
+using ObservableCollections;
 using R3;
 using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class AudioService : IAudioService,IDisposable
+
+public class AudioServiceConfig
+{
+    public int DeviceTimeoutMs { get; set; } = 10_000;
+    public int OnlineRateMs { get; set; } = 1_000;
+    public int RemoveDeviceCheckDelayMs { get; set; } = 3_000;
+}
+
+public class AudioService : IAudioService,IDisposable, IAsyncDisposable
 {
     private readonly ILogger _logger; 
     private readonly IAudioCodecFactory _codecFactory;
     private readonly MavlinkIdentity _identity;
     private readonly ICoreServices _core;
-    private readonly SourceCache<AudioDevice,MavlinkIdentity> _deviceCache;
+    private readonly ObservableDictionary<MavlinkIdentity,IAudioDevice> _devices;
     private readonly MavlinkPacketTransponder<AsvAudioOnlinePacket,AsvAudioOnlinePayload> _transponder;
     private readonly ReactiveProperty<bool> _isOnline;
     private readonly ReactiveProperty<AsvAudioCodec?> _codec;
     private readonly ReactiveProperty<bool> _speakerEnabled;
     private readonly ReactiveProperty<bool> _micEnabled;
-    
     private readonly TimeSpan _deviceTimeout;
     private readonly TimeSpan _onlineRate;
-    private readonly IDisposable _disposeIt;
-
-
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly ITimer _timer;
+    private readonly IDisposable _sub3;
+    private readonly IDisposable _sub4;
+    
     public AudioService(IAudioCodecFactory codecFactory,MavlinkIdentity identity,
         AudioServiceConfig config, ICoreServices core)
     {
@@ -38,23 +51,17 @@ public class AudioService : IAudioService,IDisposable
         var config1 = config ?? throw new ArgumentNullException(nameof(config));
         _deviceTimeout = TimeSpan.FromMilliseconds(config1.DeviceTimeoutMs);
         _onlineRate = TimeSpan.FromMilliseconds(config1.OnlineRateMs);
-
-        var builder = Disposable.CreateBuilder();
         
-        _deviceCache = new SourceCache<AudioDevice,MavlinkIdentity>(x => x.FullId).AddTo(ref builder);
-        Devices = _deviceCache.Connect().Transform(x=>(IAudioDevice)x);
-        core.Connection.Filter<AsvAudioOnlinePacket>().Where(_=>IsOnline.Value).Subscribe(OnRecvDeviceOnline).AddTo(ref builder);
-        core.Connection.Filter<AsvAudioStreamPacket>().Where(_=>IsOnline.Value).Subscribe(OnRecvAudioStream).AddTo(ref builder);
+        _devices = new ObservableDictionary<MavlinkIdentity,IAudioDevice>();
+        _sub1 = core.Connection.Filter<AsvAudioOnlinePacket>().Where(_=>IsOnline.CurrentValue).Subscribe(OnRecvDeviceOnline);
+        _sub2 = core.Connection.Filter<AsvAudioStreamPacket>().Where(_=>IsOnline.CurrentValue).Subscribe(OnRecvAudioStream);
         
-        core.TimeProvider.CreateTimer(RemoveOldDevice, null, TimeSpan.FromMilliseconds(config.RemoveDeviceCheckDelayMs), TimeSpan.FromMilliseconds(config.RemoveDeviceCheckDelayMs)).AddTo(ref builder);
-        Devices = _deviceCache.Connect().Transform(x => (IAudioDevice)x).RefCount();
-        
-        _transponder = new MavlinkPacketTransponder<AsvAudioOnlinePacket,AsvAudioOnlinePayload>(identity,core)
-            .AddTo(ref builder);
-        _isOnline = new ReactiveProperty<bool>(false).AddTo(ref builder);
-        _codec = new ReactiveProperty<AsvAudioCodec?>().AddTo(ref builder);
-        _speakerEnabled = new ReactiveProperty<bool>(false).AddTo(ref builder);
-        _speakerEnabled.Subscribe(speakerEnabled=>_transponder.Set(p=>
+        _timer = core.TimeProvider.CreateTimer(RemoveOldDevice, null, TimeSpan.FromMilliseconds(config.RemoveDeviceCheckDelayMs), TimeSpan.FromMilliseconds(config.RemoveDeviceCheckDelayMs));
+        _transponder = new MavlinkPacketTransponder<AsvAudioOnlinePacket,AsvAudioOnlinePayload>(identity,core);
+        _isOnline = new ReactiveProperty<bool>(false);
+        _codec = new ReactiveProperty<AsvAudioCodec?>();
+        _speakerEnabled = new ReactiveProperty<bool>(false);
+        _sub3 = _speakerEnabled.Subscribe(speakerEnabled=>_transponder.Set(p=>
         {
             if (speakerEnabled)
             {
@@ -64,9 +71,9 @@ public class AudioService : IAudioService,IDisposable
             {
                 p.Mode &= ~AsvAudioModeFlag.AsvAudioModeFlagSpeakerOn;
             }
-        })).AddTo(ref builder);
-        _micEnabled = new ReactiveProperty<bool>(false).AddTo(ref builder);
-        _micEnabled.Subscribe(micEnabled=>_transponder.Set(p=>
+        }));
+        _micEnabled = new ReactiveProperty<bool>(false);
+        _sub4 = _micEnabled.Subscribe(micEnabled=>_transponder.Set(p=>
         {
             if (micEnabled)
             {
@@ -76,27 +83,15 @@ public class AudioService : IAudioService,IDisposable
             {
                 p.Mode &= ~AsvAudioModeFlag.AsvAudioModeFlagMicOn;
             }
-        })).AddTo(ref builder);
-
-        _disposeIt = builder.Build();
+        }));
     }
-
- 
-
 
     private void OnRecvAudioStream(AsvAudioStreamPacket pkt)
     {
-        if (pkt.Payload.TargetSystem != _identity.SystemId)
-        {
-            return;
-        }
-        if (pkt.Payload.TargetComponent != _identity.ComponentId)
-        {
-            return;
-        }
-        var device = _deviceCache.Lookup(pkt.FullId);
-        if (device.HasValue == false) return;
-        device.Value.OnInputAudioStream(pkt.Payload);
+        if (pkt.Payload.TargetSystem != _identity.SystemId) return;
+        if (pkt.Payload.TargetComponent != _identity.ComponentId) return;
+        if (_devices.TryGetValue(pkt.FullId, out var device) == false) return;
+        ((AudioDevice)device).OnInputAudioStream(pkt.Payload);
     }
     private void OnRecvDeviceOnline(AsvAudioOnlinePacket pkt)
     {
@@ -104,27 +99,22 @@ public class AudioService : IAudioService,IDisposable
         {
             return;
         }
-        _deviceCache.Edit(update =>
+        try
         {
-            try
+            if (_devices.TryGetValue(pkt.FullId, out var item))
             {
-                var item = update.Lookup(pkt.FullId);
-                if (item.HasValue)
-                {
-                    item.Value.Update(pkt.Payload);
-                }
-                else
-                {
-
-                    var newItem = new AudioDevice(_codecFactory, _codec.Value.Value, pkt, SendAudioStream, InternalOnReceiveAudio, _core );
-                    update.AddOrUpdate(newItem);
-                }
+                ((AudioDevice)item).Update(pkt.Payload);
             }
-            catch (Exception e)
+            else
             {
-                _logger.ZLogError(e, $"Error on add device:{e.Message}");
+                var newItem = new AudioDevice(_codecFactory, _codec.Value.Value, pkt, SendAudioStream, InternalOnReceiveAudio, _core );
+                _devices.Add(newItem.FullId,newItem);  
             }
-        });
+        }
+        catch (Exception e)
+        {
+            _logger.ZLogError(e, $"Error on add device:{e.Message}");
+        }
     }
 
     private void InternalOnReceiveAudio(IAudioDevice device, ReadOnlyMemory<byte> pcmRawAudioData)
@@ -146,15 +136,15 @@ public class AudioService : IAudioService,IDisposable
 
     private void RemoveOldDevice(object? state)
     {
-        _deviceCache.Edit(update =>
+        var itemsToDelete = _devices
+            .Select(x => (AudioDevice)x.Value)
+            .Where(device => _core.TimeProvider.GetElapsedTime(device.GetLastHit()) > _deviceTimeout)
+            .ToImmutableArray();
+        foreach (var item in itemsToDelete.RemoveRange(itemsToDelete))
         {
-            var itemsToDelete = update.Items.Where(device => _core.TimeProvider.GetElapsedTime(device.GetLastHit()) > _deviceTimeout).ToList();
-            foreach (var item in itemsToDelete)
-            {
-                item.Dispose();
-            }
-            update.RemoveKeys(itemsToDelete.Select(device=>device.FullId));
-        });
+            item.Dispose();
+        }
+
     }
     
     public IEnumerable<AsvAudioCodec> AvailableCodecs => _codecFactory.AvailableCodecs;
@@ -183,8 +173,6 @@ public class AudioService : IAudioService,IDisposable
         _micEnabled.OnNext(micEnabled);
         _transponder.Start(_onlineRate, _onlineRate);
     }
-
-
     public void GoOffline()
     {
         _isOnline.OnNext(false);
@@ -193,21 +181,58 @@ public class AudioService : IAudioService,IDisposable
 
     public ReadOnlyReactiveProperty<bool> IsOnline => _isOnline;
     public ReadOnlyReactiveProperty<AsvAudioCodec?> Codec => _codec;
-    public IRxEditableValue<bool> SpeakerEnabled => _speakerEnabled;
-    public IRxEditableValue<bool> MicEnabled => _micEnabled;
-    public IObservable<IChangeSet<IAudioDevice, MavlinkIdentity>> Devices { get; }
-    public OnRecvAudioDelegate OnReceiveAudio { get; set; }
+    public ReactiveProperty<bool> SpeakerEnabled => _speakerEnabled;
+    public ReactiveProperty<bool> MicEnabled => _micEnabled;
+    public IReadOnlyObservableDictionary<MavlinkIdentity,IAudioDevice> Devices => _devices;
+    public OnRecvAudioDelegate? OnReceiveAudio { get; set; }
   
     public void SendAll(ReadOnlyMemory<byte> pcmRawAudioData)
     {
-        foreach (var item in _deviceCache.Items)
+        foreach (var item in _devices.Select(x=>x.Value))
         {
             item.SendAudio(pcmRawAudioData);
         }
     }
 
+    #region Dispose
+
     public void Dispose()
     {
-        _disposeIt.Dispose();
+        _transponder.Dispose();
+        _isOnline.Dispose();
+        _codec.Dispose();
+        _speakerEnabled.Dispose();
+        _micEnabled.Dispose();
+        _sub1.Dispose();
+        _sub2.Dispose();
+        _timer.Dispose();
+        _sub3.Dispose();
+        _sub4.Dispose();
     }
+
+    public async ValueTask DisposeAsync()
+    {
+        await CastAndDispose(_transponder).ConfigureAwait(false);
+        await CastAndDispose(_isOnline).ConfigureAwait(false);
+        await CastAndDispose(_codec).ConfigureAwait(false);
+        await CastAndDispose(_speakerEnabled).ConfigureAwait(false);
+        await CastAndDispose(_micEnabled).ConfigureAwait(false);
+        await CastAndDispose(_sub1).ConfigureAwait(false);
+        await CastAndDispose(_sub2).ConfigureAwait(false);
+        await _timer.DisposeAsync().ConfigureAwait(false);
+        await CastAndDispose(_sub3).ConfigureAwait(false);
+        await CastAndDispose(_sub4).ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

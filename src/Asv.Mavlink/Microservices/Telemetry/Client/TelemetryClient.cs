@@ -14,10 +14,10 @@ namespace Asv.Mavlink;
 public sealed class TelemetryClient : MavlinkMicroserviceClient, ITelemetryClient
 {
     private readonly ILogger _logger;
-    private readonly ReactiveProperty<RadioStatusPayload> _radio;
-    private readonly ReactiveProperty<SysStatusPayload> _systemStatus;
-    private readonly ReactiveProperty<ExtendedSysStatePayload> _extendedSystemState;
-    private readonly ReactiveProperty<BatteryStatusPayload> _battery;
+    private readonly ReactiveProperty<RadioStatusPayload?> _radio;
+    private readonly ReactiveProperty<SysStatusPayload?> _systemStatus;
+    private readonly ReactiveProperty<ExtendedSysStatePayload?> _extendedSystemState;
+    private readonly ReactiveProperty<BatteryStatusPayload?> _battery;
     private readonly IDisposable _sub1;
     private readonly IDisposable _sub2;
     private readonly IDisposable _sub3;
@@ -28,19 +28,19 @@ public sealed class TelemetryClient : MavlinkMicroserviceClient, ITelemetryClien
         : base("RTT", identity, core)
     {
         _logger = core.Log.CreateLogger<TelemetryClient>();
-        _radio = new ReactiveProperty<RadioStatusPayload>();
-        _sub1 = InternalFilter<RadioStatusPacket>().Select(p=>p.Payload).Subscribe(_radio.AsObserver());
-        _systemStatus = new ReactiveProperty<SysStatusPayload>();
-        _sub2 = InternalFilter<SysStatusPacket>().Select(p => p.Payload).Subscribe(_systemStatus.AsObserver());
-        _extendedSystemState = new ReactiveProperty<ExtendedSysStatePayload>();
-        _sub3 = InternalFilter<ExtendedSysStatePacket>().Select(p => p.Payload).Subscribe(_extendedSystemState.AsObserver());
-        _battery = new ReactiveProperty<BatteryStatusPayload>();
-        _sub4 = InternalFilter<BatteryStatusPacket>().Select(p => p.Payload).Subscribe(_battery.AsObserver());
+        _radio = new ReactiveProperty<RadioStatusPayload?>();
+        _sub1 = InternalFilter<RadioStatusPacket>().Select(p=>p?.Payload).Subscribe(_radio.AsObserver());
+        _systemStatus = new ReactiveProperty<SysStatusPayload?>();
+        _sub2 = InternalFilter<SysStatusPacket>().Select(p => p?.Payload).Subscribe(_systemStatus.AsObserver());
+        _extendedSystemState = new ReactiveProperty<ExtendedSysStatePayload?>();
+        _sub3 = InternalFilter<ExtendedSysStatePacket>().Select(p => p?.Payload).Subscribe(_extendedSystemState.AsObserver());
+        _battery = new ReactiveProperty<BatteryStatusPayload?>();
+        _sub4 = InternalFilter<BatteryStatusPacket>().Select(p => p?.Payload).Subscribe(_battery.AsObserver());
     }
-    public ReadOnlyReactiveProperty<RadioStatusPayload> Radio => _radio;
-    public ReadOnlyReactiveProperty<SysStatusPayload> SystemStatus => _systemStatus;
-    public ReadOnlyReactiveProperty<ExtendedSysStatePayload> ExtendedSystemState => _extendedSystemState;
-    public ReadOnlyReactiveProperty<BatteryStatusPayload> Battery => _battery;
+    public ReadOnlyReactiveProperty<RadioStatusPayload?> Radio => _radio;
+    public ReadOnlyReactiveProperty<SysStatusPayload?> SystemStatus => _systemStatus;
+    public ReadOnlyReactiveProperty<ExtendedSysStatePayload?> ExtendedSystemState => _extendedSystemState;
+    public ReadOnlyReactiveProperty<BatteryStatusPayload?> Battery => _battery;
     public Task RequestDataStream(byte streamId, ushort rateHz, bool startStop, CancellationToken cancel = default)
     {
         _logger.ZLogDebug($"{LogSend} {( startStop ? "Enable stream":"DisableStream")} with ID '{streamId}' and rate {rateHz} Hz");

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Asv.Mavlink;
 
@@ -18,15 +19,15 @@ public interface ICoreServices
 
 public class CoreServices(
     IMavlinkV2Connection connection,
-    IPacketSequenceCalculator sequence,
-    ILoggerFactory logFactory,
-    TimeProvider timeProvider,
-    IMeterFactory metrics)
+    IPacketSequenceCalculator? sequence = null,
+    ILoggerFactory? logFactory = null,
+    TimeProvider? timeProvider = null,
+    IMeterFactory? metrics = null)
     : ICoreServices
 {
     public IMavlinkV2Connection Connection { get; } = connection;
-    public IPacketSequenceCalculator Sequence { get; } = sequence;
-    public ILoggerFactory Log { get; } = logFactory;
-    public TimeProvider TimeProvider { get; } = timeProvider;
-    public IMeterFactory Metrics { get; } = metrics;
+    public IPacketSequenceCalculator Sequence { get; } = sequence ?? new PacketSequenceCalculator();
+    public ILoggerFactory Log { get; } = logFactory ?? NullLoggerFactory.Instance;
+    public TimeProvider TimeProvider { get; } = timeProvider ?? TimeProvider.System;
+    public IMeterFactory Metrics { get; } = metrics ?? new DefaultMeterFactory();
 }

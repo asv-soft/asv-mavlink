@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.ObjectModel;
 using DynamicData;
 
@@ -36,4 +36,4 @@ public class FtpEntryModel : IFtpEntry
     public string Path { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public FtpEntryType Type { get; set; }
-}
+}*/

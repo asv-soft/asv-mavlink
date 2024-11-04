@@ -1,28 +1,23 @@
 ﻿using System;
-using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.AsvRsga;
+using R3;
 
 namespace Asv.Mavlink;
 
 public class AsvRsgaClient: MavlinkMicroserviceClient, IAsvRsgaClient
 {
-    private readonly Subject<AsvRsgaCompatibilityResponsePayload> _onCompatibilityRequest;
     private uint _requestCounter;
-    private readonly IDisposable _onCompatibilityRequestSubscribe;
-
-
     public AsvRsgaClient(MavlinkClientIdentity identity, ICoreServices core) 
         : base("RSGA", identity, core)
     {
-        _onCompatibilityRequest = new Subject<AsvRsgaCompatibilityResponsePayload>();
-        _onCompatibilityRequestSubscribe = InternalFilter<AsvRsgaCompatibilityResponsePacket>()
-            .Select(x => x.Payload)
-            .Subscribe(_onCompatibilityRequest);
+        OnCompatibilityResponse = InternalFilter<AsvRsgaCompatibilityResponsePacket>()
+            .Select(x => x?.Payload)
+            .ToReadOnlyReactiveProperty();
     }
 
-    public IObservable<AsvRsgaCompatibilityResponsePayload> OnCompatibilityResponse => _onCompatibilityRequest;
+    public ReadOnlyReactiveProperty<AsvRsgaCompatibilityResponsePayload?> OnCompatibilityResponse { get; }
 
     public Task<AsvRsgaCompatibilityResponsePayload> GetCompatibilities(CancellationToken cancel)
     {
@@ -41,10 +36,28 @@ public class AsvRsgaClient: MavlinkMicroserviceClient, IAsvRsgaClient
         return (ushort)(Interlocked.Increment(ref _requestCounter)%ushort.MaxValue);
     }
 
-    public override void Dispose()
+    #region Dispose
+
+    protected override void Dispose(bool disposing)
     {
-        _onCompatibilityRequestSubscribe.Dispose();
-        _onCompatibilityRequest.Dispose();
-        base.Dispose();
+        if (disposing)
+        {
+            OnCompatibilityResponse.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
+
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        if (OnCompatibilityResponse is IAsyncDisposable onCompatibilityResponseAsyncDisposable)
+            await onCompatibilityResponseAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+        else
+            OnCompatibilityResponse.Dispose();
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
+    }
+
+    #endregion
+
 }

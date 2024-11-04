@@ -1,30 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reactive.Subjects;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.IO;
 using Asv.Mavlink.V2.Common;
 using ConsoleAppFramework;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Spectre.Console;
+using R3;
 
 namespace Asv.Mavlink.Shell;
 
 public class MavProxy
 {
-    private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
-    private StreamWriter _out;
-    private readonly Subject<ConsoleKeyInfo> _userInput = new Subject<ConsoleKeyInfo>();
-    private readonly List<MavlinkV2Connection> _connections = new List<MavlinkV2Connection>();
-    private readonly List<int> _sysId = new List<int>();
-    private readonly List<int> _msgId = new List<int>();
-    private readonly List<int> _dirIndex = new List<int>();
-    private Regex _nameFilter;
+    private readonly CancellationTokenSource _cancel = new();
+    private StreamWriter? _out;
+    private readonly Subject<ConsoleKeyInfo> _userInput = new();
+    private readonly List<MavlinkV2Connection> _connections = new();
+    private readonly List<int> _sysId = new();
+    private readonly List<int> _msgId = new();
+    private readonly List<int> _dirIndex = new();
+    private Regex? _nameFilter;
     private bool _silentMode;
-    private Regex _textFilter;
+    private Regex? _textFilter;
 
     /// <summary>
     /// Used for connecting vehicle and several ground station
@@ -39,13 +40,13 @@ public class MavProxy
     /// <param name="textPattern">-txt, Filter for logging: regex json text filter (Example: -txt MAV_CMD_D)</param>
     /// <param name="directions">-from, Filter for packet direction: select only input packets from the specified direction</param>
     [Command("proxy")]
-    public async Task RunMavProxy(string[] links, string outputFile = null, bool silent = false, int[] sysIds = null,
-        int[] msgIds = null, string namePattern = null, string textPattern = null, int[] directions = null)
+    public async Task RunMavProxy(string[] links, string? outputFile = null, bool silent = false, int[]? sysIds = null,
+        int[]? msgIds = null, string? namePattern = null, string? textPattern = null, int[]? directions = null)
     {
         _silentMode = silent;
-        _sysId.AddRange(sysIds ?? Array.Empty<int>());
-        _msgId.AddRange(msgIds ?? Array.Empty<int>());
-        _dirIndex.AddRange(directions ?? Array.Empty<int>());
+        _sysId.AddRange(sysIds ?? []);
+        _msgId.AddRange(msgIds ?? []);
+        _dirIndex.AddRange(directions ?? []);
         _nameFilter = string.IsNullOrEmpty(namePattern) ? null : new Regex(namePattern, RegexOptions.Compiled);
         _textFilter = string.IsNullOrEmpty(textPattern) ? null : new Regex(textPattern, RegexOptions.Compiled);
 
@@ -59,13 +60,7 @@ public class MavProxy
             AddLink(link);
         }
 
-        Console.CancelKeyPress += (sender, e) =>
-        {
-            e.Cancel = true;
-            _cancel.Cancel();
-        };
-
-        await Task.Run(() => Console.ReadLine(), _cancel.Token);
+        using var c = ConsoleAppHelper.WaitCancelPressOrProcessExit();
 
         _cancel.Cancel();
     }
@@ -75,7 +70,7 @@ public class MavProxy
         var dirIndex = _connections.Count;
         var conn = new MavlinkV2Connection(connectionString, _ => { _.RegisterCommonDialect(); });
 
-        conn.Subscribe(_ => OnPacket(conn, _, dirIndex), _cancel.Cancel);
+        conn.RxPipe.Subscribe(_ => OnPacket(conn, _, dirIndex));
         _connections.Add(conn);
     }
 

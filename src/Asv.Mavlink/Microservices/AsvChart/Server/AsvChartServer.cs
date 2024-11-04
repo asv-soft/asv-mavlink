@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.AsvChart;
 using Microsoft.Extensions.Logging;
+using ObservableCollections;
 using R3;
 using ZLogger;
 
@@ -18,37 +21,37 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
 {
     private readonly AsvChartServerConfig _config;
     private readonly ILogger _logger;
-    private readonly SourceCache<AsvChartInfo,ushort> _charts;
+    private readonly ObservableDictionary<ushort,AsvChartInfo> _charts;
     private volatile ushort _chartHash = 0;
     private int _changeHashLock;
-    private readonly IDisposable _disposeIt;
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
 
     public AsvChartServer(MavlinkIdentity identity, AsvChartServerConfig config, ICoreServices core)
         :base("CHART", identity, core)
     {
         _logger = Core.Log.CreateLogger<AsvChartServer>();
         _config = config;
-        _charts = new SourceCache<AsvChartInfo, ushort>(x => x.Id);
+        _charts = new ObservableDictionary<ushort,AsvChartInfo>();
 
-        var d1 = InternalFilter<AsvChartInfoRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
+        _sub1 = InternalFilter<AsvChartInfoRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
             .Subscribe(OnRequestSignalInfo);
-        var d2 = InternalFilter<AsvChartDataRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
+        _sub2 = InternalFilter<AsvChartDataRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
             .Subscribe(OnRequestChartData);
         
-        // TODO: must using TimeProvider
-        var d3= _charts.Connect().Sample(TimeSpan.FromMilliseconds(_config.SendCollectionUpdateMs))
+        _sub3 = _charts.ObserveChanged().Debounce(TimeSpan.FromMilliseconds(_config.SendCollectionUpdateMs))
             .Subscribe(InternalUpdateCollectionHash);
-
-        _disposeIt = Disposable.Combine(_charts,d2,d1,d3); 
+ 
     }
 
-    private async void InternalUpdateCollectionHash(IChangeSet<AsvChartInfo, ushort> changeSet)
+    private async void InternalUpdateCollectionHash(CollectionChangedEvent<KeyValuePair<ushort, AsvChartInfo>> changeSet)
     {
         if (Interlocked.Exchange(ref _changeHashLock, 1) == 1) return;
         try
         {
             var hash = new HashCode();
-            foreach (var chart in _charts.Items)
+            foreach (var chart in _charts.Select(x=>x.Value))
             {
                 hash.Add(chart.InfoHash);
             }
@@ -70,7 +73,7 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
     }
 
 
-    public ISourceCache<AsvChartInfo, ushort> Charts => _charts;
+    public ObservableDictionary<ushort,AsvChartInfo> Charts => _charts;
 
     public async Task Send(DateTime time, ReadOnlyMemory<float> data, AsvChartInfo info, CancellationToken cancel = default)
     {
@@ -144,21 +147,20 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
                 return;
             }
 
-            var info = _charts.Lookup(request.Payload.ChatId);
-            if (info.HasValue == false)
+            if (_charts.TryGetValue(request.Payload.ChatId, out var info) == false)
             {
                 await InternalSend<AsvChartDataResponsePacket>(x => { x.Payload.Result = AsvChartRequestAck.AsvChartRequestAckNotFound; }).ConfigureAwait(false);
                 return;
             }
             
-            var result = await OnDataRequest.Invoke(new AsvChartOptions(request),info.Value, CancellationToken.None).ConfigureAwait(false);
+            var result = await OnDataRequest.Invoke(new AsvChartOptions(request),info, CancellationToken.None).ConfigureAwait(false);
             await InternalSend<AsvChartDataResponsePacket>(x =>
             {
                 x.Payload.Result = AsvChartRequestAck.AsvChartRequestAckOk;
                 x.Payload.DataRate = result.Rate;
                 x.Payload.DataTrigger = result.Trigger;
                 x.Payload.ChatId = result.ChartId;
-                x.Payload.ChatInfoHash = info.Value.InfoHash;
+                x.Payload.ChatInfoHash = info.InfoHash;
                 
             }).ConfigureAwait(false);
         }
@@ -182,7 +184,7 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
             x.Payload.Result = AsvChartRequestAck.AsvChartRequestAckOk;
             x.Payload.ChatListHash = _chartHash;
         }).ConfigureAwait(false);
-        var charts = _charts.Items.Skip(request.Payload.Skip).Take(request.Payload.Count);
+        var charts = _charts.Select(x=>x.Value).Skip(request.Payload.Skip).Take(request.Payload.Count);
         foreach (var chart in charts)
         {
             await InternalSend<AsvChartInfoPacket>(x => chart.Fill(x.Payload)).ConfigureAwait(false);
@@ -190,10 +192,38 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
                 await Task.Delay(_config.SendSignalDelayMs).ConfigureAwait(false);
         }
     }
+    #region Dispose
 
-    public override void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _disposeIt.Dispose();
-        base.Dispose();
+        if (disposing)
+        {
+            _sub1.Dispose();
+            _sub2.Dispose();
+            _sub3.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
+
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        await CastAndDispose(_sub1).ConfigureAwait(false);
+        await CastAndDispose(_sub2).ConfigureAwait(false);
+        await CastAndDispose(_sub3).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

@@ -1,14 +1,10 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ConsoleAppFramework;
-using DynamicData;
-using DynamicData.Binding;
+using R3;
 using Spectre.Console;
 
 namespace Asv.Mavlink.Shell;
@@ -25,11 +21,14 @@ public class PacketViewerCommand
     private bool _isPause;
     private string _consoleSearch;
     private string _consoleSize = "10";
-    private readonly SourceList<KeyValuePair<DateTime,string>> _packetsSource = new();
     private PacketPrinter _printer;
 
+    /// <summary>
+    /// Show packets in real time
+    /// </summary>
+    /// <param name="connection">-connection, Connection string. Default "tcp://127.0.0.1:5762"</param>
     [Command("packetviewer")]
-    public void Run(string connection)
+    public void Run(string connection = "tcp://127.0.0.1:5762")
     {
         _printer = new PacketPrinter(new List<IPacketPrinterHandler>()
         {
@@ -60,11 +59,8 @@ public class PacketViewerCommand
             });
             _router.WrapToV2ExtensionEnabled = true;
         });
-        _router.Buffer(TimeSpan.FromSeconds(1))
-            .Subscribe(_ =>
-            {
-                GetPacketAndUpdateTable(_);
-            });
+        _router.RxPipe.Chunk(TimeSpan.FromSeconds(1))
+            .Subscribe(GetPacketAndUpdateTable);
         _actionsThread = new Thread(InterceptConsoleActions);
         _actionsThread.Start();
         AnsiConsole.Live(_table).AutoClear(true).StartAsync(async ctx =>
@@ -184,7 +180,6 @@ public class PacketViewerCommand
                     HighlightEndCell();
                     _isCancel = true;
                     _router.Dispose();
-                    _packetsSource.Dispose();
                     _actionsThread.Interrupt();
                     return;
                 }

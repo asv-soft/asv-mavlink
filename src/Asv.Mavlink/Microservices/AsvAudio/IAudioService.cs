@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvAudio;
+using ObservableCollections;
 using R3;
 
 namespace Asv.Mavlink;
@@ -20,16 +21,10 @@ public interface IAudioService
     void GoOffline();
     ReadOnlyReactiveProperty<bool> IsOnline { get; }
     ReadOnlyReactiveProperty<AsvAudioCodec?> Codec { get; }
-    IRxEditableValue<bool> SpeakerEnabled { get; }
-    IRxEditableValue<bool> MicEnabled { get; }
-    IObservable<IChangeSet<IAudioDevice, MavlinkIdentity>> Devices { get; }
-    OnRecvAudioDelegate OnReceiveAudio { get; set; }
+    ReactiveProperty<bool> SpeakerEnabled { get; }
+    ReactiveProperty<bool> MicEnabled { get; }
+    IReadOnlyObservableDictionary<MavlinkIdentity,IAudioDevice> Devices { get; }
+    OnRecvAudioDelegate? OnReceiveAudio { get; set; }
     void SendAll(ReadOnlyMemory<byte> pcmRawAudioData);
 }
 
-public class AudioServiceConfig
-{
-    public int DeviceTimeoutMs { get; set; } = 10_000;
-    public int OnlineRateMs { get; set; } = 1_000;
-    public int RemoveDeviceCheckDelayMs { get; set; } = 3_000;
-}

@@ -18,8 +18,9 @@ public class ArduQuadPlaneControlClient(
 
     public override ValueTask<bool> IsAutoMode(CancellationToken cancel = default)
     {
-        return ValueTask.FromResult(heartbeat.RawHeartbeat.Value.BaseMode.HasFlag(MavModeFlag.MavModeFlagCustomModeEnabled) &&
-                                    heartbeat.RawHeartbeat.Value.CustomMode == (int)PlaneMode.PlaneModeAuto);
+        if (heartbeat.RawHeartbeat.CurrentValue == null) return ValueTask.FromResult(false);
+        return ValueTask.FromResult(heartbeat.RawHeartbeat.CurrentValue.BaseMode.HasFlag(MavModeFlag.MavModeFlagCustomModeEnabled) &&
+                                    heartbeat.RawHeartbeat.CurrentValue.CustomMode == (int)PlaneMode.PlaneModeAuto);
     }
 
     public override Task SetAutoMode(CancellationToken cancel = default)
@@ -30,9 +31,10 @@ public class ArduQuadPlaneControlClient(
 
     public override ValueTask<bool> IsGuidedMode(CancellationToken cancel = default)
     {
+        if (heartbeat.RawHeartbeat.CurrentValue == null) return ValueTask.FromResult(false);
         return ValueTask.FromResult(
-            heartbeat.RawHeartbeat.Value.BaseMode.HasFlag(MavModeFlag.MavModeFlagCustomModeEnabled) &&
-            heartbeat.RawHeartbeat.Value.CustomMode == (int)PlaneMode.PlaneModeGuided);
+            heartbeat.RawHeartbeat.CurrentValue.BaseMode.HasFlag(MavModeFlag.MavModeFlagCustomModeEnabled) &&
+            heartbeat.RawHeartbeat.CurrentValue.CustomMode == (int)PlaneMode.PlaneModeGuided);
     }
 
     public override Task SetGuidedMode(CancellationToken cancel = default)

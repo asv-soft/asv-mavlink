@@ -1,9 +1,7 @@
-using Asv.Mavlink;
 using JetBrains.Annotations;
-using Xunit;
 using Xunit.Abstractions;
 
-namespace Asv.Mavlink.Test.Ex;
+namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(AsvSdrServerEx))]
 public class AsvSdrServerExTest(ITestOutputHelper log) : ServerTestBase<AsvSdrServerEx>(log)

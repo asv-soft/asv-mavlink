@@ -6,6 +6,7 @@
     <FileVersion>$(ProductVersion)</FileVersion>
     <Version>$(ProductVersion)</Version>
     <PackageIcon>asv-mavlink-128.png</PackageIcon>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\img\asv-mavlink-128.png">
@@ -31,7 +32,6 @@
     <PackageReference Include="ConsoleAppFramework" Version="$(ConsoleAppFrameworkVersion)"/>
     <PackageReference Include="DotLiquid" Version="2.2.595" />
     <PackageReference Include="Geodesy" Version="4.1.0" />
-    <PackageReference Include="ManyConsole" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />

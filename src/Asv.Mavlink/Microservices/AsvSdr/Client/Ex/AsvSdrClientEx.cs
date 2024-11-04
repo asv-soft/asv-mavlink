@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Asv.Common;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using ObservableCollections;
 using R3;
 
 namespace Asv.Mavlink;
@@ -16,21 +18,17 @@ public class AsvSdrClientExConfig
     public int MaxTimeToWaitForResponseForListMs { get; set; } = 2000;
 }
 
-public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
+public class AsvSdrClientEx : IAsvSdrClientEx, IDisposable, IAsyncDisposable
 {
     private readonly ICommandClient _commandClient;
     private readonly AsvSdrClientExConfig _config;
     private readonly TimeSpan _maxTimeToWaitForResponseForList;
-    private readonly ReactiveProperty<AsvSdrCustomMode> _customMode;
-    private readonly ReactiveProperty<ushort> _recordsCount;
-    private readonly ReactiveProperty<AsvSdrCustomModeFlag> _supportedModes;
-    private readonly SourceCache<AsvSdrClientRecord,Guid> _records;
-    private readonly ReactiveProperty<bool> _isRecordStarted;
-    private readonly ReactiveProperty<Guid> _currentRecord;
-    private readonly ReactiveProperty<ushort> _calibrationTableRemoteCount;
-    private readonly ReactiveProperty<AsvSdrCalibState> _calibrationState;
-    private readonly ISourceCache<AsvSdrClientCalibrationTable,string> _calibrationTables;
+    private readonly ObservableDictionary<Guid,IAsvSdrClientRecord> _records;
+    private readonly ObservableDictionary<string,AsvSdrClientCalibrationTable> _calibrationTables;
     private readonly ILogger _logger;
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly CancellationTokenSource _disposeCancel;
 
     public AsvSdrClientEx(
         IAsvSdrClient client, 
@@ -42,80 +40,65 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         _logger = client.Core.Log.CreateLogger<AsvSdrClientEx>();
         _commandClient = commandClient;
         _config = config;
+        _disposeCancel = new CancellationTokenSource();
         
         _maxTimeToWaitForResponseForList = TimeSpan.FromMilliseconds(config.MaxTimeToWaitForResponseForListMs);
-        _customMode = new ReactiveProperty<AsvSdrCustomMode>();
-        heartbeatClient.RawHeartbeat
+        CustomMode = heartbeatClient.RawHeartbeat
             .Select(p => (AsvSdrCustomMode)p.CustomMode)
-            .Subscribe(_customMode)
-            .DisposeItWith(Disposable);
+            .ToReadOnlyReactiveProperty();
 
-        _recordsCount = new ReactiveProperty<ushort>()
-            .DisposeItWith(Disposable);
-        _supportedModes = new ReactiveProperty<AsvSdrCustomModeFlag>()
-            .DisposeItWith(Disposable);
-        _currentRecord = new ReactiveProperty<Guid>()
-            .DisposeItWith(Disposable);
-        _isRecordStarted = new ReactiveProperty<bool>(false)
-            .DisposeItWith(Disposable);
-        _calibrationTableRemoteCount = new ReactiveProperty<ushort>()
-            .DisposeItWith(Disposable);
-        _calibrationState = new ReactiveProperty<AsvSdrCalibState>()
-            .DisposeItWith(Disposable);
+        RecordsCount =  client.Status
+            .Select(x=>x?.RecordCount ?? 0)
+            .ToReadOnlyReactiveProperty();
+            
+        SupportedModes = client.Status
+            .Select(x=>x?.SupportedModes ?? 0)
+            .ToReadOnlyReactiveProperty();
+
+        CurrentRecord = client.Status
+            .Select(x => new Guid(x?.CurrentRecordGuid ?? Guid.Empty.ToByteArray()))
+            .ToReadOnlyReactiveProperty();
+
+        IsRecordStarted = CurrentRecord.Select(x => Guid.Empty.Equals(x))
+            .ToReadOnlyReactiveProperty();
+        CalibrationTableRemoteCount = client.Status
+            .Select(x => x?.CalibTableCount)
+            .ToReadOnlyReactiveProperty();
+
+        CalibrationState = client.Status
+            .Select(x => x?.CalibState)
+            .ToReadOnlyReactiveProperty();
         
-        client.Status.Subscribe(p =>
-        {
-            _supportedModes.OnNext(p.SupportedModes);
-            _recordsCount.OnNext(p.RecordCount);
-            var guid = new Guid(p.CurrentRecordGuid);
-            _currentRecord.OnNext(guid);
-            _isRecordStarted.OnNext(guid != Guid.Empty);
-            _calibrationTableRemoteCount.OnNext(p.CalibTableCount);
-            _calibrationState.OnNext(p.CalibState);
-        }).DisposeItWith(Disposable);
-        
-        _records = new SourceCache<AsvSdrClientRecord, Guid>(x => x.Id)
-            .DisposeItWith(Disposable);
-        client.OnRecord.Subscribe(t=>_records.Edit(updater =>
-        {
-            var value = updater.Lookup(t.Item1);
-            if (value.HasValue == false)
-            {
-                updater.AddOrUpdate(new AsvSdrClientRecord(t.Item1,t.Item2,client,config));
-            }
-        })).DisposeItWith(Disposable);
-        client.OnDeleteRecord.Where(t=>t.Item2.Result == AsvSdrRequestAck.AsvSdrRequestAckOk).Subscribe(t=>_records.Edit(updater =>
-        {
-            var value = updater.Lookup(t.Item1);
-            if (!value.HasValue) return;
-            updater.RemoveKey(t.Item1);
-            value.Value.Dispose();
-        })).DisposeItWith(Disposable);
-        
-        Records = _records.Connect().Transform(r=>(IAsvSdrClientRecord)r).RefCount();
-        
-        _calibrationTables = new SourceCache<AsvSdrClientCalibrationTable,string>(t=>t.Name)
-            .DisposeItWith(Disposable);
-        CalibrationTables = _calibrationTables.Connect().DisposeMany().RefCount();
-        Base.OnCalibrationTable.Subscribe(payload=>_calibrationTables.Edit(updater =>
+        _records = new ObservableDictionary<Guid,IAsvSdrClientRecord>();
+        _sub1 = client.OnRecord.Subscribe(t => _records[t.Item1] = new AsvSdrClientRecord(t.Item1, t.Item2, client, config));
+        _sub2 = client.OnDeleteRecord
+            .Where(t => t.Item2.Result == AsvSdrRequestAck.AsvSdrRequestAckOk)
+            .Subscribe(t => _records.Remove(t.Item1));
+
+        _calibrationTables = new ObservableDictionary<string, AsvSdrClientCalibrationTable>();
+        Base.OnCalibrationTable.Subscribe(payload=>
         {
             var name = MavlinkTypesHelper.GetString(payload.TableName);
-            var value = updater.Lookup(name);
-            if (value.HasValue == false)
+            if (_calibrationTables.TryGetValue(name, out var updater))
             {
-                updater.AddOrUpdate(new AsvSdrClientCalibrationTable(payload, Base, _maxTimeToWaitForResponseForList));
+                updater.Update(payload);
             }
             else
             {
-                value.Value.Update(payload);
+                _calibrationTables.Add(name,new AsvSdrClientCalibrationTable(payload, Base, _maxTimeToWaitForResponseForList));
             }
-        })).DisposeItWith(Disposable);
+        });
     }
     public string Name => $"{Base.Name}Ex";
-    public ReadOnlyReactiveProperty<Guid> CurrentRecord => _currentRecord;
-
-    public ReadOnlyReactiveProperty<bool> IsRecordStarted => _isRecordStarted;
-
+    public IAsvSdrClient Base { get; }
+    public MavlinkClientIdentity Identity => Base.Identity;
+    public ICoreServices Core => Base.Core;
+    public Task Init(CancellationToken cancel = default)
+    {
+        return Task.CompletedTask;
+    }
+    public ReadOnlyReactiveProperty<Guid> CurrentRecord { get; }
+    public ReadOnlyReactiveProperty<bool> IsRecordStarted { get; }
     public async Task DeleteRecord(Guid recordName, CancellationToken cancel)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
@@ -125,8 +108,6 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
             throw new Exception("Request fail");
     }
-
- 
 
     public async Task<bool> DownloadRecordList(IProgress<double> progress, CancellationToken cancel)
     {
@@ -148,12 +129,14 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         }
         return _records.Count == requestAck.ItemsCount;
     }
-    public IAsvSdrClient Base { get; }
-    public ReadOnlyReactiveProperty<AsvSdrCustomModeFlag> SupportedModes => _supportedModes;
-    public ReadOnlyReactiveProperty<AsvSdrCustomMode> CustomMode => _customMode;
     
-    public ReadOnlyReactiveProperty<ushort> RecordsCount => _recordsCount;
-    public IObservable<IChangeSet<IAsvSdrClientRecord,Guid>> Records { get; }
+    public ReadOnlyReactiveProperty<AsvSdrCustomModeFlag> SupportedModes { get; }
+
+    public ReadOnlyReactiveProperty<AsvSdrCustomMode> CustomMode { get; }
+
+    public ReadOnlyReactiveProperty<ushort> RecordsCount { get; }
+
+    public IReadOnlyObservableDictionary<Guid, IAsvSdrClientRecord> Records => _records;
     
     public async Task<MavResult> SetMode(AsvSdrCustomMode mode, ulong frequencyHz, float recordRate, uint sendingThinningRatio, float referencePowerDbm,
         CancellationToken cancel)
@@ -162,6 +145,8 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         var result = await _commandClient.CommandLong(item => AsvSdrHelper.SetArgsForSdrSetMode(item, mode,frequencyHz,recordRate,sendingThinningRatio,referencePowerDbm),cs.Token).ConfigureAwait(false);
         return result.Result;
     }
+
+    private CancellationToken DisposeCancel => _disposeCancel.Token;
 
     public async Task<MavResult> StartRecord(string recordName, CancellationToken cancel)
     {
@@ -219,13 +204,12 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
         var result = await _commandClient.CommandLong(AsvSdrHelper.SetArgsForSdrStopCalibration, cs.Token).ConfigureAwait(false);
         return result.Result;
     }
-
-    public ReadOnlyReactiveProperty<ushort> CalibrationTableRemoteCount => _calibrationTableRemoteCount;
-    public ReadOnlyReactiveProperty<AsvSdrCalibState> CalibrationState => _calibrationState;
+    public ReadOnlyReactiveProperty<ushort?> CalibrationTableRemoteCount { get; }
+    public ReadOnlyReactiveProperty<AsvSdrCalibState?> CalibrationState { get; }
     public async Task ReadCalibrationTableList(IProgress<double>? progress = null, CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();
-        var count = CalibrationTableRemoteCount.Value;
+        var count = CalibrationTableRemoteCount.CurrentValue;
         for (ushort i = 0; i < count; i++)
         {
             progress.Report(i);
@@ -236,20 +220,54 @@ public class AsvSdrClientEx : DisposableOnceWithCancel, IAsvSdrClientEx
 
     public async Task<AsvSdrClientCalibrationTable?> GetCalibrationTable(string name, CancellationToken cancel = default)
     {
-        var value = _calibrationTables.Lookup(name);
-        if (value.HasValue) return value.Value;
+        if (_calibrationTables.TryGetValue(name, out var table)) return null;
         await ReadCalibrationTableList(null, cancel).ConfigureAwait(false);
-        value = _calibrationTables.Lookup(name);
-        return value.HasValue ? value.Value : null;
+        return table;
     }
+    public IReadOnlyObservableDictionary<string, AsvSdrClientCalibrationTable> CalibrationTables => _calibrationTables;
 
 
-    public IObservable<IChangeSet<AsvSdrClientCalibrationTable,string>> CalibrationTables { get; }
+    #region Dispose
 
-    public MavlinkClientIdentity Identity => Base.Identity;
-    public ICoreServices Core => Base.Core;
-    public Task Init(CancellationToken cancel = default)
+    public void Dispose()
     {
-        return Task.CompletedTask;
+        _sub1.Dispose();
+        _sub2.Dispose();
+        _disposeCancel.Cancel(false);
+        _disposeCancel.Dispose();
+        CurrentRecord.Dispose();
+        IsRecordStarted.Dispose();
+        SupportedModes.Dispose();
+        CustomMode.Dispose();
+        RecordsCount.Dispose();
+        CalibrationTableRemoteCount.Dispose();
+        CalibrationState.Dispose();
     }
+
+    public async ValueTask DisposeAsync()
+    {
+        await CastAndDispose(_sub1).ConfigureAwait(false);
+        await CastAndDispose(_sub2).ConfigureAwait(false);
+        _disposeCancel.Cancel(false);
+        await CastAndDispose(_disposeCancel).ConfigureAwait(false);
+        await CastAndDispose(CurrentRecord).ConfigureAwait(false);
+        await CastAndDispose(IsRecordStarted).ConfigureAwait(false);
+        await CastAndDispose(SupportedModes).ConfigureAwait(false);
+        await CastAndDispose(CustomMode).ConfigureAwait(false);
+        await CastAndDispose(RecordsCount).ConfigureAwait(false);
+        await CastAndDispose(CalibrationTableRemoteCount).ConfigureAwait(false);
+        await CastAndDispose(CalibrationState).ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

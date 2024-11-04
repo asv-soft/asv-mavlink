@@ -8,18 +8,20 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using R3;
 using ZLogger;
+using Observable = R3.Observable;
 using ObservableExtensions = System.ObservableExtensions;
 using Unit = System.Reactive.Unit;
 
 namespace Asv.Mavlink;
 
-public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
+public class AsvSdrClientCalibrationTable: IDisposable,IAsyncDisposable
 {
     private readonly IAsvSdrClient _ifc;
-    private readonly ReactiveProperty<ushort> _remoteSize;
     private readonly ILogger _logger;
     private readonly TimeSpan _deviceUploadTimeout;
     private readonly ReactiveProperty<CalibrationTableMetadata> _metadata;
+    private readonly ReactiveProperty<ushort> _remoteSize;
+    private readonly CancellationTokenSource _disposeCancel;
 
     public AsvSdrClientCalibrationTable(
         AsvSdrCalibTablePayload payload, 
@@ -27,20 +29,21 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
         TimeSpan deviceUploadTimeout,
         ILoggerFactory? logFactory = null)
     {
-        logFactory??=NullLoggerFactory.Instance;
+        logFactory ??= NullLoggerFactory.Instance;
         _logger = logFactory.CreateLogger<AsvSdrClientCalibrationTable>();
+        _disposeCancel = new CancellationTokenSource();
         _ifc = ifc;
         _deviceUploadTimeout = deviceUploadTimeout;
-        _remoteSize = new ReactiveProperty<ushort>(payload.RowCount).DisposeItWith(Disposable);
-        _metadata = new ReactiveProperty<CalibrationTableMetadata>(new CalibrationTableMetadata(payload)).DisposeItWith(Disposable);
+        _remoteSize = new ReactiveProperty<ushort>(payload.RowCount);
+        _metadata = new ReactiveProperty<CalibrationTableMetadata>(new CalibrationTableMetadata(payload));
         Name = MavlinkTypesHelper.GetString(payload.TableName);
         Index = payload.TableIndex;
     }
     public string Name { get; }
     public ushort Index { get; }
-
+    private CancellationToken DisposeCancel => _disposeCancel.Token;
     public ReadOnlyReactiveProperty<ushort> RemoteSize => _remoteSize;
-    public IRxEditableValue<CalibrationTableMetadata> Metadata => _metadata;
+    public ReactiveProperty<CalibrationTableMetadata> Metadata => _metadata;
 
     internal void Update(AsvSdrCalibTablePayload payload)
     {
@@ -68,7 +71,7 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
         return array;
     }
     
-    public async Task Upload(CalibrationTableRow[] data, IProgress<double> progress = null,CancellationToken cancel = default)
+    public async Task Upload(CalibrationTableRow[] data, IProgress<double>? progress = null,CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();
         progress.Report(0);
@@ -80,21 +83,21 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
         var tcs = new TaskCompletionSource<Unit>();
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
         
-        var lastUpdateTime = DateTime.Now;
-        using var checkTimer = ObservableExtensions
-            .Subscribe<long>(Observable.Timer(_deviceUploadTimeout, _deviceUploadTimeout), _ =>
+        var lastUpdateTime = _ifc.Core.TimeProvider.GetTimestamp();
+
+        using var checkTimer = _ifc.Core.TimeProvider.CreateTimer(x =>
+        {
+            if (_ifc.Core.TimeProvider.GetElapsedTime( lastUpdateTime) > _deviceUploadTimeout)
             {
-                if (DateTime.Now - lastUpdateTime > _deviceUploadTimeout)
-                {
-                    _logger.ZLogWarning($"'{Name}[{Index}]' table upload timeout");
-                    tcs.TrySetException(new Exception($"'{Name}[{Index}]' table upload timeout"));
-                }
-            });
+                _logger.ZLogWarning($"'{Name}[{Index}]' table upload timeout");
+                tcs.TrySetException(new Exception($"'{Name}[{Index}]' table upload timeout"));
+            }
+        }, null, _deviceUploadTimeout, _deviceUploadTimeout);
 
         using var sub1 = _ifc.OnCalibrationTableRowUploadCallback.Subscribe(req =>
         {
             _logger.ZLogDebug($"Payload request '{Name}[{Index}]' row with index={req.RowIndex}");
-            lastUpdateTime = DateTime.Now;
+            lastUpdateTime = _ifc.Core.TimeProvider.GetTimestamp();
             if (data.Length <= req.RowIndex)
             {
                 tcs.TrySetException(
@@ -118,7 +121,7 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
 
         using var sub2 = _ifc.OnCalibrationAcc.Where(p => p.RequestId == reqId).Subscribe(p =>
         {
-            lastUpdateTime = DateTime.Now;
+            lastUpdateTime = _ifc.Core.TimeProvider.GetTimestamp();
             if (p.Result == AsvSdrRequestAck.AsvSdrRequestAckOk)
             {
                 tcs.TrySetResult(Unit.Default);
@@ -141,7 +144,33 @@ public class AsvSdrClientCalibrationTable:DisposableOnceWithCancel
         await tcs.Task.ConfigureAwait(false);
         
     }
-    
-    
-    
+
+
+    #region Dispose
+
+    public void Dispose()
+    {
+        _metadata.Dispose();
+        _remoteSize.Dispose();
+        _disposeCancel.Dispose();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await CastAndDispose(_metadata).ConfigureAwait(false);
+        await CastAndDispose(_remoteSize).ConfigureAwait(false);
+        await CastAndDispose(_disposeCancel).ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

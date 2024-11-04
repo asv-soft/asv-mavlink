@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Asv.IO;
-using ConsoleAppFramework;
-using DynamicData;
-using Spectre.Console;
+﻿namespace Asv.Mavlink.Shell;
 
-namespace Asv.Mavlink.Shell;
-
+/*
 public class FtpBrowserDirectory
 {
     private ReadOnlyObservableCollection<FtpEntry> _tree;
@@ -232,4 +222,4 @@ public class FtpBrowserDirectory
                 task.StopTask();
             });
     }
-}
+}*/

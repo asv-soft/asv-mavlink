@@ -5,7 +5,6 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using ConsoleAppFramework;
-using ManyConsole;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 

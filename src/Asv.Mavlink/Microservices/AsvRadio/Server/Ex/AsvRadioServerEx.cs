@@ -10,36 +10,25 @@ using Asv.Mavlink.V2.AsvRadio;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.V2.Minimal;
 using Microsoft.Extensions.Logging;
+using R3;
 using ZLogger;
 using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
 
 namespace Asv.Mavlink;
 
 
-public delegate Task<MavResult> EnableRadioDelegate(uint frequencyHz, AsvRadioModulation modulation,
-    float referenceRxPowerDbm, float txPowerDbm, AsvAudioCodec codec, CancellationToken cancel);
-
-public delegate Task<MavResult> DisableRadioDelegate(CancellationToken cancel);
-
-public interface IAsvRadioServerEx
-{
-    IAsvRadioServer Base { get; }
-    IRxEditableValue<AsvRadioCustomMode> CustomMode { get; }
-    EnableRadioDelegate EnableRadio { set; }
-    DisableRadioDelegate DisableRadio { set; }
-
-    void Start();
-}
 
 
-
-public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
+public class AsvRadioServerEx: IAsvRadioServerEx, IDisposable,IAsyncDisposable
 {
     private readonly AsvRadioCapabilities _capabilities;
     private readonly IReadOnlySet<AsvAudioCodec> _codecs;
     private readonly IHeartbeatServer _heartbeat;
     private readonly ILogger _logger;
     private int _capRequestInProgress;
+    private readonly ReactiveProperty<AsvRadioCustomMode> _customMode;
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
 
     public AsvRadioServerEx(
         AsvRadioCapabilities capabilities, 
@@ -67,16 +56,12 @@ public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
             x.CustomMode = (uint)AsvRadioCustomMode.AsvRadioCustomModeIdle;
         });
         
-        CustomMode = new ReactiveProperty<AsvRadioCustomMode>().DisposeItWith(Disposable);
-        CustomMode.DistinctUntilChanged().Subscribe(mode => heartbeat.Set(p =>
-        {
-            p.CustomMode = (uint)mode;
-        })).DisposeItWith(Disposable);
+        _customMode = new ReactiveProperty<AsvRadioCustomMode>();
+        CustomMode.Subscribe(mode => heartbeat.Set(p => p.CustomMode = (uint)mode));
         
         commands[(MavCmd)V2.AsvRadio.MavCmd.MavCmdAsvRadioOn] = async (id,args, cancel) =>
         {
             if (EnableRadio == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
-            using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             AsvRadioHelper.GetArgsForRadioOn(args.Payload, out var freq, out var mode, out var referencePower, out var txPower, out var codec);
             if (freq > capabilities.MaxFrequencyHz || freq < capabilities.MinFrequencyHz)
             {
@@ -103,24 +88,24 @@ public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
                 statusText1.Error("Codec not supported");
             }
             
-            var result = await EnableRadio(freq, mode, referencePower, txPower, codec, cs.Token).ConfigureAwait(false);
+            var result = await EnableRadio(freq, mode, referencePower, txPower, codec, cancel).ConfigureAwait(false);
             return CommandResult.FromResult(result);
         };
         commands[(MavCmd)V2.AsvRadio.MavCmd.MavCmdAsvRadioOff] = async (id,args, cancel) =>
         {
             if (DisableRadio == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
-            using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
             AsvRadioHelper.GetArgsForRadioOff(args.Payload);
-            var result = await DisableRadio(cs.Token).ConfigureAwait(false);
+            var result = await DisableRadio(cancel).ConfigureAwait(false);
             return CommandResult.FromResult(result);
         };
 
-        Base.OnCapabilitiesRequest.Subscribe(OnCapabilitiesRequest).DisposeItWith(Disposable);
-        Base.OnCodecCapabilitiesRequest.Subscribe(OnCodecCapabilitiesRequest).DisposeItWith(Disposable);
+        _sub1 = Base.OnCapabilitiesRequest.Subscribe(OnCapabilitiesRequest);
+        _sub2 = Base.OnCodecCapabilitiesRequest.Subscribe(OnCodecCapabilitiesRequest);
     }
 
-    private async void OnCodecCapabilitiesRequest(AsvRadioCodecCapabilitiesRequestPayload request)
+    private async void OnCodecCapabilitiesRequest(AsvRadioCodecCapabilitiesRequestPayload? request)
     {
+        if (request == null) return;
         try
         {
             var count = Math.Min((byte)request.Count, (byte)AsvRadioCodecCapabilitiesResponsePayload.CodecsMaxItemsCount);
@@ -134,7 +119,7 @@ public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
                     x.Codecs[x.Count] = item;
                     ++x.Count;
                 }
-            }, DisposeCancel).ConfigureAwait(false);
+            }).ConfigureAwait(false);
         }
         catch (Exception e)
         {
@@ -142,7 +127,7 @@ public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
         }
     }
 
-    private async void OnCapabilitiesRequest(AsvRadioCapabilitiesRequestPayload request)
+    private async void OnCapabilitiesRequest(AsvRadioCapabilitiesRequestPayload? request)
     {
         try
         {
@@ -162,7 +147,7 @@ public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
                 x.MinTxPower = _capabilities.MinTxPowerDbm;
                 x.MaxTxPower = _capabilities.MaxTxPowerDbm;
                 
-            }, DisposeCancel).ConfigureAwait(false);
+            }).ConfigureAwait(false);
         }
         catch (Exception e)
         {
@@ -174,13 +159,42 @@ public class AsvRadioServerEx: DisposableOnceWithCancel, IAsvRadioServerEx
         }
     }
 
-    public IRxEditableValue<AsvRadioCustomMode> CustomMode { get; }
+    public ReadOnlyReactiveProperty<AsvRadioCustomMode> CustomMode => _customMode;
+
     public IAsvRadioServer Base { get; }
-    public EnableRadioDelegate EnableRadio { get; set; }
-    public DisableRadioDelegate DisableRadio { get; set; }
+    public EnableRadioDelegate? EnableRadio { get; set; }
+    public DisableRadioDelegate? DisableRadio { get; set; }
     public void Start()
     {
         Base.Start();
         _heartbeat.Start();
     }
+
+    #region Dispose
+
+    public void Dispose()
+    {
+        _customMode.Dispose();
+        _sub1.Dispose();
+        _sub2.Dispose();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await CastAndDispose(_customMode).ConfigureAwait(false);
+        await CastAndDispose(_sub1).ConfigureAwait(false);
+        await CastAndDispose(_sub2).ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

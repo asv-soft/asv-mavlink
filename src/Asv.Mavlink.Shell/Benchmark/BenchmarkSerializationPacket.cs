@@ -4,7 +4,6 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using ConsoleAppFramework;
-using ManyConsole;
 
 namespace Asv.Mavlink.Shell
 {

@@ -17,7 +17,7 @@ namespace Asv.Mavlink
         /// <value>
         /// An implementation of the IRxValue interface that provides access to the RadioStatusPayload object.
         /// </value>
-        ReadOnlyReactiveProperty<RadioStatusPayload> Radio { get; }
+        ReadOnlyReactiveProperty<RadioStatusPayload?> Radio { get; }
 
         /// <summary>
         /// Represents the system status property.
@@ -27,7 +27,7 @@ namespace Asv.Mavlink
         /// </remarks>
         /// <seealso cref="IRxValue{T}"/>
         /// <seealso cref="SysStatusPayload"/>
-        ReadOnlyReactiveProperty<SysStatusPayload> SystemStatus { get; }
+        ReadOnlyReactiveProperty<SysStatusPayload?> SystemStatus { get; }
 
         /// <summary>
         /// Represents the extended state of the system.
@@ -35,7 +35,7 @@ namespace Asv.Mavlink
         /// <returns>
         /// An observable value of type <see cref="ExtendedSysStatePayload"/> that represents the extended state of the system.
         /// </returns>
-        ReadOnlyReactiveProperty<ExtendedSysStatePayload> ExtendedSystemState { get; }
+        ReadOnlyReactiveProperty<ExtendedSysStatePayload?> ExtendedSystemState { get; }
 
         /// <summary>
         /// Represents the battery status.
@@ -46,7 +46,7 @@ namespace Asv.Mavlink
         /// <value>
         /// An instance of the <see cref="IRxValue{T}"/> interface containing the battery status payload.
         /// </value>
-        ReadOnlyReactiveProperty<BatteryStatusPayload> Battery { get; }
+        ReadOnlyReactiveProperty<BatteryStatusPayload?> Battery { get; }
 
         /// <summary>
         /// Request a data stream.

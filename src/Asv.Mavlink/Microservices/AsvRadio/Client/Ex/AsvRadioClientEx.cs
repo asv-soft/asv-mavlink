@@ -11,27 +11,11 @@ using R3;
 
 namespace Asv.Mavlink;
 
-public interface IAsvRadioClientEx:IMavlinkMicroserviceClient
-{
-    ReadOnlyReactiveProperty<AsvRadioCustomMode> CustomMode { get; }
-    IAsvRadioClient Base { get; }
-
-    ReadOnlyReactiveProperty<AsvRadioCapabilities?> Capabilities { get; }
-    
-    Task<MavResult> EnableRadio(uint frequencyHz, AsvRadioModulation modulation, float referenceRxPowerDbm,
-        float txPowerDbm, AsvAudioCodec codec, CancellationToken cancel = default);
-    Task<MavResult> DisableRadio(CancellationToken cancel = default);
-    
-    Task<AsvRadioCapabilities> GetCapabilities(CancellationToken cancel = default);
-    Task<ISet<AsvAudioCodec>> GetCodecsCapabilities(CancellationToken cancel = default);
-
-}
-
-public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
+public class AsvRadioClientEx:IAsvRadioClientEx, IDisposable, IAsyncDisposable
 {
     private readonly ICommandClient _commandClient;
-    private readonly ReactiveProperty<AsvRadioCustomMode> _customMode;
     private readonly ReactiveProperty<AsvRadioCapabilities?> _capabilities;
+    private readonly CancellationTokenSource _disposeCancel;
 
     public AsvRadioClientEx(
         IAsvRadioClient client, 
@@ -39,13 +23,12 @@ public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
         ICommandClient commandClient)
     {
         _commandClient = commandClient ?? throw new ArgumentNullException(nameof(commandClient));
+        _disposeCancel = new CancellationTokenSource();
         Base = client ?? throw new ArgumentNullException(nameof(client));
-        _customMode = new ReactiveProperty<AsvRadioCustomMode>(AsvRadioCustomMode.AsvRadioCustomModeIdle).DisposeItWith(Disposable);;
-        heartbeatClient.RawHeartbeat
-            .Select(x => (AsvRadioCustomMode)x.CustomMode)
-            .Subscribe(_customMode)
-            .DisposeItWith(Disposable);
-        _capabilities = new ReactiveProperty<AsvRadioCapabilities?>(default).DisposeItWith(Disposable);
+        CustomMode = heartbeatClient.RawHeartbeat
+            .Select(x => (AsvRadioCustomMode)(x?.CustomMode ?? 0))
+            .ToReadOnlyReactiveProperty();
+        _capabilities = new ReactiveProperty<AsvRadioCapabilities?>(default);
     }
     public string Name => $"{Base.Name}Ex";
     public ReadOnlyReactiveProperty<AsvRadioCapabilities?> Capabilities => _capabilities;
@@ -56,6 +39,9 @@ public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
         var result = await _commandClient.CommandLong(item => AsvRadioHelper.SetArgsForRadioOn(item, frequencyHz,modulation,referenceRxPowerDbm,txPowerDbm,codec),cs.Token).ConfigureAwait(false);
         return result.Result;
     }
+
+    private CancellationToken DisposeCancel => _disposeCancel.Token;
+
     public async Task<MavResult> DisableRadio( CancellationToken cancel)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
@@ -93,7 +79,8 @@ public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
         return result;
     }
 
-    public ReadOnlyReactiveProperty<AsvRadioCustomMode> CustomMode => _customMode;
+    public ReadOnlyReactiveProperty<AsvRadioCustomMode> CustomMode { get; }
+
     public IAsvRadioClient Base { get; }
     public MavlinkClientIdentity Identity => Base.Identity;
     public ICoreServices Core => Base.Core;
@@ -101,4 +88,32 @@ public class AsvRadioClientEx:DisposableOnceWithCancel,IAsvRadioClientEx
     {
         return Task.CompletedTask;
     }
+
+    #region Dispose
+
+    public void Dispose()
+    {
+        _capabilities.Dispose();
+        _disposeCancel.Dispose();
+        CustomMode.Dispose();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await CastAndDispose(_capabilities).ConfigureAwait(false);
+        await CastAndDispose(_disposeCancel).ConfigureAwait(false);
+        await CastAndDispose(CustomMode).ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

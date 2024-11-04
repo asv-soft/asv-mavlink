@@ -34,8 +34,8 @@ public class AsvChartInfo
 {
     public AsvChartInfo(ushort id, string signalName, AsvChartAxisInfo axisX, AsvChartAxisInfo axisY, AsvChartDataFormat format, ushort? hash = null)
     {
-        if (axisX == null) throw new ArgumentNullException(nameof(axisX));
-        if (axisY == null) throw new ArgumentNullException(nameof(axisY));
+        ArgumentNullException.ThrowIfNull(axisX);
+        ArgumentNullException.ThrowIfNull(axisY);
         AsvChartTypeHelper.CheckSignalName(signalName);
         SignalName = signalName;
         AxisX = axisX;

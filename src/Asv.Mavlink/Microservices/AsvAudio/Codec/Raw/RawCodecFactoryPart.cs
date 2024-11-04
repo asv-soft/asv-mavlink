@@ -1,50 +1,73 @@
 using System;
 using System.Collections.Generic;
-using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvAudio;
+using R3;
 
 namespace Asv.Mavlink;
 
 public class RawCodecFactoryPart:IAudioCodecFactory
 {
-    
-
-    public IAudioEncoder CreateEncoder(AsvAudioCodec codec, IObservable<ReadOnlyMemory<byte>> input)
+    public const AsvAudioCodec CodecId = AsvAudioCodec.AsvAudioCodecRaw8000Mono;
+    public IAudioEncoder CreateEncoder(AsvAudioCodec codec, Observable<ReadOnlyMemory<byte>> input)
     {
-        return new RawCodec(input);
+        return new RawEncoder(input);
     }
 
-    public IAudioDecoder CreateDecoder(AsvAudioCodec codec, IObservable<ReadOnlyMemory<byte>> input)
+    public IAudioDecoder CreateDecoder(AsvAudioCodec codec, Observable<ReadOnlyMemory<byte>> input)
     {
-        return new RawCodec(input);
+        return new RawDecoder(input);
     }
 
     public IEnumerable<AsvAudioCodec> AvailableCodecs
     {
         get
         {
-            yield return RawCodec.CodecId;
+            yield return CodecId;
         }
     }
 }
 
-public class RawCodec: DisposableOnceWithCancel,IAudioEncoder,IAudioDecoder
+public class RawDecoder : IAudioDecoder
 {
-    private readonly Subject<ReadOnlyMemory<byte>> _output;
-    public const AsvAudioCodec CodecId = AsvAudioCodec.AsvAudioCodecRaw8000Mono;
     
-    public AsvAudioCodec Codec => AsvAudioCodec.AsvAudioCodecRaw8000Mono;
-
-    public RawCodec(IObservable<ReadOnlyMemory<byte>> src)
+    public RawDecoder(Observable<ReadOnlyMemory<byte>> input)
     {
-        _output = new Subject<ReadOnlyMemory<byte>>().DisposeItWith(Disposable);
-        src.Subscribe(_output);
+        Output = input;
     }
 
+    public Observable<ReadOnlyMemory<byte>> Output { get; }
+    public AsvAudioCodec Codec => RawCodecFactoryPart.CodecId;
 
-    public IDisposable Subscribe(IObserver<ReadOnlyMemory<byte>> observer)
+    public void Dispose()
     {
-        return _output.Subscribe(observer);
+        
     }
+
+    public ValueTask DisposeAsync()
+    {
+        return ValueTask.CompletedTask;
+    }
+}
+
+public class RawEncoder : IAudioEncoder
+{
+    public RawEncoder(Observable<ReadOnlyMemory<byte>> input)
+    {
+        Output = input;
+    }
+
+    public void Dispose()
+    {
+        
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        return new ValueTask(Task.CompletedTask);
+    }
+
+    public Observable<ReadOnlyMemory<byte>> Output { get; }
+    public AsvAudioCodec Codec => RawCodecFactoryPart.CodecId;
 }

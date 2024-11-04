@@ -7,18 +7,4 @@ namespace Asv.Mavlink.Test.Browser;
 public class MavlinkDeviceBrowserTest
 {
 
-    [Fact]
-    public void METHOD()
-    {
-        
-            
-        
-        
-    }
-
-    [Fact]
-    public void METHOD()
-    {
-        
-    }
 }

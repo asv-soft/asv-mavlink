@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Threading.Tasks;
+using Asv.Cfg;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Asv.Mavlink.Vehicle;
 using ConsoleAppFramework;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 using Spectre.Console;
 
@@ -66,11 +66,10 @@ public class VirtualAdsbCommand
             router.AddPort(port);
         }
 
-        var srv = new AdsbServerDevice(
-            router,
-            new PacketSequenceCalculator(),
-            new MavlinkIdentity(config.SystemId, config.ComponentId),
-            new AdsbServerDeviceConfig());
+        var core = new CoreServices(router, new PacketSequenceCalculator(), NullLoggerFactory.Instance,
+            TimeProvider.System, new DefaultMeterFactory());
+        
+        var srv = new AdsbServerDevice(new MavlinkIdentity(config.SystemId, config.ComponentId), new AdsbServerDeviceConfig(), [], new MavParamByteWiseEncoding(), new InMemoryConfiguration(),core);
         srv.Start();
 
         AnsiConsole.MarkupLine($"[green]Found config for {config.Vehicles.Length} vehicles[/]");

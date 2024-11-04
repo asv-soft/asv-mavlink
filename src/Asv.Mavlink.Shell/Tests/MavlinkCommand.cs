@@ -4,13 +4,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ConsoleAppFramework;
+using R3;
 using Spectre.Console;
 
 namespace Asv.Mavlink.Shell
 {
     public class MavlinkCommand
     {
-        private string _connectionString = "tcp://127.0.0.1:5760";
+        private string _connectionString = "tcp://127.0.0.1:5762";
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
         private readonly ReaderWriterLockSlim _rw = new ReaderWriterLockSlim();
         private readonly List<DisplayRow> _items = new List<DisplayRow>();
@@ -23,15 +24,15 @@ namespace Asv.Mavlink.Shell
         /// <summary>
         /// Listen MAVLink packages and print statistic
         /// </summary>
-        /// <param name="connection">-cs, Connection string. Default "tcp://127.0.0.1:5760"</param>
+        /// <param name="connection">-cs, Connection string. Default "tcp://127.0.0.1:5762"</param>
         [Command("mavlink")]
-        public void RunMavlink(string connection = null)
+        public void RunMavlink(string? connection = null)
         {
             _connectionString = connection ?? _connectionString;
             Task.Factory.StartNew(KeyListen);
             var conn = MavlinkV2Connection.Create(_connectionString);
 
-            conn.Subscribe(OnPacket);
+            conn.RxPipe.Subscribe(OnPacket);
             conn.DeserializePackageErrors.Subscribe(OnError);
             while (!_cancel.IsCancellationRequested)
             {

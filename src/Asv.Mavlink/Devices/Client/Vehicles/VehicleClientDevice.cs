@@ -73,7 +73,6 @@ public class VehicleClientDevice: ClientDevice
         }
         var cmd = new CommandClient(Identity,_deviceConfig.Command,Core);
         yield return cmd;
-        yield return new OffboardClient(Identity, Core);
         yield return new LoggingClient(Identity, Core);
         var missions = new MissionClient(Identity, _deviceConfig.Missions,Core);
         yield return missions;

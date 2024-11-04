@@ -5,6 +5,8 @@ using Asv.Common;
 using Asv.Mavlink.V2.AsvRsga;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using ObservableCollections;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink;
@@ -13,34 +15,32 @@ public class AsvRsgaClientEx : DisposableOnceWithCancel, IAsvRsgaClientEx
 {
     private readonly ILogger _logger;
     private readonly ICommandClient _commandClient;
-    private readonly SourceList<AsvRsgaCustomMode> _supportedModes;
+    private readonly ObservableList<AsvRsgaCustomMode> _supportedModes;
     public AsvRsgaClientEx(IAsvRsgaClient client, ICommandClient commandClient)
     {
         _logger = client.Core.Log.CreateLogger<AsvRsgaClientEx>();
         _commandClient = commandClient;
         Base = client;
-        _supportedModes = new SourceList<AsvRsgaCustomMode>().DisposeItWith(Disposable);
+        _supportedModes = new ObservableList<AsvRsgaCustomMode>();
         client.OnCompatibilityResponse.Subscribe(OnCapabilityResponse).DisposeItWith(Disposable);
     }
 
-    private void OnCapabilityResponse(AsvRsgaCompatibilityResponsePayload asv)
+    private void OnCapabilityResponse(AsvRsgaCompatibilityResponsePayload? asv)
     {
+        if (asv == null) return;
         if (asv.Result != AsvRsgaRequestAck.AsvRsgaRequestAckOk)
         {
             _logger.ZLogWarning($"Error to get compatibility:{asv.Result:G}");
             return;
         }
         
-        _supportedModes.Edit(inner =>
-        {
-            inner.Clear();
-            inner.AddRange(RsgaHelper.GetSupportedModes(asv));
-        });
+        _supportedModes.Clear();
+        _supportedModes.AddRange(RsgaHelper.GetSupportedModes(asv));
     }
     public string Name => $"{Base.Name}Ex";
     public IAsvRsgaClient Base { get; }
 
-    public IObservable<IChangeSet<AsvRsgaCustomMode>> AvailableModes => _supportedModes.Connect();
+    public IReadOnlyObservableList<AsvRsgaCustomMode> AvailableModes => _supportedModes;
 
     public Task RefreshInfo(CancellationToken cancel = default)
     {

@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.AsvRadio;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -12,10 +13,11 @@ public class AsvRadioClient : MavlinkMicroserviceClient, IAsvRadioClient
         : base(AsvRadioHelper.IfcName, identity, core)
     {
         Status = InternalFilter<AsvRadioStatusPacket>()
-            .Select(p => p.Payload).Publish().RefCount();
+            .Select(p => p?.Payload)
+            .ToReadOnlyReactiveProperty();
     }
 
-    public IObservable<AsvRadioStatusPayload> Status { get; }
+    public ReadOnlyReactiveProperty<AsvRadioStatusPayload?> Status { get; }
     
     public Task<AsvRadioCapabilitiesResponsePayload> RequestCapabilities(CancellationToken cancel = default)
     {

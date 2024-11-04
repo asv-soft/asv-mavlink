@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.AsvRadio;
+using R3;
 
 namespace Asv.Mavlink;
 
@@ -21,11 +22,13 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _transponder =
             new MavlinkPacketTransponder<AsvRadioStatusPacket, AsvRadioStatusPayload>(identity, core);
-        
-        OnCapabilitiesRequest = InternalFilter<AsvRadioCapabilitiesRequestPacket>(x=>x.Payload.TargetSystem,x=>x.Payload.TargetComponent)
-            .Select(x => x.Payload).Publish().RefCount();
+
+        OnCapabilitiesRequest =
+            InternalFilter<AsvRadioCapabilitiesRequestPacket>(x => x.Payload.TargetSystem,
+                    x => x.Payload.TargetComponent)
+                .Select(x => x?.Payload).ToReadOnlyReactiveProperty();
         OnCodecCapabilitiesRequest = InternalFilter<AsvRadioCodecCapabilitiesRequestPacket>(x=>x.Payload.TargetSystem,x=>x.Payload.TargetComponent)
-            .Select(x => x.Payload).Publish().RefCount();
+            .Select(x => x?.Payload).ToReadOnlyReactiveProperty();
         
     }
     
@@ -40,7 +43,7 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
         _transponder.Set(changeCallback);
     }
     
-    public IObservable<AsvRadioCapabilitiesRequestPayload> OnCapabilitiesRequest { get; }
+    public ReadOnlyReactiveProperty<AsvRadioCapabilitiesRequestPayload?> OnCapabilitiesRequest { get; }
 
     public Task SendCapabilitiesResponse(Action<AsvRadioCapabilitiesResponsePayload> setValueCallback,
         CancellationToken cancel = default)
@@ -49,16 +52,45 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
         return InternalSend<AsvRadioCapabilitiesResponsePacket>(x => { setValueCallback(x.Payload); }, cancel);
     }
     
-    public IObservable<AsvRadioCodecCapabilitiesRequestPayload> OnCodecCapabilitiesRequest { get; }
+    public ReadOnlyReactiveProperty<AsvRadioCodecCapabilitiesRequestPayload?> OnCodecCapabilitiesRequest { get; }
     public Task SendCodecCapabilitiesRequest(Action<AsvRadioCodecCapabilitiesResponsePayload> setValueCallback, CancellationToken cancel = default)
     {
         if (setValueCallback == null) throw new ArgumentNullException(nameof(setValueCallback));
         return InternalSend<AsvRadioCodecCapabilitiesResponsePacket>(x => { setValueCallback(x.Payload); }, cancel);
     }
 
-    public override void Dispose()
+    #region Dispose
+
+    protected override void Dispose(bool disposing)
     {
-        _transponder.Dispose();
-        base.Dispose();
+        if (disposing)
+        {
+            _transponder.Dispose();
+            OnCapabilitiesRequest.Dispose();
+            OnCodecCapabilitiesRequest.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
+
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        await CastAndDispose(_transponder).ConfigureAwait(false);
+        await CastAndDispose(OnCapabilitiesRequest).ConfigureAwait(false);
+        await CastAndDispose(OnCodecCapabilitiesRequest).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.AsvSdr;
+using ObservableCollections;
 using R3;
 
 namespace Asv.Mavlink;
@@ -99,7 +101,7 @@ public interface IAsvSdrClientRecord
     /// The change is represented by an <see cref="IChangeSet{TObject, TKey}"/> where TObject is <see cref="AsvSdrClientRecordTag"/>
     /// and TKey is <see cref="TagId"/>.
     /// </returns>
-    IObservable<IChangeSet<AsvSdrClientRecordTag, TagId>> Tags { get; }
+    IReadOnlyObservableDictionary<TagId, AsvSdrClientRecordTag> Tags { get; }
 
     /// <summary>
     /// Downloads the tag list.
@@ -107,7 +109,7 @@ public interface IAsvSdrClientRecord
     /// <param name="progress">An optional progress object to report the download progress.</param>
     /// <param name="cancel">An optional cancellation token to cancel the download operation.</param>
     /// <returns>A task representing the asynchronous operation. The task will be completed with a boolean value indicating whether the download is successful or not.</returns>
-    Task<bool> DownloadTagList(IProgress<double> progress = null, CancellationToken cancel = default);
+    Task<bool> DownloadTagList(IProgress<double>? progress = null, CancellationToken cancel = default);
 
     /// <summary>
     /// Deletes a tag with the specified ID.
@@ -153,9 +155,7 @@ public static class AsvSdrClientRecordHelper
     public static void CopyTo(this IAsvSdrClientRecord self, AsvSdrRecordFileMetadata dest)
     {
         self.CopyTo(dest.Info);
-        var tags = new List<AsvSdrClientRecordTag>();
-        using var subs = self.Tags.Bind(out var list).Subscribe();
-        foreach (var tag in list)
+        foreach (var tag in self.Tags.Select(x=>x.Value))
         {
             var tagPayload = new AsvSdrRecordTagPayload();
             tag.CopyTo(tagPayload);
@@ -184,14 +184,14 @@ public static class AsvSdrClientRecordHelper
     public static void CopyTo(this IAsvSdrClientRecord self, AsvSdrRecordPayload dest)
     {
         MavlinkTypesHelper.SetGuid(dest.RecordGuid, self.Id);
-        MavlinkTypesHelper.SetString(dest.RecordName,self.Name.Value);
-        dest.Frequency = self.Frequency.Value;
-        dest.CreatedUnixUs = MavlinkTypesHelper.ToUnixTimeUs(self.Created.Value);
-        dest.DataType = self.DataType.Value;
-        dest.DurationSec = (uint)self.Duration.Value.TotalSeconds;
-        dest.DataCount = self.DataCount.Value;
-        dest.Size = self.ByteSize.Value;
-        dest.TagCount = self.TagsCount.Value;
+        MavlinkTypesHelper.SetString(dest.RecordName,self.Name.CurrentValue);
+        dest.Frequency = self.Frequency.CurrentValue;
+        dest.CreatedUnixUs = MavlinkTypesHelper.ToUnixTimeUs(self.Created.CurrentValue);
+        dest.DataType = self.DataType.CurrentValue;
+        dest.DurationSec = (uint)self.Duration.CurrentValue.TotalSeconds;
+        dest.DataCount = self.DataCount.CurrentValue;
+        dest.Size = self.ByteSize.CurrentValue;
+        dest.TagCount = self.TagsCount.CurrentValue;
         
     }
 }

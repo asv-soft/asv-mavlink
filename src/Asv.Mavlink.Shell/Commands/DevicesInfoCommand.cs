@@ -1,13 +1,12 @@
 using System;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.V2.Minimal;
 using ConsoleAppFramework;
-using DynamicData;
-using DynamicData.Binding;
+using ObservableCollections;
+using R3;
 using Spectre.Console;
 
 namespace Asv.Mavlink.Shell;
@@ -16,7 +15,8 @@ public class DevicesInfoCommand
 {
     private uint _refreshRate;
     private MavlinkRouter _router;
-    private IObservableList<MavlinkDeviceModel> _list;
+    private ISynchronizedView<KeyValuePair<MavlinkIdentity,MavlinkDevice>,MavlinkDeviceModel> _list;
+
 
     /// <summary>
     /// Command that shows info about devices in the mavlink network
@@ -37,7 +37,7 @@ public class DevicesInfoCommand
     private async Task RunAsync(string connectionString, uint? iterations, uint devicesTimeout,  uint refreshRate)
     {
         _refreshRate = refreshRate;
-        _router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects, publishScheduler: Scheduler.Default);
+        _router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
         _router.WrapToV2ExtensionEnabled = true;
         var portConfig = new MavlinkPortConfig
         {
@@ -47,13 +47,14 @@ public class DevicesInfoCommand
         };
         _router.AddPort(portConfig);
         
-        var svc = new MavlinkDeviceBrowser(_router, TimeSpan.FromSeconds(devicesTimeout), Scheduler.Default);
-        var devicesDisp = svc.Devices
-            .Do(_ => { })
-            .Transform(_ => new MavlinkDeviceModel(_))
-            .BindToObservableList(out _list)
-            .DisposeMany()
-            .Subscribe();
+        var svc = new MavlinkDeviceBrowser(_router, new MavlinkDeviceBrowserConfig
+        {
+            DeviceTimeoutMs = 2000,
+            DeviceCheckOldTimeoutMs = 1000
+        });
+        _list = svc.Devices
+            .CreateView(x => new MavlinkDeviceModel(x.Value, TimeProvider.System));
+            
         
         var table = new Table();
         table.Title("[[ [yellow]Devices Info[/] ]]");
@@ -93,25 +94,25 @@ public class DevicesInfoCommand
         finally
         {
             AnsiConsole.Markup("\nDone");
-            devicesDisp.Dispose();
-            svc.Dispose();
-            _router.Dispose();
+            _list.Dispose();
+            await svc.DisposeAsync();
+            await _router.DisposeAsync();
         }
     }
 
-    private void RenderRows(Table table, IObservableList<MavlinkDeviceModel> devices)
+    private void RenderRows(Table table, ISynchronizedView<KeyValuePair<MavlinkIdentity, MavlinkDevice>, MavlinkDeviceModel> devices)
     {
-        foreach (var device in devices.Items)
+        foreach (var device in devices.Unfiltered)
         {
             table.AddRow(
-                $"[red]{device.DeviceFullId}[/]",
-                $"{device.Type}",
-                $"{device.SystemId}",
-                $"{device.ComponentId}",
-                $"{device.MavlinkVersion}",
-                $"{device.BaseModeText}",
-                $"{device.SystemStatusText}",
-                $"[green]{device.RateText}[/]"
+                $"[red]{device.View.DeviceFullId}[/]",
+                $"{device.View.Type}",
+                $"{device.View.SystemId}",
+                $"{device.View.ComponentId}",
+                $"{device.View.MavlinkVersion}",
+                $"{device.View.BaseModeText}",
+                $"{device.View.SystemStatusText}",
+                $"[green]{device.View.RateText}[/]"
             );
         }
     }
@@ -119,10 +120,10 @@ public class DevicesInfoCommand
     private class MavlinkDeviceModel
     {
         private uint _rate;
-        private DateTime _lastUpdate;
+        private long _lastUpdate;
         private uint _lastRate;
 
-        public MavlinkDeviceModel(IMavlinkDevice info)
+        public MavlinkDeviceModel(MavlinkDevice info,TimeProvider timeProvider )
         {
             DeviceFullId = info.FullId;
             Type = ConvertTypeToString(info.Type);
@@ -130,18 +131,19 @@ public class DevicesInfoCommand
             ComponentId = info.ComponentId;
             MavlinkVersion = info.MavlinkVersion;
             RateText = "0.0 Hz";
-            Observable.Timer(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3), Scheduler.Default).Subscribe(_ =>
+            
+            Observable.Timer(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3), timeProvider).Subscribe(_ =>
             {
-                var now = DateTime.Now;
-                var rate = (((double)_rate - _lastRate) / (now - _lastUpdate).TotalSeconds);
+                var time = Interlocked.Exchange(ref _lastUpdate, timeProvider.GetTimestamp());
+                var cnt = Interlocked.Exchange(ref _lastRate,0);
+                var rate = (cnt / timeProvider.GetElapsedTime(time).TotalSeconds);
                 RateText = $"{rate:F1} Hz";
-                _lastUpdate = now;
-                _lastRate = _rate;
             });
 
-            info.Ping.Sample(TimeSpan.FromSeconds(2), Scheduler.Default)
+            info.Ping.ThrottleLast(TimeSpan.FromSeconds(2), timeProvider)
                 .Subscribe(_ =>
                 {
+                    Interlocked.Increment(ref _lastRate);
                     ToggleLinkPing = false;
                     ToggleLinkPing = true;
                 });
@@ -150,8 +152,8 @@ public class DevicesInfoCommand
             info.BaseMode.Subscribe(_ => BaseModeText = $"{_.ToString("F").Replace("MavModeFlag", "")}");
             info.SystemStatus.Subscribe(_ => SystemStatusText = _.ToString("G").Replace("MavState", ""));
         }
-    
-        public ushort DeviceFullId { get; }
+
+        public MavlinkIdentity DeviceFullId { get; set; }
         public string Type { get; }
         public byte SystemId { get; }
         public byte ComponentId { get; }
