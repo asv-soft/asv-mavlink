@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Diagnostic.Client;
 using ConsoleAppFramework;
-using DynamicData;
 using Spectre.Console;
 
 namespace Asv.Mavlink.Shell;
@@ -21,9 +18,6 @@ public class TestGenerateDiagnosticsCommand
     
     private uint _refreshRate;
     private DiagnosticClient _client;
-
-    private ReadOnlyObservableCollection<INamedProbe<int>>? _intItems;
-    private ReadOnlyObservableCollection<INamedProbe<float>>? _floatItems;
     private IList<(string, string, string)>? _unitedItems = new List<(string, string, string)>();
 
     /// <summary>
@@ -35,7 +29,7 @@ public class TestGenerateDiagnosticsCommand
     /// <param name="refreshRate">-r, (in ms) States how fast should the console be refreshed</param>
     /// <returns></returns>
     [Command("test-diagnostics")]
-    public int Run(string connectionString, byte targetSystemId, byte targetComponentId, uint refreshRate = 1000)
+    public int Run(string connectionString = "tcp://127.0.0.1:7341", byte targetSystemId = 255, byte targetComponentId = 255, uint refreshRate = 1000)
     {
         _connectionString = connectionString;
         _targetSystemId = targetSystemId;
@@ -49,7 +43,7 @@ public class TestGenerateDiagnosticsCommand
     
     private async Task RunAsync()
     {
-        using var router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects, publishScheduler: Scheduler.Default);
+        using var router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
         router.WrapToV2ExtensionEnabled = true;
         router.AddPort(new MavlinkPortConfig
         {
@@ -57,32 +51,12 @@ public class TestGenerateDiagnosticsCommand
             Name = "to Server",
             IsEnabled = true
         });
+
+        var core = new CoreServices(router);
         
-        _client = new DiagnosticClient(
-            new DiagnosticClientConfig(),
-            router, 
-            new MavlinkClientIdentity
-            {
-                SystemId = 3,
-                ComponentId = 4,
-                TargetSystemId = _targetSystemId,
-                TargetComponentId = _targetComponentId
-            }, 
-            new PacketSequenceCalculator(), 
-            TimeProvider.System,
-            Scheduler.Default
-        );
+        _client = new DiagnosticClient(new MavlinkClientIdentity(3,4,_targetSystemId,_targetComponentId), new DiagnosticClientConfig(),core);
         
-        _client.IntProbes
-            .Transform(to => to)
-            .Bind(out _intItems)
-            .DisposeMany()
-            .Subscribe();
-        _client.FloatProbes
-            .Transform(to => to)
-            .Bind(out _floatItems)
-            .DisposeMany()
-            .Subscribe();
+        
         
         var table = new Table();
         table.Title("[[ [yellow]Diagnostics info[/] ]]");
@@ -141,28 +115,22 @@ public class TestGenerateDiagnosticsCommand
     private void UniteItems()
     {
         _unitedItems?.Clear();
-        if (_intItems is not null)
+        foreach (var item in _client.IntProbes.Select(x=>x.Value))
         {
-            foreach (var item in _intItems)
-            {
-                _unitedItems?.Add((
-                    item.Name, 
-                    "Int", 
-                    item.Value.Value.Item2.ToString()
-                ));
-            }
+            _unitedItems?.Add((
+                item.Name, 
+                "Int", 
+                item.Value.CurrentValue.Item2.ToString()
+            ));
         }
         
-        if (_floatItems is not null)
+        foreach (var item in _client.FloatProbes.Select(x=>x.Value))
         {
-            foreach (var item in _floatItems)
-            {
-                _unitedItems?.Add((
-                    item.Name, 
-                    "Float", 
-                    item.Value.Value.Item2.ToString(CultureInfo.CurrentCulture)
-                ));
-            }
+            _unitedItems?.Add((
+                item.Name, 
+                "Float", 
+                item.Value.CurrentValue.Item2.ToString(CultureInfo.CurrentCulture)
+            ));
         }
 
         _unitedItems = _unitedItems?.OrderBy(i => i.Item1).ToList();

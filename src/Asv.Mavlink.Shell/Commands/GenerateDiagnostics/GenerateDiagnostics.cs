@@ -156,23 +156,16 @@ public class GenerateDiagnostics
 
     private IDiagnosticServer SetUpServer(GenerateDiagnosticsConfig config)
     {
-        _router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects, publishScheduler: Scheduler.Default);
+        _router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
         _router.WrapToV2ExtensionEnabled = true;
         foreach (var port in config.Ports)
         {
             AnsiConsole.MarkupLine($"[green]Add connection port {port.Name}[/]: [yellow]{port.ConnectionString}[/]");
             _router.AddPort(port);
         }
-        
-        var server = new DiagnosticServer(
-            config.ServerConfig,
-            _router, 
-            new MavlinkIdentity(config.SystemId, config.ComponentId), 
-            new PacketSequenceCalculator(), 
-            TimeProvider.System,
-            Scheduler.Default
-        );
 
+        var core = new CoreServices(_router);
+        var server = new DiagnosticServer(new MavlinkIdentity(config.SystemId, config.ComponentId), config.ServerConfig, core);
         return server;
     }
 }

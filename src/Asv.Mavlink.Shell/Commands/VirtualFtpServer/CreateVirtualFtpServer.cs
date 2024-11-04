@@ -50,7 +50,7 @@ public class CreateVirtualFtpServerCommand
             return;
         }
         
-        var router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects, publishScheduler: Scheduler.Default);
+        var router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
         router.WrapToV2ExtensionEnabled = true;
         foreach (var port in cfg.Ports)
         {
@@ -58,20 +58,12 @@ public class CreateVirtualFtpServerCommand
             router.AddPort(port);
         }
 
-        var seq = new PacketSequenceCalculator();
         var deviceCfg = new FtpServerDeviceConfig
         {
             ServerCfg = cfg.FtpServerConfig,
             ServerExCfg = cfg.FtpServerExConfig,
         };
-        var device = new FtpServerDevice(
-            router, seq,
-            new MavlinkIdentity(cfg.SystemId, cfg.ComponentId),
-            deviceCfg,
-            null,
-            TimeProvider.System,
-            Scheduler.Default,
-            _loggerFactory
-        );
+        var core = new CoreServices(router);
+        var device = new FtpServerDevice(new MavlinkIdentity(cfg.SystemId, cfg.ComponentId), deviceCfg, core);
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -9,11 +8,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class MavlinkFtpServerExConfig
+public class MavlinkFtpServerExConfig:MavlinkFtpServerConfig
 {
     public required string RootDirectory { get; init; }
 }
@@ -21,7 +20,6 @@ public class MavlinkFtpServerExConfig
 public class FtpServerEx : IFtpServerEx
 {
     private readonly ILogger _logger;
-    private readonly MavlinkFtpServerExConfig _config;
     private readonly IFileSystem _fileSystem;
     private readonly ConcurrentBag<FtpSession> _sessions;
     private readonly string _rootDirectory;
@@ -76,7 +74,7 @@ public class FtpServerEx : IFtpServerEx
         session.Stream = stream;
 
         var fileSize = (uint)stream.Length;
-        _logger.ZLogInformation($"Success open file read {path}");
+        _logger.ZLogDebug($"Success open file read {path}");
         return Task.FromResult(new ReadHandle(session.Id, fileSize));
     }
 

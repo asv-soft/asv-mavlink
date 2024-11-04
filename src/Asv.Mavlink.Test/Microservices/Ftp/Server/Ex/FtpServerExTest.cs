@@ -10,8 +10,6 @@ public class FtpServerExTest(ITestOutputHelper log) : ServerTestBase<FtpServerEx
     private MockFileSystem _fs = new();
     private MavlinkFtpServerExConfig _config = new()
     {
-        NetworkId = 0,
-        BurstReadChunkDelayMs = 100,
         RootDirectory = "root"
     };
 

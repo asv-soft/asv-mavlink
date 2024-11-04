@@ -117,8 +117,8 @@ public class FileSystemHierarchicalStore<TKey, TFile> : DisposableOnceWithCancel
             _logger.ZLogWarning($"Directory '{rootFolder}' not exist. Try create");
             Directory.CreateDirectory(rootFolder);
         }
-        _count = new RxValue<ushort>().DisposeItWith(Disposable);
-        _size = new RxValue<ulong>().DisposeItWith(Disposable);
+        _count = new ReactiveProperty<ushort>().DisposeItWith(Disposable);
+        _size = new ReactiveProperty<ulong>().DisposeItWith(Disposable);
         
         InternalUpdateEntries();
         
@@ -134,7 +134,7 @@ public class FileSystemHierarchicalStore<TKey, TFile> : DisposableOnceWithCancel
     /// <value>
     /// An instance of <see cref="IRxValue{ulong}"/> representing the size value.
     /// </value>
-    public IRxValue<ulong> Size => _size;
+    public ReadOnlyReactiveProperty<ulong> Size => _size;
 
     public void UpdateEntries()
     {
@@ -165,7 +165,7 @@ public class FileSystemHierarchicalStore<TKey, TFile> : DisposableOnceWithCancel
     {
         foreach (var directory in _fileSystem.Directory.EnumerateDirectories(parentFolder?.FullPath ?? _rootFolder))
         {
-            var folderInfo = new DirectoryInfo(directory);
+            var folderInfo = _fileSystem.DirectoryInfo.New(directory);
             Debug.Assert(folderInfo.Exists);
             if (_format.TryGetFolderInfo(folderInfo,out var id, out var displayName) == false)
             {
@@ -715,7 +715,7 @@ public class FileSystemHierarchicalStore<TKey, TFile> : DisposableOnceWithCancel
 
             var file = _format.CreateFile(
                 _fileSystem.File.Open(fileInfo.FullName, FileMode.OpenOrCreate, FileAccess.ReadWrite), id, name);
-            var wrapper = new CachedFile<TKey, TFile>(id, name, parentId, file, OnFileDisposed);
+            var wrapper = new CachedFile<TKey, TFile>(id, name, parentId, file, OnFileDisposed, _timeProvider);
             var entry = new FileSystemHierarchicalStoreEntry<TKey>(id, name, FolderStoreEntryType.File, parentId,
                 fileInfo.FullName);
             _entries.Add(id, entry);
@@ -761,7 +761,7 @@ public class FileSystemHierarchicalStore<TKey, TFile> : DisposableOnceWithCancel
         {
             var stream = _fileSystem.File.Open(entry.FullPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             var file = _format.OpenFile(stream);
-            exist = new CachedFile<TKey, TFile>(entry.Id, entry.Name, entry.ParentId, file, OnFileDisposed);
+            exist = new CachedFile<TKey, TFile>(entry.Id, entry.Name, entry.ParentId, file, OnFileDisposed, _timeProvider);
             exist.AddRef();
             _logger.ZLogTrace($"Add file '{entry.Name}'[{entry.Id}] to cache (ref count={exist.RefCount})");
             _fileCache.Add(exist);
@@ -798,8 +798,7 @@ public class FileSystemHierarchicalStore<TKey, TFile> : DisposableOnceWithCancel
     /// <summary>
     /// Checks the file cache for rotten files and removes them.
     /// </summary>
-    /// <param name="delay">The delay in milliseconds to wait before checking the cache again if it is already in progress.</param>
-    private void CheckFileCacheForRottenFiles(long delay)
+    private void CheckFileCacheForRottenFiles(object? state)
     {
         if (Interlocked.CompareExchange(ref _checkCacheInProgress, 1, 0) != 0) return;
 
