@@ -119,11 +119,13 @@ public class FtpClientEx : IFtpClientEx, IMavlinkMicroserviceClient,IDisposable,
                     {
                         // special case for root path: we don't need to trim '/' on root path
                         charSize = await Base.ListDirectory(path, offset, array, cancel).ConfigureAwait(false);
+                        recursive = false;
                     }
                     else
                     {
                         // path must be trimmed to avoid '/' at the end: e.g. /log/ -> /log
-                        charSize = await Base.ListDirectory(path.TrimEnd(MavlinkFtpHelper.DirectorySeparator), offset, array, cancel).ConfigureAwait(false);    
+                        if (path.EndsWith(MavlinkFtpHelper.DirectorySeparator)) path= path.TrimEnd('/');
+                        charSize = await Base.ListDirectory(path, offset, array, cancel).ConfigureAwait(false);    
                     }
                     
                     var seq = new ReadOnlySequence<char>(array, 0, charSize);
@@ -190,7 +192,6 @@ public class FtpClientEx : IFtpClientEx, IMavlinkMicroserviceClient,IDisposable,
                     var result = await Base.ReadFile(request, bufferToSave, cancel).ConfigureAwait(false);
                     skip += result.ReadCount;
                     progress.Report((double)skip / file.Size);
-                    
                 }
                 catch (FtpNackEndOfFileException e)
                 {
@@ -216,7 +217,7 @@ public class FtpClientEx : IFtpClientEx, IMavlinkMicroserviceClient,IDisposable,
         var buffer = ArrayPool<byte>.Shared.Rent(MavlinkFtpHelper.MaxDataSize);
         try
         {
-            while (true)
+            while (buffer.Length <= streamToSave.Length)
             {
                 if (file.Size - skip < take)
                 {
@@ -232,7 +233,7 @@ public class FtpClientEx : IFtpClientEx, IMavlinkMicroserviceClient,IDisposable,
                     progress.Report((double)skip / file.Size);
                     
                 }
-                catch (FtpNackEndOfFileException e)
+                catch (FtpNackEndOfFileException)
                 {
                     break;
                 }

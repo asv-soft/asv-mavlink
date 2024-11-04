@@ -40,6 +40,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="TestableIO.System.IO.Abstractions.Extensions" Version="2.2.5" />
+    <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="21.0.29" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Asv.Mavlink\Asv.Mavlink.csproj" />

@@ -26,7 +26,7 @@ public interface IFtpServerEx : IDisposable, IAsyncDisposable
     public Task WriteFile(WriteRequest request, Memory<byte> buffer, CancellationToken cancel = default);
 }
 
-public sealed class FtpSession : IDisposable, IAsyncDisposable
+public sealed class FtpSession(byte id) : IDisposable, IAsyncDisposable
 {
     public enum SessionMode
     {
@@ -37,6 +37,7 @@ public sealed class FtpSession : IDisposable, IAsyncDisposable
         OpenReadWrite,
     }
     
+    private bool _disposed;
     private Stream? _stream;
     public Stream? Stream
     {
@@ -52,14 +53,8 @@ public sealed class FtpSession : IDisposable, IAsyncDisposable
         }
     }
     
-    public byte Id { get; }
-    public SessionMode Mode { get; private set; }
-    
-    public FtpSession(byte id)
-    {
-        Id = id;
-        Mode = SessionMode.Free;
-    }
+    public byte Id { get; } = id;
+    public SessionMode Mode { get; private set; } = SessionMode.Free;
 
     public void Open(SessionMode mode = SessionMode.Unknown)
     {
@@ -82,29 +77,44 @@ public sealed class FtpSession : IDisposable, IAsyncDisposable
         Mode = SessionMode.Free;
         await DisposeAsync().ConfigureAwait(false);
     }
+    
+    private void Dispose(bool disposing)
+    {
+        if (_disposed) return;
+        if (disposing)
+        {
+            _stream?.Dispose();
+        }
+        _disposed = true;
+    }
         
     public void Dispose()
     {
-        ReleaseAllResources();
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
     
+    private async ValueTask DisposeAsyncCore()
+    {
+        if (!_disposed)
+        {
+            if (_stream is not null)
+            {
+                await _stream.DisposeAsync().ConfigureAwait(false);
+            }
+            
+            _disposed = true;
+        }
+    }
+
     public async ValueTask DisposeAsync()
     {
-        await ReleaseAllResourcesAsync().ConfigureAwait(false);
+        await DisposeAsyncCore().ConfigureAwait(false);
+        GC.SuppressFinalize(this);
     }
-        
-    private void ReleaseAllResources()
+
+    ~FtpSession()
     {
-        _stream?.Dispose();
-    }
-    
-    private async Task ReleaseAllResourcesAsync()
-    {
-        if (_stream is null)
-        {
-            return;
-        }
-        
-        await _stream.DisposeAsync().ConfigureAwait(false);
+        Dispose(disposing: false);
     }
 }

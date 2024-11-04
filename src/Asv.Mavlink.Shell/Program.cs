@@ -30,6 +30,9 @@ class Program
         app.Add<ShowParams>();
         app.Add<MavlinkCommand>();
         app.Add<PacketViewerCommand>();
+        app.Add<CreateVirtualFtpServerCommand>();
+        app.Add<GenerateDiagnostics>();
+        app.Add<TestGenerateDiagnosticsCommand>();
         await app.RunAsync(args);
     }
 }
