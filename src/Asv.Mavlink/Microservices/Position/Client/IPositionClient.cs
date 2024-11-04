@@ -10,7 +10,6 @@ namespace Asv.Mavlink;
 /// </summary>
 public interface IPositionClient: IMavlinkMicroserviceClient
 {
-    ICoreServices Core { get; }
     /// <summary>
     /// Gets the RX value for GlobalPosition of type GlobalPositionIntPayload.
     /// </summary>

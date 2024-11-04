@@ -83,44 +83,44 @@ public interface IMavParamExtTypeMetadata
     /// /
     string GetValidationError(MavParamExtValue newValue);
     
-    private static string CombineConfigKey(string prefix, string name)
+    private static string CombineConfigKey(string? prefix, string name)
     {
-        return prefix.IsNullOrWhiteSpace() ? name : $"{prefix}{name}";
+        return string.IsNullOrWhiteSpace(prefix) ? name : $"{prefix}{name}";
     }
     
-    public MavParamExtValue ReadFromConfig(IConfiguration config, string prefix = null)
+    public MavParamExtValue ReadFromConfig(IConfiguration config, string? prefix = null)
     {
         var key = CombineConfigKey(prefix, Name);
         switch (Type)
         {
             case MavParamExtType.MavParamExtTypeUint8:
-                return new MavParamExtValue(config.Get(key, (byte)DefaultValue));
+                return new MavParamExtValue(config.Get(key, new System.Lazy<byte>(()=>DefaultValue)));
             case MavParamExtType.MavParamExtTypeInt8:
-                return new MavParamExtValue(config.Get(key, (sbyte)DefaultValue));
+                return new MavParamExtValue(config.Get(key, new System.Lazy<sbyte>(()=>DefaultValue)));
             case MavParamExtType.MavParamExtTypeUint16:
-                return new MavParamExtValue(config.Get(key, (ushort)DefaultValue));
+                return new MavParamExtValue(config.Get(key, new System.Lazy<ushort>(DefaultValue)));
             case MavParamExtType.MavParamExtTypeInt16:
-                return new MavParamExtValue(config.Get(key, (short)DefaultValue));
+                return new MavParamExtValue(config.Get(key,  new System.Lazy<short>(DefaultValue)));
             case MavParamExtType.MavParamExtTypeUint32:
-                return new MavParamExtValue(config.Get(key, (uint)DefaultValue));
+                return new MavParamExtValue(config.Get(key,  new System.Lazy<uint>(DefaultValue)));
             case MavParamExtType.MavParamExtTypeInt32:
-                return new MavParamExtValue(config.Get(key, (int)DefaultValue));
+                return new MavParamExtValue(config.Get(key,  new System.Lazy<int>(DefaultValue)));
             case MavParamExtType.MavParamExtTypeReal32:
-                return new MavParamExtValue(config.Get(key, (float)DefaultValue));
+                return new MavParamExtValue(config.Get(key,  new System.Lazy<float>(DefaultValue)));
             case MavParamExtType.MavParamExtTypeUint64:
-                return new MavParamExtValue(config.Get(key, (ulong)DefaultValue));
+                return new MavParamExtValue(config.Get(key, new System.Lazy<ulong>(DefaultValue)));
             case MavParamExtType.MavParamExtTypeInt64:
-                return new MavParamExtValue(config.Get(key, (long)DefaultValue));
+                return new MavParamExtValue(config.Get(key, new System.Lazy<long>(DefaultValue)));
             case MavParamExtType.MavParamExtTypeReal64:
-                return new MavParamExtValue(config.Get(key, (double)DefaultValue));
+                return new MavParamExtValue(config.Get(key, new System.Lazy<double>(DefaultValue)));
             case MavParamExtType.MavParamExtTypeCustom:
-                return new MavParamExtValue(config.Get(key, (char[])DefaultValue));
+                return new MavParamExtValue(config.Get(key, new System.Lazy<char[]>(DefaultValue)));
             default:
                 throw new ArgumentOutOfRangeException(nameof(Type));
         }
     }
     
-    public void WriteToConfig(IConfiguration config, MavParamExtValue value,string prefix = null)
+    public void WriteToConfig(IConfiguration config, MavParamExtValue value,string? prefix = null)
     {
         var key = CombineConfigKey(prefix, Name);
         switch (value.Type)

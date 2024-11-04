@@ -15,7 +15,7 @@ public interface IListDataFile<out TMetadata>:IDisposable
     where TMetadata:ISpanSerializable
 {
     IListDataFileFormat Header { get; }
-    object Tag { get; set; }
+    object? Tag { get; set; }
 
     /// <summary>
     /// Count of items in list

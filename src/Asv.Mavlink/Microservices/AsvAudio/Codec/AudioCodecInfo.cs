@@ -73,8 +73,7 @@ public class AudioCodecInfo: IEquatable<AudioCodecInfo>
             default:
                 throw new ArgumentOutOfRangeException(nameof(codec), codec, null);
         }
-
-        return null;
+        throw new ArgumentOutOfRangeException(nameof(codec), codec, null);
     }
     
     private AudioCodecInfo(AsvAudioCodec codec, AsvAudioPcmFormat format, uint sampleRate,
@@ -93,14 +92,14 @@ public class AudioCodecInfo: IEquatable<AudioCodecInfo>
     public uint SampleRate { get; }
     public AsvAudioChannel Channel { get; }
 
-    public bool Equals(AudioCodecInfo other)
+    public bool Equals(AudioCodecInfo? other)
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
         return Name == other.Name && Codec == other.Codec && Format == other.Format && SampleRate == other.SampleRate && Channel == other.Channel;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;

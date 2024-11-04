@@ -65,7 +65,7 @@ namespace Asv.Mavlink
         /// /
         public static async Task<TAnswerPacket> SendAndWaitAnswer<TAnswerPacket, TAnswerPayload>(
             this IMavlinkV2Connection src, IPacketV2<IPayload> packet, int targetSystem, int targetComponent,
-            CancellationToken cancel, Func<TAnswerPacket, bool> filter = null)
+            CancellationToken cancel, Func<TAnswerPacket, bool>? filter = null)
             where TAnswerPacket : IPacketV2<TAnswerPayload>, new() where TAnswerPayload : IPayload
         {
             var origin = new TAnswerPacket();

@@ -37,14 +37,14 @@ public class TagId:IEquatable<TagId>
         return $"TAG:{RecordGuid:N}.{TagGuid:N}";
     }
 
-    public bool Equals(TagId other)
+    public bool Equals(TagId? other)
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
         return RecordGuid.Equals(other.RecordGuid) && TagGuid.Equals(other.TagGuid);
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;

@@ -76,7 +76,7 @@ public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdenti
         CancellationToken cancel, 
         Func<TAnswerPacket, byte> targetSystemGetter,
         Func<TAnswerPacket, byte> targetComponentGetter, 
-        Func<TAnswerPacket, bool> filter = null,
+        Func<TAnswerPacket, bool>? filter = null,
         int timeoutMs = 1000)
         where TAnswerPacket : IPacketV2<IPayload>, new()
     {
@@ -105,7 +105,7 @@ public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdenti
         Func<TPacketRecv, bool> filter, 
         Func<TPacketRecv, TResult> resultGetter,
         int attemptCount = 5,
-        Action<TPacketSend, int> fillOnConfirmation = null, int timeoutMs = 1000, CancellationToken cancel = default)
+        Action<TPacketSend, int>? fillOnConfirmation = null, int timeoutMs = 1000, CancellationToken cancel = default)
         where TPacketSend : IPacketV2<IPayload>, new()
         where TPacketRecv : IPacketV2<IPayload>, new()
     {

@@ -138,8 +138,9 @@ public class ArduCopterModeClient : ModeClient
     {
     }
 
-    protected override OpMode Convert(HeartbeatPayload hb)
+    protected override OpMode Convert(HeartbeatPayload? hb)
     {
+        if (hb == null) return OpMode.Unknown;
         return AllModes.FirstOrDefault(x => x.CustomMode == hb.CustomMode) ?? OpMode.Unknown;
     }
 

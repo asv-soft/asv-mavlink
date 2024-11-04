@@ -103,8 +103,9 @@ public class ArduQuadPlaneModeClient(IHeartbeatClient heartbeat, ICommandClient 
     
     #endregion
 
-    protected override OpMode Convert(HeartbeatPayload hb)
+    protected override OpMode Convert(HeartbeatPayload? hb)
     {
+        if (hb == null) return OpMode.Unknown;
         return AllModes.FirstOrDefault(x => x.CustomMode == hb.CustomMode) ?? OpMode.Unknown;
     }
 

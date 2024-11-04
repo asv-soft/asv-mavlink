@@ -40,7 +40,7 @@ public interface IMissionClientEx:IMavlinkMicroserviceClient
     /// <param name="cancel">A cancellation token that can be used to cancel the upload operation.</param>
     /// <param name="progress">An optional callback to track the progress of the upload. The callback receives a value between 0 and 1 representing the progress percentage.</param>
     /// <returns>A task representing the asynchronous upload operation.</returns>
-    Task Upload(CancellationToken cancel = default, Action<double> progress = null);
+    Task Upload(CancellationToken cancel = default, Action<double>? progress = null);
 
     /// <summary>
     /// Creates a new MissionItem object.

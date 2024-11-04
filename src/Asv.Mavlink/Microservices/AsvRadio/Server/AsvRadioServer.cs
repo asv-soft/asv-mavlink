@@ -28,7 +28,8 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
                     x => x.Payload.TargetComponent)
                 .Select(x => x?.Payload).ToReadOnlyReactiveProperty();
         OnCodecCapabilitiesRequest = InternalFilter<AsvRadioCodecCapabilitiesRequestPacket>(x=>x.Payload.TargetSystem,x=>x.Payload.TargetComponent)
-            .Select(x => x?.Payload).ToReadOnlyReactiveProperty();
+            .Select(x => x?.Payload)
+            .ToReadOnlyReactiveProperty();
         
     }
     

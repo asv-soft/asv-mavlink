@@ -176,7 +176,7 @@ namespace Asv.Mavlink
             return InternalSend((int)mode,v=>setValueCallback(v.Payload), cancel);
         }
 
-        public IPacketV2<IPayload> CreateRecordData(AsvSdrCustomMode mode)
+        public IPacketV2<IPayload>? CreateRecordData(AsvSdrCustomMode mode)
         {
             if (mode == AsvSdrCustomMode.AsvSdrCustomModeIdle)
                 throw new ArgumentException("Can't create message for IDLE mode", nameof(mode));

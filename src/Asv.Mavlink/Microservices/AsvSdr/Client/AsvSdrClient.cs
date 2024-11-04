@@ -164,14 +164,14 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     public async Task<AsvSdrCalibTablePayload> ReadCalibrationTable(ushort tableIndex, CancellationToken cancel = default)
     {
         var id = GenerateRequestIndex();
-        var result = await InternalCall<(AsvSdrCalibTablePayload,AsvSdrCalibAccPayload), AsvSdrCalibTableReadPacket>(
+        var result = await InternalCall<(AsvSdrCalibTablePayload?,AsvSdrCalibAccPayload?), AsvSdrCalibTableReadPacket>(
             arg =>
             {
                 arg.Payload.TargetComponent = _identity.Target.ComponentId;
                 arg.Payload.TargetSystem = _identity.Target.SystemId;
                 arg.Payload.RequestId = id;
                 arg.Payload.TableIndex = tableIndex;
-            }, (IPacketV2<IPayload> input, out (AsvSdrCalibTablePayload, AsvSdrCalibAccPayload) tuple) =>
+            }, (IPacketV2<IPayload> input, out (AsvSdrCalibTablePayload?, AsvSdrCalibAccPayload?) tuple) =>
             {
                 switch (input.MessageId)
                 {
@@ -200,7 +200,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     public async Task<AsvSdrCalibTableRowPayload> ReadCalibrationTableRow(ushort tableIndex, ushort rowIndex, CancellationToken cancel = default)
     {
         var id = GenerateRequestIndex();
-        var result = await InternalCall<(AsvSdrCalibTableRowPayload,AsvSdrCalibAccPayload), AsvSdrCalibTableRowReadPacket>(
+        var result = await InternalCall<(AsvSdrCalibTableRowPayload?,AsvSdrCalibAccPayload?), AsvSdrCalibTableRowReadPacket>(
             arg =>
             {
                 arg.Payload.TargetComponent = _identity.Target.ComponentId;
@@ -208,7 +208,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
                 arg.Payload.RequestId = id;
                 arg.Payload.TableIndex = tableIndex;
                 arg.Payload.RowIndex = rowIndex;
-            }, (IPacketV2<IPayload> input, out (AsvSdrCalibTableRowPayload, AsvSdrCalibAccPayload) tuple) =>
+            }, (IPacketV2<IPayload> input, out (AsvSdrCalibTableRowPayload?, AsvSdrCalibAccPayload?) tuple) =>
             {
                 switch (input.MessageId)
                 {

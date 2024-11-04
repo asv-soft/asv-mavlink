@@ -54,7 +54,7 @@ public class AsvSdrClientCalibrationTable: IDisposable,IAsyncDisposable
         _remoteSize.OnNext(payload.RowCount);
     }
     
-    public async Task<CalibrationTableRow[]> Download(IProgress<double> progress = null,CancellationToken cancel = default)
+    public async Task<CalibrationTableRow[]> Download(IProgress<double>? progress = null,CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();
         progress.Report(0);

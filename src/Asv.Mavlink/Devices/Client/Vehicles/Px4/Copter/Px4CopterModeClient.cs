@@ -115,8 +115,9 @@ public class Px4CopterModeClient  : ModeClient
     {
     }
 
-    protected override OpMode Convert(HeartbeatPayload hb)
+    protected override OpMode Convert(HeartbeatPayload? hb)
     {
+        if (hb == null) return OpMode.Unknown;
         var customMainMode = (CustomMainMode)((hb.CustomMode & 0xFF0000) >> 16);
         var customSubMode = (CustomSubMode)((hb.CustomMode & 0xFF000000) >> 24);
         var mode = hb.BaseMode;

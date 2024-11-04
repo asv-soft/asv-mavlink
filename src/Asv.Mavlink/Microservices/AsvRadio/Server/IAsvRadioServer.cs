@@ -12,7 +12,7 @@ public interface IAsvRadioServer:IMavlinkMicroserviceServer
     void Set(Action<AsvRadioStatusPayload> changeCallback);
     ReadOnlyReactiveProperty<AsvRadioCapabilitiesRequestPayload?> OnCapabilitiesRequest { get; }
     Task SendCapabilitiesResponse(Action<AsvRadioCapabilitiesResponsePayload> setValueCallback, CancellationToken cancel = default);
-    ReadOnlyReactiveProperty<AsvRadioCodecCapabilitiesRequestPayload> OnCodecCapabilitiesRequest { get; }
+    ReadOnlyReactiveProperty<AsvRadioCodecCapabilitiesRequestPayload?> OnCodecCapabilitiesRequest { get; }
     Task SendCodecCapabilitiesRequest(Action<AsvRadioCodecCapabilitiesResponsePayload> setValueCallback, CancellationToken cancel = default);
     
 }

@@ -6,6 +6,8 @@ namespace Asv.Mavlink;
 
 public readonly struct MavParamExtValue : IComparable<MavParamExtValue>, IComparable, IEquatable<MavParamExtValue>
 {
+    
+
     public const int RawValueBufferMaxLength = 128;
 
     private readonly byte[] _rawValue = new byte[RawValueBufferMaxLength];
@@ -158,7 +160,11 @@ public readonly struct MavParamExtValue : IComparable<MavParamExtValue>, ICompar
 
     #region Comparison
 
-    public int CompareTo(object obj)
+    public override bool Equals(object? obj)
+    {
+        return obj is MavParamExtValue other && Equals(other);
+    }
+    public int CompareTo(object? obj)
     {
         if (ReferenceEquals(null, obj)) return 1;
         return obj is MavParamValue other ? CompareTo(other) :

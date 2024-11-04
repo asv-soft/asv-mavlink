@@ -44,7 +44,7 @@ public class AsvSdrClientEx : IAsvSdrClientEx, IDisposable, IAsyncDisposable
         
         _maxTimeToWaitForResponseForList = TimeSpan.FromMilliseconds(config.MaxTimeToWaitForResponseForListMs);
         CustomMode = heartbeatClient.RawHeartbeat
-            .Select(p => (AsvSdrCustomMode)p.CustomMode)
+            .Select(p => (AsvSdrCustomMode)(p?.CustomMode ?? 0))
             .ToReadOnlyReactiveProperty();
 
         RecordsCount =  client.Status

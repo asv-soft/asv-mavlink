@@ -153,7 +153,7 @@ public readonly struct MavParamValue: IComparable<MavParamValue>, IComparable,IE
         return 0;
     }
 
-    public int CompareTo(object obj)
+    public int CompareTo(object? obj)
     {
         if (ReferenceEquals(null, obj)) return 1;
         return obj is MavParamValue other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(MavParamValue)}");
@@ -196,7 +196,7 @@ public readonly struct MavParamValue: IComparable<MavParamValue>, IComparable,IE
         return Nullable.Equals(_realValue, other._realValue) && _intValue == other._intValue && Type == other.Type;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is MavParamValue other && Equals(other);
     }

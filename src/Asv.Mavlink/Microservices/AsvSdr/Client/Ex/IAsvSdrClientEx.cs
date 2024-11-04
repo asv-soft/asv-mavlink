@@ -52,7 +52,7 @@ public interface IAsvSdrClientEx:IMavlinkMicroserviceClient
     /// <summary>
     /// Downloads the record list.
     /// </summary>
-    Task<bool> DownloadRecordList(IProgress<double> progress = null, CancellationToken cancel = default);
+    Task<bool> DownloadRecordList(IProgress<double>? progress = null, CancellationToken cancel = default);
 
     /// <summary>
     /// Sets the mode of the ASV/SDR device.

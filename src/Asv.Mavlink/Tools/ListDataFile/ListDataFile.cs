@@ -276,7 +276,7 @@ public class ListDataFile<TMetadata> : DisposableOnce, IListDataFile<TMetadata>
     
     #region Row
 
-    public object Tag { get; set; }
+    public object? Tag { get; set; }
 
     public uint Count
     {

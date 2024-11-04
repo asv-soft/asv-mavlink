@@ -189,7 +189,7 @@ namespace Asv.Mavlink
         /// <param name="mode">The custom mode for creating the record data.</param>
         /// <returns>An instance of the IPacketV2 interface containing the record data.</returns>
         /// <seealso cref="IPacketV2{IPayload}"/>
-        IPacketV2<IPayload> CreateRecordData(AsvSdrCustomMode mode);
+        IPacketV2<IPayload>? CreateRecordData(AsvSdrCustomMode mode);
 
         /// <summary>
         /// Sends a signal.

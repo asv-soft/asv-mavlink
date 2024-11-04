@@ -50,7 +50,7 @@ public class ArduPlaneControlClient(
         await pos.SetTarget(point, cancel).ConfigureAwait(false);
     }
 
-    public override async Task DoLand(CancellationToken cancel = default)
+    public override Task DoLand(CancellationToken cancel = default)
     {
         throw new NotSupportedException("Land not supported for Plane vehicles");
     }

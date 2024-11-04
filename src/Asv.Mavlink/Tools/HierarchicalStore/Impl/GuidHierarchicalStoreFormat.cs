@@ -66,6 +66,13 @@ public abstract class GuidHierarchicalStoreFormat<TFile> : IHierarchicalStoreFor
 
     public bool TryGetFolderInfo(IDirectoryInfo? folderInfo, out Guid id, out string? displayName)
     {
+        if (folderInfo == null)
+        {
+            id = default;
+            displayName = null;
+            return false;
+        }
+
         var matches = GuidHierarchicalStoreFormat.FileSystemNameOfFolderRegex.Match(folderInfo.Name);
         if (matches.Groups.Count != 3)
         {
@@ -102,7 +109,7 @@ public abstract class GuidHierarchicalStoreFormat<TFile> : IHierarchicalStoreFor
         if (ext != _defaultFileExt)
         {
             id = default;
-            displayName = null;
+            displayName = string.Empty;
             return false;
         }
 
@@ -111,7 +118,7 @@ public abstract class GuidHierarchicalStoreFormat<TFile> : IHierarchicalStoreFor
         if (matches.Groups.Count != 3)
         {
             id = default;
-            displayName = default;
+            displayName = string.Empty;
             return false;
         }
 
@@ -119,7 +126,7 @@ public abstract class GuidHierarchicalStoreFormat<TFile> : IHierarchicalStoreFor
         var idMatch = matches.Groups[2];
         if (ShortGuid.TryParse(idMatch.Value, out id) == false)
         {
-            displayName = null;
+            displayName = string.Empty;
             return false;
         }
 

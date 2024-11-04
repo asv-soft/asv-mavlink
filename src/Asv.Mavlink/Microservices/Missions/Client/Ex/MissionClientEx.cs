@@ -85,7 +85,7 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
         _isMissionSynced.OnNext(true);
     }
 
-    public async Task Upload(CancellationToken cancel, Action<double> progress = null)
+    public async Task Upload(CancellationToken cancel, Action<double>? progress = null)
     {
         _logger.ZLogInformation($"Begin upload mission");
         progress?.Invoke(0);

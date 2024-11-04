@@ -146,12 +146,12 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
     {
         if (WriteCalibrationTable == null)
         {
-            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckNotSupported).ConfigureAwait(false);
+            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckNotSupported, DisposeCancel).ConfigureAwait(false);
             return;
         }
         if (Interlocked.CompareExchange(ref _calibrationTableUploadFlag, 1, 0) != 0)
         {
-            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckInProgress).ConfigureAwait(false);
+            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckInProgress, DisposeCancel).ConfigureAwait(false);
             _logger.ZLogWarning($"Calibration table upload already in progress");
             return;
         }
@@ -166,13 +166,13 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
             }
             WriteCalibrationTable(args.Payload.TableIndex, new CalibrationTableMetadata(args), rows);
             _status.Info($"Upload calibration [{args.Payload.TableIndex}] completed");
-            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckOk).ConfigureAwait(false);
+            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckOk, DisposeCancel).ConfigureAwait(false);
         }
         catch (Exception e)
         {
             _status.Info($"Upload calibration [{args.Payload.TableIndex}] error");
             _logger.ZLogError(e,$"Upload calibration [{args.Payload.TableIndex}] error:{e.Message}");
-            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail).ConfigureAwait(false);
+            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail, DisposeCancel).ConfigureAwait(false);
         }
         finally
         {
@@ -184,7 +184,7 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
     {
         if (TryReadCalibrationTableRow == null)
         {
-            await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckNotSupported).ConfigureAwait(false);
+            await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckNotSupported, DisposeCancel).ConfigureAwait(false);
             return;
         }
         try
@@ -198,16 +198,16 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
                     res.TargetComponent = 0;
                     res.TargetSystem = 0;
                     info?.Fill(res);
-                }).ConfigureAwait(false);
+                }, DisposeCancel).ConfigureAwait(false);
             }
             else
             {
-                await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail).ConfigureAwait(false);
+                await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail, DisposeCancel).ConfigureAwait(false);
             }
         }
         catch (Exception e)
         {
-            await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail).ConfigureAwait(false);
+            await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail, DisposeCancel).ConfigureAwait(false);
         }
     }
 

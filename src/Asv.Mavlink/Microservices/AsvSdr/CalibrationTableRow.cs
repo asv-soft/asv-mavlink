@@ -5,9 +5,9 @@ namespace Asv.Mavlink;
 
 public class CalibrationTablePod
 {
-    public string Name { get; set; }
-    public CalibrationTableMetadata Metadata { get; set; }
-    public CalibrationTableRow[] Rows { get; set; }
+    public string? Name { get; set; }
+    public CalibrationTableMetadata? Metadata { get; set; }
+    public CalibrationTableRow[]? Rows { get; set; }
 }
 
 

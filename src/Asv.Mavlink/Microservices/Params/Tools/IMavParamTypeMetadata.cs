@@ -409,7 +409,7 @@ public interface IMavParamTypeMetadata
         }
     }
     
-    public void WriteToConfig(IConfiguration config, MavParamValue value,string prefix = null)
+    public void WriteToConfig(IConfiguration config, MavParamValue value,string? prefix = null)
     {
         var key = CombineConfigKey(prefix, Name);
         switch (value.Type)

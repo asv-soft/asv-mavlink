@@ -13,7 +13,7 @@ namespace Asv.Mavlink
         /// <value>
         /// The value of the Tag property.
         /// </value>
-        object Tag { get; set; }
+        object? Tag { get; set; }
 
         /// <summary>
         /// Calculates the CrcEtra value.
