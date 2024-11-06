@@ -10,7 +10,7 @@ using R3;
 namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(ServerDevice))]
-public class ServerDeviceTests(ITestOutputHelper log):ServerTestBase<ServerDevice>(log)
+public class ServerDeviceTests(ITestOutputHelper log) : ServerTestBase<ServerDevice>(log)
 {
     protected override ServerDevice CreateClient(MavlinkIdentity identity, CoreServices core)
     {
@@ -21,7 +21,7 @@ public class ServerDeviceTests(ITestOutputHelper log):ServerTestBase<ServerDevic
                 StatusText = new StatusTextLoggerConfig { MaxQueueSize = 100, MaxSendRateHz = 10 }
             }, core);
     }
-    
+
     [Fact]
     public void Ctor_WithDefaultArgs_Success()
     {
@@ -29,11 +29,11 @@ public class ServerDeviceTests(ITestOutputHelper log):ServerTestBase<ServerDevic
         var seq = new PacketSequenceCalculator();
         var time = new FakeTimeProvider();
         var meter = new DefaultMeterFactory();
-        var core = new CoreServices(link.Server,seq,NullLoggerFactory.Instance, time, meter);
-        var device = new ServerDevice(new MavlinkIdentity(3,4), new ServerDeviceConfig(),core);
+        var core = new CoreServices(link.Server, seq, NullLoggerFactory.Instance, time, meter);
+        var device = new ServerDevice(new MavlinkIdentity(3, 4), new ServerDeviceConfig(), core);
         Assert.NotNull(device);
     }
-    
+
     [Fact]
     public void Ctor_WithNullIdentity_ThrowException()
     {
@@ -41,12 +41,13 @@ public class ServerDeviceTests(ITestOutputHelper log):ServerTestBase<ServerDevic
         var seq = new PacketSequenceCalculator();
         var time = new FakeTimeProvider();
         var meter = new DefaultMeterFactory();
-        var core = new CoreServices(link.Server,seq,NullLoggerFactory.Instance, time, meter);
-        Assert.Throws<ArgumentNullException>(() => new ServerDevice(null!, new ServerDeviceConfig(),core));
-        Assert.Throws<ArgumentNullException>(() => new ServerDevice(new MavlinkIdentity(3,4), null!,core));
-        Assert.Throws<ArgumentNullException>(() => new ServerDevice(new MavlinkIdentity(3,4), new ServerDeviceConfig(),null!));
+        var core = new CoreServices(link.Server, seq, NullLoggerFactory.Instance, time, meter);
+        Assert.Throws<ArgumentNullException>(() => new ServerDevice(null!, new ServerDeviceConfig(), core));
+        Assert.Throws<ArgumentNullException>(() => new ServerDevice(new MavlinkIdentity(3, 4), null!, core));
+        Assert.Throws<ArgumentNullException>(() =>
+            new ServerDevice(new MavlinkIdentity(3, 4), new ServerDeviceConfig(), null!));
     }
-    
+
     [Fact]
     public void Heartbeat_SendMessagesAfterStart_Success()
     {
@@ -54,14 +55,14 @@ public class ServerDeviceTests(ITestOutputHelper log):ServerTestBase<ServerDevic
         var seq = new PacketSequenceCalculator();
         var time = new FakeTimeProvider();
         var meter = new DefaultMeterFactory();
-        var core = new CoreServices(link.Client,seq,NullLoggerFactory.Instance, time, meter);
-        var device = new ServerDevice(new MavlinkIdentity(3,4), new ServerDeviceConfig
+        var core = new CoreServices(link.Client, seq, NullLoggerFactory.Instance, time, meter);
+        var device = new ServerDevice(new MavlinkIdentity(3, 4), new ServerDeviceConfig
         {
             Heartbeat =
             {
                 HeartbeatRateMs = 1000,
             }
-        },core);
+        }, core);
         var comId = 0;
         var sysId = 0;
         link.Server.Filter<HeartbeatPacket>().Subscribe(x =>
@@ -70,13 +71,36 @@ public class ServerDeviceTests(ITestOutputHelper log):ServerTestBase<ServerDevic
             comId = x.ComponentId;
         });
         device.Start();
-        Assert.Equal(0,sysId);
-        Assert.Equal(0,comId);
+        Assert.Equal(0, sysId);
+        Assert.Equal(0, comId);
         time.Advance(TimeSpan.FromSeconds(1.1));
-        Assert.Equal(3,sysId);
-        Assert.Equal(4,comId);
-        
+        Assert.Equal(3, sysId);
+        Assert.Equal(4, comId);
+    }
+    
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(4)]
+    [InlineData(5)]
+    [InlineData(6)]
+    [InlineData(7)]
+    [InlineData(8)]
+    [InlineData(11)]
+    [InlineData(20)]
+    [InlineData(21)]
+    [InlineData(22)]
+    [InlineData(23)]
+    [InlineData(24)]
+    [InlineData(25)]
+    [Theory]
+    public void Server_CreatePacketByMessageId_Success(ushort packetId)
+    {
+        var link = new VirtualMavlinkConnection();
+       var packet =  link.Server.CreatePacketByMessageId(packetId);
+       Assert.Equal(packetId, packet.MessageId);
     }
 
+    
     
 }
