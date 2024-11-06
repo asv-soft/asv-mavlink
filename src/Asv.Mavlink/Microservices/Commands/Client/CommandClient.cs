@@ -10,8 +10,24 @@ namespace Asv.Mavlink
 {
     public class CommandProtocolConfig
     {
-        public int CommandTimeoutMs { get; set; } = 5000;
-        public int CommandAttempt { get; set; } = 5;
+        private int _commandTimeoutMs = 5000;
+        private int _commandAttempt = 5;
+        
+        public int CommandTimeoutMs
+        {
+            get => _commandTimeoutMs;
+            set => _commandTimeoutMs = value >= 0 
+                ? value 
+                : throw new ArgumentOutOfRangeException(nameof(value));
+        }
+
+        public int CommandAttempt
+        {
+            get => _commandAttempt;
+            set => _commandAttempt = value >= 0 
+                ? value 
+                : throw new ArgumentOutOfRangeException(nameof(value));
+        }
     }
 
     public class CommandClient : MavlinkMicroserviceClient, ICommandClient
@@ -102,7 +118,7 @@ namespace Asv.Mavlink
         public async Task<CommandAckPayload> CommandLong(Action<CommandLongPayload> edit, CancellationToken cancel = default)
         {
             var command = (MavCmd)0;
-            string commandTxt = String.Empty;
+            var commandTxt = string.Empty;
             var result = await InternalCall<CommandAckPayload, CommandLongPacket, CommandAckPacket>((packet) =>
             {
                 packet.Payload.TargetComponent = Identity.Target.ComponentId;
@@ -160,8 +176,7 @@ namespace Asv.Mavlink
             _logger.ZLogTrace($"{LogRecv}{command:G}({param1},{param2},{param3},{param4},{param5},{param6},{param7}) => {result.Name})");
             return result;
         }
-
-
+        
         #region Dispose
 
         protected override void Dispose(bool disposing)

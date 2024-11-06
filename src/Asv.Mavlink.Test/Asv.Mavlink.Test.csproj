@@ -36,5 +36,9 @@
     <ProjectReference Include="..\Asv.Mavlink\Asv.Mavlink.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Microservices\AsvGbs\TestTest.cs" />
+  </ItemGroup>
+
 
 </Project>

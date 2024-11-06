@@ -91,11 +91,7 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
         Assert.Equal(packetsCount, Link.Server.TxPackets);
         Assert.Equal(packetsCount, Link.Client.RxPackets);
         Assert.Equal(packetsCount, results.Count);
-        Assert.Equal(serverResults.Count, results.Count);
-        for (var i = 0; i < results.Count; i++)
-        {
-            Assert.True(results[i].IsDeepEqual(serverResults[i]));
-        }
+        Assert.True(serverResults.IsDeepEqual(results));
     }
     
     [Theory]

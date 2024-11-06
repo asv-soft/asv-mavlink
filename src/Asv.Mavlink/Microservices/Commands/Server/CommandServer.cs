@@ -39,8 +39,8 @@ namespace Asv.Mavlink
             {
                 p.Payload.Command = cmd;
                 p.Payload.Result = result.ResultCode;
-                p.Payload.TargetSystem = responseTarget?.SystemId ?? 0;
-                p.Payload.TargetComponent = responseTarget?.ComponentId ?? 0;
+                p.Payload.TargetSystem = responseTarget.SystemId;
+                p.Payload.TargetComponent = responseTarget.ComponentId;
                 p.Payload.Progress = result.Progress ?? 0;
                 p.Payload.ResultParam2 = result.ResultParam2 ?? 0;
             }, cancel);
