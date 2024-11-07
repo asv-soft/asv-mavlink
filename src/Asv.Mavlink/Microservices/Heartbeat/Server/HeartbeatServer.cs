@@ -21,7 +21,7 @@ namespace Asv.Mavlink
 
         public void Start()
         {
-            _transponder.Start(TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(config.HeartbeatRateMs));
+            _transponder.Start(TimeSpan.FromMilliseconds(config.HeartbeatRateMs), TimeSpan.FromMilliseconds(config.HeartbeatRateMs));
         }
 
         #region Dispose

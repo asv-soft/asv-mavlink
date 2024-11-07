@@ -54,6 +54,8 @@ public class ComplexDeviceTests(ITestOutputHelper log)
     [Fact]
     public async Task HeartbeatClientConnectToServer_Success()
     {
+        var client = Client;
+        var server = Server;
         Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.CurrentValue);
         ServerTime.Advance(TimeSpan.FromSeconds(1.1));
         ClientTime.Advance(TimeSpan.FromSeconds(1.1));
