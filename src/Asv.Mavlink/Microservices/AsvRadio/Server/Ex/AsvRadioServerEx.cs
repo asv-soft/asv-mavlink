@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.Mavlink.V2.AsvAudio;
 using Asv.Mavlink.V2.AsvRadio;
 using Asv.Mavlink.V2.Common;
@@ -89,6 +87,7 @@ public class AsvRadioServerEx: IAsvRadioServerEx, IDisposable,IAsyncDisposable
             }
             
             var result = await EnableRadio(freq, mode, referencePower, txPower, codec, cancel).ConfigureAwait(false);
+            _customMode.Value = AsvRadioCustomMode.AsvRadioCustomModeOnair;
             return CommandResult.FromResult(result);
         };
         commands[(MavCmd)V2.AsvRadio.MavCmd.MavCmdAsvRadioOff] = async (id,args, cancel) =>
@@ -96,6 +95,7 @@ public class AsvRadioServerEx: IAsvRadioServerEx, IDisposable,IAsyncDisposable
             if (DisableRadio == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             AsvRadioHelper.GetArgsForRadioOff(args.Payload);
             var result = await DisableRadio(cancel).ConfigureAwait(false);
+            _customMode.Value = AsvRadioCustomMode.AsvRadioCustomModeIdle;
             return CommandResult.FromResult(result);
         };
 
