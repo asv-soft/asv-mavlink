@@ -423,7 +423,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
     {
         // Arrange
         var path = "/path/to/file.txt";
-        var fileSize = 0U;
+        var fileSize = 10U;
         var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
         var sessionId = (byte)2;
 
@@ -458,7 +458,6 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var handle = await handleTask.ConfigureAwait(false);
 
         // Assert
-        Assert.NotNull(handle);
         Assert.Equal(sessionId, handle.Session);
         Assert.Equal(fileSize, handle.Size);
     }
@@ -538,5 +537,175 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         // Assert
         Assert.NotNull(result);
         Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
+    }
+
+    [Fact]
+    public async Task ReadFile_Success()
+    {
+        // Arrange
+        var sessionId = (byte)1;
+        var skip = 0U;
+        var take = (byte)100;
+        var request = new ReadRequest(sessionId, skip, take);
+        var data = new byte[take];
+        new Random().NextBytes(data);
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
+
+        // Set up server response
+        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        {
+            if (packet.ReadOpcode() == FtpOpcode.ReadFile)
+            {
+                var requestedSessionId = packet.ReadSession();
+                var requestedSkip = packet.ReadOffset();
+                var requestedSize = packet.ReadSize();
+
+                Assert.Equal(sessionId, requestedSessionId);
+                Assert.Equal(skip, requestedSkip);
+                Assert.Equal(take, requestedSize);
+
+                var response = CreateAckResponse(packet, FtpOpcode.ReadFile);
+                response.WriteSession(sessionId);
+                response.WriteSize((byte)data.Length);
+                response.WriteData(data);
+
+                _ = Link.Server.Send(response, default);
+
+                Time.Advance(TimeSpan.FromMilliseconds(10));
+
+                tcs.TrySetResult(response);
+            }
+        });
+
+        // Act
+        var readTask = Client.ReadFile(request, CancellationToken.None);
+
+        // Wait for the client to receive and process the response
+        await tcs.Task.ConfigureAwait(false);
+
+        var result = await readTask.ConfigureAwait(false);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
+        var size = result.ReadSize();
+        var receivedData = result.Payload.Payload.AsSpan(12, size).ToArray();
+        Assert.Equal(data, receivedData);
+    }
+
+    [Fact]
+    public async Task WriteFile_Success()
+    {
+        // Arrange
+        var sessionId = (byte)1;
+        var skip = 0U;
+        var take = (byte)100;
+        var request = new WriteRequest(sessionId, skip, take);
+        var data = new byte[take];
+        new Random().NextBytes(data);
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
+
+        // Set up server response
+        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        {
+            if (packet.ReadOpcode() == FtpOpcode.WriteFile)
+            {
+                var requestedSkip = packet.ReadOffset();
+                var size = packet.ReadSize();
+                var requestedData = packet.Payload.Payload.AsSpan(12, size).ToArray();
+
+                Assert.Equal(skip, requestedSkip);
+                Assert.Equal(data, requestedData);
+
+                var response = CreateAckResponse(packet, FtpOpcode.WriteFile);
+
+                _ = Link.Server.Send(response, default);
+
+                Time.Advance(TimeSpan.FromMilliseconds(10));
+
+                tcs.TrySetResult(response);
+            }
+        });
+
+        // Act
+        var writeTask = Client.WriteFile(request, data, CancellationToken.None);
+
+        // Wait for the client to receive and process the response
+        await tcs.Task.ConfigureAwait(false);
+
+        var result = await writeTask.ConfigureAwait(false);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
+    }
+
+    [Fact]
+    public async Task BurstReadFile_Success()
+    {
+        // Arrange
+        var sessionId = (byte)1;
+        var skip = 0U;
+        var take = (byte)100;
+        var request = new ReadRequest(sessionId, skip, take);
+        var dataChunks = new List<byte[]>
+        {
+            new byte[50],
+            new byte[50]
+        };
+        new Random().NextBytes(dataChunks[0]);
+        new Random().NextBytes(dataChunks[1]);
+
+        var tcs = new TaskCompletionSource();
+        var totalDataReceived = new List<byte>();
+
+        // Set up server response
+        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(async packet =>
+        {
+            if (packet.ReadOpcode() == FtpOpcode.BurstReadFile)
+            {
+                var requestedSessionId = packet.ReadSession();
+                var requestedSkip = packet.ReadOffset();
+                var requestedTake = packet.ReadSize();
+
+                Assert.Equal(sessionId, requestedSessionId);
+                Assert.Equal(skip, requestedSkip);
+                Assert.Equal(take, requestedTake);
+
+                // Simulate sending data chunks
+                for (int i = 0; i < dataChunks.Count; i++)
+                {
+                    var data = dataChunks[i];
+                    var response = CreateAckResponse(packet, FtpOpcode.BurstReadFile);
+                    response.WriteSession(sessionId);
+                    response.WriteSize((byte)data.Length);
+                    response.WriteData(data);
+                    response.WriteBurstComplete(i == dataChunks.Count - 1 ? (byte)1 : (byte)0);
+
+                    await Link.Server.Send(response, default);
+
+                    Time.Advance(TimeSpan.FromMilliseconds(10));
+                }
+
+                tcs.TrySetResult();
+            }
+        });
+
+        // Act
+        var burstReadTask = Client.BurstReadFile(request, packet =>
+        {
+            var size = packet.ReadSize();
+            var data = packet.Payload.Payload.AsSpan(12, size).ToArray();
+            totalDataReceived.AddRange(data);
+        }, CancellationToken.None);
+
+        // Wait for the client to receive and process the response
+        await tcs.Task.ConfigureAwait(false);
+
+        await burstReadTask.ConfigureAwait(false);
+
+        // Assert
+        var expectedData = dataChunks.SelectMany(d => d).ToArray();
+        Assert.Equal(expectedData, totalDataReceived.ToArray());
     }
 }
