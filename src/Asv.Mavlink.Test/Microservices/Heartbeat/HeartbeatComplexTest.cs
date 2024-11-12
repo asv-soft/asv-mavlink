@@ -20,6 +20,7 @@ public class HeartbeatComplexTest(ITestOutputHelper output) : ComplexTestBase<He
     [Fact]
     public async Task Server_Send_Heartbeat_Packet_And_Client_Catch_It()
     {
+        var client = Client;
         Server.Set(p=>
         {
             p.Autopilot = MavAutopilot.MavAutopilotGeneric;

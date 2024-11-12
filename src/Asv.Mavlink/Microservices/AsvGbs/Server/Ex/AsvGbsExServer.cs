@@ -16,6 +16,7 @@ namespace Asv.Mavlink;
 
 public class AsvGbsExServer: IAsvGbsServerEx, IDisposable,IAsyncDisposable
 {
+    private readonly IHeartbeatServer _heartbeatServer;
     private readonly int _maxMessageLength = new GpsRtcmDataPayload().Data.Length;
     private readonly ILogger _logger;
     private uint _seqNumber;
@@ -37,6 +38,7 @@ public class AsvGbsExServer: IAsvGbsServerEx, IDisposable,IAsyncDisposable
         IHeartbeatServer heartbeatServer, 
         ICommandServerEx<CommandLongPacket> commands)
     {
+        _heartbeatServer = heartbeatServer;
         Base = server;
         _logger = server.Core.Log.CreateLogger<AsvGbsExServer>();
         #region Commands
@@ -152,6 +154,12 @@ public class AsvGbsExServer: IAsvGbsServerEx, IDisposable,IAsyncDisposable
         }));
 
         #endregion
+    }
+
+    public void Start()
+    {
+        Base.Start();
+        _heartbeatServer.Start();
     }
 
     public IAsvGbsServer Base { get; }

@@ -99,7 +99,7 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
             {
                 var itemsToDelete = _floatProbes.Select(x=>x.Value)
                     .Cast<ClientNamedProbe<float>>()
-                    .Where(y => Core.TimeProvider.GetElapsedTime(y.LastUpdateTimestamp).TotalMilliseconds > _config.DeleteProbesTimeoutMs)
+                    .Where(y => Core.TimeProvider.GetElapsedTime(y.LastUpdateTimestamp).TotalMilliseconds >= _config.DeleteProbesTimeoutMs)
                     .ToImmutableArray();
                 if (itemsToDelete.Length != 0)
                 {
@@ -116,7 +116,7 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
             {
                 var itemsToDelete = _intProbes.Select(x=>x.Value)
                     .Cast<ClientNamedProbe<int>>()
-                    .Where(y => Core.TimeProvider.GetElapsedTime(y.LastUpdateTimestamp).TotalMilliseconds > _config.DeleteProbesTimeoutMs)
+                    .Where(y => Core.TimeProvider.GetElapsedTime(y.LastUpdateTimestamp).TotalMilliseconds >= _config.DeleteProbesTimeoutMs)
                     .ToImmutableArray();
                 if (itemsToDelete.Length != 0)
                 {

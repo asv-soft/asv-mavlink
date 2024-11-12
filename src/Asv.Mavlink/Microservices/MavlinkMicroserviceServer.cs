@@ -14,22 +14,33 @@ public interface IMavlinkMicroserviceServer
     MavlinkIdentity Identity { get; }
 }
 
-public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdentity identity, ICoreServices core)
-    : IMavlinkMicroserviceServer, IDisposable, IAsyncDisposable
+public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, IDisposable, IAsyncDisposable
 {
-    private readonly ILogger _loggerBase = core.Log.CreateLogger<MavlinkMicroserviceServer>();
+    private readonly ILogger _loggerBase;
     private string? _logLocalName;
     private string? _logSend;
     private string? _logRecv;
     private readonly CancellationTokenSource _disposeCancel = new();
+    private readonly string _ifcLogName;
+
+    protected MavlinkMicroserviceServer(string ifcLogName, MavlinkIdentity identity, ICoreServices core)
+    {
+        ArgumentNullException.ThrowIfNull(identity);
+        ArgumentNullException.ThrowIfNull(core);
+        ArgumentException.ThrowIfNullOrWhiteSpace(ifcLogName);
+        _ifcLogName = ifcLogName;
+        _loggerBase = core.Log.CreateLogger<MavlinkMicroserviceServer>();
+        Core = core;
+        Identity = identity;
+    }
 
     protected string LogLocalName => _logLocalName ??= $"{Identity.SystemId}:{Identity.ComponentId}";
-    protected string LogSend => _logSend ??= $"[{LogLocalName}]=>[{ifcLogName}]:";
-    protected string LogRecv => _logRecv ??= $"[{LogLocalName}]<=[{ifcLogName}]:";
+    protected string LogSend => _logSend ??= $"[{LogLocalName}]=>[{_ifcLogName}]:";
+    protected string LogRecv => _logRecv ??= $"[{LogLocalName}]<=[{_ifcLogName}]:";
 
-    public ICoreServices Core { get; } = core;
+    public ICoreServices Core { get; }
 
-    public MavlinkIdentity Identity { get; } = identity;
+    public MavlinkIdentity Identity { get; }
 
     protected CancellationToken DisposeCancel => _disposeCancel.Token;
 
