@@ -77,7 +77,7 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         Assert.NotNull(res);
         Assert.Equal(1, Link.Client.RxPackets);
         Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.True(AdsbVehiclePayloadComparer.IsEqualPayload(packet.Payload, res.Payload));
+        Assert.True(AdsbVehiclePacketComparer.IsEqualPayload(packet.Payload, res.Payload));
     }
     
     [Theory]
@@ -86,20 +86,21 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
     [InlineData(20000)]
     public async Task Send_ManyPackets_Success(int packetsCount)
     {
-        // Arrange
-        var cancels = new List<CancellationTokenSource>();
-        var tasks = new List<TaskCompletionSource<IPacketV2<IPayload>>>();
+// Arrange
+        var called = 0;
         var results = new List<AdsbVehiclePayload>();
         var serverResults = new List<AdsbVehiclePayload>();
         using var sub = Link.Client.RxPipe.Subscribe(p =>
         {
-            var task = new TaskCompletionSource<IPacketV2<IPayload>>();
-            var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-            cancel.Token.Register(() => task.TrySetCanceled());
-            task.TrySetResult(p);
-            
-            cancels.Add(cancel);
-            tasks.Add(task);
+            called++;
+            if (p is AdsbVehiclePacket packet)
+            {
+                results.Add(packet.Payload);
+            }
+            if (called >= packetsCount)
+            {
+                _taskCompletionSource.TrySetResult(p);
+            }
         });
 
         // Act
@@ -109,22 +110,15 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         }
 
         // Assert
-        foreach (var task in tasks)
-        {
-            var result = await task.Task as AdsbVehiclePacket;
-            results.Add(result.Payload!);
-        }
-
+        await _taskCompletionSource.Task;
+        Assert.Equal(packetsCount, Link.Server.TxPackets);
         Assert.Equal(packetsCount, Link.Client.RxPackets);
         Assert.Equal(packetsCount, results.Count);
         Assert.Equal(serverResults.Count, results.Count);
         for (var i = 0; i < results.Count; i++)
         {
-            Assert.True(AdsbVehiclePayloadComparer.IsEqualPayload(results[i], serverResults[i]));
+            Assert.True(AdsbVehiclePacketComparer.IsEqualPayload(results[i], serverResults[i]));
         }
-
-        // Dispose
-        cancels.ForEach(c => c.Dispose());
     }
     
     [Fact(Skip = "Cancellation doesn't work")] // TODO: FIX CANCELLATION

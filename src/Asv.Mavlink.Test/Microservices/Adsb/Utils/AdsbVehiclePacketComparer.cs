@@ -3,7 +3,7 @@ using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink.Test.Utils;
 
-public class AdsbVehiclePayloadComparer
+public class AdsbVehiclePacketComparer
 {
     public static bool IsEqual(AdsbVehiclePacket? left, AdsbVehiclePacket? right)
     {
