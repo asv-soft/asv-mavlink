@@ -51,6 +51,8 @@ public class AsvRadioClientServerComplexTest(ITestOutputHelper log)
     [Fact]
     public async Task Client_EnableRadio_Success()
     {
+        //Arrange
+        var tcs = new CancellationTokenSource();
         var client = Client;
         var server = Server;
         server.EnableRadio += async (hz, modulation, dbm, powerDbm, codec, cancel) =>
@@ -58,9 +60,14 @@ public class AsvRadioClientServerComplexTest(ITestOutputHelper log)
             return await Task.Run(() => MavResult.MavResultAccepted, cancel);
         };
         server.Start();
+
+        //Act
         var result = await client.EnableRadio(10000001, AsvRadioModulation.AsvRadioModulationFm, (float)-90.0,
             (float)90.0,
-            AsvAudioCodec.AsvAudioCodecAac, CancellationToken.None);
+            AsvAudioCodec.AsvAudioCodecAac, tcs.Token);
+        await tcs.CancelAsync();
+
+        //Assert
         Assert.True(result == MavResult.MavResultAccepted);
         Assert.Equal(AsvRadioCustomMode.AsvRadioCustomModeOnair, server.CustomMode.CurrentValue);
     }
@@ -68,6 +75,8 @@ public class AsvRadioClientServerComplexTest(ITestOutputHelper log)
     [Fact]
     public async Task Client_EnableRadio_Failure()
     {
+        //Arrange
+        var tcs = new CancellationTokenSource();
         var client = Client;
         var server = Server;
         server.EnableRadio += async (hz, modulation, dbm, powerDbm, codec, cancel) =>
@@ -75,52 +84,83 @@ public class AsvRadioClientServerComplexTest(ITestOutputHelper log)
             return await Task.Run(() => MavResult.MavResultAccepted, cancel);
         };
         server.Start();
+
+        //Act
         var result = await client.EnableRadio(10000001, AsvRadioModulation.AsvRadioModulationFm, (float)-100.99,
             (float)90.0,
-            AsvAudioCodec.AsvAudioCodecAac, CancellationToken.None);
+            AsvAudioCodec.AsvAudioCodecAac, tcs.Token);
+
+        //Assert
         Assert.True(result == MavResult.MavResultFailed);
         Assert.Equal(AsvRadioCustomMode.AsvRadioCustomModeIdle, server.CustomMode.CurrentValue);
+        await tcs.CancelAsync();
     }
 
     [Fact]
     public async Task Client_DisableRadio_Success()
     {
+        //Arrange
         Server.EnableRadio += async (hz, modulation, dbm, powerDbm, codec, cancel) =>
         {
             return await Task.Run(() => MavResult.MavResultAccepted, cancel);
         };
         Server.DisableRadio += async cancel => { return await Task.Run(() => MavResult.MavResultAccepted, cancel); };
         Server.Start();
+        var tcs = new CancellationTokenSource();
+
+        //Act
         ClientTime.Advance(TimeSpan.FromSeconds(1));
         ServerTime.Advance(TimeSpan.FromSeconds(1));
         var result = await Client.EnableRadio(10000001, AsvRadioModulation.AsvRadioModulationFm, (float)-99.0,
             (float)90.0,
-            AsvAudioCodec.AsvAudioCodecAac, CancellationToken.None);
+            AsvAudioCodec.AsvAudioCodecAac, tcs.Token);
+
+        //Assert
         Assert.True(result == MavResult.MavResultAccepted);
         Assert.Equal(AsvRadioCustomMode.AsvRadioCustomModeOnair, Server.CustomMode.CurrentValue);
-        result = await Client.DisableRadio(CancellationToken.None);
+        result = await Client.DisableRadio(tcs.Token);
         Assert.True(result == MavResult.MavResultAccepted);
         Assert.Equal(AsvRadioCustomMode.AsvRadioCustomModeIdle, Server.CustomMode.CurrentValue);
+        await tcs.CancelAsync();
     }
 
     [Fact]
     public async Task Client_RequestCodecCapabilities_Success()
     {
+        //Arrange
+        CreateServer(Identity.Self, ServerCore);
         var client = Client;
         var server = Server;
+        var payload = new AsvRadioCodecCapabilitiesResponsePayload();
         server.Start();
-        var result = await client.Base.RequestCodecCapabilities(0);
-        Assert.True(result is not null);
+
+        //Act
+        var result = await client.Base.RequestCodecCapabilities();
+
+        //Assert
+        Assert.Equal(result.Codecs, payload.Codecs);
+        Assert.Equal(result.Count, payload.Count);
     }
 
     [Fact]
     public async Task Client_RequestCapabilities_Success()
     {
+        //Arrange
+        CreateServer(Identity.Self, ServerCore);
         var client = Client;
         var server = Server;
         server.Start();
+
+        //Act
         var result = await client.Base.RequestCapabilities();
-        Assert.True(result is not null);
+
+        //Assert
+        Assert.Equal(result.MaxRfFreq, _capabilities.MaxFrequencyHz);
+        Assert.Equal(result.MaxRxPower, _capabilities.MaxReferencePowerDbm);
+        Assert.Equal(result.MinRxPower, _capabilities.MinReferencePowerDbm);
+        Assert.Equal(result.MaxTxPower, _capabilities.MaxTxPowerDbm);
+        Assert.Equal(result.MinTxPower, _capabilities.MinTxPowerDbm);
+        Assert.Equal(result.MinRfFreq, _capabilities.MinFrequencyHz);
     }
 
     protected override AsvRadioServerEx CreateServer(MavlinkIdentity identity, ICoreServices core)

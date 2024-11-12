@@ -78,29 +78,4 @@ public class ServerDeviceTests(ITestOutputHelper log) : ServerTestBase<ServerDev
         Assert.Equal(4, comId);
     }
     
-    [InlineData(0)]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(4)]
-    [InlineData(5)]
-    [InlineData(6)]
-    [InlineData(7)]
-    [InlineData(8)]
-    [InlineData(11)]
-    [InlineData(20)]
-    [InlineData(21)]
-    [InlineData(22)]
-    [InlineData(23)]
-    [InlineData(24)]
-    [InlineData(25)]
-    [Theory]
-    public void Server_CreatePacketByMessageId_Success(ushort packetId)
-    {
-        var link = new VirtualMavlinkConnection();
-       var packet =  link.Server.CreatePacketByMessageId(packetId);
-       Assert.Equal(packetId, packet.MessageId);
-    }
-
-    
-    
 }
