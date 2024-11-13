@@ -13,6 +13,7 @@ public class GbsClientDeviceConfig:ClientDeviceConfig
     public ParamsClientExConfig Params { get; set; } = new();
     public string SerialNumberParamName { get; set; } = "BRD_SERIAL_NUM";
 }
+
 public class GbsClientDevice : ClientDevice
 {
     private readonly GbsClientDeviceConfig _config;
