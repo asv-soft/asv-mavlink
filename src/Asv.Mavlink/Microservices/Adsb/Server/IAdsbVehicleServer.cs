@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 
@@ -12,5 +13,5 @@ public interface IAdsbVehicleServer : IMavlinkMicroserviceServer
     /// <summary>
     /// Sends a payload to the ADSB vehicle.
     /// </summary>
-    Task Send(Action<AdsbVehiclePayload> fillCallback);
+    Task Send(Action<AdsbVehiclePayload> fillCallback, CancellationToken cancel);
 }
