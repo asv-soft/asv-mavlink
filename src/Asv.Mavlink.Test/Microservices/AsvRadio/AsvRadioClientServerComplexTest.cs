@@ -11,8 +11,8 @@ using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-public class AsvRadioClientServerComplexTest(ITestOutputHelper log)
-    : ComplexTestBase<AsvRadioClientEx, AsvRadioServerEx>(log)
+public class AsvRadioClientServerComplexTest
+    : ComplexTestBase<AsvRadioClientEx, AsvRadioServerEx>
 {
     private readonly HeartbeatClientConfig _heartbeatConfigClient = new()
     {
@@ -30,8 +30,12 @@ public class AsvRadioClientServerComplexTest(ITestOutputHelper log)
     };
 
     private readonly AsvRadioCapabilities _capabilities = AsvRadioCapabilities.Empty;
-    private readonly IReadOnlySet<AsvAudioCodec> _codecs = new HashSet<AsvAudioCodec>();
 
+    private readonly IReadOnlySet<AsvAudioCodec> _codecs =
+        new HashSet<AsvAudioCodec>((byte)AsvRadioCodecCapabilitiesResponsePayload.CodecsMaxItemsCount);
+
+    private AsvAudioCodec[] _codecsCollection ;
+    
     private readonly AsvRadioServerConfig _radioConfig = new()
     {
         StatusRateMs = 1000
@@ -47,12 +51,19 @@ public class AsvRadioClientServerComplexTest(ITestOutputHelper log)
         MaxQueueSize = 100,
         MaxSendRateHz = 100
     };
+    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly CancellationTokenSource _cancellationTokenSource;
+    public AsvRadioClientServerComplexTest(ITestOutputHelper output): base(output)
+    {
+        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
+        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+    }
 
     [Fact]
     public async Task Client_EnableRadio_Success()
     {
         //Arrange
-        var tcs = new CancellationTokenSource();
         var client = Client;
         var server = Server;
         server.EnableRadio += async (hz, modulation, dbm, powerDbm, codec, cancel) =>
@@ -60,23 +71,19 @@ public class AsvRadioClientServerComplexTest(ITestOutputHelper log)
             return await Task.Run(() => MavResult.MavResultAccepted, cancel);
         };
         server.Start();
-
         //Act
         var result = await client.EnableRadio(10000001, AsvRadioModulation.AsvRadioModulationFm, (float)-90.0,
             (float)90.0,
-            AsvAudioCodec.AsvAudioCodecAac, tcs.Token);
-        await tcs.CancelAsync();
-
+            AsvAudioCodec.AsvAudioCodecAac,_cancellationTokenSource.Token);
         //Assert
         Assert.True(result == MavResult.MavResultAccepted);
         Assert.Equal(AsvRadioCustomMode.AsvRadioCustomModeOnair, server.CustomMode.CurrentValue);
-    }
+     }
 
     [Fact]
     public async Task Client_EnableRadio_Failure()
     {
         //Arrange
-        var tcs = new CancellationTokenSource();
         var client = Client;
         var server = Server;
         server.EnableRadio += async (hz, modulation, dbm, powerDbm, codec, cancel) =>
@@ -88,12 +95,12 @@ public class AsvRadioClientServerComplexTest(ITestOutputHelper log)
         //Act
         var result = await client.EnableRadio(10000001, AsvRadioModulation.AsvRadioModulationFm, (float)-100.99,
             (float)90.0,
-            AsvAudioCodec.AsvAudioCodecAac, tcs.Token);
+            AsvAudioCodec.AsvAudioCodecAac, _cancellationTokenSource.Token);
 
         //Assert
         Assert.True(result == MavResult.MavResultFailed);
+        
         Assert.Equal(AsvRadioCustomMode.AsvRadioCustomModeIdle, server.CustomMode.CurrentValue);
-        await tcs.CancelAsync();
     }
 
     [Fact]
@@ -106,29 +113,31 @@ public class AsvRadioClientServerComplexTest(ITestOutputHelper log)
         };
         Server.DisableRadio += async cancel => { return await Task.Run(() => MavResult.MavResultAccepted, cancel); };
         Server.Start();
-        var tcs = new CancellationTokenSource();
 
         //Act
         ClientTime.Advance(TimeSpan.FromSeconds(1));
         ServerTime.Advance(TimeSpan.FromSeconds(1));
         var result = await Client.EnableRadio(10000001, AsvRadioModulation.AsvRadioModulationFm, (float)-99.0,
             (float)90.0,
-            AsvAudioCodec.AsvAudioCodecAac, tcs.Token);
+            AsvAudioCodec.AsvAudioCodecAac, _cancellationTokenSource.Token);
 
         //Assert
         Assert.True(result == MavResult.MavResultAccepted);
         Assert.Equal(AsvRadioCustomMode.AsvRadioCustomModeOnair, Server.CustomMode.CurrentValue);
-        result = await Client.DisableRadio(tcs.Token);
+        result = await Client.DisableRadio(_cancellationTokenSource.Token);
         Assert.True(result == MavResult.MavResultAccepted);
         Assert.Equal(AsvRadioCustomMode.AsvRadioCustomModeIdle, Server.CustomMode.CurrentValue);
-        await tcs.CancelAsync();
     }
 
     [Fact]
     public async Task Client_RequestCodecCapabilities_Success()
     {
         //Arrange
-        CreateServer(Identity.Self, ServerCore);
+        _codecsCollection = new AsvAudioCodec[100];
+        for (int i = 0; i < 99; i++)
+        {
+            _codecsCollection[i] = AsvAudioCodec.AsvAudioCodecUnknown;
+        }
         var client = Client;
         var server = Server;
         var payload = new AsvRadioCodecCapabilitiesResponsePayload();
@@ -138,7 +147,7 @@ public class AsvRadioClientServerComplexTest(ITestOutputHelper log)
         var result = await client.Base.RequestCodecCapabilities();
 
         //Assert
-        Assert.Equal(result.Codecs, payload.Codecs);
+        Assert.Equal(result.Codecs, _codecsCollection);
         Assert.Equal(result.Count, payload.Count);
     }
 
@@ -146,7 +155,6 @@ public class AsvRadioClientServerComplexTest(ITestOutputHelper log)
     public async Task Client_RequestCapabilities_Success()
     {
         //Arrange
-        CreateServer(Identity.Self, ServerCore);
         var client = Client;
         var server = Server;
         server.Start();
