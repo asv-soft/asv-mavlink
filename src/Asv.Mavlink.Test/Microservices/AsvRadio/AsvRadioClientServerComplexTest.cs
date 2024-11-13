@@ -31,7 +31,7 @@ public class AsvRadioClientServerComplexTest
 
     private readonly AsvRadioCapabilities _capabilities = AsvRadioCapabilities.Empty;
 
-    private readonly IReadOnlySet<AsvAudioCodec> _codecs =
+    private IReadOnlySet<AsvAudioCodec> _codecs =
         new HashSet<AsvAudioCodec>((byte)AsvRadioCodecCapabilitiesResponsePayload.CodecsMaxItemsCount);
 
     private AsvAudioCodec[] _codecsCollection ;
@@ -133,22 +133,24 @@ public class AsvRadioClientServerComplexTest
     public async Task Client_RequestCodecCapabilities_Success()
     {
         //Arrange
-        _codecsCollection = new AsvAudioCodec[100];
-        for (int i = 0; i < 99; i++)
-        {
-            _codecsCollection[i] = AsvAudioCodec.AsvAudioCodecUnknown;
-        }
-        var client = Client;
-        var server = Server;
-        var payload = new AsvRadioCodecCapabilitiesResponsePayload();
+        _codecsCollection = new AsvAudioCodec[5];
+        _codecsCollection[0] = AsvAudioCodec.AsvAudioCodecAac;
+        _codecsCollection[1] = AsvAudioCodec.AsvAudioCodecG722;
+        _codecsCollection[2] = AsvAudioCodec.AsvAudioCodecL16;
+        _codecsCollection[3] = AsvAudioCodec.AsvAudioCodecPcma;
+        _codecsCollection[4] = AsvAudioCodec.AsvAudioCodecUnknown; // adding 0 because the default value will still be returned in the result
+        _codecs = new HashSet<AsvAudioCodec>(_codecsCollection);
+        var client = CreateClient(Identity,ClientCore);
+        var server = CreateServer(new MavlinkIdentity(Identity.Target.SystemId,Identity.Target.ComponentId),ServerCore);
         server.Start();
-
+        
         //Act
-        var result = await client.Base.RequestCodecCapabilities();
-
+        var result = await client.Base.RequestCodecCapabilities(cancel:_cancellationTokenSource.Token);
+        var hashSetResult = new HashSet<AsvAudioCodec>(result.Codecs);
+        
         //Assert
-        Assert.Equal(result.Codecs, _codecsCollection);
-        Assert.Equal(result.Count, payload.Count);
+        Assert.Equal(hashSetResult, _codecs);
+        Assert.Equal(hashSetResult.Count, _codecs.Count);
     }
 
     [Fact]
@@ -160,7 +162,7 @@ public class AsvRadioClientServerComplexTest
         server.Start();
 
         //Act
-        var result = await client.Base.RequestCapabilities();
+        var result = await client.Base.RequestCapabilities(cancel:_cancellationTokenSource.Token);
 
         //Assert
         Assert.Equal(result.MaxRfFreq, _capabilities.MaxFrequencyHz);
