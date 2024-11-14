@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
@@ -17,33 +18,37 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
     private readonly ILogger _logger;
     private readonly ObservableList<ServerMissionItem> _missionSource;
     private double _busy;
-    private readonly IDisposable _sub1;
-    private readonly IDisposable _sub2;
-    private readonly IDisposable _sub3;
-    private readonly IDisposable _sub4;
-    private readonly IDisposable _sub5;
-    private readonly IDisposable _sub6;
-    private readonly IDisposable _sub7;
 
     public MissionServerEx(IMissionServer baseIfc, IStatusTextServer status) :
         base("MISSION", baseIfc.Identity, baseIfc.Core)
     {
-        _logger = baseIfc.Core.Log.CreateLogger<MissionServerEx>();
-        Base = baseIfc;
+        Base = baseIfc ?? throw new ArgumentNullException(nameof(baseIfc));
         _statusLogger = status ?? throw new ArgumentNullException(nameof(status));
+        _logger = baseIfc.Core.Log.CreateLogger<MissionServerEx>();
         _missionSource = new ObservableList<ServerMissionItem>();
 
         Current = new ReactiveProperty<ushort>(0);
         _sub1 = Current.Subscribe(Base,(x,b)=>b.SendMissionCurrent(x));
 
         Reached = new ReactiveProperty<ushort>(0);
-        _sub1 = Current.Subscribe(Base,(x,b)=>b.SendMissionCurrent(x));
         _sub2 = Reached.Subscribe(Base,(x,b)=>b.SendReached(x));
         
-        _sub3 = baseIfc.OnMissionCount.Subscribe(UploadMission);
-        _sub4 = baseIfc.OnMissionRequestList.Subscribe(DownloadMission);
-        _sub5 = baseIfc.OnMissionRequestInt.Subscribe(ReadMissionItem);
-        _sub6 = baseIfc.OnMissionClearAll.Subscribe(ClearAll);
+        _sub3 = baseIfc.OnMissionCount.SubscribeAwait(
+            async (req, ct) => 
+                await UploadMission(req, ct).ConfigureAwait(false)
+        );
+        _sub4 = baseIfc.OnMissionRequestList.SubscribeAwait(
+            async (req, ct) => 
+                await DownloadMission(req, ct).ConfigureAwait(false)
+        );
+        _sub5 = baseIfc.OnMissionRequestInt.SubscribeAwait(
+            async (req, ct) => 
+                await ReadMissionItem(req, ct).ConfigureAwait(false)
+        );
+        _sub6 = baseIfc.OnMissionClearAll.SubscribeAwait(
+            async (req, ct) => 
+                await ClearAll(req, ct).ConfigureAwait(false)
+        );
         _sub7 = baseIfc.OnMissionSetCurrent.Subscribe(SetCurrent);
     }
 
@@ -58,7 +63,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         Current.OnNext(req.Payload.Seq);
     }
   
-    private async void ClearAll(MissionClearAllPacket req)
+    private async Task ClearAll(MissionClearAllPacket req, CancellationToken token)
     {
         if (req.Payload.MissionType is not (MavMissionType.MavMissionTypeMission or MavMissionType.MavMissionTypeAll))
         {
@@ -69,7 +74,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         await Base.SendMissionAck(MavMissionResult.MavMissionAccepted, req.SystemId, req.ComponentId).ConfigureAwait(false);
     }
         
-    private async void ReadMissionItem(MissionRequestIntPacket req)
+    private async Task ReadMissionItem(MissionRequestIntPacket req, CancellationToken token)
     {
         if (req.Payload.MissionType != MavMissionType.MavMissionTypeMission)
         {
@@ -85,12 +90,12 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         var item = _missionSource[req.Payload.Seq];
         await Base.SendMissionItemInt(item).ConfigureAwait(false);
     }
-    private async void DownloadMission(MissionRequestListPacket req)
+    private async Task DownloadMission(MissionRequestListPacket req, CancellationToken token)
     {
         await Base.SendMissionCount((ushort)_missionSource.Count, req.SystemId, req.ComponentId).ConfigureAwait(false);
     }
 
-    private async void UploadMission(MissionCountPacket req)
+    private async Task UploadMission(MissionCountPacket req, CancellationToken token)
     {
         if (Interlocked.CompareExchange(ref _busy, 1, 0) != 0)
         {
@@ -102,10 +107,10 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         try
         {
             var count = req.Payload.Count;
-            for (ushort i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
                 var index = i;
-                var item = await Base.RequestMissionItem(index, req.Payload.MissionType, req.SystemId, req.ComponentId, DisposeCancel).ConfigureAwait(false);
+                var item = await Base.RequestMissionItem((ushort) index, req.Payload.MissionType, req.SystemId, req.ComponentId, DisposeCancel).ConfigureAwait(false);
                 if (i % 5 == 0)
                 {
                     _statusLogger.Info($"{LogSend}: uploaded '{(i + 1) / count:P0}' items");
@@ -132,8 +137,14 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
     public IReadOnlyObservableList<ServerMissionItem> Items => _missionSource;
     public void AddItems(IEnumerable<ServerMissionItem> items)
     {
+        var serverMissionItems = items as ServerMissionItem[] ?? items.ToArray();
+        if (_missionSource.Count + serverMissionItems.Length > ushort.MaxValue + 1)
+        {
+            throw new ArgumentOutOfRangeException();
+        }
+        
+        _missionSource.AddRange(serverMissionItems);
         EnsureIndexCorrected();
-        _missionSource.AddRange(items);
     }
 
     public void RemoveItems(IEnumerable<ServerMissionItem> items)
@@ -158,7 +169,16 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         EnsureIndexCorrected();
         return [.._missionSource];
     }
+    
     #region Dispose
+    
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
+    private readonly IDisposable _sub4;
+    private readonly IDisposable _sub5;
+    private readonly IDisposable _sub6;
+    private readonly IDisposable _sub7;
     
     protected override void Dispose(bool disposing)
     {

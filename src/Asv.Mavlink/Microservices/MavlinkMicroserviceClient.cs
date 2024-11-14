@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -78,6 +77,7 @@ namespace Asv.Mavlink
         protected Task InternalSend<TPacketSend>(Action<TPacketSend> fillPacket, CancellationToken cancel = default)
             where TPacketSend : IPacketV2<IPayload>, new()
         {
+            cancel.ThrowIfCancellationRequested();
             var packet = new TPacketSend();
             fillPacket(packet);
             _loggerBase.ZLogTrace($"{LogSend} send {packet.Name}");
@@ -90,6 +90,7 @@ namespace Asv.Mavlink
         protected async Task<TResult> InternalSendAndWaitAnswer<TResult>(IPacketV2<IPayload> packet,
             CancellationToken cancel, FilterDelegate<TResult> filterAndResultGetter, int timeoutMs = 1000)
         {
+            cancel.ThrowIfCancellationRequested();
             ArgumentNullException.ThrowIfNull(filterAndResultGetter);
             _loggerBase.ZLogTrace($"{LogSend} call {packet.Name}");
             using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
@@ -155,6 +156,7 @@ namespace Asv.Mavlink
             CancellationToken cancel, Func<TAnswerPacket, bool>? filter = null, int timeoutMs = 1000)
             where TAnswerPacket : IPacketV2<IPayload>, new()
         {
+            cancel.ThrowIfCancellationRequested();
             var p = new TAnswerPacket();
             _loggerBase.ZLogTrace($"{LogSend} call {p.Name}");
             using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
