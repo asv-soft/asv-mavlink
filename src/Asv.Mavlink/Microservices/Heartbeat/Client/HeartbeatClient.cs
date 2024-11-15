@@ -71,11 +71,17 @@ namespace Asv.Mavlink
 
             _packetRate = new ReactiveProperty<double>(0);
             _link = new LinkIndicator(config.LinkQualityWarningSkipCount);
+            // TODO: error at LinkIndicator. After first downgrade status will be Downgrade. Remove after fix at Asv.Common
+            for (var i = 0; i < config.LinkQualityWarningSkipCount + 1; i++)
+            {
+                _link.Downgrade();
+            }
+            
             Link = _link.ToObservable().ToReadOnlyReactiveProperty();
             
             _linkQuality = new ReactiveProperty<double>();
             _timeProvider
-                .CreateTimer(CheckConnection, null, TimeSpan.Zero, CheckConnectionDelay);
+                .CreateTimer(CheckConnection, null, CheckConnectionDelay, CheckConnectionDelay);
             
             // we need skip first packet because it's not a real packet
             _obs2 = RawHeartbeat.Skip(1).Subscribe(_ =>
