@@ -665,21 +665,20 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         new Random().NextBytes(dataChunks);
         var originStream = new MemoryStream(dataChunks);
 
-        Server.BurstReadFile = async (request, buffer, _) =>
+        Server.BurstReadFile = async (req, buffer, cancel) =>
         {
-            var bytes = ArrayPool<byte>.Shared.Rent(request.Take);
+            var bytes = ArrayPool<byte>.Shared.Rent(req.Take);
             try
             {
-                // Определяем, последний ли это кусок данных
-                var isLastChunk = request.Skip + request.Take >= originStream.Length;
+                var isLastChunk = req.Skip + req.Take >= originStream.Length;
 
-                originStream.Position = request.Skip;
-                var readSize = await originStream.ReadAsync(bytes.AsMemory(0, request.Take), _cts.Token)
+                originStream.Position = req.Skip;
+                var size = await originStream.ReadAsync(bytes, 0, req.Take, cancel)
                     .ConfigureAwait(false);
-                var realBytes = bytes[..readSize];
+                var realBytes = bytes[..size];
                 realBytes.CopyTo(buffer);
 
-                return new BurstReadResult((byte)readSize, isLastChunk, request);
+                return new BurstReadResult((byte)size, isLastChunk, req);
             }
             finally
             {
@@ -710,18 +709,13 @@ public class FtpServerTest : ServerTestBase<FtpServer>
 
         Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
         {
-            var receivedOffset = Convert.ToInt32(packet.ReadOffset());
-            var receivedSize = packet.ReadSize();
-            var resultBuf = new byte[receivedSize];
+            var offset = Convert.ToInt32(packet.ReadOffset());
+            var size = packet.ReadSize();
+            var resultBuf = new byte[size];
             packet.ReadData(resultBuf);
-
-            Array.Copy(resultBuf, 0, totalDataReceived, receivedOffset, receivedSize);
-            totalReceivedCount += receivedSize;
-
-            if (totalReceivedCount >= dataChunks.Length)
-            {
-                _tcs.TrySetResult(packet);
-            }
+            Array.Copy(resultBuf, 0, totalDataReceived, offset, size);
+            totalReceivedCount += size;
+            _tcs.TrySetResult(packet);
         });
 
         // Act
@@ -731,6 +725,8 @@ public class FtpServerTest : ServerTestBase<FtpServer>
 
         // Assert
         Assert.Equal(dataChunks, totalDataReceived);
+        
+        await originStream.DisposeAsync();
     }
 
     [Fact]

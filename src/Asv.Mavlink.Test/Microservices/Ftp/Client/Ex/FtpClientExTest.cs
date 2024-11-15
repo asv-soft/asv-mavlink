@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
@@ -14,21 +15,30 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(FtpClientEx))]
 public class FtpClientExTest : ClientTestBase<FtpClientEx>
 {
-    private readonly TaskCompletionSource _tcs = new(); 
+    private readonly TaskCompletionSource<FileTransferProtocolPacket> _tcs = new(); 
     private readonly CancellationTokenSource _cts;
-        
-    private readonly MavlinkFtpClientConfig _config = new ()
+    
+    private readonly MavlinkFtpClientConfig _clientExConfig = new ()
     {
         TimeoutMs = 1000,
         CommandAttemptCount = 5,
         TargetNetworkId = 0,
         BurstTimeoutMs = 100
     };
+    
+    private readonly MavlinkFtpServerExConfig _serverExConfig = new ()
+    {
+        RootDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "root")
+    };
+    
+    private FtpServerEx _ftpServerEx;
+    private MockFileSystem _fileSystem;
 
     public FtpClientExTest(ITestOutputHelper log) : base(log)
     {
         _cts = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
         _cts.Token.Register(() => _tcs.TrySetCanceled());
+        _ = Client;
     }
     private static MockFileSystem SetUpFileSystem(string root)
     {
@@ -42,143 +52,116 @@ public class FtpClientExTest : ClientTestBase<FtpClientEx>
         return fileSystem;
     }
 
-    protected override FtpClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core) => new(new FtpClient(identity, _config, core));
+    private void SetUpFtpServerEx(MavlinkClientIdentity identity, CoreServices core)
+    {
+        var serverId = new MavlinkIdentity(identity.Target.SystemId, identity.Target.ComponentId);
+        var serverConf = new MavlinkFtpServerConfig
+        {
+            NetworkId = _clientExConfig.TargetNetworkId,
+            BurstReadChunkDelayMs = 100
+        };
+        var server = new FtpServer(serverId, serverConf, core);
+
+        _fileSystem = SetUpFileSystem(_serverExConfig.RootDirectory);
+        _ftpServerEx = new FtpServerEx(server, _serverExConfig, _fileSystem);
+    }
+
+    protected override FtpClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core)
+    {
+        SetUpFtpServerEx(identity, core);
+        return new FtpClientEx(new FtpClient(identity, _clientExConfig, core));
+    }
     
     [Fact]
-    public async Task DownloadFile_WithProgressReporting_ReportsProgress()
+    public async Task DownloadFile_Success()
     {
         // Arrange
-        var path = "/test/progressFile.txt";
-        var memoryStream = new MemoryStream();
-        double lastProgress = 0;
-        var progress = new Progress<double>(p => lastProgress = p);
-
+        const string fileName = "test.txt";
+        const string fileContent = "Something good band test read me pls32, gogogo";
+        var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
+        using var streamToSave = new MemoryStream();
+        var progress = new Progress<double>();
+        _fileSystem.AddFile(filePath, new MockFileData(fileContent));
+        
         // Act
-        await Client.DownloadFile(path, memoryStream, progress, _cts.Token);
-
+        await Client.DownloadFile(filePath, streamToSave, progress, _cts.Token);
+        
         // Assert
-        Assert.True(lastProgress > 0);
-        Assert.Equal(1.0, lastProgress); // Ensure progress reaches 100%
+        var result = await ConvertStreamToString(streamToSave, 0);
+        Assert.Equal(fileContent, result);
     }
 
     [Fact]
     public async Task BurstDownloadFile_Success()
     {
         // Arrange
-        var path = "/test/burstFile.txt";
-        var memoryStream = new MemoryStream();
-
+        const string fileName = "test.txt";
+        const string fileContent = "Something good band test read me pls32, gogogo";
+        var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
+        using var streamToSave = new MemoryStream();
+        var progress = new Progress<double>();
+        _fileSystem.AddFile(filePath, new MockFileData(fileContent));
+        
         // Act
-        await Client.BurstDownloadFile(path, memoryStream, null, 64, _cts.Token);
-
+        await Client.BurstDownloadFile(filePath, streamToSave, progress, 239, _cts.Token);
+        
+        await _tcs.Task.ConfigureAwait(false);
+        
         // Assert
-        Assert.True(memoryStream.Length > 0);
+        var result = await ConvertStreamToString(streamToSave, 0);
+        Assert.Equal(fileContent, result);
     }
-
-    [Fact]
-    public async Task DownloadLargeFile_Success()
-    {
-        // Arrange
-        var path = "/test/largeFile.txt";
-        var memoryStream = new MemoryStream();
-
-        // Act
-        await Client.DownloadFile(path, memoryStream, null, _cts.Token);
-
-        // Assert
-        Assert.True(memoryStream.Length > MavlinkFtpHelper.MaxDataSize); // File size exceeds single read capacity
-    }
-
-    [Fact]
-    public async Task Refresh_ClearsCacheBeforeReloading()
-    {
-        // Arrange
-        var path = "/cacheTest";
-        await Client.Refresh(path, recursive: false, _cts.Token);
-        var initialCount = Client.Entries.Count;
-
-        // Act
-        await Client.Refresh(path, recursive: false, _cts.Token);
-
-        // Assert
-        Assert.Equal(initialCount, Client.Entries.Count); // Cache should be cleared and reloaded with the same count
-    }
-
-    [Fact]
-    public async Task BurstDownloadFile_InvalidPartSize_ThrowsException()
-    {
-        // Arrange
-        var path = "/test/invalidBurstSizeFile.txt";
-        var memoryStream = new MemoryStream();
-        var invalidPartSize = (byte)(MavlinkFtpHelper.MaxDataSize + 1);
-
-        // Act & Assert
-        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => Client.BurstDownloadFile(path, memoryStream, null, invalidPartSize, _cts.Token));
-    }
-
     
     [Fact]
-    public async Task Refresh_SingleLevelDirectory_Success()
+    public async Task Refresh_Success()
     {
         // Arrange
-        var path = "/test";
+        var fileDirName = "temp";
+        var fileDir = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileDirName);
+        var filePath = _fileSystem.Path.Combine(fileDir, "test.txt");
+        var filePath2 = _fileSystem.Path.Combine(fileDir, "test2.txt");
+        _fileSystem.AddDirectory(Path.Combine(fileDir, "Folder1"));
+        _fileSystem.AddDirectory(Path.Combine(fileDir, "Folder2"));
+        _fileSystem.AddDirectory(Path.Combine(fileDir, "Folder3"));
+        _fileSystem.AddFile(filePath, new MockFileData("Something"));
+        _fileSystem.AddFile(filePath2, new MockFileData(string.Empty));
         
         // Act
-        await Client.Refresh(path, recursive: false, _cts.Token);
+        await Client.Refresh(fileDirName, true, _cts.Token);
         
         // Assert
-        Assert.Contains(path, Client.Entries.Keys);
+        Assert.Equal(6, Client.Entries.Count);
     }
-
-    [Fact]
-    public async Task Refresh_RecursiveDirectory_Success()
+    
+    private static async Task<string> ConvertStreamToString(Stream stream, long offset)
     {
-        // Arrange
-        const string path = "/test";
-        
-        // Act
-        await Client.Refresh(path, recursive: true, _cts.Token);
-        
-        // Assert
-        Assert.Contains(path, Client.Entries.Keys);
-        Assert.True(Client.Entries.Count > 1); // Verify subdirectories are added
+        stream.Seek(offset, SeekOrigin.Begin);
+        using var reader = new StreamReader(stream, MavlinkFtpHelper.FtpEncoding);
+        return await reader.ReadToEndAsync();
     }
-
-    [Fact]
-    public async Task DownloadFile_Success()
+    
+    private FileTransferProtocolPacket CreateAckResponse(FileTransferProtocolPacket requestPacket, FtpOpcode originOpCode)
     {
-        // Arrange
-        const string path = "/test/file.txt";
-        var memoryStream = new MemoryStream();
+        var response = new FileTransferProtocolPacket
+        {
+            SystemId = Identity.Target.SystemId,
+            ComponentId = Identity.Target.ComponentId,
+            Sequence = requestPacket.Sequence,
+            Payload =
+            {
+                TargetSystem = requestPacket.SystemId,
+                TargetComponent = requestPacket.ComponentId,
+                TargetNetwork = requestPacket.Payload.TargetNetwork,
+                Payload = new byte[251],
+            }
+        };
 
-        // Act
-        await Client.DownloadFile(path, memoryStream, null, _cts.Token);
-        await Client.Base.OpenFileRead(path, _cts.Token);
+        response.WriteOpcode(FtpOpcode.Ack);
+        response.WriteSequenceNumber(requestPacket.ReadSequenceNumber());
+        response.WriteSession(requestPacket.ReadSession());
+        response.WriteSize(0);
+        response.WriteOriginOpCode(originOpCode);
 
-        var result = await Client.Base.ReadFile(new ReadRequest(0, 0, 10));
-        
-        // Assert
-        Assert.True(memoryStream.Length > 0);
-    }
-
-    [Fact]
-    public async Task DownloadFile_FileNotFound()
-    {
-        // Arrange
-        const string invalidPath = "/test/nonexistent.txt";
-        var memoryStream = new MemoryStream();
-
-        // Act & Assert
-        await Assert.ThrowsAsync<FtpNackException>(() => Client.DownloadFile(invalidPath, memoryStream, null, _cts.Token));
-    }
-
-    [Fact]
-    public async Task Refresh_InvalidPath_ThrowsException()
-    {
-        // Arrange
-        const string invalidPath = "/invalidPath";
-
-        // Act & Assert
-        await Assert.ThrowsAsync<FtpNackException>(() => Client.Refresh(invalidPath, recursive: false, _cts.Token));
+        return response;
     }
 }

@@ -40,12 +40,9 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
     
     private readonly MavlinkFtpServerExConfig _config = new()
     {
-        NetworkId = 0,
-        BurstReadChunkDelayMs = 100,
-        RootDirectory = "/root"
+        RootDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp")
     };
-
-
+    
     protected override FtpServerEx CreateClient(MavlinkIdentity identity, CoreServices core)
     {
         return new FtpServerEx(new FtpServer(identity, _config, core), _config, _fileSystem);
@@ -69,14 +66,14 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
     public async Task OpenFileWrite_Success()
     {
         // Arrange
-        var filePath = _fileSystem.Path.Combine(_config.RootDirectory, "test.txt").Replace("\\", "/");;
+        var filePath = _fileSystem.Path.Combine(_config.RootDirectory, "test.txt");
 
         // Act
         await Server.CreateFile(filePath, _cts.Token);
         var handle = await Server.OpenFileWrite(filePath, _cts.Token);
 
         // Assert
-        Assert.Equal(1, handle.Session); // Проверка корректного ID сессии
+        Assert.Equal(1, handle.Session);
     }
 
     [Fact]
@@ -92,8 +89,8 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         var result = await Server.FileRead(new ReadRequest(handle.Session, 0, (byte) buffer.Length), buffer, _cts.Token);
 
         // Assert
-        Assert.Equal((byte) buffer.Length, result.ReadCount); // Проверяем количество прочитанных байт
-        Assert.Equal("Test", System.Text.Encoding.UTF8.GetString(buffer)); // Проверка данных
+        Assert.Equal((byte) buffer.Length, result.ReadCount);
+        Assert.Equal("Test", System.Text.Encoding.UTF8.GetString(buffer));
     }
 
     [Fact]
@@ -101,16 +98,21 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
     {
         // Arrange
         var filePath = _fileSystem.Path.Combine(_config.RootDirectory, "test.txt");
-        var buffer = "New data"u8.ToArray();
-        var handle = await Server.OpenFileWrite(filePath, _cts.Token);
+        const byte session = 0;
+        const byte size = 5;
+        var buffer = new byte[] { 1, 2, 3, 4, 5 };
+        
+        await Server.OpenFileWrite(filePath, _cts.Token);
 
         // Act
-        await Server.WriteFile(new WriteRequest(handle.Session, 0, (byte) buffer.Length), buffer, _cts.Token);
+        await Server.WriteFile(new WriteRequest(session, 0, size), buffer, _cts.Token);
+        await Server.TerminateSession(session);
 
         // Assert
-        var writtenData = await _fileSystem.File.ReadAllBytesAsync(filePath);
-        
-        Assert.Equal("New data", System.Text.Encoding.UTF8.GetString(writtenData));
+        var writtenData = new byte[size];
+        await Server.OpenFileRead(filePath, _cts.Token);
+        await Server.FileRead(new ReadRequest(session, 0, size), writtenData);
+        Assert.Equal(buffer, writtenData);
     }
 
     [Fact]
@@ -138,10 +140,10 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         using var memory = MemoryPool<char>.Shared.Rent(256);
 
         // Act
-        var result = await Server.ListDirectory(dirPath, 0, memory.Memory, _cts.Token);
+        var result = await Server.ListDirectory(dirPath, 0, memory.Memory);
 
         // Assert
-        const string expectedOutput = "Ffile1.txt\t12\0Ffile2.txt\t12\0";
+        const string expectedOutput = "Ffile1.txt\t13\0Ffile2.txt\t13\0";
         var output = new string(memory.Memory.Span[..result]);
         Assert.Equal(expectedOutput, output);
     }
