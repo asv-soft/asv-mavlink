@@ -12,9 +12,6 @@ namespace Asv.Mavlink.Test;
 
 public class FtpClientTest : ClientTestBase<FtpClient>
 {
-    private readonly TaskCompletionSource<FileTransferProtocolPacket> _tcs = new();
-    private readonly CancellationTokenSource _cts;
-    
     private readonly MavlinkFtpClientConfig _config = new()
     {
         TimeoutMs = 1000,
@@ -25,8 +22,6 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
     public FtpClientTest(ITestOutputHelper log) : base(log)
     {
-        _cts = new CancellationTokenSource(TimeSpan.FromSeconds(3), TimeProvider.System);
-        _cts.Token.Register(() => _tcs.TrySetCanceled());
     }
 
     protected override FtpClient CreateClient(MavlinkClientIdentity identity, CoreServices core)
@@ -62,6 +57,9 @@ public class FtpClientTest : ClientTestBase<FtpClient>
     [Fact]
     public async Task ResetSessions_Success()
     {
+        // Arrange
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
+
         // Set up server response before starting client operation
         Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
         {
@@ -76,7 +74,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
                 // Advance time to allow the client to process the response
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
-                _tcs.TrySetResult(response);
+                tcs.TrySetResult(response);
             }
         });
 
@@ -84,7 +82,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var resultTask = Client.ResetSessions();
 
         // Wait for the client to receive and process the response
-        await _tcs.Task.ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(false);
 
         var result = await resultTask.ConfigureAwait(false);
 
@@ -98,6 +96,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
     {
         // Arrange
         var path = "/path/to/directory";
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
 
         // Set up server response before starting client operation
         Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
@@ -113,7 +112,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
-                _tcs.TrySetResult(response);
+                tcs.TrySetResult(response);
             }
         });
 
@@ -121,7 +120,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var resultTask = Client.RemoveDirectory(path);
 
         // Wait for the client to receive and process the response
-        await _tcs.Task.ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(false);
 
         var result = await resultTask.ConfigureAwait(false);
 
@@ -135,6 +134,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
     {
         // Arrange
         var path = "/path/to/file.txt";
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
 
         // Set up server response before starting client operation
         Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
@@ -150,7 +150,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
-                _tcs.TrySetResult(response);
+                tcs.TrySetResult(response);
             }
         });
 
@@ -158,7 +158,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var resultTask = Client.RemoveFile(path);
 
         // Wait for the client to receive and process the response
-        await _tcs.Task.ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(false);
 
         var result = await resultTask.ConfigureAwait(false);
 
@@ -174,6 +174,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var path = "/path/to/file.txt";
         var offset = 1024U;
         var request = new TruncateRequest(path, offset);
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
 
         // Set up server response before starting client operation
         Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
@@ -192,7 +193,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
-                _tcs.TrySetResult(response);
+                tcs.TrySetResult(response);
             }
         });
 
@@ -200,7 +201,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var resultTask = Client.TruncateFile(request);
 
         // Wait for the client to receive and process the response
-        await _tcs.Task.ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(false);
 
         var result = await resultTask.ConfigureAwait(false);
 
@@ -215,6 +216,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         // Arrange
         var path = "/path/to/file.txt";
         var expectedCrc32 = 0xDEADBEEF;
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
 
         // Set up server response before starting client operation
         Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
@@ -233,7 +235,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
-                _tcs.TrySetResult(response);
+                tcs.TrySetResult(response);
             }
         });
 
@@ -241,7 +243,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var crc32Task = Client.CalcFileCrc32(path);
 
         // Wait for the client to receive and process the response
-        await _tcs.Task.ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(false);
 
         var crc32 = await crc32Task.ConfigureAwait(false);
 
@@ -254,6 +256,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
     {
         // Arrange
         var path = "/path/to/new_directory";
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
 
         // Set up server response before starting client operation
         Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
@@ -270,7 +273,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
-                _tcs.TrySetResult(response);
+                tcs.TrySetResult(response);
             }
         });
 
@@ -278,7 +281,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var resultTask = Client.CreateDirectory(path);
 
         // Wait for the client to receive and process the response
-        await _tcs.Task.ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(false);
 
         var result = await resultTask.ConfigureAwait(false);
 
@@ -293,6 +296,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         // Arrange
         var oldPath = "/path/to/old_name.txt";
         var newPath = "/path/to/new_name.txt";
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
 
         // Set up server response before starting client operation
         Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
@@ -305,7 +309,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
-                _tcs.TrySetResult(response);
+                tcs.TrySetResult(response);
             }
         });
 
@@ -313,7 +317,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var resultTask = Client.Rename(oldPath, newPath, CancellationToken.None);
 
         // Wait for the client to receive and process the response
-        await _tcs.Task.ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(false);
 
         var result = await resultTask.ConfigureAwait(false);
 
@@ -328,6 +332,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         // Arrange
         var path = "/path/to/directory";
         uint offset = 0;
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
         var directoryListing = "file1.txt\nfile2.txt\ndir1/\n";
 
         // Set up server response before starting client operation
@@ -349,7 +354,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
-                _tcs.TrySetResult(response);
+                tcs.TrySetResult(response);
             }
         });
 
@@ -357,7 +362,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var resultTask = Client.ListDirectory(path, offset);
 
         // Wait for the client to receive and process the response
-        await _tcs.Task.ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(false);
 
         var result = await resultTask.ConfigureAwait(false);
 
@@ -374,6 +379,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         // Arrange
         var path = "/path/to/file.txt";
         var fileSize = 2048U;
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
         var sessionId = (byte)1;
 
         // Set up server response before starting client operation
@@ -394,7 +400,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
-                _tcs.TrySetResult(response);
+                tcs.TrySetResult(response);
             }
         });
 
@@ -402,7 +408,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var handleTask = Client.OpenFileRead(path);
 
         // Wait for the client to receive and process the response
-        await _tcs.Task.ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(false);
 
         var handle = await handleTask.ConfigureAwait(false);
 
@@ -418,6 +424,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         // Arrange
         var path = "/path/to/file.txt";
         var fileSize = 10U;
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
         var sessionId = (byte)2;
 
         // Set up server response before starting client operation
@@ -438,7 +445,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
-                _tcs.TrySetResult(response);
+                tcs.TrySetResult(response);
             }
         });
 
@@ -446,7 +453,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var handleTask = Client.OpenFileWrite(path);
 
         // Wait for the client to receive and process the response
-        await _tcs.Task.ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(false);
 
         var handle = await handleTask.ConfigureAwait(false);
 
@@ -460,6 +467,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
     {
         // Arrange
         var sessionId = (byte)1;
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
 
         // Set up server response before starting client operation
         Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
@@ -476,7 +484,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
-                _tcs.TrySetResult(response);
+                tcs.TrySetResult(response);
             }
         });
 
@@ -484,7 +492,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var terminateTask = Client.TerminateSession(sessionId);
 
         // Wait for the client to receive and process the response
-        await _tcs.Task.ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(false);
 
         await terminateTask.ConfigureAwait(false);
 
@@ -497,6 +505,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
     {
         // Arrange
         var path = "/path/to/new_file.txt";
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
 
         // Set up server response before starting client operation
         Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
@@ -513,7 +522,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
-                _tcs.TrySetResult(response);
+                tcs.TrySetResult(response);
             }
         });
 
@@ -521,7 +530,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var resultTask = Client.CreateFile(path);
 
         // Wait for the client to receive and process the response
-        await _tcs.Task.ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(false);
 
         var result = await resultTask.ConfigureAwait(false);
 
@@ -540,6 +549,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var request = new ReadRequest(sessionId, skip, take);
         var data = new byte[take];
         new Random().NextBytes(data);
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
 
         // Set up server response
         Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
@@ -563,7 +573,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
-                _tcs.TrySetResult(response);
+                tcs.TrySetResult(response);
             }
         });
 
@@ -571,7 +581,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var readTask = Client.ReadFile(request, CancellationToken.None);
 
         // Wait for the client to receive and process the response
-        await _tcs.Task.ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(false);
 
         var result = await readTask.ConfigureAwait(false);
 
@@ -593,6 +603,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var request = new WriteRequest(sessionId, skip, take);
         var data = new byte[take];
         new Random().NextBytes(data);
+        var tcs = new TaskCompletionSource<FileTransferProtocolPacket>();
 
         // Set up server response
         Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
@@ -612,7 +623,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
-                _tcs.TrySetResult(response);
+                tcs.TrySetResult(response);
             }
         });
 
@@ -620,7 +631,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var writeTask = Client.WriteFile(request, data, CancellationToken.None);
 
         // Wait for the client to receive and process the response
-        await _tcs.Task.ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(false);
 
         var result = await writeTask.ConfigureAwait(false);
 
@@ -644,7 +655,8 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         };
         new Random().NextBytes(dataChunks[0]);
         new Random().NextBytes(dataChunks[1]);
-        
+
+        var tcs = new TaskCompletionSource();
         var totalDataReceived = new List<byte>();
 
         // Set up server response
@@ -675,7 +687,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
                     Time.Advance(TimeSpan.FromMilliseconds(10));
                 }
 
-                _tcs.TrySetResult(packet);
+                tcs.TrySetResult();
             }
         });
 
@@ -688,7 +700,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         }, CancellationToken.None);
 
         // Wait for the client to receive and process the response
-        await _tcs.Task.ConfigureAwait(false);
+        await tcs.Task.ConfigureAwait(false);
 
         await burstReadTask.ConfigureAwait(false);
 
