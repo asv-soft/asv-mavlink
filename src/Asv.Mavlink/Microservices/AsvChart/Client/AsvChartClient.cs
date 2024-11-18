@@ -32,13 +32,6 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
     private readonly Subject<AsvChartInfo> _onChartInfo;
     private readonly Subject<AsvChartOptions> _onStreamOptions;
     private readonly Subject<AsvChartInfoUpdatedEventPayload> _onUpdateEvent;
-    private readonly IDisposable _sub1;
-    private readonly IDisposable _sub2;
-    private readonly IDisposable _sub3;
-    private readonly IDisposable _sub4;
-    private readonly IDisposable _sub5;
-    private readonly IDisposable _sub6;
-
 
     public AsvChartClient(MavlinkClientIdentity identity,AsvChartClientConfig config,ICoreServices core)
         : base("CHART", identity,core)
@@ -210,6 +203,13 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
 
     #region Dispose
 
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
+    private readonly IDisposable _sub4;
+    private readonly IDisposable _sub5;
+    private readonly IDisposable _sub6;
+    
     protected override void Dispose(bool disposing)
     {
         if (disposing)

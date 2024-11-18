@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.Mavlink.V2.AsvAudio;
 using Microsoft.Extensions.Logging;
 using R3;
@@ -18,23 +17,20 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
     private readonly ILogger _logger;
     private readonly Func<Action<AsvAudioStreamPacket>, CancellationToken, Task> _sendPacketDelegate;
     private readonly ICoreServices _core;
-    private readonly ReactiveProperty<string> _name;
     private long _lastHit;
-    private readonly System.Reactive.Subjects.Subject<Unit> _onLinePing;
-    private uint _frameCounter = 0;
-    private readonly SortedDictionary<byte, AsvAudioStreamPayload> _frameBuffer = new();
+    private uint _frameCounter;
     private readonly object _sync = new();
-    private readonly Subject<ReadOnlyMemory<byte>> _inputEncoderAudioStream;
-    private readonly Subject<ReadOnlyMemory<byte>> _inputDecoderAudioStream;
     private PacketCounter? _counter;
     private int _lastFrameSeq;
     private int _lastPacketSync;
     private readonly IAudioEncoder _encoder;
     private readonly IAudioDecoder _decoder;
-    private readonly IDisposable _sub1;
-    private readonly IDisposable _sub2;
+    private readonly ReactiveProperty<string> _name;
     private readonly CancellationTokenSource _disposeCancel;
-    private bool _isDisposed;
+    private readonly System.Reactive.Subjects.Subject<Unit> _onLinePing;
+    private readonly Subject<ReadOnlyMemory<byte>> _inputEncoderAudioStream;
+    private readonly Subject<ReadOnlyMemory<byte>> _inputDecoderAudioStream;
+    private readonly SortedDictionary<byte, AsvAudioStreamPayload> _frameBuffer = new();
 
     public AudioDevice(IAudioCodecFactory factory, 
         AsvAudioCodec outputCodecInfo, 
@@ -81,7 +77,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
             var fullPackets = encodedData.Length / AsvAudioHelper.MaxPacketStreamData;
             var lastPacketSize = encodedData.Length % AsvAudioHelper.MaxPacketStreamData;
             byte packetIndex = 0;
-            var packetsInFrame = (fullPackets + (lastPacketSize > 0 ? 1 : 0));
+            var packetsInFrame = fullPackets + (lastPacketSize > 0 ? 1 : 0);
             if (packetsInFrame == 0) return; // no data to send
             if (packetsInFrame > byte.MaxValue) throw new Exception($"Too many packets in frame. Expected: less then {byte.MaxValue}, actual: {packetsInFrame}");
             for (var i = 0; i < fullPackets; i++)
@@ -226,6 +222,11 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
     }
 
     #region Dispose
+
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    
+    private bool _isDisposed;
 
     public void Dispose()
     {

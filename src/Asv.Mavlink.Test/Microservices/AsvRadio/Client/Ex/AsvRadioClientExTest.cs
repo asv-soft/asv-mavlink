@@ -1,4 +1,4 @@
-using Asv.Mavlink;
+using Asv.Mavlink.V2.AsvRadio;
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;
@@ -16,11 +16,27 @@ public class AsvRadioClientExTest(ITestOutputHelper log) : ClientTestBase<AsvRad
         PrintStatisticsToLogDelayMs = 1000,
         PrintLinkStateToLog = true
     };
+
     private CommandProtocolConfig _commandConfig = new()
     {
         CommandTimeoutMs = 1000,
         CommandAttempt = 5
     };
+
+    [Fact]
+    public void Ctor_CreatesClientCorrect_Success()
+    {
+        //Arrange & Act
+        var client = Client;
+        
+        //Assert
+        Assert.NotNull(client.Identity);
+        Assert.NotNull(client.Name);
+        Assert.NotNull(client.Capabilities);
+        Assert.NotNull(client.Base);
+        Assert.NotNull(client.Core);
+        Assert.Equal(AsvRadioCustomMode.AsvRadioCustomModeIdle, client.CustomMode.CurrentValue);
+    }
 
     protected override AsvRadioClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core)
     {

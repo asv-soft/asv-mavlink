@@ -1,0 +1,41 @@
+﻿using System;
+using System.Threading;
+using JetBrains.Annotations;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace Asv.Mavlink.Test;
+
+[TestSubject(typeof(ParamsClient))]
+public class ParamsClientTest : ClientTestBase<ParamsClient>, IDisposable
+{
+    private readonly CancellationTokenSource _cancellationTokenSource;
+    private readonly ParamsClient _client;
+    
+    private readonly ParameterClientConfig _config = new()
+    {
+        ReadAttemptCount = 6,
+        ReadTimeouMs = 1000,
+    };
+    
+    public ParamsClientTest(ITestOutputHelper log) : base(log)
+    {
+        _client = Client;
+        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
+    }
+
+    protected override ParamsClient CreateClient(MavlinkClientIdentity identity, CoreServices core) => new(identity, _config, core);
+    
+    [Fact]
+    public void Constructor_Null_Throws()
+    {
+        Assert.Throws<ArgumentNullException>(() => new ParamsClient(null!, _config, Core));
+        Assert.Throws<ArgumentNullException>(() => new ParamsClient(Identity, null!, Core));
+        Assert.Throws<ArgumentNullException>(() => new ParamsClient(Identity, _config, null!));
+    }
+
+    public void Dispose()
+    {
+        _cancellationTokenSource.Dispose();
+    }
+}

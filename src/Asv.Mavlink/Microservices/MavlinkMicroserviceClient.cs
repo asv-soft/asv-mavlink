@@ -118,11 +118,13 @@ namespace Asv.Mavlink
             Action<TPacketSend,int>? fillOnConfirmation = null, int timeoutMs = 1000,  CancellationToken cancel = default)
             where TPacketSend : IPacketV2<IPayload>, new()
         {
+            cancel.ThrowIfCancellationRequested();
             var packet = new TPacketSend();
             fillPacket(packet);
             byte currentAttempt = 0;
             var name = packet.Name;
-            while (currentAttempt < attemptCount)
+            bool IsRetryCondition() => currentAttempt < attemptCount;
+            while (IsRetryCondition())
             {
                 if (currentAttempt != 0)
                 {
@@ -136,10 +138,12 @@ namespace Asv.Mavlink
                 }
                 catch (OperationCanceledException)
                 {
-                    if (cancel.IsCancellationRequested)
+                    if (IsRetryCondition())
                     {
-                        throw;
+                        continue;
                     }
+
+                    cancel.ThrowIfCancellationRequested();
                 }
             }
             _loggerBase.ZLogError($"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
@@ -175,12 +179,14 @@ namespace Asv.Mavlink
             where TPacketSend : IPacketV2<IPayload>, new()
             where TPacketRecv : IPacketV2<IPayload>, new()
         {
+            cancel.ThrowIfCancellationRequested();
             var packet = new TPacketSend();
             fillPacket(packet);
             byte currentAttempt = 0;
             TPacketRecv? result = default;
             var name = packet.Name;
-            while (currentAttempt < attemptCount)
+            bool IsRetryCondition() => currentAttempt < attemptCount;
+            while (IsRetryCondition())
             {
                 if (currentAttempt != 0)
                 {
@@ -195,10 +201,12 @@ namespace Asv.Mavlink
                 }
                 catch (OperationCanceledException)
                 {
-                    if (cancel.IsCancellationRequested)
+                    if (IsRetryCondition())
                     {
-                        throw;
+                        continue;
                     }
+                    
+                    cancel.ThrowIfCancellationRequested();
                 }
             }
 

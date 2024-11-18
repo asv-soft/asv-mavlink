@@ -4,7 +4,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.Mavlink.V2.AsvAudio;
 using Microsoft.Extensions.Logging;
 using ObservableCollections;
@@ -12,7 +11,6 @@ using R3;
 using ZLogger;
 
 namespace Asv.Mavlink;
-
 
 public class AudioServiceConfig
 {
@@ -23,23 +21,19 @@ public class AudioServiceConfig
 
 public class AudioService : IAudioService,IDisposable, IAsyncDisposable
 {
-    private readonly ILogger _logger; 
+    private readonly ILogger _logger;
     private readonly IAudioCodecFactory _codecFactory;
     private readonly MavlinkIdentity _identity;
     private readonly ICoreServices _core;
-    private readonly ObservableDictionary<MavlinkIdentity,IAudioDevice> _devices;
-    private readonly MavlinkPacketTransponder<AsvAudioOnlinePacket,AsvAudioOnlinePayload> _transponder;
-    private readonly ReactiveProperty<bool> _isOnline;
-    private readonly ReactiveProperty<AsvAudioCodec?> _codec;
-    private readonly ReactiveProperty<bool> _speakerEnabled;
-    private readonly ReactiveProperty<bool> _micEnabled;
+    private readonly ObservableDictionary<MavlinkIdentity, IAudioDevice> _devices;
     private readonly TimeSpan _deviceTimeout;
     private readonly TimeSpan _onlineRate;
-    private readonly IDisposable _sub1;
-    private readonly IDisposable _sub2;
     private readonly ITimer _timer;
-    private readonly IDisposable _sub3;
-    private readonly IDisposable _sub4;
+    private readonly ReactiveProperty<bool> _micEnabled;
+    private readonly ReactiveProperty<bool> _speakerEnabled;
+    private readonly ReactiveProperty<AsvAudioCodec?> _codec;
+    private readonly ReactiveProperty<bool> _isOnline;
+    private readonly MavlinkPacketTransponder<AsvAudioOnlinePacket, AsvAudioOnlinePayload> _transponder;
     
     public AudioService(IAudioCodecFactory codecFactory,MavlinkIdentity identity,
         AudioServiceConfig config, ICoreServices core)
@@ -195,6 +189,11 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
     }
 
     #region Dispose
+
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
+    private readonly IDisposable _sub4;
 
     public void Dispose()
     {
