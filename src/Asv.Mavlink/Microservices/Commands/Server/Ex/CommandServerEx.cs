@@ -33,7 +33,6 @@ public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>
         _cmdGetter = cmdGetter;
         _confirmationGetter = confirmationGetter;
         _subscribe = commandsPipe.Subscribe(OnRequest);
-        
     }
 
     public ICommandServer Base { get; }
@@ -42,8 +41,7 @@ public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>
     {
         set { _registry.AddOrUpdate((ushort)cmd, value, (mavCmd, del) => value); }
     }
-
-
+    
     private async void OnRequest(TArgPacket pkt)
     {
         var requester = new DeviceIdentity() { ComponentId = pkt.ComponentId, SystemId = pkt.SystemId };
@@ -84,7 +82,6 @@ public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>
             _lastCommand = -1;
             await Base.SendCommandAck((MavCmd)cmd, requester,
                 CommandResult.FromResult(MavResult.MavResultFailed), DisposeCancel).ConfigureAwait(false);
-
         }
         finally
         {

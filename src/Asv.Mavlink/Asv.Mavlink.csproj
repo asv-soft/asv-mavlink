@@ -54,6 +54,7 @@
       <DependentUpon>ParamsDesc.resx</DependentUpon>
     </Compile>
     <Compile Remove="Microservices\Params\Server\Ex\ParamsDesc.cs" />
+    <Compile Remove="Microservices\Commands\Client\Ex\**" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="RS.resx">
@@ -67,9 +68,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ParamsDesc.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Remove="Microservices\Commands\Client\Ex\**" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Microservices\Commands\Client\Ex\" />
     <Folder Include="Microservices\Control\Server\" />
     <Folder Include="Microservices\Dgps\Server\" />
     <Folder Include="Microservices\Gnss\Server\" />
@@ -90,5 +91,6 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+    <None Remove="Microservices\Commands\Client\Ex\**" />
   </ItemGroup>
 </Project>

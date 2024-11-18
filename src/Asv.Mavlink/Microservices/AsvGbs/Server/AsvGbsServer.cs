@@ -8,7 +8,7 @@ namespace Asv.Mavlink
 {
     public class AsvGbsServerConfig
     {
-        public int StatusRateMs { get; set; } = 1000;
+        public uint StatusRateMs { get; set; } = 1000;
     }
 
     public class AsvGbsServer:MavlinkMicroserviceServer, IAsvGbsServer
