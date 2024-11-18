@@ -1,6 +1,4 @@
 using System;
-using System.Reactive.Concurrency;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Time.Testing;
