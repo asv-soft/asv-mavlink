@@ -1,3 +1,4 @@
+using System;
 using Asv.Mavlink;
 using JetBrains.Annotations;
 using Xunit;
@@ -14,4 +15,21 @@ public class AsvChartClientTest(ITestOutputHelper log) : ClientTestBase<AsvChart
     };
 
     protected override AsvChartClient CreateClient(MavlinkClientIdentity identity, CoreServices core) => new(identity, _config, core);
+    
+    [Fact]
+    public void Ctor_ThrowsExceptions_ArgIsNullFail()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+        {
+            var client = new AsvChartClient(null, _config, Core);
+        });
+        Assert.Throws<NullReferenceException>(() =>
+        {
+            var client = new AsvChartClient(Identity, null, Core);
+        });
+        Assert.Throws<ArgumentNullException>(() =>
+        {
+            var client = new AsvChartClient(Identity, _config, null);
+        });
+    }
 }

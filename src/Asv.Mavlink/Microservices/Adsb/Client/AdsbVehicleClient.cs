@@ -20,10 +20,6 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
     private readonly Subject<AdsbVehiclePayload> _onAdsbTarget;
     private readonly ObservableDictionary<uint,IAdsbVehicle> _targetSource;
     private readonly ReactiveProperty<TimeSpan> _targetTimeout;
-    private readonly IDisposable _sub1;
-    private readonly IDisposable _sub2;
-    private readonly ITimer _sub3;
-
 
     public AdsbVehicleClient(MavlinkClientIdentity identity, AdsbVehicleClientConfig config,ICoreServices core) 
         : base("ADSB", identity, core)
@@ -73,6 +69,10 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
 
     #region Dispose
 
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly ITimer _sub3;
+    
     protected override void Dispose(bool disposing)
     {
         if (disposing)

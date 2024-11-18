@@ -18,29 +18,19 @@ public class AsvGbsExServer: IAsvGbsServerEx, IDisposable,IAsyncDisposable
 {
     private readonly IHeartbeatServer _heartbeatServer;
     private readonly int _maxMessageLength = new GpsRtcmDataPayload().Data.Length;
+    public static readonly int MaxDgpsMessageLength = new GpsRtcmDataPayload().Data.Length;
+    public static readonly int MaxRtcmMessageLength = MaxDgpsMessageLength * 4;
+    
     private readonly ILogger _logger;
     private uint _seqNumber;
-    private readonly IDisposable _sub1;
-    private readonly IDisposable _sub2;
-    private readonly IDisposable _sub3;
-    private readonly IDisposable _sub4;
-    private readonly IDisposable _sub5;
-    private readonly IDisposable _sub6;
-    private readonly IDisposable _sub7;
-    private readonly IDisposable _sub8;
-    private readonly IDisposable _sub9;
-    private readonly IDisposable _sub10;
-    private readonly IDisposable _sub11;
-    private readonly IDisposable _sub12;
-    private readonly IDisposable _sub13;
 
     public AsvGbsExServer(IAsvGbsServer server, 
         IHeartbeatServer heartbeatServer, 
         ICommandServerEx<CommandLongPacket> commands)
     {
-        _heartbeatServer = heartbeatServer;
         Base = server;
         _logger = server.Core.Log.CreateLogger<AsvGbsExServer>();
+        _heartbeatServer = heartbeatServer;
         #region Commands
 
         commands[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunAutoMode] = async (id,args, cancel) =>
@@ -182,14 +172,14 @@ public class AsvGbsExServer: IAsvGbsServerEx, IDisposable,IAsyncDisposable
     
     public async Task SendRtcmData(byte[] data, int length, CancellationToken cancel)
     {
-        if (length > _maxMessageLength * 4)
+        if (length > MaxRtcmMessageLength)
         {
             _logger.ZLogError($"RTCM message for DGPS is too large '{length}'");
             return;
         }
 
         // number of packets we need, including a termination packet if needed
-        var pktCount = length / _maxMessageLength + 1;
+        var pktCount = (int)Math.Ceiling((double)length / MaxDgpsMessageLength);
         if (pktCount >= 4)
         {
             pktCount = 4;
@@ -208,9 +198,9 @@ public class AsvGbsExServer: IAsvGbsServerEx, IDisposable,IAsyncDisposable
                 var increment = Interlocked.Increment(ref _seqNumber) % 31;
                 pkt.Payload.Flags += (byte)((increment & 0x1f) << 3);
 
-                var dataLength = Math.Min(length - i1 * _maxMessageLength, _maxMessageLength);
+                var dataLength = Math.Min(length - i1 * MaxDgpsMessageLength, MaxDgpsMessageLength);
                 var dataArray = new byte[dataLength];
-                Array.Copy(data, i1 * _maxMessageLength, dataArray, 0, dataLength);
+                Array.Copy(data, i1 * MaxDgpsMessageLength, dataArray, 0, dataLength);
                 pkt.Payload.Data = dataArray;
 
                 pkt.Payload.Len = (byte)dataLength;
@@ -219,6 +209,20 @@ public class AsvGbsExServer: IAsvGbsServerEx, IDisposable,IAsyncDisposable
     }
 
     #region Dispose
+    
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
+    private readonly IDisposable _sub4;
+    private readonly IDisposable _sub5;
+    private readonly IDisposable _sub6;
+    private readonly IDisposable _sub7;
+    private readonly IDisposable _sub8;
+    private readonly IDisposable _sub9;
+    private readonly IDisposable _sub10;
+    private readonly IDisposable _sub11;
+    private readonly IDisposable _sub12;
+    private readonly IDisposable _sub13;
 
     public void Dispose()
     {

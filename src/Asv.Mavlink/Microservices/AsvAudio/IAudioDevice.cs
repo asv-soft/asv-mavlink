@@ -51,7 +51,7 @@ public class PacketCounter(byte initialCounter = 0)
     }
 }
 
-public interface IAudioDevice
+public interface IAudioDevice : IDisposable
 {
     MavlinkIdentity FullId { get; }
     IObservable<Unit> OnLinePing { get; }
