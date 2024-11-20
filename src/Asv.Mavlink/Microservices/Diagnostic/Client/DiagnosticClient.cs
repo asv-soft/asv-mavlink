@@ -68,8 +68,11 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
     public DiagnosticClient(MavlinkClientIdentity identity,DiagnosticClientConfig config,ICoreServices core) 
         : base("DIAG", identity, core)
     {
+        ArgumentNullException.ThrowIfNull(identity);
+        ArgumentNullException.ThrowIfNull(core);
+        ArgumentNullException.ThrowIfNull(config);
         _logger = core.Log.CreateLogger<DiagnosticClient>();
-        _config = config;
+        _config = config ?? throw new ArgumentNullException(nameof(config));
         _floatProbes = new ObservableDictionary<string,INamedProbe<float>>();
         _floatSubject = new Subject<NamedValueFloatPayload>();
         _sub1 = InternalFilter<NamedValueFloatPacket>()
