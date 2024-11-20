@@ -40,6 +40,7 @@ public class DiagnosticServerTest(ITestOutputHelper log) : ServerTestBase<Diagno
         var resultByte = Server.Send(1, 1, 1, [1, 1, 1, 1]).IsCompleted;
         
         //Assert
+        Assert.True(result);
         Assert.True(resultFloat);
         Assert.True(resultFloatArray);
         Assert.True(resultByte);
