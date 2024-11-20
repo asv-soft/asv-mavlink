@@ -422,13 +422,12 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
     public RenameDelegate? Rename { private get; set; }
     private async Task InternalRename(FileTransferProtocolPacket input)
     {
-        if (Rename is null)
-        {
-            throw new FtpNackException(FtpOpcode.Rename, NackError.UnknownCommand);
-        }
-
-        var path1 = input.ReadDataAsString();
-        var path2 = input.ReadDataAsString();
+        if (Rename is null) throw new FtpNackException(FtpOpcode.Rename, NackError.UnknownCommand);
+        var path = input.ReadDataAsString();
+        var split = path.Split('\0');
+        if (split.Length != 2) throw new FtpNackException(FtpOpcode.Rename, NackError.UnknownCommand);
+        var path1 = split[0];
+        var path2 = split[1];
         await Rename(path1, path2, DisposeCancel).ConfigureAwait(false);
         _logger.ZLogInformation($"{LogRecv} Rename: ({path1}) to ({path2})");
         await InternalFtpReply(input, FtpOpcode.Ack, p =>

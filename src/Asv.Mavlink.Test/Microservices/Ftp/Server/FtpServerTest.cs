@@ -309,15 +309,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         // Arrange
         var oldPath = "/path/to/old_name.txt";
         var newPath = "/path/to/new_name.txt";
-
-        Server.Rename = async (path1, path2, _) =>
-        {
-            Assert.Equal(oldPath, path1);
-            Assert.Equal(newPath, path2);
-            await Task.CompletedTask;
-        };
-
-        // Simulate client request
+        
         var requestPacket = new FileTransferProtocolPacket
         {
             SystemId = Identity.SystemId,
@@ -331,12 +323,19 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 Payload = new byte[251],
             }
         };
+        
+        Server.Rename = async (path1, path2, _) =>
+        {
+            Assert.Equal(oldPath, path1);
+            Assert.Equal(newPath, path2);
+            await Task.CompletedTask;
+        };
+        
         requestPacket.WriteOpcode(FtpOpcode.Rename);
         requestPacket.WriteSession(0);
         requestPacket.WriteSize((byte)(oldPath.Length + newPath.Length));
-        requestPacket.WriteDataAsString(oldPath);
-        requestPacket.WriteDataAsString(newPath);
-
+        requestPacket.WriteDataAsString(oldPath + '\0' + newPath);
+        
         Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
@@ -658,37 +657,26 @@ public class FtpServerTest : ServerTestBase<FtpServer>
     public async Task BurstReadFile_Success()
     {
         // Arrange
-        var sessionId = (byte)1;
-        var offset = 0U;
-        var size = (byte)100;
-        var dataChunks = new byte[200];
+        const byte sessionId = 1;
+        const uint offset = 0U;
+        const byte size = 100;
+        var dataChunks = new byte[size];
         new Random().NextBytes(dataChunks);
         var originStream = new MemoryStream(dataChunks);
+        var resultBuffer = new ArrayBufferWriter<byte>(size);
 
-        Server.BurstReadFile = async (req, buffer, cancel) =>
+        Server.BurstReadFile = async (request, buffer, cancel) =>
         {
-            var bytes = ArrayPool<byte>.Shared.Rent(req.Take);
-            try
-            {
-                var isLastChunk = req.Skip + req.Take >= originStream.Length;
-
-                originStream.Position = req.Skip;
-                var size = await originStream.ReadAsync(bytes, 0, req.Take, cancel)
-                    .ConfigureAwait(false);
-                var realBytes = bytes[..size];
-                realBytes.CopyTo(buffer);
-
-                return new BurstReadResult((byte)size, isLastChunk, req);
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(bytes);
-            }
+            var isLastChunk = request.Skip + request.Take >= originStream.Length;
+            originStream.Position = request.Skip;
+            var temp = dataChunks[..request.Take];
+            var readSize = await originStream.ReadAsync(temp, cancel).ConfigureAwait(false);
+            resultBuffer.Write(temp);
+            resultBuffer.Advance(readSize);
+            
+            return new BurstReadResult((byte)readSize, isLastChunk, request);
         };
 
-        var totalDataReceived = new byte[dataChunks.Length];
-        var totalReceivedCount = 0;
-        
         var requestPacket = new FileTransferProtocolPacket
         {
             SystemId = Identity.SystemId,
@@ -709,12 +697,6 @@ public class FtpServerTest : ServerTestBase<FtpServer>
 
         Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
         {
-            var offset = Convert.ToInt32(packet.ReadOffset());
-            var size = packet.ReadSize();
-            var resultBuf = new byte[size];
-            packet.ReadData(resultBuf);
-            Array.Copy(resultBuf, 0, totalDataReceived, offset, size);
-            totalReceivedCount += size;
             _tcs.TrySetResult(packet);
         });
 
@@ -724,7 +706,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         await _tcs.Task.ConfigureAwait(false);
 
         // Assert
-        Assert.Equal(dataChunks, totalDataReceived);
+        Assert.Equal(dataChunks, resultBuffer.GetMemory().ToArray());
         
         await originStream.DisposeAsync();
     }
