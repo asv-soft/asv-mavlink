@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
@@ -33,11 +34,16 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
             .Filter<FileTransferProtocolPacket>()
             .Where(x => x.Payload.TargetComponent == identity.ComponentId &&
                         x.Payload.TargetSystem == identity.SystemId && _config.NetworkId == x.Payload.TargetNetwork)
-            .Subscribe(OnFtpMessage);
+            .SubscribeAwait(OnFtpMessage);
     }
 
-    private async void OnFtpMessage(FileTransferProtocolPacket input)
+    private async ValueTask OnFtpMessage(FileTransferProtocolPacket input, CancellationToken cancellationToken)
     {
+        if (cancellationToken.IsCancellationRequested)
+        {
+            _logger.ZLogWarning($"FTP message cancellation requested.");
+            return;
+        }
         try
         {
             switch (input.ReadOpcode())
