@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -309,7 +310,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         // Arrange
         var oldPath = "/path/to/old_name.txt";
         var newPath = "/path/to/new_name.txt";
-        
+
         var requestPacket = new FileTransferProtocolPacket
         {
             SystemId = Identity.SystemId,
@@ -323,19 +324,19 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 Payload = new byte[251],
             }
         };
-        
+
         Server.Rename = async (path1, path2, _) =>
         {
             Assert.Equal(oldPath, path1);
             Assert.Equal(newPath, path2);
             await Task.CompletedTask;
         };
-        
+
         requestPacket.WriteOpcode(FtpOpcode.Rename);
         requestPacket.WriteSession(0);
         requestPacket.WriteSize((byte)(oldPath.Length + newPath.Length));
         requestPacket.WriteDataAsString(oldPath + '\0' + newPath);
-        
+
         Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
@@ -562,7 +563,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
     public async Task TerminateSession_Success()
     {
         // Arrange
-        var sessionId = (byte)1;
+        const byte sessionId = (byte)1;
 
         Server.TerminateSession = async (requestedSessionId, _) =>
         {
@@ -616,7 +617,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
             Assert.Equal(sessionId, request.Session);
             Assert.Equal(offset, request.Skip);
             Assert.Equal(size, request.Take);
-            Assert.Equal(data, buffer.Span.Slice(0, size).ToArray());
+            Assert.Equal(data, buffer.Span[..size].ToArray());
             await Task.CompletedTask;
         };
 
@@ -662,19 +663,24 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         const byte size = 100;
         var dataChunks = new byte[size];
         new Random().NextBytes(dataChunks);
+
         var originStream = new MemoryStream(dataChunks);
-        var resultBuffer = new ArrayBufferWriter<byte>(size);
 
         Server.BurstReadFile = async (request, buffer, cancel) =>
         {
-            var isLastChunk = request.Skip + request.Take >= originStream.Length;
+            if (originStream.Length == 0 || request.Skip >= originStream.Length)
+            {
+                return new BurstReadResult(0, true, request);
+            }
+
             originStream.Position = request.Skip;
-            var temp = dataChunks[..request.Take];
-            var readSize = await originStream.ReadAsync(temp, cancel).ConfigureAwait(false);
-            resultBuffer.Write(temp);
-            resultBuffer.Advance(readSize);
-            
-            return new BurstReadResult((byte)readSize, isLastChunk, request);
+
+            var bytesToRead = (int)Math.Min(request.Take, originStream.Length - request.Skip);
+            var readBytes = await originStream.ReadAsync(buffer[..bytesToRead], cancel).ConfigureAwait(false);
+
+            Log.WriteLine($"Server Buffer Content: {BitConverter.ToString(buffer[..readBytes].ToArray())}");
+
+            return new BurstReadResult((byte)readBytes, originStream.Position >= originStream.Length, request);
         };
 
         var requestPacket = new FileTransferProtocolPacket
@@ -686,7 +692,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
             {
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
-                TargetNetwork = _config.NetworkId,
+                TargetNetwork = 0,
                 Payload = new byte[300],
             }
         };
@@ -694,29 +700,35 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteSession(sessionId);
         requestPacket.WriteOffset(offset);
         requestPacket.WriteSize(size);
+        requestPacket.WriteData(dataChunks);
 
         Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
         {
+            Log.WriteLine($"Client received packet: {BitConverter.ToString(packet.Payload.Payload)}");
             _tcs.TrySetResult(packet);
         });
 
         // Act
         await Link.Server.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-
-        await _tcs.Task.ConfigureAwait(false);
-
-        // Assert
-        Assert.Equal(dataChunks, resultBuffer.GetMemory().ToArray());
+        var response = await _tcs.Task.ConfigureAwait(false);
         
-        await originStream.DisposeAsync();
+        // Assert
+        
+        var mb = new ArrayBufferWriter<byte>();
+        response.ReadData(mb);
+        var resultData = mb.WrittenMemory.ToArray();
+        
+        Assert.NotNull(response);
+        Assert.Equal(FtpOpcode.BurstReadFile, response.ReadOpcode());
+        Assert.Equal(dataChunks, resultData);
     }
 
     [Fact]
     public async Task CreateFile_Success()
     {
         // Arrange
-        var path = "/path/to/new_file.txt";
-        var sessionId = (byte)1;
+        const string path = "/path/to/new_file.txt";
+        const byte sessionId = 1;
 
         Server.CreateFile = async (requestedPath, _) =>
         {
@@ -724,7 +736,6 @@ public class FtpServerTest : ServerTestBase<FtpServer>
             return await Task.FromResult(sessionId);
         };
 
-        // Simulate client request
         var requestPacket = new FileTransferProtocolPacket
         {
             SystemId = Identity.SystemId,
@@ -743,13 +754,10 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteSize(0);
         requestPacket.WriteDataAsString(path);
 
-        // Set up client to receive the server's response
         Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
         await Link.Server.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-
-        // Wait for the client to receive the response
         var response = await _tcs.Task.ConfigureAwait(false);
 
         // Assert
