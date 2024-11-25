@@ -14,12 +14,7 @@ public class ServerDeviceTests(ITestOutputHelper log) : ServerTestBase<ServerDev
 {
     protected override ServerDevice CreateClient(MavlinkIdentity identity, CoreServices core)
     {
-        return new ServerDevice(identity,
-            new ServerDeviceConfig
-            {
-                Heartbeat = new MavlinkHeartbeatServerConfig { HeartbeatRateMs = 1000 },
-                StatusText = new StatusTextLoggerConfig { MaxQueueSize = 100, MaxSendRateHz = 10 }
-            }, core);
+        throw new NotImplementedException();
     }
 
     [Fact]
