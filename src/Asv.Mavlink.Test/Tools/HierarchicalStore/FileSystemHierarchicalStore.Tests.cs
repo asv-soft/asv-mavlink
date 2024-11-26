@@ -1,4 +1,4 @@
-/*using System;
+using System;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using Asv.Common;
@@ -16,23 +16,26 @@ public class FileSystemHierarchicalStoreTest
         }
     }
 
+    private FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>> _store;
     private MockFileSystem _fileSystem;
+    private AsvSdrListDataStoreFormat _format;
     public FileSystemHierarchicalStoreTest()
     {
         _fileSystem = new MockFileSystem();
+        _format = new AsvSdrListDataStoreFormat();
     }
+
     #region Files
-    
+
     [Fact]
     public void Check_Create_File_With_Same_Id()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_Create_File_With_Same_Id #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), fileSystem: _fileSystem);
 
         var firstGuid = Guid.NewGuid();
 
@@ -49,13 +52,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_Success_Create_File()
     {
-        var storeLocation = "TestFolder_Success_CreateFile #" +  _fileSystem.Path.GetRandomFileName();
-        var format = new AsvSdrListDataStoreFormat();
+        var storeLocation = "TestFolder_Success_CreateFile #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
         var guid = Guid.NewGuid();
 
@@ -73,19 +75,18 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_If_File_Exists_After_Manual_Delete()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_Manual_File_Delete #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
         var guid = Guid.NewGuid();
 
         var file = store.CreateFile(guid, "FirstCreation", store.RootFolderId);
         file.Dispose();
-        var files =  _fileSystem.Directory.GetFiles(storeinfo.FullName);
+        var files = _fileSystem.Directory.GetFiles(storeinfo.FullName);
 
         _fileSystem.File.Delete(files[0]);
 
@@ -101,13 +102,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_GetFiles()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_GetFiles #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
         var guid = Guid.NewGuid();
 
         var file1 = store.CreateFile(guid, "FirstFile", store.RootFolderId);
@@ -133,13 +133,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_TryGetFile()
     {
-        var format = new AsvSdrListDataStoreFormat();
-        var storeLocation = "TestFolder_TryGetFile #" +  _fileSystem.Path.GetRandomFileName();
+        var storeLocation = "TestFolder_TryGetFile #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
         var guid1 = Guid.NewGuid();
         var guid2 = Guid.NewGuid();
@@ -165,13 +164,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_DeleteFile()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_DeleteFile #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
         var guid1 = Guid.NewGuid();
         var guid2 = Guid.NewGuid();
         var folderGuid = Guid.NewGuid();
@@ -202,13 +200,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_RenameFile()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_RenameFile #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
         var guid1 = Guid.NewGuid();
         var guid2 = Guid.NewGuid();
@@ -216,8 +213,8 @@ public class FileSystemHierarchicalStoreTest
 
         var file1 = store.CreateFile(guid1, "FirstFile", store.RootFolderId);
         file1.Dispose();
-        var file2 = store.CreateFile(guid2, "SecondFile", store.RootFolderId);
-        var folder1 = store.CreateFolder(folderGuid, "FirstFolder", store.RootFolderId);
+        var file2 = store.CreateFile(guid2, "SecondFile", store.RootFolderId); 
+        store.CreateFolder(folderGuid, "FirstFolder", store.RootFolderId);
 
         Assert.Throws<HierarchicalStoreException>(() => { store.RenameFile(folderGuid, "NewFolderName"); });
 
@@ -237,13 +234,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_MoveFile()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_MoveFile #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
 
         var guid1 = Guid.NewGuid();
@@ -258,8 +254,8 @@ public class FileSystemHierarchicalStoreTest
         file2.Dispose();
         var file3 = store.CreateFile(guid3, "ThirdFile", store.RootFolderId);
 
-        var folder1 = store.CreateFolder(folderGuid, "FirstFolder", store.RootFolderId);
-        var folder2 = store.CreateFolder(newFolderGuid, "SecondFolder", store.RootFolderId);
+        store.CreateFolder(folderGuid, "FirstFolder", store.RootFolderId);
+        store.CreateFolder(newFolderGuid, "SecondFolder", store.RootFolderId);
 
         Assert.Throws<HierarchicalStoreException>(() => { store.MoveFile(folderGuid, newFolderGuid); });
 
@@ -282,13 +278,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public async void Check_OpenFile()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_OpenFile #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
 
         var guid1 = Guid.NewGuid();
@@ -305,7 +300,7 @@ public class FileSystemHierarchicalStoreTest
         Assert.Equal(resultFile.Id, guid1);
 
         Assert.Throws<FileNotFoundException>(() => { store.OpenFile(guid3); });
-        
+
         _fileSystem.File.Delete($"{storeinfo.FullName}\\SecondFile #{ShortGuid.Encode(guid2)}.sdr");
 
         Assert.Throws<FileNotFoundException>(() => { store.OpenFile(guid2); });
@@ -322,13 +317,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_GetFolders()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_GetFolders #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
         var guid1 = Guid.NewGuid();
         var guid2 = Guid.NewGuid();
@@ -352,13 +346,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_Manual_Delete_GetFolders()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_Folder_Manual_Delete #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
         var guid1 = Guid.NewGuid();
         var guid2 = Guid.NewGuid();
@@ -385,13 +378,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_CreateFolder()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_CreateFolder #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
         var guid1 = Guid.NewGuid();
         var guid2 = Guid.NewGuid();
@@ -424,13 +416,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_DeleteFolder()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_DeleteFolder #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
         var guid1 = Guid.NewGuid();
         var guid2 = Guid.NewGuid();
@@ -467,13 +458,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_FolderExists()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_FolderExists #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
         var guid1 = Guid.NewGuid();
         var guid2 = Guid.NewGuid();
@@ -496,13 +486,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_RenameFolder()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_RenameFolder #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
         var guid1 = Guid.NewGuid();
         var guid2 = Guid.NewGuid();
@@ -530,7 +519,8 @@ public class FileSystemHierarchicalStoreTest
 
         store.RenameFolder(folder2, "NewSecondFolder");
 
-        Assert.True(_fileSystem.Directory.Exists($"{storeinfo.FullName}\\NewSecondFolder #{ShortGuid.Encode(folder2)}"));
+        Assert.True(
+            _fileSystem.Directory.Exists($"{storeinfo.FullName}\\NewSecondFolder #{ShortGuid.Encode(folder2)}"));
 
         store.Dispose();
 
@@ -540,13 +530,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_MoveFolder()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_MoveFolder #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
         var guid1 = Guid.NewGuid();
         var guid2 = Guid.NewGuid();
@@ -584,13 +573,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_GetEntries()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_GetEntries #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
         var fileGuid1 = Guid.NewGuid();
         var fileGuid2 = Guid.NewGuid();
@@ -637,13 +625,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_TryGetEntry()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_TryGetEntry #" + _fileSystem.Path.GetRandomFileName();
         var storeinfo = new DirectoryInfo(storeLocation);
         _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
         var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
         var fileGuid1 = Guid.NewGuid();
         var fileGuid2 = Guid.NewGuid();
@@ -681,13 +668,12 @@ public class FileSystemHierarchicalStoreTest
     [Fact]
     public void Check_EntryExists()
     {
-        var format = new AsvSdrListDataStoreFormat();
         var storeLocation = "TestFolder_EntryExists #" + _fileSystem.Path.GetRandomFileName();
-        var storeinfo = new DirectoryInfo(storeLocation);
-        _fileSystem.Directory.CreateDirectory(storeinfo.FullName);
-        var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeinfo.FullName,
-            format,
-            TimeSpan.FromMilliseconds(0),null,_fileSystem);
+        var storeInfo = new DirectoryInfo(storeLocation);
+        _fileSystem.Directory.CreateDirectory(storeInfo.FullName);
+        var store = new FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>(storeInfo.FullName,
+            _format,
+            TimeSpan.FromMilliseconds(0), null, fileSystem: _fileSystem);
 
         var fileGuid1 = Guid.NewGuid();
         var fileGuid2 = Guid.NewGuid();
@@ -720,8 +706,8 @@ public class FileSystemHierarchicalStoreTest
 
         store.Dispose();
 
-        ClearAllDirectories(storeinfo.FullName);
+        ClearAllDirectories(storeInfo.FullName);
     }
 
     #endregion
-}*/
+}
