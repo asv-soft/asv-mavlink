@@ -1,16 +1,27 @@
-using Asv.Mavlink;
+using Asv.Cfg;
 using JetBrains.Annotations;
-using Xunit;
 using Xunit.Abstractions;
 
-namespace Asv.Mavlink.Test.ParamsExt.Server.Ex;
+namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(ParamsExtServerEx))]
 public class ParamsExtServerExTest(ITestOutputHelper log)
     : ServerTestBase<ParamsExtServerEx>(log)
 {
-    protected override ParamsExtServerEx CreateClient(MavlinkIdentity identity, CoreServices core)
+    private readonly StatusTextLoggerConfig _statusConfig = new()
     {
-        throw new System.NotImplementedException();
-    }
+        MaxQueueSize = 100,
+        MaxSendRateHz = 100,
+    };
+
+    private readonly ParamsExtServerExConfig _config = new()
+    {
+        SendingParamItemDelayMs = 100,
+        CfgPrefix = "MAV_",
+    };
+
+    protected override ParamsExtServerEx CreateClient(MavlinkIdentity identity, CoreServices core) 
+        => new(new ParamsExtServer(identity, core), new StatusTextServer(identity, _statusConfig, core) , ParamDesc,Configuration, _config);
+    private IMavParamExtTypeMetadata[] ParamDesc { get; set; } = [];
+    private InMemoryConfiguration Configuration { get; set; } = new();
 }
