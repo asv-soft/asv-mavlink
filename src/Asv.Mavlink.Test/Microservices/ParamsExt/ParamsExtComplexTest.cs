@@ -16,10 +16,12 @@ public class ParamsExtComplexTest : ComplexTestBase<ParamsExtClientEx, ParamsExt
     private readonly TaskCompletionSource<ParamExtValuePayload> _taskCompletionSource;
     private readonly ParamsExtServerEx _serverEx;
     private readonly ParamsExtClientEx _client;
+    private readonly IMavParamEncoding _encoding;
     private ParamsExtServer? _server;
 
     public ParamsExtComplexTest(ITestOutputHelper log) : base(log)
     {
+        _encoding = new MavParamByteWiseEncoding();
         _serverEx = Server;
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<ParamExtValuePayload>();
@@ -134,7 +136,7 @@ public class ParamsExtComplexTest : ComplexTestBase<ParamsExtClientEx, ParamsExt
             },
         };
         var configuration = new InMemoryConfiguration();
-        return new ParamsExtServerEx(_server, statusTextServer, paramDict, configuration, _serverExConfig);
+        return new ParamsExtServerEx(_server, statusTextServer, paramDict, configuration, _serverExConfig, _encoding);
     }
 
     protected override ParamsExtClientEx CreateClient(MavlinkClientIdentity identity, ICoreServices core)
@@ -154,7 +156,7 @@ public class ParamsExtComplexTest : ComplexTestBase<ParamsExtClientEx, ParamsExt
             new() { Name = "GND_ABS_PRESS", ParamExtType = MavParamExtType.MavParamExtTypeReal64 },
             new() { Name = "SERIAL1_PROTOCOL", ParamExtType = MavParamExtType.MavParamExtTypeCustom },
         };
-        return new ParamsExtClientEx(client, _clientExConfig, existDescription);
+        return new ParamsExtClientEx(client, _clientExConfig, existDescription, _encoding);
     }
 
     [Fact]

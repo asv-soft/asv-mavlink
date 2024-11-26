@@ -31,6 +31,7 @@ public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDi
     private readonly IParamsExtServer _server;
     private readonly IStatusTextServer _statusTextServer;
     private readonly IConfiguration _cfg;
+    private readonly IMavParamEncoding _encoding;
     private readonly ParamsExtServerExConfig _serverCfg;
     private readonly CancellationTokenSource _disposeCancel;
     private readonly IDisposable _sub1;
@@ -42,13 +43,14 @@ public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDi
         IStatusTextServer statusTextServer,
         IEnumerable<IMavParamExtTypeMetadata> paramDescriptions, 
         IConfiguration cfg,
-        ParamsExtServerExConfig serverCfg)
+        ParamsExtServerExConfig serverCfg, IMavParamEncoding converter)
     {
         _logger = server.Core.Log.CreateLogger<ParamsExtServer>();
         _server = server ?? throw new ArgumentNullException(nameof(server));
         _statusTextServer = statusTextServer ?? throw new ArgumentNullException(nameof(statusTextServer));
         _cfg = cfg ?? throw new ArgumentNullException(nameof(cfg));
         _serverCfg = serverCfg ?? throw new ArgumentNullException(nameof(serverCfg));
+        _encoding = converter ?? throw new ArgumentNullException(nameof(converter));
         _disposeCancel = new CancellationTokenSource();
 
         _onErrorSubject = new Subject<Exception>();
@@ -148,7 +150,7 @@ public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDi
             return;
         }
 
-        var newValue = new MavParamExtValue(packet.Payload.ParamValue);
+        var newValue = _encoding.ConvertFromMavlinkUnion(packet.Payload.ParamValue, param.Item2.Type);
         if (param.Item2.IsValid(newValue) == false)
         {
             var errorMsg = param.Item2.GetValidationError(newValue);

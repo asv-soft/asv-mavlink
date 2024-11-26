@@ -21,7 +21,8 @@ public class ParamsExtServerExTest(ITestOutputHelper log)
     };
 
     protected override ParamsExtServerEx CreateClient(MavlinkIdentity identity, CoreServices core) 
-        => new(new ParamsExtServer(identity, core), new StatusTextServer(identity, _statusConfig, core) , ParamDesc,Configuration, _config);
+        => new(new ParamsExtServer(identity, core), new StatusTextServer(identity, _statusConfig, core) , ParamDesc,Configuration, _config, Encoding);
     private IMavParamExtTypeMetadata[] ParamDesc { get; set; } = [];
     private InMemoryConfiguration Configuration { get; set; } = new();
+    private IMavParamEncoding Encoding { get; set; } = new MavParamByteWiseEncoding();
 }

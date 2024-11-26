@@ -27,12 +27,14 @@ public class ParamsExtClientEx : IParamsExtClientEx, IDisposable, IAsyncDisposab
     private readonly CancellationTokenSource _disposeCancel;
     private readonly IDisposable _sub1;
     private readonly ImmutableDictionary<string, ParamExtDescription> _existDescription;
+    private readonly IMavParamEncoding _converter;
 
 
     public ParamsExtClientEx(IParamsExtClient client, ParamsExtClientExConfig config,
-        IEnumerable<ParamExtDescription> existDescription)
+        IEnumerable<ParamExtDescription> existDescription, IMavParamEncoding converter)
     {
         _config = config ?? throw new ArgumentNullException(nameof(config));
+        _converter = converter ?? throw new ArgumentNullException(nameof(converter));
         _existDescription = existDescription.ToImmutableDictionary(x => x.Name, x => x);
         Base = client;
         _disposeCancel = new CancellationTokenSource();
@@ -223,8 +225,9 @@ public class ParamsExtClientEx : IParamsExtClientEx, IDisposable, IAsyncDisposab
     public async Task<MavParamExtValue> WriteOnce(string name, MavParamExtValue value,
         CancellationToken cancel = default)
     {
-        var result = await Base.Write(name, value.Type, value, cancel).ConfigureAwait(false);
-        return MavParamExtHelper.CreateFromBuffer(result.ParamValue, result.ParamType);
+        var charValue = _converter.ConvertToMavlinkUnion(value);
+        var result = await Base.Write(name, value.Type, charValue, cancel).ConfigureAwait(false);
+        return _converter.ConvertFromMavlinkUnion(result.ParamValue, result.ParamType);
     }
 
     #region Dispose

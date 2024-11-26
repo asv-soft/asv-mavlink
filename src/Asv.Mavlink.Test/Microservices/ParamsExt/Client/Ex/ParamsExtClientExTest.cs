@@ -13,6 +13,7 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
 {
     private readonly CancellationTokenSource _cancellationTokenSource;
     private List<ParamDescription> _existDescription;
+    private readonly IMavParamEncoding _encoding;
     private readonly ParamsExtClientEx _clientEx;
     private ParamsExtClient _client;
     
@@ -42,12 +43,13 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
     protected override ParamsExtClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core)
     {
         var client = new ParamsExtClient(identity, _config, core);
-        return new ParamsExtClientEx(client, _config, ParamDescription);
+        return new ParamsExtClientEx(client, _config, ParamDescription, _encoding);
     }
 
 
     public ParamsExtClientExTest(ITestOutputHelper log) : base(log)
     {
+        _encoding = new MavParamByteWiseEncoding();
         _clientEx = Client;
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
     }
@@ -55,9 +57,10 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
     [Fact]
     public void Constructor_Null_Throws()
     {
-        Assert.Throws<NullReferenceException>(() => new ParamsExtClientEx(null!, _config, ParamDescription));
-        Assert.Throws<ArgumentNullException>(() => new ParamsExtClientEx(_client, null!, ParamDescription));
-        Assert.Throws<ArgumentNullException>(() => new ParamsExtClientEx(_client, _config, null!));
+        Assert.Throws<NullReferenceException>(() => new ParamsExtClientEx(null!, _config, ParamDescription, _encoding));
+        Assert.Throws<ArgumentNullException>(() => new ParamsExtClientEx(_client, null!, ParamDescription, _encoding));
+        Assert.Throws<ArgumentNullException>(() => new ParamsExtClientEx(_client, _config, null!, _encoding));
+        Assert.Throws<ArgumentNullException>(() => new ParamsExtClientEx(_client, _config, ParamDescription, null!));
     }
 
     public void Dispose()
