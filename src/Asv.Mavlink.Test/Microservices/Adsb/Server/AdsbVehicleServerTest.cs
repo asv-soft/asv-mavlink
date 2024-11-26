@@ -11,13 +11,12 @@ using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-
 [TestSubject(typeof(AsvGbsServer))]
 public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposable
 {
     private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
-    
+
     public AdsbVehicleServerTest(ITestOutputHelper output) : base(output)
     {
         _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
@@ -25,8 +24,9 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
-    protected override AdsbVehicleServer CreateClient(MavlinkIdentity identity, CoreServices core) => new(identity, core);
-    
+    protected override AdsbVehicleServer CreateClient(MavlinkIdentity identity, CoreServices core) =>
+        new(identity, core);
+
     [Fact]
     public async Task Send_SinglePacket_Success()
     {
@@ -79,14 +79,14 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
         Assert.True(packet.Payload.IsDeepEqual(res.Payload));
     }
-    
+
     [Theory]
     [InlineData(10)]
     [InlineData(200)]
     [InlineData(20000)]
     public async Task Send_ManyPackets_Success(int packetsCount)
     {
-// Arrange
+        // Arrange
         var called = 0;
         var results = new List<AdsbVehiclePayload>();
         var serverResults = new List<AdsbVehiclePayload>();
@@ -97,6 +97,7 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
             {
                 results.Add(packet.Payload);
             }
+
             if (called >= packetsCount)
             {
                 _taskCompletionSource.TrySetResult(p);
@@ -120,7 +121,7 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
             Assert.True(results[i].IsDeepEqual(serverResults[i]));
         }
     }
-    
+
     [Fact(Skip = "Cancellation doesn't work")] // TODO: FIX CANCELLATION
     public async Task Send_Canceled_Throws()
     {
@@ -129,11 +130,11 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         using var sub = Link.Client.RxPipe.Subscribe(
             p => _taskCompletionSource.TrySetResult(p)
         );
-    
+
         // Act
         await _cancellationTokenSource.CancelAsync();
         var task = Server.Send(p => p = packet.Payload, _cancellationTokenSource.Token);
-    
+
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
         Assert.Equal(0, Link.Client.RxPackets);
