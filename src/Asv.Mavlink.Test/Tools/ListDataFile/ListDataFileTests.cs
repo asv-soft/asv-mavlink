@@ -10,7 +10,7 @@ namespace Asv.Mavlink.Test;
 
 public class ListDataFileTests
 {
-    private static MockFileSystem _fileSystem = new ();
+    private static MockFileSystem _fileSystem = new();
 
     public static readonly ListDataFileFormat FileFormat1 = new()
     {
@@ -34,11 +34,11 @@ public class ListDataFileTests
         using var strm = new MemoryStream();
         Assert.Throws<ArgumentNullException>(() =>
         {
-            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(null, FileFormat1, false,_fileSystem);
+            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(null, FileFormat1, false, _fileSystem);
         });
         Assert.Throws<ArgumentNullException>(() =>
         {
-            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(new MemoryStream(), null, false,_fileSystem);
+            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(new MemoryStream(), null, false, _fileSystem);
         });
     }
 
@@ -46,7 +46,7 @@ public class ListDataFileTests
     public void Metadata_Serialization_Success()
     {
         using var strm = new MemoryStream();
-        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, AsvSdrHelper.FileFormat, false,_fileSystem);
+        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, AsvSdrHelper.FileFormat, false, _fileSystem);
         var payload = new AsvSdrRecordPayload
         {
             Frequency = 1,
@@ -92,7 +92,7 @@ public class ListDataFileTests
     public void Data_Serialization_Success()
     {
         using var strm = new MemoryStream();
-        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false,_fileSystem);
+        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
 
         Assert.False(file.Exist(0));
 
@@ -158,9 +158,9 @@ public class ListDataFileTests
 
         var ilsRead2 = new AsvSdrRecordDataLlzPayload();
         Assert.True(file.Read(10, ilsRead2));
-        ils.ShouldDeepEqual(ilsRead2);
+        ils.IsDeepEqual(ilsRead2);
         Assert.True(file.Read(20, ilsRead2));
-        ils.ShouldDeepEqual(ilsRead2);
+        ils.IsDeepEqual(ilsRead2);
 
         Assert.False(file.Read(9, ilsRead2));
         Assert.False(file.Exist(5));
