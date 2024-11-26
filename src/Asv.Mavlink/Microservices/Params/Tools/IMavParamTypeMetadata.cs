@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Asv.Cfg;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
@@ -69,9 +70,9 @@ public static class MavParam
             RebootRequired = false,
             Units = string.Empty,
             Increment = new MavParamValue((byte)1),
-            MinValue = new((byte)0),
+            MinValue = new((byte)list.Min(a => a.Item1)),
             DefaultValue = new MavParamValue(Convert.ToByte(def)),
-            MaxValue = new((byte)(list.Count -1)),
+            MaxValue = new((byte)list.Max(a => a.Item1)),
             Values = list.ToArray(),
             Volatile = vlt,
             

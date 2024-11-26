@@ -68,10 +68,10 @@ public class ParamsExtClient : MavlinkMicroserviceClient, IParamsExtClient
         }, cancel);
     }
 
-    public Task<ParamExtValuePayload> Read(string name, CancellationToken cancel = default)
+    public async Task<ParamExtValuePayload> Read(string name, CancellationToken cancel = default)
     {
         _logger.ZLogInformation($"{LogSend} Attempt to read single param by id: {name}");
-        return InternalCall<ParamExtValuePayload, ParamRequestReadPacket, ParamExtValuePacket>(packet =>
+        return await InternalCall<ParamExtValuePayload, ParamExtRequestReadPacket, ParamExtValuePacket>(packet =>
             {
                 packet.Payload.TargetComponent = Identity.Target.ComponentId;
                 packet.Payload.TargetSystem = Identity.Target.SystemId;
@@ -79,13 +79,13 @@ public class ParamsExtClient : MavlinkMicroserviceClient, IParamsExtClient
                 MavlinkTypesHelper.SetString(packet.Payload.ParamId, name);
             }, packet => name.Equals(MavlinkTypesHelper.GetString(packet.Payload.ParamId)),
             packet => packet.Payload, _config.ReadAttemptCount,
-            timeoutMs: _config.ReadTimeouMs, cancel: cancel);
+            timeoutMs: _config.ReadTimeouMs, cancel: cancel).ConfigureAwait(false);
     }
 
-    public Task<ParamExtValuePayload> Read(ushort index, CancellationToken cancel = default)
+    public async Task<ParamExtValuePayload> Read(ushort index, CancellationToken cancel = default)
     {
         _logger.ZLogInformation($"{LogSend} Attempt to read single param by index: {index}");
-        return InternalCall<ParamExtValuePayload, ParamExtRequestReadPacket, ParamExtValuePacket>(packet =>
+        return await InternalCall<ParamExtValuePayload, ParamExtRequestReadPacket, ParamExtValuePacket>(packet =>
             {
                 packet.Payload.TargetComponent = Identity.Target.ComponentId;
                 packet.Payload.TargetSystem = Identity.Target.SystemId;
@@ -93,14 +93,14 @@ public class ParamsExtClient : MavlinkMicroserviceClient, IParamsExtClient
                 packet.Payload.ParamIndex = (short)index;
             }, packet => index == packet.Payload.ParamIndex,
             packet => packet.Payload, _config.ReadAttemptCount, 
-            timeoutMs: _config.ReadTimeouMs, cancel: cancel);
+            timeoutMs: _config.ReadTimeouMs, cancel: cancel).ConfigureAwait(false);
     }
     
-    public Task<ParamExtAckPayload> Write(string name, MavParamExtType type, char[] value,
+    public async Task<ParamExtAckPayload> Write(string name, MavParamExtType type, char[] value,
         CancellationToken cancel = default)
     {
         _logger.ZLogInformation($"{LogSend} Attempt to write single param by id: {name} with value: {string.Join(", ", value)}");
-        return InternalCall<ParamExtAckPayload, ParamExtSetPacket, ParamExtAckPacket>(packet =>
+        return await InternalCall<ParamExtAckPayload, ParamExtSetPacket, ParamExtAckPacket>(packet =>
             {
                 packet.Payload.TargetComponent = Identity.Target.ComponentId;
                 packet.Payload.TargetSystem = Identity.Target.SystemId;
@@ -109,7 +109,7 @@ public class ParamsExtClient : MavlinkMicroserviceClient, IParamsExtClient
                 packet.Payload.ParamValue = value;
             }, packet => name.Equals(MavlinkTypesHelper.GetString(packet.Payload.ParamId)),
             packet => packet.Payload, _config.ReadAttemptCount,
-            timeoutMs: _config.ReadTimeouMs, cancel: cancel);
+            timeoutMs: _config.ReadTimeouMs, cancel: cancel).ConfigureAwait(false);
     }
 
     #region Dispose
