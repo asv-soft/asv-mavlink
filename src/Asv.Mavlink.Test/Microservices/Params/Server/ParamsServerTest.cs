@@ -29,22 +29,19 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
     public async Task Send_SinglePacket_Success()
     {
         // Arrange
-        var payload = new ParamValuePayload
-        {
-            ParamValue = 123f,
-        };
+        var paramValue = 123f;
         using var sub = Link.Client.RxPipe.Subscribe(
             p => _taskCompletionSource.TrySetResult(p)
         );
         
         // Act
-        await Server.SendParamValue(p => p.ParamValue = 123f, _cancellationTokenSource.Token);
+        await Server.SendParamValue(p => p.ParamValue = paramValue, _cancellationTokenSource.Token);
         
         // Assert
         var result = await _taskCompletionSource.Task as ParamValuePacket;
         Assert.NotNull(result);
         Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(payload.ParamValue, result.Payload.ParamValue);
+        Assert.Equal(paramValue, result.Payload.ParamValue);
     }
     
     [Theory]

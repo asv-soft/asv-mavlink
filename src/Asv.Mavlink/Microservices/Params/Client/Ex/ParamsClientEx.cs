@@ -14,7 +14,7 @@ namespace Asv.Mavlink;
 
 public class ParamsClientExConfig : ParameterClientConfig
 {
-    public int ReadListTimeoutMs { get; set; } = 5000;
+    public int ReadListTimeoutMs { get; set; } = 500;
     public int ChunkUpdateBufferMs { get; set; } = 100;
 }
 
@@ -201,7 +201,8 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
             {
                 tcs.TrySetResult(false);
             }
-            //TODO: Interlocked.Exchange(ref lastUpdate, Base.Core.TimeProvider.GetTimestamp());
+            //TODO: time is not ticking
+            //Interlocked.Exchange(ref lastUpdate, Base.Core.TimeProvider.GetTimestamp());
         }, null, CheckTimeout, CheckTimeout);
         var cached = _paramsSource.ToImmutableArray();
         _paramsSource.Clear();

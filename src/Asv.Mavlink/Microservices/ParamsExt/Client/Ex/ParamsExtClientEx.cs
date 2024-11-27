@@ -190,6 +190,8 @@ public class ParamsExtClientEx : IParamsExtClientEx, IDisposable, IAsyncDisposab
             {
                 tcs.TrySetResult(false);
             }
+            //TODO: time is not ticking, same as params microservice
+            //Interlocked.Exchange(ref lastUpdate, Base.Core.TimeProvider.GetTimestamp());
         }, null, CheckTimeout, CheckTimeout);
 
         var cached = _paramsSource.ToImmutableArray();
