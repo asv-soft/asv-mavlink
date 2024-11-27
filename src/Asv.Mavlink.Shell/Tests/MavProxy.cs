@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
-using Asv.Mavlink.V2.Common;
+
 using ConsoleAppFramework;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -74,7 +74,7 @@ public class MavProxy
         _connections.Add(conn);
     }
 
-    private void OnPacket(MavlinkV2Connection receiveFrom, IPacketV2<IPayload> packetV2, int dirIndex)
+    private void OnPacket(MavlinkV2Connection receiveFrom, MavlinkMessage packetV2, int dirIndex)
     {
         if (Filter(packetV2, dirIndex, out var txt))
         {
@@ -90,7 +90,7 @@ public class MavProxy
         }
     }
 
-    private bool Filter(IPacketV2<IPayload> packetV2, int dirIndex, out string txt)
+    private bool Filter(MavlinkMessage packetV2, int dirIndex, out string txt)
     {
         txt = JsonConvert.SerializeObject(packetV2, Formatting.None, new StringEnumConverter());
 

@@ -159,12 +159,12 @@ namespace Asv.Mavlink
             buffer[inx + PaylodStartIndexInFrame + payloadSize+1] = (byte)(crc >> 8 & 0xFF);
         }
 
-        public static void Serialize(this IPacketV2<IPayload> src, Memory<byte> buffer)
+        public static void Serialize(this MavlinkMessage src, Memory<byte> buffer)
         {
             var span = buffer.Span;
             src.Serialize(ref span);
         }
-        public static int Serialize(this IPacketV2<IPayload> src, byte[] buffer)
+        public static int Serialize(this MavlinkMessage src, byte[] buffer)
         {
             var span = new Span<byte>(buffer);
             src.Serialize(ref span);

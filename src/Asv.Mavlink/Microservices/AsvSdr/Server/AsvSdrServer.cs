@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.AsvSdr;
-using Asv.Mavlink.V2.AsvSdr;
+
 using Microsoft.Extensions.Logging;
 using R3;
 
@@ -16,7 +16,7 @@ namespace Asv.Mavlink
     {
         private readonly AsvSdrServerConfig _config;
         private readonly ILogger _logger;
-        private readonly MavlinkPacketTransponder<AsvSdrOutStatusPacket, AsvSdrOutStatusPayload> _transponder;
+        private readonly MavlinkPacketTransponder<AsvSdrOutStatusPacket> _transponder;
         private readonly Subject<AsvSdrRecordRequestPayload> _onRecordRequest;
         private readonly Subject<AsvSdrRecordDeleteRequestPayload> _onRecordDeleteRequest;
         private readonly Subject<AsvSdrRecordTagRequestPayload> _onRecordTagRequest;
@@ -42,12 +42,12 @@ namespace Asv.Mavlink
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _logger = core.Log.CreateLogger<AsvSdrServer>();
             _transponder =
-                new MavlinkPacketTransponder<AsvSdrOutStatusPacket, AsvSdrOutStatusPayload>(identity, core);
+                new MavlinkPacketTransponder<AsvSdrOutStatusPacket>(identity, core);
                     
             _transponder.Set(x =>
             {
-                x.SignalOverflow = float.NaN;
-                x.RefPower = float.NaN;
+                x.Payload.SignalOverflow = float.NaN;
+                x.Payload.RefPower = float.NaN;
             });
 
             _onRecordRequest = new Subject<AsvSdrRecordRequestPayload>();   
@@ -112,18 +112,18 @@ namespace Asv.Mavlink
         public void Set(Action<AsvSdrOutStatusPayload> changeCallback)
         {
             ArgumentNullException.ThrowIfNull(changeCallback);
-            _transponder.Set(changeCallback);
+            _transponder.Set(x=>changeCallback(x.Payload));
         }
 
         public Observable<AsvSdrRecordRequestPayload> OnRecordRequest => _onRecordRequest;
 
-        public Task SendRecordResponse(Action<AsvSdrRecordResponsePayload> setValueCallback, CancellationToken cancel = default)
+        public ValueTask SendRecordResponse(Action<AsvSdrRecordResponsePayload> setValueCallback, CancellationToken cancel = default)
         {
             ArgumentNullException.ThrowIfNull(setValueCallback);
             return InternalSend<AsvSdrRecordResponsePacket>(p =>{ setValueCallback(p.Payload); }, cancel);
         }
 
-        public Task SendRecord(Action<AsvSdrRecordPayload> setValueCallback, CancellationToken cancel = default)
+        public ValueTask SendRecord(Action<AsvSdrRecordPayload> setValueCallback, CancellationToken cancel = default)
         {
             ArgumentNullException.ThrowIfNull(setValueCallback);
             return InternalSend<AsvSdrRecordPacket>(p =>{ setValueCallback(p.Payload); }, cancel);
@@ -131,7 +131,7 @@ namespace Asv.Mavlink
 
         public Observable<AsvSdrRecordDeleteRequestPayload> OnRecordDeleteRequest => _onRecordDeleteRequest;
 
-        public Task SendRecordDeleteResponse(Action<AsvSdrRecordDeleteResponsePayload> setValueCallback, CancellationToken cancel = default)
+        public ValueTask SendRecordDeleteResponse(Action<AsvSdrRecordDeleteResponsePayload> setValueCallback, CancellationToken cancel = default)
         {
             ArgumentNullException.ThrowIfNull(setValueCallback);
             return InternalSend<AsvSdrRecordDeleteResponsePacket>(p =>{ setValueCallback(p.Payload); }, cancel);
@@ -139,7 +139,7 @@ namespace Asv.Mavlink
 
         public Observable<AsvSdrRecordTagRequestPayload> OnRecordTagRequest => _onRecordTagRequest;
 
-        public Task SendRecordTagResponse(Action<AsvSdrRecordTagResponsePayload> setValueCallback, CancellationToken cancel = default)
+        public ValueTask SendRecordTagResponse(Action<AsvSdrRecordTagResponsePayload> setValueCallback, CancellationToken cancel = default)
         {
             ArgumentNullException.ThrowIfNull(setValueCallback);
             return InternalSend<AsvSdrRecordTagResponsePacket>(p =>{ setValueCallback(p.Payload); }, cancel);
@@ -147,7 +147,7 @@ namespace Asv.Mavlink
 
         public Observable<AsvSdrRecordTagRequestPayload> OnGetRecordTag => _onGetRecordTag;
 
-        public Task SendRecordTag(Action<AsvSdrRecordTagPayload> setValueCallback, CancellationToken cancel = default)
+        public ValueTask SendRecordTag(Action<AsvSdrRecordTagPayload> setValueCallback, CancellationToken cancel = default)
         {
             ArgumentNullException.ThrowIfNull(setValueCallback);
             return InternalSend<AsvSdrRecordTagPacket>(p =>{ setValueCallback(p.Payload); }, cancel);
@@ -155,7 +155,7 @@ namespace Asv.Mavlink
 
         public Observable<AsvSdrRecordTagDeleteRequestPayload> OnRecordTagDeleteRequest => _onRecordTagDeleteRequest;
 
-        public Task SendRecordTagDeleteResponse(Action<AsvSdrRecordTagDeleteResponsePayload> setValueCallback, CancellationToken cancel = default)
+        public ValueTask SendRecordTagDeleteResponse(Action<AsvSdrRecordTagDeleteResponsePayload> setValueCallback, CancellationToken cancel = default)
         {
             ArgumentNullException.ThrowIfNull(setValueCallback);
             return InternalSend<AsvSdrRecordTagDeleteResponsePacket>(p =>{ setValueCallback(p.Payload); }, cancel);
@@ -163,13 +163,13 @@ namespace Asv.Mavlink
 
         public Observable<AsvSdrRecordDataRequestPayload> OnRecordDataRequest => _onRecordDataRequest;
 
-        public Task SendRecordDataResponse(Action<AsvSdrRecordDataResponsePayload> setValueCallback, CancellationToken cancel = default)
+        public ValueTask SendRecordDataResponse(Action<AsvSdrRecordDataResponsePayload> setValueCallback, CancellationToken cancel = default)
         {
             ArgumentNullException.ThrowIfNull(setValueCallback);
             return InternalSend<AsvSdrRecordDataResponsePacket>(p =>{ setValueCallback(p.Payload); }, cancel);
         }
 
-        public Task SendRecordData(AsvSdrCustomMode mode, Action<IPayload> setValueCallback, CancellationToken cancel = default)
+        public ValueTask SendRecordData(AsvSdrCustomMode mode, Action<IPayload> setValueCallback, CancellationToken cancel = default)
         {
             ArgumentNullException.ThrowIfNull(setValueCallback);
             if (mode == AsvSdrCustomMode.AsvSdrCustomModeIdle)
@@ -177,7 +177,7 @@ namespace Asv.Mavlink
             return InternalSend((int)mode,v=>setValueCallback(v.Payload), cancel);
         }
 
-        public IPacketV2<IPayload>? CreateRecordData(AsvSdrCustomMode mode)
+        public MavlinkMessage? CreateRecordData(AsvSdrCustomMode mode)
         {
             if (mode == AsvSdrCustomMode.AsvSdrCustomModeIdle)
                 throw new ArgumentException("Can't create message for IDLE mode", nameof(mode));
@@ -186,12 +186,12 @@ namespace Asv.Mavlink
 
         #region Calibration
 
-        public Task SendSignal(Action<AsvSdrSignalRawPacket> setValueCallback, CancellationToken cancel = default)
+        public ValueTask SendSignal(Action<AsvSdrSignalRawPacket> setValueCallback, CancellationToken cancel = default)
         {
             return InternalSend(setValueCallback,cancel);
         }
 
-        public Task SendCalibrationAcc(ushort reqId, AsvSdrRequestAck resultCode,
+        public ValueTask SendCalibrationAcc(ushort reqId, AsvSdrRequestAck resultCode,
             CancellationToken cancel = default)
         {
             return InternalSend<AsvSdrCalibAccPacket>(args =>
@@ -204,7 +204,7 @@ namespace Asv.Mavlink
 
         public Observable<AsvSdrCalibTableReadPayload> OnCalibrationTableReadRequest => _onCalibrationTableReadRequest;
 
-        public Task SendCalibrationTableReadResponse(Action<AsvSdrCalibTablePayload> setValueCallback, CancellationToken cancel = default)
+        public ValueTask SendCalibrationTableReadResponse(Action<AsvSdrCalibTablePayload> setValueCallback, CancellationToken cancel = default)
         {
             ArgumentNullException.ThrowIfNull(setValueCallback);
             return InternalSend<AsvSdrCalibTablePacket>(args => setValueCallback(args.Payload), cancel);
@@ -212,7 +212,7 @@ namespace Asv.Mavlink
 
         public Observable<AsvSdrCalibTableRowReadPayload> OnCalibrationTableRowReadRequest => _onCalibrationTableRowReadRequest;
 
-        public Task SendCalibrationTableRowReadResponse(Action<AsvSdrCalibTableRowPayload> setValueCallback, CancellationToken cancel = default)
+        public ValueTask SendCalibrationTableRowReadResponse(Action<AsvSdrCalibTableRowPayload> setValueCallback, CancellationToken cancel = default)
         {
             ArgumentNullException.ThrowIfNull(setValueCallback);
             return InternalSend<AsvSdrCalibTableRowPacket>(args =>

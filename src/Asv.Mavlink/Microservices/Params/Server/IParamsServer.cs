@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 using R3;
 
 namespace Asv.Mavlink;
@@ -18,7 +18,7 @@ public interface IParamsServer:IMavlinkMicroserviceServer
     /// <param name="changeCallback">The callback method to be executed when the parameter value changes.</param>
     /// <param name="cancel">A cancellation token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    Task SendParamValue(Action<ParamValuePayload> changeCallback, CancellationToken cancel = default);
+    ValueTask SendParamValue(Action<ParamValuePayload> changeCallback, CancellationToken cancel = default);
 
     /// <summary>
     /// Gets the observable sequence for handling param request read packets.

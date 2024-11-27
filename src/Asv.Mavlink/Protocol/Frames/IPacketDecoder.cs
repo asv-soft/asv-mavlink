@@ -27,10 +27,10 @@ namespace Asv.Mavlink
         void Register(Func<TFrame> factory);
 
         /// <summary>
-        /// Creates a new instance of IPacketV2<IPayload> with the specified ID.
+        /// Creates a new instance of MavlinkMessage with the specified ID.
         /// </summary>
         /// <param name="id">The ID for the packet.</param>
-        /// <returns>A new instance of IPacketV2<IPayload> with the specified ID.</returns>
-        IPacketV2<IPayload>? Create(int id);
+        /// <returns>A new instance of MavlinkMessage with the specified ID.</returns>
+        MavlinkMessage? Create(int id);
     }
 }

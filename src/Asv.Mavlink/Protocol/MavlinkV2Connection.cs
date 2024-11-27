@@ -1,3 +1,4 @@
+/*
 #nullable enable
 using System;
 using System.Buffers;
@@ -6,19 +7,19 @@ using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.V2.Ardupilotmega;
-using Asv.Mavlink.V2.AsvAudio;
-using Asv.Mavlink.V2.AsvChart;
-using Asv.Mavlink.V2.AsvGbs;
-using Asv.Mavlink.V2.AsvRadio;
+
+
+using Asv.Mavlink.AsvGbs;
+using Asv.Mavlink.AsvRadio;
 using Asv.Mavlink.V2.AsvRfsa;
-using Asv.Mavlink.V2.AsvRsga;
-using Asv.Mavlink.V2.AsvSdr;
+using Asv.Mavlink.AsvRsga;
+
 using Asv.Mavlink.V2.Avssuas;
-using Asv.Mavlink.V2.Common;
+
 using Asv.Mavlink.V2.Csairlink;
 using Asv.Mavlink.V2.Cubepilot;
 using Asv.Mavlink.V2.Icarous;
-using Asv.Mavlink.V2.Minimal;
+
 using Asv.Mavlink.V2.Storm32;
 using Asv.Mavlink.V2.Ualberta;
 using Asv.Mavlink.V2.Uavionix;
@@ -35,7 +36,7 @@ namespace Asv.Mavlink
             return new MavlinkV2Connection(dataStream, RegisterDefaultDialects,disposeDataStream);
         }
         
-        public static IMavlinkV2Connection Create(IDataStream dataStream,Action<IPacketDecoder<IPacketV2<IPayload>>> register, bool disposeDataStream = false)
+        public static IMavlinkV2Connection Create(IDataStream dataStream,Action<IPacketDecoder<MavlinkMessage>> register, bool disposeDataStream = false)
         {
             return new MavlinkV2Connection(dataStream, register,disposeDataStream);
         }
@@ -45,7 +46,7 @@ namespace Asv.Mavlink
             return new MavlinkV2Connection(connectionString, RegisterDefaultDialects);
         }
 
-        public static void RegisterDefaultDialects(IPacketDecoder<IPacketV2<IPayload>> decoder)
+        public static void RegisterDefaultDialects(IPacketDecoder<MavlinkMessage> decoder)
         {
             decoder.RegisterMinimalDialect();
             decoder.RegisterCommonDialect();
@@ -72,11 +73,11 @@ namespace Asv.Mavlink
         private long _txPackets;
         private long _rxPackets;
         private long _skipPackets;
-        private readonly Subject<IPacketV2<IPayload>> _sendPacketSubject;
+        private readonly Subject<MavlinkMessage> _sendPacketSubject;
         private readonly IDisposable _sub1;
         private readonly IDisposable _sub2;
 
-        public MavlinkV2Connection(string connectionString, Action<IPacketDecoder<IPacketV2<IPayload>>> register):this(ConnectionStringConvert(connectionString),register,true)
+        public MavlinkV2Connection(string connectionString, Action<IPacketDecoder<MavlinkMessage>> register):this(ConnectionStringConvert(connectionString),register,true)
         {
         }
 
@@ -87,13 +88,13 @@ namespace Asv.Mavlink
             return p;
         }
 
-        public MavlinkV2Connection(IDataStream dataStream, Action<IPacketDecoder<IPacketV2<IPayload>>> register, bool disposeDataStream = false)
+        public MavlinkV2Connection(IDataStream dataStream, Action<IPacketDecoder<MavlinkMessage>> register, bool disposeDataStream = false)
         {
             DataStream = dataStream;
             _decoder = new PacketV2Decoder();
             register(_decoder);
             _sub1 = DataStream.OnReceive.Subscribe(b=> _decoder.OnData(b)); 
-            _sendPacketSubject = new Subject<IPacketV2<IPayload>>();
+            _sendPacketSubject = new Subject<MavlinkMessage>();
             RxPipe = _decoder.OnPacket
                 .Do(x => Interlocked.Increment(ref _rxPackets))
                 .Where(TryDecodeV2ExtensionPackets).Publish().RefCount();
@@ -106,16 +107,16 @@ namespace Asv.Mavlink
         public long TxPackets => Interlocked.Read(ref _txPackets);
         public long SkipPackets => Interlocked.Read(ref _skipPackets);
         public Observable<DeserializePackageException> DeserializePackageErrors => _decoder.OutError;
-        public Observable<IPacketV2<IPayload>> TxPipe => _sendPacketSubject;
-        public Observable<IPacketV2<IPayload>> RxPipe { get; }
+        public Observable<MavlinkMessage> TxPipe => _sendPacketSubject;
+        public Observable<MavlinkMessage> RxPipe { get; }
 
         public IDataStream DataStream { get; }
-        public IPacketV2<IPayload>? CreatePacketByMessageId(int messageId)
+        public MavlinkMessage? CreatePacketByMessageId(int messageId)
         {
             return _decoder.Create(messageId);
         }
 
-        public async Task Send(IPacketV2<IPayload> packet, CancellationToken cancel)
+        public async Task Send(MavlinkMessage packet, CancellationToken cancel)
         {
             if (_sendPacketSubject.IsDisposed) return;
             Interlocked.Increment(ref _txPackets);
@@ -161,7 +162,7 @@ namespace Asv.Mavlink
         }
 
 
-        private bool TryDecodeV2ExtensionPackets(IPacketV2<IPayload> arg)
+        private bool TryDecodeV2ExtensionPackets(MavlinkMessage arg)
         {
             if (WrapToV2ExtensionEnabled == false) return true;
             if (arg is not V2ExtensionPacket wrapped) return true;
@@ -201,4 +202,5 @@ namespace Asv.Mavlink
         #endregion
     }
 }
+*/
 

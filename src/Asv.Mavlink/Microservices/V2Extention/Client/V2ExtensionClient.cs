@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 using R3;
 
 namespace Asv.Mavlink
@@ -27,7 +27,7 @@ namespace Asv.Mavlink
 
         public ReadOnlyReactiveProperty<V2ExtensionPacket> OnData => _onData;
 
-        public Task SendData(byte targetNetworkId,ushort messageType, byte[] data, CancellationToken cancel)
+        public ValueTask SendData(byte targetNetworkId,ushort messageType, byte[] data, CancellationToken cancel)
         {
             return InternalSend<V2ExtensionPacket>(p =>
             {

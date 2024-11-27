@@ -18,6 +18,7 @@ using Asv.Mavlink.Minimal;
 using Asv.Mavlink.Storm32;
 using Asv.Mavlink.Ualberta;
 using Asv.Mavlink.Uavionix;
+using Asv.Mavlink.UnitTestMessage;
 
 namespace Asv.Mavlink;
 
@@ -28,25 +29,26 @@ public partial class MavlinkV2MessageFactory : IProtocolMessageFactory<MavlinkMe
 
     private MavlinkV2MessageFactory()
     {
-        var decoder = ImmutableDictionary.CreateBuilder<ushort, Func<MavlinkMessage>>();
-        decoder.RegisterMinimalDialect();
-        decoder.RegisterCommonDialect();
-        decoder.RegisterArdupilotmegaDialect();
-        decoder.RegisterIcarousDialect();
-        decoder.RegisterUalbertaDialect();
-        decoder.RegisterStorm32Dialect();
-        decoder.RegisterAvssuasDialect();
-        decoder.RegisterUavionixDialect();
-        decoder.RegisterCubepilotDialect();
-        decoder.RegisterCsairlinkDialect();
-        decoder.RegisterAsvGbsDialect();
-        decoder.RegisterAsvSdrDialect();
-        decoder.RegisterAsvAudioDialect();
-        decoder.RegisterAsvRadioDialect();
-        decoder.RegisterAsvRfsaDialect();
-        decoder.RegisterAsvChartDialect();
-        decoder.RegisterAsvRsgaDialect();
-        _decoder = decoder.ToImmutable();
+        var builder = ImmutableDictionary.CreateBuilder<ushort, Func<MavlinkMessage>>();
+        builder.RegisterMinimalDialect();
+        builder.RegisterCommonDialect();
+        builder.RegisterArdupilotmegaDialect();
+        builder.RegisterIcarousDialect();
+        builder.RegisterUalbertaDialect();
+        builder.RegisterStorm32Dialect();
+        builder.RegisterAvssuasDialect();
+        builder.RegisterUavionixDialect();
+        builder.RegisterCubepilotDialect();
+        builder.RegisterCsairlinkDialect();
+        builder.RegisterAsvGbsDialect();
+        builder.RegisterAsvSdrDialect();
+        builder.RegisterAsvAudioDialect();
+        builder.RegisterAsvRadioDialect();
+        builder.RegisterAsvRfsaDialect();
+        builder.RegisterAsvChartDialect();
+        builder.RegisterAsvRsgaDialect();
+        builder.RegisterUnitTestMessageDialect();
+        _decoder = builder.ToImmutable();
     }
 
     

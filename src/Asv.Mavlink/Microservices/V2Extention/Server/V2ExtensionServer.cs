@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 using R3;
 
 namespace Asv.Mavlink
@@ -20,7 +20,7 @@ namespace Asv.Mavlink
                 .Subscribe(_onData.AsObserver());
         }
         public Observable<V2ExtensionPacket> OnData => _onData;
-        public Task SendData(byte targetSystemId,byte targetComponentId,byte targetNetworkId,ushort messageType, byte[] data, CancellationToken cancel)
+        public ValueTask SendData(byte targetSystemId,byte targetComponentId,byte targetNetworkId,ushort messageType, byte[] data, CancellationToken cancel)
         {
             return InternalSend<V2ExtensionPacket>(packet =>
             {

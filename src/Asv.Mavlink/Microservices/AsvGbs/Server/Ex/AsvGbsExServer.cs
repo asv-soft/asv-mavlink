@@ -6,14 +6,14 @@ using Asv.Common;
 using Asv.Mavlink.AsvGbs;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
-using Asv.Mavlink.V2.AsvGbs;
-using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Minimal;
+using Asv.Mavlink.AsvGbs;
+
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
-using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
-using MavType = Asv.Mavlink.V2.Minimal.MavType;
+using MavCmd = Asv.Mavlink.Common.MavCmd;
+using MavType = Asv.Mavlink.Minimal.MavType;
 
 namespace Asv.Mavlink;
 
@@ -36,13 +36,13 @@ public class AsvGbsExServer: IAsvGbsServerEx, IDisposable,IAsyncDisposable
         _heartbeatServer = heartbeatServer;
         #region Commands
 
-        commands[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunAutoMode] = async (id,args, cancel) =>
+        commands[(MavCmd)AsvGbs.MavCmd.MavCmdAsvGbsRunAutoMode] = async (id,args, cancel) =>
         {
             if (StartAutoMode == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             var result = await StartAutoMode(args.Payload.Param1, args.Payload.Param2, cancel).ConfigureAwait(false);
             return CommandResult.FromResult(result);
         }; 
-        commands[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunFixedMode] = async (id,args, cancel) =>
+        commands[(MavCmd)AsvGbs.MavCmd.MavCmdAsvGbsRunFixedMode] = async (id,args, cancel) =>
         {
             if (StartFixedMode == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             var lat = BitConverter.ToInt32(BitConverter.GetBytes(args.Payload.Param1),0) / 10000000.0;
@@ -52,7 +52,7 @@ public class AsvGbsExServer: IAsvGbsServerEx, IDisposable,IAsyncDisposable
             var result = await StartFixedMode(new GeoPoint(lat,lon,alt),ac, cancel).ConfigureAwait(false);
             return CommandResult.FromResult(result);
         };
-        commands[(MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunIdleMode] = async (id,args, cancel) =>
+        commands[(MavCmd)AsvGbs.MavCmd.MavCmdAsvGbsRunIdleMode] = async (id,args, cancel) =>
         {
             if (StartIdleMode == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             var result = await StartIdleMode(cancel).ConfigureAwait(false);
@@ -134,11 +134,11 @@ public class AsvGbsExServer: IAsvGbsServerEx, IDisposable,IAsyncDisposable
         heartbeatServer.Set(p =>
         {
             p.Autopilot = MavAutopilot.MavAutopilotInvalid;
-            p.Type = (MavType)V2.AsvGbs.MavType.MavTypeAsvGbs;
+            p.Type = (MavType)AsvGbs.MavType.MavTypeAsvGbs;
             p.SystemStatus = MavState.MavStateActive;
             p.BaseMode = MavModeFlag.MavModeFlagCustomModeEnabled;
             p.MavlinkVersion = 3;
-            p.CustomMode = (uint)V2.AsvGbs.AsvGbsCustomMode.AsvGbsCustomModeLoading;
+            p.CustomMode = (uint)AsvGbs.AsvGbsCustomMode.AsvGbsCustomModeLoading;
         });
         CustomMode = new ReactiveProperty<AsvGbsCustomMode>();
         _sub13 = CustomMode.Subscribe(mode => heartbeatServer.Set(p =>

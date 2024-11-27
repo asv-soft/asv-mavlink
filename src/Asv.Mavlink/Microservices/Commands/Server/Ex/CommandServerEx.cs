@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -11,7 +11,7 @@ using ZLogger;
 namespace Asv.Mavlink;
 
 public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>, IDisposable, IAsyncDisposable
-    where TArgPacket : IPacketV2<IPayload>
+    where TArgPacket : MavlinkMessage
 {
     private readonly Func<TArgPacket,ushort> _cmdGetter;
     private readonly Func<TArgPacket,byte> _confirmationGetter;

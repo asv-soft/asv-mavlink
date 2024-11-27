@@ -47,7 +47,7 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
 
     protected Observable<TPacket> InternalFilter<TPacket>(Func<TPacket, byte> targetSystemGetter,
         Func<TPacket, byte> targetComponentGetter)
-        where TPacket : MavlinkV2Message<IPayload>, new()
+        where TPacket : MavlinkMessage, new()
     {
         return Core.Connection.RxFilter<TPacket, ushort>().Where((targetSystemGetter,targetComponentGetter),(v, f) =>
         {
@@ -59,13 +59,15 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
 
     protected Observable<TPacket> InternalFilterFirstAsync<TPacket>(Func<TPacket, byte> targetSystemGetter,
         Func<TPacket, byte> targetComponentGetter, Func<TPacket, bool> filter)
-        where TPacket : MavlinkV2Message<IPayload>, new()
+        where TPacket : MavlinkMessage, new()
     {
         return InternalFilter(targetSystemGetter, targetComponentGetter).Where(filter).Take(1);
     }
-    protected Task InternalSend(int messageId, Action<MavlinkV2Message<IPayload>> fillPacket, CancellationToken cancel = default)
+    protected ValueTask InternalSend(int messageId, Action<MavlinkV2Message<IPayload>> fillPacket, CancellationToken cancel = default)
     {
-        var pkt = Core.Connection.CreatePacketByMessageId(messageId);
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+        var pkt = (MavlinkV2Message<IPayload>)MavlinkV2MessageFactory.Instance.Create((ushort)messageId);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
         fillPacket(pkt ?? throw new InvalidOperationException($"Packet {messageId} not found"));
         pkt.ComponentId = Identity.ComponentId;
         pkt.SystemId = Identity.SystemId;
@@ -73,8 +75,8 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
         return Core.Connection.Send(pkt, cancel);
     }
     
-    protected Task InternalSend<TPacketSend>(Action<TPacketSend> fillPacket, CancellationToken cancel = default)
-        where TPacketSend : IPacketV2<IPayload>, new()
+    protected ValueTask InternalSend<TPacketSend>(Action<TPacketSend> fillPacket, CancellationToken cancel = default)
+        where TPacketSend : MavlinkMessage, new()
     {
         var packet = new TPacketSend();
         fillPacket(packet);
@@ -84,13 +86,13 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
         return Core.Connection.Send(packet, cancel);
     }
 
-    protected async Task<TAnswerPacket> InternalSendAndWaitAnswer<TAnswerPacket>(IPacketV2<IPayload> packet,
+    protected async Task<TAnswerPacket> InternalSendAndWaitAnswer<TAnswerPacket>(MavlinkMessage packet,
         CancellationToken cancel, 
         Func<TAnswerPacket, byte> targetSystemGetter,
         Func<TAnswerPacket, byte> targetComponentGetter, 
         Func<TAnswerPacket, bool>? filter = null,
         int timeoutMs = 1000)
-        where TAnswerPacket : IPacketV2<IPayload>, new()
+        where TAnswerPacket : MavlinkMessage, new()
     {
         var p = new TAnswerPacket();
         _loggerBase.ZLogTrace($"{LogSend} call {p.Name}");
@@ -118,8 +120,8 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
         Func<TPacketRecv, TResult> resultGetter,
         int attemptCount = 5,
         Action<TPacketSend, int>? fillOnConfirmation = null, int timeoutMs = 1000, CancellationToken cancel = default)
-        where TPacketSend : IPacketV2<IPayload>, new()
-        where TPacketRecv : IPacketV2<IPayload>, new()
+        where TPacketSend : MavlinkMessage, new()
+        where TPacketRecv : MavlinkMessage, new()
     {
         var packet = new TPacketSend();
         fillPacket(packet);

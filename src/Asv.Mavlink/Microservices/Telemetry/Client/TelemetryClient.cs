@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -42,7 +42,7 @@ public sealed class TelemetryClient : MavlinkMicroserviceClient, ITelemetryClien
     public ReadOnlyReactiveProperty<SysStatusPayload?> SystemStatus => _systemStatus;
     public ReadOnlyReactiveProperty<ExtendedSysStatePayload?> ExtendedSystemState => _extendedSystemState;
     public ReadOnlyReactiveProperty<BatteryStatusPayload?> Battery => _battery;
-    public Task RequestDataStream(byte streamId, ushort rateHz, bool startStop, CancellationToken cancel = default)
+    public ValueTask RequestDataStream(byte streamId, ushort rateHz, bool startStop, CancellationToken cancel = default)
     {
         _logger.ZLogDebug($"{LogSend} {( startStop ? "Enable stream":"DisableStream")} with ID '{streamId}' and rate {rateHz} Hz");
         return InternalSend<RequestDataStreamPacket>(p =>

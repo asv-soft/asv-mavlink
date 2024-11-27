@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.AsvRadio;
-using Asv.Mavlink.V2.AsvRadio;
+using Asv.Mavlink.AsvRadio;
 using R3;
 
 namespace Asv.Mavlink;
@@ -15,14 +15,14 @@ public class AsvRadioServerConfig
 public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
 {
     private readonly AsvRadioServerConfig _config;
-    private readonly MavlinkPacketTransponder<AsvRadioStatusPacket,AsvRadioStatusPayload> _transponder;
+    private readonly MavlinkPacketTransponder<AsvRadioStatusPacket> _transponder;
 
     public AsvRadioServer(MavlinkIdentity identity, AsvRadioServerConfig config, ICoreServices core)     
         : base(AsvRadioHelper.IfcName, identity,core)
     {
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _transponder =
-            new MavlinkPacketTransponder<AsvRadioStatusPacket, AsvRadioStatusPayload>(identity, core);
+            new MavlinkPacketTransponder<AsvRadioStatusPacket>(identity, core);
 
         OnCapabilitiesRequest =
             InternalFilter<AsvRadioCapabilitiesRequestPacket>(x => x.Payload.TargetSystem,
@@ -42,12 +42,12 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
     public void Set(Action<AsvRadioStatusPayload> changeCallback)
     {
         if (changeCallback == null) throw new ArgumentNullException(nameof(changeCallback));
-        _transponder.Set(changeCallback);
+        _transponder.Set(x=>changeCallback(x.Payload));
     }
     
     public ReadOnlyReactiveProperty<AsvRadioCapabilitiesRequestPayload?> OnCapabilitiesRequest { get; }
 
-    public Task SendCapabilitiesResponse(Action<AsvRadioCapabilitiesResponsePayload> setValueCallback,
+    public ValueTask SendCapabilitiesResponse(Action<AsvRadioCapabilitiesResponsePayload> setValueCallback,
         CancellationToken cancel = default)
     {
         if (setValueCallback == null) throw new ArgumentNullException(nameof(setValueCallback));
@@ -55,7 +55,7 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
     }
     
     public ReadOnlyReactiveProperty<AsvRadioCodecCapabilitiesRequestPayload?> OnCodecCapabilitiesRequest { get; }
-    public Task SendCodecCapabilitiesRequest(Action<AsvRadioCodecCapabilitiesResponsePayload> setValueCallback, CancellationToken cancel = default)
+    public ValueTask SendCodecCapabilitiesRequest(Action<AsvRadioCodecCapabilitiesResponsePayload> setValueCallback, CancellationToken cancel = default)
     {
         if (setValueCallback == null) throw new ArgumentNullException(nameof(setValueCallback));
         return InternalSend<AsvRadioCodecCapabilitiesResponsePacket>(x => { setValueCallback(x.Payload); }, cancel);

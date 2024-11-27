@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-using Asv.Mavlink.V2.Common;
+
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
@@ -9,18 +9,18 @@ namespace Asv.Mavlink.Test;
 
 public class PacketPrinterFtpPacketHandlerTest
 {
-    private readonly FtpPacketHandler _handler;
+    private readonly FtpPacketFormatter _formatter;
 
     public PacketPrinterFtpPacketHandlerTest()
     {
-        _handler = new FtpPacketHandler();
+        _formatter = new FtpPacketFormatter();
     }
 
     [Fact]
     public void Order_ShouldReturnHalfOfMaxValue_Success()
     {
         // Act
-        var order = _handler.Order;
+        var order = _formatter.Order;
 
         // Assert
         Assert.Equal(int.MaxValue / 2, order);
@@ -30,11 +30,11 @@ public class PacketPrinterFtpPacketHandlerTest
     public void CanPrint_ShouldReturnTrue_WhenMessageIdMatches_Success()
     {
         // Arrange
-        var mockPacket = new Mock<IPacketV2<IPayload>>();
+        var mockPacket = new Mock<MavlinkMessage>();
         mockPacket.Setup(p => p.MessageId).Returns(FileTransferProtocolPacket.PacketMessageId);
 
         // Act
-        var canPrint = _handler.CanPrint(mockPacket.Object);
+        var canPrint = _formatter.CanPrint(mockPacket.Object);
 
         // Assert
         Assert.True(canPrint);
@@ -44,10 +44,10 @@ public class PacketPrinterFtpPacketHandlerTest
     public void CanPrint_ShouldReturnFalse_WhenMessageIdDoesNotMatch_Fail()
     {
         // Arrange
-        var mockPacket = new Mock<IPacketV2<IPayload>>();
+        var mockPacket = new Mock<MavlinkMessage>();
 
         // Act
-        var canPrint = _handler.CanPrint(mockPacket.Object);
+        var canPrint = _formatter.CanPrint(mockPacket.Object);
 
         // Assert
         Assert.False(canPrint);
@@ -72,7 +72,7 @@ public class PacketPrinterFtpPacketHandlerTest
             str = Encoding.ASCII.GetString(ftpPacket.Payload.Payload).TrimEnd('\0')
         }, Formatting.None);
         // Act
-        var result = _handler.Print(ftpPacket);
+        var result = _formatter.Print(ftpPacket);
 
         // Assert
         Assert.Equal(expectedResult, result);
@@ -98,7 +98,7 @@ public class PacketPrinterFtpPacketHandlerTest
         }, Formatting.Indented);
 
         // Act
-        var result = _handler.Print(ftpPacket, PacketFormatting.Indented);
+        var result = _formatter.Print(ftpPacket, PacketFormatting.Indented);
 
         // Assert
         Assert.Equal(expectedResult, result);
@@ -108,9 +108,9 @@ public class PacketPrinterFtpPacketHandlerTest
     public void Print_ShouldThrowException_WhenPacketIsNotFileTransferProtocolPacket_Fail()
     {
         // Arrange
-        var mockPacket = new Mock<IPacketV2<IPayload>>();
+        var mockPacket = new Mock<MavlinkMessage>();
 
         // Act & Assert
-        Assert.Throws<NullReferenceException>(() => _handler.Print(mockPacket.Object));
+        Assert.Throws<NullReferenceException>(() => _formatter.Print(mockPacket.Object));
     }
 }

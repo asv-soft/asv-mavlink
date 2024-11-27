@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 using R3;
 
 namespace Asv.Mavlink
@@ -44,7 +44,8 @@ namespace Asv.Mavlink
         /// The acknowledgement includes information about the command being acknowledged and the result of its execution.
         /// It is an asynchronous operation that returns a task representing the completion of the send operation.
         /// </remarks>
-        Task SendCommandAck(MavCmd cmd, DeviceIdentity responseTarget, CommandResult result, CancellationToken cancel = default);
+        ValueTask SendCommandAck(MavCmd cmd, DeviceIdentity responseTarget, CommandResult result,
+            CancellationToken cancel = default);
     }
 
     /// Represents the result of a command execution.

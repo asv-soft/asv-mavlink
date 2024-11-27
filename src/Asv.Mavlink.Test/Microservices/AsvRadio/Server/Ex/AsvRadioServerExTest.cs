@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Asv.Mavlink;
-using Asv.Mavlink.V2.AsvAudio;
-using Asv.Mavlink.V2.AsvRadio;
+
+using Asv.Mavlink.AsvRadio;
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;

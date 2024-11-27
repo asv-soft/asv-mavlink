@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.AsvRsga;
-using Asv.Mavlink.V2.AsvRsga;
+using Asv.Mavlink.AsvRsga;
 using R3;
 
 namespace Asv.Mavlink;
@@ -12,5 +12,6 @@ namespace Asv.Mavlink;
 public interface IAsvRsgaServer:IMavlinkMicroserviceServer
 {
     Observable<AsvRsgaCompatibilityRequestPayload> OnCompatibilityRequest { get; }
-    Task SendCompatibilityResponse(Action<AsvRsgaCompatibilityResponsePayload> fillCallback, CancellationToken cancel = default);
+    ValueTask SendCompatibilityResponse(Action<AsvRsgaCompatibilityResponsePayload> fillCallback,
+        CancellationToken cancel = default);
 }

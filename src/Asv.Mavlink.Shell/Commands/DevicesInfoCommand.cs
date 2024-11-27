@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
-using Asv.Mavlink.V2.Minimal;
+
 using ConsoleAppFramework;
 using ObservableCollections;
 using R3;

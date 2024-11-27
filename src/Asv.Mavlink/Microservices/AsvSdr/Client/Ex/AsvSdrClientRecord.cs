@@ -3,7 +3,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.AsvSdr;
-using Asv.Mavlink.V2.AsvSdr;
+
 using ObservableCollections;
 using R3;
 

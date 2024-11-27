@@ -9,15 +9,15 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public sealed class PacketV2Decoder : IPacketDecoder<IPacketV2<IPayload>>
+public sealed class PacketV2Decoder : IPacketDecoder<MavlinkMessage>
 {
     private readonly byte[] _buffer = new byte[PacketV2Helper.PacketV2MaxSize];
     private DecodeStep _decodeStep;
     private int _bufferIndex;
     private int _bufferStopIndex;
-    private readonly Dictionary<int, Func<IPacketV2<IPayload>>> _dict = new();
+    private readonly Dictionary<int, Func<MavlinkMessage>> _dict = new();
     private readonly Subject<DeserializePackageException> _decodeErrorSubject;
-    private readonly Subject<IPacketV2<IPayload>> _packetSubject;
+    private readonly Subject<MavlinkMessage> _packetSubject;
     private readonly ILogger _logger;
     private readonly object _sync = new();
 
@@ -36,7 +36,7 @@ public sealed class PacketV2Decoder : IPacketDecoder<IPacketV2<IPayload>>
         // the first byte is always STX
         _buffer[0] = PacketV2Helper.MagicMarkerV2;
         _decodeErrorSubject = new Subject<DeserializePackageException>();
-        _packetSubject = new Subject<IPacketV2<IPayload>>();
+        _packetSubject = new Subject<MavlinkMessage>();
     }
 
     public void OnData(byte[] buffer)
@@ -113,7 +113,7 @@ public sealed class PacketV2Decoder : IPacketDecoder<IPacketV2<IPayload>>
         return DecodeStep.Sync;
     }
 
-    private IPacketV2<IPayload>? CreatePacket(int messageId)
+    private MavlinkMessage? CreatePacket(int messageId)
     {
         return _dict.TryGetValue(messageId, out var func) ? func() : null;
     }
@@ -151,15 +151,15 @@ public sealed class PacketV2Decoder : IPacketDecoder<IPacketV2<IPayload>>
     }
 
     public Observable<DeserializePackageException> OutError => _decodeErrorSubject;
-    public Observable<IPacketV2<IPayload>> OnPacket => _packetSubject;
+    public Observable<MavlinkMessage> OnPacket => _packetSubject;
 
-    public void Register(Func<IPacketV2<IPayload>> factory)
+    public void Register(Func<MavlinkMessage> factory)
     {
         var pkt = factory();
         _dict.Add(pkt.MessageId,factory);
     }
 
-    public IPacketV2<IPayload>? Create(int id)
+    public MavlinkMessage? Create(int id)
     {
         return _dict.TryGetValue(id, out var factory) == false ? null : factory();
     }

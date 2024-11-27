@@ -1,6 +1,6 @@
 using System.Text;
-using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Minimal;
+
+
 using Moq;
 using Xunit;
 
@@ -8,12 +8,12 @@ namespace Asv.Mavlink.Test;
 
 public class PacketPrinterStatusTextPacketHandler
 {
-    private readonly StatusTextHandler _handler;
+    private readonly StatusTextFormatter _formatter;
     private readonly StatustextPacket _packet;
 
     public PacketPrinterStatusTextPacketHandler()
     {
-        _handler = new StatusTextHandler();
+        _formatter = new StatusTextFormatter();
         var text = "StatusText";
         _packet = new StatustextPacket()
         {
@@ -31,7 +31,7 @@ public class PacketPrinterStatusTextPacketHandler
     public void Order_ShouldReturnHalfOfMaxValue_Success()
     {
         // Act
-        var order = _handler.Order;
+        var order = _formatter.Order;
 
         // Assert
         Assert.Equal(int.MaxValue / 2, order);
@@ -41,11 +41,11 @@ public class PacketPrinterStatusTextPacketHandler
     public void CanPrint_ShouldReturnTrue_WhenMessageIdMatches_Success()
     {
         // Arrange
-        var mockPacket = new Mock<IPacketV2<IPayload>>();
+        var mockPacket = new Mock<MavlinkMessage>();
         mockPacket.Setup(p => p.MessageId).Returns(ParamValuePacket.PacketMessageId);
 
         // Act
-        var canPrint = _handler.CanPrint(mockPacket.Object);
+        var canPrint = _formatter.CanPrint(mockPacket.Object);
 
         // Assert
         Assert.True(canPrint);
@@ -58,7 +58,7 @@ public class PacketPrinterStatusTextPacketHandler
         var mockPacket = new HeartbeatPacket();
 
         // Act
-        var canPrint = _handler.CanPrint(mockPacket);
+        var canPrint = _formatter.CanPrint(mockPacket);
 
         // Assert
         Assert.False(canPrint);
@@ -78,7 +78,7 @@ public class PacketPrinterStatusTextPacketHandler
         expectedResult.Append("}");
 
         // Act
-        var result = _handler.Print(_packet);
+        var result = _formatter.Print(_packet);
 
         // Assert
         Assert.Equal(expectedResult.ToString(), result);

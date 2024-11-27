@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 
 namespace Asv.Mavlink;
 
@@ -39,19 +39,19 @@ public static class CommandClientHelper
     /// Set the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM.
     /// </summary>
     public static Task SetMessageInterval<TPacket>(this ICommandClient src, int intervalUs, CancellationToken cancel = default)
-        where TPacket : IPacketV2<IPayload>, new()
+        where TPacket : MavlinkMessage, new()
     {
         var pkt = new TPacket();
-        return src.SetMessageInterval(pkt.MessageId, intervalUs, cancel);
+        return src.SetMessageInterval(pkt.Id, intervalUs, cancel);
     }
     /// <summary>
     /// Request the target system(s) emit a single instance of a specified message (i.e. a "one-shot" version of MAV_CMD_SET_MESSAGE_INTERVAL).
     /// </summary>
     public static Task<TPacket> RequestMessageOnce<TPacket>(this ICommandClient src, CancellationToken cancel = default)
-        where TPacket : IPacketV2<IPayload>, new()
+        where TPacket : MavlinkMessage, new()
     {
         var pkt = new TPacket();
-        return src.CommandLongAndWaitPacket<TPacket>(MavCmd.MavCmdRequestMessage, pkt.MessageId, 0, 0, 0,
+        return src.CommandLongAndWaitPacket<TPacket>(MavCmd.MavCmdRequestMessage, pkt.Id, 0, 0, 0,
             0, 0, 0, cancel);
     }
     

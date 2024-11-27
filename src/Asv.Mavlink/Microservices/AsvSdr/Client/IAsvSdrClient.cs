@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.AsvSdr;
-using Asv.Mavlink.V2.AsvSdr;
+
 using R3;
 
 namespace Asv.Mavlink
@@ -81,7 +81,7 @@ namespace Asv.Mavlink
        /// <summary>
        /// Observes the Record's Data.
        /// </summary>
-       Observable<IPacketV2<IPayload>> OnRecordData { get; }
+       Observable<MavlinkMessage> OnRecordData { get; }
 
        // Calibration
        /// <summary>
@@ -103,7 +103,7 @@ namespace Asv.Mavlink
        /// <summary>
        /// Starts the upload process of a Calibration Table's Row.
        /// </summary>
-       Task SendCalibrationTableRowUploadStart(Action<AsvSdrCalibTableUploadStartPayload> argsFill,
+       ValueTask SendCalibrationTableRowUploadStart(Action<AsvSdrCalibTableUploadStartPayload> argsFill,
            CancellationToken cancel = default);
 
        /// <summary>
@@ -119,7 +119,7 @@ namespace Asv.Mavlink
        /// <summary>
        /// Sends the upload item of a Calibration Table's Row.
        /// </summary>
-       Task SendCalibrationTableRowUploadItem(Action<AsvSdrCalibTableRowPayload> argsFill,
+       ValueTask SendCalibrationTableRowUploadItem(Action<AsvSdrCalibTableRowPayload> argsFill,
            CancellationToken cancel = default);
    }
 

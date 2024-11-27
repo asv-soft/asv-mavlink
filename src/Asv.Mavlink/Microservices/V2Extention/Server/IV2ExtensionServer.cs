@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 using R3;
 
 namespace Asv.Mavlink
@@ -39,7 +39,7 @@ namespace Asv.Mavlink
         /// target network ID, message type, and data to send.
         /// The cancellation token can be used to cancel the operation.
         /// </remarks>
-        Task SendData(byte targetSystemId, byte targetComponentId, byte targetNetworkId, ushort messageType,
+        ValueTask SendData(byte targetSystemId, byte targetComponentId, byte targetNetworkId, ushort messageType,
             byte[] data, CancellationToken cancel);
     }
 }

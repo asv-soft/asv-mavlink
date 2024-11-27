@@ -4,8 +4,9 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.IO;
 using Asv.Mavlink.AsvAudio;
-using Asv.Mavlink.V2.AsvAudio;
+
 using Microsoft.Extensions.Logging;
 using ObservableCollections;
 using R3;
@@ -34,7 +35,7 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
     private readonly ReactiveProperty<bool> _speakerEnabled;
     private readonly ReactiveProperty<AsvAudioCodec?> _codec;
     private readonly ReactiveProperty<bool> _isOnline;
-    private readonly MavlinkPacketTransponder<AsvAudioOnlinePacket, AsvAudioOnlinePayload> _transponder;
+    private readonly MavlinkPacketTransponder<AsvAudioOnlinePacket> _transponder;
     
     public AudioService(IAudioCodecFactory codecFactory,MavlinkIdentity identity,
         AudioServiceConfig config, ICoreServices core)
@@ -48,11 +49,11 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
         _onlineRate = TimeSpan.FromMilliseconds(config1.OnlineRateMs);
         
         _devices = new ObservableDictionary<MavlinkIdentity,IAudioDevice>();
-        _sub1 = core.Connection.Filter<AsvAudioOnlinePacket>().Where(_=>IsOnline.CurrentValue).Subscribe(OnRecvDeviceOnline);
-        _sub2 = core.Connection.Filter<AsvAudioStreamPacket>().Where(_=>IsOnline.CurrentValue).Subscribe(OnRecvAudioStream);
+        _sub1 = core.Connection.RxFilter<AsvAudioOnlinePacket, ushort>().Where(_=>IsOnline.CurrentValue).Subscribe(OnRecvDeviceOnline);
+        _sub2 = core.Connection.RxFilter<AsvAudioStreamPacket,ushort>().Where(_=>IsOnline.CurrentValue).Subscribe(OnRecvAudioStream);
         
         _timer = core.TimeProvider.CreateTimer(RemoveOldDevice, null, TimeSpan.FromMilliseconds(config.RemoveDeviceCheckDelayMs), TimeSpan.FromMilliseconds(config.RemoveDeviceCheckDelayMs));
-        _transponder = new MavlinkPacketTransponder<AsvAudioOnlinePacket,AsvAudioOnlinePayload>(identity,core);
+        _transponder = new MavlinkPacketTransponder<AsvAudioOnlinePacket>(identity,core);
         _isOnline = new ReactiveProperty<bool>(false);
         _codec = new ReactiveProperty<AsvAudioCodec?>();
         _speakerEnabled = new ReactiveProperty<bool>(false);
@@ -60,11 +61,11 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
         {
             if (speakerEnabled)
             {
-                p.Mode |= AsvAudioModeFlag.AsvAudioModeFlagSpeakerOn;
+                p.Payload.Mode |= AsvAudioModeFlag.AsvAudioModeFlagSpeakerOn;
             }
             else
             {
-                p.Mode &= ~AsvAudioModeFlag.AsvAudioModeFlagSpeakerOn;
+                p.Payload.Mode &= ~AsvAudioModeFlag.AsvAudioModeFlagSpeakerOn;
             }
         }));
         _micEnabled = new ReactiveProperty<bool>(false);
@@ -72,11 +73,11 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
         {
             if (micEnabled)
             {
-                p.Mode |= AsvAudioModeFlag.AsvAudioModeFlagMicOn;
+                p.Payload.Mode |= AsvAudioModeFlag.AsvAudioModeFlagMicOn;
             }
             else
             {
-                p.Mode &= ~AsvAudioModeFlag.AsvAudioModeFlagMicOn;
+                p.Payload.Mode &= ~AsvAudioModeFlag.AsvAudioModeFlagMicOn;
             }
         }));
     }
@@ -117,7 +118,7 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
         OnReceiveAudio?.Invoke(device, pcmRawAudioData);
     }
 
-    private Task SendAudioStream(Action<AsvAudioStreamPacket> packet, CancellationToken cancel)
+    private ValueTask SendAudioStream(Action<AsvAudioStreamPacket> packet, CancellationToken cancel)
     {
         var pkt = new AsvAudioStreamPacket
         {
@@ -149,8 +150,8 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
         AsvAudioHelper.CheckDeviceName(name);
         _transponder.Set(p =>
         {
-            MavlinkTypesHelper.SetString(p.Name,name);
-            p.Codec = codec;
+            MavlinkTypesHelper.SetString(p.Payload.Name,name);
+            p.Payload.Codec = codec;
             AsvAudioModeFlag mode = 0;
             if (speakerEnabled)
             {
@@ -160,7 +161,7 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
             {
                 mode |= AsvAudioModeFlag.AsvAudioModeFlagMicOn;
             }
-            p.Mode = mode;
+            p.Payload.Mode = mode;
         });
         _isOnline.OnNext(true);
         _codec.OnNext(codec);

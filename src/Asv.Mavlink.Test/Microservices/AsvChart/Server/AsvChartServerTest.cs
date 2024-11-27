@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvChart;
+
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -12,7 +12,7 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(AsvChartServer))]
 public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
 {
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
 
     private readonly AsvChartServerConfig _config = new()
@@ -23,7 +23,7 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
 
     public AsvChartServerTest(ITestOutputHelper output) : base(output)
     {
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }

@@ -3,9 +3,9 @@ using System.Text.RegularExpressions;
 using Asv.Common;
 using Asv.Mavlink.AsvSdr;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.AsvSdr;
-using Asv.Mavlink.V2.Common;
-using MavCmd = Asv.Mavlink.V2.AsvSdr.MavCmd;
+
+
+using MavCmd = Asv.Mavlink.AsvSdr.MavCmd;
 
 namespace Asv.Mavlink;
 
@@ -172,7 +172,7 @@ public static class AsvSdrHelper
         float recordRate, uint sendingThinningRatio, float referencePowerDbm)
     {
         var freqArray = BitConverter.GetBytes(frequencyHz);
-        item.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetMode;
+        item.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetMode;
         item.Param1 = BitConverter.ToSingle(BitConverter.GetBytes((uint)mode));
         item.Param2 = BitConverter.ToSingle(freqArray, 0);
         item.Param3 = BitConverter.ToSingle(freqArray, 4);
@@ -186,7 +186,7 @@ public static class AsvSdrHelper
         float recordRate, uint sendingThinningRatio, float referencePowerDbm)
     {
         var freqArray = BitConverter.GetBytes(frequencyHz);
-        payload.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetMode;
+        payload.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetMode;
         payload.Param1 = BitConverter.ToSingle(BitConverter.GetBytes((uint)mode));
         payload.Param2 = BitConverter.ToSingle(freqArray, 0);
         payload.Param3 = BitConverter.ToSingle(freqArray, 4);
@@ -198,7 +198,7 @@ public static class AsvSdrHelper
     public static void GetArgsForSdrSetMode(CommandLongPayload item, out AsvSdrCustomMode mode, out ulong frequencyHz,
         out float recordRate, out uint sendingThinningRatio, out float referencePowerDbm)
     {
-        if (item.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetMode)
+        if (item.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetMode)
             throw new ArgumentException($"Command {item.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrSetMode}");
         mode = (AsvSdrCustomMode)BitConverter.ToUInt32(BitConverter.GetBytes(item.Param1));
         var freqArray = new byte[8];
@@ -213,7 +213,7 @@ public static class AsvSdrHelper
     public static void GetArgsForSdrSetMode(ServerMissionItem item, out AsvSdrCustomMode mode,  out ulong frequencyHz,
         out float recordRate, out uint sendingThinningRatio, out float referencePowerDbm)
     {
-        if (item.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetMode)
+        if (item.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetMode)
             throw new ArgumentException($"Command {item.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrSetMode}");
         mode = (AsvSdrCustomMode)BitConverter.ToUInt32(BitConverter.GetBytes(item.Param1));
         var freqArray = new byte[8];
@@ -234,7 +234,7 @@ public static class AsvSdrHelper
         CheckRecordName(recordName);
         var nameArray = new byte[RecordNameMaxLength];
         MavlinkTypesHelper.SetString(nameArray, recordName);
-        payload.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartRecord;
+        payload.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartRecord;
         payload.Param1 = BitConverter.ToSingle(nameArray, 0);
         payload.Param2 = BitConverter.ToSingle(nameArray, 4);
         payload.Param3 = BitConverter.ToSingle(nameArray, 8);
@@ -246,7 +246,7 @@ public static class AsvSdrHelper
     
     public static void GetArgsForSdrStartRecord(ServerMissionItem payload, out string recordName)
     {
-        if (payload.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartRecord)
+        if (payload.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartRecord)
             throw new ArgumentException($"Command {payload.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrStartRecord}");
         var nameArray = new byte[AsvSdrHelper.RecordNameMaxLength];
         BitConverter.GetBytes(payload.Param1).CopyTo(nameArray,0);
@@ -265,7 +265,7 @@ public static class AsvSdrHelper
         CheckRecordName(recordName);
         var nameArray = new byte[RecordNameMaxLength];
         MavlinkTypesHelper.SetString(nameArray, recordName);
-        item.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartRecord;
+        item.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartRecord;
         item.Param1 = BitConverter.ToSingle(nameArray, 0);
         item.Param2 = BitConverter.ToSingle(nameArray, 4);
         item.Param3 = BitConverter.ToSingle(nameArray, 8);
@@ -277,7 +277,7 @@ public static class AsvSdrHelper
 
     public static void GetArgsForSdrStartRecord(CommandLongPayload payload, out string recordName)
     {
-        if (payload.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartRecord)
+        if (payload.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartRecord)
             throw new ArgumentException($"Command {payload.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrStartRecord}");
         var nameArray = new byte[RecordNameMaxLength];
         BitConverter.GetBytes(payload.Param1).CopyTo(nameArray,0);
@@ -297,7 +297,7 @@ public static class AsvSdrHelper
 
     public static void SetArgsForSdrStopRecord(MissionItemIntPayload payload)
     {
-        payload.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopRecord;
+        payload.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopRecord;
         payload.Param1 = Single.NaN;
         payload.Param2 = Single.NaN;
         payload.Param3 = Single.NaN;
@@ -309,7 +309,7 @@ public static class AsvSdrHelper
     
     public static void SetArgsForSdrStopRecord(CommandLongPayload item)
     {
-        item.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopRecord;
+        item.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopRecord;
         item.Param1 = Single.NaN;
         item.Param2 = Single.NaN;
         item.Param3 = Single.NaN;
@@ -321,13 +321,13 @@ public static class AsvSdrHelper
     
     public static void GetArgsForSdrStopRecord(ServerMissionItem payload)
     {
-        if (payload.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopRecord)
+        if (payload.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopRecord)
             throw new ArgumentException($"Command {payload.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrStopRecord}");
     }
    
     public static void GetArgsForSdrStopRecord(CommandLongPayload payload)
     {
-        if (payload.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopRecord)
+        if (payload.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopRecord)
             throw new ArgumentException($"Command {payload.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrStopRecord}");
     }
     
@@ -342,7 +342,7 @@ public static class AsvSdrHelper
             throw new ArgumentException(nameof(rawValue), $"Tag value array must be {RecordTagValueLength} bytes length");
         var nameArray = new byte[RecordTagNameMaxLength];
         MavlinkTypesHelper.SetString(nameArray, tagName);
-        item.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag;
+        item.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag;
         item.Param1 = BitConverter.ToSingle(BitConverter.GetBytes((uint)type));
         item.Param2 = BitConverter.ToSingle(nameArray, 0);
         item.Param3 = BitConverter.ToSingle(nameArray, 4);
@@ -358,7 +358,7 @@ public static class AsvSdrHelper
             throw new ArgumentException(nameof(rawValue), $"Tag value array must be {RecordTagValueLength} bytes length");
         var nameArray = new byte[RecordTagNameMaxLength];
         MavlinkTypesHelper.SetString(nameArray, tagName);
-        payload.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag;
+        payload.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag;
         payload.Param1 = BitConverter.ToSingle(BitConverter.GetBytes((uint)type));
         payload.Param2 = BitConverter.ToSingle(nameArray, 0);
         payload.Param3 = BitConverter.ToSingle(nameArray, 4);
@@ -371,7 +371,7 @@ public static class AsvSdrHelper
     public static void GetArgsForSdrCurrentRecordSetTag(CommandLongPayload item, out string tagName,
         out AsvSdrRecordTagType type,out  byte[] valueArray)
     {
-        if (item.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag)
+        if (item.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag)
             throw new ArgumentException($"Command {item.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag}");
         type = (AsvSdrRecordTagType)BitConverter.ToUInt32(BitConverter.GetBytes(item.Param1));
         var nameArray = new byte[RecordTagNameMaxLength];
@@ -388,7 +388,7 @@ public static class AsvSdrHelper
     public static void GetArgsForSdrCurrentRecordSetTag(ServerMissionItem item, out string tagName,
         out AsvSdrRecordTagType type,out  byte[] valueArray)
     {
-        if (item.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag)
+        if (item.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag)
             throw new ArgumentException($"Command {item.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag}");
         type = (AsvSdrRecordTagType)BitConverter.ToUInt32(BitConverter.GetBytes(item.Param1));
         var nameArray = new byte[RecordTagNameMaxLength];
@@ -409,7 +409,7 @@ public static class AsvSdrHelper
 
     public static void SetArgsForSdrSystemControlAction(CommandLongPayload item,AsvSdrSystemControlAction action)
     {   
-        item.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction;
+        item.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction;
         item.Param1 = BitConverter.ToSingle(BitConverter.GetBytes((uint)action));
         item.Param2 = Single.NaN;
         item.Param3 = Single.NaN;
@@ -421,7 +421,7 @@ public static class AsvSdrHelper
     
     public static void SetArgsForSdrSystemControlAction(MissionItemIntPayload item,AsvSdrSystemControlAction action)
     {   
-        item.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction;
+        item.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction;
         item.Param1 = BitConverter.ToSingle(BitConverter.GetBytes((uint)action));
         item.Param2 = Single.NaN;
         item.Param3 = Single.NaN;
@@ -433,7 +433,7 @@ public static class AsvSdrHelper
 
     public static void GetArgsForSdrSystemControlAction(CommandLongPayload item, out AsvSdrSystemControlAction action)
     {
-        if (item.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction)
+        if (item.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction)
             throw new ArgumentException($"Command {item.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction}");
         action = (AsvSdrSystemControlAction)BitConverter.ToUInt32(BitConverter.GetBytes(item.Param1));
         
@@ -441,7 +441,7 @@ public static class AsvSdrHelper
     
     public static void GetArgsForSdrSystemControlAction(ServerMissionItem item, out AsvSdrSystemControlAction action)
     {
-        if (item.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction)
+        if (item.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction)
             throw new ArgumentException($"Command {item.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction}");
         action = (AsvSdrSystemControlAction)BitConverter.ToUInt32(BitConverter.GetBytes(item.Param1));
         
@@ -453,7 +453,7 @@ public static class AsvSdrHelper
 
     public static void SetArgsForSdrStartMission(CommandLongPayload item,ushort missionIndex)
     {   
-        item.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartMission;
+        item.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartMission;
         item.Param1 = BitConverter.ToSingle(BitConverter.GetBytes((uint)missionIndex));
         item.Param2 = Single.NaN;
         item.Param3 = Single.NaN;
@@ -465,7 +465,7 @@ public static class AsvSdrHelper
 
     public static void GetArgsForSdrStartMission(CommandLongPayload item,out ushort missionIndex)
     {
-        if (item.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartMission)
+        if (item.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartMission)
             throw new ArgumentException($"Command {item.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrStartMission}");
         missionIndex = (ushort)BitConverter.ToUInt32(BitConverter.GetBytes(item.Param1));
     }
@@ -476,7 +476,7 @@ public static class AsvSdrHelper
 
     public static void SetArgsForSdrStopMission(CommandLongPayload item)
     {   
-        item.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopMission;
+        item.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopMission;
         item.Param1 = Single.NaN;
         item.Param2 = Single.NaN;
         item.Param3 = Single.NaN;
@@ -487,7 +487,7 @@ public static class AsvSdrHelper
     }
     public static void GetArgsForSdrStopMission(CommandLongPayload item)
     {   
-        if (item.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopMission)
+        if (item.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopMission)
             throw new ArgumentException($"Command {item.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrStopMission}");
     }
 
@@ -497,7 +497,7 @@ public static class AsvSdrHelper
     
     public static void SetArgsForSdrDelay(MissionItemIntPayload item,uint delayMs)
     {   
-        item.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrDelay;
+        item.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrDelay;
         item.Param1 = BitConverter.ToSingle(BitConverter.GetBytes(delayMs));
         item.Param2 = Single.NaN;
         item.Param3 = Single.NaN;
@@ -509,7 +509,7 @@ public static class AsvSdrHelper
     
     public static void GetArgsForSdrDelay(ServerMissionItem item,out uint delayMs)
     {   
-        if (item.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrDelay)
+        if (item.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrDelay)
             throw new ArgumentException($"Command {item.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrDelay}");
         delayMs = BitConverter.ToUInt32(BitConverter.GetBytes(item.Param1));
     }
@@ -521,7 +521,7 @@ public static class AsvSdrHelper
 
     public static void SetArgsForSdrWaitVehicleWaypoint(MissionItemIntPayload item,ushort index)
     {   
-        item.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrWaitVehicleWaypoint;
+        item.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrWaitVehicleWaypoint;
         item.Param1 = BitConverter.ToSingle(BitConverter.GetBytes((uint)index));
         item.Param2 = Single.NaN;
         item.Param3 = Single.NaN;
@@ -533,14 +533,14 @@ public static class AsvSdrHelper
     
     public static void GetArgsForSdrWaitVehicleWaypoint(ServerMissionItem item,out ushort index)
     {   
-        if (item.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrWaitVehicleWaypoint)
+        if (item.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrWaitVehicleWaypoint)
             throw new ArgumentException($"Command {item.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrWaitVehicleWaypoint}");
         index = (ushort)BitConverter.ToUInt32(BitConverter.GetBytes(item.Param1));
     }
 
     public static void SetArgsForSdrStartCalibration(CommandLongPayload item)
     {
-        item.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration;
+        item.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration;
         item.Param1 = Single.NaN;
         item.Param2 = Single.NaN;
         item.Param3 = Single.NaN;
@@ -552,13 +552,13 @@ public static class AsvSdrHelper
     
     public static void GetArgsForSdrStartCalibration(CommandLongPayload item)
     {   
-        if (item.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration)
+        if (item.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration)
             throw new ArgumentException($"Command {item.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration}");
     }
 
     public static void SetArgsForSdrStopCalibration(CommandLongPayload item)
     {
-        item.Command = (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration;
+        item.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration;
         item.Param1 = Single.NaN;
         item.Param2 = Single.NaN;
         item.Param3 = Single.NaN;
@@ -569,7 +569,7 @@ public static class AsvSdrHelper
     }
     public static void GetArgsForSdrStopCalibration(CommandLongPayload item)
     {   
-        if (item.Command != (V2.Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration)
+        if (item.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration)
             throw new ArgumentException($"Command {item.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration}");
     }
     

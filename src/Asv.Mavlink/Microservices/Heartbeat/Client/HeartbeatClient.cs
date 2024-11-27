@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.Minimal;
-using Asv.Mavlink.V2.Minimal;
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
