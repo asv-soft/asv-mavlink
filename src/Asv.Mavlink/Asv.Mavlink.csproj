@@ -55,6 +55,7 @@
     </Compile>
     <Compile Remove="Microservices\Params\Server\Ex\ParamsDesc.cs" />
     <Compile Remove="Microservices\Commands\Client\Ex\**" />
+    <Compile Remove="Microservices\Telemetry\Server\**" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="RS.resx">
@@ -69,6 +70,7 @@
       <LastGenOutput>ParamsDesc.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Remove="Microservices\Commands\Client\Ex\**" />
+    <EmbeddedResource Remove="Microservices\Telemetry\Server\**" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Microservices\Control\Server\" />
@@ -76,7 +78,6 @@
     <Folder Include="Microservices\Gnss\Server\" />
     <Folder Include="Microservices\Mode\Server\" />
     <Folder Include="Microservices\Position\Server\" />
-    <Folder Include="Microservices\Telemetry\Server\" />
     <Folder Include="Tools\HierarchicalStore\Impl\" />
   </ItemGroup>
   <ItemGroup>
@@ -93,5 +94,6 @@
       <PackagePath>\</PackagePath>
     </None>
     <None Remove="Microservices\Commands\Client\Ex\**" />
+    <None Remove="Microservices\Telemetry\Server\**" />
   </ItemGroup>
 </Project>
