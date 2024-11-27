@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -13,14 +13,14 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(CommandServer))]
 public class CommandServerTest : ServerTestBase<CommandServer>
 {
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly CommandServer _server;
 
     public CommandServerTest(ITestOutputHelper log) : base(log)
     {
         _server = Server;
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
 

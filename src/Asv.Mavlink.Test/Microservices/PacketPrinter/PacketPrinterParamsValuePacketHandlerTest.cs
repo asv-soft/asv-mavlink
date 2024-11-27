@@ -1,5 +1,5 @@
-using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Minimal;
+
+
 using Moq;
 using Xunit;
 
@@ -7,14 +7,14 @@ namespace Asv.Mavlink.Test;
 
 public class PacketPrinterParamsValuePacketHandlerTest
 {
-    private readonly ParamValuePacketHandler _handler;
+    private readonly ParamValueFormatter _formatter;
     private readonly ParamValuePacket _packet;
     IMavParamEncoding _cstyleEncoding = new MavParamCStyleEncoding();
     IMavParamEncoding _byteWiseEncoding = new MavParamByteWiseEncoding();
 
     public PacketPrinterParamsValuePacketHandlerTest()
     {
-        _handler = new ParamValuePacketHandler();
+        _formatter = new ParamValueFormatter();
         var name = "Name";
         _packet = new ParamValuePacket()
         {
@@ -32,7 +32,7 @@ public class PacketPrinterParamsValuePacketHandlerTest
     public void Order_ShouldReturnHalfOfMaxValue_Success()
     {
         // Act
-        var order = _handler.Order;
+        var order = _formatter.Order;
 
         // Assert
         Assert.Equal(int.MaxValue / 2, order);
@@ -42,11 +42,11 @@ public class PacketPrinterParamsValuePacketHandlerTest
     public void CanPrint_ShouldReturnTrue_WhenMessageIdMatches_Success()
     {
         // Arrange
-        var mockPacket = new Mock<IPacketV2<IPayload>>();
+        var mockPacket = new Mock<MavlinkMessage>();
         mockPacket.Setup(p => p.MessageId).Returns(ParamValuePacket.PacketMessageId);
 
         // Act
-        var canPrint = _handler.CanPrint(mockPacket.Object);
+        var canPrint = _formatter.CanPrint(mockPacket.Object);
 
         // Assert
         Assert.True(canPrint);
@@ -59,7 +59,7 @@ public class PacketPrinterParamsValuePacketHandlerTest
         var mockPacket = new HeartbeatPacket();
 
         // Act
-        var canPrint = _handler.CanPrint(mockPacket);
+        var canPrint = _formatter.CanPrint(mockPacket);
 
         // Assert
         Assert.False(canPrint);
@@ -76,7 +76,7 @@ public class PacketPrinterParamsValuePacketHandlerTest
         var expectedResult = $"Name[1 of 2]=cstyle({cValue}) or byteWise({bValue})";
 
         // Act
-        var result = _handler.Print(_packet);
+        var result = _formatter.Print(_packet);
 
         // Assert
         Assert.Equal(expectedResult, result);
@@ -102,7 +102,7 @@ public class PacketPrinterParamsValuePacketHandlerTest
         var expectedResult = $"{string.Empty}[1 of 2]=cstyle({cValue}) or byteWise({bValue})";
 
         // Act
-        var result = _handler.Print(packet);
+        var result = _formatter.Print(packet);
 
         // Assert
         Assert.Equal(expectedResult, result);

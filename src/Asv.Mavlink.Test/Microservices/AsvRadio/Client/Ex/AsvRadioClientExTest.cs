@@ -1,4 +1,4 @@
-using Asv.Mavlink.V2.AsvRadio;
+using Asv.Mavlink.AsvRadio;
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;

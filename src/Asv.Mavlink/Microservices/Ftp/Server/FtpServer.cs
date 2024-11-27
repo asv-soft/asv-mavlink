@@ -2,7 +2,7 @@ using System;
 using System.Buffers;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -30,10 +30,9 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
     {
         _config = config;
         _logger = core.Log.CreateLogger<FtpServer>();
-        _filter = core.Connection
-            .Filter<FileTransferProtocolPacket>()
-            .Where(x => x.Payload.TargetComponent == identity.ComponentId &&
-                        x.Payload.TargetSystem == identity.SystemId && _config.NetworkId == x.Payload.TargetNetwork)
+        
+        _filter = InternalFilter<FileTransferProtocolPacket>(x=>x.Payload.TargetSystem, x=>x.Payload.TargetComponent)
+            .Where(x =>x.Payload.TargetNetwork == 0 || _config.NetworkId == x.Payload.TargetNetwork)
             .Subscribe(OnFtpMessage);
     }
 
@@ -524,7 +523,7 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     #region ReplyNack
 
-    private Task ReplyNack(FileTransferProtocolPacket req, NackError err, Exception? ex = null)
+    private ValueTask ReplyNack(FileTransferProtocolPacket req, NackError err, Exception? ex = null)
     {
         var originOpCode = req.ReadOriginOpCode();
         if (ex == null)
@@ -540,7 +539,7 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         return InternalFtpReply(req, FtpOpcode.Nak, x => x.WriteDataAsByte((byte)err));
     }
 
-    private Task ReplyNackFailErrno(FileTransferProtocolPacket req, byte fsErrorCode, Exception? ex = null)
+    private ValueTask ReplyNackFailErrno(FileTransferProtocolPacket req, byte fsErrorCode, Exception? ex = null)
     {
         var originOpCode = req.ReadOriginOpCode();
         var originSession = req.ReadSession();
@@ -560,7 +559,7 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     #endregion
 
-    private Task InternalFtpReply(FileTransferProtocolPacket req, FtpOpcode replyOpCode,
+    private ValueTask InternalFtpReply(FileTransferProtocolPacket req, FtpOpcode replyOpCode,
         Action<FileTransferProtocolPacket> fillPacket)
     {
         return InternalSend<FileTransferProtocolPacket>(p =>

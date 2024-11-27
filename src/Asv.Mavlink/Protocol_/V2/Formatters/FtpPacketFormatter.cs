@@ -1,22 +1,28 @@
+using System;
+using System.Diagnostics;
 using System.Text;
+using Asv.IO;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 using Newtonsoft.Json;
 
 namespace Asv.Mavlink;
 
-public class FtpPacketHandler: IPacketPrinterHandler
+public class FtpPacketFormatter: IProtocolMessageFormatter
 {
-    public int Order  => int.MaxValue/2;
-    public bool CanPrint(IPacketV2<IPayload> packet)
+    public bool CanPrint(IProtocolMessage message)
     {
-        return packet.MessageId == FileTransferProtocolPacket.PacketMessageId;
+        return message is FileTransferProtocolPacket;
     }
 
-    public string Print(IPacketV2<IPayload> packet, PacketFormatting formatting = PacketFormatting.None)
+    public string Print(IProtocolMessage packet, PacketFormatting formatting)
     {
-        var ftp = packet as FileTransferProtocolPacket;
-        var payload =ftp.Payload.Payload;
+        if (packet is FileTransferProtocolPacket ftp == false)
+        {
+            Debug.Assert(false,"packet is FileTransferProtocolPacket ftp == false");
+            return string.Empty;
+        }
+        var payload = ftp.Payload.Payload;
         var brstcmp =  ftp.ReadBurstComplete();
         var seq = ftp.ReadSequenceNumber();
         var size = ftp.ReadSize();
@@ -32,4 +38,8 @@ public class FtpPacketHandler: IPacketPrinterHandler
             str,
         }, formatting == PacketFormatting.Indented ? Formatting.Indented : Formatting.None);
     }
+
+    public string Name => "FTP";
+    public int Order  => int.MaxValue/2;
+   
 }

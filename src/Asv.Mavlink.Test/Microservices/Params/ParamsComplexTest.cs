@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
-using Asv.Mavlink.V2.Common;
+
 using R3;
 using Xunit;
 using Xunit.Abstractions;

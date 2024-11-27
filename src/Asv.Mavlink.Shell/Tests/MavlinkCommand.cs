@@ -16,7 +16,7 @@ namespace Asv.Mavlink.Shell
         private readonly ReaderWriterLockSlim _rw = new ReaderWriterLockSlim();
         private readonly List<DisplayRow> _items = new List<DisplayRow>();
         private DateTime _lastUpdate = DateTime.Now;
-        private readonly List<IPacketV2<IPayload>> _lastPackets = new List<IPacketV2<IPayload>>();
+        private readonly List<MavlinkMessage> _lastPackets = new List<MavlinkMessage>();
         private int MaxHistorySize = 20;
         private int _packetCount;
         private int _lastPacketCount;
@@ -65,7 +65,7 @@ namespace Asv.Mavlink.Shell
         private void Redraw()
         {
             DisplayRow[] items;
-            IPacketV2<IPayload>[] packets;
+            MavlinkMessage[] packets;
             try
             {
                 _rw.EnterReadLock();
@@ -125,7 +125,7 @@ namespace Asv.Mavlink.Shell
             }
         }
 
-        private void OnPacket(IPacketV2<IPayload> packet)
+        private void OnPacket(MavlinkMessage packet)
         {
             Interlocked.Increment(ref _packetCount);
             try

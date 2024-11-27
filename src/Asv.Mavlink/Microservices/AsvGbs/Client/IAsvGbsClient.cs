@@ -1,5 +1,5 @@
 using Asv.Mavlink.AsvGbs;
-using Asv.Mavlink.V2.AsvGbs;
+using Asv.Mavlink.AsvGbs;
  using R3;
 
  namespace Asv.Mavlink

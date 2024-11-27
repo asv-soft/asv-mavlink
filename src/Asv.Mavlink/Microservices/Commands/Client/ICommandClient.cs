@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 using R3;
 
 namespace Asv.Mavlink
@@ -73,7 +73,7 @@ namespace Asv.Mavlink
         /// ```
         /// </returns>
         Task<TAnswerPacket> CommandLongAndWaitPacket<TAnswerPacket>(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, CancellationToken cancel = default)
-            where TAnswerPacket : IPacketV2<IPayload>, new();
+            where TAnswerPacket : MavlinkMessage, new();
 
         /// <summary>
         /// Sends a long command to the specified MavCmd with the provided parameters.
@@ -89,6 +89,7 @@ namespace Asv.Mavlink
         /// <param name="cancel">The cancellation token to cancel the command (optional).</param>
         /// <returns>A task representing the asynchronous operation of sending the command.</returns>
         Task SendCommandLong(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7,  CancellationToken cancel = default);
+
         /// <summary>
         /// Message encoding a command with parameters as scaled integers. Scaling depends on the actual command value.
         ///  Don't wait answer
@@ -106,7 +107,7 @@ namespace Asv.Mavlink
         /// <param name="z">PARAM7 / z position: global: altitude in meters (relative or absolute, depending on frame).</param>
         /// <param name="cancel"></param>
         /// <returns></returns>
-        Task SendCommandInt(MavCmd command, MavFrame frame, bool current, bool autocontinue,
+        ValueTask SendCommandInt(MavCmd command, MavFrame frame, bool current, bool autocontinue,
             float param1, float param2,
             float param3, float param4, int x, int y, float z, CancellationToken cancel = default);
         /// <summary>

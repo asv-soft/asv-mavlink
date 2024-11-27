@@ -3,8 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.AsvGbs;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.AsvGbs;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.AsvGbs;
+
 
 namespace Asv.Mavlink
 {
@@ -16,7 +16,7 @@ namespace Asv.Mavlink
     public class AsvGbsServer:MavlinkMicroserviceServer, IAsvGbsServer
     {
         private readonly AsvGbsServerConfig _config;
-        private readonly MavlinkPacketTransponder<AsvGbsOutStatusPacket,AsvGbsOutStatusPayload> _transponder;
+        private readonly MavlinkPacketTransponder<AsvGbsOutStatusPacket> _transponder;
 
         public AsvGbsServer(
             MavlinkIdentity identity,
@@ -26,7 +26,7 @@ namespace Asv.Mavlink
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _transponder =
-                new MavlinkPacketTransponder<AsvGbsOutStatusPacket, AsvGbsOutStatusPayload>(identity, core);
+                new MavlinkPacketTransponder<AsvGbsOutStatusPacket>(identity, core);
         }
 
         public void Start()
@@ -36,10 +36,10 @@ namespace Asv.Mavlink
 
         public void Set(Action<AsvGbsOutStatusPayload> changeCallback)
         {
-            _transponder.Set(changeCallback);
+            _transponder.Set(x=>changeCallback(x.Payload));
         }
 
-        public Task SendDgps(Action<GpsRtcmDataPacket> changeCallback, CancellationToken cancel = default)
+        public ValueTask SendDgps(Action<GpsRtcmDataPacket> changeCallback, CancellationToken cancel = default)
         {
             return InternalSend(changeCallback, cancel);
         }

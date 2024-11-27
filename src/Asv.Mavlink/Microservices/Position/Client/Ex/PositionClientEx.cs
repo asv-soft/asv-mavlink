@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
-using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Minimal;
 using R3;
 
 namespace Asv.Mavlink;
@@ -154,7 +152,7 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
         _roi.OnNext(null);
     }
 
-    public Task SetTarget(GeoPoint point, CancellationToken cancel)
+    public ValueTask SetTarget(GeoPoint point, CancellationToken cancel)
     {
         return Base.SetTargetGlobalInt(0, MavFrame.MavFrameGlobalInt, cancel, MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(point.Latitude),
             MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(point.Longitude), (float?)point.Altitude);

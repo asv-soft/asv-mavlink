@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -27,25 +26,25 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
     {
         _logger = core.Log.CreateLogger<PositionClient>();
         _target = InternalFilter<PositionTargetGlobalIntPacket>()
-            .Select(p => p.Payload)
+            .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
         _home = InternalFilter<HomePositionPacket>()
-            .Select(p => p.Payload)
+            .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
         _globalPosition = InternalFilter<GlobalPositionIntPacket>()
-            .Select(p => p.Payload)
+            .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
         _altitude = InternalFilter<AltitudePacket>()
-            .Select(p => p.Payload)
+            .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
         _vfrHud = InternalFilter<VfrHudPacket>()
-            .Select(p => p.Payload)
+            .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
         _imu = InternalFilter<HighresImuPacket>()
-            .Select(p => p.Payload)
+            .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
         _attitude = InternalFilter<AttitudePacket>()
-            .Select(p => p.Payload)
+            .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
     }
     public ReadOnlyReactiveProperty<GlobalPositionIntPayload?> GlobalPosition => _globalPosition;
@@ -56,7 +55,7 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
     public ReadOnlyReactiveProperty<HighresImuPayload?> Imu => _imu;
     public ReadOnlyReactiveProperty<AttitudePayload?> Attitude => _attitude;
 
-    public Task SetTargetGlobalInt(uint timeBootMs, MavFrame coordinateFrame, int latInt, int lonInt, float alt,
+    public ValueTask SetTargetGlobalInt(uint timeBootMs, MavFrame coordinateFrame, int latInt, int lonInt, float alt,
         float vx, float vy, float vz, float afx, float afy, float afz, float yaw,
         float yawRate, PositionTargetTypemask typeMask, CancellationToken cancel)
     {
@@ -82,7 +81,7 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
         }, cancel);
     }
 
-    public Task SetPositionTargetLocalNed(uint timeBootMs, MavFrame coordinateFrame, PositionTargetTypemask typeMask, float x,
+    public ValueTask SetPositionTargetLocalNed(uint timeBootMs, MavFrame coordinateFrame, PositionTargetTypemask typeMask, float x,
         float y, float z, float vx, float vy, float vz, float afx, float afy, float afz, float yaw, float yawRate,
         CancellationToken cancel)
     {

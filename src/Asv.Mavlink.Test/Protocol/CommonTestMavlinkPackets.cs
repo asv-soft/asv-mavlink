@@ -1,10 +1,10 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.PythonArrayTest;
-using Asv.Mavlink.V2.Test;
-using Asv.Mavlink.V2.UnitTestMessage;
+
+using Asv.Mavlink.PythonArrayTest;
+using Asv.Mavlink.Test;
+using Asv.Mavlink.UnitTestMessage;
 using DeepEqual.Syntax;
 using Xunit;
 using Xunit.Abstractions;
@@ -16,7 +16,7 @@ namespace Asv.Mavlink.Test
     public class CommonTestMavlinkPackets
     {
         
-        private readonly byte[] _buffer = new byte[PacketV2Helper.PacketV2MaxSize];
+        private readonly byte[] _buffer = new byte[MavlinkV2Protocol.PacketV2MaxSize];
         private readonly ITestOutputHelper _output;
 
         public CommonTestMavlinkPackets(ITestOutputHelper output)
@@ -59,7 +59,7 @@ namespace Asv.Mavlink.Test
             expectedObject.Serialize(ref serializeSpan);
             
             
-            byte[] buffer2 = new byte[PacketV2Helper.PacketV2MaxSize];
+            byte[] buffer2 = new byte[MavlinkV2Protocol.PacketV2MaxSize];
             var span = new Span<byte>(buffer2);
             var size = span.Length;
             expectedObject.Serialize(ref span);
@@ -103,7 +103,7 @@ namespace Asv.Mavlink.Test
             var serializeSpan = new Span<byte>(_buffer);
             expectedObject.Serialize(ref serializeSpan);
             
-            byte[] buffer2 = new byte[PacketV2Helper.PacketV2MaxSize];
+            byte[] buffer2 = new byte[MavlinkV2Protocol.PacketV2MaxSize];
             var span = new Span<byte>(buffer2);
             expectedObject.Serialize(ref span);
 
@@ -215,7 +215,7 @@ namespace Asv.Mavlink.Test
                 0, 0, 0, 207, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 90, 104, 85, 95, 130, 184, 0, 8, 204, 49, 170,
                 44, 83, 46, 0
             };
-            var decoder = new PacketV2Decoder();
+            var decoder = new MavlinkV2Parser(MavlinkV2MessageFactory.Instance);
             // decoder.RegisterMinimalDialect();
             decoder.RegisterCommonDialect();
             int err = 0;

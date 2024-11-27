@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.AsvRsga;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.AsvRsga;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.AsvRsga;
+
 using Microsoft.Extensions.Logging;
 using ObservableCollections;
 using R3;

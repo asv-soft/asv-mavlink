@@ -1,5 +1,5 @@
 using System;
-using Asv.Mavlink.V2.Minimal;
+
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
@@ -29,7 +29,7 @@ public class PacketPrinterDefaultPacketHandlerTest
     public void CanPrint_ShouldAlwaysReturnTrue_Success()
     {
         // Arrange
-        var mockPacket = new Mock<IPacketV2<IPayload>>();
+        var mockPacket = new Mock<MavlinkMessage>();
 
         // Act
         var canPrint = _handler.CanPrint(mockPacket.Object);
@@ -42,7 +42,7 @@ public class PacketPrinterDefaultPacketHandlerTest
     public void Print_ShouldThrowArgumentException_WhenPacketIsNull_Fail()
     {
         // Arrange
-        IPacketV2<IPayload> packet = null;
+        MavlinkMessage packet = null;
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentException>(() => _handler.Print(packet));
@@ -105,7 +105,7 @@ public class PacketPrinterDefaultPacketHandlerTest
     {
         // Arrange
         var payload = new Mock<IPayload>();
-        var mockPacket = new Mock<IPacketV2<IPayload>>();
+        var mockPacket = new Mock<MavlinkMessage>();
         mockPacket.Setup(p => p.Payload).Returns(payload.Object);
 
         // Act & Assert

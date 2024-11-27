@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -23,14 +23,14 @@ public class AsvGbsExServerTest : ServerTestBase<AsvGbsExServer>, IDisposable
         HeartbeatRateMs = 1000
     };
     
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly IAsvGbsServerEx _server;
 
     public AsvGbsExServerTest(ITestOutputHelper output) : base(output)
     {
         _server = Server;
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(1), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }

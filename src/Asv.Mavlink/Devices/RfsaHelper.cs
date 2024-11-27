@@ -1,6 +1,6 @@
 using System;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 
 namespace Asv.Mavlink;
 
@@ -9,7 +9,7 @@ public static class RfsaHelper
     public static void SetArgsForEnableCommand(CommandLongPayload item, ulong frequencyHz, uint spanHz)
     {
         var freqArray = BitConverter.GetBytes(frequencyHz);
-        item.Command = (V2.Common.MavCmd)V2.AsvRfsa.MavCmd.MavCmdAsvRfsaOn;
+        item.Command = (Common.MavCmd)V2.AsvRfsa.MavCmd.MavCmdAsvRfsaOn;
         item.Param1 = BitConverter.ToSingle(freqArray, 0);
         item.Param2 = BitConverter.ToSingle(freqArray, 4);
         item.Param3 = BitConverter.ToSingle(BitConverter.GetBytes(spanHz));
@@ -21,7 +21,7 @@ public static class RfsaHelper
     public static void GetArgsForEnableCommand(CommandLongPayload item, out ulong frequencyHz,
         out uint span)
     {
-        if (item.Command != (V2.Common.MavCmd)V2.AsvRfsa.MavCmd.MavCmdAsvRfsaOn)
+        if (item.Command != (Common.MavCmd)V2.AsvRfsa.MavCmd.MavCmdAsvRfsaOn)
             throw new ArgumentException($"Command {item.Command:G} is not {V2.AsvRfsa.MavCmd.MavCmdAsvRfsaOn:G}");
         var freqArray = new byte[8];
         BitConverter.GetBytes(item.Param1).CopyTo(freqArray,0);
@@ -31,7 +31,7 @@ public static class RfsaHelper
     }
     public static void SetArgsForDisableCommand(CommandLongPayload item)
     {
-        item.Command = (V2.Common.MavCmd)V2.AsvRfsa.MavCmd.MavCmdAsvRfsaOff;
+        item.Command = (Common.MavCmd)V2.AsvRfsa.MavCmd.MavCmdAsvRfsaOff;
         item.Param1 = Single.NaN;
         item.Param2 = Single.NaN;
         item.Param3 = Single.NaN;
@@ -43,7 +43,7 @@ public static class RfsaHelper
 
     public static void GetArgsForDisableCommand(CommandLongPayload item)
     {
-        if (item.Command != (V2.Common.MavCmd)V2.AsvRfsa.MavCmd.MavCmdAsvRfsaOff)
+        if (item.Command != (Common.MavCmd)V2.AsvRfsa.MavCmd.MavCmdAsvRfsaOff)
             throw new ArgumentException($"Command {item.Command:G} is not {V2.AsvRfsa.MavCmd.MavCmdAsvRfsaOff:G}");
     }
 }

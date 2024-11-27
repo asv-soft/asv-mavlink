@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 
 namespace Asv.Mavlink;
 
@@ -9,7 +9,7 @@ namespace Asv.Mavlink;
 /// /
 public static class MavlinkCommonHelper
 {
-    public static Task SetPositionTargetLocalNed(this IPositionClient src, uint timeBootMs, MavFrame coordinateFrame, float? x,
+    public static ValueTask SetPositionTargetLocalNed(this IPositionClient src, uint timeBootMs, MavFrame coordinateFrame, float? x,
         float? y, float? z, float? vx, float? vy, float? vz, float? afx, float? afy, float? afz, float? yaw, float? yawRate,
         CancellationToken cancel)
     {
@@ -50,7 +50,7 @@ public static class MavlinkCommonHelper
     /// <param name="yaw">Yaw angle (radians) of the target position. Set to null to ignore.</param>
     /// <param name="yawRate">Yaw rate (rad/s) of the target position. Set to null to ignore.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
-    public static Task SetTargetGlobalInt(this IPositionClient src, uint timeBootMs, MavFrame coordFrame,
+    public static ValueTask SetTargetGlobalInt(this IPositionClient src, uint timeBootMs, MavFrame coordFrame,
         CancellationToken cancel,
         int? latInt = null,
         int? lonInt = null,

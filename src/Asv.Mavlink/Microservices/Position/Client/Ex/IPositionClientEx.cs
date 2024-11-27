@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 using R3;
 
 namespace Asv.Mavlink;
@@ -206,7 +206,7 @@ public interface IPositionClientEx : IMavlinkMicroserviceClient
     /// This method sets the target for the application. The target GeoPoint
     /// specifies the point to which the application will navigate.
     /// </remarks>
-    Task SetTarget(GeoPoint point, CancellationToken none);
+    ValueTask SetTarget(GeoPoint point, CancellationToken none);
 
     /// <summary>
     /// Initiates the takeoff process.

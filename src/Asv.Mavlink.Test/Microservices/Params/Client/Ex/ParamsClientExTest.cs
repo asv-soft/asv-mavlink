@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;

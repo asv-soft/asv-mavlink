@@ -7,14 +7,14 @@ using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRadio;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
-using Asv.Mavlink.V2.AsvAudio;
-using Asv.Mavlink.V2.AsvRadio;
-using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Minimal;
+
+using Asv.Mavlink.AsvRadio;
+
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
-using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
+using MavCmd = Asv.Mavlink.Common.MavCmd;
 
 namespace Asv.Mavlink;
 
@@ -51,7 +51,7 @@ public class AsvRadioServerEx: IAsvRadioServerEx, IDisposable,IAsyncDisposable
         heartbeat.Set(x =>
         {
             x.Autopilot = MavAutopilot.MavAutopilotInvalid;
-            x.Type = (V2.Minimal.MavType)V2.AsvRadio.MavType.MavTypeAsvRadio;
+            x.Type = (Minimal.MavType)AsvRadio.MavType.MavTypeAsvRadio;
             x.SystemStatus = MavState.MavStateActive;
             x.BaseMode = MavModeFlag.MavModeFlagCustomModeEnabled;
             x.MavlinkVersion = 3;
@@ -61,7 +61,7 @@ public class AsvRadioServerEx: IAsvRadioServerEx, IDisposable,IAsyncDisposable
         _customMode = new ReactiveProperty<AsvRadioCustomMode>();
         CustomMode.Subscribe(mode => heartbeat.Set(p => p.CustomMode = (uint)mode));
         
-        commands[(MavCmd)V2.AsvRadio.MavCmd.MavCmdAsvRadioOn] = async (id,args, cancel) =>
+        commands[(MavCmd)AsvRadio.MavCmd.MavCmdAsvRadioOn] = async (id,args, cancel) =>
         {
             if (EnableRadio == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             AsvRadioHelper.GetArgsForRadioOn(args.Payload, out var freq, out var mode, out var referencePower, out var txPower, out var codec);
@@ -94,7 +94,7 @@ public class AsvRadioServerEx: IAsvRadioServerEx, IDisposable,IAsyncDisposable
             _customMode.Value = AsvRadioCustomMode.AsvRadioCustomModeOnair;
             return CommandResult.FromResult(result);
         };
-        commands[(MavCmd)V2.AsvRadio.MavCmd.MavCmdAsvRadioOff] = async (id,args, cancel) =>
+        commands[(MavCmd)AsvRadio.MavCmd.MavCmdAsvRadioOff] = async (id,args, cancel) =>
         {
             if (DisableRadio == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             AsvRadioHelper.GetArgsForRadioOff(args.Payload);

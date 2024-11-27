@@ -23,7 +23,7 @@ public abstract class MavlinkV2Message<TPayload> : MavlinkMessage
     
     public int GetMaxByteSize() => Payload.GetMaxByteSize() + Signature.GetMaxByteSize() + 12 /*HEADER*/;
     
-    public override int GetByteSize() => Payload.GetByteSize() + (Signature.IsPresent ? PacketV2Helper.SignatureByteSize : 0) + 12 /*HEADER*/;
+    public override int GetByteSize() => Payload.GetByteSize() + (Signature.IsPresent ? MavlinkV2Protocol.SignatureByteSize : 0) + 12 /*HEADER*/;
 
     public override void Serialize(ref Span<byte> buffer)
     {
@@ -48,7 +48,7 @@ public abstract class MavlinkV2Message<TPayload> : MavlinkMessage
             }
         }
         
-        BinSerialize.WriteByte(ref fillBuffer, PacketV2Helper.MagicMarkerV2);
+        BinSerialize.WriteByte(ref fillBuffer, MavlinkV2Protocol.MagicMarkerV2);
         BinSerialize.WriteByte(ref fillBuffer, (byte)payloadSize);
         BinSerialize.WriteByte(ref fillBuffer, IncompatFlags);
         BinSerialize.WriteByte(ref fillBuffer, CompatFlags);
@@ -78,8 +78,8 @@ public abstract class MavlinkV2Message<TPayload> : MavlinkMessage
         var crcBuffer = buffer[1..];
             
             var stx = BinSerialize.ReadByte(ref buffer);
-            if (stx != PacketV2Helper.MagicMarkerV2)
-                throw new MavlinkException(string.Format(RS.WheelKnownConstant_VerifyStx_Unknown_STX_value, PacketV2Helper.MagicMarkerV2, stx));
+            if (stx != MavlinkV2Protocol.MagicMarkerV2)
+                throw new MavlinkException(string.Format(RS.WheelKnownConstant_VerifyStx_Unknown_STX_value, MavlinkV2Protocol.MagicMarkerV2, stx));
 
             var payloadSize = BinSerialize.ReadByte(ref buffer);
             IncompatFlags = BinSerialize.ReadByte(ref buffer);

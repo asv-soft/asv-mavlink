@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 using R3;
 
 namespace Asv.Mavlink
@@ -57,6 +57,6 @@ namespace Asv.Mavlink
         /// <param name="startStop">Whether to start or stop the data stream.</param>
         /// <param name="cancel">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>A task representing the asynchronous request for the data stream.</returns>
-        Task RequestDataStream(byte streamId, ushort rateHz, bool startStop, CancellationToken cancel = default);
+        ValueTask RequestDataStream(byte streamId, ushort rateHz, bool startStop, CancellationToken cancel = default);
     }
 }

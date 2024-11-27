@@ -13,7 +13,7 @@ namespace Asv.Mavlink
             set
             {
                 _isPresent = value;
-                ByteSize = value ? PacketV2Helper.SignatureByteSize : 0;
+                ByteSize = value ? MavlinkV2Protocol.SignatureByteSize : 0;
             }
         }
 
@@ -42,7 +42,7 @@ namespace Asv.Mavlink
             return ByteSize;
         }
 
-        public int GetMaxByteSize() => PacketV2Helper.SignatureByteSize;
+        public int GetMaxByteSize() => MavlinkV2Protocol.SignatureByteSize;
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -101,7 +101,7 @@ namespace Asv.Mavlink
             buffer[offset + 10] = (byte)(Sign >> 24 & 0xFF);
             buffer[offset + 11] = (byte)(Sign >> 32 & 0xFF);
             buffer[offset + 12] = (byte)(Sign >> 40 & 0xFF);
-            return PacketV2Helper.SignatureByteSize;
+            return MavlinkV2Protocol.SignatureByteSize;
         }
     }
 }

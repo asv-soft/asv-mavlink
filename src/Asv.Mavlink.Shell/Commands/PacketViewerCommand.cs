@@ -33,10 +33,10 @@ public class PacketViewerCommand
         _printer = new PacketPrinter(new List<IPacketPrinterHandler>()
         {
             new DefaultPacketHandler(),
-            new FtpPacketHandler(),
-            new StatusTextHandler(),
-            new ParamSetPacketHandler(),
-            new ParamValuePacketHandler()
+            new FtpPacketFormatter(),
+            new StatusTextFormatter(),
+            new ParamSetFormatter(),
+            new ParamValueFormatter()
         });
         _headerTable = new Table().Expand().AddColumns("[red]F6[/]", "[red]F7[/]", "[red]F8[/]", "[red]F9[/]", "[red]ENTER[/]").Title("[aqua]Controls[/]");
         _headerTable.AddRow("Search:", $"Size:{_consoleSize}", "Pause", "End", "Submit"); 
@@ -192,11 +192,11 @@ public class PacketViewerCommand
         }
     }
     
-    private void GetPacketAndUpdateTable(IList<IPacketV2<IPayload>> pkt)
+    private void GetPacketAndUpdateTable(IList<MavlinkMessage> pkt)
     {
         
         if (_isPause) return;
-        var result = new List<IPacketV2<IPayload>>();
+        var result = new List<MavlinkMessage>();
         var filtered = pkt.Where(_ => _.Name.Contains(_consoleSearch, StringComparison.InvariantCultureIgnoreCase));
         if (_consoleSearch is null)
         {

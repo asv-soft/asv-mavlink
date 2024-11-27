@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 using R3;
 
 namespace Asv.Mavlink;
@@ -72,7 +72,7 @@ public interface IPositionClient: IMavlinkMicroserviceClient
     /// other system).
     /// </summary>
     /// <param name="timeBootMs">Timestamp (time since system boot). The rationale for the timestamp in the setpoint is to allow the system to compensate for the transport delay of the setpoint. This allows the system to compensate processing latency.</param>
-    /// <param name="coordFrame">Valid options are: MAV_FRAME_GLOBAL_INT = 5, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT = 6, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT = 11</param>
+    /// <param name="coordinateFrame"></param>
     /// <param name="latInt">X Position in WGS84 frame</param>
     /// <param name="lonInt">Y Position in WGS84 frame</param>
     /// <param name="alt">Altitude (MSL, Relative to home, or AGL - depending on frame)</param>
@@ -86,10 +86,12 @@ public interface IPositionClient: IMavlinkMicroserviceClient
     /// <param name="yawRate">yaw rate setpoint</param>
     /// <param name="typeMask">Bitmap to indicate which dimensions should be ignored by the vehicle.</param>
     /// <param name="cancel">Cancellation token</param>
+    /// <param name="coordFrame">Valid options are: MAV_FRAME_GLOBAL_INT = 5, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT = 6, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT = 11</param>
     /// <returns>Returns a Task representing the asynchronous operation</returns>
-    Task SetTargetGlobalInt(uint timeBootMs, MavFrame coordinateFrame, int latInt, int lonInt, float alt,
+    ValueTask SetTargetGlobalInt(uint timeBootMs, MavFrame coordinateFrame, int latInt, int lonInt, float alt,
         float vx, float vy, float vz, float afx, float afy, float afz, float yaw,
         float yawRate, PositionTargetTypemask typeMask, CancellationToken cancel = default);
+
     /// <summary>
     /// 
     /// </summary>
@@ -109,7 +111,8 @@ public interface IPositionClient: IMavlinkMicroserviceClient
     /// <param name="yawRate">yaw rate setpoint</param>
     /// <param name="cancel"></param>
     /// <returns></returns>
-    Task SetPositionTargetLocalNed(uint timeBootMs, MavFrame coordinateFrame, PositionTargetTypemask typeMask, float x,
+    ValueTask SetPositionTargetLocalNed(uint timeBootMs, MavFrame coordinateFrame, PositionTargetTypemask typeMask,
+        float x,
         float y, float z, float vx, float vy, float vz, float afx, float afy, float afz, float yaw, float yawRate,
         CancellationToken cancel);
 }

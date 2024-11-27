@@ -6,9 +6,8 @@ using ZLogger;
 
 namespace Asv.Mavlink
 {
-    public class MavlinkPacketTransponder<TPacket,TPayload> : IMavlinkPacketTransponder<TPacket,TPayload>, IDisposable
-        where TPacket : IPacketV2<TPayload>, new()
-        where TPayload : IPayload, new()
+    public class MavlinkPacketTransponder<TPacket> : IMavlinkPacketTransponder<TPacket>, IDisposable
+        where TPacket : MavlinkMessage, new()
     {
         private readonly ICoreServices _core;
         private readonly object _sync = new();
@@ -24,13 +23,11 @@ namespace Asv.Mavlink
         {
             ArgumentNullException.ThrowIfNull(identityConfig);
             _core = core ?? throw new ArgumentNullException(nameof(core));
-            _logger = core.Log.CreateLogger<IMavlinkPacketTransponder<TPacket,TPayload>>();
+            _logger = core.Log.CreateLogger<IMavlinkPacketTransponder<TPacket>>();
             
             _disposeCancel = new CancellationTokenSource();
             _packet = new TPacket
             {
-                CompatFlags = 0,
-                IncompatFlags = 0,
                 ComponentId = identityConfig.ComponentId,
                 SystemId = identityConfig.SystemId,
             };
@@ -58,8 +55,8 @@ namespace Asv.Mavlink
             try
             {
                 _dataLock.EnterReadLock();
-                ((IPacketV2<IPayload>) _packet).Sequence = _core.Sequence.GetNextSequenceNumber();
-                _core.Connection.Send((IPacketV2<IPayload>)_packet, DisposeCancel).Wait(DisposeCancel);
+                _packet.Sequence = _core.Sequence.GetNextSequenceNumber();
+                _core.Connection.Send(_packet, DisposeCancel);
                 LogSuccess();
             }
             catch (Exception e)
@@ -109,12 +106,12 @@ namespace Asv.Mavlink
             }
         }
 
-        public void Set(Action<TPayload> changeCallback)
+        public void Set(Action<TPacket> changeCallback)
         {
             try
             {
                 _dataLock.EnterWriteLock();
-                changeCallback(_packet.Payload);
+                changeCallback(_packet);
             }
             catch (Exception e)
             {

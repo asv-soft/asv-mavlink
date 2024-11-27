@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -33,7 +33,7 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
 
     public Observable<ParamValuePayload> OnParamValue => _onParamValue;
     
-    public Task SendRequestList(CancellationToken cancel = default)
+    public ValueTask SendRequestList(CancellationToken cancel = default)
     {
         _logger.ZLogInformation($"{LogSend} Request all params from vehicle");
         return InternalSend<ParamRequestListPacket>(p =>

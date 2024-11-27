@@ -21,29 +21,29 @@ namespace Asv.Mavlink
             }
         }
 
-        public static Observable<IPacketV2<IPayload>> FilterVehicle(this Observable<IPacketV2<IPayload>> src, MavlinkClientIdentity identity)
+        public static Observable<MavlinkMessage> FilterVehicle(this Observable<MavlinkMessage> src, MavlinkClientIdentity identity)
         {
             return src.Where(v => FilterVehicle(v, identity.Target.SystemId,identity.Target.ComponentId));
         }
 
-        public static Observable<IPacketV2<IPayload>> FilterVehicle(this Observable<IPacketV2<IPayload>> src, byte targetSystemId, byte targetComponentId)
+        public static Observable<MavlinkMessage> FilterVehicle(this Observable<MavlinkMessage> src, byte targetSystemId, byte targetComponentId)
         {
             return src.Where(v => FilterVehicle(v, targetSystemId, targetComponentId));
         }
 
-        public static bool FilterVehicle(IPacketV2<IPayload> packetV2, byte targetSystemId, byte targetComponentId)
+        public static bool FilterVehicle(MavlinkMessage packetV2, byte targetSystemId, byte targetComponentId)
         {
             if (targetSystemId != 0 && targetSystemId != packetV2.SystemId) return false;
             if (targetComponentId != 0 && targetComponentId != packetV2.ComponentId) return false;
             return true;
         }
 
-        public static Observable<TPacket> Filter<TPacket>(this Observable<IPacketV2<IPayload>> src)
-            where TPacket: IPacketV2<IPayload>,new()
+        public static Observable<TPacket> Filter<TPacket>(this Observable<MavlinkMessage> src)
+            where TPacket: MavlinkMessage,new()
         {
             var pkt = new TPacket();
-            var id = pkt.MessageId;
-            return src.Where(v => v.MessageId == id).Cast<IPacketV2<IPayload>,TPacket>();
+            var id = pkt.Id;
+            return src.Where(v => v.Id == id).Cast<MavlinkMessage,TPacket>();
         }
 
       

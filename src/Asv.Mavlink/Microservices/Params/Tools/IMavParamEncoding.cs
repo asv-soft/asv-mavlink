@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 
 namespace Asv.Mavlink
 {
@@ -35,6 +35,7 @@ namespace Asv.Mavlink
     /// </summary>
     public class MavParamCStyleEncoding : IMavParamEncoding
     {
+        public static MavParamCStyleEncoding Instance { get; } = new MavParamCStyleEncoding();
         /// Converts the given MavParamValue to a float value based on its type.
         /// @param value The MavParamValue to convert.
         /// @return The float value converted from the MavParamValue.
@@ -95,6 +96,7 @@ namespace Asv.Mavlink
     /// </summary>
     public class MavParamByteWiseEncoding : IMavParamEncoding
     {
+        public static MavParamByteWiseEncoding Instance { get; } = new();
         /// <summary>
         /// Converts the given MavParamValue to a Mavlink union.
         /// </summary>

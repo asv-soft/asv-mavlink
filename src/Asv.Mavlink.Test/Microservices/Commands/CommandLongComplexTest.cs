@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.V2.Common;
+
 using DeepEqual.Syntax;
 using R3;
 using Xunit;
@@ -23,7 +23,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         CommandAttempt = MaxCommandAttempts
     };
     
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly CommandLongServerEx _server;
     private readonly CommandClient _client;
@@ -32,7 +32,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
     {
         _server = Server;
         _client = Client;
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }

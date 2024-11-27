@@ -1,5 +1,5 @@
 using System;
-using Asv.Mavlink.V2.Minimal;
+
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Time.Testing;

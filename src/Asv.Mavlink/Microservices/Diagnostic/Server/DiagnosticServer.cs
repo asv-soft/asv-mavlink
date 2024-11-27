@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Common;
+
 
 namespace Asv.Mavlink.Diagnostic.Server;
 
@@ -80,9 +80,9 @@ public class DiagnosticServer: MavlinkMicroserviceServer, IDiagnosticServer
         _lastSendIntTime.AddOrUpdate(name, Core.TimeProvider.GetTimestamp(), (_, _) => Core.TimeProvider.GetTimestamp());
     }
     
-    public Task Send(string name, ushort arrayId, float[] data, CancellationToken cancel = default)
+    public ValueTask Send(string name, ushort arrayId, float[] data, CancellationToken cancel = default)
     {
-        if (IsEnabled == false) return Task.CompletedTask;
+        if (IsEnabled == false) return ValueTask.CompletedTask;
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
 
@@ -104,9 +104,9 @@ public class DiagnosticServer: MavlinkMicroserviceServer, IDiagnosticServer
         }, cancel);
     }
 
-    public Task Send(ushort address, byte version, byte type, sbyte[] value, CancellationToken cancel = default)
+    public ValueTask Send(ushort address, byte version, byte type, sbyte[] value, CancellationToken cancel = default)
     {
-        if (IsEnabled == false) return Task.CompletedTask;
+        if (IsEnabled == false) return ValueTask.CompletedTask;
         
         if (value == null) throw new ArgumentNullException(nameof(value));
         if (value.Length > MemoryVectPayload.ValueMaxItemsCount)

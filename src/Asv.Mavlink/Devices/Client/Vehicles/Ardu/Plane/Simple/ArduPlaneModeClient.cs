@@ -5,7 +5,7 @@ using System.Linq;
 using Asv.Mavlink.Ardupilotmega;
 using Asv.Mavlink.Minimal;
 using Asv.Mavlink.V2.Ardupilotmega;
-using Asv.Mavlink.V2.Minimal;
+
 
 namespace Asv.Mavlink;
 

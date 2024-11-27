@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvAudio;
-using Asv.Mavlink.V2.AsvRadio;
-using Asv.Mavlink.V2.Common;
+
+using Asv.Mavlink.AsvRadio;
+
 using R3;
 using Xunit;
 using Xunit.Abstractions;
@@ -51,11 +51,11 @@ public class AsvRadioClientServerComplexTest
         MaxQueueSize = 100,
         MaxSendRateHz = 100
     };
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     public AsvRadioClientServerComplexTest(ITestOutputHelper output): base(output)
     {
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
