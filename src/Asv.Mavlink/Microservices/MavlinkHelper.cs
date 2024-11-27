@@ -1,7 +1,8 @@
 using System;
-using System.Reactive.Linq;
+
 using System.Threading;
 using System.Threading.Tasks;
+using R3;
 
 namespace Asv.Mavlink
 {
@@ -20,12 +21,12 @@ namespace Asv.Mavlink
             }
         }
 
-        public static IObservable<IPacketV2<IPayload>> FilterVehicle(this IObservable<IPacketV2<IPayload>> src, MavlinkClientIdentity identity)
+        public static Observable<IPacketV2<IPayload>> FilterVehicle(this Observable<IPacketV2<IPayload>> src, MavlinkClientIdentity identity)
         {
             return src.Where(v => FilterVehicle(v, identity.Target.SystemId,identity.Target.ComponentId));
         }
 
-        public static IObservable<IPacketV2<IPayload>> FilterVehicle(this IObservable<IPacketV2<IPayload>> src, byte targetSystemId, byte targetComponentId)
+        public static Observable<IPacketV2<IPayload>> FilterVehicle(this Observable<IPacketV2<IPayload>> src, byte targetSystemId, byte targetComponentId)
         {
             return src.Where(v => FilterVehicle(v, targetSystemId, targetComponentId));
         }
@@ -37,12 +38,12 @@ namespace Asv.Mavlink
             return true;
         }
 
-        public static IObservable<TPacket> Filter<TPacket>(this IObservable<IPacketV2<IPayload>> src)
+        public static Observable<TPacket> Filter<TPacket>(this Observable<IPacketV2<IPayload>> src)
             where TPacket: IPacketV2<IPayload>,new()
         {
             var pkt = new TPacket();
             var id = pkt.MessageId;
-            return src.Where(v => v.MessageId == id).Cast<TPacket>();
+            return src.Where(v => v.MessageId == id).Cast<IPacketV2<IPayload>,TPacket>();
         }
 
       

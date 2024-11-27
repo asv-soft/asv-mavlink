@@ -8,7 +8,7 @@ using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
 using ObservableCollections;
 using R3;
-using ObservableExtensions = System.ObservableExtensions;
+
 
 namespace Asv.Mavlink;
 

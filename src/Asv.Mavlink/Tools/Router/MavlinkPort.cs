@@ -47,7 +47,7 @@ public sealed class MavlinkPort : IDisposable, IAsyncDisposable
             Id = Id,
             Name = _config.Name,
             ConnectionString = _config.ConnectionString,
-            State = Port.State.Value,
+            State = Port.State.CurrentValue,
             RxBytes = Port.RxBytes,
             TxBytes = Port.TxBytes,
             RxPackets = Connection.RxPackets,
@@ -56,9 +56,9 @@ public sealed class MavlinkPort : IDisposable, IAsyncDisposable
             SkipPackets = Connection.SkipPackets,
             DeserializationErrors = _deserializeError,
             Description = Port.ToString(),
-            LastException = Port.Error.Value,
+            LastException = Port.Error.CurrentValue,
             Type = Port.PortType,
-            IsEnabled = Port?.IsEnabled.Value,
+            IsEnabled = Port?.IsEnabled.CurrentValue,
             PacketLossChance = _config.PacketLossChance
         };
     }
@@ -69,7 +69,7 @@ public sealed class MavlinkPort : IDisposable, IAsyncDisposable
         {
             ConnectionString = _config.ConnectionString,
             Name = _config.Name,
-            IsEnabled = Port.IsEnabled.Value
+            IsEnabled = Port.IsEnabled.CurrentValue
         };
     }
 

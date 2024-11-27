@@ -44,11 +44,11 @@ public class ParamsServerEx: IParamsServerEx,IDisposable
     private readonly ParamsServerExConfig _serverCfg;
 
     private readonly ILogger _logger;
-    private readonly System.Reactive.Subjects.Subject<Exception> _onErrorSubject;
+    private readonly Subject<Exception> _onErrorSubject;
     private int _sendingInProgressFlag;
     private readonly ImmutableDictionary<string,(ushort,IMavParamTypeMetadata)> _paramDict;
     private readonly ImmutableList<IMavParamTypeMetadata> _paramList;
-    private readonly System.Reactive.Subjects.Subject<ParamChangedEvent> _onParamChangedSubject;
+    private readonly Subject<ParamChangedEvent> _onParamChangedSubject;
     private readonly IDisposable _disposeIt;
     private readonly CancellationTokenSource _disposableCancel;
 
@@ -67,7 +67,7 @@ public class ParamsServerEx: IParamsServerEx,IDisposable
         _encoding = encoding;
         _cfg = cfg;
         _serverCfg = serverCfg;
-        _onErrorSubject = new System.Reactive.Subjects.Subject<Exception>();
+        _onErrorSubject = new Subject<Exception>();
         _paramList = paramDescriptions.OrderBy(m=>m.Name).ToImmutableList();
         var dict = ImmutableDictionary.CreateBuilder<string, (ushort,IMavParamTypeMetadata)>();
         for (var i = 0; i < _paramList.Count; i++)
@@ -75,7 +75,7 @@ public class ParamsServerEx: IParamsServerEx,IDisposable
             dict.Add(_paramList[i].Name,((ushort)i,_paramList[i]));
         }
         _paramDict = dict.ToImmutable();
-        _onParamChangedSubject = new System.Reactive.Subjects.Subject<ParamChangedEvent>();
+        _onParamChangedSubject = new Subject<ParamChangedEvent>();
         
         var d1 = server.OnParamSet.Subscribe(OnParamSet);
         var d2 = server.OnParamRequestList.Subscribe(OnParamRequestList);
@@ -192,8 +192,8 @@ public class ParamsServerEx: IParamsServerEx,IDisposable
 
     
 
-    public IObservable<Exception> OnError => _onErrorSubject;
-    public IObservable<ParamChangedEvent> OnUpdated => _onParamChangedSubject;
+    public Observable<Exception> OnError => _onErrorSubject;
+    public Observable<ParamChangedEvent> OnUpdated => _onParamChangedSubject;
 
     public MavParamValue this[string name]
     {

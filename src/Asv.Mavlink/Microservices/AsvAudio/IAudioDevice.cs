@@ -2,7 +2,7 @@
 using System;
 using Asv.Mavlink.V2.AsvAudio;
 using R3;
-using Unit = System.Reactive.Unit;
+
 
 namespace Asv.Mavlink;
 
@@ -54,7 +54,7 @@ public class PacketCounter(byte initialCounter = 0)
 public interface IAudioDevice : IDisposable
 {
     MavlinkIdentity FullId { get; }
-    IObservable<Unit> OnLinePing { get; }
+    Observable<Unit> OnLinePing { get; }
     ReadOnlyReactiveProperty<string> Name { get; }
     void SendAudio(ReadOnlyMemory<byte> pcmRawAudioData);
     AsvAudioCodec RxCodec { get; }

@@ -1,9 +1,4 @@
-using System;
-using System.IO.Abstractions;
-using System.Reactive.Concurrency;
 using System.Threading.Tasks;
-using Asv.Common;
-using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
