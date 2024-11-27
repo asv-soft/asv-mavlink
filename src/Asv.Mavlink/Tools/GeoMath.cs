@@ -4,7 +4,7 @@ using Asv.Common;
 using Geodesy;
 using Angle = Geodesy.Angle;
 
-namespace Asv.Mavlink.Vehicle
+namespace Asv.Mavlink
 {
     public static class GeoMath
     {

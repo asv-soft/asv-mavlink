@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.Vehicle;
 using Microsoft.Extensions.Logging;
 using ObservableCollections;
 using R3;

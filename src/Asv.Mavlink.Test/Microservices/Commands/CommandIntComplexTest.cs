@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using DeepEqual.Syntax;
 using R3;
