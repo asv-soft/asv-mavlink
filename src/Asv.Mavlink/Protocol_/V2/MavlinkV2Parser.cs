@@ -47,7 +47,7 @@ public class MavlinkV2Parser:ProtocolParser<MavlinkMessage,ushort>
                     return false;
                 case DecodeStep.Length:
                     _buffer[1] = value;
-                    _bufferStopIndex = MavlinkV2Protocol.PaylodStartIndexInFrame + /*payload length*/value + 2 /*crc*/;
+                    _bufferStopIndex = MavlinkV2Protocol.PayloadStartIndexInFrame + /*payload length*/value + 2 /*crc*/;
                     _bufferIndex = 2;
                     _decodeStep = DecodeStep.FillBuffer;
                     return false;

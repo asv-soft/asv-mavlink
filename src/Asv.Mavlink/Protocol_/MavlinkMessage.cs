@@ -24,12 +24,12 @@ public abstract class MavlinkMessage : IProtocolMessage<ushort>
     
     public abstract byte GetCrcExtra();
     
+    public byte Sequence { get; set; }
+    
     public byte SystemId { get; set; }
     
     public byte ComponentId { get; set; }
     
     public MavlinkIdentity FullId => new(SystemId, ComponentId);
-    
-    public byte Sequence { get; set; }
     
 }

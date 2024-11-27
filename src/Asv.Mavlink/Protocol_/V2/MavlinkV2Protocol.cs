@@ -2,6 +2,11 @@ using Asv.IO;
 
 namespace Asv.Mavlink;
 
+/// <summary>
+///                         MAVLink 2 packet
+/// [STX|LEN|INC|CMP|SEQ|SYS|COMP|MSG_ID| PAYLOAD | CHECKSUM      | SIGNATURE    |
+///   0   1   2   3   4   5   6    7-9   10-(10+N)  (11+N)-(12+N)   (13+N)-(26+N)
+/// </summary>
 public static class MavlinkV2Protocol
 {
     public static readonly ProtocolInfo Info = new("MavlinkV2", "Mavlink V2");
@@ -43,7 +48,7 @@ public static class MavlinkV2Protocol
     /// Packet frame byte size without Payload and Signature
     /// </summary>
     public const int PacketV2FrameSize = 13;
-    public const int PaylodStartIndexInFrame = PacketV2FrameSize - /*STX*/1 - 2 /*CRC*/ ;
+    public const int PayloadStartIndexInFrame = PacketV2FrameSize - /*STX*/1 - 2 /*CRC*/ ;
     public static byte GetIncompatFlags(byte[] buffer, int inx)
     {
         return buffer[inx + 2];

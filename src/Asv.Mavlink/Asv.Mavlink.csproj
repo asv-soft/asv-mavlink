@@ -77,6 +77,7 @@
     <Folder Include="Microservices\Mode\Server\" />
     <Folder Include="Microservices\Position\Server\" />
     <Folder Include="Microservices\Telemetry\Server\" />
+    <Folder Include="Tools\HierarchicalStore\Impl\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\img\asv-mavlink-128.png">
