@@ -1,5 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Mavlink.AsvAudio;
+using Asv.Mavlink.AsvRadio;
+using Asv.Mavlink.Common;
 using Asv.Mavlink.V2.AsvAudio;
 using Asv.Mavlink.V2.AsvRadio;
 using Asv.Mavlink.V2.Common;

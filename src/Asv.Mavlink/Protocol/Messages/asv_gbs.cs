@@ -20,19 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+c1002429a625f2cf26c5bd2680700906e0b44d76
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
+using System.Text;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.AsvGbs
+namespace Asv.Mavlink.AsvGbs
 {
 
     public static class AsvGbsHelper
     {
-        public static void RegisterAsvGbsDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterAsvGbsDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new AsvGbsOutStatusPacket());
+            src.Add(AsvGbsOutStatusPacket.MessageId, ()=>new AsvGbsOutStatusPacket());
         }
     }
 
@@ -138,14 +144,20 @@ namespace Asv.Mavlink.V2.AsvGbs
     /// Ground base station status message. Send with 1 Hz frequency.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_GBS_OUT_STATUS
     /// </summary>
-    public class AsvGbsOutStatusPacket: PacketV2<AsvGbsOutStatusPayload>
+    public class AsvGbsOutStatusPacket: MavlinkV2Message<AsvGbsOutStatusPayload>
     {
-	    public const int PacketMessageId = 13000;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 216;
+        public const int MessageId = 13000;
+        
+        public const byte CrcExtra = 216;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvGbsOutStatusPayload Payload { get; } = new AsvGbsOutStatusPayload();
+        public override AsvGbsOutStatusPayload Payload { get; } = new();
 
         public override string Name => "ASV_GBS_OUT_STATUS";
     }
@@ -155,8 +167,11 @@ namespace Asv.Mavlink.V2.AsvGbs
     /// </summary>
     public class AsvGbsOutStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 26; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;

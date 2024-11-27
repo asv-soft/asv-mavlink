@@ -10,7 +10,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Connection for Mavlink V2
     /// </summary>
-    public interface IMavlinkV2Connection: IDisposable, IAsyncDisposable
+    public interface IMavlinkV2Connection: IProtocolConnection
     {
         /// <summary>
         /// Devices in network could not understand unknown messages (cause https://github.com/mavlink/mavlink/issues/1166) and will not forwarding it.

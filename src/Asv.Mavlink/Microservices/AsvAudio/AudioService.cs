@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.V2.AsvAudio;
 using Microsoft.Extensions.Logging;
 using ObservableCollections;

@@ -20,26 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+c1002429a625f2cf26c5bd2680700906e0b44d76
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
 using System.Text;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.AsvChart
+namespace Asv.Mavlink.AsvChart
 {
 
     public static class AsvChartHelper
     {
-        public static void RegisterAsvChartDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterAsvChartDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new AsvChartInfoRequestPacket());
-            src.Register(()=>new AsvChartInfoResponsePacket());
-            src.Register(()=>new AsvChartInfoUpdatedEventPacket());
-            src.Register(()=>new AsvChartInfoPacket());
-            src.Register(()=>new AsvChartDataRequestPacket());
-            src.Register(()=>new AsvChartDataResponsePacket());
-            src.Register(()=>new AsvChartDataPacket());
+            src.Add(AsvChartInfoRequestPacket.MessageId, ()=>new AsvChartInfoRequestPacket());
+            src.Add(AsvChartInfoResponsePacket.MessageId, ()=>new AsvChartInfoResponsePacket());
+            src.Add(AsvChartInfoUpdatedEventPacket.MessageId, ()=>new AsvChartInfoUpdatedEventPacket());
+            src.Add(AsvChartInfoPacket.MessageId, ()=>new AsvChartInfoPacket());
+            src.Add(AsvChartDataRequestPacket.MessageId, ()=>new AsvChartDataRequestPacket());
+            src.Add(AsvChartDataResponsePacket.MessageId, ()=>new AsvChartDataResponsePacket());
+            src.Add(AsvChartDataPacket.MessageId, ()=>new AsvChartDataPacket());
         }
     }
 
@@ -174,14 +179,20 @@ namespace Asv.Mavlink.V2.AsvChart
     /// Requests available charts for visualization. Returns ASV_CHART_INFO_RESPONSE and then items with ASV_CHART_INFO. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_CHART_INFO_REQUEST
     /// </summary>
-    public class AsvChartInfoRequestPacket: PacketV2<AsvChartInfoRequestPayload>
+    public class AsvChartInfoRequestPacket: MavlinkV2Message<AsvChartInfoRequestPayload>
     {
-	    public const int PacketMessageId = 13350;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 131;
+        public const int MessageId = 13350;
+        
+        public const byte CrcExtra = 131;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvChartInfoRequestPayload Payload { get; } = new AsvChartInfoRequestPayload();
+        public override AsvChartInfoRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_CHART_INFO_REQUEST";
     }
@@ -191,8 +202,11 @@ namespace Asv.Mavlink.V2.AsvChart
     /// </summary>
     public class AsvChartInfoRequestPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -260,14 +274,20 @@ namespace Asv.Mavlink.V2.AsvChart
     /// Responds to the request for available charts for visualization. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_CHART_INFO_RESPONSE
     /// </summary>
-    public class AsvChartInfoResponsePacket: PacketV2<AsvChartInfoResponsePayload>
+    public class AsvChartInfoResponsePacket: MavlinkV2Message<AsvChartInfoResponsePayload>
     {
-	    public const int PacketMessageId = 13351;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 109;
+        public const int MessageId = 13351;
+        
+        public const byte CrcExtra = 109;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvChartInfoResponsePayload Payload { get; } = new AsvChartInfoResponsePayload();
+        public override AsvChartInfoResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_CHART_INFO_RESPONSE";
     }
@@ -277,8 +297,11 @@ namespace Asv.Mavlink.V2.AsvChart
     /// </summary>
     public class AsvChartInfoResponsePayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -338,14 +361,20 @@ namespace Asv.Mavlink.V2.AsvChart
     /// Event about chart collection or it's element changed. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_CHART_INFO_UPDATED_EVENT
     /// </summary>
-    public class AsvChartInfoUpdatedEventPacket: PacketV2<AsvChartInfoUpdatedEventPayload>
+    public class AsvChartInfoUpdatedEventPacket: MavlinkV2Message<AsvChartInfoUpdatedEventPayload>
     {
-	    public const int PacketMessageId = 13352;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 37;
+        public const int MessageId = 13352;
+        
+        public const byte CrcExtra = 37;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvChartInfoUpdatedEventPayload Payload { get; } = new AsvChartInfoUpdatedEventPayload();
+        public override AsvChartInfoUpdatedEventPayload Payload { get; } = new();
 
         public override string Name => "ASV_CHART_INFO_UPDATED_EVENT";
     }
@@ -355,8 +384,11 @@ namespace Asv.Mavlink.V2.AsvChart
     /// </summary>
     public class AsvChartInfoUpdatedEventPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -400,14 +432,20 @@ namespace Asv.Mavlink.V2.AsvChart
     /// Contains chart info. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_CHART_INFO
     /// </summary>
-    public class AsvChartInfoPacket: PacketV2<AsvChartInfoPayload>
+    public class AsvChartInfoPacket: MavlinkV2Message<AsvChartInfoPayload>
     {
-	    public const int PacketMessageId = 13353;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 159;
+        public const int MessageId = 13353;
+        
+        public const byte CrcExtra = 159;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvChartInfoPayload Payload { get; } = new AsvChartInfoPayload();
+        public override AsvChartInfoPayload Payload { get; } = new();
 
         public override string Name => "ASV_CHART_INFO";
     }
@@ -417,8 +455,11 @@ namespace Asv.Mavlink.V2.AsvChart
     /// </summary>
     public class AsvChartInfoPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 78; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 78; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -631,14 +672,20 @@ namespace Asv.Mavlink.V2.AsvChart
     /// Request for chart data stream.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_CHART_DATA_REQUEST
     /// </summary>
-    public class AsvChartDataRequestPacket: PacketV2<AsvChartDataRequestPayload>
+    public class AsvChartDataRequestPacket: MavlinkV2Message<AsvChartDataRequestPayload>
     {
-	    public const int PacketMessageId = 13354;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 4;
+        public const int MessageId = 13354;
+        
+        public const byte CrcExtra = 4;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvChartDataRequestPayload Payload { get; } = new AsvChartDataRequestPayload();
+        public override AsvChartDataRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_CHART_DATA_REQUEST";
     }
@@ -648,8 +695,11 @@ namespace Asv.Mavlink.V2.AsvChart
     /// </summary>
     public class AsvChartDataRequestPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 11; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 11; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -725,14 +775,20 @@ namespace Asv.Mavlink.V2.AsvChart
     /// Response for ASV_CHART_STREAM_REQUEST.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_CHART_DATA_RESPONSE
     /// </summary>
-    public class AsvChartDataResponsePacket: PacketV2<AsvChartDataResponsePayload>
+    public class AsvChartDataResponsePacket: MavlinkV2Message<AsvChartDataResponsePayload>
     {
-	    public const int PacketMessageId = 13355;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 185;
+        public const int MessageId = 13355;
+        
+        public const byte CrcExtra = 185;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvChartDataResponsePayload Payload { get; } = new AsvChartDataResponsePayload();
+        public override AsvChartDataResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_CHART_DATA_RESPONSE";
     }
@@ -742,8 +798,11 @@ namespace Asv.Mavlink.V2.AsvChart
     /// </summary>
     public class AsvChartDataResponsePayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 10; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 10; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -811,14 +870,20 @@ namespace Asv.Mavlink.V2.AsvChart
     /// Raw chart data for visualization.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_CHART_DATA
     /// </summary>
-    public class AsvChartDataPacket: PacketV2<AsvChartDataPayload>
+    public class AsvChartDataPacket: MavlinkV2Message<AsvChartDataPayload>
     {
-	    public const int PacketMessageId = 13360;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 66;
+        public const int MessageId = 13360;
+        
+        public const byte CrcExtra = 66;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvChartDataPayload Payload { get; } = new AsvChartDataPayload();
+        public override AsvChartDataPayload Payload { get; } = new();
 
         public override string Name => "ASV_CHART_DATA";
     }
@@ -828,8 +893,11 @@ namespace Asv.Mavlink.V2.AsvChart
     /// </summary>
     public class AsvChartDataPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 237; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 237; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;

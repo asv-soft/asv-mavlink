@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2023 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,27 +20,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
 using System.Text;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.PythonArrayTest
+namespace Asv.Mavlink.PythonArrayTest
 {
 
     public static class PythonArrayTestHelper
     {
-        public static void RegisterPythonArrayTestDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterPythonArrayTestDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new ArrayTest0Packet());
-            src.Register(()=>new ArrayTest1Packet());
-            src.Register(()=>new ArrayTest3Packet());
-            src.Register(()=>new ArrayTest4Packet());
-            src.Register(()=>new ArrayTest5Packet());
-            src.Register(()=>new ArrayTest6Packet());
-            src.Register(()=>new ArrayTest7Packet());
-            src.Register(()=>new ArrayTest8Packet());
+            src.Add(ArrayTest0Packet.MessageId, ()=>new ArrayTest0Packet());
+            src.Add(ArrayTest1Packet.MessageId, ()=>new ArrayTest1Packet());
+            src.Add(ArrayTest3Packet.MessageId, ()=>new ArrayTest3Packet());
+            src.Add(ArrayTest4Packet.MessageId, ()=>new ArrayTest4Packet());
+            src.Add(ArrayTest5Packet.MessageId, ()=>new ArrayTest5Packet());
+            src.Add(ArrayTest6Packet.MessageId, ()=>new ArrayTest6Packet());
+            src.Add(ArrayTest7Packet.MessageId, ()=>new ArrayTest7Packet());
+            src.Add(ArrayTest8Packet.MessageId, ()=>new ArrayTest8Packet());
         }
     }
 
@@ -55,14 +60,20 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// Array test #0.
     ///  ARRAY_TEST_0
     /// </summary>
-    public class ArrayTest0Packet: PacketV2<ArrayTest0Payload>
+    public class ArrayTest0Packet: MavlinkV2Message<ArrayTest0Payload>
     {
-	    public const int PacketMessageId = 17150;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 26;
+        public const int MessageId = 17150;
+        
+        public const byte CrcExtra = 26;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override ArrayTest0Payload Payload { get; } = new ArrayTest0Payload();
+        public override ArrayTest0Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_0";
     }
@@ -72,8 +83,11 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest0Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -146,12 +160,15 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         /// Value array
         /// OriginName: ar_u32, Units: , IsExtended: false
         /// </summary>
+        public const int ArU32MaxItemsCount = 4;
         public uint[] ArU32 { get; set; } = new uint[4];
+        [Obsolete("This method is deprecated. Use GetArU32MaxItemsCount instead.")]
         public byte GetArU32MaxItemsCount() => 4;
         /// <summary>
         /// Value array
         /// OriginName: ar_u16, Units: , IsExtended: false
         /// </summary>
+        public const int ArU16MaxItemsCount = 4;
         public ushort[] ArU16 { get; } = new ushort[4];
         /// <summary>
         /// Stub field
@@ -162,25 +179,33 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         /// Value array
         /// OriginName: ar_i8, Units: , IsExtended: false
         /// </summary>
+        public const int ArI8MaxItemsCount = 4;
         public sbyte[] ArI8 { get; } = new sbyte[4];
         /// <summary>
         /// Value array
         /// OriginName: ar_u8, Units: , IsExtended: false
         /// </summary>
+        public const int ArU8MaxItemsCount = 4;
         public byte[] ArU8 { get; } = new byte[4];
     }
     /// <summary>
     /// Array test #1.
     ///  ARRAY_TEST_1
     /// </summary>
-    public class ArrayTest1Packet: PacketV2<ArrayTest1Payload>
+    public class ArrayTest1Packet: MavlinkV2Message<ArrayTest1Payload>
     {
-	    public const int PacketMessageId = 17151;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 72;
+        public const int MessageId = 17151;
+        
+        public const byte CrcExtra = 72;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override ArrayTest1Payload Payload { get; } = new ArrayTest1Payload();
+        public override ArrayTest1Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_1";
     }
@@ -190,8 +215,11 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest1Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -231,21 +259,29 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         /// Value array
         /// OriginName: ar_u32, Units: , IsExtended: false
         /// </summary>
+        public const int ArU32MaxItemsCount = 4;
         public uint[] ArU32 { get; set; } = new uint[4];
+        [Obsolete("This method is deprecated. Use GetArU32MaxItemsCount instead.")]
         public byte GetArU32MaxItemsCount() => 4;
     }
     /// <summary>
     /// Array test #3.
     ///  ARRAY_TEST_3
     /// </summary>
-    public class ArrayTest3Packet: PacketV2<ArrayTest3Payload>
+    public class ArrayTest3Packet: MavlinkV2Message<ArrayTest3Payload>
     {
-	    public const int PacketMessageId = 17153;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 19;
+        public const int MessageId = 17153;
+        
+        public const byte CrcExtra = 19;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override ArrayTest3Payload Payload { get; } = new ArrayTest3Payload();
+        public override ArrayTest3Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_3";
     }
@@ -255,8 +291,11 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest3Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 17; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 17; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -299,7 +338,9 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         /// Value array
         /// OriginName: ar_u32, Units: , IsExtended: false
         /// </summary>
+        public const int ArU32MaxItemsCount = 4;
         public uint[] ArU32 { get; set; } = new uint[4];
+        [Obsolete("This method is deprecated. Use GetArU32MaxItemsCount instead.")]
         public byte GetArU32MaxItemsCount() => 4;
         /// <summary>
         /// Stub field
@@ -311,14 +352,20 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// Array test #4.
     ///  ARRAY_TEST_4
     /// </summary>
-    public class ArrayTest4Packet: PacketV2<ArrayTest4Payload>
+    public class ArrayTest4Packet: MavlinkV2Message<ArrayTest4Payload>
     {
-	    public const int PacketMessageId = 17154;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 89;
+        public const int MessageId = 17154;
+        
+        public const byte CrcExtra = 89;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override ArrayTest4Payload Payload { get; } = new ArrayTest4Payload();
+        public override ArrayTest4Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_4";
     }
@@ -328,8 +375,11 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest4Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 17; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 17; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -372,7 +422,9 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         /// Value array
         /// OriginName: ar_u32, Units: , IsExtended: false
         /// </summary>
+        public const int ArU32MaxItemsCount = 4;
         public uint[] ArU32 { get; set; } = new uint[4];
+        [Obsolete("This method is deprecated. Use GetArU32MaxItemsCount instead.")]
         public byte GetArU32MaxItemsCount() => 4;
         /// <summary>
         /// Stub field
@@ -384,14 +436,20 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// Array test #5.
     ///  ARRAY_TEST_5
     /// </summary>
-    public class ArrayTest5Packet: PacketV2<ArrayTest5Payload>
+    public class ArrayTest5Packet: MavlinkV2Message<ArrayTest5Payload>
     {
-	    public const int PacketMessageId = 17155;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 27;
+        public const int MessageId = 17155;
+        
+        public const byte CrcExtra = 27;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override ArrayTest5Payload Payload { get; } = new ArrayTest5Payload();
+        public override ArrayTest5Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_5";
     }
@@ -401,8 +459,11 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest5Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 10; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 10; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -476,26 +537,35 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         /// Value array
         /// OriginName: c1, Units: , IsExtended: false
         /// </summary>
+        public const int C1MaxItemsCount = 5;
         public char[] C1 { get; set; } = new char[5];
+        [Obsolete("This method is deprecated. Use GetC1MaxItemsCount instead.")]
         public byte GetC1MaxItemsCount() => 5;
         /// <summary>
         /// Value array
         /// OriginName: c2, Units: , IsExtended: false
         /// </summary>
+        public const int C2MaxItemsCount = 5;
         public char[] C2 { get; } = new char[5];
     }
     /// <summary>
     /// Array test #6.
     ///  ARRAY_TEST_6
     /// </summary>
-    public class ArrayTest6Packet: PacketV2<ArrayTest6Payload>
+    public class ArrayTest6Packet: MavlinkV2Message<ArrayTest6Payload>
     {
-	    public const int PacketMessageId = 17156;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 14;
+        public const int MessageId = 17156;
+        
+        public const byte CrcExtra = 14;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override ArrayTest6Payload Payload { get; } = new ArrayTest6Payload();
+        public override ArrayTest6Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_6";
     }
@@ -505,8 +575,11 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest6Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 91; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 91; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -647,6 +720,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         /// Value array
         /// OriginName: ar_d, Units: , IsExtended: false
         /// </summary>
+        public const int ArDMaxItemsCount = 2;
         public double[] ArD { get; } = new double[2];
         /// <summary>
         /// Stub field
@@ -657,16 +731,19 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         /// Value array
         /// OriginName: ar_u32, Units: , IsExtended: false
         /// </summary>
+        public const int ArU32MaxItemsCount = 2;
         public uint[] ArU32 { get; } = new uint[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_i32, Units: , IsExtended: false
         /// </summary>
+        public const int ArI32MaxItemsCount = 2;
         public int[] ArI32 { get; } = new int[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_f, Units: , IsExtended: false
         /// </summary>
+        public const int ArFMaxItemsCount = 2;
         public float[] ArF { get; } = new float[2];
         /// <summary>
         /// Stub field
@@ -677,11 +754,13 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         /// Value array
         /// OriginName: ar_u16, Units: , IsExtended: false
         /// </summary>
+        public const int ArU16MaxItemsCount = 2;
         public ushort[] ArU16 { get; } = new ushort[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_i16, Units: , IsExtended: false
         /// </summary>
+        public const int ArI16MaxItemsCount = 2;
         public short[] ArI16 { get; } = new short[2];
         /// <summary>
         /// Stub field
@@ -692,31 +771,41 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         /// Value array
         /// OriginName: ar_u8, Units: , IsExtended: false
         /// </summary>
+        public const int ArU8MaxItemsCount = 2;
         public byte[] ArU8 { get; } = new byte[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_i8, Units: , IsExtended: false
         /// </summary>
+        public const int ArI8MaxItemsCount = 2;
         public sbyte[] ArI8 { get; } = new sbyte[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_c, Units: , IsExtended: false
         /// </summary>
+        public const int ArCMaxItemsCount = 32;
         public char[] ArC { get; set; } = new char[32];
+        [Obsolete("This method is deprecated. Use GetArCMaxItemsCount instead.")]
         public byte GetArCMaxItemsCount() => 32;
     }
     /// <summary>
     /// Array test #7.
     ///  ARRAY_TEST_7
     /// </summary>
-    public class ArrayTest7Packet: PacketV2<ArrayTest7Payload>
+    public class ArrayTest7Packet: MavlinkV2Message<ArrayTest7Payload>
     {
-	    public const int PacketMessageId = 17157;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 187;
+        public const int MessageId = 17157;
+        
+        public const byte CrcExtra = 187;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override ArrayTest7Payload Payload { get; } = new ArrayTest7Payload();
+        public override ArrayTest7Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_7";
     }
@@ -726,8 +815,11 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest7Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 84; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 84; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -859,61 +951,77 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         /// Value array
         /// OriginName: ar_d, Units: , IsExtended: false
         /// </summary>
+        public const int ArDMaxItemsCount = 2;
         public double[] ArD { get; } = new double[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_f, Units: , IsExtended: false
         /// </summary>
+        public const int ArFMaxItemsCount = 2;
         public float[] ArF { get; } = new float[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_u32, Units: , IsExtended: false
         /// </summary>
+        public const int ArU32MaxItemsCount = 2;
         public uint[] ArU32 { get; } = new uint[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_i32, Units: , IsExtended: false
         /// </summary>
+        public const int ArI32MaxItemsCount = 2;
         public int[] ArI32 { get; } = new int[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_u16, Units: , IsExtended: false
         /// </summary>
+        public const int ArU16MaxItemsCount = 2;
         public ushort[] ArU16 { get; } = new ushort[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_i16, Units: , IsExtended: false
         /// </summary>
+        public const int ArI16MaxItemsCount = 2;
         public short[] ArI16 { get; } = new short[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_u8, Units: , IsExtended: false
         /// </summary>
+        public const int ArU8MaxItemsCount = 2;
         public byte[] ArU8 { get; } = new byte[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_i8, Units: , IsExtended: false
         /// </summary>
+        public const int ArI8MaxItemsCount = 2;
         public sbyte[] ArI8 { get; } = new sbyte[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_c, Units: , IsExtended: false
         /// </summary>
+        public const int ArCMaxItemsCount = 32;
         public char[] ArC { get; set; } = new char[32];
+        [Obsolete("This method is deprecated. Use GetArCMaxItemsCount instead.")]
         public byte GetArCMaxItemsCount() => 32;
     }
     /// <summary>
     /// Array test #8.
     ///  ARRAY_TEST_8
     /// </summary>
-    public class ArrayTest8Packet: PacketV2<ArrayTest8Payload>
+    public class ArrayTest8Packet: MavlinkV2Message<ArrayTest8Payload>
     {
-	    public const int PacketMessageId = 17158;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 106;
+        public const int MessageId = 17158;
+        
+        public const byte CrcExtra = 106;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override ArrayTest8Payload Payload { get; } = new ArrayTest8Payload();
+        public override ArrayTest8Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_8";
     }
@@ -923,8 +1031,11 @@ namespace Asv.Mavlink.V2.PythonArrayTest
     /// </summary>
     public class ArrayTest8Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -977,7 +1088,9 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         /// Value array
         /// OriginName: ar_d, Units: , IsExtended: false
         /// </summary>
+        public const int ArDMaxItemsCount = 2;
         public double[] ArD { get; set; } = new double[2];
+        [Obsolete("This method is deprecated. Use GetArDMaxItemsCount instead.")]
         public byte GetArDMaxItemsCount() => 2;
         /// <summary>
         /// Stub field
@@ -988,6 +1101,7 @@ namespace Asv.Mavlink.V2.PythonArrayTest
         /// Value array
         /// OriginName: ar_u16, Units: , IsExtended: false
         /// </summary>
+        public const int ArU16MaxItemsCount = 2;
         public ushort[] ArU16 { get; } = new ushort[2];
     }
 

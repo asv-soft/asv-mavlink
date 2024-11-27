@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Mavlink.AsvSdr;
 using Asv.Mavlink.V2.AsvSdr;
 using Microsoft.Extensions.Logging;
 using R3;

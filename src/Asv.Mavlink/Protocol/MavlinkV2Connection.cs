@@ -4,6 +4,7 @@ using System.Buffers;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
+using Asv.Mavlink.Common;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.AsvAudio;
 using Asv.Mavlink.V2.AsvChart;

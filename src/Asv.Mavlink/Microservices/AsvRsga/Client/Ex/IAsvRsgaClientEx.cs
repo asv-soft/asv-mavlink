@@ -1,5 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Mavlink.AsvRsga;
+using Asv.Mavlink.Common;
 using Asv.Mavlink.V2.AsvRsga;
 using Asv.Mavlink.V2.Common;
 using ObservableCollections;

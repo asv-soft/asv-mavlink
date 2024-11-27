@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.IO;
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -46,9 +47,9 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
 
     protected Observable<TPacket> InternalFilter<TPacket>(Func<TPacket, byte> targetSystemGetter,
         Func<TPacket, byte> targetComponentGetter)
-        where TPacket : IPacketV2<IPayload>, new()
+        where TPacket : MavlinkV2Message<IPayload>, new()
     {
-        return Core.Connection.Filter<TPacket>().Where((targetSystemGetter,targetComponentGetter),(v, f) =>
+        return Core.Connection.RxFilter<TPacket, ushort>().Where((targetSystemGetter,targetComponentGetter),(v, f) =>
         {
             var sys = f.targetSystemGetter(v);
             var com = f.targetComponentGetter(v);
@@ -58,11 +59,11 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
 
     protected Observable<TPacket> InternalFilterFirstAsync<TPacket>(Func<TPacket, byte> targetSystemGetter,
         Func<TPacket, byte> targetComponentGetter, Func<TPacket, bool> filter)
-        where TPacket : IPacketV2<IPayload>, new()
+        where TPacket : MavlinkV2Message<IPayload>, new()
     {
         return InternalFilter(targetSystemGetter, targetComponentGetter).Where(filter).Take(1);
     }
-    protected Task InternalSend(int messageId, Action<IPacketV2<IPayload>> fillPacket, CancellationToken cancel = default)
+    protected Task InternalSend(int messageId, Action<MavlinkV2Message<IPayload>> fillPacket, CancellationToken cancel = default)
     {
         var pkt = Core.Connection.CreatePacketByMessageId(messageId);
         fillPacket(pkt ?? throw new InvalidOperationException($"Packet {messageId} not found"));

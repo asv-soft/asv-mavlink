@@ -25,19 +25,21 @@
 using System;
 using System.Text;
 using System.ComponentModel;
-using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Minimal;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.{{ Namespace }}
+namespace Asv.Mavlink.{{ Namespace }}
 {
 
     public static class {{ Namespace }}Helper
     {
-        public static void Register{{ Namespace }}Dialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void Register{{ Namespace }}Dialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
             {%- for msg in Messages -%}
-            src.Register(()=>new {{ msg.CamelCaseName }}Packet());
+            src.Add({{ msg.CamelCaseName }}Packet.MessageId, ()=>new {{ msg.CamelCaseName }}Packet());
             {%- endfor -%}
         }
     }
@@ -86,14 +88,20 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
     {%- endfor -%}
     ///  {{ msg.Name }}
     /// </summary>
-    public class {{ msg.CamelCaseName }}Packet: PacketV2<{{ msg.CamelCaseName }}Payload>
+    public class {{ msg.CamelCaseName }}Packet: MavlinkV2Message<{{ msg.CamelCaseName }}Payload>
     {
-	    public const int PacketMessageId = {{ msg.Id }};
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => {{ msg.CrcExtra }};
+        public const int MessageId = {{ msg.Id }};
+        
+        public const byte CrcExtra = {{ msg.CrcExtra }};
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => {{ msg.WrapToV2Extension }};
 
-        public override {{ msg.CamelCaseName }}Payload Payload { get; } = new {{ msg.CamelCaseName }}Payload();
+        public override {{ msg.CamelCaseName }}Payload Payload { get; } = new();
 
         public override string Name => "{{ msg.Name }}";
     }
@@ -103,8 +111,11 @@ namespace Asv.Mavlink.V2.{{ Namespace }}
     /// </summary>
     public class {{ msg.CamelCaseName }}Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => {{ msg.PayloadByteSize }}; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => {{ msg.PayloadByteSize - msg.ExtendedFieldsLength }}; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;

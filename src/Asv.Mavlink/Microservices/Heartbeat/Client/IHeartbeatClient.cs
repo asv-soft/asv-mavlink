@@ -1,4 +1,5 @@
 using Asv.Common;
+using Asv.Mavlink.Minimal;
 using Asv.Mavlink.V2.Minimal;
 using R3;
 

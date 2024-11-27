@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
+using Asv.Mavlink.Common;
 using Asv.Mavlink.V2.Common;
 using ObservableCollections;
 using R3;

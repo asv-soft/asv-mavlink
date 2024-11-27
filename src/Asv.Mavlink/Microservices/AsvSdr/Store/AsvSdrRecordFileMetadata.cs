@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Asv.IO;
+using Asv.Mavlink.AsvSdr;
 using Asv.Mavlink.V2.AsvSdr;
 
 namespace Asv.Mavlink;

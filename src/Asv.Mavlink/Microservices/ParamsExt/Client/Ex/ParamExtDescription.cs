@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Asv.Mavlink.Common;
 using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink

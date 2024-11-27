@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2023 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,20 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
 using System.Text;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.Test
+namespace Asv.Mavlink.Test
 {
 
     public static class TestHelper
     {
-        public static void RegisterTestDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterTestDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new TestTypesPacket());
+            src.Add(TestTypesPacket.MessageId, ()=>new TestTypesPacket());
         }
     }
 
@@ -48,14 +53,20 @@ namespace Asv.Mavlink.V2.Test
     /// Test all field types
     ///  TEST_TYPES
     /// </summary>
-    public class TestTypesPacket: PacketV2<TestTypesPayload>
+    public class TestTypesPacket: MavlinkV2Message<TestTypesPayload>
     {
-	    public const int PacketMessageId = 17000;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 103;
+        public const int MessageId = 17000;
+        
+        public const byte CrcExtra = 103;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override TestTypesPayload Payload { get; } = new TestTypesPayload();
+        public override TestTypesPayload Payload { get; } = new();
 
         public override string Name => "TEST_TYPES";
     }
@@ -65,8 +76,11 @@ namespace Asv.Mavlink.V2.Test
     /// </summary>
     public class TestTypesPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 179; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 179; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -268,17 +282,21 @@ namespace Asv.Mavlink.V2.Test
         /// uint64_t_array
         /// OriginName: u64_array, Units: , IsExtended: false
         /// </summary>
+        public const int U64ArrayMaxItemsCount = 3;
         public ulong[] U64Array { get; set; } = new ulong[3];
+        [Obsolete("This method is deprecated. Use GetU64ArrayMaxItemsCount instead.")]
         public byte GetU64ArrayMaxItemsCount() => 3;
         /// <summary>
         /// int64_t_array
         /// OriginName: s64_array, Units: , IsExtended: false
         /// </summary>
+        public const int S64ArrayMaxItemsCount = 3;
         public long[] S64Array { get; } = new long[3];
         /// <summary>
         /// double_array
         /// OriginName: d_array, Units: , IsExtended: false
         /// </summary>
+        public const int DArrayMaxItemsCount = 3;
         public double[] DArray { get; } = new double[3];
         /// <summary>
         /// uint32_t
@@ -299,16 +317,19 @@ namespace Asv.Mavlink.V2.Test
         /// uint32_t_array
         /// OriginName: u32_array, Units: , IsExtended: false
         /// </summary>
+        public const int U32ArrayMaxItemsCount = 3;
         public uint[] U32Array { get; } = new uint[3];
         /// <summary>
         /// int32_t_array
         /// OriginName: s32_array, Units: , IsExtended: false
         /// </summary>
+        public const int S32ArrayMaxItemsCount = 3;
         public int[] S32Array { get; } = new int[3];
         /// <summary>
         /// float_array
         /// OriginName: f_array, Units: , IsExtended: false
         /// </summary>
+        public const int FArrayMaxItemsCount = 3;
         public float[] FArray { get; } = new float[3];
         /// <summary>
         /// uint16_t
@@ -324,11 +345,13 @@ namespace Asv.Mavlink.V2.Test
         /// uint16_t_array
         /// OriginName: u16_array, Units: , IsExtended: false
         /// </summary>
+        public const int U16ArrayMaxItemsCount = 3;
         public ushort[] U16Array { get; } = new ushort[3];
         /// <summary>
         /// int16_t_array
         /// OriginName: s16_array, Units: , IsExtended: false
         /// </summary>
+        public const int S16ArrayMaxItemsCount = 3;
         public short[] S16Array { get; } = new short[3];
         /// <summary>
         /// char
@@ -339,6 +362,7 @@ namespace Asv.Mavlink.V2.Test
         /// string
         /// OriginName: s, Units: , IsExtended: false
         /// </summary>
+        public const int SMaxItemsCount = 10;
         public char[] S { get; } = new char[10];
         /// <summary>
         /// uint8_t
@@ -354,11 +378,13 @@ namespace Asv.Mavlink.V2.Test
         /// uint8_t_array
         /// OriginName: u8_array, Units: , IsExtended: false
         /// </summary>
+        public const int U8ArrayMaxItemsCount = 3;
         public byte[] U8Array { get; } = new byte[3];
         /// <summary>
         /// int8_t_array
         /// OriginName: s8_array, Units: , IsExtended: false
         /// </summary>
+        public const int S8ArrayMaxItemsCount = 3;
         public sbyte[] S8Array { get; } = new sbyte[3];
     }
 

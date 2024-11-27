@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Mavlink.AsvChart;
 using Asv.Mavlink.V2.AsvChart;
 using ObservableCollections;
 using R3;

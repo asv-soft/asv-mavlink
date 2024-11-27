@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2023 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,21 +20,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
+using System.Text;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.Ualberta
+namespace Asv.Mavlink.Ualberta
 {
 
     public static class UalbertaHelper
     {
-        public static void RegisterUalbertaDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterUalbertaDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new NavFilterBiasPacket());
-            src.Register(()=>new RadioCalibrationPacket());
-            src.Register(()=>new UalbertaSysStatusPacket());
+            src.Add(NavFilterBiasPacket.MessageId, ()=>new NavFilterBiasPacket());
+            src.Add(RadioCalibrationPacket.MessageId, ()=>new RadioCalibrationPacket());
+            src.Add(UalbertaSysStatusPacket.MessageId, ()=>new UalbertaSysStatusPacket());
         }
     }
 
@@ -127,14 +133,20 @@ namespace Asv.Mavlink.V2.Ualberta
     /// Accelerometer and Gyro biases from the navigation filter
     ///  NAV_FILTER_BIAS
     /// </summary>
-    public class NavFilterBiasPacket: PacketV2<NavFilterBiasPayload>
+    public class NavFilterBiasPacket: MavlinkV2Message<NavFilterBiasPayload>
     {
-	    public const int PacketMessageId = 220;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 34;
+        public const int MessageId = 220;
+        
+        public const byte CrcExtra = 34;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override NavFilterBiasPayload Payload { get; } = new NavFilterBiasPayload();
+        public override NavFilterBiasPayload Payload { get; } = new();
 
         public override string Name => "NAV_FILTER_BIAS";
     }
@@ -144,8 +156,11 @@ namespace Asv.Mavlink.V2.Ualberta
     /// </summary>
     public class NavFilterBiasPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 32; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -229,14 +244,20 @@ namespace Asv.Mavlink.V2.Ualberta
     /// Complete set of calibration parameters for the radio
     ///  RADIO_CALIBRATION
     /// </summary>
-    public class RadioCalibrationPacket: PacketV2<RadioCalibrationPayload>
+    public class RadioCalibrationPacket: MavlinkV2Message<RadioCalibrationPayload>
     {
-	    public const int PacketMessageId = 221;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 71;
+        public const int MessageId = 221;
+        
+        public const byte CrcExtra = 71;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override RadioCalibrationPayload Payload { get; } = new RadioCalibrationPayload();
+        public override RadioCalibrationPayload Payload { get; } = new();
 
         public override string Name => "RADIO_CALIBRATION";
     }
@@ -246,8 +267,11 @@ namespace Asv.Mavlink.V2.Ualberta
     /// </summary>
     public class RadioCalibrationPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -337,46 +361,59 @@ namespace Asv.Mavlink.V2.Ualberta
         /// Aileron setpoints: left, center, right
         /// OriginName: aileron, Units: , IsExtended: false
         /// </summary>
+        public const int AileronMaxItemsCount = 3;
         public ushort[] Aileron { get; } = new ushort[3];
         /// <summary>
         /// Elevator setpoints: nose down, center, nose up
         /// OriginName: elevator, Units: , IsExtended: false
         /// </summary>
+        public const int ElevatorMaxItemsCount = 3;
         public ushort[] Elevator { get; } = new ushort[3];
         /// <summary>
         /// Rudder setpoints: nose left, center, nose right
         /// OriginName: rudder, Units: , IsExtended: false
         /// </summary>
+        public const int RudderMaxItemsCount = 3;
         public ushort[] Rudder { get; } = new ushort[3];
         /// <summary>
         /// Tail gyro mode/gain setpoints: heading hold, rate mode
         /// OriginName: gyro, Units: , IsExtended: false
         /// </summary>
+        public const int GyroMaxItemsCount = 2;
         public ushort[] Gyro { get; } = new ushort[2];
         /// <summary>
         /// Pitch curve setpoints (every 25%)
         /// OriginName: pitch, Units: , IsExtended: false
         /// </summary>
+        public const int PitchMaxItemsCount = 5;
         public ushort[] Pitch { get; set; } = new ushort[5];
+        [Obsolete("This method is deprecated. Use GetPitchMaxItemsCount instead.")]
         public byte GetPitchMaxItemsCount() => 5;
         /// <summary>
         /// Throttle curve setpoints (every 25%)
         /// OriginName: throttle, Units: , IsExtended: false
         /// </summary>
+        public const int ThrottleMaxItemsCount = 5;
         public ushort[] Throttle { get; } = new ushort[5];
     }
     /// <summary>
     /// System status specific to ualberta uav
     ///  UALBERTA_SYS_STATUS
     /// </summary>
-    public class UalbertaSysStatusPacket: PacketV2<UalbertaSysStatusPayload>
+    public class UalbertaSysStatusPacket: MavlinkV2Message<UalbertaSysStatusPayload>
     {
-	    public const int PacketMessageId = 222;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 15;
+        public const int MessageId = 222;
+        
+        public const byte CrcExtra = 15;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override UalbertaSysStatusPayload Payload { get; } = new UalbertaSysStatusPayload();
+        public override UalbertaSysStatusPayload Payload { get; } = new();
 
         public override string Name => "UALBERTA_SYS_STATUS";
     }
@@ -386,8 +423,11 @@ namespace Asv.Mavlink.V2.Ualberta
     /// </summary>
     public class UalbertaSysStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;

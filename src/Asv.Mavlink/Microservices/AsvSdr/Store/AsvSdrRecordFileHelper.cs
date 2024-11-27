@@ -3,6 +3,8 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using Asv.IO;
+using Asv.Mavlink.AsvSdr;
+using Asv.Mavlink.Common;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
 

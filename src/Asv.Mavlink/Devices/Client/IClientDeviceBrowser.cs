@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Mavlink.Minimal;
 using Asv.Mavlink.V2.Minimal;
 using Microsoft.Extensions.Logging;
 using ObservableCollections;

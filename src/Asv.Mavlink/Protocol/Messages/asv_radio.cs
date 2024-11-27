@@ -20,24 +20,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+c1002429a625f2cf26c5bd2680700906e0b44d76
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
+using System.Text;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
-using Asv.Mavlink.V2.AsvAudio;
+using Asv.Mavlink.AsvAudio;
 
-namespace Asv.Mavlink.V2.AsvRadio
+namespace Asv.Mavlink.AsvRadio
 {
 
     public static class AsvRadioHelper
     {
-        public static void RegisterAsvRadioDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterAsvRadioDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new AsvRadioStatusPacket());
-            src.Register(()=>new AsvRadioCapabilitiesRequestPacket());
-            src.Register(()=>new AsvRadioCapabilitiesResponsePacket());
-            src.Register(()=>new AsvRadioCodecCapabilitiesRequestPacket());
-            src.Register(()=>new AsvRadioCodecCapabilitiesResponsePacket());
+            src.Add(AsvRadioStatusPacket.MessageId, ()=>new AsvRadioStatusPacket());
+            src.Add(AsvRadioCapabilitiesRequestPacket.MessageId, ()=>new AsvRadioCapabilitiesRequestPacket());
+            src.Add(AsvRadioCapabilitiesResponsePacket.MessageId, ()=>new AsvRadioCapabilitiesResponsePacket());
+            src.Add(AsvRadioCodecCapabilitiesRequestPacket.MessageId, ()=>new AsvRadioCodecCapabilitiesRequestPacket());
+            src.Add(AsvRadioCodecCapabilitiesResponsePacket.MessageId, ()=>new AsvRadioCodecCapabilitiesResponsePacket());
         }
     }
 
@@ -153,14 +159,20 @@ namespace Asv.Mavlink.V2.AsvRadio
     /// Status of radio device. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RADIO_STATUS
     /// </summary>
-    public class AsvRadioStatusPacket: PacketV2<AsvRadioStatusPayload>
+    public class AsvRadioStatusPacket: MavlinkV2Message<AsvRadioStatusPayload>
     {
-	    public const int PacketMessageId = 13250;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 154;
+        public const int MessageId = 13250;
+        
+        public const byte CrcExtra = 154;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvRadioStatusPayload Payload { get; } = new AsvRadioStatusPayload();
+        public override AsvRadioStatusPayload Payload { get; } = new();
 
         public override string Name => "ASV_RADIO_STATUS";
     }
@@ -170,8 +182,11 @@ namespace Asv.Mavlink.V2.AsvRadio
     /// </summary>
     public class AsvRadioStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 21; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 21; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -247,14 +262,20 @@ namespace Asv.Mavlink.V2.AsvRadio
     /// Request for device capabilities. Devices must reply ASV_RADIO_CAPABILITIES_RESPONSE message.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RADIO_CAPABILITIES_REQUEST
     /// </summary>
-    public class AsvRadioCapabilitiesRequestPacket: PacketV2<AsvRadioCapabilitiesRequestPayload>
+    public class AsvRadioCapabilitiesRequestPacket: MavlinkV2Message<AsvRadioCapabilitiesRequestPayload>
     {
-	    public const int PacketMessageId = 13251;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 10;
+        public const int MessageId = 13251;
+        
+        public const byte CrcExtra = 10;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvRadioCapabilitiesRequestPayload Payload { get; } = new AsvRadioCapabilitiesRequestPayload();
+        public override AsvRadioCapabilitiesRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_RADIO_CAPABILITIES_REQUEST";
     }
@@ -264,8 +285,11 @@ namespace Asv.Mavlink.V2.AsvRadio
     /// </summary>
     public class AsvRadioCapabilitiesRequestPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -309,14 +333,20 @@ namespace Asv.Mavlink.V2.AsvRadio
     /// Device capabilities. This is response for ASV_RADIO_CAPABILITIES_REQUEST message.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RADIO_CAPABILITIES_RESPONSE
     /// </summary>
-    public class AsvRadioCapabilitiesResponsePacket: PacketV2<AsvRadioCapabilitiesResponsePayload>
+    public class AsvRadioCapabilitiesResponsePacket: MavlinkV2Message<AsvRadioCapabilitiesResponsePayload>
     {
-	    public const int PacketMessageId = 13252;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 62;
+        public const int MessageId = 13252;
+        
+        public const byte CrcExtra = 62;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvRadioCapabilitiesResponsePayload Payload { get; } = new AsvRadioCapabilitiesResponsePayload();
+        public override AsvRadioCapabilitiesResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_RADIO_CAPABILITIES_RESPONSE";
     }
@@ -326,8 +356,11 @@ namespace Asv.Mavlink.V2.AsvRadio
     /// </summary>
     public class AsvRadioCapabilitiesResponsePayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 56; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 56; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -424,14 +457,20 @@ namespace Asv.Mavlink.V2.AsvRadio
     /// Request supported target codecs. Devices must reply ASV_RADIO_CODEC_CAPABILITIES_RESPONSE message.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RADIO_CODEC_CAPABILITIES_REQUEST
     /// </summary>
-    public class AsvRadioCodecCapabilitiesRequestPacket: PacketV2<AsvRadioCodecCapabilitiesRequestPayload>
+    public class AsvRadioCodecCapabilitiesRequestPacket: MavlinkV2Message<AsvRadioCodecCapabilitiesRequestPayload>
     {
-	    public const int PacketMessageId = 13253;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 205;
+        public const int MessageId = 13253;
+        
+        public const byte CrcExtra = 205;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvRadioCodecCapabilitiesRequestPayload Payload { get; } = new AsvRadioCodecCapabilitiesRequestPayload();
+        public override AsvRadioCodecCapabilitiesRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_RADIO_CODEC_CAPABILITIES_REQUEST";
     }
@@ -441,8 +480,11 @@ namespace Asv.Mavlink.V2.AsvRadio
     /// </summary>
     public class AsvRadioCodecCapabilitiesRequestPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -502,14 +544,20 @@ namespace Asv.Mavlink.V2.AsvRadio
     /// Request supported additional params for target codec. Devices must reply ASV_RADIO_CODEC_CAPABILITIES_REQUEST message.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RADIO_CODEC_CAPABILITIES_RESPONSE
     /// </summary>
-    public class AsvRadioCodecCapabilitiesResponsePacket: PacketV2<AsvRadioCodecCapabilitiesResponsePayload>
+    public class AsvRadioCodecCapabilitiesResponsePacket: MavlinkV2Message<AsvRadioCodecCapabilitiesResponsePayload>
     {
-	    public const int PacketMessageId = 13254;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 228;
+        public const int MessageId = 13254;
+        
+        public const byte CrcExtra = 228;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvRadioCodecCapabilitiesResponsePayload Payload { get; } = new AsvRadioCodecCapabilitiesResponsePayload();
+        public override AsvRadioCodecCapabilitiesResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_RADIO_CODEC_CAPABILITIES_RESPONSE";
     }
@@ -519,8 +567,11 @@ namespace Asv.Mavlink.V2.AsvRadio
     /// </summary>
     public class AsvRadioCodecCapabilitiesResponsePayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 205; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 205; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;

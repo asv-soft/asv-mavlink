@@ -2,6 +2,7 @@
 using System;
 using System.Text.RegularExpressions;
 using Asv.Common;
+using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.V2.AsvAudio;
 
 namespace Asv.Mavlink;

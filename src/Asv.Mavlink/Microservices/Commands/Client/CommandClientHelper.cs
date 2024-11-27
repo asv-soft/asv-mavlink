@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Mavlink.Common;
 using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink;

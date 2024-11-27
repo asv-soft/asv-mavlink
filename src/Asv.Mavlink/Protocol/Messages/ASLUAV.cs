@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2023 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,36 +20,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
-using Asv.Mavlink.V2.Common;
+using System.Text;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.Asluav
+namespace Asv.Mavlink.Asluav
 {
 
     public static class AsluavHelper
     {
-        public static void RegisterAsluavDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterAsluavDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new CommandIntStampedPacket());
-            src.Register(()=>new CommandLongStampedPacket());
-            src.Register(()=>new SensPowerPacket());
-            src.Register(()=>new SensMpptPacket());
-            src.Register(()=>new AslctrlDataPacket());
-            src.Register(()=>new AslctrlDebugPacket());
-            src.Register(()=>new AsluavStatusPacket());
-            src.Register(()=>new EkfExtPacket());
-            src.Register(()=>new AslObctrlPacket());
-            src.Register(()=>new SensAtmosPacket());
-            src.Register(()=>new SensBatmonPacket());
-            src.Register(()=>new FwSoaringDataPacket());
-            src.Register(()=>new SensorpodStatusPacket());
-            src.Register(()=>new SensPowerBoardPacket());
-            src.Register(()=>new GsmLinkStatusPacket());
-            src.Register(()=>new SatcomLinkStatusPacket());
-            src.Register(()=>new SensorAirflowAnglesPacket());
+            src.Add(CommandIntStampedPacket.MessageId, ()=>new CommandIntStampedPacket());
+            src.Add(CommandLongStampedPacket.MessageId, ()=>new CommandLongStampedPacket());
+            src.Add(SensPowerPacket.MessageId, ()=>new SensPowerPacket());
+            src.Add(SensMpptPacket.MessageId, ()=>new SensMpptPacket());
+            src.Add(AslctrlDataPacket.MessageId, ()=>new AslctrlDataPacket());
+            src.Add(AslctrlDebugPacket.MessageId, ()=>new AslctrlDebugPacket());
+            src.Add(AsluavStatusPacket.MessageId, ()=>new AsluavStatusPacket());
+            src.Add(EkfExtPacket.MessageId, ()=>new EkfExtPacket());
+            src.Add(AslObctrlPacket.MessageId, ()=>new AslObctrlPacket());
+            src.Add(SensAtmosPacket.MessageId, ()=>new SensAtmosPacket());
+            src.Add(SensBatmonPacket.MessageId, ()=>new SensBatmonPacket());
+            src.Add(FwSoaringDataPacket.MessageId, ()=>new FwSoaringDataPacket());
+            src.Add(SensorpodStatusPacket.MessageId, ()=>new SensorpodStatusPacket());
+            src.Add(SensPowerBoardPacket.MessageId, ()=>new SensPowerBoardPacket());
+            src.Add(GsmLinkStatusPacket.MessageId, ()=>new GsmLinkStatusPacket());
+            src.Add(SatcomLinkStatusPacket.MessageId, ()=>new SatcomLinkStatusPacket());
+            src.Add(SensorAirflowAnglesPacket.MessageId, ()=>new SensorAirflowAnglesPacket());
         }
     }
 
@@ -144,14 +149,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// Message encoding a command with parameters as scaled integers and additional metadata. Scaling depends on the actual command value.
     ///  COMMAND_INT_STAMPED
     /// </summary>
-    public class CommandIntStampedPacket: PacketV2<CommandIntStampedPayload>
+    public class CommandIntStampedPacket: MavlinkV2Message<CommandIntStampedPayload>
     {
-	    public const int PacketMessageId = 223;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 119;
+        public const int MessageId = 223;
+        
+        public const byte CrcExtra = 119;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override CommandIntStampedPayload Payload { get; } = new CommandIntStampedPayload();
+        public override CommandIntStampedPayload Payload { get; } = new();
 
         public override string Name => "COMMAND_INT_STAMPED";
     }
@@ -161,8 +172,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class CommandIntStampedPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 47; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 47; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -310,14 +324,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// Send a command with up to seven parameters to the MAV and additional metadata
     ///  COMMAND_LONG_STAMPED
     /// </summary>
-    public class CommandLongStampedPacket: PacketV2<CommandLongStampedPayload>
+    public class CommandLongStampedPacket: MavlinkV2Message<CommandLongStampedPayload>
     {
-	    public const int PacketMessageId = 224;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 102;
+        public const int MessageId = 224;
+        
+        public const byte CrcExtra = 102;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override CommandLongStampedPayload Payload { get; } = new CommandLongStampedPayload();
+        public override CommandLongStampedPayload Payload { get; } = new();
 
         public override string Name => "COMMAND_LONG_STAMPED";
     }
@@ -327,8 +347,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class CommandLongStampedPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 45; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 45; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -460,14 +483,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// Voltage and current sensor data
     ///  SENS_POWER
     /// </summary>
-    public class SensPowerPacket: PacketV2<SensPowerPayload>
+    public class SensPowerPacket: MavlinkV2Message<SensPowerPayload>
     {
-	    public const int PacketMessageId = 8002;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 218;
+        public const int MessageId = 8002;
+        
+        public const byte CrcExtra = 218;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override SensPowerPayload Payload { get; } = new SensPowerPayload();
+        public override SensPowerPayload Payload { get; } = new();
 
         public override string Name => "SENS_POWER";
     }
@@ -477,8 +506,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensPowerPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -538,14 +570,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// Maximum Power Point Tracker (MPPT) sensor data for solar module power performance tracking
     ///  SENS_MPPT
     /// </summary>
-    public class SensMpptPacket: PacketV2<SensMpptPayload>
+    public class SensMpptPacket: MavlinkV2Message<SensMpptPayload>
     {
-	    public const int PacketMessageId = 8003;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 231;
+        public const int MessageId = 8003;
+        
+        public const byte CrcExtra = 231;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override SensMpptPayload Payload { get; } = new SensMpptPayload();
+        public override SensMpptPayload Payload { get; } = new();
 
         public override string Name => "SENS_MPPT";
     }
@@ -555,8 +593,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensMpptPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 41; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -688,14 +729,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// ASL-fixed-wing controller data
     ///  ASLCTRL_DATA
     /// </summary>
-    public class AslctrlDataPacket: PacketV2<AslctrlDataPayload>
+    public class AslctrlDataPacket: MavlinkV2Message<AslctrlDataPayload>
     {
-	    public const int PacketMessageId = 8004;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 172;
+        public const int MessageId = 8004;
+        
+        public const byte CrcExtra = 172;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override AslctrlDataPayload Payload { get; } = new AslctrlDataPayload();
+        public override AslctrlDataPayload Payload { get; } = new();
 
         public override string Name => "ASLCTRL_DATA";
     }
@@ -705,8 +752,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class AslctrlDataPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 98; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 98; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -934,14 +984,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// ASL-fixed-wing controller debug data
     ///  ASLCTRL_DEBUG
     /// </summary>
-    public class AslctrlDebugPacket: PacketV2<AslctrlDebugPayload>
+    public class AslctrlDebugPacket: MavlinkV2Message<AslctrlDebugPayload>
     {
-	    public const int PacketMessageId = 8005;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 251;
+        public const int MessageId = 8005;
+        
+        public const byte CrcExtra = 251;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override AslctrlDebugPayload Payload { get; } = new AslctrlDebugPayload();
+        public override AslctrlDebugPayload Payload { get; } = new();
 
         public override string Name => "ASLCTRL_DEBUG";
     }
@@ -951,8 +1007,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class AslctrlDebugPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 38; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -1068,14 +1127,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// Extended state information for ASLUAVs
     ///  ASLUAV_STATUS
     /// </summary>
-    public class AsluavStatusPacket: PacketV2<AsluavStatusPayload>
+    public class AsluavStatusPacket: MavlinkV2Message<AsluavStatusPayload>
     {
-	    public const int PacketMessageId = 8006;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 97;
+        public const int MessageId = 8006;
+        
+        public const byte CrcExtra = 97;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override AsluavStatusPayload Payload { get; } = new AsluavStatusPayload();
+        public override AsluavStatusPayload Payload { get; } = new();
 
         public override string Name => "ASLUAV_STATUS";
     }
@@ -1085,8 +1150,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class AsluavStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -1150,21 +1218,29 @@ namespace Asv.Mavlink.V2.Asluav
         ///  Status vector for up to 8 servos
         /// OriginName: Servo_status, Units: , IsExtended: false
         /// </summary>
+        public const int ServoStatusMaxItemsCount = 8;
         public byte[] ServoStatus { get; set; } = new byte[8];
+        [Obsolete("This method is deprecated. Use GetServoStatusMaxItemsCount instead.")]
         public byte GetServoStatusMaxItemsCount() => 8;
     }
     /// <summary>
     /// Extended EKF state estimates for ASLUAVs
     ///  EKF_EXT
     /// </summary>
-    public class EkfExtPacket: PacketV2<EkfExtPayload>
+    public class EkfExtPacket: MavlinkV2Message<EkfExtPayload>
     {
-	    public const int PacketMessageId = 8007;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 64;
+        public const int MessageId = 8007;
+        
+        public const byte CrcExtra = 64;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override EkfExtPayload Payload { get; } = new EkfExtPayload();
+        public override EkfExtPayload Payload { get; } = new();
 
         public override string Name => "EKF_EXT";
     }
@@ -1174,8 +1250,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class EkfExtPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 32; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -1259,14 +1338,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// Off-board controls/commands for ASLUAVs
     ///  ASL_OBCTRL
     /// </summary>
-    public class AslObctrlPacket: PacketV2<AslObctrlPayload>
+    public class AslObctrlPacket: MavlinkV2Message<AslObctrlPayload>
     {
-	    public const int PacketMessageId = 8008;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 234;
+        public const int MessageId = 8008;
+        
+        public const byte CrcExtra = 234;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override AslObctrlPayload Payload { get; } = new AslObctrlPayload();
+        public override AslObctrlPayload Payload { get; } = new();
 
         public override string Name => "ASL_OBCTRL";
     }
@@ -1276,8 +1361,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class AslObctrlPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -1369,14 +1457,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// Atmospheric sensors (temperature, humidity, ...) 
     ///  SENS_ATMOS
     /// </summary>
-    public class SensAtmosPacket: PacketV2<SensAtmosPayload>
+    public class SensAtmosPacket: MavlinkV2Message<SensAtmosPayload>
     {
-	    public const int PacketMessageId = 8009;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 144;
+        public const int MessageId = 8009;
+        
+        public const byte CrcExtra = 144;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override SensAtmosPayload Payload { get; } = new SensAtmosPayload();
+        public override SensAtmosPayload Payload { get; } = new();
 
         public override string Name => "SENS_ATMOS";
     }
@@ -1386,8 +1480,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensAtmosPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -1439,14 +1536,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// Battery pack monitoring data for Li-Ion batteries
     ///  SENS_BATMON
     /// </summary>
-    public class SensBatmonPacket: PacketV2<SensBatmonPayload>
+    public class SensBatmonPacket: MavlinkV2Message<SensBatmonPayload>
     {
-	    public const int PacketMessageId = 8010;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 155;
+        public const int MessageId = 8010;
+        
+        public const byte CrcExtra = 155;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override SensBatmonPayload Payload { get; } = new SensBatmonPayload();
+        public override SensBatmonPayload Payload { get; } = new();
 
         public override string Name => "SENS_BATMON";
     }
@@ -1456,8 +1559,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensBatmonPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 41; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -1605,14 +1711,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// Fixed-wing soaring (i.e. thermal seeking) data
     ///  FW_SOARING_DATA
     /// </summary>
-    public class FwSoaringDataPacket: PacketV2<FwSoaringDataPayload>
+    public class FwSoaringDataPacket: MavlinkV2Message<FwSoaringDataPayload>
     {
-	    public const int PacketMessageId = 8011;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 20;
+        public const int MessageId = 8011;
+        
+        public const byte CrcExtra = 20;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override FwSoaringDataPayload Payload { get; } = new FwSoaringDataPayload();
+        public override FwSoaringDataPayload Payload { get; } = new();
 
         public override string Name => "FW_SOARING_DATA";
     }
@@ -1622,8 +1734,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class FwSoaringDataPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 102; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 102; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -1851,14 +1966,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// Monitoring of sensorpod status
     ///  SENSORPOD_STATUS
     /// </summary>
-    public class SensorpodStatusPacket: PacketV2<SensorpodStatusPayload>
+    public class SensorpodStatusPacket: MavlinkV2Message<SensorpodStatusPayload>
     {
-	    public const int PacketMessageId = 8012;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 54;
+        public const int MessageId = 8012;
+        
+        public const byte CrcExtra = 54;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override SensorpodStatusPayload Payload { get; } = new SensorpodStatusPayload();
+        public override SensorpodStatusPayload Payload { get; } = new();
 
         public override string Name => "SENSORPOD_STATUS";
     }
@@ -1868,8 +1989,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensorpodStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -1961,14 +2085,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// Monitoring of power board status
     ///  SENS_POWER_BOARD
     /// </summary>
-    public class SensPowerBoardPacket: PacketV2<SensPowerBoardPayload>
+    public class SensPowerBoardPacket: MavlinkV2Message<SensPowerBoardPayload>
     {
-	    public const int PacketMessageId = 8013;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 222;
+        public const int MessageId = 8013;
+        
+        public const byte CrcExtra = 222;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override SensPowerBoardPayload Payload { get; } = new SensPowerBoardPayload();
+        public override SensPowerBoardPayload Payload { get; } = new();
 
         public override string Name => "SENS_POWER_BOARD";
     }
@@ -1978,8 +2108,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensPowerBoardPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 46; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 46; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -2103,14 +2236,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// Status of GSM modem (connected to onboard computer)
     ///  GSM_LINK_STATUS
     /// </summary>
-    public class GsmLinkStatusPacket: PacketV2<GsmLinkStatusPayload>
+    public class GsmLinkStatusPacket: MavlinkV2Message<GsmLinkStatusPayload>
     {
-	    public const int PacketMessageId = 8014;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 200;
+        public const int MessageId = 8014;
+        
+        public const byte CrcExtra = 200;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override GsmLinkStatusPayload Payload { get; } = new GsmLinkStatusPayload();
+        public override GsmLinkStatusPayload Payload { get; } = new();
 
         public override string Name => "GSM_LINK_STATUS";
     }
@@ -2120,8 +2259,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class GsmLinkStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -2205,14 +2347,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// Status of the SatCom link
     ///  SATCOM_LINK_STATUS
     /// </summary>
-    public class SatcomLinkStatusPacket: PacketV2<SatcomLinkStatusPayload>
+    public class SatcomLinkStatusPacket: MavlinkV2Message<SatcomLinkStatusPayload>
     {
-	    public const int PacketMessageId = 8015;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 23;
+        public const int MessageId = 8015;
+        
+        public const byte CrcExtra = 23;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override SatcomLinkStatusPayload Payload { get; } = new SatcomLinkStatusPayload();
+        public override SatcomLinkStatusPayload Payload { get; } = new();
 
         public override string Name => "SATCOM_LINK_STATUS";
     }
@@ -2222,8 +2370,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SatcomLinkStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -2315,14 +2466,20 @@ namespace Asv.Mavlink.V2.Asluav
     /// Calibrated airflow angle measurements
     ///  SENSOR_AIRFLOW_ANGLES
     /// </summary>
-    public class SensorAirflowAnglesPacket: PacketV2<SensorAirflowAnglesPayload>
+    public class SensorAirflowAnglesPacket: MavlinkV2Message<SensorAirflowAnglesPayload>
     {
-	    public const int PacketMessageId = 8016;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 149;
+        public const int MessageId = 8016;
+        
+        public const byte CrcExtra = 149;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override SensorAirflowAnglesPayload Payload { get; } = new SensorAirflowAnglesPayload();
+        public override SensorAirflowAnglesPayload Payload { get; } = new();
 
         public override string Name => "SENSOR_AIRFLOW_ANGLES";
     }
@@ -2332,8 +2489,11 @@ namespace Asv.Mavlink.V2.Asluav
     /// </summary>
     public class SensorAirflowAnglesPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 18; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;

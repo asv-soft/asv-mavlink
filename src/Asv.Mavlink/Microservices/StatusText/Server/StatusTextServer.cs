@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Mavlink.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
 using ZLogger;

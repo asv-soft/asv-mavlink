@@ -1,6 +1,7 @@
 using System;
 using Asv.Common;
 using Asv.IO;
+using Asv.Mavlink.AsvChart;
 using Asv.Mavlink.V2.AsvChart;
 
 namespace Asv.Mavlink;

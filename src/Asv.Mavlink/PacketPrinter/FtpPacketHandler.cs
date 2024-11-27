@@ -1,4 +1,5 @@
 using System.Text;
+using Asv.Mavlink.Common;
 using Asv.Mavlink.V2.Common;
 using Newtonsoft.Json;
 

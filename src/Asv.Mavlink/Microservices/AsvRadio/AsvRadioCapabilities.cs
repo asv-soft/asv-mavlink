@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Asv.Mavlink.AsvRadio;
 using Asv.Mavlink.V2.AsvRadio;
 
 namespace Asv.Mavlink;

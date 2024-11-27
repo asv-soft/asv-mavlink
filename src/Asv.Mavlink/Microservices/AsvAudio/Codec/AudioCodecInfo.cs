@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.V2.AsvAudio;
 
 namespace Asv.Mavlink;

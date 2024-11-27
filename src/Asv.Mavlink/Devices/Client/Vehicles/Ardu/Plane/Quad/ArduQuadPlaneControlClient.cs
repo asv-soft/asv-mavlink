@@ -1,6 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
+using Asv.Mavlink.Ardupilotmega;
+using Asv.Mavlink.Minimal;
 using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.Minimal;
 using Microsoft.Extensions.Logging;
