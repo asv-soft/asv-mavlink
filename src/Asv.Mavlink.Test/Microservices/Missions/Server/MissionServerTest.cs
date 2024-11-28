@@ -1,7 +1,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.IO;
+using Asv.Mavlink.Common;
+
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -14,14 +16,14 @@ namespace Asv.Mavlink.Test.Server;
 [TestSubject(typeof(MissionServer))]
 public class MissionServerTest : ServerTestBase<MissionServer>
 {
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<IProtocolMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly MissionServer _server;
     
     public MissionServerTest(ITestOutputHelper log) : base(log)
     {
         _server = Server;
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(1000), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
@@ -57,12 +59,12 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         // Arrange
         var called = 0;
         MissionAckPacket? packetFromServer = null;
-        using var s1 = Link.Client.RxPipe.Subscribe(p =>
+        using var s1 = Link.Client.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var s2 = Link.Server.TxPipe.Subscribe(p =>
+        using var s2 = Link.Server.OnTxMessage.Subscribe(p =>
         {
             packetFromServer = p as MissionAckPacket;
         });
@@ -73,8 +75,8 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         // Assert
         var result = await _taskCompletionSource.Task as MissionAckPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.RxPackets);
-        Assert.Equal(Link.Client.RxPackets, Link.Server.TxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
         Assert.NotNull(result);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromServer.IsDeepEqual(result));
@@ -91,12 +93,12 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         // Arrange
         var called = 0;
         MissionAckPacket? packetFromServer = null;
-        using var s1 = Link.Client.RxPipe.Subscribe(p =>
+        using var s1 = Link.Client.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var s2 = Link.Server.TxPipe.Subscribe(p =>
+        using var s2 = Link.Server.OnTxMessage.Subscribe(p =>
         {
             packetFromServer = p as MissionAckPacket;
         });
@@ -107,8 +109,8 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         // Assert
         var result = await _taskCompletionSource.Task as MissionAckPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.RxPackets);
-        Assert.Equal(Link.Client.RxPackets, Link.Server.TxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
         Assert.NotNull(result);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromServer.IsDeepEqual(result));
@@ -122,12 +124,12 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         // Arrange
         var called = 0;
         MissionCountPacket? packetFromServer = null;
-        using var s1 = Link.Client.RxPipe.Subscribe(p =>
+        using var s1 = Link.Client.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var s2 = Link.Server.TxPipe.Subscribe(p =>
+        using var s2 = Link.Server.OnTxMessage.Subscribe(p =>
         {
             packetFromServer = p as MissionCountPacket;
         });
@@ -139,8 +141,8 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         // Assert
         var result = await _taskCompletionSource.Task as MissionCountPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.RxPackets);
-        Assert.Equal(Link.Client.RxPackets, Link.Server.TxPackets);
+        Assert.Equal(called, (int) Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
         Assert.NotNull(result);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromServer.IsDeepEqual(result));
@@ -154,12 +156,12 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         // Arrange
         var called = 0;
         MissionItemReachedPacket? packetFromServer = null;
-        using var s1 = Link.Client.RxPipe.Subscribe(p =>
+        using var s1 = Link.Client.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var s2 = Link.Server.TxPipe.Subscribe(p =>
+        using var s2 = Link.Server.OnTxMessage.Subscribe(p =>
         {
             packetFromServer = p as MissionItemReachedPacket;
         });
@@ -170,8 +172,8 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         // Assert
         var result = await _taskCompletionSource.Task as MissionItemReachedPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.RxPackets);
-        Assert.Equal(Link.Client.RxPackets, Link.Server.TxPackets);
+        Assert.Equal(called, (int) Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
         Assert.NotNull(result);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromServer.IsDeepEqual(result));
@@ -185,12 +187,12 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         // Arrange
         var called = 0;
         MissionCurrentPacket? packetFromServer = null;
-        using var s1 = Link.Client.RxPipe.Subscribe(p =>
+        using var s1 = Link.Client.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var s2 = Link.Server.TxPipe.Subscribe(p =>
+        using var s2 = Link.Server.OnTxMessage.Subscribe(p =>
         {
             packetFromServer = p as MissionCurrentPacket;
         });
@@ -201,8 +203,8 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         // Assert
         var result = await _taskCompletionSource.Task as MissionCurrentPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.RxPackets);
-        Assert.Equal(Link.Client.RxPackets, Link.Server.TxPackets);
+        Assert.Equal(called, (int) Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
         Assert.NotNull(result);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromServer.IsDeepEqual(result));
@@ -215,12 +217,12 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         var called = 0;
         var serverItem = new ServerMissionItem();
         MissionItemIntPacket? packetFromServer = null;
-        using var s1 = Link.Client.RxPipe.Subscribe(p =>
+        using var s1 = Link.Client.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var s2 = Link.Server.TxPipe.Subscribe(p =>
+        using var s2 = Link.Server.OnTxMessage.Subscribe(p =>
         {
             packetFromServer = p as MissionItemIntPacket;
         });
@@ -231,8 +233,8 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         // Assert
         var result = await _taskCompletionSource.Task as MissionItemIntPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.RxPackets);
-        Assert.Equal(Link.Client.RxPackets, Link.Server.TxPackets);
+        Assert.Equal(called, (int) Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
         Assert.NotNull(result);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromServer.IsDeepEqual(result));
@@ -243,14 +245,15 @@ public class MissionServerTest : ServerTestBase<MissionServer>
     {
         // Arrange
         var called = 0;
-        using var s = Link.Client.RxPipe.Subscribe(p =>
+        using var s = Link.Client.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
         
         // Act + Assert
-        await Assert.ThrowsAsync<NullReferenceException>(() => _server.SendMissionItemInt(null!));
+        // ReSharper disable once NullableWarningSuppressionIsUsed
+        await Assert.ThrowsAsync<NullReferenceException>(async () => await _server.SendMissionItemInt(null!));
         Assert.Equal(0, called);
     }
     
@@ -332,12 +335,12 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         };
         MissionItemIntPacket? packetFromServer = null;
         
-        using var s1 = Link.Client.RxPipe.Subscribe(p =>
+        using var s1 = Link.Client.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var s2 = Link.Server.TxPipe.Subscribe(p =>
+        using var s2 = Link.Server.OnTxMessage.Subscribe(p =>
         {
             packetFromServer = p as MissionItemIntPacket;
         });
@@ -348,8 +351,8 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         // Assert
         var result = await _taskCompletionSource.Task as MissionItemIntPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.RxPackets);
-        Assert.Equal(Link.Client.RxPackets, Link.Server.TxPackets);
+        Assert.Equal(called, (int) Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
         Assert.NotNull(result);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromServer.IsDeepEqual(result));

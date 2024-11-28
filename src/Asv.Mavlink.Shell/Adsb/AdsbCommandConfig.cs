@@ -6,21 +6,11 @@ public class AdsbCommandConfig
     {
         SystemId = 1,
         ComponentId = 240,
-        Ports = new []
-        {
-            new MavlinkPortConfig
-            {
-                ConnectionString = "tcp://127.0.0.1:5760",
-                Name = "to SITL",
-                IsEnabled = true
-            },
-            new MavlinkPortConfig
-            {
-                ConnectionString = "tcp://127.0.0.1:7341?srv=true",
-                Name = "to Mission Planner",
-                IsEnabled = true
-            }
-        },
+        Ports =
+        [
+            "tcp://127.0.0.1:5760",
+            "tcps://127.0.0.1:7341"
+        ],
         Vehicles = new[]
         {
             new AdsbCommandVehicleConfig()
@@ -132,7 +122,7 @@ public class AdsbCommandConfig
         }
     };
     
-    public MavlinkPortConfig[] Ports { get; set; }
+    public string[] Ports { get; set; }
     public AdsbCommandVehicleConfig[] Vehicles { get; set; }
     public byte SystemId { get; set; }
     public byte ComponentId { get; set; }

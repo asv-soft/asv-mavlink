@@ -16,7 +16,7 @@ namespace Asv.Mavlink;
 public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
 {
     private readonly ILogger _logger;
-    private readonly Func<Action<AsvAudioStreamPacket>, CancellationToken, Task> _sendPacketDelegate;
+    private readonly Func<Action<AsvAudioStreamPacket>, CancellationToken, ValueTask> _sendPacketDelegate;
     private readonly ICoreServices _core;
     private long _lastHit;
     private uint _frameCounter;
@@ -36,8 +36,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
     public AudioDevice(IAudioCodecFactory factory, 
         AsvAudioCodec outputCodecInfo, 
         AsvAudioOnlinePacket packet, 
-        Func<Action<AsvAudioStreamPacket>, 
-            CancellationToken, Task> sendPacketDelegate,
+        Func<Action<AsvAudioStreamPacket>, CancellationToken, ValueTask> sendPacketDelegate,
         OnRecvAudioDelegate onRecvAudioDelegate,
         ICoreServices core)
     {
@@ -98,7 +97,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
             }
             if (lastPacketSize > 0)
             {
-                await _sendPacketDelegate(p =>
+                await _sendPacketDelegate((p) =>
                 {
                     p.Payload.FrameSeq = frameIndex;
                     p.Payload.TargetSystem = FullId.SystemId;

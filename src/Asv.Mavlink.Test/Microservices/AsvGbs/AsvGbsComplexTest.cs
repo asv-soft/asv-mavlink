@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.AsvGbs;
-
+using Asv.Mavlink.Common;
 using R3;
 using Xunit;
 using Xunit.Abstractions;
@@ -115,7 +115,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         var called = 0;
         var realDuration = 0f;
         var realAccuracy = 0f;
-        _server.StartAutoMode = (dur, acc, cancel)
+        _server.StartAutoMode = (_, _, _)
             =>
         {
             called++;
@@ -153,7 +153,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         // Arrange
         var called = 0;
         
-        _server.StartIdleMode = (cancel) =>
+        _server.StartIdleMode = (_) =>
         {
             called++;
 
@@ -190,7 +190,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         var realGeoPoint = GeoPoint.NaN;
         var realAccuracy = 0f;
         
-        _server.StartFixedMode = (gPoint, acc, cancel) => 
+        _server.StartFixedMode = (_, _, _) => 
         {
             called++;
             realGeoPoint = GeoPoint.Zero;
@@ -229,7 +229,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         var realGeoPoint = GeoPoint.NaN;
         var realAccuracy = 0f;
         
-        _server.StartFixedMode = (gPoint, acc, cancel) => 
+        _server.StartFixedMode = (_, _, _) => 
         {
             called++;
             realGeoPoint = GeoPoint.Zero;
@@ -258,7 +258,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
     {
         // Arrange
         var called = 0;
-        _server.StartFixedMode = (gPoint, acc, cancelToken) =>
+        _server.StartFixedMode = (_, _, _) =>
         {
             called++;
             
@@ -321,7 +321,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         // Arrange
         var called = 0;
         await _cancellationTokenSource.CancelAsync();
-        _server.StartAutoMode = (dur, acc, cancel)
+        _server.StartAutoMode = (_, _, _)
             => 
         {
             called++;

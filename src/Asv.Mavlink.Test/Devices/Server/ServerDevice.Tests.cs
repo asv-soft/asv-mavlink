@@ -1,5 +1,6 @@
 using System;
-
+using Asv.IO;
+using Asv.Mavlink.Minimal;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Time.Testing;
@@ -25,7 +26,11 @@ public class ServerDeviceTests(ITestOutputHelper log) : ServerTestBase<ServerDev
     [Fact]
     public void Ctor_WithDefaultArgs_Success()
     {
-        var link = new VirtualMavlinkConnection();
+        var protocol = Protocol.Create(builder =>
+        {
+            builder.RegisterMavlinkV2Protocol();
+        });
+        var link = protocol.CreateVirtualConnection();
         var seq = new PacketSequenceCalculator();
         var time = new FakeTimeProvider();
         var meter = new DefaultMeterFactory();
@@ -37,7 +42,11 @@ public class ServerDeviceTests(ITestOutputHelper log) : ServerTestBase<ServerDev
     [Fact]
     public void Ctor_WithNullIdentity_ThrowException()
     {
-        var link = new VirtualMavlinkConnection();
+        var protocol = Protocol.Create(builder =>
+        {
+            builder.RegisterMavlinkV2Protocol();
+        });
+        var link = protocol.CreateVirtualConnection();
         var seq = new PacketSequenceCalculator();
         var time = new FakeTimeProvider();
         var meter = new DefaultMeterFactory();
@@ -51,7 +60,11 @@ public class ServerDeviceTests(ITestOutputHelper log) : ServerTestBase<ServerDev
     [Fact]
     public void Heartbeat_SendMessagesAfterStart_Success()
     {
-        var link = new VirtualMavlinkConnection();
+        var protocol = Protocol.Create(builder =>
+        {
+            builder.RegisterMavlinkV2Protocol();
+        });
+        var link = protocol.CreateVirtualConnection();
         var seq = new PacketSequenceCalculator();
         var time = new FakeTimeProvider();
         var meter = new DefaultMeterFactory();
@@ -65,7 +78,7 @@ public class ServerDeviceTests(ITestOutputHelper log) : ServerTestBase<ServerDev
         }, core);
         var comId = 0;
         var sysId = 0;
-        link.Server.Filter<HeartbeatPacket>().Subscribe(x =>
+        link.Server.RxFilterByType<HeartbeatPacket>().Subscribe(x =>
         {
             sysId = x.SystemId;
             comId = x.ComponentId;

@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Asv.IO;
 using Asv.Mavlink.PythonArrayTest;
 using Asv.Mavlink.Test;
 using Asv.Mavlink.UnitTestMessage;
@@ -215,21 +215,20 @@ namespace Asv.Mavlink.Test
                 0, 0, 0, 207, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 90, 104, 85, 95, 130, 184, 0, 8, 204, 49, 170,
                 44, 83, 46, 0
             };
-            var decoder = new MavlinkV2Parser(MavlinkV2MessageFactory.Instance);
-            // decoder.RegisterMinimalDialect();
-            decoder.RegisterCommonDialect();
+          
+            
             int err = 0;
             for (int i = 0; i < crcExtra.Length; i++)
             {
                 if (length[i] == 0) continue;
-                var packet = decoder.Create(i);
+                var packet = MavlinkV2MessageFactory.Instance.Create((ushort)i) as MavlinkV2Message<IPayload>;
                 if (packet == null)
                 {
                     _output.WriteLine($"NOT PRESENT {i}");
                     continue;
                 }
 
-                var calculated = packet.GetCrcEtra();
+                var calculated = packet.GetCrcExtra();
                 var calcLength = packet.Payload.GetMinByteSize();
                 if (crcExtra[i] != calculated)
                 {
@@ -255,12 +254,11 @@ namespace Asv.Mavlink.Test
         [Fact]
         public async Task Test_custom_crc_message()
         {
-            // create virtual link with custom dialect 
-            var link = new VirtualMavlinkConnection(registerDialects: decoder =>
+            var protocol = Protocol.Create(builder =>
             {
-                decoder.RegisterCommonDialect();
-                decoder.RegisterUnitTestMessageDialect();
+                builder.RegisterMavlinkV2Protocol();
             });
+            var link = protocol.CreateVirtualConnection();
 
             // create original packet
             var outPkt = new ChemicalDetectorDataPacket
@@ -279,7 +277,7 @@ namespace Asv.Mavlink.Test
             };
             // create waiter, to wait for incoming packet
             var waiter = new TaskCompletionSource<ChemicalDetectorDataPacket>();
-            using var serverSubscribe = link.Server.Filter<ChemicalDetectorDataPacket>().Subscribe(inPkt =>
+            using var serverSubscribe = link.Server.RxFilterByMsgId<ChemicalDetectorDataPacket, ushort>().Subscribe(inPkt =>
             {
                 waiter.TrySetResult(inPkt);
             });
@@ -305,11 +303,11 @@ namespace Asv.Mavlink.Test
         [Fact]
         public async Task Test_custom_crc_message2()
         {
-            var link = new VirtualMavlinkConnection(registerDialects: decoder =>
+            var protocol = Protocol.Create(builder =>
             {
-                decoder.RegisterCommonDialect();
-                decoder.RegisterUnitTestMessageDialect();
+                builder.RegisterMavlinkV2Protocol();
             });
+            var link = protocol.CreateVirtualConnection();
 
             // create original packet
             var outPkt = new ChemicalDetectorDataPacket
@@ -328,7 +326,7 @@ namespace Asv.Mavlink.Test
             };
             // create waiter, to wait for incoming packet
             var waiter = new TaskCompletionSource<ChemicalDetectorDataPacket>();
-            using var serverSubscribe = link.Server.Filter<ChemicalDetectorDataPacket>().Subscribe(inPkt =>
+            using var serverSubscribe = link.Server.RxFilterByType<ChemicalDetectorDataPacket>().Subscribe(inPkt =>
             {
                 waiter.TrySetResult(inPkt);
             });

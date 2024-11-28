@@ -1,5 +1,6 @@
 using System;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;

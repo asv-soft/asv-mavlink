@@ -1,5 +1,6 @@
 using System;
-
+using Asv.IO;
+using Asv.Mavlink.AsvAudio;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
@@ -18,10 +19,10 @@ public class AudioServiceTest
 
     public AudioServiceTest()
     {
-        Mock<IMavlinkV2Connection> connectionMock = new();
-        Subject<MavlinkMessage> rxPipeSubject = new();
+        Mock<IProtocolConnection> connectionMock = new();
+        Subject<IProtocolMessage> rxPipeSubject = new();
 
-        connectionMock.Setup(c => c.RxPipe).Returns(rxPipeSubject.AsObservable());
+        connectionMock.Setup(c => c.OnRxMessage).Returns(rxPipeSubject.AsObservable());
 
         _coreServicesMock = new Mock<ICoreServices>();
         _coreServicesMock.Setup(c => c.Connection).Returns(connectionMock.Object);

@@ -2,7 +2,7 @@ using System;
 
 using System.Threading.Tasks;
 using Asv.Common;
-
+using Asv.Mavlink.Minimal;
 using R3;
 using Xunit;
 using Xunit.Abstractions;

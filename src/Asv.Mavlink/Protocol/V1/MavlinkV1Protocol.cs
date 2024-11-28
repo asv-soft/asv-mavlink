@@ -11,7 +11,7 @@ public static class MavlinkV1Protocol
     public const int PacketMaxSize = 263;
     public const int PayloadStartIndex = 5;
     
-    public static void RegisterMavlinkV2Protocol(this IProtocolBuilder builder)
+    public static void RegisterMavlinkV1Protocol(this IProtocolBuilder builder)
     {
         builder.RegisterProtocol(Info, (core,stat) => new MavlinkV1Parser(MavlinkV1MessageFactory.Instance, core,stat));
     }

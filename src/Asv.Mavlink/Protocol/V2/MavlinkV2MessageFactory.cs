@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using Asv.IO;
 using Asv.Mavlink.Ardupilotmega;
 using Asv.Mavlink.AsvAudio;
@@ -22,7 +24,7 @@ using Asv.Mavlink.UnitTestMessage;
 
 namespace Asv.Mavlink;
 
-public partial class MavlinkV2MessageFactory : IProtocolMessageFactory<MavlinkMessage, ushort>
+public class MavlinkV2MessageFactory : IProtocolMessageFactory<MavlinkMessage, ushort>
 {
     private readonly ImmutableDictionary<ushort,Func<MavlinkMessage>> _decoder;
     public static MavlinkV2MessageFactory Instance { get; } = new();
@@ -55,4 +57,9 @@ public partial class MavlinkV2MessageFactory : IProtocolMessageFactory<MavlinkMe
     public MavlinkMessage? Create(ushort id) => _decoder.TryGetValue(id, out var factory) ? factory() : null;
 
     public ProtocolInfo Info => MavlinkV2Protocol.Info;
+    
+    public IEnumerable<ushort> GetSupportedIds()
+    {
+        return _decoder.Keys.Select(x=>(ushort)x);
+    }
 }

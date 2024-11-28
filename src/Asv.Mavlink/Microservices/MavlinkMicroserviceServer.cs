@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Common;
 using Asv.IO;
 using Microsoft.Extensions.Logging;
 using R3;
@@ -49,7 +50,7 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
         Func<TPacket, byte> targetComponentGetter)
         where TPacket : MavlinkMessage, new()
     {
-        return Core.Connection.RxFilter<TPacket, ushort>().Where((targetSystemGetter,targetComponentGetter),(v, f) =>
+        return Core.Connection.RxFilterByMsgId<TPacket, ushort>().Where((targetSystemGetter,targetComponentGetter),(v, f) =>
         {
             var sys = f.targetSystemGetter(v);
             var com = f.targetComponentGetter(v);
@@ -87,7 +88,7 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
         return Core.Connection.Send(packet, cancel);
     }
 
-    protected async Task<TAnswerPacket> InternalSendAndWaitAnswer<TAnswerPacket>(IPacketV2<IPayload> packet,
+    protected async Task<TAnswerPacket> InternalSendAndWaitAnswer<TAnswerPacket>(MavlinkMessage packet,
         CancellationToken cancel, 
         Func<TAnswerPacket, byte> targetSystemGetter,
         Func<TAnswerPacket, byte> targetComponentGetter, 
@@ -99,7 +100,7 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
         var p = new TAnswerPacket();
         _loggerBase.ZLogTrace($"{LogSend} call {p.Name}");
         using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, _disposeCancel.Token);
-        linkedCancel.CancelAfter(TimeSpan.FromMilliseconds(timeoutMs), Core.TimeProvider);
+        linkedCancel.CancelAfter(timeoutMs, Core.TimeProvider);
         var tcs = new TaskCompletionSource<TAnswerPacket>();
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
 

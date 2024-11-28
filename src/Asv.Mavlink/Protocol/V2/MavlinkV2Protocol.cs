@@ -57,5 +57,12 @@ public static class MavlinkV2Protocol
     public static void RegisterMavlinkV2Protocol(this IProtocolBuilder builder)
     {
         builder.RegisterProtocol(Info, (core,stat) => new MavlinkV2Parser(MavlinkV2MessageFactory.Instance, core,stat));
+        
+        builder.RegisterFormatter(FtpPacketFormatter.Instance);
+        builder.RegisterFormatter(ParamSetFormatter.Instance);
+        builder.RegisterFormatter(ParamValueFormatter.Instance);
+        builder.RegisterFormatter(StatusTextFormatter.Instance);
+        
+        builder.EnableBroadcastFeature<MavlinkMessage>();
     }
 }

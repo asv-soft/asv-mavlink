@@ -14,7 +14,7 @@ namespace Asv.Mavlink.Shell;
 public class DevicesInfoCommand
 {
     private uint _refreshRate;
-    private MavlinkRouter _router;
+    private IProtocolRouter _router;
     private ISynchronizedView<KeyValuePair<MavlinkIdentity,MavlinkDevice>,MavlinkDeviceModel> _list;
 
 
@@ -37,15 +37,14 @@ public class DevicesInfoCommand
     private async Task RunAsync(string connectionString, uint? iterations, uint devicesTimeout,  uint refreshRate)
     {
         _refreshRate = refreshRate;
-        _router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
-        _router.WrapToV2ExtensionEnabled = true;
-        var portConfig = new MavlinkPortConfig
+        var protocol = Protocol.Create(builder =>
         {
-            ConnectionString = connectionString,
-            IsEnabled = true,
-            Name = "DevicesInfoPort"
-        };
-        _router.AddPort(portConfig);
+            builder.RegisterMavlinkV2Protocol();
+        });
+        _router = protocol.CreateRouter("DEFAULT");
+        _router.AddPort(connectionString);
+        
+        var browser = new ClientDeviceBrowser()
         
         var svc = new MavlinkDeviceBrowser(_router, new MavlinkDeviceBrowserConfig
         {

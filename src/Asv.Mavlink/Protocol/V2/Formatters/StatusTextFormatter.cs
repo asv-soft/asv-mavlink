@@ -2,12 +2,20 @@ using System;
 using System.Text;
 using Asv.IO;
 using Asv.Mavlink.Common;
+using DotNext.Patterns;
 
 
 namespace Asv.Mavlink;
 
-public class StatusTextFormatter : IProtocolMessageFormatter
+public class StatusTextFormatter : IProtocolMessageFormatter, ISingleton<StatusTextFormatter>
 {
+    public static StatusTextFormatter Instance { get; } = new();
+
+    private StatusTextFormatter()
+    {
+        
+    }
+    
     public int Order => int.MaxValue/2;
     public bool CanPrint(IProtocolMessage packet)
     {
@@ -46,4 +54,5 @@ public class StatusTextFormatter : IProtocolMessageFormatter
     }
 
     public string Name => "StatusText";
+    
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink;
@@ -14,6 +15,11 @@ public class MavlinkV1MessageFactory : IProtocolMessageFactory<MavlinkMessage, u
     public MavlinkMessage? Create(ushort id)
     {
         return null;
+    }
+
+    public IEnumerable<ushort> GetSupportedIds()
+    {
+        yield break;
     }
 
     public ProtocolInfo Info => MavlinkV2Protocol.Info;

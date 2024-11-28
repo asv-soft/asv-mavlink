@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Asv.Mavlink.Ardupilotmega;
 using Asv.Mavlink.Minimal;
-using Asv.Mavlink.V2.Ardupilotmega;
+
 
 
 namespace Asv.Mavlink;

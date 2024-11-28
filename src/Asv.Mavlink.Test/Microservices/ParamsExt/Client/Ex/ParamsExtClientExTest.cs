@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-
+using Asv.Mavlink.Common;
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;

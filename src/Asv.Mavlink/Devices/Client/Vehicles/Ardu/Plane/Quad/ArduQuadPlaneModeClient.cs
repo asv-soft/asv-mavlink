@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Asv.Mavlink.Ardupilotmega;
 using Asv.Mavlink.Minimal;
-using Asv.Mavlink.V2.Ardupilotmega;
+
 
 
 namespace Asv.Mavlink;
@@ -97,7 +97,7 @@ public class ArduQuadPlaneModeClient(IHeartbeatClient heartbeat, ICommandClient 
     /// <summary>
     /// This mode will perform a descending fixed wing LOITER down to Q_RTL_ALT and then switch to QLAND mode.
     /// </summary>
-    public static OpMode LoiterToQuadLand = new("Loiter To QLand", RS.ArdupilotPlaneMode_Loiter_To_QLand_Description, false, MavModeFlag.MavModeFlagCustomModeEnabled, (uint) PlaneMode.LoiterToQLand, 0);
+    public static OpMode LoiterToQuadLand = new("Loiter To QLand", RS.ArdupilotPlaneMode_Loiter_To_QLand_Description, false, MavModeFlag.MavModeFlagCustomModeEnabled, (uint) PlaneMode.PlaneModeQloiter, 0);
     /// <summary>
     /// A quadplane mode for advanced users that provides rate based stabilization like Copter ACRO
     /// </summary>

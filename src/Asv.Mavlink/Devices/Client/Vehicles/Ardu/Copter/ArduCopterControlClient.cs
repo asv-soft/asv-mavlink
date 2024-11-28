@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.Ardupilotmega;
 using Asv.Mavlink.Minimal;
-using Asv.Mavlink.V2.Ardupilotmega;
+
 
 using Microsoft.Extensions.Logging;
 using ZLogger;

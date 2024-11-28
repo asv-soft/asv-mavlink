@@ -1,7 +1,7 @@
 using System;
 
 using System.Threading.Tasks;
-
+using Asv.Mavlink.Minimal;
 using AutoFixture.Xunit2;
 using R3;
 using Xunit;

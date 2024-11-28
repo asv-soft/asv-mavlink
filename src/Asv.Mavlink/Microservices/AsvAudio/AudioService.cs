@@ -49,8 +49,8 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
         _onlineRate = TimeSpan.FromMilliseconds(config1.OnlineRateMs);
         
         _devices = new ObservableDictionary<MavlinkIdentity,IAudioDevice>();
-        _sub1 = core.Connection.RxFilter<AsvAudioOnlinePacket, ushort>().Where(_=>IsOnline.CurrentValue).Subscribe(OnRecvDeviceOnline);
-        _sub2 = core.Connection.RxFilter<AsvAudioStreamPacket,ushort>().Where(_=>IsOnline.CurrentValue).Subscribe(OnRecvAudioStream);
+        _sub1 = core.Connection.RxFilterByMsgId<AsvAudioOnlinePacket, ushort>().Where(_=>IsOnline.CurrentValue).Subscribe(OnRecvDeviceOnline);
+        _sub2 = core.Connection.RxFilterByMsgId<AsvAudioStreamPacket,ushort>().Where(_=>IsOnline.CurrentValue).Subscribe(OnRecvAudioStream);
         
         _timer = core.TimeProvider.CreateTimer(RemoveOldDevice, null, TimeSpan.FromMilliseconds(config.RemoveDeviceCheckDelayMs), TimeSpan.FromMilliseconds(config.RemoveDeviceCheckDelayMs));
         _transponder = new MavlinkPacketTransponder<AsvAudioOnlinePacket>(identity,core);
@@ -118,7 +118,7 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
         OnReceiveAudio?.Invoke(device, pcmRawAudioData);
     }
 
-    private ValueTask SendAudioStream(Action<AsvAudioStreamPacket> packet, CancellationToken cancel)
+    private ValueTask SendAudioStream(Action<AsvAudioStreamPacket> packet,CancellationToken cancel)
     {
         var pkt = new AsvAudioStreamPacket
         {
@@ -127,7 +127,7 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
             Sequence = _core.Sequence.GetNextSequenceNumber(),
         };
         packet(pkt);
-        return _core.Connection.Send(pkt, cancel);   
+        return _core.Connection.Send(pkt,cancel);
     }
 
     private void RemoveOldDevice(object? state)

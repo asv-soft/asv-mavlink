@@ -21,7 +21,7 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
             .Select(p => p.Payload);
     }
 
-
+    public Observable<MissionAckPayload> OnMissionAck { get; }
     public Observable<MissionCountPacket> OnMissionCount { get; }
     public Observable<MissionRequestListPacket> OnMissionRequestList { get; }
     public Observable<MissionRequestIntPacket> OnMissionRequestInt { get; }

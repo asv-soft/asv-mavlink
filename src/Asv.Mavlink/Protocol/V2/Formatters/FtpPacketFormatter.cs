@@ -3,13 +3,19 @@ using System.Diagnostics;
 using System.Text;
 using Asv.IO;
 using Asv.Mavlink.Common;
-
+using DotNext.Patterns;
 using Newtonsoft.Json;
 
 namespace Asv.Mavlink;
 
-public class FtpPacketFormatter: IProtocolMessageFormatter
+public class FtpPacketFormatter: IProtocolMessageFormatter,ISingleton<FtpPacketFormatter>
 {
+    public static FtpPacketFormatter Instance { get; } = new();
+    
+    private FtpPacketFormatter()
+    {
+        
+    }
     public bool CanPrint(IProtocolMessage message)
     {
         return message is FileTransferProtocolPacket;
@@ -41,5 +47,6 @@ public class FtpPacketFormatter: IProtocolMessageFormatter
 
     public string Name => "FTP";
     public int Order  => int.MaxValue/2;
-   
+
+    
 }

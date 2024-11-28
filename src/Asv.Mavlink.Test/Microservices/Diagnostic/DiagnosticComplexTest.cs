@@ -48,7 +48,7 @@ public class DiagnosticComplexTest(ITestOutputHelper log)
 
         var t = new TaskCompletionSource();
         using var c1 = Client.IntProbes.ObserveAdd()
-            .Subscribe(t,(x,tcs) => tcs.TrySetResult());
+            .Subscribe(t,(_,tcs) => tcs.TrySetResult());
         await Server.Send(name, value);
         await t.Task;
         
@@ -74,7 +74,7 @@ public class DiagnosticComplexTest(ITestOutputHelper log)
         
         var t = new TaskCompletionSource();
         using var c1 = Client.FloatProbes.ObserveAdd()
-            .Subscribe(t,(x,tcs) => tcs.TrySetResult());
+            .Subscribe(t,(_,tcs) => tcs.TrySetResult());
         
         // Act
         await Server.Send(name, value);
@@ -100,7 +100,7 @@ public class DiagnosticComplexTest(ITestOutputHelper log)
         var counter = all;
         var t = new TaskCompletionSource();
         using var c1 = Client.OnIntProbe
-            .Subscribe(t,(x,tcs) =>
+            .Subscribe(t,(_,tcs) =>
             {
                 --counter;
                 if (counter == 0)
@@ -125,7 +125,7 @@ public class DiagnosticComplexTest(ITestOutputHelper log)
         var counter = all;
         var t = new TaskCompletionSource();
         using var c1 = Client.OnFloatProbe
-            .Subscribe(t,(x,tcs) =>
+            .Subscribe(t,(_,tcs) =>
             {
                 --counter;
                 if (counter == 0)

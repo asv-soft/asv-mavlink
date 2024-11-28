@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.IO;
 using Asv.Mavlink.Minimal;
 
 using Microsoft.Extensions.Logging;
@@ -45,7 +46,7 @@ public sealed class ClientDeviceBrowser : IClientDeviceBrowser, IDisposable,IAsy
         _deviceCache = new ObservableDictionary<MavlinkIdentity,IClientDevice>();
         _deviceTimeout = new ReactiveProperty<TimeSpan>(TimeSpan.FromMilliseconds(config.DeviceTimeoutMs));
         _subscribe1 = core.Connection
-            .Filter<HeartbeatPacket>()
+            .RxFilterByType<HeartbeatPacket>()
             .Subscribe(UpdateDevice);
         _timer = core.TimeProvider.CreateTimer(RemoveOldDevices, null, TimeSpan.FromMilliseconds(config.DeviceCheckIntervalMs), TimeSpan.FromMilliseconds(config.DeviceCheckIntervalMs));
     }

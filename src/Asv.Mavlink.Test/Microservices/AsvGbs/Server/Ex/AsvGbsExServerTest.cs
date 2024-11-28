@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Asv.IO;
+using Asv.Mavlink.Common;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -23,14 +24,14 @@ public class AsvGbsExServerTest : ServerTestBase<AsvGbsExServer>, IDisposable
         HeartbeatRateMs = 1000
     };
     
-    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
+    private readonly TaskCompletionSource<IProtocolMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly IAsvGbsServerEx _server;
 
     public AsvGbsExServerTest(ITestOutputHelper output) : base(output)
     {
         _server = Server;
-        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
+        _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(1), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
@@ -47,7 +48,7 @@ public class AsvGbsExServerTest : ServerTestBase<AsvGbsExServer>, IDisposable
         var length = AsvGbsExServer.MaxDgpsMessageLength;
         var bytes = new byte[length];
         Random.Shared.NextBytes(bytes);
-        using var sub = Link.Client.RxPipe
+        using var sub = Link.Client.OnRxMessage
             .Subscribe(p => _taskCompletionSource.TrySetResult(p));
 
         // Act
@@ -57,8 +58,8 @@ public class AsvGbsExServerTest : ServerTestBase<AsvGbsExServer>, IDisposable
         var res = await _taskCompletionSource.Task as GpsRtcmDataPacket;
         var data = res?.Payload.Data;
         Assert.NotNull(res);
-        Assert.Equal(1, Link.Client.RxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(1, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.True(data?.SequenceEqual(bytes));
     }
     
@@ -73,8 +74,8 @@ public class AsvGbsExServerTest : ServerTestBase<AsvGbsExServer>, IDisposable
         await _server.SendRtcmData(bytes, length, _cancellationTokenSource.Token);
 
         // Assert
-        Assert.Equal(0, Link.Client.RxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
     
     [Fact(Skip = "Cancellation doesn't work")] // TODO: FIX CANCELLATION
@@ -90,8 +91,8 @@ public class AsvGbsExServerTest : ServerTestBase<AsvGbsExServer>, IDisposable
 
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
-        Assert.Equal(0, Link.Client.RxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
     
     [Fact]
@@ -103,7 +104,7 @@ public class AsvGbsExServerTest : ServerTestBase<AsvGbsExServer>, IDisposable
         Random.Shared.NextBytes(bytes);
         var results = new List<GpsRtcmDataPacket>();
         var called = 0;
-        using var sub = Link.Client.RxPipe
+        using var sub = Link.Client.OnRxMessage
             .Subscribe(p =>
             {
                 called++;
@@ -126,8 +127,8 @@ public class AsvGbsExServerTest : ServerTestBase<AsvGbsExServer>, IDisposable
         await _taskCompletionSource.Task;
         var receivedBytes = results.SelectMany(x => x.Payload.Data).ToArray();
         
-        Assert.Equal(called, Link.Client.RxPackets);
-        Assert.Equal(Link.Client.RxPackets, Link.Server.TxPackets);
+        Assert.Equal(called, (int) Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
         Assert.Equal(bytes, receivedBytes);
     }
     
@@ -143,8 +144,8 @@ public class AsvGbsExServerTest : ServerTestBase<AsvGbsExServer>, IDisposable
         await _server.SendRtcmData(bytes, length, _cancellationTokenSource.Token);
 
         // Assert
-        Assert.Equal(0, Link.Client.RxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
     
     [Theory]
@@ -157,7 +158,7 @@ public class AsvGbsExServerTest : ServerTestBase<AsvGbsExServer>, IDisposable
         var results = new List<GpsRtcmDataPacket>();
         var sendByteArrays = new List<byte[]>();
         var called = 0;
-        using var sub = Link.Client.RxPipe
+        using var sub = Link.Client.OnRxMessage
             .Subscribe(p =>
             {
                 called++;
@@ -186,8 +187,8 @@ public class AsvGbsExServerTest : ServerTestBase<AsvGbsExServer>, IDisposable
 
         // Assert
         await _taskCompletionSource.Task;
-        Assert.Equal(called, Link.Client.RxPackets);
-        Assert.Equal(Link.Client.RxPackets, Link.Server.TxPackets);
+        Assert.Equal(called, (int) Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
         Assert.Equal(results.Count, sendByteArrays.Count);
         for (var i = 0; i < results.Count; i++)
         {

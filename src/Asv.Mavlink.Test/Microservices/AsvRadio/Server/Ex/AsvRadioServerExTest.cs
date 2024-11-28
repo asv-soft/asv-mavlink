@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Asv.Mavlink;
-
+using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRadio;
 using JetBrains.Annotations;
 using Xunit;
@@ -38,19 +38,6 @@ public class AsvRadioServerExTest(ITestOutputHelper log) : ServerTestBase<AsvRad
         var cmd = new CommandLongServerEx(new CommandServer(identity, core));
         var status = new StatusTextServer(identity, _statusConfig, core);
         return new AsvRadioServerEx(_capabilities, _codecs, srv, hb, cmd, status);
-    }
-
-    [Fact]
-    public void ServerEx_CreatesSuccessfully()
-    {
-        //Arrange & Act
-        var connection = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
-        var identity = new MavlinkIdentity(3, 4);
-        var services = new CoreServices(connection);
-        var server = CreateClient(identity, services);
-
-        //Assert
-        Assert.NotNull(server);
     }
 
     [Fact]

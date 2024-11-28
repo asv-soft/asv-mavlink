@@ -2,12 +2,19 @@ using System;
 using System.Diagnostics;
 using Asv.IO;
 using Asv.Mavlink.Common;
+using DotNext.Patterns;
 
 
 namespace Asv.Mavlink;
 
-public class ParamValueFormatter : IProtocolMessageFormatter
+public class ParamValueFormatter : IProtocolMessageFormatter, ISingleton<ParamValueFormatter>
 {
+    public static ParamValueFormatter Instance { get; } = new();
+
+    private ParamValueFormatter()
+    {
+        
+    }
     public int Order => int.MaxValue/2;
     
     public bool CanPrint(IProtocolMessage packet)
@@ -26,5 +33,6 @@ public class ParamValueFormatter : IProtocolMessageFormatter
         return $"{name}[{param.Payload.ParamIndex} of {param.Payload.ParamCount}]=cstyle({cValue}) or byteWise({bValue})";
     }
 
-    public string Name { get; }
+    public string Name => "ParamValue";
+    
 }

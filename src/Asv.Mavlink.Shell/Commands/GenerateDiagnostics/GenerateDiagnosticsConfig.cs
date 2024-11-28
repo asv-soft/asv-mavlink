@@ -9,12 +9,7 @@ public class GenerateDiagnosticsConfig
     {
         Ports = new []
         {
-            new MavlinkPortConfig
-            {
-                ConnectionString = "tcp://127.0.0.1:7342",
-                Name = "to Client",
-                IsEnabled = true
-            }
+           "tcp://127.0.0.1:7342"
         },
         Metrics = {
             new Metric
@@ -43,7 +38,7 @@ public class GenerateDiagnosticsConfig
     };
     
     public required DiagnosticServerConfig ServerConfig { get; set; }
-    public required MavlinkPortConfig[] Ports { get; set; }
+    public required string[] Ports { get; set; }
     public ISet<Metric> Metrics { get; set; } = new HashSet<Metric>(Metric.MetricEqualityComparer.Instance.Value);
     public required byte SystemId { get; set; }
     public required byte ComponentId { get; set; }

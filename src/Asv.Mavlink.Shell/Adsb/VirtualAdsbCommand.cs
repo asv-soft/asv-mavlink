@@ -6,7 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.Common;
-
+using Asv.IO;
+using Asv.Mavlink.Common;
 using ConsoleAppFramework;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
@@ -60,10 +61,14 @@ public class VirtualAdsbCommand
 
         AnsiConsole.MarkupLine($"[blue]info[/]: Start virtual ADSB receiver with SystemId: [yellow]{config.SystemId}[/], ComponentId: [yellow]{config.ComponentId}[/]");
 
-        using var router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
+        var protocol = Protocol.Create(builder =>
+        {
+            builder.RegisterMavlinkV2Protocol();
+        });
+        var router = protocol.CreateRouter("ADSB");
         foreach (var port in config.Ports)
         {
-            AnsiConsole.MarkupLine($"[green]Add connection port {port.Name}[/]: [yellow]{port.ConnectionString}[/]");
+            AnsiConsole.MarkupLine($"[green]Add connection port [/]: [yellow]{port}[/]");
             router.AddPort(port);
         }
 

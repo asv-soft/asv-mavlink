@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Asv.Mavlink.AsvChart;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -58,8 +58,8 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         ServerTime.Advance(TimeSpan.FromMilliseconds(200));
 
         // Assert
-        Assert.Equal(2, Link.Client.RxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(2, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.Single(Server.Charts); //TODO: Не обновляется коллекция Charts
     }
 

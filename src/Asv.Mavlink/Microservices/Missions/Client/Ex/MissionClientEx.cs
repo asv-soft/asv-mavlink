@@ -82,11 +82,11 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
 
         if (result.Length != count)
         {
-            await Base.SendMissionAck(MavMissionResult.MavMissionError, cancel).ConfigureAwait(false);
+            await Base.SendMissionAck(MavMissionResult.MavMissionError, cancel: cancel).ConfigureAwait(false);
             return [];
         }
 
-        await Base.SendMissionAck(MavMissionResult.MavMissionAccepted, cancel).ConfigureAwait(false);
+        await Base.SendMissionAck(MavMissionResult.MavMissionAccepted, cancel: cancel).ConfigureAwait(false);
         _isMissionSynced.OnNext(true);
         return result;
     }

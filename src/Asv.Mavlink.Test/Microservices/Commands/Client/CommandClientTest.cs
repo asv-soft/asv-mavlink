@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Asv.IO;
+using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -20,14 +21,14 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         CommandAttempt = 5
     };
 
-    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
+    private readonly TaskCompletionSource<IProtocolMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly CommandClient _client;
 
     public CommandClientTest(ITestOutputHelper log) : base(log)
     {
         _client = Client;
-        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
+        _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
 
@@ -50,12 +51,12 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         // Arrange
         var called = 0;
         CommandIntPacket? packetFromClient = null;
-        using var sub = Link.Server.RxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var sub1 = Link.Client.TxPipe.Subscribe(p => { packetFromClient = p as CommandIntPacket; });
+        using var sub1 = Link.Client.OnTxMessage.Subscribe(p => { packetFromClient = p as CommandIntPacket; });
 
         // Act
         await _client.SendCommandInt(
@@ -77,8 +78,8 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         Assert.NotNull(result);
         Assert.NotNull(packetFromClient);
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.True(packetFromClient.IsDeepEqual(result));
     }
 
@@ -114,12 +115,12 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         // Arrange 
         var called = 0;
         CommandIntPacket? packetFromClient = null;
-        using var sub = Link.Server.RxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var sub1 = Link.Client.TxPipe.Subscribe(p => { packetFromClient = p as CommandIntPacket; });
+        using var sub1 = Link.Client.OnTxMessage.Subscribe(p => { packetFromClient = p as CommandIntPacket; });
 
         // Act
         await _client.SendCommandInt(
@@ -141,8 +142,8 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         Assert.NotNull(result);
         Assert.NotNull(packetFromClient);
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.True(packetFromClient.IsDeepEqual(result));
     }
 
@@ -157,7 +158,7 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         var called = 0;
         var results = new List<CommandIntPacket>();
         var packetsFromClient = new List<CommandIntPacket>();
-        using var sub = Link.Server.RxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnRxMessage.Subscribe(p =>
         {
             called++;
             if (p is not CommandIntPacket commandPacket)
@@ -172,7 +173,7 @@ public class CommandClientTest : ClientTestBase<CommandClient>
                 _taskCompletionSource.TrySetResult(p);
             }
         });
-        using var sub1 = Link.Client.TxPipe.Subscribe(p =>
+        using var sub1 = Link.Client.OnTxMessage.Subscribe(p =>
         {
             if (p is not CommandIntPacket commandPacket)
             {
@@ -203,8 +204,8 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         // Assert
         await _taskCompletionSource.Task;
         Assert.Equal(sendCount, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(packetsFromClient.Count, results.Count);
         for (var i = 0; i < results.Count; i++)
         {
@@ -217,7 +218,7 @@ public class CommandClientTest : ClientTestBase<CommandClient>
     {
         // Arrange
         var called = 0;
-        using var sub = Link.Server.RxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
@@ -240,10 +241,10 @@ public class CommandClientTest : ClientTestBase<CommandClient>
             _cancellationTokenSource.Token);
 
         // Assert
-        await Assert.ThrowsAsync<TaskCanceledException>(() => task);
+        await Assert.ThrowsAsync<TaskCanceledException>(async () => await task);
         Assert.Equal(0, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
     }
 
     #endregion
@@ -260,12 +261,12 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         // Arrange
         var called = 0;
         CommandLongPacket? packetFromClient = null;
-        using var sub = Link.Server.RxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var sub1 = Link.Client.TxPipe.Subscribe(p => { packetFromClient = p as CommandLongPacket; });
+        using var sub1 = Link.Client.OnTxMessage.Subscribe(p => { packetFromClient = p as CommandLongPacket; });
 
         // Act
         await _client.SendCommandLong(
@@ -284,8 +285,8 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         Assert.NotNull(result);
         Assert.NotNull(packetFromClient);
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.True(packetFromClient.IsDeepEqual(result));
     }
 
@@ -321,12 +322,12 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         // Arrange 
         var called = 0;
         CommandLongPacket? packetFromClient = null;
-        using var sub = Link.Server.RxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var sub1 = Link.Client.TxPipe.Subscribe(p => { packetFromClient = p as CommandLongPacket; });
+        using var sub1 = Link.Client.OnTxMessage.Subscribe(p => { packetFromClient = p as CommandLongPacket; });
 
         // Act
         await _client.SendCommandLong(
@@ -345,8 +346,8 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         Assert.NotNull(result);
         Assert.NotNull(packetFromClient);
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.True(packetFromClient.IsDeepEqual(result));
     }
 
@@ -362,7 +363,7 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         var called = 0;
         var results = new List<CommandLongPacket>();
         var packetsFromClient = new List<CommandLongPacket>();
-        using var sub = Link.Server.RxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnRxMessage.Subscribe(p =>
         {
             called++;
             if (p is not CommandLongPacket commandPacket)
@@ -377,7 +378,7 @@ public class CommandClientTest : ClientTestBase<CommandClient>
                 _taskCompletionSource.TrySetResult(p);
             }
         });
-        using var sub1 = Link.Client.TxPipe.Subscribe(p =>
+        using var sub1 = Link.Client.OnTxMessage.Subscribe(p =>
         {
             if (p is not CommandLongPacket commandPacket)
             {
@@ -405,8 +406,8 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         // Assert
         await _taskCompletionSource.Task;
         Assert.Equal(sendCount, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(packetsFromClient.Count, results.Count);
         for (var i = 0; i < results.Count; i++)
         {
@@ -419,7 +420,7 @@ public class CommandClientTest : ClientTestBase<CommandClient>
     {
         // Arrange
         var called = 0;
-        using var sub = Link.Server.RxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
@@ -441,8 +442,8 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         // Assert
         await Assert.ThrowsAsync<TaskCanceledException>(() => task);
         Assert.Equal(0, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
     }
 
     #endregion

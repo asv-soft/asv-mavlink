@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Asv.IO;
+using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -14,12 +15,12 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(AsvGbsServer))]
 public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposable
 {
-    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
+    private readonly TaskCompletionSource<IProtocolMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
 
     public AdsbVehicleServerTest(ITestOutputHelper output) : base(output)
     {
-        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
+        _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
@@ -51,7 +52,7 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
                 Squawk = 7000
             }
         };
-        using var sub = Link.Client.RxPipe.Subscribe(
+        using var sub = Link.Client.OnRxMessage.Subscribe(
             p => _taskCompletionSource.TrySetResult(p)
         );
         // Act
@@ -75,8 +76,8 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         // Assert
         var res = await _taskCompletionSource.Task.ConfigureAwait(false) as AdsbVehiclePacket;
         Assert.NotNull(res);
-        Assert.Equal(1, Link.Client.RxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(1, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.True(packet.Payload.IsDeepEqual(res.Payload));
     }
 
@@ -90,7 +91,7 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         var called = 0;
         var results = new List<AdsbVehiclePayload>();
         var serverResults = new List<AdsbVehiclePayload>();
-        using var sub = Link.Client.RxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnRxMessage.Subscribe(p =>
         {
             called++;
             if (p is AdsbVehiclePacket packet)
@@ -112,8 +113,8 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
 
         // Assert
         await _taskCompletionSource.Task;
-        Assert.Equal(packetsCount, Link.Server.TxPackets);
-        Assert.Equal(packetsCount, Link.Client.RxPackets);
+        Assert.Equal(packetsCount, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(packetsCount, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(packetsCount, results.Count);
         Assert.Equal(serverResults.Count, results.Count);
         for (var i = 0; i < results.Count; i++)
@@ -127,7 +128,7 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
     {
         // Arrange
         AdsbVehiclePacket? packet = null;
-        using var sub = Link.Client.RxPipe.Subscribe(
+        using var sub = Link.Client.OnRxMessage.Subscribe(
             p => _taskCompletionSource.TrySetResult(p)
         );
 
@@ -137,8 +138,8 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
 
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
-        Assert.Equal(0, Link.Client.RxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     public void Dispose()

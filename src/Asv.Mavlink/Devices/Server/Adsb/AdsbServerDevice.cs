@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Asv.Cfg;
+using Asv.Mavlink.Minimal;
 
 
 namespace Asv.Mavlink;

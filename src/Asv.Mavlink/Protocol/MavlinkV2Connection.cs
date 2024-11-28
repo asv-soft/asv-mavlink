@@ -6,42 +6,42 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.V2.Ardupilotmega;
+
 
 
 using Asv.Mavlink.AsvGbs;
 using Asv.Mavlink.AsvRadio;
-using Asv.Mavlink.V2.AsvRfsa;
+using Asv.Mavlink.AsvRfsa;
 using Asv.Mavlink.AsvRsga;
 
-using Asv.Mavlink.V2.Avssuas;
+using Asv.Mavlink.Avssuas;
 
-using Asv.Mavlink.V2.Csairlink;
-using Asv.Mavlink.V2.Cubepilot;
-using Asv.Mavlink.V2.Icarous;
+using Asv.Mavlink.Csairlink;
+using Asv.Mavlink.Cubepilot;
+using Asv.Mavlink.Icarous;
 
-using Asv.Mavlink.V2.Storm32;
-using Asv.Mavlink.V2.Ualberta;
-using Asv.Mavlink.V2.Uavionix;
+using Asv.Mavlink.Storm32;
+using Asv.Mavlink.Ualberta;
+using Asv.Mavlink.Uavionix;
 using R3;
 
 namespace Asv.Mavlink
 {
-    public sealed class MavlinkV2Connection : IMavlinkV2Connection
+    public sealed class MavlinkV2Connection : IProtocolConnection
     {
         #region Static
 
-        public static IMavlinkV2Connection Create(IDataStream dataStream, bool disposeDataStream = false)
+        public static IProtocolConnection Create(IDataStream dataStream, bool disposeDataStream = false)
         {
             return new MavlinkV2Connection(dataStream, RegisterDefaultDialects,disposeDataStream);
         }
         
-        public static IMavlinkV2Connection Create(IDataStream dataStream,Action<IPacketDecoder<MavlinkMessage>> register, bool disposeDataStream = false)
+        public static IProtocolConnection Create(IDataStream dataStream,Action<IPacketDecoder<MavlinkMessage>> register, bool disposeDataStream = false)
         {
             return new MavlinkV2Connection(dataStream, register,disposeDataStream);
         }
         
-        public static IMavlinkV2Connection Create(string connectionString)
+        public static IProtocolConnection Create(string connectionString)
         {
             return new MavlinkV2Connection(connectionString, RegisterDefaultDialects);
         }
