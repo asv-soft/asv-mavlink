@@ -116,7 +116,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         new Random().NextBytes(dataChunks);
         var originStream = new MemoryStream(dataChunks);
         var data = new byte[size];
-        
+
         Server.Base.OpenFileRead = async (path, _) =>
         {
             Assert.Equal(filePath, path);
@@ -143,13 +143,10 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
             data.CopyTo(buffer.Span);
             return await Task.FromResult(new ReadResult(size, request));
         };
-        
+
         Server.Base.TerminateSession = (session, reason) => Task.CompletedTask;
 
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(p =>
-        {
-            _tcs.TrySetResult(p);
-        });
+        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(p => { _tcs.TrySetResult(p); });
 
         // Act
         await Client.BurstDownloadFile(filePath, streamToSave, progress, 239, _cts.Token);
@@ -162,28 +159,53 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         Assert.Equal(dataChunks, buffer);
     }
 
-    [Fact]
-    public async Task Refresh_Success()
+    [Theory]
+    [InlineData("/")]
+    [InlineData("")]
+    public async Task Refresh_Success(string refreshPath)
     {
         // Arrange
+        var localRoot = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder");
         var fileEntries = new[]
         {
-            _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "file1.txt"),
-            _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "file2.txt"),
-            _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "file3.txt"),
+            _fileSystem.Path.Combine(localRoot, "file1.txt"),
+            _fileSystem.Path.Combine(localRoot, "file2.txt"),
+            _fileSystem.Path.Combine(localRoot, "file3.txt"),
         };
-        
-        _fileSystem.AddFile(fileEntries[0], new MockFileData("file1"));
-        _fileSystem.AddFile(fileEntries[1], new MockFileData("file2"));
-        _fileSystem.AddFile(fileEntries[2], new MockFileData("file3"));
 
-        Server.Base.ListDirectory = (path, offset, buffer, cancel) =>
+        var expectedFiles = new[]
         {
+            $"{MavlinkFtpHelper.DirectorySeparator}",
+            $"{MavlinkFtpHelper.DirectorySeparator}folder{MavlinkFtpHelper.DirectorySeparator}",
+            $"{MavlinkFtpHelper.DirectorySeparator}folder{MavlinkFtpHelper.DirectorySeparator}file1.txt",
+            $"{MavlinkFtpHelper.DirectorySeparator}folder{MavlinkFtpHelper.DirectorySeparator}file2.txt",
+            $"{MavlinkFtpHelper.DirectorySeparator}folder{MavlinkFtpHelper.DirectorySeparator}file3.txt",
+        };
+
+        Server.Base.ListDirectory = BaseListDirectory;
+
+        // Act
+        await Client.Refresh(refreshPath, true, _cts.Token);
+
+        // Assert
+        Assert.Equal(expectedFiles, Client.Entries.Keys.ToArray());
+        return;
+
+        Task<byte> BaseListDirectory(string path, uint offset, Memory<char> buffer, CancellationToken cancel)
+        {
+            if (!_fileSystem.FileExists(_fileSystem.Path.Combine(localRoot, "file1.txt")))
+            {
+                _fileSystem.AddDirectory(localRoot);
+                _fileSystem.AddFile(fileEntries[0], new MockFileData("file1"));
+                _fileSystem.AddFile(fileEntries[1], new MockFileData("file2"));
+                _fileSystem.AddFile(fileEntries[2], new MockFileData("file3"));
+            }
+
             if (cancel.IsCancellationRequested)
             {
                 throw new FtpNackException(FtpOpcode.ListDirectory, NackError.None);
             }
-            
+
             var fullPath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, path);
             if (!fullPath.Contains(_serverExConfig.RootDirectory))
             {
@@ -197,8 +219,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
 
             uint currentIndex = 0;
             var infos = new List<IFileSystemInfo>();
-            var dirInfo = new DirectoryInfo(fullPath);
-            var directory = _fileSystem.DirectoryInfo.Wrap(dirInfo);
+            var directory = _fileSystem.DirectoryInfo.Wrap(new DirectoryInfo(fullPath));
             var dirInfos = directory.GetFileSystemInfos();
 
             if (offset >= dirInfos.Length)
@@ -242,46 +263,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
 
             sb.ToString().CopyTo(buffer.Span);
             return Task.FromResult((byte)sb.Length);
-        };
-
-        // Act
-        await Client.Refresh(_serverExConfig.RootDirectory, true);
-
-        // Assert
-        Assert.Equal(fileEntries, Client.Entries.Keys);
-    }
-
-    private static async Task<string> ConvertStreamToString(Stream stream, long offset)
-    {
-        stream.Seek(offset, SeekOrigin.Begin);
-        using var reader = new StreamReader(stream, MavlinkFtpHelper.FtpEncoding);
-        return await reader.ReadToEndAsync();
-    }
-
-    private FileTransferProtocolPacket CreateAckResponse(FileTransferProtocolPacket requestPacket,
-        FtpOpcode originOpCode)
-    {
-        var response = new FileTransferProtocolPacket
-        {
-            SystemId = Identity.Target.SystemId,
-            ComponentId = Identity.Target.ComponentId,
-            Sequence = requestPacket.Sequence,
-            Payload =
-            {
-                TargetSystem = requestPacket.SystemId,
-                TargetComponent = requestPacket.ComponentId,
-                TargetNetwork = requestPacket.Payload.TargetNetwork,
-                Payload = new byte[251],
-            }
-        };
-
-        response.WriteOpcode(FtpOpcode.Ack);
-        response.WriteSequenceNumber(requestPacket.ReadSequenceNumber());
-        response.WriteSession(requestPacket.ReadSession());
-        response.WriteSize(0);
-        response.WriteOriginOpCode(originOpCode);
-
-        return response;
+        }
     }
 
     private static MockFileSystem SetUpFileSystem(string root)
