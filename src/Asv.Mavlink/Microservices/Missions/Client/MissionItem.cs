@@ -12,21 +12,20 @@ namespace Asv.Mavlink
     {
         internal readonly MissionItemIntPayload Payload;
         private readonly Subject<Unit> _onChanged;
-        private readonly IDisposable _sub1;
-        private readonly IDisposable _sub2;
-        private readonly IDisposable _sub3;
-        private readonly IDisposable _sub4;
-        private readonly IDisposable _sub5;
-        private readonly IDisposable _sub6;
-        private readonly IDisposable _sub7;
-        private readonly IDisposable _sub8;
-        private readonly IDisposable _sub9;
 
         public MissionItem(MissionItemIntPayload item)
         {
             Payload = item ?? throw new ArgumentNullException(nameof(item));
             _onChanged = new Subject<Unit>();
-            Location = new ReactiveProperty<GeoPoint>(new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(item.X), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(item.Y), item.Z));
+            Index = Payload.Seq;
+            
+            Location = new ReactiveProperty<GeoPoint>(
+                new GeoPoint(
+                MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(item.X), 
+                MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(item.Y), 
+                item.Z
+                )
+            );
             _sub1 = Location.Subscribe(Edit,(x,cb) =>
             {
                 cb(p=>
@@ -63,8 +62,13 @@ namespace Asv.Mavlink
 
             Param4 = new ReactiveProperty<float>(item.Param4);
             _sub9 = Param4.Subscribe(Edit,(f,cb) => cb(p=>p.Param4 = f));
+
+            _sub10 = _onChanged.Subscribe(_ =>
+            {
+                SyncPropertiesWith(Payload);
+            });
         }
-        public ushort Index => Payload.Seq;
+        public ushort Index { get; private set; }
         public ReactiveProperty<GeoPoint> Location { get; }
         public ReactiveProperty<bool> AutoContinue { get; }
         public ReactiveProperty<MavCmd> Command { get; }
@@ -79,7 +83,21 @@ namespace Asv.Mavlink
 
         public void Edit(Action<MissionItemIntPayload> editCallback)
         {
+            var oldState = (Payload.X, Payload.Y, Payload.Z, Payload.Autocontinue, Payload.Command, 
+                Payload.Current, Payload.Frame, Payload.MissionType, Payload.Param1, 
+                Payload.Param2, Payload.Param3, Payload.Param4, Payload.Seq);
+            
             editCallback(Payload);
+            
+            var newState = (Payload.X, Payload.Y, Payload.Z, Payload.Autocontinue, Payload.Command, 
+                Payload.Current, Payload.Frame, Payload.MissionType, Payload.Param1, 
+                Payload.Param2, Payload.Param3, Payload.Param4, Payload.Seq);
+            
+            if (oldState.Equals(newState))
+            {
+                return;
+            }
+            
             _onChanged.OnNext(Unit.Default);
         }
         
@@ -90,7 +108,37 @@ namespace Asv.Mavlink
             return $"Mission Item: {Command} target: {Location})";
         }
 
+        private void SyncPropertiesWith(MissionItemIntPayload payload)
+        {
+            Index = payload.Seq;
+            Location.Value = new GeoPoint(
+                MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(payload.X),
+                MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(payload.Y),
+                payload.Z
+            );
+            AutoContinue.Value = payload.Autocontinue != 0;
+            Command.Value = payload.Command;
+            Current.Value = payload.Current != 0;
+            Frame.Value = payload.Frame;
+            MissionType.Value = payload.MissionType;
+            Param1.Value = payload.Param1;
+            Param2.Value = payload.Param2;
+            Param3.Value = payload.Param3;
+            Param4.Value = payload.Param4;
+        }
+
         #region Dispose
+        
+        private readonly IDisposable _sub1;
+        private readonly IDisposable _sub2;
+        private readonly IDisposable _sub3;
+        private readonly IDisposable _sub4;
+        private readonly IDisposable _sub5;
+        private readonly IDisposable _sub6;
+        private readonly IDisposable _sub7;
+        private readonly IDisposable _sub8;
+        private readonly IDisposable _sub9;
+        private readonly IDisposable _sub10;
 
         public void Dispose()
         {
@@ -104,6 +152,7 @@ namespace Asv.Mavlink
             _sub7.Dispose();
             _sub8.Dispose();
             _sub9.Dispose();
+            _sub10.Dispose();
             Location.Dispose();
             AutoContinue.Dispose();
             Command.Dispose();
@@ -128,6 +177,7 @@ namespace Asv.Mavlink
             await CastAndDispose(_sub7).ConfigureAwait(false);
             await CastAndDispose(_sub8).ConfigureAwait(false);
             await CastAndDispose(_sub9).ConfigureAwait(false);
+            await CastAndDispose(_sub10).ConfigureAwait(false);
             await CastAndDispose(Location).ConfigureAwait(false);
             await CastAndDispose(AutoContinue).ConfigureAwait(false);
             await CastAndDispose(Command).ConfigureAwait(false);

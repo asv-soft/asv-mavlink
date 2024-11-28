@@ -130,8 +130,15 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// An <see cref="IObservable{T}"/> of type <see cref="MissionSetCurrentPacket"/> that can be subscribed to receive notifications when the event is raised.
     /// </value>
     Observable<MissionSetCurrentPacket> OnMissionSetCurrent { get; }
-
-
+    
+    /// <summary>
+    /// Gets the observable sequence that emits MissionAckPayload when a mission acknowledgement is received.
+    /// </summary>
+    /// <value>
+    /// The observable sequence that emits MissionAckPayload when a mission acknowledgement is received.
+    /// </value>
+    public Observable<MissionAckPayload> OnMissionAck { get; }
+    
     /// <summary>
     /// Sends a mission acknowledgment message to the specified target system and component IDs.
     /// </summary>
