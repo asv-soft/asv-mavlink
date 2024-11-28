@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Reactive.Linq;
+
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using R3;
 using ZLogger;
 
 namespace Asv.Mavlink;
@@ -20,7 +21,7 @@ public interface IParamsServerEx
     /// <value>
     /// The observable sequence of exceptions.
     /// </value>
-    IObservable<Exception> OnError { get; }
+    Observable<Exception> OnError { get; }
 
     /// <summary>
     /// Gets an observable sequence of `ParamChangedEvent` events that represents updates to the property.
@@ -38,7 +39,7 @@ public interface IParamsServerEx
     /// </code>
     /// This will subscribe to the `OnUpdated` event and write a message to the console whenever the property is updated.
     /// </remarks>
-    IObservable<ParamChangedEvent> OnUpdated { get; }
+    Observable<ParamChangedEvent> OnUpdated { get; }
 
     /// <summary>
     /// Gets or sets the MavParamValue with the specified name.
@@ -55,27 +56,27 @@ public interface IParamsServerEx
     MavParamValue this[IMavParamTypeMetadata param] { get; set; }
     IReadOnlyList<IMavParamTypeMetadata> AllParamsList { get; }
     IReadOnlyDictionary<string,(ushort,IMavParamTypeMetadata)> AllParamsDict { get; }
-    public IObservable<ParamChangedEvent> OnChange(string name)
+    public Observable<ParamChangedEvent> OnChange(string name)
     {
         return OnUpdated.Where(x => x.Metadata.Name.Equals(name));
     }
-    public IObservable<ParamChangedEvent> OnChange(IMavParamTypeMetadata param)
+    public Observable<ParamChangedEvent> OnChange(IMavParamTypeMetadata param)
     {
         return OnUpdated.Where(x => x.Metadata.Name.Equals(param.Name));
     }
-    public IObservable<ParamChangedEvent> OnRemoteChange(string name)
+    public Observable<ParamChangedEvent> OnRemoteChange(string name)
     {
         return OnUpdated.Where(x => x.IsRemoteChange && x.Metadata.Name.Equals(name));
     }
-    public IObservable<ParamChangedEvent> OnRemoteChange(IMavParamTypeMetadata param)
+    public Observable<ParamChangedEvent> OnRemoteChange(IMavParamTypeMetadata param)
     {
         return OnUpdated.Where(x => x.IsRemoteChange && x.Metadata.Name.Equals(param.Name));
     }
-    public IObservable<ParamChangedEvent> OnLocalChange(string name)
+    public Observable<ParamChangedEvent> OnLocalChange(string name)
     {
         return OnUpdated.Where(x => x.IsRemoteChange == false && x.Metadata.Name.Equals(name));
     }
-    public IObservable<ParamChangedEvent> OnLocalChange(IMavParamTypeMetadata param)
+    public Observable<ParamChangedEvent> OnLocalChange(IMavParamTypeMetadata param)
     {
         return OnUpdated.Where(x => x.IsRemoteChange == false && x.Metadata.Name.Equals(param.Name));
     }
@@ -158,7 +159,7 @@ public interface IParamsServerEx
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext,disposeCancel);
+            .Subscribe(OnNext).RegisterTo(disposeCancel);
         return;
 
         async void OnNext(ParamChangedEvent x)
@@ -179,7 +180,7 @@ public interface IParamsServerEx
         CheckType(param, MavParamType.MavParamTypeUint8);
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext,disposeCancel);
+            .Subscribe(OnNext).RegisterTo(disposeCancel);
         this[param] = (byte)0;
         return;
 
@@ -205,7 +206,7 @@ public interface IParamsServerEx
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext,disposeCancel);
+            .Subscribe(OnNext).RegisterTo(disposeCancel);
         return;
 
         async void OnNext(ParamChangedEvent x)
@@ -230,7 +231,7 @@ public interface IParamsServerEx
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext,disposeCancel);
+            .Subscribe(OnNext).RegisterTo(disposeCancel);
         return;
 
         async void OnNext(ParamChangedEvent x)
@@ -253,7 +254,7 @@ public interface IParamsServerEx
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext,disposeCancel);
+            .Subscribe(OnNext).RegisterTo(disposeCancel);
         return;
 
         async void OnNext(ParamChangedEvent x)
@@ -278,7 +279,7 @@ public interface IParamsServerEx
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext,disposeCancel);
+            .Subscribe(OnNext).RegisterTo(disposeCancel);
         return;
 
         async void OnNext(ParamChangedEvent x)
@@ -301,7 +302,7 @@ public interface IParamsServerEx
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext,disposeCancel);
+            .Subscribe(OnNext).RegisterTo(disposeCancel);
         return;
 
         async void OnNext(ParamChangedEvent x)
@@ -324,7 +325,7 @@ public interface IParamsServerEx
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext,disposeCancel);
+            .Subscribe(OnNext).RegisterTo(disposeCancel);
         return;
 
         async void OnNext(ParamChangedEvent x)
@@ -347,7 +348,7 @@ public interface IParamsServerEx
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext,disposeCancel);
+            .Subscribe(OnNext).RegisterTo(disposeCancel);
         return;
 
         async void OnNext(ParamChangedEvent x)
@@ -371,7 +372,7 @@ public interface IParamsServerEx
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext,disposeCancel);
+            .Subscribe(OnNext).RegisterTo(disposeCancel);
         return;
 
         async void OnNext(ParamChangedEvent x)

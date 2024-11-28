@@ -6,16 +6,13 @@ using Asv.Mavlink.V2.Common;
 
 namespace Asv.Mavlink
 {
-
     public class AsvGbsServerConfig
     {
-        public int StatusRateMs { get; set; } = 1000;
+        public uint StatusRateMs { get; set; } = 1000;
     }
 
     public class AsvGbsServer:MavlinkMicroserviceServer, IAsvGbsServer
     {
-        
-
         private readonly AsvGbsServerConfig _config;
         private readonly MavlinkPacketTransponder<AsvGbsOutStatusPacket,AsvGbsOutStatusPayload> _transponder;
 
@@ -32,7 +29,7 @@ namespace Asv.Mavlink
 
         public void Start()
         {
-            _transponder.Start(TimeSpan.FromMilliseconds(500),TimeSpan.FromMilliseconds(_config.StatusRateMs));
+            _transponder.Start(TimeSpan.FromMilliseconds(_config.StatusRateMs),TimeSpan.FromMilliseconds(_config.StatusRateMs));
         }
 
         public void Set(Action<AsvGbsOutStatusPayload> changeCallback)
@@ -68,6 +65,5 @@ namespace Asv.Mavlink
         }
 
         #endregion
-
     }
 }

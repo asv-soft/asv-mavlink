@@ -7,11 +7,8 @@ namespace Asv.Mavlink;
 
 public sealed class StatusTextClient : MavlinkMicroserviceClient, IStatusTextClient
 {
-    
-
     private readonly Subject<StatusMessage> _onMessage;
     private readonly ReactiveProperty<string> _name;
-    private readonly IDisposable _sub;
 
     public StatusTextClient(MavlinkClientIdentity identity,ICoreServices core) 
         : base("STATUS",identity,core)
@@ -37,6 +34,8 @@ public sealed class StatusTextClient : MavlinkMicroserviceClient, IStatusTextCli
 
     #region Dispose
 
+    private readonly IDisposable _sub;
+    
     protected override void Dispose(bool disposing)
     {
         if (disposing)

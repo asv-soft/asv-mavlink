@@ -1,22 +1,28 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.Vehicle;
 using Microsoft.Extensions.Logging;
 using ObservableCollections;
 using R3;
 using ZLogger;
-using Unit = System.Reactive.Unit;
+
 
 namespace Asv.Mavlink;
 
 public class MissionClientExConfig:MissionClientConfig
 {
-    public int DeviceUploadTimeoutMs { get; set; } = 3000;
+    private int _deviceUploadTimeoutMs = 3000;
+
+    public int DeviceUploadTimeoutMs
+    {
+        get => _deviceUploadTimeoutMs;
+        set => _deviceUploadTimeoutMs = value >= 0 
+            ? value 
+            : throw new ArgumentOutOfRangeException(nameof(DeviceUploadTimeoutMs));
+    }
 }
 
 public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDisposable
@@ -28,14 +34,13 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
     private readonly ReactiveProperty<double> _allMissionDistance;
     private readonly TimeSpan _deviceUploadTimeout;
     private readonly CancellationTokenSource _disposeCancel;
-    private readonly IDisposable _obs1;
 
     public MissionClientEx(
         IMissionClient client, 
         MissionClientExConfig config)
     {
-        _logger = client.Core.Log.CreateLogger<MissionClientEx>();
         _client = client ?? throw new ArgumentNullException(nameof(client));
+        _logger = client.Core.Log.CreateLogger<MissionClientEx>();
         var config1 = config ?? throw new ArgumentNullException(nameof(config));
         _disposeCancel = new CancellationTokenSource();
         _deviceUploadTimeout = TimeSpan.FromMilliseconds(config1.DeviceUploadTimeoutMs);
@@ -43,8 +48,8 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
         _isMissionSynced = new ReactiveProperty<bool>(false);
         _allMissionDistance = new ReactiveProperty<double>(double.NaN);
         _obs1 = _isMissionSynced.Subscribe(_ => UpdateMissionsDistance());
-        
     }
+    
     public string Name => $"{Base.Name}Ex";
     public IMissionClient Base => _client;
     public IReadOnlyObservableList<MissionItem> MissionItems => _missionSource;
@@ -66,13 +71,21 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
         var result = new MissionItem[count];
         _missionSource.Clear();
         var current = 0;
-        for (ushort i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
         {
-            var item = await _client.MissionRequestItem(i,cancel).ConfigureAwait(false);
+            var item = await _client.MissionRequestItem((ushort) i,cancel).ConfigureAwait(false);
             result[i] = AddMissionItem(item);
             current++;
             progress?.Invoke((double)current / count);
         }
+
+        if (result.Length != count)
+        {
+            await Base.SendMissionAck(MavMissionResult.MavMissionError, cancel).ConfigureAwait(false);
+            return [];
+        }
+
+        await Base.SendMissionAck(MavMissionResult.MavMissionAccepted, cancel).ConfigureAwait(false);
         _isMissionSynced.OnNext(true);
         return result;
     }
@@ -96,15 +109,17 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
         var current = 0;
         var lastUpdateTime = DateTime.Now;
-        using var checkTimer = Base.Core.TimeProvider.CreateTimer(x =>
+        await using var checkTimer = Base.Core.TimeProvider.CreateTimer(x =>
         {
-            if (DateTime.Now - lastUpdateTime > _deviceUploadTimeout)
+            if (DateTime.Now - lastUpdateTime <= _deviceUploadTimeout)
             {
-                _logger.ZLogWarning($"Mission upload timeout");
-                tcs.TrySetException(new Exception($"Mission upload timeout"));
+                return;
             }
+            
+            _logger.ZLogWarning($"Mission upload timeout");
+            tcs.TrySetException(new Exception("Mission upload timeout"));
         }, null, _deviceUploadTimeout, _deviceUploadTimeout); 
-        using var sub1 = _client.OnMissionRequest.Subscribe(req =>
+        using var sub1 = _client.OnMissionRequest.SubscribeAwait(async (req, ct) =>
         {
             _logger.ZLogDebug($"UAV request {req.Seq} item");
             lastUpdateTime = DateTime.Now;
@@ -116,11 +131,11 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
                 tcs.TrySetException(new Exception($"Requested mission item with index '{req.Seq}' not found in local store"));
                 return;
             }
-            _client.WriteMissionItem(item, cancel);
-
+            
+            await _client.WriteMissionItem(item, cancel).ConfigureAwait(false);
         } );
 
-        using var sub2 =_client.OnMissionAck.Subscribe(p =>
+        using var sub2 = _client.OnMissionAck.Subscribe(p =>
         {
             lastUpdateTime = DateTime.Now;
             if (p.Type == MavMissionResult.MavMissionAccepted)
@@ -131,10 +146,9 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
             {
                 tcs.TrySetException(new Exception($"Error to upload mission to vehicle:{p.Type:G}"));
             }
-                
         });
 
-        await _client.MissionSetCount((ushort)_missionSource.Count, cancel).ConfigureAwait(false);
+        await _client.MissionSetCount((ushort) _missionSource.Count, cancel).ConfigureAwait(false);
         await tcs.Task.ConfigureAwait(false);
         _isMissionSynced.OnNext(true);
     }
@@ -143,6 +157,11 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
 
     public MissionItem Create()
     {
+        if (_missionSource.Count > ushort.MaxValue)
+        {
+            throw new ArgumentOutOfRangeException();
+        } 
+        
         return AddMissionItem(new MissionItemIntPayload
         {
             Seq = (ushort)_missionSource.Count,
@@ -186,7 +205,7 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
         return missionItem;
     }
     
-    private void UpdateMissionsDistance()
+    private void  UpdateMissionsDistance()
     {
         var missions = _missionSource.Where(i =>
                 i.Command.Value == MavCmd.MavCmdNavWaypoint || i.Command.Value == MavCmd.MavCmdNavSplineWaypoint)
@@ -206,7 +225,11 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
     {
         return Task.CompletedTask;
     }
+    
     #region Dispose
+    
+    private readonly IDisposable _obs1;
+    
     public void Dispose()
     {
         _isMissionSynced.Dispose();

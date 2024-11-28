@@ -91,7 +91,7 @@ namespace Asv.Mavlink
             DataStream = dataStream;
             _decoder = new PacketV2Decoder();
             register(_decoder);
-            _sub1 = DataStream.Subscribe(b=> _decoder.OnData(b)); 
+            _sub1 = DataStream.OnReceive.Subscribe(b=> _decoder.OnData(b)); 
             _sendPacketSubject = new Subject<IPacketV2<IPayload>>();
             RxPipe = _decoder.OnPacket
                 .Do(x => Interlocked.Increment(ref _rxPackets))

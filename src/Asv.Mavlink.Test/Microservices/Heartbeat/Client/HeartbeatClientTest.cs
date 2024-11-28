@@ -1,7 +1,8 @@
 using System;
-using System.Reactive.Linq;
+
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Minimal;
+using AutoFixture.Xunit2;
 using R3;
 using Xunit;
 using Xunit.Abstractions;
@@ -58,6 +59,7 @@ public class HeartbeatClientTest(ITestOutputHelper log) : ClientTestBase<Heartbe
     [InlineData(1000,1)]
     [InlineData(100,10)]
     [InlineData(10,100)]
+    [InlineData(20,50)]
     public async Task PacketRateHz_Changed_Success(int delayMs, double rate)
     {
         Assert.Equal(0,Client.PacketRateHz.CurrentValue);

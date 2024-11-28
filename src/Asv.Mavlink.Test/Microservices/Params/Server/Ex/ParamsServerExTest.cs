@@ -2,7 +2,7 @@ using Asv.Cfg;
 using JetBrains.Annotations;
 using Xunit.Abstractions;
 
-namespace Asv.Mavlink.Test.Server.Ex;
+namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(ParamsServerEx))]
 public class ParamsServerExTest(ITestOutputHelper log) : ServerTestBase<ParamsServerEx>(log)

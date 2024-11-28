@@ -1,7 +1,7 @@
-#nullable enable
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Common;
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -78,6 +78,7 @@ namespace Asv.Mavlink
         protected Task InternalSend<TPacketSend>(Action<TPacketSend> fillPacket, CancellationToken cancel = default)
             where TPacketSend : IPacketV2<IPayload>, new()
         {
+            cancel.ThrowIfCancellationRequested();
             var packet = new TPacketSend();
             fillPacket(packet);
             _loggerBase.ZLogTrace($"{LogSend} send {packet.Name}");
@@ -90,6 +91,7 @@ namespace Asv.Mavlink
         protected async Task<TResult> InternalSendAndWaitAnswer<TResult>(IPacketV2<IPayload> packet,
             CancellationToken cancel, FilterDelegate<TResult> filterAndResultGetter, int timeoutMs = 1000)
         {
+            cancel.ThrowIfCancellationRequested();
             ArgumentNullException.ThrowIfNull(filterAndResultGetter);
             _loggerBase.ZLogTrace($"{LogSend} call {packet.Name}");
             using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
@@ -118,11 +120,13 @@ namespace Asv.Mavlink
             Action<TPacketSend,int>? fillOnConfirmation = null, int timeoutMs = 1000,  CancellationToken cancel = default)
             where TPacketSend : IPacketV2<IPayload>, new()
         {
+            cancel.ThrowIfCancellationRequested();
             var packet = new TPacketSend();
             fillPacket(packet);
             byte currentAttempt = 0;
             var name = packet.Name;
-            while (currentAttempt < attemptCount)
+            bool IsRetryCondition() => currentAttempt < attemptCount;
+            while (IsRetryCondition())
             {
                 if (currentAttempt != 0)
                 {
@@ -136,10 +140,12 @@ namespace Asv.Mavlink
                 }
                 catch (OperationCanceledException)
                 {
-                    if (cancel.IsCancellationRequested)
+                    if (IsRetryCondition())
                     {
-                        throw;
+                        continue;
                     }
+
+                    cancel.ThrowIfCancellationRequested();
                 }
             }
             _loggerBase.ZLogError($"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
@@ -151,6 +157,7 @@ namespace Asv.Mavlink
             CancellationToken cancel, Func<TAnswerPacket, bool>? filter = null, int timeoutMs = 1000)
             where TAnswerPacket : IPacketV2<IPayload>, new()
         {
+            cancel.ThrowIfCancellationRequested();
             var p = new TAnswerPacket();
             _loggerBase.ZLogTrace($"{LogSend} call {p.Name}");
             using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
@@ -175,12 +182,14 @@ namespace Asv.Mavlink
             where TPacketSend : IPacketV2<IPayload>, new()
             where TPacketRecv : IPacketV2<IPayload>, new()
         {
+            cancel.ThrowIfCancellationRequested();
             var packet = new TPacketSend();
             fillPacket(packet);
             byte currentAttempt = 0;
             TPacketRecv? result = default;
             var name = packet.Name;
-            while (currentAttempt < attemptCount)
+            bool IsRetryCondition() => currentAttempt < attemptCount;
+            while (IsRetryCondition())
             {
                 if (currentAttempt != 0)
                 {
@@ -195,10 +204,12 @@ namespace Asv.Mavlink
                 }
                 catch (OperationCanceledException)
                 {
-                    if (cancel.IsCancellationRequested)
+                    if (IsRetryCondition())
                     {
-                        throw;
+                        continue;
                     }
+                    
+                    cancel.ThrowIfCancellationRequested();
                 }
             }
 

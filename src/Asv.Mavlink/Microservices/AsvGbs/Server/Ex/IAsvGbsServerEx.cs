@@ -34,6 +34,7 @@ namespace Asv.Mavlink
     /// </summary>
     public interface IAsvGbsServerEx
     {
+        public void Start();
         /// <summary>
         /// Gets the base server.
         /// </summary>

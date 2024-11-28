@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reactive.Linq;
+
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -30,7 +30,7 @@ namespace Asv.Mavlink
         private readonly IncrementalRateCounter _rxRate;
         private readonly ReactiveProperty<double> _packetRate;
         private readonly ReactiveProperty<double> _linkQuality;
-        private readonly LinkIndicator _link;
+        private readonly ManualLinkIndicator _link;
         private long _lastHeartbeat;
         private long _totalRateCounter;
         private readonly TimeSpan _heartBeatTimeoutMs;
@@ -70,12 +70,17 @@ namespace Asv.Mavlink
                 .ToReadOnlyReactiveProperty();
 
             _packetRate = new ReactiveProperty<double>(0);
-            _link = new LinkIndicator(config.LinkQualityWarningSkipCount);
-            Link = _link.ToObservable().ToReadOnlyReactiveProperty();
+            _link = new ManualLinkIndicator(config.LinkQualityWarningSkipCount);
+            // TODO: error at LinkIndicator. After first downgrade status will be Downgrade. Remove after fix at Asv.Common
+            for (var i = 0; i < config.LinkQualityWarningSkipCount + 1; i++)
+            {
+                _link.Downgrade();
+            }
+            
             
             _linkQuality = new ReactiveProperty<double>();
             _timeProvider
-                .CreateTimer(CheckConnection, null, TimeSpan.Zero, CheckConnectionDelay);
+                .CreateTimer(CheckConnection, null, CheckConnectionDelay, CheckConnectionDelay);
             
             // we need skip first packet because it's not a real packet
             _obs2 = RawHeartbeat.Skip(1).Subscribe(_ =>
@@ -86,7 +91,7 @@ namespace Asv.Mavlink
 
             if (config.PrintLinkStateToLog)
             {
-                _obs3 = _link.DistinctUntilChanged().Skip(1).Subscribe(PrintLinkToLog);
+                _obs3 = _link.State.Skip(1).Subscribe(PrintLinkToLog);
             }
             if (config.PrintStatisticsToLogDelayMs > 0)
             {
@@ -147,7 +152,7 @@ namespace Asv.Mavlink
         public ReadOnlyReactiveProperty<HeartbeatPayload?> RawHeartbeat => _heartBeat;
         public ReadOnlyReactiveProperty<double> PacketRateHz => _packetRate;
         public ReadOnlyReactiveProperty<double> LinkQuality => _linkQuality;
-        public ReadOnlyReactiveProperty<LinkState> Link { get; }
+        public ReadOnlyReactiveProperty<LinkState> Link => _link.State;
 
         private void CheckConnection(object? state)
         {
@@ -156,7 +161,7 @@ namespace Asv.Mavlink
             _packetRate.OnNext(rate);
             if (_timeProvider.GetElapsedTime(_lastHeartbeat) <= _heartBeatTimeoutMs) return;
             _link.Downgrade();
-            if (_link.Value == LinkState.Disconnected)
+            if (_link.State.Value == LinkState.Disconnected)
             {
                 _packetRate.OnNext(0);
                 _linkQuality.OnNext(0);

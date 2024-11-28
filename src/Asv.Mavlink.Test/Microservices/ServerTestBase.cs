@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Time.Testing;
+using TimeProviderExtensions;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
@@ -11,7 +12,7 @@ public abstract class ServerTestBase<TServer>
     {
         Log = log;
         Link = new VirtualMavlinkConnection();
-        ServerTime = new FakeTimeProvider();
+        ServerTime = new ManualTimeProvider();
         Seq = new PacketSequenceCalculator();
         Identity = new MavlinkIdentity(3, 4);
         Core = new CoreServices(Link.Server, Seq, new TestLoggerFactory(log, ServerTime, "SERVER"), ServerTime, new DefaultMeterFactory());
@@ -25,6 +26,6 @@ public abstract class ServerTestBase<TServer>
     protected ITestOutputHelper Log { get; }
     protected CoreServices Core { get; }
     protected PacketSequenceCalculator Seq { get; }
-    protected FakeTimeProvider ServerTime { get; }
+    protected ManualTimeProvider ServerTime { get; }
     protected VirtualMavlinkConnection Link { get; }
 }

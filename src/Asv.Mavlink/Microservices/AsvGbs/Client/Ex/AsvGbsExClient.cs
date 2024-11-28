@@ -16,7 +16,6 @@ public class AsvGbsExClient: IAsvGbsExClient, IDisposable, IAsyncDisposable
     private readonly ICommandClient _command;
     private readonly CancellationTokenSource _disposedCancel;
 
-
     public AsvGbsExClient(
         IAsvGbsClient client, 
         IHeartbeatClient heartbeat, 

@@ -14351,10 +14351,9 @@ namespace Asv.Mavlink.V2.Common
             BinSerialize.WriteByte(ref buffer,(byte)MissionType);
             /* PayloadByteSize = 38 */;
         }
-        
-        
 
-
+        private byte _autocontinue;
+        private byte _current;
 
         /// <summary>
         /// PARAM1, see MAV_CMD enum
@@ -14420,12 +14419,20 @@ namespace Asv.Mavlink.V2.Common
         /// false:0, true:1
         /// OriginName: current, Units: , IsExtended: false
         /// </summary>
-        public byte Current { get; set; }
+        public byte Current
+        {
+            get => _current;
+            set => _current = value > (byte )1 ? (byte) 1 : value;
+        }
         /// <summary>
         /// Autocontinue to next waypoint. 0: false, 1: true. Set false to pause mission after the item completes.
         /// OriginName: autocontinue, Units: , IsExtended: false
         /// </summary>
-        public byte Autocontinue { get; set; }
+        public byte Autocontinue
+        {
+            get => _autocontinue;
+            set => _autocontinue = value > (byte) 1 ? (byte) 1 : value;
+        }
         /// <summary>
         /// Mission type.
         /// OriginName: mission_type, Units: , IsExtended: true

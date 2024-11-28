@@ -7,8 +7,6 @@ namespace Asv.Mavlink
 {
     public class AsvGbsClient:MavlinkMicroserviceClient, IAsvGbsClient
     {
-       
-
         public AsvGbsClient(MavlinkClientIdentity identity,ICoreServices core) 
             : base("GBS", identity, core)
         {
@@ -41,6 +39,4 @@ namespace Asv.Mavlink
 
         #endregion
     }
-    
-    
 }

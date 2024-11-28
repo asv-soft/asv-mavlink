@@ -1,6 +1,6 @@
 using System;
-using System.Reactive.Disposables;
 using Microsoft.Extensions.Logging;
+using R3;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;

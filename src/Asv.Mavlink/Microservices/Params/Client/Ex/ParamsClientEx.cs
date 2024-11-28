@@ -8,11 +8,11 @@ using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
 using ObservableCollections;
 using R3;
-using ObservableExtensions = System.ObservableExtensions;
+
 
 namespace Asv.Mavlink;
 
-public class ParamsClientExConfig:ParameterClientConfig
+public class ParamsClientExConfig : ParameterClientConfig
 {
     public int ReadListTimeoutMs { get; set; } = 5000;
     public int ChunkUpdateBufferMs { get; set; } = 100;
@@ -20,34 +20,43 @@ public class ParamsClientExConfig:ParameterClientConfig
 
 public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposable
 {
-    
-
     private static readonly TimeSpan CheckTimeout = TimeSpan.FromMilliseconds(100);
     private readonly ParamsClientExConfig _config;
     private readonly IMavParamEncoding _converter;
-    private readonly ObservableDictionary<string,ParamItem> _paramsSource;
+    private readonly ObservableDictionary<string, ParamItem> _paramsSource;
     private readonly BindableReactiveProperty<bool> _isSynced;
     private readonly Subject<(string, MavParamValue)> _onValueChanged;
     private readonly ILogger<ParamsClientEx> _logger;
     private readonly CancellationTokenSource _disposeCancel;
     private readonly IDisposable _sub1;
-    private readonly ImmutableDictionary<string,ParamDescription> _existDescription;
+    private readonly ImmutableDictionary<string, ParamDescription> _existDescription;
 
-    public ParamsClientEx(IParamsClient client, ParamsClientExConfig config,IMavParamEncoding converter,IEnumerable<ParamDescription> existDescription)
+    public ParamsClientEx(IParamsClient client, ParamsClientExConfig config, IMavParamEncoding converter,
+        IEnumerable<ParamDescription> existDescription)
     {
         _logger = client.Core.Log.CreateLogger<ParamsClientEx>();
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _converter = converter ?? throw new ArgumentNullException(nameof(converter));
-        _existDescription = existDescription.ToImmutableDictionary(x=>x.Name,x=>x);;
+        _existDescription = existDescription.ToImmutableDictionary(x => x.Name, x => x);
         Base = client;
         _disposeCancel = new CancellationTokenSource();
         _paramsSource = new ObservableDictionary<string, ParamItem>();
         _isSynced = new BindableReactiveProperty<bool>(false);
-        _sub1 = client.OnParamValue.Chunk(TimeSpan.FromMilliseconds(config.ChunkUpdateBufferMs),client.Core.TimeProvider).Subscribe(OnUpdate);
+        
+        //TODO: chunk не срабатывает
+        //_sub1 = client.OnParamValue.Chunk(TimeSpan.FromMilliseconds(config.ChunkUpdateBufferMs),client.Core.TimeProvider).Subscribe(OnUpdate);
+        
+        var listParam = new List<ParamValuePayload>();
+        _sub1 = client.OnParamValue.Subscribe(p =>
+        {
+            listParam.Add(p);
+            OnUpdate(listParam);
+        });
         RemoteCount = client.OnParamValue.Select(x => (int)x.ParamCount).ToReadOnlyReactiveProperty(-1);
         LocalCount = _paramsSource.ObserveCountChanged().ToReadOnlyReactiveProperty();
         _onValueChanged = new Subject<(string, MavParamValue)>();
     }
+
     public string Name => $"{Base.Name}Ex";
     public IParamsClient Base { get; }
     public MavlinkClientIdentity Identity => Base.Identity;
@@ -59,6 +68,7 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
     private CancellationToken DisposeCancel => _disposeCancel.Token;
     public ReadOnlyReactiveProperty<bool> IsSynced => _isSynced;
     public IReadOnlyObservableDictionary<string, ParamItem> Items => _paramsSource;
+
     private void OnUpdate(IList<ParamValuePayload> items)
     {
         if (items.Count == 0) return;
@@ -71,9 +81,11 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
                 {
                     desc = CreateDefaultDescription(value);
                 }
+
                 item = new ParamItem(Base, _converter, desc, value);
-                _paramsSource.Add(name,item);
+                _paramsSource.Add(name, item);
             }
+
             item.InternalUpdate(value);
             item.IsSynced.AsObservable().Subscribe(OnSyncedChanged);
             _onValueChanged.OnNext((name, item.Value.Value));
@@ -107,7 +119,7 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
         desc.Values = null;
         desc.Calibration = 0;
         desc.BoardType = null;
-        
+
         switch (value.ParamType)
         {
             case MavParamType.MavParamTypeUint8:
@@ -159,11 +171,11 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
         }
 
         return desc;
-
     }
 
-    
-    public async Task ReadAll(IProgress<double>? progress = null, bool readMissedOneByOne = true, CancellationToken cancel = default)
+
+    public async Task ReadAll(IProgress<double>? progress = null, bool readMissedOneByOne = true,
+        CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();
         using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
@@ -177,6 +189,7 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
             {
                 tcs.TrySetResult(true);
             }
+
             progress.Report((double)_paramsSource.Count / p.ParamCount);
             Interlocked.Exchange(ref lastUpdate, Base.Core.TimeProvider.GetTimestamp());
         });
@@ -188,13 +201,15 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
             {
                 tcs.TrySetResult(false);
             }
-        },null,CheckTimeout,CheckTimeout);
+            //TODO: Interlocked.Exchange(ref lastUpdate, Base.Core.TimeProvider.GetTimestamp());
+        }, null, CheckTimeout, CheckTimeout);
         var cached = _paramsSource.ToImmutableArray();
         _paramsSource.Clear();
         foreach (var item in cached)
         {
             await item.Value.DisposeAsync().ConfigureAwait(false);
         }
+
         await Base.SendRequestList(linkedCancel.Token).ConfigureAwait(false);
         var readAllParams = await tcs.Task.ConfigureAwait(false);
         progress.Report(1);
@@ -212,15 +227,17 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
             }
         }
     }
+
     public async Task<MavParamValue> ReadOnce(string name, CancellationToken cancel = default)
     {
-        var result = await Base.Read(name,cancel).ConfigureAwait(false);
+        var result = await Base.Read(name, cancel).ConfigureAwait(false);
         return _converter.ConvertFromMavlinkUnion(result.ParamValue, result.ParamType);
     }
+
     public async Task<MavParamValue> WriteOnce(string name, MavParamValue value, CancellationToken cancel = default)
     {
         var floatValue = _converter.ConvertToMavlinkUnion(value);
-        var result = await Base.Write(name,value.Type,floatValue, cancel).ConfigureAwait(false);
+        var result = await Base.Write(name, value.Type, floatValue, cancel).ConfigureAwait(false);
         return _converter.ConvertFromMavlinkUnion(result.ParamValue, result.ParamType);
     }
 

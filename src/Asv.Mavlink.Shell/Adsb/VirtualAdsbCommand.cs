@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.Vehicle;
 using ConsoleAppFramework;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
@@ -17,7 +17,8 @@ namespace Asv.Mavlink.Shell;
 public class VirtualAdsbCommand
 {
     private string _file = "adsb.json";
-
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
+        
     /// <summary>
     /// Generate virtual ADSB Vehicle.
     /// </summary>
@@ -159,7 +160,7 @@ public class VirtualAdsbCommand
                 x.HorVelocity = (ushort)(vHorizontal * 1e2);
                 x.VerVelocity = (short)(vVertical * 1e2);
                 x.IcaoAddress = cfg.IcaoAddress;
-            });
+            },  _cancellationTokenSource.Token);
 
             // Simulate delay for realistic movement
             vehicleTask.Description =

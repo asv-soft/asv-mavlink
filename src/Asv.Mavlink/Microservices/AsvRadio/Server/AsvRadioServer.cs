@@ -35,7 +35,7 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
     
     public void Start()
     {
-        _transponder.Start(TimeSpan.FromMilliseconds(800),TimeSpan.FromMilliseconds(_config.StatusRateMs));
+        _transponder.Start(TimeSpan.FromMilliseconds(_config.StatusRateMs),TimeSpan.FromMilliseconds(_config.StatusRateMs));
     }
 
     public void Set(Action<AsvRadioStatusPayload> changeCallback)

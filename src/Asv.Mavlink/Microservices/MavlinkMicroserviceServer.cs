@@ -14,22 +14,33 @@ public interface IMavlinkMicroserviceServer
     MavlinkIdentity Identity { get; }
 }
 
-public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdentity identity, ICoreServices core)
-    : IMavlinkMicroserviceServer, IDisposable, IAsyncDisposable
+public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, IDisposable, IAsyncDisposable
 {
-    private readonly ILogger _loggerBase = core.Log.CreateLogger<MavlinkMicroserviceServer>();
+    private readonly ILogger _loggerBase;
     private string? _logLocalName;
     private string? _logSend;
     private string? _logRecv;
     private readonly CancellationTokenSource _disposeCancel = new();
+    private readonly string _ifcLogName;
+
+    protected MavlinkMicroserviceServer(string ifcLogName, MavlinkIdentity identity, ICoreServices core)
+    {
+        ArgumentNullException.ThrowIfNull(identity);
+        ArgumentNullException.ThrowIfNull(core);
+        ArgumentException.ThrowIfNullOrWhiteSpace(ifcLogName);
+        _ifcLogName = ifcLogName;
+        _loggerBase = core.Log.CreateLogger<MavlinkMicroserviceServer>();
+        Core = core;
+        Identity = identity;
+    }
 
     protected string LogLocalName => _logLocalName ??= $"{Identity.SystemId}:{Identity.ComponentId}";
-    protected string LogSend => _logSend ??= $"[{LogLocalName}]=>[{ifcLogName}]:";
-    protected string LogRecv => _logRecv ??= $"[{LogLocalName}]<=[{ifcLogName}]:";
+    protected string LogSend => _logSend ??= $"[{LogLocalName}]=>[{_ifcLogName}]:";
+    protected string LogRecv => _logRecv ??= $"[{LogLocalName}]<=[{_ifcLogName}]:";
 
-    public ICoreServices Core { get; } = core;
+    public ICoreServices Core { get; }
 
-    public MavlinkIdentity Identity { get; } = identity;
+    public MavlinkIdentity Identity { get; }
 
     protected CancellationToken DisposeCancel => _disposeCancel.Token;
 
@@ -53,6 +64,7 @@ public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdenti
     }
     protected Task InternalSend(int messageId, Action<IPacketV2<IPayload>> fillPacket, CancellationToken cancel = default)
     {
+        cancel.ThrowIfCancellationRequested();
         var pkt = Core.Connection.CreatePacketByMessageId(messageId);
         fillPacket(pkt ?? throw new InvalidOperationException($"Packet {messageId} not found"));
         pkt.ComponentId = Identity.ComponentId;
@@ -64,6 +76,7 @@ public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdenti
     protected Task InternalSend<TPacketSend>(Action<TPacketSend> fillPacket, CancellationToken cancel = default)
         where TPacketSend : IPacketV2<IPayload>, new()
     {
+        cancel.ThrowIfCancellationRequested();
         var packet = new TPacketSend();
         fillPacket(packet);
         packet.ComponentId = Identity.ComponentId;
@@ -80,12 +93,13 @@ public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdenti
         int timeoutMs = 1000)
         where TAnswerPacket : IPacketV2<IPayload>, new()
     {
+        cancel.ThrowIfCancellationRequested();
         var p = new TAnswerPacket();
         _loggerBase.ZLogTrace($"{LogSend} call {p.Name}");
         using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, _disposeCancel.Token);
-        linkedCancel.CancelAfter(timeoutMs);
+        linkedCancel.CancelAfter(TimeSpan.FromMilliseconds(timeoutMs), Core.TimeProvider);
         var tcs = new TaskCompletionSource<TAnswerPacket>();
-        using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
+        await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
 
         filter ??= (_ => true);
         using var subscribe = InternalFilterFirstAsync(targetSystemGetter,targetComponentGetter,filter).Subscribe(v => tcs.TrySetResult(v));
@@ -109,13 +123,16 @@ public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdenti
         where TPacketSend : IPacketV2<IPayload>, new()
         where TPacketRecv : IPacketV2<IPayload>, new()
     {
+        cancel.ThrowIfCancellationRequested();
         var packet = new TPacketSend();
         fillPacket(packet);
         byte currentAttempt = 0;
         TPacketRecv result = default;
         var name = packet.Name;
-        while (currentAttempt < attemptCount)
+        bool IsRetryCondition() => currentAttempt < attemptCount;
+        while (IsRetryCondition())
         {
+            cancel.ThrowIfCancellationRequested();
             if (currentAttempt != 0)
             {
                 fillOnConfirmation?.Invoke(packet, currentAttempt);
@@ -128,12 +145,14 @@ public abstract class MavlinkMicroserviceServer(string ifcLogName, MavlinkIdenti
                 result = await InternalSendAndWaitAnswer(packet, cancel,targetSystemGetter, targetComponentGetter,filter, timeoutMs).ConfigureAwait(false);
                 break;
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
-                if (cancel.IsCancellationRequested)
+                if (IsRetryCondition())
                 {
-                    throw;
+                    continue;
                 }
+
+                cancel.ThrowIfCancellationRequested();
             }
         }
 

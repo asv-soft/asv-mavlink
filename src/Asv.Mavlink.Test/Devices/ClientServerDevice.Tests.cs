@@ -1,10 +1,7 @@
 using System;
-using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using Asv.Common;
 using JetBrains.Annotations;
-using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Time.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -33,7 +30,7 @@ public class ComplexDeviceTests(ITestOutputHelper log)
     {
         Heartbeat =
         {
-            HeartbeatTimeoutMs = 2000,
+            HeartbeatTimeoutMs = 1000,
             LinkQualityWarningSkipCount = 3,
             RateMovingAverageFilter = 10,
             PrintStatisticsToLogDelayMs = 10_000,
@@ -52,27 +49,29 @@ public class ComplexDeviceTests(ITestOutputHelper log)
     }
     
     [Fact]
-    public async Task HeartbeatClientConnectToServer_Success()
+    public void HeartbeatClientConnectToServer_Success()
     {
+        var client = Client; // to ensure that client is created
+        Server.Start();
         Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.CurrentValue);
-        ServerTime.Advance(TimeSpan.FromSeconds(1.1));
-        ClientTime.Advance(TimeSpan.FromSeconds(1.1));
-        await Client.WaitUntilConnect();
-        await Server.DisposeAsync();
+        ServerTime.Advance(TimeSpan.FromSeconds(1));
+        ClientTime.Advance(TimeSpan.FromSeconds(1));
+        Server.Dispose();
         Assert.Equal(LinkState.Connected,Client.Heartbeat.Link.CurrentValue);
-        ServerTime.Advance(TimeSpan.FromSeconds(1.1));
-        ClientTime.Advance(TimeSpan.FromSeconds(1.1));
+        
+        ServerTime.Advance(TimeSpan.FromSeconds(1));
+        ClientTime.Advance(TimeSpan.FromSeconds(1));
+        Assert.Equal(LinkState.Downgrade,Client.Heartbeat.Link.CurrentValue);
+        
+        ServerTime.Advance(TimeSpan.FromSeconds(1));
+        ClientTime.Advance(TimeSpan.FromSeconds(1));
         
         Assert.Equal(LinkState.Downgrade,Client.Heartbeat.Link.CurrentValue);
-        ServerTime.Advance(TimeSpan.FromSeconds(1.1));
-        ClientTime.Advance(TimeSpan.FromSeconds(1.1));
-        
-        Assert.Equal(LinkState.Downgrade,Client.Heartbeat.Link.CurrentValue);
-        ServerTime.Advance(TimeSpan.FromSeconds(1.1));
-        ClientTime.Advance(TimeSpan.FromSeconds(1.1));
+        ServerTime.Advance(TimeSpan.FromSeconds(1));
+        ClientTime.Advance(TimeSpan.FromSeconds(1));
         Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.CurrentValue);
-        ServerTime.Advance(TimeSpan.FromSeconds(1.1));
-        ClientTime.Advance(TimeSpan.FromSeconds(1.1));
+        ServerTime.Advance(TimeSpan.FromSeconds(1));
+        ClientTime.Advance(TimeSpan.FromSeconds(1));
         
         Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.CurrentValue);
     }

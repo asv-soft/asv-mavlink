@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Asv.Mavlink;
 using Asv.Mavlink.V2.AsvAudio;
+using Asv.Mavlink.V2.AsvRadio;
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;
@@ -12,10 +14,12 @@ public class AsvRadioServerExTest(ITestOutputHelper log) : ServerTestBase<AsvRad
 {
     private readonly AsvRadioCapabilities _capabilities = AsvRadioCapabilities.Empty;
     private readonly IReadOnlySet<AsvAudioCodec> _codecs = new HashSet<AsvAudioCodec>();
+
     private readonly AsvRadioServerConfig _radioConfig = new()
     {
         StatusRateMs = 1000
     };
+
     private readonly MavlinkHeartbeatServerConfig _heartbeatConfig = new()
     {
         HeartbeatRateMs = 1000
@@ -33,6 +37,31 @@ public class AsvRadioServerExTest(ITestOutputHelper log) : ServerTestBase<AsvRad
         var hb = new HeartbeatServer(identity, _heartbeatConfig, core);
         var cmd = new CommandLongServerEx(new CommandServer(identity, core));
         var status = new StatusTextServer(identity, _statusConfig, core);
-        return new AsvRadioServerEx(_capabilities, _codecs,srv,hb , cmd, status );
+        return new AsvRadioServerEx(_capabilities, _codecs, srv, hb, cmd, status);
+    }
+
+    [Fact]
+    public void ServerEx_CreatesSuccessfully()
+    {
+        //Arrange & Act
+        var connection = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
+        var identity = new MavlinkIdentity(3, 4);
+        var services = new CoreServices(connection);
+        var server = CreateClient(identity, services);
+
+        //Assert
+        Assert.NotNull(server);
+    }
+
+    [Fact]
+    public void Ctor_ServerCreatesCorrect_Success()
+    {
+        //Arrange & Act
+        var server = Server;
+
+        //Assert
+        Assert.NotNull(server);
+        Assert.NotNull(server.Base);
+        Assert.Equal(AsvRadioCustomMode.AsvRadioCustomModeIdle, server.CustomMode.CurrentValue);
     }
 }
