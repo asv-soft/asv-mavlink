@@ -9,11 +9,25 @@ using ZLogger;
 
 namespace Asv.Mavlink
 {
-
     public class MissionClientConfig
     {
-        public int CommandTimeoutMs { get; set; } = 1000;
-        public int AttemptToCallCount { get; set; } = 3;
+        private int _commandTimeoutMs = 1000;
+        private int _attemptToCallCount = 3;
+
+        public int CommandTimeoutMs
+        {
+            get => _commandTimeoutMs;
+            set => _commandTimeoutMs = value >= 0 
+                ? value 
+                : throw new ArgumentOutOfRangeException(nameof(CommandTimeoutMs));
+        }
+        public int AttemptToCallCount 
+        { 
+            get => _attemptToCallCount;
+            set => _attemptToCallCount = value >= 0
+                ? value 
+                : throw new ArgumentOutOfRangeException(nameof(AttemptToCallCount));
+        }
     }
 
     public sealed class MissionClient : MavlinkMicroserviceClient, IMissionClient
@@ -24,8 +38,8 @@ namespace Asv.Mavlink
         public MissionClient(MavlinkClientIdentity identity, MissionClientConfig config, ICoreServices core) 
             : base("MISSION",identity, core)
         {
+            _config = config ?? throw new ArgumentNullException(nameof(config));
             _logger = core.Log.CreateLogger<MissionClient>();
-            _config = config;
             MissionCurrent = InternalFilter<MissionCurrentPacket>().Select(p => p.Payload.Seq)
                 .ToReadOnlyReactiveProperty();
             MissionReached = InternalFilter<MissionItemReachedPacket>().Select(p => p.Payload.Seq)
@@ -34,16 +48,15 @@ namespace Asv.Mavlink
             OnMissionAck = InternalFilter<MissionAckPacket>(_ => true).Select(p => p.Payload);
         }
 
-        public async Task MissionSetCurrent(ushort missionItemsIndex, CancellationToken cancel)
+        public Task MissionSetCurrent(ushort missionItemsIndex, CancellationToken cancel)
         {
             _logger.ZLogDebug($"{LogSend} Set current mission index to '{missionItemsIndex}' with {_config.AttemptToCallCount} attempts");
-            var result = await InternalCall<int, MissionSetCurrentPacket, MissionCurrentPacket>(p =>
+            return InternalCall<int, MissionSetCurrentPacket, MissionCurrentPacket>(p =>
             {
                 p.Payload.Seq = missionItemsIndex;
                 p.Payload.TargetComponent = Identity.Target.ComponentId;
                 p.Payload.TargetSystem = Identity.Target.SystemId;
-            }, null, p => p.Payload.Seq, _config.AttemptToCallCount, timeoutMs: _config.CommandTimeoutMs, cancel: cancel).ConfigureAwait(false);
-            // Debug.Assert(result == missionItemsIndex);
+            }, null, p => p.Payload.Seq, _config.AttemptToCallCount, timeoutMs: _config.CommandTimeoutMs, cancel: cancel);
         }
 
         public async Task<int> MissionRequestCount(CancellationToken cancel)
@@ -103,7 +116,6 @@ namespace Asv.Mavlink
                 p.Payload.MissionType = missionType;
 
             }, cancel);
-
         }
         
         public async Task ClearAll(MavMissionType type = MavMissionType.MavMissionTypeAll,
@@ -163,6 +175,27 @@ namespace Asv.Mavlink
                 p.Payload.TargetComponent = Identity.Target.ComponentId;
                 p.Payload.TargetSystem = Identity.Target.SystemId;
                 fillCallback(p.Payload);
+            }, cancel);
+        }
+        
+        public Task SendMissionAck
+        (
+            MavMissionResult result, 
+            CancellationToken cancel = default,
+            byte targetSystemId = 0, 
+            byte targetComponentId = 0,
+            MavMissionType? type = null
+        )
+        {
+            return InternalSend<MissionAckPacket>(x =>
+            {
+                x.Payload.TargetSystem = targetSystemId;
+                x.Payload.TargetComponent = targetComponentId;
+                x.Payload.Type = result;
+                if (type.HasValue)
+                {
+                    x.Payload.MissionType = type.Value;
+                }
             }, cancel);
         }
 

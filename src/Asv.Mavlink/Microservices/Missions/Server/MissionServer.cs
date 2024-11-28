@@ -16,14 +16,17 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
         OnMissionClearAll = InternalFilter<MissionClearAllPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
         OnMissionSetCurrent = InternalFilter<MissionSetCurrentPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
         OnMissionCount = InternalFilter<MissionCountPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
+        OnMissionAck = InternalFilter<MissionAckPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
+            .Select(p => p.Payload);
     }
-
-
+    
     public Observable<MissionCountPacket> OnMissionCount { get; }
     public Observable<MissionRequestListPacket> OnMissionRequestList { get; }
     public Observable<MissionRequestIntPacket> OnMissionRequestInt { get; }
     public Observable<MissionClearAllPacket> OnMissionClearAll { get; }
     public Observable<MissionSetCurrentPacket> OnMissionSetCurrent { get; }
+    public Observable<MissionAckPayload> OnMissionAck { get; }
+    
     public Task SendMissionAck(MavMissionResult result, byte targetSystemId = 0, byte targetComponentId = 0,
         MavMissionType? type = null)
     {
@@ -98,6 +101,6 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
                 x.Payload.TargetComponent = targetComponentId;
                 x.Payload.TargetSystem = targetSystemId;
                 x.Payload.Seq = index;
-            },p=>p.Payload.TargetSystem, p=>p.Payload.TargetComponent,p=> p.Payload.Seq == index, AsvSdrHelper.Convert , cancel:DisposeCancel);
+            },p=>p.Payload.TargetSystem, p=>p.Payload.TargetComponent,p=> p.Payload.Seq == index, AsvSdrHelper.Convert , cancel: cancel);
     }
 }
