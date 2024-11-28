@@ -1,12 +1,10 @@
 using System;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
 using JetBrains.Annotations;
-using R3;
 using Xunit;
 using Xunit.Abstractions;
 
