@@ -8,28 +8,100 @@ namespace Asv.Mavlink;
 /// /
 public static class MavlinkCommonHelper
 {
-    public static Task SetPositionTargetLocalNed(this IPositionClient src, uint timeBootMs, MavFrame coordinateFrame, float? x,
-        float? y, float? z, float? vx, float? vy, float? vz, float? afx, float? afy, float? afz, float? yaw, float? yawRate,
-        CancellationToken cancel)
+    public static Task SetPositionTargetLocalNed(
+        this IPositionClient src, 
+        uint timeBootMs, 
+        MavFrame coordinateFrame,
+        CancellationToken cancel,
+        float? x = null,
+        float? y = null, 
+        float? z = null, 
+        float? vx = null,
+        float? vy = null, 
+        float? vz = null, 
+        float? afx = null,
+        float? afy = null, 
+        float? afz = null, 
+        float? yaw = null, 
+        float? yawRate = null
+    )
     {
         PositionTargetTypemask mask = 0;
-        if (!x.HasValue) mask |= PositionTargetTypemask.PositionTargetTypemaskXIgnore;
-        if (!y.HasValue) mask |= PositionTargetTypemask.PositionTargetTypemaskYIgnore;
-        if (!z.HasValue) mask |= PositionTargetTypemask.PositionTargetTypemaskZIgnore;
+        if (!x.HasValue)
+        {
+            mask |= PositionTargetTypemask.PositionTargetTypemaskXIgnore;
+        }
+        
+        if (!y.HasValue)
+        {
+            mask |= PositionTargetTypemask.PositionTargetTypemaskYIgnore;
+        }
+        
+        if (!z.HasValue)
+        {
+            mask |= PositionTargetTypemask.PositionTargetTypemaskZIgnore;
+        }
 
-        if (!vx.HasValue) mask |= PositionTargetTypemask.PositionTargetTypemaskVxIgnore;
-        if (!vy.HasValue) mask |= PositionTargetTypemask.PositionTargetTypemaskVyIgnore;
-        if (!vz.HasValue) mask |= PositionTargetTypemask.PositionTargetTypemaskVzIgnore;
+        if (!vx.HasValue)
+        {
+            mask |= PositionTargetTypemask.PositionTargetTypemaskVxIgnore;
+        }
+        
+        if (!vy.HasValue)
+        {
+            mask |= PositionTargetTypemask.PositionTargetTypemaskVyIgnore;
+        }
+        
+        if (!vz.HasValue)
+        {
+            mask |= PositionTargetTypemask.PositionTargetTypemaskVzIgnore;
+        }
 
-        if (!afx.HasValue) mask |= PositionTargetTypemask.PositionTargetTypemaskAxIgnore;
-        if (!afy.HasValue) mask |= PositionTargetTypemask.PositionTargetTypemaskVyIgnore;
-        if (!afz.HasValue) mask |= PositionTargetTypemask.PositionTargetTypemaskVzIgnore;
+        if (!afx.HasValue)
+        {
+            mask |= PositionTargetTypemask.PositionTargetTypemaskAxIgnore;
+        }
+        
+        if (!afy.HasValue)
+        {
+            mask |= PositionTargetTypemask.PositionTargetTypemaskVyIgnore;
+        }
+        
+        if (!afz.HasValue)
+        {
+            mask |= PositionTargetTypemask.PositionTargetTypemaskVzIgnore;
+        }
 
-        if (!yaw.HasValue) mask |= PositionTargetTypemask.PositionTargetTypemaskYawIgnore;
-        if (!yawRate.HasValue) mask |= PositionTargetTypemask.PositionTargetTypemaskYawRateIgnore;
+        if (!yaw.HasValue)
+        {
+            mask |= PositionTargetTypemask.PositionTargetTypemaskYawIgnore;
+        }
+        
+        if (!yawRate.HasValue)
+        {
+            mask |= PositionTargetTypemask.PositionTargetTypemaskYawRateIgnore;
+        }
 
-        return src.SetPositionTargetLocalNed(timeBootMs, coordinateFrame, mask, x ?? 0, y ?? 0, z ?? 0, vx ?? 0, vy ?? 0, vz ?? 0, afx ?? 0, afy ?? 0, afz ?? 0, yaw ?? 0, yawRate ?? 0, cancel);
+        return src.SetPositionTargetLocalNed(
+            timeBootMs, 
+            coordinateFrame, 
+            mask,
+            x ?? 0, 
+            y ?? 0, 
+            z ?? 0, 
+            vx ?? 0, 
+            vy ?? 0, 
+            vz ?? 0, 
+            afx ?? 0, 
+            afy ?? 0, 
+            afz ?? 0,
+            yaw ?? 0,
+            yawRate ?? 
+            0, 
+            cancel
+        );
     }
+    
     /// <summary>
     /// Sets the target global position for control commands.
     /// </summary>
@@ -49,7 +121,10 @@ public static class MavlinkCommonHelper
     /// <param name="yaw">Yaw angle (radians) of the target position. Set to null to ignore.</param>
     /// <param name="yawRate">Yaw rate (rad/s) of the target position. Set to null to ignore.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
-    public static Task SetTargetGlobalInt(this IPositionClient src, uint timeBootMs, MavFrame coordFrame,
+    public static Task SetTargetGlobalInt(
+        this IPositionClient src, 
+        uint timeBootMs, 
+        MavFrame coordFrame,
         CancellationToken cancel,
         int? latInt = null,
         int? lonInt = null,
@@ -88,36 +163,40 @@ public static class MavlinkCommonHelper
         {
             mask |= PositionTargetTypemask.PositionTargetTypemaskVyIgnore;
         }
-
+        
         if (vz.HasValue)
         {
             mask |= PositionTargetTypemask.PositionTargetTypemaskVzIgnore;
         }
+        
         if (afx.HasValue)
         {
             mask |= PositionTargetTypemask.PositionTargetTypemaskAxIgnore;
         }
+        
         if (afy.HasValue)
         {
             mask |= PositionTargetTypemask.PositionTargetTypemaskAyIgnore;
         }
+        
         if (afz.HasValue)
         {
             mask |= PositionTargetTypemask.PositionTargetTypemaskAzIgnore;
         }
+        
         if (yaw.HasValue)
         {
             mask |= PositionTargetTypemask.PositionTargetTypemaskYawIgnore;
         }
+        
         if (yawRate.HasValue)
         {
             mask |= PositionTargetTypemask.PositionTargetTypemaskYawRateIgnore;
         }
-
-        mask = ~mask;
-
+        
+        mask = (PositionTargetTypemask)(ushort)~mask;
+        
         return src.SetTargetGlobalInt(timeBootMs, coordFrame, latInt ?? 0, lonInt ?? 0, alt ?? 0, vx ?? 0,
             vy ?? 0, vz ?? 0, afx ?? 0, afy ?? 0, afz ?? 0, yaw ?? 0, yawRate ?? 0, mask, cancel);
-
     }
 }

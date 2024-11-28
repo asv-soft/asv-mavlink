@@ -75,7 +75,6 @@
     <Folder Include="Microservices\Dgps\Server\" />
     <Folder Include="Microservices\Gnss\Server\" />
     <Folder Include="Microservices\Mode\Server\" />
-    <Folder Include="Microservices\Position\Server\" />
     <Folder Include="Microservices\Telemetry\Server\" />
     <Folder Include="Tools\HierarchicalStore\Impl\" />
   </ItemGroup>
