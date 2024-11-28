@@ -43,7 +43,7 @@ public class ListDataFileTests
     }
 
     [Fact]
-    public void Metadata_Serialization_Success()
+    public void Metadata_AsvSdrRecordPayloadSerialization_Success()
     {
         using var strm = new MemoryStream();
         using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, AsvSdrHelper.FileFormat, false, _fileSystem);
@@ -89,17 +89,17 @@ public class ListDataFileTests
     }
 
     [Fact]
-    public void Data_Serialization_Success()
+    public void Data_AsvSdrRecordDataLlzSerialization_Success()
     {
         using var strm = new MemoryStream();
         using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
 
         Assert.False(file.Exist(0));
 
-        var ilsRead = new AsvSdrRecordDataLlzPayload();
-        Assert.False(file.Read(0, ilsRead));
+        var payloadRead = new AsvSdrRecordDataLlzPayload();
+        Assert.False(file.Read(0, payloadRead));
 
-        var ils = new AsvSdrRecordDataLlzPayload
+        var payload = new AsvSdrRecordDataLlzPayload()
         {
             TimeUnixUsec = 15,
             TotalFreq = 2,
@@ -130,7 +130,6 @@ public class ListDataFileTests
             TotalAm150 = 90,
             Phi90CrsVsClr = 10,
             Phi150CrsVsClr = 20,
-            CodeIdAm1020 = 30,
             GnssEph = 40,
             GnssEpv = 50,
             GnssVel = 60,
@@ -147,24 +146,218 @@ public class ListDataFileTests
             TotalCarrierOffset = 0,
             TotalFreq90 = 0,
             TotalFreq150 = 0,
-            CodeIdFreq1020 = 0,
             MeasureTime = 0,
             RecordGuid = new byte[16],
             GnssFixType = GpsFixType.GpsFixTypeNoGps,
             GnssSatellitesVisible = 0
         };
-        file.Write(10, ils);
-        file.Write(20, ils);
+        file.Write(10, payload);
+        file.Write(20, payload);
 
-        var ilsRead2 = new AsvSdrRecordDataLlzPayload();
-        Assert.True(file.Read(10, ilsRead2));
-        ils.IsDeepEqual(ilsRead2);
-        Assert.True(file.Read(20, ilsRead2));
-        ils.IsDeepEqual(ilsRead2);
+        var payloadRead2 = new AsvSdrRecordDataLlzPayload();
+        Assert.True(file.Read(10, payloadRead2));
+        payload.IsDeepEqual(payloadRead2);
+        Assert.True(file.Read(20, payloadRead2));
+        payload.IsDeepEqual(payloadRead2);
 
-        Assert.False(file.Read(9, ilsRead2));
+        Assert.False(file.Read(9, payloadRead2));
         Assert.False(file.Exist(5));
     }
+
+    [Fact]
+    public void Data_AsvSdrRecordDataGpSerialization_Success()
+    {
+        using var strm = new MemoryStream();
+        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
+
+        Assert.False(file.Exist(0));
+
+        var payloadRead = new AsvSdrRecordDataGpPayload();
+        Assert.False(file.Read(0, payloadRead));
+
+        var payload = new AsvSdrRecordDataGpPayload()
+        {
+            TimeUnixUsec = 15,
+            TotalFreq = 2,
+            DataIndex = 3,
+            GnssLat = 4,
+            GnssLon = 5,
+            GnssAlt = 6,
+            GnssAltEllipsoid = 7,
+            GnssHAcc = 8,
+            GnssVAcc = 9,
+            GnssVelAcc = 10,
+            Lat = 5566,
+            Lon = 64654,
+            Alt = 5465,
+            RelativeAlt = 150,
+            Roll = 30,
+            Pitch = 10,
+            Yaw = 70,
+            CrsPower = 90.90f,
+            CrsAm90 = 10.1f,
+            CrsAm150 = 20.2f,
+            ClrPower = 30.4f,
+            ClrAm90 = 40.5f,
+            ClrAm150 = 50.5f,
+            TotalPower = 60.123f,
+            TotalFieldStrength = 70,
+            TotalAm90 = 80,
+            TotalAm150 = 90,
+            Phi90CrsVsClr = 10,
+            Phi150CrsVsClr = 20,
+            GnssEph = 40,
+            GnssEpv = 50,
+            GnssVel = 60,
+            Vx = 70,
+            Vy = 80,
+            Vz = 90,
+            Hdg = 10,
+            CrsCarrierOffset = 10,
+            CrsFreq90 = 20,
+            CrsFreq150 = 0,
+            ClrCarrierOffset = 0,
+            ClrFreq90 = 0,
+            ClrFreq150 = 0,
+            TotalCarrierOffset = 0,
+            TotalFreq90 = 0,
+            TotalFreq150 = 0,
+            MeasureTime = 0,
+            RecordGuid = new byte[16],
+            GnssFixType = GpsFixType.GpsFixTypeNoGps,
+            GnssSatellitesVisible = 0
+        };
+        file.Write(10, payload);
+        file.Write(20, payload);
+
+        var payload2 = new AsvSdrRecordDataGpPayload();
+        Assert.True(file.Read(10, payload2));
+        payload.IsDeepEqual(payload2);
+        Assert.True(file.Read(20, payload2));
+        payload.IsDeepEqual(payload2);
+
+        Assert.False(file.Read(9, payload2));
+        Assert.False(file.Exist(5));
+    }
+    [Fact]
+    public void Data_AsvSdrRecordDataRequestSerialization_Success()
+    {
+        using var strm = new MemoryStream();
+        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
+
+        Assert.False(file.Exist(0));
+
+        var payloadRead = new AsvSdrRecordDataRequestPayload();
+        Assert.False(file.Read(0, payloadRead));
+
+        var payload = new AsvSdrRecordDataRequestPayload()
+        {
+            
+            RecordGuid = new byte[16],
+            Count = 2,
+            Skip = 1,
+            TargetComponent = 1,
+            TargetSystem = 2
+        };
+        file.Write(10, payload);
+        file.Write(20, payload);
+
+        var payloadRead2 = new AsvSdrRecordDataRequestPayload();
+        Assert.True(file.Read(10, payloadRead2));
+        payload.IsDeepEqual(payloadRead2);
+        Assert.True(file.Read(20, payloadRead2));
+        payload.IsDeepEqual(payloadRead2);
+
+        Assert.False(file.Read(9, payloadRead2));
+        Assert.False(file.Exist(5));
+    }
+    
+    [Fact]
+    public void Data_AsvSdrRecordDataResponseSerialization_Success()
+    {
+        using var strm = new MemoryStream();
+        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
+
+        Assert.False(file.Exist(0));
+
+        var payloadRead = new AsvSdrRecordDataResponsePayload();
+        Assert.False(file.Read(0, payloadRead));
+
+        var payload = new AsvSdrRecordDataResponsePayload()
+        {
+            
+            RecordGuid = new byte[16],
+            DataType = AsvSdrCustomMode.AsvSdrCustomModeIdle,
+            ItemsCount = 15,
+            Result = AsvSdrRequestAck.AsvSdrRequestAckOk,
+            RequestId = 15
+        };
+        file.Write(10, payload);
+        file.Write(20, payload);
+
+        var payloadRead2 = new AsvSdrRecordDataResponsePayload();
+        Assert.True(file.Read(10, payloadRead2));
+        payload.IsDeepEqual(payloadRead2);
+        Assert.True(file.Read(20, payloadRead2));
+        payload.IsDeepEqual(payloadRead2);
+
+        Assert.False(file.Read(9, payloadRead2));
+        Assert.False(file.Exist(5));
+    }
+    
+    [Fact]
+    public void Data_AsvSdrRecordDataVorSerialization_Success()
+    {
+        using var strm = new MemoryStream();
+        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
+
+        Assert.False(file.Exist(0));
+
+        var payloadRead = new AsvSdrRecordDataVorPayload();
+        Assert.False(file.Read(0, payloadRead));
+        var payload = new AsvSdrRecordDataVorPayload()
+        {
+            
+            RecordGuid = new byte[16],
+            Alt = 500,
+            Am30 = (float)15.0,
+            Am9960 = (float)80.0,
+            Azimuth = 180,
+            GnssAlt = 505,
+            CarrierOffset = 1,
+            CodeIdAm1020 = (float)100.0,
+            DataIndex = 13,
+            CodeIdFreq1020 = 13,
+            Deviation = 10,
+            FieldStrength = 100,
+            Freq30 = 30,
+            Freq9960 = 9960,
+            GnssEph = 100,
+            GnssLat = 10,
+            GnssEpv = 100,
+            GnssLon = 20,
+            GnssVel = 1,
+            GnssAltEllipsoid = 100,
+            GnssFixType = GpsFixType.GpsFixTypeDgps,
+            GnssHAcc = 1,
+            GnssSatellitesVisible = 15,
+            GnssVAcc = 1,
+            GnssVelAcc = 12
+        };
+        file.Write(10, payload);
+        file.Write(20, payload);
+
+        var payloadRead2 = new AsvSdrRecordDataVorPayload();
+        Assert.True(file.Read(10, payloadRead2));
+        payload.IsDeepEqual(payloadRead2);
+        Assert.True(file.Read(20, payloadRead2));
+        payload.IsDeepEqual(payloadRead2);
+
+        Assert.False(file.Read(9, payloadRead2));
+        Assert.False(file.Exist(5));
+    }
+    
+    
 
     [Fact]
     public static void EditMetadata_Null_Argument_Fail()
@@ -293,6 +486,11 @@ public class ListDataFileTests
         {
             using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false, _fileSystem);
         });
+    }
+
+    [Fact]
+    public void Test()
+    {
     }
 
     [Fact]
