@@ -760,7 +760,7 @@ namespace Asv.Mavlink.V2.AsvChart
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
             DataRate = BinSerialize.ReadFloat(ref buffer);
-            ChatId = BinSerialize.ReadUShort(ref buffer);
+            ChartId = BinSerialize.ReadUShort(ref buffer);
             ChatInfoHash = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvChartRequestAck)BinSerialize.ReadByte(ref buffer);
             DataTrigger = (AsvChartDataTrigger)BinSerialize.ReadByte(ref buffer);
@@ -770,7 +770,7 @@ namespace Asv.Mavlink.V2.AsvChart
         public void Serialize(ref Span<byte> buffer)
         {
             BinSerialize.WriteFloat(ref buffer,DataRate);
-            BinSerialize.WriteUShort(ref buffer,ChatId);
+            BinSerialize.WriteUShort(ref buffer,ChartId);
             BinSerialize.WriteUShort(ref buffer,ChatInfoHash);
             BinSerialize.WriteByte(ref buffer,(byte)Result);
             BinSerialize.WriteByte(ref buffer,(byte)DataTrigger);
@@ -790,7 +790,7 @@ namespace Asv.Mavlink.V2.AsvChart
         /// The ID of the requested chart
         /// OriginName: chat_id, Units: , IsExtended: false
         /// </summary>
-        public ushort ChatId { get; set; }
+        public ushort ChartId { get; set; }
         /// <summary>
         /// Hash of the chart ASV_CHART_INFO to ensure that all settings are synchronized.
         /// OriginName: chat_info_hash, Units: , IsExtended: false

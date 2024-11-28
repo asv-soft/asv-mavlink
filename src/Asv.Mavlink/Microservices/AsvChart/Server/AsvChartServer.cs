@@ -159,7 +159,7 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
                 x.Payload.Result = AsvChartRequestAck.AsvChartRequestAckOk;
                 x.Payload.DataRate = result.Rate;
                 x.Payload.DataTrigger = result.Trigger;
-                x.Payload.ChatId = result.ChartId;
+                x.Payload.ChartId = result.ChartId;
                 x.Payload.ChatInfoHash = info.InfoHash;
                 
             }).ConfigureAwait(false);
@@ -185,11 +185,22 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
             x.Payload.ChatListHash = _chartHash;
         }).ConfigureAwait(false);
         var charts = _charts.Select(x=>x.Value).Skip(request.Payload.Skip).Take(request.Payload.Count);
+
+        var delay = TimeSpan.FromMilliseconds(_config.SendSignalDelayMs);
+        var ts = Core.TimeProvider.GetTimestamp();    
         foreach (var chart in charts)
         {
             await InternalSend<AsvChartInfoPacket>(x => chart.Fill(x.Payload)).ConfigureAwait(false);
             if (_config.SendSignalDelayMs > 0)
-                await Task.Delay(_config.SendSignalDelayMs).ConfigureAwait(false);
+            {
+                var tcs = new TaskCompletionSource<bool>();
+                await using var timer = Core.TimeProvider.CreateTimer(_ =>
+                {
+                    tcs.SetResult(true);
+                }, null, TimeSpan.Zero, delay);
+
+                await tcs.Task.ConfigureAwait(false);
+            }
         }
     }
     #region Dispose
