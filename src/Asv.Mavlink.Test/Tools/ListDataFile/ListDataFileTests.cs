@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
+using System.Threading.Tasks;
+using Asv.Common;
 using Asv.Mavlink.V2.AsvSdr;
 using Asv.Mavlink.V2.Common;
 using DeepEqual.Syntax;
@@ -39,6 +41,46 @@ public class ListDataFileTests
         Assert.Throws<ArgumentNullException>(() =>
         {
             using var file = new ListDataFile<AsvSdrRecordFileMetadata>(new MemoryStream(), null, false, _fileSystem);
+        });
+    }
+
+    [Fact]
+    public static void Ctor_TryPassNullValueOfVersionToFileCtor_Fail()
+    {
+        using var strm = new MemoryStream();
+
+        var format = new ListDataFileFormat()
+        {
+            Version = null,
+            Type = "type",
+            MetadataMaxSize = 1234,
+            ItemMaxSize = 567
+        };
+
+        Assert.Throws<InvalidOperationException>(() =>
+        {
+            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false, _fileSystem);
+        });
+    }
+
+    [Theory]
+    [InlineData("1.0.0", "type", 0, 53)]
+    [InlineData("1.0.0", "type", 1241, 0)]
+    public static void Ctor_WrongSizesPass_Fail(string version, string type, ushort metadataMaxSize, ushort itemMaxSize)
+    {
+        using var strm = new MemoryStream();
+
+        var format = new ListDataFileFormat()
+        {
+            Version = version,
+            Type = type,
+            MetadataMaxSize = metadataMaxSize,
+            ItemMaxSize = itemMaxSize
+        };
+
+        Assert.Throws<InvalidOperationException>(() =>
+        {
+            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false, _fileSystem);
         });
     }
 
@@ -86,6 +128,16 @@ public class ListDataFileTests
             Assert.Equal(payload.DurationSec, _.Info.DurationSec);
             Assert.Equal(payload.TagCount, _.Info.TagCount);
         });
+    }
+
+    [Fact]
+    public static void Meatdata_EditMetadataInfowithNullRecordName_Fail()
+    {
+        using var strm = new MemoryStream();
+
+        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
+
+        Assert.Throws<NullReferenceException>(() => { file.EditMetadata(_ => { _.Info.RecordName = null; }); });
     }
 
     [Fact]
@@ -239,6 +291,7 @@ public class ListDataFileTests
         Assert.False(file.Read(9, payload2));
         Assert.False(file.Exist(5));
     }
+
     [Fact]
     public void Data_AsvSdrRecordDataRequestSerialization_Success()
     {
@@ -252,7 +305,6 @@ public class ListDataFileTests
 
         var payload = new AsvSdrRecordDataRequestPayload()
         {
-            
             RecordGuid = new byte[16],
             Count = 2,
             Skip = 1,
@@ -271,7 +323,7 @@ public class ListDataFileTests
         Assert.False(file.Read(9, payloadRead2));
         Assert.False(file.Exist(5));
     }
-    
+
     [Fact]
     public void Data_AsvSdrRecordDataResponseSerialization_Success()
     {
@@ -285,7 +337,6 @@ public class ListDataFileTests
 
         var payload = new AsvSdrRecordDataResponsePayload()
         {
-            
             RecordGuid = new byte[16],
             DataType = AsvSdrCustomMode.AsvSdrCustomModeIdle,
             ItemsCount = 15,
@@ -304,7 +355,7 @@ public class ListDataFileTests
         Assert.False(file.Read(9, payloadRead2));
         Assert.False(file.Exist(5));
     }
-    
+
     [Fact]
     public void Data_AsvSdrRecordDataVorSerialization_Success()
     {
@@ -317,7 +368,6 @@ public class ListDataFileTests
         Assert.False(file.Read(0, payloadRead));
         var payload = new AsvSdrRecordDataVorPayload()
         {
-            
             RecordGuid = new byte[16],
             Alt = 500,
             Am30 = (float)15.0,
@@ -356,11 +406,136 @@ public class ListDataFileTests
         Assert.False(file.Read(9, payloadRead2));
         Assert.False(file.Exist(5));
     }
-    
-    
 
     [Fact]
-    public static void EditMetadata_Null_Argument_Fail()
+    public void Data_TryToReWriteToSameIndex_Success()
+    {
+        using var strm = new MemoryStream();
+        var payload = new AsvSdrRecordDataVorPayload()
+        {
+            RecordGuid = new byte[16],
+            Alt = 500,
+            Am30 = (float)15.0,
+            Am9960 = (float)80.0,
+            Azimuth = 180,
+            GnssAlt = 505,
+            CarrierOffset = 1,
+            CodeIdAm1020 = (float)100.0,
+            DataIndex = 13,
+            CodeIdFreq1020 = 13,
+            Deviation = 10,
+            FieldStrength = 100,
+            Freq30 = 30,
+            Freq9960 = 9960,
+            GnssEph = 100,
+            GnssLat = 10,
+            GnssEpv = 100,
+            GnssLon = 20,
+            GnssVel = 1,
+            GnssAltEllipsoid = 100,
+            GnssFixType = GpsFixType.GpsFixTypeDgps,
+            GnssHAcc = 1,
+            GnssSatellitesVisible = 15,
+            GnssVAcc = 1,
+            GnssVelAcc = 12
+        };
+        var format = new ListDataFileFormat()
+        {
+            ItemMaxSize = (ushort)payload.GetByteSize(),
+            MetadataMaxSize = (ushort)payload.GetByteSize(),
+            Type = "TestFilef",
+            Version = SemVersion.Parse("0.0.1")
+        };
+        var payloadRead = new AsvSdrRecordDataVorPayload();
+        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false, _fileSystem);
+        file.Write(0, payload);
+        file.Write(0, payload);
+        file.Read(0, payloadRead);
+        Assert.True(payload.IsDeepEqual(payloadRead));
+        file.Read(100, payloadRead);
+    }
+
+    [Fact]
+    public async Task Data_ThreadSafeTestForEditMetadata_Success()
+    {
+        using var strm = new MemoryStream();
+        var payload = new AsvSdrRecordDataVorPayload()
+        {
+            RecordGuid = new byte[16],
+            Alt = 500,
+            Am30 = (float)15.0,
+            Am9960 = (float)80.0,
+            Azimuth = 180,
+            GnssAlt = 505,
+            CarrierOffset = 1,
+            CodeIdAm1020 = (float)100.0,
+            DataIndex = 13,
+            CodeIdFreq1020 = 13,
+            Deviation = 10,
+            FieldStrength = 100,
+            Freq30 = 30,
+            Freq9960 = 9960,
+            GnssEph = 100,
+            GnssLat = 10,
+            GnssEpv = 100,
+            GnssLon = 20,
+            GnssVel = 1,
+            GnssAltEllipsoid = 100,
+            GnssFixType = GpsFixType.GpsFixTypeDgps,
+            GnssHAcc = 1,
+            GnssSatellitesVisible = 15,
+            GnssVAcc = 1,
+            GnssVelAcc = 12
+        };
+
+        var format = new ListDataFileFormat()
+        {
+            ItemMaxSize = (ushort)payload.GetByteSize(),
+            MetadataMaxSize = (ushort)payload.GetByteSize(),
+            Type = "TestFilef",
+            Version = SemVersion.Parse("0.0.1")
+        };
+        var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false, _fileSystem);
+        await Task.Run(() =>
+        {
+            for (var i = 0; i < 100; i++)
+            {
+                file.Write(payload);
+            }
+        });
+        await Task.Run(() =>
+        {
+            file.EditMetadata(_ =>
+            {
+                _.Tags.Add(new AsvSdrRecordTagPayload()
+                {
+                    RecordGuid = [1, 0, 0],
+                    TagType = AsvSdrRecordTagType.AsvSdrRecordTagTypeInt64
+                });
+            });
+        });
+    }
+
+    [Fact]
+    public void Format_MetadataMaxSizeLessThanItemSize_Fail()
+    {
+        using var strm = new MemoryStream();
+        var format = new ListDataFileFormat()
+        {
+            ItemMaxSize = 40,
+            MetadataMaxSize = 39,
+            Type = "TestFilef",
+            Version = SemVersion.Parse("0.0.1")
+        };
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        {
+            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false, _fileSystem);
+        });
+    }
+
+
+    [Fact]
+    public static void Metadata_TryPassNullValue_Fail()
     {
         using var strm = new MemoryStream();
         IListDataFile<AsvSdrRecordFileMetadata> file =
@@ -370,7 +545,7 @@ public class ListDataFileTests
     }
 
     [Fact]
-    public static void Write_Null_Argument_Fail()
+    public static void Data_TryPassNullValueAsItem_Fail()
     {
         using var strm = new MemoryStream();
         IListDataFile<AsvSdrRecordFileMetadata> file =
@@ -395,7 +570,7 @@ public class ListDataFileTests
     }
 
     [Fact]
-    public static void Wrong_Version_Header_Fail()
+    public static void Format_WrongVersionHeader_Fail()
     {
         using var strm = new MemoryStream();
         Assert.Throws<ArgumentException>(() =>
@@ -410,27 +585,9 @@ public class ListDataFileTests
         });
     }
 
-    [Fact]
-    public static void Null_Version_Header_Fail()
-    {
-        using var strm = new MemoryStream();
-
-        var format = new ListDataFileFormat()
-        {
-            Version = null,
-            Type = "type",
-            MetadataMaxSize = 1234,
-            ItemMaxSize = 567
-        };
-
-        Assert.Throws<InvalidOperationException>(() =>
-        {
-            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false, _fileSystem);
-        });
-    }
 
     [Fact]
-    public static void Empty_Type_Header_Fail()
+    public static void Format_StringEmptyTypeHeader_Fail()
     {
         using var strm = new MemoryStream();
 
@@ -449,7 +606,7 @@ public class ListDataFileTests
     }
 
     [Fact]
-    public static void Null_Type_Header_Fail()
+    public static void Format_NullValueTypeHeader_Fail()
     {
         using var strm = new MemoryStream();
 
@@ -465,41 +622,5 @@ public class ListDataFileTests
         {
             using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false, _fileSystem);
         });
-    }
-
-    [Theory]
-    [InlineData("1.0.0", "type", 0, 53)]
-    [InlineData("1.0.0", "type", 1241, 0)]
-    public static void Max_Size_Header_Fail(string version, string type, ushort metadataMaxSize, ushort itemMaxSize)
-    {
-        using var strm = new MemoryStream();
-
-        var format = new ListDataFileFormat()
-        {
-            Version = version,
-            Type = type,
-            MetadataMaxSize = metadataMaxSize,
-            ItemMaxSize = itemMaxSize
-        };
-
-        Assert.Throws<InvalidOperationException>(() =>
-        {
-            using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false, _fileSystem);
-        });
-    }
-
-    [Fact]
-    public void Test()
-    {
-    }
-
-    [Fact]
-    public static void Null_Edit_Metadata_Info_Record_Name_Fail()
-    {
-        using var strm = new MemoryStream();
-
-        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
-
-        Assert.Throws<NullReferenceException>(() => { file.EditMetadata(_ => { _.Info.RecordName = null; }); });
     }
 }
