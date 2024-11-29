@@ -94,10 +94,7 @@ public sealed class VirtualDataStream : IDataStream, IDisposable,IAsyncDisposabl
             .Subscribe(this,(b, ctx) => Interlocked.Add(ref ctx._rxBytes, b.Length));
     }
 
-    public IDisposable Subscribe(IObserver<byte[]> observer)
-    {
-        return _rxPipe.Subscribe(observer.ToObserver());
-    }
+   
 
     public Task<bool> Send(byte[] data, int count, CancellationToken cancel)
     {
@@ -114,6 +111,8 @@ public sealed class VirtualDataStream : IDataStream, IDisposable,IAsyncDisposabl
         _txPipe.OnNext(data.ToArray());
         return Task.FromResult(true);
     }
+
+    public Observable<byte[]> OnReceive => _rxPipe;
 
     public Observer<byte[]> RxPipe => _rxPipe.AsObserver();
     public Observable<byte[]> TxPipe => _txPipe;

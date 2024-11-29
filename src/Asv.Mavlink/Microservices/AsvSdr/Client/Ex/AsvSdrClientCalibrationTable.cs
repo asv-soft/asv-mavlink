@@ -1,16 +1,12 @@
 using System;
-using System.Reactive.Linq;
+
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.Mavlink.V2.AsvSdr;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using R3;
 using ZLogger;
-using Observable = R3.Observable;
-using ObservableExtensions = System.ObservableExtensions;
-using Unit = System.Reactive.Unit;
 
 namespace Asv.Mavlink;
 

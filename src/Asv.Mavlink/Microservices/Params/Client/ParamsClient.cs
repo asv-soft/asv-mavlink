@@ -10,7 +10,7 @@ namespace Asv.Mavlink;
 
 public class ParameterClientConfig
 {
-    public int ReadAttemptCount { get; set; } = 3;
+    public int ReadAttemptCount { get; set; } = 6;
     public int ReadTimeouMs { get; set; } = 1000;
 }
 
@@ -25,7 +25,7 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
         : base("PARAMS",  identity, core)
     {
         _logger = core.Log.CreateLogger<ParamsClient>();
-        _config = config;
+        _config = config ?? throw new ArgumentNullException(nameof(config));;
         _onParamValue = new Subject<ParamValuePayload>();
         _sub1 = InternalFilter<ParamValuePacket>().Select(p => p.Payload).Subscribe(_onParamValue.AsObserver());
     }

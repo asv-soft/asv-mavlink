@@ -6,7 +6,7 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(FtpClientEx))]
 public class FtpClientExTest(ITestOutputHelper log) : ClientTestBase<FtpClientEx>(log)
 {
-    private readonly MavlinkFtpClientConfig _config = new ()
+    private readonly MavlinkFtpClientConfig _clientExConfig = new ()
     {
         TimeoutMs = 1000,
         CommandAttemptCount = 5,
@@ -14,5 +14,8 @@ public class FtpClientExTest(ITestOutputHelper log) : ClientTestBase<FtpClientEx
         BurstTimeoutMs = 100
     };
 
-    protected override FtpClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core) => new(new FtpClient(identity, _config, core));
+    protected override FtpClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core)
+    {
+        return new FtpClientEx(new FtpClient(identity, _clientExConfig, core));
+    }
 }

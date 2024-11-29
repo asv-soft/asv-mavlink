@@ -8,7 +8,7 @@ using Asv.Mavlink.V2.AsvAudio;
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
-using Unit = System.Reactive.Unit;
+
 
 namespace Asv.Mavlink;
 
@@ -27,7 +27,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
     private readonly IAudioDecoder _decoder;
     private readonly ReactiveProperty<string> _name;
     private readonly CancellationTokenSource _disposeCancel;
-    private readonly System.Reactive.Subjects.Subject<Unit> _onLinePing;
+    private readonly Subject<Unit> _onLinePing;
     private readonly Subject<ReadOnlyMemory<byte>> _inputEncoderAudioStream;
     private readonly Subject<ReadOnlyMemory<byte>> _inputDecoderAudioStream;
     private readonly SortedDictionary<byte, AsvAudioStreamPayload> _frameBuffer = new();
@@ -55,7 +55,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
         _core = core;
         FullId = packet.FullId;
         _name = new ReactiveProperty<string>(MavlinkTypesHelper.GetString(packet.Payload.Name));
-        _onLinePing = new System.Reactive.Subjects.Subject<Unit>();
+        _onLinePing = new Subject<Unit>();
         _encoder = factory.CreateEncoder(outputCodecInfo,_inputEncoderAudioStream);
         _sub1 = _encoder.Output.Subscribe(InternalSendEncodedAudio);
         _decoder = factory.CreateDecoder(packet.Payload.Codec,_inputDecoderAudioStream);
@@ -65,7 +65,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
     }
   
     public MavlinkIdentity FullId { get; }
-    public IObservable<Unit> OnLinePing => _onLinePing;
+    public Observable<Unit> OnLinePing => _onLinePing;
     public ReadOnlyReactiveProperty<string> Name => _name;
     
     private async void InternalSendEncodedAudio(ReadOnlyMemory<byte> encodedData)

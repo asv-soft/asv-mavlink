@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.Vehicle;
 using ConsoleAppFramework;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;

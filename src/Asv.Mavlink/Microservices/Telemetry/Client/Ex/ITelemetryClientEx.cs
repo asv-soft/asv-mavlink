@@ -1,4 +1,3 @@
-using Asv.Common;
 using R3;
 
 namespace Asv.Mavlink;
@@ -62,7 +61,7 @@ public interface ITelemetryClientEx:IMavlinkMicroserviceClient
     /// Gets the rate at which communication with the server is dropping.
     /// </summary>
     /// <returns>
-    /// An <see cref="IRxValue{T}"/> object representing the drop rate of communication.
+    /// Double ReadOnlyReactiveProperty representing the drop rate of communication.
     /// </returns>
     ReadOnlyReactiveProperty<double> DropRateCommunication { get; }
 }

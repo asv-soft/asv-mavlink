@@ -1,9 +1,9 @@
 using System;
 using Asv.Common;
 
-namespace Asv.Mavlink.Vehicle
+namespace Asv.Mavlink
 {
-    public static class GeoConverter
+    public static class __REMOVE_GeoConverter
     {
         private static double Pi = 3.14159265358979;             // Число Пи
         private static double ro = 206264.8062;                  // Число угловых секунд в радиане
