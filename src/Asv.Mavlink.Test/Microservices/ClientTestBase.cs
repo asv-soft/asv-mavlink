@@ -17,13 +17,13 @@ public abstract class ClientTestBase<TClient>
         Seq = new PacketSequenceCalculator();
         Identity = new MavlinkClientIdentity(1, 2, 3, 4);
         var loggerFactory = new TestLoggerFactory(log, Time, "SERVER");
+        
         var protocol = Protocol.Create(builder =>
         {
             builder.SetLog(loggerFactory);
             builder.SetTimeProvider(Time);
             builder.RegisterMavlinkV2Protocol();
             
-            builder.AddPrinterJson();
         });
         Link = protocol.CreateVirtualConnection();
         Core = new CoreServices(Link.Client, Seq, new TestLoggerFactory(log, Time, "CLIENT"), Time, new DefaultMeterFactory());

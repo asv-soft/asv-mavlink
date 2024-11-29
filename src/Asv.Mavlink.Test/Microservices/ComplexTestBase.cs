@@ -22,7 +22,7 @@ public abstract class ComplexTestBase<TClient,TServer>
             builder.SetTimeProvider(RouterTime);
             builder.RegisterMavlinkV2Protocol();
             builder.EnableBroadcastFeature<MavlinkMessage>();
-            builder.AddPrinterJson();
+            builder.RegisterSimpleFormatter();
         });
         
         Link = protocol.CreateVirtualConnection();

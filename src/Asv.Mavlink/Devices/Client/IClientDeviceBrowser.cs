@@ -74,7 +74,7 @@ public sealed class ClientDeviceBrowser : IClientDeviceBrowser, IDisposable,IAsy
             (_, _) => _core.TimeProvider.GetTimestamp());
         
         if (_deviceCache.TryGetValue(packet.FullId, out var item) == true) return;
-        var device = _factory.Create(packet, _core);
+        var device = _factory.Create(packet);
         if (device == null)
         {
             _logger.ZLogWarning($"Device provider for {packet.FullId} not found");

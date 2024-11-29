@@ -17,13 +17,14 @@ public abstract class ServerTestBase<TServer>
         Seq = new PacketSequenceCalculator();
         Identity = new MavlinkIdentity(3, 4);
         var loggerFactory = new TestLoggerFactory(log, ServerTime, "SERVER");
+        
         var protocol = Protocol.Create(builder =>
         {
             builder.SetLog(loggerFactory);
             builder.SetTimeProvider(ServerTime);
             builder.RegisterMavlinkV2Protocol();
             builder.EnableBroadcastFeature<MavlinkMessage>();
-            builder.AddPrinterJson();
+            builder.RegisterSimpleFormatter();
         });
         Link = protocol.CreateVirtualConnection();
         Core = new CoreServices(Link.Server, Seq, loggerFactory, ServerTime, new DefaultMeterFactory());
