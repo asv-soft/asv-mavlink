@@ -25,7 +25,6 @@ namespace Asv.Mavlink
         /// <remarks>
         /// The SystemStatus property is an IRxValue that provides the current system status information.
         /// </remarks>
-        /// <seealso cref="IRxValue{T}"/>
         /// <seealso cref="SysStatusPayload"/>
         ReadOnlyReactiveProperty<SysStatusPayload?> SystemStatus { get; }
 
@@ -41,11 +40,8 @@ namespace Asv.Mavlink
         /// Represents the battery status.
         /// </summary>
         /// <remarks>
-        /// This property provides an instance of the <see cref="IRxValue{T}"/> interface which holds the battery status payload.
+        /// This property holds the battery status payload.
         /// </remarks>
-        /// <value>
-        /// An instance of the <see cref="IRxValue{T}"/> interface containing the battery status payload.
-        /// </value>
         ReadOnlyReactiveProperty<BatteryStatusPayload?> Battery { get; }
 
         /// <summary>

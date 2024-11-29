@@ -53,8 +53,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ParamsDesc.resx</DependentUpon>
     </Compile>
-    <Compile Remove="Microservices\Params\Server\Ex\ParamsDesc.cs" />
-    <Compile Remove="Microservices\Commands\Client\Ex\**" />
+    
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="RS.resx">
@@ -69,6 +68,7 @@
       <LastGenOutput>ParamsDesc.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Remove="Microservices\Commands\Client\Ex\**" />
+    <EmbeddedResource Remove="Microservices\Telemetry\Server\**" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Microservices\Control\Server\" />
@@ -77,6 +77,7 @@
     <Folder Include="Microservices\Mode\Server\" />
     <Folder Include="Microservices\Position\Server\" />
     <Folder Include="Microservices\Telemetry\Server\" />
+    <Folder Include="Tools\HierarchicalStore\Impl\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\img\asv-mavlink-128.png">
@@ -92,5 +93,6 @@
       <PackagePath>\</PackagePath>
     </None>
     <None Remove="Microservices\Commands\Client\Ex\**" />
+    <None Remove="Microservices\Telemetry\Server\**" />
   </ItemGroup>
 </Project>

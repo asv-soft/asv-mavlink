@@ -130,7 +130,7 @@ public class ParamsServerEx: IParamsServerEx,IDisposable
                 var param = _paramList[index];
                 var currentValue =  param.ReadFromConfig(_cfg, _serverCfg.CfgPrefix);
                 await SendParam(((ushort)index,param), currentValue, DisposeCancel).ConfigureAwait(false);
-                //TODO: Task.Delay
+                //TODO: Task.Delay, remove it
                 await Task.Delay(_serverCfg.SendingParamItemDelayMs, DisposeCancel).ConfigureAwait(false);
             }
         }

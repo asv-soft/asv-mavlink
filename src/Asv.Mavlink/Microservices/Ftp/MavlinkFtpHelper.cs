@@ -19,8 +19,10 @@ public static class MavlinkFtpHelper
     public const char PathSeparator = '\0';
     public const string SpecialPathCurrent = ".";
     public const string SpecialPathBack = "..";
-    public static readonly ImmutableHashSet<string> IgnorePaths = new[] {SpecialPathCurrent, SpecialPathBack}.ToImmutableHashSet();
-    
+
+    public static readonly ImmutableHashSet<string> IgnorePaths =
+        new[] { SpecialPathCurrent, SpecialPathBack }.ToImmutableHashSet();
+
     public static void CheckFilePath(string path)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
@@ -29,7 +31,7 @@ public static class MavlinkFtpHelper
             throw new ArgumentOutOfRangeException(nameof(path), $"Max path size is {MaxDataSize}");
         }
     }
-    
+
 
     public static void CheckFolderPath(ReadOnlySpan<char> path)
     {
@@ -48,20 +50,24 @@ public static class MavlinkFtpHelper
         {
             return new FtpDirectory(string.Empty);
         }
+
         span = span.TrimEnd(DirectorySeparator);
         var index = span.LastIndexOf(DirectorySeparator);
         if (index == -1)
         {
             return new FtpDirectory(span.ToString());
         }
+
         var directoryName = span[(index + 1)..].ToString();
         var parentPath = span[..index].ToString();
         if (parentPath == string.Empty && path.StartsWith(DirectorySeparator))
         {
             parentPath = DirectorySeparator.ToString();
         }
+
         return new FtpDirectory(directoryName, parentPath);
     }
+
     public static bool ParseFtpEntry(ref SequenceReader<char> rdr, string parentPath, out IFtpEntry? entry)
     {
         entry = null;
@@ -74,146 +80,161 @@ public static class MavlinkFtpHelper
                 case DirectoryChar:
                     line = line[1..];
                     if (line.IsEmpty) continue;
-                    entry = new FtpDirectory(line.Trim().ToString(),parentPath);
+                    entry = new FtpDirectory(line.Trim().ToString(), parentPath);
                     return true;
                 case FileChar:
                     line = line[1..];
                     if (line.IsEmpty) continue;
                     var tabIndex = line.IndexOf(FileSizeSeparator);
                     if (tabIndex == -1) continue;
-                    entry = new FtpFile(line[..tabIndex].Trim(DirectorySeparator).ToString(), uint.Parse(line[(tabIndex + 1)..]),parentPath);
+                    entry = new FtpFile(line[..tabIndex].Trim(DirectorySeparator).ToString(),
+                        uint.Parse(line[(tabIndex + 1)..]), parentPath);
                     return true;
             }
         }
     }
-    
+
     public static Encoding FtpEncoding { get; } = Encoding.ASCII;
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteSequenceNumber(this FileTransferProtocolPacket packet,in ushort seqNumber)
+    public static void WriteSequenceNumber(this FileTransferProtocolPacket packet, in ushort seqNumber)
     {
         Unsafe.As<byte, ushort>(ref packet.Payload.Payload[0]) = seqNumber;
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ReadSequenceNumber(this FileTransferProtocolPacket packet, out ushort seqNumber)
     {
         seqNumber = Unsafe.As<byte, ushort>(ref packet.Payload.Payload[0]);
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ushort ReadSequenceNumber(this FileTransferProtocolPacket packet)
     {
         return Unsafe.As<byte, ushort>(ref packet.Payload.Payload[0]);
     }
-    
-    
+
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteSession(this FileTransferProtocolPacket packet,in byte session)
+    public static void WriteSession(this FileTransferProtocolPacket packet, in byte session)
     {
         packet.Payload.Payload[2] = session;
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ReadSession(this FileTransferProtocolPacket packet, out byte session)
     {
         session = packet.Payload.Payload[2];
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReadSession(this FileTransferProtocolPacket packet)
     {
         return packet.Payload.Payload[2];
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteOpcode(this FileTransferProtocolPacket packet,in FtpOpcode ftpOpcode)
+    public static void WriteOpcode(this FileTransferProtocolPacket packet, in FtpOpcode ftpOpcode)
     {
         packet.Payload.Payload[3] = (byte)ftpOpcode;
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ReadOpcode(this FileTransferProtocolPacket packet, out FtpOpcode ftpOpcode)
     {
         ftpOpcode = (FtpOpcode)packet.Payload.Payload[3];
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static FtpOpcode ReadOpcode(this FileTransferProtocolPacket packet)
     {
         return (FtpOpcode)packet.Payload.Payload[3];
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteSize(this FileTransferProtocolPacket packet,in byte size)
+    public static void WriteSize(this FileTransferProtocolPacket packet, in byte size)
     {
         packet.Payload.Payload[4] = size;
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ReadSize(this FileTransferProtocolPacket packet, out byte size)
     {
         size = packet.Payload.Payload[4];
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReadSize(this FileTransferProtocolPacket packet)
     {
         return packet.Payload.Payload[4];
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteOriginOpCode(this FileTransferProtocolPacket packet,in FtpOpcode offset)
+    public static void WriteOriginOpCode(this FileTransferProtocolPacket packet, in FtpOpcode offset)
     {
         packet.Payload.Payload[5] = (byte)offset;
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ReadOriginOpCode(this FileTransferProtocolPacket packet, out FtpOpcode offset)
     {
         offset = (FtpOpcode)packet.Payload.Payload[5];
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static FtpOpcode ReadOriginOpCode(this FileTransferProtocolPacket packet)
     {
         return (FtpOpcode)packet.Payload.Payload[5];
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteBurstComplete(this FileTransferProtocolPacket packet, in byte complete)
     {
         packet.Payload.Payload[6] = complete;
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ReadBurstComplete(this FileTransferProtocolPacket packet, out byte complete)
     {
         complete = packet.Payload.Payload[6];
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ReadBurstComplete(this FileTransferProtocolPacket packet)
     {
         return packet.Payload.Payload[6] != 0;
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WritePadding(this FileTransferProtocolPacket packet, in byte padding)
     {
         packet.Payload.Payload[7] = padding;
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ReadPadding(this FileTransferProtocolPacket packet, out byte padding)
     {
         padding = packet.Payload.Payload[7];
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReadPadding(this FileTransferProtocolPacket packet)
     {
         return packet.Payload.Payload[7];
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteOffset(this FileTransferProtocolPacket packet, in uint offset)
     {
         Unsafe.As<byte, uint>(ref packet.Payload.Payload[8]) = offset;
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ReadOffset(this FileTransferProtocolPacket packet, out uint offset)
     {
         offset = Unsafe.As<byte, uint>(ref packet.Payload.Payload[8]);
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint ReadOffset(this FileTransferProtocolPacket packet)
     {
@@ -228,12 +249,14 @@ public static class MavlinkFtpHelper
         data.CopyTo(packet.Payload.Payload.AsSpan(12));
         packet.WriteSize((byte)data.Length);
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteDataAsByte(this FileTransferProtocolPacket packet, in byte firstByte)
     {
         packet.Payload.Payload[12] = firstByte;
         packet.WriteSize(sizeof(byte));
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteDataAsInt(this FileTransferProtocolPacket packet, in int data)
     {
@@ -241,6 +264,7 @@ public static class MavlinkFtpHelper
         byteArr.CopyTo(packet.Payload.Payload.AsSpan(12));
         packet.WriteSize(sizeof(int));
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteDataAsTwoByte(this FileTransferProtocolPacket packet, in byte firstByte, in byte secondByte)
     {
@@ -248,53 +272,59 @@ public static class MavlinkFtpHelper
         packet.Payload.Payload[12] = secondByte;
         packet.WriteSize(sizeof(byte) * 2);
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ReadData(this FileTransferProtocolPacket packet, out ReadOnlySpan<byte> data)
     {
         var size = packet.ReadSize();
-        data = packet.Payload.Payload.AsSpan(12,size);
+        data = packet.Payload.Payload.AsSpan(12, size);
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReadData(this FileTransferProtocolPacket packet, IBufferWriter<byte> data)
     {
         var size = packet.ReadSize();
         var buffer = data.GetSpan(size);
-        packet.Payload.Payload.AsSpan(12,size).CopyTo(buffer);
+        packet.Payload.Payload.AsSpan(12, size).CopyTo(buffer);
         data.Advance(size);
         return size;
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReadData(this FileTransferProtocolPacket packet, Memory<byte> data)
     {
         var size = packet.ReadSize();
-        packet.Payload.Payload.AsSpan(12,size).CopyTo(data.Span);
+        packet.Payload.Payload.AsSpan(12, size).CopyTo(data.Span);
         return size;
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReadDataFirstByte(this FileTransferProtocolPacket packet)
     {
         return packet.Payload.Payload[12];
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReadDataSecondByte(this FileTransferProtocolPacket packet)
     {
         return packet.Payload.Payload[13];
     }
-    
-    
+
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string ReadDataAsString(this FileTransferProtocolPacket packet)
     {
         var size = packet.ReadSize();
-        return FtpEncoding.GetString(new ReadOnlySpan<byte>(packet.Payload.Payload, 12,size));
+        return FtpEncoding.GetString(new ReadOnlySpan<byte>(packet.Payload.Payload, 12, size));
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReadDataAsString(this FileTransferProtocolPacket packet, Memory<char> buffer)
     {
         var size = packet.ReadSize();
-        return (byte)FtpEncoding.GetChars(new ReadOnlySpan<byte>(packet.Payload.Payload, 12,size), buffer.Span);
+        return (byte)FtpEncoding.GetChars(new ReadOnlySpan<byte>(packet.Payload.Payload, 12, size), buffer.Span);
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int ReadDataAsInt(this FileTransferProtocolPacket packet)
     {
@@ -302,12 +332,14 @@ public static class MavlinkFtpHelper
         ReadOnlySpan<byte> byteArr = packet.Payload.Payload.AsSpan(12, size);
         return BitConverter.ToInt32(byteArr);
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReadDataAsString(this FileTransferProtocolPacket packet, Span<char> buffer)
     {
         var size = packet.ReadSize();
-        return (byte)FtpEncoding.GetChars(new ReadOnlySpan<byte>(packet.Payload.Payload, 12,size), buffer);
+        return (byte)FtpEncoding.GetChars(new ReadOnlySpan<byte>(packet.Payload.Payload, 12, size), buffer);
     }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReadDataAsString(this FileTransferProtocolPacket packet, IBufferWriter<char> data)
     {
@@ -315,8 +347,8 @@ public static class MavlinkFtpHelper
         var span = new ReadOnlySpan<byte>(packet.Payload.Payload, 12, size);
         return (byte)FtpEncoding.GetChars(span, data);
     }
-    
-    public static void WriteDataAsString(this FileTransferProtocolPacket packet,ReadOnlySpan<char> value)
+
+    public static void WriteDataAsString(this FileTransferProtocolPacket packet, ReadOnlySpan<char> value)
     {
         var byteSize = FtpEncoding.GetByteCount(value);
         var pathArray = ArrayPool<byte>.Shared.Rent(byteSize);
@@ -333,18 +365,19 @@ public static class MavlinkFtpHelper
         }
     }
 
-    public static void WriteDataAsUint(this FileTransferProtocolPacket packet,uint value)
+    public static void WriteDataAsUint(this FileTransferProtocolPacket packet, uint value)
     {
-        MemoryMarshal.Write(new Span<byte>(packet.Payload.Payload,12,4),value);
+        MemoryMarshal.Write(new Span<byte>(packet.Payload.Payload, 12, 4), value);
         packet.WriteSize(sizeof(uint));
     }
+
     public static uint ReadDataAsUint(this FileTransferProtocolPacket packet)
     {
-        return MemoryMarshal.Read<uint>(new ReadOnlySpan<byte>(packet.Payload.Payload,12,4));
+        return MemoryMarshal.Read<uint>(new ReadOnlySpan<byte>(packet.Payload.Payload, 12, 4));
     }
-    
+
     #endregion
-   
+
 
     public static string GetErrorMessage(NackError errorCode)
     {
@@ -352,7 +385,8 @@ public static class MavlinkFtpHelper
         {
             NackError.None => "No error occurred.",
             NackError.Fail => "An unknown failure occurred.",
-            NackError.FailErrno => "The command failed, and an error number is sent back in PayloadHeader.data[1]. This is a file-system error number understood by the server's operating system.",
+            NackError.FailErrno =>
+                "The command failed, and an error number is sent back in PayloadHeader.data[1]. This is a file-system error number understood by the server's operating system.",
             NackError.InvalidDataSize => "The payload size is invalid.",
             NackError.InvalidSession => "The session is not currently open.",
             NackError.NoSessionsAvailable => "All available sessions are already in use.",
@@ -364,8 +398,6 @@ public static class MavlinkFtpHelper
             _ => throw new ArgumentOutOfRangeException(nameof(errorCode), errorCode, null)
         };
     }
-
-    
 }
 
 /// <summary>
@@ -479,10 +511,12 @@ public enum FtpOpcode : byte
     /// Dropped parts of the burst can be fetched using ReadFile.
     /// </summary>
     BurstReadFile = 15,
+
     /// <summary>
     /// Ack response
     /// </summary>
     Ack = 128,
+
     /// <summary>
     /// Nak response
     /// </summary>
@@ -554,4 +588,3 @@ public enum NackError : ushort
     /// </summary>
     FileNotFound = 10
 }
-

@@ -1,5 +1,7 @@
+using System.Threading.Tasks;
 using Asv.Cfg;
 using JetBrains.Annotations;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
