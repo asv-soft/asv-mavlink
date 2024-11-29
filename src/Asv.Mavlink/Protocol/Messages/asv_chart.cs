@@ -24,11 +24,8 @@
 
 using System;
 using System.Text;
-using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
-using Asv.Mavlink.Common;
-using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.AsvChart

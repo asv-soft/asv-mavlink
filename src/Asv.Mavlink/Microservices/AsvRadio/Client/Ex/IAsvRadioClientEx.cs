@@ -4,9 +4,6 @@ using System.Threading.Tasks;
 using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRadio;
 using Asv.Mavlink.Common;
-
-using Asv.Mavlink.AsvRadio;
-
 using R3;
 
 namespace Asv.Mavlink;

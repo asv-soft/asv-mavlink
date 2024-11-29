@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Asv.Mavlink.AsvRsga;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.AsvRsga;
 
 
 namespace Asv.Mavlink;

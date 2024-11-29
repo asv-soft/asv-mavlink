@@ -1,7 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.AsvRadio;
-using Asv.Mavlink.AsvRadio;
 using R3;
 
 namespace Asv.Mavlink;

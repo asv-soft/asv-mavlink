@@ -4,10 +4,6 @@ using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRadio;
 using Asv.Mavlink.Common;
 
-using Asv.Mavlink.AsvRadio;
-
-using MavCmd = Asv.Mavlink.AsvRadio.MavCmd;
-
 namespace Asv.Mavlink;
 
 public class AsvRadioHelper

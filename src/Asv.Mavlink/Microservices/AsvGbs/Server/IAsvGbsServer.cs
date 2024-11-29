@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.AsvGbs;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.AsvGbs;
 
 
 namespace Asv.Mavlink

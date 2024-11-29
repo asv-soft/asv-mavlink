@@ -6,8 +6,6 @@ using Asv.Mavlink.AsvSdr;
 using Asv.Mavlink.Common;
 
 
-using MavCmd = Asv.Mavlink.AsvSdr.MavCmd;
-
 namespace Asv.Mavlink;
 
 public static class AsvSdrHelper

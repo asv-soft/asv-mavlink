@@ -7,10 +7,6 @@ using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRadio;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
-
-using Asv.Mavlink.AsvRadio;
-
-
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;

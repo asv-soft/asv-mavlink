@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.AsvGbs;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.AsvGbs;
-
 using Microsoft.Extensions.Logging;
 using R3;
 using MavCmd = Asv.Mavlink.Common.MavCmd;

@@ -1,8 +1,6 @@
 using System;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Asv.IO;
 using ConsoleAppFramework;
 
 namespace Asv.Mavlink.Shell;

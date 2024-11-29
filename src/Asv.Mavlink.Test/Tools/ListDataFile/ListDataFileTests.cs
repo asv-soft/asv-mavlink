@@ -3,8 +3,9 @@ using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.V2.AsvSdr;
-using Asv.Mavlink.V2.Common;
+using Asv.IO;
+using Asv.Mavlink.AsvSdr;
+using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
 using Xunit;
 
