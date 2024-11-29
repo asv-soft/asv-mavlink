@@ -1,10 +1,10 @@
 using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Asv.IO;
+using Asv.Mavlink.Common;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -68,7 +68,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteDataAsString(path);
 
         // Set up server response
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
         await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
@@ -118,7 +118,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteDataAsString(path);
 
         // Set up server response
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
         await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
@@ -163,7 +163,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteDataAsString(path);
 
         // Set up server response
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
         await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
@@ -208,7 +208,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteDataAsString(path);
 
         // Set up server response
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
         await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
@@ -246,7 +246,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteSize(0);
 
         // Set up server response
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
         await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
@@ -291,7 +291,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteDataAsString(path);
 
         // Set up server response
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
         await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
@@ -337,7 +337,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteSize((byte)(oldPath.Length + newPath.Length));
         requestPacket.WriteDataAsString(oldPath + '\0' + newPath);
 
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
         await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
@@ -387,7 +387,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteDataAsString(path);
 
         // Set up server response
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
         await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
@@ -441,7 +441,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteSize(size);
 
         // Set up server response
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
         await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
@@ -496,7 +496,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteDataAsString(path);
 
         // Set up server response
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
         await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
@@ -546,7 +546,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteDataAsString(path);
 
         // Set up client to receive the server's response
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
         await Link.Server.Send(requestPacket, _cts.Token).ConfigureAwait(false);
@@ -590,7 +590,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteSize(0);
 
         // Set up client to receive the server's response
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
         await Link.Server.Send(requestPacket, _cts.Token).ConfigureAwait(false);
@@ -642,7 +642,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteData(data);
 
         // Set up client to receive the server's response
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
         await Link.Server.Send(requestPacket, _cts.Token).ConfigureAwait(false);
@@ -702,7 +702,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteSize(size);
         requestPacket.WriteData(dataChunks);
 
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             Log.WriteLine($"Client received packet: {BitConverter.ToString(packet.Payload.Payload)}");
             _tcs.TrySetResult(packet);
@@ -754,7 +754,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         requestPacket.WriteSize(0);
         requestPacket.WriteDataAsString(path);
 
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
 
         // Act
         await Link.Server.Send(requestPacket, _cts.Token).ConfigureAwait(false);

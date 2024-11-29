@@ -1,5 +1,4 @@
 using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
@@ -8,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
-using Asv.Mavlink.V2.Common;
+using Asv.IO;
+using Asv.Mavlink.Common;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -146,7 +145,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
 
         Server.Base.TerminateSession = (session, reason) => Task.CompletedTask;
 
-        Link.Client.Filter<FileTransferProtocolPacket>().Subscribe(p => { _tcs.TrySetResult(p); });
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(p => { _tcs.TrySetResult(p); });
 
         // Act
         await Client.BurstDownloadFile(filePath, streamToSave, progress, 239, _cts.Token);

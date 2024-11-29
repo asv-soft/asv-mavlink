@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.IO;
 using ConsoleAppFramework;
 using R3;
 using Spectre.Console;
@@ -15,13 +16,13 @@ public class PacketViewerCommand
     private Table _packetTable;
     private Table _headerTable;
     private Thread _actionsThread;
-    private IMavlinkRouter _router;
+    private IProtocolRouter _router;
     private bool _isCancel;
     private bool _isSearching;
     private bool _isPause;
     private string _consoleSearch;
     private string _consoleSize = "10";
-    private PacketPrinter _printer;
+    private IProtocolFactory _protocol;
 
     /// <summary>
     /// Show packets in real time
@@ -30,14 +31,7 @@ public class PacketViewerCommand
     [Command("packetviewer")]
     public void Run(string connection = "tcp://127.0.0.1:5762")
     {
-        _printer = new PacketPrinter(new List<IPacketPrinterHandler>()
-        {
-            new DefaultPacketHandler(),
-            new FtpPacketFormatter(),
-            new StatusTextFormatter(),
-            new ParamSetFormatter(),
-            new ParamValueFormatter()
-        });
+       
         _headerTable = new Table().Expand().AddColumns("[red]F6[/]", "[red]F7[/]", "[red]F8[/]", "[red]F9[/]", "[red]ENTER[/]").Title("[aqua]Controls[/]");
         _headerTable.AddRow("Search:", $"Size:{_consoleSize}", "Pause", "End", "Submit"); 
         _table = new Table().Expand().AddColumn("[aqua]Packet Viewer[/]")//.BorderColor(Color.Aqua)
@@ -50,16 +44,14 @@ public class PacketViewerCommand
         {
             ctx.Spinner(Spinner.Known.Aesthetic);
             ctx.SpinnerStyle(Style.Parse("green"));
-            _router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
-            _router.AddPort(new MavlinkPortConfig()
+            _protocol =Protocol.Create(builder =>
             {
-                ConnectionString = connection,
-                IsEnabled = true,
-                Name = "Client"
+                builder.RegisterMavlinkV2Protocol();
             });
-            _router.WrapToV2ExtensionEnabled = true;
+            _router = _protocol.CreateRouter("ROTUER");
+            _router.AddPort(connection);
         });
-        _router.RxPipe.Chunk(TimeSpan.FromSeconds(1))
+        _router.OnRxMessage.RxFilterByType<MavlinkMessage>().Chunk(TimeSpan.FromSeconds(1))
             .Subscribe(GetPacketAndUpdateTable);
         _actionsThread = new Thread(InterceptConsoleActions);
         _actionsThread.Start();
@@ -210,7 +202,7 @@ public class PacketViewerCommand
 
         foreach (var packet in result)
         {
-            var msg = _printer.Print(packet);
+            var msg = _protocol.PrintMessage(packet);
             _packetTable.InsertRow(0, $@"{DateTime.Now}", $"{packet.Name}", $"{packet.ComponentId},{packet.SystemId}", $"{packet.GetByteSize()}", Markup.Escape($"{packet.Sequence}"),  Markup.Escape($"{msg}"));
             _table.UpdateCell(1, 0, _packetTable);      
         }

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.IO;
+using Asv.Mavlink.Common;
+
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -15,14 +17,14 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(TelemetryClient))]
 public class TelemetryClientTest : ClientTestBase<TelemetryClient>
 {
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly TelemetryClient _client;
     
     public TelemetryClientTest(ITestOutputHelper log) : base(log)
     {
         _client = Client;
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
@@ -33,7 +35,9 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     [Fact]
     public void Constructor_WithNull_Throws()
     {
+        // ReSharper disable once NullableWarningSuppressionIsUsed
         Assert.Throws<ArgumentNullException>(() => new TelemetryClient(null!, Core));
+        // ReSharper disable once NullableWarningSuppressionIsUsed
         Assert.Throws<ArgumentNullException>(() => new TelemetryClient(Identity, null!));
     }
 
@@ -53,13 +57,13 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         // Arrange
         var called = 0;
         RequestDataStreamPacket? packetFromClient = null;
-        using var sub1 = Link.Server.RxPipe.Subscribe(p =>
+        using var sub1 = Link.Server.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
         {
             called++;
 
             _taskCompletionSource.TrySetResult(p);
         });
-        using var sub2 = Link.Client.TxPipe.Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as RequestDataStreamPacket;
         });
@@ -70,10 +74,10 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         // Assert
         var result = await _taskCompletionSource.Task as RequestDataStreamPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(0, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int) Link.Client.Statistic.TxMessages);
+        Assert.Equal(Link.Client.Statistic.TxMessages, Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int) Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.NotNull(result);
         Assert.NotNull(packetFromClient);
         Assert.True(packetFromClient.IsDeepEqual(result));
@@ -86,13 +90,13 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         var called = 0;
         RequestDataStreamPacket? packetFromClient = null;
         await _cancellationTokenSource.CancelAsync();
-        using var sub1 = Link.Server.RxPipe.Subscribe(p =>
+        using var sub1 = Link.Server.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
         {
             called++;
 
             _taskCompletionSource.TrySetResult(p);
         });
-        using var sub2 = Link.Client.TxPipe.Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as RequestDataStreamPacket;
         });
@@ -108,10 +112,10 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
                 )
         );
         Assert.Equal(0, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(0, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int) Link.Client.Statistic.TxMessages);
+        Assert.Equal(Link.Client.Statistic.TxMessages, Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int) Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.Null(packetFromClient);
     }
 
@@ -177,6 +181,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
             }
             called++;
 
+            // ReSharper disable once NullableWarningSuppressionIsUsed
             tcs.TrySetResult(p!);
         });
 
@@ -186,10 +191,10 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         // Assert
         var payloadFromServer = await tcs.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int) Link.Server.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
         Assert.NotNull(payloadFromServer);
         Assert.True(packet.Payload.IsDeepEqual(payloadFromServer));
     }
@@ -248,10 +253,10 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         // Assert
         await tcs.Task;
         Assert.Equal(packetsCount, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int) Link.Server.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
         Assert.NotEmpty(payloads);
         Assert.True(payloads.All(p => p.IsDeepEqual(packet.Payload)));
     }
@@ -407,10 +412,10 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         // Assert
         var payloadFromServer = await tcs.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int) Link.Server.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
         Assert.NotNull(payloadFromServer);
         Assert.True(packet.Payload.IsDeepEqual(payloadFromServer));
     }
@@ -477,10 +482,10 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         // Assert
         await tcs.Task;
         Assert.Equal(packetsCount, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int) Link.Server.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
         Assert.NotEmpty(payloads);
         Assert.True(payloads.All(p => p.IsDeepEqual(packet.Payload)));
     }
@@ -589,10 +594,10 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         // Assert
         var payloadFromServer = await tcs.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int) Link.Server.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
         Assert.NotNull(payloadFromServer);
         Assert.True(packet.Payload.IsDeepEqual(payloadFromServer));
     }
@@ -645,10 +650,10 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         // Assert
         await tcs.Task;
         Assert.Equal(packetsCount, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int) Link.Server.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
         Assert.NotEmpty(payloads);
         Assert.True(payloads.All(p => p.IsDeepEqual(packet.Payload)));
     }
@@ -783,10 +788,10 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         // Assert
         var payloadFromServer = await tcs.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int) Link.Server.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
         Assert.NotNull(payloadFromServer);
         Assert.True(packet.Payload.IsDeepEqual(payloadFromServer));
     }
@@ -849,10 +854,10 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         // Assert
         await tcs.Task;
         Assert.Equal(packetsCount, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int) Link.Server.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
         Assert.NotEmpty(payloads);
         Assert.True(payloads.All(p => p.IsDeepEqual(packet.Payload)));
     }

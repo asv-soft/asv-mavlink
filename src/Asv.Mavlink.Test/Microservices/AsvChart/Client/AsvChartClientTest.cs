@@ -50,7 +50,7 @@ public class AsvChartClientTest : ClientTestBase<AsvChartClient>, IDisposable
         
         //Assert
         await Task.WhenAll(t1, t2);
-        Assert.Equal(attempts, Link.Client.TxPackets);
+        Assert.Equal(attempts, (int)Link.Client.Statistic.TxMessages);
     }
 
     public void Dispose()

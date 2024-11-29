@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -83,10 +84,10 @@ public class TelemetryClientExTest : ClientTestBase<TelemetryClientEx>
         // Assert
         await _taskCompletionSource.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int) Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
     }
     
     [Theory]
@@ -137,10 +138,10 @@ public class TelemetryClientExTest : ClientTestBase<TelemetryClientEx>
         // Assert
         await _taskCompletionSource.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int) Link.Server.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
     }
     
     [Theory]
@@ -191,10 +192,10 @@ public class TelemetryClientExTest : ClientTestBase<TelemetryClientEx>
         // Assert
         await _taskCompletionSource.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int) Link.Server.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
     }
     
     [Theory]
@@ -245,10 +246,10 @@ public class TelemetryClientExTest : ClientTestBase<TelemetryClientEx>
         // Assert
         await _taskCompletionSource.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int) Link.Server.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
     }
     
     [Theory]
@@ -299,9 +300,9 @@ public class TelemetryClientExTest : ClientTestBase<TelemetryClientEx>
         // Assert
         await _taskCompletionSource.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int) Link.Server.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
     }
 }

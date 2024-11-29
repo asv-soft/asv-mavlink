@@ -4,9 +4,8 @@ using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Common;
 using JetBrains.Annotations;
-using R3;
 using Xunit;
 using Xunit.Abstractions;
 

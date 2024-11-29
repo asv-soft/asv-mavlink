@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Asv.Mavlink;
 using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRadio;
 using JetBrains.Annotations;

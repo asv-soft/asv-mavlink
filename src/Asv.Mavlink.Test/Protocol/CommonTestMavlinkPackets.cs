@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.PythonArrayTest;
-using Asv.Mavlink.Test;
 using Asv.Mavlink.UnitTestMessage;
 using DeepEqual.Syntax;
 using Xunit;

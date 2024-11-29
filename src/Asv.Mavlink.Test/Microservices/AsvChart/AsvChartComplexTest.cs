@@ -2,7 +2,8 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvChart;
+using Asv.IO;
+using Asv.Mavlink.AsvChart;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -61,7 +62,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         Assert.True(sync);
 
         // Assert
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.Equal(Server.Charts.Count, Client.Charts.Count);
     }
 
@@ -69,7 +70,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
     public async Task RequestStream_WhenSingleRequest_ShouldReturnStreamAndUpdateCharts()
     {
         // Arrange
-        var tcs = new TaskCompletionSource<IPacketV2<IPayload>>();
+        var tcs = new TaskCompletionSource<MavlinkMessage>();
         _cancellationTokenSource.Token.Register(() => tcs.TrySetCanceled());
 
         var info = new AsvChartInfo(1, "TestChart1",
@@ -95,7 +96,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
             return Task.FromResult(new AsvChartOptions(infoChart.Id, AsvChartDataTrigger.AsvChartDataTriggerPeriodic,
                 30));
         };
-        using var sub = Link.Client.RxPipe.Subscribe(_ =>
+        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(_ =>
         {
             if (_ is AsvChartDataResponsePacket)
             {
@@ -118,7 +119,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         Assert.NotNull(res);
         Assert.NotNull(stream);
         Assert.Equal(res?.Payload.ChartId, stream.ChartId);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -174,7 +175,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
                 30));
         };
 
-        using var sub = Link.Client.RxPipe.Subscribe(packet =>
+        using var sub = Link.Client.OnRxMessage.Subscribe(packet =>
         {
             if (packet is AsvChartDataResponsePacket response)
             {
@@ -210,7 +211,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         Assert.NotNull(resSecond);
         Assert.Equal(resFirst.Payload.ChartId, firstStream.ChartId);
         Assert.Equal(resSecond.Payload.ChartId, secondStream.ChartId);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     public void Dispose()

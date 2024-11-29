@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.IO;
+using Asv.Mavlink.Common;
 using R3;
 using Xunit;
 using Xunit.Abstractions;
@@ -63,7 +64,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
     public async Task ResetSessions_Success()
     {
         // Arrange
-        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.ResetSessions)
             {
@@ -95,7 +96,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         // Arrange
         var path = "/path/to/directory";
 
-        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.RemoveDirectory)
             {
@@ -130,7 +131,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         // Arrange
         var path = "/path/to/file.txt";
 
-        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.RemoveFile)
             {
@@ -167,7 +168,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var offset = 1024U;
         var request = new TruncateRequest(path, offset);
 
-        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.TruncateFile)
             {
@@ -206,7 +207,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var path = "/path/to/file.txt";
         var expectedCrc32 = 0xDEADBEEF;
 
-        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.CalcFileCRC32)
             {
@@ -243,7 +244,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         // Arrange
         var path = "/path/to/new_directory";
 
-        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.CreateDirectory)
             {
@@ -280,7 +281,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var oldPath = "/path/to/old_name.txt";
         var newPath = "/path/to/new_name.txt";
 
-        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.Rename)
             {
@@ -313,7 +314,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         uint offset = 0;
         var directoryListing = "file1.txt\nfile2.txt\ndir1/\n";
 
-        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.ListDirectory)
             {
@@ -357,7 +358,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var sessionId = (byte)1;
 
         // Set up server response before starting client operation
-        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.OpenFileRO)
             {
@@ -401,7 +402,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var sessionId = (byte)2;
 
         // Set up server response before starting client operation
-        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.OpenFileWO)
             {
@@ -442,7 +443,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var sessionId = (byte)1;
 
         // Set up server response before starting client operation
-        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.TerminateSession)
             {
@@ -479,7 +480,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var path = "/path/to/new_file.txt";
 
         // Set up server response before starting client operation
-        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.CreateFile)
             {
@@ -522,7 +523,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         new Random().NextBytes(data);
 
         // Set up server response
-        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.ReadFile)
             {
@@ -575,7 +576,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         new Random().NextBytes(data);
 
         // Set up server response
-        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(packet =>
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.WriteFile)
             {
@@ -628,7 +629,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var totalDataReceived = new List<byte>();
 
         // Set up server response
-        Link.Server.Filter<FileTransferProtocolPacket>().Subscribe(async packet =>
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(async packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.BurstReadFile)
             {

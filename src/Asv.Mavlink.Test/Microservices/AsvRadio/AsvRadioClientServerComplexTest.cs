@@ -6,7 +6,6 @@ using Asv.IO;
 using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRadio;
 using Asv.Mavlink.Common;
-using R3;
 using Xunit;
 using Xunit.Abstractions;
 

@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;
@@ -13,7 +14,7 @@ namespace Asv.Mavlink.Test;
 public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposable
 {
     private readonly CancellationTokenSource _cancellationTokenSource;
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private List<ParamDescription> _existDescription;
     private readonly ParamsExtClientEx _clientEx;
     private ParamsExtClient _client;
@@ -51,7 +52,7 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
     public ParamsExtClientExTest(ITestOutputHelper log) : base(log)
     {
         _clientEx = Client;
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
@@ -81,7 +82,7 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
         
         //Assert
         await Task.WhenAll(t1, t2);
-        Assert.Equal(_config.ReadAttemptCount, Link.Client.TxPackets);
+        Assert.Equal(_config.ReadAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
     [Fact]
@@ -100,7 +101,7 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
         
         //Assert
         await Task.WhenAll(t1, t2);
-        Assert.Equal(_config.ReadAttemptCount, Link.Client.TxPackets);
+        Assert.Equal(_config.ReadAttemptCount, (int) Link.Client.Statistic.TxMessages);
     }
     
     [Fact]
@@ -122,7 +123,7 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
         
         //Assert
         await Task.WhenAll(t1, t2);
-        Assert.Equal(_config.ReadAttemptCount, Link.Client.TxPackets);
+        Assert.Equal(_config.ReadAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
     
     [Fact]
@@ -144,7 +145,7 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
         
         //Assert
         await Task.WhenAll(task, taskTime);
-        Assert.Equal(_config.ReadAttemptCount, Link.Client.TxPackets);
+        Assert.Equal(_config.ReadAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
     public void Dispose()

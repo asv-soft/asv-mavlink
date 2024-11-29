@@ -1,6 +1,7 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -12,6 +13,8 @@ namespace Asv.Mavlink;
 /// </summary>
 public sealed class TelemetryClient : MavlinkMicroserviceClient, ITelemetryClient
 {
+    
+
     private readonly ILogger _logger;
 
     public TelemetryClient(MavlinkClientIdentity identity, ICoreServices core)
@@ -33,7 +36,7 @@ public sealed class TelemetryClient : MavlinkMicroserviceClient, ITelemetryClien
     public ReadOnlyReactiveProperty<ExtendedSysStatePayload?> ExtendedSystemState { get; }
     public ReadOnlyReactiveProperty<BatteryStatusPayload?> Battery { get; }
     
-    public Task RequestDataStream(byte streamId, ushort rateHz, bool startStop, CancellationToken cancel = default)
+    public ValueTask RequestDataStream(byte streamId, ushort rateHz, bool startStop, CancellationToken cancel = default)
     {
         _logger.ZLogDebug($"{LogSend} {( startStop ? "Enable stream":"DisableStream")} with ID '{streamId}' and rate {rateHz} Hz");
         return InternalSend<RequestDataStreamPacket>(p =>
@@ -48,9 +51,37 @@ public sealed class TelemetryClient : MavlinkMicroserviceClient, ITelemetryClien
 
     #region Dispose
 
-    protected override async ValueTask DisposeAsyncCore()
+    protected sealed override async ValueTask DisposeAsyncCore()
     {
+        await CastAndDispose(Radio).ConfigureAwait(false);
+        await CastAndDispose(SystemStatus).ConfigureAwait(false);
+        await CastAndDispose(ExtendedSystemState).ConfigureAwait(false);
+        await CastAndDispose(Battery).ConfigureAwait(false);
+
         await base.DisposeAsyncCore().ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+    
+    protected sealed override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            Radio.Dispose();
+            SystemStatus.Dispose();
+            ExtendedSystemState.Dispose();
+            Battery.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 
     #endregion
