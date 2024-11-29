@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.IO;
+using Asv.IO;
 
 namespace Asv.Mavlink;
 

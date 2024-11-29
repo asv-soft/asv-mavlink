@@ -2,6 +2,7 @@ using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
+using Asv.IO;
 using ConsoleAppFramework;
 using Spectre.Console;
 
@@ -17,8 +18,7 @@ namespace Asv.Mavlink.Shell
         [Command("params")]
         public async Task Run(string cs = ConnectionString)
         {
-            var factory = new ClientDeviceFactory(new MavlinkIdentity(255, 255), new IClientDeviceProvider[]
-            {
+            var factory = new ClientDeviceFactory(new MavlinkIdentity(255, 255), [
                 new AdsbClientDeviceProvider(new AdsbClientDeviceConfig(), []),
                 new GbsClientDeviceProvider(new GbsClientDeviceConfig()),
                 new GenericDeviceProvider(new GenericDeviceConfig()),
@@ -29,10 +29,13 @@ namespace Asv.Mavlink.Shell
                 new ArduCopterClientDeviceProvider(new VehicleClientDeviceConfig()),
                 new ArduPlaneClientDeviceProvider(new VehicleClientDeviceConfig()),
                 new Px4CopterClientDeviceProvider(new VehicleClientDeviceConfig()),
-                new Px4PlaneClientDeviceProvider(new VehicleClientDeviceConfig()),
-            });
-            var mavlink = MavlinkV2Connection.Create(ConnectionString);
-            var core = new CoreServices(mavlink);
+                new Px4PlaneClientDeviceProvider(new VehicleClientDeviceConfig())
+            ]);
+            var router = Protocol.Create(builder =>
+            {
+                builder.RegisterMavlinkV2Protocol();
+            }).CreateRouter("ROUTER");
+            var core = new CoreServices(router);
             var browser = new ClientDeviceBrowser(factory, new DeviceBrowserConfig(), core);
             
             IClientDevice choice;

@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using Asv.Common;
 using Asv.IO;
 
 namespace Asv.Mavlink;

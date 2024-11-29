@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.IO;
 using Asv.Mavlink.AsvSdr;
 
 using ObservableCollections;
@@ -120,7 +121,7 @@ public interface IAsvSdrClientRecord
 }
 
 /// <summary>
-/// Helper class for copying metadata between <see cref="IAsvSdrClientRecord"/> and <see cref="IListDataFile{AsvSdrRecordFileMetadata}"/>.
+/// Helper class for copying metadata between <see cref="IAsvSdrClientRecord"/> and <see cref="IListDataFile{TMetadata}"/>.
 /// </summary>
 public static class AsvSdrClientRecordHelper
 {

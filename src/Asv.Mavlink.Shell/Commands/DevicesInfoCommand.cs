@@ -44,6 +44,7 @@ public class DevicesInfoCommand
         _router = protocol.CreateRouter("DEFAULT");
         _router.AddPort(connectionString);
         
+        
         var browser = new ClientDeviceBrowser()
         
         var svc = new MavlinkDeviceBrowser(_router, new MavlinkDeviceBrowserConfig
