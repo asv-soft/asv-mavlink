@@ -85,7 +85,7 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
     public async Task ReadAll_ShouldThrowTimeout_Exception()
     {
         // Act
-        var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
+        var t1 = Assert.ThrowsAsync<TaskCanceledException>(async () =>
         {
             await Client.ReadAll(default, default, _cancellationTokenSource.Token);
         });

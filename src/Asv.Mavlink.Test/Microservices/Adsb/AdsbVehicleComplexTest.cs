@@ -17,7 +17,7 @@ public class AdsbVehicleComplexTest : ComplexTestBase<AdsbVehicleClient, AdsbVeh
     private readonly AdsbVehicleClientConfig _clientConfig = new()
     {
         TargetTimeoutMs = 10000,
-        CheckOldDevicesMs = 3000,
+        CheckOldDevicesMs = 1000,
     };
 
     public AdsbVehicleComplexTest(ITestOutputHelper output) : base(output)

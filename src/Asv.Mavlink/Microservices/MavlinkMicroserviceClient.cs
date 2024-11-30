@@ -20,14 +20,15 @@ namespace Asv.Mavlink
     
     public delegate bool FilterDelegate<TResult>(MavlinkMessage inputPacket, out TResult result);
     
-    public abstract class MavlinkMicroserviceClient:IMavlinkMicroserviceClient,IDisposable, IAsyncDisposable
+    public abstract class MavlinkMicroserviceClient: AsyncDisposableWithCancel, IMavlinkMicroserviceClient,IDisposable, IAsyncDisposable
     {
         private readonly string _ifcLogName;
         private readonly ILogger _loggerBase;
         private string? _logSend;
         private string? _logRecv;
-        private readonly CancellationTokenSource _disposeCancel = new();
-        
+        private readonly Subject<MavlinkMessage> _internalFilteredVehiclePackets = new();
+        private readonly IDisposable _sub1;
+
         protected MavlinkMicroserviceClient(string ifcLogName, MavlinkClientIdentity identity,
             ICoreServices core) 
         {
@@ -35,7 +36,7 @@ namespace Asv.Mavlink
             Core = core ?? throw new ArgumentNullException(nameof(core));
             _loggerBase = Core.Log.CreateLogger<MavlinkMicroserviceClient>();
             _ifcLogName = ifcLogName;
-            InternalFilteredVehiclePackets = core.Connection.OnRxMessage.Where(x =>
+            _sub1 = core.Connection.OnRxMessage.Where(x =>
                 {
                     if (x.Protocol.Id != MavlinkV2Protocol.Info.Id) return false;
                     return true;
@@ -46,7 +47,7 @@ namespace Asv.Mavlink
                     if (Identity.Target.SystemId != x.SystemId) return false;
                     if (Identity.Target.ComponentId != x.ComponentId) return false;
                     return true;
-                }).Publish().RefCount();
+                }).Subscribe(_internalFilteredVehiclePackets.AsObserver());
         }
 
         public MavlinkClientIdentity Identity { get; }
@@ -55,8 +56,6 @@ namespace Asv.Mavlink
         {
             return Task.CompletedTask;
         }
-
-        protected CancellationToken DisposeCancel => _disposeCancel.Token;
 
         public string Name => _ifcLogName;
         protected string LogSend => _logSend ??= $"{Identity.Self}=>{Identity.Target}[{_ifcLogName}]:";
@@ -79,11 +78,13 @@ namespace Asv.Mavlink
             return InternalFilter(filter).Take(1);
         }
 
-        protected Observable<MavlinkMessage> InternalFilteredVehiclePackets { get; }
-       
+        protected Observable<MavlinkMessage> InternalFilteredVehiclePackets => _internalFilteredVehiclePackets;
+
         protected ValueTask InternalSend<TMessage>(Action<TMessage> fillPacket, CancellationToken cancel = default)
             where TMessage : MavlinkMessage, new()
         {
+            ArgumentNullException.ThrowIfNull(fillPacket);
+            cancel.ThrowIfCancellationRequested();
             var packet = new TMessage();
             fillPacket(packet);
             _loggerBase.ZLogTrace($"{LogSend} send {packet.Name}");
@@ -94,8 +95,10 @@ namespace Asv.Mavlink
         }
 
         protected async Task<TResult> InternalSendAndWaitAnswer<TResult>(MavlinkMessage packet,
-            CancellationToken cancel, FilterDelegate<TResult> filterAndResultGetter, int timeoutMs = 1000)
+            FilterDelegate<TResult> filterAndResultGetter, int timeoutMs = 1000,
+            CancellationToken cancel = default)
         {
+            cancel.ThrowIfCancellationRequested();
             ArgumentNullException.ThrowIfNull(filterAndResultGetter);
             _loggerBase.ZLogTrace($"{LogSend} call {packet.Name}");
             using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
@@ -140,7 +143,7 @@ namespace Asv.Mavlink
                 ++currentAttempt;
                 try
                 {
-                    return await InternalSendAndWaitAnswer(packet, cancel, filterAndResultGetter, timeoutMs).ConfigureAwait(false);
+                    return await InternalSendAndWaitAnswer(packet, filterAndResultGetter, timeoutMs, cancel).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -161,6 +164,7 @@ namespace Asv.Mavlink
             CancellationToken cancel, Func<TAnswerPacket, bool>? filter = null, int timeoutMs = 1000)
             where TAnswerPacket : MavlinkMessage, new()
         {
+            cancel.ThrowIfCancellationRequested();
             var p = new TAnswerPacket();
             _loggerBase.ZLogTrace($"{LogSend} call {p.Name}");
             using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
@@ -221,30 +225,33 @@ namespace Asv.Mavlink
             throw new TimeoutException($"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _disposeCancel.Dispose();
+                _internalFilteredVehiclePackets.Dispose();
+                _sub1.Dispose();
             }
+
+            base.Dispose(disposing);
         }
 
-        public void Dispose()
+        protected override async ValueTask DisposeAsyncCore()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+            await CastAndDispose(_internalFilteredVehiclePackets).ConfigureAwait(false);
+            await CastAndDispose(_sub1).ConfigureAwait(false);
 
-        protected virtual ValueTask DisposeAsyncCore()
-        {
-            _disposeCancel.Dispose();
-            return ValueTask.CompletedTask;
-        }
+            await base.DisposeAsyncCore().ConfigureAwait(false);
 
-        public async ValueTask DisposeAsync()
-        {
-            await DisposeAsyncCore().ConfigureAwait(false);
-            GC.SuppressFinalize(this);
+            return;
+
+            static async ValueTask CastAndDispose(IDisposable resource)
+            {
+                if (resource is IAsyncDisposable resourceAsyncDisposable)
+                    await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    resource.Dispose();
+            }
         }
     }
 }

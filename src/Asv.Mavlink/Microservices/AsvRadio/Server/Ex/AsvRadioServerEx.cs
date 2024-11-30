@@ -105,9 +105,9 @@ public class AsvRadioServerEx: IAsvRadioServerEx, IDisposable,IAsyncDisposable
 
     private async void OnCodecCapabilitiesRequest(AsvRadioCodecCapabilitiesRequestPayload? request)
     {
-        if (request == null) return;
         try
         {
+            if (request == null) return;
             var count = Math.Min((byte)request.Count, (byte)AsvRadioCodecCapabilitiesResponsePayload.CodecsMaxItemsCount);
             var items = _codecs.Skip(request.Skip).Take(count);
             await Base.SendCodecCapabilitiesRequest(x =>

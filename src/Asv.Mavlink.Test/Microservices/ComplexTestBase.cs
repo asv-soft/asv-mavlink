@@ -20,7 +20,7 @@ public abstract class ComplexTestBase<TClient,TServer>
             builder.SetLog(loggerFactory);
             builder.SetTimeProvider(RouterTime);
             builder.RegisterMavlinkV2Protocol();
-            builder.EnableBroadcastFeature<MavlinkMessage>();
+            builder.RegisterBroadcastFeature<MavlinkMessage>();
             builder.RegisterSimpleFormatter();
         });
         

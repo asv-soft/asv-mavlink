@@ -78,7 +78,7 @@ public class AsvGbsExServerTest : ServerTestBase<AsvGbsExServer>, IDisposable
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
     
-    [Fact(Skip = "Cancellation doesn't work")] // TODO: FIX CANCELLATION
+    [Fact] 
     public async Task SendRtcmData_Canceled_Throws()
     {
         // Arrange

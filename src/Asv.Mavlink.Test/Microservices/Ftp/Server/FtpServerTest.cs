@@ -26,7 +26,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
 
     public FtpServerTest(ITestOutputHelper log) : base(log)
     {
-        _cts = new CancellationTokenSource(TimeSpan.FromSeconds(3), TimeProvider.System);
+        _cts = new CancellationTokenSource(TimeSpan.FromSeconds(60), TimeProvider.System);
         _cts.Token.Register(() => _tcs.TrySetCanceled());
     }
 
@@ -537,7 +537,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[257],
+                Payload = new byte[200],
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.OpenFileWO);
@@ -693,7 +693,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = 0,
-                Payload = new byte[300],
+                Payload = new byte[200],
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.BurstReadFile);

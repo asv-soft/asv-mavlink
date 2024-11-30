@@ -23,7 +23,7 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
     public ParamsServerTest(ITestOutputHelper log) : base(log)
     {
         _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 

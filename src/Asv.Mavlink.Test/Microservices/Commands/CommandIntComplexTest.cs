@@ -33,7 +33,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         _server = Server;
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 

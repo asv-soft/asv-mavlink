@@ -22,7 +22,7 @@ public abstract class ServerTestBase<TServer>
             builder.SetLog(loggerFactory);
             builder.SetTimeProvider(ServerTime);
             builder.RegisterMavlinkV2Protocol();
-            builder.EnableBroadcastFeature<MavlinkMessage>();
+            builder.RegisterBroadcastFeature<MavlinkMessage>();
             builder.RegisterSimpleFormatter();
         });
         Link = protocol.CreateVirtualConnection();

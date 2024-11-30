@@ -15,6 +15,8 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
 {
     private readonly AsvRadioServerConfig _config;
     private readonly MavlinkPacketTransponder<AsvRadioStatusPacket> _transponder;
+    private readonly Subject<AsvRadioCapabilitiesRequestPayload?> _onCapabilitiesRequest = new();
+    private readonly Subject<AsvRadioCodecCapabilitiesRequestPayload?> _onCodecCapabilitiesRequest = new();
 
     public AsvRadioServer(MavlinkIdentity identity, AsvRadioServerConfig config, ICoreServices core)     
         : base(AsvRadioHelper.IfcName, identity,core)
@@ -22,14 +24,14 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _transponder =
             new MavlinkPacketTransponder<AsvRadioStatusPacket>(identity, core);
-
-        OnCapabilitiesRequest =
-            InternalFilter<AsvRadioCapabilitiesRequestPacket>(x => x.Payload.TargetSystem,
+        
+        // we create Subject and subscribe to it because we need to dispose subscription in Dispose method
+        InternalFilter<AsvRadioCapabilitiesRequestPacket>(x => x.Payload.TargetSystem,
                     x => x.Payload.TargetComponent)
-                .Select(x => x?.Payload).ToReadOnlyReactiveProperty();
-        OnCodecCapabilitiesRequest = InternalFilter<AsvRadioCodecCapabilitiesRequestPacket>(x=>x.Payload.TargetSystem,x=>x.Payload.TargetComponent)
-            .Select(x => x?.Payload)
-            .ToReadOnlyReactiveProperty();
+                .Select(x => x?.Payload).Subscribe(_onCapabilitiesRequest.AsObserver());
+        
+        InternalFilter<AsvRadioCodecCapabilitiesRequestPacket>(x=>x.Payload.TargetSystem,x=>x.Payload.TargetComponent)
+            .Select(x => x?.Payload).Subscribe(_onCodecCapabilitiesRequest.AsObserver());
         
     }
     
@@ -43,8 +45,8 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
         if (changeCallback == null) throw new ArgumentNullException(nameof(changeCallback));
         _transponder.Set(x=>changeCallback(x.Payload));
     }
-    
-    public ReadOnlyReactiveProperty<AsvRadioCapabilitiesRequestPayload?> OnCapabilitiesRequest { get; }
+
+    public Observable<AsvRadioCapabilitiesRequestPayload?> OnCapabilitiesRequest => _onCapabilitiesRequest;
 
     public ValueTask SendCapabilitiesResponse(Action<AsvRadioCapabilitiesResponsePayload> setValueCallback,
         CancellationToken cancel = default)
@@ -52,8 +54,9 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
         if (setValueCallback == null) throw new ArgumentNullException(nameof(setValueCallback));
         return InternalSend<AsvRadioCapabilitiesResponsePacket>(x => { setValueCallback(x.Payload); }, cancel);
     }
-    
-    public ReadOnlyReactiveProperty<AsvRadioCodecCapabilitiesRequestPayload?> OnCodecCapabilitiesRequest { get; }
+
+    public Observable<AsvRadioCodecCapabilitiesRequestPayload?> OnCodecCapabilitiesRequest => _onCodecCapabilitiesRequest;
+
     public ValueTask SendCodecCapabilitiesRequest(Action<AsvRadioCodecCapabilitiesResponsePayload> setValueCallback, CancellationToken cancel = default)
     {
         if (setValueCallback == null) throw new ArgumentNullException(nameof(setValueCallback));
@@ -67,8 +70,8 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
         if (disposing)
         {
             _transponder.Dispose();
-            OnCapabilitiesRequest.Dispose();
-            OnCodecCapabilitiesRequest.Dispose();
+            _onCapabilitiesRequest.Dispose();
+            _onCodecCapabilitiesRequest.Dispose();
         }
 
         base.Dispose(disposing);
@@ -77,8 +80,8 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
     protected override async ValueTask DisposeAsyncCore()
     {
         await CastAndDispose(_transponder).ConfigureAwait(false);
-        await CastAndDispose(OnCapabilitiesRequest).ConfigureAwait(false);
-        await CastAndDispose(OnCodecCapabilitiesRequest).ConfigureAwait(false);
+        await CastAndDispose(_onCapabilitiesRequest).ConfigureAwait(false);
+        await CastAndDispose(_onCodecCapabilitiesRequest).ConfigureAwait(false);
 
         await base.DisposeAsyncCore().ConfigureAwait(false);
 

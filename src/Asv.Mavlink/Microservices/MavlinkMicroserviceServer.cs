@@ -16,13 +16,12 @@ public interface IMavlinkMicroserviceServer
     MavlinkIdentity Identity { get; }
 }
 
-public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, IDisposable, IAsyncDisposable
+public abstract class MavlinkMicroserviceServer : AsyncDisposableWithCancel, IMavlinkMicroserviceServer, IDisposable, IAsyncDisposable
 {
     private readonly ILogger _loggerBase;
     private string? _logLocalName;
     private string? _logSend;
     private string? _logRecv;
-    private readonly CancellationTokenSource _disposeCancel = new();
     private readonly string _ifcLogName;
 
     protected MavlinkMicroserviceServer(string ifcLogName, MavlinkIdentity identity, ICoreServices core)
@@ -43,8 +42,6 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
     public ICoreServices Core { get; }
 
     public MavlinkIdentity Identity { get; }
-
-    protected CancellationToken DisposeCancel => _disposeCancel.Token;
 
     protected Observable<TPacket> InternalFilter<TPacket>(Func<TPacket, byte> targetSystemGetter,
         Func<TPacket, byte> targetComponentGetter)
@@ -80,6 +77,7 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
     protected ValueTask InternalSend<TPacketSend>(Action<TPacketSend> fillPacket, CancellationToken cancel = default)
         where TPacketSend : MavlinkMessage, new()
     {
+        cancel.ThrowIfCancellationRequested();
         var packet = new TPacketSend();
         fillPacket(packet);
         packet.ComponentId = Identity.ComponentId;
@@ -99,7 +97,7 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
         cancel.ThrowIfCancellationRequested();
         var p = new TAnswerPacket();
         _loggerBase.ZLogTrace($"{LogSend} call {p.Name}");
-        using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, _disposeCancel.Token);
+        using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
         linkedCancel.CancelAfter(timeoutMs, Core.TimeProvider);
         var tcs = new TaskCompletionSource<TAnswerPacket>();
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
@@ -164,31 +162,4 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
         throw new TimeoutException($"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
     }
 
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            _disposeCancel.Cancel(false);
-            _disposeCancel.Dispose();
-        }
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual ValueTask DisposeAsyncCore()
-    {
-        _disposeCancel.Cancel(false);
-        _disposeCancel.Dispose();
-        return ValueTask.CompletedTask;
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await DisposeAsyncCore().ConfigureAwait(false);
-        GC.SuppressFinalize(this);
-    }
 }

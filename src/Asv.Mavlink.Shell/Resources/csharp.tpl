@@ -88,13 +88,13 @@ namespace Asv.Mavlink.{{ Namespace }}
     {%- endfor -%}
     ///  {{ msg.Name }}
     /// </summary>
-    public class {{ msg.CamelCaseName }}Packet: MavlinkV2Message<{{ msg.CamelCaseName }}Payload>
+    public class {{ msg.CamelCaseName }}Packet : MavlinkV2Message<{{ msg.CamelCaseName }}Payload>
     {
         public const int MessageId = {{ msg.Id }};
         
         public const byte CrcExtra = {{ msg.CrcExtra }};
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;

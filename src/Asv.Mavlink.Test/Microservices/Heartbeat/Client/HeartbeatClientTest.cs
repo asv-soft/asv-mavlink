@@ -64,7 +64,7 @@ public class HeartbeatClientTest(ITestOutputHelper log) : ClientTestBase<Heartbe
         Assert.Equal(0,Client.PacketRateHz.CurrentValue);
         var seq = new PacketSequenceCalculator();
         
-        for (var i = 0; i < 1000; i++)
+        for (var i = 0; i < 10000; i++)
         {
             var p = new HeartbeatPacket
             {

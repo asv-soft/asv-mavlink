@@ -42,7 +42,7 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
     {
         if (_targetSource.Count == 0) return;
         var itemsToDelete = _targetSource.Select(x=>(AdsbVehicle)x.Value)
-            .Where(device => Core.TimeProvider.GetElapsedTime(device.GetLastHit()) > _targetTimeout.Value)
+            .Where(device => Core.TimeProvider.GetElapsedTime(device.GetLastHit()) >= _targetTimeout.Value)
             .ToList();
         
         foreach (var item in itemsToDelete)

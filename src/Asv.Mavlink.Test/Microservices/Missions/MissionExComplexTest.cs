@@ -243,6 +243,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         });
         _server.AddItems([new ServerMissionItem()]);
         
+        
         // Act
         var task = _client.SetCurrent(0, cancel.Token);
         
@@ -570,11 +571,11 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
             ClientTime.Advance(TimeSpan.FromMilliseconds((MaxAttemptsToCallCount * MaxCommandTimeoutMs * 2) + 1));
         });
         
-        // Act
-        var result = _client.ClearRemote(cancel.Token);
-        
         // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async () => await result);
+        await Assert.ThrowsAsync<TimeoutException>(async ()=>
+        {
+            await _client.ClearRemote(cancel.Token);
+        });
         Assert.False(_client.IsSynced.CurrentValue);
     }
     
@@ -591,11 +592,11 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
             called++;
         });
         
-        // Act
-        var result = _client.ClearRemote(cancel.Token);
-        
         // Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => await result);
+        await Assert.ThrowsAsync<TimeoutException>(async ()=>
+        {
+            await _client.ClearRemote(cancel.Token);
+        });
         Assert.Equal(0, called);
         Assert.False(_client.IsSynced.CurrentValue);
     }

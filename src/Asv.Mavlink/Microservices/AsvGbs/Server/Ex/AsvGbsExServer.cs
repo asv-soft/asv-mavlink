@@ -172,6 +172,7 @@ public class AsvGbsExServer: IAsvGbsServerEx, IDisposable,IAsyncDisposable
     
     public async Task SendRtcmData(byte[] data, int length, CancellationToken cancel)
     {
+        cancel.ThrowIfCancellationRequested();
         if (length > MaxRtcmMessageLength)
         {
             _logger.ZLogError($"RTCM message for DGPS is too large '{length}'");

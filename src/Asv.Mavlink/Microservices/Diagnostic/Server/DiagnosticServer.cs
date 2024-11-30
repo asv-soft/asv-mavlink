@@ -41,7 +41,7 @@ public class DiagnosticServer: MavlinkMicroserviceServer, IDiagnosticServer
 
         if (_lastSendFloatTime.TryGetValue(name, out var lastSendTime))
         {
-            if (Core.TimeProvider.GetElapsedTime(lastSendTime).TotalMilliseconds < _config.MaxSendIntervalMs)
+            if (Core.TimeProvider.GetElapsedTime(lastSendTime).TotalMilliseconds <= _config.MaxSendIntervalMs)
             {
                 return;
             }

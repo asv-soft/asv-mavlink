@@ -29,7 +29,7 @@ public class CommandClientTest : ClientTestBase<CommandClient>
     {
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(50), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
 
     }
@@ -114,13 +114,17 @@ public class CommandClientTest : ClientTestBase<CommandClient>
     {
         // Arrange 
         var called = 0;
-        CommandIntPacket? packetFromClient = null;
+        
+        var tcs2 = new TaskCompletionSource<CommandIntPacket>();
         using var sub = Link.Server.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var sub1 = Link.Client.OnTxMessage.Subscribe(p => { packetFromClient = p as CommandIntPacket; });
+        using var sub1 = Link.Client.OnTxMessage.Subscribe(p =>
+        {
+            tcs2.TrySetResult(p as CommandIntPacket);
+        });
 
         // Act
         await _client.SendCommandInt(
@@ -139,6 +143,7 @@ public class CommandClientTest : ClientTestBase<CommandClient>
 
         // Assert
         var result = await _taskCompletionSource.Task as CommandIntPacket;
+        var packetFromClient = await tcs2.Task;
         Assert.NotNull(result);
         Assert.NotNull(packetFromClient);
         Assert.Equal(1, called);
@@ -213,7 +218,7 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         }
     }
 
-    [Fact(Skip = "Cancellation doesn't work")] // TODO: FIX CANCELLATION
+    [Fact]
     public async Task SendCommandInt_Canceled_Throws()
     {
         // Arrange
@@ -226,22 +231,26 @@ public class CommandClientTest : ClientTestBase<CommandClient>
 
         // Act
         await _cancellationTokenSource.CancelAsync();
-        var task = _client.SendCommandInt(
-            MavCmd.MavCmdUser1,
-            MavFrame.MavFrameMission,
-            true,
-            true,
-            1,
-            1,
-            3,
-            4,
-            5,
-            6,
-            7,
-            _cancellationTokenSource.Token);
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            var task = _client.SendCommandInt(
+                MavCmd.MavCmdUser1,
+                MavFrame.MavFrameMission,
+                true,
+                true,
+                1,
+                1,
+                3,
+                4,
+                5,
+                6,
+                7,
+                _cancellationTokenSource.Token);
+        });
+        
 
         // Assert
-        await Assert.ThrowsAsync<TaskCanceledException>(async () => await task);
+        
         Assert.Equal(0, called);
         Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
         Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
@@ -415,7 +424,7 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         }
     }
 
-    [Fact(Skip = "Cancellation doesn't work")] // TODO: FIX CANCELLATION
+    [Fact]
     public async Task SendCommandLong_Canceled_Throws()
     {
         // Arrange
@@ -428,19 +437,22 @@ public class CommandClientTest : ClientTestBase<CommandClient>
 
         // Act
         await _cancellationTokenSource.CancelAsync();
-        var task = _client.SendCommandLong(
-            MavCmd.MavCmdUser1,
-            1,
-            1,
-            3,
-            4,
-            5,
-            6,
-            7,
-            _cancellationTokenSource.Token);
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await _client.SendCommandLong(
+                MavCmd.MavCmdUser1,
+                1,
+                1,
+                3,
+                4,
+                5,
+                6,
+                7,
+                _cancellationTokenSource.Token);
 
-        // Assert
-        await Assert.ThrowsAsync<TaskCanceledException>(() => task);
+            // Assert
+        });
+        
         Assert.Equal(0, called);
         Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
         Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);

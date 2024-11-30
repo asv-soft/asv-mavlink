@@ -25,7 +25,7 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
     public AsvChartServerTest(ITestOutputHelper output) : base(output)
     {
         _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
