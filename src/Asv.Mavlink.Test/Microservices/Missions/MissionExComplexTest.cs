@@ -593,7 +593,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         });
         
         // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async ()=>
+        await Assert.ThrowsAsync<OperationCanceledException>(async ()=>
         {
             await _client.ClearRemote(cancel.Token);
         });

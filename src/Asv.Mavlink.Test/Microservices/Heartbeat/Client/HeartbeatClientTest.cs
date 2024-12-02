@@ -49,6 +49,7 @@ public class HeartbeatClientTest(ITestOutputHelper log) : ClientTestBase<Heartbe
             }
             Time.Advance(TimeSpan.FromSeconds(0.05));
         }
+        
         Assert.Equal(quality,Client.LinkQuality.CurrentValue, 1);
         Log.WriteLine($"RESULT: {quality:F3} ~ {Client.LinkQuality.CurrentValue:F3}");
     }
