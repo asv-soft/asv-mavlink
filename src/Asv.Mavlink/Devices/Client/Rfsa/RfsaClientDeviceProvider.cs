@@ -1,14 +1,25 @@
+using System.Collections.Immutable;
+using Asv.IO;
 using Asv.Mavlink.Minimal;
 
 
 namespace Asv.Mavlink;
 
-public class RfsaClientDeviceProvider(RfsaClientDeviceConfig config) : IClientDeviceProvider
+public class RfsaClientDeviceProvider(MavlinkIdentity selfId, IPacketSequenceCalculator seq, RfsaClientDeviceConfig config) 
+    : MavlinkClientDeviceFactory<RfsaClientDevice>(selfId,seq)
 {
-    public int Order => ClientDeviceFactory.DefaultOrder;
-    public bool CanCreateDevice(HeartbeatPacket packet) => packet.Payload.Type == (MavType)Mavlink.AsvRfsa.MavType.MavTypeAsvRfsa;
-    public IClientDevice CreateDevice(HeartbeatPacket packet, MavlinkClientIdentity identity, ICoreServices core)
+    public override int Order => ClientDeviceFactory.DefaultOrder;
+    public override string DeviceClass => RfsaClientDevice.DeviceClass;
+
+    protected override RfsaClientDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId, ImmutableArray<IClientDeviceExtender> extenders,
+        ICoreServices context)
     {
-        return new RfsaClientDevice(identity,config,core);
+        return new RfsaClientDevice(clientDeviceId,config,extenders,context);
     }
+
+    protected override bool CheckDevice(HeartbeatPacket msg)
+    {
+        return msg.Payload.Type == (MavType)AsvRfsa.MavType.MavTypeAsvRfsa;
+    }
+
 }

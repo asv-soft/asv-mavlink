@@ -18,7 +18,7 @@ namespace Asv.Mavlink
         public DgpsClient(MavlinkClientIdentity identity, ICoreServices core)
             :base("DGPS", identity, core)
         {
-            _logger = core.Log.CreateLogger<DgpsClient>();
+            _logger = core.LoggerFactory.CreateLogger<DgpsClient>();
         }
 
         public async Task SendRtcmData(byte[] data, int length, CancellationToken cancel)

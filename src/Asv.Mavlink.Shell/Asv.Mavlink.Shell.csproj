@@ -27,7 +27,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Asv.Cfg" Version="$(AsvCommonVersion)" />
     <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
     <PackageReference Include="ConsoleAppFramework" Version="$(ConsoleAppFrameworkVersion)"/>
     <PackageReference Include="DotLiquid" Version="2.2.595" />

@@ -1,22 +1,29 @@
+using System.Collections.Immutable;
+using Asv.IO;
 using Asv.Mavlink.Minimal;
 
 
 namespace Asv.Mavlink;
 
-public class Px4CopterClientDeviceProvider(VehicleClientDeviceConfig deviceConfig) : IClientDeviceProvider
+public class Px4CopterClientDeviceProvider(MavlinkIdentity selfId, IPacketSequenceCalculator seq,VehicleClientDeviceConfig config)
+    : MavlinkClientDeviceFactory<Px4VehicleClientDevice>(selfId,seq)
 {
-    public int Order => ClientDeviceFactory.DefaultOrder;
-    public bool CanCreateDevice(HeartbeatPacket packet)
+    public override int Order => ClientDeviceFactory.MinimumOrder;
+    public override string DeviceClass => Vehicles.CopterDeviceClass;
+
+    protected override Px4VehicleClientDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId, ImmutableArray<IClientDeviceExtender> extenders,
+        ICoreServices context)
     {
-        return packet.Payload is
+        return new Px4VehicleClientDevice(clientDeviceId,config,extenders,context);
+    }
+
+    protected override bool CheckDevice(HeartbeatPacket msg)
+    {
+        return msg.Payload is
         {
             Type: MavType.MavTypeQuadrotor or MavType.MavTypeTricopter or MavType.MavTypeHexarotor or MavType.MavTypeOctorotor,
             Autopilot: MavAutopilot.MavAutopilotPx4
         };
     }
 
-    public IClientDevice CreateDevice(HeartbeatPacket packet, MavlinkClientIdentity identity, ICoreServices core)
-    {
-        return new Px4VehicleClientDevice(identity, deviceConfig, core, DeviceClass.Copter);
-    }
 }

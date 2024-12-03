@@ -24,7 +24,7 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
     public PositionClient(MavlinkClientIdentity identity, ICoreServices core)
         : base("CTRL", identity, core)
     {
-        _logger = core.Log.CreateLogger<PositionClient>();
+        _logger = core.LoggerFactory.CreateLogger<PositionClient>();
         _target = InternalFilter<PositionTargetGlobalIntPacket>()
             .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
@@ -59,7 +59,7 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
         float vx, float vy, float vz, float afx, float afy, float afz, float yaw,
         float yawRate, PositionTargetTypemask typeMask, CancellationToken cancel)
     {
-        _logger.ZLogDebug($"{LogSend} {nameof(SetTargetGlobalInt)} ");
+        _logger.ZLogDebug($"{Id} {nameof(SetTargetGlobalInt)} ");
         return InternalSend<SetPositionTargetGlobalIntPacket>(p =>
         {
             p.Payload.TimeBootMs = timeBootMs;

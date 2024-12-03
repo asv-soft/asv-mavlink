@@ -219,7 +219,7 @@ public class AudioDeviceTest
     {
         public IProtocolConnection Connection { get; } = Mock.Of<IProtocolConnection>();
         public IPacketSequenceCalculator Sequence { get; } = Mock.Of<IPacketSequenceCalculator>();
-        public ILoggerFactory Log { get; } = new FakeLoggerFactory();
+        public ILoggerFactory LoggerFactory { get; } = new FakeLoggerFactory();
         public TimeProvider TimeProvider { get; } = TimeProvider.System;
         public IMeterFactory Metrics { get; } = Mock.Of<IMeterFactory>();
 

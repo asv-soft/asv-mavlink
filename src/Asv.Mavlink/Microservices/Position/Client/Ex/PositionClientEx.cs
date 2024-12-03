@@ -88,7 +88,7 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
             .ToReadOnlyReactiveProperty(double.NaN);
         }
 
-    public string Name => $"{Base.Name}Ex";
+    public string TypeName => $"{Base.TypeName}Ex";
     
     private void CheckArmedTime(object? state)
     {

@@ -1,49 +1,55 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.IO;
 
 namespace Asv.Mavlink;
 
 public class ArduPlaneClientDevice: ArduVehicleClientDevice
 {
-    private readonly VehicleClientDeviceConfig _deviceConfig;
-    private bool _quadPlaneEnabled;
 
-    public ArduPlaneClientDevice(MavlinkClientIdentity identity, VehicleClientDeviceConfig deviceConfig, ICoreServices core) 
-        : base(identity, deviceConfig, core, DeviceClass.Copter)
+    public ArduPlaneClientDevice(
+        MavlinkClientDeviceId identity, 
+        VehicleClientDeviceConfig config,
+        ImmutableArray<IClientDeviceExtender> extenders, 
+        ICoreServices core) 
+        : base(identity,config,extenders,core)
     {
-        _deviceConfig = deviceConfig;
+        
     }
 
-    protected override async Task InitBeforeMicroservices(CancellationToken cancel)
-    {
-        var param = new ParamsClient(Identity,_deviceConfig.Params,Core);
-        var value = await param.Read("Q_ENABLE",cancel).ConfigureAwait(false);
-        _quadPlaneEnabled = value.ParamValue != 0;
-        await base.InitBeforeMicroservices(cancel).ConfigureAwait(false);
-    }
-
-    protected override IEnumerable<IMavlinkMicroserviceClient> CreateMicroservices()
+    protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices(
+        [EnumeratorCancellation] CancellationToken cancel)
     {
         ICommandClient? cmd = null;
         IPositionClientEx? pos = null;
-        foreach (var client in base.CreateMicroservices())
+        IParamsClient? param = null;
+        await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
         {
-            if (client is ICommandClient command)
+            if (microservice is IParamsClient parameters)
+            {
+                param = parameters;
+            }
+            if (microservice is ICommandClient command)
             {
                 cmd = command;
             }
-            if (client is IPositionClientEx position)
+            if (microservice is IPositionClientEx position)
             {
                 pos = position;
             }
-            yield return client;
+            yield return microservice;
         }
+        if (param == null) yield break;
+        if (cmd == null) yield break;
+        if (pos == null) yield break;
         
-        Debug.Assert(cmd != null);
-        Debug.Assert(pos != null);
-        if (_quadPlaneEnabled)
+        var value = await param.Read("Q_ENABLE",cancel).ConfigureAwait(false);
+        var quadPlaneEnabled = value.ParamValue != 0;
+        if (quadPlaneEnabled)
         {
             var mode = new ArduQuadPlaneModeClient(Heartbeat, cmd);
             yield return mode;

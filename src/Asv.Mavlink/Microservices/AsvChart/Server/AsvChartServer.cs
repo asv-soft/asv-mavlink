@@ -32,7 +32,7 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
     public AsvChartServer(MavlinkIdentity identity, AsvChartServerConfig config, ICoreServices core)
         :base("CHART", identity, core)
     {
-        _logger = Core.Log.CreateLogger<AsvChartServer>();
+        _logger = Core.LoggerFactory.CreateLogger<AsvChartServer>();
         _config = config;
         _charts = new ObservableDictionary<ushort,AsvChartInfo>();
 

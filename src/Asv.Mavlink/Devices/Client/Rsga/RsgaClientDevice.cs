@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.IO;
 using Asv.Mavlink.Diagnostic.Client;
 using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
-public class RsgaClientDeviceConfig:ClientDeviceConfig
+public class RsgaClientDeviceConfig:MavlinkClientDeviceConfig
 {
     public ParamsClientExConfig Params { get; set; } = new();
     public AsvChartClientConfig Charts { get; set; } = new();
@@ -17,27 +20,32 @@ public class RsgaClientDeviceConfig:ClientDeviceConfig
     
 }
 
-public class RsgaClientDevice : ClientDevice
+public class RsgaClientDevice : MavlinkClientDevice
 {
-    
+    public const string DeviceClass = "RSGA";
 
     private readonly RsgaClientDeviceConfig _config;
     private readonly ILogger _logger;
 
-    public RsgaClientDevice(MavlinkClientIdentity identity, RsgaClientDeviceConfig config, ICoreServices core)
-        :base(identity,config,core, DeviceClass.Rsga)
+    public RsgaClientDevice(
+        MavlinkClientDeviceId identity, 
+        RsgaClientDeviceConfig config,
+        ImmutableArray<IClientDeviceExtender> extenders, 
+        ICoreServices core) 
+        : base(identity,config,extenders,core)
     {
         _config = config;
-        _logger = core.Log.CreateLogger<RsgaClientDevice>();
+        _logger = core.LoggerFactory.CreateLogger<RsgaClientDevice>();
        
     }
-    protected override Task InitBeforeMicroservices(CancellationToken cancel)
+  
+    protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices(
+        [EnumeratorCancellation] CancellationToken cancel)
     {
-        return Task.CompletedTask;
-    }
-
-    protected override IEnumerable<IMavlinkMicroserviceClient> CreateMicroservices()
-    {
+        await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
+        {
+            yield return microservice;
+        }
         yield return new StatusTextClient(Identity, Core);
         var paramBase = new ParamsClient(Identity, _config.Params, Core);
         yield return paramBase;
@@ -51,10 +59,6 @@ public class RsgaClientDevice : ClientDevice
         yield return new AsvRsgaClientEx(rsgaBase,command);
     }
 
-    protected override Task InitAfterMicroservices(CancellationToken cancel)
-    {
-        return Task.CompletedTask;
-    }
 
   
 }

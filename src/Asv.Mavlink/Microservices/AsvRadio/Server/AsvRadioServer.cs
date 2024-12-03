@@ -19,7 +19,7 @@ public class AsvRadioServer : MavlinkMicroserviceServer, IAsvRadioServer
     private readonly Subject<AsvRadioCodecCapabilitiesRequestPayload?> _onCodecCapabilitiesRequest = new();
 
     public AsvRadioServer(MavlinkIdentity identity, AsvRadioServerConfig config, ICoreServices core)     
-        : base(AsvRadioHelper.IfcName, identity,core)
+        : base(AsvRadioHelper.MicroserviceName, identity,core)
     {
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _transponder =

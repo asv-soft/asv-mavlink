@@ -11,6 +11,9 @@ namespace Asv.Mavlink;
 
 public static class MavlinkFtpHelper
 {
+    public const string FtpMicroserviceName = "FTP";
+    public const string FtpMicroserviceExName = "FTPEX";
+    
     public const char DirectorySeparator = '/';
     public const byte MaxDataSize = 239;
     public const char FileSizeSeparator = '\t';

@@ -20,7 +20,7 @@ public sealed class TelemetryClient : MavlinkMicroserviceClient, ITelemetryClien
     public TelemetryClient(MavlinkClientIdentity identity, ICoreServices core)
         : base("RTT", identity, core)
     {
-        _logger = core.Log.CreateLogger<TelemetryClient>(); 
+        _logger = core.LoggerFactory.CreateLogger<TelemetryClient>(); 
         Radio = InternalFilter<RadioStatusPacket>().Select(p=>p?.Payload)
             .ToReadOnlyReactiveProperty();
         SystemStatus  = InternalFilter<SysStatusPacket>().Select(p => p?.Payload)
@@ -38,7 +38,7 @@ public sealed class TelemetryClient : MavlinkMicroserviceClient, ITelemetryClien
     
     public ValueTask RequestDataStream(byte streamId, ushort rateHz, bool startStop, CancellationToken cancel = default)
     {
-        _logger.ZLogDebug($"{LogSend} {( startStop ? "Enable stream":"DisableStream")} with ID '{streamId}' and rate {rateHz} Hz");
+        _logger.ZLogDebug($"{Id} {( startStop ? "Enable stream":"DisableStream")} with ID '{streamId}' and rate {rateHz} Hz");
         return InternalSend<RequestDataStreamPacket>(p =>
         {
             p.Payload.TargetSystem = Identity.Target.SystemId;

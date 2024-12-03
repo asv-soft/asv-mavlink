@@ -62,7 +62,7 @@ public class ParamsServerEx: IParamsServerEx,IDisposable
         ParamsServerExConfig serverCfg)
     {
         _disposableCancel = new CancellationTokenSource();
-        _logger = server.Core.Log.CreateLogger<ParamsServerEx>();
+        _logger = server.Core.LoggerFactory.CreateLogger<ParamsServerEx>();
         _server = server;
         _statusTextServer = statusTextServer ?? throw new ArgumentNullException(nameof(statusTextServer));
         _encoding = encoding;

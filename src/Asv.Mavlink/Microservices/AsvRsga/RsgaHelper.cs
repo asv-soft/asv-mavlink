@@ -7,8 +7,12 @@ using Asv.Mavlink.Common;
 
 namespace Asv.Mavlink;
 
-public class RsgaHelper
+public static class RsgaHelper
 {
+    
+    public const string MicroserviceExName = $"{MicroserviceName}EX";
+    public const string MicroserviceName = "RSGA";
+    
     public static void SetArgsForSetMode(CommandLongPayload item, AsvRsgaCustomMode mode, float param2 = float.NaN, float param3 = float.NaN, float param4 = float.NaN, float param5 = float.NaN, float param6 = float.NaN, float param7 = float.NaN)
     {
         item.Command = (Common.MavCmd)AsvRsga.MavCmd.MavCmdAsvRsgaSetMode;

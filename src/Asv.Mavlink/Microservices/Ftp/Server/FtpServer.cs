@@ -28,10 +28,10 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
     private readonly IDisposable _filter;
 
     public FtpServer(MavlinkIdentity identity, MavlinkFtpServerConfig config, ICoreServices core) 
-        : base("FTP", identity, core)
+        : base(MavlinkFtpHelper.FtpMicroserviceName, identity, core)
     {
         _config = config;
-        _logger = core.Log.CreateLogger<FtpServer>();
+        _logger = core.LoggerFactory.CreateLogger<FtpServer>();
         _filter = core.Connection
             .RxFilterByType<FileTransferProtocolPacket>()
             .Where(x => x.Payload.TargetComponent == identity.ComponentId &&
@@ -132,7 +132,7 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         }
 
         var path = input.ReadDataAsString();
-        _logger.ZLogInformation($"{LogRecv} Start calculate CRC32 for: ({path})");
+        _logger.ZLogInformation($"{Id} Start calculate CRC32 for: ({path})");
         var result = await CalcFileCrc32(path, DisposeCancel).ConfigureAwait(false);
         await InternalFtpReply(input, FtpOpcode.Ack, packet => packet.WriteDataAsUint(result)).ConfigureAwait(false);
     }
@@ -152,7 +152,7 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
         var path = input.ReadDataAsString();
         var offset = input.ReadOffset();
-        _logger.ZLogInformation($"{LogRecv} Truncate file: ({path}) to size {offset}");
+        _logger.ZLogInformation($"{Id} Truncate file: ({path}) to size {offset}");
         await TruncateFile(new TruncateRequest(path, offset), DisposeCancel).ConfigureAwait(false);
         await InternalFtpReply(input, FtpOpcode.Ack, p => p.WriteSize(0)).ConfigureAwait(false);
     }
@@ -190,7 +190,7 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
         var path = input.ReadDataAsString();
         await RemoveFile(path, DisposeCancel).ConfigureAwait(false);
-        _logger.ZLogInformation($"{LogRecv} Removed file: ({path})");
+        _logger.ZLogInformation($"{Id} Removed file: ({path})");
         await InternalFtpReply(input, FtpOpcode.Ack, p => { p.WriteSize(0); }).ConfigureAwait(false);
     }
 
@@ -208,7 +208,7 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         }
 
         await ResetSessions(DisposeCancel).ConfigureAwait(false);
-        _logger.ZLogInformation($"{LogSend}Success to reset Sessions!)");
+        _logger.ZLogInformation($"{Id}Success to reset Sessions!)");
         await InternalFtpReply(input, FtpOpcode.Ack, p => { p.WriteSize(0); }).ConfigureAwait(false);
     }
 
@@ -227,11 +227,11 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         
         var path = input.ReadDataAsString();
         var offset = input.ReadOffset();
-        _logger.ZLogInformation($"{LogRecv}ListDirectory path: ({path}), offset: ({offset})");
+        _logger.ZLogInformation($"{Id}ListDirectory path: ({path}), offset: ({offset})");
         using var buffer = MemoryPool<char>.Shared.Rent(MavlinkFtpHelper.MaxDataSize);
         MavlinkFtpHelper.CheckFolderPath(path);
         var result = await ListDirectory(path, offset, buffer.Memory, DisposeCancel).ConfigureAwait(false);
-        _logger.ZLogInformation($"{LogRecv}Success ListDirectory path: ({path}), offset: ({offset}): readCount={result}");
+        _logger.ZLogInformation($"{Id}Success ListDirectory path: ({path}), offset: ({offset}): readCount={result}");
         await InternalFtpReply(input, FtpOpcode.Ack, p =>
         {
             // ReSharper disable once AccessToDisposedClosure
@@ -255,7 +255,7 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         var path = input.ReadDataAsString();
         MavlinkFtpHelper.CheckFilePath(path);
 
-        _logger.ZLogInformation($"{LogRecv} Create directory path: ({path})");
+        _logger.ZLogInformation($"{Id} Create directory path: ({path})");
         await CreateDirectory(path, DisposeCancel).ConfigureAwait(false);
         await InternalFtpReply(input, FtpOpcode.Ack, p =>
         {
@@ -279,9 +279,9 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         var path = input.ReadDataAsString();
         MavlinkFtpHelper.CheckFilePath(path);
 
-        _logger.ZLogInformation($"{LogRecv}CreateFile file path: ({path})");
+        _logger.ZLogInformation($"{Id}CreateFile file path: ({path})");
         var result = await CreateFile(path, DisposeCancel).ConfigureAwait(false);
-        _logger.ZLogInformation($"{LogRecv}Success CreateFile file path: ({path})");
+        _logger.ZLogInformation($"{Id}Success CreateFile file path: ({path})");
         await InternalFtpReply(input, FtpOpcode.Ack, p =>
         {
             p.WriteSession(result);
@@ -302,9 +302,9 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         }
 
         var session = input.ReadSession();
-        _logger.ZLogInformation($"{LogRecv}TerminateSession(session={session})");
+        _logger.ZLogInformation($"{Id}TerminateSession(session={session})");
         await TerminateSession(session, DisposeCancel).ConfigureAwait(false);
-        _logger.ZLogInformation($"{LogSend}Success TerminateSession(session={session})");
+        _logger.ZLogInformation($"{Id}Success TerminateSession(session={session})");
         await InternalFtpReply(input, FtpOpcode.Ack, p =>
         {
             p.WriteSize(0);
@@ -332,12 +332,12 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
             throw new FtpNackException(FtpOpcode.ReadFile, NackError.InvalidDataSize);
         }
 
-        _logger.ZLogTrace($"{LogRecv}ReadFile(session={session}, offset={offset}, size={size})");
+        _logger.ZLogTrace($"{Id}ReadFile(session={session}, offset={offset}, size={size})");
         using var buffer = MemoryPool<byte>.Shared.Rent(size);
         var result = await FileRead(new ReadRequest(session, offset, size), buffer.Memory, DisposeCancel)
             .ConfigureAwait(false);
         _logger.ZLogTrace(
-            $"{LogSend}Success ReadFile(session={session}, offset={offset}, size={size}): readCount={result.ReadCount}");
+            $"{Id}Success ReadFile(session={session}, offset={offset}, size={size}): readCount={result.ReadCount}");
         await InternalFtpReply(input, FtpOpcode.Ack, p =>
         {
             p.WriteSession(session);
@@ -367,14 +367,14 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         {
             // If the drone (client) receives a message with the same sequence number then it assumes that its ACK/NAK response was lost.
             // In this case it should resend the response (the sequence number is not iterated, because it is as though the previous response was not sent). 
-            _logger.ZLogWarning($"{LogRecv}Duplicate OpenFileRead({path})");
+            _logger.ZLogWarning($"{Id}Duplicate OpenFileRead({path})");
         }
         else
         {
-            _logger.ZLogInformation($"{LogRecv}OpenFileRead({path})");
+            _logger.ZLogInformation($"{Id}OpenFileRead({path})");
             _lastReadHandle = await OpenFileRead(path, DisposeCancel).ConfigureAwait(false);
             _logger.ZLogInformation(
-                $"{LogSend}Success OpenFileRead({path}): session={_lastReadHandle.Session}, size={_lastReadHandle.Size}");
+                $"{Id}Success OpenFileRead({path}): session={_lastReadHandle.Session}, size={_lastReadHandle.Size}");
             _lastRoSequenceNumber = sequenceNumber;
         }
 
@@ -405,14 +405,14 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         {
             // If the drone (client) receives a message with the same sequence number then it assumes that its ACK/NAK response was lost.
             // In this case it should resend the response (the sequence number is not iterated, because it is as though the previous response was not sent). 
-            _logger.ZLogWarning($"{LogRecv}Duplicate OpenFileWrite({path})");
+            _logger.ZLogWarning($"{Id}Duplicate OpenFileWrite({path})");
         }
         else
         {
-            _logger.ZLogInformation($"{LogRecv}OpenFileWrite({path})");
+            _logger.ZLogInformation($"{Id}OpenFileWrite({path})");
             _lastWriteHandle = await OpenFileWrite(path, DisposeCancel).ConfigureAwait(false);
             _logger.ZLogInformation(
-                $"{LogSend}Success OpenFileWrite({path}): session={_lastWriteHandle.Session}, size={_lastWriteHandle.Size}");
+                $"{Id}Success OpenFileWrite({path}): session={_lastWriteHandle.Session}, size={_lastWriteHandle.Size}");
             _lastWoSequenceNumber = sequenceNumber;
         }
 
@@ -437,7 +437,7 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         var path1 = split[0];
         var path2 = split[1];
         await Rename(path1, path2, DisposeCancel).ConfigureAwait(false);
-        _logger.ZLogInformation($"{LogRecv} Rename: ({path1}) to ({path2})");
+        _logger.ZLogInformation($"{Id} Rename: ({path1}) to ({path2})");
         await InternalFtpReply(input, FtpOpcode.Ack, p =>
         {
             p.WriteSize(0);
@@ -464,14 +464,14 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         {
             throw new FtpNackException(FtpOpcode.BurstReadFile, NackError.InvalidDataSize);
         }
-        _logger.ZLogTrace($"{LogRecv}BurstReadFile(session={session}, offset={offset}, size={size})");
+        _logger.ZLogTrace($"{Id}BurstReadFile(session={session}, offset={offset}, size={size})");
         var isOver = false;
         while (!isOver)
         {
             using var buffer = MemoryPool<byte>.Shared.Rent(size);
             var result = await BurstReadFile(new ReadRequest(session, offset, size), buffer.Memory, DisposeCancel).ConfigureAwait(false);
             _logger.ZLogTrace(
-                $"{LogSend}Success BurstReadFile(session={session}, offset={offset}, size={size}): readCount={result.ReadCount}, isLastChunk = {result.IsLastChunk}");
+                $"{Id}Success BurstReadFile(session={session}, offset={offset}, size={size}): readCount={result.ReadCount}, isLastChunk = {result.IsLastChunk}");
             var burstComplete = result.IsLastChunk ? (byte) 1 : (byte) 0;
             var currentOffset = offset;
             await InternalFtpReply(input, FtpOpcode.Ack, p =>
@@ -515,11 +515,11 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         using var buffer = MemoryPool<byte>.Shared.Rent(size);
         input.ReadData(buffer.Memory);
         
-        _logger.ZLogTrace($"{LogRecv}WriteFile(session={session}, offset={offset}, size={size})");
+        _logger.ZLogTrace($"{Id}WriteFile(session={session}, offset={offset}, size={size})");
         await WriteFile(new WriteRequest(session, offset, size), buffer.Memory, DisposeCancel)
             .ConfigureAwait(false);
         _logger.ZLogTrace(
-            $"{LogSend}Success WriteFile(session={session}, offset={offset}, size={size})");
+            $"{Id}Success WriteFile(session={session}, offset={offset}, size={size})");
         await InternalFtpReply(input, FtpOpcode.Ack, p =>
         {
             p.WriteSize(0);

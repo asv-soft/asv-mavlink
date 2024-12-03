@@ -1,38 +1,47 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
+using Asv.IO;
 
 namespace Asv.Mavlink;
 
 public class ArduCopterClientDeviceV2: ArduVehicleClientDevice
 {
-    public ArduCopterClientDeviceV2(MavlinkClientIdentity identity, VehicleClientDeviceConfig deviceConfig, ICoreServices core) 
-        : base(identity, deviceConfig, core, DeviceClass.Copter)
+    public ArduCopterClientDeviceV2(
+        MavlinkClientDeviceId identity, 
+        VehicleClientDeviceConfig config,
+        ImmutableArray<IClientDeviceExtender> extenders, 
+        ICoreServices core) 
+        : base(identity,config,extenders,core)
     {
         
     }
 
-    protected override IEnumerable<IMavlinkMicroserviceClient> CreateMicroservices()
+    protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices(
+        [EnumeratorCancellation] CancellationToken cancel)
     {
         ICommandClient? cmd = null;
         IPositionClientEx? pos = null;
-        foreach (var client in base.CreateMicroservices())
+        await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
         {
-            if (client is ICommandClient command)
+            if (microservice is ICommandClient command)
             {
                 cmd = command;
             }
-            if (client is IPositionClientEx position)
+            if (microservice is IPositionClientEx position)
             {
                 pos = position;
             }
-            yield return client;
+            yield return microservice;
         }
-        
-        Debug.Assert(cmd != null);
-        Debug.Assert(pos != null);
+        if (cmd == null) yield break;
+        if (pos == null) yield break;
         
         var mode = new ArduCopterModeClient(Heartbeat, cmd);
         yield return mode;
-        yield return new ArduCopterControlClient(Heartbeat, mode,pos);
+        yield return new ArduCopterControlClient(Heartbeat, mode, pos);
     }
 }

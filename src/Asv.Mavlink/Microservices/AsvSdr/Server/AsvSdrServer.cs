@@ -40,7 +40,7 @@ namespace Asv.Mavlink
             : base("SDR", identity, core)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
-            _logger = core.Log.CreateLogger<AsvSdrServer>();
+            _logger = core.LoggerFactory.CreateLogger<AsvSdrServer>();
             _transponder =
                 new MavlinkPacketTransponder<AsvSdrOutStatusPacket>(identity, core);
                     

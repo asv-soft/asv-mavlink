@@ -27,9 +27,9 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
 
     public AsvSdrClient(MavlinkClientIdentity identity,
         ICoreServices core)
-        : base("SDR", identity, core)
+        : base(AsvSdrHelper.AsvSdrMicroserviceName, identity, core)
     {
-        _logger = core.Log.CreateLogger<AsvSdrClient>();
+        _logger = core.LoggerFactory.CreateLogger<AsvSdrClient>();
         _identity = identity;
         Status = InternalFilter<AsvSdrOutStatusPacket>().Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
@@ -60,7 +60,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
             .Subscribe(_onDeleteRecord.AsObserver());
 
         _onRecordData = new Subject<MavlinkMessage>();
-        InternalFilteredVehiclePackets.Where(x=>dataPacketsHashSet.Contains(x.Id))
+        InternalFilteredDeviceMessages.Where(x=>dataPacketsHashSet.Contains(x.Id))
             .Subscribe(_onRecordData.AsObserver());
 
         _onCalibrationTableRowUploadCallback = new Subject<AsvSdrCalibTableUploadReadCallbackPayload>();

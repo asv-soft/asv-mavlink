@@ -1,14 +1,25 @@
+using System.Collections.Immutable;
+using Asv.IO;
 using Asv.Mavlink.Minimal;
 
 
 namespace Asv.Mavlink;
 
-public class SdrClientDeviceProvider(SdrClientDeviceConfig config) : IClientDeviceProvider
+public class SdrClientDeviceProvider(MavlinkIdentity selfId, IPacketSequenceCalculator seq, SdrClientDeviceConfig config) 
+    : MavlinkClientDeviceFactory<SdrClientDevice>(selfId,seq)
 {
-    public int Order => ClientDeviceFactory.DefaultOrder;
-    public bool CanCreateDevice(HeartbeatPacket packet) => packet.Payload.Type == (MavType)Mavlink.AsvSdr.MavType.MavTypeAsvSdrPayload;
-    public IClientDevice CreateDevice(HeartbeatPacket packet, MavlinkClientIdentity identity, ICoreServices core)
+    public override int Order => ClientDeviceFactory.DefaultOrder;
+    public override string DeviceClass => SdrClientDevice.DeviceClass;
+
+    protected override SdrClientDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId, ImmutableArray<IClientDeviceExtender> extenders,
+        ICoreServices context)
     {
-        return new SdrClientDevice(identity,config,core);
+        return new SdrClientDevice(clientDeviceId,config,extenders,context);
     }
+
+    protected override bool CheckDevice(HeartbeatPacket msg)
+    {
+        return msg.Payload.Type == (MavType)AsvSdr.MavType.MavTypeAsvSdrPayload;
+    }
+   
 }

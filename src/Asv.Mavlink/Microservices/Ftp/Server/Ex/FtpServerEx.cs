@@ -34,7 +34,7 @@ public class FtpServerEx : IFtpServerEx
         _rootDirectory = config.RootDirectory;
         _fileSystem =
             fileSystem ?? new FileSystem(); // if file system that was passed here is null we use default system.io
-        _logger = @base.Core.Log.CreateLogger<FtpServerEx>();
+        _logger = @base.Core.LoggerFactory.CreateLogger<FtpServerEx>();
         _sessions = [];
 
         Base = @base;

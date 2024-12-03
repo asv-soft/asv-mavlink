@@ -55,7 +55,7 @@ public class ParamsExtClientEx : IParamsExtClientEx, IDisposable, IAsyncDisposab
         _onValueChanged = new Subject<(string, MavParamExtValue)>();
     }
 
-    public string Name => $"{Base.Name}Ex";
+    public string TypeName => $"{Base.TypeName}Ex";
     public IParamsExtClient Base { get; }
     public MavlinkClientIdentity Identity => Base.Identity;
     public ICoreServices Core => Base.Core;

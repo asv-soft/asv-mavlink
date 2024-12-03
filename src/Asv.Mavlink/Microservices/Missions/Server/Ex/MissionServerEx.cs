@@ -25,7 +25,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
     {
         Base = baseIfc ?? throw new ArgumentNullException(nameof(baseIfc));
         _statusLogger = status ?? throw new ArgumentNullException(nameof(status));
-        _logger = baseIfc.Core.Log.CreateLogger<MissionServerEx>();
+        _logger = baseIfc.Core.LoggerFactory.CreateLogger<MissionServerEx>();
         _missionSource = new ObservableList<ServerMissionItem>();
 
         Current = new ReactiveProperty<ushort>(0);
@@ -57,8 +57,8 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
     {
         if (req.Payload.Seq >= _missionSource.Count)
         {
-            _logger.ZLogWarning($"{LogRecv}: '{req.Payload.Seq}' not found");
-            _statusLogger.Info($"{LogSend}: item '{req.Payload.Seq}' not found");
+            _logger.ZLogWarning($"{Id}: '{req.Payload.Seq}' not found");
+            _statusLogger.Info($"{Id}: item '{req.Payload.Seq}' not found");
             return;
         }
         Current.OnNext(req.Payload.Seq);
@@ -100,11 +100,11 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
     {
         if (Interlocked.CompareExchange(ref _busy, 1, 0) != 0)
         {
-            _logger.ZLogTrace($"{LogSend}: Duplicate '{nameof(MissionCountPacket)}' received. Skip it...");
+            _logger.ZLogTrace($"{Id}: Duplicate '{nameof(MissionCountPacket)}' received. Skip it...");
             return;
         }
         _missionSource.Clear();
-        _statusLogger.Info($"{LogSend}: begin upload '{req.Payload.Count}' items");
+        _statusLogger.Info($"{Id}: begin upload '{req.Payload.Count}' items");
         try
         {
             var count = req.Payload.Count;
@@ -114,16 +114,16 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
                 var item = await Base.RequestMissionItem((ushort) index, req.Payload.MissionType, req.SystemId, req.ComponentId, DisposeCancel).ConfigureAwait(false);
                 if (i % 5 == 0)
                 {
-                    _statusLogger.Info($"{LogSend}: uploaded '{(i + 1) / count:P0}' items");
+                    _statusLogger.Info($"{Id}: uploaded '{(i + 1) / count:P0}' items");
                 }
                 _missionSource.Add(item);
             }
-            _statusLogger.Info($"{LogSend}: uploaded '{count}' items");
+            _statusLogger.Info($"{Id}: uploaded '{count}' items");
             await Base.SendMissionAck(MavMissionResult.MavMissionAccepted, req.SystemId, req.ComponentId).ConfigureAwait(false);
         }
         catch (Exception e)
         {
-            _logger.ZLogError($"{LogSend}: upload error");
+            _logger.ZLogError($"{Id}: upload error");
             await Base.SendMissionAck(MavMissionResult.MavMissionError, req.SystemId, req.ComponentId).ConfigureAwait(false);
         }
         finally

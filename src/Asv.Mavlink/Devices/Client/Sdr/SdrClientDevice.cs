@@ -1,13 +1,16 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.IO;
 using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
-public class SdrClientDeviceConfig:ClientDeviceConfig
+public class SdrClientDeviceConfig:MavlinkClientDeviceConfig
 {
     public CommandProtocolConfig Command { get; set; } = new();
     public AsvSdrClientExConfig SdrEx { get; set; } = new();
@@ -17,28 +20,32 @@ public class SdrClientDeviceConfig:ClientDeviceConfig
     public ParamsClientExConfig ParamsEx { get; set; } = new();
     public string SerialNumberParamName { get; set; } = "BRD_SERIAL_NUM";
 }
-public class SdrClientDevice : ClientDevice
+public class SdrClientDevice : MavlinkClientDevice
 {
-    
+    public const string DeviceClass = "SDR";
 
     private readonly SdrClientDeviceConfig _config;
     private readonly ILogger _logger;
   
-    public SdrClientDevice(MavlinkClientIdentity identity, SdrClientDeviceConfig config, ICoreServices core) 
-        : base(identity, config, core, DeviceClass.SdrPayload)
+    public SdrClientDevice(
+        MavlinkClientDeviceId identity, 
+        SdrClientDeviceConfig config,
+        ImmutableArray<IClientDeviceExtender> extenders, 
+        ICoreServices core) 
+        : base(identity,config,extenders,core)
     {
-        _logger = core.Log.CreateLogger<SdrClientDevice>();
+        _logger = core.LoggerFactory.CreateLogger<SdrClientDevice>();
         _config = config;
         
     }
 
-    protected override Task InitBeforeMicroservices(CancellationToken cancel)
+    protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices(
+        [EnumeratorCancellation] CancellationToken cancel)
     {
-        return Task.CompletedTask;
-    }
-
-    protected override IEnumerable<IMavlinkMicroserviceClient> CreateMicroservices()
-    {
+        await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
+        {
+            yield return microservice;
+        }
         yield return new StatusTextClient(Identity, Core);
         var paramBase = new ParamsClient(Identity, _config.Params, Core);
         yield return paramBase;
@@ -54,8 +61,4 @@ public class SdrClientDevice : ClientDevice
         
     }
 
-    protected override Task InitAfterMicroservices(CancellationToken cancel)
-    {
-        return Task.CompletedTask;
-    }
 }

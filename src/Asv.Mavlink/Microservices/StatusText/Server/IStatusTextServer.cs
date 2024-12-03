@@ -14,7 +14,7 @@ namespace Asv.Mavlink
         /// <param name="msg">(MavSeverity severity, string message)</param>
         /// <returns>True if the log operation was successful; otherwise, false.</returns>
         /// <remarks>
-        /// The Log method logs the specified message with the given severity level. The severity level is defined by
+        /// The LoggerFactory method logs the specified message with the given severity level. The severity level is defined by
         /// <paramref name="msg"/> which is a tuple containing the severity level and the message to be logged.
         /// This method returns true if the log operation was successful, otherwise false.
         /// </remarks>

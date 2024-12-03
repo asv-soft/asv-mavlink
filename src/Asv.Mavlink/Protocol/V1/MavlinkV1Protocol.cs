@@ -14,7 +14,7 @@ public static class MavlinkV1Protocol
     
     public static void RegisterMavlinkV1Protocol(this IProtocolBuilder builder)
     {
-        builder.RegisterProtocol(Info, (core,stat) => new MavlinkV1Parser(MavlinkV1MessageFactory.Instance, core,stat));
+        builder.Protocols.Register(Info, (core,stat) => new MavlinkV1Parser(MavlinkV1MessageFactory.Instance, core,stat));
     }
     
     public static int GetMessageId(ReadOnlySpan<byte> buffer)

@@ -36,7 +36,7 @@ public class AsvRadioServerEx: IAsvRadioServerEx, IDisposable,IAsyncDisposable
         ICommandServerEx<CommandLongPacket> commands, 
         IStatusTextServer statusText)
     {
-        _logger = server.Core.Log.CreateLogger<AsvRadioServerEx>();
+        _logger = server.Core.LoggerFactory.CreateLogger<AsvRadioServerEx>();
         ArgumentNullException.ThrowIfNull(commands);
         _capabilities = capabilities ?? throw new ArgumentNullException(nameof(capabilities));
         _codecs = codecs ?? throw new ArgumentNullException(nameof(codecs));

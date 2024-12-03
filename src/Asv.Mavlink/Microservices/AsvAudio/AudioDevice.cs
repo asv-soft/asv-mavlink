@@ -48,7 +48,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
         ArgumentNullException.ThrowIfNull(factory);
         ArgumentNullException.ThrowIfNull(packet);
         _disposeCancel = new CancellationTokenSource();
-        _logger = core.Log.CreateLogger<AudioDevice>();
+        _logger = core.LoggerFactory.CreateLogger<AudioDevice>();
         _inputEncoderAudioStream = new Subject<ReadOnlyMemory<byte>>();
         _inputDecoderAudioStream = new Subject<ReadOnlyMemory<byte>>();
         _sendPacketDelegate = sendPacketDelegate ?? throw new ArgumentNullException(nameof(sendPacketDelegate));

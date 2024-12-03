@@ -21,7 +21,7 @@ namespace Asv.Mavlink
             MavlinkIdentity identity,
             AsvGbsServerConfig config, 
             ICoreServices core)
-            : base("GBS", identity, core)
+            : base(AsvGbsHelper.MicroserviceName, identity, core)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _transponder =

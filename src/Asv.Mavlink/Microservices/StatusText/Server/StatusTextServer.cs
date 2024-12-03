@@ -28,7 +28,7 @@ public class StatusTextServer : MavlinkMicroserviceServer, IStatusTextServer
     public StatusTextServer(MavlinkIdentity identity, StatusTextLoggerConfig config, ICoreServices core):   
         base("STATUS",identity,core)
     {
-        _logger = core.Log.CreateLogger<StatusTextServer>();
+        _logger = core.LoggerFactory.CreateLogger<StatusTextServer>();
         _config = config ?? throw new ArgumentNullException(nameof(config));
 
         _logger.ZLogDebug($"Create status logger for [sys:{identity.SystemId}, com:{identity.ComponentId}] with send rate:{config.MaxSendRateHz} Hz, buffer size: {config.MaxQueueSize}");

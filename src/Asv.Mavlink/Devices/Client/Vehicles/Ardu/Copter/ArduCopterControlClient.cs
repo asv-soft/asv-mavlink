@@ -16,7 +16,7 @@ public class ArduCopterControlClient(
     IPositionClientEx pos)
     : ControlClient(heartbeat.Identity, heartbeat.Core)
 {
-    private readonly ILogger<ArduCopterControlClient> _logger = heartbeat.Core.Log.CreateLogger<ArduCopterControlClient>();
+    private readonly ILogger<ArduCopterControlClient> _logger = heartbeat.Core.LoggerFactory.CreateLogger<ArduCopterControlClient>();
 
     public override ValueTask<bool> IsAutoMode(CancellationToken cancel = default)
     {

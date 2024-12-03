@@ -47,16 +47,16 @@ namespace Asv.Mavlink
 
 
         public HeartbeatClient(MavlinkClientIdentity identity, HeartbeatClientConfig config, ICoreServices core)
-            :base("HEARTBEAT", identity, core)
+            :base(Heartbeat.MicroserviceName, identity, core)
         {
-            _logger = core.Log.CreateLogger<HeartbeatClient>();
-            _logger.ZLogTrace($"{Name} ID={identity},timeout:{config.HeartbeatTimeoutMs} ms, rate:{config.RateMovingAverageFilter}, warn after {config.LinkQualityWarningSkipCount} skip");
+            _logger = core.LoggerFactory.CreateLogger<HeartbeatClient>();
+            _logger.ZLogTrace($"{TypeName} ID={identity},timeout:{config.HeartbeatTimeoutMs} ms, rate:{config.RateMovingAverageFilter}, warn after {config.LinkQualityWarningSkipCount} skip");
             ArgumentNullException.ThrowIfNull(config);
             _timeProvider = core.TimeProvider;
             FullId = MavlinkHelper.ConvertToFullId(identity.Target.ComponentId, identity.Target.SystemId);
             _rxRate = new IncrementalRateCounter(config.RateMovingAverageFilter,core.TimeProvider);
             _heartBeatTimeoutMs = TimeSpan.FromMilliseconds(config.HeartbeatTimeoutMs);
-            _obs1 = InternalFilteredVehiclePackets
+            _obs1 = InternalFilteredDeviceMessages
                 .Select(x => x.Sequence)
                 .Subscribe(x =>
                 {
@@ -153,7 +153,7 @@ namespace Asv.Mavlink
         public ReadOnlyReactiveProperty<HeartbeatPayload?> RawHeartbeat => _heartBeat;
         public ReadOnlyReactiveProperty<double> PacketRateHz => _packetRate;
         public ReadOnlyReactiveProperty<double> LinkQuality => _linkQuality;
-        public ReadOnlyReactiveProperty<LinkState> Link => _link.State;
+        public ILinkIndicator Link => _link;
 
         private void CheckConnection(object? state)
         {
@@ -162,7 +162,7 @@ namespace Asv.Mavlink
             _packetRate.OnNext(rate);
             if (_timeProvider.GetElapsedTime(_lastHeartbeat) <= _heartBeatTimeoutMs) return;
             _link.Downgrade();
-            if (_link.State.Value == LinkState.Disconnected)
+            if (_link.State.CurrentValue == LinkState.Disconnected)
             {
                 _packetRate.OnNext(0);
                 _linkQuality.OnNext(0);
@@ -183,7 +183,6 @@ namespace Asv.Mavlink
                 _obs2.Dispose();
                 _obs3?.Dispose();
                 _obs4?.Dispose();
-                Link.Dispose();
             }
 
             base.Dispose(disposing);

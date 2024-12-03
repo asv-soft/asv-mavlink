@@ -44,10 +44,22 @@ public class MavlinkIdentity(byte systemId, byte componentId) : IEquatable<Mavli
     }
 }
 
-public class MavlinkClientIdentity(byte systemId, byte componentId, byte targetSystemId, byte targetComponentId):IEquatable<MavlinkClientIdentity>
+public class MavlinkClientIdentity :IEquatable<MavlinkClientIdentity>
 {
-    public MavlinkIdentity Self { get; } = new(systemId, componentId);
-    public MavlinkIdentity Target { get; } = new(targetSystemId, targetComponentId);
+    public MavlinkClientIdentity(byte systemId, byte componentId, byte targetSystemId, byte targetComponentId)
+    {
+        Self = new MavlinkIdentity(systemId, componentId);
+        Target = new MavlinkIdentity(targetSystemId, targetComponentId);
+    }
+
+    public MavlinkClientIdentity(MavlinkIdentity self, MavlinkIdentity target)
+    {
+        Self = self;
+        Target = target;
+    }
+
+    public MavlinkIdentity Self { get; }
+    public MavlinkIdentity Target { get; }
     
     public override string ToString()
     {

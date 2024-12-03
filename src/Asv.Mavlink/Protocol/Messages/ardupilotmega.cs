@@ -5713,7 +5713,7 @@ namespace Asv.Mavlink.Ardupilotmega
 
 
         /// <summary>
-        /// Log data block sequence number.
+        /// LoggerFactory data block sequence number.
         /// OriginName: seqno, Units: , IsExtended: false
         /// </summary>
         public MavRemoteLogDataBlockCommands Seqno { get; set; }
@@ -5728,7 +5728,7 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         public byte TargetComponent { get; set; }
         /// <summary>
-        /// Log data block.
+        /// LoggerFactory data block.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
         public const int DataMaxItemsCount = 200;
@@ -5803,7 +5803,7 @@ namespace Asv.Mavlink.Ardupilotmega
 
 
         /// <summary>
-        /// Log data block sequence number.
+        /// LoggerFactory data block sequence number.
         /// OriginName: seqno, Units: , IsExtended: false
         /// </summary>
         public uint Seqno { get; set; }
@@ -5818,7 +5818,7 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         public byte TargetComponent { get; set; }
         /// <summary>
-        /// Log data block status.
+        /// LoggerFactory data block status.
         /// OriginName: status, Units: , IsExtended: false
         /// </summary>
         public MavRemoteLogDataBlockStatuses Status { get; set; }

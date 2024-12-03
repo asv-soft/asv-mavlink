@@ -1,35 +1,33 @@
 using System;
 using System.Diagnostics.Metrics;
-using Asv.Common;
 using Asv.IO;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Asv.Mavlink;
 
-public interface ICoreServices
+public interface ICoreServices:IDeviceContext
 {
-    IProtocolConnection Connection { get; }
     IPacketSequenceCalculator Sequence { get; }
-    ILoggerFactory Log { get; }
-    TimeProvider TimeProvider { get; }
-    IMeterFactory Metrics { get; }
-    
 }
 
 
 
-public class CoreServices(
-    IProtocolConnection connection,
-    IPacketSequenceCalculator? sequence = null,
-    ILoggerFactory? logFactory = null,
-    TimeProvider? timeProvider = null,
-    IMeterFactory? metrics = null)
-    : ICoreServices
+public class CoreServices : DeviceContext, ICoreServices
 {
-    public IProtocolConnection Connection { get; } = connection;
-    public IPacketSequenceCalculator Sequence { get; } = sequence ?? new PacketSequenceCalculator();
-    public ILoggerFactory Log { get; } = logFactory ?? NullLoggerFactory.Instance;
-    public TimeProvider TimeProvider { get; } = timeProvider ?? TimeProvider.System;
-    public IMeterFactory Metrics { get; } = metrics ?? new DefaultMeterFactory();
+    public CoreServices(IProtocolConnection connection,
+        IPacketSequenceCalculator? sequence = null,
+        ILoggerFactory? logFactory = null,
+        TimeProvider? timeProvider = null,
+        IMeterFactory? metrics = null) : base(connection, logFactory, timeProvider, metrics)
+    {
+        Sequence = sequence ?? new PacketSequenceCalculator();
+    }
+
+    public CoreServices(IPacketSequenceCalculator seq,IDeviceContext context) 
+        : base(context)
+    {
+        Sequence = seq;
+    }
+
+    public IPacketSequenceCalculator Sequence { get; }
 }

@@ -10,6 +10,9 @@ namespace Asv.Mavlink;
 
 public static class AsvSdrHelper
 {
+    public const string AsvSdrMicroserviceName = "SDR";
+    public const string AsvSdrMicroserviceExName = $"{AsvSdrMicroserviceName}EX";
+    
     public const int RecordTagValueLength = 8;
 
     public const int RecordNameMaxLength = 28;

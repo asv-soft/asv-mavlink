@@ -9,7 +9,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public interface IMavlinkMicroserviceServer
+public interface IMavlinkMicroserviceServer : IMicroserviceServer
 {
     ICoreServices Core { get; }
 
@@ -30,7 +30,7 @@ public abstract class MavlinkMicroserviceServer : AsyncDisposableWithCancel, IMa
         ArgumentNullException.ThrowIfNull(core);
         ArgumentException.ThrowIfNullOrWhiteSpace(ifcLogName);
         _ifcLogName = ifcLogName;
-        _loggerBase = core.Log.CreateLogger<MavlinkMicroserviceServer>();
+        _loggerBase = core.LoggerFactory.CreateLogger<MavlinkMicroserviceServer>();
         Core = core;
         Identity = identity;
     }
@@ -96,7 +96,7 @@ public abstract class MavlinkMicroserviceServer : AsyncDisposableWithCancel, IMa
     {
         cancel.ThrowIfCancellationRequested();
         var p = new TAnswerPacket();
-        _loggerBase.ZLogTrace($"{LogSend} call {p.Name}");
+        _loggerBase.ZLogTrace($"{Id} call {p.Name}");
         using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
         linkedCancel.CancelAfter(timeoutMs, Core.TimeProvider);
         var tcs = new TaskCompletionSource<TAnswerPacket>();
@@ -109,7 +109,7 @@ public abstract class MavlinkMicroserviceServer : AsyncDisposableWithCancel, IMa
         packet.Sequence = Core.Sequence.GetNextSequenceNumber();
         await Core.Connection.Send(packet, linkedCancel.Token).ConfigureAwait(false);
         var result = await tcs.Task.ConfigureAwait(false);
-        _loggerBase.ZLogTrace($"{LogRecv} ok {packet.Name}<=={p.Name}");
+        _loggerBase.ZLogTrace($"{Id} ok {packet.Name}<=={p.Name}");
         return result;
     }
 
@@ -137,7 +137,7 @@ public abstract class MavlinkMicroserviceServer : AsyncDisposableWithCancel, IMa
             if (currentAttempt != 0)
             {
                 fillOnConfirmation?.Invoke(packet, currentAttempt);
-                _loggerBase.ZLogWarning($"{LogSend} replay {currentAttempt} {name}");
+                _loggerBase.ZLogWarning($"{Id} replay {currentAttempt} {name}");
             }
 
             ++currentAttempt;
@@ -158,8 +158,8 @@ public abstract class MavlinkMicroserviceServer : AsyncDisposableWithCancel, IMa
         }
 
         if (result != null) return resultGetter(result);
-        _loggerBase.ZLogError($"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
-        throw new TimeoutException($"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
+        _loggerBase.ZLogError($"{Id} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
+        throw new TimeoutException($"{Id} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
     }
 
 }

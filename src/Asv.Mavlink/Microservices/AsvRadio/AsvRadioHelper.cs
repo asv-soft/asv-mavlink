@@ -6,9 +6,10 @@ using Asv.Mavlink.Common;
 
 namespace Asv.Mavlink;
 
-public class AsvRadioHelper
+public static class AsvRadioHelper
 {
-    public const string IfcName = "ASV_RADIO";
+    public const string MicroserviceExName = $"{MicroserviceName}_EX";
+    public const string MicroserviceName = "ASV_RADIO";
 
     public static void SetArgsForRadioOn(CommandLongPayload item, uint frequencyHz, AsvRadioModulation modulation, float referenceRxPowerDbm, float txPowerDbm, AsvAudioCodec codec)
     {

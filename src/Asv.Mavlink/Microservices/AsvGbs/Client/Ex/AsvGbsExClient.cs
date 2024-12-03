@@ -10,7 +10,7 @@ using MavCmd = Asv.Mavlink.Common.MavCmd;
 
 namespace Asv.Mavlink;
 
-public class AsvGbsExClient: IAsvGbsExClient, IDisposable, IAsyncDisposable
+public class AsvGbsExClient: MavlinkMicroserviceClient, IAsvGbsExClient
 {
     private readonly ILogger _logger;
     private readonly ICommandClient _command;
@@ -19,9 +19,9 @@ public class AsvGbsExClient: IAsvGbsExClient, IDisposable, IAsyncDisposable
     public AsvGbsExClient(
         IAsvGbsClient client, 
         IHeartbeatClient heartbeat, 
-        ICommandClient command)
+        ICommandClient command) : base(AsvGbsHelper.MicroserviceExName, client.Identity, client.Core)
     {
-        _logger = client.Core.Log.CreateLogger<AsvGbsExClient>();
+        _logger = client.Core.LoggerFactory.CreateLogger<AsvGbsExClient>();
         ArgumentNullException.ThrowIfNull(heartbeat);
         _command = command ?? throw new ArgumentNullException(nameof(command));
         Base = client ?? throw new ArgumentNullException(nameof(client));
@@ -48,13 +48,7 @@ public class AsvGbsExClient: IAsvGbsExClient, IDisposable, IAsyncDisposable
        
     }
     public IAsvGbsClient Base { get; }
-    public string Name => $"{Base.Name}Ex";
-    public MavlinkClientIdentity Identity => Base.Identity;
-    public ICoreServices Core => Base.Core;
-    public Task Init(CancellationToken cancel = default)
-    {
-        return Task.CompletedTask;
-    }
+    
     private static GeoPoint ConvertLocation(AsvGbsOutStatusPayload? payload)
     {
         if (payload == null) return GeoPoint.NaN;
@@ -105,7 +99,6 @@ public class AsvGbsExClient: IAsvGbsExClient, IDisposable, IAsyncDisposable
         return ack.Result;
     }
 
-    private CancellationToken DisposeCancel => _disposedCancel.Token;
 
     public ReadOnlyReactiveProperty<AsvGbsCustomMode> CustomMode { get; }
     public ReadOnlyReactiveProperty<GeoPoint> Position { get; }

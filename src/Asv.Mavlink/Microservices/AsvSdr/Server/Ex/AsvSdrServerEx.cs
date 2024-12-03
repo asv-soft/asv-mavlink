@@ -36,7 +36,7 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
         IHeartbeatServer heartbeat, 
         ICommandServerEx<CommandLongPacket> commands)
     {
-        _logger = server.Core.Log.CreateLogger<AsvSdrServerEx>();
+        _logger = server.Core.LoggerFactory.CreateLogger<AsvSdrServerEx>();
         ArgumentNullException.ThrowIfNull(heartbeat);
         ArgumentNullException.ThrowIfNull(commands);
         _status = status ?? throw new ArgumentNullException(nameof(status));

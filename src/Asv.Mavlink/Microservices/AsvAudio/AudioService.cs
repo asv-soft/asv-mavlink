@@ -40,7 +40,7 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
     public AudioService(IAudioCodecFactory codecFactory,MavlinkIdentity identity,
         AudioServiceConfig config, ICoreServices core)
     {
-        _logger = core.Log.CreateLogger<AudioService>();
+        _logger = core.LoggerFactory.CreateLogger<AudioService>();
         _codecFactory = codecFactory ?? throw new ArgumentNullException(nameof(codecFactory));
         _identity = identity;
         _core = core;

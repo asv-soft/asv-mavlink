@@ -18,7 +18,7 @@ public class GnssClientEx : IGnssClientEx,IDisposable,IAsyncDisposable
         _main = new GnssStatusClient(client.Main);
         _additional = new GnssStatusClient(client.Additional);
     }
-    public string Name => $"{Base.Name}Ex";
+    public string TypeName => $"{Base.TypeName}Ex";
     /// <summary>
     /// Gets the base GNSS client.
     /// </summary>

@@ -3957,7 +3957,7 @@
     </message>
     <message id="118" name="LOG_ENTRY">
       <description>Reply to LOG_REQUEST_LIST</description>
-      <field type="uint16_t" name="id">Log id</field>
+      <field type="uint16_t" name="id">LoggerFactory id</field>
       <field type="uint16_t" name="num_logs">Total number of logs</field>
       <field type="uint16_t" name="last_log_num">High log number</field>
       <field type="uint32_t" name="time_utc" units="s">UTC timestamp of log since 1970, or 0 if not available</field>
@@ -3967,13 +3967,13 @@
       <description>Request a chunk of a log</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
-      <field type="uint16_t" name="id">Log id (from LOG_ENTRY reply)</field>
+      <field type="uint16_t" name="id">LoggerFactory id (from LOG_ENTRY reply)</field>
       <field type="uint32_t" name="ofs">Offset into the log</field>
       <field type="uint32_t" name="count" units="bytes">Number of bytes</field>
     </message>
     <message id="120" name="LOG_DATA">
       <description>Reply to LOG_REQUEST_DATA</description>
-      <field type="uint16_t" name="id">Log id (from LOG_ENTRY reply)</field>
+      <field type="uint16_t" name="id">LoggerFactory id (from LOG_ENTRY reply)</field>
       <field type="uint32_t" name="ofs">Offset into the log</field>
       <field type="uint8_t" name="count" units="bytes">Number of bytes (zero for end of log)</field>
       <field type="uint8_t[90]" name="data">log data</field>

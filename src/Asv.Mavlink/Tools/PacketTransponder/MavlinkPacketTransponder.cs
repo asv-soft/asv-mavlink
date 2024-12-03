@@ -26,7 +26,7 @@ namespace Asv.Mavlink
         {
             ArgumentNullException.ThrowIfNull(identity);
             _core = core ?? throw new ArgumentNullException(nameof(core));
-            _logger = core.Log.CreateLogger<IMavlinkPacketTransponder<TPacket>>();
+            _logger = core.LoggerFactory.CreateLogger<IMavlinkPacketTransponder<TPacket>>();
             
             _packet = new TPacket
             {

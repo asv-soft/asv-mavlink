@@ -36,7 +36,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
     public AsvChartClient(MavlinkClientIdentity identity,AsvChartClientConfig config,ICoreServices core)
         : base("CHART", identity,core)
     {
-        _logger = core.Log.CreateLogger<AsvChartClient>();
+        _logger = core.LoggerFactory.CreateLogger<AsvChartClient>();
         _charts = new ObservableDictionary<ushort,AsvChartInfo>();
         _maxTimeToWaitForResponseForList = TimeSpan.FromMilliseconds(config.MaxTimeToWaitForResponseForListMs);
         _onChartInfo = new Subject<AsvChartInfo>();

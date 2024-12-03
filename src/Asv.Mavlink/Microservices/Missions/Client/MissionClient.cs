@@ -40,7 +40,7 @@ namespace Asv.Mavlink
             : base("MISSION",identity, core)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
-            _logger = core.Log.CreateLogger<MissionClient>();
+            _logger = core.LoggerFactory.CreateLogger<MissionClient>();
             MissionCurrent = InternalFilter<MissionCurrentPacket>().Select(p => p.Payload.Seq)
                 .ToReadOnlyReactiveProperty();
             MissionReached = InternalFilter<MissionItemReachedPacket>().Select(p => p.Payload.Seq)
@@ -51,7 +51,7 @@ namespace Asv.Mavlink
 
         public Task MissionSetCurrent(ushort missionItemsIndex, CancellationToken cancel)
         {
-            _logger.ZLogDebug($"{LogSend} Set current mission index to '{missionItemsIndex}' with {_config.AttemptToCallCount} attempts");
+            _logger.ZLogDebug($"{Id} Set current mission index to '{missionItemsIndex}' with {_config.AttemptToCallCount} attempts");
             return InternalCall<int, MissionSetCurrentPacket, MissionCurrentPacket>(p =>
             {
                 p.Payload.Seq = missionItemsIndex;
@@ -62,13 +62,13 @@ namespace Asv.Mavlink
 
         public async Task<int> MissionRequestCount(CancellationToken cancel)
         {
-            _logger.ZLogDebug($"{LogSend} Begin request items count with {_config.AttemptToCallCount} attempts");
+            _logger.ZLogDebug($"{Id} Begin request items count with {_config.AttemptToCallCount} attempts");
             var result = await InternalCall<int, MissionRequestListPacket, MissionCountPacket>(p =>
             {
                 p.Payload.TargetComponent = Identity.Target.ComponentId;
                 p.Payload.TargetSystem = Identity.Target.SystemId;
             }, null, p => p.Payload.Count, _config.AttemptToCallCount, timeoutMs: _config.CommandTimeoutMs, cancel: cancel).ConfigureAwait(false);
-            _logger.ZLogInformation($"{LogRecv} Mission item count: {result} items");
+            _logger.ZLogInformation($"{Id} Mission item count: {result} items");
             return result;
         }
 
@@ -80,7 +80,7 @@ namespace Asv.Mavlink
         public async Task<MissionItemIntPayload> MissionRequestItem(ushort index, CancellationToken cancel)
         {
             // MISSION_REQUEST_INT
-            _logger.ZLogDebug($"{LogSend} Begin request mission item {index} with {_config.AttemptToCallCount} attempts");
+            _logger.ZLogDebug($"{Id} Begin request mission item {index} with {_config.AttemptToCallCount} attempts");
             var result = await InternalCall<MissionItemIntPayload, MissionRequestIntPacket, MissionItemIntPacket>(p =>
             {
                 p.Payload.TargetComponent = Identity.Target.ComponentId;
@@ -88,13 +88,13 @@ namespace Asv.Mavlink
                 p.Payload.Seq = index;
                 p.Payload.MissionType = MavMissionType.MavMissionTypeMission;
             }, null, p => p.Payload, _config.AttemptToCallCount, timeoutMs: _config.CommandTimeoutMs, cancel: cancel).ConfigureAwait(false);
-            _logger.ZLogInformation($"{LogRecv} Mission item {index} recieved: {JsonConvert.SerializeObject(result)}");
+            _logger.ZLogInformation($"{Id} Mission item {index} recieved: {JsonConvert.SerializeObject(result)}");
             return result;
         }
         public ValueTask WriteMissionItem(ushort seq, MavFrame frame, MavCmd cmd, bool current, bool autoContinue, float param1, float param2, float param3,
             float param4, float x, float y, float z, MavMissionType missionType, CancellationToken cancel)
         {
-            _logger.ZLogInformation($"{LogSend} Write mission item");
+            _logger.ZLogInformation($"{Id} Write mission item");
 
             // Ardupilot has custom implementation see =>  https://mavlink.io/en/services/mission.html#flight-plan-missions
 
@@ -122,7 +122,7 @@ namespace Asv.Mavlink
         public async Task ClearAll(MavMissionType type = MavMissionType.MavMissionTypeAll,
             CancellationToken cancel = default)
         {
-            _logger.ZLogInformation($"{LogSend} Clear all mission items");
+            _logger.ZLogInformation($"{Id} Clear all mission items");
             var result = await InternalCall<MavMissionResult, MissionClearAllPacket, MissionAckPacket>(p =>
             {
                 p.Payload.TargetComponent = Identity.Target.ComponentId;
@@ -134,7 +134,7 @@ namespace Asv.Mavlink
 
         public ValueTask MissionSetCount(ushort count, CancellationToken cancel)
         {
-            _logger.ZLogDebug($"{LogSend} Begin set items count '{count}'");
+            _logger.ZLogDebug($"{Id} Begin set items count '{count}'");
             return InternalSend<MissionCountPacket>(p =>
             {
                 p.Payload.Count = count;
@@ -146,7 +146,7 @@ namespace Asv.Mavlink
 
         public ValueTask WriteMissionItem(MissionItem missionItem,  CancellationToken cancel)
         {
-            _logger.ZLogInformation($"{LogSend} Write mission item {missionItem.Index}");
+            _logger.ZLogInformation($"{Id} Write mission item {missionItem.Index}");
 
             // Ardupilot has custom implementation see =>  https://mavlink.io/en/services/mission.html#flight-plan-missions
             return InternalSend<MissionItemIntPacket>(p =>
@@ -170,7 +170,7 @@ namespace Asv.Mavlink
         }
         public ValueTask WriteMissionIntItem(Action<MissionItemIntPayload> fillCallback, CancellationToken cancel = default)
         {
-            _logger.ZLogInformation($"{LogSend} Write mission item");
+            _logger.ZLogInformation($"{Id} Write mission item");
             return InternalSend<MissionItemIntPacket>(p =>
             {
                 p.Payload.TargetComponent = Identity.Target.ComponentId;
@@ -203,7 +203,7 @@ namespace Asv.Mavlink
         private void CheckResult(MavMissionResult result, string actionName)
         {
             if (result == MavMissionResult.MavMissionAccepted) return;
-            throw new MavlinkException($"{LogSend} Error to {actionName}:{result:G}");
+            throw new MavlinkException($"{Id} Error to {actionName}:{result:G}");
         }
 
         #region Dispose

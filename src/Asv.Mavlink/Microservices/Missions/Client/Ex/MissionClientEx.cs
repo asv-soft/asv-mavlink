@@ -41,7 +41,7 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
         MissionClientExConfig config)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _logger = client.Core.Log.CreateLogger<MissionClientEx>();
+        _logger = client.Core.LoggerFactory.CreateLogger<MissionClientEx>();
         var config1 = config ?? throw new ArgumentNullException(nameof(config));
         _disposeCancel = new CancellationTokenSource();
         _deviceUploadTimeout = TimeSpan.FromMilliseconds(config1.DeviceUploadTimeoutMs);
@@ -51,7 +51,7 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
         _obs1 = _isMissionSynced.Subscribe(_ => UpdateMissionsDistance());
     }
     
-    public string Name => $"{Base.Name}Ex";
+    public string TypeName => $"{Base.TypeName}Ex";
     public IMissionClient Base => _client;
     public IReadOnlyObservableList<MissionItem> MissionItems => _missionSource;
     public ReadOnlyReactiveProperty<bool> IsSynced => _isMissionSynced;

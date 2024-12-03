@@ -1,14 +1,23 @@
+using System.Collections.Immutable;
+using Asv.IO;
 using Asv.Mavlink.Minimal;
 
 
 namespace Asv.Mavlink;
 
-public class RsgaClientDeviceProvider(RsgaClientDeviceConfig config) : IClientDeviceProvider
+public class RsgaClientDeviceProvider(MavlinkIdentity selfId, IPacketSequenceCalculator seq,RsgaClientDeviceConfig config) 
+    : MavlinkClientDeviceFactory<RsgaClientDevice>(selfId,seq)
 {
-    public int Order => ClientDeviceFactory.DefaultOrder;
-    public bool CanCreateDevice(HeartbeatPacket packet) => packet.Payload.Type == (MavType)Mavlink.AsvRsga.MavType.MavTypeAsvRsga;
-    public IClientDevice CreateDevice(HeartbeatPacket packet, MavlinkClientIdentity identity, ICoreServices core)
+    public override int Order => ClientDeviceFactory.MinimumOrder;
+    public override string DeviceClass => RsgaClientDevice.DeviceClass;
+    protected override RsgaClientDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId,
+        ImmutableArray<IClientDeviceExtender> extenders, ICoreServices context)
     {
-        return new RsgaClientDevice(identity,config,core);
+        return new RsgaClientDevice(clientDeviceId,config,extenders,context);
+    }
+
+    protected override bool CheckDevice(HeartbeatPacket msg)
+    {
+        return msg.Payload.Type == (MavType)AsvRsga.MavType.MavTypeAsvRsga;
     }
 }

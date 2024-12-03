@@ -351,7 +351,7 @@ namespace Asv.Mavlink.Minimal
         /// </summary>
         MavTypeParachute = 37,
         /// <summary>
-        /// Log
+        /// LoggerFactory
         /// MAV_TYPE_LOG
         /// </summary>
         MavTypeLog = 38,

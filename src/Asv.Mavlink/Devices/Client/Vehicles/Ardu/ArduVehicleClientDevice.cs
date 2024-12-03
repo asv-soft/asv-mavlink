@@ -1,9 +1,16 @@
+using System.Collections.Immutable;
+using Asv.IO;
+
 namespace Asv.Mavlink;
 
 public class ArduVehicleClientDevice:VehicleClientDevice
 {
-    protected ArduVehicleClientDevice(MavlinkClientIdentity identity, VehicleClientDeviceConfig deviceConfig, ICoreServices core, DeviceClass @class) 
-        : base(identity, deviceConfig, core, @class)
+    protected ArduVehicleClientDevice(
+        MavlinkClientDeviceId identity, 
+        VehicleClientDeviceConfig config,
+        ImmutableArray<IClientDeviceExtender> extenders, 
+        ICoreServices core) 
+        : base(identity,config,extenders,core)
     {
         
     }

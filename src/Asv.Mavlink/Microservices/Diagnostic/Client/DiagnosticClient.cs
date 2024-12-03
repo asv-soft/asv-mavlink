@@ -72,7 +72,7 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(core);
         ArgumentNullException.ThrowIfNull(config);
-        _logger = core.Log.CreateLogger<DiagnosticClient>();
+        _logger = core.LoggerFactory.CreateLogger<DiagnosticClient>();
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _floatProbes = new ObservableDictionary<string,INamedProbe<float>>();
         _floatSubject = new Subject<NamedValueFloatPayload>();

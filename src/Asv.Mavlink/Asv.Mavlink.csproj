@@ -28,9 +28,9 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Asv.Cfg" Version="$(AsvCommonVersion)" />
+    <!--<PackageReference Include="Asv.Cfg" Version="$(AsvCommonVersion)" />
     <PackageReference Include="Asv.Common" Version="$(AsvCommonVersion)" />
-    <PackageReference Include="Asv.IO" Version="$(AsvCommonVersion)" />
+    <PackageReference Include="Asv.IO" Version="$(AsvCommonVersion)" />-->
     <PackageReference Include="ObservableCollections.R3" Version="3.3.1" />
     <PackageReference Include="R3" Version="1.2.9" />
     <PackageReference Include="TestableIO.System.IO.Abstractions" Version="21.0.29" />
@@ -67,17 +67,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ParamsDesc.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Remove="Microservices\Commands\Client\Ex\**" />
-    <EmbeddedResource Remove="Microservices\Telemetry\Server\**" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Microservices\Control\Server\" />
-    <Folder Include="Microservices\Dgps\Server\" />
-    <Folder Include="Microservices\Gnss\Server\" />
-    <Folder Include="Microservices\Mode\Server\" />
-    <Folder Include="Microservices\Position\Server\" />
-    <Folder Include="Microservices\Telemetry\Server\" />
-  </ItemGroup>
+ 
   <ItemGroup>
     <None Include="..\..\img\asv-mavlink-128.png">
       <Pack>True</Pack>
@@ -91,7 +82,11 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Remove="Microservices\Commands\Client\Ex\**" />
-    <None Remove="Microservices\Telemetry\Server\**" />
+  </ItemGroup>
+ 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\asv-common\src\Asv.Cfg\Asv.Cfg.csproj" />
+    <ProjectReference Include="..\..\..\asv-common\src\Asv.Common\Asv.Common.csproj" />
+    <ProjectReference Include="..\..\..\asv-common\src\Asv.IO\Asv.IO.csproj" />
   </ItemGroup>
 </Project>

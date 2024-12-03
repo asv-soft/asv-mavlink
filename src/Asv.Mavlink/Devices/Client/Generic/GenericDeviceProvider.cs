@@ -1,14 +1,24 @@
+using System.Collections.Immutable;
+using Asv.IO;
 using Asv.Mavlink.Minimal;
 
 
 namespace Asv.Mavlink;
 
-public class GenericDeviceProvider(GenericDeviceConfig config) : IClientDeviceProvider
+public class GenericDeviceProvider(MavlinkIdentity selfId, IPacketSequenceCalculator seq, GenericDeviceConfig config) 
+    : MavlinkClientDeviceFactory<GenericDevice>(selfId,seq)
 {
-    public int Order => ClientDeviceFactory.MinimumOrder;
-    public bool CanCreateDevice(HeartbeatPacket packet) => true;
-    public IClientDevice CreateDevice(HeartbeatPacket packet, MavlinkClientIdentity identity, ICoreServices core)
+    public override int Order => ClientDeviceFactory.MinimumOrder;
+    public override string DeviceClass => GenericDevice.DeviceClass;
+
+    protected override GenericDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId,
+        ImmutableArray<IClientDeviceExtender> extenders, ICoreServices context)
     {
-        return new GenericDevice(identity,config,core);
+        return new GenericDevice(clientDeviceId,config,extenders,context);
     }
+
+    protected override bool CheckDevice(HeartbeatPacket msg) => true;
+
+    public bool CanCreateDevice(HeartbeatPacket packet) => true;
+   
 }

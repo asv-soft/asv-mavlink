@@ -26,7 +26,7 @@ public class AudioServiceTest
 
         _coreServicesMock = new Mock<ICoreServices>();
         _coreServicesMock.Setup(c => c.Connection).Returns(connectionMock.Object);
-        _coreServicesMock.Setup(c => c.Log).Returns(NullLoggerFactory.Instance);
+        _coreServicesMock.Setup(c => c.LoggerFactory).Returns(NullLoggerFactory.Instance);
 
         _coreServicesMock.Setup(c => c.TimeProvider).Returns(TimeProvider.System);
 

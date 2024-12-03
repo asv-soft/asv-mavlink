@@ -2036,7 +2036,7 @@
         <description>Format a storage medium. Once format is complete, a STORAGE_INFORMATION message is sent. Use the command's target_component to target a specific component's storage.</description>
         <param index="1" label="Storage ID" minValue="0" increment="1">Storage ID (1 for first, 2 for second, etc.)</param>
         <param index="2" label="Format" minValue="0" maxValue="1" increment="1">Format storage (and reset image log). 0: No action 1: Format storage</param>
-        <param index="3" label="Reset Image Log" minValue="0" maxValue="1" increment="1">Reset Image Log (without formatting storage medium). This will reset CAMERA_CAPTURE_STATUS.image_count and CAMERA_IMAGE_CAPTURED.image_index. 0: No action 1: Reset Image Log</param>
+        <param index="3" label="Reset Image LoggerFactory" minValue="0" maxValue="1" increment="1">Reset Image LoggerFactory (without formatting storage medium). This will reset CAMERA_CAPTURE_STATUS.image_count and CAMERA_IMAGE_CAPTURED.image_index. 0: No action 1: Reset Image LoggerFactory</param>
         <param index="4">Reserved (all remaining params)</param>
       </entry>
       <entry value="527" name="MAV_CMD_REQUEST_CAMERA_CAPTURE_STATUS" hasLocation="false" isDestination="false">
@@ -6069,7 +6069,7 @@
     </message>
     <message id="118" name="LOG_ENTRY">
       <description>Reply to LOG_REQUEST_LIST</description>
-      <field type="uint16_t" name="id">Log id</field>
+      <field type="uint16_t" name="id">LoggerFactory id</field>
       <field type="uint16_t" name="num_logs">Total number of logs</field>
       <field type="uint16_t" name="last_log_num">High log number</field>
       <field type="uint32_t" name="time_utc" units="s" invalid="0">UTC timestamp of log since 1970, or 0 if not available</field>
@@ -6079,13 +6079,13 @@
       <description>Request a chunk of a log</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
-      <field type="uint16_t" name="id">Log id (from LOG_ENTRY reply)</field>
+      <field type="uint16_t" name="id">LoggerFactory id (from LOG_ENTRY reply)</field>
       <field type="uint32_t" name="ofs">Offset into the log</field>
       <field type="uint32_t" name="count" units="bytes">Number of bytes</field>
     </message>
     <message id="120" name="LOG_DATA">
       <description>Reply to LOG_REQUEST_DATA</description>
-      <field type="uint16_t" name="id">Log id (from LOG_ENTRY reply)</field>
+      <field type="uint16_t" name="id">LoggerFactory id (from LOG_ENTRY reply)</field>
       <field type="uint32_t" name="ofs">Offset into the log</field>
       <field type="uint8_t" name="count" units="bytes">Number of bytes (zero for end of log)</field>
       <field type="uint8_t[90]" name="data">log data</field>
@@ -7475,7 +7475,7 @@
       <field type="uint32_t" name="id">Event ID (as defined in the component metadata)</field>
       <field type="uint32_t" name="event_time_boot_ms" units="ms">Timestamp (time since system boot when the event happened).</field>
       <field type="uint16_t" name="sequence">Sequence number.</field>
-      <field type="uint8_t" name="log_levels">Log levels: 4 bits MSB: internal (for logging purposes), 4 bits LSB: external. Levels: Emergency = 0, Alert = 1, Critical = 2, Error = 3, Warning = 4, Notice = 5, Info = 6, Debug = 7, Protocol = 8, Disabled = 9</field>
+      <field type="uint8_t" name="log_levels">LoggerFactory levels: 4 bits MSB: internal (for logging purposes), 4 bits LSB: external. Levels: Emergency = 0, Alert = 1, Critical = 2, Error = 3, Warning = 4, Notice = 5, Info = 6, Debug = 7, Protocol = 8, Disabled = 9</field>
       <field type="uint8_t[40]" name="arguments">Arguments (depend on event ID).</field>
     </message>
     <message id="411" name="CURRENT_EVENT_SEQUENCE">

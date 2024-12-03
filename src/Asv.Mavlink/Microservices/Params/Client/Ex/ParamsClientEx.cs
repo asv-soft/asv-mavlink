@@ -35,7 +35,7 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
     public ParamsClientEx(IParamsClient client, ParamsClientExConfig config, IMavParamEncoding converter,
         IEnumerable<ParamDescription> existDescription)
     {
-        _logger = client.Core.Log.CreateLogger<ParamsClientEx>();
+        _logger = client.Core.LoggerFactory.CreateLogger<ParamsClientEx>();
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _converter = converter ?? throw new ArgumentNullException(nameof(converter));
         _existDescription = existDescription.ToImmutableDictionary(x => x.Name, x => x);
@@ -58,7 +58,7 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
         _onValueChanged = new Subject<(string, MavParamValue)>();
     }
 
-    public string Name => $"{Base.Name}Ex";
+    public string TypeName => $"{Base.TypeName}Ex";
     public IParamsClient Base { get; }
     public MavlinkClientIdentity Identity => Base.Identity;
     public ICoreServices Core => Base.Core;

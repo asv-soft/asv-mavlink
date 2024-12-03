@@ -9,7 +9,7 @@ public class AsvRadioClient : MavlinkMicroserviceClient, IAsvRadioClient
 {
     
     public AsvRadioClient(MavlinkClientIdentity identity, ICoreServices core) 
-        : base(AsvRadioHelper.IfcName, identity, core)
+        : base(AsvRadioHelper.MicroserviceName, identity, core)
     {
         Status = InternalFilter<AsvRadioStatusPacket>()
             .Select(p => p?.Payload)

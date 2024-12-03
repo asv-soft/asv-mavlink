@@ -68,7 +68,7 @@ public sealed class TelemetryClientEx : ITelemetryClientEx, IDisposable, IAsyncD
     /// </value>
     public ReadOnlyReactiveProperty<double> DropRateCommunication { get; }
 
-    public string Name => $"{Base.Name}Ex";
+    public string TypeName => $"{Base.TypeName}Ex";
     public MavlinkClientIdentity Identity => Base.Identity;
     public ICoreServices Core => Base.Core;
     public Task Init(CancellationToken cancel = default)
