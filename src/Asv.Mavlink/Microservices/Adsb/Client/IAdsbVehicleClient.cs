@@ -53,7 +53,7 @@ public interface IAdsbVehicle
     /// Gets the call sign of the object.
     /// </summary>
     /// <returns>
-    /// An <see cref="IRxValue{T}"/> representing the call sign.
+    /// An <see cref="ReadOnlyReactiveProperty{T}"/> representing the call sign.
     /// </returns>
     ReadOnlyReactiveProperty<string> CallSign { get; }
 
@@ -61,7 +61,7 @@ public interface IAdsbVehicle
     /// The property Location represents the current location as a geographical point.
     /// </summary>
     /// <returns>
-    /// An IRxValue object containing a GeoPoint value.
+    /// An ReadOnlyReactiveProperty object containing a GeoPoint value.
     /// </returns>
     ReadOnlyReactiveProperty<GeoPoint> Location { get; }
 
@@ -92,7 +92,7 @@ public interface IAdsbVehicle
     /// Gets the time since the last communication.
     /// </summary>
     /// <value>
-    /// The time since the last communication as an <see cref="IRxValue{T}"/> instance
+    /// The time since the last communication as an <see cref="ReadOnlyReactiveProperty{T}"/> instance
     /// representing a <see cref="TimeSpan"/>.
     /// </value>
     ReadOnlyReactiveProperty<TimeSpan> Tslc { get; }
@@ -112,7 +112,7 @@ public interface IAdsbVehicle
     /// </summary>
     /// <remarks>
     /// This property provides access to the horizontal velocity of an object.
-    /// The value is of type double and can be retrieved using an IRxValue wrapper.
+    /// The value is of type double and can be retrieved using an ReadOnlyReactiveProperty wrapper.
     /// </remarks>
     /// <returns>
     /// An instance of ReadOnlyReactiveProperty<double> that represents the horizontal velocity.

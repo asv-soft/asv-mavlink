@@ -20,7 +20,7 @@ namespace Asv.Mavlink
         int MaxDataSize { get; }
 
         /// <summary>
-        /// Gets the OnData property of type IRxValue&lt;V2ExtensionPacket&gt;.
+        /// Gets the OnData property of type ReadOnlyReactiveProperty&lt;V2ExtensionPacket&gt;.
         /// </summary>
         /// <remarks>
         /// This property represents a reactive value that provides a stream of V2ExtensionPacket objects.

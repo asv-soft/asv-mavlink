@@ -76,7 +76,7 @@ public interface IMissionClientEx:IMavlinkMicroserviceClient
     /// Each change is represented as an IChangeSet, containing the updated MissionItem and an index.
     /// </remarks>
     /// <returns>
-    /// An IObservable<IChangeSet<MissionItem, ushort>> representing the stream of changes to the MissionItems collection.
+    /// An Observable<IChangeSet<MissionItem, ushort>> representing the stream of changes to the MissionItems collection.
     /// </returns>
     IReadOnlyObservableList<MissionItem> MissionItems { get; }
 
@@ -101,7 +101,7 @@ public interface IMissionClientEx:IMavlinkMicroserviceClient
     Task SetCurrent(ushort index, CancellationToken cancel = default);
 
     /// Gets the current value of the property.
-    /// @return The current value of the property as an IRxValue of type ushort.
+    /// @return The current value of the property as an ReadOnlyReactiveProperty of type ushort.
     /// /
     ReadOnlyReactiveProperty<ushort> Current { get; }
 
@@ -109,7 +109,7 @@ public interface IMissionClientEx:IMavlinkMicroserviceClient
     /// Gets the value indicating if a particular condition has been reached.
     /// </summary>
     /// <value>
-    /// The <see cref="IRxValue{T}"/> representing the condition being reached. The value will be
+    /// The <see cref="ReadOnlyReactiveProperty{T}"/> representing the condition being reached. The value will be
     /// updated whenever the condition is reached.
     /// </value>
     ReadOnlyReactiveProperty<ushort> Reached { get; }
@@ -117,7 +117,7 @@ public interface IMissionClientEx:IMavlinkMicroserviceClient
     /// <summary>
     /// Gets the total distance of all missions.
     /// </summary>
-    /// <returns>An <see cref="IRxValue"/> object representing the total distance.</returns>
+    /// <returns>An <see cref="ReadOnlyReactiveProperty"/> object representing the total distance.</returns>
     ReadOnlyReactiveProperty<double> AllMissionsDistance { get; }
 }
 

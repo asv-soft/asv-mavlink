@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvRsga;
+using Asv.Mavlink.AsvRsga;
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;

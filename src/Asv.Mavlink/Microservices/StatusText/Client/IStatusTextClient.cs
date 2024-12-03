@@ -21,10 +21,10 @@ public interface IStatusTextClient: IMavlinkMicroserviceClient
     /// Gets the value of the OnMessage property.
     /// </summary>
     /// <remarks>
-    /// The OnMessage property is used to obtain a reference to an IRxValue object that emits StatusMessage values.
+    /// The OnMessage property is used to obtain a reference to an ReadOnlyReactiveProperty object that emits StatusMessage values.
     /// </remarks>
     /// <returns>
-    /// An IRxValue object that emits StatusMessage values.
+    /// An ReadOnlyReactiveProperty object that emits StatusMessage values.
     /// </returns>
     Observable<StatusMessage> OnMessage { get; }
 }

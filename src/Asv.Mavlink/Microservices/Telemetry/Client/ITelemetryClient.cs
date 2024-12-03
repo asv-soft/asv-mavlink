@@ -15,7 +15,7 @@ namespace Asv.Mavlink
         /// Represents the radio property.
         /// </summary>
         /// <value>
-        /// An implementation of the IRxValue interface that provides access to the RadioStatusPayload object.
+        /// An implementation of the ReadOnlyReactiveProperty interface that provides access to the RadioStatusPayload object.
         /// </value>
         ReadOnlyReactiveProperty<RadioStatusPayload?> Radio { get; }
 
@@ -23,7 +23,7 @@ namespace Asv.Mavlink
         /// Represents the system status property.
         /// </summary>
         /// <remarks>
-        /// The SystemStatus property is an IRxValue that provides the current system status information.
+        /// The SystemStatus property is an ReadOnlyReactiveProperty that provides the current system status information.
         /// </remarks>
         /// <seealso cref="SysStatusPayload"/>
         ReadOnlyReactiveProperty<SysStatusPayload?> SystemStatus { get; }

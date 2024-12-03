@@ -13,7 +13,7 @@ public interface IGnssStatusClient
     /// Gets the ground velocity.
     /// </summary>
     /// <returns>
-    /// An <see cref="IRxValue{T}"/> representing the ground velocity.
+    /// An <see cref="ReadOnlyReactiveProperty{T}"/> representing the ground velocity.
     /// </returns>
     ReadOnlyReactiveProperty<double> GroundVelocity { get; }
 
@@ -21,11 +21,11 @@ public interface IGnssStatusClient
     /// Gets the property that represents the GPS information.
     /// </summary>
     /// <remarks>
-    /// The GPS information is obtained from an IRxValue object. The GPS information represents
+    /// The GPS information is obtained from an ReadOnlyReactiveProperty object. The GPS information represents
     /// latitude, longitude, altitude, and other related details.
     /// </remarks>
     /// <returns>
-    /// An IRxValue object of type GpsInfo that contains the GPS information.
+    /// An ReadOnlyReactiveProperty object of type GpsInfo that contains the GPS information.
     /// </returns>
     ReadOnlyReactiveProperty<GpsInfo> Info { get; }
 

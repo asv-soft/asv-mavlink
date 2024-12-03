@@ -16,7 +16,7 @@ namespace Asv.Mavlink
         /// The raw logging data property.
         /// </value>
         /// <remarks>
-        /// This property provides access to the raw logging data in the form of an <see cref="IRxValue{T}"/> where T is <see cref="LoggingDataPayload"/>.
+        /// This property provides access to the raw logging data in the form of an <see cref="ReadOnlyReactiveProperty{T}"/> where T is <see cref="LoggingDataPayload"/>.
         /// </remarks>
         ReadOnlyReactiveProperty<LoggingDataPayload> RawLoggingData { get; }
     }

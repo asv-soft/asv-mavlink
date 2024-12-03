@@ -20,7 +20,7 @@ public interface IParamsClient: IMavlinkMicroserviceClient
     /// Subscribers can be notified multiple times as new ParamValuePayload objects are emitted.
     /// </remarks>
     /// <seealso cref="ParamValuePayload"/>
-    /// <seealso cref="IObservable{T}"/>
+    /// <seealso cref="Observable{T}"/>
     Observable<ParamValuePayload> OnParamValue { get; }
 
     /// <summary>

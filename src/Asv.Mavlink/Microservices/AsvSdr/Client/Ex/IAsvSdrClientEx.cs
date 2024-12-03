@@ -20,7 +20,7 @@ public interface IAsvSdrClientEx:IMavlinkMicroserviceClient
     IAsvSdrClient Base { get; }
 
     /// <summary>
-    /// Gets the supported modes of the IRxValue object.
+    /// Gets the supported modes of the ReadOnlyReactiveProperty object.
     /// </summary>
     /// The supported
     ReadOnlyReactiveProperty<AsvSdrCustomModeFlag> SupportedModes { get; }

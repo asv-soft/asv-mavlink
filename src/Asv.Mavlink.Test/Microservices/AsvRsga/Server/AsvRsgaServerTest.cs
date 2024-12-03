@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvRsga;
+using Asv.Mavlink.AsvRsga;
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;

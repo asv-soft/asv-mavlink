@@ -23,7 +23,7 @@ public interface IPositionClient: IMavlinkMicroserviceClient
     /// Gets the home position of the property Home.
     /// </summary>
     /// <value>
-    /// The home position represented by an IRxValue of HomePositionPayload.
+    /// The home position represented by an ReadOnlyReactiveProperty of HomePositionPayload.
     /// </value>
     ReadOnlyReactiveProperty<HomePositionPayload?> Home { get; }
 
@@ -31,7 +31,7 @@ public interface IPositionClient: IMavlinkMicroserviceClient
     /// Gets the target position value.
     /// </summary>
     /// <returns>
-    /// The RxValue object that represents the target position value.
+    /// The ReactiveProperty object that represents the target position value.
     /// </returns>
     ReadOnlyReactiveProperty<PositionTargetGlobalIntPayload?> Target { get; }
 
@@ -44,13 +44,13 @@ public interface IPositionClient: IMavlinkMicroserviceClient
     ReadOnlyReactiveProperty<AltitudePayload?> Altitude { get; }
 
     /// <summary>
-    /// Gets the RxValue for VfrHud.
+    /// Gets the ReactiveProperty for VfrHud.
     /// </summary>
     /// <remarks>
-    /// The VfrHud property provides access to an IRxValue interface for VfrHudPayload, which represents the
+    /// The VfrHud property provides access to an ReadOnlyReactiveProperty interface for VfrHudPayload, which represents the
     /// information received from a VFR (Visual Flight Rules) Heads-Up Display (HUD).
     /// </remarks>
-    /// <returns>The IRxValue interface for VfrHudPayload.</returns>
+    /// <returns>The ReadOnlyReactiveProperty interface for VfrHudPayload.</returns>
     ReadOnlyReactiveProperty<VfrHudPayload?> VfrHud { get; }
 
     /// <summary>
