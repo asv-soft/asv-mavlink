@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -18,7 +19,7 @@ public class AsvRsgaClientEx : DisposableOnceWithCancel, IAsvRsgaClientEx
     public AsvRsgaClientEx(IAsvRsgaClient client, ICommandClient commandClient)
     {
         _logger = client.Core.Log.CreateLogger<AsvRsgaClientEx>();
-        _commandClient = commandClient;
+        _commandClient = commandClient ?? throw new ArgumentNullException(nameof(commandClient));
         Base = client;
         _supportedModes = new ObservableList<AsvRsgaCustomMode>();
         client.OnCompatibilityResponse.Subscribe(OnCapabilityResponse).DisposeItWith(Disposable);
