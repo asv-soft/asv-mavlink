@@ -47,7 +47,7 @@ namespace Asv.Mavlink
 
 
         public HeartbeatClient(MavlinkClientIdentity identity, HeartbeatClientConfig config, ICoreServices core)
-            :base(Heartbeat.MicroserviceName, identity, core)
+            :base(HeartbeatHelper.MicroserviceName, identity, core)
         {
             _logger = core.LoggerFactory.CreateLogger<HeartbeatClient>();
             _logger.ZLogTrace($"{TypeName} ID={identity},timeout:{config.HeartbeatTimeoutMs} ms, rate:{config.RateMovingAverageFilter}, warn after {config.LinkQualityWarningSkipCount} skip");
@@ -198,7 +198,6 @@ namespace Asv.Mavlink
             await CastAndDispose(_obs2).ConfigureAwait(false);
             if (_obs3 != null) await CastAndDispose(_obs3).ConfigureAwait(false);
             if (_obs4 != null) await _obs4.DisposeAsync().ConfigureAwait(false);
-            await CastAndDispose(Link).ConfigureAwait(false);
 
             await base.DisposeAsyncCore().ConfigureAwait(false);
 

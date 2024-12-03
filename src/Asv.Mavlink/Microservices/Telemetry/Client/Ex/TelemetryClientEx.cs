@@ -8,9 +8,10 @@ namespace Asv.Mavlink;
 /// <summary>
 /// Represents an extended telemetry client that provides additional telemetry data.
 /// </summary>
-public sealed class TelemetryClientEx : ITelemetryClientEx, IDisposable, IAsyncDisposable
+public sealed class TelemetryClientEx : MavlinkMicroserviceClient, ITelemetryClientEx, IDisposable, IAsyncDisposable
 {
     public TelemetryClientEx(ITelemetryClient client)
+        :base(TelemetryHelper.MicroserviceName, client.Identity,client.Core)
     {
         Base = client;
         
@@ -68,33 +69,32 @@ public sealed class TelemetryClientEx : ITelemetryClientEx, IDisposable, IAsyncD
     /// </value>
     public ReadOnlyReactiveProperty<double> DropRateCommunication { get; }
 
-    public string TypeName => $"{Base.TypeName}Ex";
-    public MavlinkClientIdentity Identity => Base.Identity;
-    public ICoreServices Core => Base.Core;
-    public Task Init(CancellationToken cancel = default)
-    {
-        return Task.CompletedTask;
-    }
+   
     
     #region Dispose
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        BatteryCharge.Dispose();
-        BatteryCurrent.Dispose();
-        BatteryVoltage.Dispose();
-        CpuLoad.Dispose();
-        DropRateCommunication.Dispose();
+        if (disposing)
+        {
+            BatteryCharge.Dispose();
+            BatteryCurrent.Dispose();
+            BatteryVoltage.Dispose();
+            CpuLoad.Dispose();
+            DropRateCommunication.Dispose();
+        }
+        base.Dispose(disposing);
     }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
         await CastAndDispose(BatteryCharge).ConfigureAwait(false);
         await CastAndDispose(BatteryCurrent).ConfigureAwait(false);
         await CastAndDispose(BatteryVoltage).ConfigureAwait(false);
         await CastAndDispose(CpuLoad).ConfigureAwait(false);
         await CastAndDispose(DropRateCommunication).ConfigureAwait(false);
-
+        await base.DisposeAsyncCore().ConfigureAwait(false);
+        
         return;
 
         static async ValueTask CastAndDispose(IDisposable resource)
@@ -104,6 +104,7 @@ public sealed class TelemetryClientEx : ITelemetryClientEx, IDisposable, IAsyncD
             else
                 resource.Dispose();
         }
+        
     }
 
     #endregion

@@ -7,18 +7,21 @@ namespace Asv.Mavlink;
 /// <summary>
 /// The GNSS client extension class.
 /// </summary>
-public class GnssClientEx : IGnssClientEx,IDisposable,IAsyncDisposable
+public class GnssClientEx : MavlinkMicroserviceClient, IGnssClientEx
 {
+    
+
     private readonly GnssStatusClient _main;
     private readonly GnssStatusClient _additional;
 
-    public GnssClientEx(IGnssClient client)
+    public GnssClientEx(IGnssClient client) 
+        : base(GnssHelper.MicroserviceExName,client.Identity, client.Core)
     {
         Base = client;
         _main = new GnssStatusClient(client.Main);
         _additional = new GnssStatusClient(client.Additional);
     }
-    public string TypeName => $"{Base.TypeName}Ex";
+    
     /// <summary>
     /// Gets the base GNSS client.
     /// </summary>
@@ -43,36 +46,26 @@ public class GnssClientEx : IGnssClientEx,IDisposable,IAsyncDisposable
     /// </value>
     public IGnssStatusClient Additional => _additional;
 
-    public MavlinkClientIdentity Identity => Base.Identity;
-    public ICoreServices Core => Base.Core;
-    public Task Init(CancellationToken cancel = default)
-    {
-        return Task.CompletedTask;
-    }
-
     #region Dispose
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _main.Dispose();
-        _additional.Dispose();
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await CastAndDispose(_main).ConfigureAwait(false);
-        await CastAndDispose(_additional).ConfigureAwait(false);
-
-        return;
-
-        static async ValueTask CastAndDispose(IDisposable resource)
+        if (disposing)
         {
-            if (resource is IAsyncDisposable resourceAsyncDisposable)
-                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
-            else
-                resource.Dispose();
+            _main.Dispose();
+            _additional.Dispose();
         }
+
+        base.Dispose(disposing);
     }
 
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        await _main.DisposeAsync().ConfigureAwait(false);
+        await _additional.DisposeAsync().ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
+    }
+    
     #endregion
 }

@@ -9,7 +9,7 @@ using R3;
 
 namespace Asv.Mavlink;
 
-public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisposable
+public sealed class PositionClientEx : MavlinkMicroserviceClient, IPositionClientEx
 {
     private static readonly TimeSpan ArmedTimeCheckInterval = TimeSpan.FromSeconds(1);
     private readonly ICommandClient _commandClient;
@@ -23,6 +23,7 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
         IPositionClient client, 
         IHeartbeatClient heartbeatClient, 
         ICommandClient commandClient)
+        :base(PositionHelper.MicroserviceName, client.Identity, client.Core)
     {
         _commandClient = commandClient;
         Base = client;
@@ -179,36 +180,33 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
         return _commandClient.CommandLong(MavCmd.MavCmdNavVtolLand, (float)landOptions, 0, (float)approachAlt, 0, 0, 0, 0, cancel);
     }
 
-    public MavlinkClientIdentity Identity => Base.Identity;
-    public ICoreServices Core => Base.Core;
-    public Task Init(CancellationToken cancel = default)
-    {
-        return Task.CompletedTask;
-    }
-
     #region Disposable
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        Pitch.Dispose();
-        PitchSpeed.Dispose();
-        Roll.Dispose();
-        RollSpeed.Dispose();
-        Yaw.Dispose();
-        YawSpeed.Dispose();
-        Target.Dispose();
-        Home.Dispose();
-        Current.Dispose();
-        HomeDistance.Dispose();
-        TargetDistance.Dispose();
-        IsArmed.Dispose();
-        _armedTime.Dispose();
-        _armedTimer.Dispose();
-        _roi.Dispose();
-        AltitudeAboveHome.Dispose();
+        if (disposing)
+        {
+            Pitch.Dispose();
+            PitchSpeed.Dispose();
+            Roll.Dispose();
+            RollSpeed.Dispose();
+            Yaw.Dispose();
+            YawSpeed.Dispose();
+            Target.Dispose();
+            Home.Dispose();
+            Current.Dispose();
+            HomeDistance.Dispose();
+            TargetDistance.Dispose();
+            IsArmed.Dispose();
+            _armedTime.Dispose();
+            _armedTimer.Dispose();
+            _roi.Dispose();
+            AltitudeAboveHome.Dispose();
+        }
+        base.Dispose(disposing);
     }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
         await CastAndDispose(Pitch).ConfigureAwait(false);
         await CastAndDispose(PitchSpeed).ConfigureAwait(false);
@@ -226,7 +224,7 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
         await _armedTimer.DisposeAsync().ConfigureAwait(false);
         await CastAndDispose(_roi).ConfigureAwait(false);
         await CastAndDispose(AltitudeAboveHome).ConfigureAwait(false);
-
+        await base.DisposeAsyncCore().ConfigureAwait(false);
         return;
 
         static async ValueTask CastAndDispose(IDisposable resource)

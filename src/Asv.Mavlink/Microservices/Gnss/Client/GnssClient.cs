@@ -8,7 +8,7 @@ namespace Asv.Mavlink;
 
 public class GnssClient : MavlinkMicroserviceClient, IGnssClient
 {
-    public GnssClient(MavlinkClientIdentity identity,ICoreServices core) : base("GNSS", identity, core)
+    public GnssClient(MavlinkClientIdentity identity,ICoreServices core) : base(GnssHelper.MicroserviceName, identity, core)
     {
         Main = InternalFilter<GpsRawIntPacket>()
             .Select(p => p?.Payload)

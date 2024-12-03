@@ -26,7 +26,7 @@ public class MissionClientExConfig:MissionClientConfig
     }
 }
 
-public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDisposable
+public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientEx
 {
     private readonly ILogger _logger;
     private readonly IMissionClient _client;
@@ -39,6 +39,7 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
     public MissionClientEx(
         IMissionClient client, 
         MissionClientExConfig config)
+        :base(MissionClientHelper.MicroserviceExName, client.Identity, client.Core)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = client.Core.LoggerFactory.CreateLogger<MissionClientEx>();
@@ -154,8 +155,6 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
         _isMissionSynced.OnNext(true);
     }
 
-    private CancellationToken DisposeCancel => _disposeCancel.Token;
-
     public MissionItem Create()
     {
         if (_missionSource.Count > ushort.MaxValue)
@@ -219,30 +218,29 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
         _allMissionDistance.OnNext(dist / 1000.0);
     }
 
-    public MavlinkClientIdentity Identity => Base.Identity;
-    public ICoreServices Core => Base.Core;
-
-    public Task Init(CancellationToken cancel = default)
-    {
-        return Task.CompletedTask;
-    }
+  
     
     #region Dispose
     
     private readonly IDisposable _obs1;
     
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _isMissionSynced.Dispose();
-        _allMissionDistance.Dispose();
-        _disposeCancel.Dispose();
-        _obs1.Dispose();
-        foreach (var item in _missionSource)
+        if (disposing)
         {
-            item.Dispose();
+            _isMissionSynced.Dispose();
+            _allMissionDistance.Dispose();
+            _disposeCancel.Dispose();
+            _obs1.Dispose();
+            foreach (var item in _missionSource)
+            {
+                item.Dispose();
+            }
         }
+        base.Dispose(disposing);
+        
     }
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
         await CastAndDispose(_isMissionSynced).ConfigureAwait(false);
         await CastAndDispose(_allMissionDistance).ConfigureAwait(false);
@@ -255,6 +253,8 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
         {
             await item.DisposeAsync().ConfigureAwait(false);
         }
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
         return;
 
         static async ValueTask CastAndDispose(IDisposable resource)

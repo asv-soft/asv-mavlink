@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Asv.Mavlink;
 
-public interface IFtpServerEx : IDisposable, IAsyncDisposable
+public interface IFtpServerEx : IMavlinkMicroserviceServer
 {
     IFtpServer Base { get; }
     

@@ -1,6 +1,6 @@
 namespace Asv.Mavlink;
 
-public static class Heartbeat
+public static class HeartbeatHelper
 {
     public const string MicroserviceName = "HEARTBEAT";
 }
