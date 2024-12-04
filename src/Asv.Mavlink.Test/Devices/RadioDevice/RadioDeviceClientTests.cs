@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Immutable;
+using Asv.IO;
+using Asv.Mavlink.Test.Client;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -15,8 +18,6 @@ public class RadioDeviceClientTests : ClientTestBase<RadioClientDevice>
             Command = new CommandProtocolConfig() { CommandAttempt = 1, CommandTimeoutMs = 1000 },
             Heartbeat = new HeartbeatClientConfig { HeartbeatTimeoutMs = 1000 },
             Params = new ParamsClientExConfig() { ChunkUpdateBufferMs = 1000, ReadAttemptCount = 1 },
-            SerialNumberParamName = "TEST_PARAM_NAME",
-            RequestInitDataDelayAfterFailMs = 1000
         };
     }
 
@@ -32,10 +33,11 @@ public class RadioDeviceClientTests : ClientTestBase<RadioClientDevice>
     {
         RadioClientDeviceConfig cfg = null;
         CoreServices? core = null;
+        MavlinkClientDeviceId id = new MavlinkClientDeviceId(AsvRadioClient)
         MavlinkClientIdentity? identity = null;
         Assert.Throws<ArgumentNullException>( () =>
         {
-            var radio = new RadioClientDevice(identity,_cfg,Core);
+            var radio = new RadioClientDevice(identity,_cfg, ImmutableArray<IClientDeviceExtender>.Empty,  Core);
         });
         Assert.Throws<ArgumentNullException>(() =>
         {

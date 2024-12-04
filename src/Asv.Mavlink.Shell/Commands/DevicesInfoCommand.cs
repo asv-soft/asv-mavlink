@@ -46,17 +46,17 @@ public class DevicesInfoCommand
         
         var devices = new List<IClientDeviceProvider>
         {
-            new GenericDeviceProvider(new GenericDeviceConfig()),
+            new GenericClientDeviceFactory(new GenericDeviceConfig()),
             new AdsbClientDeviceProvider(new AdsbClientDeviceConfig(), Array.Empty<ParamDescription>()),
             new GbsClientDeviceProvider(new GbsClientDeviceConfig()),
             new RadioClientDeviceProvider(new RadioClientDeviceConfig()),
             new RfsaClientDeviceProvider(new RfsaClientDeviceConfig()),
             new RsgaClientDeviceProvider(new RsgaClientDeviceConfig()),
             new SdrClientDeviceProvider(new SdrClientDeviceConfig()),
-            new ArduCopterClientDeviceProvider(new VehicleClientDeviceConfig()),
+            new ArduCopterClientDeviceFactory(new VehicleClientDeviceConfig()),
             new ArduPlaneClientDeviceProvider(new VehicleClientDeviceConfig()),
-            new Px4CopterClientDeviceProvider(new VehicleClientDeviceConfig()),
-            new Px4PlaneClientDeviceProvider(new VehicleClientDeviceConfig())
+            new Px4CopterClientDeviceFactory(new VehicleClientDeviceConfig()),
+            new Px4PlaneClientDeviceFactory(new VehicleClientDeviceConfig())
         };
         
         

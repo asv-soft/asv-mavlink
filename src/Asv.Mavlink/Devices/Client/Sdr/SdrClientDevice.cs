@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Cfg;
 using Asv.IO;
 using Microsoft.Extensions.Logging;
 
@@ -18,7 +19,29 @@ public class SdrClientDeviceConfig:MavlinkClientDeviceConfig
     public MissionClientExConfig MissionsEx { get; set; } = new();
     public ParamsClientExConfig Params { get; set; } = new();
     public ParamsClientExConfig ParamsEx { get; set; } = new();
-    public string SerialNumberParamName { get; set; } = "BRD_SERIAL_NUM";
+    
+    public override void Load(string key, IConfiguration configuration)
+    {
+        base.Load(key, configuration);
+        Command = configuration.Get<CommandProtocolConfig>();
+        SdrEx = configuration.Get<AsvSdrClientExConfig>();
+        Missions = configuration.Get<MissionClientConfig>();
+        MissionsEx = configuration.Get<MissionClientExConfig>();
+        Params = configuration.Get<ParamsClientExConfig>();
+        ParamsEx = configuration.Get<ParamsClientExConfig>();
+    }
+    
+    public override void Save(string key, IConfiguration configuration)
+    {
+        base.Save(key, configuration);
+        configuration.Set(Command);
+        configuration.Set(SdrEx);
+        configuration.Set(Missions);
+        configuration.Set(MissionsEx);
+        configuration.Set(Params);
+        configuration.Set(ParamsEx);
+    }
+    
 }
 public class SdrClientDevice : MavlinkClientDevice
 {

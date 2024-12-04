@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Cfg;
 using Asv.IO;
 using Asv.Mavlink.Common;
 
@@ -17,6 +18,22 @@ public class GenericDeviceConfig:MavlinkClientDeviceConfig
     public CommandProtocolConfig Commands { get; set; } = new();
     public MavlinkFtpClientConfig Ftp { get; set; } = new();
     public ParamsClientExConfig Params { get; set; } = new ();
+    
+    public override void Load(string key, IConfiguration configuration)
+    {
+        base.Load(key, configuration);
+        Commands = configuration.Get<CommandProtocolConfig>();
+        Ftp = configuration.Get<MavlinkFtpClientConfig>();
+        Params = configuration.Get<ParamsClientExConfig>();
+    }
+    
+    public override void Save(string key, IConfiguration configuration)
+    {
+        base.Save(key, configuration);
+        configuration.Set(Commands);
+        configuration.Set(Ftp);
+        configuration.Set(Params);
+    }
 }
 
 public class GenericDevice: MavlinkClientDevice

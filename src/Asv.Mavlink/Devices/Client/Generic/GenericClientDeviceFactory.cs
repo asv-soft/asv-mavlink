@@ -5,7 +5,7 @@ using Asv.Mavlink.Minimal;
 
 namespace Asv.Mavlink;
 
-public class GenericDeviceProvider(MavlinkIdentity selfId, IPacketSequenceCalculator seq, GenericDeviceConfig config) 
+public class GenericClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq, GenericDeviceConfig config) 
     : MavlinkClientDeviceFactory<GenericDevice>(selfId,seq)
 {
     public override int Order => ClientDeviceFactory.MinimumOrder;

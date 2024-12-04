@@ -26,15 +26,15 @@ namespace Asv.Mavlink.Shell
             var factory = new ClientDeviceFactory(new MavlinkIdentity(255, 255), [
                 new AdsbClientDeviceProvider(new AdsbClientDeviceConfig(), []),
                 new GbsClientDeviceProvider(new GbsClientDeviceConfig()),
-                new GenericDeviceProvider(new GenericDeviceConfig()),
+                new GenericClientDeviceFactory(new GenericDeviceConfig()),
                 new RadioClientDeviceProvider(new RadioClientDeviceConfig()),
                 new RfsaClientDeviceProvider(new RfsaClientDeviceConfig()),
                 new RsgaClientDeviceProvider(new RsgaClientDeviceConfig()),
                 new SdrClientDeviceProvider(new SdrClientDeviceConfig()),
-                new ArduCopterClientDeviceProvider(new VehicleClientDeviceConfig()),
+                new ArduCopterClientDeviceFactory(new VehicleClientDeviceConfig()),
                 new ArduPlaneClientDeviceProvider(new VehicleClientDeviceConfig()),
-                new Px4CopterClientDeviceProvider(new VehicleClientDeviceConfig()),
-                new Px4PlaneClientDeviceProvider(new VehicleClientDeviceConfig())
+                new Px4CopterClientDeviceFactory(new VehicleClientDeviceConfig()),
+                new Px4PlaneClientDeviceFactory(new VehicleClientDeviceConfig())
             ],core);
             
             var browser = new ClientDeviceBrowser(factory, new DeviceBrowserConfig(), core);

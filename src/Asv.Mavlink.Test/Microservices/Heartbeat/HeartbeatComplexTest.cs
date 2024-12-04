@@ -32,7 +32,7 @@ public class HeartbeatComplexTest(ITestOutputHelper output) : ComplexTestBase<He
         Server.Start();
         ServerTime.Advance(TimeSpan.FromSeconds(1.1));
         ClientTime.Advance(TimeSpan.FromSeconds(1.1));
-        await Client.Link.FirstAsync(x => x == LinkState.Connected);
+        await Client.Link.State.FirstAsync(x => x == LinkState.Connected);
         
         Assert.NotNull(Client.RawHeartbeat.CurrentValue);
         Assert.Equal(MavAutopilot.MavAutopilotGeneric, Client.RawHeartbeat.CurrentValue.Autopilot);

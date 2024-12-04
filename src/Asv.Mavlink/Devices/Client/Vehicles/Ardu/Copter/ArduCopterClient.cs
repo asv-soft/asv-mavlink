@@ -8,9 +8,9 @@ using Asv.IO;
 
 namespace Asv.Mavlink;
 
-public class ArduCopterClientDeviceV2: ArduVehicleClientDevice
+public class ArduCopterClientDevice: ArduVehicleClientDevice
 {
-    public ArduCopterClientDeviceV2(
+    public ArduCopterClientDevice(
         MavlinkClientDeviceId identity, 
         VehicleClientDeviceConfig config,
         ImmutableArray<IClientDeviceExtender> extenders, 

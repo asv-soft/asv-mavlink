@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvRsga;
+using Asv.IO;
+using Asv.Mavlink.AsvRsga;
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -14,12 +15,12 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(AsvRsgaServer))]
 public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
 {
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
 
     public AsvRsgaServerTest(ITestOutputHelper output) : base(output)
     {
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
@@ -37,15 +38,15 @@ public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
             SupportedModes = new byte[32],
         };
 
-        using var sub = Link.Client.RxPipe.Subscribe(p => _taskCompletionSource.TrySetResult(p));
+        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p => _taskCompletionSource.TrySetResult(p));
         // Act
         await Server.SendCompatibilityResponse(p => p.RequestId = 1, _cancellationTokenSource.Token);
 
         // Assert
         var result = await _taskCompletionSource.Task as AsvRsgaCompatibilityResponsePacket;
         Assert.NotNull(result);
-        Assert.Equal(1, Link.Client.RxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(1U, Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.RxMessages);
         Assert.True(payload.IsDeepEqual(result?.Payload));
     }
 
@@ -59,7 +60,7 @@ public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
         var called = 0;
         var results = new List<AsvRsgaCompatibilityResponsePayload>();
         var serverResults = new List<AsvRsgaCompatibilityResponsePayload>();
-        using var sub = Link.Client.RxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
         {
             called++;
             if (p is AsvRsgaCompatibilityResponsePacket packet)
@@ -81,8 +82,8 @@ public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
 
         // Assert
         await _taskCompletionSource.Task;
-        Assert.Equal(packetCount, Link.Server.TxPackets);
-        Assert.Equal(packetCount, Link.Client.RxPackets);
+        Assert.Equal(packetCount, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(packetCount, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(packetCount, results.Count);
         Assert.Equal(serverResults.Count, results.Count);
         for (var i = 0; i < results.Count; i++)
@@ -95,10 +96,10 @@ public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
     public async Task SendCompatibilityResponse_WhenCanceled_ShouldThrowOperationCanceledException()
     {
         // Arrange
-        using var sub = Link.Client.RxPipe.Subscribe(
+        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(
             p => _taskCompletionSource.TrySetResult(p)
         );
-        _cancellationTokenSource.Cancel();
+        await _cancellationTokenSource.CancelAsync();
 
         // Act
         var task = Server.SendCompatibilityResponse(p => { }, _cancellationTokenSource.Token);
@@ -106,8 +107,8 @@ public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
 
-        Assert.Equal(0, Link.Client.RxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.RxMessages);
     }
 
     public void Dispose()

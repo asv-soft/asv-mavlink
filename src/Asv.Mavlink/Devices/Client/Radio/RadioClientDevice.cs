@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Cfg;
 using Asv.IO;
 using Microsoft.Extensions.Logging;
 
@@ -15,7 +16,19 @@ public class RadioClientDeviceConfig:MavlinkClientDeviceConfig
 {
     public CommandProtocolConfig Command { get; set; } = new();
     public ParamsClientExConfig Params { get; set; } = new();
-    public string SerialNumberParamName { get; set; } = "BRD_SERIAL_NUM";
+    public override void Load(string key, IConfiguration configuration)
+    {
+        base.Load(key, configuration);
+        Command = configuration.Get<CommandProtocolConfig>();
+        Params = configuration.Get<ParamsClientExConfig>();
+    }
+    
+    public override void Save(string key, IConfiguration configuration)
+    {
+        base.Save(key, configuration);
+        configuration.Set(Command);
+        configuration.Set(Params);
+    }
 }
 
 public class RadioClientDevice : MavlinkClientDevice

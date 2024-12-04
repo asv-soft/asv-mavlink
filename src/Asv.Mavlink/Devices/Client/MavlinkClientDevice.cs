@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Asv.Cfg;
 using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.Minimal;
@@ -10,16 +11,28 @@ using Asv.Mavlink.Minimal;
 namespace Asv.Mavlink;
 
 
-public class MavlinkClientDeviceConfig:ClientDeviceConfig
+public class MavlinkClientDeviceConfig : ICustomConfigurable
 {
     public HeartbeatClientConfig Heartbeat { get; set; } = new();
+    public ClientDeviceConfig BaseConfig { get; set; } = new();
+    public virtual void Load(string key, IConfiguration configuration)
+    {
+        Heartbeat = configuration.Get<HeartbeatClientConfig>();
+        BaseConfig = configuration.Get<ClientDeviceConfig>();
+    }
+
+    public virtual void Save(string key, IConfiguration configuration)
+    {
+        configuration.Set(Heartbeat);
+        configuration.Set(BaseConfig);
+    }
 }
 public class MavlinkClientDevice:ClientDevice<MavlinkClientDeviceId>
 {
     private readonly MavlinkClientDeviceId _id;
 
     public MavlinkClientDevice(MavlinkClientDeviceId id, MavlinkClientDeviceConfig config, ImmutableArray<IClientDeviceExtender> extenders, ICoreServices context) 
-        : base(id, config, extenders, context)
+        : base(id, config.BaseConfig, extenders, context)
     {
         _id = id;
         ArgumentNullException.ThrowIfNull(id);

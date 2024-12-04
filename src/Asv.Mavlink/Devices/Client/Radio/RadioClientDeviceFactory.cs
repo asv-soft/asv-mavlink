@@ -5,7 +5,7 @@ using Asv.Mavlink.Minimal;
 
 namespace Asv.Mavlink;
 
-public class RadioClientDeviceProvider(MavlinkIdentity selfId, IPacketSequenceCalculator seq, RadioClientDeviceConfig config) 
+public class RadioClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq, RadioClientDeviceConfig config) 
     : MavlinkClientDeviceFactory<RadioClientDevice>(selfId, seq)
 {
     public override int Order => ClientDeviceFactory.DefaultOrder;

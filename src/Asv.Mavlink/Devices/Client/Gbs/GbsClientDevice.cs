@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Cfg;
 using Asv.IO;
 using Microsoft.Extensions.Logging;
 
@@ -14,7 +15,19 @@ public class GbsClientDeviceConfig:MavlinkClientDeviceConfig
 {
     public CommandProtocolConfig Command { get; set; } = new();
     public ParamsClientExConfig Params { get; set; } = new();
-    public string SerialNumberParamName { get; set; } = "BRD_SERIAL_NUM";
+    public override void Load(string key, IConfiguration configuration)
+    {
+        base.Load(key, configuration);
+        Command = configuration.Get<CommandProtocolConfig>();
+        Params = configuration.Get<ParamsClientExConfig>();
+    }
+    
+    public override void Save(string key, IConfiguration configuration)
+    {
+        base.Save(key, configuration);
+        configuration.Set(Command);
+        configuration.Set(Params);
+    }
 }
 
 public class GbsClientDevice : MavlinkClientDevice
@@ -34,7 +47,7 @@ public class GbsClientDevice : MavlinkClientDevice
         _logger = Core.LoggerFactory.CreateLogger<GbsClientDevice>();
     }
 
-    protected async override IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices([EnumeratorCancellation] CancellationToken cancel)
+    protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices([EnumeratorCancellation] CancellationToken cancel)
     {
         await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
         {

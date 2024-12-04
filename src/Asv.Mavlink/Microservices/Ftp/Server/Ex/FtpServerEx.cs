@@ -18,7 +18,7 @@ public class MavlinkFtpServerExConfig:MavlinkFtpServerConfig
     public required string RootDirectory { get; init; }
 }
 
-public class FtpServerEx : IFtpServerEx
+public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
 {
     private readonly ILogger _logger;
     private readonly IFileSystem _fileSystem;
@@ -30,6 +30,7 @@ public class FtpServerEx : IFtpServerEx
     public FtpServerEx(IFtpServer @base,
         MavlinkFtpServerExConfig config,
         IFileSystem? fileSystem = null)
+        :base(MavlinkFtpHelper.FtpMicroserviceName,@base.Identity, @base.Core)
     {
         _rootDirectory = config.RootDirectory;
         _fileSystem =

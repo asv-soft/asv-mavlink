@@ -30,7 +30,6 @@ public class DiagnosticClientTest(ITestOutputHelper log) : ClientTestBase<Diagno
        Assert.NotNull(Client.IntProbes);
        Assert.NotNull(Client.FloatProbes);
        Assert.NotNull(Client.MemoryVector);
-       Assert.NotNull(Client.Name);
        Assert.NotNull(Client.OnFloatProbe);
        Assert.NotNull(Client.OnIntProbe);
     }

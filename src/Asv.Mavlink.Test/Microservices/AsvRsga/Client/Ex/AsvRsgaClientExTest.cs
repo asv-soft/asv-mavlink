@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvRsga;
+using Asv.IO;
+using Asv.Mavlink.AsvRsga;
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;
@@ -64,7 +65,7 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
 
         //Assert
         await Task.WhenAll(t1, t2);
-        Assert.Equal(attempts, Link.Client.TxPackets);
+        Assert.Equal(attempts, (int)Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -84,7 +85,7 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
 
         //Assert
         await Task.WhenAll(t1, t2);
-        Assert.Equal(attempts, Link.Client.TxPackets);
+        Assert.Equal(attempts, (int)Link.Client.Statistic.TxMessages);
     }
 
     public void Dispose()

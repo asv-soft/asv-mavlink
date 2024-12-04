@@ -6,7 +6,7 @@ using Asv.Mavlink.Minimal;
 
 namespace Asv.Mavlink;
 
-public class AdsbClientDeviceProvider(MavlinkIdentity selfId, IPacketSequenceCalculator seq, AdsbClientDeviceConfig config,IEnumerable<ParamDescription> paramDescriptions) 
+public class AdsbClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq, AdsbClientDeviceConfig config) 
     : MavlinkClientDeviceFactory<AdsbClientDevice>(selfId,seq)
 {
     public override int Order => ClientDeviceFactory.DefaultOrder;
@@ -15,7 +15,7 @@ public class AdsbClientDeviceProvider(MavlinkIdentity selfId, IPacketSequenceCal
     protected override AdsbClientDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId,
         ImmutableArray<IClientDeviceExtender> extenders, ICoreServices context)
     {
-        return new AdsbClientDevice(clientDeviceId, config, extenders, context,paramDescriptions);
+        return new AdsbClientDevice(clientDeviceId, config, extenders, context);
     }
 
     protected override bool CheckDevice(HeartbeatPacket msg)

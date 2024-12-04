@@ -165,7 +165,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     public async Task<AsvSdrCalibTablePayload> ReadCalibrationTable(ushort tableIndex, CancellationToken cancel = default)
     {
         var id = GenerateRequestIndex();
-        var result = await InternalCall<(AsvSdrCalibTablePayload?,AsvSdrCalibAccPayload?), AsvSdrCalibTableReadPacket>(
+        var result = await InternalCall<(AsvSdrCalibTablePayload?,AsvSdrCalibAccPayload?), AsvSdrCalibTableReadPacket,MavlinkMessage>(
             arg =>
             {
                 arg.Payload.TargetComponent = _identity.Target.ComponentId;
@@ -201,7 +201,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     public async Task<AsvSdrCalibTableRowPayload> ReadCalibrationTableRow(ushort tableIndex, ushort rowIndex, CancellationToken cancel = default)
     {
         var id = GenerateRequestIndex();
-        var result = await InternalCall<(AsvSdrCalibTableRowPayload?,AsvSdrCalibAccPayload?), AsvSdrCalibTableRowReadPacket>(
+        var result = await InternalCall<(AsvSdrCalibTableRowPayload?,AsvSdrCalibAccPayload?), AsvSdrCalibTableRowReadPacket,MavlinkMessage>(
             arg =>
             {
                 arg.Payload.TargetComponent = _identity.Target.ComponentId;

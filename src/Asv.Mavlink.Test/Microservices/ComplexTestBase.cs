@@ -21,8 +21,8 @@ public abstract class ComplexTestBase<TClient,TServer>
             builder.SetLog(loggerFactory);
             builder.SetTimeProvider(RouterTime);
             builder.RegisterMavlinkV2Protocol();
-            builder.RegisterBroadcastFeature<MavlinkMessage>();
-            builder.RegisterSimpleFormatter();
+            builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
+            builder.Formatters.RegisterSimpleFormatter();
         });
         
         Link = protocol.CreateVirtualConnection();

@@ -5,7 +5,7 @@ using Asv.Mavlink.Minimal;
 
 namespace Asv.Mavlink;
 
-public class RsgaClientDeviceProvider(MavlinkIdentity selfId, IPacketSequenceCalculator seq,RsgaClientDeviceConfig config) 
+public class RsgaClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq,RsgaClientDeviceConfig config) 
     : MavlinkClientDeviceFactory<RsgaClientDevice>(selfId,seq)
 {
     public override int Order => ClientDeviceFactory.MinimumOrder;

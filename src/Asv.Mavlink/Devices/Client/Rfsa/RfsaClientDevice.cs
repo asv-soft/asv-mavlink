@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Cfg;
 using Asv.IO;
 using Asv.Mavlink.Diagnostic.Client;
 using Microsoft.Extensions.Logging;
@@ -16,7 +17,24 @@ public class RfsaClientDeviceConfig:MavlinkClientDeviceConfig
     public AsvChartClientConfig Charts { get; set; } = new();
     public CommandProtocolConfig Command { get; set; } = new();
     public DiagnosticClientConfig Diagnostics { get; set; } = new();
-    public string SerialNumberParamName { get; set; } = "BRD_SERIAL_NUM";
+    
+    public override void Load(string key, IConfiguration configuration)
+    {
+        base.Load(key, configuration);
+        Params = configuration.Get<ParamsClientExConfig>();
+        Charts = configuration.Get<AsvChartClientConfig>();
+        Command = configuration.Get<CommandProtocolConfig>();
+        Diagnostics = configuration.Get<DiagnosticClientConfig>();
+    }
+    
+    public override void Save(string key, IConfiguration configuration)
+    {
+        base.Save(key, configuration);
+        configuration.Set(Params);
+        configuration.Set(Charts);
+        configuration.Set(Command);
+        configuration.Set(Diagnostics);
+    }
     
 }
 

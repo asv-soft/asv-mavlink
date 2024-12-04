@@ -5,7 +5,7 @@ using Asv.Mavlink.Minimal;
 
 namespace Asv.Mavlink;
 
-public class RfsaClientDeviceProvider(MavlinkIdentity selfId, IPacketSequenceCalculator seq, RfsaClientDeviceConfig config) 
+public class RfsaClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq, RfsaClientDeviceConfig config) 
     : MavlinkClientDeviceFactory<RfsaClientDevice>(selfId,seq)
 {
     public override int Order => ClientDeviceFactory.DefaultOrder;

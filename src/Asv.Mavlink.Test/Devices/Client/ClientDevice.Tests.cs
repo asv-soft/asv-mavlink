@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Immutable;
 using Asv.Common;
 using Asv.IO;
 using JetBrains.Annotations;
@@ -9,10 +10,10 @@ using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-[TestSubject(typeof(ClientDevice))]
-public class ClientDeviceTests(ITestOutputHelper log) : ClientTestBase<ClientDevice>(log)
+[TestSubject(typeof(MavlinkClientDevice))]
+public class ClientDeviceTests(ITestOutputHelper log) : ClientTestBase<MavlinkClientDevice>(log)
 {
-    readonly ClientDeviceConfig _config = new ClientDeviceConfig
+    readonly MavlinkClientDeviceConfig _config = new()
     {
         Heartbeat = new HeartbeatClientConfig
         {
@@ -22,9 +23,9 @@ public class ClientDeviceTests(ITestOutputHelper log) : ClientTestBase<ClientDev
         }
     };
     
-    protected override ClientDevice CreateClient(MavlinkClientIdentity identity, CoreServices core)
+    protected override MavlinkClientDevice CreateClient(MavlinkClientIdentity identity, CoreServices core)
     {
-        return new(identity,_config ,core, DeviceClass.Copter);
+        return new(new MavlinkClientDeviceId("TEST", identity),_config , ImmutableArray<IClientDeviceExtender>.Empty,  core);
     }
     [Fact]
     public void Ctor_WithDefaultArgs_Success()
@@ -35,9 +36,11 @@ public class ClientDeviceTests(ITestOutputHelper log) : ClientTestBase<ClientDev
     [Fact]
     public void Ctor_WithNullArgs_Fail()
     {
-        Assert.Throws<ArgumentNullException>(() => new ClientDevice(null, new ClientDeviceConfig(),Core, DeviceClass.Copter));
-        Assert.Throws<ArgumentNullException>(() => new ClientDevice(new MavlinkClientIdentity(1,2,3,4), null,Core, DeviceClass.Copter));
-        Assert.Throws<ArgumentNullException>(() => new ClientDevice(new MavlinkClientIdentity(1,2,3,4), new ClientDeviceConfig(),null, DeviceClass.Copter));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Assert.Throws<ArgumentNullException>(() => new MavlinkClientDevice(null, new MavlinkClientDeviceConfig(),ImmutableArray<IClientDeviceExtender>.Empty,Core));
+        Assert.Throws<ArgumentNullException>(() => new MavlinkClientDevice(new MavlinkClientDeviceId("TEST", new MavlinkClientIdentity(1,2,3,4)), null,ImmutableArray<IClientDeviceExtender>.Empty,Core));
+        Assert.Throws<ArgumentNullException>(() => new MavlinkClientDevice(new MavlinkClientDeviceId("TEST", new MavlinkClientIdentity(1,2,3,4)), new MavlinkClientDeviceConfig(),ImmutableArray<IClientDeviceExtender>.Empty,null));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
     
     [Fact]
@@ -55,10 +58,12 @@ public class ClientDeviceTests(ITestOutputHelper log) : ClientTestBase<ClientDev
         
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var device = new ClientDevice(new MavlinkClientIdentity(1,2,3,4), new ClientDeviceConfig
+            Assert.Throws<ArgumentNullException>(() => new MavlinkClientDevice(new MavlinkClientDeviceId("TEST", new MavlinkClientIdentity(1,2,3,4)), new MavlinkClientDeviceConfig
             {
-                Heartbeat = null!
-            },core, DeviceClass.Copter);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+                Heartbeat = null
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+            },ImmutableArray<IClientDeviceExtender>.Empty,Core));
         });
     }
 

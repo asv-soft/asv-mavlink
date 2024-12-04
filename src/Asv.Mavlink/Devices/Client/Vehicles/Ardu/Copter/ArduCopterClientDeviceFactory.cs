@@ -5,16 +5,16 @@ using Asv.Mavlink.Minimal;
 
 namespace Asv.Mavlink;
 
-public class ArduCopterClientDeviceProvider(MavlinkIdentity selfId, IPacketSequenceCalculator seq, VehicleClientDeviceConfig config) 
-    : MavlinkClientDeviceFactory<ArduCopterClientDeviceV2>(selfId,seq)
+public class ArduCopterClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq, VehicleClientDeviceConfig config) 
+    : MavlinkClientDeviceFactory<ArduCopterClientDevice>(selfId,seq)
 {
     public override int Order => ClientDeviceFactory.DefaultOrder;
     public override string DeviceClass => Vehicles.CopterDeviceClass;
 
-    protected override ArduCopterClientDeviceV2 InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId, ImmutableArray<IClientDeviceExtender> extenders,
+    protected override ArduCopterClientDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId, ImmutableArray<IClientDeviceExtender> extenders,
         ICoreServices context)
     {
-        return new ArduCopterClientDeviceV2(clientDeviceId,config,extenders,context);
+        return new ArduCopterClientDevice(clientDeviceId,config,extenders,context);
     }
 
     protected override bool CheckDevice(HeartbeatPacket msg)

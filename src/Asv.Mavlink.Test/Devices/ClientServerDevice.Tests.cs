@@ -1,13 +1,14 @@
 using System;
 using Asv.Common;
+using Asv.IO;
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-[TestSubject(typeof(ClientDevice))]
-[TestSubject(typeof(ServerDevice))]
+[TestSubject(typeof(MavlinkClientDevice))]
+[TestSubject(typeof(MavlinkSer))]
 public class ComplexDeviceTests(ITestOutputHelper log)
     : ComplexTestBase<ClientDevice, ServerDevice>(log)
 {
@@ -25,7 +26,7 @@ public class ComplexDeviceTests(ITestOutputHelper log)
 
     };
 
-    private readonly ClientDeviceConfig _clientConfig = new()
+    private readonly MavlinkClientDeviceConfig _clientConfig = new()
     {
         Heartbeat =
         {
