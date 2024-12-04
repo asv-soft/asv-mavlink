@@ -19,10 +19,10 @@ namespace Asv.Mavlink
         float ConvertToMavlinkUnion(MavParamValue value);
 
         /// <summary>
-        /// Converts a MavParamValue to a float using the Mavlink union.
+        /// Converts a MavParamExtValue to a float using the Mavlink union.
         /// </summary>
         /// <param name="value">The MavParamExtValue to convert.</param>
-        /// <returns>The converted char [] value.</returns>
+        /// <returns>The converted from char [] value.</returns>
         char[] ConvertToMavlinkUnion(MavParamExtValue value);
 
         /// <summary>
@@ -293,43 +293,21 @@ namespace Asv.Mavlink
                 {
                     case MavParamExtType.MavParamExtTypeUint8:
                         span[0] = (byte)value;
-                        span[1] = 0;
-                        span[2] = 0;
-                        span[3] = 0;
-                        span[4] = 0;
-                        span[5] = 0;
-                        span[6] = 0;
-                        span[7] = 0;
+                        span[1..].Clear();
                         break;
                     case MavParamExtType.MavParamExtTypeInt8:
-                        span[0] = (byte)value;
-                        span[1] = 0;
-                        span[2] = 0;
-                        span[3] = 0;
-                        span[4] = 0;
-                        span[5] = 0;
-                        span[6] = 0;
-                        span[7] = 0;
+                        span[0] = (byte)(sbyte)value;
+                        span[1..].Clear();
                         break;
                     case MavParamExtType.MavParamExtTypeUint16:
                         if (BitConverter.TryWriteBytes(span, (ushort)value) == false)
                             throw new MavlinkException("Failed to write ushort value to span");
-                        span[2] = 0;
-                        span[3] = 0;
-                        span[4] = 0;
-                        span[5] = 0;
-                        span[6] = 0;
-                        span[7] = 0;
+                        span[2..].Clear();
                         break;
                     case MavParamExtType.MavParamExtTypeInt16:
                         if (BitConverter.TryWriteBytes(span, (short)value) == false)
                             throw new MavlinkException("Failed to write short value to span");
-                        span[2] = 0;
-                        span[3] = 0;
-                        span[4] = 0;
-                        span[5] = 0;
-                        span[6] = 0;
-                        span[7] = 0;
+                        span[2..].Clear();
                         break;
                     case MavParamExtType.MavParamExtTypeCustom:
                         if (BitConverter.TryWriteBytes(span, value) == false)
@@ -338,26 +316,17 @@ namespace Asv.Mavlink
                     case MavParamExtType.MavParamExtTypeUint32:
                         if (BitConverter.TryWriteBytes(span, (uint)value) == false)
                             throw new MavlinkException("Failed to write uint value to span");
-                        span[4] = 0;
-                        span[5] = 0;
-                        span[6] = 0;
-                        span[7] = 0;
+                        span[4..].Clear();
                         break;
                     case MavParamExtType.MavParamExtTypeInt32:
                         if (BitConverter.TryWriteBytes(span, (int)value) == false)
                             throw new MavlinkException("Failed to write int value to span");
-                        span[4] = 0;
-                        span[5] = 0;
-                        span[6] = 0;
-                        span[7] = 0;
+                        span[4..].Clear();
                         break;
                     case MavParamExtType.MavParamExtTypeReal32:
                         if (BitConverter.TryWriteBytes(span, (float)value) == false)
                             throw new MavlinkException("Failed to write float value to span");
-                        span[4] = 0;
-                        span[5] = 0;
-                        span[6] = 0;
-                        span[7] = 0;
+                        span[4..].Clear();
                         break;
                     case MavParamExtType.MavParamExtTypeUint64:
                         if (BitConverter.TryWriteBytes(span, (ulong)value) == false)
@@ -375,10 +344,16 @@ namespace Asv.Mavlink
                         throw new ArgumentOutOfRangeException(nameof(value.Type), value.Type, "Unsupported type");
                 }
 
-                var charsNeeded = Encoding.ASCII.GetCharCount(span);
-                var charArr = new char[charsNeeded];
+                var charArr = new char[128];
                 Encoding.ASCII.GetChars(span, charArr);
                 return charArr;
+                
+                // var charArr = new char[128];
+                // for (int i = 0; i < 8; i++)
+                // {
+                //     charArr[i] = (char)arr[i];
+                // }
+                // return charArr;
             }
             finally
             {
@@ -394,6 +369,16 @@ namespace Asv.Mavlink
         /// <returns>A new <see cref="MavParamExtValue"/> object representing the converted value.</returns>
         public MavParamExtValue ConvertFromMavlinkUnion(char[] value, MavParamExtType type)
         {
+            // var arr = ArrayPool<byte>.Shared.Rent(8);
+            // try
+            // {
+            //     for (int i = 0; i < arr.Length; i++)
+            //     {
+            //         arr[i] = (byte)value[i];
+            //     }
+            //
+            //     var span = new ReadOnlySpan<byte>(arr, 0, 8);
+            
             var bytesNeeded = Encoding.ASCII.GetByteCount(value);
             var arr = ArrayPool<byte>.Shared.Rent(bytesNeeded);
 
