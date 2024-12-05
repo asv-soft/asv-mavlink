@@ -16,7 +16,7 @@ public class ServerDevice : IServerDevice, IDisposable, IAsyncDisposable
     private readonly StatusTextServer _statusText;
     private readonly ILogger<ServerDevice> _logger;
 
-    public ServerDevice(MavlinkIdentity identity, ServerDeviceConfig config, ICoreServices core)
+    public ServerDevice(MavlinkIdentity identity, ServerDeviceConfig config, IMavlinkContext core)
     {
         ArgumentNullException.ThrowIfNull(core);
         ArgumentNullException.ThrowIfNull(config);
@@ -28,7 +28,7 @@ public class ServerDevice : IServerDevice, IDisposable, IAsyncDisposable
         Identity = identity;
     }
 
-    public ICoreServices Core { get; }
+    public IMavlinkContext Core { get; }
     public MavlinkIdentity Identity { get; }
 
     public IStatusTextServer StatusText => _statusText;

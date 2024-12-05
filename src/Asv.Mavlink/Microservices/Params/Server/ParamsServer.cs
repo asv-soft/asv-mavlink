@@ -9,7 +9,7 @@ namespace Asv.Mavlink
 {
     public class ParamsServer: MavlinkMicroserviceServer, IParamsServer
     {
-        public ParamsServer(MavlinkIdentity identity, ICoreServices core)
+        public ParamsServer(MavlinkIdentity identity, IMavlinkContext core)
             : base("PARAM", identity, core)
         {
             OnParamRequestRead =

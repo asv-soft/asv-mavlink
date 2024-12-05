@@ -54,7 +54,7 @@ public class SdrClientDevice : MavlinkClientDevice
         MavlinkClientDeviceId identity, 
         SdrClientDeviceConfig config,
         ImmutableArray<IClientDeviceExtender> extenders, 
-        ICoreServices core) 
+        IMavlinkContext core) 
         : base(identity,config,extenders,core)
     {
         _logger = core.LoggerFactory.CreateLogger<SdrClientDevice>();

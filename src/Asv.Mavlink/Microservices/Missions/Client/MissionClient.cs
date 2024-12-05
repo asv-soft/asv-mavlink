@@ -36,7 +36,7 @@ namespace Asv.Mavlink
         private readonly MissionClientConfig _config;
         private readonly ILogger _logger;
 
-        public MissionClient(MavlinkClientIdentity identity, MissionClientConfig config, ICoreServices core) 
+        public MissionClient(MavlinkClientIdentity identity, MissionClientConfig config, IMavlinkContext core) 
             : base(MissionClientHelper.MicroserviceName,identity, core)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));

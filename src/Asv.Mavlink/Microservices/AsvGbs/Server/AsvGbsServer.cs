@@ -20,7 +20,7 @@ namespace Asv.Mavlink
         public AsvGbsServer(
             MavlinkIdentity identity,
             AsvGbsServerConfig config, 
-            ICoreServices core)
+            IMavlinkContext core)
             : base(AsvGbsHelper.MicroserviceName, identity, core)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));

@@ -22,7 +22,7 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
     private readonly Subject<ParamValuePayload> _onParamValue;
     private readonly IDisposable _sub1;
 
-    public ParamsClient(MavlinkClientIdentity identity, ParameterClientConfig config, ICoreServices core) 
+    public ParamsClient(MavlinkClientIdentity identity, ParameterClientConfig config, IMavlinkContext core) 
         : base("PARAMS",  identity, core)
     {
         _logger = core.LoggerFactory.CreateLogger<ParamsClient>();

@@ -15,7 +15,7 @@ public class ArduPlaneClientDevice: ArduVehicleClientDevice
         MavlinkClientDeviceId identity, 
         VehicleClientDeviceConfig config,
         ImmutableArray<IClientDeviceExtender> extenders, 
-        ICoreServices core) 
+        IMavlinkContext core) 
         : base(identity,config,extenders,core)
     {
         

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.IO;
 using Asv.Mavlink.AsvRsga;
 using R3;
 using Xunit;
@@ -36,14 +37,14 @@ public class AsvRsgaComplexTest : ComplexTestBase<AsvRsgaClientEx, AsvRsgaServer
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
-    protected override AsvRsgaServerEx CreateServer(MavlinkIdentity identity, ICoreServices core)
+    protected override AsvRsgaServerEx CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
         var status = new StatusTextServer(identity, _statusConfig, core);
         var command = new CommandLongServerEx(new CommandServer(identity, core));
         return new AsvRsgaServerEx(new AsvRsgaServer(identity, core), status, command);
     }
 
-    protected override AsvRsgaClientEx CreateClient(MavlinkClientIdentity identity, ICoreServices core)
+    protected override AsvRsgaClientEx CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
         return new AsvRsgaClientEx(new AsvRsgaClient(identity, core), new CommandClient(identity, _commandConfig, core));
     }

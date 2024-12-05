@@ -27,7 +27,7 @@ public class AudioDeviceTest
     public AudioDeviceTest()
     {
         _sendPacketDelegateMock = new Mock<Func<Action<AsvAudioStreamPacket>, CancellationToken, ValueTask>>();
-        Mock<ICoreServices> coreServicesMock = new();
+        Mock<IMavlinkContext> coreServicesMock = new();
         _codecFactoryMock = new Mock<IAudioCodecFactory>();
         _encoderMock = new Mock<IAudioEncoder>();
         _decoderMock = new Mock<IAudioDecoder>();
@@ -203,7 +203,7 @@ public class AudioDeviceTest
 
     private AudioDevice CreateAudioDevice()
     {
-        var coreServices = new FakeCoreServices();
+        var coreServices = new IFakeMavlinkContext();
 
         return new AudioDevice(
             _codecFactoryMock.Object,
@@ -215,7 +215,7 @@ public class AudioDeviceTest
         );
     }
 
-    private class FakeCoreServices : ICoreServices
+    private class IFakeMavlinkContext : IMavlinkContext
     {
         public IProtocolConnection Connection { get; } = Mock.Of<IProtocolConnection>();
         public IPacketSequenceCalculator Sequence { get; } = Mock.Of<IPacketSequenceCalculator>();

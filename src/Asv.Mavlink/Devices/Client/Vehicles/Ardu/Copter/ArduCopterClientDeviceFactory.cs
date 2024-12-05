@@ -12,7 +12,7 @@ public class ArduCopterClientDeviceFactory(MavlinkIdentity selfId, IPacketSequen
     public override string DeviceClass => Vehicles.CopterDeviceClass;
 
     protected override ArduCopterClientDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId, ImmutableArray<IClientDeviceExtender> extenders,
-        ICoreServices context)
+        IMavlinkContext context)
     {
         return new ArduCopterClientDevice(clientDeviceId,config,extenders,context);
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
+using Asv.IO;
 using Asv.Mavlink.Common;
 
 using DeepEqual.Syntax;
@@ -47,14 +48,14 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         _client = Client;
     }
 
-    protected override MissionServerEx CreateServer(MavlinkIdentity identity, ICoreServices core)
+    protected override MissionServerEx CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
         var statusTextServer = new StatusTextServer(identity, _statusTextServerConfig, core);
         var server = new MissionServer(identity, core);
         return new MissionServerEx(server, statusTextServer);
     }
 
-    protected override MissionClientEx CreateClient(MavlinkClientIdentity identity, ICoreServices core)
+    protected override MissionClientEx CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
         var client = new MissionClient(identity, _clientConfig, core);
         return new MissionClientEx(client, _clientExConfig);

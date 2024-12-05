@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.IO;
 using Asv.Mavlink.Common;
 using JetBrains.Annotations;
 using R3;
@@ -29,10 +30,10 @@ public class StatusTextComplexTest : ComplexTestBase<StatusTextClient, StatusTex
         _cts.Token.Register(() => _tcs.TrySetCanceled());
     }
 
-    protected override StatusTextServer CreateServer(MavlinkIdentity identity, ICoreServices core) =>
+    protected override StatusTextServer CreateServer(MavlinkIdentity identity, IMavlinkContext core) =>
         new(identity, _serverConfig, core);
 
-    protected override StatusTextClient CreateClient(MavlinkClientIdentity identity, ICoreServices core) =>
+    protected override StatusTextClient CreateClient(MavlinkClientIdentity identity, IMavlinkContext core) =>
         new(identity, core);
 
     [Fact]

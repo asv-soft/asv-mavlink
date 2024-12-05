@@ -12,7 +12,7 @@ public class RadioClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCal
     public override string DeviceClass => RadioClientDevice.DeviceClass;
 
     protected override RadioClientDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId, ImmutableArray<IClientDeviceExtender> extenders,
-        ICoreServices context)
+        IMavlinkContext context)
     {
         return new RadioClientDevice(clientDeviceId, config, extenders, context);
     }

@@ -9,7 +9,7 @@ public class Px4PlaneClientDevice:Px4VehicleClientDevice
         MavlinkClientDeviceId identity, 
         VehicleClientDeviceConfig config,
         ImmutableArray<IClientDeviceExtender> extenders, 
-        ICoreServices core) 
+        IMavlinkContext core) 
         : base(identity,config,extenders,core)
     {
         

@@ -15,7 +15,7 @@ public class TestContext
         Core = new CoreServices(connection, Seq, new TestLoggerFactory(log, Time, logPrefix), Time, new DefaultMeterFactory());
     }
     
-    public ICoreServices Core { get;  }
+    public IMavlinkContext Core { get;  }
     public IPacketSequenceCalculator Seq { get; }
     public FakeTimeProvider Time { get; }
     public ITestOutputHelper Log { get; }

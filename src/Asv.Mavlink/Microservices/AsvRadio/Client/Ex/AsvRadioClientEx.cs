@@ -82,7 +82,7 @@ public class AsvRadioClientEx:MavlinkMicroserviceClient, IAsvRadioClientEx, IDis
 
     public IAsvRadioClient Base { get; }
     public MavlinkClientIdentity Identity => Base.Identity;
-    public ICoreServices Core => Base.Core;
+    public IMavlinkContext Core => Base.Core;
     public Task Init(CancellationToken cancel = default)
     {
         return Task.CompletedTask;

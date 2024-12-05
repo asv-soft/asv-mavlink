@@ -12,7 +12,7 @@ public class GbsClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalcu
     public override string DeviceClass => GbsClientDevice.DeviceClass;
 
     protected override GbsClientDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId,
-        ImmutableArray<IClientDeviceExtender> extenders, ICoreServices context)
+        ImmutableArray<IClientDeviceExtender> extenders, IMavlinkContext context)
     {
         return new GbsClientDevice(clientDeviceId,config, extenders, context);
     }

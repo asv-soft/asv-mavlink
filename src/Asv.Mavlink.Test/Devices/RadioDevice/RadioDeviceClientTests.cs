@@ -24,34 +24,32 @@ public class RadioDeviceClientTests : ClientTestBase<RadioClientDevice>
     [Fact]
     public void Client_CreateClient_Success()
     {
-        var radio = CreateClient(Identity, Core);
+        var radio = CreateClient(Identity, Context);
         Assert.NotNull(radio);
     }
 
     [Fact]
     public void Ctor_TryPassEmptyValues_Fail()
     {
-        RadioClientDeviceConfig cfg = null;
-        CoreServices? core = null;
-        MavlinkClientDeviceId id = new MavlinkClientDeviceId(AsvRadioClient)
-        MavlinkClientIdentity? identity = null;
+        var id =
+            new MavlinkClientDeviceId(RadioClientDevice.DeviceClass, new MavlinkClientIdentity(1,2,3,4));
         Assert.Throws<ArgumentNullException>( () =>
         {
-            var radio = new RadioClientDevice(identity,_cfg, ImmutableArray<IClientDeviceExtender>.Empty,  Core);
+            var radio = new RadioClientDevice(null,_cfg, ImmutableArray<IClientDeviceExtender>.Empty,  Context);
         });
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var radio = new RadioClientDevice(Identity, cfg, Core);
+            var radio = new RadioClientDevice(id, null,ImmutableArray<IClientDeviceExtender>.Empty, Context);
         });
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var radio = new RadioClientDevice(Identity, _cfg, core);
+            var radio = new RadioClientDevice(id, _cfg,ImmutableArray<IClientDeviceExtender>.Empty, null);
         });
     }
     
     protected override RadioClientDevice CreateClient(MavlinkClientIdentity identity, CoreServices core)
     {
         var cfg = _cfg ?? new RadioClientDeviceConfig();
-        return new RadioClientDevice(identity, cfg, core);
+        return new RadioClientDevice(new MavlinkClientDeviceId(RadioClientDevice.DeviceClass,identity), cfg,ImmutableArray<IClientDeviceExtender>.Empty, core);
     }
 }

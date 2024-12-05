@@ -26,7 +26,7 @@ public class GbsServerDevice:ServerDevice, IGbsServerDevice
         IEnumerable<IMavParamTypeMetadata> paramList,
         IMavParamEncoding encoding,
         IConfiguration paramStore,
-        ICoreServices core) : base(identity, config, core)
+        IMavlinkContext core) : base(identity, config, core)
     {
         _commandBase = new CommandServer(identity,core);
         _commandLongEx = new CommandLongServerEx(_commandBase);

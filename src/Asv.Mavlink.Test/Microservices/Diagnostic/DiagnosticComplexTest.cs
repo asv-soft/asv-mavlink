@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Asv.IO;
 using Asv.Mavlink.Diagnostic.Client;
 using Asv.Mavlink.Diagnostic.Server;
 using JetBrains.Annotations;
@@ -28,12 +29,12 @@ public class DiagnosticComplexTest(ITestOutputHelper log)
         MaxCollectionSize = 100
     };
 
-    protected override DiagnosticServer CreateServer(MavlinkIdentity identity, ICoreServices core)
+    protected override DiagnosticServer CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
         return new DiagnosticServer(identity, _serverConfig, core);
     }
 
-    protected override DiagnosticClient CreateClient(MavlinkClientIdentity identity, ICoreServices core)
+    protected override DiagnosticClient CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
         return new DiagnosticClient(identity, _clientConfig, core);
     }

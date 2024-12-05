@@ -10,7 +10,7 @@ namespace Asv.Mavlink;
 public class ParamsExtServer : MavlinkMicroserviceServer, IParamsExtServer
 {
     
-    public ParamsExtServer(MavlinkIdentity identity,ICoreServices core)
+    public ParamsExtServer(MavlinkIdentity identity,IMavlinkContext core)
         : base("PARAMS_EXT",identity, core)
     {
         OnParamExtSet = InternalFilter<ParamExtSetPacket>(

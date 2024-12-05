@@ -12,7 +12,7 @@ public class SdrClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalcu
     public override string DeviceClass => SdrClientDevice.DeviceClass;
 
     protected override SdrClientDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId, ImmutableArray<IClientDeviceExtender> extenders,
-        ICoreServices context)
+        IMavlinkContext context)
     {
         return new SdrClientDevice(clientDeviceId,config,extenders,context);
     }

@@ -27,7 +27,7 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
     private WriteHandle _lastWriteHandle;
     private readonly IDisposable _filter;
 
-    public FtpServer(MavlinkIdentity identity, MavlinkFtpServerConfig config, ICoreServices core) 
+    public FtpServer(MavlinkIdentity identity, MavlinkFtpServerConfig config, IMavlinkContext core) 
         : base(MavlinkFtpHelper.FtpMicroserviceName, identity, core)
     {
         _config = config;

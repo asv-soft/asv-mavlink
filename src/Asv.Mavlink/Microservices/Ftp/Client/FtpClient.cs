@@ -25,7 +25,7 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
     private readonly TimeSpan _burstTimeout;
 
     public FtpClient(MavlinkClientIdentity identity,
-        MavlinkFtpClientConfig config,ICoreServices core) 
+        MavlinkFtpClientConfig config,IMavlinkContext core) 
         : base(MavlinkFtpHelper.FtpMicroserviceName, identity, core)
     {
         _config = config;

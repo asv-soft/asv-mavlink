@@ -13,7 +13,7 @@ public class Px4CopterClientDevice:Px4VehicleClientDevice
     public Px4CopterClientDevice(MavlinkClientDeviceId identity, 
         VehicleClientDeviceConfig config,
         ImmutableArray<IClientDeviceExtender> extenders, 
-        ICoreServices core) 
+        IMavlinkContext core) 
         : base(identity,config,extenders,core)
     {
         

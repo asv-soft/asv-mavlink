@@ -37,12 +37,12 @@ public class AdsbClientDevice(
     MavlinkClientDeviceId identity,
     AdsbClientDeviceConfig config,
     ImmutableArray<IClientDeviceExtender> extenders,
-    ICoreServices core)
+    IMavlinkContext core)
     : MavlinkClientDevice(identity, config, extenders, core)
 {
     public const string DeviceClass = "Adsb";
     private readonly MavlinkClientDeviceId _identity = identity;
-    private readonly ICoreServices _core = core;
+    private readonly IMavlinkContext _core = core;
 
     protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices([EnumeratorCancellation] CancellationToken cancel)
     {

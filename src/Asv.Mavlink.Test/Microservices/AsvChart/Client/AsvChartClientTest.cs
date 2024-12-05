@@ -28,8 +28,8 @@ public class AsvChartClientTest : ClientTestBase<AsvChartClient>, IDisposable
     [Fact]
     public void Ctor_ThrowsExceptions_ArgIsNullFail()
     {
-        Assert.Throws<ArgumentNullException>(() => new AsvChartClient(null!, _config, Core));
-        Assert.Throws<NullReferenceException>(() => new AsvChartClient(Identity, null!, Core));
+        Assert.Throws<ArgumentNullException>(() => new AsvChartClient(null!, _config, Context));
+        Assert.Throws<NullReferenceException>(() => new AsvChartClient(Identity, null!, Context));
         Assert.Throws<ArgumentNullException>(() => new AsvChartClient(Identity, _config, null!));
     }
     

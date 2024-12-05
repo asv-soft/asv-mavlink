@@ -11,7 +11,7 @@ namespace Asv.Mavlink;
 
 public interface IMavlinkMicroserviceServer : IMicroserviceServer
 {
-    ICoreServices Core { get; }
+    IMavlinkContext Core { get; }
 
     MavlinkIdentity Identity { get; }
 }
@@ -19,7 +19,7 @@ public interface IMavlinkMicroserviceServer : IMicroserviceServer
 public abstract class MavlinkMicroserviceServer : MicroserviceServer<MavlinkMessage>, IMavlinkMicroserviceServer
 {
     protected MavlinkMicroserviceServer(string microserviceTypeName, MavlinkIdentity identity,
-        ICoreServices core) : base(core, $"{identity}.{microserviceTypeName}")
+        IMavlinkContext core) : base(core, $"{identity}.{microserviceTypeName}")
     {
         ArgumentNullException.ThrowIfNull(microserviceTypeName);
         ArgumentNullException.ThrowIfNull(identity);
@@ -29,7 +29,7 @@ public abstract class MavlinkMicroserviceServer : MicroserviceServer<MavlinkMess
         TypeName = microserviceTypeName;
     }
 
-    public ICoreServices Core { get; }
+    public IMavlinkContext Core { get; }
     public MavlinkIdentity Identity { get; }
     public override string TypeName { get; }
 

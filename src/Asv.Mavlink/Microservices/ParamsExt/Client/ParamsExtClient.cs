@@ -42,7 +42,7 @@ public class ParamsExtClient : MavlinkMicroserviceClient, IParamsExtClient
     private readonly IDisposable _sub2;
 
     public ParamsExtClient(MavlinkClientIdentity identity, ParamsExtClientConfig config,
-        ICoreServices core)
+        IMavlinkContext core)
         : base("PARAMS_EXT", identity, core)
     {
         _logger = core.LoggerFactory.CreateLogger<ParamsExtClient>();

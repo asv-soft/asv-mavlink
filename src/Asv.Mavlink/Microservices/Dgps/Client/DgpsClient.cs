@@ -15,7 +15,7 @@ namespace Asv.Mavlink
         private readonly ILogger _logger;
         private uint _seqNumber;
 
-        public DgpsClient(MavlinkClientIdentity identity, ICoreServices core)
+        public DgpsClient(MavlinkClientIdentity identity, IMavlinkContext core)
             :base("DGPS", identity, core)
         {
             _logger = core.LoggerFactory.CreateLogger<DgpsClient>();

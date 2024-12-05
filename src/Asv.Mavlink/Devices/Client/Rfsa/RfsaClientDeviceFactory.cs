@@ -12,7 +12,7 @@ public class RfsaClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalc
     public override string DeviceClass => RfsaClientDevice.DeviceClass;
 
     protected override RfsaClientDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId, ImmutableArray<IClientDeviceExtender> extenders,
-        ICoreServices context)
+        IMavlinkContext context)
     {
         return new RfsaClientDevice(clientDeviceId,config,extenders,context);
     }

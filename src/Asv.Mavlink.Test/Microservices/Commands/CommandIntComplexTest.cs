@@ -37,13 +37,13 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
-    protected override CommandIntServerEx CreateServer(MavlinkIdentity identity, ICoreServices core)
+    protected override CommandIntServerEx CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
         var commandServer = new CommandServer(identity, core);
         return new CommandIntServerEx(commandServer);
     }
 
-    protected override CommandClient CreateClient(MavlinkClientIdentity identity, ICoreServices core)
+    protected override CommandClient CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
         return new CommandClient(identity, _config, core);
     }

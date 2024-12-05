@@ -257,7 +257,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx, IMavlinkMicr
     }
 
     public MavlinkClientIdentity Identity => Base.Identity;
-    public ICoreServices Core => Base.Core;
+    public IMavlinkContext Core => Base.Core;
 
     public Task Init(CancellationToken cancel = default)
     {

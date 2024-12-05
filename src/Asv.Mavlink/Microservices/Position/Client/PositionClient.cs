@@ -21,7 +21,7 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
     private readonly ReadOnlyReactiveProperty<HighresImuPayload?> _imu;
     private readonly ReadOnlyReactiveProperty<AttitudePayload?> _attitude;
 
-    public PositionClient(MavlinkClientIdentity identity, ICoreServices core)
+    public PositionClient(MavlinkClientIdentity identity, IMavlinkContext core)
         : base("CTRL", identity, core)
     {
         _logger = core.LoggerFactory.CreateLogger<PositionClient>();

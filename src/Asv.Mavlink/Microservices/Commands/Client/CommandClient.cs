@@ -38,7 +38,7 @@ namespace Asv.Mavlink
         private readonly Subject<CommandAckPayload> _onCommandAck;
         private readonly IDisposable _sub1;
 
-        public CommandClient(MavlinkClientIdentity identity, CommandProtocolConfig config,ICoreServices core)
+        public CommandClient(MavlinkClientIdentity identity, CommandProtocolConfig config,IMavlinkContext core)
             :base(Command.MicroserviceTypeName, identity, core)
         {
             _logger = core.LoggerFactory.CreateLogger<CommandClient>();

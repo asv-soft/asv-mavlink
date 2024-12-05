@@ -9,7 +9,7 @@ namespace Asv.Mavlink;
 public class AsvRsgaClient: MavlinkMicroserviceClient, IAsvRsgaClient
 {
     private uint _requestCounter;
-    public AsvRsgaClient(MavlinkClientIdentity identity, ICoreServices core) 
+    public AsvRsgaClient(MavlinkClientIdentity identity, IMavlinkContext core) 
         : base("RSGA", identity, core)
     {
         OnCompatibilityResponse = InternalFilter<AsvRsgaCompatibilityResponsePacket>()

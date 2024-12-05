@@ -48,7 +48,7 @@ public class RfsaClientDevice:MavlinkClientDevice
         MavlinkClientDeviceId identity, 
         RfsaClientDeviceConfig config,
         ImmutableArray<IClientDeviceExtender> extenders, 
-        ICoreServices core) 
+        IMavlinkContext core) 
         : base(identity,config,extenders,core)
     {
         _config = config;

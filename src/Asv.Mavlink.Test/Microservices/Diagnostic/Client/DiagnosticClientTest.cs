@@ -38,8 +38,8 @@ public class DiagnosticClientTest(ITestOutputHelper log) : ClientTestBase<Diagno
     public void Ctor_InitWithNullArguments_Failed()
     {
         //Assert
-        Assert.Throws<ArgumentNullException>(() => new DiagnosticClient(null!, _config, Core));
-        Assert.Throws<ArgumentNullException>(() => new DiagnosticClient(Identity, null!, Core));
+        Assert.Throws<ArgumentNullException>(() => new DiagnosticClient(null!, _config, Context));
+        Assert.Throws<ArgumentNullException>(() => new DiagnosticClient(Identity, null!, Context));
         Assert.Throws<ArgumentNullException>(() => new DiagnosticClient(Identity, _config, null!));
     }
 

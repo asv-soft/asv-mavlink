@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.IO;
 using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
 using R3;
@@ -27,11 +28,11 @@ public class AdsbVehicleComplexTest : ComplexTestBase<AdsbVehicleClient, AdsbVeh
         _cancellationTokenSource.Token.Register(() => taskCompletionSource.TrySetCanceled());
     }
 
-    protected override AdsbVehicleServer CreateServer(MavlinkIdentity identity, ICoreServices core) =>
+    protected override AdsbVehicleServer CreateServer(MavlinkIdentity identity, IMavlinkContext core) =>
         new(identity, core);
 
-    protected override AdsbVehicleClient CreateClient(MavlinkClientIdentity identity, ICoreServices core) =>
-        new(identity, _clientConfig, core);
+    protected override AdsbVehicleClient CreateClient(MavlinkClientIdentity identity, IMavlinkContext core) =>
+        new(identity, _clientConfig,core);
 
     [Fact]
     public async Task UpdateTarget_AddSingleTarget_Success()

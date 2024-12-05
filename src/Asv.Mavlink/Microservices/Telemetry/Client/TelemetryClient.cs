@@ -17,7 +17,7 @@ public sealed class TelemetryClient : MavlinkMicroserviceClient, ITelemetryClien
 
     private readonly ILogger _logger;
 
-    public TelemetryClient(MavlinkClientIdentity identity, ICoreServices core)
+    public TelemetryClient(MavlinkClientIdentity identity, IMavlinkContext core)
         : base("RTT", identity, core)
     {
         _logger = core.LoggerFactory.CreateLogger<TelemetryClient>(); 

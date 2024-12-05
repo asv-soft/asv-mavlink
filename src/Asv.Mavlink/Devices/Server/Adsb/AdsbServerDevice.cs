@@ -25,7 +25,7 @@ public class AdsbServerDevice : ServerDevice, IAdsbServerDevice
         IEnumerable<IMavParamTypeMetadata> paramList,
         IMavParamEncoding encoding,
         IConfiguration paramStore,
-        ICoreServices core)
+        IMavlinkContext core)
         : base(identity, config, core)
     {
         _command = new CommandServer(identity,core);

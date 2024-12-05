@@ -18,7 +18,7 @@ namespace Asv.Mavlink
         private readonly IDisposable _subscribe;
 
         public V2ExtensionClient(MavlinkClientIdentity identity, 
-            ICoreServices core):base(V2Extension.MicroserviceTypeName, identity, core)
+            IMavlinkContext core):base(V2Extension.MicroserviceTypeName, identity, core)
         {
             _identity = identity;
             _onData = new ReactiveProperty<V2ExtensionPacket>();

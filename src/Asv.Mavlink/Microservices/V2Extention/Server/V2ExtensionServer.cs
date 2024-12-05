@@ -12,7 +12,7 @@ namespace Asv.Mavlink
         private readonly Subject<V2ExtensionPacket> _onData;
         private readonly IDisposable _sub;
 
-        public V2ExtensionServer(MavlinkIdentity identity,ICoreServices core )
+        public V2ExtensionServer(MavlinkIdentity identity,IMavlinkContext core )
             :base(V2Extension.MicroserviceTypeName,identity,core)
         {
             _onData = new Subject<V2ExtensionPacket>(); 

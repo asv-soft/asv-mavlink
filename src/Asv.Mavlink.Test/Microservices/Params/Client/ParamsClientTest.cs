@@ -29,8 +29,8 @@ public class ParamsClientTest : ClientTestBase<ParamsClient>, IDisposable
     [Fact]
     public void Constructor_Null_Throws()
     {
-        Assert.Throws<ArgumentNullException>(() => new ParamsClient(null!, _config, Core));
-        Assert.Throws<ArgumentNullException>(() => new ParamsClient(Identity, null!, Core));
+        Assert.Throws<ArgumentNullException>(() => new ParamsClient(null!, _config, Context));
+        Assert.Throws<ArgumentNullException>(() => new ParamsClient(Identity, null!, Context));
         Assert.Throws<ArgumentNullException>(() => new ParamsClient(Identity, _config, null!));
     }
 

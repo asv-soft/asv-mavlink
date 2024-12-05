@@ -13,7 +13,7 @@ public class StatusTextClientTest(ITestOutputHelper log) : ClientTestBase<Status
     [Fact]
     public void Ctor_Identity_Arg_Is_Null_Fail()
     {
-        Assert.Throws<ArgumentNullException>(() => { _ = new StatusTextClient(null!, Core); });
+        Assert.Throws<ArgumentNullException>(() => { _ = new StatusTextClient(null!, Context); });
     }
     
     [Fact]

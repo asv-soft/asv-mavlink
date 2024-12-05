@@ -11,7 +11,7 @@ public class RsgaClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalc
     public override int Order => ClientDeviceFactory.MinimumOrder;
     public override string DeviceClass => RsgaClientDevice.DeviceClass;
     protected override RsgaClientDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId,
-        ImmutableArray<IClientDeviceExtender> extenders, ICoreServices context)
+        ImmutableArray<IClientDeviceExtender> extenders, IMavlinkContext context)
     {
         return new RsgaClientDevice(clientDeviceId,config,extenders,context);
     }

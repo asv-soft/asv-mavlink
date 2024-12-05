@@ -41,7 +41,7 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
     {
         Assert.Throws<ArgumentNullException>(() => new MissionClientEx(null!, _config));
         Assert.Throws<ArgumentNullException>(() => new MissionClientEx(
-            new MissionClient(Identity, _config, Core), 
+            new MissionClient(Identity, _config, Context), 
             null!
             )
         );

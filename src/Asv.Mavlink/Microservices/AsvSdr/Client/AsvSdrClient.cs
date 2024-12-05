@@ -26,7 +26,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     private readonly Subject<AsvSdrSignalRawPayload> _onSignal;
 
     public AsvSdrClient(MavlinkClientIdentity identity,
-        ICoreServices core)
+        IMavlinkContext core)
         : base(AsvSdrHelper.AsvSdrMicroserviceName, identity, core)
     {
         _logger = core.LoggerFactory.CreateLogger<AsvSdrClient>();

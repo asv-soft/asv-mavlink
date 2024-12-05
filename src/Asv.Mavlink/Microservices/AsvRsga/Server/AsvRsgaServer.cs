@@ -11,7 +11,7 @@ public class AsvRsgaServer:MavlinkMicroserviceServer,IAsvRsgaServer
     private readonly Subject<AsvRsgaCompatibilityRequestPayload> _onCompatibilityRequest;
     private readonly IDisposable _subscribe;
 
-    public AsvRsgaServer(MavlinkIdentity identity,ICoreServices core)
+    public AsvRsgaServer(MavlinkIdentity identity,IMavlinkContext core)
         : base("RSGA", identity, core)
     {
         _onCompatibilityRequest = new Subject<AsvRsgaCompatibilityRequestPayload>();

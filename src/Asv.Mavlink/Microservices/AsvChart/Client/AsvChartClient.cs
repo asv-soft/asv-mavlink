@@ -33,7 +33,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
     private readonly Subject<AsvChartOptions> _onStreamOptions;
     private readonly Subject<AsvChartInfoUpdatedEventPayload> _onUpdateEvent;
 
-    public AsvChartClient(MavlinkClientIdentity identity,AsvChartClientConfig config,ICoreServices core)
+    public AsvChartClient(MavlinkClientIdentity identity,AsvChartClientConfig config,IMavlinkContext core)
         : base("CHART", identity,core)
     {
         _logger = core.LoggerFactory.CreateLogger<AsvChartClient>();

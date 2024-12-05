@@ -16,7 +16,7 @@ namespace Asv.Mavlink
         private readonly IDisposable _obs1;
         private readonly IDisposable _obs2;
 
-        public CommandServer(MavlinkIdentity identity,ICoreServices core)
+        public CommandServer(MavlinkIdentity identity,IMavlinkContext core)
             : base(Command.MicroserviceTypeName, identity,core)
         {
             _logger = core.LoggerFactory.CreateLogger<CommandServer>();

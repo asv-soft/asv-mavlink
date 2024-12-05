@@ -52,13 +52,13 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         _cts.Token.Register(() => _tcs.TrySetCanceled());
     }
 
-    protected override FtpServerEx CreateServer(MavlinkIdentity identity, ICoreServices core)
+    protected override FtpServerEx CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
         _fileSystem = SetUpFileSystem(_serverExConfig.RootDirectory);
         return new FtpServerEx(new FtpServer(identity, _serverConfig, core), _serverExConfig, _fileSystem);
     }
 
-    protected override FtpClientEx CreateClient(MavlinkClientIdentity identity, ICoreServices core)
+    protected override FtpClientEx CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
         return new FtpClientEx(new FtpClient(identity, _clientConfig, core));
     }

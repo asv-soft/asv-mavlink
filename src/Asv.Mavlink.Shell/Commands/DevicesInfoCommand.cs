@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Cfg;
 using Asv.IO;
-
+using BenchmarkDotNet.Toolchains.Roslyn;
 using ConsoleAppFramework;
 using ObservableCollections;
 using R3;
@@ -15,7 +17,8 @@ public class DevicesInfoCommand
 {
     private uint _refreshRate;
     private IProtocolRouter _router;
-    private ISynchronizedView<KeyValuePair<MavlinkIdentity,IClientDevice>,MavlinkDeviceModel> _list;
+    private IDeviceExplorer _explorer;
+    private ISynchronizedView<KeyValuePair<DeviceId,IClientDevice>,MavlinkDeviceModel> _list;
 
 
     /// <summary>
@@ -41,31 +44,19 @@ public class DevicesInfoCommand
         {
             builder.RegisterMavlinkV2Protocol();
         });
-        _router = protocol.CreateRouter("DEFAULT");
+        _router = protocol.CreateRouter("ROUTER");
         _router.AddPort(connectionString);
-        
-        var devices = new List<IClientDeviceProvider>
+        var seq = new PacketSequenceCalculator();
+        _explorer = DeviceExplorer.Create(_router, builder =>
         {
-            new GenericClientDeviceFactory(new GenericDeviceConfig()),
-            new AdsbClientDeviceProvider(new AdsbClientDeviceConfig(), Array.Empty<ParamDescription>()),
-            new GbsClientDeviceProvider(new GbsClientDeviceConfig()),
-            new RadioClientDeviceProvider(new RadioClientDeviceConfig()),
-            new RfsaClientDeviceProvider(new RfsaClientDeviceConfig()),
-            new RsgaClientDeviceProvider(new RsgaClientDeviceConfig()),
-            new SdrClientDeviceProvider(new SdrClientDeviceConfig()),
-            new ArduCopterClientDeviceFactory(new VehicleClientDeviceConfig()),
-            new ArduPlaneClientDeviceProvider(new VehicleClientDeviceConfig()),
-            new Px4CopterClientDeviceFactory(new VehicleClientDeviceConfig()),
-            new Px4PlaneClientDeviceFactory(new VehicleClientDeviceConfig())
-        };
+            builder.SetLog(protocol.LoggerFactory);
+            builder.SetMetrics(protocol.MeterFactory);
+            builder.SetTimeProvider(protocol.TimeProvider);
+            builder.Factories.RegisterDefaultDevices(new MavlinkIdentity(254,254), seq, new InMemoryConfiguration());
+        });
         
         
-        var id = new MavlinkIdentity(254, 254);
-        var core = new CoreServices(_router, new PacketSequenceCalculator(), protocol.LoggerFactory, protocol.TimeProvider,protocol.MeterFactory);
-        var factory = new ClientDeviceFactory(id, devices, core);
-        var browser = new ClientDeviceBrowser(factory, new DeviceBrowserConfig(), core);
-        
-        _list = browser.Devices.CreateView(x => new MavlinkDeviceModel(x.Value, TimeProvider.System));
+        _list = _explorer.Devices.CreateView(x => new MavlinkDeviceModel(x.Value, TimeProvider.System));
             
         
         var table = new Table();
@@ -107,12 +98,12 @@ public class DevicesInfoCommand
         {
             AnsiConsole.Markup("\nDone");
             _list.Dispose();
-            await browser.DisposeAsync();
+            await _explorer.DisposeAsync();
             await _router.DisposeAsync();
         }
     }
 
-    private void RenderRows(Table table, ISynchronizedView<KeyValuePair<MavlinkIdentity, IClientDevice>, MavlinkDeviceModel> devices)
+    private void RenderRows(Table table, ISynchronizedView<KeyValuePair<DeviceId,IClientDevice>,MavlinkDeviceModel> devices)
     {
         foreach (var device in devices.Unfiltered)
         {
@@ -137,12 +128,13 @@ public class DevicesInfoCommand
 
         public MavlinkDeviceModel(IClientDevice info,TimeProvider timeProvider )
         {
-            DeviceFullId = info.Identity.Target;
-            Type = info.Class.ToString();
-            SystemId = info.Identity.Target.SystemId;
-            ComponentId = info.Identity.Target.ComponentId;
-            if (info.Heartbeat.RawHeartbeat.CurrentValue != null)
-                MavlinkVersion = info.Heartbeat.RawHeartbeat.CurrentValue.MavlinkVersion;
+            var heartbeat = (IHeartbeatClient)info.Microservices.First(x => x is IHeartbeatClient);
+            DeviceFullId = heartbeat.Identity.Target;
+            Type = info.Id.DeviceClass;
+            SystemId = heartbeat.Identity.Target.SystemId;
+            ComponentId = heartbeat.Identity.Target.ComponentId;
+            if (heartbeat.RawHeartbeat.CurrentValue != null)
+                MavlinkVersion = heartbeat.RawHeartbeat.CurrentValue.MavlinkVersion;
             RateText = "0.0 Hz";
             
             Observable.Timer(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3), timeProvider).Subscribe(_ =>
@@ -153,7 +145,7 @@ public class DevicesInfoCommand
                 RateText = $"{rate:F1} Hz";
             });
 
-            info.Heartbeat.RawHeartbeat.ThrottleLast(TimeSpan.FromSeconds(2), timeProvider)
+            heartbeat.RawHeartbeat.ThrottleLast(TimeSpan.FromSeconds(2), timeProvider)
                 .Subscribe(_ =>
                 {
                     Interlocked.Increment(ref _lastRate);
@@ -161,9 +153,9 @@ public class DevicesInfoCommand
                     ToggleLinkPing = true;
                 });
 
-            info.Heartbeat.RawHeartbeat.Subscribe(_ => Interlocked.Increment(ref _rate));
-            info.Heartbeat.RawHeartbeat.Subscribe(_ => BaseModeText = $"{_.BaseMode.ToString("F").Replace("MavModeFlag", "")}");
-            info.Heartbeat.RawHeartbeat.Subscribe(_ => SystemStatusText = _.SystemStatus.ToString("G").Replace("MavState", ""));
+            heartbeat.RawHeartbeat.Subscribe(_ => Interlocked.Increment(ref _rate));
+            heartbeat.RawHeartbeat.Subscribe(_ => BaseModeText = $"{_.BaseMode.ToString("F").Replace("MavModeFlag", "")}");
+            heartbeat.RawHeartbeat.Subscribe(_ => SystemStatusText = _.SystemStatus.ToString("G").Replace("MavState", ""));
         }
 
         public MavlinkIdentity DeviceFullId { get; set; }

@@ -13,7 +13,7 @@ namespace Asv.Mavlink.Test;
 public class AudioServiceTest
 {
     private readonly Mock<IAudioCodecFactory> _codecFactoryMock;
-    private readonly Mock<ICoreServices> _coreServicesMock;
+    private readonly Mock<IMavlinkContext> _coreServicesMock;
     private readonly MavlinkIdentity _identity;
     private readonly AudioServiceConfig _config;
 
@@ -24,7 +24,7 @@ public class AudioServiceTest
 
         connectionMock.Setup(c => c.OnRxMessage).Returns(rxPipeSubject.AsObservable());
 
-        _coreServicesMock = new Mock<ICoreServices>();
+        _coreServicesMock = new Mock<IMavlinkContext>();
         _coreServicesMock.Setup(c => c.Connection).Returns(connectionMock.Object);
         _coreServicesMock.Setup(c => c.LoggerFactory).Returns(NullLoggerFactory.Instance);
 

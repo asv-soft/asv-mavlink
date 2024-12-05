@@ -5,14 +5,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
-public interface ICoreServices:IDeviceContext
+public interface IMavlinkContext:IMicroserviceContext
 {
     IPacketSequenceCalculator Sequence { get; }
 }
 
 
 
-public class CoreServices : DeviceContext, ICoreServices
+public class CoreServices : MicroserviceContext, IMavlinkContext
 {
     public CoreServices(IProtocolConnection connection,
         IPacketSequenceCalculator? sequence = null,
@@ -23,7 +23,7 @@ public class CoreServices : DeviceContext, ICoreServices
         Sequence = sequence ?? new PacketSequenceCalculator();
     }
 
-    public CoreServices(IPacketSequenceCalculator seq,IDeviceContext context) 
+    public CoreServices(IPacketSequenceCalculator seq,IMicroserviceContext context) 
         : base(context)
     {
         Sequence = seq;

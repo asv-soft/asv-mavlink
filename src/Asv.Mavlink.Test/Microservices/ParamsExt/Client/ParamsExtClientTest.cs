@@ -29,8 +29,8 @@ public class ParamsExtClientTest : ClientTestBase<ParamsExtClient>, IDisposable
     [Fact]
     public void Constructor_Null_Throws()
     {
-        Assert.Throws<ArgumentNullException>(() => new ParamsExtClient(null!, _config, Core));
-        Assert.Throws<ArgumentNullException>(() => new ParamsExtClient(Identity, null!, Core));
+        Assert.Throws<ArgumentNullException>(() => new ParamsExtClient(null!, _config, Context));
+        Assert.Throws<ArgumentNullException>(() => new ParamsExtClient(Identity, null!, Context));
         Assert.Throws<ArgumentNullException>(() => new ParamsExtClient(Identity, _config, null!));
     }
     

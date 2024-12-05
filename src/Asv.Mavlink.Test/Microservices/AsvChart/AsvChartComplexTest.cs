@@ -36,10 +36,10 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         MaxTimeToWaitForResponseForListMs = 1000,
     };
 
-    protected override AsvChartServer CreateServer(MavlinkIdentity identity, ICoreServices core) =>
+    protected override AsvChartServer CreateServer(MavlinkIdentity identity, IMavlinkContext core) =>
         new(identity, _serverConfig, core);
 
-    protected override AsvChartClient CreateClient(MavlinkClientIdentity identity, ICoreServices core) =>
+    protected override AsvChartClient CreateClient(MavlinkClientIdentity identity, IMavlinkContext core) =>
         new(identity, _clientConfig, core);
 
     [Fact]

@@ -17,7 +17,7 @@ public sealed class FtpServerDevice : ServerDevice, IFtpServerDevice
 
     public FtpServerDevice( 
         MavlinkIdentity identity, 
-        FtpServerDeviceConfig config, ICoreServices core) 
+        FtpServerDeviceConfig config, IMavlinkContext core) 
         : base(identity, config,core)
     {
         _serverBase = new FtpServer(identity,config.ServerCfg,core);

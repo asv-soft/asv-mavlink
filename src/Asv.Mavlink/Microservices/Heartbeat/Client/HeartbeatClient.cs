@@ -46,7 +46,7 @@ namespace Asv.Mavlink
         private readonly ITimer? _obs4;
 
 
-        public HeartbeatClient(MavlinkClientIdentity identity, HeartbeatClientConfig config, ICoreServices core)
+        public HeartbeatClient(MavlinkClientIdentity identity, HeartbeatClientConfig config, IMavlinkContext core)
             :base(HeartbeatHelper.MicroserviceName, identity, core)
         {
             _logger = core.LoggerFactory.CreateLogger<HeartbeatClient>();

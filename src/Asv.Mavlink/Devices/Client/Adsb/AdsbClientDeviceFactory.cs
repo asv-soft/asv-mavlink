@@ -13,7 +13,7 @@ public class AdsbClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalc
     public override string DeviceClass => AdsbClientDevice.DeviceClass;
 
     protected override AdsbClientDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId,
-        ImmutableArray<IClientDeviceExtender> extenders, ICoreServices context)
+        ImmutableArray<IClientDeviceExtender> extenders, IMavlinkContext context)
     {
         return new AdsbClientDevice(clientDeviceId, config, extenders, context);
     }

@@ -7,13 +7,13 @@ namespace Asv.Mavlink
     public interface IMavlinkMicroserviceClient: IMicroserviceClient
     {
         MavlinkClientIdentity Identity { get; }
-        ICoreServices Core { get; }
+        IMavlinkContext Core { get; }
     }
     
     public abstract class MavlinkMicroserviceClient: MicroserviceClient<MavlinkMessage>, IMavlinkMicroserviceClient
     {
         protected MavlinkMicroserviceClient(string microserviceTypeName, MavlinkClientIdentity identity,
-            ICoreServices core) : base(core, $"{identity}.{microserviceTypeName}")
+            IMavlinkContext core) : base(core, $"{identity}.{microserviceTypeName}")
         {
             ArgumentNullException.ThrowIfNull(microserviceTypeName);
             Identity = identity ?? throw new ArgumentNullException(nameof(identity));
@@ -22,7 +22,7 @@ namespace Asv.Mavlink
         }
 
         public MavlinkClientIdentity Identity { get; }
-        public ICoreServices Core { get; }
+        public IMavlinkContext Core { get; }
         public override string TypeName { get; }
 
         protected override bool FilterDeviceMessages(MavlinkMessage arg)

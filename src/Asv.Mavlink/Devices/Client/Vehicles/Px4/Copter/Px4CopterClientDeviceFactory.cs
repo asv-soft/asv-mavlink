@@ -12,7 +12,7 @@ public class Px4CopterClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenc
     public override string DeviceClass => Vehicles.CopterDeviceClass;
 
     protected override Px4VehicleClientDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId, ImmutableArray<IClientDeviceExtender> extenders,
-        ICoreServices context)
+        IMavlinkContext context)
     {
         return new Px4VehicleClientDevice(clientDeviceId,config,extenders,context);
     }

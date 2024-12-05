@@ -29,7 +29,7 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
     private readonly IDisposable _sub2;
     private readonly IDisposable _sub3;
 
-    public AsvChartServer(MavlinkIdentity identity, AsvChartServerConfig config, ICoreServices core)
+    public AsvChartServer(MavlinkIdentity identity, AsvChartServerConfig config, IMavlinkContext core)
         :base("CHART", identity, core)
     {
         _logger = Core.LoggerFactory.CreateLogger<AsvChartServer>();

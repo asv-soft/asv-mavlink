@@ -12,7 +12,7 @@ public class GenericClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceC
     public override string DeviceClass => GenericDevice.DeviceClass;
 
     protected override GenericDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId,
-        ImmutableArray<IClientDeviceExtender> extenders, ICoreServices context)
+        ImmutableArray<IClientDeviceExtender> extenders, IMavlinkContext context)
     {
         return new GenericDevice(clientDeviceId,config,extenders,context);
     }

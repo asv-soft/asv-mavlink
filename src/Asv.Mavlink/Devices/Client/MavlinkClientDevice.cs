@@ -31,7 +31,7 @@ public class MavlinkClientDevice:ClientDevice<MavlinkClientDeviceId>
 {
     private readonly MavlinkClientDeviceId _id;
 
-    public MavlinkClientDevice(MavlinkClientDeviceId id, MavlinkClientDeviceConfig config, ImmutableArray<IClientDeviceExtender> extenders, ICoreServices context) 
+    public MavlinkClientDevice(MavlinkClientDeviceId id, MavlinkClientDeviceConfig config, ImmutableArray<IClientDeviceExtender> extenders, IMavlinkContext context) 
         : base(id, config.BaseConfig, extenders, context)
     {
         _id = id;
@@ -43,8 +43,8 @@ public class MavlinkClientDevice:ClientDevice<MavlinkClientDeviceId>
     }
 
     protected MavlinkClientIdentity Identity => _id.Id;
-    protected ICoreServices Core { get; }
-    protected HeartbeatClient Heartbeat { get; }
+    protected IMavlinkContext Core { get; }
+    public HeartbeatClient Heartbeat { get; }
 
     public override ILinkIndicator Link => Heartbeat.Link;
     protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices([EnumeratorCancellation] CancellationToken cancel)
@@ -66,14 +66,14 @@ public abstract class MavlinkClientDeviceFactory<TDevice>(MavlinkIdentity selfId
         // nothing to do
     }
 
-    protected override TDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId, IDeviceContext context,
+    protected override TDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId, IMicroserviceContext context,
         ImmutableArray<IClientDeviceExtender> extenders)
     {
         return InternalCreateDevice(msg, clientDeviceId, extenders, new CoreServices(seq,context));
     }
     
     protected abstract TDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId,
-        ImmutableArray<IClientDeviceExtender> extenders, ICoreServices context);
+        ImmutableArray<IClientDeviceExtender> extenders, IMavlinkContext context);
 
     protected abstract bool CheckDevice(HeartbeatPacket msg);
     

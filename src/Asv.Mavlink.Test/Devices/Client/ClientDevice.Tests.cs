@@ -37,8 +37,8 @@ public class ClientDeviceTests(ITestOutputHelper log) : ClientTestBase<MavlinkCl
     public void Ctor_WithNullArgs_Fail()
     {
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        Assert.Throws<ArgumentNullException>(() => new MavlinkClientDevice(null, new MavlinkClientDeviceConfig(),ImmutableArray<IClientDeviceExtender>.Empty,Core));
-        Assert.Throws<ArgumentNullException>(() => new MavlinkClientDevice(new MavlinkClientDeviceId("TEST", new MavlinkClientIdentity(1,2,3,4)), null,ImmutableArray<IClientDeviceExtender>.Empty,Core));
+        Assert.Throws<ArgumentNullException>(() => new MavlinkClientDevice(null, new MavlinkClientDeviceConfig(),ImmutableArray<IClientDeviceExtender>.Empty,Context));
+        Assert.Throws<ArgumentNullException>(() => new MavlinkClientDevice(new MavlinkClientDeviceId("TEST", new MavlinkClientIdentity(1,2,3,4)), null,ImmutableArray<IClientDeviceExtender>.Empty,Context));
         Assert.Throws<ArgumentNullException>(() => new MavlinkClientDevice(new MavlinkClientDeviceId("TEST", new MavlinkClientIdentity(1,2,3,4)), new MavlinkClientDeviceConfig(),ImmutableArray<IClientDeviceExtender>.Empty,null));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
@@ -63,7 +63,7 @@ public class ClientDeviceTests(ITestOutputHelper log) : ClientTestBase<MavlinkCl
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
                 Heartbeat = null
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-            },ImmutableArray<IClientDeviceExtender>.Empty,Core));
+            },ImmutableArray<IClientDeviceExtender>.Empty,Context));
         });
     }
 

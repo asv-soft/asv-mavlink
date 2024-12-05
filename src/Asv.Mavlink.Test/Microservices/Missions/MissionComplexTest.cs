@@ -38,12 +38,12 @@ public class MissionComplexTest : ComplexTestBase<MissionClient, MissionServer>
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
-    protected override MissionServer CreateServer(MavlinkIdentity identity, ICoreServices core)
+    protected override MissionServer CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     { 
         return new MissionServer(identity, core);
     }
 
-    protected override MissionClient CreateClient(MavlinkClientIdentity identity, ICoreServices core)
+    protected override MissionClient CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
         return new MissionClient(identity, _clientConfig, core);
     }

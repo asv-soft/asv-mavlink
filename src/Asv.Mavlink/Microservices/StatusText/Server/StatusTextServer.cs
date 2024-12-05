@@ -25,7 +25,7 @@ public class StatusTextServer : MavlinkMicroserviceServer, IStatusTextServer
     private int _isSending;
     private readonly ITimer _timer;
 
-    public StatusTextServer(MavlinkIdentity identity, StatusTextLoggerConfig config, ICoreServices core):   
+    public StatusTextServer(MavlinkIdentity identity, StatusTextLoggerConfig config, IMavlinkContext core):   
         base("STATUS",identity,core)
     {
         _logger = core.LoggerFactory.CreateLogger<StatusTextServer>();

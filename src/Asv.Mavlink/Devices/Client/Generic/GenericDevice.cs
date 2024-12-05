@@ -48,7 +48,7 @@ public class GenericDevice: MavlinkClientDevice
         MavlinkClientDeviceId identity, 
         GenericDeviceConfig config,
         ImmutableArray<IClientDeviceExtender> extenders, 
-        ICoreServices core) 
+        IMavlinkContext core) 
         : base(identity,config,extenders,core)
     {
         _config = config;
