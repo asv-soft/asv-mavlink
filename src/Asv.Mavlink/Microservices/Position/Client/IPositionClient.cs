@@ -72,7 +72,7 @@ public interface IPositionClient: IMavlinkMicroserviceClient
     /// other system).
     /// </summary>
     /// <param name="timeBootMs">Timestamp (time since system boot). The rationale for the timestamp in the setpoint is to allow the system to compensate for the transport delay of the setpoint. This allows the system to compensate processing latency.</param>
-    /// <param name="coordinateFrame"></param>
+    /// <param name="coordinateFrame">Valid options are: MAV_FRAME_GLOBAL_INT = 5, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT = 6, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT = 11</param>
     /// <param name="latInt">X Position in WGS84 frame</param>
     /// <param name="lonInt">Y Position in WGS84 frame</param>
     /// <param name="alt">Altitude (MSL, Relative to home, or AGL - depending on frame)</param>
