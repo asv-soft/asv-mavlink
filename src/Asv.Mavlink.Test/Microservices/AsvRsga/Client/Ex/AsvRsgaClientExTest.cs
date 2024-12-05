@@ -51,7 +51,7 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
     public async Task ReadOnce_ShouldThrowTimeout_Exception()
     {
         // Arrange
-        var attempts = 5;
+        var attempts = (uint)5;
         var timeout = 1000;
 
         // Act
@@ -64,14 +64,14 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
 
         //Assert
         await Task.WhenAll(t1, t2);
-        Assert.Equal(attempts, Link.Client.TxPackets);
+        Assert.Equal(attempts, Link.Client.Statistic.TxMessages);
     }
 
     [Fact]
     public async Task SetMode_ShouldThrowTimeout_Exception()
     {
         // Arrange
-        var attempts = 5;
+        var attempts = (uint)5;
         var timeout = 1000;
 
         // Act
@@ -84,7 +84,7 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
 
         //Assert
         await Task.WhenAll(t1, t2);
-        Assert.Equal(attempts, Link.Client.TxPackets);
+        Assert.Equal(attempts, Link.Client.Statistic.TxMessages);
     }
 
     public void Dispose()

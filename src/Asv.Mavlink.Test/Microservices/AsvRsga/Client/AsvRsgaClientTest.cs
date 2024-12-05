@@ -32,7 +32,7 @@ public class AsvRsgaClientTest : ClientTestBase<AsvRsgaClient>, IDisposable
     public async Task ReadAllInfo_ShouldThrowTimeout_Exception()
     {
         // Arrange
-        var attempts = 5;
+        var attempts = (uint)5;
         var timeout = 1000;
         
         // Act
@@ -48,7 +48,7 @@ public class AsvRsgaClientTest : ClientTestBase<AsvRsgaClient>, IDisposable
         
         //Assert
         await Task.WhenAll(t1, t2);
-        Assert.Equal(attempts, Link.Client.TxPackets);
+        Assert.Equal(attempts, Link.Client.Statistic.TxMessages);
     }
     
     public void Dispose()
