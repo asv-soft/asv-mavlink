@@ -1,4 +1,4 @@
-﻿/*using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +12,8 @@ namespace Asv.Mavlink.Shell;
 public class FtpTreeDirectory
 {
     private ReadOnlyObservableCollection<FtpEntry> _tree;
+    private readonly SourceCache<IFtpEntry,string> _entryCache = new(x => x.Path);
+    private IObservable<IChangeSet<IFtpEntry, string>> Entries => _entryCache.Connect();
 
     /// <summary>
     /// Tree representation of all available files and directories on the drone's FTP server
@@ -25,14 +27,26 @@ public class FtpTreeDirectory
         using var conn = MavlinkV2Connection.Create(port);
         var identity = new MavlinkClientIdentity(255, 255, 1, 1);
         var seq = new PacketSequenceCalculator();
-        using var ftpClient = new FtpClient(new MavlinkFtpClientConfig(), conn, identity, seq, TimeProvider.System);
+        var core = new CoreServices(conn, seq, null, TimeProvider.System, new DefaultMeterFactory());
+        MavlinkFtpClientConfig config = new()
+        {
+            TimeoutMs = 1000,
+            CommandAttemptCount = 5,
+            TargetNetworkId = 0,
+            BurstTimeoutMs = 1000
+        };
+        await using var ftpClient = new FtpClient(identity, config, core);
         var ftpEx = new FtpClientEx(ftpClient);
         try
         {
             await ftpEx.Refresh("/");
             await ftpEx.Refresh("@SYS");
-            ftpEx.Entries.TransformToTree(x => x.ParentPath).Transform(x => new FtpEntry(x)).DisposeMany()
-                .Bind(out _tree).Subscribe();
+            _entryCache.AddOrUpdate(ftpEx.Entries.Values);
+            Entries.TransformToTree(x => x.ParentPath)
+                .Transform(x => new FtpEntry(x))
+                .DisposeMany()
+                .Bind(out _tree)
+                .Subscribe();
 
             var rootNode = CreateFtpTree(_tree);
             AnsiConsole.Write(rootNode);
@@ -67,4 +81,4 @@ public class FtpTreeDirectory
 
         return rootNode;
     }
-}*/
+}

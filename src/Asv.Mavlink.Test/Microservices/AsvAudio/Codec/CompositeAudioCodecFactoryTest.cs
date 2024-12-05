@@ -1,4 +1,3 @@
-using Asv.Mavlink;
 using JetBrains.Annotations;
 using Xunit;
 

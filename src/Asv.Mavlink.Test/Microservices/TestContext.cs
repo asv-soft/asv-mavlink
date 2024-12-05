@@ -1,3 +1,5 @@
+using Asv.Common;
+using Asv.IO;
 using Microsoft.Extensions.Time.Testing;
 using Xunit.Abstractions;
 
@@ -5,7 +7,7 @@ namespace Asv.Mavlink.Test;
 
 public class TestContext
 {
-    public TestContext(ITestOutputHelper log, string logPrefix, IMavlinkV2Connection connection)
+    public TestContext(ITestOutputHelper log, string logPrefix, IProtocolConnection connection)
     {
         Log = log;
         Time = new FakeTimeProvider();

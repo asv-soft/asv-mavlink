@@ -43,14 +43,10 @@ public class TestGenerateDiagnosticsCommand
     
     private async Task RunAsync()
     {
-        using var router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
-        router.WrapToV2ExtensionEnabled = true;
-        router.AddPort(new MavlinkPortConfig
+        await using var router = Protocol.Create(builder =>
         {
-            ConnectionString = _connectionString,
-            Name = "to Server",
-            IsEnabled = true
-        });
+            builder.RegisterMavlinkV2Protocol();
+        }).CreateRouter("ROTUER");
 
         var core = new CoreServices(router);
         

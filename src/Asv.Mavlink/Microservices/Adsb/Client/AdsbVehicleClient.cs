@@ -3,7 +3,8 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using ObservableCollections;
 using R3;
 
@@ -41,7 +42,7 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
     {
         if (_targetSource.Count == 0) return;
         var itemsToDelete = _targetSource.Select(x=>(AdsbVehicle)x.Value)
-            .Where(device => Core.TimeProvider.GetElapsedTime(device.GetLastHit()) > _targetTimeout.Value)
+            .Where(device => Core.TimeProvider.GetElapsedTime(device.GetLastHit()) >= _targetTimeout.Value)
             .ToList();
         
         foreach (var item in itemsToDelete)

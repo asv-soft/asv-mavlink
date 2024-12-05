@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvGbs;
-using Asv.Mavlink.V2.Common;
+using Asv.IO;
+using Asv.Mavlink.AsvGbs;
+using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -20,14 +21,14 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
         StatusRateMs = 1000
     };
     
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<IProtocolMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly IAsvGbsServer _server;
 
     public AsvGbsServerTest(ITestOutputHelper output) : base(output)
     {
         _server = Server;
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
@@ -40,7 +41,7 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
     {
         // Arrange
         GpsRtcmDataPacket? packet = null;
-        using var sub = Link.Client.RxPipe.Subscribe(
+        using var sub = Link.Client.OnRxMessage.Subscribe(
             p => _taskCompletionSource.TrySetResult(p)
         );
 
@@ -51,8 +52,8 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
         var res = await _taskCompletionSource.Task as GpsRtcmDataPacket;
         Assert.NotNull(res);
         Assert.NotNull(packet);
-        Assert.Equal(1, Link.Client.RxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(1, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.True(packet.IsDeepEqual(res));
     }
     
@@ -66,7 +67,7 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
         var called = 0;
         var results = new List<GpsRtcmDataPacket>();
         var serverResults = new List<GpsRtcmDataPacket>();
-        using var sub = Link.Client.RxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnRxMessage.Subscribe(p =>
         {
             called++;
             if (p is GpsRtcmDataPacket gpsPacket)
@@ -88,8 +89,8 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
 
         // Assert
         await _taskCompletionSource.Task;
-        Assert.Equal(packetsCount, Link.Server.TxPackets);
-        Assert.Equal(packetsCount, Link.Client.RxPackets);
+        Assert.Equal(packetsCount, (int) Link.Server.Statistic.TxMessages);
+        Assert.Equal(packetsCount, (int) Link.Client.Statistic.RxMessages);
         Assert.Equal(packetsCount, results.Count);
         Assert.True(serverResults.IsDeepEqual(results));
     }
@@ -104,7 +105,7 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
         var intValue = isMax ? int.MaxValue : int.MinValue;
         var ushortValue = isMax ? ushort.MaxValue : ushort.MinValue;
         var byteValue = isMax ? byte.MaxValue : byte.MinValue;
-        using var sub = Link.Client.RxPipe
+        using var sub = Link.Client.OnRxMessage
             .Subscribe(p =>
             {
                 _taskCompletionSource.TrySetResult(p);
@@ -155,7 +156,7 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
     {
         // Arrange
         GpsRtcmDataPacket? packet = null;
-        using var sub = Link.Client.RxPipe.Subscribe(
+        using var sub = Link.Client.OnRxMessage.Subscribe(
             p => _taskCompletionSource.TrySetResult(p)
         );
 
@@ -165,8 +166,8 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
 
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
-        Assert.Equal(0, Link.Client.RxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(0, (int) Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     public void Dispose()

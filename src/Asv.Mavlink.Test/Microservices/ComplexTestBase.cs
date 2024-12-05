@@ -1,4 +1,5 @@
-using Microsoft.Extensions.Time.Testing;
+using Asv.Common;
+using Asv.IO;
 using TimeProviderExtensions;
 using Xunit.Abstractions;
 
@@ -11,9 +12,21 @@ public abstract class ComplexTestBase<TClient,TServer>
 
     protected ComplexTestBase(ITestOutputHelper log)
     {
-        Link = new VirtualMavlinkConnection();
+        
         Log = log;
-
+        RouterTime = new ManualTimeProvider();
+        var loggerFactory = new TestLoggerFactory(log, RouterTime, "ROUTER");
+        var protocol = Protocol.Create(builder =>
+        {
+            builder.SetLog(loggerFactory);
+            builder.SetTimeProvider(RouterTime);
+            builder.RegisterMavlinkV2Protocol();
+            builder.RegisterBroadcastFeature<MavlinkMessage>();
+            builder.RegisterSimpleFormatter();
+        });
+        
+        Link = protocol.CreateVirtualConnection();
+        
         Identity = new MavlinkClientIdentity(1,2,3,4);
         
         ClientTime = new ManualTimeProvider();
@@ -25,9 +38,10 @@ public abstract class ComplexTestBase<TClient,TServer>
         ServerCore = new CoreServices(Link.Server, ServerSeq, new TestLoggerFactory(log, ServerTime, "SERVER"), ServerTime, new DefaultMeterFactory());
     }
 
+    public ManualTimeProvider RouterTime { get; }
     protected MavlinkClientIdentity Identity { get; }
     protected ITestOutputHelper Log { get; }
-    protected VirtualMavlinkConnection Link { get; }
+    protected IVirtualConnection Link { get; }
     protected ManualTimeProvider ClientTime{ get; }
     protected PacketSequenceCalculator ClientSeq{ get; }
     protected CoreServices ClientCore{ get; }

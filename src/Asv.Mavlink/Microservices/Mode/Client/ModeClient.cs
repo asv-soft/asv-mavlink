@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Minimal;
+using Asv.Mavlink.Minimal;
+
 using R3;
 
 namespace Asv.Mavlink;

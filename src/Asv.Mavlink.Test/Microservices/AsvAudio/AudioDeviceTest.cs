@@ -2,7 +2,8 @@ using System;
 using System.Diagnostics.Metrics;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvAudio;
+using Asv.IO;
+using Asv.Mavlink.AsvAudio;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -15,7 +16,7 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(AudioDevice))]
 public class AudioDeviceTest
 {
-    private readonly Mock<Func<Action<AsvAudioStreamPacket>, CancellationToken, Task>> _sendPacketDelegateMock;
+    private readonly Mock<Func<Action<AsvAudioStreamPacket>, CancellationToken, ValueTask>> _sendPacketDelegateMock;
     private readonly Mock<IAudioCodecFactory> _codecFactoryMock;
     private readonly Mock<IAudioEncoder> _encoderMock;
     private readonly Mock<IAudioDecoder> _decoderMock;
@@ -25,7 +26,7 @@ public class AudioDeviceTest
 
     public AudioDeviceTest()
     {
-        _sendPacketDelegateMock = new Mock<Func<Action<AsvAudioStreamPacket>, CancellationToken, Task>>();
+        _sendPacketDelegateMock = new Mock<Func<Action<AsvAudioStreamPacket>, CancellationToken, ValueTask>>();
         Mock<ICoreServices> coreServicesMock = new();
         _codecFactoryMock = new Mock<IAudioCodecFactory>();
         _encoderMock = new Mock<IAudioEncoder>();
@@ -103,8 +104,8 @@ public class AudioDeviceTest
         // Arrange
         var device = CreateAudioDevice();
         _sendPacketDelegateMock
-            .Setup(s => s(It.IsAny<Action<AsvAudioStreamPacket>>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new Exception("Test exception"));
+            .Setup( s => s(It.IsAny<Action<AsvAudioStreamPacket>>(), It.IsAny<CancellationToken>()))
+            .Throws(new Exception("Test exception"));
 
         var audioData = new byte[10];
         var audioMemory = new ReadOnlyMemory<byte>(audioData);
@@ -148,7 +149,7 @@ public class AudioDeviceTest
 
         _sendPacketDelegateMock
             .Setup(s => s(It.IsAny<Action<AsvAudioStreamPacket>>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new Exception("Test exception"));
+            .Throws(new Exception("Test exception"));
 
         var audioData = new byte[10];
         var audioMemory = new ReadOnlyMemory<byte>(audioData);
@@ -216,7 +217,7 @@ public class AudioDeviceTest
 
     private class FakeCoreServices : ICoreServices
     {
-        public IMavlinkV2Connection Connection { get; } = Mock.Of<IMavlinkV2Connection>();
+        public IProtocolConnection Connection { get; } = Mock.Of<IProtocolConnection>();
         public IPacketSequenceCalculator Sequence { get; } = Mock.Of<IPacketSequenceCalculator>();
         public ILoggerFactory Log { get; } = new FakeLoggerFactory();
         public TimeProvider TimeProvider { get; } = TimeProvider.System;

@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Asv.Mavlink.V2.AsvAudio;
-using Asv.Mavlink.V2.AsvRadio;
-using Asv.Mavlink.V2.Common;
-using MavCmd = Asv.Mavlink.V2.AsvRadio.MavCmd;
+using Asv.Mavlink.AsvAudio;
+using Asv.Mavlink.AsvRadio;
+using Asv.Mavlink.Common;
 
 namespace Asv.Mavlink;
 
@@ -13,7 +12,7 @@ public class AsvRadioHelper
 
     public static void SetArgsForRadioOn(CommandLongPayload item, uint frequencyHz, AsvRadioModulation modulation, float referenceRxPowerDbm, float txPowerDbm, AsvAudioCodec codec)
     {
-        item.Command = (V2.Common.MavCmd)MavCmd.MavCmdAsvRadioOn;
+        item.Command = (Common.MavCmd)AsvRadio.MavCmd.MavCmdAsvRadioOn;
         item.Param1 = BitConverter.ToSingle(BitConverter.GetBytes(frequencyHz));
         item.Param2 = BitConverter.ToSingle(BitConverter.GetBytes((uint)modulation));
         item.Param3 = referenceRxPowerDbm;
@@ -24,8 +23,8 @@ public class AsvRadioHelper
     }
     public static void GetArgsForRadioOn(CommandLongPayload item, out uint frequencyHz,out AsvRadioModulation modulation,out float referenceRxPowerDbm,out float txPowerDbm,out AsvAudioCodec codec)
     {
-        if (item.Command != (V2.Common.MavCmd)MavCmd.MavCmdAsvRadioOn)
-            throw new ArgumentException($"Command {item.Command} is not {MavCmd.MavCmdAsvRadioOn:G}");
+        if (item.Command != (Common.MavCmd)AsvRadio.MavCmd.MavCmdAsvRadioOn)
+            throw new ArgumentException($"Command {item.Command} is not {AsvRadio.MavCmd.MavCmdAsvRadioOn:G}");
         frequencyHz = BitConverter.ToUInt32(BitConverter.GetBytes(item.Param1));
         modulation = (AsvRadioModulation)BitConverter.ToUInt32(BitConverter.GetBytes(item.Param2));
         referenceRxPowerDbm = item.Param3;
@@ -35,7 +34,7 @@ public class AsvRadioHelper
 
     public static void SetArgsForRadioOff(CommandLongPayload item)
     {
-        item.Command = (V2.Common.MavCmd)MavCmd.MavCmdAsvRadioOff;
+        item.Command = (Common.MavCmd)AsvRadio.MavCmd.MavCmdAsvRadioOff;
         item.Param1 = 0;
         item.Param2 = 0;
         item.Param3 = 0;
@@ -46,8 +45,8 @@ public class AsvRadioHelper
     }
     public static void GetArgsForRadioOff(CommandLongPayload item)
     {
-        if (item.Command != (V2.Common.MavCmd)MavCmd.MavCmdAsvRadioOff)
-            throw new ArgumentException($"Command {item.Command} is not {MavCmd.MavCmdAsvRadioOff:G}");
+        if (item.Command != (Common.MavCmd)AsvRadio.MavCmd.MavCmdAsvRadioOff)
+            throw new ArgumentException($"Command {item.Command} is not {AsvRadio.MavCmd.MavCmdAsvRadioOff:G}");
     }
 
     public static void SetModulation(AsvRadioCapabilitiesResponsePayload payload, IEnumerable<AsvRadioModulation> modulations)

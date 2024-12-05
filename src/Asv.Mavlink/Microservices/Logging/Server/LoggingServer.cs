@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 
 namespace Asv.Mavlink
 {
@@ -24,7 +25,8 @@ namespace Asv.Mavlink
         /// <param name="firstMessageOffset">The offset of the first message.</param>
         /// <param name="data">The logging data to be sent.</param>
         /// <returns>A Task representing the asynchronous operation.</returns>
-        Task SendLoggingData(byte targetSystemId, byte targetComponentId, ushort seq, byte firstMessageOffset, byte[] data);
+        ValueTask SendLoggingData(byte targetSystemId, byte targetComponentId, ushort seq, byte firstMessageOffset,
+            byte[] data);
     }
 
     /// <summary>
@@ -56,7 +58,7 @@ namespace Asv.Mavlink
         /// @throws ArgumentException If the length of the data is greater than the maximum allowed size (_maxDataLength).
         /// @returns A Task representing the asynchronous sending of the logging data.
         /// /
-        public Task SendLoggingData(byte targetSystemId, byte targetComponentId, ushort seq, byte firstMessageOffset, byte[] data)
+        public ValueTask SendLoggingData(byte targetSystemId, byte targetComponentId, ushort seq, byte firstMessageOffset, byte[] data)
         {
             if (data.Length > _maxDataLength)
             {

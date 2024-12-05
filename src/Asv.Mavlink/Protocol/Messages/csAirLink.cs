@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2023 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,21 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
 using System.Text;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.Csairlink
+namespace Asv.Mavlink.Csairlink
 {
 
     public static class CsairlinkHelper
     {
-        public static void RegisterCsairlinkDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterCsairlinkDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new AirlinkAuthPacket());
-            src.Register(()=>new AirlinkAuthResponsePacket());
+            src.Add(AirlinkAuthPacket.MessageId, ()=>new AirlinkAuthPacket());
+            src.Add(AirlinkAuthResponsePacket.MessageId, ()=>new AirlinkAuthResponsePacket());
         }
     }
 
@@ -66,14 +68,20 @@ namespace Asv.Mavlink.V2.Csairlink
     /// Authorization package
     ///  AIRLINK_AUTH
     /// </summary>
-    public class AirlinkAuthPacket: PacketV2<AirlinkAuthPayload>
+    public class AirlinkAuthPacket: MavlinkV2Message<AirlinkAuthPayload>
     {
-	    public const int PacketMessageId = 52000;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 13;
+        public const int MessageId = 52000;
+        
+        public const byte CrcExtra = 13;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override AirlinkAuthPayload Payload { get; } = new AirlinkAuthPayload();
+        public override AirlinkAuthPayload Payload { get; } = new();
 
         public override string Name => "AIRLINK_AUTH";
     }
@@ -83,8 +91,11 @@ namespace Asv.Mavlink.V2.Csairlink
     /// </summary>
     public class AirlinkAuthPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 100; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 100; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -158,26 +169,35 @@ namespace Asv.Mavlink.V2.Csairlink
         /// Login
         /// OriginName: login, Units: , IsExtended: false
         /// </summary>
+        public const int LoginMaxItemsCount = 50;
         public char[] Login { get; set; } = new char[50];
+        [Obsolete("This method is deprecated. Use GetLoginMaxItemsCount instead.")]
         public byte GetLoginMaxItemsCount() => 50;
         /// <summary>
         /// Password
         /// OriginName: password, Units: , IsExtended: false
         /// </summary>
+        public const int PasswordMaxItemsCount = 50;
         public char[] Password { get; } = new char[50];
     }
     /// <summary>
     /// Response to the authorization request
     ///  AIRLINK_AUTH_RESPONSE
     /// </summary>
-    public class AirlinkAuthResponsePacket: PacketV2<AirlinkAuthResponsePayload>
+    public class AirlinkAuthResponsePacket: MavlinkV2Message<AirlinkAuthResponsePayload>
     {
-	    public const int PacketMessageId = 52001;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 239;
+        public const int MessageId = 52001;
+        
+        public const byte CrcExtra = 239;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override AirlinkAuthResponsePayload Payload { get; } = new AirlinkAuthResponsePayload();
+        public override AirlinkAuthResponsePayload Payload { get; } = new();
 
         public override string Name => "AIRLINK_AUTH_RESPONSE";
     }
@@ -187,8 +207,11 @@ namespace Asv.Mavlink.V2.Csairlink
     /// </summary>
     public class AirlinkAuthResponsePayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 1; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 1; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;

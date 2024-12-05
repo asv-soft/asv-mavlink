@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvGbs;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.AsvGbs;
+using Asv.Mavlink.Common;
+
 
 namespace Asv.Mavlink
 {
@@ -28,6 +29,6 @@ namespace Asv.Mavlink
         /// <param name="changeCallback">Specifies the GPS RTCM data packet to be sent.</param>
         /// <param name="cancel">Optional cancellation token to allow halting this task.</param>
         /// <returns>A Task representing asynchronous send operation.</returns>
-        Task SendDgps(Action<GpsRtcmDataPacket> changeCallback, CancellationToken cancel = default);
+        ValueTask SendDgps(Action<GpsRtcmDataPacket> changeCallback, CancellationToken cancel = default);
     }
 }

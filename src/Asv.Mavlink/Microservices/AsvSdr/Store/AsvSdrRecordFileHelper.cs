@@ -3,8 +3,10 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using Asv.IO;
-using Asv.Mavlink.V2.AsvSdr;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.AsvSdr;
+using Asv.Mavlink.Common;
+
+
 
 namespace Asv.Mavlink;
 
@@ -108,9 +110,9 @@ public static class AsvSdrRecordFileHelper
         self.ReadMetadata().Info.CopyTo(record);
     }
 
-    public static bool TryReadCommonRecordData(IPacketV2<IPayload> packet, out CommonRecordData? data)
+    public static bool TryReadCommonRecordData(MavlinkMessage packet, out CommonRecordData? data)
     {
-        var type = (AsvSdrCustomMode)packet.MessageId;
+        var type = (AsvSdrCustomMode)packet.Id;
         data = null;
         switch (type)
         {
@@ -221,9 +223,9 @@ public static class AsvSdrRecordFileHelper
         }
     }
     
-    public static bool TryReadDataIndex(IPacketV2<IPayload> packet, out uint index)
+    public static bool TryReadDataIndex(MavlinkMessage packet, out uint index)
     {
-        var type = (AsvSdrCustomMode)packet.MessageId;
+        var type = (AsvSdrCustomMode)packet.Id;
         switch (type)
         {
             case AsvSdrCustomMode.AsvSdrCustomModeLlz:
@@ -248,7 +250,7 @@ public static class AsvSdrRecordFileHelper
         }
     }
     
-    public static bool Write(this IListDataFile<AsvSdrRecordFileMetadata> self, IPacketV2<IPayload> packet)
+    public static bool Write(this IListDataFile<AsvSdrRecordFileMetadata> self, MavlinkV2Message<IPayload> packet)
     {
         if (TryReadDataIndex(packet, out var dataIndex) == false) return false;
         self.Write(dataIndex, packet.Payload);

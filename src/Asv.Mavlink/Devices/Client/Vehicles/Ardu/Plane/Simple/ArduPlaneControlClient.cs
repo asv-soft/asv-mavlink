@@ -2,8 +2,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.V2.Ardupilotmega;
-using Asv.Mavlink.V2.Minimal;
+using Asv.Mavlink.Ardupilotmega;
+using Asv.Mavlink.Minimal;
+
+
 using Microsoft.Extensions.Logging;
 using ZLogger;
 

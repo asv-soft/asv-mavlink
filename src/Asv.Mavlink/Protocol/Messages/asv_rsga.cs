@@ -20,20 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+c1002429a625f2cf26c5bd2680700906e0b44d76
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.AsvRsga
+namespace Asv.Mavlink.AsvRsga
 {
 
     public static class AsvRsgaHelper
     {
-        public static void RegisterAsvRsgaDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterAsvRsgaDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new AsvRsgaCompatibilityRequestPacket());
-            src.Register(()=>new AsvRsgaCompatibilityResponsePacket());
+            src.Add(AsvRsgaCompatibilityRequestPacket.MessageId, ()=>new AsvRsgaCompatibilityRequestPacket());
+            src.Add(AsvRsgaCompatibilityResponsePacket.MessageId, ()=>new AsvRsgaCompatibilityResponsePacket());
         }
     }
 
@@ -195,14 +197,20 @@ namespace Asv.Mavlink.V2.AsvRsga
     /// Requests device COMPATIBILITY. Returns ASV_RSGA_COMPATIBILITY_RESPONSE. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RSGA_COMPATIBILITY_REQUEST
     /// </summary>
-    public class AsvRsgaCompatibilityRequestPacket: PacketV2<AsvRsgaCompatibilityRequestPayload>
+    public class AsvRsgaCompatibilityRequestPacket: MavlinkV2Message<AsvRsgaCompatibilityRequestPayload>
     {
-	    public const int PacketMessageId = 13400;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 16;
+        public const int MessageId = 13400;
+        
+        public const byte CrcExtra = 16;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvRsgaCompatibilityRequestPayload Payload { get; } = new AsvRsgaCompatibilityRequestPayload();
+        public override AsvRsgaCompatibilityRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_COMPATIBILITY_REQUEST";
     }
@@ -212,8 +220,11 @@ namespace Asv.Mavlink.V2.AsvRsga
     /// </summary>
     public class AsvRsgaCompatibilityRequestPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -265,14 +276,20 @@ namespace Asv.Mavlink.V2.AsvRsga
     /// Responds to the ASV_RSGA_COMPATIBILITY_REQUEST. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RSGA_COMPATIBILITY_RESPONSE
     /// </summary>
-    public class AsvRsgaCompatibilityResponsePacket: PacketV2<AsvRsgaCompatibilityResponsePayload>
+    public class AsvRsgaCompatibilityResponsePacket: MavlinkV2Message<AsvRsgaCompatibilityResponsePayload>
     {
-	    public const int PacketMessageId = 13401;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 196;
+        public const int MessageId = 13401;
+        
+        public const byte CrcExtra = 196;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvRsgaCompatibilityResponsePayload Payload { get; } = new AsvRsgaCompatibilityResponsePayload();
+        public override AsvRsgaCompatibilityResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_COMPATIBILITY_RESPONSE";
     }
@@ -282,8 +299,11 @@ namespace Asv.Mavlink.V2.AsvRsga
     /// </summary>
     public class AsvRsgaCompatibilityResponsePayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 35; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 35; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;

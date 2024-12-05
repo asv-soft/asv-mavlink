@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -160,8 +161,7 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _logger.ZLogTrace($"{LogSend} {FtpOpcode.Rename:G}({path1}) to ({path2})");
         var result = await InternalFtpCall(FtpOpcode.Rename, p =>
         {
-            p.WriteDataAsString(path1);
-            p.WriteDataAsString(path2);
+            p.WriteDataAsString($"{path1}\0{path2}");
         }, cancel).ConfigureAwait(false);
         _logger.ZLogTrace($"{LogRecv} {FtpOpcode.Rename:G}({path1}) to ({path2}): read={result.ReadSize()}");
         return result;

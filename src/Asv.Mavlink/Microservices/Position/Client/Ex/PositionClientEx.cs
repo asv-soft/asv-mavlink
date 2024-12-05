@@ -2,8 +2,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Minimal;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using R3;
 
 namespace Asv.Mavlink;
@@ -212,7 +212,7 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
         _roi.OnNext(null);
     }
 
-    public Task SetTarget(GeoPoint point, CancellationToken cancel)
+    public ValueTask SetTarget(GeoPoint point, CancellationToken cancel)
     {
         return Base.SetTargetGlobalInt(
             0,

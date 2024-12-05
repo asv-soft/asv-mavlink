@@ -1,7 +1,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.IO;
+using Asv.Mavlink.Common;
+
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -19,14 +21,14 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         AttemptToCallCount = 5
     };
     
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<IProtocolMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly MissionClient _client;
 
     public MissionClientTest(ITestOutputHelper log) : base(log)
     {
         _client = Client;
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
@@ -37,8 +39,11 @@ public class MissionClientTest : ClientTestBase<MissionClient>
     [Fact]
     public void Constructor_Null_Throws()
     {
+        // ReSharper disable once NullableWarningSuppressionIsUsed
         Assert.Throws<ArgumentNullException>(() => new MissionClient(null!, _config, Core));
+        // ReSharper disable once NullableWarningSuppressionIsUsed
         Assert.Throws<ArgumentNullException>(() => new MissionClient(Identity, null!, Core));
+        // ReSharper disable once NullableWarningSuppressionIsUsed
         Assert.Throws<ArgumentNullException>(() => new MissionClient(Identity, _config, null!));
     }
     
@@ -64,25 +69,25 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         // Arrange
         var called = 0;
         MissionAckPacket? packetFromServer = null;
-        using var s1 = Link.Server.RxPipe.Subscribe(p =>
+        using var s1 = Link.Server.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var s2 = Link.Client.TxPipe.Subscribe(p =>
+        using var s2 = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromServer = p as MissionAckPacket;
         });
         
         // Act
-        await _client.SendMissionAck(missionResult, _cancellationTokenSource.Token);
+        await _client.SendMissionAck(missionResult, cancel: _cancellationTokenSource.Token);
 
         // Assert
         var result = await _taskCompletionSource.Task as MissionAckPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.RxPackets, Link.Server.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
         Assert.NotNull(result);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromServer.IsDeepEqual(result));
@@ -99,12 +104,12 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         // Arrange
         var called = 0;
         MissionAckPacket? packetFromServer = null;
-        using var s1 = Link.Server.RxPipe.Subscribe(p =>
+        using var s1 = Link.Server.OnRxMessage.Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var s2 = Link.Client.TxPipe.Subscribe(p =>
+        using var s2 = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromServer = p as MissionAckPacket;
         });
@@ -115,9 +120,9 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         // Assert
         var result = await _taskCompletionSource.Task as MissionAckPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.RxPackets, Link.Server.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
         Assert.NotNull(result);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromServer.IsDeepEqual(result));
@@ -129,7 +134,7 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         // Arrange
         var called = 0;
         await _cancellationTokenSource.CancelAsync();
-        using var s1 = Link.Server.RxPipe.Subscribe(p =>
+        using var s1 = Link.Server.OnRxMessage.Subscribe(_ =>
         {
             called++;
         });
@@ -138,13 +143,13 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         await Assert.ThrowsAsync<OperationCanceledException>(async () => 
             await _client.SendMissionAck(
                 MavMissionResult.MavMissionAccepted, 
-                _cancellationTokenSource.Token, 
+                cancel:_cancellationTokenSource.Token, 
                 type: MavMissionType.MavMissionTypeMission
             )
         );
         Assert.Equal(0, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.RxPackets, Link.Server.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
     }
 }

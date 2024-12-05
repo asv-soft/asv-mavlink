@@ -4,7 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.V2.Common;
+using Asv.IO;
+using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
 using R3;
 using Xunit;
@@ -23,7 +24,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         CommandAttempt = MaxCommandAttempts
     };
     
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<IProtocolMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly CommandLongServerEx _server;
     private readonly CommandClient _client;
@@ -32,7 +33,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
     {
         _server = Server;
         _client = Client;
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
@@ -60,14 +61,14 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Arrange
         var called = 0;
         CommandLongPacket? packetFromClient = null;
-        _server[cmd] = (id, args, cancel) =>
+        _server[cmd] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -88,8 +89,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Assert
         var packetFromServer = await _taskCompletionSource.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultAccepted, result.Result);
         Assert.Equal(cmd, result.Command);
         Assert.NotNull(packetFromClient);
@@ -112,13 +113,13 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Arrange
         var called = 0;
         CommandLongPacket? packetFromClient = null;
-        _server[MavCmd.MavCmdActuatorTest] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdActuatorTest] = (_, args, _) =>
         {
             called++;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(mavResult));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -138,8 +139,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Assert
         var packetFromServer = await _taskCompletionSource.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(mavResult, result.Result);
         Assert.Equal(MavCmd.MavCmdActuatorTest, result.Command);
         Assert.NotNull(packetFromClient);
@@ -250,14 +251,14 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Arrange
         var called = 0;
         CommandLongPacket? packetFromClient = null;
-        _server[MavCmd.MavCmdCanForward] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdCanForward] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -277,8 +278,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Assert
         var packetFromServer = await _taskCompletionSource.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultAccepted, result.Result);
         Assert.Equal(MavCmd.MavCmdCanForward, result.Command);
         Assert.NotNull(packetFromClient);
@@ -296,7 +297,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         var results = new List<CommandAckPayload>();
         var packetsFromServer = new List<CommandLongPacket>();
         var packetsFromClient = new List<CommandLongPacket>();
-        _server[MavCmd.MavCmdActuatorTest] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdActuatorTest] = (_, args, _) =>
         {
             called++;
             packetsFromServer.Add(args);
@@ -308,7 +309,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
             
             return Task.FromResult(CommandResult.FromResult(MavResult.MavResultAccepted));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             if (p is CommandLongPacket longPacket)
             {
@@ -335,8 +336,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Assert
         await _taskCompletionSource.Task;
         Assert.Equal(callsCount, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         foreach (var result in results)
         {
             Assert.Equal(MavResult.MavResultAccepted, result.Result);
@@ -350,7 +351,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
     {
         // Arrange
         var called = 0;
-        _server[MavCmd.MavCmdActuatorTest] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdActuatorTest] = (_, args, _) =>
         {
             called++;
             _taskCompletionSource.TrySetResult(args);
@@ -375,8 +376,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
         Assert.Equal(0, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
     }
     
     [Fact]
@@ -386,13 +387,13 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         var calledFirst = 0;
         var calledSecond = 0;
         _cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(10), TimeProvider.System);
-        _server[MavCmd.MavCmdActuatorTest] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdActuatorTest] = (_, _, _) =>
         {
             calledFirst++;
             var result = MavResult.MavResultAccepted;
             return Task.FromResult(CommandResult.FromResult(result));
         }; 
-        _server[MavCmd.MavCmdUser5] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdUser5] = (_, _, _) =>
         {
             calledSecond++;
             var result = MavResult.MavResultAccepted;
@@ -414,8 +415,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Assert
         Assert.Equal(1, calledFirst);
         Assert.Equal(0, calledSecond);
-        Assert.Equal(calledFirst, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(calledFirst, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultAccepted, result.Result);
         Assert.Equal(MavCmd.MavCmdActuatorTest, result.Command);
     }
@@ -432,14 +433,14 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         var cancel2 = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
         cancel1.Token.Register(() => tcs1.TrySetCanceled());
         cancel2.Token.Register(() => tcs2.TrySetCanceled());
-        _server[MavCmd.MavCmdActuatorTest] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdActuatorTest] = (_, _, _) =>
         {
             calledFirst++;
             var result = MavResult.MavResultAccepted;
             tcs1.TrySetResult();
             return Task.FromResult(CommandResult.FromResult(result));
         }; 
-        _server[MavCmd.MavCmdUser5] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdUser5] = (_, _, _) =>
         {
             calledSecond++;
             var result = MavResult.MavResultAccepted;
@@ -477,8 +478,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         await tcs2.Task;
         Assert.Equal(1, calledFirst);
         Assert.Equal(1, calledSecond);
-        Assert.Equal(calledFirst + calledSecond, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(calledFirst + calledSecond, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultAccepted, result1.Result);
         Assert.Equal(MavCmd.MavCmdActuatorTest, result1.Command);
         Assert.Equal(MavResult.MavResultAccepted, result2.Result);
@@ -501,13 +502,13 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Arrange
         var called = 0;
         CommandLongPacket? packetFromClient = null;
-        _server[MavCmd.MavCmdActuatorTest] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdActuatorTest] = (_, args, _) =>
         {
             called++;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(mavResult));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -529,8 +530,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         var packetFromServer = await _taskCompletionSource.Task;
         Assert.NotNull(packetFromClient);
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
     }
     
@@ -539,7 +540,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
     {
         // Arrange
         var called = 0;
-        _server[MavCmd.MavCmdUser1] = (id, args, cancelToken) =>
+        _server[MavCmd.MavCmdUser1] = (_, _, _) =>
         {
             called++;
             if (called != MaxCommandAttempts)
@@ -566,8 +567,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Assert
         var result = await task;
         Assert.Equal(MaxCommandAttempts, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultInProgress, result.Result);
         Assert.Equal(MavCmd.MavCmdUser1, result.Command);
     }
@@ -584,7 +585,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         );
         
         var client = CreateClient(identityToNothing, ClientCore);
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(_ =>
         {
             ClientTime.Advance(TimeSpan.FromMilliseconds(MaxTimeoutInMs * (MaxCommandAttempts + 1)));
         });
@@ -604,7 +605,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         
         // Assert
         await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-        Assert.Equal(MaxCommandAttempts, Link.Client.TxPackets);
+        Assert.Equal(MaxCommandAttempts, (int)Link.Client.Statistic.TxMessages);
     }
     
     [Theory]
@@ -624,7 +625,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         };
         var client = new CommandClient(Identity, customCfg, ClientCore);
         
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(_ =>
         {
             ClientTime.Advance(TimeSpan.FromMilliseconds(maxTimeoutInMs * (maxCommandAttempts + 1)));
         });
@@ -644,7 +645,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         
         // Assert
         await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-        Assert.Equal(maxCommandAttempts, Link.Client.TxPackets);
+        Assert.Equal(maxCommandAttempts, (int)Link.Client.Statistic.TxMessages);
     }
     
     [Theory]
@@ -662,7 +663,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         };
         var client = new CommandClient(Identity, customCfg, ClientCore);
         
-        _server[MavCmd.MavCmdUser1] = (id, args, cancelToken) =>
+        _server[MavCmd.MavCmdUser1] = (_, args, _) =>
         {
             called++;
             Log.WriteLine($"confirmation______ === {args.Payload.Confirmation}");
@@ -690,8 +691,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Assert
         var result = await task;
         Assert.Equal(maxCommandAttempts, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultInProgress, result.Result);
         Assert.Equal(MavCmd.MavCmdUser1, result.Command);
     }
@@ -711,14 +712,14 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         };
         var client = new CommandClient(Identity, customCfg, ClientCore);
         CommandLongPacket? packetFromClient = null;
-        _server[MavCmd.MavCmdUser1] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdUser1] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -739,8 +740,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Assert
         var packetFromServer = await _taskCompletionSource.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultAccepted, result.Result);
         Assert.Equal(MavCmd.MavCmdUser1, result.Command);
         Assert.NotNull(packetFromClient);
@@ -753,7 +754,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Arrange
         var called = 0;
         var packetsFromServer = new List<CommandLongPacket>();
-        _server[MavCmd.MavCmdDoParachute] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdDoParachute] = (_, args, _) =>
         {
             called++;
             packetsFromServer.Add(args);
@@ -783,8 +784,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Assert
         await _taskCompletionSource.Task;
         Assert.Equal(MaxCommandAttempts, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultAccepted, result.Result);
         Assert.Equal(MavCmd.MavCmdDoParachute, result.Command);
         Assert.Equal(MaxCommandAttempts, packetsFromServer.Count);
@@ -802,7 +803,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Arrange
         var called = 0;
         var packetsFromServer = new List<CommandLongPacket>();
-        _server[MavCmd.MavCmdDoParachute] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdDoParachute] = (_, args, _) =>
         {
             called++;
             packetsFromServer.Add(args);
@@ -842,8 +843,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Assert
         await _taskCompletionSource.Task;
         Assert.Equal(2, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultAccepted, call1.Result);
         Assert.Equal(MavCmd.MavCmdDoParachute, call1.Command);
         Assert.Equal(MavResult.MavResultAccepted, call2.Result);

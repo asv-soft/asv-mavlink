@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.IO;
 using ConsoleAppFramework;
 using R3;
 using Spectre.Console;
@@ -16,7 +17,7 @@ namespace Asv.Mavlink.Shell
         private readonly ReaderWriterLockSlim _rw = new ReaderWriterLockSlim();
         private readonly List<DisplayRow> _items = new List<DisplayRow>();
         private DateTime _lastUpdate = DateTime.Now;
-        private readonly List<IPacketV2<IPayload>> _lastPackets = new List<IPacketV2<IPayload>>();
+        private readonly List<MavlinkMessage> _lastPackets = new List<MavlinkMessage>();
         private int MaxHistorySize = 20;
         private int _packetCount;
         private int _lastPacketCount;
@@ -30,10 +31,13 @@ namespace Asv.Mavlink.Shell
         {
             _connectionString = connection ?? _connectionString;
             Task.Factory.StartNew(KeyListen);
-            var conn = MavlinkV2Connection.Create(_connectionString);
+            var conn = Protocol.Create(builder =>
+            {
+                builder.RegisterMavlinkV2Protocol();
+            }).CreateRouter("ROUTER");
 
-            conn.RxPipe.Subscribe(OnPacket);
-            conn.DeserializePackageErrors.Subscribe(OnError);
+            conn.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(OnPacket);
+            
             while (!_cancel.IsCancellationRequested)
             {
                 Redraw();
@@ -41,31 +45,12 @@ namespace Asv.Mavlink.Shell
             }
         }
 
-        private void OnError(DeserializePackageException ex)
-        {
-            try
-            {
-                _rw.EnterWriteLock();
-                var exist = _items.FirstOrDefault(_ => ex.MessageId == _.Msg);
-                if (exist == null)
-                {
-                    _items.Add(new DisplayRow { Msg = ex.MessageId, Message = ex.Message });
-                }
-                else
-                {
-                    exist.Count++;
-                }
-            }
-            finally
-            {
-                _rw.ExitWriteLock();
-            }
-        }
+       
 
         private void Redraw()
         {
             DisplayRow[] items;
-            IPacketV2<IPayload>[] packets;
+            MavlinkMessage[] packets;
             try
             {
                 _rw.EnterReadLock();
@@ -125,7 +110,7 @@ namespace Asv.Mavlink.Shell
             }
         }
 
-        private void OnPacket(IPacketV2<IPayload> packet)
+        private void OnPacket(MavlinkMessage packet)
         {
             Interlocked.Increment(ref _packetCount);
             try
@@ -133,10 +118,10 @@ namespace Asv.Mavlink.Shell
                 _rw.EnterWriteLock();
                 _lastPackets.Add(packet);
                 if (_lastPackets.Count >= MaxHistorySize) _lastPackets.RemoveAt(0);
-                var exist = _items.FirstOrDefault(_ => packet.MessageId == _.Msg);
+                var exist = _items.FirstOrDefault(r => packet.Id == r.Msg);
                 if (exist == null)
                 {
-                    _items.Add(new DisplayRow { Msg = packet.MessageId, Message = packet.Name });
+                    _items.Add(new DisplayRow { Msg = packet.Id, Message = packet.Name });
                 }
                 else
                 {

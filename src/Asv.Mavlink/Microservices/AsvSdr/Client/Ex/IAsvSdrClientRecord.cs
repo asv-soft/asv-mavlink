@@ -2,7 +2,9 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvSdr;
+using Asv.IO;
+using Asv.Mavlink.AsvSdr;
+
 using ObservableCollections;
 using R3;
 
@@ -22,7 +24,7 @@ public interface IAsvSdrClientRecord
     /// Gets the data type of the value.
     /// </summary>
     /// <value>
-    /// The data type of the value as an <see cref="IRxValue{T}"/> where T is <see cref="AsvSdrCustomMode"/>.
+    /// The data type of the value as an <see cref="ReadOnlyReactiveProperty{T}"/> where T is <see cref="AsvSdrCustomMode"/>.
     /// </value>
     ReadOnlyReactiveProperty<AsvSdrCustomMode> DataType { get; }
 
@@ -35,15 +37,15 @@ public interface IAsvSdrClientRecord
     /// Gets the frequency of the signal.
     /// </summary>
     /// <returns>
-    /// The frequency represented by an <see cref="IRxValue"/> of type <see cref="ulong"/>.
+    /// The frequency represented by an <see cref="ReadOnlyReactiveProperty"/> of type <see cref="ulong"/>.
     /// </returns>
     ReadOnlyReactiveProperty<ulong> Frequency { get; }
 
     /// <summary>
-    /// Gets the RxValue representing the creation date and time of an object.
+    /// Gets the ReactiveProperty representing the creation date and time of an object.
     /// </summary>
     /// <returns>
-    /// The RxValue object that represents the creation date and time of an object.
+    /// The ReactiveProperty object that represents the creation date and time of an object.
     /// </returns>
     ReadOnlyReactiveProperty<DateTime> Created { get; }
 
@@ -65,7 +67,7 @@ public interface IAsvSdrClientRecord
     /// This property represents the total count of data.
     /// </remarks>
     /// <value>
-    /// An <see cref="IRxValue{T}"/> object representing the data count.
+    /// An <see cref="ReadOnlyReactiveProperty{T}"/> object representing the data count.
     /// </value>
     ReadOnlyReactiveProperty<uint> DataCount { get; }
 
@@ -73,10 +75,10 @@ public interface IAsvSdrClientRecord
     /// Gets the byte size of the value.
     /// </summary>
     /// <remarks>
-    /// The ByteSize property returns the byte size of the value contained in the IRxValue.
+    /// The ByteSize property returns the byte size of the value contained in the ReadOnlyReactiveProperty.
     /// </remarks>
     /// <returns>
-    /// An IRxValue of type uint representing the byte size of the value.
+    /// An ReadOnlyReactiveProperty of type uint representing the byte size of the value.
     /// </returns>
     ReadOnlyReactiveProperty<uint> ByteSize { get; }
 
@@ -84,10 +86,10 @@ public interface IAsvSdrClientRecord
     /// Gets the duration of this object.
     /// </summary>
     /// <remarks>
-    /// The Duration property returns an <see cref="IRxValue{TimeSpan}"/> that represents the duration of an object.
+    /// The Duration property returns an <see cref="ReadOnlyReactiveProperty{TimeSpan}"/> that represents the duration of an object.
     /// </remarks>
     /// <returns>
-    /// An <see cref="IRxValue{TimeSpan}"/> representing the duration.
+    /// An <see cref="ReadOnlyReactiveProperty{TimeSpan}"/> representing the duration.
     /// </returns>
     ReadOnlyReactiveProperty<TimeSpan> Duration { get; }
 
@@ -95,7 +97,7 @@ public interface IAsvSdrClientRecord
     /// Gets an observable sequence of changes to the collection of tags.
     /// </summary>
     /// <returns>
-    /// An <see cref="IObservable{T}"/> sequence where each change represents a collection of tags.
+    /// An <see cref="Observable{T}"/> sequence where each change represents a collection of tags.
     /// The change is represented by an <see cref="IChangeSet{TObject, TKey}"/> where TObject is <see cref="AsvSdrClientRecordTag"/>
     /// and TKey is <see cref="TagId"/>.
     /// </returns>
@@ -119,7 +121,7 @@ public interface IAsvSdrClientRecord
 }
 
 /// <summary>
-/// Helper class for copying metadata between <see cref="IAsvSdrClientRecord"/> and <see cref="IListDataFile{AsvSdrRecordFileMetadata}"/>.
+/// Helper class for copying metadata between <see cref="IAsvSdrClientRecord"/> and <see cref="IListDataFile{TMetadata}"/>.
 /// </summary>
 public static class AsvSdrClientRecordHelper
 {

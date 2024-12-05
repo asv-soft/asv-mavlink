@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using R3;
 
 namespace Asv.Mavlink;
@@ -25,10 +26,10 @@ public class ParamsExtServer : MavlinkMicroserviceServer, IParamsExtServer
 
     
 
-    public Task SendParamExtAck(Action<ParamExtAckPayload> changeCallback, CancellationToken cancel = default) =>
+    public ValueTask SendParamExtAck(Action<ParamExtAckPayload> changeCallback, CancellationToken cancel = default) =>
         InternalSend<ParamExtAckPacket>(packet => changeCallback(packet.Payload), cancel);
     
-    public Task SendParamExtValue(Action<ParamExtValuePayload> changeCallback, CancellationToken cancel = default) =>
+    public ValueTask SendParamExtValue(Action<ParamExtValuePayload> changeCallback, CancellationToken cancel = default) =>
         InternalSend<ParamExtValuePacket>(packet => changeCallback(packet.Payload), cancel);
 
     public Observable<ParamExtSetPacket> OnParamExtSet { get; }

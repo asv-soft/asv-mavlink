@@ -2,7 +2,8 @@ using System;
 
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvSdr;
+using Asv.Mavlink.AsvSdr;
+
 using ObservableCollections;
 using R3;
 

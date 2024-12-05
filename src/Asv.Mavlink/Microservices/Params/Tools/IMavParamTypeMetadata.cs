@@ -4,7 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Asv.Cfg;
 using Asv.Common;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 
 namespace Asv.Mavlink;
 

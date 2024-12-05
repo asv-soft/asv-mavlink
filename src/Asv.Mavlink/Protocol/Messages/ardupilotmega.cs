@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2023 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,85 +20,87 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
 using System.Text;
-using Asv.Mavlink.V2.Common;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
+using Asv.Mavlink.Common;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.Ardupilotmega
+namespace Asv.Mavlink.Ardupilotmega
 {
 
     public static class ArdupilotmegaHelper
     {
-        public static void RegisterArdupilotmegaDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterArdupilotmegaDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new SensorOffsetsPacket());
-            src.Register(()=>new SetMagOffsetsPacket());
-            src.Register(()=>new MeminfoPacket());
-            src.Register(()=>new ApAdcPacket());
-            src.Register(()=>new DigicamConfigurePacket());
-            src.Register(()=>new DigicamControlPacket());
-            src.Register(()=>new MountConfigurePacket());
-            src.Register(()=>new MountControlPacket());
-            src.Register(()=>new MountStatusPacket());
-            src.Register(()=>new FencePointPacket());
-            src.Register(()=>new FenceFetchPointPacket());
-            src.Register(()=>new AhrsPacket());
-            src.Register(()=>new SimstatePacket());
-            src.Register(()=>new HwstatusPacket());
-            src.Register(()=>new RadioPacket());
-            src.Register(()=>new LimitsStatusPacket());
-            src.Register(()=>new WindPacket());
-            src.Register(()=>new Data16Packet());
-            src.Register(()=>new Data32Packet());
-            src.Register(()=>new Data64Packet());
-            src.Register(()=>new Data96Packet());
-            src.Register(()=>new RangefinderPacket());
-            src.Register(()=>new AirspeedAutocalPacket());
-            src.Register(()=>new RallyPointPacket());
-            src.Register(()=>new RallyFetchPointPacket());
-            src.Register(()=>new CompassmotStatusPacket());
-            src.Register(()=>new Ahrs2Packet());
-            src.Register(()=>new CameraStatusPacket());
-            src.Register(()=>new CameraFeedbackPacket());
-            src.Register(()=>new Battery2Packet());
-            src.Register(()=>new Ahrs3Packet());
-            src.Register(()=>new AutopilotVersionRequestPacket());
-            src.Register(()=>new RemoteLogDataBlockPacket());
-            src.Register(()=>new RemoteLogBlockStatusPacket());
-            src.Register(()=>new LedControlPacket());
-            src.Register(()=>new MagCalProgressPacket());
-            src.Register(()=>new EkfStatusReportPacket());
-            src.Register(()=>new PidTuningPacket());
-            src.Register(()=>new DeepstallPacket());
-            src.Register(()=>new GimbalReportPacket());
-            src.Register(()=>new GimbalControlPacket());
-            src.Register(()=>new GimbalTorqueCmdReportPacket());
-            src.Register(()=>new GoproHeartbeatPacket());
-            src.Register(()=>new GoproGetRequestPacket());
-            src.Register(()=>new GoproGetResponsePacket());
-            src.Register(()=>new GoproSetRequestPacket());
-            src.Register(()=>new GoproSetResponsePacket());
-            src.Register(()=>new RpmPacket());
-            src.Register(()=>new DeviceOpReadPacket());
-            src.Register(()=>new DeviceOpReadReplyPacket());
-            src.Register(()=>new DeviceOpWritePacket());
-            src.Register(()=>new DeviceOpWriteReplyPacket());
-            src.Register(()=>new AdapTuningPacket());
-            src.Register(()=>new VisionPositionDeltaPacket());
-            src.Register(()=>new AoaSsaPacket());
-            src.Register(()=>new EscTelemetry1To4Packet());
-            src.Register(()=>new EscTelemetry5To8Packet());
-            src.Register(()=>new EscTelemetry9To12Packet());
-            src.Register(()=>new OsdParamConfigPacket());
-            src.Register(()=>new OsdParamConfigReplyPacket());
-            src.Register(()=>new OsdParamShowConfigPacket());
-            src.Register(()=>new OsdParamShowConfigReplyPacket());
-            src.Register(()=>new ObstacleDistance3dPacket());
-            src.Register(()=>new WaterDepthPacket());
-            src.Register(()=>new McuStatusPacket());
+            src.Add(SensorOffsetsPacket.MessageId, ()=>new SensorOffsetsPacket());
+            src.Add(SetMagOffsetsPacket.MessageId, ()=>new SetMagOffsetsPacket());
+            src.Add(MeminfoPacket.MessageId, ()=>new MeminfoPacket());
+            src.Add(ApAdcPacket.MessageId, ()=>new ApAdcPacket());
+            src.Add(DigicamConfigurePacket.MessageId, ()=>new DigicamConfigurePacket());
+            src.Add(DigicamControlPacket.MessageId, ()=>new DigicamControlPacket());
+            src.Add(MountConfigurePacket.MessageId, ()=>new MountConfigurePacket());
+            src.Add(MountControlPacket.MessageId, ()=>new MountControlPacket());
+            src.Add(MountStatusPacket.MessageId, ()=>new MountStatusPacket());
+            src.Add(FencePointPacket.MessageId, ()=>new FencePointPacket());
+            src.Add(FenceFetchPointPacket.MessageId, ()=>new FenceFetchPointPacket());
+            src.Add(AhrsPacket.MessageId, ()=>new AhrsPacket());
+            src.Add(SimstatePacket.MessageId, ()=>new SimstatePacket());
+            src.Add(HwstatusPacket.MessageId, ()=>new HwstatusPacket());
+            src.Add(RadioPacket.MessageId, ()=>new RadioPacket());
+            src.Add(LimitsStatusPacket.MessageId, ()=>new LimitsStatusPacket());
+            src.Add(WindPacket.MessageId, ()=>new WindPacket());
+            src.Add(Data16Packet.MessageId, ()=>new Data16Packet());
+            src.Add(Data32Packet.MessageId, ()=>new Data32Packet());
+            src.Add(Data64Packet.MessageId, ()=>new Data64Packet());
+            src.Add(Data96Packet.MessageId, ()=>new Data96Packet());
+            src.Add(RangefinderPacket.MessageId, ()=>new RangefinderPacket());
+            src.Add(AirspeedAutocalPacket.MessageId, ()=>new AirspeedAutocalPacket());
+            src.Add(RallyPointPacket.MessageId, ()=>new RallyPointPacket());
+            src.Add(RallyFetchPointPacket.MessageId, ()=>new RallyFetchPointPacket());
+            src.Add(CompassmotStatusPacket.MessageId, ()=>new CompassmotStatusPacket());
+            src.Add(Ahrs2Packet.MessageId, ()=>new Ahrs2Packet());
+            src.Add(CameraStatusPacket.MessageId, ()=>new CameraStatusPacket());
+            src.Add(CameraFeedbackPacket.MessageId, ()=>new CameraFeedbackPacket());
+            src.Add(Battery2Packet.MessageId, ()=>new Battery2Packet());
+            src.Add(Ahrs3Packet.MessageId, ()=>new Ahrs3Packet());
+            src.Add(AutopilotVersionRequestPacket.MessageId, ()=>new AutopilotVersionRequestPacket());
+            src.Add(RemoteLogDataBlockPacket.MessageId, ()=>new RemoteLogDataBlockPacket());
+            src.Add(RemoteLogBlockStatusPacket.MessageId, ()=>new RemoteLogBlockStatusPacket());
+            src.Add(LedControlPacket.MessageId, ()=>new LedControlPacket());
+            src.Add(MagCalProgressPacket.MessageId, ()=>new MagCalProgressPacket());
+            src.Add(EkfStatusReportPacket.MessageId, ()=>new EkfStatusReportPacket());
+            src.Add(PidTuningPacket.MessageId, ()=>new PidTuningPacket());
+            src.Add(DeepstallPacket.MessageId, ()=>new DeepstallPacket());
+            src.Add(GimbalReportPacket.MessageId, ()=>new GimbalReportPacket());
+            src.Add(GimbalControlPacket.MessageId, ()=>new GimbalControlPacket());
+            src.Add(GimbalTorqueCmdReportPacket.MessageId, ()=>new GimbalTorqueCmdReportPacket());
+            src.Add(GoproHeartbeatPacket.MessageId, ()=>new GoproHeartbeatPacket());
+            src.Add(GoproGetRequestPacket.MessageId, ()=>new GoproGetRequestPacket());
+            src.Add(GoproGetResponsePacket.MessageId, ()=>new GoproGetResponsePacket());
+            src.Add(GoproSetRequestPacket.MessageId, ()=>new GoproSetRequestPacket());
+            src.Add(GoproSetResponsePacket.MessageId, ()=>new GoproSetResponsePacket());
+            src.Add(RpmPacket.MessageId, ()=>new RpmPacket());
+            src.Add(DeviceOpReadPacket.MessageId, ()=>new DeviceOpReadPacket());
+            src.Add(DeviceOpReadReplyPacket.MessageId, ()=>new DeviceOpReadReplyPacket());
+            src.Add(DeviceOpWritePacket.MessageId, ()=>new DeviceOpWritePacket());
+            src.Add(DeviceOpWriteReplyPacket.MessageId, ()=>new DeviceOpWriteReplyPacket());
+            src.Add(AdapTuningPacket.MessageId, ()=>new AdapTuningPacket());
+            src.Add(VisionPositionDeltaPacket.MessageId, ()=>new VisionPositionDeltaPacket());
+            src.Add(AoaSsaPacket.MessageId, ()=>new AoaSsaPacket());
+            src.Add(EscTelemetry1To4Packet.MessageId, ()=>new EscTelemetry1To4Packet());
+            src.Add(EscTelemetry5To8Packet.MessageId, ()=>new EscTelemetry5To8Packet());
+            src.Add(EscTelemetry9To12Packet.MessageId, ()=>new EscTelemetry9To12Packet());
+            src.Add(OsdParamConfigPacket.MessageId, ()=>new OsdParamConfigPacket());
+            src.Add(OsdParamConfigReplyPacket.MessageId, ()=>new OsdParamConfigReplyPacket());
+            src.Add(OsdParamShowConfigPacket.MessageId, ()=>new OsdParamShowConfigPacket());
+            src.Add(OsdParamShowConfigReplyPacket.MessageId, ()=>new OsdParamShowConfigReplyPacket());
+            src.Add(ObstacleDistance3dPacket.MessageId, ()=>new ObstacleDistance3dPacket());
+            src.Add(WaterDepthPacket.MessageId, ()=>new WaterDepthPacket());
+            src.Add(McuStatusPacket.MessageId, ()=>new McuStatusPacket());
         }
     }
 
@@ -1893,10 +1895,6 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// PLANE_MODE_THERMAL
         /// </summary>
         PlaneModeThermal = 24,
-        /// <summary>
-        /// PLANE_MODE_THERMAL
-        /// </summary>
-        LoiterToQLand = 25,
     }
 
     /// <summary>
@@ -2216,14 +2214,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Offsets and calibrations values for hardware sensors. This makes it easier to debug the calibration process.
     ///  SENSOR_OFFSETS
     /// </summary>
-    public class SensorOffsetsPacket: PacketV2<SensorOffsetsPayload>
+    public class SensorOffsetsPacket: MavlinkV2Message<SensorOffsetsPayload>
     {
-	    public const int PacketMessageId = 150;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 134;
+        public const int MessageId = 150;
+        
+        public const byte CrcExtra = 134;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override SensorOffsetsPayload Payload { get; } = new SensorOffsetsPayload();
+        public override SensorOffsetsPayload Payload { get; } = new();
 
         public override string Name => "SENSOR_OFFSETS";
     }
@@ -2233,8 +2237,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class SensorOffsetsPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -2358,14 +2365,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Set the magnetometer offsets
     ///  SET_MAG_OFFSETS
     /// </summary>
-    public class SetMagOffsetsPacket: PacketV2<SetMagOffsetsPayload>
+    public class SetMagOffsetsPacket: MavlinkV2Message<SetMagOffsetsPayload>
     {
-	    public const int PacketMessageId = 151;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 219;
+        public const int MessageId = 151;
+        
+        public const byte CrcExtra = 219;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override SetMagOffsetsPayload Payload { get; } = new SetMagOffsetsPayload();
+        public override SetMagOffsetsPayload Payload { get; } = new();
 
         public override string Name => "SET_MAG_OFFSETS";
     }
@@ -2375,8 +2388,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class SetMagOffsetsPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -2444,14 +2460,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// State of autopilot RAM.
     ///  MEMINFO
     /// </summary>
-    public class MeminfoPacket: PacketV2<MeminfoPayload>
+    public class MeminfoPacket: MavlinkV2Message<MeminfoPayload>
     {
-	    public const int PacketMessageId = 152;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 208;
+        public const int MessageId = 152;
+        
+        public const byte CrcExtra = 208;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override MeminfoPayload Payload { get; } = new MeminfoPayload();
+        public override MeminfoPayload Payload { get; } = new();
 
         public override string Name => "MEMINFO";
     }
@@ -2461,8 +2483,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class MeminfoPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -2516,14 +2541,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Raw ADC output.
     ///  AP_ADC
     /// </summary>
-    public class ApAdcPacket: PacketV2<ApAdcPayload>
+    public class ApAdcPacket: MavlinkV2Message<ApAdcPayload>
     {
-	    public const int PacketMessageId = 153;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 188;
+        public const int MessageId = 153;
+        
+        public const byte CrcExtra = 188;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override ApAdcPayload Payload { get; } = new ApAdcPayload();
+        public override ApAdcPayload Payload { get; } = new();
 
         public override string Name => "AP_ADC";
     }
@@ -2533,8 +2564,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class ApAdcPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -2610,14 +2644,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Configure on-board Camera Control System.
     ///  DIGICAM_CONFIGURE
     /// </summary>
-    public class DigicamConfigurePacket: PacketV2<DigicamConfigurePayload>
+    public class DigicamConfigurePacket: MavlinkV2Message<DigicamConfigurePayload>
     {
-	    public const int PacketMessageId = 154;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 84;
+        public const int MessageId = 154;
+        
+        public const byte CrcExtra = 84;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override DigicamConfigurePayload Payload { get; } = new DigicamConfigurePayload();
+        public override DigicamConfigurePayload Payload { get; } = new();
 
         public override string Name => "DIGICAM_CONFIGURE";
     }
@@ -2627,8 +2667,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class DigicamConfigurePayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 15; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 15; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -2744,14 +2787,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Control on-board Camera Control System to take shots.
     ///  DIGICAM_CONTROL
     /// </summary>
-    public class DigicamControlPacket: PacketV2<DigicamControlPayload>
+    public class DigicamControlPacket: MavlinkV2Message<DigicamControlPayload>
     {
-	    public const int PacketMessageId = 155;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 22;
+        public const int MessageId = 155;
+        
+        public const byte CrcExtra = 22;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override DigicamControlPayload Payload { get; } = new DigicamControlPayload();
+        public override DigicamControlPayload Payload { get; } = new();
 
         public override string Name => "DIGICAM_CONTROL";
     }
@@ -2761,8 +2810,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class DigicamControlPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 13; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 13; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -2870,14 +2922,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Message to configure a camera mount, directional antenna, etc.
     ///  MOUNT_CONFIGURE
     /// </summary>
-    public class MountConfigurePacket: PacketV2<MountConfigurePayload>
+    public class MountConfigurePacket: MavlinkV2Message<MountConfigurePayload>
     {
-	    public const int PacketMessageId = 156;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 19;
+        public const int MessageId = 156;
+        
+        public const byte CrcExtra = 19;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override MountConfigurePayload Payload { get; } = new MountConfigurePayload();
+        public override MountConfigurePayload Payload { get; } = new();
 
         public override string Name => "MOUNT_CONFIGURE";
     }
@@ -2887,8 +2945,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class MountConfigurePayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -2964,14 +3025,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Message to control a camera mount, directional antenna, etc.
     ///  MOUNT_CONTROL
     /// </summary>
-    public class MountControlPacket: PacketV2<MountControlPayload>
+    public class MountControlPacket: MavlinkV2Message<MountControlPayload>
     {
-	    public const int PacketMessageId = 157;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 21;
+        public const int MessageId = 157;
+        
+        public const byte CrcExtra = 21;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override MountControlPayload Payload { get; } = new MountControlPayload();
+        public override MountControlPayload Payload { get; } = new();
 
         public override string Name => "MOUNT_CONTROL";
     }
@@ -2981,8 +3048,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class MountControlPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 15; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 15; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -3058,14 +3128,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Message with some status from autopilot to GCS about camera or antenna mount.
     ///  MOUNT_STATUS
     /// </summary>
-    public class MountStatusPacket: PacketV2<MountStatusPayload>
+    public class MountStatusPacket: MavlinkV2Message<MountStatusPayload>
     {
-	    public const int PacketMessageId = 158;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 134;
+        public const int MessageId = 158;
+        
+        public const byte CrcExtra = 134;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override MountStatusPayload Payload { get; } = new MountStatusPayload();
+        public override MountStatusPayload Payload { get; } = new();
 
         public override string Name => "MOUNT_STATUS";
     }
@@ -3075,8 +3151,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class MountStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 15; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 15; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -3154,14 +3233,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// A fence point. Used to set a point when from GCS -> MAV. Also used to return a point from MAV -> GCS.
     ///  FENCE_POINT
     /// </summary>
-    public class FencePointPacket: PacketV2<FencePointPayload>
+    public class FencePointPacket: MavlinkV2Message<FencePointPayload>
     {
-	    public const int PacketMessageId = 160;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 78;
+        public const int MessageId = 160;
+        
+        public const byte CrcExtra = 78;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override FencePointPayload Payload { get; } = new FencePointPayload();
+        public override FencePointPayload Payload { get; } = new();
 
         public override string Name => "FENCE_POINT";
     }
@@ -3171,8 +3256,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class FencePointPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -3248,14 +3336,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Request a current fence point from MAV.
     ///  FENCE_FETCH_POINT
     /// </summary>
-    public class FenceFetchPointPacket: PacketV2<FenceFetchPointPayload>
+    public class FenceFetchPointPacket: MavlinkV2Message<FenceFetchPointPayload>
     {
-	    public const int PacketMessageId = 161;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 68;
+        public const int MessageId = 161;
+        
+        public const byte CrcExtra = 68;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override FenceFetchPointPayload Payload { get; } = new FenceFetchPointPayload();
+        public override FenceFetchPointPayload Payload { get; } = new();
 
         public override string Name => "FENCE_FETCH_POINT";
     }
@@ -3265,8 +3359,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class FenceFetchPointPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -3318,14 +3415,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Status of DCM attitude estimator.
     ///  AHRS
     /// </summary>
-    public class AhrsPacket: PacketV2<AhrsPayload>
+    public class AhrsPacket: MavlinkV2Message<AhrsPayload>
     {
-	    public const int PacketMessageId = 163;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 127;
+        public const int MessageId = 163;
+        
+        public const byte CrcExtra = 127;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override AhrsPayload Payload { get; } = new AhrsPayload();
+        public override AhrsPayload Payload { get; } = new();
 
         public override string Name => "AHRS";
     }
@@ -3335,8 +3438,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class AhrsPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -3420,14 +3526,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Status of simulation environment, if used.
     ///  SIMSTATE
     /// </summary>
-    public class SimstatePacket: PacketV2<SimstatePayload>
+    public class SimstatePacket: MavlinkV2Message<SimstatePayload>
     {
-	    public const int PacketMessageId = 164;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 154;
+        public const int MessageId = 164;
+        
+        public const byte CrcExtra = 154;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override SimstatePayload Payload { get; } = new SimstatePayload();
+        public override SimstatePayload Payload { get; } = new();
 
         public override string Name => "SIMSTATE";
     }
@@ -3437,8 +3549,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class SimstatePayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -3554,14 +3669,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Status of key hardware.
     ///  HWSTATUS
     /// </summary>
-    public class HwstatusPacket: PacketV2<HwstatusPayload>
+    public class HwstatusPacket: MavlinkV2Message<HwstatusPayload>
     {
-	    public const int PacketMessageId = 165;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 21;
+        public const int MessageId = 165;
+        
+        public const byte CrcExtra = 21;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override HwstatusPayload Payload { get; } = new HwstatusPayload();
+        public override HwstatusPayload Payload { get; } = new();
 
         public override string Name => "HWSTATUS";
     }
@@ -3571,8 +3692,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class HwstatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -3616,14 +3740,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Status generated by radio.
     ///  RADIO
     /// </summary>
-    public class RadioPacket: PacketV2<RadioPayload>
+    public class RadioPacket: MavlinkV2Message<RadioPayload>
     {
-	    public const int PacketMessageId = 166;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 21;
+        public const int MessageId = 166;
+        
+        public const byte CrcExtra = 21;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override RadioPayload Payload { get; } = new RadioPayload();
+        public override RadioPayload Payload { get; } = new();
 
         public override string Name => "RADIO";
     }
@@ -3633,8 +3763,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class RadioPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -3718,14 +3851,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Status of AP_Limits. Sent in extended status stream when AP_Limits is enabled.
     ///  LIMITS_STATUS
     /// </summary>
-    public class LimitsStatusPacket: PacketV2<LimitsStatusPayload>
+    public class LimitsStatusPacket: MavlinkV2Message<LimitsStatusPayload>
     {
-	    public const int PacketMessageId = 167;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 144;
+        public const int MessageId = 167;
+        
+        public const byte CrcExtra = 144;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override LimitsStatusPayload Payload { get; } = new LimitsStatusPayload();
+        public override LimitsStatusPayload Payload { get; } = new();
 
         public override string Name => "LIMITS_STATUS";
     }
@@ -3735,8 +3874,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class LimitsStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -3836,14 +3978,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Wind estimation.
     ///  WIND
     /// </summary>
-    public class WindPacket: PacketV2<WindPayload>
+    public class WindPacket: MavlinkV2Message<WindPayload>
     {
-	    public const int PacketMessageId = 168;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 1;
+        public const int MessageId = 168;
+        
+        public const byte CrcExtra = 1;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override WindPayload Payload { get; } = new WindPayload();
+        public override WindPayload Payload { get; } = new();
 
         public override string Name => "WIND";
     }
@@ -3853,8 +4001,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class WindPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -3906,14 +4057,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Data packet, size 16.
     ///  DATA16
     /// </summary>
-    public class Data16Packet: PacketV2<Data16Payload>
+    public class Data16Packet: MavlinkV2Message<Data16Payload>
     {
-	    public const int PacketMessageId = 169;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 234;
+        public const int MessageId = 169;
+        
+        public const byte CrcExtra = 234;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override Data16Payload Payload { get; } = new Data16Payload();
+        public override Data16Payload Payload { get; } = new();
 
         public override string Name => "DATA16";
     }
@@ -3923,8 +4080,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class Data16Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 18; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -3980,21 +4140,29 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Raw data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 16;
         public byte[] Data { get; set; } = new byte[16];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 16;
     }
     /// <summary>
     /// Data packet, size 32.
     ///  DATA32
     /// </summary>
-    public class Data32Packet: PacketV2<Data32Payload>
+    public class Data32Packet: MavlinkV2Message<Data32Payload>
     {
-	    public const int PacketMessageId = 170;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 73;
+        public const int MessageId = 170;
+        
+        public const byte CrcExtra = 73;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override Data32Payload Payload { get; } = new Data32Payload();
+        public override Data32Payload Payload { get; } = new();
 
         public override string Name => "DATA32";
     }
@@ -4004,8 +4172,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class Data32Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 34; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 34; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -4061,21 +4232,29 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Raw data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 32;
         public byte[] Data { get; set; } = new byte[32];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 32;
     }
     /// <summary>
     /// Data packet, size 64.
     ///  DATA64
     /// </summary>
-    public class Data64Packet: PacketV2<Data64Payload>
+    public class Data64Packet: MavlinkV2Message<Data64Payload>
     {
-	    public const int PacketMessageId = 171;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 181;
+        public const int MessageId = 171;
+        
+        public const byte CrcExtra = 181;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override Data64Payload Payload { get; } = new Data64Payload();
+        public override Data64Payload Payload { get; } = new();
 
         public override string Name => "DATA64";
     }
@@ -4085,8 +4264,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class Data64Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 66; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 66; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -4142,21 +4324,29 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Raw data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 64;
         public byte[] Data { get; set; } = new byte[64];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 64;
     }
     /// <summary>
     /// Data packet, size 96.
     ///  DATA96
     /// </summary>
-    public class Data96Packet: PacketV2<Data96Payload>
+    public class Data96Packet: MavlinkV2Message<Data96Payload>
     {
-	    public const int PacketMessageId = 172;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 22;
+        public const int MessageId = 172;
+        
+        public const byte CrcExtra = 22;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override Data96Payload Payload { get; } = new Data96Payload();
+        public override Data96Payload Payload { get; } = new();
 
         public override string Name => "DATA96";
     }
@@ -4166,8 +4356,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class Data96Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 98; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 98; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -4223,21 +4416,29 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Raw data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 96;
         public byte[] Data { get; set; } = new byte[96];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 96;
     }
     /// <summary>
     /// Rangefinder reporting.
     ///  RANGEFINDER
     /// </summary>
-    public class RangefinderPacket: PacketV2<RangefinderPayload>
+    public class RangefinderPacket: MavlinkV2Message<RangefinderPayload>
     {
-	    public const int PacketMessageId = 173;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 83;
+        public const int MessageId = 173;
+        
+        public const byte CrcExtra = 83;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override RangefinderPayload Payload { get; } = new RangefinderPayload();
+        public override RangefinderPayload Payload { get; } = new();
 
         public override string Name => "RANGEFINDER";
     }
@@ -4247,8 +4448,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class RangefinderPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -4292,14 +4496,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Airspeed auto-calibration.
     ///  AIRSPEED_AUTOCAL
     /// </summary>
-    public class AirspeedAutocalPacket: PacketV2<AirspeedAutocalPayload>
+    public class AirspeedAutocalPacket: MavlinkV2Message<AirspeedAutocalPayload>
     {
-	    public const int PacketMessageId = 174;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 167;
+        public const int MessageId = 174;
+        
+        public const byte CrcExtra = 167;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override AirspeedAutocalPayload Payload { get; } = new AirspeedAutocalPayload();
+        public override AirspeedAutocalPayload Payload { get; } = new();
 
         public override string Name => "AIRSPEED_AUTOCAL";
     }
@@ -4309,8 +4519,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class AirspeedAutocalPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 48; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 48; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -4434,14 +4647,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// A rally point. Used to set a point when from GCS -> MAV. Also used to return a point from MAV -> GCS.
     ///  RALLY_POINT
     /// </summary>
-    public class RallyPointPacket: PacketV2<RallyPointPayload>
+    public class RallyPointPacket: MavlinkV2Message<RallyPointPayload>
     {
-	    public const int PacketMessageId = 175;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 138;
+        public const int MessageId = 175;
+        
+        public const byte CrcExtra = 138;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override RallyPointPayload Payload { get; } = new RallyPointPayload();
+        public override RallyPointPayload Payload { get; } = new();
 
         public override string Name => "RALLY_POINT";
     }
@@ -4451,8 +4670,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class RallyPointPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 19; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 19; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -4560,14 +4782,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Request a current rally point from MAV. MAV should respond with a RALLY_POINT message. MAV should not respond if the request is invalid.
     ///  RALLY_FETCH_POINT
     /// </summary>
-    public class RallyFetchPointPacket: PacketV2<RallyFetchPointPayload>
+    public class RallyFetchPointPacket: MavlinkV2Message<RallyFetchPointPayload>
     {
-	    public const int PacketMessageId = 176;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 234;
+        public const int MessageId = 176;
+        
+        public const byte CrcExtra = 234;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override RallyFetchPointPayload Payload { get; } = new RallyFetchPointPayload();
+        public override RallyFetchPointPayload Payload { get; } = new();
 
         public override string Name => "RALLY_FETCH_POINT";
     }
@@ -4577,8 +4805,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class RallyFetchPointPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -4630,14 +4861,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Status of compassmot calibration.
     ///  COMPASSMOT_STATUS
     /// </summary>
-    public class CompassmotStatusPacket: PacketV2<CompassmotStatusPayload>
+    public class CompassmotStatusPacket: MavlinkV2Message<CompassmotStatusPayload>
     {
-	    public const int PacketMessageId = 177;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 240;
+        public const int MessageId = 177;
+        
+        public const byte CrcExtra = 240;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override CompassmotStatusPayload Payload { get; } = new CompassmotStatusPayload();
+        public override CompassmotStatusPayload Payload { get; } = new();
 
         public override string Name => "COMPASSMOT_STATUS";
     }
@@ -4647,8 +4884,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class CompassmotStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -4724,14 +4964,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Status of secondary AHRS filter if available.
     ///  AHRS2
     /// </summary>
-    public class Ahrs2Packet: PacketV2<Ahrs2Payload>
+    public class Ahrs2Packet: MavlinkV2Message<Ahrs2Payload>
     {
-	    public const int PacketMessageId = 178;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 47;
+        public const int MessageId = 178;
+        
+        public const byte CrcExtra = 47;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override Ahrs2Payload Payload { get; } = new Ahrs2Payload();
+        public override Ahrs2Payload Payload { get; } = new();
 
         public override string Name => "AHRS2";
     }
@@ -4741,8 +4987,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class Ahrs2Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -4818,14 +5067,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Camera Event.
     ///  CAMERA_STATUS
     /// </summary>
-    public class CameraStatusPacket: PacketV2<CameraStatusPayload>
+    public class CameraStatusPacket: MavlinkV2Message<CameraStatusPayload>
     {
-	    public const int PacketMessageId = 179;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 189;
+        public const int MessageId = 179;
+        
+        public const byte CrcExtra = 189;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override CameraStatusPayload Payload { get; } = new CameraStatusPayload();
+        public override CameraStatusPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_STATUS";
     }
@@ -4835,8 +5090,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class CameraStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 29; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 29; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -4936,14 +5194,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Camera Capture Feedback.
     ///  CAMERA_FEEDBACK
     /// </summary>
-    public class CameraFeedbackPacket: PacketV2<CameraFeedbackPayload>
+    public class CameraFeedbackPacket: MavlinkV2Message<CameraFeedbackPayload>
     {
-	    public const int PacketMessageId = 180;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 52;
+        public const int MessageId = 180;
+        
+        public const byte CrcExtra = 52;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override CameraFeedbackPayload Payload { get; } = new CameraFeedbackPayload();
+        public override CameraFeedbackPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_FEEDBACK";
     }
@@ -4953,8 +5217,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class CameraFeedbackPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 47; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 47; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -5096,14 +5363,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// 2nd Battery status
     ///  BATTERY2
     /// </summary>
-    public class Battery2Packet: PacketV2<Battery2Payload>
+    public class Battery2Packet: MavlinkV2Message<Battery2Payload>
     {
-	    public const int PacketMessageId = 181;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 174;
+        public const int MessageId = 181;
+        
+        public const byte CrcExtra = 174;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override Battery2Payload Payload { get; } = new Battery2Payload();
+        public override Battery2Payload Payload { get; } = new();
 
         public override string Name => "BATTERY2";
     }
@@ -5113,8 +5386,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class Battery2Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -5158,14 +5434,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Status of third AHRS filter if available. This is for ANU research group (Ali and Sean).
     ///  AHRS3
     /// </summary>
-    public class Ahrs3Packet: PacketV2<Ahrs3Payload>
+    public class Ahrs3Packet: MavlinkV2Message<Ahrs3Payload>
     {
-	    public const int PacketMessageId = 182;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 229;
+        public const int MessageId = 182;
+        
+        public const byte CrcExtra = 229;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override Ahrs3Payload Payload { get; } = new Ahrs3Payload();
+        public override Ahrs3Payload Payload { get; } = new();
 
         public override string Name => "AHRS3";
     }
@@ -5175,8 +5457,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class Ahrs3Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 40; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 40; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -5284,14 +5569,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Request the autopilot version from the system/component.
     ///  AUTOPILOT_VERSION_REQUEST
     /// </summary>
-    public class AutopilotVersionRequestPacket: PacketV2<AutopilotVersionRequestPayload>
+    public class AutopilotVersionRequestPacket: MavlinkV2Message<AutopilotVersionRequestPayload>
     {
-	    public const int PacketMessageId = 183;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 85;
+        public const int MessageId = 183;
+        
+        public const byte CrcExtra = 85;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override AutopilotVersionRequestPayload Payload { get; } = new AutopilotVersionRequestPayload();
+        public override AutopilotVersionRequestPayload Payload { get; } = new();
 
         public override string Name => "AUTOPILOT_VERSION_REQUEST";
     }
@@ -5301,8 +5592,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class AutopilotVersionRequestPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -5346,14 +5640,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Send a block of log data to remote location.
     ///  REMOTE_LOG_DATA_BLOCK
     /// </summary>
-    public class RemoteLogDataBlockPacket: PacketV2<RemoteLogDataBlockPayload>
+    public class RemoteLogDataBlockPacket: MavlinkV2Message<RemoteLogDataBlockPayload>
     {
-	    public const int PacketMessageId = 184;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 159;
+        public const int MessageId = 184;
+        
+        public const byte CrcExtra = 159;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override RemoteLogDataBlockPayload Payload { get; } = new RemoteLogDataBlockPayload();
+        public override RemoteLogDataBlockPayload Payload { get; } = new();
 
         public override string Name => "REMOTE_LOG_DATA_BLOCK";
     }
@@ -5363,8 +5663,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class RemoteLogDataBlockPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 206; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 206; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -5428,21 +5731,29 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Log data block.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 200;
         public byte[] Data { get; set; } = new byte[200];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 200;
     }
     /// <summary>
     /// Send Status of each log block that autopilot board might have sent.
     ///  REMOTE_LOG_BLOCK_STATUS
     /// </summary>
-    public class RemoteLogBlockStatusPacket: PacketV2<RemoteLogBlockStatusPayload>
+    public class RemoteLogBlockStatusPacket: MavlinkV2Message<RemoteLogBlockStatusPayload>
     {
-	    public const int PacketMessageId = 185;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 186;
+        public const int MessageId = 185;
+        
+        public const byte CrcExtra = 186;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override RemoteLogBlockStatusPayload Payload { get; } = new RemoteLogBlockStatusPayload();
+        public override RemoteLogBlockStatusPayload Payload { get; } = new();
 
         public override string Name => "REMOTE_LOG_BLOCK_STATUS";
     }
@@ -5452,8 +5763,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class RemoteLogBlockStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -5513,14 +5827,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Control vehicle LEDs.
     ///  LED_CONTROL
     /// </summary>
-    public class LedControlPacket: PacketV2<LedControlPayload>
+    public class LedControlPacket: MavlinkV2Message<LedControlPayload>
     {
-	    public const int PacketMessageId = 186;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 72;
+        public const int MessageId = 186;
+        
+        public const byte CrcExtra = 72;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override LedControlPayload Payload { get; } = new LedControlPayload();
+        public override LedControlPayload Payload { get; } = new();
 
         public override string Name => "LED_CONTROL";
     }
@@ -5530,8 +5850,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class LedControlPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 29; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 29; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -5611,21 +5934,29 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Custom Bytes.
         /// OriginName: custom_bytes, Units: , IsExtended: false
         /// </summary>
+        public const int CustomBytesMaxItemsCount = 24;
         public byte[] CustomBytes { get; set; } = new byte[24];
+        [Obsolete("This method is deprecated. Use GetCustomBytesMaxItemsCount instead.")]
         public byte GetCustomBytesMaxItemsCount() => 24;
     }
     /// <summary>
     /// Reports progress of compass calibration.
     ///  MAG_CAL_PROGRESS
     /// </summary>
-    public class MagCalProgressPacket: PacketV2<MagCalProgressPayload>
+    public class MagCalProgressPacket: MavlinkV2Message<MagCalProgressPayload>
     {
-	    public const int PacketMessageId = 191;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 92;
+        public const int MessageId = 191;
+        
+        public const byte CrcExtra = 92;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override MagCalProgressPayload Payload { get; } = new MagCalProgressPayload();
+        public override MagCalProgressPayload Payload { get; } = new();
 
         public override string Name => "MAG_CAL_PROGRESS";
     }
@@ -5635,8 +5966,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class MagCalProgressPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 27; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -5740,21 +6074,29 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Bitmask of sphere sections (see http://en.wikipedia.org/wiki/Geodesic_grid).
         /// OriginName: completion_mask, Units: , IsExtended: false
         /// </summary>
+        public const int CompletionMaskMaxItemsCount = 10;
         public byte[] CompletionMask { get; set; } = new byte[10];
+        [Obsolete("This method is deprecated. Use GetCompletionMaskMaxItemsCount instead.")]
         public byte GetCompletionMaskMaxItemsCount() => 10;
     }
     /// <summary>
     /// EKF Status message including flags and variances.
     ///  EKF_STATUS_REPORT
     /// </summary>
-    public class EkfStatusReportPacket: PacketV2<EkfStatusReportPayload>
+    public class EkfStatusReportPacket: MavlinkV2Message<EkfStatusReportPayload>
     {
-	    public const int PacketMessageId = 193;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 71;
+        public const int MessageId = 193;
+        
+        public const byte CrcExtra = 71;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override EkfStatusReportPayload Payload { get; } = new EkfStatusReportPayload();
+        public override EkfStatusReportPayload Payload { get; } = new();
 
         public override string Name => "EKF_STATUS_REPORT";
     }
@@ -5764,8 +6106,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class EkfStatusReportPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 26; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -5851,14 +6196,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// PID tuning information.
     ///  PID_TUNING
     /// </summary>
-    public class PidTuningPacket: PacketV2<PidTuningPayload>
+    public class PidTuningPacket: MavlinkV2Message<PidTuningPayload>
     {
-	    public const int PacketMessageId = 194;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 98;
+        public const int MessageId = 194;
+        
+        public const byte CrcExtra = 98;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override PidTuningPayload Payload { get; } = new PidTuningPayload();
+        public override PidTuningPayload Payload { get; } = new();
 
         public override string Name => "PID_TUNING";
     }
@@ -5868,8 +6219,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class PidTuningPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -5973,14 +6327,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Deepstall path planning.
     ///  DEEPSTALL
     /// </summary>
-    public class DeepstallPacket: PacketV2<DeepstallPayload>
+    public class DeepstallPacket: MavlinkV2Message<DeepstallPayload>
     {
-	    public const int PacketMessageId = 195;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 120;
+        public const int MessageId = 195;
+        
+        public const byte CrcExtra = 120;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override DeepstallPayload Payload { get; } = new DeepstallPayload();
+        public override DeepstallPayload Payload { get; } = new();
 
         public override string Name => "DEEPSTALL";
     }
@@ -5990,8 +6350,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class DeepstallPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 37; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 37; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -6099,14 +6462,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// 3 axis gimbal measurements.
     ///  GIMBAL_REPORT
     /// </summary>
-    public class GimbalReportPacket: PacketV2<GimbalReportPayload>
+    public class GimbalReportPacket: MavlinkV2Message<GimbalReportPayload>
     {
-	    public const int PacketMessageId = 200;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 134;
+        public const int MessageId = 200;
+        
+        public const byte CrcExtra = 134;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override GimbalReportPayload Payload { get; } = new GimbalReportPayload();
+        public override GimbalReportPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_REPORT";
     }
@@ -6116,8 +6485,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class GimbalReportPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -6241,14 +6613,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Control message for rate gimbal.
     ///  GIMBAL_CONTROL
     /// </summary>
-    public class GimbalControlPacket: PacketV2<GimbalControlPayload>
+    public class GimbalControlPacket: MavlinkV2Message<GimbalControlPayload>
     {
-	    public const int PacketMessageId = 201;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 205;
+        public const int MessageId = 201;
+        
+        public const byte CrcExtra = 205;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override GimbalControlPayload Payload { get; } = new GimbalControlPayload();
+        public override GimbalControlPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_CONTROL";
     }
@@ -6258,8 +6636,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class GimbalControlPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -6327,14 +6708,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// 100 Hz gimbal torque command telemetry.
     ///  GIMBAL_TORQUE_CMD_REPORT
     /// </summary>
-    public class GimbalTorqueCmdReportPacket: PacketV2<GimbalTorqueCmdReportPayload>
+    public class GimbalTorqueCmdReportPacket: MavlinkV2Message<GimbalTorqueCmdReportPayload>
     {
-	    public const int PacketMessageId = 214;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 69;
+        public const int MessageId = 214;
+        
+        public const byte CrcExtra = 69;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override GimbalTorqueCmdReportPayload Payload { get; } = new GimbalTorqueCmdReportPayload();
+        public override GimbalTorqueCmdReportPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_TORQUE_CMD_REPORT";
     }
@@ -6344,8 +6731,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class GimbalTorqueCmdReportPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -6413,14 +6803,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Heartbeat from a HeroBus attached GoPro.
     ///  GOPRO_HEARTBEAT
     /// </summary>
-    public class GoproHeartbeatPacket: PacketV2<GoproHeartbeatPayload>
+    public class GoproHeartbeatPacket: MavlinkV2Message<GoproHeartbeatPayload>
     {
-	    public const int PacketMessageId = 215;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 101;
+        public const int MessageId = 215;
+        
+        public const byte CrcExtra = 101;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override GoproHeartbeatPayload Payload { get; } = new GoproHeartbeatPayload();
+        public override GoproHeartbeatPayload Payload { get; } = new();
 
         public override string Name => "GOPRO_HEARTBEAT";
     }
@@ -6430,8 +6826,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class GoproHeartbeatPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -6483,14 +6882,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Request a GOPRO_COMMAND response from the GoPro.
     ///  GOPRO_GET_REQUEST
     /// </summary>
-    public class GoproGetRequestPacket: PacketV2<GoproGetRequestPayload>
+    public class GoproGetRequestPacket: MavlinkV2Message<GoproGetRequestPayload>
     {
-	    public const int PacketMessageId = 216;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 50;
+        public const int MessageId = 216;
+        
+        public const byte CrcExtra = 50;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override GoproGetRequestPayload Payload { get; } = new GoproGetRequestPayload();
+        public override GoproGetRequestPayload Payload { get; } = new();
 
         public override string Name => "GOPRO_GET_REQUEST";
     }
@@ -6500,8 +6905,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class GoproGetRequestPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -6553,14 +6961,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Response from a GOPRO_COMMAND get request.
     ///  GOPRO_GET_RESPONSE
     /// </summary>
-    public class GoproGetResponsePacket: PacketV2<GoproGetResponsePayload>
+    public class GoproGetResponsePacket: MavlinkV2Message<GoproGetResponsePayload>
     {
-	    public const int PacketMessageId = 217;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 202;
+        public const int MessageId = 217;
+        
+        public const byte CrcExtra = 202;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override GoproGetResponsePayload Payload { get; } = new GoproGetResponsePayload();
+        public override GoproGetResponsePayload Payload { get; } = new();
 
         public override string Name => "GOPRO_GET_RESPONSE";
     }
@@ -6570,8 +6984,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class GoproGetResponsePayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -6627,21 +7044,29 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Value.
         /// OriginName: value, Units: , IsExtended: false
         /// </summary>
+        public const int ValueMaxItemsCount = 4;
         public byte[] Value { get; set; } = new byte[4];
+        [Obsolete("This method is deprecated. Use GetValueMaxItemsCount instead.")]
         public byte GetValueMaxItemsCount() => 4;
     }
     /// <summary>
     /// Request to set a GOPRO_COMMAND with a desired.
     ///  GOPRO_SET_REQUEST
     /// </summary>
-    public class GoproSetRequestPacket: PacketV2<GoproSetRequestPayload>
+    public class GoproSetRequestPacket: MavlinkV2Message<GoproSetRequestPayload>
     {
-	    public const int PacketMessageId = 218;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 17;
+        public const int MessageId = 218;
+        
+        public const byte CrcExtra = 17;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override GoproSetRequestPayload Payload { get; } = new GoproSetRequestPayload();
+        public override GoproSetRequestPayload Payload { get; } = new();
 
         public override string Name => "GOPRO_SET_REQUEST";
     }
@@ -6651,8 +7076,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class GoproSetRequestPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -6716,21 +7144,29 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Value.
         /// OriginName: value, Units: , IsExtended: false
         /// </summary>
+        public const int ValueMaxItemsCount = 4;
         public byte[] Value { get; set; } = new byte[4];
+        [Obsolete("This method is deprecated. Use GetValueMaxItemsCount instead.")]
         public byte GetValueMaxItemsCount() => 4;
     }
     /// <summary>
     /// Response from a GOPRO_COMMAND set request.
     ///  GOPRO_SET_RESPONSE
     /// </summary>
-    public class GoproSetResponsePacket: PacketV2<GoproSetResponsePayload>
+    public class GoproSetResponsePacket: MavlinkV2Message<GoproSetResponsePayload>
     {
-	    public const int PacketMessageId = 219;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 162;
+        public const int MessageId = 219;
+        
+        public const byte CrcExtra = 162;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override GoproSetResponsePayload Payload { get; } = new GoproSetResponsePayload();
+        public override GoproSetResponsePayload Payload { get; } = new();
 
         public override string Name => "GOPRO_SET_RESPONSE";
     }
@@ -6740,8 +7176,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class GoproSetResponsePayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -6785,14 +7224,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// RPM sensor output.
     ///  RPM
     /// </summary>
-    public class RpmPacket: PacketV2<RpmPayload>
+    public class RpmPacket: MavlinkV2Message<RpmPayload>
     {
-	    public const int PacketMessageId = 226;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 207;
+        public const int MessageId = 226;
+        
+        public const byte CrcExtra = 207;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override RpmPayload Payload { get; } = new RpmPayload();
+        public override RpmPayload Payload { get; } = new();
 
         public override string Name => "RPM";
     }
@@ -6802,8 +7247,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class RpmPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -6847,14 +7295,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Read registers for a device.
     ///  DEVICE_OP_READ
     /// </summary>
-    public class DeviceOpReadPacket: PacketV2<DeviceOpReadPayload>
+    public class DeviceOpReadPacket: MavlinkV2Message<DeviceOpReadPayload>
     {
-	    public const int PacketMessageId = 11000;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 134;
+        public const int MessageId = 11000;
+        
+        public const byte CrcExtra = 134;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override DeviceOpReadPayload Payload { get; } = new DeviceOpReadPayload();
+        public override DeviceOpReadPayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_READ";
     }
@@ -6864,8 +7318,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class DeviceOpReadPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 52; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 52; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -6976,7 +7433,9 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Name of device on bus (for SPI).
         /// OriginName: busname, Units: , IsExtended: false
         /// </summary>
+        public const int BusnameMaxItemsCount = 40;
         public char[] Busname { get; set; } = new char[40];
+        [Obsolete("This method is deprecated. Use GetBusnameMaxItemsCount instead.")]
         public byte GetBusnameMaxItemsCount() => 40;
         /// <summary>
         /// First register to read.
@@ -6998,14 +7457,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Read registers reply.
     ///  DEVICE_OP_READ_REPLY
     /// </summary>
-    public class DeviceOpReadReplyPacket: PacketV2<DeviceOpReadReplyPayload>
+    public class DeviceOpReadReplyPacket: MavlinkV2Message<DeviceOpReadReplyPayload>
     {
-	    public const int PacketMessageId = 11001;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 15;
+        public const int MessageId = 11001;
+        
+        public const byte CrcExtra = 15;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override DeviceOpReadReplyPayload Payload { get; } = new DeviceOpReadReplyPayload();
+        public override DeviceOpReadReplyPayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_READ_REPLY";
     }
@@ -7015,8 +7480,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class DeviceOpReadReplyPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 136; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 136; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -7093,7 +7561,9 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Reply data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 128;
         public byte[] Data { get; set; } = new byte[128];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 128;
         /// <summary>
         /// Bank number.
@@ -7105,14 +7575,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Write registers for a device.
     ///  DEVICE_OP_WRITE
     /// </summary>
-    public class DeviceOpWritePacket: PacketV2<DeviceOpWritePayload>
+    public class DeviceOpWritePacket: MavlinkV2Message<DeviceOpWritePayload>
     {
-	    public const int PacketMessageId = 11002;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 234;
+        public const int MessageId = 11002;
+        
+        public const byte CrcExtra = 234;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override DeviceOpWritePayload Payload { get; } = new DeviceOpWritePayload();
+        public override DeviceOpWritePayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_WRITE";
     }
@@ -7122,8 +7598,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class DeviceOpWritePayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 180; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 180; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -7244,6 +7723,7 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Name of device on bus (for SPI).
         /// OriginName: busname, Units: , IsExtended: false
         /// </summary>
+        public const int BusnameMaxItemsCount = 40;
         public char[] Busname { get; } = new char[40];
         /// <summary>
         /// First register to write.
@@ -7259,7 +7739,9 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Write data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public const int DataMaxItemsCount = 128;
         public byte[] Data { get; set; } = new byte[128];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 128;
         /// <summary>
         /// Bank number.
@@ -7271,14 +7753,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Write registers reply.
     ///  DEVICE_OP_WRITE_REPLY
     /// </summary>
-    public class DeviceOpWriteReplyPacket: PacketV2<DeviceOpWriteReplyPayload>
+    public class DeviceOpWriteReplyPacket: MavlinkV2Message<DeviceOpWriteReplyPayload>
     {
-	    public const int PacketMessageId = 11003;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 64;
+        public const int MessageId = 11003;
+        
+        public const byte CrcExtra = 64;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override DeviceOpWriteReplyPayload Payload { get; } = new DeviceOpWriteReplyPayload();
+        public override DeviceOpWriteReplyPayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_WRITE_REPLY";
     }
@@ -7288,8 +7776,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class DeviceOpWriteReplyPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -7333,14 +7824,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Adaptive Controller tuning information.
     ///  ADAP_TUNING
     /// </summary>
-    public class AdapTuningPacket: PacketV2<AdapTuningPayload>
+    public class AdapTuningPacket: MavlinkV2Message<AdapTuningPayload>
     {
-	    public const int PacketMessageId = 11010;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 46;
+        public const int MessageId = 11010;
+        
+        public const byte CrcExtra = 46;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override AdapTuningPayload Payload { get; } = new AdapTuningPayload();
+        public override AdapTuningPayload Payload { get; } = new();
 
         public override string Name => "ADAP_TUNING";
     }
@@ -7350,8 +7847,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class AdapTuningPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 49; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 49; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -7483,14 +7983,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Camera vision based attitude and position deltas.
     ///  VISION_POSITION_DELTA
     /// </summary>
-    public class VisionPositionDeltaPacket: PacketV2<VisionPositionDeltaPayload>
+    public class VisionPositionDeltaPacket: MavlinkV2Message<VisionPositionDeltaPayload>
     {
-	    public const int PacketMessageId = 11011;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 106;
+        public const int MessageId = 11011;
+        
+        public const byte CrcExtra = 106;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override VisionPositionDeltaPayload Payload { get; } = new VisionPositionDeltaPayload();
+        public override VisionPositionDeltaPayload Payload { get; } = new();
 
         public override string Name => "VISION_POSITION_DELTA";
     }
@@ -7500,8 +8006,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class VisionPositionDeltaPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -7570,12 +8079,15 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Defines a rotation vector [roll, pitch, yaw] to the current MAV_FRAME_BODY_FRD from the previous MAV_FRAME_BODY_FRD.
         /// OriginName: angle_delta, Units: rad, IsExtended: false
         /// </summary>
+        public const int AngleDeltaMaxItemsCount = 3;
         public float[] AngleDelta { get; set; } = new float[3];
+        [Obsolete("This method is deprecated. Use GetAngleDeltaMaxItemsCount instead.")]
         public byte GetAngleDeltaMaxItemsCount() => 3;
         /// <summary>
         /// Change in position to the current MAV_FRAME_BODY_FRD from the previous FRAME_BODY_FRD rotated to the current MAV_FRAME_BODY_FRD.
         /// OriginName: position_delta, Units: m, IsExtended: false
         /// </summary>
+        public const int PositionDeltaMaxItemsCount = 3;
         public float[] PositionDelta { get; } = new float[3];
         /// <summary>
         /// Normalised confidence value from 0 to 100.
@@ -7587,14 +8099,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Angle of Attack and Side Slip Angle.
     ///  AOA_SSA
     /// </summary>
-    public class AoaSsaPacket: PacketV2<AoaSsaPayload>
+    public class AoaSsaPacket: MavlinkV2Message<AoaSsaPayload>
     {
-	    public const int PacketMessageId = 11020;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 205;
+        public const int MessageId = 11020;
+        
+        public const byte CrcExtra = 205;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override AoaSsaPayload Payload { get; } = new AoaSsaPayload();
+        public override AoaSsaPayload Payload { get; } = new();
 
         public override string Name => "AOA_SSA";
     }
@@ -7604,8 +8122,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class AoaSsaPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -7657,14 +8178,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// ESC Telemetry Data for ESCs 1 to 4, matching data sent by BLHeli ESCs.
     ///  ESC_TELEMETRY_1_TO_4
     /// </summary>
-    public class EscTelemetry1To4Packet: PacketV2<EscTelemetry1To4Payload>
+    public class EscTelemetry1To4Packet: MavlinkV2Message<EscTelemetry1To4Payload>
     {
-	    public const int PacketMessageId = 11030;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 144;
+        public const int MessageId = 11030;
+        
+        public const byte CrcExtra = 144;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override EscTelemetry1To4Payload Payload { get; } = new EscTelemetry1To4Payload();
+        public override EscTelemetry1To4Payload Payload { get; } = new();
 
         public override string Name => "ESC_TELEMETRY_1_TO_4";
     }
@@ -7674,8 +8201,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class EscTelemetry1To4Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -7765,46 +8295,59 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Voltage.
         /// OriginName: voltage, Units: cV, IsExtended: false
         /// </summary>
+        public const int VoltageMaxItemsCount = 4;
         public ushort[] Voltage { get; set; } = new ushort[4];
+        [Obsolete("This method is deprecated. Use GetVoltageMaxItemsCount instead.")]
         public byte GetVoltageMaxItemsCount() => 4;
         /// <summary>
         /// Current.
         /// OriginName: current, Units: cA, IsExtended: false
         /// </summary>
+        public const int CurrentMaxItemsCount = 4;
         public ushort[] Current { get; } = new ushort[4];
         /// <summary>
         /// Total current.
         /// OriginName: totalcurrent, Units: mAh, IsExtended: false
         /// </summary>
+        public const int TotalcurrentMaxItemsCount = 4;
         public ushort[] Totalcurrent { get; } = new ushort[4];
         /// <summary>
         /// RPM (eRPM).
         /// OriginName: rpm, Units: rpm, IsExtended: false
         /// </summary>
+        public const int RpmMaxItemsCount = 4;
         public ushort[] Rpm { get; } = new ushort[4];
         /// <summary>
         /// count of telemetry packets received (wraps at 65535).
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
+        public const int CountMaxItemsCount = 4;
         public ushort[] Count { get; } = new ushort[4];
         /// <summary>
         /// Temperature.
         /// OriginName: temperature, Units: degC, IsExtended: false
         /// </summary>
+        public const int TemperatureMaxItemsCount = 4;
         public byte[] Temperature { get; } = new byte[4];
     }
     /// <summary>
     /// ESC Telemetry Data for ESCs 5 to 8, matching data sent by BLHeli ESCs.
     ///  ESC_TELEMETRY_5_TO_8
     /// </summary>
-    public class EscTelemetry5To8Packet: PacketV2<EscTelemetry5To8Payload>
+    public class EscTelemetry5To8Packet: MavlinkV2Message<EscTelemetry5To8Payload>
     {
-	    public const int PacketMessageId = 11031;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 133;
+        public const int MessageId = 11031;
+        
+        public const byte CrcExtra = 133;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override EscTelemetry5To8Payload Payload { get; } = new EscTelemetry5To8Payload();
+        public override EscTelemetry5To8Payload Payload { get; } = new();
 
         public override string Name => "ESC_TELEMETRY_5_TO_8";
     }
@@ -7814,8 +8357,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class EscTelemetry5To8Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -7905,46 +8451,59 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Voltage.
         /// OriginName: voltage, Units: cV, IsExtended: false
         /// </summary>
+        public const int VoltageMaxItemsCount = 4;
         public ushort[] Voltage { get; set; } = new ushort[4];
+        [Obsolete("This method is deprecated. Use GetVoltageMaxItemsCount instead.")]
         public byte GetVoltageMaxItemsCount() => 4;
         /// <summary>
         /// Current.
         /// OriginName: current, Units: cA, IsExtended: false
         /// </summary>
+        public const int CurrentMaxItemsCount = 4;
         public ushort[] Current { get; } = new ushort[4];
         /// <summary>
         /// Total current.
         /// OriginName: totalcurrent, Units: mAh, IsExtended: false
         /// </summary>
+        public const int TotalcurrentMaxItemsCount = 4;
         public ushort[] Totalcurrent { get; } = new ushort[4];
         /// <summary>
         /// RPM (eRPM).
         /// OriginName: rpm, Units: rpm, IsExtended: false
         /// </summary>
+        public const int RpmMaxItemsCount = 4;
         public ushort[] Rpm { get; } = new ushort[4];
         /// <summary>
         /// count of telemetry packets received (wraps at 65535).
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
+        public const int CountMaxItemsCount = 4;
         public ushort[] Count { get; } = new ushort[4];
         /// <summary>
         /// Temperature.
         /// OriginName: temperature, Units: degC, IsExtended: false
         /// </summary>
+        public const int TemperatureMaxItemsCount = 4;
         public byte[] Temperature { get; } = new byte[4];
     }
     /// <summary>
     /// ESC Telemetry Data for ESCs 9 to 12, matching data sent by BLHeli ESCs.
     ///  ESC_TELEMETRY_9_TO_12
     /// </summary>
-    public class EscTelemetry9To12Packet: PacketV2<EscTelemetry9To12Payload>
+    public class EscTelemetry9To12Packet: MavlinkV2Message<EscTelemetry9To12Payload>
     {
-	    public const int PacketMessageId = 11032;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 85;
+        public const int MessageId = 11032;
+        
+        public const byte CrcExtra = 85;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override EscTelemetry9To12Payload Payload { get; } = new EscTelemetry9To12Payload();
+        public override EscTelemetry9To12Payload Payload { get; } = new();
 
         public override string Name => "ESC_TELEMETRY_9_TO_12";
     }
@@ -7954,8 +8513,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class EscTelemetry9To12Payload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -8045,46 +8607,59 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Voltage.
         /// OriginName: voltage, Units: cV, IsExtended: false
         /// </summary>
+        public const int VoltageMaxItemsCount = 4;
         public ushort[] Voltage { get; set; } = new ushort[4];
+        [Obsolete("This method is deprecated. Use GetVoltageMaxItemsCount instead.")]
         public byte GetVoltageMaxItemsCount() => 4;
         /// <summary>
         /// Current.
         /// OriginName: current, Units: cA, IsExtended: false
         /// </summary>
+        public const int CurrentMaxItemsCount = 4;
         public ushort[] Current { get; } = new ushort[4];
         /// <summary>
         /// Total current.
         /// OriginName: totalcurrent, Units: mAh, IsExtended: false
         /// </summary>
+        public const int TotalcurrentMaxItemsCount = 4;
         public ushort[] Totalcurrent { get; } = new ushort[4];
         /// <summary>
         /// RPM (eRPM).
         /// OriginName: rpm, Units: rpm, IsExtended: false
         /// </summary>
+        public const int RpmMaxItemsCount = 4;
         public ushort[] Rpm { get; } = new ushort[4];
         /// <summary>
         /// count of telemetry packets received (wraps at 65535).
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
+        public const int CountMaxItemsCount = 4;
         public ushort[] Count { get; } = new ushort[4];
         /// <summary>
         /// Temperature.
         /// OriginName: temperature, Units: degC, IsExtended: false
         /// </summary>
+        public const int TemperatureMaxItemsCount = 4;
         public byte[] Temperature { get; } = new byte[4];
     }
     /// <summary>
     /// Configure an OSD parameter slot.
     ///  OSD_PARAM_CONFIG
     /// </summary>
-    public class OsdParamConfigPacket: PacketV2<OsdParamConfigPayload>
+    public class OsdParamConfigPacket: MavlinkV2Message<OsdParamConfigPayload>
     {
-	    public const int PacketMessageId = 11033;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 195;
+        public const int MessageId = 11033;
+        
+        public const byte CrcExtra = 195;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override OsdParamConfigPayload Payload { get; } = new OsdParamConfigPayload();
+        public override OsdParamConfigPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_CONFIG";
     }
@@ -8094,8 +8669,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class OsdParamConfigPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 37; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 37; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -8214,7 +8792,9 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
         /// OriginName: param_id, Units: , IsExtended: false
         /// </summary>
+        public const int ParamIdMaxItemsCount = 16;
         public char[] ParamId { get; set; } = new char[16];
+        [Obsolete("This method is deprecated. Use GetParamIdMaxItemsCount instead.")]
         public byte GetParamIdMaxItemsCount() => 16;
         /// <summary>
         /// Config type.
@@ -8226,14 +8806,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Configure OSD parameter reply.
     ///  OSD_PARAM_CONFIG_REPLY
     /// </summary>
-    public class OsdParamConfigReplyPacket: PacketV2<OsdParamConfigReplyPayload>
+    public class OsdParamConfigReplyPacket: MavlinkV2Message<OsdParamConfigReplyPayload>
     {
-	    public const int PacketMessageId = 11034;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 79;
+        public const int MessageId = 11034;
+        
+        public const byte CrcExtra = 79;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override OsdParamConfigReplyPayload Payload { get; } = new OsdParamConfigReplyPayload();
+        public override OsdParamConfigReplyPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_CONFIG_REPLY";
     }
@@ -8243,8 +8829,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class OsdParamConfigReplyPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -8288,14 +8877,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Read a configured an OSD parameter slot.
     ///  OSD_PARAM_SHOW_CONFIG
     /// </summary>
-    public class OsdParamShowConfigPacket: PacketV2<OsdParamShowConfigPayload>
+    public class OsdParamShowConfigPacket: MavlinkV2Message<OsdParamShowConfigPayload>
     {
-	    public const int PacketMessageId = 11035;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 128;
+        public const int MessageId = 11035;
+        
+        public const byte CrcExtra = 128;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override OsdParamShowConfigPayload Payload { get; } = new OsdParamShowConfigPayload();
+        public override OsdParamShowConfigPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_SHOW_CONFIG";
     }
@@ -8305,8 +8900,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class OsdParamShowConfigPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -8374,14 +8972,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Read configured OSD parameter reply.
     ///  OSD_PARAM_SHOW_CONFIG_REPLY
     /// </summary>
-    public class OsdParamShowConfigReplyPacket: PacketV2<OsdParamShowConfigReplyPayload>
+    public class OsdParamShowConfigReplyPacket: MavlinkV2Message<OsdParamShowConfigReplyPayload>
     {
-	    public const int PacketMessageId = 11036;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 177;
+        public const int MessageId = 11036;
+        
+        public const byte CrcExtra = 177;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override OsdParamShowConfigReplyPayload Payload { get; } = new OsdParamShowConfigReplyPayload();
+        public override OsdParamShowConfigReplyPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_SHOW_CONFIG_REPLY";
     }
@@ -8391,8 +8995,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class OsdParamShowConfigReplyPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 34; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 34; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -8487,7 +9094,9 @@ namespace Asv.Mavlink.V2.Ardupilotmega
         /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
         /// OriginName: param_id, Units: , IsExtended: false
         /// </summary>
+        public const int ParamIdMaxItemsCount = 16;
         public char[] ParamId { get; set; } = new char[16];
+        [Obsolete("This method is deprecated. Use GetParamIdMaxItemsCount instead.")]
         public byte GetParamIdMaxItemsCount() => 16;
         /// <summary>
         /// Config type.
@@ -8499,14 +9108,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Obstacle located as a 3D vector.
     ///  OBSTACLE_DISTANCE_3D
     /// </summary>
-    public class ObstacleDistance3dPacket: PacketV2<ObstacleDistance3dPayload>
+    public class ObstacleDistance3dPacket: MavlinkV2Message<ObstacleDistance3dPayload>
     {
-	    public const int PacketMessageId = 11037;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 130;
+        public const int MessageId = 11037;
+        
+        public const byte CrcExtra = 130;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override ObstacleDistance3dPayload Payload { get; } = new ObstacleDistance3dPayload();
+        public override ObstacleDistance3dPayload Payload { get; } = new();
 
         public override string Name => "OBSTACLE_DISTANCE_3D";
     }
@@ -8516,8 +9131,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class ObstacleDistance3dPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -8617,14 +9235,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// Water depth
     ///  WATER_DEPTH
     /// </summary>
-    public class WaterDepthPacket: PacketV2<WaterDepthPayload>
+    public class WaterDepthPacket: MavlinkV2Message<WaterDepthPayload>
     {
-	    public const int PacketMessageId = 11038;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 47;
+        public const int MessageId = 11038;
+        
+        public const byte CrcExtra = 47;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override WaterDepthPayload Payload { get; } = new WaterDepthPayload();
+        public override WaterDepthPayload Payload { get; } = new();
 
         public override string Name => "WATER_DEPTH";
     }
@@ -8634,8 +9258,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class WaterDepthPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 38; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -8751,14 +9378,20 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// The MCU status, giving MCU temperature and voltage. The min and max voltages are to allow for detecting power supply instability.
     ///  MCU_STATUS
     /// </summary>
-    public class McuStatusPacket: PacketV2<McuStatusPayload>
+    public class McuStatusPacket: MavlinkV2Message<McuStatusPayload>
     {
-	    public const int PacketMessageId = 11039;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 142;
+        public const int MessageId = 11039;
+        
+        public const byte CrcExtra = 142;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override McuStatusPayload Payload { get; } = new McuStatusPayload();
+        public override McuStatusPayload Payload { get; } = new();
 
         public override string Name => "MCU_STATUS";
     }
@@ -8768,8 +9401,11 @@ namespace Asv.Mavlink.V2.Ardupilotmega
     /// </summary>
     public class McuStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;

@@ -1,5 +1,5 @@
 using System;
-using Asv.Mavlink.V2.Test;
+using Asv.Mavlink.Test;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;

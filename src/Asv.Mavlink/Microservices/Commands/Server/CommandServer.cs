@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using Microsoft.Extensions.Logging;
 using R3;
 
@@ -32,7 +33,7 @@ namespace Asv.Mavlink
 
         public Observable<CommandIntPacket> OnCommandInt => _onCommandInt;
 
-        public Task SendCommandAck(MavCmd cmd, DeviceIdentity responseTarget, CommandResult result,
+        public ValueTask SendCommandAck(MavCmd cmd, DeviceIdentity responseTarget, CommandResult result,
             CancellationToken cancel = default)
         {
             return InternalSend<CommandAckPacket>(p =>

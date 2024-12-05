@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2023 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,14 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
-namespace Asv.Mavlink.V2.All
+using System;
+using System.Collections.Immutable;
+
+namespace Asv.Mavlink.All
 {
 
     public static class AllHelper
     {
-        public static void RegisterAllDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterAllDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
         }
     }

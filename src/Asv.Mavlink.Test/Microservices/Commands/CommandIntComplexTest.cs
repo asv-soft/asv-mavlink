@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.V2.Common;
+using Asv.IO;
+using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
 using R3;
 using Xunit;
@@ -22,7 +23,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         CommandAttempt = MaxCommandAttempts
     };
     
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<IProtocolMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly CommandIntServerEx _server;
     private readonly CommandClient _client;
@@ -31,8 +32,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
     {
         _server = Server;
         _client = Client;
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
+        _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
+        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
@@ -56,14 +57,14 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Arrange
         var called = 0;
         CommandIntPacket? packetFromClient = null;
-        _server[cmd] = (id, args, cancel) =>
+        _server[cmd] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as CommandIntPacket;
         });
@@ -86,8 +87,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Assert
         var packetFromServer = await _taskCompletionSource.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultAccepted, result.Result);
         Assert.Equal(cmd, result.Command);
         Assert.NotNull(packetFromClient);
@@ -110,13 +111,13 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Arrange
         var called = 0;
         CommandIntPacket? packetFromClient = null;
-        _server[MavCmd.MavCmdActuatorTest] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdActuatorTest] = (_, args, _) =>
         {
             called++;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(mavResult));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as CommandIntPacket;
         });
@@ -139,8 +140,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Assert
         var packetFromServer = await _taskCompletionSource.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(mavResult, result.Result);
         Assert.Equal(MavCmd.MavCmdActuatorTest, result.Command);
         Assert.NotNull(packetFromClient);
@@ -174,13 +175,13 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Arrange
         var called = 0;
         CommandIntPacket? packetFromClient = null;
-        _server[MavCmd.MavCmdActuatorTest] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdActuatorTest] = (_, args, _) =>
         {
             called++;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(MavResult.MavResultAccepted));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as CommandIntPacket;
         });
@@ -203,8 +204,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Assert
         var packetFromServer = await _taskCompletionSource.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultAccepted, result.Result);
         Assert.Equal(MavCmd.MavCmdActuatorTest, result.Command);
         Assert.NotNull(packetFromClient);
@@ -221,14 +222,14 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Arrange
         var called = 0;
         CommandIntPacket? packetFromClient = null;
-        _server[MavCmd.MavCmdCanForward] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdCanForward] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as CommandIntPacket;
         });
@@ -251,8 +252,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Assert
         var packetFromServer = await _taskCompletionSource.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultAccepted, result.Result);
         Assert.Equal(MavCmd.MavCmdCanForward, result.Command);
         Assert.NotNull(packetFromClient);
@@ -354,14 +355,14 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Arrange
         var called = 0;
         CommandIntPacket? packetFromClient = null;
-        _server[MavCmd.MavCmdCanForward] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdCanForward] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as CommandIntPacket;
         });
@@ -384,8 +385,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Assert
         var packetFromServer = await _taskCompletionSource.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultAccepted, result.Result);
         Assert.Equal(MavCmd.MavCmdCanForward, result.Command);
         Assert.NotNull(packetFromClient);
@@ -403,7 +404,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         var results = new List<CommandAckPayload>();
         var packetsFromServer = new List<CommandIntPacket>();
         var packetsFromClient = new List<CommandIntPacket>();
-        _server[MavCmd.MavCmdActuatorTest] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdActuatorTest] = (_, args, _) =>
         {
             called++;
             packetsFromServer.Add(args);
@@ -415,7 +416,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
             
             return Task.FromResult(CommandResult.FromResult(MavResult.MavResultAccepted));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             if (p is CommandIntPacket intPacket)
             {
@@ -445,8 +446,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Assert
         await _taskCompletionSource.Task;
         Assert.Equal(callsCount, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         foreach (var result in results)
         {
             Assert.Equal(MavResult.MavResultAccepted, result.Result);
@@ -460,7 +461,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
     {
         // Arrange
         var called = 0;
-        _server[MavCmd.MavCmdActuatorTest] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdActuatorTest] = (_, args, _) =>
         {
             called++;
             _taskCompletionSource.TrySetResult(args);
@@ -488,8 +489,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
         Assert.Equal(0, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
     }
     
     [Fact]
@@ -499,13 +500,13 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         var calledFirst = 0;
         var calledSecond = 0;
         _cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(10), TimeProvider.System);
-        _server[MavCmd.MavCmdActuatorTest] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdActuatorTest] = (_, _, _) =>
         {
             calledFirst++;
             var result = MavResult.MavResultAccepted;
             return Task.FromResult(CommandResult.FromResult(result));
         }; 
-        _server[MavCmd.MavCmdUser5] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdUser5] = (_, _, _) =>
         {
             calledSecond++;
             var result = MavResult.MavResultAccepted;
@@ -530,8 +531,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Assert
         Assert.Equal(1, calledFirst);
         Assert.Equal(0, calledSecond);
-        Assert.Equal(calledFirst, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(calledFirst, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultAccepted, result.Result);
         Assert.Equal(MavCmd.MavCmdActuatorTest, result.Command);
     }
@@ -548,14 +549,14 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         var cancel2 = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
         cancel1.Token.Register(() => tcs1.TrySetCanceled());
         cancel2.Token.Register(() => tcs2.TrySetCanceled());
-        _server[MavCmd.MavCmdActuatorTest] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdActuatorTest] = (_, _, _) =>
         {
             calledFirst++;
             var result = MavResult.MavResultAccepted;
             tcs1.TrySetResult();
             return Task.FromResult(CommandResult.FromResult(result));
         }; 
-        _server[MavCmd.MavCmdUser5] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdUser5] = (_, _, _) =>
         {
             calledSecond++;
             var result = MavResult.MavResultAccepted;
@@ -597,8 +598,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         await tcs2.Task;
         Assert.Equal(1, calledFirst);
         Assert.Equal(1, calledSecond);
-        Assert.Equal(calledFirst + calledSecond, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(calledFirst + calledSecond, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultAccepted, result1.Result);
         Assert.Equal(MavCmd.MavCmdActuatorTest, result1.Command);
         Assert.Equal(MavResult.MavResultAccepted, result2.Result);
@@ -621,13 +622,13 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Arrange
         var called = 0;
         CommandIntPacket? packetFromClient = null;
-        _server[MavCmd.MavCmdActuatorTest] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdActuatorTest] = (_, args, _) =>
         {
             called++;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(mavResult));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as CommandIntPacket;
         });
@@ -651,8 +652,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         var packetFromServer = await _taskCompletionSource.Task;
         Assert.NotNull(packetFromClient);
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
     }
     
@@ -661,7 +662,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
     {
         // Arrange
         var called = 0;
-        _server[MavCmd.MavCmdUser1] = (id, args, cancelToken) =>
+        _server[MavCmd.MavCmdUser1] = (_, _, _) =>
         {
             called++;
             if (called != MaxCommandAttempts)
@@ -691,8 +692,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Assert
         var result = await task;
         Assert.Equal(MaxCommandAttempts, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultInProgress, result.Result);
         Assert.Equal(MavCmd.MavCmdUser1, result.Command);
     }
@@ -709,7 +710,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         );
         
         var client = CreateClient(identityToNothing, ClientCore);
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(_ =>
         {
             ClientTime.Advance(TimeSpan.FromMilliseconds(MaxTimeoutInMs * (MaxCommandAttempts + 1)));
         });
@@ -732,7 +733,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         
         // Assert
         await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-        Assert.Equal(MaxCommandAttempts, Link.Client.TxPackets);
+        Assert.Equal(MaxCommandAttempts, (int)Link.Client.Statistic.TxMessages);
     }
 
     [Theory]
@@ -752,7 +753,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         };
         var client = new CommandClient(Identity, customCfg, ClientCore);
         
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(_ =>
         {
             ClientTime.Advance(TimeSpan.FromMilliseconds(maxTimeoutInMs * (maxCommandAttempts + 1)));
         });
@@ -775,7 +776,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         
         // Assert
         await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-        Assert.Equal(maxCommandAttempts, Link.Client.TxPackets);
+        Assert.Equal(maxCommandAttempts, (int)Link.Client.Statistic.TxMessages);
     }
     
     [Theory]
@@ -793,7 +794,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         };
         var client = new CommandClient(Identity, customCfg, ClientCore);
         
-        _server[MavCmd.MavCmdUser1] = (id, args, cancelToken) =>
+        _server[MavCmd.MavCmdUser1] = (_, _, _) =>
         {
             called++;
             if (called != maxCommandAttempts)
@@ -823,8 +824,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Assert
         var result = await task;
         Assert.Equal(maxCommandAttempts, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultInProgress, result.Result);
         Assert.Equal(MavCmd.MavCmdUser1, result.Command);
     }
@@ -844,14 +845,14 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         };
         var client = new CommandClient(Identity, customCfg, ClientCore);
         CommandIntPacket? packetFromClient = null;
-        _server[MavCmd.MavCmdUser1] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdUser1] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as CommandIntPacket;
         });
@@ -874,8 +875,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Assert
         var packetFromServer = await _taskCompletionSource.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultAccepted, result.Result);
         Assert.Equal(MavCmd.MavCmdUser1, result.Command);
         Assert.NotNull(packetFromClient);

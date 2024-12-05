@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -27,7 +28,7 @@ public interface IParamsServerEx
     /// Gets an observable sequence of `ParamChangedEvent` events that represents updates to the property.
     /// </summary>
     /// <remarks>
-    /// This property returns an `IObservable<ParamChangedEvent>` object, which allows you to subscribe to
+    /// This property returns an `Observable<ParamChangedEvent>` object, which allows you to subscribe to
     /// receive notifications whenever the `OnUpdated` event occurs. The `ParamChangedEvent` class provides
     /// details about the update, such as the parameter that has been changed.
     /// Example usage:

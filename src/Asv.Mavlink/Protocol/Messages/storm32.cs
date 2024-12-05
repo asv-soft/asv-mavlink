@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2023 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,29 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
-using Asv.Mavlink.V2.Common;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
+using Asv.Mavlink.Common;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.Storm32
+namespace Asv.Mavlink.Storm32
 {
 
     public static class Storm32Helper
     {
-        public static void RegisterStorm32Dialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterStorm32Dialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new Storm32GimbalManagerInformationPacket());
-            src.Register(()=>new Storm32GimbalManagerStatusPacket());
-            src.Register(()=>new Storm32GimbalManagerControlPacket());
-            src.Register(()=>new Storm32GimbalManagerControlPitchyawPacket());
-            src.Register(()=>new Storm32GimbalManagerCorrectRollPacket());
-            src.Register(()=>new QshotStatusPacket());
-            src.Register(()=>new RadioRcChannelsPacket());
-            src.Register(()=>new RadioLinkStatsPacket());
-            src.Register(()=>new FrskyPassthroughArrayPacket());
-            src.Register(()=>new ParamValueArrayPacket());
+            src.Add(Storm32GimbalManagerInformationPacket.MessageId, ()=>new Storm32GimbalManagerInformationPacket());
+            src.Add(Storm32GimbalManagerStatusPacket.MessageId, ()=>new Storm32GimbalManagerStatusPacket());
+            src.Add(Storm32GimbalManagerControlPacket.MessageId, ()=>new Storm32GimbalManagerControlPacket());
+            src.Add(Storm32GimbalManagerControlPitchyawPacket.MessageId, ()=>new Storm32GimbalManagerControlPitchyawPacket());
+            src.Add(Storm32GimbalManagerCorrectRollPacket.MessageId, ()=>new Storm32GimbalManagerCorrectRollPacket());
+            src.Add(QshotStatusPacket.MessageId, ()=>new QshotStatusPacket());
+            src.Add(RadioRcChannelsPacket.MessageId, ()=>new RadioRcChannelsPacket());
+            src.Add(RadioLinkStatsPacket.MessageId, ()=>new RadioLinkStatsPacket());
+            src.Add(FrskyPassthroughArrayPacket.MessageId, ()=>new FrskyPassthroughArrayPacket());
+            src.Add(ParamValueArrayPacket.MessageId, ()=>new ParamValueArrayPacket());
         }
     }
 
@@ -474,14 +476,20 @@ namespace Asv.Mavlink.V2.Storm32
     /// Information about a gimbal manager. This message should be requested by a ground station using MAV_CMD_REQUEST_MESSAGE. It mirrors some fields of the GIMBAL_DEVICE_INFORMATION message, but not all. If the additional information is desired, also GIMBAL_DEVICE_INFORMATION should be requested.
     ///  STORM32_GIMBAL_MANAGER_INFORMATION
     /// </summary>
-    public class Storm32GimbalManagerInformationPacket: PacketV2<Storm32GimbalManagerInformationPayload>
+    public class Storm32GimbalManagerInformationPacket: MavlinkV2Message<Storm32GimbalManagerInformationPayload>
     {
-	    public const int PacketMessageId = 60010;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 208;
+        public const int MessageId = 60010;
+        
+        public const byte CrcExtra = 208;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override Storm32GimbalManagerInformationPayload Payload { get; } = new Storm32GimbalManagerInformationPayload();
+        public override Storm32GimbalManagerInformationPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_INFORMATION";
     }
@@ -491,8 +499,11 @@ namespace Asv.Mavlink.V2.Storm32
     /// </summary>
     public class Storm32GimbalManagerInformationPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -592,14 +603,20 @@ namespace Asv.Mavlink.V2.Storm32
     /// Message reporting the current status of a gimbal manager. This message should be broadcast at a low regular rate (e.g. 1 Hz, may be increase momentarily to e.g. 5 Hz for a period of 1 sec after a change).
     ///  STORM32_GIMBAL_MANAGER_STATUS
     /// </summary>
-    public class Storm32GimbalManagerStatusPacket: PacketV2<Storm32GimbalManagerStatusPayload>
+    public class Storm32GimbalManagerStatusPacket: MavlinkV2Message<Storm32GimbalManagerStatusPayload>
     {
-	    public const int PacketMessageId = 60011;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 183;
+        public const int MessageId = 60011;
+        
+        public const byte CrcExtra = 183;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override Storm32GimbalManagerStatusPayload Payload { get; } = new Storm32GimbalManagerStatusPayload();
+        public override Storm32GimbalManagerStatusPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_STATUS";
     }
@@ -609,8 +626,11 @@ namespace Asv.Mavlink.V2.Storm32
     /// </summary>
     public class Storm32GimbalManagerStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -678,14 +698,20 @@ namespace Asv.Mavlink.V2.Storm32
     /// Message to a gimbal manager to control the gimbal attitude. Angles and rates can be set to NaN according to use case. A gimbal device is never to react to this message.
     ///  STORM32_GIMBAL_MANAGER_CONTROL
     /// </summary>
-    public class Storm32GimbalManagerControlPacket: PacketV2<Storm32GimbalManagerControlPayload>
+    public class Storm32GimbalManagerControlPacket: MavlinkV2Message<Storm32GimbalManagerControlPayload>
     {
-	    public const int PacketMessageId = 60012;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 99;
+        public const int MessageId = 60012;
+        
+        public const byte CrcExtra = 99;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override Storm32GimbalManagerControlPayload Payload { get; } = new Storm32GimbalManagerControlPayload();
+        public override Storm32GimbalManagerControlPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_CONTROL";
     }
@@ -695,8 +721,11 @@ namespace Asv.Mavlink.V2.Storm32
     /// </summary>
     public class Storm32GimbalManagerControlPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 36; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 36; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -763,7 +792,9 @@ namespace Asv.Mavlink.V2.Storm32
         /// Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). Set first element to NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public const int QMaxItemsCount = 4;
         public float[] Q { get; set; } = new float[4];
+        [Obsolete("This method is deprecated. Use GetQMaxItemsCount instead.")]
         public byte GetQMaxItemsCount() => 4;
         /// <summary>
         /// X component of angular velocity (positive: roll to the right). NaN to be ignored.
@@ -815,14 +846,20 @@ namespace Asv.Mavlink.V2.Storm32
     /// Message to a gimbal manager to control the gimbal tilt and pan angles. Angles and rates can be set to NaN according to use case. A gimbal device is never to react to this message.
     ///  STORM32_GIMBAL_MANAGER_CONTROL_PITCHYAW
     /// </summary>
-    public class Storm32GimbalManagerControlPitchyawPacket: PacketV2<Storm32GimbalManagerControlPitchyawPayload>
+    public class Storm32GimbalManagerControlPitchyawPacket: MavlinkV2Message<Storm32GimbalManagerControlPitchyawPayload>
     {
-	    public const int PacketMessageId = 60013;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 129;
+        public const int MessageId = 60013;
+        
+        public const byte CrcExtra = 129;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override Storm32GimbalManagerControlPitchyawPayload Payload { get; } = new Storm32GimbalManagerControlPitchyawPayload();
+        public override Storm32GimbalManagerControlPitchyawPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_CONTROL_PITCHYAW";
     }
@@ -832,8 +869,11 @@ namespace Asv.Mavlink.V2.Storm32
     /// </summary>
     public class Storm32GimbalManagerControlPitchyawPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -941,14 +981,20 @@ namespace Asv.Mavlink.V2.Storm32
     /// Message to a gimbal manager to correct the gimbal roll angle. This message is typically used to manually correct for a tilted horizon in operation. A gimbal device is never to react to this message.
     ///  STORM32_GIMBAL_MANAGER_CORRECT_ROLL
     /// </summary>
-    public class Storm32GimbalManagerCorrectRollPacket: PacketV2<Storm32GimbalManagerCorrectRollPayload>
+    public class Storm32GimbalManagerCorrectRollPacket: MavlinkV2Message<Storm32GimbalManagerCorrectRollPayload>
     {
-	    public const int PacketMessageId = 60014;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 134;
+        public const int MessageId = 60014;
+        
+        public const byte CrcExtra = 134;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override Storm32GimbalManagerCorrectRollPayload Payload { get; } = new Storm32GimbalManagerCorrectRollPayload();
+        public override Storm32GimbalManagerCorrectRollPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_CORRECT_ROLL";
     }
@@ -958,8 +1004,11 @@ namespace Asv.Mavlink.V2.Storm32
     /// </summary>
     public class Storm32GimbalManagerCorrectRollPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -1027,14 +1076,20 @@ namespace Asv.Mavlink.V2.Storm32
     /// Information about the shot operation.
     ///  QSHOT_STATUS
     /// </summary>
-    public class QshotStatusPacket: PacketV2<QshotStatusPayload>
+    public class QshotStatusPacket: MavlinkV2Message<QshotStatusPayload>
     {
-	    public const int PacketMessageId = 60020;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 202;
+        public const int MessageId = 60020;
+        
+        public const byte CrcExtra = 202;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override QshotStatusPayload Payload { get; } = new QshotStatusPayload();
+        public override QshotStatusPayload Payload { get; } = new();
 
         public override string Name => "QSHOT_STATUS";
     }
@@ -1044,8 +1099,11 @@ namespace Asv.Mavlink.V2.Storm32
     /// </summary>
     public class QshotStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -1089,14 +1147,20 @@ namespace Asv.Mavlink.V2.Storm32
     /// Radio channels. Supports up to 24 channels. Channel values are in centerd 13 bit format. Range is [-4096,4096], center is 0. Conversion to PWM is x * 5/32 + 1500. Should be emitted only by components with component id MAV_COMP_ID_TELEMETRY_RADIO.
     ///  RADIO_RC_CHANNELS
     /// </summary>
-    public class RadioRcChannelsPacket: PacketV2<RadioRcChannelsPayload>
+    public class RadioRcChannelsPacket: MavlinkV2Message<RadioRcChannelsPayload>
     {
-	    public const int PacketMessageId = 60045;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 89;
+        public const int MessageId = 60045;
+        
+        public const byte CrcExtra = 89;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override RadioRcChannelsPayload Payload { get; } = new RadioRcChannelsPayload();
+        public override RadioRcChannelsPayload Payload { get; } = new();
 
         public override string Name => "RADIO_RC_CHANNELS";
     }
@@ -1106,8 +1170,11 @@ namespace Asv.Mavlink.V2.Storm32
     /// </summary>
     public class RadioRcChannelsPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 50; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 50; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -1164,20 +1231,27 @@ namespace Asv.Mavlink.V2.Storm32
         /// RC channels. Channels above count should be set to 0, to benefit from MAVLink's zero padding.
         /// OriginName: channels, Units: , IsExtended: true
         /// </summary>
+        public const int ChannelsMaxItemsCount = 24;
         public short[] Channels { get; } = new short[24];
     }
     /// <summary>
     /// Radio link statistics. Should be emitted only by components with component id MAV_COMP_ID_TELEMETRY_RADIO. Per default, rssi values are in MAVLink units: 0 represents weakest signal, 254 represents maximum signal; can be changed to dBm with the flag RADIO_LINK_STATS_FLAGS_RSSI_DBM.
     ///  RADIO_LINK_STATS
     /// </summary>
-    public class RadioLinkStatsPacket: PacketV2<RadioLinkStatsPayload>
+    public class RadioLinkStatsPacket: MavlinkV2Message<RadioLinkStatsPayload>
     {
-	    public const int PacketMessageId = 60046;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 238;
+        public const int MessageId = 60046;
+        
+        public const byte CrcExtra = 238;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override RadioLinkStatsPayload Payload { get; } = new RadioLinkStatsPayload();
+        public override RadioLinkStatsPayload Payload { get; } = new();
 
         public override string Name => "RADIO_LINK_STATS";
     }
@@ -1187,8 +1261,11 @@ namespace Asv.Mavlink.V2.Storm32
     /// </summary>
     public class RadioLinkStatsPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 15; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 15; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -1336,14 +1413,20 @@ namespace Asv.Mavlink.V2.Storm32
     /// Frsky SPort passthrough multi packet container.
     ///  FRSKY_PASSTHROUGH_ARRAY
     /// </summary>
-    public class FrskyPassthroughArrayPacket: PacketV2<FrskyPassthroughArrayPayload>
+    public class FrskyPassthroughArrayPacket: MavlinkV2Message<FrskyPassthroughArrayPayload>
     {
-	    public const int PacketMessageId = 60040;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 156;
+        public const int MessageId = 60040;
+        
+        public const byte CrcExtra = 156;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override FrskyPassthroughArrayPayload Payload { get; } = new FrskyPassthroughArrayPayload();
+        public override FrskyPassthroughArrayPayload Payload { get; } = new();
 
         public override string Name => "FRSKY_PASSTHROUGH_ARRAY";
     }
@@ -1353,8 +1436,11 @@ namespace Asv.Mavlink.V2.Storm32
     /// </summary>
     public class FrskyPassthroughArrayPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 245; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 245; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -1410,21 +1496,29 @@ namespace Asv.Mavlink.V2.Storm32
         /// Passthrough packet buffer. A packet has 6 bytes: uint16_t id + uint32_t data. The array has space for 40 packets.
         /// OriginName: packet_buf, Units: , IsExtended: false
         /// </summary>
+        public const int PacketBufMaxItemsCount = 240;
         public byte[] PacketBuf { get; set; } = new byte[240];
+        [Obsolete("This method is deprecated. Use GetPacketBufMaxItemsCount instead.")]
         public byte GetPacketBufMaxItemsCount() => 240;
     }
     /// <summary>
     /// Parameter multi param value container.
     ///  PARAM_VALUE_ARRAY
     /// </summary>
-    public class ParamValueArrayPacket: PacketV2<ParamValueArrayPayload>
+    public class ParamValueArrayPacket: MavlinkV2Message<ParamValueArrayPayload>
     {
-	    public const int PacketMessageId = 60041;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 191;
+        public const int MessageId = 60041;
+        
+        public const byte CrcExtra = 191;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override ParamValueArrayPayload Payload { get; } = new ParamValueArrayPayload();
+        public override ParamValueArrayPayload Payload { get; } = new();
 
         public override string Name => "PARAM_VALUE_ARRAY";
     }
@@ -1434,8 +1528,11 @@ namespace Asv.Mavlink.V2.Storm32
     /// </summary>
     public class ParamValueArrayPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 255; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 255; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -1507,7 +1604,9 @@ namespace Asv.Mavlink.V2.Storm32
         /// Parameters buffer. Contains a series of variable length parameter blocks, one per parameter, with format as specifed elsewhere.
         /// OriginName: packet_buf, Units: , IsExtended: false
         /// </summary>
+        public const int PacketBufMaxItemsCount = 248;
         public byte[] PacketBuf { get; set; } = new byte[248];
+        [Obsolete("This method is deprecated. Use GetPacketBufMaxItemsCount instead.")]
         public byte GetPacketBufMaxItemsCount() => 248;
     }
 

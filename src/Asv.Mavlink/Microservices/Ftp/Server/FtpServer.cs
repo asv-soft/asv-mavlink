@@ -1,7 +1,10 @@
 using System;
 using System.Buffers;
+using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.IO;
+using Asv.Mavlink.Common;
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -30,14 +33,19 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         _config = config;
         _logger = core.Log.CreateLogger<FtpServer>();
         _filter = core.Connection
-            .Filter<FileTransferProtocolPacket>()
+            .RxFilterByType<FileTransferProtocolPacket>()
             .Where(x => x.Payload.TargetComponent == identity.ComponentId &&
                         x.Payload.TargetSystem == identity.SystemId && _config.NetworkId == x.Payload.TargetNetwork)
-            .Subscribe(OnFtpMessage);
+            .SubscribeAwait(OnFtpMessage);
     }
 
-    private async void OnFtpMessage(FileTransferProtocolPacket input)
+    private async ValueTask OnFtpMessage(FileTransferProtocolPacket input, CancellationToken cancellationToken)
     {
+        if (cancellationToken.IsCancellationRequested)
+        {
+            _logger.ZLogWarning($"FTP message cancellation requested.");
+            return;
+        }
         try
         {
             switch (input.ReadOpcode())
@@ -422,13 +430,12 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
     public RenameDelegate? Rename { private get; set; }
     private async Task InternalRename(FileTransferProtocolPacket input)
     {
-        if (Rename is null)
-        {
-            throw new FtpNackException(FtpOpcode.Rename, NackError.UnknownCommand);
-        }
-
-        var path1 = input.ReadDataAsString();
-        var path2 = input.ReadDataAsString();
+        if (Rename is null) throw new FtpNackException(FtpOpcode.Rename, NackError.UnknownCommand);
+        var path = input.ReadDataAsString();
+        var split = path.Split('\0');
+        if (split.Length != 2) throw new FtpNackException(FtpOpcode.Rename, NackError.UnknownCommand);
+        var path1 = split[0];
+        var path2 = split[1];
         await Rename(path1, path2, DisposeCancel).ConfigureAwait(false);
         _logger.ZLogInformation($"{LogRecv} Rename: ({path1}) to ({path2})");
         await InternalFtpReply(input, FtpOpcode.Ack, p =>
@@ -523,7 +530,7 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     #region ReplyNack
 
-    private Task ReplyNack(FileTransferProtocolPacket req, NackError err, Exception? ex = null)
+    private ValueTask ReplyNack(FileTransferProtocolPacket req, NackError err, Exception? ex = null)
     {
         var originOpCode = req.ReadOriginOpCode();
         if (ex == null)
@@ -539,7 +546,7 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         return InternalFtpReply(req, FtpOpcode.Nak, x => x.WriteDataAsByte((byte)err));
     }
 
-    private Task ReplyNackFailErrno(FileTransferProtocolPacket req, byte fsErrorCode, Exception? ex = null)
+    private ValueTask ReplyNackFailErrno(FileTransferProtocolPacket req, byte fsErrorCode, Exception? ex = null)
     {
         var originOpCode = req.ReadOriginOpCode();
         var originSession = req.ReadSession();
@@ -559,7 +566,7 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
 
     #endregion
 
-    private Task InternalFtpReply(FileTransferProtocolPacket req, FtpOpcode replyOpCode,
+    private ValueTask InternalFtpReply(FileTransferProtocolPacket req, FtpOpcode replyOpCode,
         Action<FileTransferProtocolPacket> fillPacket)
     {
         return InternalSend<FileTransferProtocolPacket>(p =>

@@ -2,11 +2,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.V2.AsvGbs;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.AsvGbs;
+using Asv.Mavlink.Common;
 using Microsoft.Extensions.Logging;
 using R3;
-using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
+using MavCmd = Asv.Mavlink.Common.MavCmd;
 
 namespace Asv.Mavlink;
 
@@ -63,7 +63,7 @@ public class AsvGbsExClient: IAsvGbsExClient, IDisposable, IAsyncDisposable
     public async Task<MavResult> StartAutoMode(float duration, float accuracy, CancellationToken cancel)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var ack = await _command.CommandLong((MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunAutoMode,
+        var ack = await _command.CommandLong((MavCmd)AsvGbs.MavCmd.MavCmdAsvGbsRunAutoMode,
             duration,
             accuracy,
             float.NaN,
@@ -78,7 +78,7 @@ public class AsvGbsExClient: IAsvGbsExClient, IDisposable, IAsyncDisposable
     public async Task<MavResult> StartFixedMode(GeoPoint geoPoint, float accuracy, CancellationToken cancel)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var ack = await _command.CommandLong((MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunFixedMode,
+        var ack = await _command.CommandLong((MavCmd)AsvGbs.MavCmd.MavCmdAsvGbsRunFixedMode,
             BitConverter.ToSingle(BitConverter.GetBytes((int)(geoPoint.Latitude * 10000000)), 0),
             BitConverter.ToSingle(BitConverter.GetBytes((int)(geoPoint.Longitude * 10000000)), 0),
             BitConverter.ToSingle(BitConverter.GetBytes((int)(geoPoint.Altitude * 1000)), 0),
@@ -93,7 +93,7 @@ public class AsvGbsExClient: IAsvGbsExClient, IDisposable, IAsyncDisposable
     public async Task<MavResult> StartIdleMode(CancellationToken cancel)
     {
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
-        var ack = await _command.CommandLong((MavCmd)V2.AsvGbs.MavCmd.MavCmdAsvGbsRunIdleMode,
+        var ack = await _command.CommandLong((MavCmd)AsvGbs.MavCmd.MavCmdAsvGbsRunIdleMode,
             float.NaN,
             float.NaN,
             float.NaN,

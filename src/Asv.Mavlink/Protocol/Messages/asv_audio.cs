@@ -20,22 +20,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+c1002429a625f2cf26c5bd2680700906e0b44d76
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
 using System.Text;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.AsvAudio
+namespace Asv.Mavlink.AsvAudio
 {
 
     public static class AsvAudioHelper
     {
-        public static void RegisterAsvAudioDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterAsvAudioDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new AsvAudioOnlinePacket());
-            src.Register(()=>new AsvAudioStreamPacket());
+            src.Add(AsvAudioOnlinePacket.MessageId, ()=>new AsvAudioOnlinePacket());
+            src.Add(AsvAudioStreamPacket.MessageId, ()=>new AsvAudioStreamPacket());
         }
     }
 
@@ -141,14 +143,20 @@ namespace Asv.Mavlink.V2.AsvAudio
     /// Every device that wants to be visible at voice chat and can talk to the others sends this packet at 1 Hz.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_AUDIO_ONLINE
     /// </summary>
-    public class AsvAudioOnlinePacket: PacketV2<AsvAudioOnlinePayload>
+    public class AsvAudioOnlinePacket: MavlinkV2Message<AsvAudioOnlinePayload>
     {
-	    public const int PacketMessageId = 13200;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 142;
+        public const int MessageId = 13200;
+        
+        public const byte CrcExtra = 142;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvAudioOnlinePayload Payload { get; } = new AsvAudioOnlinePayload();
+        public override AsvAudioOnlinePayload Payload { get; } = new();
 
         public override string Name => "ASV_AUDIO_ONLINE";
     }
@@ -158,8 +166,11 @@ namespace Asv.Mavlink.V2.AsvAudio
     /// </summary>
     public class AsvAudioOnlinePayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 19; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 19; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -236,14 +247,20 @@ namespace Asv.Mavlink.V2.AsvAudio
     /// Message containing encoded audio data. If, after audio-encoding, one frame exceeds one packet size, multiple packets are used for frame transmitting.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_AUDIO_STREAM
     /// </summary>
-    public class AsvAudioStreamPacket: PacketV2<AsvAudioStreamPayload>
+    public class AsvAudioStreamPacket: MavlinkV2Message<AsvAudioStreamPayload>
     {
-	    public const int PacketMessageId = 13201;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 152;
+        public const int MessageId = 13201;
+        
+        public const byte CrcExtra = 152;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => true;
 
-        public override AsvAudioStreamPayload Payload { get; } = new AsvAudioStreamPayload();
+        public override AsvAudioStreamPayload Payload { get; } = new();
 
         public override string Name => "ASV_AUDIO_STREAM";
     }
@@ -253,8 +270,11 @@ namespace Asv.Mavlink.V2.AsvAudio
     /// </summary>
     public class AsvAudioStreamPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 236; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 236; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;

@@ -1,4 +1,6 @@
 using System;
+using Asv.Common;
+using Asv.IO;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Time.Testing;
@@ -41,7 +43,11 @@ public class ClientDeviceTests(ITestOutputHelper log) : ClientTestBase<ClientDev
     [Fact]
     public void Ctor_WithNullSubConfigArgs_Fail()
     {
-        var link = new VirtualMavlinkConnection();
+        var protocol = Protocol.Create(builder =>
+        {
+            builder.RegisterMavlinkV2Protocol();
+        });
+        var link = protocol.CreateVirtualConnection();
         var seq = new PacketSequenceCalculator();
         var time = new FakeTimeProvider();
         var meter = new DefaultMeterFactory();

@@ -1,15 +1,18 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
+using Asv.Common;
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
 
 namespace Asv.Mavlink
 {
-    public class MavlinkPacketTransponder<TPacket,TPayload> : IMavlinkPacketTransponder<TPacket,TPayload>, IDisposable
-        where TPacket : IPacketV2<TPayload>, new()
-        where TPayload : IPayload, new()
+    public class MavlinkPacketTransponder<TPacket> : AsyncDisposableWithCancel, IMavlinkPacketTransponder<TPacket>
+        where TPacket : MavlinkMessage, new()
     {
+        
+
         private readonly ICoreServices _core;
         private readonly object _sync = new();
         private readonly ILogger _logger;
@@ -18,21 +21,17 @@ namespace Asv.Mavlink
         private readonly ReactiveProperty<PacketTransponderState> _state = new();
         private TPacket _packet;
         private ITimer? _timer;
-        private readonly CancellationTokenSource _disposeCancel;
 
-        public MavlinkPacketTransponder(MavlinkIdentity identityConfig, ICoreServices core)
+        public MavlinkPacketTransponder(MavlinkIdentity identity, ICoreServices core)
         {
-            ArgumentNullException.ThrowIfNull(identityConfig);
+            ArgumentNullException.ThrowIfNull(identity);
             _core = core ?? throw new ArgumentNullException(nameof(core));
-            _logger = core.Log.CreateLogger<IMavlinkPacketTransponder<TPacket,TPayload>>();
+            _logger = core.Log.CreateLogger<IMavlinkPacketTransponder<TPacket>>();
             
-            _disposeCancel = new CancellationTokenSource();
             _packet = new TPacket
             {
-                CompatFlags = 0,
-                IncompatFlags = 0,
-                ComponentId = identityConfig.ComponentId,
-                SystemId = identityConfig.SystemId,
+                ComponentId = identity.ComponentId,
+                SystemId = identity.SystemId,
             };
         }
 
@@ -58,8 +57,8 @@ namespace Asv.Mavlink
             try
             {
                 _dataLock.EnterReadLock();
-                ((IPacketV2<IPayload>) _packet).Sequence = _core.Sequence.GetNextSequenceNumber();
-                _core.Connection.Send((IPacketV2<IPayload>)_packet, DisposeCancel).Wait(DisposeCancel);
+                _packet.Sequence = _core.Sequence.GetNextSequenceNumber();
+                _core.Connection.Send(_packet, DisposeCancel);
                 LogSuccess();
             }
             catch (Exception e)
@@ -72,8 +71,6 @@ namespace Asv.Mavlink
                 Interlocked.Exchange(ref _isSending, 0);
             }
         }
-
-        private CancellationToken DisposeCancel => _disposeCancel.Token;
 
         private void LogError(Exception e)
         {
@@ -109,12 +106,12 @@ namespace Asv.Mavlink
             }
         }
 
-        public void Set(Action<TPayload> changeCallback)
+        public void Set(Action<TPacket> changeCallback)
         {
             try
             {
                 _dataLock.EnterWriteLock();
-                changeCallback(_packet.Payload);
+                changeCallback(_packet);
             }
             catch (Exception e)
             {
@@ -126,14 +123,40 @@ namespace Asv.Mavlink
             }
         }
 
-        public void Dispose()
+        #region Dispose
+
+        protected override void Dispose(bool disposing)
         {
-            _disposeCancel.Cancel(false);
-            _disposeCancel.Dispose();
-            Stop();
-            _dataLock.Dispose();
-            _state.Dispose();
-            
+            if (disposing)
+            {
+                _dataLock.Dispose();
+                _state.Dispose();
+                _timer?.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
+
+        protected override async ValueTask DisposeAsyncCore()
+        {
+            await CastAndDispose(_dataLock).ConfigureAwait(false);
+            await CastAndDispose(_state).ConfigureAwait(false);
+            if (_timer != null) await _timer.DisposeAsync().ConfigureAwait(false);
+
+            await base.DisposeAsyncCore().ConfigureAwait(false);
+
+            return;
+
+            static async ValueTask CastAndDispose(IDisposable resource)
+            {
+                if (resource is IAsyncDisposable resourceAsyncDisposable)
+                    await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    resource.Dispose();
+            }
+        }
+
+        #endregion
+
     }
 }

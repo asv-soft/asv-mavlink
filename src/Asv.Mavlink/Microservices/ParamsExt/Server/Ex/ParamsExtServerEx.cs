@@ -5,7 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;

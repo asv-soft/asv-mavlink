@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.V2.AsvGbs;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.AsvGbs;
+using Asv.Mavlink.Common;
 using R3;
 using Xunit;
 using Xunit.Abstractions;
@@ -115,7 +115,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         var called = 0;
         var realDuration = 0f;
         var realAccuracy = 0f;
-        _server.StartAutoMode = (dur, acc, cancel)
+        _server.StartAutoMode = (_, _, _)
             =>
         {
             called++;
@@ -153,7 +153,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         // Arrange
         var called = 0;
         
-        _server.StartIdleMode = (cancel) =>
+        _server.StartIdleMode = (_) =>
         {
             called++;
 
@@ -190,7 +190,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         var realGeoPoint = GeoPoint.NaN;
         var realAccuracy = 0f;
         
-        _server.StartFixedMode = (gPoint, acc, cancel) => 
+        _server.StartFixedMode = (_, _, _) => 
         {
             called++;
             realGeoPoint = GeoPoint.Zero;
@@ -229,7 +229,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         var realGeoPoint = GeoPoint.NaN;
         var realAccuracy = 0f;
         
-        _server.StartFixedMode = (gPoint, acc, cancel) => 
+        _server.StartFixedMode = (_, _, _) => 
         {
             called++;
             realGeoPoint = GeoPoint.Zero;
@@ -258,7 +258,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
     {
         // Arrange
         var called = 0;
-        _server.StartFixedMode = (gPoint, acc, cancelToken) =>
+        _server.StartFixedMode = (_, _, _) =>
         {
             called++;
             
@@ -315,13 +315,14 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         Assert.Equal(mode, modeFromServer);
     }
     
-    [Fact (Skip = "Strange behaviour! Client throws, but server receives request anyway.")]
+    /*[Fact (Skip = "Strange behaviour! Client throws, but server receives request anyway.")]*/
+    [Fact]
     public async Task StartAutoMode_Canceled_Throws()
     {
         // Arrange
         var called = 0;
         await _cancellationTokenSource.CancelAsync();
-        _server.StartAutoMode = (dur, acc, cancel)
+        _server.StartAutoMode = (_, _, _)
             => 
         {
             called++;
@@ -332,7 +333,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         var task = _client.StartAutoMode(10, 10, _cancellationTokenSource.Token);
         
         // Assert
-        await Assert.ThrowsAsync<TaskCanceledException>(async () => await task);
+        await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
         Assert.Equal(0, called);
     }
     
@@ -439,7 +440,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         });
         
         // Act
-        _server.AccuracyMeter.OnNext(doubleValue);
+        _server.AccuracyMeter.OnNext(65.53);
         _server.ObservationSec.OnNext(ushortValue);
         _server.DgpsRate.OnNext(ushortValue);
         _server.AllSatellites.OnNext(byteValue);
@@ -451,7 +452,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         _server.SbasSatellites.OnNext(byteValue);
         _server.ImesSatellites.OnNext(byteValue);
         _server.CustomMode.OnNext(AsvGbsCustomMode.AsvGbsCustomModeAuto);
-        _server.Position.OnNext(new GeoPoint(intValue,intValue,intValue));
+        _server.Position.OnNext(new GeoPoint(65,-65,1001.0));
         
         ServerTime.Advance(TimeSpan.FromSeconds(10));
         ClientTime.Advance(TimeSpan.FromSeconds(10));
@@ -461,7 +462,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         var modeFromServer = await tcsMode.Task;
         Assert.NotNull(status);
         Assert.Equal(AsvGbsCustomMode.AsvGbsCustomModeAuto, modeFromServer);
-        Assert.Equal(ushortValue, status.Accuracy);
+        Assert.Equal(65.53*100, status.Accuracy);// this is because of the fixed point conversion m => mm
         Assert.Equal(ushortValue, status.Observation);
         Assert.Equal(ushortValue, status.DgpsRate);
         Assert.Equal(byteValue, status.SatAll);
@@ -472,9 +473,9 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         Assert.Equal(byteValue, status.SatQzs);
         Assert.Equal(byteValue, status.SatSbs);
         Assert.Equal(byteValue, status.SatIme);
-        Assert.Equal(intValue, status.Lat);            
-        Assert.Equal(intValue, status.Lng);
-        Assert.Equal(intValue, status.Alt);          
+        Assert.Equal(65*10e6, status.Lat);     // this is because of the fixed point conversion         
+        Assert.Equal(-65*10e6, status.Lng); // this is because of the fixed point conversion
+        Assert.Equal(1001000, status.Alt);          
     }
 
     public void Dispose()

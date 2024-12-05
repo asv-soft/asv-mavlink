@@ -23,16 +23,17 @@
 // This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11
 
 using System;
+using System.Collections.Immutable;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.UnitTestMessage
+namespace Asv.Mavlink.UnitTestMessage
 {
 
     public static class UnitTestMessageHelper
     {
-        public static void RegisterUnitTestMessageDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterUnitTestMessageDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new ChemicalDetectorDataPacket());
+            src.Add(ChemicalDetectorDataPacket.MessageId,()=>new ChemicalDetectorDataPacket());
         }
     }
 
@@ -47,14 +48,14 @@ namespace Asv.Mavlink.V2.UnitTestMessage
     /// Chemical Detector Data
     ///  CHEMICAL_DETECTOR_DATA
     /// </summary>
-    public class ChemicalDetectorDataPacket: PacketV2<ChemicalDetectorDataPayload>
+    public class ChemicalDetectorDataPacket: MavlinkV2Message<ChemicalDetectorDataPayload>
     {
-	    public const int PacketMessageId = 14202;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 157;
+	    public const int MessageId = 14202;
+        public override ushort Id => MessageId;
+        public override byte GetCrcExtra() => 157;
         public override bool WrapToV2Extension => false;
 
-        public override ChemicalDetectorDataPayload Payload { get; } = new ChemicalDetectorDataPayload();
+        public override ChemicalDetectorDataPayload Payload { get; } = new();
 
         public override string Name => "CHEMICAL_DETECTOR_DATA";
     }

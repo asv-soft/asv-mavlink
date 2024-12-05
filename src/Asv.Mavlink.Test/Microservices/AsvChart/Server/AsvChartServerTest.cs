@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvChart;
+using Asv.IO;
+using Asv.Mavlink.AsvChart;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -12,7 +13,7 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(AsvChartServer))]
 public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
 {
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<IProtocolMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
 
     private readonly AsvChartServerConfig _config = new()
@@ -23,8 +24,8 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
 
     public AsvChartServerTest(ITestOutputHelper output) : base(output)
     {
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
+        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
@@ -47,7 +48,7 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
         info.Fill(payload);
 
         var data = new ReadOnlyMemory<float>(new float[info.OneFrameMeasureSize]);
-        using var sub = Link.Client.RxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnRxMessage.Subscribe(p =>
         {
             count++;
             _taskCompletionSource.TrySetResult(p);
@@ -60,8 +61,8 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
         var result = await _taskCompletionSource.Task as AsvChartDataPacket;
         Assert.NotNull(result);
         Assert.Equal(payload.ChartInfoHash, result.Payload.ChatInfoHash);
-        Assert.Equal(count, Link.Client.RxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(count, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -104,7 +105,7 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
             new AsvChartAxisInfo("Y", AsvChartUnitType.AsvChartUnitTypeDbm, 0, 10, 10),
             AsvChartDataFormat.AsvChartDataFormatFloat);
         var data = new ReadOnlyMemory<float>(new float[info.OneFrameMeasureSize]);
-        using var sub = Link.Client.RxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnRxMessage.Subscribe(p =>
         {
             count++;
             _taskCompletionSource.TrySetResult(p);
@@ -117,8 +118,8 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
         }
 
         // Assert
-        Assert.Equal(count, Link.Client.RxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(count, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
 

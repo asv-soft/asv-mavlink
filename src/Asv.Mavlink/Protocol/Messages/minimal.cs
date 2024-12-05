@@ -20,20 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+c1002429a625f2cf26c5bd2680700906e0b44d76
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.Minimal
+namespace Asv.Mavlink.Minimal
 {
 
     public static class MinimalHelper
     {
-        public static void RegisterMinimalDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterMinimalDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new HeartbeatPacket());
-            src.Register(()=>new ProtocolVersionPacket());
+            src.Add(HeartbeatPacket.MessageId, ()=>new HeartbeatPacket());
+            src.Add(ProtocolVersionPacket.MessageId, ()=>new ProtocolVersionPacket());
         }
     }
 
@@ -1222,14 +1224,20 @@ namespace Asv.Mavlink.V2.Minimal
     /// The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). This microservice is documented at https://mavlink.io/en/services/heartbeat.html
     ///  HEARTBEAT
     /// </summary>
-    public class HeartbeatPacket: PacketV2<HeartbeatPayload>
+    public class HeartbeatPacket: MavlinkV2Message<HeartbeatPayload>
     {
-	    public const int PacketMessageId = 0;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 50;
+        public const int MessageId = 0;
+        
+        public const byte CrcExtra = 50;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override HeartbeatPayload Payload { get; } = new HeartbeatPayload();
+        public override HeartbeatPayload Payload { get; } = new();
 
         public override string Name => "HEARTBEAT";
     }
@@ -1239,8 +1247,11 @@ namespace Asv.Mavlink.V2.Minimal
     /// </summary>
     public class HeartbeatPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -1316,14 +1327,20 @@ namespace Asv.Mavlink.V2.Minimal
     /// Version and capability of protocol version. This message can be requested with MAV_CMD_REQUEST_MESSAGE and is used as part of the handshaking to establish which MAVLink version should be used on the network. Every node should respond to a request for PROTOCOL_VERSION to enable the handshaking. Library implementers should consider adding this into the default decoding state machine to allow the protocol core to respond directly.
     ///  PROTOCOL_VERSION
     /// </summary>
-    public class ProtocolVersionPacket: PacketV2<ProtocolVersionPayload>
+    public class ProtocolVersionPacket: MavlinkV2Message<ProtocolVersionPayload>
     {
-	    public const int PacketMessageId = 300;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 217;
+        public const int MessageId = 300;
+        
+        public const byte CrcExtra = 217;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override ProtocolVersionPayload Payload { get; } = new ProtocolVersionPayload();
+        public override ProtocolVersionPayload Payload { get; } = new();
 
         public override string Name => "PROTOCOL_VERSION";
     }
@@ -1333,8 +1350,11 @@ namespace Asv.Mavlink.V2.Minimal
     /// </summary>
     public class ProtocolVersionPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;

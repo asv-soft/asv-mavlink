@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 
 namespace Asv.Mavlink;
 
@@ -17,7 +18,7 @@ public static class CommandServerHelper
     /// <param name="result">The mav result.</param>
     /// <param name="cancel">The cancellation token.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public static Task SendCommandAckAccepted(this ICommandServer server, CommandIntPacket req, MavResult result, CancellationToken cancel = default)
+    public static ValueTask SendCommandAckAccepted(this ICommandServer server, CommandIntPacket req, MavResult result, CancellationToken cancel = default)
     {
         return server.SendCommandAck(req.Payload.Command, new DeviceIdentity(req.SystemId,req.ComponentId), CommandResult.FromResult(result), cancel);
     }
@@ -32,7 +33,7 @@ public static class CommandServerHelper
     /// <returns>
     /// A task that represents the asynchronous operation.
     /// </returns>
-    public static Task SendCommandAckAccepted(this ICommandServer server, CommandLongPacket req, MavResult result, CancellationToken cancel = default)
+    public static ValueTask SendCommandAckAccepted(this ICommandServer server, CommandLongPacket req, MavResult result, CancellationToken cancel = default)
     {
         return server.SendCommandAck(req.Payload.Command, new DeviceIdentity(req.SystemId,req.ComponentId), CommandResult.FromResult(result), cancel);
     }

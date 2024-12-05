@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using R3;
 
 namespace Asv.Mavlink;
@@ -106,7 +107,7 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// a mission request packet of type int is received.
     /// </remarks>
     /// <value>
-    /// An <see cref="IObservable{T}"/> of <see cref="MissionRequestIntPacket"/>, representing the observable
+    /// An <see cref="Observable{T}"/> of <see cref="MissionRequestIntPacket"/>, representing the observable
     /// sequence of mission request packets of type int.
     /// </value>
     Observable<MissionRequestIntPacket> OnMissionRequestInt { get; }
@@ -118,7 +119,7 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// This property represents the event stream for when a mission clear all event occurs.
     /// </remarks>
     /// <returns>
-    /// An IObservable<MissionClearAllPacket> that can be subscribed to receive MissionClearAllPacket events.
+    /// An Observable<MissionClearAllPacket> that can be subscribed to receive MissionClearAllPacket events.
     /// </returns>
     Observable<MissionClearAllPacket> OnMissionClearAll { get; }
 
@@ -126,7 +127,7 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// Represents an event that is raised when a mission is set as the current mission.
     /// </summary>
     /// <value>
-    /// An <see cref="IObservable{T}"/> of type <see cref="MissionSetCurrentPacket"/> that can be subscribed to receive notifications when the event is raised.
+    /// An <see cref="Observable{T}"/> of type <see cref="MissionSetCurrentPacket"/> that can be subscribed to receive notifications when the event is raised.
     /// </value>
     Observable<MissionSetCurrentPacket> OnMissionSetCurrent { get; }
     
@@ -146,7 +147,7 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// <param name="targetComponentId">The target component ID. Default value is 0.</param>
     /// <param name="type">The mission type. Default value is null.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    Task SendMissionAck(MavMissionResult result, byte targetSystemId = 0, byte targetComponentId = 0,
+    ValueTask SendMissionAck(MavMissionResult result, byte targetSystemId = 0, byte targetComponentId = 0,
         MavMissionType? type = null);
 
     /// <summary>
@@ -158,21 +159,21 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// <returns>
     /// A task that represents the asynchronous operation of sending the mission count.
     /// </returns>
-    Task SendMissionCount(ushort count, byte targetSystemId = 0, byte targetComponentId = 0);
+    ValueTask SendMissionCount(ushort count, byte targetSystemId = 0, byte targetComponentId = 0);
 
     /// <summary>
     /// Sends the reached value of a sequence.
     /// </summary>
     /// <param name="seq">The sequence number.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    Task SendReached(ushort seq);
+    ValueTask SendReached(ushort seq);
 
     /// <summary>
     /// Sends the current mission index to the system.
     /// </summary>
     /// <param name="current">The index of the current mission.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    Task SendMissionCurrent(ushort current);
+    ValueTask SendMissionCurrent(ushort current);
 
     /// <summary>
     /// Sends a mission item to the server.
@@ -184,7 +185,7 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// A task representing the asynchronous operation. The task will complete once the mission item
     /// has been successfully sent to the server.
     /// </returns>
-    Task SendMissionItemInt(ServerMissionItem item,byte targetSystemId = 0, byte targetComponentId = 0);
+    ValueTask SendMissionItemInt(ServerMissionItem item, byte targetSystemId = 0, byte targetComponentId = 0);
 
     /// <summary>
     /// Requests a mission item from the server.

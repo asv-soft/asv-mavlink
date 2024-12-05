@@ -2,7 +2,8 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Asv.Common;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 
 namespace Asv.Mavlink;
 

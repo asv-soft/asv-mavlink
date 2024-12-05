@@ -1,8 +1,7 @@
 using System;
 
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Minimal;
-using AutoFixture.Xunit2;
+using Asv.Mavlink.Minimal;
 using R3;
 using Xunit;
 using Xunit.Abstractions;
@@ -50,6 +49,7 @@ public class HeartbeatClientTest(ITestOutputHelper log) : ClientTestBase<Heartbe
             }
             Time.Advance(TimeSpan.FromSeconds(0.05));
         }
+        
         Assert.Equal(quality,Client.LinkQuality.CurrentValue, 1);
         Log.WriteLine($"RESULT: {quality:F3} ~ {Client.LinkQuality.CurrentValue:F3}");
     }
@@ -65,7 +65,7 @@ public class HeartbeatClientTest(ITestOutputHelper log) : ClientTestBase<Heartbe
         Assert.Equal(0,Client.PacketRateHz.CurrentValue);
         var seq = new PacketSequenceCalculator();
         
-        for (var i = 0; i < 1000; i++)
+        for (var i = 0; i < 10000; i++)
         {
             var p = new HeartbeatPacket
             {

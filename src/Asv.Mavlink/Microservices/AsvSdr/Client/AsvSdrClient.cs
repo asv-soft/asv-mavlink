@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvSdr;
+using Asv.Mavlink.AsvSdr;
+
 using Microsoft.Extensions.Logging;
 using R3;
 
@@ -18,7 +19,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     private readonly Subject<(TagId, AsvSdrRecordTagPayload)> _onRecordTag;
     private readonly Subject<(Guid, AsvSdrRecordDeleteResponsePayload)> _onDeleteRecord;
     private readonly Subject<(TagId, AsvSdrRecordTagDeleteResponsePayload)> _onDeleteRecordTag;
-    private readonly Subject<IPacketV2<IPayload>> _onRecordData;
+    private readonly Subject<MavlinkMessage> _onRecordData;
     private readonly Subject<AsvSdrCalibTablePayload> _onCalibrationTable;
     private readonly Subject<AsvSdrCalibTableUploadReadCallbackPayload> _onCalibrationTableRowUploadCallback;
     private readonly Subject<AsvSdrCalibAccPayload> _onCalibrationAcc;
@@ -58,8 +59,8 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         InternalFilter<AsvSdrRecordDeleteResponsePacket>().Select(p => (new Guid(p.Payload.RecordGuid), p.Payload))
             .Subscribe(_onDeleteRecord.AsObserver());
 
-        _onRecordData = new Subject<IPacketV2<IPayload>>();
-        InternalFilteredVehiclePackets.Where(x=>dataPacketsHashSet.Contains(x.MessageId))
+        _onRecordData = new Subject<MavlinkMessage>();
+        InternalFilteredVehiclePackets.Where(x=>dataPacketsHashSet.Contains(x.Id))
             .Subscribe(_onRecordData.AsObserver());
 
         _onCalibrationTableRowUploadCallback = new Subject<AsvSdrCalibTableUploadReadCallbackPayload>();
@@ -85,7 +86,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     public Observable<(TagId, AsvSdrRecordTagPayload)> OnRecordTag => _onRecordTag;
     public Observable<(Guid, AsvSdrRecordDeleteResponsePayload)> OnDeleteRecord => _onDeleteRecord;
     public Observable<(TagId, AsvSdrRecordTagDeleteResponsePayload)> OnDeleteRecordTag => _onDeleteRecordTag;
-    public Observable<IPacketV2<IPayload>> OnRecordData => _onRecordData;
+    public Observable<MavlinkMessage> OnRecordData => _onRecordData;
     public Observable<AsvSdrCalibTablePayload> OnCalibrationTable => _onCalibrationTable;
     public Observable<AsvSdrCalibTableUploadReadCallbackPayload> OnCalibrationTableRowUploadCallback => _onCalibrationTableRowUploadCallback;
     public Observable<AsvSdrCalibAccPayload> OnCalibrationAcc => _onCalibrationAcc;
@@ -171,14 +172,14 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
                 arg.Payload.TargetSystem = _identity.Target.SystemId;
                 arg.Payload.RequestId = id;
                 arg.Payload.TableIndex = tableIndex;
-            }, (IPacketV2<IPayload> input, out (AsvSdrCalibTablePayload?, AsvSdrCalibAccPayload?) tuple) =>
+            }, (MavlinkMessage input, out (AsvSdrCalibTablePayload?, AsvSdrCalibAccPayload?) tuple) =>
             {
-                switch (input.MessageId)
+                switch (input.Id)
                 {
-                    case AsvSdrCalibTablePacket.PacketMessageId when input is AsvSdrCalibTablePacket packet2 && packet2.Payload.TableIndex == tableIndex:
+                    case AsvSdrCalibTablePacket.MessageId when input is AsvSdrCalibTablePacket packet2 && packet2.Payload.TableIndex == tableIndex:
                         tuple = (packet2.Payload, default);
                         return true;
-                    case AsvSdrCalibAccPacket.PacketMessageId when input is AsvSdrCalibAccPacket packet && packet.Payload.RequestId == id:
+                    case AsvSdrCalibAccPacket.MessageId when input is AsvSdrCalibAccPacket packet && packet.Payload.RequestId == id:
                         tuple = (default, packet.Payload);
                         return true;
                     default:
@@ -208,16 +209,16 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
                 arg.Payload.RequestId = id;
                 arg.Payload.TableIndex = tableIndex;
                 arg.Payload.RowIndex = rowIndex;
-            }, (IPacketV2<IPayload> input, out (AsvSdrCalibTableRowPayload?, AsvSdrCalibAccPayload?) tuple) =>
+            }, (MavlinkMessage input, out (AsvSdrCalibTableRowPayload?, AsvSdrCalibAccPayload?) tuple) =>
             {
-                switch (input.MessageId)
+                switch (input.Id)
                 {
-                    case AsvSdrCalibTableRowPacket.PacketMessageId when input is AsvSdrCalibTableRowPacket packet2 
+                    case AsvSdrCalibTableRowPacket.MessageId when input is AsvSdrCalibTableRowPacket packet2 
                                                                      && packet2.Payload.TableIndex == tableIndex
                                                                      && packet2.Payload.RowIndex == rowIndex:
                         tuple = (packet2.Payload, default);
                         return true;
-                    case AsvSdrCalibAccPacket.PacketMessageId when input is AsvSdrCalibAccPacket packet && packet.Payload.RequestId == id:
+                    case AsvSdrCalibAccPacket.MessageId when input is AsvSdrCalibAccPacket packet && packet.Payload.RequestId == id:
                         tuple = (default, packet.Payload);
                         return true;
                     default:
@@ -236,7 +237,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
         return result.Item1;
     }
 
-    public Task SendCalibrationTableRowUploadStart(Action<AsvSdrCalibTableUploadStartPayload> argsFill, CancellationToken cancel = default)
+    public ValueTask SendCalibrationTableRowUploadStart(Action<AsvSdrCalibTableUploadStartPayload> argsFill, CancellationToken cancel = default)
     {
         var id = GenerateRequestIndex();
         return InternalSend<AsvSdrCalibTableUploadStartPacket>(p =>
@@ -249,7 +250,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     }
 
     
-    public Task SendCalibrationTableRowUploadItem(Action<AsvSdrCalibTableRowPayload> argsFill, CancellationToken cancel = default)
+    public ValueTask SendCalibrationTableRowUploadItem(Action<AsvSdrCalibTableRowPayload> argsFill, CancellationToken cancel = default)
     {
         return InternalSend<AsvSdrCalibTableRowPacket>(p => { argsFill(p.Payload); },cancel: cancel);
     }

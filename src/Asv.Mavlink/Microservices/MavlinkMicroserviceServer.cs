@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
+using Asv.IO;
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -15,13 +16,12 @@ public interface IMavlinkMicroserviceServer
     MavlinkIdentity Identity { get; }
 }
 
-public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, IDisposable, IAsyncDisposable
+public abstract class MavlinkMicroserviceServer : AsyncDisposableWithCancel, IMavlinkMicroserviceServer, IDisposable, IAsyncDisposable
 {
     private readonly ILogger _loggerBase;
     private string? _logLocalName;
     private string? _logSend;
     private string? _logRecv;
-    private readonly CancellationTokenSource _disposeCancel = new();
     private readonly string _ifcLogName;
 
     protected MavlinkMicroserviceServer(string ifcLogName, MavlinkIdentity identity, ICoreServices core)
@@ -43,13 +43,11 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
 
     public MavlinkIdentity Identity { get; }
 
-    protected CancellationToken DisposeCancel => _disposeCancel.Token;
-
     protected Observable<TPacket> InternalFilter<TPacket>(Func<TPacket, byte> targetSystemGetter,
         Func<TPacket, byte> targetComponentGetter)
-        where TPacket : IPacketV2<IPayload>, new()
+        where TPacket : MavlinkMessage, new()
     {
-        return Core.Connection.Filter<TPacket>().Where((targetSystemGetter,targetComponentGetter),(v, f) =>
+        return Core.Connection.RxFilterByMsgId<TPacket, ushort>().Where((targetSystemGetter,targetComponentGetter),(v, f) =>
         {
             var sys = f.targetSystemGetter(v);
             var com = f.targetComponentGetter(v);
@@ -59,14 +57,16 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
 
     protected Observable<TPacket> InternalFilterFirstAsync<TPacket>(Func<TPacket, byte> targetSystemGetter,
         Func<TPacket, byte> targetComponentGetter, Func<TPacket, bool> filter)
-        where TPacket : IPacketV2<IPayload>, new()
+        where TPacket : MavlinkMessage, new()
     {
         return InternalFilter(targetSystemGetter, targetComponentGetter).Where(filter).Take(1);
     }
-    protected Task InternalSend(int messageId, Action<IPacketV2<IPayload>> fillPacket, CancellationToken cancel = default)
+    protected ValueTask InternalSend(int messageId, Action<MavlinkV2Message<IPayload>> fillPacket, CancellationToken cancel = default)
     {
         cancel.ThrowIfCancellationRequested();
-        var pkt = Core.Connection.CreatePacketByMessageId(messageId);
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+        var pkt = (MavlinkV2Message<IPayload>)MavlinkV2MessageFactory.Instance.Create((ushort)messageId);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
         fillPacket(pkt ?? throw new InvalidOperationException($"Packet {messageId} not found"));
         pkt.ComponentId = Identity.ComponentId;
         pkt.SystemId = Identity.SystemId;
@@ -74,8 +74,8 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
         return Core.Connection.Send(pkt, cancel);
     }
     
-    protected Task InternalSend<TPacketSend>(Action<TPacketSend> fillPacket, CancellationToken cancel = default)
-        where TPacketSend : IPacketV2<IPayload>, new()
+    protected ValueTask InternalSend<TPacketSend>(Action<TPacketSend> fillPacket, CancellationToken cancel = default)
+        where TPacketSend : MavlinkMessage, new()
     {
         cancel.ThrowIfCancellationRequested();
         var packet = new TPacketSend();
@@ -86,19 +86,19 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
         return Core.Connection.Send(packet, cancel);
     }
 
-    protected async Task<TAnswerPacket> InternalSendAndWaitAnswer<TAnswerPacket>(IPacketV2<IPayload> packet,
+    protected async Task<TAnswerPacket> InternalSendAndWaitAnswer<TAnswerPacket>(MavlinkMessage packet,
         CancellationToken cancel, 
         Func<TAnswerPacket, byte> targetSystemGetter,
         Func<TAnswerPacket, byte> targetComponentGetter, 
         Func<TAnswerPacket, bool>? filter = null,
         int timeoutMs = 1000)
-        where TAnswerPacket : IPacketV2<IPayload>, new()
+        where TAnswerPacket : MavlinkMessage, new()
     {
         cancel.ThrowIfCancellationRequested();
         var p = new TAnswerPacket();
         _loggerBase.ZLogTrace($"{LogSend} call {p.Name}");
-        using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, _disposeCancel.Token);
-        linkedCancel.CancelAfter(TimeSpan.FromMilliseconds(timeoutMs), Core.TimeProvider);
+        using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
+        linkedCancel.CancelAfter(timeoutMs, Core.TimeProvider);
         var tcs = new TaskCompletionSource<TAnswerPacket>();
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
 
@@ -121,8 +121,8 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
         Func<TPacketRecv, TResult> resultGetter,
         int attemptCount = 5,
         Action<TPacketSend, int>? fillOnConfirmation = null, int timeoutMs = 1000, CancellationToken cancel = default)
-        where TPacketSend : IPacketV2<IPayload>, new()
-        where TPacketRecv : IPacketV2<IPayload>, new()
+        where TPacketSend : MavlinkMessage, new()
+        where TPacketRecv : MavlinkMessage, new()
     {
         cancel.ThrowIfCancellationRequested();
         var packet = new TPacketSend();
@@ -162,31 +162,4 @@ public abstract class MavlinkMicroserviceServer : IMavlinkMicroserviceServer, ID
         throw new TimeoutException($"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
     }
 
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            _disposeCancel.Cancel(false);
-            _disposeCancel.Dispose();
-        }
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual ValueTask DisposeAsyncCore()
-    {
-        _disposeCancel.Cancel(false);
-        _disposeCancel.Dispose();
-        return ValueTask.CompletedTask;
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await DisposeAsyncCore().ConfigureAwait(false);
-        GC.SuppressFinalize(this);
-    }
 }

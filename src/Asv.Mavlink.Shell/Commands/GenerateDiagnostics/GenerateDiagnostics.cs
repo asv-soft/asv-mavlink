@@ -14,7 +14,7 @@ namespace Asv.Mavlink.Shell;
 public class GenerateDiagnostics
 {
     private string _file = "exampleDiagnosticsConfig.json";
-    private MavlinkRouter _router;
+    private IProtocolRouter _router;
     private IDiagnosticServer? _server;
     private uint _refreshRate;
     
@@ -155,11 +155,15 @@ public class GenerateDiagnostics
 
     private IDiagnosticServer SetUpServer(GenerateDiagnosticsConfig config)
     {
-        _router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
-        _router.WrapToV2ExtensionEnabled = true;
+        var protocol = Protocol.Create(builder =>
+        {
+            builder.RegisterMavlinkV2Protocol();
+        });
+        _router = protocol.CreateRouter("DEFAULT");
+        
         foreach (var port in config.Ports)
         {
-            AnsiConsole.MarkupLine($"[green]Add connection port {port.Name}[/]: [yellow]{port.ConnectionString}[/]");
+            AnsiConsole.MarkupLine($"[green]Add connection port [/]: [yellow]{port}[/]");
             _router.AddPort(port);
         }
 

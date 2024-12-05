@@ -2,8 +2,10 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvSdr;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.AsvSdr;
+using Asv.Mavlink.Common;
+
+
 using ObservableCollections;
 using R3;
 
@@ -18,7 +20,7 @@ public interface IAsvSdrClientEx:IMavlinkMicroserviceClient
     IAsvSdrClient Base { get; }
 
     /// <summary>
-    /// Gets the supported modes of the IRxValue object.
+    /// Gets the supported modes of the ReadOnlyReactiveProperty object.
     /// </summary>
     /// The supported
     ReadOnlyReactiveProperty<AsvSdrCustomModeFlag> SupportedModes { get; }

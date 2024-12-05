@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -53,7 +53,7 @@ public class StatusTextComplexTest : ComplexTestBase<StatusTextClient, StatusTex
 
         // Assert
         Assert.Equal(serverMessage, clientMessage);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     public void Dispose()

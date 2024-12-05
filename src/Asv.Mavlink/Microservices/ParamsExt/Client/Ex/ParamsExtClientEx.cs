@@ -4,7 +4,8 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using ObservableCollections;
 using R3;
 
@@ -190,6 +191,8 @@ public class ParamsExtClientEx : IParamsExtClientEx, IDisposable, IAsyncDisposab
             {
                 tcs.TrySetResult(false);
             }
+            //TODO: time is not ticking, same as params microservice
+            //Interlocked.Exchange(ref lastUpdate, Base.Core.TimeProvider.GetTimestamp());
         }, null, CheckTimeout, CheckTimeout);
 
         var cached = _paramsSource.ToImmutableArray();

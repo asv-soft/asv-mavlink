@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using DeepEqual.Syntax;
 using R3;
 using Xunit;
@@ -99,8 +99,8 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         // Assert
         var currentId = await tcs.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.Equal(missionItemsIndex, currentId);
         Assert.False(_client.IsSynced.CurrentValue);
     }
@@ -153,8 +153,8 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         // Assert
         await tcs.Task;
         Assert.Equal(callsCount, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.True(results.All(id => id == missionItemsIndex));
     }
     
@@ -201,7 +201,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         var called = 0;
         var isInit = false;
 
-        using var s1 = Link.Client.TxPipe.Subscribe(p =>
+        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
         {
             ClientTime.Advance(
                 TimeSpan.FromMilliseconds((MaxAttemptsToCallCount * MaxCommandTimeoutMs * 2) + 1)
@@ -235,13 +235,14 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
-        using var s1 = Link.Client.TxPipe.Subscribe(p =>
+        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
         {
             ClientTime.Advance(
                 TimeSpan.FromMilliseconds((MaxAttemptsToCallCount * MaxCommandTimeoutMs * 2) + 1)
             );
         });
         _server.AddItems([new ServerMissionItem()]);
+        
         
         // Act
         var task = _client.SetCurrent(0, cancel.Token);
@@ -286,11 +287,11 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         }
         
         _server.AddItems(itemsFromServer);
-        using var s1 = _server.Base.OnMissionRequestList.Subscribe(p =>
+        using var s1 = _server.Base.OnMissionRequestList.Subscribe(_ =>
         {
             calledMissionRequestList++;
         });
-        using var s2 = _server.Base.OnMissionRequestInt.Subscribe(p =>
+        using var s2 = _server.Base.OnMissionRequestInt.Subscribe(_ =>
         {
             called++;
         });
@@ -313,9 +314,9 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         Assert.Equal(1, progress);
         Assert.Equal(1, calledAckPacket);
         Assert.Equal(itemsCount, called);
-        Assert.Equal(called + calledMissionRequestList + calledAckPacket, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        // Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets); // TODO: Counter for Server.TxPackets shows strange results
+        Assert.Equal(called + calledMissionRequestList + calledAckPacket, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        // Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages); // TODO: Counter for Server.TxPackets shows strange results
         Assert.Equal(itemsCount, items.Length);
         Assert.Equal(items.Length, itemsFromServer.Length);
         for (var i = 0; i < items.Length; i++)
@@ -351,11 +352,11 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         _client.Create();
         _client.Create();
         _server.AddItems(itemsFromServer);
-        using var s1 = _server.Base.OnMissionRequestList.Subscribe(p =>
+        using var s1 = _server.Base.OnMissionRequestList.Subscribe(_ =>
         {
             calledMissionRequestList++;
         });
-        using var s2 = _server.Base.OnMissionRequestInt.Subscribe(p =>
+        using var s2 = _server.Base.OnMissionRequestInt.Subscribe(_ =>
         {
             called++;
         });
@@ -378,8 +379,8 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         Assert.Equal(1, progress);
         Assert.Equal(1, calledAckPacket);
         Assert.Equal(itemsCount, called);
-        Assert.Equal(called + calledMissionRequestList + calledAckPacket, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(called + calledMissionRequestList + calledAckPacket, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.Equal(itemsCount, items.Length);
         Assert.Equal(items.Length, itemsFromServer.Length);
         for (var i = 0; i < items.Length; i++)
@@ -400,11 +401,11 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         var called = 0;
         var progress = 0d;
         
-        using var s1 = _server.Base.OnMissionRequestList.Subscribe(p =>
+        using var s1 = _server.Base.OnMissionRequestList.Subscribe(_ =>
         {
             calledMissionRequestList++;
         });
-        using var s2 = _server.Base.OnMissionRequestInt.Subscribe(p =>
+        using var s2 = _server.Base.OnMissionRequestInt.Subscribe(_ =>
         {
             called++;
         });
@@ -428,7 +429,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         
         var progress = 0d;
         
-        using var s1 = Link.Client.TxPipe.Subscribe(p =>
+        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
         {
             ClientTime.Advance(
                 TimeSpan.FromMilliseconds((MaxAttemptsToCallCount * MaxCommandTimeoutMs * 2) + 1)
@@ -455,11 +456,11 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         var called = 0;
         var progress = 0d;
         
-        using var s1 = _server.Base.OnMissionRequestList.Subscribe(p =>
+        using var s1 = _server.Base.OnMissionRequestList.Subscribe(_ =>
         {
             calledMissionRequestList++;
         });
-        using var s2 = _server.Base.OnMissionRequestInt.Subscribe(p =>
+        using var s2 = _server.Base.OnMissionRequestInt.Subscribe(_ =>
         {
             called++;
         });
@@ -496,11 +497,11 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         }
         
         _server.AddItems(itemsFromServer);
-        using var s = _server.Base.OnMissionClearAll.Subscribe(p =>
+        using var s = _server.Base.OnMissionClearAll.Subscribe(_ =>
         {
             called++;
         });
-        using var s1 = Link.Client.RxPipe.Subscribe(p =>
+        using var s1 = Link.Client.OnRxMessage.Subscribe(p =>
         {
             if (p is MissionAckPacket ackP)
             {
@@ -517,8 +518,8 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         Assert.Equal(1, called);
         Assert.NotNull(ackPacket);
         Assert.Equal(MavMissionResult.MavMissionAccepted, ackPacket.Payload.Type);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.Empty(items);
         Assert.True(_client.IsSynced.CurrentValue);
     }
@@ -533,11 +534,11 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
-        using var s = _server.Base.OnMissionClearAll.Subscribe(p =>
+        using var s = _server.Base.OnMissionClearAll.Subscribe(_ =>
         {
             called++;
         });
-        using var s1 = Link.Client.RxPipe.Subscribe(p =>
+        using var s1 = Link.Client.OnRxMessage.Subscribe(p =>
         {
             if (p is MissionAckPacket ackP)
             {
@@ -553,8 +554,8 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         var items = _server.Items.ToList();
         Assert.Equal(1, called);
         Assert.Equal(MavMissionResult.MavMissionAccepted, ackPacket.Payload.Type);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.Empty(items);
         Assert.True(_client.IsSynced.CurrentValue);
     }
@@ -565,16 +566,16 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         // Arrange
         var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
         
-        using var s1 = Link.Client.TxPipe.Subscribe(p =>
+        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
         {
             ClientTime.Advance(TimeSpan.FromMilliseconds((MaxAttemptsToCallCount * MaxCommandTimeoutMs * 2) + 1));
         });
         
-        // Act
-        var result = _client.ClearRemote(cancel.Token);
-        
         // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async () => await result);
+        await Assert.ThrowsAsync<TimeoutException>(async ()=>
+        {
+            await _client.ClearRemote(cancel.Token);
+        });
         Assert.False(_client.IsSynced.CurrentValue);
     }
     
@@ -586,16 +587,16 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         await cancel.CancelAsync();
         
         var called = 0;
-        using var s = _server.Base.OnMissionClearAll.Subscribe(p =>
+        using var s = _server.Base.OnMissionClearAll.Subscribe(_ =>
         {
             called++;
         });
         
-        // Act
-        var result = _client.ClearRemote(cancel.Token);
-        
         // Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => await result);
+        await Assert.ThrowsAsync<OperationCanceledException>(async ()=>
+        {
+            await _client.ClearRemote(cancel.Token);
+        });
         Assert.Equal(0, called);
         Assert.False(_client.IsSynced.CurrentValue);
     }
@@ -680,8 +681,8 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         var items = _server.Items.ToList();
         Assert.Equal(2, calledAck);
         Assert.Equal(1, progress);
-        Assert.Equal(3, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(3, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.Single(items);
         Assert.True(IsEqual(items[0], item1));
         Assert.True(_client.IsSynced.CurrentValue);
@@ -731,8 +732,8 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         Assert.NotEmpty(serverItems);
         Assert.Equal(2, calledAck);
         Assert.Equal(1, progress);
-        Assert.Equal(itemsCount + 2, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(itemsCount + 2, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.Equal(clientItems.Count, serverItems.Count);
         for (var i = 0; i < clientItems.Count; i++)
         {
@@ -791,8 +792,8 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         Assert.NotEmpty(serverItems);
         Assert.Equal(2, calledAck);
         Assert.Equal(1, progress);
-        Assert.Equal(itemsCount + 2, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(itemsCount + 2, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.Equal(clientItems.Count, serverItems.Count);
         for (var i = 0; i < clientItems.Count; i++)
         {
@@ -859,8 +860,8 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
         var items = _server.Items.ToList();
         Assert.Equal(0, progress);
-        Assert.Equal(0, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(0, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.Empty(items);
         Assert.False(_client.IsSynced.CurrentValue);
     }
@@ -873,7 +874,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         var progress = 0d;
         _client.Create();
 
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Subscribe(_ =>
         {
             ClientTime.Advance(TimeSpan.FromMilliseconds((MaxAttemptsToCallCount * MaxCommandTimeoutMs * 2) + 1));
         });

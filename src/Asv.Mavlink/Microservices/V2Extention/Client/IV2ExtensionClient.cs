@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using R3;
 
 namespace Asv.Mavlink
@@ -19,7 +20,7 @@ namespace Asv.Mavlink
         int MaxDataSize { get; }
 
         /// <summary>
-        /// Gets the OnData property of type IRxValue&lt;V2ExtensionPacket&gt;.
+        /// Gets the OnData property of type ReadOnlyReactiveProperty&lt;V2ExtensionPacket&gt;.
         /// </summary>
         /// <remarks>
         /// This property represents a reactive value that provides a stream of V2ExtensionPacket objects.
@@ -35,7 +36,7 @@ namespace Asv.Mavlink
         /// <param name="data">The data to be sent.</param>
         /// <param name="cancel">The cancellation token for cancelling the task.</param>
         /// <returns>A task representing the asynchronous operation of sending data.</returns>
-        Task SendData(byte targetNetworkId, ushort messageType,
+        ValueTask SendData(byte targetNetworkId, ushort messageType,
             byte[] data, CancellationToken cancel);
     }
 }

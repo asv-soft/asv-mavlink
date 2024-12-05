@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.IO;
+using Asv.Mavlink.Common;
+
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -14,14 +16,14 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(ParamsServer))]
 public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
 {
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     protected override ParamsServer CreateClient(MavlinkIdentity identity, CoreServices core) => new(identity, core);
 
     public ParamsServerTest(ITestOutputHelper log) : base(log)
     {
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
+        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
@@ -29,22 +31,18 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
     public async Task Send_SinglePacket_Success()
     {
         // Arrange
-        var payload = new ParamValuePayload
-        {
-            ParamValue = 123f,
-        };
-        using var sub = Link.Client.RxPipe.Subscribe(
-            p => _taskCompletionSource.TrySetResult(p)
+        var paramValue = 123f;
+        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p => _taskCompletionSource.TrySetResult(p)
         );
         
         // Act
-        await Server.SendParamValue(p => p.ParamValue = 123f, _cancellationTokenSource.Token);
+        await Server.SendParamValue(p => p.ParamValue = paramValue, _cancellationTokenSource.Token);
         
         // Assert
         var result = await _taskCompletionSource.Task as ParamValuePacket;
         Assert.NotNull(result);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(payload.ParamValue, result.Payload.ParamValue);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(paramValue, result.Payload.ParamValue);
     }
     
     [Theory]
@@ -57,7 +55,7 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
         var called = 0;
         var results = new List<ParamValuePayload>();
         var serverResults = new List<ParamValuePayload>();
-        using var sub = Link.Client.RxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
         {
             called++;
             if (p is ParamValuePacket packet)
@@ -78,8 +76,8 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
 
         // Assert
         await _taskCompletionSource.Task;
-        Assert.Equal(packetCount, Link.Server.TxPackets);
-        Assert.Equal(packetCount, Link.Client.RxPackets);
+        Assert.Equal(packetCount, (int) Link.Server.Statistic.TxMessages);
+        Assert.Equal(packetCount, (int) Link.Client.Statistic.RxMessages);
         Assert.Equal(packetCount, results.Count);
         Assert.Equal(serverResults.Count, results.Count);
         for (var i = 0; i < results.Count; i++)

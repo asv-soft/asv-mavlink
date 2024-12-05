@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.IO;
+using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using Xunit;
@@ -14,12 +15,12 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(ParamsExtServer))]
 public class ParamsExtServerTest : ServerTestBase<ParamsExtServer>,IDisposable
 {
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<IProtocolMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     
     public ParamsExtServerTest(ITestOutputHelper log) : base(log)
     {
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
@@ -32,7 +33,7 @@ public class ParamsExtServerTest : ServerTestBase<ParamsExtServer>,IDisposable
         // Arrange
         var payload = new ParamExtValuePayload();
         MavlinkTypesHelper.SetString(payload.ParamValue, "test");
-        using var sub = Link.Client.RxPipe.Subscribe(
+        using var sub = Link.Client.OnRxMessage.Subscribe(
             p => _taskCompletionSource.TrySetResult(p)
         );
         
@@ -42,7 +43,9 @@ public class ParamsExtServerTest : ServerTestBase<ParamsExtServer>,IDisposable
         // Assert
         var result = await _taskCompletionSource.Task as ParamExtValuePacket;
         Assert.NotNull(result);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.NotNull(result);
+        if (result == null) return; // just to make resharper happy
         Assert.Equal(payload.ParamValue, result.Payload.ParamValue);
     }
     
@@ -52,7 +55,7 @@ public class ParamsExtServerTest : ServerTestBase<ParamsExtServer>,IDisposable
         // Arrange
         var payload = new ParamExtValuePayload();
         MavlinkTypesHelper.SetString(payload.ParamValue, "test");
-        using var sub = Link.Client.RxPipe.Subscribe(
+        using var sub = Link.Client.OnRxMessage.Subscribe(
             p => _taskCompletionSource.TrySetResult(p)
         );
         
@@ -62,7 +65,9 @@ public class ParamsExtServerTest : ServerTestBase<ParamsExtServer>,IDisposable
         // Assert
         var result = await _taskCompletionSource.Task as ParamExtAckPacket;
         Assert.NotNull(result);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.NotNull(result);
+        if (result == null) return; // just to make resharper happy
         Assert.Equal(payload.ParamValue, result.Payload.ParamValue);
     }
     
@@ -76,7 +81,7 @@ public class ParamsExtServerTest : ServerTestBase<ParamsExtServer>,IDisposable
         var called = 0;
         var results = new List<ParamExtValuePayload>();
         var serverResults = new List<ParamExtValuePayload>();
-        using var sub = Link.Client.RxPipe.Subscribe(p =>
+        using var sub = Link.Client.OnRxMessage.Subscribe(p =>
         {
             called++;
             if (p is ParamExtValuePacket packet)
@@ -97,8 +102,8 @@ public class ParamsExtServerTest : ServerTestBase<ParamsExtServer>,IDisposable
 
         // Assert
         await _taskCompletionSource.Task;
-        Assert.Equal(packetCount, Link.Server.TxPackets);
-        Assert.Equal(packetCount, Link.Client.RxPackets);
+        Assert.Equal(packetCount, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(packetCount, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(packetCount, results.Count);
         Assert.Equal(serverResults.Count, results.Count);
         for (var i = 0; i < results.Count; i++)

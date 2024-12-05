@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvChart;
+using Asv.Mavlink.AsvChart;
+
 using Microsoft.Extensions.Logging;
 using ObservableCollections;
 using R3;
@@ -98,7 +99,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
             x.Payload.DataTrigger = options.Trigger;
             x.Payload.DataRate = options.Rate;
             x.Payload.ChatInfoHash = info.InfoHash;
-        }, x=>x.Payload.ChatId == options.ChartId, x=>new AsvChartOptions(x), cancel: cancel);
+        }, x=>x.Payload.ChartId == options.ChartId, x=>new AsvChartOptions(x), cancel: cancel);
     }
 
     public IReadOnlyObservableDictionary<ushort, AsvChartInfo> Charts => _charts;

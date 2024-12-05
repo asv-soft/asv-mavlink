@@ -1,8 +1,9 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.V2.AsvRsga;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.AsvRsga;
+using Asv.Mavlink.Common;
 using Microsoft.Extensions.Logging;
 using ObservableCollections;
 using R3;
@@ -18,7 +19,7 @@ public class AsvRsgaClientEx : DisposableOnceWithCancel, IAsvRsgaClientEx
     public AsvRsgaClientEx(IAsvRsgaClient client, ICommandClient commandClient)
     {
         _logger = client.Core.Log.CreateLogger<AsvRsgaClientEx>();
-        _commandClient = commandClient;
+        _commandClient = commandClient ?? throw new ArgumentNullException(nameof(commandClient));
         Base = client;
         _supportedModes = new ObservableList<AsvRsgaCustomMode>();
         client.OnCompatibilityResponse.Subscribe(OnCapabilityResponse).DisposeItWith(Disposable);

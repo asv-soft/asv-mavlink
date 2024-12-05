@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using R3;
 
 namespace Asv.Mavlink
@@ -14,7 +15,7 @@ namespace Asv.Mavlink
         /// Represents the radio property.
         /// </summary>
         /// <value>
-        /// An implementation of the IRxValue interface that provides access to the RadioStatusPayload object.
+        /// An implementation of the ReadOnlyReactiveProperty interface that provides access to the RadioStatusPayload object.
         /// </value>
         ReadOnlyReactiveProperty<RadioStatusPayload?> Radio { get; }
 
@@ -22,9 +23,8 @@ namespace Asv.Mavlink
         /// Represents the system status property.
         /// </summary>
         /// <remarks>
-        /// The SystemStatus property is an IRxValue that provides the current system status information.
+        /// The SystemStatus property is an ReadOnlyReactiveProperty that provides the current system status information.
         /// </remarks>
-        /// <seealso cref="IRxValue{T}"/>
         /// <seealso cref="SysStatusPayload"/>
         ReadOnlyReactiveProperty<SysStatusPayload?> SystemStatus { get; }
 
@@ -40,11 +40,8 @@ namespace Asv.Mavlink
         /// Represents the battery status.
         /// </summary>
         /// <remarks>
-        /// This property provides an instance of the <see cref="IRxValue{T}"/> interface which holds the battery status payload.
+        /// This property holds the battery status payload.
         /// </remarks>
-        /// <value>
-        /// An instance of the <see cref="IRxValue{T}"/> interface containing the battery status payload.
-        /// </value>
         ReadOnlyReactiveProperty<BatteryStatusPayload?> Battery { get; }
 
         /// <summary>
@@ -56,6 +53,6 @@ namespace Asv.Mavlink
         /// <param name="startStop">Whether to start or stop the data stream.</param>
         /// <param name="cancel">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>A task representing the asynchronous request for the data stream.</returns>
-        Task RequestDataStream(byte streamId, ushort rateHz, bool startStop, CancellationToken cancel = default);
+        ValueTask RequestDataStream(byte streamId, ushort rateHz, bool startStop, CancellationToken cancel = default);
     }
 }

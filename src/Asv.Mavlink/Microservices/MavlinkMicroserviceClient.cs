@@ -1,7 +1,9 @@
+#nullable enable
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
+using Asv.IO;
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -16,16 +18,17 @@ namespace Asv.Mavlink
         Task Init(CancellationToken cancel = default);
     }
     
-    public delegate bool FilterDelegate<TResult>(IPacketV2<IPayload> inputPacket, out TResult result);
+    public delegate bool FilterDelegate<TResult>(MavlinkMessage inputPacket, out TResult result);
     
-    public abstract class MavlinkMicroserviceClient:IMavlinkMicroserviceClient,IDisposable, IAsyncDisposable
+    public abstract class MavlinkMicroserviceClient: AsyncDisposableWithCancel, IMavlinkMicroserviceClient,IDisposable, IAsyncDisposable
     {
         private readonly string _ifcLogName;
         private readonly ILogger _loggerBase;
         private string? _logSend;
         private string? _logRecv;
-        private readonly CancellationTokenSource _disposeCancel = new();
-        
+        private readonly Subject<MavlinkMessage> _internalFilteredVehiclePackets = new();
+        private readonly IDisposable _sub1;
+
         protected MavlinkMicroserviceClient(string ifcLogName, MavlinkClientIdentity identity,
             ICoreServices core) 
         {
@@ -33,7 +36,18 @@ namespace Asv.Mavlink
             Core = core ?? throw new ArgumentNullException(nameof(core));
             _loggerBase = Core.Log.CreateLogger<MavlinkMicroserviceClient>();
             _ifcLogName = ifcLogName;
-            InternalFilteredVehiclePackets = core.Connection.RxPipe.Where(FilterVehicle).Publish().RefCount();
+            _sub1 = core.Connection.OnRxMessage.Where(x =>
+                {
+                    if (x.Protocol.Id != MavlinkV2Protocol.Info.Id) return false;
+                    return true;
+                })
+                .Cast<IProtocolMessage, MavlinkMessage>()
+                .Where(x =>
+                {
+                    if (Identity.Target.SystemId != x.SystemId) return false;
+                    if (Identity.Target.ComponentId != x.ComponentId) return false;
+                    return true;
+                }).Subscribe(_internalFilteredVehiclePackets.AsObserver());
         }
 
         public MavlinkClientIdentity Identity { get; }
@@ -43,43 +57,35 @@ namespace Asv.Mavlink
             return Task.CompletedTask;
         }
 
-        protected CancellationToken DisposeCancel => _disposeCancel.Token;
-
         public string Name => _ifcLogName;
         protected string LogSend => _logSend ??= $"{Identity.Self}=>{Identity.Target}[{_ifcLogName}]:";
         protected string LogRecv => _logRecv ??= $"{Identity.Self}=>{Identity.Target}[{_ifcLogName}]:";
 
-        protected Observable<TPacket> InternalFilter<TPacket>()
-            where TPacket : IPacketV2<IPayload>, new()
+        protected Observable<TMessage> InternalFilter<TMessage>()
+            where TMessage : MavlinkMessage, new()
         {
-            var id = new TPacket().MessageId;
-            return InternalFilteredVehiclePackets.Where(id, (v,i)=>v.MessageId == i).Cast<IPacketV2<IPayload>,TPacket>();
+            var id = new TMessage().Id;
+            return InternalFilteredVehiclePackets.Where(id, (v,i)=>v.Id == i).Cast<MavlinkMessage,TMessage>();
         }
-
-        protected Observable<TPacket> InternalFilterFirstAsync<TPacket>(Func<TPacket, bool> filter)
-            where TPacket : IPacketV2<IPayload>, new()
+        protected Observable<TPacket> InternalFilter<TPacket>(Func<TPacket, bool> filter)
+            where TPacket : MavlinkMessage, new()
+        {
+            return InternalFilter<TPacket>().Where(filter);
+        }
+        protected Observable<TMessage> InternalFilterFirstAsync<TMessage>(Func<TMessage, bool> filter)
+            where TMessage : MavlinkMessage, new()
         {
             return InternalFilter(filter).Take(1);
         }
 
-        protected Observable<TPacket> InternalFilter<TPacket>(Func<TPacket, bool> filter)
-            where TPacket : IPacketV2<IPayload>, new()
-        {
-            return InternalFilter<TPacket>().Where(filter);
-        }
+        protected Observable<MavlinkMessage> InternalFilteredVehiclePackets => _internalFilteredVehiclePackets;
 
-        protected Observable<IPacketV2<IPayload>> InternalFilteredVehiclePackets { get; }
-        private bool FilterVehicle(IPacketV2<IPayload> packetV2)
+        protected ValueTask InternalSend<TMessage>(Action<TMessage> fillPacket, CancellationToken cancel = default)
+            where TMessage : MavlinkMessage, new()
         {
-            if (Identity.Target.SystemId != packetV2.SystemId) return false;
-            if (Identity.Target.ComponentId != packetV2.ComponentId) return false;
-            return true;
-        }
-        protected Task InternalSend<TPacketSend>(Action<TPacketSend> fillPacket, CancellationToken cancel = default)
-            where TPacketSend : IPacketV2<IPayload>, new()
-        {
+            ArgumentNullException.ThrowIfNull(fillPacket);
             cancel.ThrowIfCancellationRequested();
-            var packet = new TPacketSend();
+            var packet = new TMessage();
             fillPacket(packet);
             _loggerBase.ZLogTrace($"{LogSend} send {packet.Name}");
             packet.Sequence = Core.Sequence.GetNextSequenceNumber();
@@ -88,8 +94,9 @@ namespace Asv.Mavlink
             return Core.Connection.Send(packet, cancel);
         }
 
-        protected async Task<TResult> InternalSendAndWaitAnswer<TResult>(IPacketV2<IPayload> packet,
-            CancellationToken cancel, FilterDelegate<TResult> filterAndResultGetter, int timeoutMs = 1000)
+        protected async Task<TResult> InternalSendAndWaitAnswer<TResult>(MavlinkMessage packet,
+            FilterDelegate<TResult> filterAndResultGetter, int timeoutMs = 1000,
+            CancellationToken cancel = default)
         {
             cancel.ThrowIfCancellationRequested();
             ArgumentNullException.ThrowIfNull(filterAndResultGetter);
@@ -118,7 +125,7 @@ namespace Asv.Mavlink
         protected async Task<TResult> InternalCall<TResult,TPacketSend>(
             Action<TPacketSend> fillPacket, FilterDelegate<TResult> filterAndResultGetter, int attemptCount = 5,
             Action<TPacketSend,int>? fillOnConfirmation = null, int timeoutMs = 1000,  CancellationToken cancel = default)
-            where TPacketSend : IPacketV2<IPayload>, new()
+            where TPacketSend : MavlinkMessage, new()
         {
             cancel.ThrowIfCancellationRequested();
             var packet = new TPacketSend();
@@ -136,7 +143,7 @@ namespace Asv.Mavlink
                 ++currentAttempt;
                 try
                 {
-                    return await InternalSendAndWaitAnswer(packet, cancel, filterAndResultGetter, timeoutMs).ConfigureAwait(false);
+                    return await InternalSendAndWaitAnswer(packet, filterAndResultGetter, timeoutMs, cancel).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -153,9 +160,9 @@ namespace Asv.Mavlink
         }
         
         
-        protected async Task<TAnswerPacket> InternalSendAndWaitAnswer<TAnswerPacket>(IPacketV2<IPayload> packet,
+        protected async Task<TAnswerPacket> InternalSendAndWaitAnswer<TAnswerPacket>(MavlinkMessage packet,
             CancellationToken cancel, Func<TAnswerPacket, bool>? filter = null, int timeoutMs = 1000)
-            where TAnswerPacket : IPacketV2<IPayload>, new()
+            where TAnswerPacket : MavlinkMessage, new()
         {
             cancel.ThrowIfCancellationRequested();
             var p = new TAnswerPacket();
@@ -179,8 +186,8 @@ namespace Asv.Mavlink
         protected async Task<TResult> InternalCall<TResult,TPacketSend,TPacketRecv>(
             Action<TPacketSend> fillPacket, Func<TPacketRecv,bool>? filter, Func<TPacketRecv,TResult> resultGetter, int attemptCount = 5,
             Action<TPacketSend,int>? fillOnConfirmation = null, int timeoutMs = 1000, CancellationToken cancel = default)
-            where TPacketSend : IPacketV2<IPayload>, new()
-            where TPacketRecv : IPacketV2<IPayload>, new()
+            where TPacketSend : MavlinkMessage, new()
+            where TPacketRecv : MavlinkMessage, new()
         {
             cancel.ThrowIfCancellationRequested();
             var packet = new TPacketSend();
@@ -218,32 +225,33 @@ namespace Asv.Mavlink
             throw new TimeoutException($"{LogSend} Timeout to execute '{name}' with {attemptCount} x {timeoutMs} ms'");
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _disposeCancel.Dispose();
+                _internalFilteredVehiclePackets.Dispose();
+                _sub1.Dispose();
             }
+
+            base.Dispose(disposing);
         }
 
-        public void Dispose()
+        protected override async ValueTask DisposeAsyncCore()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+            await CastAndDispose(_internalFilteredVehiclePackets).ConfigureAwait(false);
+            await CastAndDispose(_sub1).ConfigureAwait(false);
 
-        protected virtual async ValueTask DisposeAsyncCore()
-        {
-            if (_disposeCancel is IAsyncDisposable disposeCancelAsyncDisposable)
-                await disposeCancelAsyncDisposable.DisposeAsync().ConfigureAwait(false);
-            else
-                _disposeCancel.Dispose();
-        }
+            await base.DisposeAsyncCore().ConfigureAwait(false);
 
-        public async ValueTask DisposeAsync()
-        {
-            await DisposeAsyncCore().ConfigureAwait(false);
-            GC.SuppressFinalize(this);
+            return;
+
+            static async ValueTask CastAndDispose(IDisposable resource)
+            {
+                if (resource is IAsyncDisposable resourceAsyncDisposable)
+                    await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    resource.Dispose();
+            }
         }
     }
 }

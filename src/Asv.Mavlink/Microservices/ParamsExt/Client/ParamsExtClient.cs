@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -58,7 +59,7 @@ public class ParamsExtClient : MavlinkMicroserviceClient, IParamsExtClient
     
     public Observable<ParamExtAckPayload> OnParamExtAck => _onParamExtAck;
 
-    public Task SendRequestList(CancellationToken cancel = default)
+    public ValueTask SendRequestList(CancellationToken cancel = default)
     {
         _logger.ZLogInformation($"{LogSend} Attempt to read all params");
         return InternalSend<ParamExtRequestListPacket>(packet =>

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
 using R3;
 using Xunit;
@@ -12,20 +12,19 @@ namespace Asv.Mavlink.Test;
 
 public class AdsbVehicleComplexTest : ComplexTestBase<AdsbVehicleClient, AdsbVehicleServer>, IDisposable
 {
-    private readonly TaskCompletionSource<AdsbVehiclePayload> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
 
     private readonly AdsbVehicleClientConfig _clientConfig = new()
     {
         TargetTimeoutMs = 10000,
-        CheckOldDevicesMs = 3000,
+        CheckOldDevicesMs = 1000,
     };
 
     public AdsbVehicleComplexTest(ITestOutputHelper output) : base(output)
     {
-        _taskCompletionSource = new TaskCompletionSource<AdsbVehiclePayload>();
+        TaskCompletionSource<AdsbVehiclePayload> taskCompletionSource = new();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource.Token.Register(() => taskCompletionSource.TrySetCanceled());
     }
 
     protected override AdsbVehicleServer CreateServer(MavlinkIdentity identity, ICoreServices core) =>
@@ -43,7 +42,7 @@ public class AdsbVehicleComplexTest : ComplexTestBase<AdsbVehicleClient, AdsbVeh
         {
             IcaoAddress = 987654321,
         };
-        Client.OnTarget.Subscribe(p => { count++; });
+        Client.OnTarget.Subscribe(_ => { count++; });
 
         // Act
         await Server.Send(p => p.IcaoAddress = 987654321, _cancellationTokenSource.Token);
@@ -52,7 +51,7 @@ public class AdsbVehicleComplexTest : ComplexTestBase<AdsbVehicleClient, AdsbVeh
         Assert.NotNull(Client.Targets.Values.FirstOrDefault());
         Assert.True(payload.IcaoAddress.ToString()
             .IsDeepEqual(Client.Targets.Values.FirstOrDefault()?.IcaoAddress.ToString()));
-        Assert.Equal(count, Link.Client.RxPackets);
+        Assert.Equal(count, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(count, Client.Targets.Count);
     }
 
@@ -65,7 +64,7 @@ public class AdsbVehicleComplexTest : ComplexTestBase<AdsbVehicleClient, AdsbVeh
         {
             IcaoAddress = 987654321,
         };
-        using var sub = Client.OnTarget.Subscribe(p => { count++; });
+        using var sub = Client.OnTarget.Subscribe(_ => { count++; });
 
         // Act
         await Server.Send(p => p.IcaoAddress = 987654321, _cancellationTokenSource.Token);

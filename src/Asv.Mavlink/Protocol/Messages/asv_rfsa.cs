@@ -20,14 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+c1002429a625f2cf26c5bd2680700906e0b44d76
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
-namespace Asv.Mavlink.V2.AsvRfsa
+using System;
+using System.Collections.Immutable;
+
+namespace Asv.Mavlink.AsvRfsa
 {
 
     public static class AsvRfsaHelper
     {
-        public static void RegisterAsvRfsaDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterAsvRfsaDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
         }
     }

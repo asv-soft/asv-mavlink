@@ -1,5 +1,6 @@
 using Asv.Common;
-using Asv.Mavlink.V2.Minimal;
+using Asv.Mavlink.Minimal;
+
 using R3;
 
 namespace Asv.Mavlink
@@ -18,7 +19,7 @@ namespace Asv.Mavlink
         ushort FullId { get; }
 
         /// <summary>
-        /// Gets the raw heartbeat value as an <see cref="IRxValue{T}"/> of type <see cref="HeartbeatPayload"/>.
+        /// Gets the raw heartbeat value as an <see cref="ReadOnlyReactiveProperty{T}"/> of type <see cref="HeartbeatPayload"/>.
         /// </summary>
         /// <value>
         /// The raw heartbeat value.
@@ -37,10 +38,10 @@ namespace Asv.Mavlink
         ReadOnlyReactiveProperty<double> LinkQuality { get; }
 
         /// <summary>
-        /// Gets the RxValue instance representing the state of a link.
+        /// Gets the ReactiveProperty instance representing the state of a link.
         /// </summary>
         /// <value>
-        /// The RxValue instance representing the state of the link.
+        /// The ReactiveProperty instance representing the state of the link.
         /// </value>
         ReadOnlyReactiveProperty<LinkState> Link { get; }
     }

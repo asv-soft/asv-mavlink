@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using R3;
 
 namespace Asv.Mavlink;
@@ -22,7 +23,7 @@ public interface IParamsExtClient: IMavlinkMicroserviceClient
     /// </summary>
     /// <param name="cancel">The cancellation token.</param>
     /// <returns>A task representing the asynchronous request of all parameters.</returns>
-    Task SendRequestList(CancellationToken cancel = default);
+    ValueTask SendRequestList(CancellationToken cancel = default);
 
     /// <summary>
     /// Sends request to read a single parameter by its ID.

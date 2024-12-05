@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using Asv.IO;
@@ -48,12 +47,15 @@ public class CreateVirtualFtpServerCommand
             AnsiConsole.MarkupLine("[red]error[/]: Unable to load cfg[/]");
             return;
         }
+
+        var router = Protocol.Create(builder =>
+        {
+            builder.RegisterMavlinkV2Protocol();
+        }).CreateRouter("ROUTER");
         
-        var router = new MavlinkRouter(MavlinkV2Connection.RegisterDefaultDialects);
-        router.WrapToV2ExtensionEnabled = true;
         foreach (var port in cfg.Ports)
         {
-            AnsiConsole.MarkupLine($"[green]Add connection port {port.Name}[/]: [yellow]{port.ConnectionString}[/]");
+            AnsiConsole.MarkupLine($"[green]Add connection port [/]: [yellow]{port}[/]");
             router.AddPort(port);
         }
 

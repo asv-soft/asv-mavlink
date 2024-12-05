@@ -4,7 +4,9 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Minimal;
+using Asv.IO;
+using Asv.Mavlink.Minimal;
+
 using Microsoft.Extensions.Logging;
 using ObservableCollections;
 using R3;
@@ -44,7 +46,7 @@ public sealed class ClientDeviceBrowser : IClientDeviceBrowser, IDisposable,IAsy
         _deviceCache = new ObservableDictionary<MavlinkIdentity,IClientDevice>();
         _deviceTimeout = new ReactiveProperty<TimeSpan>(TimeSpan.FromMilliseconds(config.DeviceTimeoutMs));
         _subscribe1 = core.Connection
-            .Filter<HeartbeatPacket>()
+            .RxFilterByType<HeartbeatPacket>()
             .Subscribe(UpdateDevice);
         _timer = core.TimeProvider.CreateTimer(RemoveOldDevices, null, TimeSpan.FromMilliseconds(config.DeviceCheckIntervalMs), TimeSpan.FromMilliseconds(config.DeviceCheckIntervalMs));
     }
@@ -72,7 +74,7 @@ public sealed class ClientDeviceBrowser : IClientDeviceBrowser, IDisposable,IAsy
             (_, _) => _core.TimeProvider.GetTimestamp());
         
         if (_deviceCache.TryGetValue(packet.FullId, out var item) == true) return;
-        var device = _factory.Create(packet, _core);
+        var device = _factory.Create(packet);
         if (device == null)
         {
             _logger.ZLogWarning($"Device provider for {packet.FullId} not found");

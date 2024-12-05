@@ -54,7 +54,7 @@ public class ClientDevice: IClientDevice, IDisposable,IAsyncDisposable
         _name = new ReactiveProperty<string>($"{Class:G}[{Identity.Target.SystemId:00},{Identity.Target.ComponentId:00}]");
     }
 
-    protected ICoreServices Core => _core;
+    public ICoreServices Core => _core;
     
     private async void TryReconnect(object? state)
     {

@@ -1,5 +1,5 @@
 using System;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;

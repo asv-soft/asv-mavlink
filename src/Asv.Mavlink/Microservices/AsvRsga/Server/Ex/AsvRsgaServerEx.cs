@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvRsga;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.AsvRsga;
+using Asv.Mavlink.Common;
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
-using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
+using MavCmd = Asv.Mavlink.Common.MavCmd;
 
 namespace Asv.Mavlink;
 
@@ -23,7 +23,7 @@ public class AsvRsgaServerEx : IAsvRsgaServerEx, IDisposable,IAsyncDisposable
         _logger = server.Core.Log.CreateLogger<AsvRsgaServerEx>();
         Base = server;
         _sub1 = server.OnCompatibilityRequest.Subscribe(OnCompatibilityRequest);
-        commands[(MavCmd)V2.AsvRsga.MavCmd.MavCmdAsvRsgaSetMode] = async (id,args, cancel) =>
+        commands[(MavCmd)AsvRsga.MavCmd.MavCmdAsvRsgaSetMode] = async (id,args, cancel) =>
         {
             if (SetMode == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             RsgaHelper.GetArgsForSetMode(args.Payload, out var mode, out var p2, out var p3, out var p4, out var p5, out var p6, out var p7);

@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Minimal;
+using Asv.Mavlink.Minimal;
+
 
 namespace Asv.Mavlink
 {
@@ -12,11 +13,11 @@ namespace Asv.Mavlink
     public class HeartbeatServer(MavlinkIdentity identity, MavlinkHeartbeatServerConfig config, ICoreServices core)
         : MavlinkMicroserviceServer("HEARTBEAT", identity, core), IHeartbeatServer
     {
-        private readonly MavlinkPacketTransponder<HeartbeatPacket, HeartbeatPayload> _transponder = new(identity, core);
+        private readonly MavlinkPacketTransponder<HeartbeatPacket> _transponder = new(identity, core);
 
         public void Set(Action<HeartbeatPayload> changeCallback)
         {
-            _transponder.Set(changeCallback);
+            _transponder.Set(x=>changeCallback(x.Payload));
         }
 
         public void Start()

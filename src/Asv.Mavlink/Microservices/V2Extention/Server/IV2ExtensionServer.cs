@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using R3;
 
 namespace Asv.Mavlink
@@ -11,13 +12,13 @@ namespace Asv.Mavlink
     public interface IV2ExtensionServer : IMavlinkMicroserviceServer
     {
         /// <summary>
-        /// Gets the property OnData which is of type IRxValue&lt;V2ExtensionPacket&gt;.
+        /// Gets the property OnData which is of type ReadOnlyReactiveProperty&lt;V2ExtensionPacket&gt;.
         /// </summary>
         /// <remarks>
         /// This property represents the event handler for handling data received events.
         /// </remarks>
         /// <returns>
-        /// The IRxValue&lt;V2ExtensionPacket&gt; object.
+        /// The ReadOnlyReactiveProperty&lt;V2ExtensionPacket&gt; object.
         /// </returns>
         Observable<V2ExtensionPacket> OnData { get; }
 
@@ -38,7 +39,7 @@ namespace Asv.Mavlink
         /// target network ID, message type, and data to send.
         /// The cancellation token can be used to cancel the operation.
         /// </remarks>
-        Task SendData(byte targetSystemId, byte targetComponentId, byte targetNetworkId, ushort messageType,
+        ValueTask SendData(byte targetSystemId, byte targetComponentId, byte targetNetworkId, ushort messageType,
             byte[] data, CancellationToken cancel);
     }
 }

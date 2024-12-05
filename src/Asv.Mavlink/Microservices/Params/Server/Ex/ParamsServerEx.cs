@@ -5,7 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -129,7 +130,7 @@ public class ParamsServerEx: IParamsServerEx,IDisposable
                 var param = _paramList[index];
                 var currentValue =  param.ReadFromConfig(_cfg, _serverCfg.CfgPrefix);
                 await SendParam(((ushort)index,param), currentValue, DisposeCancel).ConfigureAwait(false);
-                //TODO: Task.Delay
+                //TODO: Task.Delay, remove it
                 await Task.Delay(_serverCfg.SendingParamItemDelayMs, DisposeCancel).ConfigureAwait(false);
             }
         }

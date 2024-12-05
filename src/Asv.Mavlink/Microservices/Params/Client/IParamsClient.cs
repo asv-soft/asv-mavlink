@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using R3;
 
 namespace Asv.Mavlink;
@@ -19,7 +20,7 @@ public interface IParamsClient: IMavlinkMicroserviceClient
     /// Subscribers can be notified multiple times as new ParamValuePayload objects are emitted.
     /// </remarks>
     /// <seealso cref="ParamValuePayload"/>
-    /// <seealso cref="IObservable{T}"/>
+    /// <seealso cref="Observable{T}"/>
     Observable<ParamValuePayload> OnParamValue { get; }
 
     /// <summary>
@@ -27,7 +28,7 @@ public interface IParamsClient: IMavlinkMicroserviceClient
     /// </summary>
     /// <param name="cancel">Optional cancellation token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    Task SendRequestList(CancellationToken cancel = default);
+    ValueTask SendRequestList(CancellationToken cancel = default);
 
     /// <summary>
     /// Reads the value of a specified name.

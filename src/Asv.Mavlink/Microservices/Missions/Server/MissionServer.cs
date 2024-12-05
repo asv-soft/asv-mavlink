@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using R3;
 
 namespace Asv.Mavlink;
@@ -19,15 +20,14 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
         OnMissionAck = InternalFilter<MissionAckPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
             .Select(p => p.Payload);
     }
-    
+
+    public Observable<MissionAckPayload> OnMissionAck { get; }
     public Observable<MissionCountPacket> OnMissionCount { get; }
     public Observable<MissionRequestListPacket> OnMissionRequestList { get; }
     public Observable<MissionRequestIntPacket> OnMissionRequestInt { get; }
     public Observable<MissionClearAllPacket> OnMissionClearAll { get; }
     public Observable<MissionSetCurrentPacket> OnMissionSetCurrent { get; }
-    public Observable<MissionAckPayload> OnMissionAck { get; }
-    
-    public Task SendMissionAck(MavMissionResult result, byte targetSystemId = 0, byte targetComponentId = 0,
+    public ValueTask SendMissionAck(MavMissionResult result, byte targetSystemId = 0, byte targetComponentId = 0,
         MavMissionType? type = null)
     {
         return InternalSend<MissionAckPacket>(x =>
@@ -42,7 +42,7 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
         }, DisposeCancel);
     }
 
-    public Task SendMissionCount(ushort count, byte targetSystemId = 0, byte targetComponentId = 0)
+    public ValueTask SendMissionCount(ushort count, byte targetSystemId = 0, byte targetComponentId = 0)
     {
         return InternalSend<MissionCountPacket>(x =>
         {
@@ -52,7 +52,7 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
         }, DisposeCancel);
     }
 
-    public Task SendReached(ushort seq)
+    public ValueTask SendReached(ushort seq)
     {
         return InternalSend<MissionItemReachedPacket>(x =>
         {
@@ -60,7 +60,7 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
         },DisposeCancel);
     }
 
-    public Task SendMissionCurrent(ushort current)
+    public ValueTask SendMissionCurrent(ushort current)
     {
         _currentMissionIndex = current;
         return InternalSend<MissionCurrentPacket>(x =>
@@ -69,7 +69,7 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
         }, DisposeCancel);
     }
 
-    public Task SendMissionItemInt(ServerMissionItem item,byte targetSystemId = 0, byte targetComponentId = 0)
+    public ValueTask SendMissionItemInt(ServerMissionItem item,byte targetSystemId = 0, byte targetComponentId = 0)
     {
         return InternalSend<MissionItemIntPacket>(x =>
         {

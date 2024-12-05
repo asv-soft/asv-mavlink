@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2023 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,23 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
 using System.Text;
-using Asv.Mavlink.V2.Common;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
+using Asv.Mavlink.Common;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.Uavionix
+namespace Asv.Mavlink.Uavionix
 {
 
     public static class UavionixHelper
     {
-        public static void RegisterUavionixDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterUavionixDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new UavionixAdsbOutCfgPacket());
-            src.Register(()=>new UavionixAdsbOutDynamicPacket());
-            src.Register(()=>new UavionixAdsbTransceiverHealthReportPacket());
+            src.Add(UavionixAdsbOutCfgPacket.MessageId, ()=>new UavionixAdsbOutCfgPacket());
+            src.Add(UavionixAdsbOutDynamicPacket.MessageId, ()=>new UavionixAdsbOutDynamicPacket());
+            src.Add(UavionixAdsbTransceiverHealthReportPacket.MessageId, ()=>new UavionixAdsbTransceiverHealthReportPacket());
         }
     }
 
@@ -323,14 +325,20 @@ namespace Asv.Mavlink.V2.Uavionix
     /// Static data to configure the ADS-B transponder (send within 10 sec of a POR and every 10 sec thereafter)
     ///  UAVIONIX_ADSB_OUT_CFG
     /// </summary>
-    public class UavionixAdsbOutCfgPacket: PacketV2<UavionixAdsbOutCfgPayload>
+    public class UavionixAdsbOutCfgPacket: MavlinkV2Message<UavionixAdsbOutCfgPayload>
     {
-	    public const int PacketMessageId = 10001;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 209;
+        public const int MessageId = 10001;
+        
+        public const byte CrcExtra = 209;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override UavionixAdsbOutCfgPayload Payload { get; } = new UavionixAdsbOutCfgPayload();
+        public override UavionixAdsbOutCfgPayload Payload { get; } = new();
 
         public override string Name => "UAVIONIX_ADSB_OUT_CFG";
     }
@@ -340,8 +348,11 @@ namespace Asv.Mavlink.V2.Uavionix
     /// </summary>
     public class UavionixAdsbOutCfgPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -424,7 +435,9 @@ namespace Asv.Mavlink.V2.Uavionix
         /// Vehicle identifier (8 characters, null terminated, valid characters are A-Z, 0-9, " " only)
         /// OriginName: callsign, Units: , IsExtended: false
         /// </summary>
+        public const int CallsignMaxItemsCount = 9;
         public char[] Callsign { get; set; } = new char[9];
+        [Obsolete("This method is deprecated. Use GetCallsignMaxItemsCount instead.")]
         public byte GetCallsignMaxItemsCount() => 9;
         /// <summary>
         /// Transmitting vehicle type. See ADSB_EMITTER_TYPE enum
@@ -456,14 +469,20 @@ namespace Asv.Mavlink.V2.Uavionix
     /// Dynamic data used to generate ADS-B out transponder data (send at 5Hz)
     ///  UAVIONIX_ADSB_OUT_DYNAMIC
     /// </summary>
-    public class UavionixAdsbOutDynamicPacket: PacketV2<UavionixAdsbOutDynamicPayload>
+    public class UavionixAdsbOutDynamicPacket: MavlinkV2Message<UavionixAdsbOutDynamicPayload>
     {
-	    public const int PacketMessageId = 10002;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 186;
+        public const int MessageId = 10002;
+        
+        public const byte CrcExtra = 186;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override UavionixAdsbOutDynamicPayload Payload { get; } = new UavionixAdsbOutDynamicPayload();
+        public override UavionixAdsbOutDynamicPayload Payload { get; } = new();
 
         public override string Name => "UAVIONIX_ADSB_OUT_DYNAMIC";
     }
@@ -473,8 +492,11 @@ namespace Asv.Mavlink.V2.Uavionix
     /// </summary>
     public class UavionixAdsbOutDynamicPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 41; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -630,14 +652,20 @@ namespace Asv.Mavlink.V2.Uavionix
     /// Transceiver heartbeat with health report (updated every 10s)
     ///  UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT
     /// </summary>
-    public class UavionixAdsbTransceiverHealthReportPacket: PacketV2<UavionixAdsbTransceiverHealthReportPayload>
+    public class UavionixAdsbTransceiverHealthReportPacket: MavlinkV2Message<UavionixAdsbTransceiverHealthReportPayload>
     {
-	    public const int PacketMessageId = 10003;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 4;
+        public const int MessageId = 10003;
+        
+        public const byte CrcExtra = 4;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override UavionixAdsbTransceiverHealthReportPayload Payload { get; } = new UavionixAdsbTransceiverHealthReportPayload();
+        public override UavionixAdsbTransceiverHealthReportPayload Payload { get; } = new();
 
         public override string Name => "UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT";
     }
@@ -647,8 +675,11 @@ namespace Asv.Mavlink.V2.Uavionix
     /// </summary>
     public class UavionixAdsbTransceiverHealthReportPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 1; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 1; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;

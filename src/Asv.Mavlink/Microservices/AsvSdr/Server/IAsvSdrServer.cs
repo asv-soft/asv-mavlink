@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvSdr;
+using Asv.Mavlink.AsvSdr;
+
 using R3;
 
 namespace Asv.Mavlink
@@ -48,7 +49,7 @@ namespace Asv.Mavlink
         /// Provides an observable sequence of AsvSdrRecordRequestPayload objects for recording requests.
         /// </summary>
         /// <value>
-        /// An IObservable<AsvSdrRecordRequestPayload> representing the OnRecordRequest sequence.
+        /// An Observable<AsvSdrRecordRequestPayload> representing the OnRecordRequest sequence.
         /// </value>
         Observable<AsvSdrRecordRequestPayload> OnRecordRequest { get; }
 
@@ -67,7 +68,8 @@ namespace Asv.Mavlink
         /// The method returns a task that can be awaited to track the progress of the asynchronous operation. Once the operation is complete,
         /// the task will be completed.
         /// </remarks>
-        Task SendRecordResponse(Action<AsvSdrRecordResponsePayload> setValueCallback, CancellationToken cancel = default);
+        ValueTask SendRecordResponse(Action<AsvSdrRecordResponsePayload> setValueCallback,
+            CancellationToken cancel = default);
 
         /// <summary>
         /// Sends a record using the specified payload and provides a callback to set the value.
@@ -75,13 +77,13 @@ namespace Asv.Mavlink
         /// <param name="setValueCallback">The callback action used to set the value of the record.</param>
         /// <param name="cancel">The cancellation token used to cancel the operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task SendRecord(Action<AsvSdrRecordPayload> setValueCallback, CancellationToken cancel = default);
+        ValueTask SendRecord(Action<AsvSdrRecordPayload> setValueCallback, CancellationToken cancel = default);
 
         /// <summary>
         /// Event that is triggered when a delete request is received for a record.
         /// </summary>
         /// <remarks>
-        /// This event provides an <see cref="IObservable{T}"/> that emits instances of <see cref="AsvSdrRecordDeleteRequestPayload"/>.
+        /// This event provides an <see cref="Observable{T}"/> that emits instances of <see cref="AsvSdrRecordDeleteRequestPayload"/>.
         /// Subscribing to this observable allows the application to receive and handle delete requests for records.
         /// </remarks>
         Observable<AsvSdrRecordDeleteRequestPayload> OnRecordDeleteRequest { get; }
@@ -92,7 +94,8 @@ namespace Asv.Mavlink
         /// <param name="setValueCallback">A callback method to set the value of the delete response payload.</param>
         /// <param name="cancel">Optional. A cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SendRecordDeleteResponse(Action<AsvSdrRecordDeleteResponsePayload> setValueCallback, CancellationToken cancel = default);
+        ValueTask SendRecordDeleteResponse(Action<AsvSdrRecordDeleteResponsePayload> setValueCallback,
+            CancellationToken cancel = default);
 
         /// <summary>
         /// Gets the observable sequence for handling the record tagging request.
@@ -110,15 +113,16 @@ namespace Asv.Mavlink
         /// Sends a record tag response payload to the specified value callback.
         /// </summary>
         /// <param name="setValueCallback">
-        /// The action that will be called with the <see cref="AsvSdrRecordTagResponsePayload"/> as its parameter.
+        ///     The action that will be called with the <see cref="AsvSdrRecordTagResponsePayload"/> as its parameter.
         /// </param>
         /// <param name="cancel">
-        /// [Optional] A cancellation token that can be used to cancel the operation.
+        ///     [Optional] A cancellation token that can be used to cancel the operation.
         /// </param>
         /// <returns>
         /// A Task representing the asynchronous operation. The task will complete when the response payload is sent.
         /// </returns>
-        Task SendRecordTagResponse(Action<AsvSdrRecordTagResponsePayload> setValueCallback, CancellationToken cancel = default);
+        ValueTask SendRecordTagResponse(Action<AsvSdrRecordTagResponsePayload> setValueCallback,
+            CancellationToken cancel = default);
 
         /// <summary>
         /// SendRecordTag sends a record tag payload to the server.
@@ -131,24 +135,28 @@ namespace Asv.Mavlink
         /// action <paramref name="setValueCallback"/> that sets the value of the record tag. Optionally,
         /// you can provide a cancellation token <paramref name="cancel"/> to cancel the operation.
         /// </remarks>
-        Task SendRecordTag(Action<AsvSdrRecordTagPayload> setValueCallback, CancellationToken cancel = default);
+        ValueTask SendRecordTag(Action<AsvSdrRecordTagPayload> setValueCallback, CancellationToken cancel = default);
 
         /// <summary>
-        /// Gets an IObservable of AsvSdrRecordTagDeleteRequestPayload representing the OnRecordTagDeleteRequest property.
+        /// Gets an Observable of AsvSdrRecordTagDeleteRequestPayload representing the OnRecordTagDeleteRequest property.
         /// </summary>
         /// <remarks>
         /// This property provides a way to subscribe to delete requests for a record tag.
         /// The delete request payload contains information about the record tag being deleted.
         /// </remarks>
         /// <returns>
-        /// An IObservable of AsvSdrRecordTagDeleteRequestPayload representing the OnRecordTagDeleteRequest property.
+        /// An Observable of AsvSdrRecordTagDeleteRequestPayload representing the OnRecordTagDeleteRequest property.
         /// </returns>
         Observable<AsvSdrRecordTagDeleteRequestPayload> OnRecordTagDeleteRequest { get; }
 
         /// <summary>
-        /// Sends a record tag delete request to the server and asynchronously waits for the response. </summary> <param name="setValueCallback">A callback function to handle the response payload of the record tag delete.</param> <param name="cancel">A cancellation token to cancel the operation.</param> <returns>A task representing the asynchronous operation. The task completes when the response is received.</returns>
+        /// Sends a record tag delete request to the server and asynchronously waits for the response. </summary>
+        /// <param name="setValueCallback">A callback function to handle the response payload of the record tag delete.</param>
+        /// <param name="cancel">A cancellation token to cancel the operation.</param>
+        /// <returns>A task representing the asynchronous operation. The task completes when the response is received.</returns>
         /// /
-        Task SendRecordTagDeleteResponse(Action<AsvSdrRecordTagDeleteResponsePayload> setValueCallback, CancellationToken cancel = default);
+        ValueTask SendRecordTagDeleteResponse(Action<AsvSdrRecordTagDeleteResponsePayload> setValueCallback,
+            CancellationToken cancel = default);
 
         /// Summary:
         /// Gets an observable sequence of AsvSdrRecordDataRequestPayload objects representing
@@ -160,7 +168,7 @@ namespace Asv.Mavlink
         /// By subscribing to this property, you can react to record data requests and handle them
         /// appropriately in your code.
         /// Returns:
-        /// An IObservable<AsvSdrRecordDataRequestPayload> representing the observable sequence
+        /// An Observable<AsvSdrRecordDataRequestPayload> representing the observable sequence
         /// of record data requests.
         /// /
         Observable<AsvSdrRecordDataRequestPayload> OnRecordDataRequest { get; }
@@ -172,7 +180,8 @@ namespace Asv.Mavlink
         /// <param name="setValueCallback">The action to be performed when the payload is received.</param>
         /// <param name="cancel">The cancellation token to cancel the operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task SendRecordDataResponse(Action<AsvSdrRecordDataResponsePayload> setValueCallback, CancellationToken cancel = default);
+        ValueTask SendRecordDataResponse(Action<AsvSdrRecordDataResponsePayload> setValueCallback,
+            CancellationToken cancel = default);
 
         /// <summary>
         /// Sends record data with the specified mode and callback function.
@@ -181,7 +190,7 @@ namespace Asv.Mavlink
         /// <param name="setValueCallback">The callback function that will be executed for each payload received during the data sending process.</param>
         /// <param name="cancel">The CancellationToken used to cancel the data sending process (optional).</param>
         /// <returns>A Task representing the asynchronous sending of the record data.</returns>
-        Task SendRecordData(AsvSdrCustomMode mode, Action<IPayload> setValueCallback, CancellationToken cancel = default);
+        ValueTask SendRecordData(AsvSdrCustomMode mode, Action<IPayload> setValueCallback, CancellationToken cancel = default);
 
         /// <summary>
         /// Creates a record data packet based on the specified mode.
@@ -189,7 +198,7 @@ namespace Asv.Mavlink
         /// <param name="mode">The custom mode for creating the record data.</param>
         /// <returns>An instance of the IPacketV2 interface containing the record data.</returns>
         /// <seealso cref="IPacketV2{IPayload}"/>
-        IPacketV2<IPayload>? CreateRecordData(AsvSdrCustomMode mode);
+        MavlinkMessage? CreateRecordData(AsvSdrCustomMode mode);
 
         /// <summary>
         /// Sends a signal.
@@ -202,7 +211,7 @@ namespace Asv.Mavlink
         /// with a raw packet signal. It can be used to send signals to a SDR device.
         /// The method runs asynchronously and it can be cancelled using the cancellation token.
         /// </remarks>
-        Task SendSignal(Action<AsvSdrSignalRawPacket> setValueCallback, CancellationToken cancel = default);
+        ValueTask SendSignal(Action<AsvSdrSignalRawPacket> setValueCallback, CancellationToken cancel = default);
         
         #region Calibration
 
@@ -218,10 +227,10 @@ namespace Asv.Mavlink
         /// with the specified request ID and result code. If a cancellation token is provided,
         /// the operation can be cancelled by calling the Cancel method on the token.
         /// </remarks>
-        Task SendCalibrationAcc(ushort reqId, AsvSdrRequestAck resultCode , CancellationToken cancel = default);
+        ValueTask SendCalibrationAcc(ushort reqId, AsvSdrRequestAck resultCode, CancellationToken cancel = default);
 
         /// <summary>
-        /// Gets an <see cref="IObservable{T}"/> representing the event triggered when a calibration table read request is received.
+        /// Gets an <see cref="Observable{T}"/> representing the event triggered when a calibration table read request is received.
         /// </summary>
         /// <remarks>
         /// The event is raised when a request is made to read the calibration table. Subscribers can listen to this event to be notified
@@ -229,7 +238,7 @@ namespace Asv.Mavlink
         /// necessary response.
         /// </remarks>
         /// <value>
-        /// An <see cref="IObservable{T}"/> of type <see cref="AsvSdrCalibTableReadPayload"/> representing the event triggered when a
+        /// An <see cref="Observable{T}"/> of type <see cref="AsvSdrCalibTableReadPayload"/> representing the event triggered when a
         /// calibration table read request is received.
         /// </value>
         Observable<AsvSdrCalibTableReadPayload> OnCalibrationTableReadRequest { get; }
@@ -240,7 +249,8 @@ namespace Asv.Mavlink
         /// <param name="setValueCallback">The callback function to set the value of the calibration table payload.</param>
         /// <param name="cancel">Optional cancellation token to cancel the operation.</param>
         /// <returns>A Task representing the asynchronous operation.</returns>
-        Task SendCalibrationTableReadResponse(Action<AsvSdrCalibTablePayload> setValueCallback, CancellationToken cancel = default);
+        ValueTask SendCalibrationTableReadResponse(Action<AsvSdrCalibTablePayload> setValueCallback,
+            CancellationToken cancel = default);
 
         /// <summary>
         /// Event raised when a request is made to read the calibration table row.
@@ -261,7 +271,7 @@ namespace Asv.Mavlink
         /// The <paramref name="setValueCallback"/> parameter is used to set the value of the calibration table row payload.
         /// The <paramref name="cancel"/> parameter is optional and can be used to cancel the operation.
         /// </remarks>
-        Task SendCalibrationTableRowReadResponse(Action<AsvSdrCalibTableRowPayload> setValueCallback, CancellationToken cancel = default);
+        ValueTask SendCalibrationTableRowReadResponse(Action<AsvSdrCalibTableRowPayload> setValueCallback, CancellationToken cancel = default);
 
         /// <summary>
         /// Gets an observable sequence that signals the start of a calibration table upload.
@@ -271,7 +281,7 @@ namespace Asv.Mavlink
         /// representing the start of a calibration table upload process.
         /// </remarks>
         /// <returns>
-        /// An <see cref="IObservable{T}"/> of type <see cref="AsvSdrCalibTableUploadStartPacket"/>
+        /// An <see cref="Observable{T}"/> of type <see cref="AsvSdrCalibTableUploadStartPacket"/>
         /// that emits the start packets when a calibration table upload is initiated.
         /// </returns>
         Observable<AsvSdrCalibTableUploadStartPacket> OnCalibrationTableUploadStart { get; }
@@ -289,8 +299,8 @@ namespace Asv.Mavlink
         /// <param name="request">The record request payload.</param>
         /// <param name="resultCode">The result code indicating the failure.</param>
         /// <returns>The task representing the operation.</returns>
-        public Task SendRecordResponseFail( AsvSdrRecordRequestPayload request,
-            AsvSdrRequestAck resultCode)
+        public ValueTask SendRecordResponseFail( AsvSdrRecordRequestPayload request,
+            AsvSdrRequestAck resultCode, CancellationToken cancel = default)
         {
             if (resultCode == AsvSdrRequestAck.AsvSdrRequestAckOk)
                 throw new ArgumentException("Result code must be not success");
@@ -299,21 +309,24 @@ namespace Asv.Mavlink
                 x.ItemsCount = 0;
                 x.RequestId = request.RequestId;
                 x.Result = resultCode;
-            }, CancellationToken.None);
+            }, cancel);
         }
 
         /// <summary>
-        /// Sends a successful record response. </summary> <param name="request">The record request payload.</param> <param name="recordsCount">The number of records.</param> <returns>A Task representing the asynchronous operation.</returns>
+        /// Sends a successful record response. </summary>
+        /// <param name="request">The record request payload.</param>
+        /// <param name="recordsCount">The number of records.</param>
+        /// <returns>A Task representing the asynchronous operation.</returns>
         /// /
-        public Task SendRecordResponseSuccess( AsvSdrRecordRequestPayload request,
-            ushort recordsCount)
+        public ValueTask SendRecordResponseSuccess( AsvSdrRecordRequestPayload request,
+            ushort recordsCount, CancellationToken cancel = default)
         {
             return SendRecordResponse(x =>
             {
                 x.ItemsCount = recordsCount;
                 x.RequestId = request.RequestId;
                 x.Result = AsvSdrRequestAck.AsvSdrRequestAckOk;
-            }, CancellationToken.None);
+            }, cancel);
         }
 
         /// <summary>
@@ -322,8 +335,8 @@ namespace Asv.Mavlink
         /// <param name="request">The payload of the record tag request.</param>
         /// <param name="resultCode">The result code of the record tag request.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public Task SendRecordTagResponseFail( AsvSdrRecordTagRequestPayload request,
-            AsvSdrRequestAck resultCode)
+        public ValueTask SendRecordTagResponseFail( AsvSdrRecordTagRequestPayload request,
+            AsvSdrRequestAck resultCode, CancellationToken cancel = default)
         {
             if (resultCode == AsvSdrRequestAck.AsvSdrRequestAckOk)
                 throw new ArgumentException("Result code must be not success");
@@ -332,7 +345,7 @@ namespace Asv.Mavlink
                 x.ItemsCount = 0;
                 x.RequestId = request.RequestId;
                 x.Result = resultCode;
-            }, CancellationToken.None);
+            }, cancel);
         }
 
         /// <summary>
@@ -341,15 +354,15 @@ namespace Asv.Mavlink
         /// <param name="request">The payload of the record tag request</param>
         /// <param name="recordsCount">The count of records in the request</param>
         /// <returns>Returns a task that represents the asynchronous operation</returns>
-        public Task SendRecordTagResponseSuccess( AsvSdrRecordTagRequestPayload request,
-            ushort recordsCount)
+        public ValueTask SendRecordTagResponseSuccess( AsvSdrRecordTagRequestPayload request,
+            ushort recordsCount, CancellationToken cancel = default)
         {
             return SendRecordTagResponse(x =>
             {
                 x.ItemsCount = recordsCount;
                 x.RequestId = request.RequestId;
                 x.Result = AsvSdrRequestAck.AsvSdrRequestAckOk;
-            }, CancellationToken.None);
+            }, cancel);
         }
 
         /// <summary>
@@ -358,8 +371,8 @@ namespace Asv.Mavlink
         /// <param name="request">The record delete request payload.</param>
         /// <param name="resultCode">The result code to be included in the response.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public Task SendRecordDeleteResponseFail( AsvSdrRecordDeleteRequestPayload request,
-            AsvSdrRequestAck resultCode)
+        public ValueTask SendRecordDeleteResponseFail( AsvSdrRecordDeleteRequestPayload request,
+            AsvSdrRequestAck resultCode, CancellationToken cancel = default)
         {
             if (resultCode == AsvSdrRequestAck.AsvSdrRequestAckOk)
                 throw new ArgumentException("Result code must be not success");
@@ -368,7 +381,7 @@ namespace Asv.Mavlink
                 request.RecordGuid.CopyTo(x.RecordGuid, 0);
                 x.RequestId = request.RequestId;
                 x.Result = resultCode;
-            }, CancellationToken.None);
+            }, cancel);
         }
 
         /// <summary>
@@ -376,14 +389,14 @@ namespace Asv.Mavlink
         /// </summary>
         /// <param name="request">The request payload containing the record GUID and request ID.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public Task SendRecordDeleteResponseSuccess( AsvSdrRecordDeleteRequestPayload request)
+        public ValueTask SendRecordDeleteResponseSuccess( AsvSdrRecordDeleteRequestPayload request, CancellationToken cancel = default)
         {
             return SendRecordDeleteResponse(x =>
             {
                 request.RecordGuid.CopyTo(x.RecordGuid, 0);
                 x.RequestId = request.RequestId;
                 x.Result = AsvSdrRequestAck.AsvSdrRequestAckOk;
-            }, CancellationToken.None);
+            }, cancel);
         }
 
         /// <summary>
@@ -393,8 +406,8 @@ namespace Asv.Mavlink
         /// <param name="resultCode">The result code of the deletion request.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         /// <exception cref="ArgumentException">Thrown if the result code is AsvSdrRequestAckOk.</exception>
-        public Task SendRecordTagDeleteResponseFail( AsvSdrRecordTagDeleteRequestPayload request,
-            AsvSdrRequestAck resultCode)
+        public ValueTask SendRecordTagDeleteResponseFail( AsvSdrRecordTagDeleteRequestPayload request,
+            AsvSdrRequestAck resultCode, CancellationToken cancel = default)
         {
             if (resultCode == AsvSdrRequestAck.AsvSdrRequestAckOk)
                 throw new ArgumentException("Result code must be not success");
@@ -404,7 +417,7 @@ namespace Asv.Mavlink
                 request.TagGuid.CopyTo(x.TagGuid, 0);
                 x.RequestId = request.RequestId;
                 x.Result = resultCode;
-            }, CancellationToken.None);
+            }, cancel);
         }
 
         /// <summary>
@@ -412,7 +425,7 @@ namespace Asv.Mavlink
         /// </summary>
         /// <param name="request">The payload of the delete request.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public Task SendRecordTagDeleteResponseSuccess( AsvSdrRecordTagDeleteRequestPayload request)
+        public ValueTask SendRecordTagDeleteResponseSuccess( AsvSdrRecordTagDeleteRequestPayload request, CancellationToken cancel = default)
         {
            
             return SendRecordTagDeleteResponse(x =>
@@ -421,7 +434,7 @@ namespace Asv.Mavlink
                 request.TagGuid.CopyTo(x.TagGuid, 0);
                 x.RequestId = request.RequestId;
                 x.Result = AsvSdrRequestAck.AsvSdrRequestAckOk;
-            }, CancellationToken.None);
+            }, cancel);
         }
 
         /// <summary>
@@ -430,8 +443,8 @@ namespace Asv.Mavlink
         /// <param name="request">The record data request payload.</param>
         /// <param name="resultCode">The result code for the response.</param>
         /// <returns>A task representing the asynchronous operation of sending the response.</returns>
-        public Task SendRecordDataResponseFail( AsvSdrRecordDataRequestPayload request,
-            AsvSdrRequestAck resultCode)
+        public ValueTask SendRecordDataResponseFail( AsvSdrRecordDataRequestPayload request,
+            AsvSdrRequestAck resultCode, CancellationToken cancel = default)
         {
             if (resultCode == AsvSdrRequestAck.AsvSdrRequestAckOk)
                 throw new ArgumentException("Result code must be not success");
@@ -441,14 +454,14 @@ namespace Asv.Mavlink
                 x.ItemsCount = 0;
                 x.RequestId = request.RequestId;
                 x.Result = resultCode;
-            }, CancellationToken.None);
+            }, cancel);
         }
 
         /// <param name="request">The request payload containing the record data.</param>
         /// <param name="count">The count of items in the record data.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public Task SendRecordDataResponseSuccess( AsvSdrRecordDataRequestPayload request,
-            uint count)
+        public ValueTask SendRecordDataResponseSuccess( AsvSdrRecordDataRequestPayload request,
+            uint count, CancellationToken cancel = default)
         {
             return SendRecordDataResponse(x =>
             {
@@ -456,7 +469,7 @@ namespace Asv.Mavlink
                 x.ItemsCount = count;
                 x.RequestId = request.RequestId;
                 x.Result = AsvSdrRequestAck.AsvSdrRequestAckOk;
-            }, CancellationToken.None);
+            }, cancel);
         }
     }
 

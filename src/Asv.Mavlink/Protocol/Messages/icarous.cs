@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2023 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,20 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.Icarous
+namespace Asv.Mavlink.Icarous
 {
 
     public static class IcarousHelper
     {
-        public static void RegisterIcarousDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterIcarousDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new IcarousHeartbeatPacket());
-            src.Register(()=>new IcarousKinematicBandsPacket());
+            src.Add(IcarousHeartbeatPacket.MessageId, ()=>new IcarousHeartbeatPacket());
+            src.Add(IcarousKinematicBandsPacket.MessageId, ()=>new IcarousKinematicBandsPacket());
         }
     }
 
@@ -98,14 +100,20 @@ namespace Asv.Mavlink.V2.Icarous
     /// ICAROUS heartbeat
     ///  ICAROUS_HEARTBEAT
     /// </summary>
-    public class IcarousHeartbeatPacket: PacketV2<IcarousHeartbeatPayload>
+    public class IcarousHeartbeatPacket: MavlinkV2Message<IcarousHeartbeatPayload>
     {
-	    public const int PacketMessageId = 42000;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 227;
+        public const int MessageId = 42000;
+        
+        public const byte CrcExtra = 227;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override IcarousHeartbeatPayload Payload { get; } = new IcarousHeartbeatPayload();
+        public override IcarousHeartbeatPayload Payload { get; } = new();
 
         public override string Name => "ICAROUS_HEARTBEAT";
     }
@@ -115,8 +123,11 @@ namespace Asv.Mavlink.V2.Icarous
     /// </summary>
     public class IcarousHeartbeatPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 1; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 1; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -152,14 +163,20 @@ namespace Asv.Mavlink.V2.Icarous
     /// Kinematic multi bands (track) output from Daidalus
     ///  ICAROUS_KINEMATIC_BANDS
     /// </summary>
-    public class IcarousKinematicBandsPacket: PacketV2<IcarousKinematicBandsPayload>
+    public class IcarousKinematicBandsPacket: MavlinkV2Message<IcarousKinematicBandsPayload>
     {
-	    public const int PacketMessageId = 42001;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 239;
+        public const int MessageId = 42001;
+        
+        public const byte CrcExtra = 239;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override IcarousKinematicBandsPayload Payload { get; } = new IcarousKinematicBandsPayload();
+        public override IcarousKinematicBandsPayload Payload { get; } = new();
 
         public override string Name => "ICAROUS_KINEMATIC_BANDS";
     }
@@ -169,8 +186,11 @@ namespace Asv.Mavlink.V2.Icarous
     /// </summary>
     public class IcarousKinematicBandsPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 46; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 46; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;

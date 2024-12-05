@@ -1,5 +1,5 @@
 ﻿using System;
-using Asv.Mavlink.V2.AsvChart;
+using Asv.Mavlink.AsvChart;
 using JetBrains.Annotations;
 using Xunit;
 

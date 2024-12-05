@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Asv.Mavlink.V2.Minimal;
+using Asv.Mavlink.Minimal;
+
 
 namespace Asv.Mavlink;
 

@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using R3;
@@ -90,7 +91,7 @@ namespace Asv.Mavlink
             _logger.ZLogInformation($"{LogRecv} Mission item {index} recieved: {JsonConvert.SerializeObject(result)}");
             return result;
         }
-        public Task WriteMissionItem(ushort seq, MavFrame frame, MavCmd cmd, bool current, bool autoContinue, float param1, float param2, float param3,
+        public ValueTask WriteMissionItem(ushort seq, MavFrame frame, MavCmd cmd, bool current, bool autoContinue, float param1, float param2, float param3,
             float param4, float x, float y, float z, MavMissionType missionType, CancellationToken cancel)
         {
             _logger.ZLogInformation($"{LogSend} Write mission item");
@@ -131,7 +132,7 @@ namespace Asv.Mavlink
             CheckResult(result, "MissionClearAll");
         }
 
-        public Task MissionSetCount(ushort count, CancellationToken cancel)
+        public ValueTask MissionSetCount(ushort count, CancellationToken cancel)
         {
             _logger.ZLogDebug($"{LogSend} Begin set items count '{count}'");
             return InternalSend<MissionCountPacket>(p =>
@@ -143,7 +144,7 @@ namespace Asv.Mavlink
             },  cancel: cancel);
         }
 
-        public Task WriteMissionItem(MissionItem missionItem,  CancellationToken cancel)
+        public ValueTask WriteMissionItem(MissionItem missionItem,  CancellationToken cancel)
         {
             _logger.ZLogInformation($"{LogSend} Write mission item {missionItem.Index}");
 
@@ -167,7 +168,7 @@ namespace Asv.Mavlink
                 p.Payload.MissionType = missionItem.Payload.MissionType;
             }, cancel);
         }
-        public Task WriteMissionIntItem(Action<MissionItemIntPayload> fillCallback, CancellationToken cancel = default)
+        public ValueTask WriteMissionIntItem(Action<MissionItemIntPayload> fillCallback, CancellationToken cancel = default)
         {
             _logger.ZLogInformation($"{LogSend} Write mission item");
             return InternalSend<MissionItemIntPacket>(p =>
@@ -178,13 +179,13 @@ namespace Asv.Mavlink
             }, cancel);
         }
         
-        public Task SendMissionAck
+        public ValueTask SendMissionAck
         (
             MavMissionResult result, 
-            CancellationToken cancel = default,
             byte targetSystemId = 0, 
             byte targetComponentId = 0,
-            MavMissionType? type = null
+            MavMissionType? type = null,
+            CancellationToken cancel = default
         )
         {
             return InternalSend<MissionAckPacket>(x =>

@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -46,7 +47,7 @@ namespace Asv.Mavlink
             _sub1 = InternalFilter<CommandAckPacket>().Select(p => p.Payload).Subscribe(_onCommandAck.AsObserver());
         }
 
-        public Task SendCommandInt(MavCmd command, MavFrame frame, bool current, bool autocontinue,
+        public ValueTask SendCommandInt(MavCmd command, MavFrame frame, bool current, bool autocontinue,
             float param1, float param2,
             float param3, float param4, int x, int y, float z, CancellationToken cancel)
         {
@@ -156,7 +157,7 @@ namespace Asv.Mavlink
 
         public async Task<TAnswerPacket> CommandLongAndWaitPacket<TAnswerPacket>(MavCmd command, float param1, float param2, float param3,
             float param4, float param5, float param6, float param7, CancellationToken cancel) 
-            where TAnswerPacket : IPacketV2<IPayload>, new()
+            where TAnswerPacket : MavlinkMessage, new()
         {
             _logger.ZLogTrace($"{LogSend}{command:G}({param1},{param1},{param2},{param3},{param4},{param5},{param6},{param7})");
             var result = await InternalCall<TAnswerPacket, CommandLongPacket, TAnswerPacket>((packet) =>

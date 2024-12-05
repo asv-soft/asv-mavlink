@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using R3;
 
 namespace Asv.Mavlink
@@ -20,7 +21,7 @@ namespace Asv.Mavlink
 
         }
         
-        public Task SendParamValue(Action<ParamValuePayload> changeCallback, CancellationToken cancel = default)
+        public ValueTask SendParamValue(Action<ParamValuePayload> changeCallback, CancellationToken cancel = default)
         {
             return InternalSend<ParamValuePacket>(p=>changeCallback(p.Payload), cancel);
         }

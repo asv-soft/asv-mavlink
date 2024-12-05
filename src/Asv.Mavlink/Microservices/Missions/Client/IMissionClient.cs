@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using R3;
 
 namespace Asv.Mavlink
@@ -39,7 +40,7 @@ namespace Asv.Mavlink
         /// <summary>
         /// Gets an observable stream of mission request payloads.
         /// </summary>
-        /// <returns>An IObservable stream of MissionRequestPayload objects.</returns>
+        /// <returns>An Observable stream of MissionRequestPayload objects.</returns>
         Observable<MissionRequestPayload> OnMissionRequest { get; }
 
         /// <summary>
@@ -64,6 +65,7 @@ namespace Asv.Mavlink
         /// <summary>
         /// Initiate mission download from a system by requesting the list of mission items.
         /// </summary>
+        /// <param name="attemptCount">The number of attempts to request the mission count from the system.</param>
         /// <param name="cancel">A cancellation token that can be used to cancel the mission request.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The task result is the count of mission items requested from the system.
@@ -78,7 +80,7 @@ namespace Asv.Mavlink
         /// <returns>
         /// A task that represents the asynchronous operation. The task completes when the count is set successfully.
         /// </returns>
-        Task MissionSetCount(ushort count, CancellationToken cancel = default);
+        ValueTask MissionSetCount(ushort count, CancellationToken cancel = default);
 
         /// <summary>
         /// Writes a mission item to the vehicle's mission list.
@@ -98,7 +100,7 @@ namespace Asv.Mavlink
         /// <param name="missionType">The type of mission item.</param>
         /// <param name="cancel">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        Task WriteMissionItem(ushort seq, MavFrame frame, MavCmd cmd, bool current, bool autoContinue, float param1,
+        ValueTask WriteMissionItem(ushort seq, MavFrame frame, MavCmd cmd, bool current, bool autoContinue, float param1,
             float param2, float param3,
             float param4, float x, float y, float z, MavMissionType missionType, CancellationToken cancel = default);
 
@@ -116,7 +118,7 @@ namespace Asv.Mavlink
         /// <param name="missionItem">The mission item to write.</param>
         /// <param name="cancel">A cancellation token to cancel the operation.</param>
         /// <returns>A task representing the asynchronous write operation.</returns>
-        Task WriteMissionItem(MissionItem missionItem, CancellationToken cancel = default);
+        ValueTask WriteMissionItem(MissionItem missionItem, CancellationToken cancel = default);
 
         /// <summary>
         /// Writes a mission item with an integer payload.
@@ -124,7 +126,7 @@ namespace Asv.Mavlink
         /// <param name="fillCallback">A callback function that fills the mission item payload.</param>
         /// <param name="cancel">Optional cancellation token to cancel the operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task WriteMissionIntItem(Action<MissionItemIntPayload> fillCallback, CancellationToken cancel = default);
+        ValueTask WriteMissionIntItem(Action<MissionItemIntPayload> fillCallback, CancellationToken cancel = default);
 
         /// <summary>
         /// Sends a mission acknowledgment message to the specified target system and component IDs.
@@ -135,13 +137,13 @@ namespace Asv.Mavlink
         /// <param name="cancel">Optional cancellation token to cancel the operation.</param>
         /// <param name="type">The mission type. Default value is null.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task SendMissionAck
+        ValueTask SendMissionAck
         (
             MavMissionResult result,
-            CancellationToken cancel = default,
             byte targetSystemId = 0,
             byte targetComponentId = 0,
-            MavMissionType? type = null
+            MavMissionType? type = null,
+            CancellationToken cancel = default
         );
     }
 }

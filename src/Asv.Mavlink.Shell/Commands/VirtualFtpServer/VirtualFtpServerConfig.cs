@@ -5,17 +5,12 @@ namespace Asv.Mavlink.Shell;
 
 public class VirtualFtpServerConfig
 {
-    public static VirtualFtpServerConfig Default { get; } = new VirtualFtpServerConfig
+    public static VirtualFtpServerConfig Default { get; } = new()
     {
-        Ports = new[]
-        {
-            new MavlinkPortConfig
-            {
-                ConnectionString = "tcp://127.0.0.1:7343",
-                Name = "to Client",
-                IsEnabled = true
-            }
-        },
+        Ports =
+        [
+            "tcp://127.0.0.1:7343"
+        ],
         FtpServerConfig = new MavlinkFtpServerConfig
         { 
             NetworkId = 0, 
@@ -28,7 +23,7 @@ public class VirtualFtpServerConfig
         SystemId = 1,
         ComponentId = 1,
     };
-    public required MavlinkPortConfig[] Ports { get; set; }
+    public required string[] Ports { get; set; }
     public required MavlinkFtpServerConfig FtpServerConfig { get; set; }
     public required MavlinkFtpServerExConfig FtpServerExConfig { get; set; }
     public required byte SystemId { get; set; }

@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using R3;
 
 namespace Asv.Mavlink;
@@ -14,7 +15,7 @@ public interface IParamsExtServer:IMavlinkMicroserviceServer
     /// <param name="changeCallback">The action to be performed on the ParamExtAckPayload.</param>
     /// <param name="cancel">The cancellation token.</param>
     /// <returns>Sends ancknowledgement packet.</returns>
-    Task SendParamExtAck(Action<ParamExtAckPayload> changeCallback, CancellationToken cancel = default);
+    ValueTask SendParamExtAck(Action<ParamExtAckPayload> changeCallback, CancellationToken cancel = default);
 
     /// <summary>
     /// Sends a ParamExtValuePacket with the specified changeCallback and cancellation token.
@@ -22,7 +23,7 @@ public interface IParamsExtServer:IMavlinkMicroserviceServer
     /// <param name="changeCallback">The action to be performed on the ParamExtValuePayload.</param>
     /// <param name="cancel">The cancellation token.</param>
     /// <returns>Sends value packet.</returns>
-    Task SendParamExtValue(Action<ParamExtValuePayload> changeCallback, CancellationToken cancel = default);
+    ValueTask SendParamExtValue(Action<ParamExtValuePayload> changeCallback, CancellationToken cancel = default);
 
     /// <summary>
     /// Gets the observable sequence of ParamExtSetPacket objects.

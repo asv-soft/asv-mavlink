@@ -3,7 +3,8 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.Common;
+
 using Microsoft.Extensions.Logging;
 using ObservableCollections;
 using R3;
@@ -81,11 +82,11 @@ public sealed class MissionClientEx : IMissionClientEx, IDisposable, IAsyncDispo
 
         if (result.Length != count)
         {
-            await Base.SendMissionAck(MavMissionResult.MavMissionError, cancel).ConfigureAwait(false);
+            await Base.SendMissionAck(MavMissionResult.MavMissionError, cancel: cancel).ConfigureAwait(false);
             return [];
         }
 
-        await Base.SendMissionAck(MavMissionResult.MavMissionAccepted, cancel).ConfigureAwait(false);
+        await Base.SendMissionAck(MavMissionResult.MavMissionAccepted, cancel: cancel).ConfigureAwait(false);
         _isMissionSynced.OnNext(true);
         return result;
     }

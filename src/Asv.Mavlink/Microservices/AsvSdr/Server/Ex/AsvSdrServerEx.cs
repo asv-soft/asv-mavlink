@@ -3,14 +3,17 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
-using Asv.Mavlink.V2.AsvSdr;
-using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Minimal;
+using Asv.Mavlink.AsvSdr;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
+
+
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
-using MavCmd = Asv.Mavlink.V2.Common.MavCmd;
-using MavType = Asv.Mavlink.V2.Minimal.MavType;
+using MavCmd = Asv.Mavlink.Common.MavCmd;
+using MavType = Asv.Mavlink.Minimal.MavType;
 
 namespace Asv.Mavlink;
 
@@ -46,7 +49,7 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
         heartbeat.Set(p =>
         {
             p.Autopilot = MavAutopilot.MavAutopilotInvalid;
-            p.Type = (MavType)V2.AsvSdr.MavType.MavTypeAsvSdrPayload;
+            p.Type = (MavType)AsvSdr.MavType.MavTypeAsvSdrPayload;
             p.SystemStatus = MavState.MavStateActive;
             p.BaseMode = MavModeFlag.MavModeFlagCustomModeEnabled;
             p.MavlinkVersion = 3;
@@ -60,7 +63,7 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
 
         #endregion
         
-        commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSetMode] = async (id,args, cancel) =>
+        commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetMode] = async (id,args, cancel) =>
         {
             if (SetMode == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
@@ -68,7 +71,7 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
             var result = await SetMode(mode,freq, rate,sendingThinningRatio, referencePower, cs.Token).ConfigureAwait(false);
             return CommandResult.FromResult(result);
         };
-        commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartRecord] = async (id,args, cancel) =>
+        commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartRecord] = async (id,args, cancel) =>
         {
             if (StartRecord == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
@@ -76,7 +79,7 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
             var result = await StartRecord(name, cs.Token).ConfigureAwait(false);
             return CommandResult.FromResult(result);
         };
-        commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopRecord] = async (id,args, cancel) =>
+        commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopRecord] = async (id,args, cancel) =>
         {
             if (StopRecord == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
@@ -84,7 +87,7 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
             var result = await StopRecord(cs.Token).ConfigureAwait(false);
             return CommandResult.FromResult(result);
         };
-        commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag] = async (id,args, cancel) =>
+        commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag] = async (id,args, cancel) =>
         {
             if (CurrentRecordSetTag == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
@@ -92,7 +95,7 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
             var result = await CurrentRecordSetTag(tagType,name,valueArray, cs.Token).ConfigureAwait(false);
             return CommandResult.FromResult(result);
         };
-        commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction] = async (id, args, cancel) =>
+        commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction] = async (id, args, cancel) =>
         {
             if (SystemControlAction == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
@@ -100,7 +103,7 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
             var result = await SystemControlAction(action, cs.Token).ConfigureAwait(false);
             return CommandResult.FromResult(result);
         };
-        commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartMission] = async (id, args, cancel) =>
+        commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartMission] = async (id, args, cancel) =>
         {
             if (StartMission == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
@@ -108,7 +111,7 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
             var result = await StartMission(missionIndex, cs.Token).ConfigureAwait(false);
             return CommandResult.FromResult(result);
         };
-        commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopMission] = async (id, args, cancel) =>
+        commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopMission] = async (id, args, cancel) =>
         {
             if (StopMission == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
@@ -117,7 +120,7 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
             return CommandResult.FromResult(result);
         };
         
-        commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration] = async (id, args, cancel) =>
+        commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration] = async (id, args, cancel) =>
         {
             if (StartCalibration == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
@@ -125,7 +128,7 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
             var result = await StartCalibration(cs.Token).ConfigureAwait(false);
             return CommandResult.FromResult(result);
         };
-        commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration] = async (id, args, cancel) =>
+        commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration] = async (id, args, cancel) =>
         {
             if (StopCalibration == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
             using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
@@ -463,15 +466,15 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
         _sub3.Dispose();
         _sub4.Dispose();
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSetMode] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartRecord] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopRecord] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartMission] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopMission] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetMode] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartRecord] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopRecord] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartMission] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopMission] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration] = null;
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         
     }
@@ -485,15 +488,15 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
         await CastAndDispose(_sub4).ConfigureAwait(false);
         
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSetMode] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartRecord] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopRecord] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartMission] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopMission] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration] = null;
-        _commands[(MavCmd)V2.AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetMode] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartRecord] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopRecord] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartMission] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopMission] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration] = null;
+        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration] = null;
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         
         return;

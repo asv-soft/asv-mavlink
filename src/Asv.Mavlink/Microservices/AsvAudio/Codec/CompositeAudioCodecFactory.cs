@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Asv.Mavlink.V2.AsvAudio;
+using Asv.Mavlink.AsvAudio;
+
 using R3;
 
 namespace Asv.Mavlink;

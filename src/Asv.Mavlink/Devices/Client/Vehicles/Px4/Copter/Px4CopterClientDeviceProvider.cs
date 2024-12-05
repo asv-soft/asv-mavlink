@@ -1,4 +1,5 @@
-using Asv.Mavlink.V2.Minimal;
+using Asv.Mavlink.Minimal;
+
 
 namespace Asv.Mavlink;
 

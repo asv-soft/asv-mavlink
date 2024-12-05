@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2023 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,22 +20,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.2.5-alpha-11
+// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
+using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
 using Asv.IO;
 
-namespace Asv.Mavlink.V2.Avssuas
+namespace Asv.Mavlink.Avssuas
 {
 
     public static class AvssuasHelper
     {
-        public static void RegisterAvssuasDialect(this IPacketDecoder<IPacketV2<IPayload>> src)
+        public static void RegisterAvssuasDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
         {
-            src.Register(()=>new AvssPrsSysStatusPacket());
-            src.Register(()=>new AvssDronePositionPacket());
-            src.Register(()=>new AvssDroneImuPacket());
-            src.Register(()=>new AvssDroneOperationModePacket());
+            src.Add(AvssPrsSysStatusPacket.MessageId, ()=>new AvssPrsSysStatusPacket());
+            src.Add(AvssDronePositionPacket.MessageId, ()=>new AvssDronePositionPacket());
+            src.Add(AvssDroneImuPacket.MessageId, ()=>new AvssDroneImuPacket());
+            src.Add(AvssDroneOperationModePacket.MessageId, ()=>new AvssDroneOperationModePacket());
         }
     }
 
@@ -272,14 +274,20 @@ namespace Asv.Mavlink.V2.Avssuas
     ///  AVSS PRS system status.
     ///  AVSS_PRS_SYS_STATUS
     /// </summary>
-    public class AvssPrsSysStatusPacket: PacketV2<AvssPrsSysStatusPayload>
+    public class AvssPrsSysStatusPacket: MavlinkV2Message<AvssPrsSysStatusPayload>
     {
-	    public const int PacketMessageId = 60050;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 220;
+        public const int MessageId = 60050;
+        
+        public const byte CrcExtra = 220;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override AvssPrsSysStatusPayload Payload { get; } = new AvssPrsSysStatusPayload();
+        public override AvssPrsSysStatusPayload Payload { get; } = new();
 
         public override string Name => "AVSS_PRS_SYS_STATUS";
     }
@@ -289,8 +297,11 @@ namespace Asv.Mavlink.V2.Avssuas
     /// </summary>
     public class AvssPrsSysStatusPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -358,14 +369,20 @@ namespace Asv.Mavlink.V2.Avssuas
     ///  Drone position.
     ///  AVSS_DRONE_POSITION
     /// </summary>
-    public class AvssDronePositionPacket: PacketV2<AvssDronePositionPayload>
+    public class AvssDronePositionPacket: MavlinkV2Message<AvssDronePositionPayload>
     {
-	    public const int PacketMessageId = 60051;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 245;
+        public const int MessageId = 60051;
+        
+        public const byte CrcExtra = 245;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override AvssDronePositionPayload Payload { get; } = new AvssDronePositionPayload();
+        public override AvssDronePositionPayload Payload { get; } = new();
 
         public override string Name => "AVSS_DRONE_POSITION";
     }
@@ -375,8 +392,11 @@ namespace Asv.Mavlink.V2.Avssuas
     /// </summary>
     public class AvssDronePositionPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -452,14 +472,20 @@ namespace Asv.Mavlink.V2.Avssuas
     ///  Drone IMU data. Quaternion order is w, x, y, z and a zero rotation would be expressed as (1 0 0 0).
     ///  AVSS_DRONE_IMU
     /// </summary>
-    public class AvssDroneImuPacket: PacketV2<AvssDroneImuPayload>
+    public class AvssDroneImuPacket: MavlinkV2Message<AvssDroneImuPayload>
     {
-	    public const int PacketMessageId = 60052;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 101;
+        public const int MessageId = 60052;
+        
+        public const byte CrcExtra = 101;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override AvssDroneImuPayload Payload { get; } = new AvssDroneImuPayload();
+        public override AvssDroneImuPayload Payload { get; } = new();
 
         public override string Name => "AVSS_DRONE_IMU";
     }
@@ -469,8 +495,11 @@ namespace Asv.Mavlink.V2.Avssuas
     /// </summary>
     public class AvssDroneImuPayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;
@@ -586,14 +615,20 @@ namespace Asv.Mavlink.V2.Avssuas
     ///  Drone operation mode.
     ///  AVSS_DRONE_OPERATION_MODE
     /// </summary>
-    public class AvssDroneOperationModePacket: PacketV2<AvssDroneOperationModePayload>
+    public class AvssDroneOperationModePacket: MavlinkV2Message<AvssDroneOperationModePayload>
     {
-	    public const int PacketMessageId = 60053;
-        public override int MessageId => PacketMessageId;
-        public override byte GetCrcEtra() => 45;
+        public const int MessageId = 60053;
+        
+        public const byte CrcExtra = 45;
+        
+        public override ushort Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
         public override bool WrapToV2Extension => false;
 
-        public override AvssDroneOperationModePayload Payload { get; } = new AvssDroneOperationModePayload();
+        public override AvssDroneOperationModePayload Payload { get; } = new();
 
         public override string Name => "AVSS_DRONE_OPERATION_MODE";
     }
@@ -603,8 +638,11 @@ namespace Asv.Mavlink.V2.Avssuas
     /// </summary>
     public class AvssDroneOperationModePayload : IPayload
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
+        
         public int GetByteSize()
         {
             var sum = 0;

@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.AsvAudio;
-using Asv.Mavlink.V2.AsvRadio;
-using Asv.Mavlink.V2.Common;
-using R3;
+using Asv.IO;
+using Asv.Mavlink.AsvAudio;
+using Asv.Mavlink.AsvRadio;
+using Asv.Mavlink.Common;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -51,11 +51,11 @@ public class AsvRadioClientServerComplexTest
         MaxQueueSize = 100,
         MaxSendRateHz = 100
     };
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<IProtocolMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     public AsvRadioClientServerComplexTest(ITestOutputHelper output): base(output)
     {
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
         _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
@@ -66,7 +66,7 @@ public class AsvRadioClientServerComplexTest
         //Arrange
         var client = Client;
         var server = Server;
-        server.EnableRadio += async (hz, modulation, dbm, powerDbm, codec, cancel) =>
+        server.EnableRadio += async (_, _, _, _, _, cancel) =>
         {
             return await Task.Run(() => MavResult.MavResultAccepted, cancel);
         };
@@ -86,7 +86,7 @@ public class AsvRadioClientServerComplexTest
         //Arrange
         var client = Client;
         var server = Server;
-        server.EnableRadio += async (hz, modulation, dbm, powerDbm, codec, cancel) =>
+        server.EnableRadio += async (_, _, _, _, _, cancel) =>
         {
             return await Task.Run(() => MavResult.MavResultAccepted, cancel);
         };
@@ -107,7 +107,7 @@ public class AsvRadioClientServerComplexTest
     public async Task Client_DisableRadio_Success()
     {
         //Arrange
-        Server.EnableRadio += async (hz, modulation, dbm, powerDbm, codec, cancel) =>
+        Server.EnableRadio += async (_, _, _, _, _, cancel) =>
         {
             return await Task.Run(() => MavResult.MavResultAccepted, cancel);
         };
