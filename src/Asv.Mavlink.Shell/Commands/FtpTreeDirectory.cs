@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Asv.Common;
 using Asv.IO;
 using ConsoleAppFramework;
 using DynamicData;
@@ -22,9 +23,11 @@ public class FtpTreeDirectory
     [Command("ftp-tree")]
     public async Task RunFtpTree(string connection)
     {
-        using var port = PortFactory.Create(connection);
-        port.Enable();
-        using var conn = MavlinkV2Connection.Create(port);
+        await using var conn = Protocol.Create(builder =>
+        {
+            builder.RegisterMavlinkV2Protocol();
+        }).CreateRouter("ROUTER");
+        conn.AddPort(connection);
         var identity = new MavlinkClientIdentity(255, 255, 1, 1);
         var seq = new PacketSequenceCalculator();
         var core = new CoreServices(conn, seq, null, TimeProvider.System, new DefaultMeterFactory());

@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Minimal;
+using Asv.IO;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
+
+
 using DeepEqual.Syntax;
 using R3;
 using Xunit;
@@ -37,14 +40,14 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
     private HeartbeatServer _heartBeatServer = null!;
     private readonly PositionClientEx _client;
     private readonly CommandLongServerEx _server;
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     
     public PositionExComplexTest(ITestOutputHelper log) : base(log)
     {
         _client = Client;
         _server = Server;
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
         _cancellationTokenSource = new CancellationTokenSource(
             TimeSpan.FromSeconds(200), 
             TimeProvider.System
@@ -52,7 +55,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
-    protected override CommandLongServerEx CreateServer(MavlinkIdentity identity, ICoreServices core)
+    protected override CommandLongServerEx CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
         _heartBeatServer = new HeartbeatServer(identity, _heartbeatServerCfg, core);
         
@@ -60,7 +63,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         return new CommandLongServerEx(commandServer);
     }
 
-    protected override PositionClientEx CreateClient(MavlinkClientIdentity identity, ICoreServices core)
+    protected override PositionClientEx CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
         var positionClient = new PositionClient(identity, core);
         var heartBeatClient = new HeartbeatClient(identity, _heartbeatClientCfg, core);
@@ -81,7 +84,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Client.TxPipe.Subscribe(p =>
+        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -92,10 +95,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         var packetFromServer = await _taskCompletionSource.Task as CommandLongPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         Assert.NotNull(packetFromClient);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
@@ -127,7 +130,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Client.TxPipe.Subscribe(p =>
+        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -138,10 +141,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         var packetFromServer = await _taskCompletionSource.Task as CommandLongPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called , Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(2, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called , (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(2, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         Assert.NotNull(packetFromClient);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
@@ -166,10 +169,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
         Assert.Equal(0, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(0, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
     [Fact]
@@ -177,8 +180,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
     {
         // Arrange 
         var result = MavResult.MavResultAccepted;
-        using var sub = Link.Client
-            .Filter<CommandAckPacket>()
+        using var sub = Link.Client.OnRxMessage.RxFilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -190,16 +192,16 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         await Assert.ThrowsAsync<CommandException>(async () => await task);
         Assert.Equal(MavResult.MavResultUnsupported, result);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
     [Fact]
     public async Task ArmDisarm_Timeout_Throws()
     {
         // Arrange
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             ClientTime.Advance(
                 TimeSpan.FromSeconds(
@@ -247,7 +249,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Client.TxPipe.Subscribe(p =>
+        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -258,10 +260,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         var packetFromServer = await _taskCompletionSource.Task as CommandLongPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         Assert.NotNull(packetFromClient);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
@@ -300,7 +302,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Client.TxPipe.Subscribe(p =>
+        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -311,10 +313,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         var packetFromServer = await _taskCompletionSource.Task as CommandLongPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         Assert.NotNull(packetFromClient);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
@@ -343,7 +345,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Client.TxPipe.Subscribe(p =>
+        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             if (p is CommandLongPacket packet)
             {
@@ -359,10 +361,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         await _taskCompletionSource.Task;
         Assert.Equal(3, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(3, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(3, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         Assert.NotEmpty(packetsFromClient);
         Assert.NotEmpty(packetsFromServer);
         Assert.True(packetsFromClient.IsDeepEqual(packetsFromServer));
@@ -389,10 +391,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
         Assert.Equal(0, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(0, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
     [Fact]
@@ -400,7 +402,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
     {
         // Arrange
         var geoPoint = new GeoPoint(1, 3, 11);
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             ClientTime.Advance(
                 TimeSpan.FromMilliseconds(
@@ -429,7 +431,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Client.TxPipe.Subscribe(p =>
+        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -440,10 +442,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         var packetFromServer = await _taskCompletionSource.Task as CommandLongPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         Assert.NotNull(packetFromClient);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
@@ -486,7 +488,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange 
         var result = MavResult.MavResultAccepted;
         using var sub = Link.Client
-            .Filter<CommandAckPacket>()
+            .OnRxMessage.RxFilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -498,9 +500,9 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         await Assert.ThrowsAsync<CommandException>(async () => await task);
         Assert.Equal(MavResult.MavResultUnsupported, result);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
     [Fact]
@@ -526,7 +528,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
     public async Task ClearRoi_Timeout_Throws()
     {
         // Arrange
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             ClientTime.Advance(
                 TimeSpan.FromMilliseconds(
@@ -558,7 +560,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -569,10 +571,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         var packetFromServer = await _taskCompletionSource.Task as CommandLongPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         Assert.NotNull(packetFromClient);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
@@ -594,7 +596,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -605,10 +607,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         var packetFromServer = await _taskCompletionSource.Task as CommandLongPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         Assert.NotNull(packetFromClient);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
@@ -634,17 +636,17 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
         Assert.Equal(0, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(0, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
     [Fact]
     public async Task TakeOff_Timeout_Throws()
     {
         // Arrange
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             ClientTime.Advance(
                 TimeSpan.FromMilliseconds(
@@ -668,7 +670,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange 
         var result = MavResult.MavResultAccepted;
         using var sub = Link.Client
-            .Filter<CommandAckPacket>()
+            .OnRxMessage.RxFilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -680,9 +682,9 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         await Assert.ThrowsAsync<CommandException>(async () => await task);
         Assert.Equal(MavResult.MavResultUnsupported, result);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
     [Theory]
@@ -700,7 +702,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -711,10 +713,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         var packetFromServer = await _taskCompletionSource.Task as CommandLongPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         Assert.NotNull(packetFromClient);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
@@ -736,7 +738,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -747,10 +749,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         var packetFromServer = await _taskCompletionSource.Task as CommandLongPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         Assert.NotNull(packetFromClient);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
@@ -776,17 +778,17 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
         Assert.Equal(0, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(0, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
     [Fact]
     public async Task QTakeOff_Timeout_Throws()
     {
         // Arrange
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             ClientTime.Advance(
                 TimeSpan.FromMilliseconds(
@@ -810,7 +812,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange 
         var result = MavResult.MavResultAccepted;
         using var sub = Link.Client
-            .Filter<CommandAckPacket>()
+            .OnRxMessage.RxFilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -822,9 +824,9 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         await Assert.ThrowsAsync<CommandException>(async () => await task);
         Assert.Equal(MavResult.MavResultUnsupported, result);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
     [Fact]
@@ -840,7 +842,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -851,10 +853,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         var packetFromServer = await _taskCompletionSource.Task as CommandLongPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         Assert.NotNull(packetFromClient);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
@@ -879,17 +881,17 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
         Assert.Equal(0, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(0, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
     [Fact]
     public async Task GetHomePosition_Timeout_Throws()
     {
         // Arrange
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             ClientTime.Advance(
                 TimeSpan.FromMilliseconds(
@@ -913,7 +915,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange 
         var result = MavResult.MavResultAccepted;
         using var sub = Link.Client
-            .Filter<CommandAckPacket>()
+            .OnRxMessage.RxFilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -924,9 +926,9 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         
         // Assert
         Assert.Equal(MavResult.MavResultUnsupported, result);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
 
     [Theory]
@@ -945,7 +947,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -960,10 +962,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         var packetFromServer = await _taskCompletionSource.Task as CommandLongPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         Assert.NotNull(packetFromClient);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
@@ -990,7 +992,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -1005,10 +1007,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         var packetFromServer = await _taskCompletionSource.Task as CommandLongPacket;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         Assert.NotNull(packetFromClient);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
@@ -1046,17 +1048,17 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
         Assert.Equal(0, called);
-        Assert.Equal(called, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(0, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
     [Fact]
     public async Task QLand_Timeout_Throws()
     {
         // Arrange
-        using var sub = Link.Client.TxPipe.Subscribe(p =>
+        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             ClientTime.Advance(
                 TimeSpan.FromMilliseconds(
@@ -1084,7 +1086,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange 
         var result = MavResult.MavResultAccepted;
         using var sub = Link.Client
-            .Filter<CommandAckPacket>()
+            .OnRxMessage.RxFilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -1099,9 +1101,9 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         
         // Assert
         Assert.Equal(MavResult.MavResultUnsupported, result);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
     [Fact]
@@ -1171,10 +1173,10 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Assert
         await _taskCompletionSource.Task;
         Assert.Equal(5, called);
-        Assert.Equal(0 , Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
-        Assert.Equal(4, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(0 , (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(4, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         foreach (var t in times)
         {
             Log.WriteLine($"Time == {t}");

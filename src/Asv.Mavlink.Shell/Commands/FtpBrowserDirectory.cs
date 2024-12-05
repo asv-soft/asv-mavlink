@@ -28,9 +28,10 @@ public class FtpBrowserDirectory
     [Command("ftp-browser")]
     public async Task RunFtpBrowser(string connection)
     {
-        using var port = PortFactory.Create(connection);
-        port.Enable();
-        await using var conn = MavlinkV2Connection.Create(port);
+        await using var conn = Protocol.Create(builder =>
+        {
+            builder.RegisterMavlinkV2Protocol();
+        }).CreateRouter("ROUTER");
         var identity = new MavlinkClientIdentity(255, 255, 1, 1);
         var seq = new PacketSequenceCalculator();
         var core = new CoreServices(conn, seq, null, TimeProvider.System, new DefaultMeterFactory());

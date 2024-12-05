@@ -12,10 +12,10 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
 {
     private readonly ILogger _logger;
 
-    public PositionClient(MavlinkClientIdentity identity, ICoreServices core)
+    public PositionClient(MavlinkClientIdentity identity, IMavlinkContext core)
         : base("CTRL", identity, core)
     {
-        _logger = core.Log.CreateLogger<PositionClient>();
+        _logger = core.LoggerFactory.CreateLogger<PositionClient>();
         Target = InternalFilter<PositionTargetGlobalIntPacket>()
             .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
@@ -47,7 +47,7 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
     public ReadOnlyReactiveProperty<HighresImuPayload?> Imu { get; }
     public ReadOnlyReactiveProperty<AttitudePayload?> Attitude { get; }
 
-    public Task SetTargetGlobalInt(
+    public ValueTask SetTargetGlobalInt(
         uint timeBootMs, 
         MavFrame coordinateFrame, 
         int latInt, 
@@ -65,7 +65,7 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
         CancellationToken cancel
     )
     {
-        _logger.ZLogDebug($"{LogSend} {nameof(SetTargetGlobalInt)} ");
+        _logger.ZLogDebug($"{Id} {nameof(SetTargetGlobalInt)} ");
         return InternalSend<SetPositionTargetGlobalIntPacket>(p =>
         {
             p.Payload.TimeBootMs = timeBootMs;
@@ -87,7 +87,7 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
         }, cancel);
     }
 
-    public Task SetPositionTargetLocalNed(
+    public ValueTask SetPositionTargetLocalNed(
         uint timeBootMs, 
         MavFrame coordinateFrame, 
         PositionTargetTypemask typeMask, 

@@ -9,7 +9,7 @@ namespace Asv.Mavlink;
 /// /
 public static class MavlinkCommonHelper
 {
-    public static Task SetPositionTargetLocalNed(
+    public static ValueTask SetPositionTargetLocalNed(
         this IPositionClient src, 
         uint timeBootMs, 
         MavFrame coordinateFrame,
@@ -122,7 +122,7 @@ public static class MavlinkCommonHelper
     /// <param name="yaw">Yaw angle (radians) of the target position. Set to null to ignore.</param>
     /// <param name="yawRate">Yaw rate (rad/s) of the target position. Set to null to ignore.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
-    public static Task SetTargetGlobalInt(
+    public static ValueTask SetTargetGlobalInt(
         this IPositionClient src, 
         uint timeBootMs, 
         MavFrame coordFrame,

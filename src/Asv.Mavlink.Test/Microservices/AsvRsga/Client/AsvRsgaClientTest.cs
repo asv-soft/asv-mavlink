@@ -24,7 +24,7 @@ public class AsvRsgaClientTest : ClientTestBase<AsvRsgaClient>, IDisposable
     [Fact]
     public void Ctor_ThrowsExceptions_ArgIsNullFail()
     {
-        Assert.Throws<ArgumentNullException>(() => new AsvRsgaClient(null!, Core));
+        Assert.Throws<ArgumentNullException>(() => new AsvRsgaClient(null!, Context));
         Assert.Throws<ArgumentNullException>(() => new AsvRsgaClient(Identity, null!));
     }
     

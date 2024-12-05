@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.Mavlink.V2.Common;
-using Asv.Mavlink.V2.Minimal;
+using Asv.IO;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
+
+
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -32,13 +35,13 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
     };
     
     private readonly PositionClientEx _client;
-    private readonly TaskCompletionSource<IPacketV2<IPayload>> _taskCompletionSource;
+    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     
     public PositionClientExTest(ITestOutputHelper log) : base(log)
     {
         _client = Client;
-        _taskCompletionSource = new TaskCompletionSource<IPacketV2<IPayload>>();
+        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
         _cancellationTokenSource = new CancellationTokenSource(
             TimeSpan.FromSeconds(200), 
             TimeProvider.System
@@ -83,20 +86,20 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
     )
     {
         // Arrange
-        var called = 0;
+        var called = 0U;
         SetPositionTargetGlobalIntPacket? packetFromClient = null;
         var gPoint = new GeoPoint(
             latitude, 
             longitude, 
             altitude
         );
-        using var sub1 = Link.Server.RxPipe.Subscribe(p =>
+        using var sub1 = Link.Server.OnRxMessage.Subscribe(p =>
         {
             called++;
 
-            _taskCompletionSource.TrySetResult(p);
+            _taskCompletionSource.TrySetResult((MavlinkMessage)p);
         });
-        using var sub2 = Link.Client.TxPipe.Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as SetPositionTargetGlobalIntPacket;
         });
@@ -107,11 +110,11 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
         // Assert
         var result = await _taskCompletionSource.Task as SetPositionTargetGlobalIntPacket;
         Assert.NotNull(result);
-        Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
-        Assert.Equal(0, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(1U, called);
+        Assert.Equal(called, Link.Server.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
+        Assert.Equal(0U, Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.True(packetFromClient.IsDeepEqual(result));
     }
     
@@ -122,7 +125,7 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
         var called = 0;
         var packetsFromServer = new List<SetPositionTargetGlobalIntPacket>();
         var packetsFromClient = new List<SetPositionTargetGlobalIntPacket>();
-        using var sub1 = Link.Server.RxPipe.Subscribe(p =>
+        using var sub1 = Link.Server.OnRxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             called++;
 
@@ -136,7 +139,7 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
                 _taskCompletionSource.TrySetResult(p);
             }
         });
-        using var sub2 = Link.Client.TxPipe.Subscribe(p =>
+        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             if (p is SetPositionTargetGlobalIntPacket packet)
             {
@@ -152,10 +155,10 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
         // Assert
         await _taskCompletionSource.Task;
         Assert.Equal(3, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
-        Assert.Equal(0, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         Assert.NotEmpty(packetsFromServer);
         Assert.NotEmpty(packetsFromClient);
         Assert.Equal(packetsFromClient.Count, packetsFromServer.Count);
@@ -169,7 +172,7 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
         var called = 0;
         var gPoint = new GeoPoint(1, 2, 3);
         await _cancellationTokenSource.CancelAsync();
-        using var sub1 = Link.Server.RxPipe.Subscribe(p =>
+        using var sub1 = Link.Server.OnRxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             called++;
 
@@ -181,10 +184,10 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
             => await _client.SetTarget(gPoint, _cancellationTokenSource.Token)
         );
         Assert.Equal(0, called);
-        Assert.Equal(called, Link.Server.RxPackets);
-        Assert.Equal(Link.Server.RxPackets, Link.Client.TxPackets);
-        Assert.Equal(0, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
     [Theory]
@@ -343,10 +346,10 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
         // Assert
         await tcs.Task;
         Assert.Equal(6, called);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.NotEqual(double.NaN, pitchResult);
         Assert.NotEqual(double.NaN, pitchSpeedResult);
         Assert.NotEqual(double.NaN, rollResult);
@@ -454,10 +457,10 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
         // Assert
         var result = await tcs.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.Equal(expectedGPoint, result);
     }
     
@@ -559,10 +562,10 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
         // Assert
         var result = await tcs.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.Equal(expectedGPoint, result);
     }
     
@@ -670,10 +673,10 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
         // Assert
         await tcs.Task;
         Assert.Equal(2, called);
-        Assert.Equal(1, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.Equal(expectedGPoint, result);
         Assert.NotEqual(double.NaN, _client.HomeDistance.CurrentValue);
         Assert.NotEqual(double.NaN, _client.AltitudeAboveHome.CurrentValue);
@@ -716,10 +719,10 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
         // Assert
         await tcs.Task;
         Assert.Equal(1, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.True(_client.IsArmed.CurrentValue);
     }
     
@@ -773,10 +776,10 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
         // Assert
         await tcs.Task;
         Assert.Equal(2, called);
-        Assert.Equal(called, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(called, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.False(_client.IsArmed.CurrentValue);
     }
     
@@ -848,10 +851,10 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
         // Assert
         await tcs.Task;
         Assert.Equal(1, called);
-        Assert.Equal(2, Link.Server.TxPackets);
-        Assert.Equal(Link.Server.TxPackets, Link.Client.RxPackets);
-        Assert.Equal(0, Link.Client.TxPackets);
-        Assert.Equal(Link.Client.TxPackets, Link.Server.RxPackets);
+        Assert.Equal(2, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.NotEqual(double.NaN, _client.TargetDistance.CurrentValue);
     }
 }
