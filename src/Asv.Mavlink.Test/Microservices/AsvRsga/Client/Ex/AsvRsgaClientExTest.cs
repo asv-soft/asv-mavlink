@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.IO;
 using Asv.Mavlink.AsvRsga;
 using JetBrains.Annotations;
 using Xunit;
@@ -52,7 +51,7 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
     public async Task ReadOnce_ShouldThrowTimeout_Exception()
     {
         // Arrange
-        var attempts = 5;
+        var attempts = (uint)5;
         var timeout = 1000;
 
         // Act
@@ -65,14 +64,14 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
 
         //Assert
         await Task.WhenAll(t1, t2);
-        Assert.Equal(attempts, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(attempts, Link.Client.Statistic.TxMessages);
     }
 
     [Fact]
     public async Task SetMode_ShouldThrowTimeout_Exception()
     {
         // Arrange
-        var attempts = 5;
+        var attempts = (uint)5;
         var timeout = 1000;
 
         // Act
@@ -85,7 +84,7 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
 
         //Assert
         await Task.WhenAll(t1, t2);
-        Assert.Equal(attempts, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(attempts, Link.Client.Statistic.TxMessages);
     }
 
     public void Dispose()

@@ -32,7 +32,7 @@ public interface IParamsServer:IMavlinkMicroserviceServer
     /// Event fired when a param request list packet is received.
     /// </summary>
     /// <remarks>
-    /// This event provides an IObservable<ParamRequestListPacket> that can be subscribed to receive param request list packets.
+    /// This event provides an Observable<ParamRequestListPacket> that can be subscribed to receive param request list packets.
     /// </remarks>
     Observable<ParamRequestListPacket> OnParamRequestList { get; }
 
@@ -41,7 +41,7 @@ public interface IParamsServer:IMavlinkMicroserviceServer
     /// <remarks>
     /// This event provides a stream of ParamSetPacket objects. </remarks>
     /// <value>
-    /// An IObservable of ParamSetPacket representing the event stream
+    /// An Observable of ParamSetPacket representing the event stream
     /// of parameter set packets being received. </value>
     /// /
     Observable<ParamSetPacket> OnParamSet { get; }

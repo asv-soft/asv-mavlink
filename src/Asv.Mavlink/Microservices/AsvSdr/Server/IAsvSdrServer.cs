@@ -49,7 +49,7 @@ namespace Asv.Mavlink
         /// Provides an observable sequence of AsvSdrRecordRequestPayload objects for recording requests.
         /// </summary>
         /// <value>
-        /// An IObservable<AsvSdrRecordRequestPayload> representing the OnRecordRequest sequence.
+        /// An Observable<AsvSdrRecordRequestPayload> representing the OnRecordRequest sequence.
         /// </value>
         Observable<AsvSdrRecordRequestPayload> OnRecordRequest { get; }
 
@@ -83,7 +83,7 @@ namespace Asv.Mavlink
         /// Event that is triggered when a delete request is received for a record.
         /// </summary>
         /// <remarks>
-        /// This event provides an <see cref="IObservable{T}"/> that emits instances of <see cref="AsvSdrRecordDeleteRequestPayload"/>.
+        /// This event provides an <see cref="Observable{T}"/> that emits instances of <see cref="AsvSdrRecordDeleteRequestPayload"/>.
         /// Subscribing to this observable allows the application to receive and handle delete requests for records.
         /// </remarks>
         Observable<AsvSdrRecordDeleteRequestPayload> OnRecordDeleteRequest { get; }
@@ -138,14 +138,14 @@ namespace Asv.Mavlink
         ValueTask SendRecordTag(Action<AsvSdrRecordTagPayload> setValueCallback, CancellationToken cancel = default);
 
         /// <summary>
-        /// Gets an IObservable of AsvSdrRecordTagDeleteRequestPayload representing the OnRecordTagDeleteRequest property.
+        /// Gets an Observable of AsvSdrRecordTagDeleteRequestPayload representing the OnRecordTagDeleteRequest property.
         /// </summary>
         /// <remarks>
         /// This property provides a way to subscribe to delete requests for a record tag.
         /// The delete request payload contains information about the record tag being deleted.
         /// </remarks>
         /// <returns>
-        /// An IObservable of AsvSdrRecordTagDeleteRequestPayload representing the OnRecordTagDeleteRequest property.
+        /// An Observable of AsvSdrRecordTagDeleteRequestPayload representing the OnRecordTagDeleteRequest property.
         /// </returns>
         Observable<AsvSdrRecordTagDeleteRequestPayload> OnRecordTagDeleteRequest { get; }
 
@@ -168,7 +168,7 @@ namespace Asv.Mavlink
         /// By subscribing to this property, you can react to record data requests and handle them
         /// appropriately in your code.
         /// Returns:
-        /// An IObservable<AsvSdrRecordDataRequestPayload> representing the observable sequence
+        /// An Observable<AsvSdrRecordDataRequestPayload> representing the observable sequence
         /// of record data requests.
         /// /
         Observable<AsvSdrRecordDataRequestPayload> OnRecordDataRequest { get; }
@@ -230,7 +230,7 @@ namespace Asv.Mavlink
         ValueTask SendCalibrationAcc(ushort reqId, AsvSdrRequestAck resultCode, CancellationToken cancel = default);
 
         /// <summary>
-        /// Gets an <see cref="IObservable{T}"/> representing the event triggered when a calibration table read request is received.
+        /// Gets an <see cref="Observable{T}"/> representing the event triggered when a calibration table read request is received.
         /// </summary>
         /// <remarks>
         /// The event is raised when a request is made to read the calibration table. Subscribers can listen to this event to be notified
@@ -238,7 +238,7 @@ namespace Asv.Mavlink
         /// necessary response.
         /// </remarks>
         /// <value>
-        /// An <see cref="IObservable{T}"/> of type <see cref="AsvSdrCalibTableReadPayload"/> representing the event triggered when a
+        /// An <see cref="Observable{T}"/> of type <see cref="AsvSdrCalibTableReadPayload"/> representing the event triggered when a
         /// calibration table read request is received.
         /// </value>
         Observable<AsvSdrCalibTableReadPayload> OnCalibrationTableReadRequest { get; }
@@ -281,7 +281,7 @@ namespace Asv.Mavlink
         /// representing the start of a calibration table upload process.
         /// </remarks>
         /// <returns>
-        /// An <see cref="IObservable{T}"/> of type <see cref="AsvSdrCalibTableUploadStartPacket"/>
+        /// An <see cref="Observable{T}"/> of type <see cref="AsvSdrCalibTableUploadStartPacket"/>
         /// that emits the start packets when a calibration table upload is initiated.
         /// </returns>
         Observable<AsvSdrCalibTableUploadStartPacket> OnCalibrationTableUploadStart { get; }

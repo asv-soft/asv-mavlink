@@ -40,7 +40,7 @@ namespace Asv.Mavlink
         /// <summary>
         /// Gets an observable stream of mission request payloads.
         /// </summary>
-        /// <returns>An IObservable stream of MissionRequestPayload objects.</returns>
+        /// <returns>An Observable stream of MissionRequestPayload objects.</returns>
         Observable<MissionRequestPayload> OnMissionRequest { get; }
 
         /// <summary>

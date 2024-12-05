@@ -19,7 +19,7 @@ namespace Asv.Mavlink
         /// This event stream allows subscribing to received CommandLong packets.
         /// </remarks>
         /// <returns>
-        /// An <see cref="IObservable{T}"/> of <see cref="CommandLongPacket"/> representing the event stream for receiving CommandLong packets.
+        /// An <see cref="Observable{T}"/> of <see cref="CommandLongPacket"/> representing the event stream for receiving CommandLong packets.
         /// </returns>
         Observable<CommandLongPacket> OnCommandLong { get; }
 
@@ -27,7 +27,7 @@ namespace Asv.Mavlink
         /// Gets an observable sequence of CommandIntPacket events.
         /// </summary>
         /// <remarks>
-        /// This property returns an IObservable<CommandIntPacket> that can be subscribed to in order to receive CommandIntPacket events.
+        /// This property returns an Observable<CommandIntPacket> that can be subscribed to in order to receive CommandIntPacket events.
         /// </remarks>
         Observable<CommandIntPacket> OnCommandInt { get; }
 

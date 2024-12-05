@@ -10,56 +10,62 @@ namespace Asv.Mavlink;
 
 public class PositionClient : MavlinkMicroserviceClient, IPositionClient
 {
-    
-
     private readonly ILogger _logger;
-    private readonly ReadOnlyReactiveProperty<PositionTargetGlobalIntPayload?> _target;
-    private readonly ReadOnlyReactiveProperty<HomePositionPayload?> _home;
-    private readonly ReadOnlyReactiveProperty<GlobalPositionIntPayload?> _globalPosition;
-    private readonly ReadOnlyReactiveProperty<AltitudePayload?> _altitude;
-    private readonly ReadOnlyReactiveProperty<VfrHudPayload?> _vfrHud;
-    private readonly ReadOnlyReactiveProperty<HighresImuPayload?> _imu;
-    private readonly ReadOnlyReactiveProperty<AttitudePayload?> _attitude;
 
-    public PositionClient(MavlinkClientIdentity identity, IMavlinkContext core)
+    public PositionClient(MavlinkClientIdentity identity, ICoreServices core)
         : base("CTRL", identity, core)
     {
-        _logger = core.LoggerFactory.CreateLogger<PositionClient>();
-        _target = InternalFilter<PositionTargetGlobalIntPacket>()
+        _logger = core.Log.CreateLogger<PositionClient>();
+        Target = InternalFilter<PositionTargetGlobalIntPacket>()
             .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
-        _home = InternalFilter<HomePositionPacket>()
+        Home = InternalFilter<HomePositionPacket>()
             .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
-        _globalPosition = InternalFilter<GlobalPositionIntPacket>()
+        GlobalPosition = InternalFilter<GlobalPositionIntPacket>()
             .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
-        _altitude = InternalFilter<AltitudePacket>()
+        Altitude = InternalFilter<AltitudePacket>()
             .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
-        _vfrHud = InternalFilter<VfrHudPacket>()
+        VfrHud = InternalFilter<VfrHudPacket>()
             .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
-        _imu = InternalFilter<HighresImuPacket>()
+        Imu = InternalFilter<HighresImuPacket>()
             .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
-        _attitude = InternalFilter<AttitudePacket>()
+        Attitude = InternalFilter<AttitudePacket>()
             .Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
     }
-    public ReadOnlyReactiveProperty<GlobalPositionIntPayload?> GlobalPosition => _globalPosition;
-    public ReadOnlyReactiveProperty<HomePositionPayload?> Home => _home;
-    public ReadOnlyReactiveProperty<PositionTargetGlobalIntPayload?> Target => _target;
-    public ReadOnlyReactiveProperty<AltitudePayload?> Altitude => _altitude;
-    public ReadOnlyReactiveProperty<VfrHudPayload?> VfrHud => _vfrHud;
-    public ReadOnlyReactiveProperty<HighresImuPayload?> Imu => _imu;
-    public ReadOnlyReactiveProperty<AttitudePayload?> Attitude => _attitude;
 
-    public ValueTask SetTargetGlobalInt(uint timeBootMs, MavFrame coordinateFrame, int latInt, int lonInt, float alt,
-        float vx, float vy, float vz, float afx, float afy, float afz, float yaw,
-        float yawRate, PositionTargetTypemask typeMask, CancellationToken cancel)
+    public ReadOnlyReactiveProperty<GlobalPositionIntPayload?> GlobalPosition { get; }
+    public ReadOnlyReactiveProperty<HomePositionPayload?> Home { get; }
+    public ReadOnlyReactiveProperty<PositionTargetGlobalIntPayload?> Target { get; }
+    public ReadOnlyReactiveProperty<AltitudePayload?> Altitude { get; }
+    public ReadOnlyReactiveProperty<VfrHudPayload?> VfrHud { get; }
+    public ReadOnlyReactiveProperty<HighresImuPayload?> Imu { get; }
+    public ReadOnlyReactiveProperty<AttitudePayload?> Attitude { get; }
+
+    public Task SetTargetGlobalInt(
+        uint timeBootMs, 
+        MavFrame coordinateFrame, 
+        int latInt, 
+        int lonInt, 
+        float alt,
+        float vx, 
+        float vy, 
+        float vz, 
+        float afx, 
+        float afy, 
+        float afz, 
+        float yaw,
+        float yawRate, 
+        PositionTargetTypemask typeMask, 
+        CancellationToken cancel
+    )
     {
-        _logger.ZLogDebug($"{Id} {nameof(SetTargetGlobalInt)} ");
+        _logger.ZLogDebug($"{LogSend} {nameof(SetTargetGlobalInt)} ");
         return InternalSend<SetPositionTargetGlobalIntPacket>(p =>
         {
             p.Payload.TimeBootMs = timeBootMs;
@@ -81,9 +87,23 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
         }, cancel);
     }
 
-    public ValueTask SetPositionTargetLocalNed(uint timeBootMs, MavFrame coordinateFrame, PositionTargetTypemask typeMask, float x,
-        float y, float z, float vx, float vy, float vz, float afx, float afy, float afz, float yaw, float yawRate,
-        CancellationToken cancel)
+    public Task SetPositionTargetLocalNed(
+        uint timeBootMs, 
+        MavFrame coordinateFrame, 
+        PositionTargetTypemask typeMask, 
+        float x,
+        float y, 
+        float z, 
+        float vx, 
+        float vy, 
+        float vz, 
+        float afx,
+        float afy,
+        float afz, 
+        float yaw,
+        float yawRate,
+        CancellationToken cancel
+    )
     {
         return InternalSend<SetPositionTargetLocalNedPacket>(p =>
         {
@@ -112,13 +132,13 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
     {
         if (disposing)
         {
-            _target.Dispose();
-            _home.Dispose();
-            _globalPosition.Dispose();
-            _altitude.Dispose();
-            _vfrHud.Dispose();
-            _imu.Dispose();
-            _attitude.Dispose();
+            Target.Dispose();
+            Home.Dispose();
+            GlobalPosition.Dispose();
+            Altitude.Dispose();
+            VfrHud.Dispose();
+            Imu.Dispose();
+            Attitude.Dispose();
         }
 
         base.Dispose(disposing);
@@ -126,13 +146,13 @@ public class PositionClient : MavlinkMicroserviceClient, IPositionClient
 
     protected override async ValueTask DisposeAsyncCore()
     {
-        await CastAndDispose(_target).ConfigureAwait(false);
-        await CastAndDispose(_home).ConfigureAwait(false);
-        await CastAndDispose(_globalPosition).ConfigureAwait(false);
-        await CastAndDispose(_altitude).ConfigureAwait(false);
-        await CastAndDispose(_vfrHud).ConfigureAwait(false);
-        await CastAndDispose(_imu).ConfigureAwait(false);
-        await CastAndDispose(_attitude).ConfigureAwait(false);
+        await CastAndDispose(Target).ConfigureAwait(false);
+        await CastAndDispose(Home).ConfigureAwait(false);
+        await CastAndDispose(GlobalPosition).ConfigureAwait(false);
+        await CastAndDispose(Attitude).ConfigureAwait(false);
+        await CastAndDispose(VfrHud).ConfigureAwait(false);
+        await CastAndDispose(Imu).ConfigureAwait(false);
+        await CastAndDispose(Attitude).ConfigureAwait(false);
 
         await base.DisposeAsyncCore().ConfigureAwait(false);
 

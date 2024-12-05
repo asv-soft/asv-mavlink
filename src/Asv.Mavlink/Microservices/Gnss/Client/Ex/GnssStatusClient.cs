@@ -48,12 +48,12 @@ public sealed class GnssStatusClient : IGnssStatusClient, IDisposable,IAsyncDisp
     /// Returns the ground velocity as an observable value.
     /// </summary>
     /// <remarks>
-    /// The ground velocity is represented by an <see cref="IRxValue{T}"/> object,
+    /// The ground velocity is represented by an <see cref="ReadOnlyReactiveProperty{T}"/> object,
     /// which provides a reactive way of accessing the current value and receiving
     /// notifications about any changes in the ground velocity.
     /// </remarks>
     /// <returns>
-    /// An <see cref="IRxValue{T}"/> object representing the ground velocity.
+    /// An <see cref="ReadOnlyReactiveProperty{T}"/> object representing the ground velocity.
     /// </returns>
     public ReadOnlyReactiveProperty<double> GroundVelocity { get; }
 
@@ -64,12 +64,12 @@ public sealed class GnssStatusClient : IGnssStatusClient, IDisposable,IAsyncDisp
     /// The GPS information.
     /// </value>
     /// <remarks>
-    /// This property provides access to the GPS information represented by an <see cref="IRxValue{T}"/> of type <see cref="GpsInfo"/>.
+    /// This property provides access to the GPS information represented by an <see cref="ReadOnlyReactiveProperty{T}"/> of type <see cref="GpsInfo"/>.
     /// </remarks>
     public ReadOnlyReactiveProperty<GpsInfo> Info { get; }
 
     /// <summary>
-    /// Gets the position value as an instance of <see cref="IRxValue{GeoPoint}"/>.
+    /// Gets the position value as an instance of <see cref="ReadOnlyReactiveProperty{GeoPoint}"/>.
     /// </summary>
     /// <value>
     /// The position value.

@@ -12,13 +12,13 @@ namespace Asv.Mavlink
     public interface IV2ExtensionServer : IMavlinkMicroserviceServer
     {
         /// <summary>
-        /// Gets the property OnData which is of type IRxValue&lt;V2ExtensionPacket&gt;.
+        /// Gets the property OnData which is of type ReadOnlyReactiveProperty&lt;V2ExtensionPacket&gt;.
         /// </summary>
         /// <remarks>
         /// This property represents the event handler for handling data received events.
         /// </remarks>
         /// <returns>
-        /// The IRxValue&lt;V2ExtensionPacket&gt; object.
+        /// The ReadOnlyReactiveProperty&lt;V2ExtensionPacket&gt; object.
         /// </returns>
         Observable<V2ExtensionPacket> OnData { get; }
 

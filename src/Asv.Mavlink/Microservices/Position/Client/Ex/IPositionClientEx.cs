@@ -25,7 +25,7 @@ public interface IPositionClientEx : IMavlinkMicroserviceClient
     /// The pitch value represents the frequency of a sound or musical note.
     /// </remarks>
     /// <returns>
-    /// An object implementing the <see cref="IRxValue{T}"/> interface with a generic argument of type <see cref="double"/>.
+    /// An object implementing the <see cref="ReadOnlyReactiveProperty{T}"/> interface with a generic argument of type <see cref="double"/>.
     /// The value represents the pitch of the sound or musical note.
     /// </returns>
     ReadOnlyReactiveProperty<double> Pitch { get; }
@@ -37,7 +37,7 @@ public interface IPositionClientEx : IMavlinkMicroserviceClient
     /// The pitch speed property represents the speed at which the pitch changes in a certain context.
     /// </remarks>
     /// <returns>
-    /// An <see cref="IRxValue{T}"/> instance that represents the pitch speed property.
+    /// An <see cref="ReadOnlyReactiveProperty{T}"/> instance that represents the pitch speed property.
     /// </returns>
     ReadOnlyReactiveProperty<double> PitchSpeed { get; }
 
@@ -45,7 +45,7 @@ public interface IPositionClientEx : IMavlinkMicroserviceClient
     /// Gets the roll value of the object.
     /// </summary>
     /// <value>
-    /// The roll value represented as an <see cref="IRxValue{T}"/> interface, where T is <see cref="double"/>.
+    /// The roll value represented as an <see cref="ReadOnlyReactiveProperty{T}"/> interface, where T is <see cref="double"/>.
     /// </value>
     ReadOnlyReactiveProperty<double> Roll { get; }
 
@@ -55,7 +55,7 @@ public interface IPositionClientEx : IMavlinkMicroserviceClient
     /// <remarks>
     /// The roll speed value represents the rotational speed of an object around its longitudinal axis.
     /// </remarks>
-    /// <returns>An instance of IRxValue&lt;double&gt; representing the roll speed.</returns>
+    /// <returns>An instance of ReadOnlyReactiveProperty&lt;double&gt; representing the roll speed.</returns>
     ReadOnlyReactiveProperty<double> RollSpeed { get; }
 
     /// <summary>
@@ -73,7 +73,7 @@ public interface IPositionClientEx : IMavlinkMicroserviceClient
     /// The yaw speed represents the rate of change of the yaw angle in a particular scenario.
     /// It is expressed in degrees per second.
     /// </remarks>
-    /// <returns>An <see cref="IRxValue{T}"/> object representing the yaw speed.</returns>
+    /// <returns>An <see cref="ReadOnlyReactiveProperty{T}"/> object representing the yaw speed.</returns>
     ReadOnlyReactiveProperty<double> YawSpeed { get; }
 
     /// <summary>
@@ -101,7 +101,7 @@ public interface IPositionClientEx : IMavlinkMicroserviceClient
     /// </summary>
     /// <remarks>
     /// Use this property to get or set the home location, which is a <see cref="GeoPoint"/> object.
-    /// The home location is represented as an <see cref="IRxValue{GeoPoint?}"/> object,
+    /// The home location is represented as an <see cref="ReadOnlyReactiveProperty{GeoPoint?}"/> object,
     /// allowing for asynchronous and reactive operations on the value.
     /// </remarks>
     ReadOnlyReactiveProperty<GeoPoint?> Home { get; }
@@ -127,7 +127,7 @@ public interface IPositionClientEx : IMavlinkMicroserviceClient
     /// The distance is measured in units such as miles or kilometers.
     /// </remarks>
     /// <returns>
-    /// An <see cref="IRxValue{T}"/> representing the home distance.
+    /// An <see cref="ReadOnlyReactiveProperty{T}"/> representing the home distance.
     /// </returns>
     ReadOnlyReactiveProperty<double> HomeDistance { get; }
 
@@ -138,7 +138,7 @@ public interface IPositionClientEx : IMavlinkMicroserviceClient
     /// The target distance.
     /// </value>
     /// <remarks>
-    /// This property represents the target distance value. The value is of type <see cref="IRxValue{T}"/> with double as the generic type parameter.
+    /// This property represents the target distance value. The value is of type <see cref="ReadOnlyReactiveProperty{T}"/> with double as the generic type parameter.
     /// </remarks>
     ReadOnlyReactiveProperty<double> TargetDistance { get; }
 
@@ -151,7 +151,7 @@ public interface IPositionClientEx : IMavlinkMicroserviceClient
     /// ready to perform certain actions or operations.
     /// </remarks>
     /// <returns>
-    /// An instance of IRxValue&lt;bool&gt; representing the IsArmed property.
+    /// An instance of ReadOnlyReactiveProperty&lt;bool&gt; representing the IsArmed property.
     /// </returns>
     ReadOnlyReactiveProperty<bool> IsArmed { get; }
 
@@ -178,7 +178,7 @@ public interface IPositionClientEx : IMavlinkMicroserviceClient
     /// <summary>
     /// Gets the Roi property.
     /// </summary>
-    /// <returns>The Roi property of type <see cref="IRxValue{T}"/> with a generic argument of <see cref="GeoPoint?"/>.</returns>
+    /// <returns>The Roi property of type <see cref="ReadOnlyReactiveProperty{T}"/> with a generic argument of <see cref="GeoPoint?"/>.</returns>
     ReadOnlyReactiveProperty<GeoPoint?> Roi { get; }
 
     /// <summary>

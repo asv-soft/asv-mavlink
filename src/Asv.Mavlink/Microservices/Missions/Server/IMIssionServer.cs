@@ -107,7 +107,7 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// a mission request packet of type int is received.
     /// </remarks>
     /// <value>
-    /// An <see cref="IObservable{T}"/> of <see cref="MissionRequestIntPacket"/>, representing the observable
+    /// An <see cref="Observable{T}"/> of <see cref="MissionRequestIntPacket"/>, representing the observable
     /// sequence of mission request packets of type int.
     /// </value>
     Observable<MissionRequestIntPacket> OnMissionRequestInt { get; }
@@ -119,7 +119,7 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// This property represents the event stream for when a mission clear all event occurs.
     /// </remarks>
     /// <returns>
-    /// An IObservable<MissionClearAllPacket> that can be subscribed to receive MissionClearAllPacket events.
+    /// An Observable<MissionClearAllPacket> that can be subscribed to receive MissionClearAllPacket events.
     /// </returns>
     Observable<MissionClearAllPacket> OnMissionClearAll { get; }
 
@@ -127,7 +127,7 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// Represents an event that is raised when a mission is set as the current mission.
     /// </summary>
     /// <value>
-    /// An <see cref="IObservable{T}"/> of type <see cref="MissionSetCurrentPacket"/> that can be subscribed to receive notifications when the event is raised.
+    /// An <see cref="Observable{T}"/> of type <see cref="MissionSetCurrentPacket"/> that can be subscribed to receive notifications when the event is raised.
     /// </value>
     Observable<MissionSetCurrentPacket> OnMissionSetCurrent { get; }
     
