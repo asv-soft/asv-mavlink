@@ -299,6 +299,45 @@ public static class MavParam
         };
     }
     
+    public static IMavParamTypeMetadata SysU32AsString(string name,string desc, string def = "", bool vlt = false)
+        => U32AsString(System, name, desc, def,vlt);
+    public static IMavParamTypeMetadata AdvU32AsString(string name,string desc, string def = "", bool vlt = false)
+        => U32AsString(Advanced, name, desc, def,vlt);
+
+    public static IMavParamTypeMetadata DevU32AsString(string name, string desc, string def = "", bool vlt = false)
+        => U32AsString(Developer, name, desc, def,vlt);
+    public static IMavParamTypeMetadata U32AsString(string category,string name,string desc,string def = "", bool vlt = false)
+    {
+        // if(!typeof(TEnum).IsEnum)
+        // {
+        //     throw new ArgumentException(nameof(TEnum));
+        // }
+        
+        var list = new List<(MavParamValue, string)>();
+        // foreach (var value in Enum.GetValues<TEnum>())
+        // {
+        //     var val = new MavParamValue(Convert.ToByte(value));
+        //     var valueName = value.GetAttributeOfType<DisplayAttribute>()?.Name ?? Enum.GetName(value) ?? value.ToString();
+        //     
+        //     list.Add(new ValueTuple<MavParamValue, string>(val,valueName));
+        // }
+        
+        return new MavParamTypeMetadata(name, MavParamType.MavParamTypeUint32)
+        {
+            ShortDesc = desc,
+            LongDesc = desc,
+            Category = category,
+            RebootRequired = false,
+            Units = string.Empty,
+            Increment = new MavParamValue((byte)1),
+            MinValue = new((byte)list.Min(a => a.Item1)),
+            DefaultValue = new MavParamValue(Convert.ToByte(def)),
+            MaxValue = new((byte)list.Max(a => a.Item1)),
+            Values = list.ToArray(),
+            Volatile = vlt
+        };
+    }
+    
 }
 
 public interface IMavParamTypeMetadata
