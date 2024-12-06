@@ -21,8 +21,8 @@ public abstract class ComplexTestBase<TClient,TServer>
             builder.SetLog(loggerFactory);
             builder.SetTimeProvider(RouterTime);
             builder.RegisterMavlinkV2Protocol();
-            builder.RegisterBroadcastFeature<MavlinkMessage>();
-            builder.RegisterSimpleFormatter();
+            builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
+            builder.Formatters.RegisterSimpleFormatter();
         });
         
         Link = protocol.CreateVirtualConnection();
@@ -53,6 +53,6 @@ public abstract class ComplexTestBase<TClient,TServer>
 
     protected TServer Server => _server ??=CreateServer(Identity.Target, ServerCore);
 
-    protected abstract TServer CreateServer(MavlinkIdentity identity, ICoreServices core);
-    protected abstract TClient CreateClient(MavlinkClientIdentity identity, ICoreServices core);
+    protected abstract TServer CreateServer(MavlinkIdentity identity, IMavlinkContext core);
+    protected abstract TClient CreateClient(MavlinkClientIdentity identity, IMavlinkContext core);
 }

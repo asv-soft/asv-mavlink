@@ -11,18 +11,21 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class AsvRsgaClientEx : DisposableOnceWithCancel, IAsvRsgaClientEx
+public class AsvRsgaClientEx : MavlinkMicroserviceClient, IAsvRsgaClientEx
 {
     private readonly ILogger _logger;
     private readonly ICommandClient _commandClient;
     private readonly ObservableList<AsvRsgaCustomMode> _supportedModes;
+    private readonly IDisposable _sub2;
+
     public AsvRsgaClientEx(IAsvRsgaClient client, ICommandClient commandClient)
+        :base(RsgaHelper.MicroserviceExName, client.Identity, client.Core)
     {
-        _logger = client.Core.Log.CreateLogger<AsvRsgaClientEx>();
+        _logger = client.Core.LoggerFactory.CreateLogger<AsvRsgaClientEx>();
         _commandClient = commandClient ?? throw new ArgumentNullException(nameof(commandClient));
         Base = client;
         _supportedModes = new ObservableList<AsvRsgaCustomMode>();
-        client.OnCompatibilityResponse.Subscribe(OnCapabilityResponse).DisposeItWith(Disposable);
+        _sub2 = client.OnCompatibilityResponse.Subscribe(OnCapabilityResponse);
     }
 
     private void OnCapabilityResponse(AsvRsgaCompatibilityResponsePayload? asv)
@@ -37,7 +40,6 @@ public class AsvRsgaClientEx : DisposableOnceWithCancel, IAsvRsgaClientEx
         _supportedModes.Clear();
         _supportedModes.AddRange(RsgaHelper.GetSupportedModes(asv));
     }
-    public string Name => $"{Base.Name}Ex";
     public IAsvRsgaClient Base { get; }
 
     public IReadOnlyObservableList<AsvRsgaCustomMode> AvailableModes => _supportedModes;
@@ -52,12 +54,5 @@ public class AsvRsgaClientEx : DisposableOnceWithCancel, IAsvRsgaClientEx
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
         var result = await _commandClient.CommandLong(item => RsgaHelper.SetArgsForSetMode(item, mode),cs.Token).ConfigureAwait(false);
         return result.Result;
-    }
-
-    public MavlinkClientIdentity Identity =>Base.Identity;
-    public ICoreServices Core => Base.Core;
-    public Task Init(CancellationToken cancel = default)
-    {
-        return Task.CompletedTask;
     }
 }

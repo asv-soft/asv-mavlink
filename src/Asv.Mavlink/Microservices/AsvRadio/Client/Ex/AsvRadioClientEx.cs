@@ -10,7 +10,7 @@ using R3;
 
 namespace Asv.Mavlink;
 
-public class AsvRadioClientEx:IAsvRadioClientEx, IDisposable, IAsyncDisposable
+public class AsvRadioClientEx:MavlinkMicroserviceClient, IAsvRadioClientEx, IDisposable, IAsyncDisposable
 {
     private readonly ICommandClient _commandClient;
     private readonly ReactiveProperty<AsvRadioCapabilities?> _capabilities;
@@ -19,7 +19,7 @@ public class AsvRadioClientEx:IAsvRadioClientEx, IDisposable, IAsyncDisposable
     public AsvRadioClientEx(
         IAsvRadioClient client, 
         IHeartbeatClient heartbeatClient, 
-        ICommandClient commandClient)
+        ICommandClient commandClient) : base(AsvRadioHelper.MicroserviceExName,client.Identity, client.Core)
     {
         _commandClient = commandClient ?? throw new ArgumentNullException(nameof(commandClient));
         _disposeCancel = new CancellationTokenSource();
@@ -29,7 +29,7 @@ public class AsvRadioClientEx:IAsvRadioClientEx, IDisposable, IAsyncDisposable
             .ToReadOnlyReactiveProperty();
         _capabilities = new ReactiveProperty<AsvRadioCapabilities?>(default);
     }
-    public string Name => $"{Base.Name}Ex";
+    public string TypeName => $"{Base.TypeName}Ex";
     public ReadOnlyReactiveProperty<AsvRadioCapabilities?> Capabilities => _capabilities;
 
     public async Task<MavResult> EnableRadio(uint frequencyHz, AsvRadioModulation modulation,float referenceRxPowerDbm,float txPowerDbm,  AsvAudioCodec codec, CancellationToken cancel)
@@ -82,7 +82,7 @@ public class AsvRadioClientEx:IAsvRadioClientEx, IDisposable, IAsyncDisposable
 
     public IAsvRadioClient Base { get; }
     public MavlinkClientIdentity Identity => Base.Identity;
-    public ICoreServices Core => Base.Core;
+    public IMavlinkContext Core => Base.Core;
     public Task Init(CancellationToken cancel = default)
     {
         return Task.CompletedTask;

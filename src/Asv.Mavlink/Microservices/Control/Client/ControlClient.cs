@@ -4,7 +4,7 @@ using Asv.Common;
 
 namespace Asv.Mavlink;
 
-public abstract class ControlClient(MavlinkClientIdentity identity, ICoreServices core)
+public abstract class ControlClient(MavlinkClientIdentity identity, IMavlinkContext core)
     : MavlinkMicroserviceClient("CRTL", identity, core), IControlClient
 {
     public abstract ValueTask<bool> IsAutoMode(CancellationToken cancel = default);

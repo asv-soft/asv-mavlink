@@ -32,7 +32,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Represents a logging server that sends logging data through a Mavlink connection.
     /// </summary>
-    public class LoggingServer(MavlinkIdentity identity, ICoreServices core)
+    public class LoggingServer(MavlinkIdentity identity, IMavlinkContext core)
         : MavlinkMicroserviceServer("LOG", identity, core), ILoggingServer
     {
         /// <summary>

@@ -66,13 +66,13 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
     private readonly Subject<NamedValueFloatPayload> _floatSubject;
    
 
-    public DiagnosticClient(MavlinkClientIdentity identity,DiagnosticClientConfig config,ICoreServices core) 
+    public DiagnosticClient(MavlinkClientIdentity identity,DiagnosticClientConfig config,IMavlinkContext core) 
         : base("DIAG", identity, core)
     {
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(core);
         ArgumentNullException.ThrowIfNull(config);
-        _logger = core.Log.CreateLogger<DiagnosticClient>();
+        _logger = core.LoggerFactory.CreateLogger<DiagnosticClient>();
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _floatProbes = new ObservableDictionary<string,INamedProbe<float>>();
         _floatSubject = new Subject<NamedValueFloatPayload>();

@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Immutable;
+using Asv.IO;
+using Asv.Mavlink.Test.Client;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -15,41 +18,38 @@ public class RadioDeviceClientTests : ClientTestBase<RadioClientDevice>
             Command = new CommandProtocolConfig() { CommandAttempt = 1, CommandTimeoutMs = 1000 },
             Heartbeat = new HeartbeatClientConfig { HeartbeatTimeoutMs = 1000 },
             Params = new ParamsClientExConfig() { ChunkUpdateBufferMs = 1000, ReadAttemptCount = 1 },
-            SerialNumberParamName = "TEST_PARAM_NAME",
-            RequestInitDataDelayAfterFailMs = 1000
         };
     }
 
     [Fact]
     public void Client_CreateClient_Success()
     {
-        var radio = CreateClient(Identity, Core);
+        var radio = CreateClient(Identity, Context);
         Assert.NotNull(radio);
     }
 
     [Fact]
     public void Ctor_TryPassEmptyValues_Fail()
     {
-        RadioClientDeviceConfig cfg = null;
-        CoreServices? core = null;
-        MavlinkClientIdentity? identity = null;
+        var id =
+            new MavlinkClientDeviceId(RadioClientDevice.DeviceClass, new MavlinkClientIdentity(1,2,3,4));
         Assert.Throws<ArgumentNullException>( () =>
         {
-            var radio = new RadioClientDevice(identity,_cfg,Core);
+            var radio = new RadioClientDevice(null,_cfg, ImmutableArray<IClientDeviceExtender>.Empty,  Context);
+        });
+        Assert.Throws<NullReferenceException>(() =>
+        {
+            var radio = new RadioClientDevice(id, null,ImmutableArray<IClientDeviceExtender>.Empty, Context);
         });
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var radio = new RadioClientDevice(Identity, cfg, Core);
-        });
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            var radio = new RadioClientDevice(Identity, _cfg, core);
+            var radio = new RadioClientDevice(id, _cfg,ImmutableArray<IClientDeviceExtender>.Empty, null);
         });
     }
     
     protected override RadioClientDevice CreateClient(MavlinkClientIdentity identity, CoreServices core)
     {
         var cfg = _cfg ?? new RadioClientDeviceConfig();
-        return new RadioClientDevice(identity, cfg, core);
+        return new RadioClientDevice(new MavlinkClientDeviceId(RadioClientDevice.DeviceClass,identity), cfg,ImmutableArray<IClientDeviceExtender>.Empty, core);
     }
 }

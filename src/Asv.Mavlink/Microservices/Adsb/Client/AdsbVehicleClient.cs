@@ -22,7 +22,7 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
     private readonly ObservableDictionary<uint,IAdsbVehicle> _targetSource;
     private readonly ReactiveProperty<TimeSpan> _targetTimeout;
 
-    public AdsbVehicleClient(MavlinkClientIdentity identity, AdsbVehicleClientConfig config,ICoreServices core) 
+    public AdsbVehicleClient(MavlinkClientIdentity identity, AdsbVehicleClientConfig config,IMavlinkContext core) 
         : base("ADSB", identity, core)
     {
         _onAdsbTarget = new Subject<AdsbVehiclePayload>();

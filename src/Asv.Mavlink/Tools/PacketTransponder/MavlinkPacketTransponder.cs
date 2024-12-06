@@ -13,7 +13,7 @@ namespace Asv.Mavlink
     {
         
 
-        private readonly ICoreServices _core;
+        private readonly IMavlinkContext _core;
         private readonly object _sync = new();
         private readonly ILogger _logger;
         private readonly ReaderWriterLockSlim _dataLock = new();
@@ -22,11 +22,11 @@ namespace Asv.Mavlink
         private TPacket _packet;
         private ITimer? _timer;
 
-        public MavlinkPacketTransponder(MavlinkIdentity identity, ICoreServices core)
+        public MavlinkPacketTransponder(MavlinkIdentity identity, IMavlinkContext core)
         {
             ArgumentNullException.ThrowIfNull(identity);
             _core = core ?? throw new ArgumentNullException(nameof(core));
-            _logger = core.Log.CreateLogger<IMavlinkPacketTransponder<TPacket>>();
+            _logger = core.LoggerFactory.CreateLogger<IMavlinkPacketTransponder<TPacket>>();
             
             _packet = new TPacket
             {

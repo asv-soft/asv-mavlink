@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
+using Asv.IO;
 using Asv.Mavlink.AsvGbs;
 using Asv.Mavlink.Common;
 using R3;
@@ -38,7 +39,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
-    protected override AsvGbsExServer CreateServer(MavlinkIdentity identity, ICoreServices core)
+    protected override AsvGbsExServer CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
         var heartbeatServer = new HeartbeatServer(
             new MavlinkIdentity(Identity.Target.SystemId, HeartbeatServerComponentId), 
@@ -61,7 +62,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         return new AsvGbsExServer(gbsServer, heartbeatServer, commandLongEx);;
     }
 
-    protected override AsvGbsExClient CreateClient(MavlinkClientIdentity identity, ICoreServices core)
+    protected override AsvGbsExClient CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
         var heartbeatClient = new HeartbeatClient(
             new MavlinkClientIdentity(Identity.Self.SystemId, HeartbeatClientComponentId, Identity.Target.SystemId, HeartbeatServerComponentId), 

@@ -16,10 +16,10 @@ namespace Asv.Mavlink
         private readonly IDisposable _obs1;
         private readonly IDisposable _obs2;
 
-        public CommandServer(MavlinkIdentity identity,ICoreServices core)
-            : base("COMMAND", identity,core)
+        public CommandServer(MavlinkIdentity identity,IMavlinkContext core)
+            : base(Command.MicroserviceTypeName, identity,core)
         {
-            _logger = core.Log.CreateLogger<CommandServer>();
+            _logger = core.LoggerFactory.CreateLogger<CommandServer>();
             _onCommandLong = new Subject<CommandLongPacket>();
             _obs1 = InternalFilter<CommandLongPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
                 .Subscribe(_onCommandLong.AsObserver());

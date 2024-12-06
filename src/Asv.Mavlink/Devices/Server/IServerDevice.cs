@@ -5,7 +5,7 @@ namespace Asv.Mavlink;
 /// </summary>
 public interface IServerDevice
 {
-    ICoreServices Core { get; }
+    IMavlinkContext Core { get; }
     /// <summary>
     /// Starts the process.
     /// </summary>

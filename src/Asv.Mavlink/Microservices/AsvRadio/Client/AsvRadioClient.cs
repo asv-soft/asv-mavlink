@@ -8,8 +8,8 @@ namespace Asv.Mavlink;
 public class AsvRadioClient : MavlinkMicroserviceClient, IAsvRadioClient
 {
     
-    public AsvRadioClient(MavlinkClientIdentity identity, ICoreServices core) 
-        : base(AsvRadioHelper.IfcName, identity, core)
+    public AsvRadioClient(MavlinkClientIdentity identity, IMavlinkContext core) 
+        : base(AsvRadioHelper.MicroserviceName, identity, core)
     {
         Status = InternalFilter<AsvRadioStatusPacket>()
             .Select(p => p?.Payload)

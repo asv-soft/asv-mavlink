@@ -9,14 +9,16 @@ namespace Asv.Mavlink
 {
     public class V2ExtensionClient : MavlinkMicroserviceClient, IV2ExtensionClient
     {
+        
         public static readonly int StaticMaxDataSize = new V2ExtensionPayload().GetMaxByteSize();
+        
         
         private readonly MavlinkClientIdentity _identity;
         private readonly ReactiveProperty<V2ExtensionPacket> _onData;
         private readonly IDisposable _subscribe;
 
         public V2ExtensionClient(MavlinkClientIdentity identity, 
-            ICoreServices core):base("V2EXT", identity, core)
+            IMavlinkContext core):base(V2Extension.MicroserviceTypeName, identity, core)
         {
             _identity = identity;
             _onData = new ReactiveProperty<V2ExtensionPacket>();

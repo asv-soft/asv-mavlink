@@ -45,7 +45,7 @@ public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDi
         IConfiguration cfg,
         ParamsExtServerExConfig serverCfg)
     {
-        _logger = server.Core.Log.CreateLogger<ParamsExtServer>();
+        _logger = server.Core.LoggerFactory.CreateLogger<ParamsExtServer>();
         _server = server ?? throw new ArgumentNullException(nameof(server));
         _statusTextServer = statusTextServer ?? throw new ArgumentNullException(nameof(statusTextServer));
         _cfg = cfg ?? throw new ArgumentNullException(nameof(cfg));

@@ -17,7 +17,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
 {
     private readonly ILogger _logger;
     private readonly Func<Action<AsvAudioStreamPacket>, CancellationToken, ValueTask> _sendPacketDelegate;
-    private readonly ICoreServices _core;
+    private readonly IMavlinkContext _core;
     private long _lastHit;
     private uint _frameCounter;
     private readonly object _sync = new();
@@ -38,7 +38,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
         AsvAudioOnlinePacket packet, 
         Func<Action<AsvAudioStreamPacket>, CancellationToken, ValueTask> sendPacketDelegate,
         OnRecvAudioDelegate onRecvAudioDelegate,
-        ICoreServices core)
+        IMavlinkContext core)
     {
         ArgumentNullException.ThrowIfNull(factory);
         ArgumentNullException.ThrowIfNull(packet);
@@ -48,7 +48,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
         ArgumentNullException.ThrowIfNull(factory);
         ArgumentNullException.ThrowIfNull(packet);
         _disposeCancel = new CancellationTokenSource();
-        _logger = core.Log.CreateLogger<AudioDevice>();
+        _logger = core.LoggerFactory.CreateLogger<AudioDevice>();
         _inputEncoderAudioStream = new Subject<ReadOnlyMemory<byte>>();
         _inputDecoderAudioStream = new Subject<ReadOnlyMemory<byte>>();
         _sendPacketDelegate = sendPacketDelegate ?? throw new ArgumentNullException(nameof(sendPacketDelegate));

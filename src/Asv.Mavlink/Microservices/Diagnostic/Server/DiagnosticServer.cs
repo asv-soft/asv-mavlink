@@ -20,7 +20,7 @@ public class DiagnosticServer: MavlinkMicroserviceServer, IDiagnosticServer
     private readonly ConcurrentDictionary<string,long> _lastSendFloatTime = new();
     private readonly ConcurrentDictionary<string,long> _lastSendIntTime = new();
 
-    public DiagnosticServer(MavlinkIdentity identity, DiagnosticServerConfig config,ICoreServices core) 
+    public DiagnosticServer(MavlinkIdentity identity, DiagnosticServerConfig config,IMavlinkContext core) 
         : base("DIAG", identity, core)
     {
         _config = config;

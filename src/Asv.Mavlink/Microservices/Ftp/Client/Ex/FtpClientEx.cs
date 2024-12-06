@@ -12,20 +12,21 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class FtpClientEx : IFtpClientEx, IMavlinkMicroserviceClient, IDisposable, IAsyncDisposable
+public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx, IMavlinkMicroserviceClient, IDisposable, IAsyncDisposable
 {
     private readonly ILogger _logger;
     private readonly ObservableDictionary<string, IFtpEntry> _entryCache;
     private static readonly TimeSpan DefaultBurstTimeout = TimeSpan.FromSeconds(5);
 
     public FtpClientEx(IFtpClient client)
+        : base(MavlinkFtpHelper.FtpMicroserviceExName, client.Identity, client.Core)
     {
-        _logger = client.Core.Log.CreateLogger<FtpClientEx>();
+        _logger = client.Core.LoggerFactory.CreateLogger<FtpClientEx>();
         Base = client;
         _entryCache = new ObservableDictionary<string, IFtpEntry>();
     }
 
-    public string Name => $"{Base.Name}Ex";
+    public string TypeName => $"{Base.TypeName}Ex";
     public IFtpClient Base { get; }
     public IReadOnlyObservableDictionary<string, IFtpEntry> Entries => _entryCache;
 
@@ -256,7 +257,7 @@ public class FtpClientEx : IFtpClientEx, IMavlinkMicroserviceClient, IDisposable
     }
 
     public MavlinkClientIdentity Identity => Base.Identity;
-    public ICoreServices Core => Base.Core;
+    public IMavlinkContext Core => Base.Core;
 
     public Task Init(CancellationToken cancel = default)
     {

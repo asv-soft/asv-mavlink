@@ -11,7 +11,7 @@ namespace Asv.Mavlink
         private readonly ReactiveProperty<LoggingDataPayload> _loggingData;
         private readonly IDisposable _filter;
 
-        public LoggingClient(MavlinkClientIdentity identity, ICoreServices core):base("LOG", identity, core)
+        public LoggingClient(MavlinkClientIdentity identity, IMavlinkContext core):base("LOG", identity, core)
         {
             _loggingData = new ReactiveProperty<LoggingDataPayload>();
             _filter = InternalFilter<LoggingDataPacket>()

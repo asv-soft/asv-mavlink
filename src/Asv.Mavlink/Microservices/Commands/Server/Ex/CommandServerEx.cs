@@ -30,7 +30,7 @@ public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>
     {
         Base = server;
         _disposeCancel = new CancellationTokenSource();
-        _logger = server.Core.Log.CreateLogger<CommandServerEx<TArgPacket>>();
+        _logger = server.Core.LoggerFactory.CreateLogger<CommandServerEx<TArgPacket>>();
         _cmdGetter = cmdGetter;
         _confirmationGetter = confirmationGetter;
         _subscribe = commandsPipe.SubscribeAwait(

@@ -1,22 +1,29 @@
+using System.Collections.Immutable;
+using Asv.IO;
 using Asv.Mavlink.Minimal;
 
 
 namespace Asv.Mavlink;
 
-public class ArduPlaneClientDeviceProvider(VehicleClientDeviceConfig deviceConfig) : IClientDeviceProvider
+public class ArduPlaneClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq,VehicleClientDeviceConfig config)
+    : MavlinkClientDeviceFactory<ArduPlaneClientDevice>(selfId,seq)
 {
-    public int Order => ClientDeviceFactory.DefaultOrder;
-    public bool CanCreateDevice(HeartbeatPacket packet)
+    public override int Order => ClientDeviceFactory.MinimumOrder;
+    public override string DeviceClass => Vehicles.PlaneDeviceClass;
+
+    protected override ArduPlaneClientDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId, ImmutableArray<IClientDeviceExtender> extenders,
+        IMavlinkContext context)
     {
-        return packet.Payload is
+        return new ArduPlaneClientDevice(clientDeviceId,config,extenders,context);
+    }
+
+    protected override bool CheckDevice(HeartbeatPacket msg)
+    {
+        return msg.Payload is
         {
             Type: MavType.MavTypeFixedWing, 
             Autopilot: MavAutopilot.MavAutopilotArdupilotmega
         };
     }
 
-    public IClientDevice CreateDevice(HeartbeatPacket packet, MavlinkClientIdentity identity, ICoreServices core)
-    {
-        return new ArduPlaneClientDevice(identity, deviceConfig, core);
-    }
 }

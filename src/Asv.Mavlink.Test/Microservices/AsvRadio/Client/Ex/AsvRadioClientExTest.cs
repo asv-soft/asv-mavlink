@@ -31,7 +31,7 @@ public class AsvRadioClientExTest(ITestOutputHelper log) : ClientTestBase<AsvRad
         
         //Assert
         Assert.NotNull(client.Identity);
-        Assert.NotNull(client.Name);
+        Assert.NotNull(client.TypeName);
         Assert.NotNull(client.Capabilities);
         Assert.NotNull(client.Base);
         Assert.NotNull(client.Core);

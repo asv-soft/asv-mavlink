@@ -25,7 +25,7 @@ class Program
         app.Add<MavProxy>();
         app.Add<BenchmarkBinSerializationCommand>();
         app.Add<BenchmarkSerializationPacket>();*/
-        app.Add<ShowParams>();
+        //app.Add<ShowParams>();
         app.Add<MavlinkCommand>();
         app.Add<PacketViewerCommand>();
         app.Add<CreateVirtualFtpServerCommand>();

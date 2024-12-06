@@ -1,9 +1,23 @@
-﻿namespace Asv.Mavlink.Shell;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Asv.Common;
+using Asv.IO;
+using ConsoleAppFramework;
+using DynamicData;
+using Spectre.Console;
 
-/*
+namespace Asv.Mavlink.Shell;
+
 public class FtpBrowserDirectory
 {
     private ReadOnlyObservableCollection<FtpEntry> _tree;
+    private readonly SourceCache<IFtpEntry,string> _entryCache = new(x => x.Path);
+    private IObservable<IChangeSet<IFtpEntry, string>> Entries => _entryCache.Connect();
     private FtpClient _ftpClient;
     private FtpClientEx _ftpClientEx;
 
@@ -14,20 +28,34 @@ public class FtpBrowserDirectory
     [Command("ftp-browser")]
     public async Task RunFtpBrowser(string connection)
     {
-        using var port = PortFactory.Create(connection);
-        port.Enable();
-        using var conn = MavlinkV2Connection.Create(port);
+        await using var conn = Protocol.Create(builder =>
+        {
+            builder.RegisterMavlinkV2Protocol();
+        }).CreateRouter("ROUTER");
         var identity = new MavlinkClientIdentity(255, 255, 1, 1);
         var seq = new PacketSequenceCalculator();
-        _ftpClient = new FtpClient(new MavlinkFtpClientConfig(), conn, identity, seq, TimeProvider.System);
+        var core = new CoreServices(conn, seq, null, TimeProvider.System, new DefaultMeterFactory());
+        MavlinkFtpClientConfig config = new()
+        {
+            TimeoutMs = 1000,
+            CommandAttemptCount = 5,
+            TargetNetworkId = 0,
+            BurstTimeoutMs = 1000
+        };
+        _ftpClient = new FtpClient(identity, config, core);
         _ftpClientEx = new FtpClientEx(_ftpClient);
         try
         {
             await _ftpClientEx.Refresh("/");
             await _ftpClientEx.Refresh("@SYS");
-            _ftpClientEx.Entries.TransformToTree(x => x.ParentPath).Transform(x => new FtpEntry(x)).DisposeMany()
-                .Bind(out _tree).Subscribe();
-
+            
+            _entryCache.AddOrUpdate(_ftpClientEx.Entries.Values);
+            Entries.TransformToTree(x => x.ParentPath)
+                .Transform(x => new FtpEntry(x))
+                .DisposeMany()
+                .Bind(out _tree)
+                .Subscribe();
+            
             await CreateFtpBrowser(_tree);
         }
         catch (Exception e)
@@ -38,7 +66,7 @@ public class FtpBrowserDirectory
     }
 
     private async Task CreateFtpBrowser(ReadOnlyObservableCollection<FtpEntry> tree,
-        Stack<FtpEntry> stack = null)
+        Stack<FtpEntry>? stack = null)
     {
         stack ??= new Stack<FtpEntry>();
         var currentDirectory = stack.Count > 0 ? stack.Peek() : null;
@@ -62,7 +90,7 @@ public class FtpBrowserDirectory
         {
             var selection = AnsiConsole.Prompt(
                 new SelectionPrompt<FtpEntry>()
-                    .Title($"[blue]Current Directory:[/] [yellow]{(currentDirectory?.Key ?? "Root")}[/]")
+                    .Title($"[blue]Current Directory:[/] [yellow]{currentDirectory?.Key ?? "Root"}[/]")
                     .AddChoices(choices)
                     .UseConverter(entry => entry.Item.Name + (entry.Item.Type == FtpEntryType.Directory ? "/" : "")));
 
@@ -222,4 +250,4 @@ public class FtpBrowserDirectory
                 task.StopTask();
             });
     }
-}*/
+}

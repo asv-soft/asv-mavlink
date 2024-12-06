@@ -20,7 +20,7 @@ public class AsvRsgaServerEx : IAsvRsgaServerEx, IDisposable,IAsyncDisposable
         IStatusTextServer status, 
         ICommandServerEx<CommandLongPacket> commands )
     {
-        _logger = server.Core.Log.CreateLogger<AsvRsgaServerEx>();
+        _logger = server.Core.LoggerFactory.CreateLogger<AsvRsgaServerEx>();
         Base = server;
         _sub1 = server.OnCompatibilityRequest.Subscribe(OnCompatibilityRequest);
         commands[(MavCmd)AsvRsga.MavCmd.MavCmdAsvRsgaSetMode] = async (id,args, cancel) =>

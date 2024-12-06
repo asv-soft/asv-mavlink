@@ -1,37 +1,58 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Cfg;
+using Asv.IO;
 using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
-public class GbsClientDeviceConfig:ClientDeviceConfig
+public class GbsClientDeviceConfig:MavlinkClientDeviceConfig
 {
     public CommandProtocolConfig Command { get; set; } = new();
     public ParamsClientExConfig Params { get; set; } = new();
-    public string SerialNumberParamName { get; set; } = "BRD_SERIAL_NUM";
+    public override void Load(string key, IConfiguration configuration)
+    {
+        base.Load(key, configuration);
+        Command = configuration.Get<CommandProtocolConfig>();
+        Params = configuration.Get<ParamsClientExConfig>();
+    }
+    
+    public override void Save(string key, IConfiguration configuration)
+    {
+        base.Save(key, configuration);
+        configuration.Set(Command);
+        configuration.Set(Params);
+    }
 }
 
-public class GbsClientDevice : ClientDevice
+public class GbsClientDevice : MavlinkClientDevice
 {
+    public const string DeviceClass = "Adsb";
     private readonly GbsClientDeviceConfig _config;
     private readonly ILogger _logger;
 
-    public GbsClientDevice(MavlinkClientIdentity identity, GbsClientDeviceConfig config, ICoreServices core) 
-        : base(identity,config,core, DeviceClass.GbsRtk)
+    public GbsClientDevice(
+        MavlinkClientDeviceId identity, 
+        GbsClientDeviceConfig config,
+        ImmutableArray<IClientDeviceExtender> extenders, 
+        IMavlinkContext core) 
+        : base(identity,config,extenders,core)
     {
         _config = config;
-        _logger = Core.Log.CreateLogger<GbsClientDevice>();
+        _logger = Core.LoggerFactory.CreateLogger<GbsClientDevice>();
     }
 
-    protected override Task InitBeforeMicroservices(CancellationToken cancel)
+    protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices([EnumeratorCancellation] CancellationToken cancel)
     {
-        return Task.CompletedTask;
-    }
-    protected override IEnumerable<IMavlinkMicroserviceClient> CreateMicroservices()
-    {
+        await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
+        {
+            yield return microservice;
+        }
         yield return new StatusTextClient(Identity, Core);
         var command = new CommandClient(Identity, _config.Command, Core);
         yield return command;
@@ -40,10 +61,6 @@ public class GbsClientDevice : ClientDevice
         yield return new ParamsClientEx(paramBase, _config.Params, MavParamHelper.ByteWiseEncoding, ArraySegment<ParamDescription>.Empty);
         var client = new AsvGbsClient(Identity, Core);
         yield return new AsvGbsExClient(client, Heartbeat, command);
-    }
-
-    protected override Task InitAfterMicroservices(CancellationToken cancel)
-    {
-        return Task.CompletedTask;
+        
     }
 }

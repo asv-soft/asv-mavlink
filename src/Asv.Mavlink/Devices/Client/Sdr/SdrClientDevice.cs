@@ -1,13 +1,16 @@
-#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Cfg;
+using Asv.IO;
 using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
-public class SdrClientDeviceConfig:ClientDeviceConfig
+public class SdrClientDeviceConfig:MavlinkClientDeviceConfig
 {
     public CommandProtocolConfig Command { get; set; } = new();
     public AsvSdrClientExConfig SdrEx { get; set; } = new();
@@ -15,30 +18,55 @@ public class SdrClientDeviceConfig:ClientDeviceConfig
     public MissionClientExConfig MissionsEx { get; set; } = new();
     public ParamsClientExConfig Params { get; set; } = new();
     public ParamsClientExConfig ParamsEx { get; set; } = new();
-    public string SerialNumberParamName { get; set; } = "BRD_SERIAL_NUM";
-}
-public class SdrClientDevice : ClientDevice
-{
     
+    public override void Load(string key, IConfiguration configuration)
+    {
+        base.Load(key, configuration);
+        Command = configuration.Get<CommandProtocolConfig>();
+        SdrEx = configuration.Get<AsvSdrClientExConfig>();
+        Missions = configuration.Get<MissionClientConfig>();
+        MissionsEx = configuration.Get<MissionClientExConfig>();
+        Params = configuration.Get<ParamsClientExConfig>();
+        ParamsEx = configuration.Get<ParamsClientExConfig>();
+    }
+    
+    public override void Save(string key, IConfiguration configuration)
+    {
+        base.Save(key, configuration);
+        configuration.Set(Command);
+        configuration.Set(SdrEx);
+        configuration.Set(Missions);
+        configuration.Set(MissionsEx);
+        configuration.Set(Params);
+        configuration.Set(ParamsEx);
+    }
+    
+}
+public class SdrClientDevice : MavlinkClientDevice
+{
+    public const string DeviceClass = "SDR";
 
     private readonly SdrClientDeviceConfig _config;
-    private readonly ILogger _logger;
-  
-    public SdrClientDevice(MavlinkClientIdentity identity, SdrClientDeviceConfig config, ICoreServices core) 
-        : base(identity, config, core, DeviceClass.SdrPayload)
+
+    public SdrClientDevice(
+        MavlinkClientDeviceId identity, 
+        SdrClientDeviceConfig config,
+        ImmutableArray<IClientDeviceExtender> extenders, 
+        IMavlinkContext core) 
+        : base(identity,config,extenders,core)
     {
-        _logger = core.Log.CreateLogger<SdrClientDevice>();
+        core.LoggerFactory.CreateLogger<SdrClientDevice>();
         _config = config;
         
     }
 
-    protected override Task InitBeforeMicroservices(CancellationToken cancel)
+    protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices(
+        [EnumeratorCancellation] CancellationToken cancel)
     {
-        return Task.CompletedTask;
-    }
-
-    protected override IEnumerable<IMavlinkMicroserviceClient> CreateMicroservices()
-    {
+        await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
+        {
+            yield return microservice;
+        }
         yield return new StatusTextClient(Identity, Core);
         var paramBase = new ParamsClient(Identity, _config.Params, Core);
         yield return paramBase;
@@ -54,8 +82,4 @@ public class SdrClientDevice : ClientDevice
         
     }
 
-    protected override Task InitAfterMicroservices(CancellationToken cancel)
-    {
-        return Task.CompletedTask;
-    }
 }

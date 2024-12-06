@@ -36,11 +36,11 @@ namespace Asv.Mavlink
         private readonly IDisposable _sub8;
         private readonly IDisposable _sub9;
 
-        public AsvSdrServer(MavlinkIdentity identity, AsvSdrServerConfig config, ICoreServices core) 
+        public AsvSdrServer(MavlinkIdentity identity, AsvSdrServerConfig config, IMavlinkContext core) 
             : base("SDR", identity, core)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
-            _logger = core.Log.CreateLogger<AsvSdrServer>();
+            _logger = core.LoggerFactory.CreateLogger<AsvSdrServer>();
             _transponder =
                 new MavlinkPacketTransponder<AsvSdrOutStatusPacket>(identity, core);
                     

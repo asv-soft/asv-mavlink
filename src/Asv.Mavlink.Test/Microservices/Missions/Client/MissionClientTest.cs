@@ -40,9 +40,9 @@ public class MissionClientTest : ClientTestBase<MissionClient>
     public void Constructor_Null_Throws()
     {
         // ReSharper disable once NullableWarningSuppressionIsUsed
-        Assert.Throws<ArgumentNullException>(() => new MissionClient(null!, _config, Core));
+        Assert.Throws<ArgumentNullException>(() => new MissionClient(null!, _config, Context));
         // ReSharper disable once NullableWarningSuppressionIsUsed
-        Assert.Throws<ArgumentNullException>(() => new MissionClient(Identity, null!, Core));
+        Assert.Throws<ArgumentNullException>(() => new MissionClient(Identity, null!, Context));
         // ReSharper disable once NullableWarningSuppressionIsUsed
         Assert.Throws<ArgumentNullException>(() => new MissionClient(Identity, _config, null!));
     }

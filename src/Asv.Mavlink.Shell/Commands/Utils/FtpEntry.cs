@@ -1,6 +1,12 @@
-﻿/*using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Asv.Common;
+using DotNext;
 using DynamicData;
+using ObservableCollections;
+using R3;
+using R3.Collections;
 
 namespace Asv.Mavlink.Shell;
 
@@ -36,4 +42,4 @@ public class FtpEntryModel : IFtpEntry
     public string Path { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public FtpEntryType Type { get; set; }
-}*/
+}

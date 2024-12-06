@@ -1,28 +1,40 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
+using Asv.IO;
 
 namespace Asv.Mavlink;
 
 public class Px4CopterClientDevice:Px4VehicleClientDevice
 {
-    public Px4CopterClientDevice(MavlinkClientIdentity identity, VehicleClientDeviceConfig deviceConfig, ICoreServices core) 
-        : base(identity, deviceConfig, core, DeviceClass.Copter)
+    public Px4CopterClientDevice(MavlinkClientDeviceId identity, 
+        VehicleClientDeviceConfig config,
+        ImmutableArray<IClientDeviceExtender> extenders, 
+        IMavlinkContext core) 
+        : base(identity,config,extenders,core)
     {
         
     }
     
-    protected override IEnumerable<IMavlinkMicroserviceClient> CreateMicroservices()
+    protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices(
+        [EnumeratorCancellation] CancellationToken cancel)
     {
         ICommandClient? cmd = null;
-        foreach (var client in base.CreateMicroservices())
+        await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
         {
-            if (client is ICommandClient command)
+            if (microservice is ICommandClient command)
             {
                 cmd = command;
             }
-            yield return client;
+            yield return microservice;
         }
-        Debug.Assert(cmd != null);
-        yield return new Px4CopterModeClient(Heartbeat, cmd);
+       
+        if (cmd == null) yield break;
+        
+        yield return new Px4CopterModeClient(Heartbeat,cmd);
+        
     }
 }

@@ -8,7 +8,7 @@ namespace Asv.Mavlink;
 
 
 
-public class AdsbVehicleServer(MavlinkIdentity identity, ICoreServices core)
+public class AdsbVehicleServer(MavlinkIdentity identity, IMavlinkContext core)
     : MavlinkMicroserviceServer("ADSB", identity, core), IAdsbVehicleServer
 {
     public ValueTask Send(Action<AdsbVehiclePayload> fillCallback, CancellationToken cancel)

@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +8,7 @@ using R3;
 
 namespace Asv.Mavlink;
 
-public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisposable
+public sealed class PositionClientEx : MavlinkMicroserviceClient, IPositionClientEx
 {
     private static readonly TimeSpan ArmedTimeCheckInterval = TimeSpan.FromSeconds(1);
     private readonly ICommandClient _commandClient;
@@ -23,6 +22,7 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
         IPositionClient client, 
         IHeartbeatClient heartbeatClient, 
         ICommandClient commandClient)
+        :base(PositionHelper.MicroserviceName, client.Identity, client.Core)
     {
         _commandClient = commandClient;
         Base = client;
@@ -51,35 +51,66 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
         
         Target = client.Target
             .Where(p => p?.CoordinateFrame == MavFrame.MavFrameGlobal)
-            .Select(p =>(GeoPoint?) new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.LatInt ?? 0)  , MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.LonInt ?? 0), p?.Alt ?? 0))
-            .ToReadOnlyReactiveProperty();
+            .Select(p => (GeoPoint?)
+                new GeoPoint(
+                    MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.LatInt ?? 0),
+                    MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.LonInt ?? 0),
+                    p?.Alt ?? 0
+                )
+            ).ToReadOnlyReactiveProperty();
         
         Home = client.Home
-            .Select(p => (GeoPoint?)new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.Latitude ?? 0), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.Longitude?? 0), MavlinkTypesHelper.AltFromMmToDoubleMeter(p?.Altitude ?? 0)))
-            .ToReadOnlyReactiveProperty();
+            .Select(p => (GeoPoint?)
+                new GeoPoint(
+                    MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.Latitude ?? 0), 
+                    MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.Longitude?? 0), 
+                    MavlinkTypesHelper.AltFromMmToDoubleMeter(p?.Altitude ?? 0)
+                )
+            ).ToReadOnlyReactiveProperty();
         
         Current = client.GlobalPosition
-            .Select(p=>new GeoPoint(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.Lat ?? 0), MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.Lon ?? 0), MavlinkTypesHelper.AltFromMmToDoubleMeter(p?.Alt ?? 0)))
+            .Select(p=>new GeoPoint(
+                MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.Lat ?? 0), 
+                MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(p?.Lon ?? 0), 
+                MavlinkTypesHelper.AltFromMmToDoubleMeter(p?.Alt ?? 0)
+                )
+            )
             .ToReadOnlyReactiveProperty(null);
         
         HomeDistance = Current.AsObservable()
-            .CombineLatest(Home.AsObservable(), (c, h) => GeoMath.Distance(c, h))
-            .ToReadOnlyReactiveProperty(double.NaN);
+            .CombineLatest(
+                Home.AsObservable(), 
+                (c, h) => GeoMath.Distance(c, h)
+            ).ToReadOnlyReactiveProperty(double.NaN);
 
         TargetDistance = Current.AsObservable()
-            .CombineLatest(Target.AsObservable(), (c, h) => GeoMath.Distance(c, h))
-            .ToReadOnlyReactiveProperty();
+            .CombineLatest(
+                Target.AsObservable(), 
+                (c, h) => GeoMath.Distance(c, h)
+            ).ToReadOnlyReactiveProperty();
 
         IsArmed = heartbeatClient.RawHeartbeat
-            .Select(p => p.BaseMode.HasFlag(MavModeFlag.MavModeFlagSafetyArmed))
+            .Select(p =>
+                p?.BaseMode.HasFlag(MavModeFlag.MavModeFlagSafetyArmed) ?? false
+            )
             .ToReadOnlyReactiveProperty();
         
         _armedTime = new BindableReactiveProperty<TimeSpan>(TimeSpan.Zero);
 
         _armedTimer =
-            client.Core.TimeProvider.CreateTimer(CheckArmedTime, null, ArmedTimeCheckInterval, ArmedTimeCheckInterval);
+            client.Core.TimeProvider.CreateTimer(
+                CheckArmedTime, 
+                null,
+                ArmedTimeCheckInterval, 
+                ArmedTimeCheckInterval
+            );
         IsArmed.AsObservable().Where(_ => _)
-            .Subscribe(_ => Interlocked.Exchange(ref _lastArmedTime,client.Core.TimeProvider.GetTimestamp()));
+            .Subscribe(_ => 
+                Interlocked.Exchange(
+                    ref _lastArmedTime,
+                    client.Core.TimeProvider.GetTimestamp()
+                )
+            );
 
         _roi = new BindableReactiveProperty<GeoPoint?>(null);
         
@@ -88,7 +119,7 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
             .ToReadOnlyReactiveProperty(double.NaN);
         }
 
-    public string Name => $"{Base.Name}Ex";
+    public string TypeName => $"{Base.TypeName}Ex";
     
     private void CheckArmedTime(object? state)
     {
@@ -134,81 +165,153 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
     
     public async Task ArmDisarm(bool isArm, CancellationToken cancel)
     {
-        if (IsArmed.CurrentValue == isArm) return;
-        await _commandClient.CommandLongAndCheckResult(MavCmd.MavCmdComponentArmDisarm, isArm ? 1 : 0, 0, 0,
-            0, 0, 0, 0, cancel).ConfigureAwait(false);
+        if (IsArmed.CurrentValue == isArm)
+        {
+            return;
+        }
         
+        await _commandClient.CommandLongAndCheckResult(
+            MavCmd.MavCmdComponentArmDisarm, 
+            isArm ? 1 : 0, 
+            0, 
+            0,
+            0, 
+            0, 
+            0, 
+            0, 
+            cancel)
+            .ConfigureAwait(false);
     }
 
     public async Task SetRoi(GeoPoint location, CancellationToken cancel)
     {
-        await _commandClient.CommandLongAndCheckResult(MavCmd.MavCmdDoSetRoi, (int)MavRoi.MavRoiLocation, 0, 0, 0, (float)location.Latitude, (float)location.Longitude, (float)location.Altitude,  CancellationToken.None).ConfigureAwait(false);
+        await _commandClient.CommandLongAndCheckResult(
+            MavCmd.MavCmdDoSetRoi, 
+            (int)MavRoi.MavRoiLocation, 
+            0, 
+            0, 
+            0, 
+            (float)location.Latitude, 
+            (float)location.Longitude,
+            (float)location.Altitude,  
+            cancel).ConfigureAwait(false);
         _roi.OnNext(location);
     }
 
     public async Task ClearRoi(CancellationToken cancel)
     {
-        await _commandClient.CommandLongAndCheckResult(MavCmd.MavCmdDoSetRoiNone, (int)MavRoi.MavRoiLocation, 0, 0, 0, 0, 0, 0, CancellationToken.None).ConfigureAwait(false);
+        await _commandClient.CommandLongAndCheckResult(
+            MavCmd.MavCmdDoSetRoiNone, 
+            (int)MavRoi.MavRoiLocation, 
+            0, 
+            0, 
+            0, 
+            0, 
+            0, 
+            0, 
+            cancel).ConfigureAwait(false);
         _roi.OnNext(null);
     }
 
     public ValueTask SetTarget(GeoPoint point, CancellationToken cancel)
     {
-        return Base.SetTargetGlobalInt(0, MavFrame.MavFrameGlobalInt, cancel, MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(point.Latitude),
-            MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(point.Longitude), (float?)point.Altitude);
+        return Base.SetTargetGlobalInt(
+            0,
+            MavFrame.MavFrameGlobalInt, 
+            cancel,
+            MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(point.Latitude),
+            MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(point.Longitude), 
+            (float?)point.Altitude
+        );
     }
 
     public Task TakeOff(double altInMeters, CancellationToken cancel = default)
     {
-        return _commandClient.CommandLongAndCheckResult(MavCmd.MavCmdNavTakeoff, 0, 0, 0, 0, 0, 0, (float)altInMeters, cancel);
+        return _commandClient.CommandLongAndCheckResult(
+            MavCmd.MavCmdNavTakeoff, 
+            0, 
+            0, 
+            0, 
+            0, 
+            0, 
+            0, 
+            (float)altInMeters, 
+            cancel
+        );
     }
 
     public Task QTakeOff(double altInMeters, CancellationToken cancel = default)
     {
-        return _commandClient.CommandLongAndCheckResult(MavCmd.MavCmdNavVtolTakeoff, 0, 0, 0, 0, 0, 0, (float)altInMeters, cancel);
+        return _commandClient.CommandLongAndCheckResult(
+            MavCmd.MavCmdNavVtolTakeoff, 
+            0, 
+            0, 
+            0, 
+            0, 
+            0, 
+            0, 
+            (float)altInMeters, 
+            cancel
+        );
     }
 
     public Task GetHomePosition(CancellationToken cancel)
     {
-        return _commandClient.CommandLong(MavCmd.MavCmdGetHomePosition, 0, 0, 0, 0, 0,
-            0, 0, cancel);
+        return _commandClient.CommandLong(
+            MavCmd.MavCmdGetHomePosition, 
+            0, 
+            0, 
+            0, 
+            0, 
+            0,
+            0, 
+            0,
+            cancel
+        );
     }
 
     public Task QLand(NavVtolLandOptions landOptions, double approachAlt, CancellationToken cancel)
     {
-        return _commandClient.CommandLong(MavCmd.MavCmdNavVtolLand, (float)landOptions, 0, (float)approachAlt, 0, 0, 0, 0, cancel);
-    }
-
-    public MavlinkClientIdentity Identity => Base.Identity;
-    public ICoreServices Core => Base.Core;
-    public Task Init(CancellationToken cancel = default)
-    {
-        return Task.CompletedTask;
+        return _commandClient.CommandLong(
+            MavCmd.MavCmdNavVtolLand, 
+            (float)landOptions, 
+            0, 
+            (float)approachAlt, 
+            0, 
+            0, 
+            0, 
+            0, 
+            cancel
+        );
     }
 
     #region Disposable
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        Pitch.Dispose();
-        PitchSpeed.Dispose();
-        Roll.Dispose();
-        RollSpeed.Dispose();
-        Yaw.Dispose();
-        YawSpeed.Dispose();
-        Target.Dispose();
-        Home.Dispose();
-        Current.Dispose();
-        HomeDistance.Dispose();
-        TargetDistance.Dispose();
-        IsArmed.Dispose();
-        _armedTime.Dispose();
-        _armedTimer.Dispose();
-        _roi.Dispose();
-        AltitudeAboveHome.Dispose();
+        if (disposing)
+        {
+            Pitch.Dispose();
+            PitchSpeed.Dispose();
+            Roll.Dispose();
+            RollSpeed.Dispose();
+            Yaw.Dispose();
+            YawSpeed.Dispose();
+            Target.Dispose();
+            Home.Dispose();
+            Current.Dispose();
+            HomeDistance.Dispose();
+            TargetDistance.Dispose();
+            IsArmed.Dispose();
+            _armedTime.Dispose();
+            _armedTimer.Dispose();
+            _roi.Dispose();
+            AltitudeAboveHome.Dispose();
+        }
+        base.Dispose(disposing);
     }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
         await CastAndDispose(Pitch).ConfigureAwait(false);
         await CastAndDispose(PitchSpeed).ConfigureAwait(false);
@@ -226,7 +329,7 @@ public sealed class PositionClientEx : IPositionClientEx,IDisposable, IAsyncDisp
         await _armedTimer.DisposeAsync().ConfigureAwait(false);
         await CastAndDispose(_roi).ConfigureAwait(false);
         await CastAndDispose(AltitudeAboveHome).ConfigureAwait(false);
-
+        await base.DisposeAsyncCore().ConfigureAwait(false);
         return;
 
         static async ValueTask CastAndDispose(IDisposable resource)

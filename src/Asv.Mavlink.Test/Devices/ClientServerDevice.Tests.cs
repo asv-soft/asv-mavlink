@@ -1,15 +1,17 @@
 using System;
+using System.Collections.Immutable;
 using Asv.Common;
+using Asv.IO;
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-[TestSubject(typeof(ClientDevice))]
+[TestSubject(typeof(MavlinkClientDevice))]
 [TestSubject(typeof(ServerDevice))]
 public class ComplexDeviceTests(ITestOutputHelper log)
-    : ComplexTestBase<ClientDevice, ServerDevice>(log)
+    : ComplexTestBase<MavlinkClientDevice, ServerDevice>(log)
 {
     private readonly ServerDeviceConfig _serverConfig = new()
     {
@@ -25,7 +27,7 @@ public class ComplexDeviceTests(ITestOutputHelper log)
 
     };
 
-    private readonly ClientDeviceConfig _clientConfig = new()
+    private readonly MavlinkClientDeviceConfig _clientConfig = new()
     {
         Heartbeat =
         {
@@ -37,14 +39,14 @@ public class ComplexDeviceTests(ITestOutputHelper log)
         }
     };
 
-    protected override ServerDevice CreateServer(MavlinkIdentity identity, ICoreServices core)
+    protected override ServerDevice CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
         return new ServerDevice(identity,_serverConfig,core);
     }
 
-    protected override ClientDevice CreateClient(MavlinkClientIdentity identity, ICoreServices core)
+    protected override MavlinkClientDevice CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
-        return new ClientDevice(identity,_clientConfig,core, DeviceClass.Copter);
+        return new MavlinkClientDevice(new MavlinkClientDeviceId("TEST",identity),_clientConfig, [], core);
     }
     
     [Fact]
@@ -52,27 +54,27 @@ public class ComplexDeviceTests(ITestOutputHelper log)
     {
         var client = Client; // to ensure that client is created
         Server.Start();
-        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.CurrentValue);
+        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.State.CurrentValue);
         ServerTime.Advance(TimeSpan.FromSeconds(1));
         ClientTime.Advance(TimeSpan.FromSeconds(1));
         Server.Dispose();
-        Assert.Equal(LinkState.Connected,Client.Heartbeat.Link.CurrentValue);
+        Assert.Equal(LinkState.Connected,Client.Heartbeat.Link.State.CurrentValue);
         
         ServerTime.Advance(TimeSpan.FromSeconds(1));
         ClientTime.Advance(TimeSpan.FromSeconds(1));
-        Assert.Equal(LinkState.Downgrade,Client.Heartbeat.Link.CurrentValue);
+        Assert.Equal(LinkState.Downgrade,Client.Heartbeat.Link.State.CurrentValue);
         
         ServerTime.Advance(TimeSpan.FromSeconds(1));
         ClientTime.Advance(TimeSpan.FromSeconds(1));
         
-        Assert.Equal(LinkState.Downgrade,Client.Heartbeat.Link.CurrentValue);
+        Assert.Equal(LinkState.Downgrade,Client.Heartbeat.Link.State.CurrentValue);
         ServerTime.Advance(TimeSpan.FromSeconds(1));
         ClientTime.Advance(TimeSpan.FromSeconds(1));
-        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.CurrentValue);
+        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.State.CurrentValue);
         ServerTime.Advance(TimeSpan.FromSeconds(1));
         ClientTime.Advance(TimeSpan.FromSeconds(1));
         
-        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.CurrentValue);
+        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.State.CurrentValue);
     }
 
     

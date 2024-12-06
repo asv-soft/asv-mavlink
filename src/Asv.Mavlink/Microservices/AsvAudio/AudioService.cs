@@ -26,7 +26,7 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
     private readonly ILogger _logger;
     private readonly IAudioCodecFactory _codecFactory;
     private readonly MavlinkIdentity _identity;
-    private readonly ICoreServices _core;
+    private readonly IMavlinkContext _core;
     private readonly ObservableDictionary<MavlinkIdentity, IAudioDevice> _devices;
     private readonly TimeSpan _deviceTimeout;
     private readonly TimeSpan _onlineRate;
@@ -38,9 +38,9 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
     private readonly MavlinkPacketTransponder<AsvAudioOnlinePacket> _transponder;
     
     public AudioService(IAudioCodecFactory codecFactory,MavlinkIdentity identity,
-        AudioServiceConfig config, ICoreServices core)
+        AudioServiceConfig config, IMavlinkContext core)
     {
-        _logger = core.Log.CreateLogger<AudioService>();
+        _logger = core.LoggerFactory.CreateLogger<AudioService>();
         _codecFactory = codecFactory ?? throw new ArgumentNullException(nameof(codecFactory));
         _identity = identity;
         _core = core;

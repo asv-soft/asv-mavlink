@@ -32,7 +32,7 @@ public class SdrServerDevice:ServerDevice, ISdrServerDevice
         IEnumerable<IMavParamTypeMetadata> paramList,
         IMavParamEncoding encoding,
         IConfiguration paramStore,
-        ICoreServices core)
+        IMavlinkContext core)
         : base( identity, config, core)
     {
         ArgumentNullException.ThrowIfNull(config);

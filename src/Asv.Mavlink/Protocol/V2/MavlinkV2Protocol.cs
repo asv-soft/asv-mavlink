@@ -56,13 +56,13 @@ public static class MavlinkV2Protocol
     
     public static void RegisterMavlinkV2Protocol(this IProtocolBuilder builder)
     {
-        builder.RegisterProtocol(Info, (core,stat) => new MavlinkV2Parser(MavlinkV2MessageFactory.Instance, core,stat));
+        builder.Protocols.Register(Info, (core,stat) => new MavlinkV2Parser(MavlinkV2MessageFactory.Instance, core,stat));
         
-        builder.RegisterFormatter(FtpPacketFormatter.Instance);
-        builder.RegisterFormatter(ParamSetFormatter.Instance);
-        builder.RegisterFormatter(ParamValueFormatter.Instance);
-        builder.RegisterFormatter(StatusTextFormatter.Instance);
+        builder.Formatters.Register(FtpPacketFormatter.Instance);
+        builder.Formatters.Register(ParamSetFormatter.Instance);
+        builder.Formatters.Register(ParamValueFormatter.Instance);
+        builder.Formatters.Register(StatusTextFormatter.Instance);
         
-        builder.RegisterBroadcastFeature<MavlinkMessage>();
+        builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
     }
 }

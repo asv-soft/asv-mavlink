@@ -7,7 +7,7 @@ namespace Asv.Mavlink
 {
     public class AsvGbsClient:MavlinkMicroserviceClient, IAsvGbsClient
     {
-        public AsvGbsClient(MavlinkClientIdentity identity,ICoreServices core) 
+        public AsvGbsClient(MavlinkClientIdentity identity,IMavlinkContext core) 
             : base("GBS", identity, core)
         {
             RawStatus = InternalFilter<AsvGbsOutStatusPacket>().Select(p => p?.Payload)

@@ -19,7 +19,7 @@ public class ParamsClientExConfig : ParameterClientConfig
     public int ChunkUpdateBufferMs { get; set; } = 100;
 }
 
-public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposable
+public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
 {
     private static readonly TimeSpan CheckTimeout = TimeSpan.FromMilliseconds(100);
     private readonly ParamsClientExConfig _config;
@@ -33,9 +33,9 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
     private readonly ImmutableDictionary<string, ParamDescription> _existDescription;
 
     public ParamsClientEx(IParamsClient client, ParamsClientExConfig config, IMavParamEncoding converter,
-        IEnumerable<ParamDescription> existDescription)
+        IEnumerable<ParamDescription> existDescription):base(ParamsHelper.MicroserviceName,client.Identity,client.Core)
     {
-        _logger = client.Core.Log.CreateLogger<ParamsClientEx>();
+        _logger = client.Core.LoggerFactory.CreateLogger<ParamsClientEx>();
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _converter = converter ?? throw new ArgumentNullException(nameof(converter));
         _existDescription = existDescription.ToImmutableDictionary(x => x.Name, x => x);
@@ -58,15 +58,10 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
         _onValueChanged = new Subject<(string, MavParamValue)>();
     }
 
-    public string Name => $"{Base.Name}Ex";
     public IParamsClient Base { get; }
-    public MavlinkClientIdentity Identity => Base.Identity;
-    public ICoreServices Core => Base.Core;
-    public Task Init(CancellationToken cancel = default) => Task.CompletedTask;
     public ReadOnlyReactiveProperty<int> RemoteCount { get; }
     public ReadOnlyReactiveProperty<int> LocalCount { get; }
     public Observable<(string, MavParamValue)> OnValueChanged => _onValueChanged;
-    private CancellationToken DisposeCancel => _disposeCancel.Token;
     public ReadOnlyReactiveProperty<bool> IsSynced => _isSynced;
     public IReadOnlyObservableDictionary<string, ParamItem> Items => _paramsSource;
 
@@ -245,17 +240,21 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
 
     #region Dispose
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _isSynced.Dispose();
-        _onValueChanged.Dispose();
-        _disposeCancel.Dispose();
-        _sub1.Dispose();
-        RemoteCount.Dispose();
-        LocalCount.Dispose();
+        if (disposing)
+        {
+            _isSynced.Dispose();
+            _onValueChanged.Dispose();
+            _disposeCancel.Dispose();
+            _sub1.Dispose();
+            RemoteCount.Dispose();
+            LocalCount.Dispose();
+        }
+        base.Dispose(disposing);
     }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
         await CastAndDispose(_isSynced).ConfigureAwait(false);
         await CastAndDispose(_onValueChanged).ConfigureAwait(false);
@@ -263,7 +262,7 @@ public sealed class ParamsClientEx : IParamsClientEx, IDisposable, IAsyncDisposa
         await CastAndDispose(_sub1).ConfigureAwait(false);
         await CastAndDispose(RemoteCount).ConfigureAwait(false);
         await CastAndDispose(LocalCount).ConfigureAwait(false);
-
+        await base.DisposeAsyncCore().ConfigureAwait(false);
         return;
 
         static async ValueTask CastAndDispose(IDisposable resource)

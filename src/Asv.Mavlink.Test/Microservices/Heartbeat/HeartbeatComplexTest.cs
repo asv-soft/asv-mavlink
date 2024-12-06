@@ -2,6 +2,7 @@ using System;
 
 using System.Threading.Tasks;
 using Asv.Common;
+using Asv.IO;
 using Asv.Mavlink.Minimal;
 using R3;
 using Xunit;
@@ -14,8 +15,8 @@ public class HeartbeatComplexTest(ITestOutputHelper output) : ComplexTestBase<He
     private readonly HeartbeatClientConfig _clientConfig = new();
     private readonly MavlinkHeartbeatServerConfig _serverConfig = new();
 
-    protected override HeartbeatServer CreateServer(MavlinkIdentity identity, ICoreServices core) => new(identity,_serverConfig,core);
-    protected override HeartbeatClient CreateClient(MavlinkClientIdentity identity, ICoreServices core) => new(identity, _clientConfig, core);
+    protected override HeartbeatServer CreateServer(MavlinkIdentity identity, IMavlinkContext core) => new(identity,_serverConfig,core);
+    protected override HeartbeatClient CreateClient(MavlinkClientIdentity identity, IMavlinkContext core) => new(identity, _clientConfig, core);
 
     [Fact]
     public async Task Server_Send_Heartbeat_Packet_And_Client_Catch_It()
@@ -32,7 +33,7 @@ public class HeartbeatComplexTest(ITestOutputHelper output) : ComplexTestBase<He
         Server.Start();
         ServerTime.Advance(TimeSpan.FromSeconds(1.1));
         ClientTime.Advance(TimeSpan.FromSeconds(1.1));
-        await Client.Link.FirstAsync(x => x == LinkState.Connected);
+        await Client.Link.State.FirstAsync(x => x == LinkState.Connected);
         
         Assert.NotNull(Client.RawHeartbeat.CurrentValue);
         Assert.Equal(MavAutopilot.MavAutopilotGeneric, Client.RawHeartbeat.CurrentValue.Autopilot);

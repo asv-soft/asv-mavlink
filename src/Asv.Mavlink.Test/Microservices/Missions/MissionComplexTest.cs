@@ -38,12 +38,12 @@ public class MissionComplexTest : ComplexTestBase<MissionClient, MissionServer>
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
-    protected override MissionServer CreateServer(MavlinkIdentity identity, ICoreServices core)
+    protected override MissionServer CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     { 
         return new MissionServer(identity, core);
     }
 
-    protected override MissionClient CreateClient(MavlinkClientIdentity identity, ICoreServices core)
+    protected override MissionClient CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
         return new MissionClient(identity, _clientConfig, core);
     }
@@ -378,7 +378,7 @@ public class MissionComplexTest : ComplexTestBase<MissionClient, MissionServer>
     }
     
     [Fact]
-    public void WriteMissionItem_SendNull_Throws()
+    public async Task WriteMissionItem_SendNull_Throws()
     {
         // Arrange
         var called = 0;
@@ -387,11 +387,11 @@ public class MissionComplexTest : ComplexTestBase<MissionClient, MissionServer>
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        
+
         // Act + Assert
-        Assert.Throws<NullReferenceException>(
+        await Assert.ThrowsAsync<NullReferenceException>(
             // ReSharper disable once NullableWarningSuppressionIsUsed
-            () => _client.WriteMissionItem(null!, cancel:_cancellationTokenSource.Token)
+           async () => await _client.WriteMissionItem(null!, cancel:_cancellationTokenSource.Token)
         );
         Assert.Equal(0, called);
         Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
@@ -477,8 +477,8 @@ public class MissionComplexTest : ComplexTestBase<MissionClient, MissionServer>
         });
 
         // Act + Assert
-        Assert.Throws<OperationCanceledException>(
-            () => _client.WriteMissionItem(missionItem, cancel:_cancellationTokenSource.Token)
+        await Assert.ThrowsAsync<OperationCanceledException>(
+            async () => await _client.WriteMissionItem(missionItem, cancel:_cancellationTokenSource.Token)
         );
         Assert.Equal(0, called);
     }
@@ -528,9 +528,9 @@ public class MissionComplexTest : ComplexTestBase<MissionClient, MissionServer>
         });
         
         // Act + Assert
-        Assert.Throws<NullReferenceException>(
+        Assert.ThrowsAsync<NullReferenceException>(
             // ReSharper disable once NullableWarningSuppressionIsUsed
-            () => _client.WriteMissionIntItem(null!, cancel:_cancellationTokenSource.Token)
+            async () => await _client.WriteMissionIntItem(null!, cancel:_cancellationTokenSource.Token)
         );
         Assert.Equal(0, called);
         Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
@@ -549,10 +549,10 @@ public class MissionComplexTest : ComplexTestBase<MissionClient, MissionServer>
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        
+
         // Act + Assert
-         Assert.Throws<OperationCanceledException>(
-            () => _client.WriteMissionIntItem(_ => { }, cancel:_cancellationTokenSource.Token)
+        await Assert.ThrowsAsync<OperationCanceledException>(
+            async () => await _client.WriteMissionIntItem(_ => { }, cancel:_cancellationTokenSource.Token)
         );
         Assert.Equal(0, called);
     }
@@ -680,10 +680,10 @@ public class MissionComplexTest : ComplexTestBase<MissionClient, MissionServer>
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        
+
         // Act + Assert
-        Assert.Throws<OperationCanceledException>(
-            () => _client.MissionSetCount(10,cancel: _cancellationTokenSource.Token)
+        await Assert.ThrowsAsync<OperationCanceledException>(
+            async () => await _client.MissionSetCount(10,cancel: _cancellationTokenSource.Token)
         );
         Assert.Equal(0, called);
     }

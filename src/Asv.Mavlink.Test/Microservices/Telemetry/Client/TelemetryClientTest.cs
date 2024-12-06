@@ -36,7 +36,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     public void Constructor_WithNull_Throws()
     {
         // ReSharper disable once NullableWarningSuppressionIsUsed
-        Assert.Throws<ArgumentNullException>(() => new TelemetryClient(null!, Core));
+        Assert.Throws<ArgumentNullException>(() => new TelemetryClient(null!, Context));
         // ReSharper disable once NullableWarningSuppressionIsUsed
         Assert.Throws<ArgumentNullException>(() => new TelemetryClient(Identity, null!));
     }

@@ -10,8 +10,8 @@ namespace Asv.Mavlink
         public int HeartbeatRateMs { get; set; } = 1000;
     }
 
-    public class HeartbeatServer(MavlinkIdentity identity, MavlinkHeartbeatServerConfig config, ICoreServices core)
-        : MavlinkMicroserviceServer("HEARTBEAT", identity, core), IHeartbeatServer
+    public class HeartbeatServer(MavlinkIdentity identity, MavlinkHeartbeatServerConfig config, IMavlinkContext core)
+        : MavlinkMicroserviceServer(HeartbeatHelper.MicroserviceName, identity, core), IHeartbeatServer
     {
         private readonly MavlinkPacketTransponder<HeartbeatPacket> _transponder = new(identity, core);
 

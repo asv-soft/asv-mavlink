@@ -186,7 +186,7 @@
         <description>Parachute</description>
       </entry>
       <entry value="38" name="MAV_TYPE_LOG">
-        <description>Log</description>
+        <description>LoggerFactory</description>
       </entry>
       <entry value="39" name="MAV_TYPE_OSD">
         <description>OSD</description>

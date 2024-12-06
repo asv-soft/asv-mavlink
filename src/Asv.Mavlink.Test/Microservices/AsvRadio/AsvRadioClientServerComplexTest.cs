@@ -173,7 +173,7 @@ public class AsvRadioClientServerComplexTest
         Assert.Equal(result.MinRfFreq, _capabilities.MinFrequencyHz);
     }
 
-    protected override AsvRadioServerEx CreateServer(MavlinkIdentity identity, ICoreServices core)
+    protected override AsvRadioServerEx CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
         var srv = new AsvRadioServer(identity, _radioConfig, core);
         var hb = new HeartbeatServer(identity, _heartbeatConfigServer, core);
@@ -182,7 +182,7 @@ public class AsvRadioClientServerComplexTest
         return new AsvRadioServerEx(_capabilities, _codecs, srv, hb, cmd, status);
     }
 
-    protected override AsvRadioClientEx CreateClient(MavlinkClientIdentity identity, ICoreServices core)
+    protected override AsvRadioClientEx CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
         return new AsvRadioClientEx(new AsvRadioClient(identity, core),
             new HeartbeatClient(identity, _heartbeatConfigClient, core),

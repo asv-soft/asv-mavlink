@@ -8,7 +8,7 @@ using Spectre.Console;
 
 namespace Asv.Mavlink.Shell
 {
-    public class ShowParams
+    /*public class ShowParams
     {
         private const string ConnectionString = "tcp://127.0.0.1:5762";
         /// <summary>
@@ -24,20 +24,17 @@ namespace Asv.Mavlink.Shell
             }).CreateRouter("ROUTER");
             var core = new CoreServices(router);
             var factory = new ClientDeviceFactory(new MavlinkIdentity(255, 255), [
-                new AdsbClientDeviceProvider(new AdsbClientDeviceConfig(), []),
-                new GbsClientDeviceProvider(new GbsClientDeviceConfig()),
-                new GenericDeviceProvider(new GenericDeviceConfig()),
-                new RadioClientDeviceProvider(new RadioClientDeviceConfig()),
+                new GenericClientDeviceFactory(new GenericDeviceConfig()),
                 new RfsaClientDeviceProvider(new RfsaClientDeviceConfig()),
                 new RsgaClientDeviceProvider(new RsgaClientDeviceConfig()),
                 new SdrClientDeviceProvider(new SdrClientDeviceConfig()),
-                new ArduCopterClientDeviceProvider(new VehicleClientDeviceConfig()),
+                new ArduCopterClientDeviceFactory(new VehicleClientDeviceConfig()),
                 new ArduPlaneClientDeviceProvider(new VehicleClientDeviceConfig()),
-                new Px4CopterClientDeviceProvider(new VehicleClientDeviceConfig()),
-                new Px4PlaneClientDeviceProvider(new VehicleClientDeviceConfig())
+                new Px4CopterClientDeviceFactory(new VehicleClientDeviceConfig()),
+                new Px4PlaneClientDeviceFactory(new VehicleClientDeviceConfig())
             ],core);
             
-            var browser = new ClientDeviceBrowser(factory, new DeviceBrowserConfig(), core);
+            var browser = new DeviceExplorer(factory, new DeviceBrowserConfig(), core);
             
             IClientDevice choice;
             do
@@ -71,5 +68,5 @@ namespace Asv.Mavlink.Shell
             
 
         }
-    }
+    }*/
 }

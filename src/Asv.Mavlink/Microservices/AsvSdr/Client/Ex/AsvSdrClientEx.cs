@@ -17,7 +17,7 @@ public class AsvSdrClientExConfig
     public int MaxTimeToWaitForResponseForListMs { get; set; } = 2000;
 }
 
-public class AsvSdrClientEx : IAsvSdrClientEx, IDisposable, IAsyncDisposable
+public class AsvSdrClientEx :MavlinkMicroserviceClient, IAsvSdrClientEx
 {
     private readonly ICommandClient _commandClient;
     private readonly AsvSdrClientExConfig _config;
@@ -34,9 +34,10 @@ public class AsvSdrClientEx : IAsvSdrClientEx, IDisposable, IAsyncDisposable
         IHeartbeatClient heartbeatClient, 
         ICommandClient commandClient, 
         AsvSdrClientExConfig config)
+        : base(AsvSdrHelper.AsvSdrMicroserviceExName, client.Identity, client.Core)
     {
         Base = client;
-        _logger = client.Core.Log.CreateLogger<AsvSdrClientEx>();
+        _logger = client.Core.LoggerFactory.CreateLogger<AsvSdrClientEx>();
         _commandClient = commandClient;
         _config = config;
         _disposeCancel = new CancellationTokenSource();
@@ -88,10 +89,10 @@ public class AsvSdrClientEx : IAsvSdrClientEx, IDisposable, IAsyncDisposable
             }
         });
     }
-    public string Name => $"{Base.Name}Ex";
+    public string TypeName => $"{Base.TypeName}Ex";
     public IAsvSdrClient Base { get; }
     public MavlinkClientIdentity Identity => Base.Identity;
-    public ICoreServices Core => Base.Core;
+    public IMavlinkContext Core => Base.Core;
     public Task Init(CancellationToken cancel = default)
     {
         return Task.CompletedTask;

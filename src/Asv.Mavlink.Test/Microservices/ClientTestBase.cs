@@ -26,13 +26,13 @@ public abstract class ClientTestBase<TClient>
             
         });
         Link = protocol.CreateVirtualConnection();
-        Core = new CoreServices(Link.Client, Seq, new TestLoggerFactory(log, Time, "CLIENT"), Time, new DefaultMeterFactory());
+        Context = new CoreServices(Link.Client, Seq, new TestLoggerFactory(log, Time, "CLIENT"), Time, new DefaultMeterFactory());
     }
     protected abstract TClient CreateClient(MavlinkClientIdentity identity, CoreServices core);
     protected MavlinkClientIdentity Identity { get; }
     protected ITestOutputHelper Log { get; }
-    protected TClient Client => _client ??= CreateClient(Identity, Core);
-    protected CoreServices Core { get; }
+    protected TClient Client => _client ??= CreateClient(Identity, Context);
+    protected CoreServices Context { get; }
     protected PacketSequenceCalculator Seq { get; }
     protected ManualTimeProvider Time { get; }
     protected IVirtualConnection Link { get; }

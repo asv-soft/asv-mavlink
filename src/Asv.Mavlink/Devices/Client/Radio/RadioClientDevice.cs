@@ -1,39 +1,63 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Cfg;
+using Asv.IO;
 using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
 
-public class RadioClientDeviceConfig:ClientDeviceConfig
+public class RadioClientDeviceConfig:MavlinkClientDeviceConfig
 {
     public CommandProtocolConfig Command { get; set; } = new();
     public ParamsClientExConfig Params { get; set; } = new();
-    public string SerialNumberParamName { get; set; } = "BRD_SERIAL_NUM";
+    public override void Load(string key, IConfiguration configuration)
+    {
+        base.Load(key, configuration);
+        Command = configuration.Get<CommandProtocolConfig>();
+        Params = configuration.Get<ParamsClientExConfig>();
+    }
+    
+    public override void Save(string key, IConfiguration configuration)
+    {
+        base.Save(key, configuration);
+        configuration.Set(Command);
+        configuration.Set(Params);
+    }
 }
 
-public class RadioClientDevice : ClientDevice
+public class RadioClientDevice : MavlinkClientDevice
 {
+    public const string DeviceClass = "RADIO";
     private readonly RadioClientDeviceConfig _config;
     private readonly ILogger _logger;
 
-    public RadioClientDevice(MavlinkClientIdentity identity, RadioClientDeviceConfig config, ICoreServices core)
-        : base(identity, config, core, DeviceClass.Radio)
+    public RadioClientDevice(
+        MavlinkClientDeviceId identity, 
+        RadioClientDeviceConfig config,
+        ImmutableArray<IClientDeviceExtender> extenders, 
+        IMavlinkContext core) 
+        : base(identity,config,extenders,core)
     {
-        _logger = core.Log.CreateLogger<RadioClientDevice>();
+        _logger = core.LoggerFactory.CreateLogger<RadioClientDevice>();
         _config = config ?? throw new ArgumentNullException(nameof(config));
     }
 
-    protected override Task InitBeforeMicroservices(CancellationToken cancel)
-    {
-        return Task.CompletedTask;
-    }
+  
 
-    protected override IEnumerable<IMavlinkMicroserviceClient> CreateMicroservices()
+    protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices(
+        [EnumeratorCancellation] CancellationToken cancel)
     {
+        await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
+        {
+            yield return microservice;
+        }
+        
         yield return new StatusTextClient(Identity, Core);
         var command = new CommandClient(Identity, _config.Command, Core);
         yield return command;
@@ -44,9 +68,5 @@ public class RadioClientDevice : ClientDevice
         yield return new AsvRadioClientEx(client, Heartbeat, command);
     }
 
-    protected override Task InitAfterMicroservices(CancellationToken cancel)
-    {
-        return Task.CompletedTask;
-    }
     
 }

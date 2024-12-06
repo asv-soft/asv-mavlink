@@ -22,10 +22,10 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
     private readonly Subject<ParamValuePayload> _onParamValue;
     private readonly IDisposable _sub1;
 
-    public ParamsClient(MavlinkClientIdentity identity, ParameterClientConfig config, ICoreServices core) 
+    public ParamsClient(MavlinkClientIdentity identity, ParameterClientConfig config, IMavlinkContext core) 
         : base("PARAMS",  identity, core)
     {
-        _logger = core.Log.CreateLogger<ParamsClient>();
+        _logger = core.LoggerFactory.CreateLogger<ParamsClient>();
         _config = config ?? throw new ArgumentNullException(nameof(config));;
         _onParamValue = new Subject<ParamValuePayload>();
         _sub1 = InternalFilter<ParamValuePacket>().Select(p => p.Payload).Subscribe(_onParamValue.AsObserver());
@@ -35,7 +35,7 @@ public class ParamsClient : MavlinkMicroserviceClient, IParamsClient
     
     public ValueTask SendRequestList(CancellationToken cancel = default)
     {
-        _logger.ZLogInformation($"{LogSend} Request all params from vehicle");
+        _logger.ZLogInformation($"{Id} Request all params from vehicle");
         return InternalSend<ParamRequestListPacket>(p =>
         {
             p.Payload.TargetComponent = Identity.Target.ComponentId;

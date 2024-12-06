@@ -23,8 +23,8 @@ public abstract class ServerTestBase<TServer>
             builder.SetLog(loggerFactory);
             builder.SetTimeProvider(ServerTime);
             builder.RegisterMavlinkV2Protocol();
-            builder.RegisterBroadcastFeature<MavlinkMessage>();
-            builder.RegisterSimpleFormatter();
+            builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
+            builder.Formatters.RegisterSimpleFormatter();
         });
         Link = protocol.CreateVirtualConnection();
         Core = new CoreServices(Link.Server, Seq, loggerFactory, ServerTime, new DefaultMeterFactory());

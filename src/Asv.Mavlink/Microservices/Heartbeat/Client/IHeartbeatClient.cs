@@ -43,7 +43,7 @@ namespace Asv.Mavlink
         /// <value>
         /// The ReactiveProperty instance representing the state of the link.
         /// </value>
-        ReadOnlyReactiveProperty<LinkState> Link { get; }
+        ILinkIndicator Link { get; }
     }
 
     

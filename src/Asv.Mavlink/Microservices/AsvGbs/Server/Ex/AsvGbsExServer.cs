@@ -29,7 +29,7 @@ public class AsvGbsExServer: IAsvGbsServerEx, IDisposable,IAsyncDisposable
         ICommandServerEx<CommandLongPacket> commands)
     {
         Base = server;
-        _logger = server.Core.Log.CreateLogger<AsvGbsExServer>();
+        _logger = server.Core.LoggerFactory.CreateLogger<AsvGbsExServer>();
         _heartbeatServer = heartbeatServer;
         #region Commands
 

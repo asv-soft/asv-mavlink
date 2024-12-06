@@ -16,19 +16,19 @@ public class ServerDevice : IServerDevice, IDisposable, IAsyncDisposable
     private readonly StatusTextServer _statusText;
     private readonly ILogger<ServerDevice> _logger;
 
-    public ServerDevice(MavlinkIdentity identity, ServerDeviceConfig config, ICoreServices core)
+    public ServerDevice(MavlinkIdentity identity, ServerDeviceConfig config, IMavlinkContext core)
     {
         ArgumentNullException.ThrowIfNull(core);
         ArgumentNullException.ThrowIfNull(config);
         ArgumentNullException.ThrowIfNull(identity);
-        _logger = core.Log.CreateLogger<ServerDevice>();
+        _logger = core.LoggerFactory.CreateLogger<ServerDevice>();
         _heartbeat = new(identity, config.Heartbeat, core);
         _statusText = new(identity, config.StatusText,core);
         Core = core;
         Identity = identity;
     }
 
-    public ICoreServices Core { get; }
+    public IMavlinkContext Core { get; }
     public MavlinkIdentity Identity { get; }
 
     public IStatusTextServer StatusText => _statusText;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
+using Asv.IO;
 using Asv.Mavlink.Common;
 using R3;
 using Xunit;
@@ -51,7 +52,7 @@ public class ParamsExtComplexTest : ComplexTestBase<ParamsExtClientEx, ParamsExt
         CfgPrefix = "MAV_CFG_",
     };
 
-    protected override ParamsExtServerEx CreateServer(MavlinkIdentity identity, ICoreServices core)
+    protected override ParamsExtServerEx CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
         _server = new ParamsExtServer(identity, core);
         var statusTextServer = new StatusTextServer(identity, _statusTextServerConfig, core);
@@ -137,7 +138,7 @@ public class ParamsExtComplexTest : ComplexTestBase<ParamsExtClientEx, ParamsExt
         return new ParamsExtServerEx(_server, statusTextServer, paramDict, configuration, _serverExConfig);
     }
 
-    protected override ParamsExtClientEx CreateClient(MavlinkClientIdentity identity, ICoreServices core)
+    protected override ParamsExtClientEx CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
         var client = new ParamsExtClient(identity, _clientConfig, core);
         var existDescription = new List<ParamExtDescription>

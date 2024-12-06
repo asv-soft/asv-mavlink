@@ -67,17 +67,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ParamsDesc.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Remove="Microservices\Commands\Client\Ex\**" />
-    <EmbeddedResource Remove="Microservices\Telemetry\Server\**" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Microservices\Control\Server\" />
-    <Folder Include="Microservices\Dgps\Server\" />
-    <Folder Include="Microservices\Gnss\Server\" />
-    <Folder Include="Microservices\Mode\Server\" />
-    <Folder Include="Microservices\Position\Server\" />
-    <Folder Include="Microservices\Telemetry\Server\" />
-  </ItemGroup>
+ 
   <ItemGroup>
     <None Include="..\..\img\asv-mavlink-128.png">
       <Pack>True</Pack>
@@ -91,7 +82,5 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Remove="Microservices\Commands\Client\Ex\**" />
-    <None Remove="Microservices\Telemetry\Server\**" />
   </ItemGroup>
 </Project>

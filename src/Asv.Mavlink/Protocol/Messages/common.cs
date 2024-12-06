@@ -3233,7 +3233,7 @@ namespace Asv.Mavlink.Common
         /// Format a storage medium. Once format is complete, a STORAGE_INFORMATION message is sent. Use the command's target_component to target a specific component's storage.
         /// Param 1 - Storage ID (1 for first, 2 for second, etc.)
         /// Param 2 - Format storage (and reset image log). 0: No action 1: Format storage
-        /// Param 3 - Reset Image Log (without formatting storage medium). This will reset CAMERA_CAPTURE_STATUS.image_count and CAMERA_IMAGE_CAPTURED.image_index. 0: No action 1: Reset Image Log
+        /// Param 3 - Reset Image LoggerFactory (without formatting storage medium). This will reset CAMERA_CAPTURE_STATUS.image_count and CAMERA_IMAGE_CAPTURED.image_index. 0: No action 1: Reset Image LoggerFactory
         /// Param 4 - Reserved (all remaining params)
         /// MAV_CMD_STORAGE_FORMAT
         /// </summary>
@@ -19955,7 +19955,7 @@ namespace Asv.Mavlink.Common
         /// </summary>
         public uint Size { get; set; }
         /// <summary>
-        /// Log id
+        /// LoggerFactory id
         /// OriginName: id, Units: , IsExtended: false
         /// </summary>
         public ushort Id { get; set; }
@@ -20050,7 +20050,7 @@ namespace Asv.Mavlink.Common
         /// </summary>
         public uint Count { get; set; }
         /// <summary>
-        /// Log id (from LOG_ENTRY reply)
+        /// LoggerFactory id (from LOG_ENTRY reply)
         /// OriginName: id, Units: , IsExtended: false
         /// </summary>
         public ushort Id { get; set; }
@@ -20147,7 +20147,7 @@ namespace Asv.Mavlink.Common
         /// </summary>
         public uint Ofs { get; set; }
         /// <summary>
-        /// Log id (from LOG_ENTRY reply)
+        /// LoggerFactory id (from LOG_ENTRY reply)
         /// OriginName: id, Units: , IsExtended: false
         /// </summary>
         public ushort Id { get; set; }
@@ -35661,7 +35661,7 @@ namespace Asv.Mavlink.Common
         /// </summary>
         public byte DestinationSystem { get; set; }
         /// <summary>
-        /// Log levels: 4 bits MSB: internal (for logging purposes), 4 bits LSB: external. Levels: Emergency = 0, Alert = 1, Critical = 2, Error = 3, Warning = 4, Notice = 5, Info = 6, Debug = 7, Protocol = 8, Disabled = 9
+        /// LoggerFactory levels: 4 bits MSB: internal (for logging purposes), 4 bits LSB: external. Levels: Emergency = 0, Alert = 1, Critical = 2, Error = 3, Warning = 4, Notice = 5, Info = 6, Debug = 7, Protocol = 8, Disabled = 9
         /// OriginName: log_levels, Units: , IsExtended: false
         /// </summary>
         public byte LogLevels { get; set; }

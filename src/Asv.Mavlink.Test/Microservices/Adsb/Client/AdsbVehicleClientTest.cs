@@ -30,7 +30,7 @@ public class AdsbVehicleClientTest : ClientTestBase<AdsbVehicleClient>, IDisposa
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
-            var client = new AdsbVehicleClient(null, _config, Core);
+            var client = new AdsbVehicleClient(null, _config, Context);
         });
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -38,7 +38,7 @@ public class AdsbVehicleClientTest : ClientTestBase<AdsbVehicleClient>, IDisposa
         });
         Assert.Throws<NullReferenceException>(() =>
         {
-            var client = new AdsbVehicleClient(Identity, null, Core);
+            var client = new AdsbVehicleClient(Identity, null, Context);
         });
     }
 

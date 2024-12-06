@@ -26,10 +26,10 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     private readonly Subject<AsvSdrSignalRawPayload> _onSignal;
 
     public AsvSdrClient(MavlinkClientIdentity identity,
-        ICoreServices core)
-        : base("SDR", identity, core)
+        IMavlinkContext core)
+        : base(AsvSdrHelper.AsvSdrMicroserviceName, identity, core)
     {
-        _logger = core.Log.CreateLogger<AsvSdrClient>();
+        _logger = core.LoggerFactory.CreateLogger<AsvSdrClient>();
         _identity = identity;
         Status = InternalFilter<AsvSdrOutStatusPacket>().Select(p => p?.Payload)
             .ToReadOnlyReactiveProperty();
@@ -60,7 +60,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
             .Subscribe(_onDeleteRecord.AsObserver());
 
         _onRecordData = new Subject<MavlinkMessage>();
-        InternalFilteredVehiclePackets.Where(x=>dataPacketsHashSet.Contains(x.Id))
+        InternalFilteredDeviceMessages.Where(x=>dataPacketsHashSet.Contains(x.Id))
             .Subscribe(_onRecordData.AsObserver());
 
         _onCalibrationTableRowUploadCallback = new Subject<AsvSdrCalibTableUploadReadCallbackPayload>();
@@ -165,7 +165,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     public async Task<AsvSdrCalibTablePayload> ReadCalibrationTable(ushort tableIndex, CancellationToken cancel = default)
     {
         var id = GenerateRequestIndex();
-        var result = await InternalCall<(AsvSdrCalibTablePayload?,AsvSdrCalibAccPayload?), AsvSdrCalibTableReadPacket>(
+        var result = await InternalCall<(AsvSdrCalibTablePayload?,AsvSdrCalibAccPayload?), AsvSdrCalibTableReadPacket,MavlinkMessage>(
             arg =>
             {
                 arg.Payload.TargetComponent = _identity.Target.ComponentId;
@@ -201,7 +201,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
     public async Task<AsvSdrCalibTableRowPayload> ReadCalibrationTableRow(ushort tableIndex, ushort rowIndex, CancellationToken cancel = default)
     {
         var id = GenerateRequestIndex();
-        var result = await InternalCall<(AsvSdrCalibTableRowPayload?,AsvSdrCalibAccPayload?), AsvSdrCalibTableRowReadPacket>(
+        var result = await InternalCall<(AsvSdrCalibTableRowPayload?,AsvSdrCalibAccPayload?), AsvSdrCalibTableRowReadPacket,MavlinkMessage>(
             arg =>
             {
                 arg.Payload.TargetComponent = _identity.Target.ComponentId;
