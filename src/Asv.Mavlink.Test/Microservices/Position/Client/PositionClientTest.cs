@@ -95,7 +95,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
 
             _taskCompletionSource.TrySetResult(p);
         });
-        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as SetPositionTargetGlobalIntPacket;
         });
@@ -157,7 +157,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
 
             _taskCompletionSource.TrySetResult(p);
         });
-        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as SetPositionTargetGlobalIntPacket;
         });
@@ -251,7 +251,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
 
             _taskCompletionSource.TrySetResult(p);
         });
-        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as SetPositionTargetLocalNedPacket;
         });
@@ -313,7 +313,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
 
             _taskCompletionSource.TrySetResult(p);
         });
-        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as SetPositionTargetLocalNedPacket;
         });

@@ -46,7 +46,7 @@ public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
         var result = await _taskCompletionSource.Task as AsvRsgaCompatibilityResponsePacket;
         Assert.NotNull(result);
         Assert.Equal(1U, Link.Client.Statistic.RxMessages);
-        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.True(payload.IsDeepEqual(result?.Payload));
     }
 

@@ -139,7 +139,7 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
                 _taskCompletionSource.TrySetResult(p);
             }
         });
-        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             if (p is SetPositionTargetGlobalIntPacket packet)
             {

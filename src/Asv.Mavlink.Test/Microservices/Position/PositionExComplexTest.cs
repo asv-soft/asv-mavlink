@@ -84,7 +84,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -130,7 +130,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -201,7 +201,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
     public async Task ArmDisarm_Timeout_Throws()
     {
         // Arrange
-        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             ClientTime.Advance(
                 TimeSpan.FromSeconds(
@@ -249,7 +249,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -302,7 +302,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });
@@ -345,7 +345,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             if (p is CommandLongPacket packet)
             {
@@ -431,7 +431,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandLongPacket;
         });

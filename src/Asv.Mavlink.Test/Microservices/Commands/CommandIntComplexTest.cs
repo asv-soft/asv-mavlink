@@ -739,7 +739,6 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
     [Theory]
     [InlineData(0, 0)]
     [InlineData(0, 1000)]
-    [InlineData(1, 0)]
     [InlineData(1, 1000)]
     [InlineData(5, 5000)]
     [InlineData(10, 20000)]

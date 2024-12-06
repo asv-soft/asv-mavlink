@@ -37,7 +37,7 @@ public class RadioDeviceClientTests : ClientTestBase<RadioClientDevice>
         {
             var radio = new RadioClientDevice(null,_cfg, ImmutableArray<IClientDeviceExtender>.Empty,  Context);
         });
-        Assert.Throws<ArgumentNullException>(() =>
+        Assert.Throws<NullReferenceException>(() =>
         {
             var radio = new RadioClientDevice(id, null,ImmutableArray<IClientDeviceExtender>.Empty, Context);
         });

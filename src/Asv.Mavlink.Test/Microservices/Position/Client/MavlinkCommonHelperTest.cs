@@ -128,15 +128,20 @@ public class MavlinkCommonHelperTest : ClientTestBase<PositionClient>
         // Arrange
         var called = 0;
         SetPositionTargetGlobalIntPacket? packetFromClient = null;
+
+        var tcs2 = new TaskCompletionSource<SetPositionTargetGlobalIntPacket>();
         using var sub1 = Link.Server.OnRxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
         {
             called++;
-
             _taskCompletionSource.TrySetResult(p);
         });
-        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as SetPositionTargetGlobalIntPacket;
+            if (packetFromClient != null)
+            {
+                tcs2.TrySetResult(packetFromClient);
+            }
         });
 
         // Act
@@ -158,7 +163,12 @@ public class MavlinkCommonHelperTest : ClientTestBase<PositionClient>
         );
 
         // Assert
+        var result2 = await tcs2.Task; 
+        
         var result = await _taskCompletionSource.Task as SetPositionTargetGlobalIntPacket;
+
+        Assert.True(result2.IsDeepEqual(result));
+        
         Assert.NotNull(result);
         Assert.Equal(1, called);
         Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
@@ -194,7 +204,7 @@ public class MavlinkCommonHelperTest : ClientTestBase<PositionClient>
 
             _taskCompletionSource.TrySetResult(p);
         });
-        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as SetPositionTargetGlobalIntPacket;
         });
@@ -303,7 +313,7 @@ public class MavlinkCommonHelperTest : ClientTestBase<PositionClient>
 
             _taskCompletionSource.TrySetResult(p);
         });
-        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as SetPositionTargetLocalNedPacket;
         });
@@ -363,7 +373,7 @@ public class MavlinkCommonHelperTest : ClientTestBase<PositionClient>
 
             _taskCompletionSource.TrySetResult(p);
         });
-        using var sub2 = Link.Server.OnTxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
+        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as SetPositionTargetLocalNedPacket;
         });

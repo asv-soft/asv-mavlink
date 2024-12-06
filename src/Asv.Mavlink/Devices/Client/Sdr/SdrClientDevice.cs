@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -48,8 +47,7 @@ public class SdrClientDevice : MavlinkClientDevice
     public const string DeviceClass = "SDR";
 
     private readonly SdrClientDeviceConfig _config;
-    private readonly ILogger _logger;
-  
+
     public SdrClientDevice(
         MavlinkClientDeviceId identity, 
         SdrClientDeviceConfig config,
@@ -57,7 +55,7 @@ public class SdrClientDevice : MavlinkClientDevice
         IMavlinkContext core) 
         : base(identity,config,extenders,core)
     {
-        _logger = core.LoggerFactory.CreateLogger<SdrClientDevice>();
+        core.LoggerFactory.CreateLogger<SdrClientDevice>();
         _config = config;
         
     }

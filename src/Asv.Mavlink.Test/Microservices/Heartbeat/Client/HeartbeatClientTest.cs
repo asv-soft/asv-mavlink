@@ -56,16 +56,23 @@ public class HeartbeatClientTest(ITestOutputHelper log) : ClientTestBase<Heartbe
     
     
     [Theory]
-    [InlineData(1000,1)]
-    [InlineData(100,10)]
-    [InlineData(10,100)]
-    [InlineData(20,50)]
-    public async Task PacketRateHz_Changed_Success(int delayMs, double rate)
+    [InlineData(1000,1,100_000)]
+    [InlineData(100,10,10_000)]
+    [InlineData(10,100,10_000)]
+    [InlineData(20,50,10_000)]
+    public async Task PacketRateHz_Changed_Success(int delayMs, double rate, int count)
     {
         Assert.Equal(0,Client.PacketRateHz.CurrentValue);
         var seq = new PacketSequenceCalculator();
         
-        for (var i = 0; i < 10000; i++)
+        var tcs = new TaskCompletionSource();
+        var inx = 0;
+        Link.Client.OnRxMessage.Subscribe(x =>
+        {
+            inx++;
+            if (inx == count) tcs.SetResult();
+        });
+        for (var i = 0; i < count; i++)
         {
             var p = new HeartbeatPacket
             {
@@ -76,6 +83,9 @@ public class HeartbeatClientTest(ITestOutputHelper log) : ClientTestBase<Heartbe
             await Link.Server.Send(p, default);
             Time.Advance(TimeSpan.FromMilliseconds(delayMs));
         }
+
+       
+        await tcs.Task;
         Assert.Equal(rate,Client.PacketRateHz.CurrentValue, 1);
         Log.WriteLine($"RESULT: {rate:F3} ~ {Client.PacketRateHz.CurrentValue:F3}");
     }

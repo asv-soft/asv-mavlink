@@ -13,8 +13,29 @@ namespace Asv.Mavlink;
 
 public class MavlinkClientDeviceConfig : ICustomConfigurable
 {
-    public HeartbeatClientConfig Heartbeat { get; set; } = new();
-    public ClientDeviceConfig BaseConfig { get; set; } = new();
+    private HeartbeatClientConfig _heartbeat = new();
+    private ClientDeviceConfig _baseConfig = new();
+
+    public HeartbeatClientConfig Heartbeat
+    {
+        get => _heartbeat;
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            _heartbeat = value;
+        }
+    }
+
+    public ClientDeviceConfig BaseConfig
+    {
+        get => _baseConfig;
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            _baseConfig = value;
+        }
+    }
+
     public virtual void Load(string key, IConfiguration configuration)
     {
         Heartbeat = configuration.Get<HeartbeatClientConfig>();
