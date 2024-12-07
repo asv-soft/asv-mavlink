@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.V2.Common;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using ZLogger;
 
 namespace Asv.Mavlink
@@ -120,6 +121,7 @@ namespace Asv.Mavlink
             ILogger? logger = null)
             : base("RTT", connection, identity, seq,scheduler,logger)
         {
+            _logger = logger ?? NullLogger.Instance;
             _radio = new RxValue<RadioStatusPayload>().DisposeItWith(Disposable);
             InternalFilter<RadioStatusPacket>().Select(p=>p.Payload).Subscribe(_radio).DisposeItWith(Disposable);
             _systemStatus = new RxValue<SysStatusPayload>().DisposeItWith(Disposable);
