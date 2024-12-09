@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
-    <AssemblyVersion>$(ProductVersion)</AssemblyVersion>
+    
     <FileVersion>$(ProductVersion)</FileVersion>
     <Version>$(ProductVersion)</Version>
     <PackageIcon>asv-mavlink-128.png</PackageIcon>
