@@ -12,9 +12,6 @@ namespace Asv.Mavlink.Test;
 
 public class AsvSdrStoreTests
 {
-    public AsvSdrStoreTests()
-    {
-    }
 
     [Fact]
     public void Format_CreateFile_Success()
