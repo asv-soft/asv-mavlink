@@ -40,7 +40,7 @@ public class CommonRecordData
     public GpsFixType GnssFixType { get; set; }
 }
 
-public static class AsvSdrRecordFileHelper
+public static class AsvSdrRecordFileHelper 
 {
     public static void ReadRecordInfo(this IListDataFile<AsvSdrRecordFileMetadata> self,AsvSdrRecordPayload dest)
     {
