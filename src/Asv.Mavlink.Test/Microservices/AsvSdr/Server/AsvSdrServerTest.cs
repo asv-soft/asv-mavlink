@@ -73,27 +73,6 @@ public class AsvSdrServerTest : ServerTestBase<AsvSdrServer>, IDisposable
         Assert.True(result?.Payload.Result == AsvSdrRequestAck.AsvSdrRequestAckOk);
     }
     
-    [Fact(Skip = "fix it")] //TODO: переделать тесты на отправку/получение сигнала
-    public void OnRecordRequest_WhenTriggered_ShouldReceiveRecordRequest()
-    {
-        // Arrange
-        var tcs = new TaskCompletionSource<AsvSdrRecordRequestPayload>();
-        var testPayload = new AsvSdrRecordRequestPayload { RequestId = 123 };
-
-        using var sub = Server.OnRecordRequest.Subscribe(payload =>
-        {
-            tcs.TrySetResult(payload);
-        });
-
-        // Act
-        Server.SendRecordResponse(p => p.RequestId = 123, _cancellationTokenSource.Token);
-
-        // Assert
-        var result = tcs.Task.Result;
-        Assert.NotNull(result);
-        Assert.Equal(123, result.RequestId);
-    }
-    
     [Fact]
     public async Task SendRecordDeleteResponse_WhenCalled_ShouldTransmitDeleteResponseSuccessfully()
     {
@@ -207,7 +186,7 @@ public class AsvSdrServerTest : ServerTestBase<AsvSdrServer>, IDisposable
         Assert.Equal(dataCount, result?.Payload.ItemsCount);
     }
     
-    [Fact(Skip = "Fix it")] // Fix it
+    [Fact] //TODO: test fails in method
     public async Task SendRecordData_WhenCalled_ShouldTransmitRecordDataSuccessfully()
     {
         // Arrange
@@ -275,33 +254,63 @@ public class AsvSdrServerTest : ServerTestBase<AsvSdrServer>, IDisposable
         Assert.True(result?.Payload.Result == ack);
     }
     
-    #endregion
-
-    #region CalibrationTable
-    
     [Fact]
-    public async Task SendCalibrationTableReadResponse_WhenCalled_ShouldTransmitTableSuccessfully()
+    public async Task SendCalibrationTableReadResponse_WhenCalled_ShouldTransmitTableReadResponseSuccessfully()
     {
         // Arrange
         var tcs = new TaskCompletionSource<MavlinkMessage>();
-        var name = "test".ToCharArray();
+        var tableIndex = (ushort)5;
+        var rowCount = (ushort)20;
+
         Server.Start();
         using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
             tcs.TrySetResult(p));
 
         // Act
-        await Server.SendCalibrationTableReadResponse(p => p.TableName = name, _cancellationTokenSource.Token);
+        await Server.SendCalibrationTableReadResponse(p =>
+        {
+            p.TableIndex = tableIndex;
+            p.RowCount = rowCount;
+        }, _cancellationTokenSource.Token);
 
         // Assert
         var result = await tcs.Task as AsvSdrCalibTablePacket;
         Assert.NotNull(result);
         Assert.Equal(1U, Link.Client.Statistic.RxMessages);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
-        Assert.Equal(name.ToString(), result?.Payload.TableName.ToString());
+        Assert.Equal(tableIndex, result?.Payload.TableIndex);
+        Assert.Equal(rowCount, result?.Payload.RowCount);
     }
 
-    #endregion
+    [Fact]
+    public async Task SendCalibrationTableRowReadResponse_WhenCalled_ShouldTransmitTableRowReadResponseSuccessfully()
+    {
+        // Arrange
+        var tcs = new TaskCompletionSource<MavlinkMessage>();
+        var tableIndex = (ushort)2;
+        var rowIndex = (ushort)7;
+
+        Server.Start();
+        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
+            tcs.TrySetResult(p));
+
+        // Act
+        await Server.SendCalibrationTableRowReadResponse(p =>
+        {
+            p.TableIndex = tableIndex;
+            p.RowIndex = rowIndex;
+        }, _cancellationTokenSource.Token);
+
+        // Assert
+        var result = await tcs.Task as AsvSdrCalibTableRowPacket;
+        Assert.NotNull(result);
+        Assert.Equal(1U, Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(tableIndex, result?.Payload.TableIndex);
+        Assert.Equal(rowIndex, result?.Payload.RowIndex);
+    }
     
+    #endregion
     
     [Theory]
     [InlineData(10)]
