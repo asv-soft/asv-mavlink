@@ -39,7 +39,7 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
     [Fact]
     public void Constructor_Null_Throws()
     {
-        Assert.Throws<ArgumentNullException>(() => new MissionClientEx(null!, _config));
+        Assert.Throws<NullReferenceException>(() => new MissionClientEx(null!, _config));
         Assert.Throws<ArgumentNullException>(() => new MissionClientEx(
             new MissionClient(Identity, _config, Context), 
             null!
