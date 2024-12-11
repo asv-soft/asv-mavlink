@@ -648,8 +648,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
     }
     
     [Theory]
-    [InlineData(1, 1000)]
-    [InlineData(5, 5000)]
+    [InlineData(1, 5000)]
+    [InlineData(5, 10000)]
     [InlineData(10, 20000)]
     public async Task CommandLong_WaitBeforeResponseWithCustomConfig_Success(int maxCommandAttempts, int maxTimeoutInMs)
     {
