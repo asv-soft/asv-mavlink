@@ -14,7 +14,7 @@ public delegate Task<MavResult> DisableRadioDelegate(CancellationToken cancel);
 public interface IAsvRadioServerEx
 {
     IAsvRadioServer Base { get; }
-    ReadOnlyReactiveProperty<AsvRadioCustomMode> CustomMode { get; }
+    ReactiveProperty<AsvRadioCustomMode> CustomMode { get; }
     EnableRadioDelegate EnableRadio { set; }
     DisableRadioDelegate DisableRadio { set; }
 

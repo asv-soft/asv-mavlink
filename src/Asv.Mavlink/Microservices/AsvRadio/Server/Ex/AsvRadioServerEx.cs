@@ -159,7 +159,7 @@ public class AsvRadioServerEx: IAsvRadioServerEx, IDisposable,IAsyncDisposable
         }
     }
 
-    public ReadOnlyReactiveProperty<AsvRadioCustomMode> CustomMode => _customMode;
+    public ReactiveProperty<AsvRadioCustomMode> CustomMode => _customMode;
 
     public IAsvRadioServer Base { get; }
     public EnableRadioDelegate? EnableRadio { get; set; }

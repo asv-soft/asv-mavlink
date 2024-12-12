@@ -317,7 +317,7 @@ public static class MavParam
             LongDesc = desc,
             Category = category,
             RebootRequired = false,
-            Units = string.Empty,
+            Units = "ABCD",
             Increment = new MavParamValue((uint)0x00000001),
             MinValue = new MavParamValue((uint)0x00000000),
             DefaultValue = new MavParamValue(def),
