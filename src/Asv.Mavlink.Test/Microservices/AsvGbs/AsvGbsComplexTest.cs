@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.IO;
 using Asv.Mavlink.AsvGbs;
 using Asv.Mavlink.Common;
 using R3;
