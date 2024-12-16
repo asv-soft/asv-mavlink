@@ -1,0 +1,8 @@
+<pdf landscape="true">
+    <cover-page>
+        <title>Asv Mavlink</title>
+        <description>Documentation</description>
+        <copyright>(c) 2023 Asv Soft LLC</copyright>
+    </cover-page>
+    <layout>Windows</layout>
+</pdf>

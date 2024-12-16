@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE buildprofiles SYSTEM "https://resources.jetbrains.com/writerside/1.0/build-profiles.dtd">
+<buildprofiles xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/build-profiles.xsd"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <variables></variables>
+    <build-profile instance="am">
+        <variables>
+            <primary-color>blue</primary-color>
+            <link-color>blue</link-color>
+            <custom-favicons>asv-mavlink-128.png</custom-favicons>
+            <algolia-id>FS4LOABGZR</algolia-id>
+            <algolia-index>asv.mavlink</algolia-index>
+            <algolia-api-key>2e71182668928729892da193d411c26a</algolia-api-key>
+            <algolia-show-logo>true</algolia-show-logo>
+            <noindex-content>false</noindex-content>
+            <ignore-problems>MRK056</ignore-problems>
+        </variables>
+
+        <footer>
+            <link href="https://docs.asv.me/">Official website</link>
+            <link href="https://github.com/asv-soft/asv-mavlink/issues">Issue tracker and Support</link>
+            <link href="mailto:asv@me.com">Contact us</link>
+            <link href="https://github.com/asv-soft/asv-drones">Asv.Drones</link>
+
+            <copyright>(c) 2023 Asv Soft LLC</copyright>
+        </footer>
+    </build-profile>
+
+</buildprofiles>

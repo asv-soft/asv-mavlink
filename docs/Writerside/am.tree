@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="am"
+                  name="Asv Mavlink" start-page="welcome-page.md">
+    <toc-element topic="welcome-page.md">
+        <toc-element topic="get-started.md">
+            <toc-element topic="With-Virtual-Connection.md"/>
+            <toc-element topic="With-Ardu-SITL.md"/>
+        </toc-element>
+    </toc-element>
+    <toc-element toc-title="CLI">
+        <toc-element topic="packet-code-generation.md"/>
+        <toc-element topic="packet-viewer.md"/>
+        <toc-element topic="proxy.md"/>
+        <toc-element topic="mavlink.md"/>
+        <toc-element topic="benchmark-serialization.md"/>
+        <toc-element topic="devices-info.md"/>
+        <toc-element topic="emulate-adsb-receiver.md"/>
+        <toc-element topic="export-sdr-data.md"/>
+        <toc-element topic="ftp-browser.md"/>
+        <toc-element topic="ftp-tree.md"/>
+        <toc-element topic="generate-fake-diagnostic-data.md"/>
+    </toc-element>
+    <toc-element toc-title="About">
+        <toc-element topic="licensing-information.md"/>
+        <toc-element topic="contact-information-for-feedback.md"/>
+    </toc-element>
+    <toc-element topic="for-developers.md"/>
+</instance-profile>
