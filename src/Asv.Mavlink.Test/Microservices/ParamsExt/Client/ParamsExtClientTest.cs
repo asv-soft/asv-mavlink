@@ -15,8 +15,7 @@ public class ParamsExtClientTest : ClientTestBase<ParamsExtClient>, IDisposable
     private readonly ParamsExtClientConfig _config = new ParamsExtClientExConfig
     {
         ReadAttemptCount = 5,
-        ReadTimeouMs = 1000,
-        ReadListTimeoutMs = 1000
+        ReadTimeoutMs = 1000,
     };
     protected override ParamsExtClient CreateClient(MavlinkClientIdentity identity, CoreServices core) => new(identity, _config, core);
 

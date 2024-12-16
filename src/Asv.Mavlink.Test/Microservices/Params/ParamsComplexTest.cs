@@ -39,7 +39,6 @@ public class ParamsComplexTest : ComplexTestBase<ParamsClientEx, ParamsServerEx>
 
     private readonly ParamsClientExConfig _clientExConfig = new()
     {
-        ReadListTimeoutMs = 5000,
         ChunkUpdateBufferMs = 100,
     };
 

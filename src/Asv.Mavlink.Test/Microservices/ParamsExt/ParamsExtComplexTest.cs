@@ -31,12 +31,11 @@ public class ParamsExtComplexTest : ComplexTestBase<ParamsExtClientEx, ParamsExt
     private readonly ParamsExtClientConfig _clientConfig = new()
     {
         ReadAttemptCount = 3,
-        ReadTimeouMs = 5000,
+        ReadTimeoutMs = 5000,
     };
 
     private readonly ParamsExtClientExConfig _clientExConfig = new()
     {
-        ReadListTimeoutMs = 5000,
         ChunkUpdateBufferMs = 100,
     };
 

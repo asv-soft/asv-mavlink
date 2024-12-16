@@ -12,7 +12,7 @@ public abstract class ModeClient : MavlinkMicroserviceClient, IModeClient
 {
     private readonly ICommandClient _command;
 
-    protected ModeClient(IHeartbeatClient heartbeat, ICommandClient command) : base("MODE", command.Identity, command.Core)
+    protected ModeClient(IHeartbeatClient heartbeat, ICommandClient command) : base(ModeHelper.MicroserviceName, command.Identity, command.Core)
     {
         _command = command;
         CurrentMode = heartbeat.RawHeartbeat

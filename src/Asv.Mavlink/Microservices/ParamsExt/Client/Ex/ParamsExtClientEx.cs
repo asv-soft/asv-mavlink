@@ -13,13 +13,11 @@ namespace Asv.Mavlink;
 
 public class ParamsExtClientExConfig : ParamsExtClientConfig
 {
-    public int ReadListTimeoutMs { get; set; } = 5000;
     public int ChunkUpdateBufferMs { get; set; } = 100;
 }
 
 public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
 {
-    private static readonly TimeSpan CheckTimeout = TimeSpan.FromMilliseconds(100);
     private readonly ParamsExtClientExConfig _config;
     private readonly ObservableDictionary<string, ParamExtItem> _paramsSource;
     private readonly BindableReactiveProperty<bool> _isSynced;
@@ -35,6 +33,9 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
         IEnumerable<ParamExtDescription> existDescription) 
         : base(ParamsExtHelper.MicroserviceExName,client.Identity, client.Core)
     {
+        ArgumentNullException.ThrowIfNull(client);
+        ArgumentNullException.ThrowIfNull(config);
+        ArgumentNullException.ThrowIfNull(existDescription);
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _existDescription = existDescription.ToImmutableDictionary(x => x.Name, x => x);
         Base = client;
@@ -163,7 +164,7 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
     }
 
 
-    public async Task ReadAll(IProgress<double>? progress = null, CancellationToken cancel = default)
+    public async Task<bool> ReadAll(IProgress<double>? progress = null, CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();
         using var linkedCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
@@ -177,21 +178,18 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
             {
                 tcs.TrySetResult(true);
             }
-
             progress.Report((double)_paramsSource.Count / p.ParamCount);
             Interlocked.Exchange(ref lastUpdate, Base.Core.TimeProvider.GetTimestamp());
         });
-        var timeout = TimeSpan.FromMilliseconds(_config.ReadListTimeoutMs);
+        var timeout = TimeSpan.FromMilliseconds(_config.ReadTimeoutMs*_config.ReadAttemptCount);
         await using var c3 = Base.Core.TimeProvider.CreateTimer(_ =>
         {
             var last = Interlocked.Read(ref lastUpdate);
-            if (Base.Core.TimeProvider.GetElapsedTime(last) > timeout)
+            if (Base.Core.TimeProvider.GetElapsedTime(last) >= timeout)
             {
                 tcs.TrySetResult(false);
             }
-            //TODO: time is not ticking, same as params microservice
-            //Interlocked.Exchange(ref lastUpdate, Base.Core.TimeProvider.GetTimestamp());
-        }, null, CheckTimeout, CheckTimeout);
+        }, null, TimeSpan.FromMilliseconds(_config.ReadTimeoutMs/2.0), TimeSpan.FromMilliseconds(_config.ReadTimeoutMs/2.0));
 
         var cached = _paramsSource.ToImmutableArray();
         _paramsSource.Clear();
@@ -202,8 +200,11 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
 
         await Base.SendRequestList(linkedCancel.Token).ConfigureAwait(false);
         var readAllParams = await tcs.Task.ConfigureAwait(false);
-        progress.Report(1);
+        
+        
+        
         _isSynced.OnNext(true);
+        return readAllParams;
     }
 
     public Observable<MavParamExtValue> Filter(string name)

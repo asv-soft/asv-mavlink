@@ -24,7 +24,6 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
         ReadTimeouMs = 100,
         ReadAttemptCount = 3,
         ChunkUpdateBufferMs = 100,
-        ReadListTimeoutMs = 500,
     };
 
     public ParamsClientExTest(ITestOutputHelper log) : base(log)
