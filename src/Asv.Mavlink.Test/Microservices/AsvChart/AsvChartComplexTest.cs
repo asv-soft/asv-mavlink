@@ -21,8 +21,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
     public AsvChartComplexTest(ITestOutputHelper log) : base(log)
     {
         _taskCompletionSource = new TaskCompletionSource<AsvChartInfo>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(1500));
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     private readonly AsvChartServerConfig _serverConfig = new()

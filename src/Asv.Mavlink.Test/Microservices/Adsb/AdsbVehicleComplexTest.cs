@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.IO;
 using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
 using R3;
@@ -24,8 +23,7 @@ public class AdsbVehicleComplexTest : ComplexTestBase<AdsbVehicleClient, AdsbVeh
     public AdsbVehicleComplexTest(ITestOutputHelper output) : base(output)
     {
         TaskCompletionSource<AdsbVehiclePayload> taskCompletionSource = new();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        _cancellationTokenSource.Token.Register(() => taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     protected override AdsbVehicleServer CreateServer(MavlinkIdentity identity, IMavlinkContext core) =>

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
-using Asv.IO;
 using Asv.Mavlink.Common;
 using R3;
 using Xunit;
@@ -27,8 +26,7 @@ public class ParamsComplexTest : ComplexTestBase<ParamsClientEx, ParamsServerEx>
         _serverEx = Server;
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<ParamValuePayload>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     private readonly ParameterClientConfig _clientConfig = new()

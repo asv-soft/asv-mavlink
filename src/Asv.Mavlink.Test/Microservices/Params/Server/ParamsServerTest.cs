@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
-
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -23,8 +22,7 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
     public ParamsServerTest(ITestOutputHelper log) : base(log)
     {
         _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     [Fact]
@@ -55,6 +53,8 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
         var called = 0;
         var results = new List<ParamValuePayload>();
         var serverResults = new List<ParamValuePayload>();
+        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+        cancel.Token.Register(() => _taskCompletionSource.TrySetCanceled());
         using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
         {
             called++;
@@ -71,7 +71,7 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
         // Act
         for (var i = 0; i < packetCount; i++)
         {
-            await Server.SendParamValue(p => serverResults.Add(p), _cancellationTokenSource.Token);
+            await Server.SendParamValue(p => serverResults.Add(p), cancel.Token);
         }
 
         // Assert

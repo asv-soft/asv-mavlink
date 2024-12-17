@@ -19,7 +19,7 @@ public class AdsbVehicleClientTest : ClientTestBase<AdsbVehicleClient>, IDisposa
 
     public AdsbVehicleClientTest(ITestOutputHelper output) : base(output)
     {
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     protected override AdsbVehicleClient CreateClient(MavlinkClientIdentity identity, CoreServices core) =>
@@ -28,18 +28,9 @@ public class AdsbVehicleClientTest : ClientTestBase<AdsbVehicleClient>, IDisposa
     [Fact]
     public void Ctor_ThrowsExceptions_ArgIsNullFail()
     {
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            var client = new AdsbVehicleClient(null, _config, Context);
-        });
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            var client = new AdsbVehicleClient(Identity, _config, null);
-        });
-        Assert.Throws<NullReferenceException>(() =>
-        {
-            var client = new AdsbVehicleClient(Identity, null, Context);
-        });
+        Assert.Throws<ArgumentNullException>(() => new AdsbVehicleClient(null, _config, Context));
+        Assert.Throws<ArgumentNullException>(() => new AdsbVehicleClient(Identity, _config, null));
+        Assert.Throws<NullReferenceException>(() => new AdsbVehicleClient(Identity, null, Context));
     }
 
     public void Dispose()

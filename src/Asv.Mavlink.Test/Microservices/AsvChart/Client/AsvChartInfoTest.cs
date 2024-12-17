@@ -15,7 +15,10 @@ public class AsvChartInfoTest
         AsvChartAxisInfo? axis= null;
         Assert.Throws<NullReferenceException>(() =>
         {
-            var chart = new AsvChartInfo(payload);
+            if (payload != null)
+            {
+                var chart = new AsvChartInfo(payload);
+            }
         });
         Assert.Throws<ArgumentNullException>(() =>
         {

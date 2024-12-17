@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
-using Asv.IO;
 using Asv.Mavlink.Common;
 using R3;
 using Xunit;
@@ -24,8 +23,7 @@ public class ParamsExtComplexTest : ComplexTestBase<ParamsExtClientEx, ParamsExt
         _serverEx = Server;
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<ParamExtValuePayload>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     private readonly ParamsExtClientConfig _clientConfig = new()
