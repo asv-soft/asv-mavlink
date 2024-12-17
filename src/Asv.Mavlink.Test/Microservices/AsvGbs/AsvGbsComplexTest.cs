@@ -35,7 +35,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         _server = Server;
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
@@ -65,7 +65,12 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
     protected override AsvGbsExClient CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
         var heartbeatClient = new HeartbeatClient(
-            new MavlinkClientIdentity(Identity.Self.SystemId, HeartbeatClientComponentId, Identity.Target.SystemId, HeartbeatServerComponentId), 
+            new MavlinkClientIdentity(
+                Identity.Self.SystemId, 
+                HeartbeatClientComponentId, 
+                Identity.Target.SystemId,
+                HeartbeatServerComponentId
+            ), 
             new HeartbeatClientConfig{
                 HeartbeatTimeoutMs = 2000,
                 LinkQualityWarningSkipCount = 3,
@@ -77,7 +82,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         );
         
         var gbsClient = new AsvGbsClient(identity, core);
-        var protocolCfg = new CommandProtocolConfig(){
+        var protocolCfg = new CommandProtocolConfig{
             CommandTimeoutMs = 1000,
             CommandAttempt = 5
         };
@@ -128,7 +133,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         };
 
         // Act
-        var result = await _client.StartAutoMode(duration, accuracy, _cancellationTokenSource.Token);
+        var result = await _client.StartAutoMode(duration, accuracy, CancellationToken.None);
 
         // Assert
         await _taskCompletionSource.Task;
@@ -202,7 +207,11 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         };
         
         // Act
-        var result = await _client.StartFixedMode(GeoPoint.Zero, accuracy, _cancellationTokenSource.Token);
+        var result = await _client.StartFixedMode(
+            GeoPoint.Zero, 
+            accuracy, 
+            _cancellationTokenSource.Token
+        );
         
         // Assert
         await _taskCompletionSource.Task;
@@ -241,7 +250,11 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         };
         
         // Act
-        var result = await _client.StartFixedMode(GeoPoint.Zero, accuracy, _cancellationTokenSource.Token);
+        var result = await _client.StartFixedMode(
+            GeoPoint.Zero, 
+            accuracy, 
+            _cancellationTokenSource.Token
+        );
         
         // Assert
         await _taskCompletionSource.Task;
@@ -270,7 +283,12 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         var results = new List<MavResult>();
         for (var i = 0; i < callsCount; i++)
         {
-            var result = await _client.StartFixedMode(GeoPoint.Zero, 10, default);
+            var result = await _client.StartFixedMode(
+                GeoPoint.Zero, 
+                10,
+                _cancellationTokenSource.Token
+            );
+            
             results.Add(result);
         }
         
@@ -292,7 +310,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         // Arrange
         _server.Start();
         var tcs = new TaskCompletionSource<AsvGbsCustomMode>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         using var sub = _client.CustomMode
             .Subscribe(p =>
@@ -316,13 +334,11 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         Assert.Equal(mode, modeFromServer);
     }
     
-    /*[Fact (Skip = "Strange behaviour! Client throws, but server receives request anyway.")]*/
     [Fact]
     public async Task StartAutoMode_Canceled_Throws()
     {
         // Arrange
         var called = 0;
-        await _cancellationTokenSource.CancelAsync();
         _server.StartAutoMode = (_, _, _)
             => 
         {
@@ -331,7 +347,12 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         };
         
         // Act
-        var task = _client.StartAutoMode(10, 10, _cancellationTokenSource.Token);
+        await _cancellationTokenSource.CancelAsync();
+        var task = _client.StartAutoMode(
+            10, 
+            10, 
+            _cancellationTokenSource.Token
+        );
         
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
@@ -349,7 +370,7 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         var ushortValue = isMax ? ushort.MaxValue : ushort.MinValue;
         var byteValue = isMax ? byte.MaxValue : byte.MinValue;
         var tcs = new TaskCompletionSource<AsvGbsOutStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         using var sub = _client.Base.RawStatus
             .Subscribe(p =>
@@ -410,14 +431,12 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
     {
         // Arrange
         _server.Start();
-        var intValue = isMax ? int.MaxValue : int.MinValue;
-        var doubleValue = isMax ? double.MaxValue : double.MinValue;
         var ushortValue = isMax ? ushort.MaxValue : ushort.MinValue;
         var byteValue = isMax ? byte.MaxValue : byte.MinValue;
         var tcs = new TaskCompletionSource<AsvGbsOutStatusPayload>();
         var tcsMode = new TaskCompletionSource<AsvGbsCustomMode>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
-        var cancelMode = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
+        var cancelMode = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         cancelMode.Token.Register(() => tcsMode.TrySetCanceled());
         using var sub1 = _client.Base.RawStatus

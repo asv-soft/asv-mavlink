@@ -44,8 +44,12 @@ namespace Asv.Mavlink
         /// The acknowledgement includes information about the command being acknowledged and the result of its execution.
         /// It is an asynchronous operation that returns a task representing the completion of the send operation.
         /// </remarks>
-        ValueTask SendCommandAck(MavCmd cmd, DeviceIdentity responseTarget, CommandResult result,
-            CancellationToken cancel = default);
+        ValueTask SendCommandAck(
+            MavCmd cmd,
+            DeviceIdentity responseTarget, 
+            CommandResult result,
+            CancellationToken cancel = default
+        );
     }
 
     /// Represents the result of a command execution.
@@ -117,9 +121,6 @@ namespace Asv.Mavlink
         private static Task<CommandResult>? _commandUnsupportedMavFrameTask;
         public static Task<CommandResult> CommandUnsupportedMavFrameTask => _commandUnsupportedMavFrameTask ??= Task.FromResult(CommandUnsupportedMavFrame);
         
-        
-
-        
         public static CommandResult FromResult(MavResult result)
         {
             return result switch
@@ -137,6 +138,7 @@ namespace Asv.Mavlink
                 _ => CommandResult.FromResult(result)
             };
         }
+        
         public static Task<CommandResult> AsTask(MavResult result)
         {
             return result switch
@@ -154,7 +156,6 @@ namespace Asv.Mavlink
                 _ => Task.FromResult(CommandResult.FromResult(result))
             };
         }
-        
 
         #endregion
         
@@ -165,7 +166,12 @@ namespace Asv.Mavlink
         /// <param name="result">The result value.</param>
         /// <param name="progress">The progress value.</param>
         /// <param name="resultParam2">An optional second result parameter.</param>
-        public CommandResult(MavResult resultCode, int result = 0,byte? progress = null,int? resultParam2 = null)
+        public CommandResult(
+            MavResult resultCode, 
+            int result = 0,
+            byte? progress = null,
+            int? resultParam2 = null
+        )
         {
             ResultCode = resultCode;
             Progress = progress;

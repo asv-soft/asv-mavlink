@@ -26,7 +26,8 @@ public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>
         ICommandServer server,
         Observable<TArgPacket> commandsPipe, 
         Func<TArgPacket,ushort> cmdGetter, 
-        Func<TArgPacket,byte> confirmationGetter )
+        Func<TArgPacket,byte> confirmationGetter 
+    )
     {
         Base = server;
         _disposeCancel = new CancellationTokenSource();

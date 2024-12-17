@@ -88,9 +88,23 @@ public interface IPositionClient: IMavlinkMicroserviceClient
     /// <param name="cancel">Cancellation token</param>
     /// <param name="coordFrame">Valid options are: MAV_FRAME_GLOBAL_INT = 5, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT = 6, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT = 11</param>
     /// <returns>Returns a Task representing the asynchronous operation</returns>
-    ValueTask SetTargetGlobalInt(uint timeBootMs, MavFrame coordinateFrame, int latInt, int lonInt, float alt,
-        float vx, float vy, float vz, float afx, float afy, float afz, float yaw,
-        float yawRate, PositionTargetTypemask typeMask, CancellationToken cancel = default);
+    ValueTask SetTargetGlobalInt(
+        uint timeBootMs,
+        MavFrame coordinateFrame,
+        int latInt,
+        int lonInt,
+        float alt,
+        float vx,
+        float vy,
+        float vz,
+        float afx,
+        float afy,
+        float afz,
+        float yaw,
+        float yawRate,
+        PositionTargetTypemask typeMask,
+        CancellationToken cancel = default
+    );
 
     /// <summary>
     /// 
@@ -111,8 +125,21 @@ public interface IPositionClient: IMavlinkMicroserviceClient
     /// <param name="yawRate">yaw rate setpoint</param>
     /// <param name="cancel"></param>
     /// <returns></returns>
-    ValueTask SetPositionTargetLocalNed(uint timeBootMs, MavFrame coordinateFrame, PositionTargetTypemask typeMask,
+    ValueTask SetPositionTargetLocalNed(
+        uint timeBootMs, 
+        MavFrame coordinateFrame, 
+        PositionTargetTypemask typeMask,
         float x,
-        float y, float z, float vx, float vy, float vz, float afx, float afy, float afz, float yaw, float yawRate,
-        CancellationToken cancel);
+        float y, 
+        float z, 
+        float vx, 
+        float vy, 
+        float vz, 
+        float afx, 
+        float afy, 
+        float afz, 
+        float yaw, 
+        float yawRate,
+        CancellationToken cancel
+    );
 }

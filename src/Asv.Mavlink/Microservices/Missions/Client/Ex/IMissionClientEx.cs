@@ -151,12 +151,17 @@ public static class MissionClientExHelper
     /// <summary>
     /// Change speed and/or throttle set points. The value persists until it is overridden or there is a mode change
     /// </summary>
+    /// <param name="vehicle">The vehicle's mission client</param>
     /// <param name="speed">Speed (-1 indicates no change, -2 indicates return to default vehicle speed)</param>
     /// <param name="speedType">Speed type of value set in param2 (such as airspeed, ground speed, and so on)</param>
     /// <param name="throttle">Throttle (-1 indicates no change, -2 indicates return to default vehicle throttle value)</param>
     /// <returns>MissionItem object</returns>
-    public static MissionItem SetVehicleSpeed(this IMissionClientEx vehicle, float speed, float speedType = 1,
-        float throttle = -1)
+    public static MissionItem SetVehicleSpeed(
+        this IMissionClientEx vehicle, 
+        float speed, 
+        float speedType = 1,
+        float throttle = -1
+    )
     {
         var item = vehicle.Create();
         item.AutoContinue.OnNext(true);
@@ -185,8 +190,14 @@ public static class MissionClientExHelper
     //  }
 
     /// and creating the documentation based on those comments yourself.
-    public static MissionItem AddNavMissionItem(this IMissionClientEx vehicle, GeoPoint point,
-        float holdTime = 0, float acceptRadius = 0, float passRadius = 0, float yawAngle = float.NaN)
+    public static MissionItem AddNavMissionItem(
+        this IMissionClientEx vehicle, 
+        GeoPoint point,
+        float holdTime = 0, 
+        float acceptRadius = 0, 
+        float passRadius = 0, 
+        float yawAngle = float.NaN
+    )
     {
         var missionItem = vehicle.Create();
         missionItem.Location.OnNext(point);
@@ -205,7 +216,12 @@ public static class MissionClientExHelper
     /// <summary>
     /// Adds a takeoff mission item to the mission. </summary> <param name="vehicle">The mission client.</param> <param name="point">The coordinates of the takeoff point.</param> <param name="pitch">The pitch angle (optional, default = 0).</param> <param name="yawAngle">The yaw angle (optional, default = NaN).</param> <returns>A mission item representing the takeoff mission.</returns>
     /// /
-    public static MissionItem AddTakeOffMissionItem(this IMissionClientEx vehicle, GeoPoint point, float pitch = 0, float yawAngle = float.NaN)
+    public static MissionItem AddTakeOffMissionItem(
+        this IMissionClientEx vehicle, 
+        GeoPoint point, 
+        float pitch = 0, 
+        float yawAngle = float.NaN
+    )
     {
         var missionItem = vehicle.Create();
         missionItem.Location.OnNext(point);
@@ -230,8 +246,13 @@ public static class MissionClientExHelper
     /// <param name="landMode">The mode of precision landing, default is PrecisionLandModeDisabled.</param>
     /// <param name="yawAngle">The yaw angle for the land mission item, default is NaN.</param>
     /// <returns>The created land mission item.</returns>
-    public static MissionItem AddLandMissionItem(this IMissionClientEx vehicle, GeoPoint point, float abortAltitude = 0,
-        PrecisionLandMode landMode = PrecisionLandMode.PrecisionLandModeDisabled, float yawAngle = float.NaN)
+    public static MissionItem AddLandMissionItem(
+        this IMissionClientEx vehicle, 
+        GeoPoint point,
+        float abortAltitude = 0,
+        PrecisionLandMode landMode = PrecisionLandMode.PrecisionLandModeDisabled, 
+        float yawAngle = float.NaN
+    )
     {
         var missionItem = vehicle.Create();
         missionItem.Location.OnNext(point);
@@ -256,7 +277,13 @@ public static class MissionClientExHelper
     /// <param name="wpIndex">The waypoint index of the mission item (optional, defaults to 0).</param>
     /// <param name="roiIndex">The ROI index (optional, defaults to 0).</param>
     /// <returns>The newly created ROI mission item.</returns>
-    public static MissionItem AddRoiMissionItem(this IMissionClientEx vehicle, GeoPoint point, MavRoi roiMode = MavRoi.MavRoiLocation, float wpIndex = 0, float roiIndex = 0)
+    public static MissionItem AddRoiMissionItem(
+        this IMissionClientEx vehicle, 
+        GeoPoint point, 
+        MavRoi roiMode = MavRoi.MavRoiLocation, 
+        float wpIndex = 0, 
+        float roiIndex = 0
+    )
     {
         var missionItem = vehicle.Create();
         missionItem.Location.OnNext(point);

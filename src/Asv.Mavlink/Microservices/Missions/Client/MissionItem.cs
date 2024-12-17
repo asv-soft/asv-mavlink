@@ -5,7 +5,6 @@ using Asv.Mavlink.Common;
 
 using R3;
 
-
 namespace Asv.Mavlink
 {
     public sealed class MissionItem : IDisposable,IAsyncDisposable

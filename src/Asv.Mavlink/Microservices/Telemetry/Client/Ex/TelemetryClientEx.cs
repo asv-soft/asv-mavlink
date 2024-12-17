@@ -8,18 +8,23 @@ namespace Asv.Mavlink;
 /// <summary>
 /// Represents an extended telemetry client that provides additional telemetry data.
 /// </summary>
-public sealed class TelemetryClientEx : MavlinkMicroserviceClient, ITelemetryClientEx, IDisposable, IAsyncDisposable
+public sealed class TelemetryClientEx : MavlinkMicroserviceClient, ITelemetryClientEx
 {
-    public TelemetryClientEx(ITelemetryClient client)
-        :base(TelemetryHelper.MicroserviceName, client.Identity,client.Core)
+    public TelemetryClientEx(ITelemetryClient client) : base(TelemetryHelper.MicroserviceName, client.Identity,
+        client.Core)
     {
         Base = client;
-        
-        BatteryCharge = client.SystemStatus.Select(p=>p?.BatteryRemaining < 0 ? double.NaN : (p?.BatteryRemaining ?? 0) / 100.0d).ToReadOnlyReactiveProperty();;
-        BatteryCurrent = client.SystemStatus.Select(p=>p?.CurrentBattery < 0 ? double.NaN : (p?.CurrentBattery ?? 0) / 100.0d).ToReadOnlyReactiveProperty();
-        BatteryVoltage = client.SystemStatus.Select(p=>(p?.VoltageBattery ?? 0) / 1000.0d).ToReadOnlyReactiveProperty();
-        CpuLoad = client.SystemStatus.Select(p=>(p?.Load ?? 0)/1000D).ToReadOnlyReactiveProperty();
-        DropRateCommunication = client.SystemStatus.Select(p => (p?.DropRateComm ?? 0) / 1000D).ToReadOnlyReactiveProperty();
+        BatteryCharge = client.SystemStatus
+            .Select(p => p?.BatteryRemaining < 0 ? double.NaN : (p?.BatteryRemaining ?? 0) / 100.0d)
+            .ToReadOnlyReactiveProperty();
+        BatteryCurrent = client.SystemStatus
+            .Select(p => p?.CurrentBattery < 0 ? double.NaN : (p?.CurrentBattery ?? 0) / 100.0d)
+            .ToReadOnlyReactiveProperty();
+        BatteryVoltage = client.SystemStatus.Select(p => (p?.VoltageBattery ?? 0) / 1000.0d)
+            .ToReadOnlyReactiveProperty();
+        CpuLoad = client.SystemStatus.Select(p => (p?.Load ?? 0) / 1000D).ToReadOnlyReactiveProperty();
+        DropRateCommunication =
+            client.SystemStatus.Select(p => (p?.DropRateComm ?? 0) / 1000D).ToReadOnlyReactiveProperty();
     }
 
     /// <summary>
@@ -29,8 +34,7 @@ public sealed class TelemetryClientEx : MavlinkMicroserviceClient, ITelemetryCli
     /// The base telemetry client.
     /// </value>
     public ITelemetryClient Base { get; }
-    
-    
+
     /// <summary>
     /// The current battery charge level.
     /// </summary>
@@ -69,8 +73,6 @@ public sealed class TelemetryClientEx : MavlinkMicroserviceClient, ITelemetryCli
     /// </value>
     public ReadOnlyReactiveProperty<double> DropRateCommunication { get; }
 
-   
-    
     #region Dispose
 
     protected override void Dispose(bool disposing)
@@ -83,6 +85,7 @@ public sealed class TelemetryClientEx : MavlinkMicroserviceClient, ITelemetryCli
             CpuLoad.Dispose();
             DropRateCommunication.Dispose();
         }
+
         base.Dispose(disposing);
     }
 
@@ -94,7 +97,6 @@ public sealed class TelemetryClientEx : MavlinkMicroserviceClient, ITelemetryCli
         await CastAndDispose(CpuLoad).ConfigureAwait(false);
         await CastAndDispose(DropRateCommunication).ConfigureAwait(false);
         await base.DisposeAsyncCore().ConfigureAwait(false);
-        
         return;
 
         static async ValueTask CastAndDispose(IDisposable resource)
@@ -104,7 +106,6 @@ public sealed class TelemetryClientEx : MavlinkMicroserviceClient, ITelemetryCli
             else
                 resource.Dispose();
         }
-        
     }
 
     #endregion

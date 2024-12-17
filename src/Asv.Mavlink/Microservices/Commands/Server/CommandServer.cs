@@ -21,11 +21,15 @@ namespace Asv.Mavlink
         {
             _logger = core.LoggerFactory.CreateLogger<CommandServer>();
             _onCommandLong = new Subject<CommandLongPacket>();
-            _obs1 = InternalFilter<CommandLongPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
-                .Subscribe(_onCommandLong.AsObserver());
+            _obs1 = InternalFilter<CommandLongPacket>(
+                    p => p.Payload.TargetSystem, 
+                    p => p.Payload.TargetComponent
+            ).Subscribe(_onCommandLong.AsObserver());
             _onCommandInt = new Subject<CommandIntPacket>();
-            _obs2 = InternalFilter<CommandIntPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent)
-                .Subscribe(_onCommandInt.AsObserver());
+            _obs2 = InternalFilter<CommandIntPacket>(
+                    p => p.Payload.TargetSystem, 
+                    p => p.Payload.TargetComponent
+            ).Subscribe(_onCommandInt.AsObserver());
 
         }
 
@@ -33,8 +37,12 @@ namespace Asv.Mavlink
 
         public Observable<CommandIntPacket> OnCommandInt => _onCommandInt;
 
-        public ValueTask SendCommandAck(MavCmd cmd, DeviceIdentity responseTarget, CommandResult result,
-            CancellationToken cancel = default)
+        public ValueTask SendCommandAck(
+            MavCmd cmd, 
+            DeviceIdentity responseTarget, 
+            CommandResult result,
+            CancellationToken cancel = default
+        )
         {
             return InternalSend<CommandAckPacket>(p =>
             {

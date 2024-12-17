@@ -24,7 +24,7 @@ public class MissionServerTest : ServerTestBase<MissionServer>
     {
         _server = Server;
         _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(1000), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
     
@@ -356,5 +356,34 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         Assert.NotNull(result);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromServer.IsDeepEqual(result));
+    }
+    
+    [Fact]
+    public async Task RequestMissionItem_Timeout_Throws()
+    {
+        // Arrange
+        Link.SetClientToServerFilter(_ => false);
+        using var s1 = Link.Server.OnTxMessage.Subscribe(_ =>
+        {
+            ServerTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    5 *    // from default value in MavlinkMicroserviceServer
+                    1000 * // from default value in MavlinkMicroserviceServer
+                    2
+                )
+            );
+        });
+        
+        // Act
+        var task = _server.RequestMissionItem(
+            10,
+            MavMissionType.MavMissionTypeAll,
+            cancel: _cancellationTokenSource.Token
+        );
+
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(0, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.TxMessages);
     }
 }

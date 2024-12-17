@@ -35,4 +35,8 @@ public interface ICommandServerEx<out TArgPacket>
 /// @param cancel The cancellation token that can be used to cancel the command execution.
 /// @returns A Task representing the asynchronous command result.
 /// /
-public delegate Task<CommandResult> CommandDelegate<in TArgPacket>(DeviceIdentity from, TArgPacket args, CancellationToken cancel);
+public delegate Task<CommandResult> CommandDelegate<in TArgPacket>(
+    DeviceIdentity from,
+    TArgPacket args, 
+    CancellationToken cancel
+);

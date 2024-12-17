@@ -21,7 +21,7 @@ public class TelemetryClientExTest : ClientTestBase<TelemetryClientEx>
     {
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<double>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
