@@ -67,6 +67,9 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
         var called = 0;
         var results = new List<GpsRtcmDataPacket>();
         var serverResults = new List<GpsRtcmDataPacket>();
+        var tcs = new TaskCompletionSource<IProtocolMessage>();
+        var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(packetsCount), TimeProvider.System);
+        
         using var sub = Link.Client.OnRxMessage.Subscribe(p =>
         {
             called++;
@@ -77,20 +80,22 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
 
             if (called >= packetsCount)
             {
-                _taskCompletionSource.TrySetResult(p);
+                tcs.TrySetResult(p);
             }
         });
 
         // Act
         for (var i = 0; i < packetsCount; i++)
         {
-            await _server.SendDgps(packet => serverResults.Add(packet), _cancellationTokenSource.Token);
+            await _server.SendDgps(packet => serverResults.Add(packet), cancellationTokenSource.Token);
         }
 
         // Assert
-        await _taskCompletionSource.Task;
-        Assert.Equal(packetsCount, (int)Link.Server.Statistic.TxMessages);
-        Assert.Equal(packetsCount, (int)Link.Client.Statistic.RxMessages);
+
+        await tcs.Task;
+        Assert.Equal(packetsCount, (int) Link.Server.Statistic.TxMessages);
+        Assert.Equal(packetsCount, (int) Link.Client.Statistic.RxMessages);
+
         Assert.Equal(packetsCount, results.Count);
         Assert.True(serverResults.IsDeepEqual(results));
     }
