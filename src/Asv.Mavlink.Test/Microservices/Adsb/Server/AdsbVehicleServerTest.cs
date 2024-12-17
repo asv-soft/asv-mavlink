@@ -123,21 +123,49 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         }
     }
 
-    [Fact(Skip = "Cancellation doesn't work")] // TODO: FIX CANCELLATION
+    [Fact]
     public async Task Send_Canceled_Throws()
     {
         // Arrange
-        AdsbVehiclePacket? packet = null;
-        using var sub = Link.Client.OnRxMessage.Subscribe(
-            p => _taskCompletionSource.TrySetResult(p)
-        );
-
+        AdsbVehiclePacket? packet = new AdsbVehiclePacket();
+        OperationCanceledException? ex = null;
+        var task = new Task(async () =>
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                try
+                {
+                    await Server.Send(p => p = packet.Payload, _cancellationTokenSource.Token);
+                }
+                catch (OperationCanceledException e)
+                {
+                    ex = e;
+                    throw;
+                }
+            }
+        });
+        task.Start();
         // Act
         await _cancellationTokenSource.CancelAsync();
-        var task = Server.Send(p => p = packet.Payload, _cancellationTokenSource.Token);
-
+        task.Wait();
         // Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
+        Assert.NotNull(ex);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+    }
+
+    [Fact]
+    public async Task Send_ArgumentCanceledToken_Throws()
+    {
+        // Arrange
+        AdsbVehiclePacket? packet = new AdsbVehiclePacket();
+        // Act
+        await _cancellationTokenSource.CancelAsync();
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Server.Send(p => p = packet.Payload, _cancellationTokenSource.Token);
+        });
         Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }

@@ -56,7 +56,7 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.True(packet.IsDeepEqual(res));
     }
-    
+
     [Theory]
     [InlineData(10)]
     [InlineData(200)]
@@ -91,13 +91,15 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
         }
 
         // Assert
+
         await tcs.Task;
         Assert.Equal(packetsCount, (int) Link.Server.Statistic.TxMessages);
         Assert.Equal(packetsCount, (int) Link.Client.Statistic.RxMessages);
+
         Assert.Equal(packetsCount, results.Count);
         Assert.True(serverResults.IsDeepEqual(results));
     }
-    
+
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
@@ -109,11 +111,8 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
         var ushortValue = isMax ? ushort.MaxValue : ushort.MinValue;
         var byteValue = isMax ? byte.MaxValue : byte.MinValue;
         using var sub = Link.Client.OnRxMessage
-            .Subscribe(p =>
-            {
-                _taskCompletionSource.TrySetResult(p);
-            });
-        
+            .Subscribe(p => { _taskCompletionSource.TrySetResult(p); });
+
         // Act
         _server.Set(pld =>
         {
@@ -132,9 +131,9 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
             pld.Lng = intValue;
             pld.Alt = intValue;
         });
-        
+
         ServerTime.Advance(TimeSpan.FromSeconds(10));
-        
+
         // Assert
         var status = await _taskCompletionSource.Task as AsvGbsOutStatusPacket;
         Assert.NotNull(status);
@@ -149,27 +148,54 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
         Assert.Equal(byteValue, status?.Payload.SatQzs);
         Assert.Equal(byteValue, status?.Payload.SatSbs);
         Assert.Equal(byteValue, status?.Payload.SatIme);
-        Assert.Equal(intValue, status?.Payload.Lat);            
+        Assert.Equal(intValue, status?.Payload.Lat);
         Assert.Equal(intValue, status?.Payload.Lng);
-        Assert.Equal(intValue, status?.Payload.Alt);         
+        Assert.Equal(intValue, status?.Payload.Alt);
     }
-    
-    [Fact(Skip = "Cancellation doesn't work")] // TODO: FIX CANCELLATION
+
+    [Fact]
     public async Task SendDgps_Canceled_Throws()
     {
         // Arrange
-        GpsRtcmDataPacket? packet = null;
-        using var sub = Link.Client.OnRxMessage.Subscribe(
-            p => _taskCompletionSource.TrySetResult(p)
-        );
-
+        GpsRtcmDataPacket? packet = new GpsRtcmDataPacket();
+        OperationCanceledException? ex = null;
+        var task = new Task(async () =>
+        {
+            try
+            {
+                for (var i = 0; i < 100; i++)
+                {
+                    await Server.SendDgps(_ => _ = packet, _cancellationTokenSource.Token);
+                }
+            }
+            catch (OperationCanceledException e)
+            {
+                ex = e;
+                throw;
+            }
+        });
         // Act
+        task.Start();
         await _cancellationTokenSource.CancelAsync();
-        var task = _server.SendDgps(_ => packet = _, _cancellationTokenSource.Token);
+        task.Wait();
 
         // Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
-        Assert.Equal(0, (int) Link.Client.Statistic.RxMessages);
+        Assert.NotNull(ex);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+    }
+
+    [Fact]
+    public async Task SendDgps_ArgumentsWithCanceledToken_Throws()
+    {
+        // Arrange
+        GpsRtcmDataPacket? packet = new GpsRtcmDataPacket();
+        // Act
+        await _cancellationTokenSource.CancelAsync();
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            await Server.SendDgps(_ => _ = packet, _cancellationTokenSource.Token));
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 

@@ -92,21 +92,17 @@ public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
         }
     }
 
-    [Fact(Skip = "Cancellation doesn't work")] // TODO: FIX CANCELLATION
-    public async Task SendCompatibilityResponse_WhenCanceled_ShouldThrowOperationCanceledException()
+    [Fact]
+    public async Task SendCompatibilityResponse_ArgumentCanceledToken_ShouldThrowOperationCanceledException()
     {
         // Arrange
         using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(
             p => _taskCompletionSource.TrySetResult(p)
         );
-        await _cancellationTokenSource.CancelAsync();
-
         // Act
-        var task = Server.SendCompatibilityResponse(p => { }, _cancellationTokenSource.Token);
-
+        await _cancellationTokenSource.CancelAsync();
         // Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
-
+        await Assert.ThrowsAsync<OperationCanceledException>(async () => await Server.SendCompatibilityResponse(p => { }, _cancellationTokenSource.Token));
         Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.RxMessages);
     }
