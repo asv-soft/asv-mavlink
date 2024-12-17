@@ -1,8 +1,6 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -21,7 +19,7 @@ public class TelemetryClientExTest : ClientTestBase<TelemetryClientEx>
     {
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<double>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 

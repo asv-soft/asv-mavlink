@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
+using R3;
 using Xunit;
 using Xunit.Abstractions;
 using ArgumentNullException = System.ArgumentNullException;
@@ -12,7 +15,6 @@ namespace Asv.Mavlink.Test.Ex;
 [TestSubject(typeof(MissionClientEx))]
 public class MissionClientExTest : ClientTestBase<MissionClientEx>
 {
-    
     private const int MaxCommandTimeoutMs = 1000;
     private const int MaxAttemptsToCallCount = 5;
     private const int MaxDeviceUploadTimeoutMs = 10_000;
@@ -198,5 +200,112 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
     public void Init_ProperInput_Success()
     {
         _client.Init();
+    }
+
+    [Fact]
+    public async Task SetCurrent_Timeout_Throws()
+    {
+        // Arrange
+        var called = 0;
+        var tcs = new TaskCompletionSource<ushort>();
+        var cancel = new CancellationTokenSource();
+        cancel.Token.Register(() => tcs.TrySetCanceled());
+
+        Link.SetServerToClientFilter(_ => false);
+        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
+        {
+            called++;
+            Time.Advance(TimeSpan.FromMilliseconds(MaxCommandTimeoutMs + 1));
+        });
+
+        // Act
+        var task = _client.SetCurrent(0, cancel.Token);
+
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_config.AttemptToCallCount, called);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+    }
+    
+    [Fact]
+    public async Task Download_Timeout_Throws()
+    {
+        // Arrange
+        var cancel = new CancellationTokenSource();
+        var called = 0;
+        var progress = 0d;
+        
+        Link.SetServerToClientFilter(_ => false);
+        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
+        {
+            called++;
+            Time.Advance(TimeSpan.FromMilliseconds(MaxCommandTimeoutMs + 1));
+        });
+        
+        // Act
+        var task = _client.Download(cancel.Token, pr => progress = pr);
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_config.AttemptToCallCount, called);
+        Assert.Equal(0, progress);
+        Assert.False(_client.IsSynced.CurrentValue);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+    }
+    
+    [Fact]
+    public async Task ClearRemote_Timeout_Throws()
+    {
+        // Arrange
+        var cancel = new CancellationTokenSource();
+        var called = 0;
+        Link.SetServerToClientFilter(_ => false);
+        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
+        {
+            called++;
+            Time.Advance(TimeSpan.FromMilliseconds(MaxCommandTimeoutMs + 1));
+        });
+        
+        // Act
+        var task = _client.ClearRemote(cancel.Token);
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async ()=>
+        {
+            await task;
+        });
+        Assert.Equal(_config.AttemptToCallCount, called);
+        Assert.False(_client.IsSynced.CurrentValue);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+    }
+    
+    [Fact]
+    public async Task Upload_Timeout_Throws()
+    {
+        // Arrange
+        var cancel = new CancellationTokenSource();
+        var progress = 0d;
+        var called = 0;
+        _client.Create();
+
+        Link.SetServerToClientFilter(_ => true);
+        using var sub = Link.Client.OnTxMessage.Subscribe(_ =>
+        {
+            called++;
+            Time.Advance(TimeSpan.FromMilliseconds(MaxCommandTimeoutMs + 1));
+        });
+        
+        // Act
+        var task = _client.Upload(cancel.Token, p => progress = p);
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_config.AttemptToCallCount, called);
+        Assert.Equal(0, progress);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
     }
 }

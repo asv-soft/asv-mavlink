@@ -179,8 +179,8 @@ public sealed class PositionClientEx : MavlinkMicroserviceClient, IPositionClien
             0, 
             0, 
             0, 
-            cancel)
-            .ConfigureAwait(false);
+            cancel
+        ).ConfigureAwait(false);
     }
 
     public async Task SetRoi(GeoPoint location, CancellationToken cancel)
@@ -270,7 +270,11 @@ public sealed class PositionClientEx : MavlinkMicroserviceClient, IPositionClien
         );
     }
 
-    public Task QLand(NavVtolLandOptions landOptions, double approachAlt, CancellationToken cancel)
+    public Task QLand(
+        NavVtolLandOptions landOptions, 
+        double approachAlt, 
+        CancellationToken cancel
+    )
     {
         return _commandClient.CommandLong(
             MavCmd.MavCmdNavVtolLand, 

@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
-
-
 using DeepEqual.Syntax;
 using R3;
 using Xunit;
@@ -48,10 +46,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         _client = Client;
         _server = Server;
         _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(
-            TimeSpan.FromSeconds(200), 
-            TimeProvider.System
-        );
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
@@ -77,17 +72,19 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         CommandLongPacket? packetFromClient = null;
-        _server[MavCmd.MavCmdComponentArmDisarm] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdComponentArmDisarm] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as CommandLongPacket;
-        });
+        using var sub2 = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as CommandLongPacket; 
+            });
         
         // Act
         await _client.ArmDisarm(true, _cancellationTokenSource.Token);
@@ -123,17 +120,19 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         ServerTime.Advance(TimeSpan.FromSeconds(1.1));
         ClientTime.Advance(TimeSpan.FromSeconds(1.1));
         
-        _server[MavCmd.MavCmdComponentArmDisarm] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdComponentArmDisarm] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as CommandLongPacket;
-        });
+        using var sub2 = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as CommandLongPacket;
+            });
         
         // Act
         await _client.ArmDisarm(false, _cancellationTokenSource.Token);
@@ -156,7 +155,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         await _cancellationTokenSource.CancelAsync();
-        _server[MavCmd.MavCmdComponentArmDisarm] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdComponentArmDisarm] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
@@ -180,7 +179,8 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
     {
         // Arrange 
         var result = MavResult.MavResultAccepted;
-        using var sub = Link.Client.OnRxMessage.RxFilterByType<CommandAckPacket>()
+        using var sub = Link.Client.OnRxMessage
+            .FilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -195,29 +195,6 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
         Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
-    }
-    
-    [Fact(Skip = "Test is not relevant")]
-    public async Task ArmDisarm_Timeout_Throws()
-    {
-        // Arrange
-        _server[MavCmd.MavCmdComponentArmDisarm] = (id, args, cancel) =>
-        {
-            var result = MavResult.MavResultAccepted;
-            return Task.FromResult(CommandResult.FromResult(result));
-        };
-        // using var sub = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        // {
-        //     ClientTime.Advance(
-        //         TimeSpan.FromMilliseconds(100)
-        //     );
-        // });
-        
-        // Act
-        var task = _client.ArmDisarm(true, _cancellationTokenSource.Token);
-        
-        // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
     }
 
     [Theory]
@@ -246,17 +223,19 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         var called = 0;
         CommandLongPacket? packetFromClient = null;
         var geoPoint = new GeoPoint(latitude, longitude, altitude);
-        _server[MavCmd.MavCmdDoSetRoi] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdDoSetRoi] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as CommandLongPacket;
-        });
+        using var sub2 = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as CommandLongPacket;
+            });
         
         // Act
         await _client.SetRoi(geoPoint, _cancellationTokenSource.Token);
@@ -299,17 +278,19 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         var called = 0;
         CommandLongPacket? packetFromClient = null;
         var geoPoint = new GeoPoint(latitude, longitude, altitude);
-        _server[MavCmd.MavCmdDoSetRoi] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdDoSetRoi] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as CommandLongPacket;
-        });
+        using var sub2 = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as CommandLongPacket; 
+            });
         
         // Act
         await _client.SetRoi(geoPoint, _cancellationTokenSource.Token);
@@ -337,7 +318,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         var called = 0;
         var packetsFromServer = new List<CommandLongPacket>();
         var packetsFromClient = new List<CommandLongPacket>();
-        _server[MavCmd.MavCmdDoSetRoi] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdDoSetRoi] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
@@ -349,13 +330,15 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            if (p is CommandLongPacket packet)
-            {
-                packetsFromClient.Add(packet);
-            }
-        });
+        using var sub2 = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                if (p is CommandLongPacket packet) 
+                { 
+                    packetsFromClient.Add(packet); 
+                }
+            });
         
         // Act
         await _client.SetRoi(GeoPoint.Zero, _cancellationTokenSource.Token);
@@ -381,7 +364,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         var called = 0;
         var geoPoint = new GeoPoint(1, 3, 11);
         await _cancellationTokenSource.CancelAsync();
-        _server[MavCmd.MavCmdDoSetRoi] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdDoSetRoi] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
@@ -400,27 +383,6 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
         Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
-    
-    [Fact(Skip = "Test is not Relevant")]
-    public async Task SetRoi_Timeout_Throws()
-    {
-        // Arrange
-        var geoPoint = new GeoPoint(1, 3, 11);
-        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _commandConfig.CommandTimeoutMs * _commandConfig.CommandAttempt * 2
-                )
-            );
-        });
-        
-        // Act
-        var task = _client.SetRoi(geoPoint, _cancellationTokenSource.Token);
-        
-        // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-    }
 
     [Fact]
     public async Task ClearRoi_SingleCall_Success()
@@ -428,17 +390,19 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         CommandLongPacket? packetFromClient = null;
-        _server[MavCmd.MavCmdDoSetRoiNone] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdDoSetRoiNone] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as CommandLongPacket;
-        });
+        using var sub2 = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as CommandLongPacket;
+            });
         
         // Act
         await _client.ClearRoi(_cancellationTokenSource.Token);
@@ -460,12 +424,12 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
     public async Task ClearRoi_CallAfterSetRoi_Success()
     {
         // Arrange
-        _server[MavCmd.MavCmdDoSetRoi] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdDoSetRoi] = (_, _, _) =>
         {
             var result = MavResult.MavResultAccepted;
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        _server[MavCmd.MavCmdDoSetRoiNone] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdDoSetRoiNone] = (_, args, _) =>
         {
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
@@ -491,8 +455,8 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
     {
         // Arrange 
         var result = MavResult.MavResultAccepted;
-        using var sub = Link.Client
-            .OnRxMessage.RxFilterByType<CommandAckPacket>()
+        using var sub = Link.Client.OnRxMessage 
+            .FilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -514,7 +478,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
     {
         // Arrange
         await _cancellationTokenSource.CancelAsync();
-        _server[MavCmd.MavCmdDoSetRoiNone] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdDoSetRoiNone] = (_, _, _) =>
         {
             var result = MavResult.MavResultAccepted;
             return Task.FromResult(CommandResult.FromResult(result));
@@ -528,27 +492,6 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         Assert.Null(_client.Roi.CurrentValue);
     }
     
-    [Fact (Skip = "Test is not relevant")]
-    public async Task ClearRoi_Timeout_Throws()
-    {
-        // Arrange
-        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _commandConfig.CommandTimeoutMs * _commandConfig.CommandAttempt * 2
-                )
-            );
-        });
-        
-        // Act
-        var task = _client.ClearRoi(_cancellationTokenSource.Token);
-        
-        // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-        Assert.Null(_client.Roi.CurrentValue);
-    }
-    
     [Theory]
     [InlineData(float.MaxValue)]
     [InlineData(float.MinValue)]
@@ -557,17 +500,19 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         IProtocolMessage? packetFromClient = null;
-        _server[MavCmd.MavCmdNavTakeoff] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdNavTakeoff] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as CommandAckPacket;
-        });
+        using var sub = Link.Server.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as CommandAckPacket;
+            });
         
         // Act
         await _client.TakeOff(altInMeters, _cancellationTokenSource.Token);
@@ -592,17 +537,19 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         IProtocolMessage? packetFromClient = null;
-        _server[MavCmd.MavCmdNavTakeoff] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdNavTakeoff] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as CommandAckPacket;
-        });
+        using var sub = Link.Server.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as CommandAckPacket; 
+            });
         
         // Act
         await _client.TakeOff(float.NaN, _cancellationTokenSource.Token);
@@ -625,7 +572,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         await _cancellationTokenSource.CancelAsync();
-        _server[MavCmd.MavCmdNavTakeoff] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdNavTakeoff] = (_, _, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
@@ -644,35 +591,13 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
-    [Fact(Skip = "Test is not relevant")]
-    public async Task TakeOff_Timeout_Throws()
-    {
-        // Arrange
-        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _commandConfig.CommandTimeoutMs * 
-                    _commandConfig.CommandAttempt *
-                    2
-                )
-            );
-        });
-        
-        // Act
-        var task = _client.TakeOff(10, _cancellationTokenSource.Token);
-        
-        // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-    }
-    
     [Fact]
     public async Task Takeoff_Unsupported_Throws()
     {
         // Arrange 
         var result = MavResult.MavResultAccepted;
-        using var sub = Link.Client
-            .OnRxMessage.RxFilterByType<CommandAckPacket>()
+        using var sub = Link.Client.OnRxMessage
+            .FilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -697,17 +622,19 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         IProtocolMessage? packetFromClient = null;
-        _server[MavCmd.MavCmdNavVtolTakeoff] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdNavVtolTakeoff] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as CommandAckPacket;
-        });
+        using var sub = Link.Server.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as CommandAckPacket;
+            });
         
         // Act
         await _client.QTakeOff(altInMeters, _cancellationTokenSource.Token);
@@ -732,17 +659,19 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         IProtocolMessage? packetFromClient = null;
-        _server[MavCmd.MavCmdNavVtolTakeoff] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdNavVtolTakeoff] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as CommandAckPacket;
-        });
+        using var sub = Link.Server.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as CommandAckPacket;
+            });
         
         // Act
         await _client.QTakeOff(float.NaN, _cancellationTokenSource.Token);
@@ -765,7 +694,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         await _cancellationTokenSource.CancelAsync();
-        _server[MavCmd.MavCmdNavVtolTakeoff] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdNavVtolTakeoff] = (_, _, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
@@ -784,35 +713,13 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
-    [Fact(Skip = ("Test is not relevant"))]
-    public async Task QTakeOff_Timeout_Throws()
-    {
-        // Arrange
-        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _commandConfig.CommandTimeoutMs * 
-                    _commandConfig.CommandAttempt *
-                    2
-                )
-            );
-        });
-        
-        // Act
-        var task = _client.QTakeOff(10, _cancellationTokenSource.Token);
-        
-        // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-    }
-    
     [Fact]
     public async Task QTakeoff_Unsupported_Throws()
     {
         // Arrange 
         var result = MavResult.MavResultAccepted;
-        using var sub = Link.Client
-            .OnRxMessage.RxFilterByType<CommandAckPacket>()
+        using var sub = Link.Client.OnRxMessage
+            .FilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -835,17 +742,19 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         CommandAckPacket? packetFromClient = null;
-        _server[MavCmd.MavCmdGetHomePosition] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdGetHomePosition] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as CommandAckPacket;
-        });
+        using var sub = Link.Server.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as CommandAckPacket;
+            });
         
         // Act
         await _client.GetHomePosition(_cancellationTokenSource.Token);
@@ -867,7 +776,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         await _cancellationTokenSource.CancelAsync();
-        _server[MavCmd.MavCmdGetHomePosition] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdGetHomePosition] = (_, _, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
@@ -886,35 +795,13 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
-    [Fact(Skip = "Test is not relevent")]
-    public async Task GetHomePosition_Timeout_Throws()
-    {
-        // Arrange
-        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _commandConfig.CommandTimeoutMs * 
-                    _commandConfig.CommandAttempt *
-                    2
-                )
-            );
-        });
-        
-        // Act
-        var task = _client.GetHomePosition(_cancellationTokenSource.Token);
-        
-        // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-    }
-    
     [Fact]
     public async Task GetHomePosition_Unsupported_MavResultUnsupported()
     {
         // Arrange 
         var result = MavResult.MavResultAccepted;
         using var sub = Link.Client
-            .OnRxMessage.RxFilterByType<CommandAckPacket>()
+            .OnRxMessage.FilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -939,17 +826,19 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         IProtocolMessage? packetFromClient = null;
-        _server[MavCmd.MavCmdNavVtolLand] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdNavVtolLand] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as CommandAckPacket;
-        });
+        using var sub = Link.Server.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as CommandAckPacket;
+            });
         
         // Act
         await _client.QLand(
@@ -983,17 +872,19 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         IProtocolMessage? packetFromClient = null;
-        _server[MavCmd.MavCmdNavVtolLand] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdNavVtolLand] = (_, args, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as CommandAckPacket;
-        });
+        using var sub = Link.Server.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as CommandAckPacket;
+            });
         
         // Act
         await _client.QLand(
@@ -1028,7 +919,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         await _cancellationTokenSource.CancelAsync();
-        _server[MavCmd.MavCmdNavVtolLand] = (id, args, cancel) =>
+        _server[MavCmd.MavCmdNavVtolLand] = (_, _, _) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
@@ -1051,39 +942,13 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
-    [Fact(Skip = "Test is not relevant")]
-    public async Task QLand_Timeout_Throws()
-    {
-        // Arrange
-        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _commandConfig.CommandTimeoutMs * 
-                    _commandConfig.CommandAttempt *
-                    2
-                )
-            );
-        });
-        
-        // Act
-        var task = _client.QLand(
-            NavVtolLandOptions.NavVtolLandOptionsDefault, 
-            10, 
-            _cancellationTokenSource.Token
-        );
-        
-        // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-    }
-    
     [Fact]
     public async Task QLand_Unsupported_MavResultUnsupported()
     {
         // Arrange 
         var result = MavResult.MavResultAccepted;
-        using var sub = Link.Client
-            .OnRxMessage.RxFilterByType<CommandAckPacket>()
+        using var sub = Link.Client.OnRxMessage
+            .FilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;

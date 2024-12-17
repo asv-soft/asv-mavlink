@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
-
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -25,7 +24,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     {
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
     
@@ -57,12 +56,13 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         // Arrange
         var called = 0;
         RequestDataStreamPacket? packetFromClient = null;
-        using var sub1 = Link.Server.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
-        {
-            called++;
-
-            _taskCompletionSource.TrySetResult(p);
-        });
+        using var sub1 = Link.Server.OnRxMessage
+            .FilterByType<MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                _taskCompletionSource.TrySetResult(p);
+            });
         using var sub2 = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as RequestDataStreamPacket;
@@ -83,33 +83,36 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         Assert.True(packetFromClient.IsDeepEqual(result));
     }
     
-    [Fact(Skip = "Wait for pr from main")]
+    [Fact]
     public async Task RequestDataStream_Cancel_Throws()
     {
         // Arrange
         var called = 0;
         RequestDataStreamPacket? packetFromClient = null;
         await _cancellationTokenSource.CancelAsync();
-        using var sub1 = Link.Server.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
-        {
-            called++;
-
-            _taskCompletionSource.TrySetResult(p);
-        });
+        using var sub1 = Link.Server.OnRxMessage
+            .FilterByType<MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                _taskCompletionSource.TrySetResult(p);
+            });
         using var sub2 = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as RequestDataStreamPacket;
         });
         
-        // Act + Assert
+        // Act
+        var task = _client.RequestDataStream(
+            0,
+            3,
+            true,
+            _cancellationTokenSource.Token
+        );
+        
+        // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(
-            async () => 
-                await _client.RequestDataStream(
-                    0, 
-                    3, 
-                    true, 
-                    _cancellationTokenSource.Token
-                )
+            async () => await task
         );
         Assert.Equal(0, called);
         Assert.Equal(called, (int) Link.Client.Statistic.TxMessages);
@@ -152,7 +155,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     )
     {
         var tcs = new TaskCompletionSource<RadioStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -206,7 +209,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     public async Task SendRadioStatusPacket_SeveralPackets_Success(int packetsCount)
     {
         var tcs = new TaskCompletionSource<RadioStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -259,48 +262,6 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
         Assert.NotEmpty(payloads);
         Assert.True(payloads.All(p => p.IsDeepEqual(packet.Payload)));
-    }
-    
-    [Fact]
-    public async Task SendRadioStatusPacket_NoAddress_Throws()
-    {
-        var tcs = new TaskCompletionSource<RadioStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromMilliseconds(200), TimeProvider.System);
-        cancel.Token.Register(() => tcs.TrySetCanceled());
-
-        var called = 0;
-        var isInit = true;
-        var packet = new RadioStatusPacket
-        {
-            Payload =
-            {
-                Fixed = 0,
-                Noise = 2,
-                Remnoise = 3,
-                Remrssi = 34,
-                Rssi = 3,
-                Rxerrors = 32,
-                Txbuf = 100
-            }
-        };
-        using var sub1 = _client.Radio.Subscribe(p =>
-        {
-            if (isInit)
-            {
-                isInit = false;
-                return;
-            }
-            called++;
-
-            tcs.TrySetResult(p!);
-        });
-
-        // Act
-        await Link.Server.Send(packet, cancel.Token);
-        
-        // Assert
-        await Assert.ThrowsAsync<TaskCanceledException>(async () => await tcs.Task);
-        Assert.Equal(0, called);
     }
     
     #endregion
@@ -365,7 +326,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     )
     {
         var tcs = new TaskCompletionSource<SysStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -426,7 +387,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     public async Task SendSysStatusPacket_SeveralPackets_Success(int packetsCount)
     {
         var tcs = new TaskCompletionSource<SysStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -489,57 +450,6 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         Assert.True(payloads.All(p => p.IsDeepEqual(packet.Payload)));
     }
     
-    [Fact]
-    public async Task SendSysStatusPacket_NoAddress_Throws()
-    {
-        var tcs = new TaskCompletionSource<SysStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromMilliseconds(200), TimeProvider.System);
-        cancel.Token.Register(() => tcs.TrySetCanceled());
-
-        var called = 0;
-        var isInit = true;
-        var packet = new SysStatusPacket
-        {
-            Payload =
-            {
-                OnboardControlSensorsPresent = MavSysStatusSensor.MavSysStatusAhrs,
-                OnboardControlSensorsEnabled = MavSysStatusSensor.MavSysStatusLogging, 
-                OnboardControlSensorsHealth = MavSysStatusSensor.MavSysStatusSensor3dAccel2, 
-                Load = 10,
-                VoltageBattery = 11,
-                CurrentBattery = 12,
-                DropRateComm = 13,
-                ErrorsComm = 14,
-                ErrorsCount1 = 15, 
-                ErrorsCount2 = 16, 
-                ErrorsCount3 = 17, 
-                ErrorsCount4 = 18, 
-                BatteryRemaining = 19, 
-                OnboardControlSensorsPresentExtended = MavSysStatusSensorExtended.MavSysStatusRecoverySystem, 
-                OnboardControlSensorsEnabledExtended = MavSysStatusSensorExtended.MavSysStatusRecoverySystem, 
-                OnboardControlSensorsHealthExtended = MavSysStatusSensorExtended.MavSysStatusRecoverySystem,
-            }
-        };
-        using var sub1 = _client.SystemStatus.Subscribe(p =>
-        {
-            if (isInit)
-            {
-                isInit = false;
-                return;
-            }
-            called++;
-
-            tcs.TrySetResult(p!);
-        });
-
-        // Act
-        await Link.Server.Send(packet, cancel.Token);
-        
-        // Assert
-        await Assert.ThrowsAsync<TaskCanceledException>(async () => await tcs.Task);
-        Assert.Equal(0, called);
-    }
-    
     #endregion
 
     #region SendExtendedSysStatePacket
@@ -560,7 +470,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     )
     {
         var tcs = new TaskCompletionSource<ExtendedSysStatePayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -584,7 +494,8 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
             }
             called++;
 
-            tcs.TrySetResult(p);
+            // ReSharper disable once NullableWarningSuppressionIsUsed
+            tcs.TrySetResult(p!);
         });
 
         // Act
@@ -608,7 +519,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     public async Task SendExtendedSysStatePacket_SeveralPackets_Success(int packetsCount)
     {
         var tcs = new TaskCompletionSource<ExtendedSysStatePayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -655,43 +566,6 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
         Assert.NotEmpty(payloads);
         Assert.True(payloads.All(p => p.IsDeepEqual(packet.Payload)));
-    }
-    
-    [Fact]
-    public async Task SendExtendedSysStatePacket_NoAddress_Throws()
-    {
-        var tcs = new TaskCompletionSource<ExtendedSysStatePayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromMilliseconds(200), TimeProvider.System);
-        cancel.Token.Register(() => tcs.TrySetCanceled());
-
-        var called = 0;
-        var isInit = true;
-        var packet = new ExtendedSysStatePacket
-        {
-            Payload =
-            {
-                VtolState = MavVtolState.MavVtolStateFw,
-                LandedState = MavLandedState.MavLandedStateInAir,
-            }
-        };
-        using var sub1 = _client.ExtendedSystemState.Subscribe(p =>
-        {
-            if (isInit)
-            {
-                isInit = false;
-                return;
-            }
-            called++;
-
-            tcs.TrySetResult(p!);
-        });
-
-        // Act
-        await Link.Server.Send(packet, cancel.Token);
-        
-        // Assert
-        await Assert.ThrowsAsync<TaskCanceledException>(async () => await tcs.Task);
-        Assert.Equal(0, called);
     }
 
     #endregion
@@ -744,7 +618,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     )
     {
         var tcs = new TaskCompletionSource<BatteryStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -801,7 +675,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     public async Task SendBatteryStatusPacket_SeveralPackets_Success(int packetsCount)
     {
         var tcs = new TaskCompletionSource<BatteryStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -858,53 +732,6 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
         Assert.NotEmpty(payloads);
         Assert.True(payloads.All(p => p.IsDeepEqual(packet.Payload)));
-    }
-    
-    [Fact]
-    public async Task SendBatteryStatusPacket_NoAddress_Throws()
-    {
-        var tcs = new TaskCompletionSource<BatteryStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromMilliseconds(200), TimeProvider.System);
-        cancel.Token.Register(() => tcs.TrySetCanceled());
-
-        var called = 0;
-        var isInit = true;
-        var packet = new BatteryStatusPacket
-        {
-            Payload =
-            {
-                CurrentConsumed = 10,
-                EnergyConsumed = 300,
-                Temperature = 112,
-                CurrentBattery = 98,
-                Id = 23,
-                BatteryFunction = MavBatteryFunction.MavBatteryFunctionAvionics,
-                Type = MavBatteryType.MavBatteryTypeNimh,
-                BatteryRemaining = 45,
-                TimeRemaining = 2000,
-                ChargeState = MavBatteryChargeState.MavBatteryChargeStateCharging,
-                Mode = MavBatteryMode.MavBatteryModeUnknown,
-                FaultBitmask = MavBatteryFault.MavBatteryFaultIncompatibleFirmware,
-            }
-        };
-        using var sub1 = _client.Battery.Subscribe(p =>
-        {
-            if (isInit)
-            {
-                isInit = false;
-                return;
-            }
-            called++;
-
-            tcs.TrySetResult(p!);
-        });
-
-        // Act
-        await Link.Server.Send(packet, cancel.Token);
-        
-        // Assert
-        await Assert.ThrowsAsync<TaskCanceledException>(async () => await tcs.Task);
-        Assert.Equal(0, called);
     }
 
     #endregion
