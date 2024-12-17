@@ -159,7 +159,7 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
         // Arrange
         GpsRtcmDataPacket? packet = new GpsRtcmDataPacket();
         OperationCanceledException? ex = null;
-        var task = new Task(async () =>
+        var task = Task.Factory.StartNew(async () =>
         {
             try
             {
@@ -173,9 +173,8 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
                 ex = e;
                 throw;
             }
-        });
+        }); 
         // Act
-        task.Start();
         await _cancellationTokenSource.CancelAsync();
         task.Wait();
 
