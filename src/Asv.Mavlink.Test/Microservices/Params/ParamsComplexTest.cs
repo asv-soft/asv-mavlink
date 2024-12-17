@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.IO;
 using Asv.Mavlink.Common;
+using JetBrains.Annotations;
 using R3;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
+[TestSubject(typeof(ParamsClientEx))]
+[TestSubject(typeof(ParamsServerEx))]
 public class ParamsComplexTest : ComplexTestBase<ParamsClientEx, ParamsServerEx>, IDisposable
 {
     private readonly CancellationTokenSource _cancellationTokenSource;

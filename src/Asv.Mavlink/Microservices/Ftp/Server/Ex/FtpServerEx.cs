@@ -15,7 +15,7 @@ namespace Asv.Mavlink;
 
 public class MavlinkFtpServerExConfig:MavlinkFtpServerConfig
 {
-    public required string RootDirectory { get; init; }
+    public string RootDirectory { get; set; }
 }
 
 public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx

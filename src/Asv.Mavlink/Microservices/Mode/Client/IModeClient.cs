@@ -1,14 +1,17 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 using R3;
 
 namespace Asv.Mavlink;
 
+
+
 public interface IModeClient: IMavlinkMicroserviceClient
 {
-    IEnumerable<OpMode> AvailableModes { get; }
-    ReadOnlyReactiveProperty<OpMode> CurrentMode { get; }
-    Task SetMode(OpMode mode, CancellationToken cancel = default);
+    ImmutableArray<ICustomMode> AvailableModes { get; }
+    ReadOnlyReactiveProperty<ICustomMode> CurrentMode { get; }
+    Task SetMode(ICustomMode mode, CancellationToken cancel = default);
 
 }
