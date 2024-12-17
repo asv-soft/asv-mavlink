@@ -96,7 +96,6 @@ public static class AsvSdrHelper
             throw new ArgumentException($"Tag type must be {AsvSdrRecordTagType.AsvSdrRecordTagTypeUint64}", nameof(type));
         if (BitConverter.TryWriteBytes(rawValue, value) == false)
             throw new ArgumentException($"Can't write value {value} to tag value array", nameof(value));
-        
     }
     public static long GetTagValueAsInt64(ReadOnlySpan<byte> rawValue, AsvSdrRecordTagType type)
     {
@@ -140,7 +139,7 @@ public static class AsvSdrHelper
         if (rawValue.Length != RecordTagValueLength)
             throw new ArgumentException($"Tag value array must be {RecordTagValueLength} bytes length", nameof(rawValue));
         if (type != AsvSdrRecordTagType.AsvSdrRecordTagTypeString8)
-            throw new ArgumentException($"Tag type must be {AsvSdrRecordTagType.AsvSdrRecordTagTypeUint64}", nameof(type));
+            throw new ArgumentException($"Tag type must be {AsvSdrRecordTagType.AsvSdrRecordTagTypeString8}", nameof(type));
         return MavlinkTypesHelper.GetString(rawValue);
     }
     
@@ -341,7 +340,7 @@ public static class AsvSdrHelper
     {
         CheckTagName(tagName);
         if (rawValue.Length != RecordTagValueLength)
-            throw new ArgumentException(nameof(rawValue), $"Tag value array must be {RecordTagValueLength} bytes length");
+            throw new ArgumentException($"Tag value array must be {RecordTagValueLength} bytes length", nameof(rawValue));
         var nameArray = new byte[RecordTagNameMaxLength];
         MavlinkTypesHelper.SetString(nameArray, tagName);
         item.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag;
@@ -357,7 +356,7 @@ public static class AsvSdrHelper
     {
         CheckTagName(tagName);
         if (rawValue.Length != RecordTagValueLength)
-            throw new ArgumentException(nameof(rawValue), $"Tag value array must be {RecordTagValueLength} bytes length");
+            throw new ArgumentException($"Tag value array must be {RecordTagValueLength} bytes length", nameof(rawValue));
         var nameArray = new byte[RecordTagNameMaxLength];
         MavlinkTypesHelper.SetString(nameArray, tagName);
         payload.Command = (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag;
@@ -539,6 +538,10 @@ public static class AsvSdrHelper
             throw new ArgumentException($"Command {item.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrWaitVehicleWaypoint}");
         index = (ushort)BitConverter.ToUInt32(BitConverter.GetBytes(item.Param1));
     }
+    
+    #endregion
+
+    #region Calibration
 
     public static void SetArgsForSdrStartCalibration(CommandLongPayload item)
     {
@@ -574,7 +577,7 @@ public static class AsvSdrHelper
         if (item.Command != (Common.MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration)
             throw new ArgumentException($"Command {item.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration}");
     }
-    
+
     #endregion
 
     public static ServerMissionItem Convert(MissionItemIntPacket input)
