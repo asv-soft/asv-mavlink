@@ -19,7 +19,7 @@ public class ParamsExtServerExConfig
     public string CfgPrefix { get; set; } = "MAV_CFG_";
 }
 
-public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDisposable
+public sealed class ParamsExtServerEx : MavlinkMicroserviceServer, IParamsExtServerEx,IDisposable, IAsyncDisposable
 {
     private readonly ILogger _logger;
 
@@ -43,7 +43,7 @@ public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDi
         IStatusTextServer statusTextServer,
         IEnumerable<IMavParamExtTypeMetadata> paramDescriptions, 
         IConfiguration cfg,
-        ParamsExtServerExConfig serverCfg)
+        ParamsExtServerExConfig serverCfg) : base(ParamsExtHelper.MicroserviceExName, server.Identity, server.Core)
     {
         _logger = server.Core.LoggerFactory.CreateLogger<ParamsExtServer>();
         _server = server ?? throw new ArgumentNullException(nameof(server));

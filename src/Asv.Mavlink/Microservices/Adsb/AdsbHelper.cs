@@ -6,7 +6,7 @@ public static class AdsbHelper
 
     public static IMavlinkServerMicroserviceBuilder RegisterAdsb(this IMavlinkServerMicroserviceBuilder builder)
     {
-        builder.Register<IAdsbVehicleServer>((identity, context) => new AdsbVehicleServer(identity, context));
+        builder.Register<IAdsbVehicleServer>((identity, context,_) => new AdsbVehicleServer(identity, context));
         return builder;
     }
 

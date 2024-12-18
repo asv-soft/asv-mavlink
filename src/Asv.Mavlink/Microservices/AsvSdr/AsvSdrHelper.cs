@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Asv.Cfg;
 using Asv.Common;
 using Asv.IO;
+using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvSdr;
 using Asv.Mavlink.Common;
 
@@ -600,5 +603,36 @@ public static class AsvSdrHelper
         };
     }
 
+    
+    #region ServerFactory
+
+    public static IMavlinkServerMicroserviceBuilder RegisterSdr(this IMavlinkServerMicroserviceBuilder builder)
+    {
+        builder.Register<IAsvSdrServer>((identity, context,config) => new AsvSdrServer(identity,config.Get<AsvSdrServerConfig>(), context));
+        return builder;
+    }
+    public static IMavlinkServerMicroserviceBuilder RegisterSdr(this IMavlinkServerMicroserviceBuilder builder, AsvSdrServerConfig config)
+    {
+        builder.Register<IAsvSdrServer>((identity, context,_) => new AsvSdrServer(identity,config, context));
+        return builder;
+    }
+    
+    public static IMavlinkServerMicroserviceBuilder RegisterSdrEx(this IMavlinkServerMicroserviceBuilder builder)
+    {
+        builder
+            .Register<IAsvSdrServerEx, IAsvSdrServer, IStatusTextServer, IHeartbeatServer,
+                ICommandServerEx<CommandLongPacket>>((_, _, _, @base, status, hb, cmd) =>
+                new AsvSdrServerEx(@base, status, hb, cmd));
+        return builder;
+    }
+   
+
+    public static IAsvSdrServer GetSdr(this IMavlinkServerMicroserviceFactory factory) 
+        => factory.Get<IAsvSdrServer>();
+
+    public static IAsvSdrServerEx GetSdrEx(this IMavlinkServerMicroserviceFactory factory) 
+        => factory.Get<IAsvSdrServerEx>();
+
+    #endregion
    
 }

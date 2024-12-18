@@ -17,7 +17,7 @@ using MavType = Asv.Mavlink.Minimal.MavType;
 
 namespace Asv.Mavlink;
 
-public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
+public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
 {
     private readonly IStatusTextServer _status;
     private readonly ICommandServerEx<CommandLongPacket> _commands;
@@ -34,7 +34,8 @@ public class AsvSdrServerEx : IAsvSdrServerEx, IDisposable,IAsyncDisposable
         IAsvSdrServer server, 
         IStatusTextServer status, 
         IHeartbeatServer heartbeat, 
-        ICommandServerEx<CommandLongPacket> commands)
+        ICommandServerEx<CommandLongPacket> commands) 
+        : base(AsvSdrHelper.AsvSdrMicroserviceExName,server.Identity,server.Core)
     {
         _logger = server.Core.LoggerFactory.CreateLogger<AsvSdrServerEx>();
         ArgumentNullException.ThrowIfNull(heartbeat);

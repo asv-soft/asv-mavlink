@@ -41,10 +41,14 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
     {
         RootDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp")
     };
+    private readonly MavlinkFtpServerConfig _configBase = new()
+    {
+        
+    };
     
     protected override FtpServerEx CreateClient(MavlinkIdentity identity, CoreServices core)
     {
-        return new FtpServerEx(new FtpServer(identity, _config, core), _config, _fileSystem);
+        return new FtpServerEx(new FtpServer(identity, _configBase, core), _config, _fileSystem);
     }
 
     [Fact]

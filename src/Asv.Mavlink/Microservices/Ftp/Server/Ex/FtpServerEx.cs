@@ -13,7 +13,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class MavlinkFtpServerExConfig:MavlinkFtpServerConfig
+public class MavlinkFtpServerExConfig
 {
     public string RootDirectory { get; set; }
 }

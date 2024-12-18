@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Asv.Cfg;
 using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRadio;
 using Asv.Mavlink.Common;
@@ -79,5 +80,36 @@ public static class AsvRadioHelper
         }
     }
 
+    
+    #region ServerFactory
+
+    public static IMavlinkServerMicroserviceBuilder RegisterRadio(this IMavlinkServerMicroserviceBuilder builder)
+    {
+        builder.Register<IAsvRadioServer>((identity, context,config) => new AsvRadioServer(identity,config.Get<AsvRadioServerConfig>(), context));
+        return builder;
+    }
+    public static IMavlinkServerMicroserviceBuilder RegisterRadio(this IMavlinkServerMicroserviceBuilder builder, AsvRadioServerConfig config)
+    {
+        builder.Register<IAsvRadioServer>((identity, context,_) => new AsvRadioServer(identity,config, context));
+        return builder;
+    }
+    
+    public static IMavlinkServerMicroserviceBuilder RegisterRadioEx(this IMavlinkServerMicroserviceBuilder builder, AsvRadioCapabilities capabilities, IReadOnlySet<AsvAudioCodec> codecs)
+    {
+        builder
+            .Register<IAsvRadioServerEx, IAsvRadioServer, IHeartbeatServer, ICommandServerEx<CommandLongPacket>,
+                IStatusTextServer>((_, _, _, @base, hb, cmd, status) =>
+                new AsvRadioServerEx(capabilities, codecs, @base, hb, cmd, status));
+        return builder;
+    }
+   
+
+    public static IAsvChartServer GetRadio(this IMavlinkServerMicroserviceFactory factory) 
+        => factory.Get<IAsvChartServer>();
+
+    public static IAsvRadioServerEx GetRadioEx(this IMavlinkServerMicroserviceFactory factory) 
+        => factory.Get<IAsvRadioServerEx>();
+
+    #endregion
 
 }

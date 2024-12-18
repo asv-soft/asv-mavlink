@@ -14,7 +14,7 @@ using MavType = Asv.Mavlink.Minimal.MavType;
 
 namespace Asv.Mavlink;
 
-public class AsvGbsExServer: IAsvGbsServerEx, IDisposable,IAsyncDisposable
+public class AsvGbsExServer: MavlinkMicroserviceServer, IAsvGbsServerEx, IDisposable,IAsyncDisposable
 {
     private readonly IHeartbeatServer _heartbeatServer;
     private readonly int _maxMessageLength = new GpsRtcmDataPayload().Data.Length;
@@ -27,6 +27,7 @@ public class AsvGbsExServer: IAsvGbsServerEx, IDisposable,IAsyncDisposable
     public AsvGbsExServer(IAsvGbsServer server, 
         IHeartbeatServer heartbeatServer, 
         ICommandServerEx<CommandLongPacket> commands)
+    :base(AsvGbsHelper.MicroserviceExName, server.Identity, server.Core)
     {
         Base = server;
         _logger = server.Core.LoggerFactory.CreateLogger<AsvGbsExServer>();

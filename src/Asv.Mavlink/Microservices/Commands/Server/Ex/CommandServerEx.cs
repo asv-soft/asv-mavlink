@@ -10,7 +10,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>, IDisposable, IAsyncDisposable
+public abstract class CommandServerEx<TArgPacket> : MavlinkMicroserviceServer, ICommandServerEx<TArgPacket>, IDisposable, IAsyncDisposable
     where TArgPacket : MavlinkMessage
 {
     private readonly Func<TArgPacket,ushort> _cmdGetter;
@@ -26,7 +26,8 @@ public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>
         ICommandServer server,
         Observable<TArgPacket> commandsPipe, 
         Func<TArgPacket,ushort> cmdGetter, 
-        Func<TArgPacket,byte> confirmationGetter )
+        Func<TArgPacket,byte> confirmationGetter ) 
+        : base(CommandHelper.MicroserviceTypeName,server.Identity,server.Core)
     {
         Base = server;
         _disposeCancel = new CancellationTokenSource();

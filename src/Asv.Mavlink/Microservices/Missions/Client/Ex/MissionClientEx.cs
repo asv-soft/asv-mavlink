@@ -39,7 +39,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
     public MissionClientEx(
         IMissionClient client, 
         MissionClientExConfig config)
-        :base(MissionClientHelper.MicroserviceExName, client.Identity, client.Core)
+        :base(MissionHelper.MicroserviceExName, client.Identity, client.Core)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = client.Core.LoggerFactory.CreateLogger<MissionClientEx>();

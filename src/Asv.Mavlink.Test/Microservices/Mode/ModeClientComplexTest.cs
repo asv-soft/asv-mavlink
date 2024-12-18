@@ -35,20 +35,7 @@ public class FakeWorkMode:IWorkModeHandler
     }
 }
 
-public class TestServer: ModeServer<IWorkModeHandler>
-{
-    public TestServer(MavlinkIdentity identity, IHeartbeatServer hb, ICommandServerEx<CommandLongPacket> command, IStatusTextServer status, IWorkModeHandler idleMode, IWorkModeHandler errorMode) 
-        : base(identity, hb, command, status, idleMode, errorMode)
-    {
-        
-    }
 
-    public override IEnumerable<ICustomMode> AvailableModes => ArduCopterMode.AllModes;
-    protected override ValueTask<IWorkModeHandler> InternalCreateMode(ICustomMode mode, CancellationToken cancel)
-    {
-        return new ValueTask<IWorkModeHandler>(new FakeWorkMode(mode));
-    }
-}
 
 [TestSubject(typeof(ParamsClientEx))]
 [TestSubject(typeof(ParamsServerEx))]
@@ -61,11 +48,11 @@ public class ModeComplexTest(ITestOutputHelper log) : ComplexTestBase<IModeClien
 
     protected override IModeServer CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
-        return new TestServer(identity,
+        return new ModeServer(identity,
             new HeartbeatServer(identity, _hbServer, core),
             new CommandLongServerEx(new CommandServer(identity, core)),
             new StatusTextServer(identity, _serverStatus, core),
-            FakeWorkMode.IdleMode, FakeWorkMode.IdleMode);
+            ArduCopterMode.Unknown,ArduCopterMode.AllModes, x=>new FakeWorkMode(x));
     }
 
     protected override IModeClient CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)

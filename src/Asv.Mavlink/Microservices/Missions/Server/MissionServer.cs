@@ -10,7 +10,7 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
 {
     private ushort _currentMissionIndex;
 
-    public MissionServer(MavlinkIdentity identity, IMavlinkContext core) : base(MissionClientHelper.MicroserviceName, identity, core)
+    public MissionServer(MavlinkIdentity identity, IMavlinkContext core) : base(MissionHelper.MicroserviceName, identity, core)
     {
         OnMissionRequestList = InternalFilter<MissionRequestListPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
         OnMissionRequestInt = InternalFilter<MissionRequestIntPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);

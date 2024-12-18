@@ -8,7 +8,7 @@ namespace Asv.Mavlink;
 /// <summary>
 /// Represents an extended mission server interface.
 /// </summary>
-public interface IMissionServerEx
+public interface IMissionServerEx : IMavlinkMicroserviceServer
 {
    /// <summary>
    /// Gets the base IMissionServer property.

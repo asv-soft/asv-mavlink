@@ -17,7 +17,7 @@ namespace Asv.Mavlink;
 
 
 
-public class AsvRadioServerEx: IAsvRadioServerEx, IDisposable,IAsyncDisposable
+public class AsvRadioServerEx: MavlinkMicroserviceServer, IAsvRadioServerEx
 {
     private readonly AsvRadioCapabilities _capabilities;
     private readonly IReadOnlySet<AsvAudioCodec> _codecs;
@@ -34,7 +34,7 @@ public class AsvRadioServerEx: IAsvRadioServerEx, IDisposable,IAsyncDisposable
         IAsvRadioServer server, 
         IHeartbeatServer heartbeat, 
         ICommandServerEx<CommandLongPacket> commands, 
-        IStatusTextServer statusText)
+        IStatusTextServer statusText): base(AsvRadioHelper.MicroserviceExName, server.Identity,server.Core)
     {
         _logger = server.Core.LoggerFactory.CreateLogger<AsvRadioServerEx>();
         ArgumentNullException.ThrowIfNull(commands);

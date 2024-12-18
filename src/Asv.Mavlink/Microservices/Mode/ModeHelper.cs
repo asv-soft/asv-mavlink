@@ -1,80 +1,28 @@
 using System;
+using System.Collections.Generic;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.Minimal;
 
 namespace Asv.Mavlink;
 
 public static class ModeHelper
 {
     public const string MicroserviceName = "MODE";
-}
+    
+    #region ServerFactory
 
-public interface ICustomMode
-{
-    /// <summary>
-    /// Gets the name of the property.
-    /// </summary>
-    /// <returns>The name of the property.</returns>
-    public string Name { get; }
+    public static IMavlinkServerMicroserviceBuilder RegisterMode(this IMavlinkServerMicroserviceBuilder builder,
+        ICustomMode idleMode, IEnumerable<ICustomMode> availableModes,
+        Func<ICustomMode, IWorkModeHandler> handlerFactory)
+    {
+        builder
+            .Register<IModeServer, IHeartbeatServer, ICommandServerEx<CommandLongPacket>, IStatusTextServer>(
+                (identity, _, _, hb, cmd, status) =>
+                    new ModeServer(identity, hb, cmd, status, idleMode, availableModes, handlerFactory));
+        return builder;
+    }
 
-    /// <summary>
-    /// Gets the description of the property.
-    /// </summary>
-    /// <returns>
-    /// A string representing the description.
-    /// </returns>
-    public string Description { get; }
+    public static IModeServer GetMode(this IMavlinkServerMicroserviceFactory factory) 
+        => factory.Get<IModeServer>();
 
-    /// <summary>
-    /// This flag indicates whether the vehicle can be set into this mode by the user command.
-    /// You shouldn't show this mode in the user interface if this flag is true.
-    /// </summary>
-    /// <value>
-    /// A boolean value that represents whether the vehicle can be set into this mode by the user command.
-    /// </value>
-    public bool InternalMode { get; }
-    /// <summary>
-    /// Get args 
-    /// </summary>
-    /// <param name="baseMode"></param>
-    /// <param name="customMode"></param>
-    /// <param name="customSubMode"></param>
-    public void GetCommandLongArgs(out uint baseMode, out uint customMode, out uint customSubMode);
-    public bool IsCurrentMode(HeartbeatPayload? hb);
-    public bool IsCurrentMode(CommandLongPayload payload);
-    void Fill(HeartbeatPayload hb);
-}
-
-public class UnknownMode : ICustomMode
-{
-    #region MyRegion
-    public static UnknownMode Instance = new();
     #endregion
-    private UnknownMode()
-    {
-        
-    }
-    public string Name => "Unknown"; 
-    public string Description => "Unknown mode";
-    public bool InternalMode => true;
-    public void GetCommandLongArgs(out uint baseMode, out uint customMode, out uint customSubMode)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool IsCurrentMode(HeartbeatPayload? hb)
-    {
-        if (hb == null) return true;
-        return hb.CustomMode == 0;
-    }
-
-    public bool IsCurrentMode(CommandLongPayload payload)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Fill(HeartbeatPayload hb)
-    {
-        throw new NotImplementedException();
-    }
 }

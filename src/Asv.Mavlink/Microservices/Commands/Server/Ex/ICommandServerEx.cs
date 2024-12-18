@@ -9,7 +9,7 @@ namespace Asv.Mavlink;
 /// Represents an extended command server.
 /// </summary>
 /// <typeparam name="TArgPacket">The type of the argument packet.</typeparam>
-public interface ICommandServerEx<out TArgPacket>
+public interface ICommandServerEx<out TArgPacket> : IMavlinkMicroserviceServer
     where TArgPacket : MavlinkMessage
 {
     /// <summary>

@@ -41,9 +41,12 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
 
     private readonly MavlinkFtpServerExConfig _serverExConfig = new()
     {
+        RootDirectory = AppDomain.CurrentDomain.BaseDirectory
+    };
+    private readonly MavlinkFtpServerConfig _serverFtpConfig = new()
+    {
         NetworkId = 0,
         BurstReadChunkDelayMs = 100,
-        RootDirectory = AppDomain.CurrentDomain.BaseDirectory
     };
 
     public FtpExComplexTest(ITestOutputHelper log) : base(log)

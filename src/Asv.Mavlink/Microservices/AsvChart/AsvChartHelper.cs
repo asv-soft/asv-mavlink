@@ -1,4 +1,5 @@
 using System;
+using Asv.Cfg;
 using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.AsvChart;
@@ -6,8 +7,9 @@ using Asv.Mavlink.AsvChart;
 
 namespace Asv.Mavlink;
 
-public static class AsvChartTypeHelper
+public static class AsvChartHelper
 {
+    public const string MavlinkMicroserviceName = "CHART";
     
     public const int SignalNameMaxLength = 16;
     
@@ -59,11 +61,8 @@ public static class AsvChartTypeHelper
     public static ushort GetHashCode(HashCode hashCode)
     {
         var hash = hashCode.ToHashCode();
-        // Получаем младшие 16 бит исходного значения
         var lowerBits = (ushort)(hash & 0xFFFF);
-        // Получаем старшие 16 бит исходного значения
         var upperBits = (ushort)((hash >> 16) & 0xFFFF);
-        // Комбинируем оба значения с помощью побитового исключающего ИЛИ (XOR)
         return (ushort)(lowerBits ^ upperBits);
     }
     
@@ -77,4 +76,24 @@ public static class AsvChartTypeHelper
             _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
         };
     }
+
+    #region ServerFactory
+
+    public static IMavlinkServerMicroserviceBuilder RegisterCharts(this IMavlinkServerMicroserviceBuilder builder)
+    {
+        builder.Register<IAsvChartServer>((identity, context,config) => new AsvChartServer(identity,config.Get<AsvChartServerConfig>(), context));
+        return builder;
+    }
+    public static IMavlinkServerMicroserviceBuilder RegisterCharts(this IMavlinkServerMicroserviceBuilder builder, AsvChartServerConfig config)
+    {
+        builder.Register<IAsvChartServer>((identity, context,_) => new AsvChartServer(identity,config, context));
+        return builder;
+    }
+
+    public static IAsvChartServer GetCharts(this IMavlinkServerMicroserviceFactory factory)
+    {
+        return factory.Get<IAsvChartServer>();
+    }
+    
+    #endregion
 }

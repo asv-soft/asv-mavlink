@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRsga;
 using Asv.Mavlink.Common;
 
@@ -61,12 +62,29 @@ public static class RsgaHelper
                 yield return (AsvRsgaCustomMode)i;
         }
     }
-}
+    
+    #region ServerFactory
 
-public class SupportedWorkMode
-{
-    
-    
-    public AsvRsgaCustomMode Mode { get; set; }
-    
+    public static IMavlinkServerMicroserviceBuilder RegisterRsga(this IMavlinkServerMicroserviceBuilder builder)
+    {
+        builder.Register<IAsvRsgaServer>((identity, context,_) => new AsvRsgaServer(identity,context));
+        return builder;
+    }
+    public static IMavlinkServerMicroserviceBuilder RegisterRsgaEx(this IMavlinkServerMicroserviceBuilder builder, AsvRadioCapabilities capabilities, IReadOnlySet<AsvAudioCodec> codecs)
+    {
+        builder
+            .Register<IAsvRsgaServerEx, IAsvRsgaServer, ICommandServerEx<CommandLongPacket>,
+                IStatusTextServer>((_, _, _, @base, cmd, status) =>
+                new AsvRsgaServerEx(@base,cmd));
+        return builder;
+    }
+   
+
+    public static IAsvChartServer GetRadio(this IMavlinkServerMicroserviceFactory factory) 
+        => factory.Get<IAsvChartServer>();
+
+    public static IAsvRadioServerEx GetRadioEx(this IMavlinkServerMicroserviceFactory factory) 
+        => factory.Get<IAsvRadioServerEx>();
+
+    #endregion
 }

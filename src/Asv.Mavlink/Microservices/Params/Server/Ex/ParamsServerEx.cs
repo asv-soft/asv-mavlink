@@ -36,7 +36,7 @@ public class ParamsServerExConfig
     public string CfgPrefix { get; set; } = "MAV_CFG_";
 }
 
-public class ParamsServerEx: IParamsServerEx,IDisposable
+public class ParamsServerEx : MavlinkMicroserviceServer, IParamsServerEx,IDisposable
 {
     private readonly IParamsServer _server;
     private readonly IStatusTextServer _statusTextServer;
@@ -59,7 +59,7 @@ public class ParamsServerEx: IParamsServerEx,IDisposable
         IEnumerable<IMavParamTypeMetadata> paramDescriptions, 
         IMavParamEncoding encoding, 
         IConfiguration cfg, 
-        ParamsServerExConfig serverCfg)
+        ParamsServerExConfig serverCfg) : base(ParamsHelper.MicroserviceExName,server.Identity,server.Core)
     {
         _disposableCancel = new CancellationTokenSource();
         _logger = server.Core.LoggerFactory.CreateLogger<ParamsServerEx>();

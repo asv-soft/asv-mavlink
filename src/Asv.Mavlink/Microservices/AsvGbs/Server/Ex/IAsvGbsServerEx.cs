@@ -32,7 +32,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Extended interface for ASV GBS server.
     /// </summary>
-    public interface IAsvGbsServerEx
+    public interface IAsvGbsServerEx : IMavlinkMicroserviceServer
     {
         public void Start();
         /// <summary>
