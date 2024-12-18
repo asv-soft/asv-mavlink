@@ -23,9 +23,10 @@ This command load XML file with mavlink packet definition
 
 And generate CSharp file, like this:
 
-<pre class="language-csharp"><code class="lang-csharp"><strong>    /// &#x3C;summary>
-</strong>    ///  HEARTBEAT
-    /// &#x3C;/summary>
+```c#
+    /// <summary>
+    ///  HEARTBEAT
+    /// <summary>
     public class HeartbeatPayload : IPayload
     {
         public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
@@ -61,35 +62,35 @@ And generate CSharp file, like this:
             BinSerialize.WriteByte(ref buffer,(byte)MavlinkVersion);
             /* PayloadByteSize = 9 */;
         }
-        /// &#x3C;summary>
+        /// <summary>
         /// A bitfield for use for autopilot-specific flags
         /// OriginName: custom_mode, Units: , IsExtended: false
-        /// &#x3C;/summary>
+        /// <summary>
         public uint CustomMode { get; set; }
-        /// &#x3C;summary>
+        /// <summary>
         /// Vehicle or component type. For a flight controller component the vehicle type (quadrotor, helicopter, etc.). For other components the component type (e.g. camera, gimbal, etc.). This should be used in preference to component id for identifying the component type.
         /// OriginName: type, Units: , IsExtended: false
-        /// &#x3C;/summary>
+        /// <summary>
         public MavType Type { get; set; }
-        /// &#x3C;summary>
+        /// <summary>
         /// Autopilot type / class. Use MAV_AUTOPILOT_INVALID for components that are not flight controllers.
         /// OriginName: autopilot, Units: , IsExtended: false
-        /// &#x3C;/summary>
+        /// <summary>
         public MavAutopilot Autopilot { get; set; }
-        /// &#x3C;summary>
+        /// <summary>
         /// System mode bitmap.
         /// OriginName: base_mode, Units: , IsExtended: false
-        /// &#x3C;/summary>
+        /// <summary>
         public MavModeFlag BaseMode { get; set; }
-        /// &#x3C;summary>
+        /// <summary>
         /// System status flag.
         /// OriginName: system_status, Units: , IsExtended: false
-        /// &#x3C;/summary>
+        /// <summary>
         public MavState SystemStatus { get; set; }
-        /// &#x3C;summary>
+        /// <summary>
         /// MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version
         /// OriginName: mavlink_version, Units: , IsExtended: false
-        /// &#x3C;/summary>
+        /// <summary>
         public byte MavlinkVersion { get; set; }
     }
-</code></pre>
+```

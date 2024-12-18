@@ -12,5 +12,4 @@ This command benchmarks the serialization and deserialization performance of MAV
 Asv.Mavlink.Shell.exe benchmark-serialization
 ```
 
-<figure><img src="../.gitbook/assets/asv-drones-mavlink-benchmark-serialization-command.png" alt=""><figcaption><p>Asv.Mavlink.Shell.exe benchmark-serialization</p></figcaption></figure>
-
+![image](asv-drones-mavlink-benchmark-serialization-command.png)
