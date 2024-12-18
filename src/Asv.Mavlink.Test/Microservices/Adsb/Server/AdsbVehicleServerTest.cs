@@ -128,7 +128,8 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         // Arrange
         AdsbVehiclePacket? packet = new AdsbVehiclePacket();
         OperationCanceledException? ex = null;
-        var task = new Task(async () =>
+        
+        var task = Task.Factory.StartNew(async () =>
         {
             for (int i = 0; i < 100; i++)
             {
@@ -143,7 +144,6 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
                 }
             }
         });
-        task.Start();
         // Act
         await _cancellationTokenSource.CancelAsync();
         task.Wait();
