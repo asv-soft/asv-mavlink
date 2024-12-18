@@ -204,7 +204,7 @@ public class CommandServerTest : ServerTestBase<CommandServer>
         await _cancellationTokenSource.CancelAsync();
         
         // Assert
-        await Assert.ThrowsAsync<TaskCanceledException>(
+        await Assert.ThrowsAsync<OperationCanceledException>(
             async () => await  _server.SendCommandAck(
                 MavCmd.MavCmdUser1,
                 new DeviceIdentity(Identity.SystemId, Identity.ComponentId),
