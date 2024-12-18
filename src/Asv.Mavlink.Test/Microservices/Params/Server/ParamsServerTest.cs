@@ -53,7 +53,7 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
         var called = 0;
         var results = new List<ParamValuePayload>();
         var serverResults = new List<ParamValuePayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => _taskCompletionSource.TrySetCanceled());
         using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
         {

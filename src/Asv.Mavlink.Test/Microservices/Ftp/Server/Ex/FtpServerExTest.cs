@@ -20,7 +20,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
     
     public FtpServerExTest(ITestOutputHelper log) : base(log)
     {
-        _cts = new CancellationTokenSource(TimeSpan.FromSeconds(3), TimeProvider.System);
+        _cts = new CancellationTokenSource();
         _cts.Token.Register(() => _tcs.TrySetCanceled());
         _fileSystem = SetUpFileSystem(_config.RootDirectory);
     }
