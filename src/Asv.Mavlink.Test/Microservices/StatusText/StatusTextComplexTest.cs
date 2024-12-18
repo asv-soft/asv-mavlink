@@ -26,7 +26,7 @@ public class StatusTextComplexTest : ComplexTestBase<StatusTextClient, StatusTex
     public StatusTextComplexTest(ITestOutputHelper log) : base(log)
     {
         _tcs = new TaskCompletionSource<StatusMessage>();
-        _cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+        _cts = new CancellationTokenSource();
         _cts.Token.Register(() => _tcs.TrySetCanceled());
     }
 
