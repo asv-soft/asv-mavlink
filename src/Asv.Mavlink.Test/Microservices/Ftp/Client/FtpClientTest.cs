@@ -26,7 +26,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
     public FtpClientTest(ITestOutputHelper log) : base(log)
     {
-        _cts = new CancellationTokenSource(TimeSpan.FromSeconds(3), TimeProvider.System);
+        _cts = new CancellationTokenSource();
         _cts.Token.Register(() => _tcs.TrySetCanceled());
     }
 
