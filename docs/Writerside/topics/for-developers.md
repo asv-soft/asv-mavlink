@@ -11,11 +11,11 @@ We would love for you to contribute to our projects and help make it even better
 * [Branches naming](for-developers.md#branches)
 * [Semantic versioning](for-developers.md#semver)
 
-### Found a Bug? <a href="#issue" id="issue"></a>
+### Found a Bug? { #issue }
 
 If you find a bug in the source code, you can help us by [submitting an issue](for-developers.md#submit-issue) to our [GitHub Repository](https://github.com/asv-soft). Even better, you can submit a Pull Request with a fix.
 
-### Missing a Feature? <a href="#feature" id="feature"></a>
+### Missing a Feature? { #feature }
 
 You can _request_ a new feature by [submitting an issue](for-developers.md#submit-issue) to our GitHub Repository. If you would like to _implement_ a new feature, please consider the size of the change in order to determine the right steps to proceed:
 
@@ -24,9 +24,9 @@ You can _request_ a new feature by [submitting an issue](for-developers.md#submi
     **Note**: Adding a new topic to the documentation, or significantly re-writing a topic, counts as a major feature.
 * **Small Features** can be crafted and directly submitted as a Pull Request.
 
-### Submission Guidelines <a href="#submit" id="submit"></a>
+### Submission Guidelines { #submit }
 
-#### Submitting an Issue <a href="#submit-issue" id="submit-issue"></a>
+#### Submitting an Issue { #submit-issue }
 
 Before you submit an issue, please search the issue tracker. An issue for your problem might already exist and the discussion might inform you of workarounds readily available.
 
@@ -38,14 +38,14 @@ We require a minimal reproduction to save maintainers' time and ultimately be ab
 
 Unfortunately, we are not able to investigate / fix bugs without a minimal reproduction, so if we don't hear back from you, we are going to close an issue that doesn't have enough info to be reproduced.
 
-### Coding Rules <a href="#rules" id="rules"></a>
+### Coding Rules { #rules }
 
 To ensure consistency throughout the source code, keep these rules in mind as you are working:
 
 * All features or bug fixes **must be tested** by one or more specs (unit-tests).
 * All public API methods **must be documented**.
 
-### Commit Message Format <a href="#commit" id="commit"></a>
+### Commit Message Format { #commit }
 
 _This specification is inspired by and supersedes the_ [_AngularJS commit message format_](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1\_OOAqWjiDU5Y/edit)_._
 
@@ -61,11 +61,11 @@ Each commit message consists of a **header**, a **body**, and a **footer**.
 <footer>
 ```
 
-The `header` is mandatory and must conform to the [Commit Message Header](for-developers.md##commit-header) format.
+The `header` is mandatory and must conform to the Commit Message Header format.
 
-The `body` is mandatory for all commits except for those of type "docs". When the body is present it must be at least 20 characters long and must conform to the [Commit Message Body](for-developers.md##commit-body) format.
+The `body` is mandatory for all commits except for those of type "docs". When the body is present it must be at least 20 characters long and must conform to the Commit Message Body format.
 
-The `footer` is mandatory for all commits. The [Commit Message Footer](for-developers.md##commit-footer) format describes what the footer is used for and the structure it must have.
+The `footer` is mandatory for all commits. The Commit Message Footer format describes what the footer is used for and the structure it must have.
 
 **Commit Message Header**
 
@@ -191,7 +191,7 @@ Change scope of some variables of an anchor to public
 Issue: https://github.com/asv-soft/asv-drones/issues/1234   
 ```
 
-#### Revert commits
+### Revert commits
 
 If the commit reverts a previous commit, it should begin with `revert:` , followed by the header of the reverted commit.
 
@@ -200,13 +200,13 @@ The content of the commit message body should contain:
 * information about the SHA of the commit being reverted in the following format: `This reverts commit <SHA>`,
 * a clear description of the reason for reverting the commit message.
 
-### Branches naming <a href="#branches" id="branches"></a>
+### Branches naming { #branches }
 
 There is a short list of branch names to create:
 
 * (Feature) - used when adding new functionality on branch
 * (Hotfix) - used when fixing existed functionality on branch
 
-### Semantic versioning <a href="#semver" id="semver"></a>
+### Semantic versioning { #semver }
 
 We use semantic versioning in our projects. If you want to read more about it - try visit [this site](https://semver.org/).
