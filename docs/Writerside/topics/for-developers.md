@@ -1,7 +1,5 @@
 # 🖥 For Developers
 
-## For developers
-
 ## Contributing
 
 We would love for you to contribute to our projects and help make it even better than it is today! As a contributor, here are the guidelines we would like you to follow:
@@ -63,11 +61,11 @@ Each commit message consists of a **header**, a **body**, and a **footer**.
 <footer>
 ```
 
-The `header` is mandatory and must conform to the [Commit Message Header](for-developers.md#commit-header) format.
+The `header` is mandatory and must conform to the [Commit Message Header](for-developers.md##commit-header) format.
 
-The `body` is mandatory for all commits except for those of type "docs". When the body is present it must be at least 20 characters long and must conform to the [Commit Message Body](for-developers.md#commit-body) format.
+The `body` is mandatory for all commits except for those of type "docs". When the body is present it must be at least 20 characters long and must conform to the [Commit Message Body](for-developers.md##commit-body) format.
 
-The `footer` is mandatory for all commits. The [Commit Message Footer](for-developers.md#commit-footer) format describes what the footer is used for and the structure it must have.
+The `footer` is mandatory for all commits. The [Commit Message Footer](for-developers.md##commit-footer) format describes what the footer is used for and the structure it must have.
 
 **Commit Message Header**
 

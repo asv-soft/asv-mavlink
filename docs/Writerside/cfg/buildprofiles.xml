@@ -7,7 +7,16 @@
     <build-profile instance="am">
         <variables>
             <noindex-content>true</noindex-content>
+            <ignore-problems>all</ignore-problems>
         </variables>
+
+        <footer>
+            <link href="https://docs.asv.me/">Official website</link>
+            <link href="https://github.com/asv-soft/asv-drones/issues">Issue tracker and Support</link>
+            <link href="asv@me.com">Contact us</link>
+
+            <copyright>(c) 2023 Asv.Drones Contributors</copyright>
+        </footer>
     </build-profile>
 
 </buildprofiles>

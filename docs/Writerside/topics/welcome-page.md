@@ -14,8 +14,3 @@ To install the [`asv-mavlink`](https://github.com/asv-soft/asv-mavlink) library,
 dotnet add package Asv.Mavlink --version <Version>
 ```
 
-## Get Started
-
-We've put together some helpful guides for you to get setup with our product quickly and easily.
-
-Here will be some helpful guides soon. Keep up!
