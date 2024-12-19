@@ -1,6 +1,6 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
-using Asv.IO;
 using Asv.Mavlink.Diagnostic.Client;
 using Asv.Mavlink.Diagnostic.Server;
 using JetBrains.Annotations;
@@ -38,7 +38,7 @@ public class DiagnosticComplexTest(ITestOutputHelper log)
     {
         return new DiagnosticClient(identity, _clientConfig, core);
     }
-   
+
     [Fact]
     public async Task ServerSend_IntProbes_ClientRetrievesMessageSuccess()
     {
@@ -49,46 +49,47 @@ public class DiagnosticComplexTest(ITestOutputHelper log)
 
         var t = new TaskCompletionSource();
         using var c1 = Client.IntProbes.ObserveAdd()
-            .Subscribe(t,(_,tcs) => tcs.TrySetResult());
+            .Subscribe(t, (_, tcs) => tcs.TrySetResult());
         await Server.Send(name, value);
         await t.Task;
-        
+
         // Assert
         Assert.Empty(Client.FloatProbes);
         Assert.Single(Client.IntProbes);
         Assert.Equal(name, Client.IntProbes[name].Name);
         Assert.Equal(value, Client.IntProbes[name].Value.CurrentValue.Item2);
-        
-        ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.DeleteProbesTimeoutMs + _clientConfig.CheckProbesDelayMs + 1 ));
-        
+
+        ClientTime.Advance(
+            TimeSpan.FromMilliseconds(_clientConfig.DeleteProbesTimeoutMs + _clientConfig.CheckProbesDelayMs + 1));
+
         Assert.Empty(Client.FloatProbes);
         Assert.Empty(Client.IntProbes);
-        
     }
-    
+
     [Fact]
     public async Task ServerSend_FloatValue_ClientRetrievesMessageSuccess()
     {
         // Arrange
         var name = "testFloat";
         var value = 10.0f;
-        
+
         var t = new TaskCompletionSource();
         using var c1 = Client.FloatProbes.ObserveAdd()
-            .Subscribe(t,(_,tcs) => tcs.TrySetResult());
-        
+            .Subscribe(t, (_, tcs) => tcs.TrySetResult());
+
         // Act
         await Server.Send(name, value);
         await t.Task;
-        
+
         // Assert
         Assert.Empty(Client.IntProbes);
         Assert.Single(Client.FloatProbes);
         Assert.Equal(name, Client.FloatProbes[name].Name);
         Assert.Equal(value, Client.FloatProbes[name].Value.CurrentValue.Item2, 5);
-        
-        ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.DeleteProbesTimeoutMs + _clientConfig.CheckProbesDelayMs + 1 ));
-        
+
+        ClientTime.Advance(
+            TimeSpan.FromMilliseconds(_clientConfig.DeleteProbesTimeoutMs + _clientConfig.CheckProbesDelayMs + 1));
+
         Assert.Empty(Client.IntProbes);
         Assert.Empty(Client.FloatProbes);
     }
@@ -96,51 +97,60 @@ public class DiagnosticComplexTest(ITestOutputHelper log)
     [Fact]
     public async Task ServerSend_IntProbes_ClientReduceMaxCollectionSizeSuccess()
     {
-        
         var all = _clientConfig.MaxCollectionSize * 2;
         var counter = all;
         var t = new TaskCompletionSource();
         using var c1 = Client.OnIntProbe
-            .Subscribe(t,(_,tcs) =>
+            .Subscribe(t, (_, tcs) =>
             {
                 --counter;
                 if (counter == 0)
                     tcs.TrySetResult();
             });
-        
+
         for (var i = 0; i < all; i++)
         {
             await Server.Send($"name{i}", i);
         }
+
         await t.Task;
-        
+
         Assert.Equal(_clientConfig.MaxCollectionSize, Client.IntProbes.Count);
-        
     }
-    
+
     [Fact]
     public async Task ServerSend_FloatProbes_ClientReduceMaxCollectionSizeSuccess()
     {
-        
         var all = _clientConfig.MaxCollectionSize * 2;
         var counter = all;
         var t = new TaskCompletionSource();
         using var c1 = Client.OnFloatProbe
-            .Subscribe(t,(_,tcs) =>
+            .Subscribe(t, (_, tcs) =>
             {
                 --counter;
                 if (counter == 0)
                     tcs.TrySetResult();
             });
-        
+
         for (var i = 0; i < all; i++)
         {
             await Server.Send($"name{i}", (float)i);
         }
+
         await t.Task;
-        
+
         Assert.Equal(_clientConfig.MaxCollectionSize, Client.FloatProbes.Count);
-        
+    }
+
+    [Fact]
+    public async Task Server_SendThrowsOpCanceled_Fail()
+    {
+        var cancelationTokenSource = new CancellationTokenSource();
+        await cancelationTokenSource.CancelAsync();
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Server.Send($"name", (float)100, cancelationTokenSource.Token);
+        });
     }
     
 }

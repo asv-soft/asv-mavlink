@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRadio;
 using JetBrains.Annotations;
@@ -53,6 +54,24 @@ public class AsvRadioServerExTest(ITestOutputHelper log) : ServerTestBase<AsvRad
         Assert.NotNull(server);
         Assert.NotNull(server.Base);
         Assert.Equal(AsvRadioCustomMode.AsvRadioCustomModeIdle, server.CustomMode.CurrentValue);
+        _dispose?.Dispose();
+    }
+    
+    [Fact]
+    public void Ctor_ClientWrongArgument_Fail()
+    {
+        var builder = Disposable.CreateBuilder();
+        var srv = new AsvRadioServer(Identity, _radioConfig, Core).AddTo(ref builder);
+        var hb = new HeartbeatServer(Identity, _heartbeatConfig, Core).AddTo(ref builder);
+        var cmd = new CommandLongServerEx(new CommandServer(Identity, Core)).AddTo(ref builder);
+        var status = new StatusTextServer(Identity, _statusConfig, Core).AddTo(ref builder);
+        _dispose = builder.Build();
+        Assert.Throws<ArgumentNullException>(() => new AsvRadioServerEx(null, _codecs, srv, hb, cmd, status));
+        Assert.Throws<ArgumentNullException>(() =>  new AsvRadioServerEx(_capabilities, null, srv, hb, cmd, status));
+        Assert.Throws<NullReferenceException>(() =>  new AsvRadioServerEx(_capabilities, _codecs, null, hb, cmd, status));
+        Assert.Throws<ArgumentNullException>(() =>  new AsvRadioServerEx(_capabilities, _codecs, srv, null, cmd, status));
+        Assert.Throws<ArgumentNullException>(() =>  new AsvRadioServerEx(_capabilities, _codecs, srv, hb, null, status));
+        Assert.Throws<ArgumentNullException>(() =>  new AsvRadioServerEx(_capabilities, _codecs, srv, hb, cmd, null));
         _dispose?.Dispose();
     }
     
