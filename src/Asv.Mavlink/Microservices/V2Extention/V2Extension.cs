@@ -6,14 +6,14 @@ public static class V2Extension
     
     #region ServerFactory
 
-    public static IMavlinkServerMicroserviceBuilder RegisterV2Ext(this IMavlinkServerMicroserviceBuilder builder)
+    public static IServerDeviceBuilder RegisterV2Ext(this IServerDeviceBuilder builder)
     {
         builder
             .Register<IV2ExtensionServer>((identity, context, _) => new V2ExtensionServer(identity, context));
         return builder;
     }
 
-    public static IV2ExtensionServer GetV2Ext(this IMavlinkServerMicroserviceFactory factory) 
+    public static IV2ExtensionServer GetV2Ext(this IServerDevice factory) 
         => factory.Get<IV2ExtensionServer>();
     
    

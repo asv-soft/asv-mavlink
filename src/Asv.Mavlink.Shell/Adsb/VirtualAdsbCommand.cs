@@ -74,8 +74,11 @@ public class VirtualAdsbCommand
 
         var core = new CoreServices(router, new PacketSequenceCalculator(), NullLoggerFactory.Instance,
             TimeProvider.System, new DefaultMeterFactory());
-        
-        var srv = new AdsbServerDevice(new MavlinkIdentity(config.SystemId, config.ComponentId), new AdsbServerDeviceConfig(), [], new MavParamByteWiseEncoding(), new InMemoryConfiguration(),core);
+
+        var srv = ServerDevice.Create(new MavlinkIdentity(config.SystemId, config.ComponentId), core, builder =>
+        {
+            builder.RegisterAdsb();
+        });
         srv.Start();
 
         AnsiConsole.MarkupLine($"[green]Found config for {config.Vehicles.Length} vehicles[/]");
@@ -84,7 +87,7 @@ public class VirtualAdsbCommand
         AnsiConsole.MarkupLine("[green]Finish simulation![/]");
     }
 
-    private async Task RunVehicleAsync(ProgressContext ctx, AdsbCommandVehicleConfig cfg, AdsbServerDevice srv)
+    private async Task RunVehicleAsync(ProgressContext ctx, AdsbCommandVehicleConfig cfg, IServerDevice srv)
     {
         var vehicleTask = ctx.AddTask(cfg.CallSign);
         if (cfg.Route == null || cfg.Route.Length < 2)
@@ -121,7 +124,7 @@ public class VirtualAdsbCommand
         }
     }
 
-    private async Task<double> RunVehicleTaskAsync(int index, double dist, double total, AdsbServerDevice srv,
+    private async Task<double> RunVehicleTaskAsync(int index, double dist, double total, IServerDevice srv,
         AdsbCommandVehicleConfig cfg, ProgressContext ctx, ProgressTask vehicleTask, GeoPoint from,
         double velocityFrom, GeoPoint to, double velocityTo)
     {
@@ -146,7 +149,7 @@ public class VirtualAdsbCommand
             var vehiclePos = from.RadialPoint(currentHorizontalDistance, azimuth)
                 .AddAltitude(currentVerticalDistance);
             currentDistance = from.DistanceTo(vehiclePos);
-            await srv.Adsb.Send(x =>
+            await srv.GetAdsb().Send(x =>
             {
                 x.Tslc = (byte)(timeStep + 1);
                 x.Altitude = MavlinkTypesHelper.AltFromDoubleMeterToInt32Mm(vehiclePos.Altitude);

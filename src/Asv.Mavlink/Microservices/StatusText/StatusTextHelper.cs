@@ -8,14 +8,14 @@ public static class StatusTextHelper
     
     #region ServerFactory
 
-    public static IMavlinkServerMicroserviceBuilder RegisterStatus(this IMavlinkServerMicroserviceBuilder builder)
+    public static IServerDeviceBuilder RegisterStatus(this IServerDeviceBuilder builder)
     {
         builder
             .Register<IStatusTextServer>((identity, context, config) => new StatusTextServer(identity, config.Get<StatusTextLoggerConfig>(), context));
         return builder;
     }
     
-    public static IMavlinkServerMicroserviceBuilder RegisterStatus(this IMavlinkServerMicroserviceBuilder builder, StatusTextLoggerConfig config)
+    public static IServerDeviceBuilder RegisterStatus(this IServerDeviceBuilder builder, StatusTextLoggerConfig config)
     {
         builder
             .Register<IStatusTextServer>((identity, context, _) => new StatusTextServer(identity, config, context));
@@ -23,7 +23,7 @@ public static class StatusTextHelper
     }
    
 
-    public static IStatusTextServer GetStatus(this IMavlinkServerMicroserviceFactory factory) 
+    public static IStatusTextServer GetStatus(this IServerDevice factory) 
         => factory.Get<IStatusTextServer>();
     
    

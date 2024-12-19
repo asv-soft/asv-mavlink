@@ -10,13 +10,13 @@ public static class ParamsHelper
     
     #region ServerFactory
 
-    public static IMavlinkServerMicroserviceBuilder RegisterParams(this IMavlinkServerMicroserviceBuilder builder)
+    public static IServerDeviceBuilder RegisterParams(this IServerDeviceBuilder builder)
     {
         builder.Register<IParamsServer>((identity, context, _) => new ParamsServer(identity, context));
         return builder;
     }
 
-    public static IMavlinkServerMicroserviceBuilder RegisterParamsEx(this IMavlinkServerMicroserviceBuilder builder,
+    public static IServerDeviceBuilder RegisterParamsEx(this IServerDeviceBuilder builder,
         IEnumerable<IMavParamTypeMetadata> paramDescriptions, IMavParamEncoding encoding)
     {
         builder.Register<IParamsServerEx, IParamsServer, IStatusTextServer>((_, _, config, @base, status) =>
@@ -24,7 +24,7 @@ public static class ParamsHelper
         return builder;
     }
     
-    public static IMavlinkServerMicroserviceBuilder RegisterParamsEx(this IMavlinkServerMicroserviceBuilder builder,
+    public static IServerDeviceBuilder RegisterParamsEx(this IServerDeviceBuilder builder,
         IEnumerable<IMavParamTypeMetadata> paramDescriptions, IMavParamEncoding encoding, ParamsServerExConfig config)
     {
         builder.Register<IParamsServerEx, IParamsServer, IStatusTextServer>((_, _, cfg, @base, status) =>
@@ -32,10 +32,10 @@ public static class ParamsHelper
         return builder;
     }
 
-    public static IParamsServer GetParams(this IMavlinkServerMicroserviceFactory factory) 
+    public static IParamsServer GetParams(this IServerDevice factory) 
         => factory.Get<IParamsServer>();
     
-    public static IParamsServerEx GetParamsEx(this IMavlinkServerMicroserviceFactory factory) 
+    public static IParamsServerEx GetParamsEx(this IServerDevice factory) 
         => factory.Get<IParamsServerEx>();
 
     #endregion

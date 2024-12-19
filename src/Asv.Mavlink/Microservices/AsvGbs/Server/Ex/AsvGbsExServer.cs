@@ -147,7 +147,7 @@ public class AsvGbsExServer: MavlinkMicroserviceServer, IAsvGbsServerEx, IDispos
         #endregion
     }
 
-    public void Start()
+    public override void Start()
     {
         Base.Start();
         _heartbeatServer.Start();

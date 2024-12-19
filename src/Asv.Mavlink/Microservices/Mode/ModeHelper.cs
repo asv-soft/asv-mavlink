@@ -10,7 +10,7 @@ public static class ModeHelper
     
     #region ServerFactory
 
-    public static IMavlinkServerMicroserviceBuilder RegisterMode(this IMavlinkServerMicroserviceBuilder builder,
+    public static IServerDeviceBuilder RegisterMode(this IServerDeviceBuilder builder,
         ICustomMode idleMode, IEnumerable<ICustomMode> availableModes,
         Func<ICustomMode, IWorkModeHandler> handlerFactory)
     {
@@ -21,7 +21,7 @@ public static class ModeHelper
         return builder;
     }
 
-    public static IModeServer GetMode(this IMavlinkServerMicroserviceFactory factory) 
+    public static IModeServer GetMode(this IServerDevice factory) 
         => factory.Get<IModeServer>();
 
     #endregion

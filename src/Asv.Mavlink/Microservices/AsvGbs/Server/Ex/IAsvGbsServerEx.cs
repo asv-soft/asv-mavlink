@@ -34,7 +34,7 @@ namespace Asv.Mavlink
     /// </summary>
     public interface IAsvGbsServerEx : IMavlinkMicroserviceServer
     {
-        public void Start();
+        
         /// <summary>
         /// Gets the base server.
         /// </summary>

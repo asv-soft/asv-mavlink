@@ -7,14 +7,14 @@ public static class MissionHelper
     
     #region ServerFactory
 
-    public static IMavlinkServerMicroserviceBuilder RegisterMission(this IMavlinkServerMicroserviceBuilder builder)
+    public static IServerDeviceBuilder RegisterMission(this IServerDeviceBuilder builder)
     {
         builder
             .Register<IMissionServer>((identity, context, _) => new MissionServer(identity, context));
         return builder;
     }
     
-    public static IMavlinkServerMicroserviceBuilder RegisterMissionEx(this IMavlinkServerMicroserviceBuilder builder)
+    public static IServerDeviceBuilder RegisterMissionEx(this IServerDeviceBuilder builder)
     {
         builder
             .Register<IMissionServerEx, IMissionServer, IStatusTextServer>((_, _, _, mis, status) =>
@@ -22,10 +22,10 @@ public static class MissionHelper
         return builder;
     }
 
-    public static IMissionServer GetMission(this IMavlinkServerMicroserviceFactory factory) 
+    public static IMissionServer GetMission(this IServerDevice factory) 
         => factory.Get<IMissionServer>();
     
-    public static IMissionServerEx GetMissionEx(this IMavlinkServerMicroserviceFactory factory) 
+    public static IMissionServerEx GetMissionEx(this IServerDevice factory) 
         => factory.Get<IMissionServerEx>();
 
     #endregion

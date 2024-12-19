@@ -407,29 +407,29 @@ public static class MavlinkFtpHelper
     
     #region ServerFactory
 
-    public static IMavlinkServerMicroserviceBuilder RegisterFtp(this IMavlinkServerMicroserviceBuilder builder)
+    public static IServerDeviceBuilder RegisterFtp(this IServerDeviceBuilder builder)
     {
         builder.Register<IFtpServer>((identity, context,config) => new FtpServer(identity, config.Get<MavlinkFtpServerConfig>(), context));
         return builder;
     }
    
-    public static IMavlinkServerMicroserviceBuilder RegisterFtp(this IMavlinkServerMicroserviceBuilder builder, MavlinkFtpServerConfig config)
+    public static IServerDeviceBuilder RegisterFtp(this IServerDeviceBuilder builder, MavlinkFtpServerConfig config)
     {
         builder
             .Register<IFtpServer>((identity, context,_) =>  new FtpServer(identity,config,context));
         return builder;
     }
     
-    public static IMavlinkServerMicroserviceBuilder RegisterFtp(this IMavlinkServerMicroserviceBuilder builder, MavlinkFtpServerExConfig config, IFileSystem? fileSystem = null)
+    public static IServerDeviceBuilder RegisterFtpEx(this IServerDeviceBuilder builder, MavlinkFtpServerExConfig config, IFileSystem? fileSystem = null)
     {
         builder
             .Register<IFtpServerEx, IFtpServer>((_, _, _, @base) => new FtpServerEx(@base, config, fileSystem));
         return builder;
     }
 
-    public static IFtpServer GetFtp(this IMavlinkServerMicroserviceFactory factory) 
+    public static IFtpServer GetFtp(this IServerDevice factory) 
         => factory.Get<IFtpServer>();
-    public static IFtpServerEx GetFtpEx(this IMavlinkServerMicroserviceFactory factory) 
+    public static IFtpServerEx GetFtpEx(this IServerDevice factory) 
         => factory.Get<IFtpServerEx>();
 
     #endregion

@@ -52,6 +52,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ParamsDesc.resx</DependentUpon>
     </Compile>
+    <Compile Remove="Devices\Server\Ftp\Server\IFtpServerDevice.cs" />
     
   </ItemGroup>
   <ItemGroup>
@@ -81,5 +82,12 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+ 
+  <ItemGroup>
+    <Folder Include="Devices\Server\Adsb\" />
+    <Folder Include="Devices\Server\Ftp\Server\" />
+    <Folder Include="Devices\Server\Gbs\" />
+    <Folder Include="Devices\Server\Sdr\" />
   </ItemGroup>
 </Project>

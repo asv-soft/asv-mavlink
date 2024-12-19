@@ -79,18 +79,18 @@ public static class AsvChartHelper
 
     #region ServerFactory
 
-    public static IMavlinkServerMicroserviceBuilder RegisterCharts(this IMavlinkServerMicroserviceBuilder builder)
+    public static IServerDeviceBuilder RegisterCharts(this IServerDeviceBuilder builder)
     {
         builder.Register<IAsvChartServer>((identity, context,config) => new AsvChartServer(identity,config.Get<AsvChartServerConfig>(), context));
         return builder;
     }
-    public static IMavlinkServerMicroserviceBuilder RegisterCharts(this IMavlinkServerMicroserviceBuilder builder, AsvChartServerConfig config)
+    public static IServerDeviceBuilder RegisterCharts(this IServerDeviceBuilder builder, AsvChartServerConfig config)
     {
         builder.Register<IAsvChartServer>((identity, context,_) => new AsvChartServer(identity,config, context));
         return builder;
     }
 
-    public static IAsvChartServer GetCharts(this IMavlinkServerMicroserviceFactory factory)
+    public static IAsvChartServer GetCharts(this IServerDevice factory)
     {
         return factory.Get<IAsvChartServer>();
     }

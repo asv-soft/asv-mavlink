@@ -9,20 +9,20 @@ public static class HeartbeatHelper
     
     #region ServerFactory
 
-    public static IMavlinkServerMicroserviceBuilder RegisterHeartbeat(this IMavlinkServerMicroserviceBuilder builder)
+    public static IServerDeviceBuilder RegisterHeartbeat(this IServerDeviceBuilder builder)
     {
         builder.Register<IHeartbeatServer>((identity, context,config) => new HeartbeatServer(identity, config.Get<MavlinkHeartbeatServerConfig>(), context));
         return builder;
     }
    
-    public static IMavlinkServerMicroserviceBuilder RegisterHeartbeat(this IMavlinkServerMicroserviceBuilder builder, MavlinkHeartbeatServerConfig config)
+    public static IServerDeviceBuilder RegisterHeartbeat(this IServerDeviceBuilder builder, MavlinkHeartbeatServerConfig config)
     {
         builder
             .Register<IHeartbeatServer>((identity, context,_) =>  new HeartbeatServer(identity,config,context));
         return builder;
     }
 
-    public static IHeartbeatServer GetHeartbeat(this IMavlinkServerMicroserviceFactory factory) 
+    public static IHeartbeatServer GetHeartbeat(this IServerDevice factory) 
         => factory.Get<IHeartbeatServer>();
 
     #endregion

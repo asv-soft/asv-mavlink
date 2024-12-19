@@ -6,14 +6,14 @@ public static class LoggingHelper
     
     #region ServerFactory
 
-    public static IMavlinkServerMicroserviceBuilder RegisterLog(this IMavlinkServerMicroserviceBuilder builder)
+    public static IServerDeviceBuilder RegisterLog(this IServerDeviceBuilder builder)
     {
         builder
             .Register<ILoggingServer>((identity, context,_) =>  new LoggingServer(identity,context));
         return builder;
     }
 
-    public static ILoggingServer GetLog(this IMavlinkServerMicroserviceFactory factory) 
+    public static ILoggingServer GetLog(this IServerDevice factory) 
         => factory.Get<ILoggingServer>();
 
     #endregion

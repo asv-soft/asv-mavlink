@@ -606,18 +606,18 @@ public static class AsvSdrHelper
     
     #region ServerFactory
 
-    public static IMavlinkServerMicroserviceBuilder RegisterSdr(this IMavlinkServerMicroserviceBuilder builder)
+    public static IServerDeviceBuilder RegisterSdr(this IServerDeviceBuilder builder)
     {
         builder.Register<IAsvSdrServer>((identity, context,config) => new AsvSdrServer(identity,config.Get<AsvSdrServerConfig>(), context));
         return builder;
     }
-    public static IMavlinkServerMicroserviceBuilder RegisterSdr(this IMavlinkServerMicroserviceBuilder builder, AsvSdrServerConfig config)
+    public static IServerDeviceBuilder RegisterSdr(this IServerDeviceBuilder builder, AsvSdrServerConfig config)
     {
         builder.Register<IAsvSdrServer>((identity, context,_) => new AsvSdrServer(identity,config, context));
         return builder;
     }
     
-    public static IMavlinkServerMicroserviceBuilder RegisterSdrEx(this IMavlinkServerMicroserviceBuilder builder)
+    public static IServerDeviceBuilder RegisterSdrEx(this IServerDeviceBuilder builder)
     {
         builder
             .Register<IAsvSdrServerEx, IAsvSdrServer, IStatusTextServer, IHeartbeatServer,
@@ -627,10 +627,10 @@ public static class AsvSdrHelper
     }
    
 
-    public static IAsvSdrServer GetSdr(this IMavlinkServerMicroserviceFactory factory) 
+    public static IAsvSdrServer GetSdr(this IServerDevice factory) 
         => factory.Get<IAsvSdrServer>();
 
-    public static IAsvSdrServerEx GetSdrEx(this IMavlinkServerMicroserviceFactory factory) 
+    public static IAsvSdrServerEx GetSdrEx(this IServerDevice factory) 
         => factory.Get<IAsvSdrServerEx>();
 
     #endregion

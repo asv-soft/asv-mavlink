@@ -26,11 +26,10 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx, IMavlinkMicr
         _entryCache = new ObservableDictionary<string, IFtpEntry>();
     }
 
-    public string TypeName => $"{Base.TypeName}Ex";
     public IFtpClient Base { get; }
     public IReadOnlyObservableDictionary<string, IFtpEntry> Entries => _entryCache;
 
-    public async Task BurstDownloadFile(string filePath, Stream streamToSave, IProgress<double>? progress = null,
+    public async Task<int> BurstDownloadFile(string filePath, Stream streamToSave, IProgress<double>? progress = null,
         byte partSize = MavlinkFtpHelper.MaxDataSize, CancellationToken cancel = default)
     {
         if (partSize > MavlinkFtpHelper.MaxDataSize)
@@ -57,7 +56,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx, IMavlinkMicr
             await Base.BurstReadFile(new ReadRequest(file.Session, 0, partSize), p =>
             {
                 var offset = p.ReadOffset();
-                Debug.Assert(offsetsToRead.Remove(offset));
+                offsetsToRead.Remove(offset);
                 var size = p.ReadSize();
                 p.ReadData(buffer);
                 progress.Report(Interlocked.Add(ref total, size) / (double)file.Size);
@@ -69,6 +68,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx, IMavlinkMicr
             }, cancel).ConfigureAwait(false);
 
             // check if we skip some data
+            var manualDownloadCount = offsetsToRead.Count;
             if (offsetsToRead.Count > 0)
             {
                 _logger.ZLogWarning(
@@ -91,10 +91,73 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx, IMavlinkMicr
             }
 
             progress.Report(1);
+            return manualDownloadCount;
         }
         finally
         {
             ArrayPool<byte>.Shared.Return(buffer);
+            await Base.TerminateSession(file.Session, cancel).ConfigureAwait(false);
+        }
+    }
+
+    public async Task<int> BurstDownloadFile(string filePath, IBufferWriter<byte> bufferToSave, IProgress<double>? progress = null,
+        byte partSize = MavlinkFtpHelper.MaxDataSize, CancellationToken cancel = default)
+    {
+        if (partSize > MavlinkFtpHelper.MaxDataSize)
+        {
+            throw new ArgumentOutOfRangeException(nameof(partSize), $"Max data size is {MavlinkFtpHelper.MaxDataSize}");
+        }
+
+        progress ??= new Progress<double>();
+        var file = await Base.OpenFileRead(filePath, cancel).ConfigureAwait(false);
+        var total = 0U;
+        progress.Report(0);
+
+
+        var offsetsToRead = new HashSet<uint>((int)(file.Size / partSize + 1));
+        for (var i = 0; i < file.Size; i += partSize)
+        {
+            offsetsToRead.Add((uint)i);
+        }
+
+        try
+        {
+            // start burst read
+            await Base.BurstReadFile(new ReadRequest(file.Session, 0, partSize), p =>
+            {
+                var offset = p.ReadOffset();
+                offsetsToRead.Remove(offset);
+                var size = p.ReadSize();
+                p.ReadData(bufferToSave);
+                progress.Report(Interlocked.Add(ref total, size) / (double)file.Size);
+            }, cancel).ConfigureAwait(false);
+
+            // check if we skip some data
+            var manualDownloadCount = offsetsToRead.Count;
+            if (offsetsToRead.Count > 0)
+            {
+                _logger.ZLogWarning(
+                    $"Burst read file {filePath} failed some packets (cnt {offsetsToRead.Count}). Try to read manually");
+                foreach (var offset in offsetsToRead)
+                {
+                    var request = new ReadRequest(file.Session, offset, partSize);
+                    try
+                    {
+                        var result2 = await Base.ReadFile(request, bufferToSave, cancel).ConfigureAwait(false);
+                        progress.Report(Interlocked.Add(ref total, result2.ReadCount) / (double)file.Size);
+                    }
+                    catch (FtpNackEndOfFileException)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            progress.Report(1);
+            return manualDownloadCount;
+        }
+        finally
+        {
             await Base.TerminateSession(file.Session, cancel).ConfigureAwait(false);
         }
     }
@@ -180,16 +243,24 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx, IMavlinkMicr
     }
 
     public async Task DownloadFile(string filePath, IBufferWriter<byte> bufferToSave,
-        IProgress<double>? progress = null, CancellationToken cancel = default)
+        IProgress<double>? progress = null, byte partSize = MavlinkFtpHelper.MaxDataSize, CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();
         var file = await Base.OpenFileRead(filePath, cancel).ConfigureAwait(false);
         var skip = 0;
-        var take = MavlinkFtpHelper.MaxDataSize;
+        if (partSize > MavlinkFtpHelper.MaxDataSize)
+        {
+            throw new ArgumentOutOfRangeException(nameof(partSize), $"Max data size is {MavlinkFtpHelper.MaxDataSize}");
+        }
+        if (partSize == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(partSize), "Part size must be greater than 0");
+        }
+        var take = partSize;
         progress.Report(0);
         try
         {
-            while (true)
+            while (file.Size > skip)
             {
                 if (file.Size - skip < take)
                 {
@@ -216,18 +287,27 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx, IMavlinkMicr
     }
 
 
-    public async Task DownloadFile(string filePath, Stream streamToSave, IProgress<double>? progress = null,
+    public async Task DownloadFile(string filePath, Stream streamToSave, IProgress<double>? progress = null, byte partSize = MavlinkFtpHelper.MaxDataSize,
         CancellationToken cancel = default)
     {
         progress ??= new Progress<double>();
         var file = await Base.OpenFileRead(filePath, cancel).ConfigureAwait(false);
+        
         var skip = 0;
-        var take = MavlinkFtpHelper.MaxDataSize;
+        if (partSize > MavlinkFtpHelper.MaxDataSize)
+        {
+            throw new ArgumentOutOfRangeException(nameof(partSize), $"Max data size is {MavlinkFtpHelper.MaxDataSize}");
+        }
+        if (partSize == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(partSize), "Part size must be greater than 0");
+        }
+        var take = partSize;
         progress.Report(0);
         var buffer = ArrayPool<byte>.Shared.Rent(MavlinkFtpHelper.MaxDataSize);
         try
         {
-            while (buffer.Length <= streamToSave.Length)
+            while (file.Size > skip)
             {
                 if (file.Size - skip < take)
                 {
@@ -239,7 +319,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx, IMavlinkMicr
                 {
                     var mem = new Memory<byte>(buffer, 0, take);
                     var result = await Base.ReadFile(request, mem, cancel).ConfigureAwait(false);
-                    await streamToSave.WriteAsync(mem, cancel).ConfigureAwait(false);
+                    await streamToSave.WriteAsync(new ReadOnlyMemory<byte>(buffer,0,result.ReadCount), cancel).ConfigureAwait(false);
                     skip += result.ReadCount;
                     progress.Report((double)skip / file.Size);
                 }

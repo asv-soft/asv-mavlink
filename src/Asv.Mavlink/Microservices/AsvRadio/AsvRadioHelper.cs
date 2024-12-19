@@ -83,18 +83,18 @@ public static class AsvRadioHelper
     
     #region ServerFactory
 
-    public static IMavlinkServerMicroserviceBuilder RegisterRadio(this IMavlinkServerMicroserviceBuilder builder)
+    public static IServerDeviceBuilder RegisterRadio(this IServerDeviceBuilder builder)
     {
         builder.Register<IAsvRadioServer>((identity, context,config) => new AsvRadioServer(identity,config.Get<AsvRadioServerConfig>(), context));
         return builder;
     }
-    public static IMavlinkServerMicroserviceBuilder RegisterRadio(this IMavlinkServerMicroserviceBuilder builder, AsvRadioServerConfig config)
+    public static IServerDeviceBuilder RegisterRadio(this IServerDeviceBuilder builder, AsvRadioServerConfig config)
     {
         builder.Register<IAsvRadioServer>((identity, context,_) => new AsvRadioServer(identity,config, context));
         return builder;
     }
     
-    public static IMavlinkServerMicroserviceBuilder RegisterRadioEx(this IMavlinkServerMicroserviceBuilder builder, AsvRadioCapabilities capabilities, IReadOnlySet<AsvAudioCodec> codecs)
+    public static IServerDeviceBuilder RegisterRadioEx(this IServerDeviceBuilder builder, AsvRadioCapabilities capabilities, IReadOnlySet<AsvAudioCodec> codecs)
     {
         builder
             .Register<IAsvRadioServerEx, IAsvRadioServer, IHeartbeatServer, ICommandServerEx<CommandLongPacket>,
@@ -104,10 +104,10 @@ public static class AsvRadioHelper
     }
    
 
-    public static IAsvChartServer GetRadio(this IMavlinkServerMicroserviceFactory factory) 
+    public static IAsvChartServer GetRadio(this IServerDevice factory) 
         => factory.Get<IAsvChartServer>();
 
-    public static IAsvRadioServerEx GetRadioEx(this IMavlinkServerMicroserviceFactory factory) 
+    public static IAsvRadioServerEx GetRadioEx(this IServerDevice factory) 
         => factory.Get<IAsvRadioServerEx>();
 
     #endregion

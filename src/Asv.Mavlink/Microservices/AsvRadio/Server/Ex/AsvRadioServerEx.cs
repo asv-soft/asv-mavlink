@@ -164,7 +164,7 @@ public class AsvRadioServerEx: MavlinkMicroserviceServer, IAsvRadioServerEx
     public IAsvRadioServer Base { get; }
     public EnableRadioDelegate? EnableRadio { get; set; }
     public DisableRadioDelegate? DisableRadio { get; set; }
-    public void Start()
+    public override void Start()
     {
         Base.Start();
         _heartbeat.Start();

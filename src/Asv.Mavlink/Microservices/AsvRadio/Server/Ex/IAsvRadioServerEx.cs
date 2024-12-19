@@ -17,6 +17,4 @@ public interface IAsvRadioServerEx: IMavlinkMicroserviceServer
     ReadOnlyReactiveProperty<AsvRadioCustomMode> CustomMode { get; }
     EnableRadioDelegate EnableRadio { set; }
     DisableRadioDelegate DisableRadio { set; }
-
-    void Start();
 }

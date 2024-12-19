@@ -65,12 +65,12 @@ public static class RsgaHelper
     
     #region ServerFactory
 
-    public static IMavlinkServerMicroserviceBuilder RegisterRsga(this IMavlinkServerMicroserviceBuilder builder)
+    public static IServerDeviceBuilder RegisterRsga(this IServerDeviceBuilder builder)
     {
         builder.Register<IAsvRsgaServer>((identity, context,_) => new AsvRsgaServer(identity,context));
         return builder;
     }
-    public static IMavlinkServerMicroserviceBuilder RegisterRsgaEx(this IMavlinkServerMicroserviceBuilder builder, AsvRadioCapabilities capabilities, IReadOnlySet<AsvAudioCodec> codecs)
+    public static IServerDeviceBuilder RegisterRsgaEx(this IServerDeviceBuilder builder, AsvRadioCapabilities capabilities, IReadOnlySet<AsvAudioCodec> codecs)
     {
         builder
             .Register<IAsvRsgaServerEx, IAsvRsgaServer, ICommandServerEx<CommandLongPacket>,
@@ -80,10 +80,10 @@ public static class RsgaHelper
     }
    
 
-    public static IAsvChartServer GetRadio(this IMavlinkServerMicroserviceFactory factory) 
+    public static IAsvChartServer GetRadio(this IServerDevice factory) 
         => factory.Get<IAsvChartServer>();
 
-    public static IAsvRadioServerEx GetRadioEx(this IMavlinkServerMicroserviceFactory factory) 
+    public static IAsvRadioServerEx GetRadioEx(this IServerDevice factory) 
         => factory.Get<IAsvRadioServerEx>();
 
     #endregion
