@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
@@ -224,7 +225,7 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
     public async Task<MavParamExtValue> WriteOnce(string name, MavParamExtValue value,
         CancellationToken cancel = default)
     {
-        var result = await Base.Write(name, value.Type, value, cancel).ConfigureAwait(false);
+        var result = await Base.Write(name, value.Type,  value.GetValue().ToString().ToCharArray(), cancel).ConfigureAwait(false);
         return MavParamExtHelper.CreateFromBuffer(result.ParamValue, result.ParamType);
     }
 

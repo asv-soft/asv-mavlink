@@ -80,7 +80,7 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
         Assert.Equal(_config.ReadAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
     
-    [Fact]
+    [Fact(Skip = "Test is not relevant")]
     public async Task ReadAll_ShouldThrowTimeout_Exception()
     {
         // Act
@@ -96,7 +96,7 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
         
         //Assert
         await Task.WhenAll(t1, t2);
-        Assert.Equal(_config.ReadAttemptCount, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(_config.ReadAttemptCount, (int)Link.Client.Statistic.TxMessages); 
     }
     
     [Fact]

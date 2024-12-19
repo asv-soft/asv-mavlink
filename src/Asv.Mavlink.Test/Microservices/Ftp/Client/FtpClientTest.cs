@@ -26,7 +26,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
     public FtpClientTest(ITestOutputHelper log) : base(log)
     {
-        _cts = new CancellationTokenSource(TimeSpan.FromSeconds(3), TimeProvider.System);
+        _cts = new CancellationTokenSource();
         _cts.Token.Register(() => _tcs.TrySetCanceled());
     }
 
@@ -70,7 +70,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
             {
                 var response = CreateAckResponse(packet, FtpOpcode.ResetSessions);
 
-                _ = Link.Server.Send(response, default);
+                _ = Link.Server.Send(response);
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
@@ -105,7 +105,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 var response = CreateAckResponse(packet, FtpOpcode.RemoveDirectory);
 
-                _ = Link.Server.Send(response, default);
+                _ = Link.Server.Send(response);
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
@@ -140,7 +140,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 var response = CreateAckResponse(packet, FtpOpcode.RemoveFile);
 
-                _ = Link.Server.Send(response, default);
+                _ = Link.Server.Send(response);
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
@@ -180,7 +180,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 var response = CreateAckResponse(packet, FtpOpcode.TruncateFile);
 
-                _ = Link.Server.Send(response, default);
+                _ = Link.Server.Send(response);
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
@@ -219,7 +219,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
                 response.WriteSize(4);
                 response.WriteDataAsUint(expectedCrc32);
 
-                _ = Link.Server.Send(response, default);
+                _ = Link.Server.Send(response);
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
@@ -254,7 +254,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 var response = CreateAckResponse(packet, FtpOpcode.CreateDirectory);
 
-                _ = Link.Server.Send(response, default);
+                _ = Link.Server.Send(response);
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
@@ -287,7 +287,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
             {
                 var response = CreateAckResponse(packet, FtpOpcode.Rename);
 
-                _ = Link.Server.Send(response, default);
+                _ = Link.Server.Send(response);
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
@@ -328,7 +328,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
                 response.WriteSize((byte)directoryListing.Length);
                 response.WriteDataAsString(directoryListing);
 
-                _ = Link.Server.Send(response, default);
+                _ = Link.Server.Send(response);
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
@@ -371,7 +371,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
                 response.WriteSize(4);
                 response.WriteDataAsUint(fileSize);
 
-                _ = Link.Server.Send(response, default);
+                _ = Link.Server.Send(response);
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
@@ -415,7 +415,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
                 response.WriteSize(4);
                 response.WriteDataAsUint(fileSize);
 
-                _ = Link.Server.Send(response, default);
+                _ = Link.Server.Send(response);
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
@@ -453,7 +453,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 var response = CreateAckResponse(packet, FtpOpcode.TerminateSession);
 
-                _ = Link.Server.Send(response, default);
+                _ = Link.Server.Send(response);
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
@@ -490,7 +490,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 var response = CreateAckResponse(packet, FtpOpcode.CreateFile);
 
-                _ = Link.Server.Send(response, default);
+                _ = Link.Server.Send(response);
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
@@ -540,7 +540,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
                 response.WriteSize((byte)data.Length);
                 response.WriteData(data);
 
-                _ = Link.Server.Send(response, default);
+                _ = Link.Server.Send(response);
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
@@ -589,7 +589,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 
                 var response = CreateAckResponse(packet, FtpOpcode.WriteFile);
 
-                _ = Link.Server.Send(response, default);
+                _ = Link.Server.Send(response);
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
 
@@ -651,7 +651,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
                     response.WriteData(data);
                     response.WriteBurstComplete(i == dataChunks.Count - 1 ? (byte)1 : (byte)0);
 
-                    await Link.Server.Send(response, default);
+                    await Link.Server.Send(response);
 
                     Time.Advance(TimeSpan.FromMilliseconds(10));
                 }

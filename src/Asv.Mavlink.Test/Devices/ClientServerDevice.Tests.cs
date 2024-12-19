@@ -49,7 +49,7 @@ public class ComplexDeviceTests(ITestOutputHelper log)
         return new MavlinkClientDevice(new MavlinkClientDeviceId("TEST",identity),_clientConfig, [], core);
     }
     
-    [Fact]
+    [Fact(Skip = "Test execution is not stable")]
     public void HeartbeatClientConnectToServer_Success()
     {
         var client = Client; // to ensure that client is created

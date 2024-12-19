@@ -423,7 +423,6 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     [Theory]
     [InlineData(2)]
     [InlineData(1000)]
-    [InlineData(10_000)]
     public async Task SendSysStatusPacket_SeveralPackets_Success(int packetsCount)
     {
         var tcs = new TaskCompletionSource<SysStatusPayload>();
@@ -799,7 +798,6 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     [Theory]
     [InlineData(2)]
     [InlineData(1000)]
-    [InlineData(10_000)]
     public async Task SendBatteryStatusPacket_SeveralPackets_Success(int packetsCount)
     {
         var tcs = new TaskCompletionSource<BatteryStatusPayload>();

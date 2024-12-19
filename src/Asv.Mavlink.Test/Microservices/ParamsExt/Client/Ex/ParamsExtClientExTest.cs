@@ -60,12 +60,9 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
     public void Constructor_Null_Throws()
     {
         // Act
-        // ReSharper disable once NullableWarningSuppressionIsUsed
         Assert.Throws<NullReferenceException>(() => new ParamsExtClientEx(null!, _config, ParamDescription));
-        // ReSharper disable once NullableWarningSuppressionIsUsed
-        Assert.Throws<NullReferenceException>(() => new ParamsExtClientEx(_client, null!, ParamDescription));
-        // ReSharper disable once NullableWarningSuppressionIsUsed
-        Assert.Throws<NullReferenceException>(() => new ParamsExtClientEx(_client, _config, null!));
+        Assert.Throws<ArgumentNullException>(() => new ParamsExtClientEx(_client, null!, ParamDescription));
+        Assert.Throws<ArgumentNullException>(() => new ParamsExtClientEx(_client, _config, null!));
     }
     
     [Fact]
@@ -79,7 +76,7 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
 
         var t2 = Task.Factory.StartNew(() =>
         {
-            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadTimeoutMs * _config.ReadAttemptCount) + 1));
+            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadTimeouMs * _config.ReadAttemptCount) + 1));
         });
         
         //Assert
@@ -91,11 +88,19 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
     public async Task ReadAll_ShouldThrowTimeout_Exception()
     {
         // Act
-        var readAllTask = Client.ReadAll(null, _cancellationTokenSource.Token);
-        Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeoutMs * _config.ReadAttemptCount));
-        await readAllTask;
+        var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
+        {
+            await Client.ReadAll(null, _cancellationTokenSource.Token);
+        });
+
+        var t2 = Task.Factory.StartNew(() =>
+        {
+            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadTimeouMs * _config.ReadAttemptCount) + 1));
+        });
+        
         //Assert
-        Assert.False(readAllTask.Result);
+        await Task.WhenAll(t1, t2);
+        Assert.Equal(_config.ReadAttemptCount, (int) Link.Client.Statistic.TxMessages);
     }
     
     [Fact]
@@ -112,7 +117,7 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
 
         var t2 = Task.Factory.StartNew(() =>
         {
-            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadTimeoutMs * _config.ReadAttemptCount) + 1));
+            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadListTimeoutMs * _config.ReadAttemptCount) + 1));
         });
         
         //Assert
@@ -134,7 +139,7 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
         
         var taskTime = Task.Factory.StartNew(() =>
         {
-            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadTimeoutMs * _config.ReadAttemptCount) + 1));
+            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadTimeouMs * _config.ReadAttemptCount) + 1));
         });
         
         //Assert
