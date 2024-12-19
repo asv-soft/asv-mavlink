@@ -45,16 +45,17 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
         _isSynced = new BindableReactiveProperty<bool>(false);
         var list = new List<ParamExtValuePayload>();
 
-        //_sub1 = client.OnParamExtValue.Chunk(TimeSpan.FromMilliseconds(config.ChunkUpdateBufferMs),client.Core.TimeProvider).Subscribe(OnUpdate);
-        //TODO: fix chunk
-        _sub1 = client.OnParamExtValue.Subscribe(p =>
+        if (config.ChunkUpdateBufferMs > 0)
         {
-            list.Add(p);
-            if (list.Count > 1)
-            {
-                OnUpdate(list);
-            }
-        });
+            _sub1 = client.OnParamExtValue.Chunk(TimeSpan.FromMilliseconds(config.ChunkUpdateBufferMs),client.Core.TimeProvider).Subscribe(OnUpdate);
+        }
+        else
+        {
+            _sub1 = client.OnParamExtValue.Subscribe(p => OnUpdate([p]));
+        }
+        
+        //TODO: fix chunk
+        
         RemoteCount = client.OnParamExtValue.Select(x => (int)x.ParamCount).ToReadOnlyBindableReactiveProperty(-1);
         LocalCount = _paramsSource.ObserveCountChanged().ToReadOnlyBindableReactiveProperty();
         _onValueChanged = new Subject<(string, MavParamExtValue)>();

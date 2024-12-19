@@ -89,7 +89,7 @@ public class AsvSdrClientRecord:IAsvSdrClientRecord, IDisposable,IAsyncDisposabl
 
         while (DateTime.Now - lastUpdate < _maxTimeToWaitForResponseForList && _tags.Count < requestAck.ItemsCount)
         {
-            await Task.Delay(1000, cancel).ConfigureAwait(false);
+            await Task.Delay(_maxTimeToWaitForResponseForList/10,_client.Core.TimeProvider, cancel).ConfigureAwait(false);
             progress?.Report((double)requestAck.ItemsCount/_tags.Count);
         }
         return _tags.Count == requestAck.ItemsCount;

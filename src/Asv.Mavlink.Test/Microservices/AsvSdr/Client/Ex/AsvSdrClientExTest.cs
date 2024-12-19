@@ -10,10 +10,8 @@ using Xunit.Sdk;
 namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(AsvSdrClientEx))]
-public class AsvSdrClientExTest() : ClientTestBase<AsvSdrClientEx>(_log)
+public class AsvSdrClientExTest(ITestOutputHelper log) : ClientTestBase<AsvSdrClientEx>(log)
 {
-    private static ITestOutputHelper _log = new TestOutputHelper();
-
     private readonly HeartbeatClientConfig _configHeartbeat = new()
     {
         HeartbeatTimeoutMs = 2000,
@@ -53,8 +51,17 @@ public class AsvSdrClientExTest() : ClientTestBase<AsvSdrClientEx>(_log)
     {
         var recordId = Guid.NewGuid();
         var cancel = new CancellationTokenSource();
-        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
             await Client.DeleteRecord(recordId, cancel.Token));
+        var t2 = Task.Factory.StartNew(() =>
+        {
+            while (t1.IsCompleted == false)
+            {
+                Time.Advance(TimeSpan.FromMilliseconds(_commandConfig.CommandTimeoutMs));    
+            }
+        }, cancel.Token);
+        
+        await Task.WhenAll(t1, t2);
     }
 
     [Fact]
@@ -62,8 +69,14 @@ public class AsvSdrClientExTest() : ClientTestBase<AsvSdrClientEx>(_log)
     {
         var recordName = "Test_Record";
         var cancel = new CancellationTokenSource();
-        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
             await Client.StartRecord(recordName, cancel.Token));
+        var t2 = Task.Factory.StartNew(() =>
+        {
+            Time.Advance(TimeSpan.FromMilliseconds(_commandConfig.CommandTimeoutMs * _commandConfig.CommandAttempt + 100));
+        }, cancel.Token);
+
+        await Task.WhenAll(t1, t2);
     }
 
     [Fact]
@@ -72,9 +85,21 @@ public class AsvSdrClientExTest() : ClientTestBase<AsvSdrClientEx>(_log)
         var tagName = "tag";
         var rawValue = new byte[] { 1, 0, 0, 1, 0, 0, 1, 0 };
         var cancel = new CancellationTokenSource();
-        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        
+        var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
             await Client.CurrentRecordSetTag(tagName, AsvSdrRecordTagType.AsvSdrRecordTagTypeInt64,
                 rawValue, cancel.Token));
+        
+        var t2 = Task.Factory.StartNew(() =>
+        {
+            while (t1.IsCompleted == false)
+            {
+                Time.Advance(TimeSpan.FromMilliseconds(_commandConfig.CommandTimeoutMs * _commandConfig.CommandAttempt + 100));    
+            }
+            
+        }, TaskCreationOptions.LongRunning);
+        
+        await Task.WhenAll(t1, t2);
     }
     [Fact]
     public async Task Client_OnRecordTagExcptWithBadValues_Fail()
@@ -106,25 +131,9 @@ public class AsvSdrClientExTest() : ClientTestBase<AsvSdrClientEx>(_log)
         var identity = new MavlinkClientIdentity(1, 2, 3, 4);
         var heartBeat = new HeartbeatClient(identity, _configHeartbeat, Context);
         var command = new CommandClient(identity, _commandConfig, Context);
-        Assert.ThrowsAsync<ArgumentNullException>(() =>
-        {
-            var test = new AsvSdrClientEx(null, heartBeat, command, new AsvSdrClientExConfig());
-            return Task.CompletedTask;
-        });
-        Assert.ThrowsAsync<ArgumentNullException>(() =>
-        {
-            var test = new AsvSdrClientEx(Client.Base, null, command, new AsvSdrClientExConfig());
-            return Task.CompletedTask;
-        });
-        Assert.ThrowsAsync<ArgumentNullException>(() =>
-        {
-            var test = new AsvSdrClientEx(Client.Base, heartBeat, null, new AsvSdrClientExConfig());
-            return Task.CompletedTask;
-        });
-        Assert.ThrowsAsync<ArgumentNullException>(() =>
-        {
-            var test = new AsvSdrClientEx(Client.Base, heartBeat, command, null);
-            return Task.CompletedTask;
-        });
+        Assert.Throws<NullReferenceException>(() => new AsvSdrClientEx(null, heartBeat, command, new AsvSdrClientExConfig()));
+        Assert.Throws<NullReferenceException>(() => new AsvSdrClientEx(Client.Base, null, command, new AsvSdrClientExConfig()));
+        Assert.Throws<ArgumentNullException>(() => new AsvSdrClientEx(Client.Base, heartBeat, null, new AsvSdrClientExConfig()));
+        Assert.Throws<ArgumentNullException>(() => new AsvSdrClientEx(Client.Base, heartBeat, command, null));
     }
 }

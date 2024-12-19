@@ -42,16 +42,17 @@ public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
         _disposeCancel = new CancellationTokenSource();
         _paramsSource = new ObservableDictionary<string, ParamItem>();
         _isSynced = new BindableReactiveProperty<bool>(false);
-        
-        //TODO: chunk не срабатывает
-        _sub1 = client.OnParamValue.Chunk(TimeSpan.FromMilliseconds(config.ChunkUpdateBufferMs),client.Core.TimeProvider).Subscribe(OnUpdate);
-        
-        /*var listParam = new List<ParamValuePayload>();
-        _sub1 = client.OnParamValue.Subscribe(p =>
+
+        if (config.ChunkUpdateBufferMs > 0)
         {
-            listParam.Add(p);
-            OnUpdate(listParam);
-        });*/
+            _sub1 = client.OnParamValue.Chunk(TimeSpan.FromMilliseconds(config.ChunkUpdateBufferMs),client.Core.TimeProvider).Subscribe(OnUpdate);    
+        }
+        else
+        {
+            _sub1 = client.OnParamValue.Subscribe(x=>OnUpdate([x]));
+        }
+        
+        
         RemoteCount = client.OnParamValue.Select(x => (int)x.ParamCount).ToReadOnlyReactiveProperty(-1);
         LocalCount = _paramsSource.ObserveCountChanged().ToReadOnlyReactiveProperty();
         _onValueChanged = new Subject<(string, MavParamValue)>();
@@ -179,7 +180,6 @@ public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
         var tcs = new TaskCompletionSource<bool>();
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
         var lastUpdate = Base.Core.TimeProvider.GetTimestamp();
-        var lastLoggedValue = 0;
         using var c2 = Base.OnParamValue.Subscribe(p =>
         {
             _ = p.ParamCount;

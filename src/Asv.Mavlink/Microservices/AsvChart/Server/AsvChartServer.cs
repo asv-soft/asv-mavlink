@@ -111,7 +111,7 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
                 pkt.Payload.ChatInfoHash = info.InfoHash;
             }, cancel).ConfigureAwait(false);
             if (_config.SendSignalDelayMs > 0)
-                await Task.Delay(_config.SendSignalDelayMs, cancel).ConfigureAwait(false);
+                await Task.Delay(TimeSpan.FromMilliseconds(_config.SendSignalDelayMs), Context.TimeProvider, cancel).ConfigureAwait(false);
         }
         if (lastPacketSize > 0)
         {
@@ -132,7 +132,7 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
                 pkt.Payload.ChatInfoHash = info.InfoHash;
             }, cancel).ConfigureAwait(false);
             if (_config.SendSignalDelayMs > 0)
-                await Task.Delay(_config.SendSignalDelayMs, cancel).ConfigureAwait(false);
+                await Task.Delay(TimeSpan.FromMilliseconds(_config.SendSignalDelayMs), Context.TimeProvider, cancel).ConfigureAwait(false);
         }
     }
 

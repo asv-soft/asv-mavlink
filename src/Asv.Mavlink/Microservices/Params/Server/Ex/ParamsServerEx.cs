@@ -32,7 +32,7 @@ public struct ParamChangedEvent
 
 public class ParamsServerExConfig
 {
-    public int SendingParamItemDelayMs { get; set; } = 100;
+    public int SendingParamItemDelayMs { get; set; } = 10;
     public string CfgPrefix { get; set; } = "MAV_CFG_";
 }
 
@@ -130,8 +130,10 @@ public class ParamsServerEx : MavlinkMicroserviceServer, IParamsServerEx,IDispos
                 var param = _paramList[index];
                 var currentValue =  param.ReadFromConfig(_cfg, _serverCfg.CfgPrefix);
                 await SendParam(((ushort)index,param), currentValue, DisposeCancel).ConfigureAwait(false);
-                //TODO: Task.Delay, remove it
-                await Task.Delay(_serverCfg.SendingParamItemDelayMs, DisposeCancel).ConfigureAwait(false);
+                if (_serverCfg.SendingParamItemDelayMs > 0)
+                {
+                    await Task.Delay(TimeSpan.FromMilliseconds(_serverCfg.SendingParamItemDelayMs), Core.TimeProvider, DisposeCancel).ConfigureAwait(false);
+                }
             }
         }
         finally
