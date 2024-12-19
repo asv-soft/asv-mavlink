@@ -64,7 +64,7 @@ public class MavProxy
         {
             AddLink(link);
         }
-        _router.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(OnPacket);
+        _router.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(OnPacket);
         using var c = ConsoleAppHelper.WaitCancelPressOrProcessExit();
 
         _cancel.Cancel();

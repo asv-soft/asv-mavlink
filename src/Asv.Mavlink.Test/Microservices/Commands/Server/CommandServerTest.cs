@@ -188,7 +188,7 @@ public class CommandServerTest : ServerTestBase<CommandServer>
         Assert.True(packetFromClient.IsDeepEqual(result));
     }
     
-    [Fact(Skip = "Wait for pr from main")] // TODO: Wait for pr from main
+    [Fact]
     public async Task SendCommandAck_Cancel_Throws()
     {
         // Arrange

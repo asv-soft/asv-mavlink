@@ -390,7 +390,7 @@ public class MissionComplexTest : ComplexTestBase<MissionClient, MissionServer>
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
     
-    [Fact(Skip = "Wait for pr from main")] // TODO: Wait for pr from main
+    [Fact]
     public async Task WriteMissionItem_Cancel_Throws()
     {
         // Arrange
@@ -468,7 +468,7 @@ public class MissionComplexTest : ComplexTestBase<MissionClient, MissionServer>
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
     
-    [Fact(Skip = "Wait for pr from main")] // TODO: Wait for pr from main
+    [Fact]
     public async Task WriteMissionIntItem_Cancel_Throws()
     {
         // Arrange
@@ -590,7 +590,7 @@ public class MissionComplexTest : ComplexTestBase<MissionClient, MissionServer>
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
     
-    [Fact(Skip = "Wait for pr from main")] // TODO: Wait for pr from main
+    [Fact]
     public async Task MissionSetCount_Cancel_Throws()
     {
         // Arrange

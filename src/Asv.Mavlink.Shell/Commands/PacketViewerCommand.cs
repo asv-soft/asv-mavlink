@@ -51,7 +51,7 @@ public class PacketViewerCommand
             _router = _protocol.CreateRouter("ROTUER");
             _router.AddPort(connection);
         });
-        _router.OnRxMessage.RxFilterByType<MavlinkMessage>().Chunk(TimeSpan.FromSeconds(1))
+        _router.OnRxMessage.FilterByType<MavlinkMessage>().Chunk(TimeSpan.FromSeconds(1))
             .Subscribe(GetPacketAndUpdateTable);
         _actionsThread = new Thread(InterceptConsoleActions);
         _actionsThread.Start();

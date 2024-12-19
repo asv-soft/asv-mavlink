@@ -367,7 +367,7 @@ public class MavlinkCommonHelperTest : ClientTestBase<PositionClient>
         Assert.True(packetFromClient.IsDeepEqual(result));
     }
 
-    [Fact(Skip = "Wait for pr from main")] // TODO: Wait for pr from main
+    [Fact]
     public async Task SetPositionTargetLocalNed_Cancel_Throws()
     {
         // Arrange

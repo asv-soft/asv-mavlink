@@ -165,7 +165,7 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
         Assert.True(packetsFromClient.IsDeepEqual(packetsFromServer));
     }
     
-    [Fact(Skip = "Wait for pr from main")] //TODO: Wait for pr from main
+    [Fact]
     public async Task SetTarget_Cancel_Throws()
     {
         // Arrange

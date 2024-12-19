@@ -96,7 +96,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
             return Task.FromResult(new AsvChartOptions(infoChart.Id, AsvChartDataTrigger.AsvChartDataTriggerPeriodic,
                 30));
         };
-        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(_ =>
+        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(_ =>
         {
             if (_ is AsvChartDataResponsePacket)
             {

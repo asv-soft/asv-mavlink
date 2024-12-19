@@ -153,7 +153,7 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
         Assert.Equal(intValue, status?.Payload.Alt);
     }
 
-    [Fact(Skip = "Wait for pr from main")] // TODO: Wait for pr from main
+    [Fact]
     public async Task SendDgps_ArgumentsWithCanceledToken_Throws()
     {
         // Act

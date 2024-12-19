@@ -32,7 +32,7 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
     {
         // Arrange
         var paramValue = 123f;
-        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p => _taskCompletionSource.TrySetResult(p)
+        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(p => _taskCompletionSource.TrySetResult(p)
         );
         
         // Act
@@ -55,7 +55,7 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
         var called = 0;
         var results = new List<ParamValuePayload>();
         var serverResults = new List<ParamValuePayload>();
-        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
+        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(p =>
         {
             called++;
             if (p is ParamValuePacket packet)

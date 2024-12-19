@@ -57,7 +57,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         var called = 0;
         RequestDataStreamPacket? packetFromClient = null;
         using var sub1 = Link.Server.OnRxMessage
-            .RxFilterByType<MavlinkMessage>()
+            .FilterByType<MavlinkMessage>()
             .Subscribe(p => 
             { 
                 called++;
@@ -83,7 +83,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         Assert.True(packetFromClient.IsDeepEqual(result));
     }
     
-    [Fact(Skip = "Wait for pr from main")] // TODO: Wait for pr from main
+    [Fact]
     public async Task RequestDataStream_Cancel_Throws()
     {
         // Arrange
@@ -91,7 +91,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         RequestDataStreamPacket? packetFromClient = null;
         await _cancellationTokenSource.CancelAsync();
         using var sub1 = Link.Server.OnRxMessage
-            .RxFilterByType<MavlinkMessage>()
+            .FilterByType<MavlinkMessage>()
             .Subscribe(p => 
             { 
                 called++;

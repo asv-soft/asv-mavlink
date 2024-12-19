@@ -254,7 +254,7 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         }
     }
 
-    [Fact(Skip = "Wait for pr from main")] // TODO: Wait for pr from main
+    [Fact]
     public async Task SendCommandInt_Canceled_Throws()
     {
         // Arrange
