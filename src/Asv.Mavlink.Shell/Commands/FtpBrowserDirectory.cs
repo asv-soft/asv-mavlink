@@ -230,7 +230,7 @@ public class FtpBrowserDirectory
             {
                 var task = ctx.AddTask($"[green]Downloading {file.Item.Name}[/]");
                 var progress = new Progress<double>(value => { task.Value = value * 100; });
-                await _ftpClientEx.DownloadFile(file.Item.Path, stream, progress, cancellationToken);
+                await _ftpClientEx.DownloadFile(file.Item.Path, stream, progress:progress, cancel:cancellationToken);
                 task.StopTask();
             });
     }
