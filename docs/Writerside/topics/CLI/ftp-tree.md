@@ -6,7 +6,7 @@ This command provides a tree representation of all available files and directori
 Asv.Mavlink.Shell.exe ftp-tree -cs tcp://127.0.0.1:5760
 ```
 
-### Features:
+## Features:
 - Display the full directory structure of the drone's file system in a tree format.
 - Automatically refreshes and loads the / and @SYS directories.
 - Displays directories and files with visual guides for better clarity.
@@ -21,4 +21,4 @@ Options:
 -cs|--connection <string>    The address of the connection to the mavlink device (Required)
 ````
 
-<figure><img src="../.gitbook/assets/asv-drones-mavlink-ftp-treecommand.png" alt=""><figcaption><p>Asv.Mavlink.Shell.exe ftp-tree output</p></figcaption></figure>
+![image](asv-drones-mavlink-ftp-tree-command.png)

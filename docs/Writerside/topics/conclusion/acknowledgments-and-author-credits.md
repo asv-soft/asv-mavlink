@@ -1,1 +1,0 @@
-# Acknowledgments and author credits

@@ -2,8 +2,8 @@
 
 Generate C# code for packet serialization\deserialization
 
+You can run code generation in a console with this command:
 ```bash
-// run code gen
 Asv.Mavlink.Shell gen -t=[mavlink-xml-file] -i=[mavlink-xml-folder] -o=[output-folder] -e=cs [path-to-liquid-template]/csharp.tpl
 ```
 

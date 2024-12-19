@@ -11,13 +11,13 @@ Asv.Mavlink.Shell adsb -cfg adsb.json
 
 ![image](asv-drones-mavlink-adsb-command.png)
 
-### Configuration file
+## Configuration file
 
 If the configuration file does not exist, the command generates a default configuration file named `adsb.json` with two vehicles that fly in a box pattern over an airport.
 
-#### Configuration file: Base properies
+### Configuration file: Base properies
 
-```json
+```json5
 {
     "SystemId": 1,         // Mavlink System ID for ADSB Receiver
     "ComponentId": 240,    // Mavlink Component ID for ADSB Receiver
@@ -26,11 +26,12 @@ If the configuration file does not exist, the command generates a default config
 }
 ```
 
-#### Configuration file: Connections
+### Configuration file: Connections
 
 You can add multiple ports at once. All packets will be routed by other ports.
 
-```json
+```json5
+{
   "Ports": [
     {
       "ConnectionString": "tcp://127.0.0.1:5760", // TCP client example
@@ -42,7 +43,7 @@ You can add multiple ports at once. All packets will be routed by other ports.
       "ConnectionString": "tcp://127.0.0.1:7341?srv=true", // TCP server example
       "Name": "TCP server",
       "IsEnabled": true,
-      "PacketLossChance": 0  
+      "PacketLossChance": 0
     },
     {
       "ConnectionString": "serial:COM1?br=115200", // Serial on Windows example
@@ -63,14 +64,15 @@ You can add multiple ports at once. All packets will be routed by other ports.
       "PacketLossChance": 0
     }
   ]
-
+}
 ```
 
 #### Configuration file: Vehicles
 
 Base properties are needed to fill [ADSB\_VEHICLE](https://mavlink.io/en/messages/common.html#ADSB\_VEHICLE). You can add multiple route points and different velocities for each point. Velocity will be interpolated between points. Latitude and Longitude can be in DMS or angle format (see [GeoPointLatitudeTest.cs](https://github.com/asv-soft/asv-common/blob/main/src/Asv.Common.Test/GeoPointLatitudeTest.cs) and [GeoPointLongitudeTest.cs](https://github.com/asv-soft/asv-common/blob/main/src/Asv.Common.Test/GeoPointLongitudeTest.cs)). Altitude is in meters. Velocity is in three dimensions in m/s. It will be separated by ground and vertical velocity if altitude between two route points is different. Velocity must be greater than 0.
 
-```json
+```json5
+{
   "Vehicles": [
     {
       "CallSign": "PLANE1",   // Call sign ADSB_VEHICLE (max 9 char)
@@ -93,8 +95,9 @@ Base properties are needed to fill [ADSB\_VEHICLE](https://mavlink.io/en/message
       ]
     },
     {
-      "CallSign": "PLANE2",   // Second vehicle example
+      "CallSign": "PLANE2", // Second vehicle example
       ...
+}
 ```
 
 #### Here's an example of ADSB utility being used with [Asv.Drones](https://github.com/asv-soft/asv-drones).

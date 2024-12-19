@@ -1,7 +1,7 @@
 # Proxy
 
 This command is used to connect a vehicle with multiple ground stations, creating a hub that routes MAVLink messages between them. It provides flexible filtering options to log specific MAVLink messages, and can output the filtered data to a file. It supports multiple connections (UDP or serial) and can operate in silent mode (without printing to the console).
-### Features:
+## Features:
 
 - Connects to multiple MAVLink streams, allowing you to route messages between different systems (e.g., vehicle and multiple ground stations).
 - Supports filtering by system ID, message ID, message name (using regex), and message content (JSON text).

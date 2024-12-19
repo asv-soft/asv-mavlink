@@ -6,14 +6,15 @@ This command is a file manager for interacting with a drone's file system via FT
 Asv.Mavlink.Shell.exe ftp-browser -cs tcp://127.0.0.1:5760
 ```
 
-### Features:
+## Features:
 - FTP Connection: The command connects to a drone via TCP using a specified connection string, establishing an FTP client for file interactions.
 - Tree Navigation: The file system is presented in a hierarchical structure using a tree model. The user can browse through directories interactively.
 - File and Directory Operations: The user can:
     - Open directories.
     - Remove, rename, or create directories.
     - Perform file operations such as downloading, removing, truncating, renaming, and calculating CRC32.
-<figure><img src="../.gitbook/assets/asv-drones-mavlink-ftp-browser-command.png" alt=""><figcaption><p>Asv.Mavlink.Shell.exe ftp-browser output</p></figcaption></figure>
+
+![image](asv-drones-mavlink-ftp-browser-command.png)
 
 You may also use some parameters in the command.
 ```bash
