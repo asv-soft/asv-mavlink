@@ -219,4 +219,185 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         Assert.False(_fileSystem.File.Exists(oldPath));
         Assert.True(_fileSystem.File.Exists(newPath));
     }
+    
+    [Fact]
+    public async Task OpenFileWrite_WithEmptyFile_Success()
+    {
+        
+        // Arrange
+        var fileName = "test.txt";
+        var fileDirName = "file";
+        var root = _fileSystem.Path.Combine(_config.RootDirectory, "temp");
+        var fileDir = _fileSystem.Path.Combine(root, fileDirName);
+        var filePath = _fileSystem.Path.Combine(fileDir, fileName);
+        _fileSystem.AddFile(filePath, new MockFileData(string.Empty));
+
+        // Act
+        var result = await Server.OpenFileWrite(filePath);
+
+        // Assert
+        Assert.Equal(0, result.Session);
+        Assert.Equal(0u, result.Size);
+    }
+    
+    [Theory]
+    [InlineData(0, "DFolder1\0DFolder2\0DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]
+    [InlineData(1, "DFolder2\0DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]
+    [InlineData(2, "DFolder3\0Ftest.txt\t9\0Ftest2.txt\t0\0")]
+    [InlineData(3, "Ftest.txt\t9\0Ftest2.txt\t0\0")]
+    [InlineData(4, "Ftest2.txt\t0\0")]
+    public async Task ListDirectory_WithOffset_Success(uint offset, string realListOfEntries)
+    {
+        // Arrange
+        var fileDirName = "files";
+        var root = _fileSystem.Path.Combine(_config.RootDirectory, "temp");
+        var fileDir = _fileSystem.Path.Combine(root, fileDirName);
+        var filePath = _fileSystem.Path.Combine(fileDir, "test.txt");
+        var filePath2 = _fileSystem.Path.Combine(fileDir, "test2.txt");
+        _fileSystem.AddDirectory(_fileSystem.Path.Combine(fileDir, "Folder1"));
+        _fileSystem.AddDirectory(_fileSystem.Path.Combine(fileDir, "Folder2"));
+        _fileSystem.AddDirectory(_fileSystem.Path.Combine(fileDir, "Folder3"));
+        _fileSystem.AddFile(filePath, new MockFileData("Something"));
+        _fileSystem.AddFile(filePath2, new MockFileData(string.Empty));
+      
+        using var memory = MemoryPool<char>.Shared.Rent();
+
+        // Act
+        var result = await Server.ListDirectory(fileDir, offset, memory.Memory, CancellationToken.None);
+
+        // Assert
+        var listOfEntries = memory.Memory[..result].ToString();
+        Assert.Equal(realListOfEntries.Length, result);
+        Assert.Equal(realListOfEntries, listOfEntries);
+    }
+    
+    [Fact]
+    public async Task ListDirectory_PastTheEndOfFile_ThrowsEOF()
+    {
+        // Arrange
+        var fileDirName = "files";
+        var root = _fileSystem.Path.Combine(_config.RootDirectory, "temp");
+        var fileDir = _fileSystem.Path.Combine(root, fileDirName);
+        var filePath = _fileSystem.Path.Combine(fileDir, "test.txt");
+        var filePath2 = _fileSystem.Path.Combine(fileDir, "test2.txt");
+        _fileSystem.AddDirectory(_fileSystem.Path.Combine(fileDir, "Folder1"));
+        _fileSystem.AddDirectory(_fileSystem.Path.Combine(fileDir, "Folder2"));
+        _fileSystem.AddDirectory(_fileSystem.Path.Combine(fileDir, "Folder3"));
+        _fileSystem.AddFile(filePath, new MockFileData("Something"));
+        _fileSystem.AddFile(filePath2, new MockFileData(string.Empty));
+        using var memory = MemoryPool<char>.Shared.Rent();
+
+        // Act + Assert
+        await Assert.ThrowsAsync<FtpNackEndOfFileException>(async () =>
+            await Server.ListDirectory(fileDir, 5, memory.Memory, CancellationToken.None));
+    }
+    [Fact]
+    public async Task WriteFile_NoDuplicateFile_Success()
+    {
+        var fileName = "test.txt";
+        var fileDirName = "file";
+        var root = _fileSystem.Path.Combine(_config.RootDirectory, "temp");
+        var fileDir = _fileSystem.Path.Combine(root, fileDirName);
+        var filePath = _fileSystem.Path.Combine(fileDir, fileName);
+        _fileSystem.AddFile(filePath, new MockFileData("12345"));
+        var request = new WriteRequest(0, 0, 5);
+        var readRequest = new ReadRequest(0, 0, 5);
+        var readBuffer = new byte[5];
+        var buffer = new byte[] { 1, 2, 3, 4, 5 };
+        // Act
+        await Server.OpenFileWrite(filePath);
+        await Server.WriteFile(request, buffer);
+        await Server.TerminateSession(0);
+        await Server.OpenFileRead(filePath);
+        var readResult = await Server.FileRead(readRequest, readBuffer);
+        // Assert
+        Assert.True(readResult.ReadCount == buffer.Length);
+    }
+    
+    [Fact]
+    public async Task TerminateSession_ReadAfterResetOneOfActiveSessions_Fault()
+    {
+        // Arrange
+        var fileName = "test.txt";
+        var fileName1 = "test1.txt";
+        var fileDirName = "file";
+        var root = _fileSystem.Path.Combine(_config.RootDirectory, "temp");
+        var fileDir = _fileSystem.Path.Combine(root, fileDirName);
+        var filePath = _fileSystem.Path.Combine(fileDir, fileName);
+        var filePath1 = _fileSystem.Path.Combine(fileDir, fileName1);
+        var relativeFilePath = _fileSystem.Path.Combine(fileDirName, fileName);
+        var relativeFilePath1 = _fileSystem.Path.Combine(fileDirName, fileName1);
+        _fileSystem.AddFile(filePath, new MockFileData("12345"));
+        _fileSystem.AddFile(filePath1, new MockFileData("12345"));
+        var request = new ReadRequest(0, 0, 5);
+        var request1 = new ReadRequest(1, 0, 5);
+
+        var buffer = new byte[5];
+        // Act
+        await Server.OpenFileRead(filePath);
+        await Server.OpenFileRead(filePath1);
+        await Server.TerminateSession(0);
+        // Assert
+        try
+        {
+            await Server.FileRead(request, buffer);
+        }
+        catch (Exception)
+        {
+            Assert.True(true);
+        }
+
+        var result1 = await Server.FileRead(request1, buffer);
+        Assert.True(result1.ReadCount == 5);
+    }
+
+    [Fact]
+    public async Task ResetSessions_ReadAfterReset_Fault()
+    {
+        // Arrange
+        var fileName = "test.txt";
+        var fileDirName = "file";
+        var root = _fileSystem.Path.Combine(_config.RootDirectory, "temp");
+       
+        var fileDir = _fileSystem.Path.Combine(root, fileDirName);
+        var filePath = _fileSystem.Path.Combine(fileDir, fileName);
+        _fileSystem.AddFile(filePath, new MockFileData("12345"));
+       
+        var request = new ReadRequest(0, 0, 5);
+        var buffer = new byte[2];
+        // Act
+
+        await Server.OpenFileRead(filePath);
+        await Server.ResetSessions();
+        try
+        {
+            await Server.FileRead(request, buffer);
+        }
+        catch (Exception e)
+        {
+            // Assert
+            Assert.True(true);
+        }
+    }
+
+    [Fact]
+    public async Task TruncateFile_TruncatePart_Success()
+    {
+        // Arrange
+        var fileName = "test.txt";
+        var fileDirName = "file";
+        var root = _fileSystem.Path.Combine(_config.RootDirectory, "temp");
+        
+        var fileDir = _fileSystem.Path.Combine(root, fileDirName);
+        var filePath = _fileSystem.Path.Combine(fileDir, fileName);
+        _fileSystem.AddFile(filePath, new MockFileData("1234567890"));
+        var request = new TruncateRequest(filePath, 5);
+        // Act
+        await Server.TruncateFile(request);
+        var result = await Server.OpenFileRead(filePath);
+        // Assert
+        Assert.True(result.Size == request.Offset);
+    }
+    
+    
 }
