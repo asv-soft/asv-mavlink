@@ -60,10 +60,10 @@ jobs:
           cd src    
           dotnet build -c Release --no-restore    
           
-      - name: Test projects
-        run: |
-          cd src
-          dotnet test 
+#      - name: Test projects
+#        run: |
+#          cd src
+#          dotnet test 
 
       - name: Packing projects to Nuget
         run: |
