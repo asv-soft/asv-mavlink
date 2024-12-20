@@ -24,7 +24,7 @@ public static class ParamsExtHelper
         return builder;
     }
     
-    public static IServerDeviceBuilder RegisterParamsEx(this IServerDeviceBuilder builder,
+    public static IServerDeviceBuilder RegisterParamsExtEx(this IServerDeviceBuilder builder,
         IEnumerable<IMavParamExtTypeMetadata> paramDescriptions, ParamsExtServerExConfig config)
     {
         builder.Register<IParamsExtServerEx, IParamsExtServer, IStatusTextServer>((_, _, cfg, @base, status) =>

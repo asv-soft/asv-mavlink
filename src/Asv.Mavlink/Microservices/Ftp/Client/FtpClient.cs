@@ -119,7 +119,7 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
                 {
                     InternalCheckNack(x,_logger);
                 }
-                catch (FtpNackEndOfFileException e)
+                catch (FtpNackEndOfFileException)
                 {
                     tcs.SetResult();
                     return;

@@ -52,7 +52,6 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
         _obs1 = _isMissionSynced.Subscribe(_ => UpdateMissionsDistance());
     }
     
-    public string TypeName => $"{Base.TypeName}Ex";
     public IMissionClient Base => _client;
     public IReadOnlyObservableList<MissionItem> MissionItems => _missionSource;
     public ReadOnlyReactiveProperty<bool> IsSynced => _isMissionSynced;

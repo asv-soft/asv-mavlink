@@ -119,7 +119,6 @@ public sealed class PositionClientEx : MavlinkMicroserviceClient, IPositionClien
             .ToReadOnlyReactiveProperty(double.NaN);
         }
 
-    public string TypeName => $"{Base.TypeName}Ex";
     
     private void CheckArmedTime(object? state)
     {

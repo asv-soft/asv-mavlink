@@ -6,7 +6,7 @@ public static class LoggingHelper
     
     #region ServerFactory
 
-    public static IServerDeviceBuilder RegisterLog(this IServerDeviceBuilder builder)
+    public static IServerDeviceBuilder SetLog(this IServerDeviceBuilder builder)
     {
         builder
             .Register<ILoggingServer>((identity, context,_) =>  new LoggingServer(identity,context));

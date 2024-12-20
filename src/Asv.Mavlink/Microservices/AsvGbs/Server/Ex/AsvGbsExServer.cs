@@ -226,37 +226,42 @@ public class AsvGbsExServer: MavlinkMicroserviceServer, IAsvGbsServerEx, IDispos
     private readonly IDisposable _sub12;
     private readonly IDisposable _sub13;
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _sub1.Dispose();
-        _sub2.Dispose();
-        _sub3.Dispose();
-        _sub4.Dispose();
-        _sub5.Dispose();
-        _sub6.Dispose();
-        _sub7.Dispose();
-        _sub8.Dispose();
-        _sub9.Dispose();
-        _sub10.Dispose();
-        _sub11.Dispose();
-        _sub12.Dispose();
-        _sub13.Dispose();
-        CustomMode.Dispose();
-        Position.Dispose();
-        AccuracyMeter.Dispose();
-        ObservationSec.Dispose();
-        DgpsRate.Dispose();
-        AllSatellites.Dispose();
-        GalSatellites.Dispose();
-        BeidouSatellites.Dispose();
-        GlonassSatellites.Dispose();
-        GpsSatellites.Dispose();
-        QzssSatellites.Dispose();
-        SbasSatellites.Dispose();
-        ImesSatellites.Dispose();
+        if (disposing)
+        {
+            _sub1.Dispose();
+            _sub2.Dispose();
+            _sub3.Dispose();
+            _sub4.Dispose();
+            _sub5.Dispose();
+            _sub6.Dispose();
+            _sub7.Dispose();
+            _sub8.Dispose();
+            _sub9.Dispose();
+            _sub10.Dispose();
+            _sub11.Dispose();
+            _sub12.Dispose();
+            _sub13.Dispose();
+            CustomMode.Dispose();
+            Position.Dispose();
+            AccuracyMeter.Dispose();
+            ObservationSec.Dispose();
+            DgpsRate.Dispose();
+            AllSatellites.Dispose();
+            GalSatellites.Dispose();
+            BeidouSatellites.Dispose();
+            GlonassSatellites.Dispose();
+            GpsSatellites.Dispose();
+            QzssSatellites.Dispose();
+            SbasSatellites.Dispose();
+            ImesSatellites.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
         await CastAndDispose(_sub1).ConfigureAwait(false);
         await CastAndDispose(_sub2).ConfigureAwait(false);
@@ -284,6 +289,8 @@ public class AsvGbsExServer: MavlinkMicroserviceServer, IAsvGbsServerEx, IDispos
         await CastAndDispose(QzssSatellites).ConfigureAwait(false);
         await CastAndDispose(SbasSatellites).ConfigureAwait(false);
         await CastAndDispose(ImesSatellites).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
 
         return;
 

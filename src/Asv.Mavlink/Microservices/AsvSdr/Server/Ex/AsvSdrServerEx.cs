@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
@@ -24,7 +25,6 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
     private double _signalSendingFlag;
     private int _calibrationTableUploadFlag;
     private readonly ILogger _logger;
-    private readonly CancellationTokenSource _disposeCancel;
     private readonly IDisposable _sub1;
     private readonly IDisposable _sub2;
     private readonly IDisposable _sub3;
@@ -42,7 +42,6 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
         ArgumentNullException.ThrowIfNull(commands);
         _status = status ?? throw new ArgumentNullException(nameof(status));
         _commands = commands;
-        _disposeCancel = new CancellationTokenSource();
         Base = server ?? throw new ArgumentNullException(nameof(server));
 
         #region Heartbeat
@@ -144,7 +143,6 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
     }
     public IAsvSdrServer Base { get; }
     public ReactiveProperty<AsvSdrCustomMode> CustomMode { get; }
-    private CancellationToken DisposeCancel => _disposeCancel.Token; 
 
     private async void OnCalibrationTableUploadStart(AsvSdrCalibTableUploadStartPacket args)
     {
@@ -209,7 +207,7 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
                 await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail, DisposeCancel).ConfigureAwait(false);
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
             await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail, DisposeCancel).ConfigureAwait(false);
         }
@@ -226,6 +224,7 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
         {
             if (TryReadCalibrationTableInfo(args.TableIndex, out var name, out var size, out var metadata))
             {
+                Debug.Assert(name != null);
                 Base.SendCalibrationTableReadResponse(res =>
                 {
                     res.TableIndex = args.TableIndex;
@@ -239,7 +238,7 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
                 Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail);
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail);
         }
@@ -459,36 +458,39 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
 
     #region Dispose
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _disposeCancel.Dispose();
-        _sub1.Dispose();
-        _sub2.Dispose();
-        _sub3.Dispose();
-        _sub4.Dispose();
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetMode] = null;
-        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartRecord] = null;
-        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopRecord] = null;
-        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag] = null;
-        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction] = null;
-        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartMission] = null;
-        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopMission] = null;
-        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration] = null;
-        _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration] = null;
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-        
+        if (disposing)
+        {
+            _sub1.Dispose();
+            _sub2.Dispose();
+            _sub3.Dispose();
+            _sub4.Dispose();
+            CustomMode.Dispose();
+            
+            _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetMode] = null;
+            _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartRecord] = null;
+            _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopRecord] = null;
+            _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetRecordTag] = null;
+            _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSystemControlAction] = null;
+            _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartMission] = null;
+            _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopMission] = null;
+            _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration] = null;
+            _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration] = null;
+
+        }
+
+        base.Dispose(disposing);
     }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
-        await CastAndDispose(_disposeCancel).ConfigureAwait(false);
         await CastAndDispose(_sub1).ConfigureAwait(false);
         await CastAndDispose(_sub2).ConfigureAwait(false);
         await CastAndDispose(_sub3).ConfigureAwait(false);
         await CastAndDispose(_sub4).ConfigureAwait(false);
+        await CastAndDispose(CustomMode).ConfigureAwait(false);
         
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrSetMode] = null;
         _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartRecord] = null;
         _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopRecord] = null;
@@ -498,8 +500,9 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
         _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopMission] = null;
         _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration] = null;
         _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration] = null;
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         
+        await base.DisposeAsyncCore().ConfigureAwait(false);
+
         return;
 
         static async ValueTask CastAndDispose(IDisposable resource)

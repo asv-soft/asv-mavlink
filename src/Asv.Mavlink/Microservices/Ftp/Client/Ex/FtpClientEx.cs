@@ -274,7 +274,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx, IMavlinkMicr
                     skip += result.ReadCount;
                     progress.Report((double)skip / file.Size);
                 }
-                catch (FtpNackEndOfFileException e)
+                catch (FtpNackEndOfFileException)
                 {
                     break;
                 }
@@ -336,22 +336,24 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx, IMavlinkMicr
         }
     }
 
-    public MavlinkClientIdentity Identity => Base.Identity;
-    public IMavlinkContext Core => Base.Core;
 
-    public Task Init(CancellationToken cancel = default)
+    #region Dispose
+
+    protected override void Dispose(bool disposing)
     {
-        return Task.CompletedTask;
+        if (disposing)
+        {
+            _entryCache.Clear();
+        }
+
+        base.Dispose(disposing);
     }
 
-    public void Dispose()
+    protected override async ValueTask DisposeAsyncCore()
     {
+        await base.DisposeAsyncCore().ConfigureAwait(false);
         _entryCache.Clear();
     }
 
-    public ValueTask DisposeAsync()
-    {
-        _entryCache.Clear();
-        return ValueTask.CompletedTask;
-    }
+    #endregion
 }

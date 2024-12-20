@@ -172,18 +172,25 @@ public class AsvRadioServerEx: MavlinkMicroserviceServer, IAsvRadioServerEx
 
     #region Dispose
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _customMode.Dispose();
-        _sub1.Dispose();
-        _sub2.Dispose();
+        if (disposing)
+        {
+            _customMode.Dispose();
+            _sub1.Dispose();
+            _sub2.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
         await CastAndDispose(_customMode).ConfigureAwait(false);
         await CastAndDispose(_sub1).ConfigureAwait(false);
         await CastAndDispose(_sub2).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
 
         return;
 

@@ -102,21 +102,24 @@ public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
 
     private static ParamDescription CreateDefaultDescription(ParamValuePayload value)
     {
-        var desc = new ParamDescription();
-        desc.Name = desc.DisplayName = MavlinkTypesHelper.GetString(value.ParamId);
-        desc.Description = $"Has no description. Type {value.ParamType:G}. Index: {value.ParamIndex}"; //TODO: Localize
-        desc.Max = null;
-        desc.Min = null;
-        desc.Units = null;
-        desc.UnitsDisplayName = null;
-        desc.GroupName = null;
-        desc.User = null;
-        desc.Increment = null;
-        desc.IsReadOnly = false;
-        desc.IsRebootRequired = false;
-        desc.Values = null;
-        desc.Calibration = 0;
-        desc.BoardType = null;
+        var desc = new ParamDescription
+        {
+            Name = MavlinkTypesHelper.GetString(value.ParamId),
+            DisplayName = MavlinkTypesHelper.GetString(value.ParamId),
+            Description = $"Has no description. Type {value.ParamType:G}. Index: {value.ParamIndex}", //TODO: Localize
+            Max = null,
+            Min = null,
+            Units = null,
+            UnitsDisplayName = null,
+            GroupName = null,
+            User = null,
+            Increment = null,
+            IsReadOnly = false,
+            IsRebootRequired = false,
+            Values = null,
+            Calibration = 0,
+            BoardType = null
+        };
 
         switch (value.ParamType)
         {

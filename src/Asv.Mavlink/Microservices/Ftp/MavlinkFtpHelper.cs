@@ -420,6 +420,13 @@ public static class MavlinkFtpHelper
         return builder;
     }
     
+    public static IServerDeviceBuilder RegisterFtpEx(this IServerDeviceBuilder builder, IFileSystem? fileSystem = null)
+    {
+        builder
+            .Register<IFtpServerEx, IFtpServer>((_, _, config, @base) => new FtpServerEx(@base, config.Get<MavlinkFtpServerExConfig>(), fileSystem));
+        return builder;
+    }
+    
     public static IServerDeviceBuilder RegisterFtpEx(this IServerDeviceBuilder builder, MavlinkFtpServerExConfig config, IFileSystem? fileSystem = null)
     {
         builder

@@ -14,7 +14,6 @@ public class AsvRadioClientEx:MavlinkMicroserviceClient, IAsvRadioClientEx, IDis
 {
     private readonly ICommandClient _commandClient;
     private readonly ReactiveProperty<AsvRadioCapabilities?> _capabilities;
-    private readonly CancellationTokenSource _disposeCancel;
 
     public AsvRadioClientEx(
         IAsvRadioClient client, 
@@ -22,14 +21,12 @@ public class AsvRadioClientEx:MavlinkMicroserviceClient, IAsvRadioClientEx, IDis
         ICommandClient commandClient) : base(AsvRadioHelper.MicroserviceExName,client.Identity, client.Core)
     {
         _commandClient = commandClient ?? throw new ArgumentNullException(nameof(commandClient));
-        _disposeCancel = new CancellationTokenSource();
         Base = client ?? throw new ArgumentNullException(nameof(client));
         CustomMode = heartbeatClient.RawHeartbeat
             .Select(x => (AsvRadioCustomMode)(x?.CustomMode ?? 0))
             .ToReadOnlyReactiveProperty();
-        _capabilities = new ReactiveProperty<AsvRadioCapabilities?>(default);
+        _capabilities = new ReactiveProperty<AsvRadioCapabilities?>(null);
     }
-    public string TypeName => $"{Base.TypeName}Ex";
     public ReadOnlyReactiveProperty<AsvRadioCapabilities?> Capabilities => _capabilities;
 
     public async Task<MavResult> EnableRadio(uint frequencyHz, AsvRadioModulation modulation,float referenceRxPowerDbm,float txPowerDbm,  AsvAudioCodec codec, CancellationToken cancel)
@@ -39,7 +36,6 @@ public class AsvRadioClientEx:MavlinkMicroserviceClient, IAsvRadioClientEx, IDis
         return result.Result;
     }
 
-    private CancellationToken DisposeCancel => _disposeCancel.Token;
 
     public async Task<MavResult> DisableRadio( CancellationToken cancel)
     {
@@ -81,27 +77,26 @@ public class AsvRadioClientEx:MavlinkMicroserviceClient, IAsvRadioClientEx, IDis
     public ReadOnlyReactiveProperty<AsvRadioCustomMode> CustomMode { get; }
 
     public IAsvRadioClient Base { get; }
-    public MavlinkClientIdentity Identity => Base.Identity;
-    public IMavlinkContext Core => Base.Core;
-    public Task Init(CancellationToken cancel = default)
-    {
-        return Task.CompletedTask;
-    }
-
+   
     #region Dispose
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _capabilities.Dispose();
-        _disposeCancel.Dispose();
-        CustomMode.Dispose();
+        if (disposing)
+        {
+            _capabilities.Dispose();
+            CustomMode.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
         await CastAndDispose(_capabilities).ConfigureAwait(false);
-        await CastAndDispose(_disposeCancel).ConfigureAwait(false);
         await CastAndDispose(CustomMode).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
 
         return;
 

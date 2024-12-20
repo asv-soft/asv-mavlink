@@ -94,14 +94,8 @@ public class AsvSdrClientEx :MavlinkMicroserviceClient, IAsvSdrClientEx
             }
         });
     }
-    public string TypeName => $"{Base.TypeName}Ex";
     public IAsvSdrClient Base { get; }
-    public MavlinkClientIdentity Identity => Base.Identity;
-    public IMavlinkContext Core => Base.Core;
-    public Task Init(CancellationToken cancel = default)
-    {
-        return Task.CompletedTask;
-    }
+    
     public ReadOnlyReactiveProperty<Guid> CurrentRecord { get; }
     public ReadOnlyReactiveProperty<bool> IsRecordStarted { get; }
     public async Task DeleteRecord(Guid recordName, CancellationToken cancel)

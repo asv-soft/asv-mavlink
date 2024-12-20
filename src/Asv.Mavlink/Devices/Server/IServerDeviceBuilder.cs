@@ -1,13 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.Metrics;
-using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.Common;
-using Asv.IO;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Asv.Mavlink;
 
@@ -30,16 +25,16 @@ public delegate TMicroservice RegisterServerMicroserviceDelegate<out TMicroservi
 
 public interface IServerDeviceBuilder
 {
-    void SetConfiguration(IConfiguration configuration);
-    void Register<TMicroservice>(RegisterServerMicroserviceDelegate<TMicroservice> factory)
+    IServerDeviceBuilder SetConfiguration(IConfiguration configuration);
+    IServerDeviceBuilder Register<TMicroservice>(RegisterServerMicroserviceDelegate<TMicroservice> factory)
         where TMicroservice: IMavlinkMicroserviceServer;
-    void Register<TMicroservice, TDependency>(RegisterServerMicroserviceDelegate<TMicroservice,TDependency> factory)
+    IServerDeviceBuilder Register<TMicroservice, TDependency>(RegisterServerMicroserviceDelegate<TMicroservice,TDependency> factory)
         where TMicroservice: IMavlinkMicroserviceServer;
-    void Register<TMicroservice, TDependency1, TDependency2>(RegisterServerMicroserviceDelegate<TMicroservice,TDependency1,TDependency2> factory)
+    IServerDeviceBuilder Register<TMicroservice, TDependency1, TDependency2>(RegisterServerMicroserviceDelegate<TMicroservice,TDependency1,TDependency2> factory)
         where TMicroservice: IMavlinkMicroserviceServer;
-    void Register<TMicroservice, TDependency1, TDependency2, TDependency3>(RegisterServerMicroserviceDelegate<TMicroservice,TDependency1,TDependency2, TDependency3> factory)
+    IServerDeviceBuilder Register<TMicroservice, TDependency1, TDependency2, TDependency3>(RegisterServerMicroserviceDelegate<TMicroservice,TDependency1,TDependency2, TDependency3> factory)
         where TMicroservice: IMavlinkMicroserviceServer;
-    void Register<TMicroservice, TDependency1, TDependency2, TDependency3, TDependency4>(RegisterServerMicroserviceDelegate<TMicroservice,TDependency1,TDependency2, TDependency3, TDependency4> factory)
+    IServerDeviceBuilder Register<TMicroservice, TDependency1, TDependency2, TDependency3, TDependency4>(RegisterServerMicroserviceDelegate<TMicroservice,TDependency1,TDependency2, TDependency3, TDependency4> factory)
         where TMicroservice: IMavlinkMicroserviceServer;
     
    
@@ -53,50 +48,57 @@ public class ServerDeviceBuilder(MavlinkIdentity identity, IMavlinkContext conte
     private readonly Dictionary<Type, IMavlinkMicroserviceServer> _services = new();
     private readonly Dictionary<Type,Type[]> _deps = new();
 
-    public void SetConfiguration(IConfiguration configuration)
+    public IServerDeviceBuilder SetConfiguration(IConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(configuration);
         _configuration = configuration;
+        return this;
     }
 
-    public void Register<TMicroservice>(RegisterServerMicroserviceDelegate<TMicroservice> factory)
+    public IServerDeviceBuilder Register<TMicroservice>(RegisterServerMicroserviceDelegate<TMicroservice> factory)
         where TMicroservice : IMavlinkMicroserviceServer
     {
         ArgumentNullException.ThrowIfNull(factory);
         _deps.Add(typeof(TMicroservice), []);
-        _buildFactory.Add(typeof(TMicroservice), (id, context, cfg) => factory(id, context, cfg));
+        _buildFactory.Add(typeof(TMicroservice), (id, ctx, cfg) => factory(id, ctx, cfg));
+        return this;
     }
 
-    public void Register<TMicroservice, TDependency>(RegisterServerMicroserviceDelegate<TMicroservice, TDependency> factory)
+    public IServerDeviceBuilder Register<TMicroservice, TDependency>(
+        RegisterServerMicroserviceDelegate<TMicroservice, TDependency> factory)
         where TMicroservice : IMavlinkMicroserviceServer
     {
         _deps.Add(typeof(TMicroservice), [typeof(TDependency)]);
-        _buildFactory.Add(typeof(TMicroservice), (id, context, cfg) => factory(id, context, cfg,
+        _buildFactory.Add(typeof(TMicroservice), (id, ctx, cfg) => factory(id, ctx, cfg,
             (TDependency)_services[typeof(TDependency)]));
+        return this;
     }
 
-    public void Register<TMicroservice, TDependency1, TDependency2>(RegisterServerMicroserviceDelegate<TMicroservice, TDependency1, TDependency2> factory)
+    public IServerDeviceBuilder Register<TMicroservice, TDependency1, TDependency2>(
+        RegisterServerMicroserviceDelegate<TMicroservice, TDependency1, TDependency2> factory)
         where TMicroservice : IMavlinkMicroserviceServer
     {
-        _deps.Add(typeof(TMicroservice), [typeof(TDependency1),typeof(TDependency2)]);
-        _buildFactory.Add(typeof(TMicroservice), (id, context, cfg) => factory(id, context, cfg,
+        _deps.Add(typeof(TMicroservice), [typeof(TDependency1), typeof(TDependency2)]);
+        _buildFactory.Add(typeof(TMicroservice), (id, ctx, cfg) => factory(id, ctx, cfg,
             (TDependency1)_services[typeof(TDependency1)],
             (TDependency2)_services[typeof(TDependency2)]));
+        return this;
     }
 
-    public void Register<TMicroservice, TDependency1, TDependency2, TDependency3>(
+    public IServerDeviceBuilder Register<TMicroservice, TDependency1, TDependency2, TDependency3>(
         RegisterServerMicroserviceDelegate<TMicroservice, TDependency1, TDependency2, TDependency3> factory)
         where TMicroservice : IMavlinkMicroserviceServer
     {
         _deps.Add(typeof(TMicroservice), [typeof(TDependency1), typeof(TDependency2), typeof(TDependency3)]);
         _buildFactory.Add(typeof(TMicroservice),
-            (id, context, cfg) => factory(id, context, cfg,
+            (id, ctx, cfg) => factory(id, ctx, cfg,
                 (TDependency1)_services[typeof(TDependency1)],
                 (TDependency2)_services[typeof(TDependency2)],
                 (TDependency3)_services[typeof(TDependency3)]));
+        return this;
     }
 
-    public void Register<TMicroservice, TDependency1, TDependency2, TDependency3, TDependency4>(
+    public IServerDeviceBuilder Register<TMicroservice, TDependency1, TDependency2, TDependency3, TDependency4>(
         RegisterServerMicroserviceDelegate<TMicroservice, TDependency1, TDependency2, TDependency3, TDependency4>
             factory) where TMicroservice : IMavlinkMicroserviceServer
     {
@@ -107,6 +109,7 @@ public class ServerDeviceBuilder(MavlinkIdentity identity, IMavlinkContext conte
                 (TDependency2)_services[typeof(TDependency2)],
                 (TDependency3)_services[typeof(TDependency3)],
                 (TDependency4)_services[typeof(TDependency4)]));
+        return this;
     }
 
     public IServerDevice Build()

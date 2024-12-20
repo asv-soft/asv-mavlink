@@ -71,7 +71,7 @@ public class ModeServer : MavlinkMicroserviceServer, IModeServer
                 _logger.ZLogInformation($"Mode ({(int)baseMode}, {customMode}, {customSubMode}) is internal");
                 return CommandResult.Unsupported;
             }
-            await SetMode(mode, cancel).ConfigureAwait(false);
+            await SetMode(mode, null, cancel).ConfigureAwait(false);
             return CommandResult.Accepted;
         };
         _sub2 = CurrentMode.Subscribe(x => hb.Set(x.Mode.Fill));
@@ -81,7 +81,7 @@ public class ModeServer : MavlinkMicroserviceServer, IModeServer
     public ReadOnlyReactiveProperty<bool> IsBusy => _isBusy;
     public ImmutableArray<ICustomMode> AvailableModes { get; }
     public ReadOnlyReactiveProperty<IWorkModeHandler> CurrentMode => _currentMode;
-    public async Task SetMode(ICustomMode mode, CancellationToken cancel = default)
+    public async Task SetMode(ICustomMode mode, Action<IWorkModeHandler>? update = null, CancellationToken cancel = default)
     {
         if (Interlocked.CompareExchange(ref _setModeBusy, 1, 0) != 0)
         {
@@ -90,6 +90,12 @@ public class ModeServer : MavlinkMicroserviceServer, IModeServer
         }
         _isBusy.OnNext(true);
         var current = CurrentMode.CurrentValue;
+        if (mode == current.Mode)
+        {
+            _logger.ZLogWarning($"Set mode skipped. Mode is same. Ignore...");
+            update?.Invoke(current);
+            return;
+        }
         
         _logger.ZLogTrace($"Begin change mode {current} => {mode}");
         try
@@ -108,6 +114,7 @@ public class ModeServer : MavlinkMicroserviceServer, IModeServer
         {
             using var linkCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel, DisposeCancel);
             workMode = _handlerFactory(mode);
+            update?.Invoke(workMode);
             await workMode.Init(linkCancel.Token).ConfigureAwait(false);
             _status.Info($"Switched to '{mode.Name}'");
         }

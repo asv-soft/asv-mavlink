@@ -14,7 +14,6 @@ public class AsvGbsExClient: MavlinkMicroserviceClient, IAsvGbsExClient
 {
     private readonly ILogger _logger;
     private readonly ICommandClient _command;
-    private readonly CancellationTokenSource _disposedCancel;
 
     public AsvGbsExClient(
         IAsvGbsClient client, 
@@ -25,7 +24,6 @@ public class AsvGbsExClient: MavlinkMicroserviceClient, IAsvGbsExClient
         ArgumentNullException.ThrowIfNull(heartbeat);
         _command = command ?? throw new ArgumentNullException(nameof(command));
         Base = client ?? throw new ArgumentNullException(nameof(client));
-        _disposedCancel = new CancellationTokenSource();
         CustomMode = heartbeat.RawHeartbeat
             .Select(p =>
             {
@@ -117,27 +115,30 @@ public class AsvGbsExClient: MavlinkMicroserviceClient, IAsvGbsExClient
 
     #region Dispose
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _disposedCancel.Dispose();
-        CustomMode.Dispose();
-        Position.Dispose();
-        AccuracyMeter.Dispose();
-        ObservationSec.Dispose();
-        DgpsRate.Dispose();
-        AllSatellites.Dispose();
-        GalSatellites.Dispose();
-        BeidouSatellites.Dispose();
-        GlonassSatellites.Dispose();
-        GpsSatellites.Dispose();
-        QzssSatellites.Dispose();
-        SbasSatellites.Dispose();
-        ImesSatellites.Dispose();
+        if (disposing)
+        {
+            CustomMode.Dispose();
+            Position.Dispose();
+            AccuracyMeter.Dispose();
+            ObservationSec.Dispose();
+            DgpsRate.Dispose();
+            AllSatellites.Dispose();
+            GalSatellites.Dispose();
+            BeidouSatellites.Dispose();
+            GlonassSatellites.Dispose();
+            GpsSatellites.Dispose();
+            QzssSatellites.Dispose();
+            SbasSatellites.Dispose();
+            ImesSatellites.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
-        await CastAndDispose(_disposedCancel).ConfigureAwait(false);
         await CastAndDispose(CustomMode).ConfigureAwait(false);
         await CastAndDispose(Position).ConfigureAwait(false);
         await CastAndDispose(AccuracyMeter).ConfigureAwait(false);
@@ -151,6 +152,8 @@ public class AsvGbsExClient: MavlinkMicroserviceClient, IAsvGbsExClient
         await CastAndDispose(QzssSatellites).ConfigureAwait(false);
         await CastAndDispose(SbasSatellites).ConfigureAwait(false);
         await CastAndDispose(ImesSatellites).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
 
         return;
 
