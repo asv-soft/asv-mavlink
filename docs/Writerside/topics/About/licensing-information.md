@@ -34,7 +34,7 @@ By choosing to use Asv.Drones, you agree to the terms of the MIT License. This l
 
 For detailed information about the MIT License, please refer to the [official MIT License page](https://opensource.org/licenses/MIT).
 
-If you have any questions or need further clarification about the licensing of Asv.Drones, please contact us at [asv@me.com](asv@me.com).
+If you have any questions or need further clarification about the licensing of Asv.Drones, please contact us at [asv@me.com](mailto:asv@me.com).
 
 Thank you for choosing Asv.Drones.
 

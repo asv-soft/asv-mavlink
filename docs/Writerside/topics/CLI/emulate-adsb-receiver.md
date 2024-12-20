@@ -15,7 +15,7 @@ Asv.Mavlink.Shell adsb -cfg adsb.json
 
 If the configuration file does not exist, the command generates a default configuration file named `adsb.json` with two vehicles that fly in a box pattern over an airport.
 
-### Configuration file: Base properies
+### Configuration file: Base properties
 
 ```json5
 {
