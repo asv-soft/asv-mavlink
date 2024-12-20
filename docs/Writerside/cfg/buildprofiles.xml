@@ -6,14 +6,18 @@
     <variables></variables>
     <build-profile instance="am">
         <variables>
-            <noindex-content>true</noindex-content>
-            <ignore-problems>all</ignore-problems>
+            <custom-favicons>asv-mavlink-128.png</custom-favicons>
+            <algolia-id>K0FKJO7LVC</algolia-id>
+            <algolia-index>mavlink_index</algolia-index>
+            <algolia-api-key>b3f76bcd17c488bfd52a3b512cc94923</algolia-api-key>
+            <algolia-show-logo>true</algolia-show-logo>
+            <noindex-content>false</noindex-content>
         </variables>
 
         <footer>
             <link href="https://docs.asv.me/">Official website</link>
             <link href="https://github.com/asv-soft/asv-drones/issues">Issue tracker and Support</link>
-            <link href="asv@me.com">Contact us</link>
+            <link href="mailto:asv@me.com">Contact us</link>
 
             <copyright>(c) 2023 Asv.Drones Contributors</copyright>
         </footer>
