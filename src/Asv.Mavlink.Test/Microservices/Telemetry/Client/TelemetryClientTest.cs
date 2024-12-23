@@ -57,7 +57,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         // Arrange
         var called = 0;
         RequestDataStreamPacket? packetFromClient = null;
-        using var sub1 = Link.Server.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
+        using var sub1 = Link.Server.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(p =>
         {
             called++;
 
@@ -90,7 +90,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         var called = 0;
         RequestDataStreamPacket? packetFromClient = null;
         await _cancellationTokenSource.CancelAsync();
-        using var sub1 = Link.Server.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
+        using var sub1 = Link.Server.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(p =>
         {
             called++;
 

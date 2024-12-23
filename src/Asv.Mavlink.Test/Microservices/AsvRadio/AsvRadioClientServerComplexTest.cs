@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.IO;
 using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRadio;
 using Asv.Mavlink.Common;
@@ -51,13 +50,10 @@ public class AsvRadioClientServerComplexTest
         MaxQueueSize = 100,
         MaxSendRateHz = 100
     };
-    private readonly TaskCompletionSource<IProtocolMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
     public AsvRadioClientServerComplexTest(ITestOutputHelper output): base(output)
     {
-        _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     [Fact]
@@ -173,6 +169,24 @@ public class AsvRadioClientServerComplexTest
         Assert.Equal(result.MinRfFreq, _capabilities.MinFrequencyHz);
     }
 
+    [Fact]
+    public async Task Client_RequestCapabilitiesThrowsOpCanceled_Success()
+    {
+        await _cancellationTokenSource.CancelAsync();
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+          await Client.Base.RequestCapabilities(_cancellationTokenSource.Token);
+        });
+    }
+    [Fact]
+    public async Task Client_RequestCodecCapabilitiesThrowsOpCanceled_Success()
+    {
+        await _cancellationTokenSource.CancelAsync();
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.Base.RequestCodecCapabilities(cancel:_cancellationTokenSource.Token);
+        });
+    }
     protected override AsvRadioServerEx CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
         var srv = new AsvRadioServer(identity, _radioConfig, core);

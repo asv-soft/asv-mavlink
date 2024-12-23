@@ -180,7 +180,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
     {
         // Arrange 
         var result = MavResult.MavResultAccepted;
-        using var sub = Link.Client.OnRxMessage.RxFilterByType<CommandAckPacket>()
+        using var sub = Link.Client.OnRxMessage.FilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -492,7 +492,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange 
         var result = MavResult.MavResultAccepted;
         using var sub = Link.Client
-            .OnRxMessage.RxFilterByType<CommandAckPacket>()
+            .OnRxMessage.FilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -672,7 +672,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange 
         var result = MavResult.MavResultAccepted;
         using var sub = Link.Client
-            .OnRxMessage.RxFilterByType<CommandAckPacket>()
+            .OnRxMessage.FilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -815,7 +815,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange 
         var result = MavResult.MavResultAccepted;
         using var sub = Link.Client
-            .OnRxMessage.RxFilterByType<CommandAckPacket>()
+            .OnRxMessage.FilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -914,6 +914,14 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
     [Fact]
     public async Task GetHomePosition_Unsupported_MavResultUnsupported()
     {
+        // Arrange 
+        var result = MavResult.MavResultAccepted;
+        using var sub = Link.Client
+            .OnRxMessage.FilterByType<CommandAckPacket>()
+            .Subscribe(p =>
+            {
+                result = p.Payload.Result;
+            });
         // Act
         var t =  _client.GetHomePosition(_cancellationTokenSource.Token);
         
@@ -1084,6 +1092,14 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
     [Fact]
     public async Task QLand_Unsupported_MavResultUnsupported()
     {
+        // Arrange 
+        var result = MavResult.MavResultAccepted;
+        using var sub = Link.Client
+            .OnRxMessage.FilterByType<CommandAckPacket>()
+            .Subscribe(p =>
+            {
+                result = p.Payload.Result;
+            });
         // Act
         var t = _client.QLand(
             NavVtolLandOptions.NavVtolLandOptionsDefault, 
