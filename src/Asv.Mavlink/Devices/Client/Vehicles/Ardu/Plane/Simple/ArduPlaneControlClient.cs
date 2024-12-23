@@ -28,7 +28,7 @@ public class ArduPlaneControlClient(
     public override Task SetAutoMode(CancellationToken cancel = default)
     {
         _logger.LogInformation("Set auto mode");
-        return mode.SetMode(ArduPlaneModeClient.Auto, cancel);
+        return mode.SetMode(ArduPlaneMode.Auto, cancel);
     }
 
     public override ValueTask<bool> IsGuidedMode(CancellationToken cancel = default)
@@ -42,7 +42,7 @@ public class ArduPlaneControlClient(
     public override Task SetGuidedMode(CancellationToken cancel = default)
     {
         _logger.LogInformation("Set guided mode");
-        return mode.SetMode(ArduPlaneModeClient.Guided, cancel);
+        return mode.SetMode(ArduPlaneMode.Guided, cancel);
     }
 
     public override async Task GoTo(GeoPoint point, CancellationToken cancel = default)
@@ -61,7 +61,7 @@ public class ArduPlaneControlClient(
     {
         _logger.LogInformation("DoRtl");
         await this.EnsureGuidedMode(cancel).ConfigureAwait(false);
-        await mode.SetMode(ArduPlaneModeClient.Rtl, cancel).ConfigureAwait(false);
+        await mode.SetMode(ArduPlaneMode.Rtl, cancel).ConfigureAwait(false);
     }
 
     public override async Task TakeOff(double altInMeters, CancellationToken cancel = default)

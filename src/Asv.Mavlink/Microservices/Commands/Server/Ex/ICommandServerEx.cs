@@ -9,7 +9,8 @@ namespace Asv.Mavlink;
 /// Represents an extended command server.
 /// </summary>
 /// <typeparam name="TArgPacket">The type of the argument packet.</typeparam>
-public interface ICommandServerEx<out TArgPacket>
+public interface ICommandServerEx<out TArgPacket> : IMavlinkMicroserviceServer
+    where TArgPacket : MavlinkMessage
 {
     /// <summary>
     /// Gets the ICommandServer Base property.
@@ -25,7 +26,7 @@ public interface ICommandServerEx<out TArgPacket>
     /// </summary>
     /// <typeparam name="TArgPacket">The type of argument packet expected by the command.</typeparam>
     /// <param name="cmd">The MAVLink command.</param>
-    CommandDelegate<TArgPacket> this[MavCmd cmd] { set; }
+    CommandDelegate<TArgPacket>? this[MavCmd cmd] { set; }
 }
 
 /// Represents a delegate that defines a command handler.

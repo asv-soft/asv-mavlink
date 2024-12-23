@@ -34,7 +34,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
     private readonly Subject<AsvChartInfoUpdatedEventPayload> _onUpdateEvent;
 
     public AsvChartClient(MavlinkClientIdentity identity,AsvChartClientConfig config,IMavlinkContext core)
-        : base("CHART", identity,core)
+        : base(AsvChartHelper.MavlinkMicroserviceName, identity,core)
     {
         _logger = core.LoggerFactory.CreateLogger<AsvChartClient>();
         _charts = new ObservableDictionary<ushort,AsvChartInfo>();
@@ -145,7 +145,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
                     var readSpan = new ReadOnlySpan<byte>(data.Payload.Data);
                     for (var i = 0; i < info.OneFrameMeasureSize; i++)
                     {
-                        frameSpan[i] = AsvChartTypeHelper.ReadSignalMeasure(ref readSpan, info);    
+                        frameSpan[i] = AsvChartHelper.ReadSignalMeasure(ref readSpan, info);    
                     }
                     OnDataReceived?.Invoke(dateTime, new ReadOnlyMemory<float>(frameData,0,info.OneFrameMeasureSize), info);
                 }
@@ -183,7 +183,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
                     var readSpan = new ReadOnlySpan<byte>(frameData,0,frameSize);
                     for (var i = 0; i < info.OneFrameMeasureSize; i++)
                     {
-                        frameSpan[i] = AsvChartTypeHelper.ReadSignalMeasure(ref readSpan, info);    
+                        frameSpan[i] = AsvChartHelper.ReadSignalMeasure(ref readSpan, info);    
                     }
                     OnDataReceived?.Invoke(dateTime, new ReadOnlyMemory<float>(frameFloatData,0,info.OneFrameMeasureSize), info);
                 }

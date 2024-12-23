@@ -14,6 +14,8 @@ public interface IMavlinkMicroserviceServer : IMicroserviceServer
     IMavlinkContext Core { get; }
 
     MavlinkIdentity Identity { get; }
+
+    public void Start();
 }
 
 public abstract class MavlinkMicroserviceServer : MicroserviceServer<MavlinkMessage>, IMavlinkMicroserviceServer
@@ -31,6 +33,12 @@ public abstract class MavlinkMicroserviceServer : MicroserviceServer<MavlinkMess
 
     public IMavlinkContext Core { get; }
     public MavlinkIdentity Identity { get; }
+
+    public virtual void Start()
+    {
+        
+    }
+
     public override string TypeName { get; }
 
     protected override bool FilterDeviceMessages(MavlinkMessage arg)

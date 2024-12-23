@@ -14,7 +14,7 @@ namespace Asv.Mavlink;
 /// <summary>
 /// Represents a server that handles parameter operations.
 /// </summary>
-public interface IParamsServerEx
+public interface IParamsServerEx: IMavlinkMicroserviceServer
 {
     /// <summary>
     /// Gets the observable sequence of exceptions that occur in the source sequence.

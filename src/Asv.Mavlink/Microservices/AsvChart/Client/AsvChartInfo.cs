@@ -8,7 +8,7 @@ public class AsvChartAxisInfo
 {
     public AsvChartAxisInfo(string name, AsvChartUnitType unit, float min, float max, int size)
     {
-        AsvChartTypeHelper.CheckSignalAxisName(name);
+        AsvChartHelper.CheckSignalAxisName(name);
         Name = name;
         Unit = unit;
         Min = min;
@@ -37,13 +37,13 @@ public class AsvChartInfo
     {
         ArgumentNullException.ThrowIfNull(axisX);
         ArgumentNullException.ThrowIfNull(axisY);
-        AsvChartTypeHelper.CheckSignalName(signalName);
+        AsvChartHelper.CheckSignalName(signalName);
         SignalName = signalName;
         AxisX = axisX;
         AxisY = axisY;
         Id = id;
         Format = format;
-        OneMeasureByteSize = AsvChartTypeHelper.GetByteSizeOneMeasure(Format);
+        OneMeasureByteSize = AsvChartHelper.GetByteSizeOneMeasure(Format);
         OneFrameByteSize = (ushort)(AxisX.Size * AxisY.Size * OneMeasureByteSize);
         OneFrameMeasureSize = AxisX.Size * AxisY.Size;
         if (hash.HasValue)
@@ -66,7 +66,7 @@ public class AsvChartInfo
             hashCode.Add(AxisY.Max);
             hashCode.Add(AxisY.Size);
             hashCode.Add(Format);
-            InfoHash = AsvChartTypeHelper.GetHashCode(hashCode);
+            InfoHash = AsvChartHelper.GetHashCode(hashCode);
         }
     }
 

@@ -28,6 +28,11 @@ public class CoreServices : MicroserviceContext, IMavlinkContext
     {
         Sequence = seq;
     }
+    public CoreServices(IPacketSequenceCalculator seq, IProtocolConnection connection, IProtocolFactory factory) 
+        : base(connection,factory.LoggerFactory,factory.TimeProvider,factory.MeterFactory)
+    {
+        Sequence = seq;
+    }
 
     public IPacketSequenceCalculator Sequence { get; }
 }

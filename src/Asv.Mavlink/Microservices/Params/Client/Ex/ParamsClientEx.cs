@@ -15,13 +15,11 @@ namespace Asv.Mavlink;
 
 public class ParamsClientExConfig : ParameterClientConfig
 {
-    public int ReadListTimeoutMs { get; set; } = 500;
     public int ChunkUpdateBufferMs { get; set; } = 100;
 }
 
 public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
 {
-    private static readonly TimeSpan CheckTimeout = TimeSpan.FromMilliseconds(100);
     private readonly ParamsClientExConfig _config;
     private readonly IMavParamEncoding _converter;
     private readonly ObservableDictionary<string, ParamItem> _paramsSource;
@@ -31,6 +29,7 @@ public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
     private readonly CancellationTokenSource _disposeCancel;
     private readonly IDisposable _sub1;
     private readonly ImmutableDictionary<string, ParamDescription> _existDescription;
+    private ReaderWriterLockSlim _paramsLock = new();
 
     public ParamsClientEx(IParamsClient client, ParamsClientExConfig config, IMavParamEncoding converter,
         IEnumerable<ParamDescription> existDescription):base(ParamsHelper.MicroserviceName,client.Identity,client.Core)
@@ -43,16 +42,17 @@ public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
         _disposeCancel = new CancellationTokenSource();
         _paramsSource = new ObservableDictionary<string, ParamItem>();
         _isSynced = new BindableReactiveProperty<bool>(false);
-        
-        //TODO: chunk не срабатывает
-        //_sub1 = client.OnParamValue.Chunk(TimeSpan.FromMilliseconds(config.ChunkUpdateBufferMs),client.Core.TimeProvider).Subscribe(OnUpdate);
-        
-        var listParam = new List<ParamValuePayload>();
-        _sub1 = client.OnParamValue.Subscribe(p =>
+
+        if (config.ChunkUpdateBufferMs > 0)
         {
-            listParam.Add(p);
-            OnUpdate(listParam);
-        });
+            _sub1 = client.OnParamValue.Chunk(TimeSpan.FromMilliseconds(config.ChunkUpdateBufferMs),client.Core.TimeProvider).Subscribe(OnUpdate);    
+        }
+        else
+        {
+            _sub1 = client.OnParamValue.Subscribe(x=>OnUpdate([x]));
+        }
+        
+        
         RemoteCount = client.OnParamValue.Select(x => (int)x.ParamCount).ToReadOnlyReactiveProperty(-1);
         LocalCount = _paramsSource.ObserveCountChanged().ToReadOnlyReactiveProperty();
         _onValueChanged = new Subject<(string, MavParamValue)>();
@@ -80,10 +80,12 @@ public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
 
                 item = new ParamItem(Base, _converter, desc, value);
                 _paramsSource.Add(name, item);
+                // we don't need to unsubscribe from this subscription because it will be disposed with item
+                item.IsSynced.AsObservable().Subscribe(OnSyncedChanged);
             }
 
             item.InternalUpdate(value);
-            item.IsSynced.AsObservable().Subscribe(OnSyncedChanged);
+            
             _onValueChanged.OnNext((name, item.Value.Value));
         }
     }
@@ -100,21 +102,24 @@ public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
 
     private static ParamDescription CreateDefaultDescription(ParamValuePayload value)
     {
-        var desc = new ParamDescription();
-        desc.Name = desc.DisplayName = MavlinkTypesHelper.GetString(value.ParamId);
-        desc.Description = $"Has no description. Type {value.ParamType:G}. Index: {value.ParamIndex}"; //TODO: Localize
-        desc.Max = null;
-        desc.Min = null;
-        desc.Units = null;
-        desc.UnitsDisplayName = null;
-        desc.GroupName = null;
-        desc.User = null;
-        desc.Increment = null;
-        desc.IsReadOnly = false;
-        desc.IsRebootRequired = false;
-        desc.Values = null;
-        desc.Calibration = 0;
-        desc.BoardType = null;
+        var desc = new ParamDescription
+        {
+            Name = MavlinkTypesHelper.GetString(value.ParamId),
+            DisplayName = MavlinkTypesHelper.GetString(value.ParamId),
+            Description = $"Has no description. Type {value.ParamType:G}. Index: {value.ParamIndex}", //TODO: Localize
+            Max = null,
+            Min = null,
+            Units = null,
+            UnitsDisplayName = null,
+            GroupName = null,
+            User = null,
+            Increment = null,
+            IsReadOnly = false,
+            IsRebootRequired = false,
+            Values = null,
+            Calibration = 0,
+            BoardType = null
+        };
 
         switch (value.ParamType)
         {
@@ -186,10 +191,11 @@ public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
                 tcs.TrySetResult(true);
             }
 
-            progress.Report((double)_paramsSource.Count / p.ParamCount);
+            var progressPercent = (double)_paramsSource.Count / p.ParamCount;
+            progress.Report(progressPercent);
             Interlocked.Exchange(ref lastUpdate, Base.Core.TimeProvider.GetTimestamp());
         });
-        var timeout = TimeSpan.FromMilliseconds(_config.ReadListTimeoutMs);
+        var timeout = TimeSpan.FromMilliseconds(_config.ReadTimeouMs * _config.ReadAttemptCount);
         await using var c3 = Base.Core.TimeProvider.CreateTimer(_ =>
         {
             var last = Interlocked.Read(ref lastUpdate);
@@ -197,25 +203,18 @@ public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
             {
                 tcs.TrySetResult(false);
             }
-            //TODO: time is not ticking
-            //Interlocked.Exchange(ref lastUpdate, Base.Core.TimeProvider.GetTimestamp());
-        }, null, CheckTimeout, CheckTimeout);
-        var cached = _paramsSource.ToImmutableArray();
-        _paramsSource.Clear();
-        foreach (var item in cached)
-        {
-            await item.Value.DisposeAsync().ConfigureAwait(false);
-        }
-
+        }, null, TimeSpan.FromMilliseconds(_config.ReadTimeouMs), TimeSpan.FromMilliseconds(_config.ReadTimeouMs));
+        
         await Base.SendRequestList(linkedCancel.Token).ConfigureAwait(false);
         var readAllParams = await tcs.Task.ConfigureAwait(false);
-        progress.Report(1);
+        
         _isSynced.OnNext(true);
         if (readAllParams == true) return;
+        
         if (RemoteCount.CurrentValue != LocalCount.CurrentValue)
         {
             if (readMissedOneByOne == false) return;
-            // read no all params=>try to read one by one
+            // read not all params=>try to read one by one
             for (ushort i = 0; i < RemoteCount.CurrentValue; i++)
             {
                 var result = await Base.Read(i, linkedCancel.Token).ConfigureAwait(false);

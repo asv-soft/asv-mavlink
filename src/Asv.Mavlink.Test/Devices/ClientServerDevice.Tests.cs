@@ -9,22 +9,19 @@ using Xunit.Abstractions;
 namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(MavlinkClientDevice))]
-[TestSubject(typeof(ServerDevice))]
+[TestSubject(typeof(IServerDevice))]
 public class ComplexDeviceTests(ITestOutputHelper log)
-    : ComplexTestBase<MavlinkClientDevice, ServerDevice>(log)
+    : ComplexTestBase<MavlinkClientDevice, IServerDevice>(log)
 {
-    private readonly ServerDeviceConfig _serverConfig = new()
+    private readonly MavlinkHeartbeatServerConfig _serverHb = new()
     {
-        Heartbeat =
-        {
-            HeartbeatRateMs = 1000,
-        },
-        StatusText =
-        {
-            MaxQueueSize = 100,
-            MaxSendRateHz = 10
-        }
-
+        HeartbeatRateMs = 1000,
+    };
+    
+    private StatusTextLoggerConfig _serverStatusText = new()
+    {
+        MaxQueueSize = 100,
+        MaxSendRateHz = 10
     };
 
     private readonly MavlinkClientDeviceConfig _clientConfig = new()
@@ -39,9 +36,12 @@ public class ComplexDeviceTests(ITestOutputHelper log)
         }
     };
 
-    protected override ServerDevice CreateServer(MavlinkIdentity identity, IMavlinkContext core)
+    protected override IServerDevice CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
-        return new ServerDevice(identity,_serverConfig,core);
+        return ServerDevice.Create(identity, core, builder =>
+        {
+            builder.RegisterHeartbeat(_serverHb);
+        });
     }
 
     protected override MavlinkClientDevice CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)

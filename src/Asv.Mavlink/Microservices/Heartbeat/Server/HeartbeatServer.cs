@@ -20,7 +20,7 @@ namespace Asv.Mavlink
             _transponder.Set(x=>changeCallback(x.Payload));
         }
 
-        public void Start()
+        public override void Start()
         {
             _transponder.Start(TimeSpan.FromMilliseconds(config.HeartbeatRateMs), TimeSpan.FromMilliseconds(config.HeartbeatRateMs));
         }

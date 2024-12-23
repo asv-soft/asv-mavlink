@@ -39,7 +39,7 @@ namespace Asv.Mavlink
         private readonly IDisposable _sub1;
 
         public CommandClient(MavlinkClientIdentity identity, CommandProtocolConfig config,IMavlinkContext core)
-            :base(Command.MicroserviceTypeName, identity, core)
+            :base(CommandHelper.MicroserviceTypeName, identity, core)
         {
             _logger = core.LoggerFactory.CreateLogger<CommandClient>();
             _config = config ?? throw new ArgumentNullException(nameof(config));

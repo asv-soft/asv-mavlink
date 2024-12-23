@@ -314,23 +314,23 @@ public interface IMavParamTypeMetadata
     /// <summary>
     /// User readable name for a group of parameters which are commonly modified together. For example a GCS can shows params in a hierarchical display based on group 
     /// </summary>
-    string Group { get; }
+    string? Group { get; }
     /// <summary>
     /// User readable name for a 'type' of parameter. For example 'Developer', 'System', or 'Advanced'.
     /// </summary>
-    string Category { get; }
+    string? Category { get; }
     /// <summary>
     /// Short user facing description/name for parameter. Used in UI instead of internal parameter name.
     /// </summary>
-    string ShortDesc { get; }
+    string? ShortDesc { get; }
     /// <summary>
     /// Long user facing documentation of how the parameters works.
     /// </summary>
-    string LongDesc { get; }
+    string? LongDesc { get; }
     /// <summary>
     /// Units for parameter value.
     /// </summary>
-    string Units { get; }
+    string? Units { get; }
     /// <summary>
     /// true: Vehicle must be rebooted if this value is changed
     /// </summary>
@@ -377,16 +377,17 @@ public interface IMavParamTypeMetadata
     /// <summary>
     /// Validates a MAV parameter value and returns an error message if validation fails. </summary> <param name="newValue">The new value to be validated.</param> <returns>A string containing the error message if validation fails; otherwise, an empty string.</returns>
     /// /
-    string GetValidationError(MavParamValue newValue);
+    string? GetValidationError(MavParamValue newValue);
     
     private static string CombineConfigKey(string prefix, string name)
     {
+        ArgumentNullException.ThrowIfNull(prefix);
         return prefix.IsNullOrWhiteSpace() ? name : $"{prefix}{name}";
     }
     
-    public MavParamValue ReadFromConfig(IConfiguration config, string prefix = null)
+    public MavParamValue ReadFromConfig(IConfiguration config, string? prefix = null)
     {
-        var key = CombineConfigKey(prefix, Name);
+        var key = CombineConfigKey(prefix ?? string.Empty, Name);
         switch (Type)
         {
             case MavParamType.MavParamTypeUint8:
@@ -483,7 +484,7 @@ public class MavParamTypeMetadata : IMavParamTypeMetadata
     /// <value>
     /// The group of the object as a string.
     /// </value>
-    public string Group { get; set; }
+    public string? Group { get; set; }
 
     /// <summary>
     /// Gets or sets the category of the property.
@@ -491,7 +492,7 @@ public class MavParamTypeMetadata : IMavParamTypeMetadata
     /// <value>
     /// The category of the property.
     /// </value>
-    public string Category { get; set; }
+    public string? Category { get; set; }
 
     /// <summary>
     /// Gets or sets the short description of a property.
@@ -499,7 +500,7 @@ public class MavParamTypeMetadata : IMavParamTypeMetadata
     /// <value>
     /// The short description.
     /// </value>
-    public string ShortDesc { get; set; }
+    public string? ShortDesc { get; set; }
 
     /// <summary>
     /// Gets or sets the long description of the property.
@@ -507,7 +508,7 @@ public class MavParamTypeMetadata : IMavParamTypeMetadata
     /// <value>
     /// The long description of the property.
     /// </value>
-    public string LongDesc { get; set; }
+    public string? LongDesc { get; set; }
 
     /// <summary>
     /// Gets or sets the units of the property.
@@ -515,7 +516,7 @@ public class MavParamTypeMetadata : IMavParamTypeMetadata
     /// <value>
     /// The units of the property.
     /// </value>
-    public string Units { get; set; }
+    public string? Units { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether a reboot is required.
@@ -620,7 +621,7 @@ public class MavParamTypeMetadata : IMavParamTypeMetadata
     /// <returns>
     /// Returns a validation error message if the provided <paramref name="value"/> is not valid, or null if the value is valid.
     /// </returns>
-    public string GetValidationError(MavParamValue value)
+    public string? GetValidationError(MavParamValue value)
     {
         if (value.Type != Type) return $"Type not equals {value.Type:G} != {Type:G}";
         switch (Type)

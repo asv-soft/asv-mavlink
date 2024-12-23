@@ -121,7 +121,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
             _statusLogger.Info($"{Id}: uploaded '{count}' items");
             await Base.SendMissionAck(MavMissionResult.MavMissionAccepted, req.SystemId, req.ComponentId).ConfigureAwait(false);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             _logger.ZLogError($"{Id}: upload error");
             await Base.SendMissionAck(MavMissionResult.MavMissionError, req.SystemId, req.ComponentId).ConfigureAwait(false);

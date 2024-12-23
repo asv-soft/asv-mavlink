@@ -16,6 +16,6 @@ public interface IParamsExtClientEx : IMavlinkMicroserviceClient
     IReadOnlyObservableDictionary<string, ParamExtItem> Items { get; }
     Observable<(string, MavParamExtValue)> OnValueChanged { get; }
     Task<MavParamExtValue> ReadOnce(string name, CancellationToken cancel = default);
-    Task ReadAll(IProgress<double>? progress = null, CancellationToken cancel = default);
+    Task<bool> ReadAll(IProgress<double>? progress = null, CancellationToken cancel = default);
     Task<MavParamExtValue> WriteOnce(string name, MavParamExtValue value, CancellationToken cancel = default);
 }

@@ -1,10 +1,13 @@
 using System;
 using System.Buffers;
 using System.Collections.Immutable;
+using System.IO.Abstractions;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using Asv.Cfg;
 using Asv.Mavlink.Common;
+using Asv.Mavlink.Diagnostic.Server;
 
 
 namespace Asv.Mavlink;
@@ -401,6 +404,42 @@ public static class MavlinkFtpHelper
             _ => throw new ArgumentOutOfRangeException(nameof(errorCode), errorCode, null)
         };
     }
+    
+    #region ServerFactory
+
+    public static IServerDeviceBuilder RegisterFtp(this IServerDeviceBuilder builder)
+    {
+        builder.Register<IFtpServer>((identity, context,config) => new FtpServer(identity, config.Get<MavlinkFtpServerConfig>(), context));
+        return builder;
+    }
+   
+    public static IServerDeviceBuilder RegisterFtp(this IServerDeviceBuilder builder, MavlinkFtpServerConfig config)
+    {
+        builder
+            .Register<IFtpServer>((identity, context,_) =>  new FtpServer(identity,config,context));
+        return builder;
+    }
+    
+    public static IServerDeviceBuilder RegisterFtpEx(this IServerDeviceBuilder builder, IFileSystem? fileSystem = null)
+    {
+        builder
+            .Register<IFtpServerEx, IFtpServer>((_, _, config, @base) => new FtpServerEx(@base, config.Get<MavlinkFtpServerExConfig>(), fileSystem));
+        return builder;
+    }
+    
+    public static IServerDeviceBuilder RegisterFtpEx(this IServerDeviceBuilder builder, MavlinkFtpServerExConfig config, IFileSystem? fileSystem = null)
+    {
+        builder
+            .Register<IFtpServerEx, IFtpServer>((_, _, _, @base) => new FtpServerEx(@base, config, fileSystem));
+        return builder;
+    }
+
+    public static IFtpServer GetFtp(this IServerDevice factory) 
+        => factory.Get<IFtpServer>();
+    public static IFtpServerEx GetFtpEx(this IServerDevice factory) 
+        => factory.Get<IFtpServerEx>();
+
+    #endregion
 }
 
 /// <summary>

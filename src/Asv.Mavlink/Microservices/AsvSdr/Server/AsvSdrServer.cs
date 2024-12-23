@@ -104,7 +104,7 @@ namespace Asv.Mavlink
 
         }
 
-        public void Start()
+        public override void Start()
         {
             _transponder.Start(TimeSpan.FromMilliseconds(_config.StatusRateMs),TimeSpan.FromMilliseconds(_config.StatusRateMs));
         }

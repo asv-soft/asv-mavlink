@@ -697,6 +697,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         IProtocolMessage? packetFromClient = null;
+        var tcs2 = new TaskCompletionSource();
         _server[MavCmd.MavCmdNavVtolTakeoff] = (id, args, cancel) =>
         {
             called++;
@@ -707,13 +708,15 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
         {
             packetFromClient = p as CommandAckPacket;
+            tcs2.TrySetResult();
         });
         
         // Act
         await _client.QTakeOff(altInMeters, _cancellationTokenSource.Token);
         
         // Assert
-        var packetFromServer = await _taskCompletionSource.Task as CommandLongPacket;
+        var packetFromServer = (await _taskCompletionSource.Task) as CommandLongPacket;
+        await tcs2.Task;
         Assert.Equal(1, called);
         Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
@@ -919,12 +922,12 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             {
                 result = p.Payload.Result;
             });
-        
         // Act
-        await _client.GetHomePosition(_cancellationTokenSource.Token);
+        var t =  _client.GetHomePosition(_cancellationTokenSource.Token);
         
         // Assert
-        Assert.Equal(MavResult.MavResultUnsupported, result);
+
+        await Assert.ThrowsAsync<CommandException>(async () => await t);
         Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
         Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
@@ -1051,20 +1054,12 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
     }
     
-    [Fact(Skip = "Test is not relevant")]
+    [Fact]
     public async Task QLand_Timeout_Throws()
     {
-        // Arrange
-        using var sub = Link.Server.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _commandConfig.CommandTimeoutMs * 
-                    _commandConfig.CommandAttempt *
-                    2
-                )
-            );
-        });
+        Link.SetClientToServerFilter(x=>false);
+        
+        
         
         // Act
         var task = _client.QLand(
@@ -1072,9 +1067,26 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             10, 
             _cancellationTokenSource.Token
         );
+        var t2 = Task.Factory.StartNew(() =>
+        {
+            while (task.IsCompleted == false)
+            {
+                ClientTime.Advance(
+                    TimeSpan.FromMilliseconds(
+                        _commandConfig.CommandTimeoutMs *
+                        _commandConfig.CommandAttempt *
+                        2
+                    )
+                );    
+            }
+            
+        }, TaskCreationOptions.LongRunning);
         
         // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        await Assert.ThrowsAsync<TimeoutException>(async () =>
+        {
+            await Task.WhenAll(task, t2);
+        });
     }
     
     [Fact]
@@ -1088,16 +1100,15 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
             {
                 result = p.Payload.Result;
             });
-        
         // Act
-        await _client.QLand(
+        var t = _client.QLand(
             NavVtolLandOptions.NavVtolLandOptionsDefault, 
             10, 
             _cancellationTokenSource.Token
         );
         
         // Assert
-        Assert.Equal(MavResult.MavResultUnsupported, result);
+        await Assert.ThrowsAsync<CommandException>(async () => await t);
         Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.Equal(1, (int)Link.Server.Statistic.TxMessages);
         Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);

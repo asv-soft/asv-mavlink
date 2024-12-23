@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.IO;
 using Asv.Mavlink.Common;
+using JetBrains.Annotations;
 using R3;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
+[TestSubject(typeof(ParamsClientEx))]
+[TestSubject(typeof(ParamsServerEx))]
 public class ParamsComplexTest : ComplexTestBase<ParamsClientEx, ParamsServerEx>, IDisposable
 {
     private readonly CancellationTokenSource _cancellationTokenSource;
@@ -39,7 +42,6 @@ public class ParamsComplexTest : ComplexTestBase<ParamsClientEx, ParamsServerEx>
 
     private readonly ParamsClientExConfig _clientExConfig = new()
     {
-        ReadListTimeoutMs = 5000,
         ChunkUpdateBufferMs = 100,
     };
 
@@ -51,7 +53,7 @@ public class ParamsComplexTest : ComplexTestBase<ParamsClientEx, ParamsServerEx>
 
     private readonly ParamsServerExConfig _serverExConfig = new()
     {
-        SendingParamItemDelayMs = 100,
+        SendingParamItemDelayMs = 0,
         CfgPrefix = "MAV_CFG_",
     };
 
@@ -190,10 +192,12 @@ public class ParamsComplexTest : ComplexTestBase<ParamsClientEx, ParamsServerEx>
         {
             called++;
             param.Add(p);
+            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.ReadTimeouMs));
             if (called == _serverEx.AllParamsList.Count)
             {
                 _taskCompletionSource.TrySetResult(p);
             }
+            
         });
 
         // Act
@@ -214,13 +218,22 @@ public class ParamsComplexTest : ComplexTestBase<ParamsClientEx, ParamsServerEx>
     public async Task ReadAll_ClientShouldSyncLocalAndRemoteCounts_Success()
     {
         // Arrange
-        using var sub = _client.Base.OnParamValue.Subscribe(p => _taskCompletionSource.TrySetResult(p));
+        var server = Server;
+        server.Start();
 
         // Act
-        await _client.ReadAll(null, false, _cancellationTokenSource.Token);
+        var t1 = _client.ReadAll(null, false, _cancellationTokenSource.Token);
+        var t2 = Task.Factory.StartNew(() =>
+        {
+            // this is for chunk update
+            while (t1.IsCompleted == false)
+            {
+                ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.ReadTimeouMs));
+            }
+        });
 
+        await Task.WhenAll(t1, t2);
         // Assert
-        await _taskCompletionSource.Task;
         Assert.Equal(_serverEx.AllParamsList.Count, _client.LocalCount.CurrentValue);
         Assert.Equal(_serverEx.AllParamsList.Count, _client.RemoteCount.CurrentValue);
     }

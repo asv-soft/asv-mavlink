@@ -22,4 +22,19 @@ public static class MavlinkDeviceHelpers
         builder.Register(new GbsClientDeviceFactory(selfId,seq, config.Get<GbsClientDeviceConfig>()));
         builder.Register(new AdsbClientDeviceFactory(selfId,seq, config.Get<AdsbClientDeviceConfig>()));
     }
+    
+    public static IAdsbVehicleServer CreateAdsbServer(MavlinkIdentity identity, 
+        IConfiguration config, IMavlinkContext context)
+    {
+        return new AdsbVehicleServer(identity, context);
+    }
+
+    public static IHeartbeatServer CreateHeartbeatServer(
+        MavlinkIdentity identity, 
+        IConfiguration config, IMavlinkContext context)
+    {
+        return new HeartbeatServer(identity, config.Get<MavlinkHeartbeatServerConfig>(), context);
+    }
+    
+    
 }

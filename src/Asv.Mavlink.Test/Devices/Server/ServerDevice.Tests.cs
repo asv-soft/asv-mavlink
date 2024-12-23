@@ -11,17 +11,15 @@ using R3;
 
 namespace Asv.Mavlink.Test;
 
-[TestSubject(typeof(ServerDevice))]
-public class ServerDeviceTests(ITestOutputHelper log) : ServerTestBase<ServerDevice>(log)
+[TestSubject(typeof(IServerDevice))]
+public class ServerDeviceTests(ITestOutputHelper log) : ServerTestBase<IServerDevice>(log)
 {
-    protected override ServerDevice CreateClient(MavlinkIdentity identity, CoreServices core)
+    protected override IServerDevice CreateClient(MavlinkIdentity identity, CoreServices core)
     {
-        return new ServerDevice(identity,
-            new ServerDeviceConfig
-            {
-                Heartbeat = new MavlinkHeartbeatServerConfig { HeartbeatRateMs = 1000 },
-                StatusText = new StatusTextLoggerConfig { MaxQueueSize = 100, MaxSendRateHz = 10 }
-            }, core);
+        return ServerDevice.Create(identity,core, builder =>
+        {
+            builder.RegisterHeartbeat();
+        }); 
     }
 
     [Fact]
@@ -36,7 +34,10 @@ public class ServerDeviceTests(ITestOutputHelper log) : ServerTestBase<ServerDev
         var time = new FakeTimeProvider();
         var meter = new DefaultMeterFactory();
         var core = new CoreServices(link.Server, seq, NullLoggerFactory.Instance, time, meter);
-        var device = new ServerDevice(new MavlinkIdentity(3, 4), new ServerDeviceConfig(), core);
+        var device = ServerDevice.Create(new MavlinkIdentity(1,2) ,core, builder =>
+        {
+            builder.RegisterHeartbeat();
+        }); 
         Assert.NotNull(device);
     }
 
@@ -52,10 +53,15 @@ public class ServerDeviceTests(ITestOutputHelper log) : ServerTestBase<ServerDev
         var time = new FakeTimeProvider();
         var meter = new DefaultMeterFactory();
         var core = new CoreServices(link.Server, seq, NullLoggerFactory.Instance, time, meter);
-        Assert.Throws<ArgumentNullException>(() => new ServerDevice(null!, new ServerDeviceConfig(), core));
-        Assert.Throws<ArgumentNullException>(() => new ServerDevice(new MavlinkIdentity(3, 4), null!, core));
-        Assert.Throws<ArgumentNullException>(() =>
-            new ServerDevice(new MavlinkIdentity(3, 4), new ServerDeviceConfig(), null!));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+        Assert.Throws<ArgumentNullException>(() => ServerDevice.Create(new MavlinkIdentity(1,2), (IMavlinkContext)null, _=>{}));
+        Assert.Throws<ArgumentNullException>(() => ServerDevice.Create(new MavlinkIdentity(1,2), (IProtocolConnection)null, _=>{}));
+        Assert.Throws<ArgumentNullException>(() => ServerDevice.Create(null, core, builder=>{}));
+        Assert.Throws<ArgumentNullException>(() => ServerDevice.Create(new MavlinkIdentity(1,2), core, null));
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        
     }
 
     [Fact]
@@ -70,13 +76,11 @@ public class ServerDeviceTests(ITestOutputHelper log) : ServerTestBase<ServerDev
         var time = new FakeTimeProvider();
         var meter = new DefaultMeterFactory();
         var core = new CoreServices(link.Client, seq, NullLoggerFactory.Instance, time, meter);
-        var device = new ServerDevice(new MavlinkIdentity(3, 4), new ServerDeviceConfig
+        var device = ServerDevice.Create(new MavlinkIdentity(3,4),core, builder =>
         {
-            Heartbeat =
-            {
-                HeartbeatRateMs = 1000,
-            }
-        }, core);
+            builder.RegisterHeartbeat(new MavlinkHeartbeatServerConfig{ HeartbeatRateMs = 1000});
+        });
+        device.Start();
         var comId = 0;
         var sysId = 0;
         link.Server.RxFilterByType<HeartbeatPacket>().Subscribe(x =>
