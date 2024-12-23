@@ -1,11 +1,11 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-
 using Microsoft.Extensions.Logging;
 using ObservableCollections;
 using R3;
@@ -15,10 +15,33 @@ namespace Asv.Mavlink;
 
 public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
 {
+    private const int InternalBusyStateIdle = 0;
+    private const int InternalBusyStateClearAll = 2;
+    
+    
+    private int _internalBusyState;
+    
+    
     private readonly IStatusTextServer _statusLogger;
     private readonly ILogger _logger;
     private readonly ObservableList<ServerMissionItem> _missionSource;
-    private double _busy;
+    private readonly ReactiveProperty<ushort> _current = new(0);
+    private readonly ReactiveProperty<ushort> _reached = new(0);
+    private readonly ReactiveProperty<MissionServerState> _state = new(MissionServerState.Idle);
+    private CancellationTokenSource? _missionCancel;
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
+    private readonly IDisposable _sub4;
+    private readonly IDisposable _sub5;
+    private readonly IDisposable _sub6;
+    private readonly IDisposable _sub7;
+    private readonly object _sync = new();
+    private Thread? _missionThread;
+    private readonly ConcurrentDictionary<ushort,MissionTaskDelegate> _registry = new();
+    private ushort _nextMissionIndex;
+    private CancellationTokenSource? _currentMissionItemCancel;
+
 
     public MissionServerEx(IMissionServer baseIfc, IStatusTextServer status) :
         base("MISSION", baseIfc.Identity, baseIfc.Core)
@@ -26,12 +49,9 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         Base = baseIfc ?? throw new ArgumentNullException(nameof(baseIfc));
         _statusLogger = status ?? throw new ArgumentNullException(nameof(status));
         _logger = baseIfc.Core.LoggerFactory.CreateLogger<MissionServerEx>();
-        _missionSource = new ObservableList<ServerMissionItem>();
+        _missionSource = [];
 
-        Current = new ReactiveProperty<ushort>(0);
         _sub1 = Current.Subscribe(Base,(x,b)=>b.SendMissionCurrent(x));
-
-        Reached = new ReactiveProperty<ushort>(0);
         _sub2 = Reached.Subscribe(Base,(x,b)=>b.SendReached(x));
         
         _sub3 = baseIfc.OnMissionCount.SubscribeAwait(
@@ -50,22 +70,28 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
             async (req, ct) => 
                 await ClearAll(req, ct).ConfigureAwait(false)
         );
-        _sub7 = baseIfc.OnMissionSetCurrent.Subscribe(SetCurrent);
+        _sub7 = baseIfc.OnMissionSetCurrent.Subscribe(x=>ChangeCurrentMissionItem(x.Payload.Seq));
     }
 
-    private void SetCurrent(MissionSetCurrentPacket req)
-    {
-        if (req.Payload.Seq >= _missionSource.Count)
-        {
-            _logger.ZLogWarning($"{Id}: '{req.Payload.Seq}' not found");
-            _statusLogger.Info($"{Id}: item '{req.Payload.Seq}' not found");
-            return;
-        }
-        Current.OnNext(req.Payload.Seq);
-    }
+    
   
     private async Task ClearAll(MissionClearAllPacket req, CancellationToken token)
     {
+        var current = Interlocked.CompareExchange(ref _internalBusyState, InternalBusyStateClearAll,
+            InternalBusyStateIdle);
+        if (current == InternalBusyStateClearAll)
+        {
+            _logger.ZLogTrace($"{Id}: Duplicate '{nameof(ClearAll)}' received. Skip it...");
+            return;
+        }
+        if (current != InternalBusyStateIdle)
+        {
+            _logger.ZLogTrace($"{Id}: Busy state '{current:G}'");
+            await Base.SendMissionAck(MavMissionResult.MavMissionDenied, req.SystemId, req.ComponentId).ConfigureAwait(false);
+            return;
+        }
+        
+        
         if (req.Payload.MissionType is not (MavMissionType.MavMissionTypeMission or MavMissionType.MavMissionTypeAll))
         {
             await Base.SendMissionAck(MavMissionResult.MavMissionUnsupported, req.SystemId, req.ComponentId).ConfigureAwait(false);
@@ -98,7 +124,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
 
     private async Task UploadMission(MissionCountPacket req, CancellationToken token)
     {
-        if (Interlocked.CompareExchange(ref _busy, 1, 0) != 0)
+        if (Interlocked.CompareExchange(ref _internalBusyState, 1, 0) != 0)
         {
             _logger.ZLogTrace($"{Id}: Duplicate '{nameof(MissionCountPacket)}' received. Skip it...");
             return;
@@ -128,13 +154,16 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         }
         finally
         {
-            Interlocked.Exchange(ref _busy, 0);
+            Interlocked.Exchange(ref _internalBusyState, 0);
         }
     }
 
     public IMissionServer Base { get; }
-    public ReactiveProperty<ushort> Current { get; }
-    public ReactiveProperty<ushort> Reached { get; }
+
+    public ReadOnlyReactiveProperty<ushort> Current => _current;
+
+    public ReadOnlyReactiveProperty<ushort> Reached => _reached;
+
     public IReadOnlyObservableList<ServerMissionItem> Items => _missionSource;
     public void AddItems(IEnumerable<ServerMissionItem> items)
     {
@@ -157,6 +186,12 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         EnsureIndexCorrected();
     }
 
+    public void ClearItems()
+    {
+        
+        _missionSource.Clear();
+    }
+
     private void EnsureIndexCorrected()
     {
         for (var i = 0; i < _missionSource.Count; i++)
@@ -170,17 +205,147 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         EnsureIndexCorrected();
         return [.._missionSource];
     }
+
+    public ReadOnlyReactiveProperty<MissionServerState> State => _state;
+
+    public void StartMission(ushort missionIndex = 0)
+    {
+        try
+        {
+            Interlocked.CompareExchange(ref _state, MissionServerState.Idle, MissionServerState.CompleteSuccess);
+        }
+        finally
+        {
+            
+        }
+        
+        _statusLogger.Info($"Start mission {missionIndex} of {_missionSource.Count}");
+        if (_state.Value == MissionServerState.Running)
+        {
+            _statusLogger.Info($"Mission already running");
+            return;
+        }
+        if (_missionSource.Count == 0)
+        {
+            _statusLogger.Info($"Mission is empty");
+            return;
+        }
+        lock (_sync)
+        {
+            _nextMissionIndex = missionIndex;
+            _missionCancel?.Cancel(false);
+            _missionCancel = new CancellationTokenSource();
+            _missionThread = new Thread(MissionTick);
+            _missionThread.Start(_missionCancel.Token);
+        }
+    }
+
+    public void StopMission(CancellationToken cancel = default)
+    {
+        _statusLogger.Info($"Stop mission");
+        lock (_sync)
+        {
+            _missionCancel?.Cancel(false);
+            _missionThread = null;
+        }
+        _state.OnNext(MissionServerState.Idle);
+    }
+
+    public MissionTaskDelegate? this[MavCmd cmd]
+    {
+        set
+        {
+            if (value == null)
+            {
+                _registry.TryRemove((ushort)cmd, out _);
+                return;
+            }
+            _registry.AddOrUpdate((ushort)cmd, value, (_, _) => value);
+        }
+    }
+
+    public IEnumerable<MavCmd> SupportedCommands => _registry.Keys.Select(x => (MavCmd)x);
+
+
+    public void ChangeCurrentMissionItem(ushort index)
+    {
+        _nextMissionIndex = index;
+        _currentMissionItemCancel?.Cancel(false);
+        _current.OnNext(index);
+    }
+    private async void MissionTick(object? obj)
+    {
+        try
+        {
+            Interlocked.CompareExchange(ref _internalBusyState, 1);
+            var cancel = (CancellationToken)(obj ?? throw new ArgumentNullException(nameof(obj)));
+            var items = GetItemsSnapshot();
+            if (items.Length == 0)
+            {
+                _statusLogger.Info($"Mission is empty");
+                _state.OnNext(MissionServerState.CompleteSuccess);
+                return;
+            }
+            _state.OnNext(MissionServerState.Running);
+            while (true)
+            {
+                var missionIndex = _nextMissionIndex;
+                ++_nextMissionIndex; // ! important here
+                if (missionIndex >= items.Length)
+                {
+                    _statusLogger.Info($"Mission already completed");
+                    _state.OnNext(MissionServerState.CompleteSuccess);
+                    return;
+                }
+
+                _current.OnNext(missionIndex);
+                if (cancel.IsCancellationRequested)
+                {
+                    _statusLogger.Info($"Mission canceled");
+                    _state.OnNext(MissionServerState.Canceled);
+                    return;
+                }
+
+                var item = items[missionIndex];
+
+                if (_registry.TryGetValue((ushort)item.Command, out var task))
+                {
+                    _statusLogger.Info($"Run '{item.Command:G}'");
+                    _currentMissionItemCancel = new CancellationTokenSource();
+                    using var linked =
+                        CancellationTokenSource.CreateLinkedTokenSource(cancel, _currentMissionItemCancel.Token,
+                            DisposeCancel);
+                    try
+                    {
+                        await task(item, linked.Token).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.ZLogError(e, $"Error at mission tick");
+                        _statusLogger.Error($"Mission error: {e.Message}");
+                    }
+                }
+                else
+                {
+                    _statusLogger.Info($"Skip unsupported command '{item.Command}'");
+                }
+                _reached.OnNext(missionIndex);
+                
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.ZLogError(e, $"Error at mission tick");
+            _statusLogger.Error($"Error at mission tick: {e.Message}");
+            _state.OnNext(MissionServerState.CompleteError);
+        }
+        
+    }
+
     
+
     #region Dispose
-    
-    private readonly IDisposable _sub1;
-    private readonly IDisposable _sub2;
-    private readonly IDisposable _sub3;
-    private readonly IDisposable _sub4;
-    private readonly IDisposable _sub5;
-    private readonly IDisposable _sub6;
-    private readonly IDisposable _sub7;
-    
+
     protected override void Dispose(bool disposing)
     {
         if (disposing)
@@ -192,8 +357,13 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
             _sub5.Dispose();
             _sub6.Dispose();
             _sub7.Dispose();
-            Current.Dispose();
-            Reached.Dispose();
+            _current.Dispose();
+            _reached.Dispose();
+            _state.Dispose();
+            _currentMissionItemCancel?.Cancel(false);
+            _currentMissionItemCancel?.Dispose();
+            _missionCancel?.Cancel(false);
+            _missionCancel?.Dispose();
         }
 
         base.Dispose(disposing);
@@ -208,8 +378,14 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         await CastAndDispose(_sub5).ConfigureAwait(false);
         await CastAndDispose(_sub6).ConfigureAwait(false);
         await CastAndDispose(_sub7).ConfigureAwait(false);
-        await CastAndDispose(Current).ConfigureAwait(false);
-        await CastAndDispose(Reached).ConfigureAwait(false);
+        await CastAndDispose(_current).ConfigureAwait(false);
+        await CastAndDispose(_reached).ConfigureAwait(false);
+        await CastAndDispose(_state).ConfigureAwait(false);
+        
+        _currentMissionItemCancel?.Cancel(false);
+        _currentMissionItemCancel?.Dispose();
+        _missionCancel?.Cancel(false);
+        _missionCancel?.Dispose();
 
         await base.DisposeAsyncCore().ConfigureAwait(false);
 
