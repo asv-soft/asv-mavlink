@@ -8,17 +8,13 @@ using Asv.IO;
 
 namespace Asv.Mavlink;
 
-public class Px4CopterClientDevice:Px4VehicleClientDevice
+public class Px4CopterClientDevice(
+    MavlinkClientDeviceId identity,
+    VehicleClientDeviceConfig config,
+    ImmutableArray<IClientDeviceExtender> extenders,
+    IMavlinkContext core)
+    : Px4VehicleClientDevice(identity, config, extenders, core)
 {
-    public Px4CopterClientDevice(MavlinkClientDeviceId identity, 
-        VehicleClientDeviceConfig config,
-        ImmutableArray<IClientDeviceExtender> extenders, 
-        IMavlinkContext core) 
-        : base(identity,config,extenders,core)
-    {
-        
-    }
-    
     protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices(
         [EnumeratorCancellation] CancellationToken cancel)
     {

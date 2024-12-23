@@ -32,11 +32,11 @@ public struct ParamChangedEvent
 
 public class ParamsServerExConfig
 {
-    public int SendingParamItemDelayMs { get; set; } = 100;
-    public string CfgPrefix { get; set; } = "MAV_CFG_";
+    public int SendingParamItemDelayMs { get; set; } = 10;
+    public string? CfgPrefix { get; set; } = "MAV_CFG_";
 }
 
-public class ParamsServerEx: IParamsServerEx,IDisposable
+public class ParamsServerEx : MavlinkMicroserviceServer, IParamsServerEx
 {
     private readonly IParamsServer _server;
     private readonly IStatusTextServer _statusTextServer;
@@ -45,13 +45,14 @@ public class ParamsServerEx: IParamsServerEx,IDisposable
     private readonly ParamsServerExConfig _serverCfg;
 
     private readonly ILogger _logger;
-    private readonly Subject<Exception> _onErrorSubject;
+    private readonly Subject<Exception> _onErrorSubject = new();
     private int _sendingInProgressFlag;
     private readonly ImmutableDictionary<string,(ushort,IMavParamTypeMetadata)> _paramDict;
     private readonly ImmutableList<IMavParamTypeMetadata> _paramList;
     private readonly Subject<ParamChangedEvent> _onParamChangedSubject;
-    private readonly IDisposable _disposeIt;
-    private readonly CancellationTokenSource _disposableCancel;
+    private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
+    private readonly IDisposable _sub4;
 
     public ParamsServerEx(
         IParamsServer server, 
@@ -59,16 +60,15 @@ public class ParamsServerEx: IParamsServerEx,IDisposable
         IEnumerable<IMavParamTypeMetadata> paramDescriptions, 
         IMavParamEncoding encoding, 
         IConfiguration cfg, 
-        ParamsServerExConfig serverCfg)
+        ParamsServerExConfig serverCfg) : base(ParamsHelper.MicroserviceExName,server.Identity,server.Core)
     {
-        _disposableCancel = new CancellationTokenSource();
         _logger = server.Core.LoggerFactory.CreateLogger<ParamsServerEx>();
         _server = server;
         _statusTextServer = statusTextServer ?? throw new ArgumentNullException(nameof(statusTextServer));
         _encoding = encoding;
         _cfg = cfg;
         _serverCfg = serverCfg;
-        _onErrorSubject = new Subject<Exception>();
+        
         _paramList = paramDescriptions.OrderBy(m=>m.Name).ToImmutableList();
         var dict = ImmutableDictionary.CreateBuilder<string, (ushort,IMavParamTypeMetadata)>();
         for (var i = 0; i < _paramList.Count; i++)
@@ -78,13 +78,12 @@ public class ParamsServerEx: IParamsServerEx,IDisposable
         _paramDict = dict.ToImmutable();
         _onParamChangedSubject = new Subject<ParamChangedEvent>();
         
-        var d1 = server.OnParamSet.Subscribe(OnParamSet);
-        var d2 = server.OnParamRequestList.Subscribe(OnParamRequestList);
-        var d3 = server.OnParamRequestRead.Subscribe(OnParamRequestRead);
-        _disposeIt = Disposable.Combine(_onErrorSubject, _onParamChangedSubject, d1, d2, d3,_disposableCancel);
+        _sub2 = server.OnParamSet.Subscribe(OnParamSet);
+        _sub3 = server.OnParamRequestList.Subscribe(OnParamRequestList);
+        _sub4 = server.OnParamRequestRead.Subscribe(OnParamRequestRead);
+        
     }
 
-    private CancellationToken DisposeCancel => _disposableCancel.Token;
     private async void OnParamRequestRead(ParamRequestReadPacket _)
     {
         (ushort,IMavParamTypeMetadata) param;
@@ -130,8 +129,10 @@ public class ParamsServerEx: IParamsServerEx,IDisposable
                 var param = _paramList[index];
                 var currentValue =  param.ReadFromConfig(_cfg, _serverCfg.CfgPrefix);
                 await SendParam(((ushort)index,param), currentValue, DisposeCancel).ConfigureAwait(false);
-                //TODO: Task.Delay, remove it
-                await Task.Delay(_serverCfg.SendingParamItemDelayMs, DisposeCancel).ConfigureAwait(false);
+                if (_serverCfg.SendingParamItemDelayMs > 0)
+                {
+                    await Task.Delay(TimeSpan.FromMilliseconds(_serverCfg.SendingParamItemDelayMs), Core.TimeProvider, DisposeCancel).ConfigureAwait(false);
+                }
             }
         }
         finally
@@ -244,9 +245,42 @@ public class ParamsServerEx: IParamsServerEx,IDisposable
     public IReadOnlyList<IMavParamTypeMetadata> AllParamsList => _paramList;
     public IReadOnlyDictionary<string,(ushort,IMavParamTypeMetadata)> AllParamsDict => _paramDict;
 
-    public void Dispose()
+    #region Dispose
+
+    protected override void Dispose(bool disposing)
     {
-        _disposableCancel.Cancel(false);
-        _disposeIt.Dispose();
+        if (disposing)
+        {
+            _onErrorSubject.Dispose();
+            _onParamChangedSubject.Dispose();
+            _sub2.Dispose();
+            _sub3.Dispose();
+            _sub4.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
+
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        await CastAndDispose(_onErrorSubject).ConfigureAwait(false);
+        await CastAndDispose(_onParamChangedSubject).ConfigureAwait(false);
+        await CastAndDispose(_sub2).ConfigureAwait(false);
+        await CastAndDispose(_sub3).ConfigureAwait(false);
+        await CastAndDispose(_sub4).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
+
+        return;
+
+        static async ValueTask CastAndDispose(IDisposable resource)
+        {
+            if (resource is IAsyncDisposable resourceAsyncDisposable)
+                await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+            else
+                resource.Dispose();
+        }
+    }
+
+    #endregion
 }

@@ -28,8 +28,14 @@ public interface IFtpClientEx
     IFtpClient Base { get; }
     IReadOnlyObservableDictionary<string, IFtpEntry> Entries { get; }
     Task Refresh(string path, bool recursive = true, CancellationToken cancel = default);
-    Task DownloadFile(string filePath, Stream streamToSave, IProgress<double>? progress = null,
+    Task DownloadFile(string filePath, Stream streamToSave, IProgress<double>? progress = null,byte partSize = MavlinkFtpHelper.MaxDataSize,
         CancellationToken cancel = default);
-    Task DownloadFile(string filePath, IBufferWriter<byte> bufferToSave, IProgress<double>? progress = null,
+    Task DownloadFile(string filePath, IBufferWriter<byte> bufferToSave, IProgress<double>? progress = null,byte partSize = MavlinkFtpHelper.MaxDataSize,
         CancellationToken cancel = default);
+
+    Task<int> BurstDownloadFile(string filePath, Stream streamToSave, IProgress<double>? progress = null,
+        byte partSize = MavlinkFtpHelper.MaxDataSize, CancellationToken cancel = default);
+
+    Task<int> BurstDownloadFile(string filePath, IBufferWriter<byte> bufferToSave, IProgress<double>? progress = null,
+        byte partSize = MavlinkFtpHelper.MaxDataSize, CancellationToken cancel = default);
 }

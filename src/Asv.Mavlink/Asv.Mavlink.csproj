@@ -52,6 +52,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ParamsDesc.resx</DependentUpon>
     </Compile>
+    <Compile Remove="Devices\Server\Ftp\Server\IFtpServerDevice.cs" />
     
   </ItemGroup>
   <ItemGroup>

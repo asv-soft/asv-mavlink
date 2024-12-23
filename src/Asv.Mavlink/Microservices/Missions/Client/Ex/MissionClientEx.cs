@@ -39,7 +39,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
     public MissionClientEx(
         IMissionClient client, 
         MissionClientExConfig config)
-        :base(MissionClientHelper.MicroserviceExName, client.Identity, client.Core)
+        :base(MissionHelper.MicroserviceExName, client.Identity, client.Core)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = client.Core.LoggerFactory.CreateLogger<MissionClientEx>();
@@ -52,7 +52,6 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
         _obs1 = _isMissionSynced.Subscribe(_ => UpdateMissionsDistance());
     }
     
-    public string TypeName => $"{Base.TypeName}Ex";
     public IMissionClient Base => _client;
     public IReadOnlyObservableList<MissionItem> MissionItems => _missionSource;
     public ReadOnlyReactiveProperty<bool> IsSynced => _isMissionSynced;

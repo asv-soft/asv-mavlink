@@ -37,11 +37,15 @@ public class ListDataFileTests
         using var strm = new MemoryStream();
         Assert.Throws<ArgumentNullException>(() =>
         {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             using var file = new ListDataFile<AsvSdrRecordFileMetadata>(null, FileFormat1, false, _fileSystem);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         });
         Assert.Throws<ArgumentNullException>(() =>
         {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             using var file = new ListDataFile<AsvSdrRecordFileMetadata>(new MemoryStream(), null, false, _fileSystem);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         });
     }
 

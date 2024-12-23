@@ -67,7 +67,7 @@ public class DiagnosticClient:MavlinkMicroserviceClient,IDiagnosticClient
    
 
     public DiagnosticClient(MavlinkClientIdentity identity,DiagnosticClientConfig config,IMavlinkContext core) 
-        : base("DIAG", identity, core)
+        : base(DiagnosticHelper.MicroserviceTypeName, identity, core)
     {
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(core);

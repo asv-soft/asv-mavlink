@@ -11,11 +11,6 @@ namespace Asv.Mavlink
     public interface IHeartbeatServer:IMavlinkMicroserviceServer
     {
         /// <summary>
-        /// Starts the execution of the program.
-        /// </summary>
-        void Start();
-
-        /// <summary>
         /// Sets the change callback for the heart beat payload.
         /// </summary>
         /// <param name="changeCallback">The action to be performed on the heart beat payload.</param>

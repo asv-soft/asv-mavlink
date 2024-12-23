@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using System.Threading;
 using Asv.Common;
 using Asv.IO;
 
@@ -17,7 +18,12 @@ public abstract class MavlinkV2Message<TPayload> : MavlinkMessage
     public byte CompatFlags { get; set; }
     
     public abstract bool WrapToV2Extension { get; }
-    
+
+    public override IPayload GetPayload()
+    {
+        return Payload;
+    }
+
     public abstract TPayload Payload { get; }
     
     public ISignature Signature => _signature;

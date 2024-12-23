@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
+
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
@@ -37,11 +38,8 @@ namespace Asv.Mavlink
         private readonly Subject<CommandAckPayload> _onCommandAck;
         private readonly IDisposable _sub1;
 
-        public CommandClient(
-            MavlinkClientIdentity identity, 
-            CommandProtocolConfig config,
-            IMavlinkContext core
-        ) :base(Command.MicroserviceTypeName, identity, core)
+        public CommandClient(MavlinkClientIdentity identity, CommandProtocolConfig config,IMavlinkContext core)
+            :base(CommandHelper.MicroserviceTypeName, identity, core)
         {
             _logger = core.LoggerFactory.CreateLogger<CommandClient>();
             _config = config ?? throw new ArgumentNullException(nameof(config));

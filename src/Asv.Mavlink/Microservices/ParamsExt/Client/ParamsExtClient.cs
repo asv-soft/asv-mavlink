@@ -19,7 +19,7 @@ namespace Asv.Mavlink;
 public class ParamsExtClientConfig
 {
     public int ReadAttemptCount { get; set; } = 3;
-    public int ReadTimeouMs { get; set; } = 1000;
+    public int ReadTimeoutMs { get; set; } = 1000;
 }
 
 /// <summary>
@@ -80,7 +80,7 @@ public class ParamsExtClient : MavlinkMicroserviceClient, IParamsExtClient
                 MavlinkTypesHelper.SetString(packet.Payload.ParamId, name);
             }, packet => name.Equals(MavlinkTypesHelper.GetString(packet.Payload.ParamId)),
             packet => packet.Payload, _config.ReadAttemptCount,
-            timeoutMs: _config.ReadTimeouMs, cancel: cancel).ConfigureAwait(false);
+            timeoutMs: _config.ReadTimeoutMs, cancel: cancel).ConfigureAwait(false);
     }
 
     public async Task<ParamExtValuePayload> Read(ushort index, CancellationToken cancel = default)
@@ -94,7 +94,7 @@ public class ParamsExtClient : MavlinkMicroserviceClient, IParamsExtClient
                 packet.Payload.ParamIndex = (short)index;
             }, packet => index == packet.Payload.ParamIndex,
             packet => packet.Payload, _config.ReadAttemptCount, 
-            timeoutMs: _config.ReadTimeouMs, cancel: cancel).ConfigureAwait(false);
+            timeoutMs: _config.ReadTimeoutMs, cancel: cancel).ConfigureAwait(false);
     }
     
     public async Task<ParamExtAckPayload> Write(string name, MavParamExtType type, char[] value,
@@ -110,7 +110,7 @@ public class ParamsExtClient : MavlinkMicroserviceClient, IParamsExtClient
                 packet.Payload.ParamValue = value;
             }, packet => name.Equals(MavlinkTypesHelper.GetString(packet.Payload.ParamId)),
             packet => packet.Payload, _config.ReadAttemptCount,
-            timeoutMs: _config.ReadTimeouMs, cancel: cancel).ConfigureAwait(false);
+            timeoutMs: _config.ReadTimeoutMs, cancel: cancel).ConfigureAwait(false);
     }
 
     #region Dispose

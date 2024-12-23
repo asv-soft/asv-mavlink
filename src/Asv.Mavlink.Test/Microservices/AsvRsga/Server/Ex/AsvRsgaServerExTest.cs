@@ -15,7 +15,6 @@ public class AsvRsgaServerExTest(ITestOutputHelper log) : ServerTestBase<AsvRsga
     protected override AsvRsgaServerEx CreateClient(MavlinkIdentity identity, CoreServices core)
     {
         return new AsvRsgaServerEx(new AsvRsgaServer(identity, core),
-            new StatusTextServer(identity, _loggerConfig, core),
             new CommandLongServerEx(new CommandServer(identity, core)));
     }
 }

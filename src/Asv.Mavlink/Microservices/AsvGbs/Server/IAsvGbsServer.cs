@@ -12,11 +12,7 @@ namespace Asv.Mavlink
     /// </summary>
     public interface IAsvGbsServer: IMavlinkMicroserviceServer
     {
-        /// <summary>
-        /// Starts the AsvGbs server.
-        /// </summary>
-        void Start();
-
+        
         /// <summary>
         /// Sets an action to be performed when Asv Gbs Out Status Payload gets changed.
         /// </summary>

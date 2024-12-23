@@ -1,15 +1,14 @@
 #nullable enable
 using System;
 using System.IO;
+using System.IO.Abstractions;
 using Asv.IO;
+using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
-public class AsvSdrListDataStoreFormat : GuidHierarchicalStoreFormat<IListDataFile<AsvSdrRecordFileMetadata>>
+public class AsvSdrListDataStoreFormat() : GuidHierarchicalStoreFormat<IListDataFile<AsvSdrRecordFileMetadata>>(".sdr")
 {
-    public AsvSdrListDataStoreFormat() : base(".sdr")
-    {
-    }
     public override IListDataFile<AsvSdrRecordFileMetadata> OpenFile(Stream stream)
     {
         return new ListDataFile<AsvSdrRecordFileMetadata>(stream, AsvSdrHelper.FileFormat, true);
@@ -34,7 +33,12 @@ public class AsvSdrListDataStoreFormat : GuidHierarchicalStoreFormat<IListDataFi
 
 public class AsvSdrStore : FileSystemHierarchicalStore<Guid, IListDataFile<AsvSdrRecordFileMetadata>>
 {
-    public AsvSdrStore(string rootFolder, TimeSpan? fileCacheTime) : base(rootFolder, AsvSdrHelper.StoreFormat, fileCacheTime)
+    public AsvSdrStore(string rootFolder, 
+        TimeSpan? fileCacheTime, 
+        ILoggerFactory? logFactory,
+        TimeProvider? timeProvider, 
+        IFileSystem? fileSystem) 
+        : base(rootFolder, AsvSdrHelper.StoreFormat, fileCacheTime, logFactory, timeProvider,fileSystem)
     {
         
     }

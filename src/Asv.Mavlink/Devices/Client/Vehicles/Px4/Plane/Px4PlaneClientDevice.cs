@@ -3,15 +3,9 @@ using Asv.IO;
 
 namespace Asv.Mavlink;
 
-public class Px4PlaneClientDevice:Px4VehicleClientDevice
-{
-    public Px4PlaneClientDevice(
-        MavlinkClientDeviceId identity, 
-        VehicleClientDeviceConfig config,
-        ImmutableArray<IClientDeviceExtender> extenders, 
-        IMavlinkContext core) 
-        : base(identity,config,extenders,core)
-    {
-        
-    }
-}
+public class Px4PlaneClientDevice(
+    MavlinkClientDeviceId identity,
+    VehicleClientDeviceConfig config,
+    ImmutableArray<IClientDeviceExtender> extenders,
+    IMavlinkContext core)
+    : Px4VehicleClientDevice(identity, config, extenders, core);

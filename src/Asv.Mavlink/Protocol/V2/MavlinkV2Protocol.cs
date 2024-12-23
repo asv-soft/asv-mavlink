@@ -63,6 +63,5 @@ public static class MavlinkV2Protocol
         builder.Formatters.Register(ParamValueFormatter.Instance);
         builder.Formatters.Register(StatusTextFormatter.Instance);
         
-        builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
     }
 }

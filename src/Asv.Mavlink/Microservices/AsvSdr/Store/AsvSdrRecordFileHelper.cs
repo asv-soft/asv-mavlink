@@ -98,8 +98,11 @@ public static class AsvSdrRecordFileHelper
         {
             var itemToDelete = metadata.Tags?.FirstOrDefault(x => new Guid(x.TagGuid).Equals(tagId));
             if (itemToDelete == null) return;
-            metadata.Tags.Remove(itemToDelete);
-            metadata.Info.TagCount = (ushort)metadata.Tags.Count;
+            metadata.Tags?.Remove(itemToDelete);
+            if (metadata.Tags != null)
+            {
+                metadata.Info.TagCount = (ushort)metadata.Tags.Count;
+            }
             result = true;
         });
         return result;

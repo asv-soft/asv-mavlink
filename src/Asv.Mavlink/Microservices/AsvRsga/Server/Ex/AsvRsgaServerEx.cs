@@ -10,15 +10,14 @@ using MavCmd = Asv.Mavlink.Common.MavCmd;
 
 namespace Asv.Mavlink;
 
-public class AsvRsgaServerEx : IAsvRsgaServerEx, IDisposable,IAsyncDisposable
+public class AsvRsgaServerEx : MavlinkMicroserviceServer, IAsvRsgaServerEx
 {
     private readonly ILogger _logger;
     private readonly IDisposable _sub1;
 
     public AsvRsgaServerEx(
         IAsvRsgaServer server, 
-        IStatusTextServer status, 
-        ICommandServerEx<CommandLongPacket> commands )
+        ICommandServerEx<CommandLongPacket> commands ) : base(RsgaHelper.MicroserviceExName,server.Identity,server.Core)
     {
         _logger = server.Core.LoggerFactory.CreateLogger<AsvRsgaServerEx>();
         Base = server;
@@ -69,14 +68,19 @@ public class AsvRsgaServerEx : IAsvRsgaServerEx, IDisposable,IAsyncDisposable
 
     #region Dispose
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        SetMode = null;
-        GetCompatibility = null;
-        _sub1.Dispose();
+        if (disposing)
+        {
+            SetMode = null;
+            GetCompatibility = null;
+            _sub1.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
         SetMode = null;
         GetCompatibility = null;
@@ -84,6 +88,8 @@ public class AsvRsgaServerEx : IAsvRsgaServerEx, IDisposable,IAsyncDisposable
             await sub1AsyncDisposable.DisposeAsync().ConfigureAwait(false);
         else
             _sub1.Dispose();
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
     }
 
     #endregion

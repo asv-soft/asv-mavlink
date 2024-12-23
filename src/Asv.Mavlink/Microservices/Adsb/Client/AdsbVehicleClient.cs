@@ -23,7 +23,7 @@ public class AdsbVehicleClient : MavlinkMicroserviceClient, IAdsbVehicleClient
     private readonly ReactiveProperty<TimeSpan> _targetTimeout;
 
     public AdsbVehicleClient(MavlinkClientIdentity identity, AdsbVehicleClientConfig config,IMavlinkContext core) 
-        : base("ADSB", identity, core)
+        : base(AdsbHelper.MicroserviceName, identity, core)
     {
         _onAdsbTarget = new Subject<AdsbVehiclePayload>();
         _sub1 = InternalFilter<AdsbVehiclePacket>()

@@ -19,6 +19,7 @@ public class AsvSdrClientExConfig
 
 public class AsvSdrClientEx :MavlinkMicroserviceClient, IAsvSdrClientEx
 {
+    private readonly IHeartbeatClient _heartbeatClient;
     private readonly ICommandClient _commandClient;
     private readonly AsvSdrClientExConfig _config;
     private readonly TimeSpan _maxTimeToWaitForResponseForList;
@@ -36,8 +37,12 @@ public class AsvSdrClientEx :MavlinkMicroserviceClient, IAsvSdrClientEx
         AsvSdrClientExConfig config)
         : base(AsvSdrHelper.AsvSdrMicroserviceExName, client.Identity, client.Core)
     {
+        ArgumentNullException.ThrowIfNull(client);
+        ArgumentNullException.ThrowIfNull(commandClient);
+        ArgumentNullException.ThrowIfNull(config);
         Base = client;
         _logger = client.Core.LoggerFactory.CreateLogger<AsvSdrClientEx>();
+        _heartbeatClient = heartbeatClient;
         _commandClient = commandClient;
         _config = config;
         _disposeCancel = new CancellationTokenSource();
@@ -89,14 +94,8 @@ public class AsvSdrClientEx :MavlinkMicroserviceClient, IAsvSdrClientEx
             }
         });
     }
-    public string TypeName => $"{Base.TypeName}Ex";
     public IAsvSdrClient Base { get; }
-    public MavlinkClientIdentity Identity => Base.Identity;
-    public IMavlinkContext Core => Base.Core;
-    public Task Init(CancellationToken cancel = default)
-    {
-        return Task.CompletedTask;
-    }
+    
     public ReadOnlyReactiveProperty<Guid> CurrentRecord { get; }
     public ReadOnlyReactiveProperty<bool> IsRecordStarted { get; }
     public async Task DeleteRecord(Guid recordName, CancellationToken cancel)
@@ -109,7 +108,7 @@ public class AsvSdrClientEx :MavlinkMicroserviceClient, IAsvSdrClientEx
             throw new Exception("Request fail");
     }
 
-    public async Task<bool> DownloadRecordList(IProgress<double> progress, CancellationToken cancel)
+    public async Task<bool> DownloadRecordList(IProgress<double>? progress, CancellationToken cancel)
     {
         var lastUpdate = DateTime.Now;
         _records.Clear();
@@ -145,8 +144,6 @@ public class AsvSdrClientEx :MavlinkMicroserviceClient, IAsvSdrClientEx
         var result = await _commandClient.CommandLong(item => AsvSdrHelper.SetArgsForSdrSetMode(item, mode,frequencyHz,recordRate,sendingThinningRatio,referencePowerDbm),cs.Token).ConfigureAwait(false);
         return result.Result;
     }
-
-    private CancellationToken DisposeCancel => _disposeCancel.Token;
 
     public async Task<MavResult> StartRecord(string recordName, CancellationToken cancel)
     {
@@ -229,27 +226,35 @@ public class AsvSdrClientEx :MavlinkMicroserviceClient, IAsvSdrClientEx
 
     #region Dispose
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _sub1.Dispose();
-        _sub2.Dispose();
-        _disposeCancel.Cancel(false);
-        _disposeCancel.Dispose();
-        CurrentRecord.Dispose();
-        IsRecordStarted.Dispose();
-        SupportedModes.Dispose();
-        CustomMode.Dispose();
-        RecordsCount.Dispose();
-        CalibrationTableRemoteCount.Dispose();
-        CalibrationState.Dispose();
+        if (disposing)
+        {
+            
+            _commandClient.Dispose();
+            _sub1.Dispose();
+            _sub2.Dispose();
+            _disposeCancel.Dispose();
+            Base.Dispose();
+            CurrentRecord.Dispose();
+            IsRecordStarted.Dispose();
+            SupportedModes.Dispose();
+            CustomMode.Dispose();
+            RecordsCount.Dispose();
+            CalibrationTableRemoteCount.Dispose();
+            CalibrationState.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
+        await _commandClient.DisposeAsync().ConfigureAwait(false);
         await CastAndDispose(_sub1).ConfigureAwait(false);
         await CastAndDispose(_sub2).ConfigureAwait(false);
-        _disposeCancel.Cancel(false);
         await CastAndDispose(_disposeCancel).ConfigureAwait(false);
+        await Base.DisposeAsync().ConfigureAwait(false);
         await CastAndDispose(CurrentRecord).ConfigureAwait(false);
         await CastAndDispose(IsRecordStarted).ConfigureAwait(false);
         await CastAndDispose(SupportedModes).ConfigureAwait(false);
@@ -257,6 +262,8 @@ public class AsvSdrClientEx :MavlinkMicroserviceClient, IAsvSdrClientEx
         await CastAndDispose(RecordsCount).ConfigureAwait(false);
         await CastAndDispose(CalibrationTableRemoteCount).ConfigureAwait(false);
         await CastAndDispose(CalibrationState).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
 
         return;
 

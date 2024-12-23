@@ -13,9 +13,9 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class MavlinkFtpServerExConfig:MavlinkFtpServerConfig
+public class MavlinkFtpServerExConfig
 {
-    public required string RootDirectory { get; init; }
+    public string RootDirectory { get; set; } = MavlinkFtpHelper.DirectorySeparator.ToString();
 }
 
 public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
@@ -563,55 +563,65 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
         return session;
     }
 
-    public void Dispose()
+    #region Dispose
+    protected override void Dispose(bool disposing)
     {
-        foreach (var session in _sessions)
+        if (disposing)
         {
-            session.Close();
+            foreach (var session in _sessions)
+            {
+                session.Close();
+            }
+
+            Base.Rename = null;
+            Base.OpenFileRead = null;
+            Base.OpenFileWrite = null;
+            Base.FileRead = null;
+            Base.TerminateSession = null;
+            Base.ListDirectory = null;
+            Base.ResetSessions = null;
+            Base.CreateDirectory = null;
+            Base.CreateFile = null;
+            Base.RemoveFile = null;
+            Base.RemoveDirectory = null;
+            Base.CalcFileCrc32 = null;
+            Base.TruncateFile = null;
+            Base.BurstReadFile = null;
+            Base.WriteFile = null;
+
+            _sessions.Clear();
         }
 
-        Base.Rename = null;
-        Base.OpenFileRead = null;
-        Base.OpenFileWrite = null;
-        Base.FileRead = null;
-        Base.TerminateSession = null;
-        Base.ListDirectory = null;
-        Base.ResetSessions = null;
-        Base.CreateDirectory = null;
-        Base.CreateFile = null;
-        Base.RemoveFile = null;
-        Base.RemoveDirectory = null;
-        Base.CalcFileCrc32 = null;
-        Base.TruncateFile = null;
-        Base.BurstReadFile = null;
-        Base.WriteFile = null;
-
-        _sessions.Clear();
+        base.Dispose(disposing);
     }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
-        Base.Rename = null;
-        Base.OpenFileRead = null;
-        Base.OpenFileWrite = null;
-        Base.FileRead = null;
-        Base.TerminateSession = null;
-        Base.ListDirectory = null;
-        Base.ResetSessions = null;
-        Base.CreateDirectory = null;
-        Base.CreateFile = null;
-        Base.RemoveFile = null;
-        Base.RemoveDirectory = null;
-        Base.CalcFileCrc32 = null;
-        Base.TruncateFile = null;
-        Base.BurstReadFile = null;
-        Base.WriteFile = null;
+        await base.DisposeAsyncCore().ConfigureAwait(false);
         foreach (var session in _sessions)
         {
             await session.CloseAsync().ConfigureAwait(false);
         }
 
+        Base.Rename = null;
+        Base.OpenFileRead = null;
+        Base.OpenFileWrite = null;
+        Base.FileRead = null;
+        Base.TerminateSession = null;
+        Base.ListDirectory = null;
+        Base.ResetSessions = null;
+        Base.CreateDirectory = null;
+        Base.CreateFile = null;
+        Base.RemoveFile = null;
+        Base.RemoveDirectory = null;
+        Base.CalcFileCrc32 = null;
+        Base.TruncateFile = null;
+        Base.BurstReadFile = null;
+        Base.WriteFile = null;
+
         _sessions.Clear();
     }
+    
+    #endregion
 }
     

@@ -12,7 +12,7 @@ public sealed class StatusTextClient : MavlinkMicroserviceClient, IStatusTextCli
     private readonly ReactiveProperty<string> _name;
 
     public StatusTextClient(MavlinkClientIdentity identity,IMavlinkContext core) 
-        : base("STATUS",identity,core)
+        : base(StatusTextHelper.MicroserviceName,identity,core)
     {
         _name = new ReactiveProperty<string>($"[{identity.Target.SystemId},{identity.Target.ComponentId}]");
         _onMessage = new Subject<StatusMessage>();

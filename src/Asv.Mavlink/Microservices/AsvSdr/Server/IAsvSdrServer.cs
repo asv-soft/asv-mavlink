@@ -12,45 +12,8 @@ namespace Asv.Mavlink
     /// </summary>
     public interface IAsvSdrServer:IMavlinkMicroserviceServer
     {
-        /// Summary:
-        /// Starts the execution of some process.
-        /// Remarks:
-        /// This method initiates the execution of a process. It does not accept any arguments
-        /// and does not return any value. The process being executed may perform various tasks
-        /// based on its implementation.
-        /// Example:
-        /// // Create an instance of the class
-        /// var myProcess = new MyProcess();
-        /// // Start the execution of the process
-        /// myProcess.Start();
-        /// /
-        void Start();
-
-        /// <summary>
-        /// Sets the specified change callback function to be executed when the status payload is changed.
-        /// </summary>
-        /// <param name="changeCallback">The callback function to be executed when the status payload is changed.</param>
-        /// <remarks>
-        /// The change callback function will be passed an instance of <see cref="AsvSdrOutStatusPayload"/> which represents the updated status payload.
-        /// </remarks>
-        /// <example>
-        /// The following example demonstrates how to use the Set method:
-        /// <code>
-        /// Set(payload =>
-        /// {
-        /// // Handle status payload change
-        /// Console.WriteLine($"Status payload changed: {payload}");
-        /// });
-        /// </code>
-        /// </example>
         void Set(Action<AsvSdrOutStatusPayload> changeCallback);
 
-        /// <summary>
-        /// Provides an observable sequence of AsvSdrRecordRequestPayload objects for recording requests.
-        /// </summary>
-        /// <value>
-        /// An Observable<AsvSdrRecordRequestPayload> representing the OnRecordRequest sequence.
-        /// </value>
         Observable<AsvSdrRecordRequestPayload> OnRecordRequest { get; }
 
         /// <summary>

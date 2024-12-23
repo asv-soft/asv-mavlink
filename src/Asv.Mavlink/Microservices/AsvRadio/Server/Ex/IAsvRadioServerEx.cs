@@ -11,12 +11,10 @@ public delegate Task<MavResult> EnableRadioDelegate(uint frequencyHz, AsvRadioMo
     float referenceRxPowerDbm, float txPowerDbm, AsvAudioCodec codec, CancellationToken cancel);
 
 public delegate Task<MavResult> DisableRadioDelegate(CancellationToken cancel);
-public interface IAsvRadioServerEx
+public interface IAsvRadioServerEx: IMavlinkMicroserviceServer
 {
     IAsvRadioServer Base { get; }
     ReadOnlyReactiveProperty<AsvRadioCustomMode> CustomMode { get; }
     EnableRadioDelegate EnableRadio { set; }
     DisableRadioDelegate DisableRadio { set; }
-
-    void Start();
 }

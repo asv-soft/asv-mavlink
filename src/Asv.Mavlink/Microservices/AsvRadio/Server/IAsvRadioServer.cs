@@ -8,7 +8,7 @@ namespace Asv.Mavlink;
 
 public interface IAsvRadioServer:IMavlinkMicroserviceServer
 {
-    void Start();
+    
     void Set(Action<AsvRadioStatusPayload> changeCallback);
     Observable<AsvRadioCapabilitiesRequestPayload?> OnCapabilitiesRequest { get; }
     ValueTask SendCapabilitiesResponse(Action<AsvRadioCapabilitiesResponsePayload> setValueCallback,

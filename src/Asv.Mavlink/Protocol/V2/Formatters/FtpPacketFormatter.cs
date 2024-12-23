@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Text;
 using Asv.IO;
@@ -33,6 +34,7 @@ public class FtpPacketFormatter: IProtocolMessageFormatter,ISingleton<FtpPacketF
         var size = ftp.ReadSize();
         var opCode = ftp.ReadOpcode();
         var offset = ftp.ReadOffset();
+        
         var str = Encoding.ASCII.GetString(payload).TrimEnd('\0');
         return JsonConvert.SerializeObject(new{
             brstcmp,
