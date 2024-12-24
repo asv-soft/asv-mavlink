@@ -172,8 +172,9 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// Sends the current mission index to the system.
     /// </summary>
     /// <param name="current">The index of the current mission.</param>
+    /// <param name="cancel"></param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    ValueTask SendMissionCurrent(ushort current);
+    ValueTask SendMissionCurrent(ushort current, CancellationToken cancel = default);
 
     /// <summary>
     /// Sends a mission item to the server.
@@ -181,11 +182,12 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// <param name="item">The mission item to be sent.</param>
     /// <param name="targetSystemId">The target system ID. Default value is 0.</param>
     /// <param name="targetComponentId">The target component ID. Default value is 0.</param>
+    /// <param name="cancel"></param>
     /// <returns>
     /// A task representing the asynchronous operation. The task will complete once the mission item
     /// has been successfully sent to the server.
     /// </returns>
-    ValueTask SendMissionItemInt(ServerMissionItem item, byte targetSystemId = 0, byte targetComponentId = 0);
+    ValueTask SendMissionItemInt(ServerMissionItem item, byte targetSystemId = 0, byte targetComponentId = 0, CancellationToken cancel = default);
 
     /// <summary>
     /// Requests a mission item from the server.

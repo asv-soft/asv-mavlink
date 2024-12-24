@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
@@ -16,7 +18,7 @@ public abstract class CommandServerEx<TArgPacket> : MavlinkMicroserviceServer, I
 {
     private readonly Func<TArgPacket,ushort> _cmdGetter;
     private readonly Func<TArgPacket,byte> _confirmationGetter;
-    private readonly ConcurrentDictionary<ushort, CommandDelegate<TArgPacket>?> _registry = new();
+    private readonly ConcurrentDictionary<ushort, CommandDelegate<TArgPacket>> _registry = new();
     private readonly ILogger _logger;
     private int _isBusy;
     private int _lastCommand = -1;
@@ -45,9 +47,19 @@ public abstract class CommandServerEx<TArgPacket> : MavlinkMicroserviceServer, I
 
     public CommandDelegate<TArgPacket>? this[MavCmd cmd]
     {
-        set => _registry.AddOrUpdate((ushort)cmd, value, (_, _) => value);
+        set
+        {
+            if (value == null)
+            {
+                _registry.TryRemove((ushort)cmd, out _);
+                return;
+            }
+            _registry.AddOrUpdate((ushort)cmd, value, (_, _) => value);
+        }
     }
-    
+
+    public IEnumerable<MavCmd> SupportedCommands =>_registry.Keys.Select(x=>(MavCmd)x);
+
     private async Task OnRequest(TArgPacket pkt, CancellationToken cancellationToken)
     {
         var requester = new DeviceIdentity() { ComponentId = pkt.ComponentId, SystemId = pkt.SystemId };
@@ -62,6 +74,7 @@ public abstract class CommandServerEx<TArgPacket> : MavlinkMicroserviceServer, I
                 if (confirmation != 0 && _lastCommand == cmd)
                 {
                     // do nothing, we already doing this task
+                    
                     return;
                 }
                 _logger.ZLogWarning($"Reject command {pkt}): too busy now");

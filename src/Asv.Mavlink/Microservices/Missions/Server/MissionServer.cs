@@ -60,16 +60,13 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
         },DisposeCancel);
     }
 
-    public ValueTask SendMissionCurrent(ushort current)
+    public ValueTask SendMissionCurrent(ushort current, CancellationToken cancel = default)
     {
         _currentMissionIndex = current;
-        return InternalSend<MissionCurrentPacket>(x =>
-        {
-            x.Payload.Seq = current;
-        }, DisposeCancel);
+        return InternalSend<MissionCurrentPacket>(x => x.Payload.Seq = current, cancel);
     }
 
-    public ValueTask SendMissionItemInt(ServerMissionItem item,byte targetSystemId = 0, byte targetComponentId = 0)
+    public ValueTask SendMissionItemInt(ServerMissionItem item,byte targetSystemId = 0, byte targetComponentId = 0,CancellationToken cancel = default)
     {
         return InternalSend<MissionItemIntPacket>(x =>
         {
@@ -89,7 +86,7 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
             x.Payload.Z = item.Z;
             x.Payload.Command = item.Command;
             x.Payload.Frame = item.Frame;
-        }, DisposeCancel);
+        }, cancel);
     }
 
     public Task<ServerMissionItem> RequestMissionItem(ushort index, MavMissionType type,byte targetSystemId = 0, byte targetComponentId = 0, CancellationToken cancel = default)
