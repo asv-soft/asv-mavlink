@@ -3,7 +3,7 @@ using R3;
 
 namespace Asv.Mavlink;
 
-public interface IParamsExtServerEx
+public interface IParamsExtServerEx : IMavlinkMicroserviceServer
 {
     Observable<Exception> OnError { get; }
     

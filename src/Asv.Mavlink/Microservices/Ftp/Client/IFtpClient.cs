@@ -94,11 +94,6 @@ public readonly struct BurstReadResult(byte readCount, bool isLastChunk, ReadReq
     public override string ToString() => $"BURSTREAD_RESP(read: {ReadCount}, {Request}, {IsLastChunk})";
 }
 
-public readonly struct CrcDelegate(string crc)
-{
-    
-}
-
 
 public readonly struct ReadHandle(byte session, uint size)
 {
@@ -118,7 +113,7 @@ public readonly struct CreateHandle(byte session, string path)
 {
     public readonly byte Session = session;
     public readonly string Path = path;
-    public override string ToString() => $"CREATE_DIR(session: {Session}, path: {path})";
+    public override string ToString() => $"CREATE_DIR(session: {Session}, path: {Path})";
 }
 
 public readonly struct TruncateRequest(string path, uint offset)

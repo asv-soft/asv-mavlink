@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
+
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -30,7 +31,7 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
     {
         // Arrange
         var paramValue = 123f;
-        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p => _taskCompletionSource.TrySetResult(p)
+        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(p => _taskCompletionSource.TrySetResult(p)
         );
         
         // Act
@@ -55,7 +56,7 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
         var serverResults = new List<ParamValuePayload>();
         var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => _taskCompletionSource.TrySetCanceled());
-        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
+        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(p =>
         {
             called++;
             if (p is ParamValuePacket packet)

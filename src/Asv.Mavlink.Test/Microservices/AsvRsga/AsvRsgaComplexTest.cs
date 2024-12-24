@@ -39,7 +39,7 @@ public class AsvRsgaComplexTest : ComplexTestBase<AsvRsgaClientEx, AsvRsgaServer
     {
         var status = new StatusTextServer(identity, _statusConfig, core);
         var command = new CommandLongServerEx(new CommandServer(identity, core));
-        return new AsvRsgaServerEx(new AsvRsgaServer(identity, core), status, command);
+        return new AsvRsgaServerEx(new AsvRsgaServer(identity, core), command);
     }
 
     protected override AsvRsgaClientEx CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)

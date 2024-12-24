@@ -39,17 +39,30 @@ namespace Asv.Mavlink
         private readonly IDisposable _sub1;
 
         public CommandClient(MavlinkClientIdentity identity, CommandProtocolConfig config,IMavlinkContext core)
-            :base(Command.MicroserviceTypeName, identity, core)
+            :base(CommandHelper.MicroserviceTypeName, identity, core)
         {
             _logger = core.LoggerFactory.CreateLogger<CommandClient>();
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _onCommandAck = new Subject<CommandAckPayload>();
-            _sub1 = InternalFilter<CommandAckPacket>().Select(p => p.Payload).Subscribe(_onCommandAck.AsObserver());
+            _sub1 = InternalFilter<CommandAckPacket>()
+                .Select(p => p.Payload)
+                .Subscribe(_onCommandAck.AsObserver());
         }
 
-        public ValueTask SendCommandInt(MavCmd command, MavFrame frame, bool current, bool autocontinue,
-            float param1, float param2,
-            float param3, float param4, int x, int y, float z, CancellationToken cancel)
+        public ValueTask SendCommandInt(
+            MavCmd command, 
+            MavFrame frame, 
+            bool current, 
+            bool autocontinue,
+            float param1, 
+            float param2,
+            float param3, 
+            float param4, 
+            int x, 
+            int y, 
+            float z, 
+            CancellationToken cancel
+        )
         {
             _logger.ZLogTrace($"{Id}.{command:G}({frame:G},{param1},{param2},{param3},{param4},{x},{y},{z},{current},{autocontinue})");
             return InternalSend<CommandIntPacket>((packet) =>
@@ -67,11 +80,23 @@ namespace Asv.Mavlink
                 packet.Payload.X = x;
                 packet.Payload.Y = y;
                 packet.Payload.Z = z;
-            },cancel);
+            }, cancel);
         }
 
-        public async Task<CommandAckPayload> CommandInt(MavCmd command, MavFrame frame, bool current, bool autocontinue, float param1, float param2,
-            float param3, float param4, int x, int y, float z,  CancellationToken cancel)
+        public async Task<CommandAckPayload> CommandInt(
+            MavCmd command, 
+            MavFrame frame, 
+            bool current, 
+            bool autocontinue, 
+            float param1, 
+            float param2,
+            float param3,
+            float param4,
+            int x, 
+            int y, 
+            float z,  
+            CancellationToken cancel
+        )
         {
             _logger.ZLogTrace($"{Id}{command:G}({frame:G},{param1},{param2},{param3},{param4},{x},{y},{z},{current},{autocontinue})");
             var result = await InternalCall<CommandAckPayload, CommandIntPacket, CommandAckPacket>((packet) =>
@@ -94,8 +119,17 @@ namespace Asv.Mavlink
             return result;
         }
 
-        public async Task SendCommandLong(MavCmd command, float param1, float param2, float param3,
-            float param4, float param5, float param6, float param7, CancellationToken cancel)
+        public async Task SendCommandLong(
+            MavCmd command,
+            float param1,
+            float param2, 
+            float param3,
+            float param4, 
+            float param5, 
+            float param6, 
+            float param7, 
+            CancellationToken cancel
+        )
         {
             await InternalSend<CommandLongPacket>((packet) =>
             {
@@ -134,7 +168,17 @@ namespace Asv.Mavlink
             return result;
         }
 
-        public async Task<CommandAckPayload> CommandLong(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, CancellationToken cancel)
+        public async Task<CommandAckPayload> CommandLong(
+            MavCmd command, 
+            float param1, 
+            float param2, 
+            float param3, 
+            float param4, 
+            float param5, 
+            float param6, 
+            float param7, 
+            CancellationToken cancel
+        )
         {
             _logger.ZLogTrace($"{Id}{command:G}({param1},{param1},{param2},{param3},{param4},{param5},{param6},{param7})");
             var result = await InternalCall<CommandAckPayload, CommandLongPacket, CommandAckPacket>((packet) =>
@@ -155,9 +199,17 @@ namespace Asv.Mavlink
             return result;
         }
 
-        public async Task<TAnswerPacket> CommandLongAndWaitPacket<TAnswerPacket>(MavCmd command, float param1, float param2, float param3,
-            float param4, float param5, float param6, float param7, CancellationToken cancel) 
-            where TAnswerPacket : MavlinkMessage, new()
+        public async Task<TAnswerPacket> CommandLongAndWaitPacket<TAnswerPacket>(
+            MavCmd command, 
+            float param1, 
+            float param2,
+            float param3,
+            float param4, 
+            float param5, 
+            float param6,
+            float param7, 
+            CancellationToken cancel
+        ) where TAnswerPacket : MavlinkMessage, new()
         {
             _logger.ZLogTrace($"{Id}{command:G}({param1},{param1},{param2},{param3},{param4},{param5},{param6},{param7})");
             var result = await InternalCall<TAnswerPacket, CommandLongPacket, TAnswerPacket>((packet) =>

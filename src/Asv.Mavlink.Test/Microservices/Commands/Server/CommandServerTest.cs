@@ -22,9 +22,8 @@ public class CommandServerTest : ServerTestBase<CommandServer>
     {
         _server = Server;
         _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
-
     }
     
     protected override CommandServer CreateClient(MavlinkIdentity identity, CoreServices core) => new(identity, core);
@@ -189,7 +188,7 @@ public class CommandServerTest : ServerTestBase<CommandServer>
         Assert.True(packetFromClient.IsDeepEqual(result));
     }
     
-    [Fact] 
+    [Fact]
     public async Task SendCommandAck_Cancel_Throws()
     {
         // Arrange
@@ -202,15 +201,16 @@ public class CommandServerTest : ServerTestBase<CommandServer>
 
         // Act
         await _cancellationTokenSource.CancelAsync();
+        var task = _server.SendCommandAck(
+            MavCmd.MavCmdUser1,
+            new DeviceIdentity(Identity.SystemId, Identity.ComponentId),
+            new CommandResult(MavResult.MavResultAccepted),
+            _cancellationTokenSource.Token
+        );
         
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(
-            async () => await  _server.SendCommandAck(
-                MavCmd.MavCmdUser1,
-                new DeviceIdentity(Identity.SystemId, Identity.ComponentId),
-                new CommandResult(MavResult.MavResultAccepted),
-                _cancellationTokenSource.Token
-            )
+            async () => await  task
         );
         Assert.Equal(0, called);
         Assert.Equal(called, (int) Link.Client.Statistic.RxMessages);

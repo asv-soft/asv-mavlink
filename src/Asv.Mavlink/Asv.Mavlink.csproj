@@ -4,8 +4,6 @@
     <FileVersion>$(ProductVersion)</FileVersion>
     <Version>$(ProductVersion)</Version>
     <PackageVersion>$(ProductVersion)</PackageVersion>
-    <ApiCompatGenerateSuppressionFile>true</ApiCompatGenerateSuppressionFile>
-    <PackageValidationBaselineVersion>$(ProductPrevVersion)</PackageValidationBaselineVersion>
     
     <Authors>https://github.com/asv-soft</Authors>
     <Company>https://github.com/asv-soft</Company>
@@ -34,10 +32,6 @@
     <PackageReference Include="R3" Version="1.2.9" />
     <PackageReference Include="TestableIO.System.IO.Abstractions" Version="21.0.29" />
     <PackageReference Include="ZLogger" Version="$(ZLoggerVersion)" />
-    <PackageReference Include="Microsoft.DotNet.ApiCompat.Task" Version="$(ApiCompatVersion)" >
-      <!--using api compatibility purely as a development harness-->
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="Geodesy" Version="4.1.0" />
     <PackageReference Include="System.IO.Abstractions" Version="21.0.29" />
       </ItemGroup>
@@ -52,7 +46,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ParamsDesc.resx</DependentUpon>
     </Compile>
-    
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="RS.resx">

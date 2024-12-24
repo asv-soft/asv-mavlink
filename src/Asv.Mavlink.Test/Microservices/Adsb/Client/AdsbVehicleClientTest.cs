@@ -28,9 +28,24 @@ public class AdsbVehicleClientTest : ClientTestBase<AdsbVehicleClient>, IDisposa
     [Fact]
     public void Ctor_ThrowsExceptions_ArgIsNullFail()
     {
-        Assert.Throws<ArgumentNullException>(() => new AdsbVehicleClient(null, _config, Context));
-        Assert.Throws<ArgumentNullException>(() => new AdsbVehicleClient(Identity, _config, null));
-        Assert.Throws<NullReferenceException>(() => new AdsbVehicleClient(Identity, null, Context));
+        Assert.Throws<ArgumentNullException>(() =>
+        {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            var client = new AdsbVehicleClient(null, _config, Context);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        });
+        Assert.Throws<ArgumentNullException>(() =>
+        {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            var client = new AdsbVehicleClient(Identity, _config, null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        });
+        Assert.Throws<NullReferenceException>(() =>
+        {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            var client = new AdsbVehicleClient(Identity, null, Context);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        });
     }
 
     public void Dispose()

@@ -29,13 +29,12 @@ public class ParamsExtComplexTest : ComplexTestBase<ParamsExtClientEx, ParamsExt
     private readonly ParamsExtClientConfig _clientConfig = new()
     {
         ReadAttemptCount = 3,
-        ReadTimeouMs = 5000,
+        ReadTimeoutMs = 5000,
     };
 
     private readonly ParamsExtClientExConfig _clientExConfig = new()
     {
-        ReadListTimeoutMs = 5000,
-        ChunkUpdateBufferMs = 100,
+        ChunkUpdateBufferMs = 0,
     };
 
     private readonly StatusTextLoggerConfig _statusTextServerConfig = new()
@@ -46,7 +45,7 @@ public class ParamsExtComplexTest : ComplexTestBase<ParamsExtClientEx, ParamsExt
 
     private readonly ParamsExtServerExConfig _serverExConfig = new()
     {
-        SendingParamItemDelayMs = 100,
+        SendingParamItemDelayMs = 0,
         CfgPrefix = "MAV_CFG_",
     };
 
@@ -273,6 +272,7 @@ public class ParamsExtComplexTest : ComplexTestBase<ParamsExtClientEx, ParamsExt
             param.Add(p);
             if (param.Count == p.ParamCount)
                 _taskCompletionSource.TrySetResult(p);
+            ClientTime.Advance(TimeSpan.FromMilliseconds(_serverExConfig.SendingParamItemDelayMs));
         });
 
         // Act

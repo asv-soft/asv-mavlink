@@ -485,7 +485,8 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
             }).ConfigureAwait(false);
             isOver = result.IsLastChunk;
             offset += result.ReadCount;
-            await Task.Delay(_config.BurstReadChunkDelayMs).ConfigureAwait(false);
+            if (_config.BurstReadChunkDelayMs>0)
+                await Task.Delay(TimeSpan.FromMilliseconds(_config.BurstReadChunkDelayMs), Context.TimeProvider).ConfigureAwait(false);
         }
     }
 

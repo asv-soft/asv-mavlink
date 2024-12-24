@@ -24,7 +24,6 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
         ReadTimeouMs = 100,
         ReadAttemptCount = 3,
         ChunkUpdateBufferMs = 100,
-        ReadListTimeoutMs = 500,
     };
 
     public ParamsClientExTest(ITestOutputHelper log) : base(log)
@@ -72,7 +71,10 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
 
         var t2 = Task.Factory.StartNew(() =>
         {
-            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadTimeouMs * _config.ReadAttemptCount) + 1));
+            while (t1.IsCompleted == false)
+            {
+                Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeouMs * _config.ReadAttemptCount + 1));
+            }
         });
         
         //Assert

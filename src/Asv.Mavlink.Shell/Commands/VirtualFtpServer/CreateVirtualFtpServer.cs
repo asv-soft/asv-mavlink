@@ -58,13 +58,11 @@ public class CreateVirtualFtpServerCommand
             AnsiConsole.MarkupLine($"[green]Add connection port [/]: [yellow]{port}[/]");
             router.AddPort(port);
         }
-
-        var deviceCfg = new FtpServerDeviceConfig
-        {
-            ServerCfg = cfg.FtpServerConfig,
-            ServerExCfg = cfg.FtpServerExConfig,
-        };
         var core = new CoreServices(router);
-        var device = new FtpServerDevice(new MavlinkIdentity(cfg.SystemId, cfg.ComponentId), deviceCfg, core);
+        var device = ServerDevice.Create(new MavlinkIdentity(cfg.SystemId, cfg.ComponentId), core, config =>
+        {
+            config.RegisterFtp(cfg.FtpServerConfig);
+            config.RegisterFtpEx(cfg.FtpServerExConfig);
+        });
     }
 }

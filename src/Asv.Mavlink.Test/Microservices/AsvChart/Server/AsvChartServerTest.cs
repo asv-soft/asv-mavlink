@@ -18,7 +18,7 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
 
     private readonly AsvChartServerConfig _config = new()
     {
-        SendSignalDelayMs = 30,
+        SendSignalDelayMs = 0, // ! Important
         SendCollectionUpdateMs = 100,
     };
 
@@ -95,9 +95,6 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
     public async Task Send_SendManyPacket_Success(int packetsCount)
     {
         // Arrange
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(15));
-        cancel.Token.Register(() => _taskCompletionSource.TrySetCanceled());
-
         var count = 0;
         var info = new AsvChartInfo(1, "TestChart",
             new AsvChartAxisInfo("X", AsvChartUnitType.AsvChartUnitTypeDbm, 0, 10, 10),
@@ -113,7 +110,7 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
         // Act
         for (var i = 0; i < packetsCount; i++)
         {
-            await Server.Send(DateTime.Now, data, info, cancel.Token);
+            await Server.Send(DateTime.Now, data, info);
         }
 
         // Assert

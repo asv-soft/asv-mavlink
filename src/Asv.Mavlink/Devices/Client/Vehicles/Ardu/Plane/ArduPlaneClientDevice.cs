@@ -8,19 +8,13 @@ using Asv.IO;
 
 namespace Asv.Mavlink;
 
-public class ArduPlaneClientDevice: ArduVehicleClientDevice
+public class ArduPlaneClientDevice(
+    MavlinkClientDeviceId identity,
+    VehicleClientDeviceConfig config,
+    ImmutableArray<IClientDeviceExtender> extenders,
+    IMavlinkContext core)
+    : ArduVehicleClientDevice(identity, config, extenders, core)
 {
-
-    public ArduPlaneClientDevice(
-        MavlinkClientDeviceId identity, 
-        VehicleClientDeviceConfig config,
-        ImmutableArray<IClientDeviceExtender> extenders, 
-        IMavlinkContext core) 
-        : base(identity,config,extenders,core)
-    {
-        
-    }
-
     protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices(
         [EnumeratorCancellation] CancellationToken cancel)
     {

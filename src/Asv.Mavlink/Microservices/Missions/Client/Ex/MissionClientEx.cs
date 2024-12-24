@@ -39,7 +39,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
     public MissionClientEx(
         IMissionClient client, 
         MissionClientExConfig config)
-        :base(MissionClientHelper.MicroserviceExName, client.Identity, client.Core)
+        :base(MissionHelper.MicroserviceExName, client.Identity, client.Core)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = client.Core.LoggerFactory.CreateLogger<MissionClientEx>();
@@ -52,7 +52,6 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
         _obs1 = _isMissionSynced.Subscribe(_ => UpdateMissionsDistance());
     }
     
-    public string TypeName => $"{Base.TypeName}Ex";
     public IMissionClient Base => _client;
     public IReadOnlyObservableList<MissionItem> MissionItems => _missionSource;
     public ReadOnlyReactiveProperty<bool> IsSynced => _isMissionSynced;
@@ -83,11 +82,15 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
 
         if (result.Length != count)
         {
-            await Base.SendMissionAck(MavMissionResult.MavMissionError, cancel: cancel).ConfigureAwait(false);
+            await Base
+                .SendMissionAck(MavMissionResult.MavMissionError, cancel: cancel)
+                .ConfigureAwait(false);
             return [];
         }
 
-        await Base.SendMissionAck(MavMissionResult.MavMissionAccepted, cancel: cancel).ConfigureAwait(false);
+        await Base
+            .SendMissionAck(MavMissionResult.MavMissionAccepted, cancel: cancel)
+            .ConfigureAwait(false);
         _isMissionSynced.OnNext(true);
         return result;
     }
@@ -121,7 +124,8 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
             _logger.ZLogWarning($"Mission upload timeout");
             tcs.TrySetException(new Exception("Mission upload timeout"));
         }, null, _deviceUploadTimeout, _deviceUploadTimeout); 
-        using var sub1 = _client.OnMissionRequest.SubscribeAwait(async (req, ct) =>
+        using var sub1 = _client.OnMissionRequest.SubscribeAwait(
+            async (req, ct) =>
         {
             _logger.ZLogDebug($"UAV request {req.Seq} item");
             lastUpdateTime = DateTime.Now;
@@ -205,11 +209,12 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
         return missionItem;
     }
     
-    private void  UpdateMissionsDistance()
+    private void UpdateMissionsDistance()
     {
         var missions = _missionSource.Where(i =>
-                i.Command.Value == MavCmd.MavCmdNavWaypoint || i.Command.Value == MavCmd.MavCmdNavSplineWaypoint)
-            .ToArray();
+                i.Command.Value == MavCmd.MavCmdNavWaypoint || 
+                i.Command.Value == MavCmd.MavCmdNavSplineWaypoint
+        ).ToArray();
         var dist = 0.0;
         for (var i = 0; i < missions.Length - 1; i++)
         {
@@ -217,8 +222,6 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
         }
         _allMissionDistance.OnNext(dist / 1000.0);
     }
-
-  
     
     #region Dispose
     

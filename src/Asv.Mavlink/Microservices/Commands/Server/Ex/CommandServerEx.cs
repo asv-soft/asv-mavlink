@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
@@ -10,7 +13,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>, IDisposable, IAsyncDisposable
+public abstract class CommandServerEx<TArgPacket> : MavlinkMicroserviceServer, ICommandServerEx<TArgPacket>, IDisposable, IAsyncDisposable
     where TArgPacket : MavlinkMessage
 {
     private readonly Func<TArgPacket,ushort> _cmdGetter;
@@ -26,7 +29,8 @@ public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>
         ICommandServer server,
         Observable<TArgPacket> commandsPipe, 
         Func<TArgPacket,ushort> cmdGetter, 
-        Func<TArgPacket,byte> confirmationGetter )
+        Func<TArgPacket,byte> confirmationGetter ) 
+        : base(CommandHelper.MicroserviceTypeName,server.Identity,server.Core)
     {
         Base = server;
         _disposeCancel = new CancellationTokenSource();
@@ -41,11 +45,21 @@ public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>
 
     public ICommandServer Base { get; }
 
-    public CommandDelegate<TArgPacket> this[MavCmd cmd]
+    public CommandDelegate<TArgPacket>? this[MavCmd cmd]
     {
-        set { _registry.AddOrUpdate((ushort)cmd, value, (mavCmd, del) => value); }
+        set
+        {
+            if (value == null)
+            {
+                _registry.TryRemove((ushort)cmd, out _);
+                return;
+            }
+            _registry.AddOrUpdate((ushort)cmd, value, (_, _) => value);
+        }
     }
-    
+
+    public IEnumerable<MavCmd> SupportedCommands =>_registry.Keys.Select(x=>(MavCmd)x);
+
     private async Task OnRequest(TArgPacket pkt, CancellationToken cancellationToken)
     {
         var requester = new DeviceIdentity() { ComponentId = pkt.ComponentId, SystemId = pkt.SystemId };
@@ -60,6 +74,7 @@ public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>
                 if (confirmation != 0 && _lastCommand == cmd)
                 {
                     // do nothing, we already doing this task
+                    
                     return;
                 }
                 _logger.ZLogWarning($"Reject command {pkt}): too busy now");
@@ -93,22 +108,26 @@ public abstract class CommandServerEx<TArgPacket> : ICommandServerEx<TArgPacket>
         }
     }
 
-    private CancellationToken DisposeCancel => _disposeCancel.Token;
 
     #region Dispose
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _subscribe.Dispose();
-        _disposeCancel.Cancel(false);
-        _disposeCancel.Dispose();
+        if (disposing)
+        {
+            _subscribe.Dispose();
+            _disposeCancel.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
         await CastAndDispose(_subscribe).ConfigureAwait(false);
-        _disposeCancel.Cancel(false);
         await CastAndDispose(_disposeCancel).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
 
         return;
 

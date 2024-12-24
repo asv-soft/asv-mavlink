@@ -15,11 +15,11 @@ namespace Asv.Mavlink;
 
 public class ParamsExtServerExConfig
 {
-    public int SendingParamItemDelayMs { get; set; } = 30;
+    public int SendingParamItemDelayMs { get; set; } = 10;
     public string CfgPrefix { get; set; } = "MAV_CFG_";
 }
 
-public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDisposable
+public sealed class ParamsExtServerEx : MavlinkMicroserviceServer, IParamsExtServerEx
 {
     private readonly ILogger _logger;
 
@@ -33,7 +33,7 @@ public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDi
     private readonly IStatusTextServer _statusTextServer;
     private readonly IConfiguration _cfg;
     private readonly ParamsExtServerExConfig _serverCfg;
-    private readonly CancellationTokenSource _disposeCancel;
+    
     private readonly IDisposable _sub1;
     private readonly IDisposable _sub2;
     private readonly IDisposable _sub3;
@@ -43,14 +43,13 @@ public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDi
         IStatusTextServer statusTextServer,
         IEnumerable<IMavParamExtTypeMetadata> paramDescriptions, 
         IConfiguration cfg,
-        ParamsExtServerExConfig serverCfg)
+        ParamsExtServerExConfig serverCfg) : base(ParamsExtHelper.MicroserviceExName, server.Identity, server.Core)
     {
         _logger = server.Core.LoggerFactory.CreateLogger<ParamsExtServer>();
         _server = server ?? throw new ArgumentNullException(nameof(server));
         _statusTextServer = statusTextServer ?? throw new ArgumentNullException(nameof(statusTextServer));
         _cfg = cfg ?? throw new ArgumentNullException(nameof(cfg));
         _serverCfg = serverCfg ?? throw new ArgumentNullException(nameof(serverCfg));
-        _disposeCancel = new CancellationTokenSource();
 
         _onErrorSubject = new Subject<Exception>();
         _paramList = paramDescriptions.OrderBy(metadata => metadata.Name).ToImmutableList();
@@ -119,7 +118,11 @@ public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDi
                 var param = _paramList[index];
                 var currentValue = param.ReadFromConfig(_cfg, _serverCfg.CfgPrefix);
                 await SendParam(((ushort)index, param), currentValue, DisposeCancel).ConfigureAwait(false);
-                await Task.Delay(_serverCfg.SendingParamItemDelayMs, DisposeCancel).ConfigureAwait(false);
+                if (_serverCfg.SendingParamItemDelayMs > 0)
+                {
+                    await Task.Delay(TimeSpan.FromMilliseconds(_serverCfg.SendingParamItemDelayMs), Core.TimeProvider, DisposeCancel).ConfigureAwait(false);    
+                }
+                
             }
         }
         finally
@@ -226,36 +229,37 @@ public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDi
         }
     }
 
-    private CancellationToken DisposeCancel => _disposeCancel.Token;
-
     public MavParamExtValue this[IMavParamExtTypeMetadata param]
     {
         get => this[param.Name];
         set => this[param.Name] = value;
     }
 
-    public void Dispose()
+    #region Dispose
+
+    protected sealed override void Dispose(bool disposing)
     {
-        _onErrorSubject.Dispose();
-        _onParamChangedSubject.Dispose();
-        _cfg.Dispose();
-        _disposeCancel.Cancel(false);
-        _disposeCancel.Dispose();
-        _sub1.Dispose();
-        _sub2.Dispose();
-        _sub3.Dispose();
+        if (disposing)
+        {
+            _onErrorSubject.Dispose();
+            _onParamChangedSubject.Dispose();
+            _sub1.Dispose();
+            _sub2.Dispose();
+            _sub3.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 
-    public async ValueTask DisposeAsync()
+    protected sealed override async ValueTask DisposeAsyncCore()
     {
         await CastAndDispose(_onErrorSubject).ConfigureAwait(false);
         await CastAndDispose(_onParamChangedSubject).ConfigureAwait(false);
-        await CastAndDispose(_cfg).ConfigureAwait(false);
-        _disposeCancel.Cancel(false);
-        await CastAndDispose(_disposeCancel).ConfigureAwait(false);
         await CastAndDispose(_sub1).ConfigureAwait(false);
         await CastAndDispose(_sub2).ConfigureAwait(false);
         await CastAndDispose(_sub3).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
 
         return;
 
@@ -267,4 +271,7 @@ public sealed class ParamsExtServerEx : IParamsExtServerEx,IDisposable, IAsyncDi
                 resource.Dispose();
         }
     }
+
+    #endregion
+    
 }

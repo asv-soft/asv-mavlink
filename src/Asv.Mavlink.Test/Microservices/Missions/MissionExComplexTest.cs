@@ -9,6 +9,7 @@ using DeepEqual.Syntax;
 using R3;
 using Xunit;
 using Xunit.Abstractions;
+using CancellationTokenSource = System.Threading.CancellationTokenSource;
 
 namespace Asv.Mavlink.Test;
 
@@ -68,7 +69,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     {
         // Arrange
         var tcs = new TaskCompletionSource<ushort>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -113,7 +114,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     {
         // Arrange
         var tcs = new TaskCompletionSource();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -162,7 +163,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     {
         // Arrange
         var tcs = new TaskCompletionSource<ushort>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         await cancel.CancelAsync();
         
@@ -189,31 +190,6 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         Assert.Equal(0, called);
     }
     
-    
-    [Fact(Skip = "Test is not relevant")]
-    public async Task SetCurrent_Timeout_Throws()
-    {
-        // Arrange
-        var tcs = new TaskCompletionSource<ushort>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(20), TimeProvider.System);
-        cancel.Token.Register(() => tcs.TrySetCanceled());
-        
-        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
-        {
-            // ClientTime.Advance(
-            //     TimeSpan.FromMilliseconds((MaxAttemptsToCallCount * MaxCommandTimeoutMs * 2) + 1)
-            // );
-        });
-        _server.AddItems([new ServerMissionItem()]);
-        
-        
-        // Act
-        var task = _client.SetCurrent(0, cancel.Token);
-        
-        // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-    }
-
     [Theory]
     [InlineData(1)]
     [InlineData(100)]
@@ -222,7 +198,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     {
         // Arrange
         var tcs = new TaskCompletionSource<MissionAckPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var calledAckPacket = 0;
@@ -279,7 +255,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         Assert.Equal(itemsCount, called);
         Assert.Equal(called + calledMissionRequestList + calledAckPacket, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
-        // Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages); // TODO: Counter for Server.TxPackets shows strange results
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.Equal(itemsCount, items.Length);
         Assert.Equal(items.Length, itemsFromServer.Length);
         for (var i = 0; i < items.Length; i++)
@@ -295,7 +271,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     {
         // Arrange
         var tcs = new TaskCompletionSource<MissionAckPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var itemsCount = 10;
@@ -358,7 +334,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     public async Task Download_ZeroItems_Success()
     {
         // Arrange
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
 
         var calledMissionRequestList = 0;
         var called = 0;
@@ -384,35 +360,11 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         Assert.True(_client.IsSynced.CurrentValue);
     }
     
-    [Fact(Skip = "Test is not relevant")]
-    public async Task Download_Timeout_Throws()
-    {
-        // Arrange
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(10), TimeProvider.System);
-        
-        var progress = 0d;
-        
-        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
-        {
-             ClientTime.Advance(
-                 TimeSpan.FromMilliseconds((MaxAttemptsToCallCount * MaxCommandTimeoutMs * 2) + 1)
-             );
-        });
-        
-        // Act
-        var task = _client.Download(cancel.Token, pr => progress = pr);
-        
-        // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-        Assert.Equal(0, progress);
-        Assert.False(_client.IsSynced.CurrentValue);
-    }
-    
-    [Fact(Skip = "Test is not relevant")]
+    [Fact]
     public async Task Download_Cancel_Throws()
     {
         // Arrange
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         await cancel.CancelAsync();
         
         var calledMissionRequestList = 0;
@@ -446,7 +398,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     {
         // Arrange
         var tcs = new TaskCompletionSource<MissionAckPacket>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -493,7 +445,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     {
         // Arrange
         var tcs = new TaskCompletionSource<MissionAckPacket>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -523,30 +475,11 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         Assert.True(_client.IsSynced.CurrentValue);
     }
     
-    [Fact(Skip = "Test is not relevant")]
-    public async Task ClearRemote_Timeout_Throws()
-    {
-        // Arrange
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
-        
-        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
-        {
-            ClientTime.Advance(TimeSpan.FromMilliseconds((MaxAttemptsToCallCount * MaxCommandTimeoutMs * 2) + 1));
-        });
-        
-        // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async ()=>
-        {
-            await _client.ClearRemote(cancel.Token);
-        });
-        Assert.False(_client.IsSynced.CurrentValue);
-    }
-    
     [Fact]
     public async Task ClearRemote_Cancel_Throws()
     {
         // Arrange
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         await cancel.CancelAsync();
         
         var called = 0;
@@ -555,48 +488,65 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
             called++;
         });
         
+        // Act
+        var task = _client.ClearRemote(cancel.Token);
+        
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async ()=>
         {
-            await _client.ClearRemote(cancel.Token);
+            await task;
         });
         Assert.Equal(0, called);
         Assert.False(_client.IsSynced.CurrentValue);
     }
 
     [Theory]
-    [InlineData(1)]
-    [InlineData(ushort.MaxValue)]
-    public async Task OnReached_DifferentSeqValues_Success(ushort seq)
+    [InlineData(0)]
+    [InlineData(4)]
+    [InlineData(8)]
+    public async Task UploadAndStartMission_StrictSequenceExecuting_Success(ushort skip)
     {
         // Arrange
-        var tcs = new TaskCompletionSource<ushort>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
-        cancel.Token.Register(() => tcs.TrySetCanceled());
-        
-        var called = 0;
-        var isInit = false;
-        
-        _client.Reached.Subscribe(v =>
+        var originMission = new List<MavCmd>
         {
-            if (!isInit)
-            {
-                isInit = true;
-                return;
-            }
-            
-            called++;
-            tcs.TrySetResult(v);
-        });
+            MavCmd.MavCmdUser1, // 0
+            MavCmd.MavCmdUser1, // 1
+            MavCmd.MavCmdUser2, // 2
+            MavCmd.MavCmdUser2, // 3
+            MavCmd.MavCmdUser2, // 4
+            MavCmd.MavCmdUser3, // 5
+            MavCmd.MavCmdUser3, // 6
+            MavCmd.MavCmdUser3, // 7
+            MavCmd.MavCmdUser3, // 8
+        };
+        var executed = new List<MavCmd>();
+        _server[MavCmd.MavCmdUser1] = (item, cancel) =>
+        {
+            executed.Add(item.Command);
+            return Task.CompletedTask;
+        };
+        _server[MavCmd.MavCmdUser2] = (item, cancel) =>
+        {
+            executed.Add(item.Command);
+            return Task.CompletedTask;
+        };
+        _server[MavCmd.MavCmdUser3] = (item, cancel) =>
+        {
+            executed.Add(item.Command);
+            return Task.CompletedTask;
+        };
+        foreach (var cmd in originMission)
+        {
+            _client.Create().Command.Value = cmd;
+        }
+        await _client.Upload(CancellationToken.None);
         
         // Act
-        _server.Reached.OnNext(seq);
-        
+        _server.StartMission(skip);
+        await _server.Reached.Where(x => x == (originMission.Count - 1)).FirstAsync();
+
         // Assert
-        var seqFromClient = await tcs.Task;
-        Assert.Equal(1, called);
-        Assert.Equal(seq, seqFromClient);
-        Assert.False(_client.IsSynced.CurrentValue);
+        Assert.Equal(originMission.Skip(skip),executed);
     }
 
     [Fact]
@@ -604,7 +554,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     {
         // Arrange
         var tcs = new TaskCompletionSource();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var calledAck = 0;
@@ -658,7 +608,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     {
         // Arrange
         var tcs = new TaskCompletionSource();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var calledAck = 0;
@@ -709,7 +659,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     {
         // Arrange
         var tcs = new TaskCompletionSource();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var itemsCount = 30;
@@ -769,7 +719,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     {
         // Arrange
         var tcs = new TaskCompletionSource();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var itemsCount = 30;
@@ -810,7 +760,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     public async Task Upload_Cancel_Throws()
     {
         // Arrange
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         await cancel.CancelAsync();
         var progress = 0d;
         _client.Create();
@@ -826,27 +776,6 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.Empty(items);
         Assert.False(_client.IsSynced.CurrentValue);
-    }
-    
-    [Fact(Skip = "Test is not relevant")]
-    public async Task Upload_Timeout_Throws()
-    {
-        // Arrange
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(1), TimeProvider.System);
-        var progress = 0d;
-        _client.Create();
-
-        using var sub = Link.Client.OnTxMessage.Subscribe(_ =>
-        {
-           // ClientTime.Advance(TimeSpan.FromMilliseconds((MaxAttemptsToCallCount * MaxCommandTimeoutMs * 2) + 1));
-        });
-        
-        // Act
-        var task = _client.Upload(cancel.Token, p => progress = p);
-        
-        // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-        Assert.Equal(0, progress);
     }
 
     #region Utils

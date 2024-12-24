@@ -28,6 +28,7 @@ public abstract class ClientTestBase<TClient>
         Link = protocol.CreateVirtualConnection();
         Context = new CoreServices(Link.Client, Seq, new TestLoggerFactory(log, Time, "CLIENT"), Time, new DefaultMeterFactory());
     }
+    
     protected abstract TClient CreateClient(MavlinkClientIdentity identity, CoreServices core);
     protected MavlinkClientIdentity Identity { get; }
     protected ITestOutputHelper Log { get; }

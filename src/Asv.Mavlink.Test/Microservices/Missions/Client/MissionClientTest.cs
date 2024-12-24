@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
-
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -29,7 +28,7 @@ public class MissionClientTest : ClientTestBase<MissionClient>
     {
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
@@ -138,18 +137,138 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         {
             called++;
         });
+
+        var task = _client.SendMissionAck(
+            MavMissionResult.MavMissionAccepted,
+            cancel: _cancellationTokenSource.Token,
+            type: MavMissionType.MavMissionTypeMission
+        );
         
-        // Act + Assert
+        // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () => 
-            await _client.SendMissionAck(
-                MavMissionResult.MavMissionAccepted, 
-                cancel:_cancellationTokenSource.Token, 
-                type: MavMissionType.MavMissionTypeMission
-            )
+            await task
         );
         Assert.Equal(0, called);
         Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
         Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
+    }
+    
+    [Theory]
+    [InlineData(ushort.MinValue)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(ushort.MaxValue)]
+    public async Task MissionSetCurrent_Timeout_Throws(ushort missionItemsIndex)
+    {
+        // Arrange
+        var called = 0;
+        Link.SetServerToClientFilter(_ => false);
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
+        {
+            called++;
+            Time.Advance(TimeSpan.FromMilliseconds(_config.CommandTimeoutMs + 1));
+        });
+        
+        // Act
+        var task = _client.MissionSetCurrent(missionItemsIndex, _cancellationTokenSource.Token);
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_config.AttemptToCallCount, called);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+    }
+    
+    [Fact]
+    public async Task MissionRequestCount_Timeout_Throws()
+    {
+        // Arrange
+        var called = 0;
+        Link.SetServerToClientFilter(_ => false);
+        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
+        {
+            called++;
+            Time.Advance(TimeSpan.FromMilliseconds(_config.CommandTimeoutMs + 1));
+        });
+        
+        // Act
+        var task = _client.MissionRequestCount(_cancellationTokenSource.Token);
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_config.AttemptToCallCount, called);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+    }
+    
+    [Theory]
+    [InlineData(ushort.MinValue)]
+    [InlineData(ushort.MaxValue)]
+    public async Task MissionRequestItem_Timeout_Throws(ushort index)
+    {
+        // Arrange
+        var called = 0;
+        Link.SetServerToClientFilter(_ => false);
+        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
+        {
+            called++;
+            Time.Advance(TimeSpan.FromMilliseconds(_config.CommandTimeoutMs + 1));
+        });
+        
+        // Act
+        var task = _client.MissionRequestItem(index, _cancellationTokenSource.Token);
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_config.AttemptToCallCount, called);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+    }
+    
+    [Theory]
+    [InlineData(ushort.MinValue)]
+    [InlineData(ushort.MaxValue)]
+    public async Task WriteMissionItem_Timeout_Throws(ushort index)
+    {
+        // Arrange
+        var called = 0;
+        Link.SetServerToClientFilter(_ => false);
+        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
+        {
+            called++;
+            Time.Advance(TimeSpan.FromMilliseconds(_config.CommandTimeoutMs + 1));
+        });
+        
+        // Act
+        var task = _client.MissionRequestItem(index, _cancellationTokenSource.Token);
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_config.AttemptToCallCount, called);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+    }
+    
+    [Fact]
+    public async Task ClearAll_Timeout_Throws()
+    {
+        // Arrange
+        var called = 0;
+        Link.SetServerToClientFilter(_ => false);
+        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
+        {
+            called++;
+            Time.Advance(TimeSpan.FromMilliseconds(_config.CommandTimeoutMs + 1));
+        });
+        
+        // Act
+        var task = _client.ClearAll(cancel: _cancellationTokenSource.Token);
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_config.AttemptToCallCount, called);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
     }
 }

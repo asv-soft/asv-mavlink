@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
@@ -34,7 +33,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         _server = Server;
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
@@ -134,7 +133,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
             5,
             6,
             7,
-            _cancellationTokenSource.Token);
+            _cancellationTokenSource.Token
+        );
         
         // Assert
         var packetFromServer = await _taskCompletionSource.Task;
@@ -273,7 +273,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
             param5,
             param6,
             param7,
-            _cancellationTokenSource.Token);
+            _cancellationTokenSource.Token
+        );
         
         // Assert
         var packetFromServer = await _taskCompletionSource.Task;
@@ -329,7 +330,9 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
                 5,
                 6,
                 7,
-                _cancellationTokenSource.Token);
+                _cancellationTokenSource.Token
+            );
+            
             results.Add(result);
         }
         
@@ -386,7 +389,6 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         // Arrange
         var calledFirst = 0;
         var calledSecond = 0;
-        _cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(10), TimeProvider.System);
         _server[MavCmd.MavCmdActuatorTest] = (_, _, _) =>
         {
             calledFirst++;
@@ -410,7 +412,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
             5,
             6,
             7,
-            _cancellationTokenSource.Token);
+            _cancellationTokenSource.Token
+        );
         
         // Assert
         Assert.Equal(1, calledFirst);
@@ -429,8 +432,8 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         var calledSecond = 0;
         var tcs1 = new TaskCompletionSource();
         var tcs2 = new TaskCompletionSource();
-        var cancel1 = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
-        var cancel2 = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
+        var cancel1 = new CancellationTokenSource();
+        var cancel2 = new CancellationTokenSource();
         cancel1.Token.Register(() => tcs1.TrySetCanceled());
         cancel2.Token.Register(() => tcs2.TrySetCanceled());
         _server[MavCmd.MavCmdActuatorTest] = (_, _, _) =>
@@ -651,9 +654,13 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
     [InlineData(1, 5000)]
     [InlineData(5, 10000)]
     [InlineData(10, 20000)]
-    public async Task CommandLong_WaitBeforeResponseWithCustomConfig_Success(int maxCommandAttempts, int maxTimeoutInMs)
+    public async Task CommandLong_WaitBeforeResponseWithCustomConfig_Success(
+        int maxCommandAttempts, 
+        int maxTimeoutInMs
+    )
     {
         // Arrange
+        Link.SetServerToClientFilter(_ => false);
         var called = 0;
         var customCfg = new CommandProtocolConfig
         {
@@ -668,7 +675,11 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
             Log.WriteLine($"confirmation______ === {args.Payload.Confirmation}");
             if (called != maxCommandAttempts)
             {
-                ClientTime.Advance(TimeSpan.FromMilliseconds((maxCommandAttempts+1) * maxTimeoutInMs));
+                ClientTime.Advance(TimeSpan.FromMilliseconds(maxTimeoutInMs + 1));
+            }
+            else
+            {
+                Link.SetServerToClientFilter(_ => true);
             }
             
             return Task.FromResult(CommandResult.FromResult(MavResult.MavResultInProgress));
@@ -694,13 +705,17 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultInProgress, result.Result);
         Assert.Equal(MavCmd.MavCmdUser1, result.Command);
+        
     }
     
     [Theory]
     [InlineData(1, 1000)]
     [InlineData(5, 5000)]
     [InlineData(10, 20000)]
-    public async Task CommandLong_WithCustomConfig_Success(int maxCommandAttempts, int maxTimeoutInMs)
+    public async Task CommandLong_WithCustomConfig_Success(
+        int maxCommandAttempts, 
+        int maxTimeoutInMs
+    )
     {
         // Arrange
         var called = 0;
@@ -751,21 +766,29 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
     public async Task CommandLong_ConfirmationValueIncreases_Success()
     {
         // Arrange
+        Link.SetServerToClientFilter(_ => false);
         var called = 0;
         var packetsFromServer = new List<CommandLongPacket>();
         _server[MavCmd.MavCmdDoParachute] = (_, args, _) =>
         {
-            called++;
             packetsFromServer.Add(args);
-            var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
+            
+            return Task.FromResult(CommandResult.FromResult(MavResult.MavResultAccepted));
+        };
+        
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
+        {
+            called++;
+            
             if (called != MaxCommandAttempts)
             {
-                ClientTime.Advance(TimeSpan.FromMilliseconds((MaxCommandAttempts+1) * MaxTimeoutInMs));
+                ClientTime.Advance(TimeSpan.FromMilliseconds(MaxTimeoutInMs + 1));
+                return;
             }
             
-            return Task.FromResult(CommandResult.FromResult(result));
-        };
+            Link.SetServerToClientFilter(_ => true);
+        });
         
         // Act
         var result = await _client.CommandLong(
