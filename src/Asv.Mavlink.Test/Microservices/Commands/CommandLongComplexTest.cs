@@ -538,6 +538,118 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
     }
     
+    [Fact(Skip = "Test is not relevant")]
+    public async Task CommandLong_WaitBeforeResponse_Success()
+    {
+        // Arrange
+        var called = 0;
+        _server[MavCmd.MavCmdUser1] = (_, _, _) =>
+        {
+            called++;
+            if (called != MaxCommandAttempts)
+            {
+                ClientTime.Advance(TimeSpan.FromMilliseconds((MaxCommandAttempts+1) * MaxTimeoutInMs));
+            }
+            
+            return Task.FromResult(CommandResult.FromResult(MavResult.MavResultInProgress));
+        };
+        
+        // Act
+        var task = _client.CommandLong(
+            MavCmd.MavCmdUser1,
+            1,
+            1,
+            3,
+            4,
+            5,
+            6,
+            7,
+            _cancellationTokenSource.Token
+        );
+        
+        // Assert
+        var result = await task;
+        Assert.Equal(MaxCommandAttempts, called);
+        Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(MavResult.MavResultInProgress, result.Result);
+        Assert.Equal(MavCmd.MavCmdUser1, result.Command);
+    }
+    
+    [Fact(Timeout = 2000)]
+    public async Task CommandLong_TimeoutHappened_Throws()
+    {
+        // Arrange
+        var identityToNothing = new MavlinkClientIdentity(
+            1, 
+            2,
+            (byte)(Identity.Target.SystemId + 1),
+            (byte)(Identity.Target.ComponentId + 1)
+        );
+        
+        var client = CreateClient(identityToNothing, ClientCore);
+        using var sub = Link.Client.OnTxMessage.Subscribe(_ =>
+        {
+            ClientTime.Advance(TimeSpan.FromMilliseconds(MaxTimeoutInMs * (MaxCommandAttempts + 1)));
+        });
+        
+        // Act
+        var task = client.CommandLong(
+            MavCmd.MavCmdUser1,
+            1,
+            1,
+            3,
+            4,
+            5,
+            6,
+            7,
+            default
+        );
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(MaxCommandAttempts, (int)Link.Client.Statistic.TxMessages);
+    }
+    
+    [Theory(Skip = "Test is not relevant")]
+    [InlineData(0, 0)]
+    [InlineData(0, 1000)]
+    [InlineData(1, 1000)]
+    [InlineData(5, 3000)]
+    [InlineData(10, 9000)]
+    public async Task CommandLong_TimeoutWithCustomConfig_Throws(int maxCommandAttempts, int maxTimeoutInMs)
+    {
+        // Arrange
+        var customCfg = new CommandProtocolConfig
+        {
+            CommandTimeoutMs = maxTimeoutInMs,
+            CommandAttempt = maxCommandAttempts
+        };
+        var client = new CommandClient(Identity, customCfg, ClientCore);
+        
+        using var sub = Link.Client.OnTxMessage.Subscribe(_ =>
+        {
+            ClientTime.Advance(TimeSpan.FromMilliseconds(maxTimeoutInMs * (maxCommandAttempts + 1)));
+        });
+        
+        // Act
+        var task = client.CommandLong(
+            MavCmd.MavCmdUser1,
+            1,
+            1,
+            3,
+            4,
+            5,
+            6,
+            7,
+            default
+        );
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(maxCommandAttempts, (int)Link.Client.Statistic.TxMessages);
+    }
+    
     [Theory]
     [InlineData(1, 5000)]
     [InlineData(5, 10000)]
@@ -567,6 +679,12 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             called++;
+            Log.WriteLine($"confirmation______ === {args.Payload.Confirmation}");
+            
+            return Task.FromResult(CommandResult.FromResult(MavResult.MavResultInProgress));
+        };
+        var task1 = Task.Factory.StartNew(async () =>
+        {
             
             if (called != maxCommandAttempts)
             {

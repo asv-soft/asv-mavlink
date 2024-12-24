@@ -74,7 +74,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         CommandLongPacket? packetFromClient = null;
-        _server[MavCmd.MavCmdComponentArmDisarm] = (_, args, _) =>
+        _server[MavCmd.MavCmdComponentArmDisarm] = (id, args, cancel) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
@@ -157,7 +157,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         await _cancellationTokenSource.CancelAsync();
-        _server[MavCmd.MavCmdComponentArmDisarm] = (_, args, _) =>
+        _server[MavCmd.MavCmdComponentArmDisarm] = (id, args, cancel) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
@@ -280,7 +280,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         var called = 0;
         CommandLongPacket? packetFromClient = null;
         var geoPoint = new GeoPoint(latitude, longitude, altitude);
-        _server[MavCmd.MavCmdDoSetRoi] = (_, args, _) =>
+        _server[MavCmd.MavCmdDoSetRoi] = (id, args, cancel) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
@@ -320,7 +320,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         var called = 0;
         var packetsFromServer = new List<CommandLongPacket>();
         var packetsFromClient = new List<CommandLongPacket>();
-        _server[MavCmd.MavCmdDoSetRoi] = (_, args, _) =>
+        _server[MavCmd.MavCmdDoSetRoi] = (id, args, cancel) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
@@ -502,7 +502,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         IProtocolMessage? packetFromClient = null;
-        _server[MavCmd.MavCmdNavTakeoff] = (_, args, _) =>
+        _server[MavCmd.MavCmdNavTakeoff] = (id, args, cancel) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
@@ -539,7 +539,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         IProtocolMessage? packetFromClient = null;
-        _server[MavCmd.MavCmdNavTakeoff] = (_, args, _) =>
+        _server[MavCmd.MavCmdNavTakeoff] = (id, args, cancel) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
@@ -723,8 +723,8 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
     {
         // Arrange 
         var result = MavResult.MavResultAccepted;
-        using var sub = Link.Client.OnRxMessage
-            .FilterByType<CommandAckPacket>()
+        using var sub = Link.Client
+            .OnRxMessage.RxFilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;
@@ -803,15 +803,6 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
     [Fact]
     public async Task GetHomePosition_Unsupported_MavResultUnsupported()
     {
-        // Arrange 
-        var result = MavResult.MavResultAccepted;
-        using var sub = Link.Client
-            .OnRxMessage.FilterByType<CommandAckPacket>()
-            .Subscribe(p =>
-            {
-                result = p.Payload.Result;
-            });
-        
         // Act
         var t =  _client.GetHomePosition(_cancellationTokenSource.Token);
         
@@ -878,7 +869,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange
         var called = 0;
         IProtocolMessage? packetFromClient = null;
-        _server[MavCmd.MavCmdNavVtolLand] = (_, args, _) =>
+        _server[MavCmd.MavCmdNavVtolLand] = (id, args, cancel) =>
         {
             called++;
             var result = MavResult.MavResultAccepted;
@@ -986,15 +977,6 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
     [Fact]
     public async Task QLand_Unsupported_MavResultUnsupported()
     {
-        // Arrange 
-        var result = MavResult.MavResultAccepted;
-        using var sub = Link.Client.OnRxMessage
-            .FilterByType<CommandAckPacket>()
-            .Subscribe(p =>
-            {
-                result = p.Payload.Result;
-            });
-        
         // Act
         var t = _client.QLand(
             NavVtolLandOptions.NavVtolLandOptionsDefault, 
