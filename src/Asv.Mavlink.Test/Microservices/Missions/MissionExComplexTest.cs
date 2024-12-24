@@ -8,6 +8,7 @@ using Asv.IO;
 using Asv.Mavlink.Common;
 
 using DeepEqual.Syntax;
+using FluentAssertions;
 using R3;
 using TimeProviderExtensions;
 using Xunit;
@@ -568,38 +569,52 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     }
 
     [Theory]
-    [InlineData(1)]
-    [InlineData(ushort.MaxValue)]
-    public async Task OnReached_DifferentSeqValues_Success(ushort seq)
+    [InlineData(0)]
+    [InlineData(4)]
+    [InlineData(8)]
+    public async Task UploadAndStartMission_StrictSequenceExecuting_Success(ushort skip)
     {
         // Arrange
-        var tcs = new TaskCompletionSource<ushort>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
-        cancel.Token.Register(() => tcs.TrySetCanceled());
-        
-        var called = 0;
-        var isInit = false;
-        
-        _client.Reached.Subscribe(v =>
+        var originMission = new List<MavCmd>
         {
-            if (!isInit)
-            {
-                isInit = true;
-                return;
-            }
-            
-            called++;
-            tcs.TrySetResult(v);
-        });
+            MavCmd.MavCmdUser1, // 0
+            MavCmd.MavCmdUser1, // 1
+            MavCmd.MavCmdUser2, // 2
+            MavCmd.MavCmdUser2, // 3
+            MavCmd.MavCmdUser2, // 4
+            MavCmd.MavCmdUser3, // 5
+            MavCmd.MavCmdUser3, // 6
+            MavCmd.MavCmdUser3, // 7
+            MavCmd.MavCmdUser3, // 8
+        };
+        var executed = new List<MavCmd>();
+        _server[MavCmd.MavCmdUser1] = (item, cancel) =>
+        {
+            executed.Add(item.Command);
+            return Task.CompletedTask;
+        };
+        _server[MavCmd.MavCmdUser2] = (item, cancel) =>
+        {
+            executed.Add(item.Command);
+            return Task.CompletedTask;
+        };
+        _server[MavCmd.MavCmdUser3] = (item, cancel) =>
+        {
+            executed.Add(item.Command);
+            return Task.CompletedTask;
+        };
+        foreach (var cmd in originMission)
+        {
+            _client.Create().Command.Value = cmd;
+        }
+        await _client.Upload(CancellationToken.None);
         
         // Act
-        _server.Reached.OnNext(seq);
-        
+        _server.StartMission(skip);
+        await _server.Reached.Where(x => x == (originMission.Count - 1)).FirstAsync();
+
         // Assert
-        var seqFromClient = await tcs.Task;
-        Assert.Equal(1, called);
-        Assert.Equal(seq, seqFromClient);
-        Assert.False(_client.IsSynced.CurrentValue);
+        Assert.Equal(originMission.Skip(skip),executed);
     }
 
     [Fact]

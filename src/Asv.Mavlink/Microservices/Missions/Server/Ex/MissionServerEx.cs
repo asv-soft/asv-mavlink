@@ -16,7 +16,9 @@ namespace Asv.Mavlink;
 public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerEx
 {
     private const int InternalBusyStateIdle = 0;
-    private const int InternalBusyStateClearAll = 2;
+    private const int InternalBusyStateClearAll = 1;
+    private const int InternalBusyStateUploadMission = 2;
+    private const int InternalBusyStateStartMission = 3;
     
     
     private int _internalBusyState;
@@ -36,7 +38,6 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
     private readonly IDisposable _sub5;
     private readonly IDisposable _sub6;
     private readonly IDisposable _sub7;
-    private readonly object _sync = new();
     private Thread? _missionThread;
     private readonly ConcurrentDictionary<ushort,MissionTaskDelegate> _registry = new();
     private ushort _nextMissionIndex;
@@ -51,88 +52,145 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         _logger = baseIfc.Core.LoggerFactory.CreateLogger<MissionServerEx>();
         _missionSource = [];
 
-        _sub1 = Current.Subscribe(Base,(x,b)=>b.SendMissionCurrent(x));
+        _sub1 = Current.SubscribeAwait((x,c)=>Base.SendMissionCurrent(x));
         _sub2 = Reached.Subscribe(Base,(x,b)=>b.SendReached(x));
         
         _sub3 = baseIfc.OnMissionCount.SubscribeAwait(
             async (req, ct) => 
                 await UploadMission(req, ct).ConfigureAwait(false)
         );
-        _sub4 = baseIfc.OnMissionRequestList.SubscribeAwait(
-            async (req, ct) => 
-                await DownloadMission(req, ct).ConfigureAwait(false)
-        );
-        _sub5 = baseIfc.OnMissionRequestInt.SubscribeAwait(
-            async (req, ct) => 
-                await ReadMissionItem(req, ct).ConfigureAwait(false)
-        );
-        _sub6 = baseIfc.OnMissionClearAll.SubscribeAwait(
-            async (req, ct) => 
-                await ClearAll(req, ct).ConfigureAwait(false)
-        );
+        _sub4 = baseIfc.OnMissionRequestList.SubscribeAwait(OnDownloadMission, AwaitOperation.Drop);
+        _sub5 = baseIfc.OnMissionRequestInt.SubscribeAwait(OnReadMissionItem, AwaitOperation.Drop);
+        _sub6 = baseIfc.OnMissionClearAll.SubscribeAwait(OnMissionClearAll, AwaitOperation.Drop);
         _sub7 = baseIfc.OnMissionSetCurrent.Subscribe(x=>ChangeCurrentMissionItem(x.Payload.Seq));
     }
 
-    
-  
-    private async Task ClearAll(MissionClearAllPacket req, CancellationToken token)
+    #region ClearItems
+
+    public void ClearItems()
     {
         var current = Interlocked.CompareExchange(ref _internalBusyState, InternalBusyStateClearAll,
             InternalBusyStateIdle);
         if (current == InternalBusyStateClearAll)
         {
-            _logger.ZLogTrace($"{Id}: Duplicate '{nameof(ClearAll)}' received. Skip it...");
+            _logger.ZLogWarning($"{Id}: Duplicate '{nameof(OnMissionClearAll)}' received. Skip it...");
             return;
         }
         if (current != InternalBusyStateIdle)
         {
-            _logger.ZLogTrace($"{Id}: Busy state '{current:G}'");
-            await Base.SendMissionAck(MavMissionResult.MavMissionDenied, req.SystemId, req.ComponentId).ConfigureAwait(false);
-            return;
+            throw new InvalidOperationException($"{Id}: Receive {nameof(OnMissionClearAll)}, but now state '{current:G}. Response with error'");
         }
-        
-        
-        if (req.Payload.MissionType is not (MavMissionType.MavMissionTypeMission or MavMissionType.MavMissionTypeAll))
+
+        try
         {
-            await Base.SendMissionAck(MavMissionResult.MavMissionUnsupported, req.SystemId, req.ComponentId).ConfigureAwait(false);
-            return;
+            _logger.ZLogInformation($"{Id}: Clear all mission items (local call)");
+            _missionSource.Clear();
         }
-        _missionSource.Clear();
-        await Base.SendMissionAck(MavMissionResult.MavMissionAccepted, req.SystemId, req.ComponentId).ConfigureAwait(false);
+        finally
+        {
+            Interlocked.Exchange(ref _internalBusyState, InternalBusyStateIdle);            
+        }
     }
-        
-    private async Task ReadMissionItem(MissionRequestIntPacket req, CancellationToken token)
+  
+    private ValueTask OnMissionClearAll(MissionClearAllPacket req, CancellationToken token)
     {
+        if (token.IsCancellationRequested)
+        {
+            return ValueTask.FromCanceled(token);
+        }
+        var prevState = Interlocked.CompareExchange(ref _internalBusyState, InternalBusyStateClearAll,
+            InternalBusyStateIdle);
+        if (prevState == InternalBusyStateClearAll)
+        {
+            _logger.ZLogWarning($"{Id}: Duplicate '{nameof(OnMissionClearAll)}' received. Skip it...");
+            return Base.SendMissionAck(MavMissionResult.MavMissionAccepted, req.SystemId, req.ComponentId);
+        }
+        if (prevState != InternalBusyStateIdle)
+        {
+            _logger.ZLogWarning($"{Id}: Receive {nameof(OnMissionClearAll)}, but now state '{prevState:G}. Response with error'");
+            return Base.SendMissionAck(MavMissionResult.MavMissionUnsupported, req.SystemId, req.ComponentId);
+        }
+
+        try
+        {
+            if (req.Payload.MissionType is not (MavMissionType.MavMissionTypeMission or MavMissionType.MavMissionTypeAll))
+            {
+                _logger.ZLogWarning($"{Id}: Receive {nameof(OnMissionClearAll)}, but mission type '{req.Payload.MissionType:G}' not supported. Response with error'");
+                return Base.SendMissionAck(MavMissionResult.MavMissionUnsupported, req.SystemId, req.ComponentId);
+            }
+            _missionSource.Clear();
+            _logger.ZLogInformation($"{Id}: Clear all mission items");
+            return Base.SendMissionAck(MavMissionResult.MavMissionAccepted, req.SystemId, req.ComponentId);
+        }
+        catch (Exception e)
+        {
+            _logger.ZLogError(e, $"{Id}: Error at clear all mission items");
+            return Base.SendMissionAck(MavMissionResult.MavMissionError, req.SystemId, req.ComponentId);
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _internalBusyState, InternalBusyStateIdle);
+        }
+        
+    }
+
+    #endregion
+        
+    private ValueTask OnReadMissionItem(MissionRequestIntPacket req, CancellationToken cancel)
+    {
+        if (cancel.IsCancellationRequested)
+        {
+            return ValueTask.FromCanceled(cancel);
+        }
         if (req.Payload.MissionType != MavMissionType.MavMissionTypeMission)
         {
-            await Base.SendMissionAck(MavMissionResult.MavMissionUnsupported, req.SystemId, req.ComponentId).ConfigureAwait(false);
-            return;
+            _logger.ZLogWarning($"{Id}: Receive {nameof(OnReadMissionItem)}, but mission type '{req.Payload.MissionType:G}' not supported. Response with error'");
+            return Base.SendMissionAck(MavMissionResult.MavMissionUnsupported, req.SystemId, req.ComponentId);
         }
         
         if (req.Payload.Seq >= _missionSource.Count)
         {
-            await Base.SendMissionAck(MavMissionResult.MavMissionInvalid, req.SystemId, req.ComponentId).ConfigureAwait(false);
-            return;
+            _logger.ZLogWarning($"{Id}: Receive {nameof(OnReadMissionItem)}, but index '{req.Payload.Seq}' out of range. Response with error'");
+            return Base
+                .SendMissionAck(MavMissionResult.MavMissionInvalid, req.SystemId, req.ComponentId);
         }
         var item = _missionSource[req.Payload.Seq];
-        await Base.SendMissionItemInt(item).ConfigureAwait(false);
+        _logger.ZLogTrace($"{Id}: Send mission item '{item}'");
+        return Base.SendMissionItemInt(item, cancel: cancel);
     }
-    private async Task DownloadMission(MissionRequestListPacket req, CancellationToken token)
+    
+    private ValueTask OnDownloadMission(MissionRequestListPacket req, CancellationToken token)
     {
-        await Base.SendMissionCount((ushort)_missionSource.Count, req.SystemId, req.ComponentId).ConfigureAwait(false);
+        if (token.IsCancellationRequested)
+        {
+            return ValueTask.FromCanceled(token);
+        }
+        _logger.ZLogTrace($"{Id}: Send mission count '{_missionSource.Count}'");
+        return Base.SendMissionCount((ushort)_missionSource.Count, req.SystemId, req.ComponentId);
     }
 
-    private async Task UploadMission(MissionCountPacket req, CancellationToken token)
+    private async Task UploadMission(MissionCountPacket req, CancellationToken cancel)
     {
-        if (Interlocked.CompareExchange(ref _internalBusyState, 1, 0) != 0)
+        cancel.ThrowIfCancellationRequested();
+        
+        var lastState = Interlocked.CompareExchange(ref _internalBusyState, InternalBusyStateUploadMission,
+            InternalBusyStateIdle);
+        if (lastState == InternalBusyStateUploadMission)
         {
-            _logger.ZLogTrace($"{Id}: Duplicate '{nameof(MissionCountPacket)}' received. Skip it...");
+            _logger.ZLogWarning($"{Id}: Duplicate '{nameof(UploadMission)}' received. Skip it...");
             return;
         }
-        _missionSource.Clear();
-        _statusLogger.Info($"{Id}: begin upload '{req.Payload.Count}' items");
+        if (lastState != InternalBusyStateIdle)
+        {
+            _logger.ZLogWarning($"{Id}: Receive {nameof(UploadMission)}, but now state '{lastState:G}. Response with error'");
+            await Base.SendMissionAck(MavMissionResult.MavMissionUnsupported, req.SystemId, req.ComponentId)
+                .ConfigureAwait(false);
+            return;
+        }
         try
         {
+            var builder = ImmutableArray.CreateBuilder<ServerMissionItem>(req.Payload.Count);
+            _statusLogger.Info($"{Id}: begin upload '{req.Payload.Count}' items");
             var count = req.Payload.Count;
             for (int i = 0; i < count; i++)
             {
@@ -142,9 +200,11 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
                 {
                     _statusLogger.Info($"{Id}: uploaded '{(i + 1) / count:P0}' items");
                 }
-                _missionSource.Add(item);
+                builder.Add(item);
             }
             _statusLogger.Info($"{Id}: uploaded '{count}' items");
+            _missionSource.Clear();
+            _missionSource.AddRange(builder.ToImmutable());
             await Base.SendMissionAck(MavMissionResult.MavMissionAccepted, req.SystemId, req.ComponentId).ConfigureAwait(false);
         }
         catch (Exception)
@@ -154,7 +214,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         }
         finally
         {
-            Interlocked.Exchange(ref _internalBusyState, 0);
+            Interlocked.Exchange(ref _internalBusyState, InternalBusyStateIdle);
         }
     }
 
@@ -186,11 +246,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         EnsureIndexCorrected();
     }
 
-    public void ClearItems()
-    {
-        
-        _missionSource.Clear();
-    }
+   
 
     private void EnsureIndexCorrected()
     {
@@ -210,44 +266,50 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
 
     public void StartMission(ushort missionIndex = 0)
     {
+        var lastState = Interlocked.CompareExchange(ref _internalBusyState, InternalBusyStateStartMission,
+            InternalBusyStateIdle);
+        if (lastState == InternalBusyStateStartMission)
+        {
+            _logger.ZLogWarning($"{Id}: Duplicate '{nameof(StartMission)}' received. Skip it...");
+            return;
+        }
+        if (lastState != InternalBusyStateIdle)
+        {
+            _logger.ZLogWarning($"{Id}: Try {nameof(StartMission)}, but now state '{lastState:G}. Response with error'");
+            return;
+        }
+
         try
         {
-            Interlocked.CompareExchange(ref _state, MissionServerState.Idle, MissionServerState.CompleteSuccess);
-        }
-        finally
-        {
-            
-        }
-        
-        _statusLogger.Info($"Start mission {missionIndex} of {_missionSource.Count}");
-        if (_state.Value == MissionServerState.Running)
-        {
-            _statusLogger.Info($"Mission already running");
-            return;
-        }
-        if (_missionSource.Count == 0)
-        {
-            _statusLogger.Info($"Mission is empty");
-            return;
-        }
-        lock (_sync)
-        {
+            if (_missionSource.Count == 0)
+            {
+                _statusLogger.Info($"Mission is empty");
+                return;
+            }
+
+            _statusLogger.Info($"Start mission {missionIndex} of {_missionSource.Count}");
+            _state.OnNext(MissionServerState.Running);
             _nextMissionIndex = missionIndex;
             _missionCancel?.Cancel(false);
             _missionCancel = new CancellationTokenSource();
             _missionThread = new Thread(MissionTick);
             _missionThread.Start(_missionCancel.Token);
         }
+        catch (Exception)
+        {
+            _state.OnNext(MissionServerState.CompleteError);
+            Interlocked.Exchange(ref _internalBusyState, InternalBusyStateIdle);            
+        }
     }
 
     public void StopMission(CancellationToken cancel = default)
     {
         _statusLogger.Info($"Stop mission");
-        lock (_sync)
-        {
-            _missionCancel?.Cancel(false);
-            _missionThread = null;
-        }
+        _missionCancel?.Cancel(false);
+        _missionCancel?.Dispose();
+        _currentMissionItemCancel?.Cancel(false);
+        _currentMissionItemCancel?.Dispose();
+        _missionThread = null;
         _state.OnNext(MissionServerState.Idle);
     }
 
@@ -266,18 +328,17 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
 
     public IEnumerable<MavCmd> SupportedCommands => _registry.Keys.Select(x => (MavCmd)x);
 
-
-    public void ChangeCurrentMissionItem(ushort index)
+    public ValueTask ChangeCurrentMissionItem(ushort index)
     {
         _nextMissionIndex = index;
         _currentMissionItemCancel?.Cancel(false);
         _current.OnNext(index);
+        return ValueTask.CompletedTask;
     }
     private async void MissionTick(object? obj)
     {
         try
         {
-            Interlocked.CompareExchange(ref _internalBusyState, 1);
             var cancel = (CancellationToken)(obj ?? throw new ArgumentNullException(nameof(obj)));
             var items = GetItemsSnapshot();
             if (items.Length == 0)
@@ -286,6 +347,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
                 _state.OnNext(MissionServerState.CompleteSuccess);
                 return;
             }
+
             _state.OnNext(MissionServerState.Running);
             while (true)
             {
@@ -293,7 +355,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
                 ++_nextMissionIndex; // ! important here
                 if (missionIndex >= items.Length)
                 {
-                    _statusLogger.Info($"Mission already completed");
+                    _statusLogger.Info($"Mission completed");
                     _state.OnNext(MissionServerState.CompleteSuccess);
                     return;
                 }
@@ -329,8 +391,9 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
                 {
                     _statusLogger.Info($"Skip unsupported command '{item.Command}'");
                 }
+
                 _reached.OnNext(missionIndex);
-                
+
             }
         }
         catch (Exception e)
@@ -338,6 +401,10 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
             _logger.ZLogError(e, $"Error at mission tick");
             _statusLogger.Error($"Error at mission tick: {e.Message}");
             _state.OnNext(MissionServerState.CompleteError);
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _internalBusyState, InternalBusyStateIdle);
         }
         
     }

@@ -29,7 +29,7 @@ public interface IMissionServerEx : IMavlinkMicroserviceServer
    void ClearItems();
    ImmutableArray<ServerMissionItem> GetItemsSnapshot();
    ReadOnlyReactiveProperty<MissionServerState> State { get; }
-   void ChangeCurrentMissionItem(ushort index);
+   ValueTask ChangeCurrentMissionItem(ushort index);
    void StartMission(ushort missionIndex = 0);
    void StopMission(CancellationToken cancel);
    MissionTaskDelegate? this[MavCmd mavCmd] { set; }
