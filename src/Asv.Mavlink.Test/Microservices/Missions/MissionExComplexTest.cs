@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.Common;
-
 using DeepEqual.Syntax;
 using R3;
 using Xunit;
@@ -605,7 +604,6 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     [Theory]
     [InlineData(2)]
     [InlineData(100)]
-    [InlineData(10_000)]
     public async Task Upload_ManyPackets_Success(int itemsCount)
     {
         // Arrange

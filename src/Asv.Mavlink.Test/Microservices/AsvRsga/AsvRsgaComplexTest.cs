@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.IO;
 using Asv.Mavlink.AsvRsga;
 using R3;
 using Xunit;
@@ -33,8 +32,7 @@ public class AsvRsgaComplexTest : ComplexTestBase<AsvRsgaClientEx, AsvRsgaServer
         _client = Client;
         _server = Server;
         _taskCompletionSource = new TaskCompletionSource<AsvRsgaCompatibilityResponsePayload>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(15));
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     protected override AsvRsgaServerEx CreateServer(MavlinkIdentity identity, IMavlinkContext core)

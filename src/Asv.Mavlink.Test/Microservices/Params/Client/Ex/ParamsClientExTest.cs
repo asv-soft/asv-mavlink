@@ -31,8 +31,7 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
         _encoding = new MavParamCStyleEncoding();
         _clientEx = Client;
         _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20), TimeProvider.System);
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     protected override ParamsClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core)

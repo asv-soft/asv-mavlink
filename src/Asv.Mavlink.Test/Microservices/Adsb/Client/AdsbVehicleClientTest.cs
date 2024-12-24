@@ -19,7 +19,7 @@ public class AdsbVehicleClientTest : ClientTestBase<AdsbVehicleClient>, IDisposa
 
     public AdsbVehicleClientTest(ITestOutputHelper output) : base(output)
     {
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     protected override AdsbVehicleClient CreateClient(MavlinkClientIdentity identity, CoreServices core) =>

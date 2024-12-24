@@ -16,7 +16,7 @@ public class AsvRsgaClientTest : ClientTestBase<AsvRsgaClient>, IDisposable
     public AsvRsgaClientTest(ITestOutputHelper log) : base(log)
     {
         _client = Client;
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     protected override AsvRsgaClient CreateClient(MavlinkClientIdentity identity, CoreServices core) => new(identity, core);

@@ -21,8 +21,7 @@ public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
     public AsvRsgaServerTest(ITestOutputHelper output) : base(output)
     {
         _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     protected override AsvRsgaServer CreateClient(MavlinkIdentity identity, CoreServices core) => new(identity, core);

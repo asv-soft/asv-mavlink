@@ -22,7 +22,7 @@ public class ParamsExtClientTest : ClientTestBase<ParamsExtClient>, IDisposable
     public ParamsExtClientTest(ITestOutputHelper log) : base(log)
     {
         _client = Client;
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     [Fact]

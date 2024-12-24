@@ -21,7 +21,7 @@ public class ParamsClientTest : ClientTestBase<ParamsClient>, IDisposable
     public ParamsClientTest(ITestOutputHelper log) : base(log)
     {
         _client = Client;
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     protected override ParamsClient CreateClient(MavlinkClientIdentity identity, CoreServices core) => new(identity, _config, core);

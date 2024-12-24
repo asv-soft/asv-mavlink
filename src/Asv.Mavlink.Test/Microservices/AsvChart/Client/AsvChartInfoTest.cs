@@ -3,7 +3,7 @@ using Asv.Mavlink.AsvChart;
 using JetBrains.Annotations;
 using Xunit;
 
-namespace Asv.Mavlink.Test.Client;
+namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(AsvChartAxisInfo))]
 public class AsvChartInfoTest
@@ -13,14 +13,8 @@ public class AsvChartInfoTest
     {
         AsvChartInfoPayload? payload = null;
         AsvChartAxisInfo? axis= null;
-        Assert.Throws<NullReferenceException>(() =>
-        {
-            var chart = new AsvChartInfo(payload);
-        });
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            var chart = new AsvChartInfo(1, "testChart", axis, axis, AsvChartDataFormat.AsvChartDataFormatFloat);
-        });
+        Assert.Throws<NullReferenceException>(() => new AsvChartInfo(payload));
+        Assert.Throws<ArgumentNullException>(() => new AsvChartInfo(1, "testChart", axis, axis, AsvChartDataFormat.AsvChartDataFormatFloat));
     }
     
     [Fact]
