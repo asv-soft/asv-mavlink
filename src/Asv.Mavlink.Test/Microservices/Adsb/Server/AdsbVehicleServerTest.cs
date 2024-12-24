@@ -32,7 +32,7 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
     {
         // Arrange
         var icao = (uint)123;
-        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(
+        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(
             p => _taskCompletionSource.TrySetResult(p)
         );
         // Act
@@ -56,7 +56,7 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         var called = 0;
         var results = new List<AdsbVehiclePayload>();
         var serverResults = new List<AdsbVehiclePayload>();
-        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
+        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(p =>
         {
             called++;
             if (p is AdsbVehiclePacket packet)
