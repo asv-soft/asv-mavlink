@@ -1,3 +1,4 @@
+using System;
 using Asv.Mavlink.AsvRadio;
 using JetBrains.Annotations;
 using Xunit;
@@ -36,6 +37,19 @@ public class AsvRadioClientExTest(ITestOutputHelper log) : ClientTestBase<AsvRad
         Assert.NotNull(client.Base);
         Assert.NotNull(client.Core);
         Assert.Equal(AsvRadioCustomMode.AsvRadioCustomModeIdle, client.CustomMode.CurrentValue);
+    }
+
+    [Fact]
+    public void Ctor_ClientWrongArgument_Fail()
+    {
+        IAsvRadioClient? baseClient = null;
+        var heartbeat = new HeartbeatClient(Identity, _heartbeatConfig, Context);
+        var command = new CommandClient(Identity, _commandConfig, Context);
+        HeartbeatClient? heartbeatNull = null;
+        CommandClient? commandNull = null;
+        Assert.Throws<NullReferenceException>(() => new AsvRadioClientEx(baseClient, heartbeat,command));
+        Assert.Throws<NullReferenceException>(() => new AsvRadioClientEx(Client.Base, heartbeatNull,command));
+        Assert.Throws<ArgumentNullException>(() => new AsvRadioClientEx(Client.Base, heartbeat,commandNull));
     }
 
     protected override AsvRadioClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core)
