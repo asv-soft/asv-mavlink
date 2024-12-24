@@ -724,7 +724,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         // Arrange 
         var result = MavResult.MavResultAccepted;
         using var sub = Link.Client
-            .OnRxMessage.RxFilterByType<CommandAckPacket>()
+            .OnRxMessage.FilterByType<CommandAckPacket>()
             .Subscribe(p =>
             {
                 result = p.Payload.Result;

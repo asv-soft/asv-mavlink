@@ -669,31 +669,21 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         };
         var client = new CommandClient(Identity, customCfg, ClientCore);
         
-        _server[MavCmd.MavCmdUser1] = (_, _, _) 
-            => Task.FromResult(
-                CommandResult.FromResult(
-                    MavResult.MavResultInProgress
-                )
-            );
-        
-        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
+        _server[MavCmd.MavCmdUser1] = (_, args, _) =>
         {
             called++;
             Log.WriteLine($"confirmation______ === {args.Payload.Confirmation}");
-            
-            return Task.FromResult(CommandResult.FromResult(MavResult.MavResultInProgress));
-        };
-        var task1 = Task.Factory.StartNew(async () =>
-        {
-            
             if (called != maxCommandAttempts)
             {
                 ClientTime.Advance(TimeSpan.FromMilliseconds(maxTimeoutInMs + 1));
-                return;
+            }
+            else
+            {
+                Link.SetServerToClientFilter(_ => true);
             }
             
-            Link.SetServerToClientFilter(_ => true);
-        });
+            return Task.FromResult(CommandResult.FromResult(MavResult.MavResultInProgress));
+        };
         
         // Act
         var task = client.CommandLong(
@@ -715,6 +705,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal(MavResult.MavResultInProgress, result.Result);
         Assert.Equal(MavCmd.MavCmdUser1, result.Command);
+        
     }
     
     [Theory]
