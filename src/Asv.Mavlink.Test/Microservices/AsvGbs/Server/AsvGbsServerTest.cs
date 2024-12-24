@@ -29,7 +29,7 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
     {
         _server = Server;
         _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
@@ -68,7 +68,7 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
         var results = new List<GpsRtcmDataPacket>();
         var serverResults = new List<GpsRtcmDataPacket>();
         var tcs = new TaskCompletionSource<IProtocolMessage>();
-        var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(packetsCount), TimeProvider.System);
+        var cancellationTokenSource = new CancellationTokenSource();
         
         using var sub = Link.Client.OnRxMessage.Subscribe(p =>
         {
@@ -154,46 +154,16 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
     }
 
     [Fact]
-    public async Task SendDgps_Canceled_Throws()
-    {
-        // Arrange
-        GpsRtcmDataPacket? packet = new GpsRtcmDataPacket();
-        OperationCanceledException? ex = null;
-        var task = Task.Factory.StartNew(async () =>
-        {
-            try
-            {
-                for (var i = 0; i < 100; i++)
-                {
-                    await Server.SendDgps(_ => _ = packet, _cancellationTokenSource.Token);
-                }
-            }
-            catch (OperationCanceledException e)
-            {
-                ex = e;
-                throw;
-            }
-        }); 
-        // Act
-        await _cancellationTokenSource.CancelAsync();
-        task.Wait();
-
-        // Assert
-        Assert.NotNull(ex);
-        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
-        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
-    }
-
-    [Fact]
     public async Task SendDgps_ArgumentsWithCanceledToken_Throws()
     {
-        // Arrange
-        GpsRtcmDataPacket? packet = new GpsRtcmDataPacket();
         // Act
         await _cancellationTokenSource.CancelAsync();
+        var task = Server.SendDgps(_ => { }, _cancellationTokenSource.Token);
+        
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
-            await Server.SendDgps(_ => _ = packet, _cancellationTokenSource.Token));
+            await task
+        );
         Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }

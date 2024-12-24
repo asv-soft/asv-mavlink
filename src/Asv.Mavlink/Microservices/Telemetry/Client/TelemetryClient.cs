@@ -13,8 +13,6 @@ namespace Asv.Mavlink;
 /// </summary>
 public sealed class TelemetryClient : MavlinkMicroserviceClient, ITelemetryClient
 {
-    
-
     private readonly ILogger _logger;
 
     public TelemetryClient(MavlinkClientIdentity identity, IMavlinkContext core)

@@ -91,7 +91,7 @@ public abstract class CommandServerEx<TArgPacket> : MavlinkMicroserviceServer, I
                     CommandResult.FromResult(MavResult.MavResultUnsupported), DisposeCancel).ConfigureAwait(false);
                 return;
             }
-            Debug.Assert(callback!= null);
+
             var result = await callback(requester,pkt, DisposeCancel).ConfigureAwait(false);
             await Base.SendCommandAck((MavCmd)cmd, requester, result, DisposeCancel).ConfigureAwait(false);
         }

@@ -6,8 +6,6 @@ using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
-
-
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -42,10 +40,7 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
     {
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(
-            TimeSpan.FromSeconds(200), 
-            TimeProvider.System
-        );
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
@@ -125,27 +120,32 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
         var called = 0;
         var packetsFromServer = new List<SetPositionTargetGlobalIntPacket>();
         var packetsFromClient = new List<SetPositionTargetGlobalIntPacket>();
-        using var sub1 = Link.Server.OnRxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            called++;
-
-            if (p is SetPositionTargetGlobalIntPacket packet)
-            {
-                packetsFromServer.Add(packet);
-            }
-
-            if (called >= 3)
-            {
-                _taskCompletionSource.TrySetResult(p);
-            }
-        });
-        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            if (p is SetPositionTargetGlobalIntPacket packet)
-            {
-                packetsFromClient.Add(packet);
-            }
-        });
+        using var sub1 = Link.Server.OnRxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                    
+                if (p is SetPositionTargetGlobalIntPacket packet) 
+                { 
+                    packetsFromServer.Add(packet); 
+                }
+                    
+                if (called >= 3) 
+                { 
+                    _taskCompletionSource.TrySetResult(p); 
+                } 
+            });
+        
+        using var sub2 = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                if (p is SetPositionTargetGlobalIntPacket packet) 
+                { 
+                    packetsFromClient.Add(packet); 
+                } 
+            });
         
         // Act
         await _client.SetTarget(GeoPoint.NaN, _cancellationTokenSource.Token);
@@ -172,16 +172,20 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
         var called = 0;
         var gPoint = new GeoPoint(1, 2, 3);
         await _cancellationTokenSource.CancelAsync();
-        using var sub1 = Link.Server.OnRxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            called++;
-
-            _taskCompletionSource.TrySetResult(p);
-        });
+        using var sub1 = Link.Server.OnRxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                _taskCompletionSource.TrySetResult(p);
+            });
         
-        // Act + Assert
+        // Act
+        var task = _client.SetTarget(gPoint, _cancellationTokenSource.Token);
+        
+        // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async ()
-            => await _client.SetTarget(gPoint, _cancellationTokenSource.Token)
+            => await task
         );
         Assert.Equal(0, called);
         Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
@@ -221,7 +225,7 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
     {
         // Arrange
         var tcs = new TaskCompletionSource();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -407,7 +411,7 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
     {
         // Arrange
         var tcs = new TaskCompletionSource<GeoPoint>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -516,7 +520,7 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
     {
         // Arrange
         var tcs = new TaskCompletionSource<GeoPoint>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -607,7 +611,7 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
     {
         // Arrange
         var tcs = new TaskCompletionSource();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -687,7 +691,7 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
     {
         // Arrange
         var tcs = new TaskCompletionSource();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -731,7 +735,7 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
     {
         // Arrange
         var tcs = new TaskCompletionSource();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -788,7 +792,7 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
     {
         // Arrange
         var tcs = new TaskCompletionSource();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -856,5 +860,222 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
         Assert.Equal(0, (int)Link.Client.Statistic.TxMessages);
         Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
         Assert.NotEqual(double.NaN, _client.TargetDistance.CurrentValue);
+    }
+    
+    [Fact]
+    public async Task ArmDisarm_Timeout_Throws()
+    {
+        // Arrange
+        Link.SetServerToClientFilter(_ => false);
+        
+        var called = 0;
+        using var sub = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                Time.Advance(TimeSpan.FromMilliseconds(_commandConfig.CommandTimeoutMs + 1));
+            });
+        
+        // Act
+        var task = _client.ArmDisarm(true, _cancellationTokenSource.Token);
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_commandConfig.CommandAttempt, called);
+        Assert.Equal(_commandConfig.CommandAttempt, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(_commandConfig.CommandAttempt, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+    }
+    
+    [Fact]
+    public async Task SetRoi_Timeout_Throws()
+    {
+        // Arrange
+        Link.SetServerToClientFilter(_ => false);
+
+        var called = 0;
+        var geoPoint = new GeoPoint(1, 3, 11);
+        using var sub = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                Time.Advance(
+                    TimeSpan.FromMilliseconds(_commandConfig.CommandTimeoutMs + 1)
+                );
+            });
+        
+        // Act
+        var task = _client.SetRoi(geoPoint, _cancellationTokenSource.Token);
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_commandConfig.CommandAttempt, called);
+        Assert.Equal(_commandConfig.CommandAttempt, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(_commandConfig.CommandAttempt, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+    }
+    
+    [Fact]
+    public async Task ClearRoi_Timeout_Throws()
+    {
+        // Arrange
+        Link.SetServerToClientFilter(_ => false);
+        
+        var called = 0;
+        using var sub = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                Time.Advance(
+                    TimeSpan.FromMilliseconds(
+                        _commandConfig.CommandTimeoutMs + 1
+                    )
+                );
+            });
+        
+        // Act
+        var task = _client.ClearRoi(_cancellationTokenSource.Token);
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_commandConfig.CommandAttempt, called);
+        Assert.Null(_client.Roi.CurrentValue);
+        Assert.Equal(_commandConfig.CommandAttempt, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(_commandConfig.CommandAttempt, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+    }
+    
+    [Fact]
+    public async Task TakeOff_Timeout_Throws()
+    {
+        // Arrange
+        Link.SetServerToClientFilter(_ => false);
+        
+        var called = 0;
+        using var sub = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                Time.Advance(
+                    TimeSpan.FromMilliseconds(
+                        _commandConfig.CommandTimeoutMs + 1
+                    )
+                );
+            });
+        
+        // Act
+        var task = _client.TakeOff(10, _cancellationTokenSource.Token);
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_commandConfig.CommandAttempt, called);
+        Assert.Equal(_commandConfig.CommandAttempt, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(_commandConfig.CommandAttempt, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+    }
+    
+    [Fact]
+    public async Task QTakeOff_Timeout_Throws()
+    {
+        // Arrange
+        Link.SetServerToClientFilter(_ => false);
+        
+        var called = 0;
+        using var sub = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                Time.Advance(
+                    TimeSpan.FromMilliseconds(
+                        _commandConfig.CommandTimeoutMs + 1
+                    )
+                );
+            });
+        
+        // Act
+        var task = _client.QTakeOff(10, _cancellationTokenSource.Token);
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_commandConfig.CommandAttempt, called);
+        Assert.Equal(_commandConfig.CommandAttempt, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(_commandConfig.CommandAttempt, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+    }
+    
+    [Fact]
+    public async Task GetHomePosition_Timeout_Throws()
+    {
+        // Arrange
+        Link.SetServerToClientFilter(_ => false);
+        
+        var called = 0;
+        using var sub = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p =>
+            {
+                called++;
+                Time.Advance(
+                    TimeSpan.FromMilliseconds(
+                        _commandConfig.CommandTimeoutMs + 1
+                    )
+                );
+            });
+        
+        // Act
+        var task = _client.GetHomePosition(_cancellationTokenSource.Token);
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_commandConfig.CommandAttempt, called);
+        Assert.Equal(_commandConfig.CommandAttempt, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(_commandConfig.CommandAttempt, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+    }
+    
+    [Fact]
+    public async Task QLand_Timeout_Throws()
+    {
+        // Arrange
+        Link.SetServerToClientFilter(_ => false);
+        
+        var called = 0;
+        using var sub = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                Time.Advance(
+                    TimeSpan.FromMilliseconds(
+                        _commandConfig.CommandTimeoutMs + 1
+                    )
+                );
+            });
+        
+        // Act
+        var task = _client.QLand(
+            NavVtolLandOptions.NavVtolLandOptionsDefault, 
+            10, 
+            _cancellationTokenSource.Token
+        );
+        
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_commandConfig.CommandAttempt, called);
+        Assert.Equal(_commandConfig.CommandAttempt, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(_commandConfig.CommandAttempt, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
     }
 }

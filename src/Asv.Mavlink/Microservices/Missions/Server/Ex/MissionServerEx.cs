@@ -73,12 +73,12 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
             InternalBusyStateIdle);
         if (current == InternalBusyStateClearAll)
         {
-            _logger.ZLogWarning($"{Id}: Duplicate '{nameof(OnMissionClearAll)}' received. Skip it...");
+            _logger.ZLogWarning($"{Id}: Duplicate '{nameof(ClearItems)}' received. Skip it...");
             return;
         }
         if (current != InternalBusyStateIdle)
         {
-            throw new InvalidOperationException($"{Id}: Receive {nameof(OnMissionClearAll)}, but now state '{current:G}. Response with error'");
+            throw new InvalidOperationException($"{Id}: Receive {nameof(ClearItems)}, but now state '{current:G}. Response with error'");
         }
 
         try
@@ -133,6 +133,8 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         }
         
     }
+        
+    
 
     #endregion
         
@@ -144,15 +146,12 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         }
         if (req.Payload.MissionType != MavMissionType.MavMissionTypeMission)
         {
-            _logger.ZLogWarning($"{Id}: Receive {nameof(OnReadMissionItem)}, but mission type '{req.Payload.MissionType:G}' not supported. Response with error'");
             return Base.SendMissionAck(MavMissionResult.MavMissionUnsupported, req.SystemId, req.ComponentId);
         }
         
         if (req.Payload.Seq >= _missionSource.Count)
         {
-            _logger.ZLogWarning($"{Id}: Receive {nameof(OnReadMissionItem)}, but index '{req.Payload.Seq}' out of range. Response with error'");
-            return Base
-                .SendMissionAck(MavMissionResult.MavMissionInvalid, req.SystemId, req.ComponentId);
+            return Base.SendMissionAck(MavMissionResult.MavMissionInvalid, req.SystemId, req.ComponentId);
         }
         var item = _missionSource[req.Payload.Seq];
         _logger.ZLogTrace($"{Id}: Send mission item '{item}'");
@@ -304,13 +303,21 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
 
     public void StopMission(CancellationToken cancel = default)
     {
-        _statusLogger.Info($"Stop mission");
-        _missionCancel?.Cancel(false);
-        _missionCancel?.Dispose();
-        _currentMissionItemCancel?.Cancel(false);
-        _currentMissionItemCancel?.Dispose();
-        _missionThread = null;
-        _state.OnNext(MissionServerState.Idle);
+        try
+        {
+            _statusLogger.Info($"Stop mission");
+            _missionCancel?.Cancel(false);
+            _missionCancel?.Dispose();
+            _currentMissionItemCancel?.Cancel(false);
+            _currentMissionItemCancel?.Dispose();
+            _missionThread = null;
+            _state.OnNext(MissionServerState.Idle);
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _internalBusyState, InternalBusyStateIdle);
+        }
+        
     }
 
     public MissionTaskDelegate? this[MavCmd cmd]
