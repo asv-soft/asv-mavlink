@@ -37,7 +37,7 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
         ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(config);
         ArgumentNullException.ThrowIfNull(existDescription);
-        _config = config ?? throw new ArgumentNullException(nameof(config));
+        _config = config;
         _existDescription = existDescription.ToImmutableDictionary(x => x.Name, x => x);
         Base = client;
         _disposeCancel = new CancellationTokenSource();

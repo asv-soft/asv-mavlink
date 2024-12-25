@@ -52,10 +52,14 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
     public void Constructor_Null_Throws()
     {
         // Act
+        // ReSharper disable once NullableWarningSuppressionIsUsed
         Assert.Throws<NullReferenceException>(() => new ParamsClientEx(null!, _config, _encoding, _existDescription));
-        Assert.Throws<ArgumentNullException>(() => new ParamsClientEx(_client, null!, _encoding, _existDescription));
-        Assert.Throws<ArgumentNullException>(() => new ParamsClientEx(_client, _config, null!, _existDescription));
-        Assert.Throws<ArgumentNullException>(() => new ParamsClientEx(_client, _config, _encoding, null!));
+        // ReSharper disable once NullableWarningSuppressionIsUsed
+        Assert.Throws<NullReferenceException>(() => new ParamsClientEx(_client, null!, _encoding, _existDescription));
+        // ReSharper disable once NullableWarningSuppressionIsUsed
+        Assert.Throws<NullReferenceException>(() => new ParamsClientEx(_client, _config, null!, _existDescription));
+        // ReSharper disable once NullableWarningSuppressionIsUsed
+        Assert.Throws<NullReferenceException>(() => new ParamsClientEx(_client, _config, _encoding, null!));
     }
     
     [Fact]

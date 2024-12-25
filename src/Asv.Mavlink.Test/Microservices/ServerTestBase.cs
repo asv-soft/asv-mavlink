@@ -1,3 +1,4 @@
+using System;
 using Asv.Common;
 using Asv.IO;
 using TimeProviderExtensions;
@@ -5,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-public abstract class ServerTestBase<TServer>
+public abstract class ServerTestBase<TServer> : IDisposable
 {
     private TServer? _server;
 
@@ -40,4 +41,22 @@ public abstract class ServerTestBase<TServer>
     protected PacketSequenceCalculator Seq { get; }
     protected ManualTimeProvider ServerTime { get; }
     protected IVirtualConnection Link { get; }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            Link.Dispose();
+            if (_server is IDisposable server)
+            {
+                server.Dispose();
+            }
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 }

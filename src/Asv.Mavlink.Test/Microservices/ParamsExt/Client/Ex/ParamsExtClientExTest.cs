@@ -61,8 +61,8 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
         
         // Act
         Assert.Throws<NullReferenceException>(() => new ParamsExtClientEx(null!, _config, ParamDescription));
-        Assert.Throws<NullReferenceException>(() => new ParamsExtClientEx(Client.Base, null!, ParamDescription));
-        Assert.Throws<NullReferenceException>(() => new ParamsExtClientEx(Client.Base, _config, null!));
+        Assert.Throws<ArgumentNullException>(() => new ParamsExtClientEx(Client.Base, null!, ParamDescription));
+        Assert.Throws<ArgumentNullException>(() => new ParamsExtClientEx(Client.Base, _config, null!));
     }
     
     [Fact]

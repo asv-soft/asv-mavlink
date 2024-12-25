@@ -34,8 +34,8 @@ public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
     public ParamsClientEx(IParamsClient client, ParamsClientExConfig config, IMavParamEncoding converter,
         IEnumerable<ParamDescription> existDescription):base(ParamsHelper.MicroserviceName,client.Identity,client.Core)
     {
-        _logger = client.Core.LoggerFactory.CreateLogger<ParamsClientEx>();
         _config = config ?? throw new ArgumentNullException(nameof(config));
+        _logger = client.Core.LoggerFactory.CreateLogger<ParamsClientEx>();
         _converter = converter ?? throw new ArgumentNullException(nameof(converter));
         _existDescription = existDescription.ToImmutableDictionary(x => x.Name, x => x);
         Base = client;

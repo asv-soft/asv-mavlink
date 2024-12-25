@@ -393,6 +393,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         Assert.Equal(MavCmd.MavCmdCanForward, result.Command);
         Assert.NotNull(packetFromClient);
         Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
+        
     }
     
     [Theory]
