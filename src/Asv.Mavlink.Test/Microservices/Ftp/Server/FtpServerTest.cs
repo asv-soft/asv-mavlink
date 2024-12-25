@@ -763,4 +763,38 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         // Assert
         Assert.NotNull(response);
     }
+
+    [Fact]
+    public async Task FtpPacketSend_Cancel_Throws()
+    {
+        // Arrange
+        await _cts.CancelAsync();
+        var called = 0;
+
+        var requestPacket = new FileTransferProtocolPacket
+        {
+            SystemId = Identity.SystemId,
+            ComponentId = Identity.ComponentId,
+            Sequence = 1,
+            Payload =
+            {
+                TargetSystem = Identity.SystemId,
+                TargetComponent = Identity.ComponentId,
+                TargetNetwork = _config.NetworkId,
+                Payload = new byte[251],
+            }
+        };
+
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
+        {
+            called++;
+        });
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Link.Server.Send(requestPacket, _cts.Token).ConfigureAwait(false);
+        });
+        Assert.Equal(0, called);
+    }
 }

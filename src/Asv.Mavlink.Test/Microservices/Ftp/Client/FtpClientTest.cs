@@ -15,7 +15,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
 {
     private readonly TaskCompletionSource<FileTransferProtocolPacket> _tcs = new();
     private readonly CancellationTokenSource _cts;
-    
+
     private readonly MavlinkFtpClientConfig _config = new()
     {
         TimeoutMs = 1000,
@@ -35,7 +35,8 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         return new FtpClient(identity, _config, core);
     }
 
-    private FileTransferProtocolPacket CreateAckResponse(FileTransferProtocolPacket requestPacket, FtpOpcode originOpCode)
+    private FileTransferProtocolPacket CreateAckResponse(FileTransferProtocolPacket requestPacket,
+        FtpOpcode originOpCode)
     {
         var response = new FileTransferProtocolPacket
         {
@@ -473,7 +474,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         // No exception means success
     }
 
-        [Fact]
+    [Fact]
     public async Task CreateFile_Success()
     {
         // Arrange
@@ -625,7 +626,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         };
         new Random().NextBytes(dataChunks[0]);
         new Random().NextBytes(dataChunks[1]);
-        
+
         var totalDataReceived = new List<byte>();
 
         // Set up server response
@@ -676,5 +677,217 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         // Assert
         var expectedData = dataChunks.SelectMany(d => d).ToArray();
         Assert.Equal(expectedData, totalDataReceived.ToArray());
+    }
+
+    [Fact]
+    public async Task ResetSessions_Cancel_Throws()
+    {
+        // Arrange
+        await _cts.CancelAsync();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () => { await Client.ResetSessions(_cts.Token); });
+    }
+
+    [Fact]
+    public async Task RemoveDirectory_Cancel_Throws()
+    {
+        // Arrange
+        var path = "/path/to/directory";
+        await _cts.CancelAsync();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.RemoveDirectory(path, _cts.Token);
+        });
+    }
+
+    [Fact]
+    public async Task RemoveFile_Cancel_Throws()
+    {
+        // Arrange
+        var path = "/path/to/file.txt";
+        await _cts.CancelAsync();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.RemoveFile(path, _cts.Token);
+        });
+    }
+
+    [Fact]
+    public async Task TruncateFile_Cancel_Throws()
+    {
+        // Arrange
+        var path = "/path/to/file.txt";
+        var request = new TruncateRequest(path, 1024);
+        await _cts.CancelAsync();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.TruncateFile(request, _cts.Token);
+        });
+    }
+
+    [Fact]
+    public async Task CalcFileCrc32_Cancel_Throws()
+    {
+        // Arrange
+        var path = "/path/to/file.txt";
+        await _cts.CancelAsync();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.CalcFileCrc32(path, _cts.Token);
+        });
+    }
+
+    [Fact]
+    public async Task CreateDirectory_Cancel_Throws()
+    {
+        // Arrange
+        var path = "/path/to/new_directory";
+        await _cts.CancelAsync();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.CreateDirectory(path, _cts.Token);
+        });
+    }
+
+    [Fact]
+    public async Task Rename_Cancel_Throws()
+    {
+        // Arrange
+        var oldPath = "/path/to/old_name.txt";
+        var newPath = "/path/to/new_name.txt";
+        await _cts.CancelAsync();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.Rename(oldPath, newPath, _cts.Token);
+        });
+    }
+
+    [Fact]
+    public async Task ListDirectory_Cancel_Throws()
+    {
+        // Arrange
+        var path = "/path/to/directory";
+        await _cts.CancelAsync();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.ListDirectory(path, 0, _cts.Token);
+        });
+    }
+
+    [Fact]
+    public async Task OpenFileRead_Cancel_Throws()
+    {
+        // Arrange
+        var path = "/path/to/file.txt";
+        await _cts.CancelAsync();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.OpenFileRead(path, _cts.Token);
+        });
+    }
+
+    [Fact]
+    public async Task OpenFileWrite_Cancel_Throws()
+    {
+        // Arrange
+        var path = "/path/to/file.txt";
+        await _cts.CancelAsync();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.OpenFileWrite(path, _cts.Token);
+        });
+    }
+
+    [Fact]
+    public async Task TerminateSession_Cancel_Throws()
+    {
+        // Arrange
+        var sessionId = (byte)1;
+        await _cts.CancelAsync();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.TerminateSession(sessionId, _cts.Token);
+        });
+    }
+
+    [Fact]
+    public async Task CreateFile_Cancel_Throws()
+    {
+        // Arrange
+        var path = "/path/to/new_file.txt";
+        await _cts.CancelAsync();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.CreateFile(path, _cts.Token);
+        });
+    }
+
+    [Fact]
+    public async Task ReadFile_Cancel_Throws()
+    {
+        // Arrange
+        var sessionId = (byte)1;
+        var request = new ReadRequest(sessionId, 0, 100);
+        await _cts.CancelAsync();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.ReadFile(request, _cts.Token);
+        });
+    }
+
+    [Fact]
+    public async Task WriteFile_Cancel_Throws()
+    {
+        // Arrange
+        var sessionId = (byte)1;
+        var request = new WriteRequest(sessionId, 0, 100);
+        var data = new byte[100];
+        await _cts.CancelAsync();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.WriteFile(request, data, _cts.Token);
+        });
+    }
+
+    [Fact]
+    public async Task BurstReadFile_Cancel_Throws()
+    {
+        // Arrange
+        var sessionId = (byte)1;
+        var request = new ReadRequest(sessionId, 0, 100);
+        await _cts.CancelAsync();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.BurstReadFile(request, _ => { }, _cts.Token);
+        });
     }
 }

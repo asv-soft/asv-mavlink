@@ -48,6 +48,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
     {
         RootDirectory = AppDomain.CurrentDomain.BaseDirectory
     };
+
     private readonly MavlinkFtpServerConfig _serverFtpConfig = new()
     {
         NetworkId = 0,
@@ -72,10 +73,10 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
     }
 
     [Theory]
-    [InlineData(100,239)]
-    [InlineData(239,239)]
-    [InlineData(239,10)]
-    [InlineData(1024*10,200)]
+    [InlineData(100, 239)]
+    [InlineData(239, 239)]
+    [InlineData(239, 10)]
+    [InlineData(1024 * 10, 200)]
     public async Task DownloadFile_ToStream_Success(int size, byte partSize)
     {
         var server = Server; // to ensure that server is created and file system is created
@@ -84,28 +85,29 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         var originContent = new byte[size];
         new Random().NextBytes(originContent);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
-        
+
         using var streamToSave = new MemoryStream(size);
 
         // Act
         var progress = 0.0;
-        await Client.DownloadFile(fileName, streamToSave, new CallbackProgress<double>(x => progress= x), partSize, _cts.Token);
+        await Client.DownloadFile(fileName, streamToSave, new CallbackProgress<double>(x => progress = x), partSize,
+            _cts.Token);
         // Assert
 
         streamToSave.Seek(0, SeekOrigin.Begin);
-        Assert.Equal(1,progress);
+        Assert.Equal(1, progress);
         Assert.Equal(originContent.Length, streamToSave.Length);
         foreach (var b in originContent)
         {
             Assert.Equal(streamToSave.ReadByte(), b);
         }
     }
-    
+
     [Theory]
-    [InlineData(100,239)]
-    [InlineData(239,239)]
-    [InlineData(239,10)]
-    [InlineData(1024*10,200)]
+    [InlineData(100, 239)]
+    [InlineData(239, 239)]
+    [InlineData(239, 10)]
+    [InlineData(1024 * 10, 200)]
     public async Task DownloadFile_ToBufferWriter_Success(int size, byte partSize)
     {
         var server = Server; // to ensure that server is created and file system is created
@@ -114,26 +116,27 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         var originContent = new byte[size];
         new Random().NextBytes(originContent);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
-        
+
         var buffer = new ArrayBufferWriter<byte>(size);
         var progress = 0.0;
         // Act
-        await Client.DownloadFile(fileName, buffer, new CallbackProgress<double>(x => { progress = x; }), partSize, _cts.Token);
+        await Client.DownloadFile(fileName, buffer, new CallbackProgress<double>(x => { progress = x; }), partSize,
+            _cts.Token);
         // Assert
 
         Assert.Equal(originContent.Length, buffer.WrittenCount);
-        Assert.Equal(1,progress);
+        Assert.Equal(1, progress);
         for (var index = 0; index < originContent.Length; index++)
         {
-            Assert.Equal(originContent[index],buffer.WrittenSpan[index]);
+            Assert.Equal(originContent[index], buffer.WrittenSpan[index]);
         }
     }
 
     [Theory]
-    [InlineData(100,239)]
-    [InlineData(239,239)]
-    [InlineData(239,10)]
-    [InlineData(1024*10,200)]
+    [InlineData(100, 239)]
+    [InlineData(239, 239)]
+    [InlineData(239, 10)]
+    [InlineData(1024 * 10, 200)]
     public async Task BurstDownloadFile_ToStream_Success(int size, byte partSize)
     {
         // Arrange
@@ -143,29 +146,28 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         var originContent = new byte[size];
         new Random().NextBytes(originContent);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
-        
+
         using var streamToSave = new MemoryStream(size);
         var progress = 0.0;
         // Act
-        await Client.BurstDownloadFile(fileName, streamToSave, new CallbackProgress<double>(x => progress = x), partSize, _cts.Token);
+        await Client.BurstDownloadFile(fileName, streamToSave, new CallbackProgress<double>(x => progress = x),
+            partSize, _cts.Token);
         // Assert
 
         streamToSave.Seek(0, SeekOrigin.Begin);
-        Assert.Equal(1,progress);
+        Assert.Equal(1, progress);
         Assert.Equal(originContent.Length, streamToSave.Length);
         foreach (var b in originContent)
         {
             Assert.Equal(streamToSave.ReadByte(), b);
         }
-        
-        
     }
-    
+
     [Theory]
-    [InlineData(100,239)]
-    [InlineData(239,239)]
-    [InlineData(239,10)]
-    [InlineData(1024*10,200)]
+    [InlineData(100, 239)]
+    [InlineData(239, 239)]
+    [InlineData(239, 10)]
+    [InlineData(1024 * 10, 200)]
     public async Task BurstDownloadFile_ToBufferWriter_Success(int size, byte partSize)
     {
         // Arrange
@@ -177,13 +179,14 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
 
         var streamToSave = new ArrayBufferWriter<byte>();
-        
+
 
         // Act
         var progress = 0.0;
-        await Client.BurstDownloadFile(fileName, streamToSave, new CallbackProgress<double>(x => progress = x), partSize, _cts.Token);
+        await Client.BurstDownloadFile(fileName, streamToSave, new CallbackProgress<double>(x => progress = x),
+            partSize, _cts.Token);
         // Assert
-        Assert.Equal(1,progress);
+        Assert.Equal(1, progress);
         Assert.Equal(originContent.Length, streamToSave.WrittenCount);
         for (var index = 0; index < originContent.Length; index++)
         {
@@ -199,12 +202,12 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         // Arrange
         var server = Server; // to ensure that server is created and file system is created
         var localRoot = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder");
-        
+
         _fileSystem.AddDirectory(localRoot);
-        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file1.txt"));    
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file1.txt"));
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file2.txt"));
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file3.txt"));
-        
+
 
         var expectedFiles = new[]
         {
@@ -215,7 +218,6 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
             $"{MavlinkFtpHelper.DirectorySeparator}folder{MavlinkFtpHelper.DirectorySeparator}file3.txt",
         };
 
-        
 
         // Act
         await Client.Refresh(refreshPath, true, _cts.Token);
@@ -234,6 +236,131 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         fileSystem.AddDirectory(mockFileCfg.CurrentDirectory);
 
         return fileSystem;
+    }
+
+    [Theory]
+    [InlineData(100, 239)]
+    [InlineData(239, 239)]
+    [InlineData(239, 10)]
+    [InlineData(1024 * 10, 200)]
+    public async Task DownloadFile_ToStream_Cancel_Throws(int size, byte partSize)
+    {
+        // Arrange
+        var server = Server;
+        await _cts.CancelAsync();
+        const string fileName = "test.txt";
+        var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
+        var originContent = new byte[size];
+        new Random().NextBytes(originContent);
+        _fileSystem.AddFile(filePath, new MockFileData(originContent));
+
+        using var streamToSave = new MemoryStream(size);
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.DownloadFile(fileName, streamToSave, new CallbackProgress<double>(_ => { }), partSize,
+                _cts.Token);
+        });
+    }
+
+    [Theory]
+    [InlineData(100, 239)]
+    [InlineData(239, 239)]
+    [InlineData(239, 10)]
+    [InlineData(1024 * 10, 200)]
+    public async Task DownloadFile_ToBufferWriter_Cancel_Throws(int size, byte partSize)
+    {
+        // Arrange
+        var server = Server;
+        await _cts.CancelAsync();
+        const string fileName = "test.txt";
+        var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
+        var originContent = new byte[size];
+        new Random().NextBytes(originContent);
+        _fileSystem.AddFile(filePath, new MockFileData(originContent));
+
+        var buffer = new ArrayBufferWriter<byte>();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.DownloadFile(fileName, buffer, new CallbackProgress<double>(_ => { }), partSize,
+                _cts.Token);
+        });
+    }
+
+    [Theory]
+    [InlineData(100, 239)]
+    [InlineData(239, 239)]
+    [InlineData(239, 10)]
+    [InlineData(1024 * 10, 200)]
+    public async Task BurstDownloadFile_ToStream_Cancel_Throws(int size, byte partSize)
+    {
+        // Arrange
+        var server = Server;
+        await _cts.CancelAsync();
+        const string fileName = "test.txt";
+        var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
+        var originContent = new byte[size];
+        new Random().NextBytes(originContent);
+        _fileSystem.AddFile(filePath, new MockFileData(originContent));
+
+        using var streamToSave = new MemoryStream(size);
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.BurstDownloadFile(fileName, streamToSave, new CallbackProgress<double>(_ => { }), partSize,
+                _cts.Token);
+        });
+    }
+
+    [Theory]
+    [InlineData(100, 239)]
+    [InlineData(239, 239)]
+    [InlineData(239, 10)]
+    [InlineData(1024 * 10, 200)]
+    public async Task BurstDownloadFile_ToBufferWriter_Cancel_Throws(int size, byte partSize)
+    {
+        // Arrange
+        var server = Server;
+        await _cts.CancelAsync();
+        const string fileName = "test.txt";
+        var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
+        var originContent = new byte[size];
+        new Random().NextBytes(originContent);
+        _fileSystem.AddFile(filePath, new MockFileData(originContent));
+
+        var buffer = new ArrayBufferWriter<byte>();
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.BurstDownloadFile(fileName, buffer, new CallbackProgress<double>(_ => { }), partSize,
+                _cts.Token);
+        });
+    }
+
+    [Theory]
+    [InlineData("/")]
+    [InlineData("")]
+    public async Task Refresh_Cancel_Throws(string refreshPath)
+    {
+        // Arrange
+        var server = Server;
+        await _cts.CancelAsync();
+        var localRoot = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder");
+        _fileSystem.AddDirectory(localRoot);
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file1.txt"));
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file2.txt"));
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file3.txt"));
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Client.Refresh(refreshPath, true, _cts.Token);
+        });
     }
 
     public void Dispose()
