@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Asv.IO;
@@ -60,7 +59,7 @@ public class ClientModeTest(ITestOutputHelper log) : ClientTestBase<ModeClient>(
         foreach (var mode in client.AvailableModes.Where(x=>x.InternalMode == false))
         {
             var tcs = new TaskCompletionSource<CommandLongPayload>();
-            Link.Server.OnRxMessage.RxFilterByType<CommandLongPacket>().Subscribe(x =>
+            Link.Server.OnRxMessage.FilterByType<CommandLongPacket>().Subscribe(x =>
             {
                 tcs.TrySetResult(x.Payload);
                 Time.Advance(TimeSpan.FromMilliseconds(_command.CommandTimeoutMs * _command.CommandAttempt + 100));

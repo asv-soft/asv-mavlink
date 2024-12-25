@@ -74,8 +74,8 @@ public class ModeServer : MavlinkMicroserviceServer, IModeServer
             await SetMode(mode, null, cancel).ConfigureAwait(false);
             return CommandResult.Accepted;
         };
-        _sub2 = CurrentMode.Subscribe(x => hb.Set(x.Mode.Fill));
         _currentMode = new ReactiveProperty<IWorkModeHandler>(_handlerFactory(idleMode));
+        _sub2 = CurrentMode.Subscribe(x => hb.Set(x.Mode.Fill));
     }
 
     public ReadOnlyReactiveProperty<bool> IsBusy => _isBusy;
