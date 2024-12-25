@@ -540,10 +540,19 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
             _client.Create().Command.Value = cmd;
         }
         await _client.Upload(CancellationToken.None);
+        var tcs = new TaskCompletionSource();
+        _server.Reached.Subscribe(x =>
+        {
+            if (x == (originMission.Count - 1))
+            {
+                tcs.TrySetResult();
+            }
+        });
         
         // Act
+        
         _server.StartMission(skip);
-        await _server.Reached.Where(x => x == (originMission.Count - 1)).FirstAsync();
+        await tcs.Task;
 
         // Assert
         Assert.Equal(originMission.Skip(skip),executed);

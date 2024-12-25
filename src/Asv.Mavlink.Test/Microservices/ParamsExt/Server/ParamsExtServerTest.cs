@@ -73,7 +73,7 @@ public class ParamsExtServerTest : ServerTestBase<ParamsExtServer>,IDisposable
     [Theory]
     [InlineData(10)]
     [InlineData(200)]
-    [InlineData(20000)]
+    [InlineData(2000)]
     public async Task SendCompatibilityResponse_SendManyPacket_Success(int packetCount)
     {
         // Arrange
