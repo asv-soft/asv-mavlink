@@ -27,7 +27,9 @@ namespace Asv.Mavlink.Shell
     [MemoryDiagnoser]
     public class SerializationPacket
     {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         private TestTypesPacket _packet;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         private byte[] _data = new byte[250];
 
         [GlobalSetup]

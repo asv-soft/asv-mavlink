@@ -8,7 +8,7 @@ namespace Asv.Mavlink.Shell
     {
         public int Id { get; set; }
         public byte CrcExtra { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public IList<MessageFieldModel> Fields { get; set; } = new List<MessageFieldModel>();
         public IList<MessageFieldModel> ExtendedFields { get; set; } = new List<MessageFieldModel>();
 

@@ -358,12 +358,12 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         var directoryListing = "Ffile1.txt\t123\nFfile2.txt\t456\nDdir1/\n";
         var listingChars = directoryListing.ToCharArray();
 
-        Server.ListDirectory = async (requestedPath, requestedOffset, buffer, _) =>
+        Server.ListDirectory = (requestedPath, requestedOffset, buffer, _) =>
         {
             Assert.Equal(path, requestedPath);
             Assert.Equal(offset, requestedOffset);
             listingChars.CopyTo(buffer.Span);
-            return (byte)listingChars.Length;
+            return Task.FromResult((byte)listingChars.Length);
         };
 
         // Simulate client request

@@ -41,7 +41,9 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
         var result = await _taskCompletionSource.Task as ParamValuePacket;
         Assert.NotNull(result);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         Assert.Equal(paramValue, result.Payload.ParamValue);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
     }
     
     [Theory]

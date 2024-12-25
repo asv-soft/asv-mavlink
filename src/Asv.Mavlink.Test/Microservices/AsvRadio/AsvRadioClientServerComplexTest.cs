@@ -13,6 +13,10 @@ namespace Asv.Mavlink.Test;
 public class AsvRadioClientServerComplexTest
     : ComplexTestBase<AsvRadioClientEx, AsvRadioServerEx>
 {
+    public AsvRadioClientServerComplexTest(ITestOutputHelper output): base(output)
+    {
+        _cancellationTokenSource = new CancellationTokenSource();
+    }
     private readonly HeartbeatClientConfig _heartbeatConfigClient = new()
     {
         HeartbeatTimeoutMs = 2000,
@@ -33,7 +37,7 @@ public class AsvRadioClientServerComplexTest
     private IReadOnlySet<AsvAudioCodec> _codecs =
         new HashSet<AsvAudioCodec>((byte)AsvRadioCodecCapabilitiesResponsePayload.CodecsMaxItemsCount);
 
-    private AsvAudioCodec[] _codecsCollection ;
+    private AsvAudioCodec[] _codecsCollection = [];
     
     private readonly AsvRadioServerConfig _radioConfig = new()
     {
@@ -51,10 +55,7 @@ public class AsvRadioClientServerComplexTest
         MaxSendRateHz = 100
     };
     private readonly CancellationTokenSource _cancellationTokenSource;
-    public AsvRadioClientServerComplexTest(ITestOutputHelper output): base(output)
-    {
-        _cancellationTokenSource = new CancellationTokenSource();
-    }
+    
 
     [Fact]
     public async Task Client_EnableRadio_Success()

@@ -14,7 +14,9 @@ namespace Asv.Mavlink.Shell;
 public class GenerateDiagnostics
 {
     private string _file = "exampleDiagnosticsConfig.json";
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private IProtocolRouter _router;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private IDiagnosticServer? _server;
     private uint _refreshRate;
     

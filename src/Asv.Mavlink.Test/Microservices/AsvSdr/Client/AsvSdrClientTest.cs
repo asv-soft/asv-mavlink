@@ -93,12 +93,14 @@ public class AsvSdrClientTest() : ClientTestBase<AsvSdrClient>(_log)
     {
         Assert.ThrowsAsync<ArgumentNullException>(() =>
         {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             var test = new AsvSdrClient(Identity, null);
             return Task.CompletedTask;
         });
         Assert.ThrowsAsync<ArgumentNullException>(() =>
         {
             var test = new AsvSdrClient(null, Context);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             return Task.CompletedTask;
         });
     }

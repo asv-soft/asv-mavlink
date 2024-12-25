@@ -136,9 +136,9 @@ namespace Asv.Mavlink.Shell
 
         internal class DisplayRow
         {
-            public string Message { get; set; }
+            public string? Message { get; set; }
             public int Count { get; set; }
-            public string Freq { get; set; }
+            public string? Freq { get; set; }
             public int Msg { get; set; }
         }
     }

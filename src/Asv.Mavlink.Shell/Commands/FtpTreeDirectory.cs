@@ -12,7 +12,9 @@ namespace Asv.Mavlink.Shell;
 
 public class FtpTreeDirectory
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private ReadOnlyObservableCollection<FtpEntry> _tree;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private readonly SourceCache<IFtpEntry,string> _entryCache = new(x => x.Path);
     private IObservable<IChangeSet<IFtpEntry, string>> Entries => _entryCache.Connect();
 

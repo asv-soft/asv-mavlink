@@ -47,9 +47,11 @@ public class AsvRadioClientExTest(ITestOutputHelper log) : ClientTestBase<AsvRad
         var command = new CommandClient(Identity, _commandConfig, Context);
         HeartbeatClient? heartbeatNull = null;
         CommandClient? commandNull = null;
+#pragma warning disable CS8604 // Possible null reference argument.
         Assert.Throws<NullReferenceException>(() => new AsvRadioClientEx(baseClient, heartbeat,command));
         Assert.Throws<NullReferenceException>(() => new AsvRadioClientEx(Client.Base, heartbeatNull,command));
         Assert.Throws<ArgumentNullException>(() => new AsvRadioClientEx(Client.Base, heartbeat,commandNull));
+#pragma warning restore CS8604 // Possible null reference argument.
     }
 
     protected override AsvRadioClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core)

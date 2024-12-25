@@ -35,7 +35,9 @@ public class RadioDeviceClientTests : ClientTestBase<RadioClientDevice>
             new MavlinkClientDeviceId(RadioClientDevice.DeviceClass, new MavlinkClientIdentity(1,2,3,4));
         Assert.Throws<ArgumentNullException>( () =>
         {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             var radio = new RadioClientDevice(null,_cfg, ImmutableArray<IClientDeviceExtender>.Empty,  Context);
+
         });
         Assert.Throws<NullReferenceException>(() =>
         {
@@ -45,6 +47,7 @@ public class RadioDeviceClientTests : ClientTestBase<RadioClientDevice>
         {
             var radio = new RadioClientDevice(id, _cfg,ImmutableArray<IClientDeviceExtender>.Empty, null);
         });
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
     
     protected override RadioClientDevice CreateClient(MavlinkClientIdentity identity, CoreServices core)

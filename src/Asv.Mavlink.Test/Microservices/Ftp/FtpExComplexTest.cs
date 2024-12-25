@@ -25,10 +25,16 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(FtpClientEx))]
 public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisposable
 {
+    private MockFileSystem? _fileSystem;
+    public FtpExComplexTest(ITestOutputHelper log) : base(log)
+    {
+        _cts = new CancellationTokenSource();
+        _cts.Token.Register(() => _tcs.TrySetCanceled());
+    }
     private readonly TaskCompletionSource<FileTransferProtocolPacket> _tcs = new();
     private readonly CancellationTokenSource _cts;
 
-    private MockFileSystem _fileSystem;
+    
 
     private readonly MavlinkFtpServerConfig _serverConfig = new()
     {
@@ -54,11 +60,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         BurstReadChunkDelayMs = 100,
     };
 
-    public FtpExComplexTest(ITestOutputHelper log) : base(log)
-    {
-        _cts = new CancellationTokenSource();
-        _cts.Token.Register(() => _tcs.TrySetCanceled());
-    }
+    
 
     protected override FtpServerEx CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
@@ -80,7 +82,9 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
     {
         var server = Server; // to ensure that server is created and file system is created
         const string fileName = "test.txt";
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         var originContent = new byte[size];
         new Random().NextBytes(originContent);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
@@ -110,7 +114,9 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
     {
         var server = Server; // to ensure that server is created and file system is created
         const string fileName = "test.txt";
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         var originContent = new byte[size];
         new Random().NextBytes(originContent);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
@@ -139,7 +145,9 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         // Arrange
         var server = Server; // to ensure that server is created and file system is created
         const string fileName = "test.txt";
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         var originContent = new byte[size];
         new Random().NextBytes(originContent);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
@@ -171,7 +179,9 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         // Arrange
         var server = Server; // to ensure that server is created and file system is created
         const string fileName = "test.txt";
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         var originContent = new byte[size];
         new Random().NextBytes(originContent);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
@@ -198,7 +208,9 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
     {
         // Arrange
         var server = Server; // to ensure that server is created and file system is created
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         var localRoot = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder");
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         
         _fileSystem.AddDirectory(localRoot);
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file1.txt"));    

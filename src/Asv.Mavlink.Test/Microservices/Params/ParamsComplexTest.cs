@@ -177,7 +177,9 @@ public class ParamsComplexTest : ComplexTestBase<ParamsClientEx, ParamsServerEx>
         // Assert
         var res = await tcs.Task;
         Assert.Equal(-500f, res.Payload.ParamValue);
-        Assert.NotEqual(payload, _serverEx.AllParamsList.FirstOrDefault(_ => _.Name == name).DefaultValue);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        Assert.NotEqual(payload, _serverEx.AllParamsList.FirstOrDefault(m => m.Name == name).DefaultValue);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
     }
 
     [Fact]

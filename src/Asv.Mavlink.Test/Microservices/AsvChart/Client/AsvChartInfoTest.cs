@@ -13,8 +13,10 @@ public class AsvChartInfoTest
     {
         AsvChartInfoPayload? payload = null;
         AsvChartAxisInfo? axis= null;
+#pragma warning disable CS8604 // Possible null reference argument.
         Assert.Throws<NullReferenceException>(() => new AsvChartInfo(payload));
         Assert.Throws<ArgumentNullException>(() => new AsvChartInfo(1, "testChart", axis, axis, AsvChartDataFormat.AsvChartDataFormatFloat));
+#pragma warning restore CS8604 // Possible null reference argument.
     }
     
     [Fact]

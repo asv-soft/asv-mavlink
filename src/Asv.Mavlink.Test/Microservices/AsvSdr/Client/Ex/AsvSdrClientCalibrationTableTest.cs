@@ -26,7 +26,9 @@ public class AsvSdrClientCalibrationTableTest : ComplexTestBase<AsvSdrClientEx, 
         public string Name { get; } = Guid.NewGuid().ToString();
         public ushort Size { get; }
         public bool IsEnabled { get; set; } = false;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         public CalibrationTableMetadata Metadata { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     }
 
     #endregion

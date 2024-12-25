@@ -10,7 +10,6 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(DiagnosticClient))]
 public class DiagnosticClientTest(ITestOutputHelper log) : ClientTestBase<DiagnosticClient>(log)
 {
-    private TaskCompletionSource _taskCompletionSource;
     private readonly DiagnosticClientConfig _config = new()
     {
         DeleteProbesTimeoutMs = 30_000,
@@ -43,8 +42,4 @@ public class DiagnosticClientTest(ITestOutputHelper log) : ClientTestBase<Diagno
         Assert.Throws<ArgumentNullException>(() => new DiagnosticClient(Identity, _config, null!));
     }
 
-    [Fact]
-    public void Client_alwk()
-    {
-    }
 }

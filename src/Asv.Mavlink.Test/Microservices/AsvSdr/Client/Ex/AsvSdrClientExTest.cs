@@ -131,9 +131,11 @@ public class AsvSdrClientExTest(ITestOutputHelper log) : ClientTestBase<AsvSdrCl
         var identity = new MavlinkClientIdentity(1, 2, 3, 4);
         var heartBeat = new HeartbeatClient(identity, _configHeartbeat, Context);
         var command = new CommandClient(identity, _commandConfig, Context);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         Assert.Throws<NullReferenceException>(() => new AsvSdrClientEx(null, heartBeat, command, new AsvSdrClientExConfig()));
         Assert.Throws<NullReferenceException>(() => new AsvSdrClientEx(Client.Base, null, command, new AsvSdrClientExConfig()));
         Assert.Throws<ArgumentNullException>(() => new AsvSdrClientEx(Client.Base, heartBeat, null, new AsvSdrClientExConfig()));
         Assert.Throws<ArgumentNullException>(() => new AsvSdrClientEx(Client.Base, heartBeat, command, null));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 }

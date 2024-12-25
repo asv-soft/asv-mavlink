@@ -12,12 +12,13 @@ namespace Asv.Mavlink.Shell;
 
 public class TestGenerateDiagnosticsCommand
 {
-    private string _connectionString;
     private byte _targetSystemId;
     private byte _targetComponentId;
     
     private uint _refreshRate;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private DiagnosticClient _client;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private IList<(string, string, string)>? _unitedItems = new List<(string, string, string)>();
 
     /// <summary>
@@ -31,7 +32,6 @@ public class TestGenerateDiagnosticsCommand
     [Command("test-diagnostics")]
     public int Run(string connectionString = "tcp://127.0.0.1:7341", byte targetSystemId = 255, byte targetComponentId = 255, uint refreshRate = 1000)
     {
-        _connectionString = connectionString;
         _targetSystemId = targetSystemId;
         _targetComponentId = targetComponentId;
         _refreshRate = refreshRate;

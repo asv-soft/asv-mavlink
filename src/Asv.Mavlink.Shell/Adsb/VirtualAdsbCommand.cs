@@ -25,7 +25,7 @@ public class VirtualAdsbCommand
     /// </summary>
     /// <param name="cfg">-cfg, File path with ADSB config. Will be created if not exist. Default 'adsb.json'</param>
     [Command("adsb")]
-    public async Task RunAdsb(string cfg = null)
+    public async Task RunAdsb(string? cfg = null)
     {
         _file = cfg ?? _file;
 
@@ -89,8 +89,8 @@ public class VirtualAdsbCommand
 
     private async Task RunVehicleAsync(ProgressContext ctx, AdsbCommandVehicleConfig cfg, IServerDevice srv)
     {
-        var vehicleTask = ctx.AddTask(cfg.CallSign);
-        if (cfg.Route == null || cfg.Route.Length < 2)
+        var vehicleTask = ctx.AddTask(cfg.CallSign ?? throw new InvalidOperationException());
+        if (cfg.Route.Length < 2)
         {
             AnsiConsole.MarkupLine($"[red]Vehicle {cfg.CallSign}[/] route must contain more than two points");
             return;
@@ -155,11 +155,16 @@ public class VirtualAdsbCommand
                 x.Altitude = MavlinkTypesHelper.AltFromDoubleMeterToInt32Mm(vehiclePos.Altitude);
                 x.Lon = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(vehiclePos.Longitude);
                 x.Lat = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(vehiclePos.Latitude);
-                MavlinkTypesHelper.SetString(x.Callsign, cfg.CallSign);
+                MavlinkTypesHelper.SetString(x.Callsign, cfg.CallSign ?? throw new InvalidOperationException());
+                // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
                 x.Flags = AdsbFlags.AdsbFlagsSimulated |
+                          // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
                           AdsbFlags.AdsbFlagsValidAltitude |
+                          // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
                           AdsbFlags.AdsbFlagsValidHeading |
+                          // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
                           AdsbFlags.AdsbFlagsValidCoords |
+                          // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
                           AdsbFlags.AdsbFlagsValidSquawk;
                 x.Squawk = cfg.Squawk;
                 x.Heading = (ushort)(azimuth * 1e2);

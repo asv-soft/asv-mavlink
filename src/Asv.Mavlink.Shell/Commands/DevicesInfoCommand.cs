@@ -16,9 +16,11 @@ namespace Asv.Mavlink.Shell;
 public class DevicesInfoCommand
 {
     private uint _refreshRate;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private IProtocolRouter _router;
     private IDeviceExplorer _explorer;
     private ISynchronizedView<KeyValuePair<DeviceId,IClientDevice>,MavlinkDeviceModel> _list;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
 
     /// <summary>
@@ -126,7 +128,9 @@ public class DevicesInfoCommand
         private long _lastUpdate;
         private uint _lastRate;
 
+#pragma warning disable CS8618, CS9264
         public MavlinkDeviceModel(IClientDevice info,TimeProvider timeProvider )
+#pragma warning restore CS8618, CS9264
         {
             var heartbeat = (IHeartbeatClient)info.Microservices.First(x => x is IHeartbeatClient);
             DeviceFullId = heartbeat.Identity.Target;
@@ -154,8 +158,8 @@ public class DevicesInfoCommand
                 });
 
             heartbeat.RawHeartbeat.Subscribe(_ => Interlocked.Increment(ref _rate));
-            heartbeat.RawHeartbeat.Subscribe(_ => BaseModeText = $"{_.BaseMode.ToString("F").Replace("MavModeFlag", "")}");
-            heartbeat.RawHeartbeat.Subscribe(_ => SystemStatusText = _.SystemStatus.ToString("G").Replace("MavState", ""));
+            heartbeat.RawHeartbeat.WhereNotNull().Subscribe(p => BaseModeText = $"{p.BaseMode.ToString("F").Replace("MavModeFlag", "")}");
+            heartbeat.RawHeartbeat.WhereNotNull().Subscribe(p => SystemStatusText = p.SystemStatus.ToString("G").Replace("MavState", ""));
         }
 
         public MavlinkIdentity DeviceFullId { get; set; }

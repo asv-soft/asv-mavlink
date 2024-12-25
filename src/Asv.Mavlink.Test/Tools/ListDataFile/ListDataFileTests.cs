@@ -56,7 +56,9 @@ public class ListDataFileTests
 
         var format = new ListDataFileFormat()
         {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Version = null,
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             Type = "type",
             MetadataMaxSize = 1234,
             ItemMaxSize = 567
@@ -142,7 +144,9 @@ public class ListDataFileTests
 
         using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         Assert.Throws<NullReferenceException>(() => { file.EditMetadata(_ => { _.Info.RecordName = null; }); });
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 
     [Fact]
@@ -546,7 +550,9 @@ public class ListDataFileTests
         IListDataFile<AsvSdrRecordFileMetadata> file =
             new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         Assert.Throws<NullReferenceException>(() => { file.EditMetadata(null); });
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 
     [Fact]
@@ -556,7 +562,9 @@ public class ListDataFileTests
         IListDataFile<AsvSdrRecordFileMetadata> file =
             new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         Assert.Throws<NullReferenceException>(() => { file.Write(0, null); });
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 
     [Fact]
@@ -618,7 +626,9 @@ public class ListDataFileTests
         var format = new ListDataFileFormat()
         {
             Version = "1.0.0",
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Type = null,
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             MetadataMaxSize = 1234,
             ItemMaxSize = 567
         };

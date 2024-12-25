@@ -15,12 +15,13 @@ namespace Asv.Mavlink.Shell;
 
 public class FtpBrowserDirectory
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private ReadOnlyObservableCollection<FtpEntry> _tree;
     private readonly SourceCache<IFtpEntry,string> _entryCache = new(x => x.Path);
     private IObservable<IChangeSet<IFtpEntry, string>> Entries => _entryCache.Connect();
     private FtpClient _ftpClient;
     private FtpClientEx _ftpClientEx;
-
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     /// <summary>
     /// File manager for interacting with a drone's file system via FTP
     /// </summary>

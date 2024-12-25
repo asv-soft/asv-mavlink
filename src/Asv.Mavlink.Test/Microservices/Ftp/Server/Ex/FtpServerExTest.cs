@@ -377,7 +377,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         {
             await Server.FileRead(request, buffer);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             // Assert
             Assert.True(true);
