@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution 
 		Directory.Build.props = Directory.Build.props
 		..\.github\workflows\release_debug_version.yml = ..\.github\workflows\release_debug_version.yml
 		..\.github\workflows\release-action.yml = ..\.github\workflows\release-action.yml
+		..\.github\workflows\docs.yml = ..\.github\workflows\docs.yml
 	EndProjectSection
 EndProject
 Global

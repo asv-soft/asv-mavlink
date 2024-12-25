@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rules SYSTEM "https://resources.jetbrains.com/writerside/1.0/redirection-rules.dtd">
+<rules>
+    <!-- format is as follows
+    <rule id="<unique id>">
+        <accepts>page.html</accepts>
+    </rule>
+    -->
+    <rule id="22a83207">
+        <description>Created after removal of "🧊 Asv.Mavlink" from Instance Name</description>
+        <accepts>asv-mavlink.html</accepts>
+    </rule>
+    <rule id="550a4f17">
+        <description><![CDATA[Created after removal of "<emulate-ADSB-receiver1.md>" from Instance Name]]></description>
+        <accepts>emulate-ADSB-receiver1.html</accepts>
+    </rule>
+    <rule id="3954fc42">
+        <description>Created after removal of "CLI: Emulate ADSB receiver" from Asv Mavlink</description>
+        <accepts>emulate-ADSB-receiver.html</accepts>
+    </rule>
+    <rule id="c16f26b">
+        <description>Created after removal of "CLI: Packet code generation" from Asv Mavlink</description>
+        <accepts>packet-code-generation.html</accepts>
+    </rule>
+    <rule id="671d35a6">
+        <description><![CDATA[Created after removal of "<packet-code-generation1.md>" from Asv Mavlink]]></description>
+        <accepts>packet-code-generation1.html</accepts>
+    </rule>
+    <rule id="66ec7796">
+        <description><![CDATA[Created after removal of "<emulate-ADSB-receiver1.md>" from Asv Mavlink]]></description>
+        <accepts>emulate-ADSB-receiver1.html</accepts>
+    </rule>
+    <rule id="23f6abd5">
+        <description>Created after removal of "Emulate ADSB receiver" from Asv Mavlink</description>
+        <accepts>emulate-ADSB-receiver.html</accepts>
+    </rule>
+    <rule id="3d953e26">
+        <description>Created after removal of "Benchmark-serialization" from Asv Mavlink</description>
+        <accepts>benchmark-serialization.html</accepts>
+    </rule>
+</rules>
