@@ -25,8 +25,7 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
     public AsvChartServerTest(ITestOutputHelper output) : base(output)
     {
         _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
 
@@ -60,7 +59,7 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
         // Assert
         var result = await _taskCompletionSource.Task as AsvChartDataPacket;
         Assert.NotNull(result);
-        Assert.Equal(payload.ChartInfoHash, result.Payload.ChatInfoHash);
+        Assert.Equal(payload.ChartInfoHash, result?.Payload.ChatInfoHash);
         Assert.Equal(count, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }

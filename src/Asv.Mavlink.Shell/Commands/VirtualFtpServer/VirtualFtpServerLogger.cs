@@ -7,8 +7,6 @@ namespace Asv.Mavlink.Shell;
 
 public class VirtualFtpServerLoggerFactory(string prefix) : ILoggerFactory
 {
-    private readonly string _prefix = prefix;
-
     public void Dispose()
     {
         

@@ -26,7 +26,7 @@ namespace Asv.Mavlink.Shell
                     ToolVersion = typeof(Program).Assembly.GetInformationalVersion(),
                     Dialect = model.Dialect,
                     Version = model.Version,
-                    Namespace = NameConverter(Path.GetFileNameWithoutExtension(model.FileName)),
+                    Namespace = NameConverter(Path.GetFileNameWithoutExtension(model.FileName) ?? throw new InvalidOperationException()),
                     Enums = model.Enums.Select(en =>
                                                    new
                                                    {
@@ -34,7 +34,7 @@ namespace Asv.Mavlink.Shell
                                                        Desc = en.Desc,
                                                        Name = en.Name,
                                                        IsFlag = en.IsFlag,
-                                                       CamelCaseName = NameConverter(en.Name),
+                                                       CamelCaseName = NameConverter(en.Name ?? throw new InvalidOperationException()),
                                                        Entries = en.Entries.Select(
                                                            enEntry => new
                                                                       {
@@ -55,7 +55,7 @@ namespace Asv.Mavlink.Shell
                                                          new
                                                          {
                                                              Name = msg.Name,
-                                                             CamelCaseName = NameConverter(msg.Name),
+                                                             CamelCaseName = NameConverter(msg.Name ?? throw new InvalidOperationException()),
                                                              Desc = msg.Desc,
                                                              Id = msg.Id,
                                                              CrcExtra = msg.CrcExtra,
@@ -67,7 +67,7 @@ namespace Asv.Mavlink.Shell
                                                                                             new
                                                                                             {
                                                                                                 Name = field.Name,
-                                                                                                CamelCaseName = NameConverter(field.Name),
+                                                                                                CamelCaseName = NameConverter(field.Name ?? throw new InvalidOperationException()),
                                                                                                 Units = field.Units,
                                                                                                 IsExtended = field.IsExtended,
                                                                                                 FieldTypeByteSize = field.FieldTypeByteSize,
@@ -77,7 +77,7 @@ namespace Asv.Mavlink.Shell
                                                                                                 IsTheLargestArrayInMessage = field.IsTheLargestArrayInMessage,
                                                                                                 IsEnum = field.Enum != null,
                                                                                                 Type = ConvertTypeName(field.Type),
-                                                                                                EnumCamelCaseName = NameConverter(field.Enum),
+                                                                                                EnumCamelCaseName = NameConverter(field.Enum ?? String.Empty),
                                                                                             })
                                                          })
                 });
@@ -86,7 +86,7 @@ namespace Asv.Mavlink.Shell
             return result.Render(args);
         }
 
-        private string NameConverter(string name)
+        private string? NameConverter(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return null;
             var a = Regex.Replace(name.ToLower(), "_([a-z0-9])", _=>_.Value.Substring(1).ToUpper(), RegexOptions.Compiled);

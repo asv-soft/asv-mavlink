@@ -12,6 +12,7 @@ namespace Asv.Mavlink.Shell;
 
 public class PacketViewerCommand
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private Table _table;
     private Table _packetTable;
     private Table _headerTable;
@@ -20,10 +21,11 @@ public class PacketViewerCommand
     private bool _isCancel;
     private bool _isSearching;
     private bool _isPause;
-    private string _consoleSearch;
+    private string? _consoleSearch;
     private string _consoleSize = "10";
     private IProtocolFactory _protocol;
-
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+    
     /// <summary>
     /// Show packets in real time
     /// </summary>
@@ -115,7 +117,9 @@ public class PacketViewerCommand
                             case ConsoleKey.Enter:
                                 _isSearching = false;
                                 UpdateSearchCellInActive();
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                                 HighlightSubmitCell();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                                 break;
                             default:
                                 _consoleSearch += keysearch.KeyChar;
@@ -144,7 +148,9 @@ public class PacketViewerCommand
                             case ConsoleKey.Enter:
                                 _isSearching = true;
                                 UpdateSizeCellInActive();
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                                 HighlightSubmitCell();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                                 break;
                             default:
                                 _consoleSize += keysearch.KeyChar;
@@ -161,7 +167,9 @@ public class PacketViewerCommand
                     var keyPause = Console.ReadKey(true);
                     if (keyPause.Key is ConsoleKey.Enter or ConsoleKey.F8)
                     {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                         HighlightSubmitCell();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                         UpdatePauseCellInActive();
                         _isPause = false;
                     }
@@ -169,7 +177,9 @@ public class PacketViewerCommand
                 }
                 case ConsoleKey.F9:
                 {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     HighlightEndCell();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     _isCancel = true;
                     _router.Dispose();
                     _actionsThread.Interrupt();
@@ -177,7 +187,9 @@ public class PacketViewerCommand
                 }
                 case ConsoleKey.Enter:
                 {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     HighlightSubmitCell();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     break;
                 }
             }
@@ -189,10 +201,9 @@ public class PacketViewerCommand
         
         if (_isPause) return;
         var result = new List<MavlinkMessage>();
-        var filtered = pkt.Where(_ => _.Name.Contains(_consoleSearch, StringComparison.InvariantCultureIgnoreCase));
+        
         if (_consoleSearch is null)
         {
-            
             result.AddRange(pkt);
         }
         else

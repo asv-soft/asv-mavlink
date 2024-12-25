@@ -2,9 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.IO;
 using Asv.Mavlink.Common;
-using DeepEqual.Syntax;
 using R3;
 using Xunit;
 using Xunit.Abstractions;
@@ -24,8 +22,7 @@ public class AdsbVehicleComplexTest : ComplexTestBase<AdsbVehicleClient, AdsbVeh
     public AdsbVehicleComplexTest(ITestOutputHelper output) : base(output)
     {
         TaskCompletionSource<AdsbVehiclePayload> taskCompletionSource = new();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        _cancellationTokenSource.Token.Register(() => taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     protected override AdsbVehicleServer CreateServer(MavlinkIdentity identity, IMavlinkContext core) =>
@@ -39,10 +36,7 @@ public class AdsbVehicleComplexTest : ComplexTestBase<AdsbVehicleClient, AdsbVeh
     {
         // Arrange
         int count = 0;
-        var payload = new AdsbVehiclePayload
-        {
-            IcaoAddress = 987654321,
-        };
+        var icao = (uint)987654321;
         Client.OnTarget.Subscribe(_ => { count++; });
 
         // Act
@@ -50,8 +44,7 @@ public class AdsbVehicleComplexTest : ComplexTestBase<AdsbVehicleClient, AdsbVeh
 
         // Assert
         Assert.NotNull(Client.Targets.Values.FirstOrDefault());
-        Assert.True(payload.IcaoAddress.ToString()
-            .IsDeepEqual(Client.Targets.Values.FirstOrDefault()?.IcaoAddress.ToString()));
+        Assert.True( Client.Targets.ContainsKey(icao));
         Assert.Equal(count, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(count, Client.Targets.Count);
     }
@@ -61,10 +54,7 @@ public class AdsbVehicleComplexTest : ComplexTestBase<AdsbVehicleClient, AdsbVeh
     {
         // Arrange
         var count = 0;
-        var payload = new AdsbVehiclePayload
-        {
-            IcaoAddress = 987654321,
-        };
+        var icao = (uint)987654321;
         using var sub = Client.OnTarget.Subscribe(_ => { count++; });
 
         // Act
@@ -73,7 +63,7 @@ public class AdsbVehicleComplexTest : ComplexTestBase<AdsbVehicleClient, AdsbVeh
 
         // Assert
         Assert.NotEqual(count, Client.Targets.Count);
-        Assert.False(Client.Targets.ContainsKey(payload.IcaoAddress));
+        Assert.False(Client.Targets.ContainsKey(icao));
     }
 
     [Fact]
@@ -81,13 +71,14 @@ public class AdsbVehicleComplexTest : ComplexTestBase<AdsbVehicleClient, AdsbVeh
     {
         // Arrange
         var packetsCount = 10;
+        var icao = (uint)123;
         using var sub = Client.OnTarget.Subscribe();
 
         // Act
         for (var i = 0; i < packetsCount; i++)
         {
-            await Server.Send(p => p.IcaoAddress = 987654321, _cancellationTokenSource.Token);
-            await Server.Send(p => p.IcaoAddress = 123456789, _cancellationTokenSource.Token);
+            await Server.Send(p => p.IcaoAddress = icao, _cancellationTokenSource.Token);
+            await Server.Send(p => p.IcaoAddress = 321, _cancellationTokenSource.Token);
         }
 
         ClientTime.Advance(TimeSpan.FromMilliseconds(5000));
@@ -95,13 +86,13 @@ public class AdsbVehicleComplexTest : ComplexTestBase<AdsbVehicleClient, AdsbVeh
 
         for (var i = 0; i < packetsCount; i++)
         {
-            await Server.Send(p => p.IcaoAddress = 987654321, _cancellationTokenSource.Token);
+            await Server.Send(p => p.IcaoAddress = icao, _cancellationTokenSource.Token);
         }
         ClientTime.Advance(TimeSpan.FromMilliseconds(5001));
 
         // Assert
         Assert.Equal(1, Client.Targets.Count);
-        Assert.True(Client.Targets.ContainsKey(987654321));
+        Assert.True(Client.Targets.ContainsKey(icao));
     }
 
     public void Dispose()

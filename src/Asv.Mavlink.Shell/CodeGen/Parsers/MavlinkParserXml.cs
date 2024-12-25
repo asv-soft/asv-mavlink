@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml;
+using Spectre.Console;
 
 namespace Asv.Mavlink.Shell
 {
@@ -52,7 +53,7 @@ namespace Asv.Mavlink.Shell
                 {
                     var messageItem = new MavlinkMessageModel
                                       {
-                                          Id = int.Parse(rdr.GetAttribute("id")),
+                                          Id = int.Parse(rdr.GetAttribute("id") ?? throw new InvalidOperationException()),
                                           Name = rdr.GetAttribute("name"),
                                           
                                       };
@@ -101,7 +102,7 @@ namespace Asv.Mavlink.Shell
             bool isArray;
             byte arrayLength;
             string baseTypeName;
-            var type = ParseFieldType(rdr.GetAttribute("type"), out baseTypeName, out isArray, out arrayLength);
+            var type = ParseFieldType(rdr.GetAttribute("type") ?? throw new InvalidOperationException(), out baseTypeName, out isArray, out arrayLength);
             var fields = extendedFields ?  msg.ExtendedFields : msg.Fields;
 
             fields.Add(new MessageFieldModel
@@ -199,7 +200,7 @@ namespace Asv.Mavlink.Shell
                 {
                     var enumItem = new MavlinkEnumModel
                                    {
-                                       Name = rdr.GetAttribute("name")
+                                       Name = rdr.GetAttribute("name") ?? throw new InvalidOperationException()
                                    };
                     protocolEnums.Add(enumItem);
                     ParseEnum(rdr, enumItem);
@@ -237,13 +238,13 @@ namespace Asv.Mavlink.Shell
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error to parse enum '{rdr.Name}' value '{valueStr}':{e.Message}");
+                AnsiConsole.WriteLine($"Error to parse enum '{rdr.Name}' value '{valueStr}':{e.Message}");
                 throw;
             }
             
             var result = new MavlinkEnumEntryModel
                          {
-                             Name = rdr.GetAttribute("name"),
+                             Name = rdr.GetAttribute("name") ?? throw new InvalidOperationException(),
                              // value can be empty !
                              Value = enumValue
             };

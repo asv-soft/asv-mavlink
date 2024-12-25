@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using R3;
 using Xunit.Abstractions;
@@ -8,7 +9,6 @@ namespace Asv.Mavlink.Test;
 public class TestLoggerFactory(ITestOutputHelper testOutputHelper, TimeProvider time, string prefix) : ILoggerFactory
 {
     public TimeProvider Time { get; } = time;
-    private readonly string _prefix = prefix;
 
     public void Dispose()
     {

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
@@ -27,6 +28,8 @@ public interface ICommandServerEx<out TArgPacket> : IMavlinkMicroserviceServer
     /// <typeparam name="TArgPacket">The type of argument packet expected by the command.</typeparam>
     /// <param name="cmd">The MAVLink command.</param>
     CommandDelegate<TArgPacket>? this[MavCmd cmd] { set; }
+    
+    IEnumerable<MavCmd> SupportedCommands { get; }
 }
 
 /// Represents a delegate that defines a command handler.
@@ -36,4 +39,8 @@ public interface ICommandServerEx<out TArgPacket> : IMavlinkMicroserviceServer
 /// @param cancel The cancellation token that can be used to cancel the command execution.
 /// @returns A Task representing the asynchronous command result.
 /// /
-public delegate Task<CommandResult> CommandDelegate<in TArgPacket>(DeviceIdentity from, TArgPacket args, CancellationToken cancel);
+public delegate Task<CommandResult> CommandDelegate<in TArgPacket>(
+    DeviceIdentity from,
+    TArgPacket args, 
+    CancellationToken cancel
+);

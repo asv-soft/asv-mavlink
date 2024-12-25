@@ -66,12 +66,14 @@ public class AsvRadioServerExTest(ITestOutputHelper log) : ServerTestBase<AsvRad
         var cmd = new CommandLongServerEx(new CommandServer(Identity, Core)).AddTo(ref builder);
         var status = new StatusTextServer(Identity, _statusConfig, Core).AddTo(ref builder);
         _dispose = builder.Build();
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         Assert.Throws<ArgumentNullException>(() => new AsvRadioServerEx(null, _codecs, srv, hb, cmd, status));
         Assert.Throws<ArgumentNullException>(() =>  new AsvRadioServerEx(_capabilities, null, srv, hb, cmd, status));
         Assert.Throws<NullReferenceException>(() =>  new AsvRadioServerEx(_capabilities, _codecs, null, hb, cmd, status));
         Assert.Throws<ArgumentNullException>(() =>  new AsvRadioServerEx(_capabilities, _codecs, srv, null, cmd, status));
         Assert.Throws<ArgumentNullException>(() =>  new AsvRadioServerEx(_capabilities, _codecs, srv, hb, null, status));
         Assert.Throws<ArgumentNullException>(() =>  new AsvRadioServerEx(_capabilities, _codecs, srv, hb, cmd, null));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         _dispose?.Dispose();
     }
     

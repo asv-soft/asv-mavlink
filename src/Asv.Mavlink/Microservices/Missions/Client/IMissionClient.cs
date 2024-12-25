@@ -100,9 +100,22 @@ namespace Asv.Mavlink
         /// <param name="missionType">The type of mission item.</param>
         /// <param name="cancel">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        ValueTask WriteMissionItem(ushort seq, MavFrame frame, MavCmd cmd, bool current, bool autoContinue, float param1,
-            float param2, float param3,
-            float param4, float x, float y, float z, MavMissionType missionType, CancellationToken cancel = default);
+        ValueTask WriteMissionItem(
+            ushort seq, 
+            MavFrame frame, 
+            MavCmd cmd,
+            bool current,
+            bool autoContinue,
+            float param1,
+            float param2, 
+            float param3,
+            float param4, 
+            float x, 
+            float y,
+            float z, 
+            MavMissionType missionType,
+            CancellationToken cancel = default
+        );
 
         /// <summary>
         /// Clears all mission items of the specified type.

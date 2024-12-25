@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
-using Asv.IO;
 using Asv.Mavlink.Common;
 using JetBrains.Annotations;
 using R3;
@@ -30,8 +29,7 @@ public class ParamsComplexTest : ComplexTestBase<ParamsClientEx, ParamsServerEx>
         _serverEx = Server;
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<ParamValuePayload>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     private readonly ParameterClientConfig _clientConfig = new()
@@ -179,7 +177,9 @@ public class ParamsComplexTest : ComplexTestBase<ParamsClientEx, ParamsServerEx>
         // Assert
         var res = await tcs.Task;
         Assert.Equal(-500f, res.Payload.ParamValue);
-        Assert.NotEqual(payload, _serverEx.AllParamsList.FirstOrDefault(_ => _.Name == name).DefaultValue);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        Assert.NotEqual(payload, _serverEx.AllParamsList.FirstOrDefault(m => m.Name == name).DefaultValue);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
     }
 
     [Fact]

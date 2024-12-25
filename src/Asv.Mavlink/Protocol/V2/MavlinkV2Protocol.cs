@@ -62,6 +62,11 @@ public static class MavlinkV2Protocol
         builder.Formatters.Register(ParamSetFormatter.Instance);
         builder.Formatters.Register(ParamValueFormatter.Instance);
         builder.Formatters.Register(StatusTextFormatter.Instance);
+        builder.Formatters.Register(GpsRtcmDataPacketFormatter.Instance);
+        builder.Formatters.Register(CommandLongPacketFormatter.Instance);
+        builder.Formatters.Register(CommandIntPacketFormatter.Instance);
+        builder.Formatters.Register(CommandAckPacketFormatter.Instance);
+        builder.Formatters.Register(PayloadAsJsonFormatter.Instance);
         
     }
 }

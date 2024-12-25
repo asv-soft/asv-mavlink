@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
-
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -24,7 +23,7 @@ public class MissionServerTest : ServerTestBase<MissionServer>
     {
         _server = Server;
         _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(1000), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
     
@@ -253,7 +252,9 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         
         // Act + Assert
         // ReSharper disable once NullableWarningSuppressionIsUsed
-        await Assert.ThrowsAsync<NullReferenceException>(async () => await _server.SendMissionItemInt(null!));
+        await Assert.ThrowsAsync<NullReferenceException>(
+            async () => await _server.SendMissionItemInt(null!)
+        );
         Assert.Equal(0, called);
     }
     
@@ -356,5 +357,36 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         Assert.NotNull(result);
         Assert.NotNull(packetFromServer);
         Assert.True(packetFromServer.IsDeepEqual(result));
+    }
+    
+    [Fact]
+    public async Task RequestMissionItem_Timeout_Throws()
+    {
+        // Arrange
+        var called = 0;
+        Link.SetClientToServerFilter(_ => false);
+        using var s1 = Link.Server.OnTxMessage.Subscribe(_ =>
+        {
+            called++;
+            ServerTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    1000 // from default value in MavlinkMicroserviceServer
+                    + 1
+                )
+            );
+        });
+        
+        // Act
+        var task = _server.RequestMissionItem(
+            10,
+            MavMissionType.MavMissionTypeAll,
+            cancel: _cancellationTokenSource.Token
+        );
+
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(5, called); // 5 is from default value in MavlinkMicroserviceServer
+        Assert.Equal(0, (int)Link.Server.Statistic.RxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.TxMessages);
     }
 }

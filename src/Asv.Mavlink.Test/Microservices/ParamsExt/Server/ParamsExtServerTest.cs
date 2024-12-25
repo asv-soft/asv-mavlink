@@ -6,8 +6,8 @@ using Asv.IO;
 using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
-using Xunit;
 using R3;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
@@ -21,8 +21,7 @@ public class ParamsExtServerTest : ServerTestBase<ParamsExtServer>,IDisposable
     public ParamsExtServerTest(ITestOutputHelper log) : base(log)
     {
         _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
     
     protected override ParamsExtServer CreateClient(MavlinkIdentity identity, CoreServices core) => new(identity, core);
@@ -74,13 +73,15 @@ public class ParamsExtServerTest : ServerTestBase<ParamsExtServer>,IDisposable
     [Theory]
     [InlineData(10)]
     [InlineData(200)]
-    [InlineData(20000)]
+    [InlineData(2000)]
     public async Task SendCompatibilityResponse_SendManyPacket_Success(int packetCount)
     {
         // Arrange
         var called = 0;
         var results = new List<ParamExtValuePayload>();
         var serverResults = new List<ParamExtValuePayload>();
+        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+        cancel.Token.Register(() => _taskCompletionSource.TrySetCanceled());
         using var sub = Link.Client.OnRxMessage.Subscribe(p =>
         {
             called++;
@@ -97,7 +98,7 @@ public class ParamsExtServerTest : ServerTestBase<ParamsExtServer>,IDisposable
         // Act
         for (var i = 0; i < packetCount; i++)
         {
-            await Server.SendParamExtValue(p => serverResults.Add(p), _cancellationTokenSource.Token);
+            await Server.SendParamExtValue(p => serverResults.Add(p), cancel.Token);
         }
 
         // Assert

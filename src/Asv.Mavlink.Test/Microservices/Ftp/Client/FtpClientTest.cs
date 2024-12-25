@@ -389,7 +389,6 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         var handle = await handleTask.ConfigureAwait(false);
 
         // Assert
-        Assert.NotNull(handle);
         Assert.Equal(sessionId, handle.Session);
         Assert.Equal(fileSize, handle.Size);
     }

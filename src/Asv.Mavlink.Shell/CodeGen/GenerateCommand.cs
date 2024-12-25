@@ -12,7 +12,9 @@ namespace Asv.Mavlink.Shell
         private string _in = "in";
         private string _targetFileName = "standard.xml";
         private string _out = "out";
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         private string _ext;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
         /// <summary>
         /// Generate file form MAVLink XML message definitions.
@@ -25,7 +27,7 @@ namespace Asv.Mavlink.Shell
         /// <param name="outputFolder">-o, [Optional] Output folder with results. By default "out" folder</param>
         [Command("gen")]
         public async Task RunGenerate(string ext,
-            string templateFile, string targetFile = null, string inputFolder = null, string outputFolder = null)
+            string templateFile, string? targetFile = null, string? inputFolder = null, string? outputFolder = null)
         {
             _targetFileName = targetFile ?? _targetFileName;
             _in = inputFolder ?? _in;
@@ -48,7 +50,7 @@ namespace Asv.Mavlink.Shell
             {
                 try
                 {
-                    if (generatedFiles.Contains(model.FileName))
+                    if (generatedFiles.Contains(model.FileName ?? throw new InvalidOperationException()))
                     {
                         AnsiConsole.MarkupLine($"[yellow]Skip[/] {model.FileName}");
                         continue;

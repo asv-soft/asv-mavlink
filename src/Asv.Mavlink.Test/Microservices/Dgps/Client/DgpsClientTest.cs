@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using R3;
 using JetBrains.Annotations;
+using R3;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -21,8 +21,7 @@ public class DgpsClientTest : ClientTestBase<DgpsClient>, IDisposable
     public DgpsClientTest(ITestOutputHelper log) : base(log)
     {
         _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20), TimeProvider.System);
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     [Theory]
@@ -35,6 +34,8 @@ public class DgpsClientTest : ClientTestBase<DgpsClient>, IDisposable
         var data = new byte[size];
         new Random().NextBytes(data);
         var sentPackets = new List<GpsRtcmDataPacket>();
+        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+        cancel.Token.Register(() => _taskCompletionSource.TrySetCanceled());
         using var sub = Link.Client.OnTxMessage.Subscribe(_ =>
         {
             if (_ is GpsRtcmDataPacket gpsPacket)
@@ -46,7 +47,7 @@ public class DgpsClientTest : ClientTestBase<DgpsClient>, IDisposable
         });
 
         // Act
-        await Client.SendRtcmData(data, size, _cancellationTokenSource.Token);
+        await Client.SendRtcmData(data, size, cancel.Token);
 
         // Assert
         var res = await _taskCompletionSource.Task as GpsRtcmDataPacket;

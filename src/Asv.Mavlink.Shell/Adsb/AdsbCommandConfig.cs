@@ -121,9 +121,9 @@ public class AdsbCommandConfig
             },
         }
     };
-    
-    public string[] Ports { get; set; }
-    public AdsbCommandVehicleConfig[] Vehicles { get; set; }
+
+    public string[] Ports { get; set; } = [];
+    public AdsbCommandVehicleConfig[] Vehicles { get; set; } = [];
     public byte SystemId { get; set; }
     public byte ComponentId { get; set; }
 }
@@ -131,17 +131,17 @@ public class AdsbCommandConfig
 
 public class AdsbCommandVehicleConfig
 {
-    public string CallSign { get; set; }
+    public string? CallSign { get; set; }
     public ushort Squawk { get; set; }
-    public AdsbCommandVehicleRouteItemConfig[] Route { get; set; }
+    public AdsbCommandVehicleRouteItemConfig[] Route { get; set; } = [];
     public int UpdateRateMs { get; set; }
     public uint IcaoAddress { get; set; }
 }
 
 public class AdsbCommandVehicleRouteItemConfig
 {
-    public string Lat { get; set; }
-    public string Lon { get; set; }
+    public string? Lat { get; set; }
+    public string? Lon { get; set; }
     public double Alt { get; set; }
     public double Velocity { get; set; }
 }

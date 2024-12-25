@@ -14,10 +14,15 @@ namespace Asv.Mavlink.Test;
 public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposable
 {
     private readonly CancellationTokenSource _cancellationTokenSource;
-    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
-    private List<ParamDescription> _existDescription;
     private readonly ParamsExtClientEx _clientEx;
-    private ParamsExtClient _client;
+    
+    public ParamsExtClientExTest(ITestOutputHelper log) : base(log)
+    {
+        _clientEx = Client;
+        TaskCompletionSource<MavlinkMessage> taskCompletionSource = new();
+        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20), TimeProvider.System);
+        _cancellationTokenSource.Token.Register(() => taskCompletionSource.TrySetCanceled());
+    }
     
     private readonly ParamsExtClientExConfig _config = new()
     {
@@ -48,21 +53,16 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
     }
 
 
-    public ParamsExtClientExTest(ITestOutputHelper log) : base(log)
-    {
-        _clientEx = Client;
-        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20), TimeProvider.System);
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
-    }
+    
     
     [Fact]
     public void Constructor_Null_Throws()
     {
+        
         // Act
         Assert.Throws<NullReferenceException>(() => new ParamsExtClientEx(null!, _config, ParamDescription));
-        Assert.Throws<NullReferenceException>(() => new ParamsExtClientEx(_client, null!, ParamDescription));
-        Assert.Throws<NullReferenceException>(() => new ParamsExtClientEx(_client, _config, null!));
+        Assert.Throws<NullReferenceException>(() => new ParamsExtClientEx(Client.Base, null!, ParamDescription));
+        Assert.Throws<NullReferenceException>(() => new ParamsExtClientEx(Client.Base, _config, null!));
     }
     
     [Fact]

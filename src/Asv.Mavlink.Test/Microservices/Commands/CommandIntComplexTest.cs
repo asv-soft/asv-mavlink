@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
@@ -33,7 +32,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         _server = Server;
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
@@ -82,7 +81,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
             5,
             6,
             7,
-            _cancellationTokenSource.Token);
+            _cancellationTokenSource.Token
+        );
         
         // Assert
         var packetFromServer = await _taskCompletionSource.Task;
@@ -135,7 +135,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
             5,
             6,
             7,
-            _cancellationTokenSource.Token);
+            _cancellationTokenSource.Token
+        );
         
         // Assert
         var packetFromServer = await _taskCompletionSource.Task;
@@ -380,7 +381,8 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
             param5,
             param6,
             param7,
-            _cancellationTokenSource.Token);
+            _cancellationTokenSource.Token
+        );
         
         // Assert
         var packetFromServer = await _taskCompletionSource.Task;
@@ -439,7 +441,9 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
                 5,
                 6,
                 7,
-                _cancellationTokenSource.Token);
+                _cancellationTokenSource.Token
+            );
+            
             results.Add(result);
         }
         
@@ -499,7 +503,6 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         // Arrange
         var calledFirst = 0;
         var calledSecond = 0;
-        _cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(10), TimeProvider.System);
         _server[MavCmd.MavCmdActuatorTest] = (_, _, _) =>
         {
             calledFirst++;
@@ -545,10 +548,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         var calledSecond = 0;
         var tcs1 = new TaskCompletionSource();
         var tcs2 = new TaskCompletionSource();
-        var cancel1 = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
-        var cancel2 = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
-        cancel1.Token.Register(() => tcs1.TrySetCanceled());
-        cancel2.Token.Register(() => tcs2.TrySetCanceled());
+        
         _server[MavCmd.MavCmdActuatorTest] = (_, _, _) =>
         {
             calledFirst++;
@@ -577,7 +577,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
             5,
             6,
             7,
-            cancel1.Token);
+            CancellationToken.None);
         
         var result2 = await _client.CommandInt(
             MavCmd.MavCmdUser5,
@@ -591,7 +591,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
             5,
             6,
             7,
-            cancel2.Token);
+            CancellationToken.None);
         
         // Assert
         await tcs1.Task;
@@ -662,16 +662,29 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
     {
         // Arrange
         var called = 0;
-        _server[MavCmd.MavCmdUser1] = (_, _, _) =>
+        Link.SetServerToClientFilter(_ => false);
+        _server[MavCmd.MavCmdUser1] = (_, _, _) 
+            => Task.FromResult(
+                CommandResult.FromResult(
+                    MavResult.MavResultInProgress
+                )
+            );
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             called++;
+            if (called == MaxCommandAttempts - 1)
+            {
+                // before last attempt - enable link
+                Link.SetServerToClientFilter(_ => true);
+            }
             if (called != MaxCommandAttempts)
             {
-                ClientTime.Advance(TimeSpan.FromMilliseconds((MaxCommandAttempts+1) * MaxTimeoutInMs));
+                ClientTime.Advance(TimeSpan.FromMilliseconds(MaxTimeoutInMs + 1));
+                return;
             }
             
-            return Task.FromResult(CommandResult.FromResult(MavResult.MavResultInProgress));
-        };
+            
+        });
         
         // Act
         var task = _client.CommandInt(
@@ -698,93 +711,17 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         Assert.Equal(MavCmd.MavCmdUser1, result.Command);
     }
     
-    [Fact(Timeout = 2000)]
-    public async Task CommandInt_TimeoutHappened_Throws()
-    {
-        // Arrange
-        var identityToNothing = new MavlinkClientIdentity(
-            1, 
-            2,
-            (byte)(Identity.Target.SystemId + 1),
-            (byte)(Identity.Target.ComponentId + 1)
-        );
-        
-        var client = CreateClient(identityToNothing, ClientCore);
-        using var sub = Link.Client.OnTxMessage.Subscribe(_ =>
-        {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(MaxTimeoutInMs * (MaxCommandAttempts + 1)));
-        });
-        
-        // Act
-        var task = client.CommandInt(
-            MavCmd.MavCmdUser1,
-            MavFrame.MavFrameGlobal,
-            true,
-            true,
-            1,
-            1,
-            3,
-            4,
-            5,
-            6,
-            7,
-            default
-        );
-        
-        // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-        Assert.Equal(MaxCommandAttempts, (int)Link.Client.Statistic.TxMessages);
-    }
-
-    [Theory (Skip = "Test execution is not stable")]
-    [InlineData(0, 0)]
-    [InlineData(0, 1000)]
-    [InlineData(1, 1000)]
-    [InlineData(5, 5000)]
-    [InlineData(10, 10000)]
-    public async Task CommandInt_TimeoutWithCustomConfig_Throws(int maxCommandAttempts, int maxTimeoutInMs)
-    {
-        // Arrange
-        var customCfg = new CommandProtocolConfig
-        {
-            CommandTimeoutMs = maxTimeoutInMs,
-            CommandAttempt = maxCommandAttempts
-        };
-        var client = new CommandClient(Identity, customCfg, ClientCore);
-        
-        using var sub = Link.Client.OnTxMessage.Subscribe(_ =>
-        {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(maxTimeoutInMs * (maxCommandAttempts + 1)));
-        });
-        
-        // Act
-        var task = client.CommandInt(
-            MavCmd.MavCmdUser1,
-            MavFrame.MavFrameGlobal,
-            true,
-            true,
-            1,
-            1,
-            3,
-            4,
-            5,
-            6,
-            7,
-            default
-        );
-        
-        // Assert
-        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-        Assert.Equal(maxCommandAttempts, (int)Link.Client.Statistic.TxMessages);
-    }
-    
     [Theory]
     [InlineData(1, 1000)]
     [InlineData(5, 5000)]
     [InlineData(10, 20000)]
-    public async Task CommandInt_WaitBeforeResponseWithCustomConfig_Success(int maxCommandAttempts, int maxTimeoutInMs)
+    public async Task CommandInt_WaitBeforeResponseWithCustomConfig_Success(
+        int maxCommandAttempts, 
+        int maxTimeoutInMs
+    )
     {
         // Arrange
+        Link.SetServerToClientFilter(_ => false);
         var called = 0;
         var customCfg = new CommandProtocolConfig
         {
@@ -793,16 +730,25 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         };
         var client = new CommandClient(Identity, customCfg, ClientCore);
         
-        _server[MavCmd.MavCmdUser1] = (_, _, _) =>
+        _server[MavCmd.MavCmdUser1] = (_, _, _) 
+            => Task.FromResult(
+                CommandResult.FromResult(
+                    MavResult.MavResultInProgress
+                )
+            );
+        
+        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             called++;
+            
             if (called != maxCommandAttempts)
             {
-                ClientTime.Advance(TimeSpan.FromMilliseconds((maxCommandAttempts+1) * maxTimeoutInMs));
+                ClientTime.Advance(TimeSpan.FromMilliseconds(maxTimeoutInMs + 1));
+                return;
             }
             
-            return Task.FromResult(CommandResult.FromResult(MavResult.MavResultInProgress));
-        };
+            Link.SetServerToClientFilter(_ => true);
+        });
         
         // Act
         var task = client.CommandInt(

@@ -13,10 +13,8 @@ namespace Asv.Mavlink.Test;
 public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
 {
     private readonly CancellationTokenSource _cancellationTokenSource;
-    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private List<ParamDescription> _existDescription;
     private readonly MavParamCStyleEncoding _encoding;
-    private readonly ParamsClientEx _clientEx;
     private ParamsClient _client;
 
     private readonly ParamsClientExConfig _config = new()
@@ -26,13 +24,12 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
         ChunkUpdateBufferMs = 100,
     };
 
+#pragma warning disable CS8618, CS9264
     public ParamsClientExTest(ITestOutputHelper log) : base(log)
+#pragma warning restore CS8618, CS9264
     {
         _encoding = new MavParamCStyleEncoding();
-        _clientEx = Client;
-        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20), TimeProvider.System);
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     protected override ParamsClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core)

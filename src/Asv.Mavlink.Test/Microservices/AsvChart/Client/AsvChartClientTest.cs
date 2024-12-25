@@ -14,7 +14,7 @@ public class AsvChartClientTest : ClientTestBase<AsvChartClient>, IDisposable
 
     public AsvChartClientTest(ITestOutputHelper log) : base(log)
     {
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
     }
     
     private readonly AsvChartClientConfig _config = new()
