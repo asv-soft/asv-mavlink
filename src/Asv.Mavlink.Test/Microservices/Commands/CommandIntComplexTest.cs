@@ -548,10 +548,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         var calledSecond = 0;
         var tcs1 = new TaskCompletionSource();
         var tcs2 = new TaskCompletionSource();
-        var cancel1 = new CancellationTokenSource();
-        var cancel2 = new CancellationTokenSource();
-        cancel1.Token.Register(() => tcs1.TrySetCanceled());
-        cancel2.Token.Register(() => tcs2.TrySetCanceled());
+        
         _server[MavCmd.MavCmdActuatorTest] = (_, _, _) =>
         {
             calledFirst++;
@@ -580,7 +577,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
             5,
             6,
             7,
-            cancel1.Token);
+            CancellationToken.None);
         
         var result2 = await _client.CommandInt(
             MavCmd.MavCmdUser5,
@@ -594,7 +591,7 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
             5,
             6,
             7,
-            cancel2.Token);
+            CancellationToken.None);
         
         // Assert
         await tcs1.Task;
@@ -675,14 +672,18 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         using var sub = Link.Client.OnTxMessage.Subscribe(p =>
         {
             called++;
-            
+            if (called == MaxCommandAttempts - 1)
+            {
+                // before last attempt - enable link
+                Link.SetServerToClientFilter(_ => true);
+            }
             if (called != MaxCommandAttempts)
             {
                 ClientTime.Advance(TimeSpan.FromMilliseconds(MaxTimeoutInMs + 1));
                 return;
             }
             
-            Link.SetServerToClientFilter(_ => true);
+            
         });
         
         // Act
