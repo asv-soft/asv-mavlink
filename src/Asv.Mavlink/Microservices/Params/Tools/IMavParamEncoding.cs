@@ -5,11 +5,38 @@ using Asv.Mavlink.Common;
 
 namespace Asv.Mavlink
 {
+    public abstract class MavParamEncodingBase : IMavParamEncoding
+    {
+        public bool IsValidType(MavParamType type)
+        {
+            switch (type)
+            {
+                case MavParamType.MavParamTypeUint8:
+                case MavParamType.MavParamTypeInt8:
+                case MavParamType.MavParamTypeUint16:
+                case MavParamType.MavParamTypeInt16:
+                case MavParamType.MavParamTypeUint32:
+                case MavParamType.MavParamTypeInt32:
+                case MavParamType.MavParamTypeReal32:
+                    return true;
+                case MavParamType.MavParamTypeUint64:
+                case MavParamType.MavParamTypeInt64:
+                case MavParamType.MavParamTypeReal64:
+                default:
+                    return false;
+            }
+        }
+
+        public abstract float ConvertToMavlinkUnion(MavParamValue value);
+        public abstract MavParamValue ConvertFromMavlinkUnion(float value, MavParamType type);
+    }
+    
     /// <summary>
     /// Interface for encoding and decoding MAVLink parameter values.
     /// </summary>
     public interface IMavParamEncoding
     {
+        bool IsValidType(MavParamType type);
         /// <summary>
         /// Converts a MavParamValue to a float using the Mavlink union.
         /// </summary>
@@ -33,16 +60,18 @@ namespace Asv.Mavlink
     /// <summary>
     /// Class for encoding and decoding Mavlink parameter values in C-style union format.
     /// </summary>
-    public class MavParamCStyleEncoding : IMavParamEncoding
+    public class MavParamCStyleEncoding : MavParamEncodingBase
     {
         public static MavParamCStyleEncoding Instance { get; } = new MavParamCStyleEncoding();
+        
+
         /// Converts the given MavParamValue to a float value based on its type.
         /// @param value The MavParamValue to convert.
         /// @return The float value converted from the MavParamValue.
         /// @throws ArgumentOutOfRangeException If the MavParamValue type is not valid.
         /// @throws MavlinkException If the MavParamValue type requires more bytes.
         /// /
-        public float ConvertToMavlinkUnion(MavParamValue value)
+        public override float ConvertToMavlinkUnion(MavParamValue value)
         {
             return value.Type switch
             {
@@ -69,7 +98,7 @@ namespace Asv.Mavlink
         /// <param name="value">The value to convert.</param>
         /// <param name="type">The MavParamType of the value.</param>
         /// <returns>A new MavParamValue object representing the converted value.</returns>
-        public MavParamValue ConvertFromMavlinkUnion(float value, MavParamType type)
+        public override MavParamValue ConvertFromMavlinkUnion(float value, MavParamType type)
         {
             return type switch
             {
@@ -94,7 +123,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Represents a class that performs byte-wise encoding and decoding of MAVLink parameter values.
     /// </summary>
-    public class MavParamByteWiseEncoding : IMavParamEncoding
+    public class MavParamByteWiseEncoding : MavParamEncodingBase
     {
         public static MavParamByteWiseEncoding Instance { get; } = new();
         /// <summary>
@@ -102,7 +131,7 @@ namespace Asv.Mavlink
         /// </summary>
         /// <param name="value">The MavParamValue to convert.</param>
         /// <returns>The converted Mavlink union as a float value.</returns>
-        public float ConvertToMavlinkUnion(MavParamValue value)
+        public override float ConvertToMavlinkUnion(MavParamValue value)
         {
             var arr = ArrayPool<byte>.Shared.Rent(4);
             var span = new Span<byte>(arr, 0, 4);
@@ -169,7 +198,7 @@ namespace Asv.Mavlink
         /// <param name="value">The value to convert.</param>
         /// <param name="type">The type of the value.</param>
         /// <returns>A new <see cref="MavParamValue"/> object representing the converted value.</returns>
-        public MavParamValue ConvertFromMavlinkUnion(float value, MavParamType type)
+        public override MavParamValue ConvertFromMavlinkUnion(float value, MavParamType type)
         {
             
             // MAVLink (v1.0, v2.0) supports these data types:

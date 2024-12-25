@@ -28,8 +28,14 @@ public class ParamValueFormatter : IProtocolMessageFormatter, ISingleton<ParamVa
         Debug.Assert(param != null, nameof(param) + " != null");
         
         var name = new Span<char>(param.Payload.ParamId).TrimEnd('\0').ToString();
-        var cValue = MavParamCStyleEncoding.Instance.ConvertFromMavlinkUnion(param.Payload.ParamValue, param.Payload.ParamType);
-        var bValue = MavParamByteWiseEncoding.Instance.ConvertFromMavlinkUnion(param.Payload.ParamValue, param.Payload.ParamType);
+        var cValue = MavParamCStyleEncoding.Instance.IsValidType(param.Payload.ParamType) 
+            ? MavParamCStyleEncoding.Instance.ConvertFromMavlinkUnion(param.Payload.ParamValue, param.Payload.ParamType).ToString() 
+            : $"Invalid type({param.Payload.ParamType:G})";
+
+        var bValue = MavParamByteWiseEncoding.Instance.IsValidType(param.Payload.ParamType) 
+            ? MavParamByteWiseEncoding.Instance.ConvertFromMavlinkUnion(param.Payload.ParamValue, param.Payload.ParamType).ToString() 
+            : $"Invalid type({param.Payload.ParamType:G})";
+        
         return $"{name}[{param.Payload.ParamIndex} of {param.Payload.ParamCount}]=cstyle({cValue}) or byteWise({bValue})";
     }
 

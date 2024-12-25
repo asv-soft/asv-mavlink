@@ -274,8 +274,8 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         }
         if (lastState != InternalBusyStateIdle)
         {
-            _logger.ZLogWarning($"{Id}: Try {nameof(StartMission)}, but now state '{lastState:G}. Response with error'");
-            return;
+            throw new Exception(
+                $"{Id}: Try {nameof(StartMission)}, but now state '{lastState:G}. Response with error'");
         }
 
         try
