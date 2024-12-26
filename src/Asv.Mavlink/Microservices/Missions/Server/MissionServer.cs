@@ -63,7 +63,10 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
     public ValueTask SendMissionCurrent(ushort current, CancellationToken cancel = default)
     {
         _currentMissionIndex = current;
-        return InternalSend<MissionCurrentPacket>(x => x.Payload.Seq = current, cancel);
+        return InternalSend<MissionCurrentPacket>(x =>
+        {
+            x.Payload.Seq = current;
+        }, cancel);
     }
 
     public ValueTask SendMissionItemInt(ServerMissionItem item,byte targetSystemId = 0, byte targetComponentId = 0,CancellationToken cancel = default)

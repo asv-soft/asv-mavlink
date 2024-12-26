@@ -13,7 +13,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public abstract class CommandServerEx<TArgPacket> : MavlinkMicroserviceServer, ICommandServerEx<TArgPacket>, IDisposable, IAsyncDisposable
+public abstract class CommandServerEx<TArgPacket> : MavlinkMicroserviceServer, ICommandServerEx<TArgPacket>
     where TArgPacket : MavlinkMessage
 {
     private readonly Func<TArgPacket,ushort> _cmdGetter;
@@ -37,10 +37,7 @@ public abstract class CommandServerEx<TArgPacket> : MavlinkMicroserviceServer, I
         _logger = server.Core.LoggerFactory.CreateLogger<CommandServerEx<TArgPacket>>();
         _cmdGetter = cmdGetter;
         _confirmationGetter = confirmationGetter;
-        _subscribe = commandsPipe.SubscribeAwait(
-            async (pkt, ct) => 
-                await OnRequest(pkt, ct).ConfigureAwait(false)
-        );
+        _subscribe = commandsPipe.SubscribeAwait(OnRequest, AwaitOperation.Parallel); // ! Important parrallel
     }
 
     public ICommandServer Base { get; }
@@ -60,7 +57,7 @@ public abstract class CommandServerEx<TArgPacket> : MavlinkMicroserviceServer, I
 
     public IEnumerable<MavCmd> SupportedCommands =>_registry.Keys.Select(x=>(MavCmd)x);
 
-    private async Task OnRequest(TArgPacket pkt, CancellationToken cancellationToken)
+    private async ValueTask OnRequest(TArgPacket pkt, CancellationToken cancellationToken)
     {
         var requester = new DeviceIdentity() { ComponentId = pkt.ComponentId, SystemId = pkt.SystemId };
         var cmd = _cmdGetter(pkt);
@@ -74,10 +71,12 @@ public abstract class CommandServerEx<TArgPacket> : MavlinkMicroserviceServer, I
                 if (confirmation != 0 && _lastCommand == cmd)
                 {
                     // do nothing, we already doing this task
-                    
+                    _logger.ZLogWarning($"Duplicate command {pkt}): already executin {_lastCommand} command)");
+                    await Base.SendCommandAck((MavCmd)cmd, requester,
+                        CommandResult.FromResult(MavResult.MavResultInProgress), DisposeCancel).ConfigureAwait(false);    
                     return;
                 }
-                _logger.ZLogWarning($"Reject command {pkt}): too busy now");
+                _logger.ZLogWarning($"Reject command {pkt}): too busy now (executing {_lastCommand} command)");
                 await Base.SendCommandAck((MavCmd)cmd, requester,
                     CommandResult.FromResult(MavResult.MavResultTemporarilyRejected), DisposeCancel).ConfigureAwait(false);
                 return;
