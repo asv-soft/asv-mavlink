@@ -627,12 +627,9 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         {
             called++;
             _taskCompletionSource.TrySetResult(args);
+            packetFromClient = args;
             return Task.FromResult(CommandResult.FromResult(mavResult));
         };
-        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
-        {
-            packetFromClient = p as CommandIntPacket;
-        });
         
         // Act
         await _client.SendCommandInt(
@@ -785,13 +782,10 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
+            packetFromClient = args;
             return Task.FromResult(CommandResult.FromResult(result));
         };
-        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
-        {
-            packetFromClient = p as CommandIntPacket;
-        });
-        
+      
         // Act
         var result = await client.CommandInt(
             MavCmd.MavCmdUser1,

@@ -156,6 +156,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
 
         await _client.MissionSetCount((ushort) _missionSource.Count, cancel).ConfigureAwait(false);
         await tcs.Task.ConfigureAwait(false);
+        progress?.Invoke(1);
         _isMissionSynced.OnNext(true);
     }
 

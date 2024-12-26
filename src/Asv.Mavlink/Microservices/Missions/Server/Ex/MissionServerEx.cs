@@ -19,10 +19,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
     private const int InternalBusyStateClearAll = 1;
     private const int InternalBusyStateUploadMission = 2;
     private const int InternalBusyStateStartMission = 3;
-    
-    
-    private int _internalBusyState;
-    
+    private int _internalBusyState = InternalBusyStateIdle;
     
     private readonly IStatusTextServer _statusLogger;
     private readonly ILogger _logger;

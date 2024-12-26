@@ -19,7 +19,6 @@ public enum MissionServerState
 
 public interface IMissionServerEx : IMavlinkMicroserviceServer
 {
-   
    IMissionServer Base { get; }
    ReadOnlyReactiveProperty<ushort> Current { get; }
    ReadOnlyReactiveProperty<ushort> Reached { get; }

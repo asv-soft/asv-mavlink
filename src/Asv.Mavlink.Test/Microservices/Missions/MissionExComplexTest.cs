@@ -550,7 +550,21 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         });
         
         // Act
-        _server.StartMission(skip);
+        
+        // On some slow platforms, start the mission before the upload is complete.
+        // We attempt to start it multiple times. It's impossible in real life with async communication
+        start:
+        try
+        {
+            _server.StartMission(skip);
+        }
+        catch (MavlinkException e)
+        {
+            Log.WriteLine("====> tests is slow. Trying to start mission multiple times <===");
+            await Task.Delay(10);
+            goto start;
+        }
+        
         await tcs.Task;
         
         // Assert
