@@ -2,6 +2,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
@@ -260,6 +261,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         var server = Server;
         await _cts.CancelAsync();
         const string fileName = "test.txt";
+        Debug.Assert(_fileSystem != null, nameof(_fileSystem) + " != null");
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
         var originContent = new byte[size];
         new Random().NextBytes(originContent);
@@ -286,6 +288,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         var server = Server;
         await _cts.CancelAsync();
         const string fileName = "test.txt";
+        Debug.Assert(_fileSystem != null, nameof(_fileSystem) + " != null");
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
         var originContent = new byte[size];
         new Random().NextBytes(originContent);
@@ -312,6 +315,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         var server = Server;
         await _cts.CancelAsync();
         const string fileName = "test.txt";
+        Debug.Assert(_fileSystem != null, nameof(_fileSystem) + " != null");
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
         var originContent = new byte[size];
         new Random().NextBytes(originContent);
@@ -338,6 +342,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         var server = Server;
         await _cts.CancelAsync();
         const string fileName = "test.txt";
+        Debug.Assert(_fileSystem != null, nameof(_fileSystem) + " != null");
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
         var originContent = new byte[size];
         new Random().NextBytes(originContent);
@@ -361,6 +366,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         // Arrange
         var server = Server;
         await _cts.CancelAsync();
+        Debug.Assert(_fileSystem != null, nameof(_fileSystem) + " != null");
         var localRoot = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder");
         _fileSystem.AddDirectory(localRoot);
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file1.txt"));
@@ -374,8 +380,13 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         });
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _cts.Dispose();
+        if (disposing)
+        {
+            _cts.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

@@ -34,8 +34,13 @@ public class ParamsClientTest : ClientTestBase<ParamsClient>, IDisposable
         Assert.Throws<ArgumentNullException>(() => new ParamsClient(Identity, _config, null!));
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _cancellationTokenSource.Dispose();
+        if (disposing)
+        {
+            _cancellationTokenSource.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

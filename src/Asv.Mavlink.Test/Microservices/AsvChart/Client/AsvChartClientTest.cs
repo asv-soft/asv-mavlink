@@ -53,8 +53,13 @@ public class AsvChartClientTest : ClientTestBase<AsvChartClient>, IDisposable
         Assert.Equal(attempts, (int)Link.Client.Statistic.TxMessages);
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _cancellationTokenSource.Dispose();
+        if (disposing)
+        {
+            _cancellationTokenSource.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

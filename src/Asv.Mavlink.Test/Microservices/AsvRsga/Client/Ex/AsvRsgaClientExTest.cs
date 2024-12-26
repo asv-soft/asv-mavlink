@@ -87,8 +87,13 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
         Assert.Equal(attempts, Link.Client.Statistic.TxMessages);
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _cancellationTokenSource.Dispose();
+        if (disposing)
+        {
+            _cancellationTokenSource.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

@@ -558,7 +558,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         {
             _server.StartMission(skip);
         }
-        catch (MavlinkException e)
+        catch (MavlinkException)
         {
             Log.WriteLine("====> tests is slow. Trying to start mission multiple times <===");
             await Task.Delay(10);

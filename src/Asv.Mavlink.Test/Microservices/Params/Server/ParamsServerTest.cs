@@ -89,8 +89,13 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
         }
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _cancellationTokenSource.Dispose();
+        if (disposing)
+        {
+            _cancellationTokenSource.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

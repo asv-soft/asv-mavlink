@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace Asv.Mavlink.Test.Dgps.Client;
 
 [TestSubject(typeof(DgpsClient))]
-public class DgpsClientTest : ClientTestBase<DgpsClient>, IDisposable
+public class DgpsClientTest : ClientTestBase<DgpsClient>
 {
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
@@ -93,8 +93,14 @@ public class DgpsClientTest : ClientTestBase<DgpsClient>, IDisposable
         // Assert
         Assert.Equal(0, (int)Link.Client.Statistic.TxMessages);
     }
-    public void Dispose()
+
+    protected override void Dispose(bool disposing)
     {
-        _cancellationTokenSource.Dispose();
+        if (disposing)
+        {
+            _cancellationTokenSource.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

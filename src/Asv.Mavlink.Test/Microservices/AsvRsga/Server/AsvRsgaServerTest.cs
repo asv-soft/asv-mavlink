@@ -106,8 +106,13 @@ public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
         Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _cancellationTokenSource.Dispose();
+        if (disposing)
+        {
+            _cancellationTokenSource.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

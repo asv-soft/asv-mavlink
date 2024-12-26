@@ -92,8 +92,13 @@ public class AsvRsgaComplexTest : ComplexTestBase<AsvRsgaClientEx, AsvRsgaServer
         Assert.NotEmpty(Client.AvailableModes);
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _cancellationTokenSource.Dispose();
+        if (disposing)
+        {
+            _cancellationTokenSource.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

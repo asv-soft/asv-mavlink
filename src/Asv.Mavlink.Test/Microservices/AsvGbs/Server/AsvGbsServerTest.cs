@@ -168,8 +168,13 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _cancellationTokenSource.Dispose();
+        if (disposing)
+        {
+            _cancellationTokenSource.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

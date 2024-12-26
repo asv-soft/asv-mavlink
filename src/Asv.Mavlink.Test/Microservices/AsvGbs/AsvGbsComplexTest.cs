@@ -497,8 +497,13 @@ public class AsvGbsComplexTest : ComplexTestBase<AsvGbsExClient, AsvGbsExServer>
         Assert.Equal(1001000, status.Alt);          
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _cancellationTokenSource.Dispose();
+        if (disposing)
+        {
+            _cancellationTokenSource.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

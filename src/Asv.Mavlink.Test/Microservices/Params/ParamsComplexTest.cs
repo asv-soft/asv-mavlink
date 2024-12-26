@@ -238,8 +238,13 @@ public class ParamsComplexTest : ComplexTestBase<ParamsClientEx, ParamsServerEx>
         Assert.Equal(_serverEx.AllParamsList.Count, _client.RemoteCount.CurrentValue);
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _cancellationTokenSource.Dispose();
+        if (disposing)
+        {
+            _cancellationTokenSource.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

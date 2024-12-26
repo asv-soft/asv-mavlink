@@ -56,8 +56,13 @@ public class StatusTextComplexTest : ComplexTestBase<StatusTextClient, StatusTex
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _cts.Dispose();
+        if (disposing)
+        {
+            _cts.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

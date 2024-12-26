@@ -145,8 +145,13 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
         Assert.Equal(_config.ReadAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _cancellationTokenSource.Dispose();
+        if (disposing)
+        {
+            _cancellationTokenSource.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }
