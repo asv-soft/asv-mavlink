@@ -220,4 +220,21 @@ public readonly struct MavParamExtValue : IComparable<MavParamExtValue>, ICompar
             MavParamExtType.MavParamExtTypeCustom => $"{{{string.Join(",", _rawValue)}}}[{Type:G}]",
             _ => throw new ArgumentOutOfRangeException()
         };
+    public object GetValue() =>
+        Type switch
+        {
+            MavParamExtType.MavParamExtTypeUint8 => (byte)this,
+            MavParamExtType.MavParamExtTypeInt8 => (sbyte)this,
+            MavParamExtType.MavParamExtTypeUint16 => (ushort)this,
+            MavParamExtType.MavParamExtTypeInt16 => (short)this,
+            MavParamExtType.MavParamExtTypeUint32 => (uint)this,
+            MavParamExtType.MavParamExtTypeInt32 => (int)this,
+            MavParamExtType.MavParamExtTypeReal32 => (float)this,
+            MavParamExtType.MavParamExtTypeUint64 =>( ulong)this,
+            MavParamExtType.MavParamExtTypeInt64 => (long)this,
+            MavParamExtType.MavParamExtTypeReal64 =>(double)this,
+            MavParamExtType.MavParamExtTypeCustom =>  _rawValue,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    
 }

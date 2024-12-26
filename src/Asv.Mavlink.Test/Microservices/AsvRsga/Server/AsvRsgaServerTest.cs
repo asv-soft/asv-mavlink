@@ -21,8 +21,7 @@ public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
     public AsvRsgaServerTest(ITestOutputHelper output) : base(output)
     {
         _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5), TimeProvider.System);
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     protected override AsvRsgaServer CreateClient(MavlinkIdentity identity, CoreServices core) => new(identity, core);
@@ -38,7 +37,7 @@ public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
             SupportedModes = new byte[32],
         };
 
-        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p => _taskCompletionSource.TrySetResult(p));
+        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(p => _taskCompletionSource.TrySetResult(p));
         // Act
         await Server.SendCompatibilityResponse(p => p.RequestId = 1, _cancellationTokenSource.Token);
 
@@ -60,7 +59,7 @@ public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
         var called = 0;
         var results = new List<AsvRsgaCompatibilityResponsePayload>();
         var serverResults = new List<AsvRsgaCompatibilityResponsePayload>();
-        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
+        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(p =>
         {
             called++;
             if (p is AsvRsgaCompatibilityResponsePacket packet)
@@ -92,21 +91,17 @@ public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
         }
     }
 
-    [Fact(Skip = "Cancellation doesn't work")] // TODO: FIX CANCELLATION
-    public async Task SendCompatibilityResponse_WhenCanceled_ShouldThrowOperationCanceledException()
+    [Fact]
+    public async Task SendCompatibilityResponse_ArgumentCanceledToken_ShouldThrowOperationCanceledException()
     {
         // Arrange
-        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(
+        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(
             p => _taskCompletionSource.TrySetResult(p)
         );
-        await _cancellationTokenSource.CancelAsync();
-
         // Act
-        var task = Server.SendCompatibilityResponse(p => { }, _cancellationTokenSource.Token);
-
+        await _cancellationTokenSource.CancelAsync();
         // Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
-
+        await Assert.ThrowsAsync<OperationCanceledException>(async () => await Server.SendCompatibilityResponse(p => { }, _cancellationTokenSource.Token));
         Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.RxMessages);
     }

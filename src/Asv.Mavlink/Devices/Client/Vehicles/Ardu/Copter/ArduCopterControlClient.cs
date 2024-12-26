@@ -28,7 +28,7 @@ public class ArduCopterControlClient(
     public override Task SetAutoMode(CancellationToken cancel = default)
     {
         _logger.LogInformation("Set auto mode");
-        return mode.SetMode(ArduCopterModeClient.Auto, cancel);
+        return mode.SetMode(ArduCopterMode.Auto, cancel);
     }
 
     public override ValueTask<bool> IsGuidedMode(CancellationToken cancel = default)
@@ -42,7 +42,7 @@ public class ArduCopterControlClient(
     public override Task SetGuidedMode(CancellationToken cancel = default)
     {
         _logger.LogInformation("Set guided mode");
-        return mode.SetMode(ArduCopterModeClient.Guided, cancel);
+        return mode.SetMode(ArduCopterMode.Guided, cancel);
     }
 
     public override async Task GoTo(GeoPoint point, CancellationToken cancel = default)
@@ -56,14 +56,14 @@ public class ArduCopterControlClient(
     {
         _logger.LogInformation("DoLand");
         await this.EnsureGuidedMode(cancel).ConfigureAwait(false);
-        await mode.SetMode(ArduCopterModeClient.Land, cancel).ConfigureAwait(false);
+        await mode.SetMode(ArduCopterMode.Land, cancel).ConfigureAwait(false);
     }
 
     public override async Task DoRtl(CancellationToken cancel = default)
     {
         _logger.LogInformation("DoRtl");
         await this.EnsureGuidedMode(cancel).ConfigureAwait(false);
-        await mode.SetMode(ArduCopterModeClient.Rtl, cancel).ConfigureAwait(false);
+        await mode.SetMode(ArduCopterMode.Rtl, cancel).ConfigureAwait(false);
     }
 
     public override async Task TakeOff(double altInMeters, CancellationToken cancel = default)

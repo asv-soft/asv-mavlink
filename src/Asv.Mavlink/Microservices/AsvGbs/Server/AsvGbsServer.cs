@@ -28,7 +28,7 @@ namespace Asv.Mavlink
                 new MavlinkPacketTransponder<AsvGbsOutStatusPacket>(identity, core);
         }
 
-        public void Start()
+        public override void Start()
         {
             _transponder.Start(TimeSpan.FromMilliseconds(_config.StatusRateMs),TimeSpan.FromMilliseconds(_config.StatusRateMs));
         }

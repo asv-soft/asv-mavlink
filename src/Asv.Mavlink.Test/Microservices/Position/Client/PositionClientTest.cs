@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
-
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -25,10 +24,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
     {
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(
-            TimeSpan.FromSeconds(200), 
-            TimeProvider.System
-        );
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
     
@@ -89,16 +85,19 @@ public class PositionClientTest : ClientTestBase<PositionClient>
         // Arrange
         var called = 0;
         SetPositionTargetGlobalIntPacket? packetFromClient = null;
-        using var sub1 = Link.Server.OnRxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            called++;
-
-            _taskCompletionSource.TrySetResult(p);
-        });
-        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as SetPositionTargetGlobalIntPacket;
-        });
+        using var sub1 = Link.Server.OnRxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                _taskCompletionSource.TrySetResult(p); 
+            });
+        using var sub2 = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as SetPositionTargetGlobalIntPacket; 
+            });
         
         // Act
         await _client.SetTargetGlobalInt(
@@ -151,37 +150,43 @@ public class PositionClientTest : ClientTestBase<PositionClient>
         var called = 0;
         await _cancellationTokenSource.CancelAsync();
         SetPositionTargetGlobalIntPacket? packetFromClient = null;
-        using var sub1 = Link.Server.OnRxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            called++;
-
-            _taskCompletionSource.TrySetResult(p);
-        });
-        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as SetPositionTargetGlobalIntPacket;
-        });
+        using var sub1 = Link.Server.OnRxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++; 
+                _taskCompletionSource.TrySetResult(p); 
+            });
+        using var sub2 = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as SetPositionTargetGlobalIntPacket; 
+            });
         
-        // Act + Assert
+        // Act
+        var task = _client.SetTargetGlobalInt(
+            10,
+            MavFrame.MavFrameMission,
+            23,
+            24,
+            25f,
+            53f,
+            24.2f,
+            45.1f,
+            10.2f,
+            14.23f,
+            11.0f,
+            49.22453f,
+            45.0f,
+            PositionTargetTypemask.PositionTargetTypemaskVyIgnore,
+            _cancellationTokenSource.Token
+        );
+        
+        // Assert
         await Assert.ThrowsAsync<OperationCanceledException>( async () =>
         {
-            await _client.SetTargetGlobalInt(
-                10,
-                MavFrame.MavFrameMission,
-                23,
-                24,
-                25f,
-                53f,
-                24.2f,
-                45.1f,
-                10.2f,
-                14.23f,
-                11.0f,
-                49.22453f,
-                45.0f,
-                PositionTargetTypemask.PositionTargetTypemaskVyIgnore,
-                _cancellationTokenSource.Token
-            );
+            await task;
         });
         Assert.Null(packetFromClient);
         Assert.Equal(0, called);
@@ -245,16 +250,19 @@ public class PositionClientTest : ClientTestBase<PositionClient>
         // Arrange
         var called = 0;
         SetPositionTargetLocalNedPacket? packetFromClient = null;
-        using var sub1 = Link.Server.OnRxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            called++;
-
-            _taskCompletionSource.TrySetResult(p);
-        });
-        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as SetPositionTargetLocalNedPacket;
-        });
+        using var sub1 = Link.Server.OnRxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                _taskCompletionSource.TrySetResult(p); 
+            });
+        using var sub2 = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as SetPositionTargetLocalNedPacket; 
+            });
         
         // Act
         await _client.SetPositionTargetLocalNed(
@@ -307,37 +315,43 @@ public class PositionClientTest : ClientTestBase<PositionClient>
         var called = 0;
         await _cancellationTokenSource.CancelAsync();
         SetPositionTargetLocalNedPacket? packetFromClient = null;
-        using var sub1 = Link.Server.OnRxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            called++;
-
-            _taskCompletionSource.TrySetResult(p);
-        });
-        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage,MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as SetPositionTargetLocalNedPacket;
-        });
+        using var sub1 = Link.Server.OnRxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                _taskCompletionSource.TrySetResult(p); 
+            });
+        using var sub2 = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage,MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as SetPositionTargetLocalNedPacket; 
+            });
         
-        // Act + Assert
+        // Act
+        var task = _client.SetPositionTargetLocalNed(
+            123,
+            MavFrame.MavFrameLocalFrd, 
+            PositionTargetTypemask.PositionTargetTypemaskYawIgnore,
+            1, 
+            2, 
+            3,
+            4, 
+            5, 
+            6, 
+            7, 
+            8, 
+            9, 
+            10,
+            11,
+            _cancellationTokenSource.Token
+        );
+        
+        // Assert
         await Assert.ThrowsAsync<OperationCanceledException>( async () =>
         {
-            await _client.SetPositionTargetLocalNed(
-                123,
-                MavFrame.MavFrameLocalFrd, 
-                PositionTargetTypemask.PositionTargetTypemaskYawIgnore,
-                1, 
-                2, 
-                3,
-                4, 
-                5, 
-                6, 
-                7, 
-                8, 
-                9, 
-                10,
-                11,
-                _cancellationTokenSource.Token
-            );
+            await task;
         });
         Assert.Null(packetFromClient);
         Assert.Equal(0, called);
@@ -387,7 +401,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
     {
         // Arrange
         var tcs = new TaskCompletionSource<GlobalPositionIntPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -441,7 +455,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
     {
         // Arrange
         var tcs = new TaskCompletionSource<GlobalPositionIntPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -553,7 +567,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
     {
         // Arrange
         var tcs = new TaskCompletionSource<HomePositionPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -608,7 +622,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
     {
         // Arrange
         var tcs = new TaskCompletionSource<HomePositionPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -737,7 +751,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
     {
         // Arrange
         var tcs = new TaskCompletionSource<PositionTargetGlobalIntPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -796,7 +810,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
     {
         // Arrange
         var tcs = new TaskCompletionSource<PositionTargetGlobalIntPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -901,7 +915,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
     {
         // Arrange
         var tcs = new TaskCompletionSource<AltitudePayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -953,7 +967,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
     {
         // Arrange
         var tcs = new TaskCompletionSource<AltitudePayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -1047,7 +1061,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
     {
         // Arrange
         var tcs = new TaskCompletionSource<VfrHudPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -1098,7 +1112,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
     {
         // Arrange
         var tcs = new TaskCompletionSource<VfrHudPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -1231,7 +1245,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
     {
         // Arrange
         var tcs = new TaskCompletionSource<HighresImuPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -1292,7 +1306,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
     {
         // Arrange
         var tcs = new TaskCompletionSource<HighresImuPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -1399,7 +1413,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
     {
         // Arrange
         var tcs = new TaskCompletionSource<AttitudePayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
@@ -1451,7 +1465,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
     {
         // Arrange
         var tcs = new TaskCompletionSource<AttitudePayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;

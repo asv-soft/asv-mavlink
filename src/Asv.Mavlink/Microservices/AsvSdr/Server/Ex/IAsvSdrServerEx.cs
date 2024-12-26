@@ -124,7 +124,7 @@ public delegate void WriteCalibrationDelegate(ushort tableIndex, CalibrationTabl
 /// <summary>
 /// Represents an extended interface for an ASV SDR server.
 /// </summary>
-public interface IAsvSdrServerEx
+public interface IAsvSdrServerEx : IMavlinkMicroserviceServer
 {
     /// <summary>
     /// Gets the <see cref="IAsvSdrServer"/> base property.

@@ -18,15 +18,14 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
 
     private readonly AsvChartServerConfig _config = new()
     {
-        SendSignalDelayMs = 30,
+        SendSignalDelayMs = 0, // ! Important
         SendCollectionUpdateMs = 100,
     };
 
     public AsvChartServerTest(ITestOutputHelper output) : base(output)
     {
         _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
 
@@ -60,7 +59,7 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
         // Assert
         var result = await _taskCompletionSource.Task as AsvChartDataPacket;
         Assert.NotNull(result);
-        Assert.Equal(payload.ChartInfoHash, result.Payload.ChatInfoHash);
+        Assert.Equal(payload.ChartInfoHash, result?.Payload.ChatInfoHash);
         Assert.Equal(count, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
@@ -96,9 +95,6 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
     public async Task Send_SendManyPacket_Success(int packetsCount)
     {
         // Arrange
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(15));
-        cancel.Token.Register(() => _taskCompletionSource.TrySetCanceled());
-
         var count = 0;
         var info = new AsvChartInfo(1, "TestChart",
             new AsvChartAxisInfo("X", AsvChartUnitType.AsvChartUnitTypeDbm, 0, 10, 10),
@@ -114,7 +110,7 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
         // Act
         for (var i = 0; i < packetsCount; i++)
         {
-            await Server.Send(DateTime.Now, data, info, cancel.Token);
+            await Server.Send(DateTime.Now, data, info);
         }
 
         // Assert

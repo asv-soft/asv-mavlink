@@ -40,7 +40,7 @@ public class MavProxy
     /// <param name="namePattern">-name, Filter for logging: regex message name filter (Example: -name MAV_CMD_D)</param>
     /// <param name="textPattern">-txt, Filter for logging: regex json text filter (Example: -txt MAV_CMD_D)</param>
     [Command("proxy")]
-    public async Task RunMavProxy(string[] links, string? outputFile = null, bool silent = false, int[]? sysIds = null,
+    public Task RunMavProxy(string[] links, string? outputFile = null, bool silent = false, int[]? sysIds = null,
         int[]? msgIds = null, string? namePattern = null, string? textPattern = null)
     {
         _silentMode = silent;
@@ -64,15 +64,18 @@ public class MavProxy
         {
             AddLink(link);
         }
-        _router.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(OnPacket);
+        _router.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(OnPacket);
         using var c = ConsoleAppHelper.WaitCancelPressOrProcessExit();
 
         _cancel.Cancel();
+        return Task.CompletedTask;
     }
 
     private void AddLink(string connectionString)
     {
+#pragma warning disable CS8604 // Possible null reference argument.
         var port = _router.AddPort(connectionString);
+#pragma warning restore CS8604 // Possible null reference argument.
         port.Tags.Add(Key, _count++);
     }
 

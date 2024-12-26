@@ -36,7 +36,7 @@ namespace Asv.Mavlink.Shell
                 builder.RegisterMavlinkV2Protocol();
             }).CreateRouter("ROUTER");
 
-            conn.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(OnPacket);
+            conn.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(OnPacket);
             
             while (!_cancel.IsCancellationRequested)
             {
@@ -136,9 +136,9 @@ namespace Asv.Mavlink.Shell
 
         internal class DisplayRow
         {
-            public string Message { get; set; }
+            public string? Message { get; set; }
             public int Count { get; set; }
-            public string Freq { get; set; }
+            public string? Freq { get; set; }
             public int Msg { get; set; }
         }
     }

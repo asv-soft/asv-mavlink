@@ -22,10 +22,7 @@ public class MavlinkCommonHelperTest : ClientTestBase<PositionClient>
     {
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(
-            TimeSpan.FromSeconds(200),
-            TimeProvider.System
-        );
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
@@ -130,19 +127,23 @@ public class MavlinkCommonHelperTest : ClientTestBase<PositionClient>
         SetPositionTargetGlobalIntPacket? packetFromClient = null;
 
         var tcs2 = new TaskCompletionSource<SetPositionTargetGlobalIntPacket>();
-        using var sub1 = Link.Server.OnRxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
-        {
-            called++;
-            _taskCompletionSource.TrySetResult(p);
-        });
-        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as SetPositionTargetGlobalIntPacket;
-            if (packetFromClient != null)
-            {
-                tcs2.TrySetResult(packetFromClient);
-            }
-        });
+        using var sub1 = Link.Server.OnRxMessage
+            .Cast<IProtocolMessage, MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++; 
+                _taskCompletionSource.TrySetResult(p); 
+            });
+        using var sub2 = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage, MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as SetPositionTargetGlobalIntPacket; 
+                if (packetFromClient != null) 
+                { 
+                    tcs2.TrySetResult(packetFromClient); 
+                }
+            });
 
         // Act
         await _client.SetTargetGlobalInt(
@@ -198,25 +199,31 @@ public class MavlinkCommonHelperTest : ClientTestBase<PositionClient>
         var called = 0;
         await _cancellationTokenSource.CancelAsync();
         SetPositionTargetGlobalIntPacket? packetFromClient = null;
-        using var sub1 = Link.Server.OnRxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
-        {
-            called++;
+        using var sub1 = Link.Server.OnRxMessage
+            .Cast<IProtocolMessage, MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++; 
+                _taskCompletionSource.TrySetResult(p); 
+            });
+        using var sub2 = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage, MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as SetPositionTargetGlobalIntPacket; 
+            });
+        
+        // Act
+        var task = _client.SetTargetGlobalInt(
+            10,
+            MavFrame.MavFrameLocalFlu,
+            _cancellationTokenSource.Token
+        );
 
-            _taskCompletionSource.TrySetResult(p);
-        });
-        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as SetPositionTargetGlobalIntPacket;
-        });
-
-        // Act + Assert
+        // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
         {
-            await _client.SetTargetGlobalInt(
-                10,
-                MavFrame.MavFrameLocalFlu,
-                _cancellationTokenSource.Token
-            );
+            await task;
         });
         Assert.Null(packetFromClient);
         Assert.Equal(0, called);
@@ -307,16 +314,19 @@ public class MavlinkCommonHelperTest : ClientTestBase<PositionClient>
         // Arrange
         var called = 0;
         SetPositionTargetLocalNedPacket? packetFromClient = null;
-        using var sub1 = Link.Server.OnRxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
-        {
-            called++;
-
-            _taskCompletionSource.TrySetResult(p);
-        });
-        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as SetPositionTargetLocalNedPacket;
-        });
+        using var sub1 = Link.Server.OnRxMessage
+            .Cast<IProtocolMessage, MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                _taskCompletionSource.TrySetResult(p); 
+            });
+        using var sub2 = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage, MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as SetPositionTargetLocalNedPacket; 
+            });
 
         // Act
         await _client.SetPositionTargetLocalNed(
@@ -367,25 +377,31 @@ public class MavlinkCommonHelperTest : ClientTestBase<PositionClient>
         var called = 0;
         await _cancellationTokenSource.CancelAsync();
         SetPositionTargetLocalNedPacket? packetFromClient = null;
-        using var sub1 = Link.Server.OnRxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
-        {
-            called++;
+        using var sub1 = Link.Server.OnRxMessage
+            .Cast<IProtocolMessage, MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++; 
+                _taskCompletionSource.TrySetResult(p); 
+            });
+        using var sub2 = Link.Client.OnTxMessage
+            .Cast<IProtocolMessage, MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                packetFromClient = p as SetPositionTargetLocalNedPacket; 
+            });
+        
+        // Act
+        var task = _client.SetPositionTargetLocalNed(
+            123,
+            MavFrame.MavFrameLocalFrd,
+            _cancellationTokenSource.Token
+        );
 
-            _taskCompletionSource.TrySetResult(p);
-        });
-        using var sub2 = Link.Client.OnTxMessage.Cast<IProtocolMessage, MavlinkMessage>().Subscribe(p =>
-        {
-            packetFromClient = p as SetPositionTargetLocalNedPacket;
-        });
-
-        // Act + Assert
+        // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
         {
-            await _client.SetPositionTargetLocalNed(
-                123,
-                MavFrame.MavFrameLocalFrd,
-                _cancellationTokenSource.Token
-            );
+            await task;
         });
         Assert.Null(packetFromClient);
         Assert.Equal(0, called);

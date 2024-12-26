@@ -1,0 +1,187 @@
+name: Release docs
+
+on:
+  push:
+    tags:
+      - 'docs-v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: write
+  id-token: write
+  pages: write
+
+env:
+  INSTANCE: 'Writerside/am'
+  DOCKER_VERSION: '243.21565'
+  PDF: 'PDF.xml'
+  CONFIG_JSON_PRODUCT: 'AM'
+  ALGOLIA_ID: 'FS4LOABGZR'
+  ALGOLIA_INDEX_NAME: 'asv.mavlink'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      instance_id_upper: ${{ steps.define-ids.outputs.instance_id_upper }}
+      algolia_artifact: ${{ steps.define-ids.outputs.algolia_artifact }}
+      artifact: ${{ steps.define-ids.outputs.artifact }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Define instance ID
+        id: define-ids
+        run: |
+          INSTANCE_ID="${INSTANCE#*/}"
+          INSTANCE_ID_UPPER=$(echo "$INSTANCE_ID" | tr '[:lower:]' '[:upper:]')
+          ARTIFACT="webHelp${INSTANCE_ID_UPPER}2-all.zip"
+          ALGOLIA_ARTIFACT="algolia-indexes-${INSTANCE_ID_UPPER}.zip"
+          
+          echo "INSTANCE_ID_UPPER: $INSTANCE_ID_UPPER"
+          echo "ARTIFACT: $ARTIFACT"
+          echo "ALGOLIA_ARTIFACT: $ALGOLIA_ARTIFACT"
+          
+          echo "INSTANCE_ID_UPPER=$INSTANCE_ID_UPPER" >> $GITHUB_ENV
+          echo "ARTIFACT=$ARTIFACT" >> $GITHUB_ENV
+          echo "ALGOLIA_ARTIFACT=$ALGOLIA_ARTIFACT" >> $GITHUB_ENV
+          
+          echo "instance_id_upper=$INSTANCE_ID_UPPER" >> $GITHUB_OUTPUT
+          echo "artifact=$ARTIFACT" >> $GITHUB_OUTPUT
+          echo "algolia_artifact=$ALGOLIA_ARTIFACT" >> $GITHUB_OUTPUT
+          
+      - name: Build Writerside docs using Docker in ZIP
+        uses: JetBrains/writerside-github-action@v4
+        with:
+          instance: ${{ env.INSTANCE }}
+          docker-version: ${{ env.DOCKER_VERSION }}
+          artifact: ${{ env.ARTIFACT }}
+          
+      - name: Build Writerside docs using Docker in PDF
+        uses: JetBrains/writerside-github-action@v4
+        with:
+          instance: ${{ env.INSTANCE }}
+          docker-version: ${{ env.DOCKER_VERSION }}
+          pdf: ${{ env.PDF }}
+          
+      - name: Save artifact with build results
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs
+          path: |
+            artifacts/pdfSource${{ env.INSTANCE_ID_UPPER }}.pdf
+            artifacts/${{ env.ARTIFACT }}
+            artifacts/report.json
+            artifacts/${{ env.ALGOLIA_ARTIFACT }}
+          retention-days: 1
+  
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docs
+          path: artifacts
+
+      - name: Test documentation
+        uses: JetBrains/writerside-checker-action@v1
+        with:
+          instance: ${{ env.INSTANCE }}
+
+  create-release:
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docs
+          path: artifacts
+        
+      - name: Show outputs
+        run: |
+          echo "INSTANCE_ID_UPPER: ${{ needs.build.outputs.instance_id_upper }}"
+          echo "ARTIFACT: ${{ needs.build.outputs.artifact }}"
+          echo "ALGOLIA_ARTIFACT: ${{ needs.build.outputs.algolia_artifact }}"
+      
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref }}
+          name: "Release ${{ github.ref_name }}"
+          draft: false
+          prerelease: ${{ contains(github.ref, 'alpha') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIHUB_NUGET_AUTH_TOKEN }}
+
+      - name: Upload artifact to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/pdfSource${{ needs.build.outputs.instance_id_upper }}.pdf
+            artifacts/${{ needs.build.outputs.artifact }}
+            artifacts/report.json
+            artifacts/${{ needs.build.outputs.algolia_artifact }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIHUB_NUGET_AUTH_TOKEN }}
+          
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: [ build, test, create-release ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docs
+          path: artifacts
+
+      - name: Unzip artifact
+        run: unzip -O UTF-8 -qq "artifacts/${{ needs.build.outputs.artifact }}" -d dir
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Package and upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dir
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        
+  publish-indexes:
+    needs: [build, test, create-release, deploy]
+    runs-on: ubuntu-latest
+    container:
+      image: registry.jetbrains.team/p/writerside/builder/algolia-publisher:2.0.32-3
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docs
+          path: artifacts
+      - name: Unzip Algolia artifact
+        run: unzip -O UTF-8 -qq "artifacts/${{ needs.build.outputs.algolia_artifact }}" -d algolia-indexes
+      - name: Update Algolia Index
+        run: |
+          if [ -z "${{ secrets.ALGOLIA_KEY }}" ]; then
+            echo "ALGOLIA_KEY secret is not set in GitHub Secrets"
+            exit 1
+          else
+            env "algolia-key=${{ secrets.ALGOLIA_KEY }}" java -jar /opt/builder/help-publication-agent.jar \
+            update-index \
+            --application-name ${{ env.ALGOLIA_ID }} \
+            --index-name ${{ env.ALGOLIA_INDEX_NAME }} \
+            --product ${{ env.CONFIG_JSON_PRODUCT }} \
+            --index-directory algolia-indexes/ \
+            2>&1 | tee algolia-update-index-log.txt
+          fi

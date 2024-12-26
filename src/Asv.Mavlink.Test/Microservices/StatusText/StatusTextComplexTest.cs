@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.IO;
 using Asv.Mavlink.Common;
 using JetBrains.Annotations;
 using R3;
@@ -26,7 +25,7 @@ public class StatusTextComplexTest : ComplexTestBase<StatusTextClient, StatusTex
     public StatusTextComplexTest(ITestOutputHelper log) : base(log)
     {
         _tcs = new TaskCompletionSource<StatusMessage>();
-        _cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+        _cts = new CancellationTokenSource();
         _cts.Token.Register(() => _tcs.TrySetCanceled());
     }
 

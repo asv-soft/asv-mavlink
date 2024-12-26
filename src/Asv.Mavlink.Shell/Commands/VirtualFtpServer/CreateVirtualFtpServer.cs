@@ -11,7 +11,6 @@ namespace Asv.Mavlink.Shell;
 public class CreateVirtualFtpServerCommand
 {
     private string _file = "exampleVirtualFtpServerConfig.json";
-    private ILoggerFactory _loggerFactory;
     
     /// <summary>
     /// Command creates virtual ftp server.
@@ -22,8 +21,6 @@ public class CreateVirtualFtpServerCommand
     public int Run(string? cfgPath = null)
     {
         _file = cfgPath ?? _file;
-        _loggerFactory = new VirtualFtpServerLoggerFactory("FTP_SERVER");
-        
         RunAsync().Wait();
         ConsoleAppHelper.WaitCancelPressOrProcessExit();
         return 0;
@@ -58,13 +55,11 @@ public class CreateVirtualFtpServerCommand
             AnsiConsole.MarkupLine($"[green]Add connection port [/]: [yellow]{port}[/]");
             router.AddPort(port);
         }
-
-        var deviceCfg = new FtpServerDeviceConfig
-        {
-            ServerCfg = cfg.FtpServerConfig,
-            ServerExCfg = cfg.FtpServerExConfig,
-        };
         var core = new CoreServices(router);
-        var device = new FtpServerDevice(new MavlinkIdentity(cfg.SystemId, cfg.ComponentId), deviceCfg, core);
+        var device = ServerDevice.Create(new MavlinkIdentity(cfg.SystemId, cfg.ComponentId), core, config =>
+        {
+            config.RegisterFtp(cfg.FtpServerConfig);
+            config.RegisterFtpEx(cfg.FtpServerExConfig);
+        });
     }
 }

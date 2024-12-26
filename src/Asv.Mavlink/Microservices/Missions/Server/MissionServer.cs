@@ -10,7 +10,7 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
 {
     private ushort _currentMissionIndex;
 
-    public MissionServer(MavlinkIdentity identity, IMavlinkContext core) : base(MissionClientHelper.MicroserviceName, identity, core)
+    public MissionServer(MavlinkIdentity identity, IMavlinkContext core) : base(MissionHelper.MicroserviceName, identity, core)
     {
         OnMissionRequestList = InternalFilter<MissionRequestListPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
         OnMissionRequestInt = InternalFilter<MissionRequestIntPacket>(p => p.Payload.TargetSystem, p => p.Payload.TargetComponent);
@@ -60,16 +60,13 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
         },DisposeCancel);
     }
 
-    public ValueTask SendMissionCurrent(ushort current)
+    public ValueTask SendMissionCurrent(ushort current, CancellationToken cancel = default)
     {
         _currentMissionIndex = current;
-        return InternalSend<MissionCurrentPacket>(x =>
-        {
-            x.Payload.Seq = current;
-        }, DisposeCancel);
+        return InternalSend<MissionCurrentPacket>(x => x.Payload.Seq = current, cancel);
     }
 
-    public ValueTask SendMissionItemInt(ServerMissionItem item,byte targetSystemId = 0, byte targetComponentId = 0)
+    public ValueTask SendMissionItemInt(ServerMissionItem item,byte targetSystemId = 0, byte targetComponentId = 0,CancellationToken cancel = default)
     {
         return InternalSend<MissionItemIntPacket>(x =>
         {
@@ -89,10 +86,16 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
             x.Payload.Z = item.Z;
             x.Payload.Command = item.Command;
             x.Payload.Frame = item.Frame;
-        }, DisposeCancel);
+        }, cancel);
     }
 
-    public Task<ServerMissionItem> RequestMissionItem(ushort index, MavMissionType type,byte targetSystemId = 0, byte targetComponentId = 0, CancellationToken cancel = default)
+    public Task<ServerMissionItem> RequestMissionItem(
+        ushort index, 
+        MavMissionType type,
+        byte targetSystemId = 0, 
+        byte targetComponentId = 0, 
+        CancellationToken cancel = default
+    )
     {
         return InternalCall<ServerMissionItem, MissionRequestPacket, MissionItemIntPacket>(
             x =>
@@ -101,6 +104,12 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
                 x.Payload.TargetComponent = targetComponentId;
                 x.Payload.TargetSystem = targetSystemId;
                 x.Payload.Seq = index;
-            },p=>p.Payload.TargetSystem, p=>p.Payload.TargetComponent,p=> p.Payload.Seq == index, AsvSdrHelper.Convert , cancel: cancel);
+            }, 
+            p=>p.Payload.TargetSystem, 
+            p=>p.Payload.TargetComponent, 
+            p=> p.Payload.Seq == index, 
+            AsvSdrHelper.Convert,
+            cancel: cancel
+        );
     }
 }

@@ -639,6 +639,15 @@ namespace Asv.Mavlink {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mode is internal and cannot be set directly.
+        /// </summary>
+        public static string ModeClient_SetMode_Mode_is_internal_and_cannot_be_set_directly {
+            get {
+                return ResourceManager.GetString("ModeClient_SetMode_Mode_is_internal_and_cannot_be_set_directly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error message id type. Want {0}, Got {1}.
         /// </summary>
         public static string PacketV2_Deserialize_Error_message_id_type {

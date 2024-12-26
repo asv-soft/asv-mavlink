@@ -32,13 +32,19 @@ public class AsvGbsExServerTest : ServerTestBase<AsvGbsExServer>, IDisposable
     {
         _server = Server;
         _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(1), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
     protected override AsvGbsExServer CreateClient(MavlinkIdentity identity, CoreServices core)
     {
-        return new(new AsvGbsServer(identity,_config,core),new HeartbeatServer(identity,_heartbeatConfig,core),new CommandLongServerEx(new CommandServer(identity, core)));
+        return new AsvGbsExServer(
+            new AsvGbsServer(identity, _config,core),
+            new HeartbeatServer(identity, _heartbeatConfig,core),
+            new CommandLongServerEx(
+                new CommandServer(identity, core)
+            )
+        );
     }
     
     [Fact]

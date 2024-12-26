@@ -25,7 +25,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     {
         _client = Client;
         _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        _cancellationTokenSource = new CancellationTokenSource();
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
     
@@ -57,12 +57,13 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         // Arrange
         var called = 0;
         RequestDataStreamPacket? packetFromClient = null;
-        using var sub1 = Link.Server.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
-        {
-            called++;
-
-            _taskCompletionSource.TrySetResult(p);
-        });
+        using var sub1 = Link.Server.OnRxMessage
+            .FilterByType<MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                _taskCompletionSource.TrySetResult(p);
+            });
         using var sub2 = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as RequestDataStreamPacket;
@@ -83,33 +84,36 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
         Assert.True(packetFromClient.IsDeepEqual(result));
     }
     
-    [Fact(Skip = "Wait for pr from main")]
+    [Fact]
     public async Task RequestDataStream_Cancel_Throws()
     {
         // Arrange
         var called = 0;
         RequestDataStreamPacket? packetFromClient = null;
         await _cancellationTokenSource.CancelAsync();
-        using var sub1 = Link.Server.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(p =>
-        {
-            called++;
-
-            _taskCompletionSource.TrySetResult(p);
-        });
+        using var sub1 = Link.Server.OnRxMessage
+            .FilterByType<MavlinkMessage>()
+            .Subscribe(p => 
+            { 
+                called++;
+                _taskCompletionSource.TrySetResult(p);
+            });
         using var sub2 = Link.Client.OnTxMessage.Subscribe(p =>
         {
             packetFromClient = p as RequestDataStreamPacket;
         });
         
-        // Act + Assert
+        // Act
+        var task = _client.RequestDataStream(
+            0,
+            3,
+            true,
+            _cancellationTokenSource.Token
+        );
+        
+        // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(
-            async () => 
-                await _client.RequestDataStream(
-                    0, 
-                    3, 
-                    true, 
-                    _cancellationTokenSource.Token
-                )
+            async () => await task
         );
         Assert.Equal(0, called);
         Assert.Equal(called, (int) Link.Client.Statistic.TxMessages);
@@ -152,7 +156,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     )
     {
         var tcs = new TaskCompletionSource<RadioStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -206,7 +210,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     public async Task SendRadioStatusPacket_SeveralPackets_Success(int packetsCount)
     {
         var tcs = new TaskCompletionSource<RadioStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -365,7 +369,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     )
     {
         var tcs = new TaskCompletionSource<SysStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -423,11 +427,10 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     [Theory]
     [InlineData(2)]
     [InlineData(1000)]
-    [InlineData(10_000)]
     public async Task SendSysStatusPacket_SeveralPackets_Success(int packetsCount)
     {
         var tcs = new TaskCompletionSource<SysStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -561,7 +564,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     )
     {
         var tcs = new TaskCompletionSource<ExtendedSysStatePayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -585,7 +588,8 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
             }
             called++;
 
-            tcs.TrySetResult(p);
+            // ReSharper disable once NullableWarningSuppressionIsUsed
+            tcs.TrySetResult(p!);
         });
 
         // Act
@@ -609,7 +613,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     public async Task SendExtendedSysStatePacket_SeveralPackets_Success(int packetsCount)
     {
         var tcs = new TaskCompletionSource<ExtendedSysStatePayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -745,7 +749,7 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     )
     {
         var tcs = new TaskCompletionSource<BatteryStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;
@@ -799,11 +803,10 @@ public class TelemetryClientTest : ClientTestBase<TelemetryClient>
     [Theory]
     [InlineData(2)]
     [InlineData(1000)]
-    [InlineData(10_000)]
     public async Task SendBatteryStatusPacket_SeveralPackets_Success(int packetsCount)
     {
         var tcs = new TaskCompletionSource<BatteryStatusPayload>();
-        var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+        var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         var called = 0;

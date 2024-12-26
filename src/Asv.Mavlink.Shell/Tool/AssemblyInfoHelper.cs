@@ -5,7 +5,7 @@ namespace Asv.Mavlink.Shell
 {
     public static class AssemblyInfoExt
     {
-        public static Version GetVersion(this Assembly src)
+        public static Version? GetVersion(this Assembly src)
         {
             return src.GetName().Version;
         }
@@ -24,7 +24,11 @@ namespace Asv.Mavlink.Shell
                 var titleAttribute = (AssemblyTitleAttribute)attributes[0];
                 if (titleAttribute.Title.Length > 0) return titleAttribute.Title;
             }
+#pragma warning disable CS8603 // Possible null reference return.
+#pragma warning disable SYSLIB0012
             return System.IO.Path.GetFileNameWithoutExtension(src.CodeBase);
+#pragma warning restore SYSLIB0012
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public static string GetProductName(this Assembly src)

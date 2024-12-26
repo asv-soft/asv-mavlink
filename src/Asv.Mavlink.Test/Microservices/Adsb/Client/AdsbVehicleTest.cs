@@ -15,7 +15,9 @@ public class AdsbVehicleTest
         AdsbVehiclePayload? payload = null;
         Assert.Throws<ArgumentNullException>(() =>
         {
+#pragma warning disable CS8604 // Possible null reference argument.
             var vehicle = new AdsbVehicle(payload, 123);
+#pragma warning restore CS8604 // Possible null reference argument.
         });
     }
 }

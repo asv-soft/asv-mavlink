@@ -1,10 +1,8 @@
 <Project>
   <PropertyGroup>
-    <ProductVersion>4.0.0-dev.0</ProductVersion>
-    <ProductPrevVersion>3.10.3</ProductPrevVersion>
-    <AsvCommonVersion>3.0.0-dev.10</AsvCommonVersion>
+    <ProductVersion>4.0.0-dev.2</ProductVersion>
+    <AsvCommonVersion>3.0.1</AsvCommonVersion>
     <ZLoggerVersion>2.5.5</ZLoggerVersion>
-    <ApiCompatVersion>8.0.200</ApiCompatVersion>
     <ConsoleAppFrameworkVersion>5.2.4</ConsoleAppFrameworkVersion>
   </PropertyGroup>
 </Project>

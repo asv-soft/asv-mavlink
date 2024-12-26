@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
 using TimeProviderExtensions;
@@ -5,7 +7,7 @@ using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-public abstract class ComplexTestBase<TClient,TServer>
+public abstract class ComplexTestBase<TClient,TServer>: IDisposable
 {
     private TClient? _client;
     private TServer? _server;
@@ -55,4 +57,27 @@ public abstract class ComplexTestBase<TClient,TServer>
 
     protected abstract TServer CreateServer(MavlinkIdentity identity, IMavlinkContext core);
     protected abstract TClient CreateClient(MavlinkClientIdentity identity, IMavlinkContext core);
+
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            Link.Dispose();
+            if (_client is IDisposable client)
+            {
+                client.Dispose();
+            }
+            if (_server is IDisposable server)
+            {
+                server.Dispose();
+            }
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 }

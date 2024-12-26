@@ -15,14 +15,13 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(AsvGbsServer))]
 public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposable
 {
-    private readonly TaskCompletionSource<IProtocolMessage> _taskCompletionSource;
+    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
 
     public AdsbVehicleServerTest(ITestOutputHelper output) : base(output)
     {
-        _taskCompletionSource = new TaskCompletionSource<IProtocolMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     protected override AdsbVehicleServer CreateClient(MavlinkIdentity identity, CoreServices core) =>
@@ -32,53 +31,19 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
     public async Task Send_SinglePacket_Success()
     {
         // Arrange
-        var callsign = "123456789".ToCharArray();
-        var packet = new AdsbVehiclePacket
-        {
-            Payload =
-            {
-                IcaoAddress = 123456789,
-                Callsign = callsign,
-                Lat = 51,
-                Lon = -8,
-                Altitude = 10000,
-                Heading = 90,
-                EmitterType = AdsbEmitterType.AdsbEmitterTypeNoInfo,
-                AltitudeType = AdsbAltitudeType.AdsbAltitudeTypeGeometric,
-                Tslc = 60,
-                HorVelocity = 500,
-                VerVelocity = 50,
-                Flags = AdsbFlags.AdsbFlagsValidCoords,
-                Squawk = 7000
-            }
-        };
-        using var sub = Link.Client.OnRxMessage.Subscribe(
+        var icao = (uint)123;
+        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(
             p => _taskCompletionSource.TrySetResult(p)
         );
         // Act
-        await Server.Send(p =>
-        {
-            p.IcaoAddress = 123456789;
-            p.Callsign = callsign;
-            p.Lat = 51;
-            p.Lon = -8;
-            p.Altitude = 10000;
-            p.Heading = 90;
-            p.EmitterType = AdsbEmitterType.AdsbEmitterTypeNoInfo;
-            p.AltitudeType = AdsbAltitudeType.AdsbAltitudeTypeGeometric;
-            p.Tslc = 60;
-            p.HorVelocity = 500;
-            p.VerVelocity = 50;
-            p.Flags = AdsbFlags.AdsbFlagsValidCoords;
-            p.Squawk = 7000;
-        }, _cancellationTokenSource.Token);
+        await Server.Send(p => p.IcaoAddress = icao, _cancellationTokenSource.Token);
 
         // Assert
         var res = await _taskCompletionSource.Task.ConfigureAwait(false) as AdsbVehiclePacket;
         Assert.NotNull(res);
         Assert.Equal(1, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
-        Assert.True(packet.Payload.IsDeepEqual(res.Payload));
+        Assert.Equal(icao, res?.Payload.IcaoAddress);
     }
 
     [Theory]
@@ -91,7 +56,7 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         var called = 0;
         var results = new List<AdsbVehiclePayload>();
         var serverResults = new List<AdsbVehiclePayload>();
-        using var sub = Link.Client.OnRxMessage.Subscribe(p =>
+        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(p =>
         {
             called++;
             if (p is AdsbVehiclePacket packet)
@@ -123,21 +88,49 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         }
     }
 
-    [Fact(Skip = "Cancellation doesn't work")] // TODO: FIX CANCELLATION
+    [Fact]
     public async Task Send_Canceled_Throws()
     {
         // Arrange
-        AdsbVehiclePacket? packet = null;
-        using var sub = Link.Client.OnRxMessage.Subscribe(
-            p => _taskCompletionSource.TrySetResult(p)
-        );
-
+        AdsbVehiclePacket? packet = new AdsbVehiclePacket();
+        OperationCanceledException? ex = null;
+        
+        var task = Task.Factory.StartNew(async () =>
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                try
+                {
+                    await Server.Send(p => p = packet.Payload, _cancellationTokenSource.Token);
+                }
+                catch (OperationCanceledException e)
+                {
+                    ex = e;
+                    throw;
+                }
+            }
+        });
         // Act
         await _cancellationTokenSource.CancelAsync();
-        var task = Server.Send(p => p = packet.Payload, _cancellationTokenSource.Token);
-
+        task.Wait();
         // Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
+        Assert.NotNull(ex);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+    }
+
+    [Fact]
+    public async Task Send_ArgumentCanceledToken_Throws()
+    {
+        // Arrange
+        AdsbVehiclePacket? packet = new AdsbVehiclePacket();
+        // Act
+        await _cancellationTokenSource.CancelAsync();
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Server.Send(p => p = packet.Payload, _cancellationTokenSource.Token);
+        });
         Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }

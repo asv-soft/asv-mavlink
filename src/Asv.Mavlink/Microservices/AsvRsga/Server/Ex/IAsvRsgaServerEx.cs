@@ -10,7 +10,7 @@ namespace Asv.Mavlink;
 public delegate Task<MavResult> RsgaSetMode(AsvRsgaCustomMode mode, CancellationToken cancel = default);
 public delegate IEnumerable<AsvRsgaCustomMode> RsgaGetCompatibility();
 
-public interface IAsvRsgaServerEx
+public interface IAsvRsgaServerEx: IMavlinkMicroserviceServer
 {
     IAsvRsgaServer Base { get; }
     RsgaSetMode? SetMode { get; set; }

@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Text.Json.Serialization;
 using Asv.IO;
 using Asv.Mavlink.Common;
 using DotNext.Patterns;

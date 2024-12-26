@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 
 /src/.idea/
+/docs/.idea/

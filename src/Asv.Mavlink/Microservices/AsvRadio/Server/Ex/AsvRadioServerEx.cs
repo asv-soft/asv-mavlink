@@ -17,7 +17,7 @@ namespace Asv.Mavlink;
 
 
 
-public class AsvRadioServerEx: IAsvRadioServerEx, IDisposable,IAsyncDisposable
+public class AsvRadioServerEx: MavlinkMicroserviceServer, IAsvRadioServerEx
 {
     private readonly AsvRadioCapabilities _capabilities;
     private readonly IReadOnlySet<AsvAudioCodec> _codecs;
@@ -34,7 +34,7 @@ public class AsvRadioServerEx: IAsvRadioServerEx, IDisposable,IAsyncDisposable
         IAsvRadioServer server, 
         IHeartbeatServer heartbeat, 
         ICommandServerEx<CommandLongPacket> commands, 
-        IStatusTextServer statusText)
+        IStatusTextServer statusText): base(AsvRadioHelper.MicroserviceExName, server.Identity,server.Core)
     {
         _logger = server.Core.LoggerFactory.CreateLogger<AsvRadioServerEx>();
         ArgumentNullException.ThrowIfNull(commands);
@@ -164,7 +164,7 @@ public class AsvRadioServerEx: IAsvRadioServerEx, IDisposable,IAsyncDisposable
     public IAsvRadioServer Base { get; }
     public EnableRadioDelegate? EnableRadio { get; set; }
     public DisableRadioDelegate? DisableRadio { get; set; }
-    public void Start()
+    public override void Start()
     {
         Base.Start();
         _heartbeat.Start();
@@ -172,18 +172,25 @@ public class AsvRadioServerEx: IAsvRadioServerEx, IDisposable,IAsyncDisposable
 
     #region Dispose
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _customMode.Dispose();
-        _sub1.Dispose();
-        _sub2.Dispose();
+        if (disposing)
+        {
+            _customMode.Dispose();
+            _sub1.Dispose();
+            _sub2.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 
-    public async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
         await CastAndDispose(_customMode).ConfigureAwait(false);
         await CastAndDispose(_sub1).ConfigureAwait(false);
         await CastAndDispose(_sub2).ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
 
         return;
 

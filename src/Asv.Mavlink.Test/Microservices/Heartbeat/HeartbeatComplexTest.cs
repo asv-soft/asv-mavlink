@@ -36,7 +36,9 @@ public class HeartbeatComplexTest(ITestOutputHelper output) : ComplexTestBase<He
         await Client.Link.State.FirstAsync(x => x == LinkState.Connected);
         
         Assert.NotNull(Client.RawHeartbeat.CurrentValue);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         Assert.Equal(MavAutopilot.MavAutopilotGeneric, Client.RawHeartbeat.CurrentValue.Autopilot);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         Assert.Equal(MavModeFlag.MavModeFlagManualInputEnabled, Client.RawHeartbeat.CurrentValue.BaseMode);
         Assert.Equal(123U, Client.RawHeartbeat.CurrentValue.CustomMode);
         Assert.Equal(MavState.MavStateActive, Client.RawHeartbeat.CurrentValue.SystemStatus);

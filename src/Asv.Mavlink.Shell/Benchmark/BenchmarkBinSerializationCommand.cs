@@ -57,7 +57,9 @@ namespace Asv.Mavlink.Shell
     [MemoryDiagnoser]
     public class BinSerialization
     {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         private TestClass _packet;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
         [GlobalSetup]
         public void Setup()
@@ -69,7 +71,9 @@ namespace Asv.Mavlink.Shell
         public void SerializeBson()
         {
             var ms = new MemoryStream();
+#pragma warning disable CS0618 // Type or member is obsolete
             using var writer = new BsonWriter(ms);
+#pragma warning restore CS0618 // Type or member is obsolete
             var serializer = new JsonSerializer();
             serializer.Serialize(writer, _packet);
         }

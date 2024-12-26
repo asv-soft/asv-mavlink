@@ -11,6 +11,8 @@ public abstract class MavlinkMessage : IProtocolMessage<ushort>
 
     public abstract void Serialize(ref Span<byte> buffer);
 
+    public abstract IPayload GetPayload();
+
     public abstract int GetByteSize();
 
     public ref ProtocolTags Tags => ref _tags;

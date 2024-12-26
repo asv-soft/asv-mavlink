@@ -26,7 +26,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
 
     public FtpServerTest(ITestOutputHelper log) : base(log)
     {
-        _cts = new CancellationTokenSource(TimeSpan.FromSeconds(60), TimeProvider.System);
+        _cts = new CancellationTokenSource();
         _cts.Token.Register(() => _tcs.TrySetCanceled());
     }
 
@@ -358,12 +358,12 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         var directoryListing = "Ffile1.txt\t123\nFfile2.txt\t456\nDdir1/\n";
         var listingChars = directoryListing.ToCharArray();
 
-        Server.ListDirectory = async (requestedPath, requestedOffset, buffer, _) =>
+        Server.ListDirectory = (requestedPath, requestedOffset, buffer, _) =>
         {
             Assert.Equal(path, requestedPath);
             Assert.Equal(offset, requestedOffset);
             listingChars.CopyTo(buffer.Span);
-            return (byte)listingChars.Length;
+            return Task.FromResult((byte)listingChars.Length);
         };
 
         // Simulate client request
@@ -762,5 +762,39 @@ public class FtpServerTest : ServerTestBase<FtpServer>
 
         // Assert
         Assert.NotNull(response);
+    }
+
+    [Fact]
+    public async Task FtpPacketSend_Cancel_Throws()
+    {
+        // Arrange
+        await _cts.CancelAsync();
+        var called = 0;
+
+        var requestPacket = new FileTransferProtocolPacket
+        {
+            SystemId = Identity.SystemId,
+            ComponentId = Identity.ComponentId,
+            Sequence = 1,
+            Payload =
+            {
+                TargetSystem = Identity.SystemId,
+                TargetComponent = Identity.ComponentId,
+                TargetNetwork = _config.NetworkId,
+                Payload = new byte[251],
+            }
+        };
+
+        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
+        {
+            called++;
+        });
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Link.Server.Send(requestPacket, _cts.Token).ConfigureAwait(false);
+        });
+        Assert.Equal(0, called);
     }
 }

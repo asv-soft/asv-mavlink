@@ -119,7 +119,6 @@ public sealed class PositionClientEx : MavlinkMicroserviceClient, IPositionClien
             .ToReadOnlyReactiveProperty(double.NaN);
         }
 
-    public string TypeName => $"{Base.TypeName}Ex";
     
     private void CheckArmedTime(object? state)
     {
@@ -179,8 +178,8 @@ public sealed class PositionClientEx : MavlinkMicroserviceClient, IPositionClien
             0, 
             0, 
             0, 
-            cancel)
-            .ConfigureAwait(false);
+            cancel
+        ).ConfigureAwait(false);
     }
 
     public async Task SetRoi(GeoPoint location, CancellationToken cancel)
@@ -257,7 +256,7 @@ public sealed class PositionClientEx : MavlinkMicroserviceClient, IPositionClien
 
     public Task GetHomePosition(CancellationToken cancel)
     {
-        return _commandClient.CommandLong(
+        return _commandClient.CommandLongAndCheckResult(
             MavCmd.MavCmdGetHomePosition, 
             0, 
             0, 
@@ -270,9 +269,13 @@ public sealed class PositionClientEx : MavlinkMicroserviceClient, IPositionClien
         );
     }
 
-    public Task QLand(NavVtolLandOptions landOptions, double approachAlt, CancellationToken cancel)
+    public Task QLand(
+        NavVtolLandOptions landOptions, 
+        double approachAlt, 
+        CancellationToken cancel
+    )
     {
-        return _commandClient.CommandLong(
+        return _commandClient.CommandLongAndCheckResult(
             MavCmd.MavCmdNavVtolLand, 
             (float)landOptions, 
             0, 

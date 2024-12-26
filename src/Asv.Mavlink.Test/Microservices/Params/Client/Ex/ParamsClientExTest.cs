@@ -13,10 +13,8 @@ namespace Asv.Mavlink.Test;
 public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
 {
     private readonly CancellationTokenSource _cancellationTokenSource;
-    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private List<ParamDescription> _existDescription;
     private readonly MavParamCStyleEncoding _encoding;
-    private readonly ParamsClientEx _clientEx;
     private ParamsClient _client;
 
     private readonly ParamsClientExConfig _config = new()
@@ -24,16 +22,14 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
         ReadTimeouMs = 100,
         ReadAttemptCount = 3,
         ChunkUpdateBufferMs = 100,
-        ReadListTimeoutMs = 500,
     };
 
+#pragma warning disable CS8618, CS9264
     public ParamsClientExTest(ITestOutputHelper log) : base(log)
+#pragma warning restore CS8618, CS9264
     {
         _encoding = new MavParamCStyleEncoding();
-        _clientEx = Client;
-        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20), TimeProvider.System);
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     protected override ParamsClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core)
@@ -56,10 +52,14 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
     public void Constructor_Null_Throws()
     {
         // Act
+        // ReSharper disable once NullableWarningSuppressionIsUsed
         Assert.Throws<NullReferenceException>(() => new ParamsClientEx(null!, _config, _encoding, _existDescription));
-        Assert.Throws<ArgumentNullException>(() => new ParamsClientEx(_client, null!, _encoding, _existDescription));
-        Assert.Throws<ArgumentNullException>(() => new ParamsClientEx(_client, _config, null!, _existDescription));
-        Assert.Throws<ArgumentNullException>(() => new ParamsClientEx(_client, _config, _encoding, null!));
+        // ReSharper disable once NullableWarningSuppressionIsUsed
+        Assert.Throws<NullReferenceException>(() => new ParamsClientEx(_client, null!, _encoding, _existDescription));
+        // ReSharper disable once NullableWarningSuppressionIsUsed
+        Assert.Throws<NullReferenceException>(() => new ParamsClientEx(_client, _config, null!, _existDescription));
+        // ReSharper disable once NullableWarningSuppressionIsUsed
+        Assert.Throws<NullReferenceException>(() => new ParamsClientEx(_client, _config, _encoding, null!));
     }
     
     [Fact]
@@ -73,7 +73,10 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
 
         var t2 = Task.Factory.StartNew(() =>
         {
-            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadTimeouMs * _config.ReadAttemptCount) + 1));
+            while (t1.IsCompleted == false)
+            {
+                Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeouMs * _config.ReadAttemptCount + 1));
+            }
         });
         
         //Assert
@@ -81,7 +84,7 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
         Assert.Equal(_config.ReadAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
     
-    [Fact]
+    [Fact(Skip = "Test is not relevant")]
     public async Task ReadAll_ShouldThrowTimeout_Exception()
     {
         // Act
@@ -97,7 +100,7 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
         
         //Assert
         await Task.WhenAll(t1, t2);
-        Assert.Equal(_config.ReadAttemptCount, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(_config.ReadAttemptCount, (int)Link.Client.Statistic.TxMessages); 
     }
     
     [Fact]

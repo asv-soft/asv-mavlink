@@ -21,8 +21,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
     public AsvChartComplexTest(ITestOutputHelper log) : base(log)
     {
         _taskCompletionSource = new TaskCompletionSource<AsvChartInfo>();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(1500));
-        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
     private readonly AsvChartServerConfig _serverConfig = new()
@@ -96,7 +95,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
             return Task.FromResult(new AsvChartOptions(infoChart.Id, AsvChartDataTrigger.AsvChartDataTriggerPeriodic,
                 30));
         };
-        using var sub = Link.Client.OnRxMessage.RxFilterByType<MavlinkMessage>().Subscribe(_ =>
+        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(_ =>
         {
             if (_ is AsvChartDataResponsePacket)
             {
