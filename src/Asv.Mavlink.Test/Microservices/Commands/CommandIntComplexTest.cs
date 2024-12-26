@@ -665,27 +665,20 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         var called = 0;
         Link.SetServerToClientFilter(_ => false);
         _server[MavCmd.MavCmdUser1] = (_, _, _) 
-            => Task.FromResult(
-                CommandResult.FromResult(
-                    MavResult.MavResultInProgress
-                )
-            );
-        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
+            =>
         {
             called++;
-            if (called == MaxCommandAttempts - 1)
+            if (called >= MaxCommandAttempts)
             {
-                // before last attempt - enable link
+                // last attempt => enable link
                 Link.SetServerToClientFilter(_ => true);
             }
             if (called != MaxCommandAttempts)
             {
                 ClientTime.Advance(TimeSpan.FromMilliseconds(MaxTimeoutInMs + 1));
-                return;
             }
-            
-            
-        });
+            return CommandResult.InProgressTask;
+        };
         
         // Act
         var task = _client.CommandInt(
@@ -731,25 +724,21 @@ public class CommandIntComplexTest : ComplexTestBase<CommandClient, CommandIntSe
         };
         var client = new CommandClient(Identity, customCfg, ClientCore);
         
-        _server[MavCmd.MavCmdUser1] = (_, _, _) 
-            => Task.FromResult(
-                CommandResult.FromResult(
-                    MavResult.MavResultInProgress
-                )
-            );
-        
-        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
+        _server[MavCmd.MavCmdUser1] = (_, _, _) =>
         {
             called++;
-            
-            if (called != maxCommandAttempts)
+            if (called >= maxCommandAttempts)
+            {
+                // last attempt => enable link
+                Link.SetServerToClientFilter(_ => true);
+            }
+            else
             {
                 ClientTime.Advance(TimeSpan.FromMilliseconds(maxTimeoutInMs + 1));
-                return;
             }
-            
-            Link.SetServerToClientFilter(_ => true);
-        });
+            return CommandResult.InProgressTask;
+        };
+        
         
         // Act
         var task = client.CommandInt(

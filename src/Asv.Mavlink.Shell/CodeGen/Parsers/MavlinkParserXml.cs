@@ -170,7 +170,7 @@ namespace Asv.Mavlink.Shell
                 case "double": return MessageFieldType.Double;
                 case "uint8_t_mavlink_version": return MessageFieldType.Uint8;
                 default:
-                    throw new Exception($"Unknown type {typeString}");
+                    throw new MavlinkException($"Unknown type {typeString}");
 
             }
         }

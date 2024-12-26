@@ -83,9 +83,9 @@ public class AsvSdrClientRecord:IAsvSdrClientRecord, IDisposable,IAsyncDisposabl
             .Subscribe();
         var requestAck = await _client.GetRecordTagList(Id,0,ushort.MaxValue,cancel).ConfigureAwait(false);
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckInProgress)
-            throw new Exception("Request already in progress");
+            throw new MavlinkException("Request already in progress");
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
-            throw new Exception("Request fail");
+            throw new MavlinkException("Request fail");
 
         while (DateTime.Now - lastUpdate < _maxTimeToWaitForResponseForList && _tags.Count < requestAck.ItemsCount)
         {
@@ -97,13 +97,13 @@ public class AsvSdrClientRecord:IAsvSdrClientRecord, IDisposable,IAsyncDisposabl
     public async Task DeleteTag(TagId id, CancellationToken cancel)
     {
         if (Id != id.RecordGuid)
-            throw new Exception("Tag not belong to this record");
+            throw new MavlinkException("Tag not belong to this record");
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
         var requestAck = await _client.DeleteRecordTag(id, cs.Token).ConfigureAwait(false);
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckInProgress)
-            throw new Exception("Request already in progress");
+            throw new MavlinkException("Request already in progress");
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
-            throw new Exception("Request fail");
+            throw new MavlinkException("Request fail");
     }
 
     #region Dispose

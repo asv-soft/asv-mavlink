@@ -37,7 +37,7 @@ namespace Asv.Mavlink
 
         public void Start(TimeSpan dueTime, TimeSpan period)
         {
-            if (_packet == null) throw new Exception($"You need call '{nameof(Set)}' method< before call start");
+            if (_packet == null) throw new MavlinkException($"You need call '{nameof(Set)}' method< before call start");
             lock (_sync)
             {
                 _timer?.Dispose();

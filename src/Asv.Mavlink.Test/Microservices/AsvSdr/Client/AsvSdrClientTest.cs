@@ -69,7 +69,7 @@ public class AsvSdrClientTest() : ClientTestBase<AsvSdrClient>(_log)
     {
         var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(3));
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
-            await Client.GetRecordTagList(new Guid(), 0, ushort.MaxValue, cancel.Token));
+            await Client.GetRecordTagList(Guid.Empty, 0, ushort.MaxValue, cancel.Token));
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public class AsvSdrClientTest() : ClientTestBase<AsvSdrClient>(_log)
     {
         var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(3));
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
-            await Client.DeleteRecordTag(new TagId(new Guid(), new Guid()), cancel.Token));
+            await Client.DeleteRecordTag(new TagId(Guid.Empty, Guid.Empty), cancel.Token));
     }
 
     [Fact]

@@ -52,12 +52,9 @@ public sealed class MissionServer : MavlinkMicroserviceServer, IMissionServer
         }, DisposeCancel);
     }
 
-    public ValueTask SendReached(ushort seq)
+    public ValueTask SendReached(ushort seq, CancellationToken cancel)
     {
-        return InternalSend<MissionItemReachedPacket>(x =>
-        {
-            x.Payload.Seq = seq;
-        },DisposeCancel);
+        return InternalSend<MissionItemReachedPacket>(x => x.Payload.Seq = seq,DisposeCancel);
     }
 
     public ValueTask SendMissionCurrent(ushort current, CancellationToken cancel = default)

@@ -551,7 +551,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
                 ClientTime.Advance(TimeSpan.FromMilliseconds((MaxCommandAttempts+1) * MaxTimeoutInMs));
             }
             
-            return Task.FromResult(CommandResult.FromResult(MavResult.MavResultInProgress));
+            return CommandResult.InProgressTask;
         };
         
         // Act
@@ -603,7 +603,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
             5,
             6,
             7,
-            default
+            CancellationToken.None
         );
         
         // Assert
@@ -642,7 +642,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
             5,
             6,
             7,
-            default
+            CancellationToken.None
         );
         
         // Assert
@@ -673,16 +673,18 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         {
             called++;
             Log.WriteLine($"confirmation______ === {args.Payload.Confirmation}");
-            if (called != maxCommandAttempts)
+            if (called >= maxCommandAttempts)
             {
-                ClientTime.Advance(TimeSpan.FromMilliseconds(maxTimeoutInMs + 1));
+                // enable link for last attempt
+                Link.SetServerToClientFilter(_ => true);
             }
             else
             {
-                Link.SetServerToClientFilter(_ => true);
+                // advance time for timeout
+                ClientTime.Advance(TimeSpan.FromMilliseconds(maxTimeoutInMs + 1));               
             }
             
-            return Task.FromResult(CommandResult.FromResult(MavResult.MavResultInProgress));
+            return CommandResult.InProgressTask;
         };
         
         // Act
@@ -731,13 +733,9 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
             called++;
             var result = MavResult.MavResultAccepted;
             _taskCompletionSource.TrySetResult(args);
-            return Task.FromResult(CommandResult.FromResult(result));
+            packetFromClient = args;
+            return CommandResult.AsTaskResult(result);
         };
-        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
-        {
-            packetFromClient = p as CommandLongPacket;
-        });
-        
         // Act
         var result = await client.CommandLong(
             MavCmd.MavCmdUser1,
@@ -773,22 +771,22 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
         {
             packetsFromServer.Add(args);
             _taskCompletionSource.TrySetResult(args);
-            
-            return Task.FromResult(CommandResult.FromResult(MavResult.MavResultAccepted));
-        };
-        
-        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
-        {
             called++;
             
-            if (called != MaxCommandAttempts)
+            if (called >= MaxCommandAttempts)
             {
-                ClientTime.Advance(TimeSpan.FromMilliseconds(MaxTimeoutInMs + 1));
-                return;
+                // enable link for last attempt
+                Link.SetServerToClientFilter(_ => true);
+            }
+            else
+            {
+                // advance time for timeout
+                ClientTime.Advance(TimeSpan.FromMilliseconds(MaxTimeoutInMs + 1));               
             }
             
-            Link.SetServerToClientFilter(_ => true);
-        });
+            return CommandResult.AcceptedTask;
+        };
+        
         
         // Act
         var result = await _client.CommandLong(

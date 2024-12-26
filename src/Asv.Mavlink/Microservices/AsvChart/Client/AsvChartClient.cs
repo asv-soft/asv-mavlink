@@ -73,9 +73,9 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
             x.Payload.Count = ushort.MaxValue;
         }, x=>x.Payload.RequestId == requestId, x=>x.Payload, cancel: cancel).ConfigureAwait(false);
         if (requestAck.Result == AsvChartRequestAck.AsvChartRequestAckInProgress)
-            throw new Exception("Request already in progress");
+            throw new MavlinkException("Request already in progress");
         if (requestAck.Result == AsvChartRequestAck.AsvChartRequestAckFail) 
-            throw new Exception("Request fail");
+            throw new MavlinkException("Request fail");
         
         while (Core.TimeProvider.GetElapsedTime(lastUpdate) < _maxTimeToWaitForResponseForList && _charts.Count < requestAck.ItemsCount)
         {
@@ -90,7 +90,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
 
     public Task<AsvChartOptions> RequestStream(AsvChartOptions options, CancellationToken cancel = default)
     {
-        if (_charts.TryGetValue(options.ChartId, out var info) == false) throw new Exception($"Chart with id {options.ChartId} not found");
+        if (_charts.TryGetValue(options.ChartId, out var info) == false) throw new MavlinkException($"Chart with id {options.ChartId} not found");
         return InternalCall<AsvChartOptions,AsvChartDataRequestPacket,AsvChartDataResponsePacket>(x=>
         {
             x.Payload.TargetSystem = Identity.Target.SystemId;

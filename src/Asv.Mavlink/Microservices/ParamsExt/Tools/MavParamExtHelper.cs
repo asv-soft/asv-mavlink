@@ -15,10 +15,10 @@ public static class MavParamExtHelper
 
     public static void CheckParamName(string name)
     {
-        if (name.IsNullOrWhiteSpace()) throw new Exception(
+        if (name.IsNullOrWhiteSpace()) throw new MavlinkException(
             "Param name is empty");
         if (name.Length > ParamExtNameMaxLength)
-            throw new Exception(
+            throw new MavlinkException(
                 $"Param name is too long. Max length is {ParamExtNameMaxLength}");
         if (RecordNameRegex.IsMatch(name) == false)
             throw new ArgumentException(

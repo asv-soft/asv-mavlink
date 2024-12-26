@@ -1,5 +1,5 @@
 using System;
-
+using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Minimal;
 using R3;
@@ -42,7 +42,7 @@ public class HeartbeatClientTest(ITestOutputHelper log) : ClientTestBase<Heartbe
                 ComponentId = 4,
                 Sequence = seq.GetNextSequenceNumber(),
             };
-            await Link.Server.Send(p, default);
+            await Link.Server.Send(p, CancellationToken.None);
             for (var j = 0; j < skip; j++)
             {
                 seq.GetNextSequenceNumber();
@@ -78,7 +78,7 @@ public class HeartbeatClientTest(ITestOutputHelper log) : ClientTestBase<Heartbe
                 ComponentId = 4,
                 Sequence = seq.GetNextSequenceNumber(),
             };
-            await Link.Server.Send(p, default);
+            await Link.Server.Send(p, CancellationToken.None);
             Time.Advance(TimeSpan.FromMilliseconds(delayMs));
         }
         
@@ -107,7 +107,7 @@ public class HeartbeatClientTest(ITestOutputHelper log) : ClientTestBase<Heartbe
                 ComponentId = 4,
                 Sequence = seq.GetNextSequenceNumber(),
             };
-            await Link.Server.Send(p, default);
+            await Link.Server.Send(p, CancellationToken.None);
             Time.Advance(TimeSpan.FromMilliseconds(100));
         }
         Assert.Equal(packets,count);

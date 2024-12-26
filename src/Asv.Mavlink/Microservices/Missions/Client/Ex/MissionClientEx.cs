@@ -122,7 +122,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
             }
             
             _logger.ZLogWarning($"Mission upload timeout");
-            tcs.TrySetException(new Exception("Mission upload timeout"));
+            tcs.TrySetException(new MavlinkException("Mission upload timeout"));
         }, null, _deviceUploadTimeout, _deviceUploadTimeout); 
         using var sub1 = _client.OnMissionRequest.SubscribeAwait(
             async (req, ct) =>
@@ -134,7 +134,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
             var item = _missionSource.FirstOrDefault(i => i.Index == req.Seq);
             if (item == null)
             {
-                tcs.TrySetException(new Exception($"Requested mission item with index '{req.Seq}' not found in local store"));
+                tcs.TrySetException(new MavlinkException($"Requested mission item with index '{req.Seq}' not found in local store"));
                 return;
             }
             
@@ -150,7 +150,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
             }
             else
             {
-                tcs.TrySetException(new Exception($"Error to upload mission to vehicle:{p.Type:G}"));
+                tcs.TrySetException(new MavlinkException($"Error to upload mission to vehicle:{p.Type:G}"));
             }
         });
 

@@ -87,7 +87,7 @@ public class AsvSdrClientCalibrationTable: IDisposable,IAsyncDisposable
             if (_ifc.Core.TimeProvider.GetElapsedTime( lastUpdateTime) > _deviceUploadTimeout)
             {
                 _logger.ZLogWarning($"'{Name}[{Index}]' table upload timeout");
-                tcs.TrySetException(new Exception($"'{Name}[{Index}]' table upload timeout"));
+                tcs.TrySetException(new MavlinkException($"'{Name}[{Index}]' table upload timeout"));
             }
         }, null, _deviceUploadTimeout, _deviceUploadTimeout);
 

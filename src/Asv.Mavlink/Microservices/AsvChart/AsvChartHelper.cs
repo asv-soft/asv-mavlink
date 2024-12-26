@@ -15,16 +15,16 @@ public static class AsvChartHelper
     
     public static void CheckSignalName(string name)
     {
-        if (name.IsNullOrWhiteSpace()) throw new Exception("Signal name is empty");
+        if (name.IsNullOrWhiteSpace()) throw new MavlinkException("Signal name is empty");
         if (name.Length > SignalNameMaxLength)
-            throw new Exception($"Signal name is too long. Max length is {SignalNameMaxLength}");
+            throw new MavlinkException($"Signal name is too long. Max length is {SignalNameMaxLength}");
     }
     
     public static void CheckSignalAxisName(string name)
     {
-        if (name.IsNullOrWhiteSpace()) throw new Exception("Signal axis name is empty");
+        if (name.IsNullOrWhiteSpace()) throw new MavlinkException("Signal axis name is empty");
         if (name.Length > SignalNameMaxLength)
-            throw new Exception($"Signal axis name is too long. Max length is {SignalNameMaxLength}");
+            throw new MavlinkException($"Signal axis name is too long. Max length is {SignalNameMaxLength}");
     }
     
     public static void WriteSignalMeasure(ref Span<byte> span, AsvChartInfo info, float value )

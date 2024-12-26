@@ -173,13 +173,15 @@ public interface IMissionServer:IMavlinkMicroserviceServer
     /// Sends the reached value of a sequence.
     /// </summary>
     /// <param name="seq">The sequence number.</param>
+    /// <param name="cancel"></param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    ValueTask SendReached(ushort seq);
+    ValueTask SendReached(ushort seq, CancellationToken cancel = default);
 
     /// <summary>
     /// Sends the current mission index to the system.
     /// </summary>
     /// <param name="current">The index of the current mission.</param>
+    /// <param name="cancel"></param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     ValueTask SendMissionCurrent(ushort current, CancellationToken cancel = default);
 

@@ -139,7 +139,7 @@ namespace Asv.Mavlink
             };
         }
         
-        public static Task<CommandResult> AsTask(MavResult result)
+        public static Task<CommandResult> AsTaskResult(MavResult result)
         {
             return result switch
             {

@@ -44,7 +44,7 @@ public sealed class ParamItem: IDisposable,IAsyncDisposable
     internal void InternalUpdate(ParamValuePayload payload)
     {
         var name = MavlinkTypesHelper.GetString(payload.ParamId);
-        if (name != Name) throw new Exception($"Invalid index: want {Name} but got {name}");
+        if (name != Name) throw new MavlinkException($"Invalid index: want {Name} but got {name}");
         try
         {
             _remoteValue = _converter.ConvertFromMavlinkUnion(payload.ParamValue, payload.ParamType);

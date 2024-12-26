@@ -177,10 +177,10 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
                 switch (input.Id)
                 {
                     case AsvSdrCalibTablePacket.MessageId when input is AsvSdrCalibTablePacket packet2 && packet2.Payload.TableIndex == tableIndex:
-                        tuple = (packet2.Payload, default);
+                        tuple = (packet2.Payload, null);
                         return true;
                     case AsvSdrCalibAccPacket.MessageId when input is AsvSdrCalibAccPacket packet && packet.Payload.RequestId == id:
-                        tuple = (default, packet.Payload);
+                        tuple = (null, packet.Payload);
                         return true;
                     default:
                         tuple = default;
@@ -216,10 +216,10 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
                     case AsvSdrCalibTableRowPacket.MessageId when input is AsvSdrCalibTableRowPacket packet2 
                                                                      && packet2.Payload.TableIndex == tableIndex
                                                                      && packet2.Payload.RowIndex == rowIndex:
-                        tuple = (packet2.Payload, default);
+                        tuple = (packet2.Payload, null);
                         return true;
                     case AsvSdrCalibAccPacket.MessageId when input is AsvSdrCalibAccPacket packet && packet.Payload.RequestId == id:
-                        tuple = (default, packet.Payload);
+                        tuple = (null, packet.Payload);
                         return true;
                     default:
                         tuple = default;

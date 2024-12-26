@@ -79,7 +79,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
             byte packetIndex = 0;
             var packetsInFrame = fullPackets + (lastPacketSize > 0 ? 1 : 0);
             if (packetsInFrame == 0) return; // no data to send
-            if (packetsInFrame > byte.MaxValue) throw new Exception($"Too many packets in frame. Expected: less then {byte.MaxValue}, actual: {packetsInFrame}");
+            if (packetsInFrame > byte.MaxValue) throw new MavlinkException($"Too many packets in frame. Expected: less then {byte.MaxValue}, actual: {packetsInFrame}");
             for (var i = 0; i < fullPackets; i++)
             {
                 var index = packetIndex;

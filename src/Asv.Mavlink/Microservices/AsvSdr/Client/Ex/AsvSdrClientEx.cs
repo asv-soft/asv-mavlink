@@ -103,9 +103,9 @@ public class AsvSdrClientEx :MavlinkMicroserviceClient, IAsvSdrClientEx
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
         var requestAck = await Base.DeleteRecord(recordName, cs.Token).ConfigureAwait(false);
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckInProgress)
-            throw new Exception("Request already in progress");
+            throw new MavlinkException("Request already in progress");
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
-            throw new Exception("Request fail");
+            throw new MavlinkException("Request fail");
     }
 
     public async Task<bool> DownloadRecordList(IProgress<double>? progress, CancellationToken cancel)
@@ -117,9 +117,9 @@ public class AsvSdrClientEx :MavlinkMicroserviceClient, IAsvSdrClientEx
             .Subscribe();
         var requestAck = await Base.GetRecordList(0,ushort.MaxValue,cancel).ConfigureAwait(false);
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckInProgress)
-            throw new Exception("Request already in progress");
+            throw new MavlinkException("Request already in progress");
         if (requestAck.Result == AsvSdrRequestAck.AsvSdrRequestAckFail) 
-            throw new Exception("Request fail");
+            throw new MavlinkException("Request fail");
 
         while (DateTime.Now - lastUpdate < _maxTimeToWaitForResponseForList && _records.Count < requestAck.ItemsCount)
         {

@@ -73,7 +73,7 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         // Act
         for (var i = 0; i < packetsCount; i++)
         {
-            await Server.Send(payload => serverResults.Add(payload), default);
+            await Server.Send(payload => serverResults.Add(payload), CancellationToken.None);
         }
 
         // Assert

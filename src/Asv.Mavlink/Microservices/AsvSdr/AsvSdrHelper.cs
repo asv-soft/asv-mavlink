@@ -34,9 +34,9 @@ public static class AsvSdrHelper
     
     public static void CheckCalibrationTableName(string name)
     {
-        if (name.IsNullOrWhiteSpace()) throw new Exception("Record name is empty");
+        if (name.IsNullOrWhiteSpace()) throw new MavlinkException("Record name is empty");
         if (name.Length > CalibrationTableNameMaxLength)
-            throw new Exception($"Record name is too long. Max length is {CalibrationTableNameMaxLength}");
+            throw new MavlinkException($"Record name is too long. Max length is {CalibrationTableNameMaxLength}");
         if (CalibrationTableNameRegex.IsMatch(name) == false)
             throw new ArgumentException(
                 $"Record name '{name}' not match regex '{CalibrationTableNameRegexString}')");
@@ -45,9 +45,9 @@ public static class AsvSdrHelper
     
     public static void CheckRecordName(string name)
     {
-        if (name.IsNullOrWhiteSpace()) throw new Exception("Record name is empty");
+        if (name.IsNullOrWhiteSpace()) throw new MavlinkException("Record name is empty");
         if (name.Length > RecordNameMaxLength)
-            throw new Exception($"Record name is too long. Max length is {RecordNameMaxLength}");
+            throw new MavlinkException($"Record name is too long. Max length is {RecordNameMaxLength}");
         if (RecordNameRegex.IsMatch(name) == false)
             throw new ArgumentException(
                 $"Record name '{name}' not match regex '{RecordNameRegexString}')");
@@ -57,9 +57,9 @@ public static class AsvSdrHelper
 
     public static void CheckTagName(string name)
     {
-        if (name.IsNullOrWhiteSpace()) throw new Exception("Tag name is empty");
+        if (name.IsNullOrWhiteSpace()) throw new MavlinkException("Tag name is empty");
         if (name.Length > RecordTagNameMaxLength)
-            throw new Exception($"Tag name is too long. Max length is {RecordTagNameMaxLength}");
+            throw new MavlinkException($"Tag name is too long. Max length is {RecordTagNameMaxLength}");
         if (RecordTagNameRegex.IsMatch(name) == false)
             throw new ArgumentException(
                 $"Tag name '{name}' not match regex '{RecordTagNameRegexString}')");

@@ -22,7 +22,7 @@ public class AsvChartInfoTest
     [Fact]
     public void CtorAsvChartAxisInfo_NullReferenceException_ArgIsNull()
     {
-        Assert.Throws<Exception>(() =>
+        Assert.Throws<MavlinkException>(() =>
         {
             var axis = new AsvChartAxisInfo("", AsvChartUnitType.AsvChartUnitTypeDbm, 0f, 0f, 10);
         });

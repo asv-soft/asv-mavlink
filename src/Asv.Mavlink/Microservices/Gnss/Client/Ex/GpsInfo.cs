@@ -25,7 +25,7 @@ public class GpsInfo
         Hdop = rawGps.Eph == ushort.MaxValue ? (double?)null : rawGps.Eph / 100D;
         Pdop = Hdop.HasValue && Vdop.HasValue
             ? Math.Sqrt(Hdop.Value * Hdop.Value + Vdop.Value * Vdop.Value)
-            : default(double?);
+            : null;
         AltitudeMsl = rawGps.Alt / 1000D;
         AltitudeEllipsoid = rawGps.AltEllipsoid / 1000D;
         CourseOverGround = rawGps.Cog / 100D;
@@ -49,7 +49,7 @@ public class GpsInfo
         Hdop = rawGps.Eph == ushort.MaxValue ? (double?)null : rawGps.Eph / 100D;
         Pdop = Hdop.HasValue && Vdop.HasValue
             ? Math.Sqrt(Hdop.Value * Hdop.Value + Vdop.Value * Vdop.Value)
-            : default(double?);
+            : null;
         AltitudeMsl = rawGps.Alt / 1000D;
 
         CourseOverGround = rawGps.Cog / 100D;

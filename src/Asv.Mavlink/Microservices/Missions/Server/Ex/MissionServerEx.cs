@@ -52,8 +52,8 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         _logger = baseIfc.Core.LoggerFactory.CreateLogger<MissionServerEx>();
         _missionSource = [];
 
-        _sub1 = Current.SubscribeAwait((x,c)=>Base.SendMissionCurrent(x));
-        _sub2 = Reached.Subscribe(Base,(x,b)=>b.SendReached(x));
+        _sub1 = Current.SubscribeAwait(Base.SendMissionCurrent);
+        _sub2 = Reached.SubscribeAwait(Base.SendReached);
         
         _sub3 = baseIfc.OnMissionCount.SubscribeAwait(
             async (req, ct) => 
@@ -274,7 +274,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         }
         if (lastState != InternalBusyStateIdle)
         {
-            throw new Exception(
+            throw new MavlinkException(
                 $"{Id}: Try {nameof(StartMission)}, but now state '{lastState:G}. Response with error'");
         }
 
@@ -387,6 +387,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
                     try
                     {
                         await task(item, linked.Token).ConfigureAwait(false);
+                        
                     }
                     catch (Exception e)
                     {
@@ -398,8 +399,8 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
                 {
                     _statusLogger.Info($"Skip unsupported command '{item.Command}'");
                 }
-
                 _reached.OnNext(missionIndex);
+                
 
             }
         }

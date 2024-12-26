@@ -21,7 +21,7 @@ public class CompositeAudioCodecFactory : IAudioCodecFactory
         var codecs = _parts.GroupBy(x => x.AvailableCodecs).Where(x => x.Count() > 1).ToImmutableArray();
         if (codecs.Any())
         {
-            throw new Exception($"Codec {codecs.First().Key} duplicated");
+            throw new MavlinkException($"Codec {codecs.First().Key} duplicated");
         }
     }
 
@@ -29,14 +29,14 @@ public class CompositeAudioCodecFactory : IAudioCodecFactory
     public IAudioEncoder CreateEncoder(AsvAudioCodec codec, Observable<ReadOnlyMemory<byte>> input)
     {
         var result = _parts.FirstOrDefault(part => part.AvailableCodecs.Contains(codec))?.CreateEncoder(codec, input);
-        if (result == null) throw new Exception($"Codec {codec} not supported");
+        if (result == null) throw new MavlinkException($"Codec {codec} not supported");
         return result;
     }
 
     public IAudioDecoder CreateDecoder(AsvAudioCodec codec, Observable<ReadOnlyMemory<byte>> input)
     {
         var result = _parts.FirstOrDefault(part => part.AvailableCodecs.Contains(codec))?.CreateDecoder(codec, input);
-        if (result == null) throw new Exception($"Codec {codec} not supported");
+        if (result == null) throw new MavlinkException($"Codec {codec} not supported");
         return result;
     }
 

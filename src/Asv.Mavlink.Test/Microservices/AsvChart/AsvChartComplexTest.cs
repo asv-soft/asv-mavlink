@@ -57,7 +57,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
             p => _taskCompletionSource.TrySetResult(p));
 
         // Act
-        var sync = await Client.ReadAllInfo(default, _cancellationTokenSource.Token);
+        var sync = await Client.ReadAllInfo(null, _cancellationTokenSource.Token);
         Assert.True(sync);
 
         // Assert
@@ -104,7 +104,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         });
 
         // Act
-        var sync = await Client.ReadAllInfo(default, _cancellationTokenSource.Token);
+        var sync = await Client.ReadAllInfo(null, _cancellationTokenSource.Token);
 
         // Assert
         Assert.True(sync);
@@ -190,7 +190,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         });
 
         // Act
-        var sync = await Client.ReadAllInfo(default, _cancellationTokenSource.Token);
+        var sync = await Client.ReadAllInfo(null, _cancellationTokenSource.Token);
 
         // Assert
         Assert.True(sync);

@@ -90,7 +90,7 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
         // Act
         var t1 = Assert.ThrowsAsync<TaskCanceledException>(async () =>
         {
-            await Client.ReadAll(default, default, _cancellationTokenSource.Token);
+            await Client.ReadAll(null, false, _cancellationTokenSource.Token);
         });
 
         var t2 = Task.Factory.StartNew(() =>

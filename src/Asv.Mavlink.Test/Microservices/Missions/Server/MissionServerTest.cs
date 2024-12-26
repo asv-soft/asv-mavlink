@@ -166,7 +166,7 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         });
         
         // Act
-        await _server.SendReached(seq);
+        await _server.SendReached(seq, CancellationToken.None);
 
         // Assert
         var result = await _taskCompletionSource.Task as MissionItemReachedPacket;

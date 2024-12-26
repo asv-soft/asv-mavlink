@@ -40,7 +40,7 @@ public class AsvChartClientTest : ClientTestBase<AsvChartClient>, IDisposable
         var attempts = 5;
         var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.ReadAllInfo(default, _cancellationTokenSource.Token);
+            await Client.ReadAllInfo(null, _cancellationTokenSource.Token);
         });
 
         var t2 = Task.Factory.StartNew(() =>

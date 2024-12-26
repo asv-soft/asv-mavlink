@@ -109,7 +109,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     [InlineData(2)]
     [InlineData(10)]
     [InlineData(400)]
-    [InlineData(90_000)]
+    [InlineData(ushort.MaxValue + 1)]
     public async Task SetCurrent_SeveralCallsWithTheSameId_Success(int callsCount)
     {
         // Arrange
@@ -520,17 +520,17 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
             MavCmd.MavCmdUser3, // 8
         };
         var executed = new List<MavCmd>();
-        _server[MavCmd.MavCmdUser1] = (item, cancel) =>
+        _server[MavCmd.MavCmdUser1] = (item, _) =>
         {
             executed.Add(item.Command);
             return Task.CompletedTask;
         };
-        _server[MavCmd.MavCmdUser2] = (item, cancel) =>
+        _server[MavCmd.MavCmdUser2] = (item, _) =>
         {
             executed.Add(item.Command);
             return Task.CompletedTask;
         };
-        _server[MavCmd.MavCmdUser3] = (item, cancel) =>
+        _server[MavCmd.MavCmdUser3] = (item, _) =>
         {
             executed.Add(item.Command);
             return Task.CompletedTask;
@@ -541,7 +541,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         }
         await _client.Upload(CancellationToken.None);
         var tcs = new TaskCompletionSource();
-        _server.Reached.Subscribe(x =>
+        _client.Reached.Subscribe(x =>
         {
             if (x == (originMission.Count - 1))
             {
@@ -550,10 +550,9 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         });
         
         // Act
-        
         _server.StartMission(skip);
         await tcs.Task;
-
+        
         // Assert
         Assert.Equal(originMission.Skip(skip),executed);
     }
