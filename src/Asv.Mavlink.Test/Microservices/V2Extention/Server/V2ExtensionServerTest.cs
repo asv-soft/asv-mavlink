@@ -7,7 +7,7 @@ namespace Asv.Mavlink.Test;
 public class V2ExtensionServerTest(ITestOutputHelper log)
     : ServerTestBase<V2ExtensionServer>(log)
 {
-    protected override V2ExtensionServer CreateClient(MavlinkIdentity identity, CoreServices core) => new(identity, core);
+    protected override V2ExtensionServer CreateServer(MavlinkIdentity identity, CoreServices core) => new(identity, core);
     
     
 }

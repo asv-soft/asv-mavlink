@@ -24,7 +24,7 @@ public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
         _cancellationTokenSource = new CancellationTokenSource();
     }
 
-    protected override AsvRsgaServer CreateClient(MavlinkIdentity identity, CoreServices core) => new(identity, core);
+    protected override AsvRsgaServer CreateServer(MavlinkIdentity identity, CoreServices core) => new(identity, core);
 
     [Fact]
     public async Task SendCompatibilityResponse_SendSinglePacket_Success()

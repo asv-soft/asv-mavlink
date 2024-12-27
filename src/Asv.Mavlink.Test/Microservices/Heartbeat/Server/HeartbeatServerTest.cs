@@ -9,7 +9,7 @@ public class HeartbeatServerTest(ITestOutputHelper log) : ServerTestBase<Heartbe
         HeartbeatRateMs = 1000,
     };
 
-    protected override HeartbeatServer CreateClient(MavlinkIdentity identity, CoreServices core)
+    protected override HeartbeatServer CreateServer(MavlinkIdentity identity, CoreServices core)
     {
         return new HeartbeatServer(identity,_config,core);
     }

@@ -24,7 +24,7 @@ public class ParamsExtServerTest : ServerTestBase<ParamsExtServer>,IDisposable
         _cancellationTokenSource = new CancellationTokenSource();
     }
     
-    protected override ParamsExtServer CreateClient(MavlinkIdentity identity, CoreServices core) => new(identity, core);
+    protected override ParamsExtServer CreateServer(MavlinkIdentity identity, CoreServices core) => new(identity, core);
 
     [Fact]
     public async Task Send_SinglePacket_Success()

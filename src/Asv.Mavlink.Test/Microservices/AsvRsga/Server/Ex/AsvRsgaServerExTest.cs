@@ -12,7 +12,7 @@ public class AsvRsgaServerExTest(ITestOutputHelper log) : ServerTestBase<AsvRsga
         MaxSendRateHz = 100
     };
 
-    protected override AsvRsgaServerEx CreateClient(MavlinkIdentity identity, CoreServices core)
+    protected override AsvRsgaServerEx CreateServer(MavlinkIdentity identity, CoreServices core)
     {
         return new AsvRsgaServerEx(new AsvRsgaServer(identity, core),
             new CommandLongServerEx(new CommandServer(identity, core)));

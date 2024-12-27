@@ -26,7 +26,7 @@ public class CommandServerTest : ServerTestBase<CommandServer>
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
     
-    protected override CommandServer CreateClient(MavlinkIdentity identity, CoreServices core) => new(identity, core);
+    protected override CommandServer CreateServer(MavlinkIdentity identity, CoreServices core) => new(identity, core);
 
     [Theory]
     [InlineData(MavCmd.MavCmdUser1)]

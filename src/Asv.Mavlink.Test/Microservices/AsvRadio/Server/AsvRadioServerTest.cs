@@ -11,7 +11,7 @@ public class AsvRadioServerTest(ITestOutputHelper log) : ServerTestBase<AsvRadio
         StatusRateMs = 1000
     };
 
-    protected override AsvRadioServer CreateClient(MavlinkIdentity identity, CoreServices core)
+    protected override AsvRadioServer CreateServer(MavlinkIdentity identity, CoreServices core)
     {
         return new AsvRadioServer(identity, _config, core);
     }

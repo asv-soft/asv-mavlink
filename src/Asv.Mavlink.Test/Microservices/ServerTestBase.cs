@@ -33,8 +33,8 @@ public abstract class ServerTestBase<TServer> : IDisposable
 
     
 
-    protected abstract TServer CreateClient(MavlinkIdentity identity, CoreServices core);
-    protected TServer Server => _server ??= CreateClient(Identity, Core);
+    protected abstract TServer CreateServer(MavlinkIdentity identity, CoreServices core);
+    protected TServer Server => _server ??= CreateServer(Identity, Core);
     protected MavlinkIdentity Identity { get; }
     protected ITestOutputHelper Log { get; }
     protected CoreServices Core { get; }

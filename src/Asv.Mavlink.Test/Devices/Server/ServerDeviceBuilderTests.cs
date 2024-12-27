@@ -18,7 +18,7 @@ public class ServerDeviceBuilderTests : ServerTestBase<ServerDeviceBuilder>
     {
     }
 
-    protected override ServerDeviceBuilder CreateClient(MavlinkIdentity identity, CoreServices core)
+    protected override ServerDeviceBuilder CreateServer(MavlinkIdentity identity, CoreServices core)
     {
         return new ServerDeviceBuilder(identity, core);
     }
