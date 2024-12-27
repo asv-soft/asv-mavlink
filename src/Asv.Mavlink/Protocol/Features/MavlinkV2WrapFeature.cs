@@ -25,26 +25,26 @@ public class MavlinkV2WrapFeature(IProtocolMessageFactory<MavlinkMessage, ushort
     public string Id => IdKey;
     public int Priority => 0;
 
-    public async ValueTask<IProtocolMessage?> ProcessRx(IProtocolMessage message, IProtocolConnection connection, CancellationToken cancel)
+    public ValueTask<IProtocolMessage?> ProcessRx(IProtocolMessage message, IProtocolConnection connection, CancellationToken cancel)
     {
-        if (connection is not IProtocolPort) return message;
-        if (message is not V2ExtensionPacket mavlink) return message;
-        if (mavlink.Payload.MessageType != V2ExtensionMessageId) return message;
+        if (connection is not IProtocolPort) return ValueTask.FromResult<IProtocolMessage?>(message);
+        if (message is not V2ExtensionPacket mavlink) return ValueTask.FromResult<IProtocolMessage?>(message);
+        if (mavlink.Payload.MessageType != V2ExtensionMessageId) return ValueTask.FromResult<IProtocolMessage?>(message);
         var messageId = MavlinkV2Protocol.GetMessageId(mavlink.Payload.Payload,0);
         var innerMessage = _factory.Create((ushort)messageId);
-        if (innerMessage == null) return message;
-        await innerMessage.Deserialize(mavlink.Payload.Payload).ConfigureAwait(false);
-        return innerMessage;
+        if (innerMessage == null) return ValueTask.FromResult<IProtocolMessage?>(message);
+        innerMessage.Deserialize(mavlink.Payload.Payload);
+        return ValueTask.FromResult<IProtocolMessage?>(innerMessage);
     }
 
-    public async ValueTask<IProtocolMessage?> ProcessTx(IProtocolMessage message, IProtocolConnection connection, CancellationToken cancel)
+    public ValueTask<IProtocolMessage?> ProcessTx(IProtocolMessage message, IProtocolConnection connection, CancellationToken cancel)
     {
-        if (connection is not IProtocolEndpoint && connection is not VirtualPort) return message;
-        if (message is not MavlinkV2Message mavlink) return message;
+        if (connection is not IProtocolEndpoint && connection is not VirtualPort) return ValueTask.FromResult<IProtocolMessage?>(message);
+        if (message is not MavlinkV2Message mavlink) return ValueTask.FromResult<IProtocolMessage?>(message);
 
         if (mavlink.WrapToV2Extension == false)
         {
-            return message;
+            return ValueTask.FromResult<IProtocolMessage?>(message);
         }
         
         var wrappedPacket = new V2ExtensionPacket
@@ -64,11 +64,11 @@ public class MavlinkV2WrapFeature(IProtocolMessageFactory<MavlinkMessage, ushort
             },
             Tags = message.Tags
         };
-        var size = await message.Serialize(wrappedPacket.Payload.Payload).ConfigureAwait(false);
+        var size = message.Serialize(wrappedPacket.Payload.Payload);
         var arr = wrappedPacket.Payload.Payload;
         Array.Resize(ref arr, size);
         wrappedPacket.Payload.Payload = arr;
-        return wrappedPacket;
+        return ValueTask.FromResult<IProtocolMessage?>(wrappedPacket);
 
     }
 

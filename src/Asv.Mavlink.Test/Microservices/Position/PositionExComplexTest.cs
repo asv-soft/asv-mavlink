@@ -251,7 +251,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         Assert.Equal((int)Link.Server.Statistic.TxMessages, (int)Link.Client.Statistic.RxMessages);
         Assert.NotNull(packetFromClient);
         Assert.NotNull(packetFromServer);
-        Assert.True(packetFromClient.IsDeepEqual(packetFromServer));
+        packetFromClient.ShouldDeepEqual(packetFromServer);
         Assert.Equal(geoPoint, _client.Roi.CurrentValue);
         Assert.True(
             Math.Abs(latitude - (packetFromServer?.Payload.Param5 ?? 0f)) <= float.Epsilon

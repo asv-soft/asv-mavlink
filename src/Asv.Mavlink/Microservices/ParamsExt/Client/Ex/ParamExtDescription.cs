@@ -13,8 +13,8 @@ namespace Asv.Mavlink
 
     public class ParamExtDescription
     {
-        public string Name { get; set; }
-        public string DisplayName { get; set; }
+        public required string Name { get; set; }
+        public string? DisplayName { get; set; }
         public string? Description { get; set; }
         public List<ParamExtDescriptionValue> AvailableValues { get; } = [];
         public decimal? Max { get; set; }
@@ -33,7 +33,7 @@ namespace Asv.Mavlink
 
         public override string ToString()
         {
-            return DisplayName;
+            return DisplayName ?? Name;
         }
     }
 }

@@ -43,7 +43,6 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
         _disposeCancel = new CancellationTokenSource();
         _paramsSource = new ObservableDictionary<string, ParamExtItem>();
         _isSynced = new BindableReactiveProperty<bool>(false);
-        var list = new List<ParamExtValuePayload>();
 
         if (config.ChunkUpdateBufferMs > 0)
         {
@@ -104,7 +103,11 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
 
     private static ParamExtDescription CreateDefaultDescription(ParamExtValuePayload value)
     {
-        var desc = new ParamExtDescription();
+        var desc = new ParamExtDescription
+        {
+            Name = MavlinkTypesHelper.GetString(value.ParamId),
+            DisplayName = MavlinkTypesHelper.GetString(value.ParamId),
+        };
 
         switch (value.ParamType)
         {
@@ -159,7 +162,7 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
                 break;
         }
 
-        desc.Name = desc.DisplayName = MavlinkTypesHelper.GetString(value.ParamId);
+        
         desc.Description = $"Has no description. Type {value.ParamType:G}. Index: {value.ParamIndex}"; //TODO: Localize
         desc.ParamExtType = value.ParamType;
         return desc;
@@ -226,7 +229,9 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
     public async Task<MavParamExtValue> WriteOnce(string name, MavParamExtValue value,
         CancellationToken cancel = default)
     {
-        var result = await Base.Write(name, value.Type,  value.GetValue().ToString().ToCharArray(), cancel).ConfigureAwait(false);
+#pragma warning disable CS8604 // Possible null reference argument.
+        var result = await Base.Write(name, value.Type,  value.GetValue().ToString()?.ToCharArray(), cancel).ConfigureAwait(false);
+#pragma warning restore CS8604 // Possible null reference argument.
         return MavParamExtHelper.CreateFromBuffer(result.ParamValue, result.ParamType);
     }
 

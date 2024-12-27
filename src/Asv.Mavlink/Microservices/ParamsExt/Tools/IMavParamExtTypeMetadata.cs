@@ -65,11 +65,11 @@ public interface IMavParamExtTypeMetadata
     /// <summary>
     /// Array of values and textual descriptions for use by GCS ui.
     /// </summary>
-    (MavParamExtValue,string)[] Values { get; }
+    (MavParamExtValue, string)[]? Values { get; }
     /// <summary>
     /// Bitmask of allowed values.
     /// </summary>
-    (uint,MavParamExtValue)[] Bitmask { get; }
+    (uint, MavParamExtValue)[]? Bitmask { get; }
 
     /// <summary>
     /// Validates the given MavParamExtValue.
@@ -286,7 +286,7 @@ public class MavParamExtTypeMetadata : IMavParamExtTypeMetadata
     /// <value>
     /// The array of property values.
     /// </value>
-    public (MavParamExtValue, string)[] Values { get; set; }
+    public (MavParamExtValue, string)[]? Values { get; set; }
 
     /// <summary>
     /// Gets or sets the bitmask property.
@@ -294,7 +294,7 @@ public class MavParamExtTypeMetadata : IMavParamExtTypeMetadata
     /// <value>
     /// An array of tuples containing a 32-bit unsigned integer and a MavParamExtValue.
     /// </value>
-    public (uint, MavParamExtValue)[] Bitmask { get; set; }
+    public (uint, MavParamExtValue)[]? Bitmask { get; set; }
 
     /// <summary>
     /// Determines whether the specified MavParamExtValue is valid.

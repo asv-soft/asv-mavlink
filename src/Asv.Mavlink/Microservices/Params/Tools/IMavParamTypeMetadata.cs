@@ -388,11 +388,11 @@ public interface IMavParamTypeMetadata
     /// <summary>
     /// Array of values and textual descriptions for use by GCS ui.
     /// </summary>
-    (MavParamValue,string)[] Values { get; }
+    (MavParamValue, string)[]? Values { get; }
     /// <summary>
     /// Bitmask of allowed values.
     /// </summary>
-    (uint,MavParamValue)[] Bitmask { get; }
+    (uint, MavParamValue)[]? Bitmask { get; }
 
     /// <summary>
     /// Validates the given MavParamValue.
@@ -441,7 +441,7 @@ public interface IMavParamTypeMetadata
     
     public void WriteToConfig(IConfiguration config, MavParamValue value,string? prefix = null)
     {
-        var key = CombineConfigKey(prefix, Name);
+        var key = CombineConfigKey(prefix ?? string.Empty, Name);
         switch (value.Type)
         {
             case MavParamType.MavParamTypeUint8:
@@ -596,7 +596,7 @@ public class MavParamTypeMetadata : IMavParamTypeMetadata
     /// <value>
     /// The array of property values.
     /// </value>
-    public (MavParamValue, string)[] Values { get; set; }
+    public (MavParamValue, string)[]? Values { get; set; }
 
     /// <summary>
     /// Gets or sets the bitmask property.
@@ -604,7 +604,7 @@ public class MavParamTypeMetadata : IMavParamTypeMetadata
     /// <value>
     /// An array of tuples containing a 32-bit unsigned integer and a MavParamValue.
     /// </value>
-    public (uint, MavParamValue)[] Bitmask { get; set; }
+    public (uint, MavParamValue)[]? Bitmask { get; set; }
 
     /// <summary>
     /// Determines whether the specified MavParamValue is valid.

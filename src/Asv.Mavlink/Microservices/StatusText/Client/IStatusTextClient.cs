@@ -40,7 +40,7 @@ public class StatusMessage
     /// <value>
     /// A string representing the sender of the message.
     /// </value>
-    public string Sender { get; set; }
+    public string? Sender { get; set; }
 
     /// <summary>
     /// Gets or sets the text value.
@@ -48,7 +48,7 @@ public class StatusMessage
     /// <remarks>
     /// This property represents the text value.
     /// </remarks>
-    public string Text { get; set; }
+    public string? Text { get; set; }
 
     /// <summary>
     /// Gets or sets the severity type.

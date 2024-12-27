@@ -24,7 +24,6 @@ public abstract class ServerTestBase<TServer> : IDisposable
             builder.SetLog(loggerFactory);
             builder.SetTimeProvider(ServerTime);
             builder.RegisterMavlinkV2Protocol();
-            builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
             builder.Formatters.RegisterSimpleFormatter();
         });
         Link = protocol.CreateVirtualConnection();

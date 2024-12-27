@@ -18,9 +18,9 @@ namespace Asv.Mavlink
         {
         }
 
-        protected MavlinkException(
-            SerializationInfo info,
-            StreamingContext context) : base(info, context)
+        [Obsolete("Obsolete")]
+        protected MavlinkException(SerializationInfo info, StreamingContext context) 
+            : base(info, context)
         {
         }
     }

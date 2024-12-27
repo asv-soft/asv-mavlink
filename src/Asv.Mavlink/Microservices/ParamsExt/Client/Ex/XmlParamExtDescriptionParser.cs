@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -56,7 +57,7 @@ namespace Asv.Mavlink
             var result = new ParamExtDescription
             {
                 GroupName = paramExtList.Attributes?["name"]?.Value,
-                Name = paramExt.Attributes["name"]?.Value,
+                Name = paramExt.Attributes?["name"]?.Value ?? throw new InvalidOperationException(),
                 DisplayName = paramExt.Attributes["humanName"]?.Value,
                 Description = paramExt.Attributes["documentation"]?.Value,
                 User = paramExt.Attributes["user"]?.Value
@@ -71,7 +72,7 @@ namespace Asv.Mavlink
 
             foreach (var field in paramExt.ChildNodes.Cast<XmlNode>().Where(n => n.Name == "field"))
             {
-                switch (field.Attributes["name"].Value)
+                switch (field.Attributes?["name"]?.Value)
                 {
                        
                     case "Range":
@@ -135,7 +136,9 @@ namespace Asv.Mavlink
         {
             return new ParamExtDescriptionValue
             {
-                Code = decimal.Parse(valueField.Attributes["code"].Value, CultureInfo.InvariantCulture),
+#pragma warning disable CS8604 // Possible null reference argument.
+                Code = decimal.Parse(valueField.Attributes?["code"]?.Value, CultureInfo.InvariantCulture),
+#pragma warning restore CS8604 // Possible null reference argument.
                 Description = valueField.InnerText
             };
         }

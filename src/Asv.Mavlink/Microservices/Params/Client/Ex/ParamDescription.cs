@@ -8,13 +8,13 @@ namespace Asv.Mavlink
     public class ParamDescriptionValue
     {
         public decimal Code { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
     }
 
     public class ParamDescription
     {
         public required string Name { get; set; }
-        public string DisplayName { get; set; }
+        public string? DisplayName { get; set; }
         public string? Description { get; set; }
         public List<ParamDescriptionValue> AvailableValues { get; } = new();
         public decimal? Max { get; set; }
@@ -33,7 +33,7 @@ namespace Asv.Mavlink
 
         public override string ToString()
         {
-            return DisplayName;
+            return DisplayName ?? Name;
         }
     }
 }

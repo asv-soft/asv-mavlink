@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -17,7 +18,8 @@ namespace Asv.Mavlink
             a.LoadXml(source);
             var paramfile = a.GetElementsByTagName("paramfile");
             if (paramfile.Count == 0) yield break;
-            foreach (var childNode in paramfile.Item(0).ChildNodes.Cast<XmlNode>())
+            // ReSharper disable once NullableWarningSuppressionIsUsed
+            foreach (var childNode in paramfile.Item(0)?.ChildNodes.Cast<XmlNode>()!)
             {
                 foreach (var item in ParseGroup(childNode))
                 {
@@ -52,8 +54,8 @@ namespace Asv.Mavlink
         {
             var result = new ParamDescription
             {
-                GroupName = paramList.Attributes["name"]?.Value,
-                Name = param.Attributes["name"]?.Value,
+                GroupName = paramList.Attributes?["name"]?.Value,
+                Name = param.Attributes?["name"]?.Value ?? throw new InvalidOperationException(),
                 DisplayName = param.Attributes["humanName"]?.Value,
                 Description = param.Attributes["documentation"]?.Value,
                 User = param.Attributes["user"]?.Value
@@ -68,7 +70,7 @@ namespace Asv.Mavlink
 
             foreach (var field in param.ChildNodes.Cast<XmlNode>().Where(n => n.Name == "field"))
             {
-                switch (field.Attributes["name"].Value)
+                switch (field.Attributes?["name"]?.Value)
                 {
                        
                     case "Range":
@@ -132,7 +134,7 @@ namespace Asv.Mavlink
         {
             return new ParamDescriptionValue
             {
-                Code = decimal.Parse(valueField.Attributes["code"].Value, CultureInfo.InvariantCulture),
+                Code = decimal.Parse(valueField.Attributes?["code"]?.Value ?? throw new InvalidOperationException(), CultureInfo.InvariantCulture),
                 Description = valueField.InnerText
             };
         }
