@@ -150,6 +150,7 @@ namespace Asv.Mavlink.AsvGbs
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
+
         
         public override bool WrapToV2Extension => true;
 

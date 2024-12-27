@@ -11,15 +11,13 @@ namespace Asv.Mavlink
     public class MavlinkPacketTransponder<TPacket> : AsyncDisposableWithCancel, IMavlinkPacketTransponder<TPacket>
         where TPacket : MavlinkMessage, new()
     {
-        
-
         private readonly IMavlinkContext _core;
         private readonly object _sync = new();
         private readonly ILogger _logger;
         private readonly ReaderWriterLockSlim _dataLock = new();
         private int _isSending;
         private readonly ReactiveProperty<PacketTransponderState> _state = new();
-        private TPacket _packet;
+        private readonly TPacket _packet;
         private ITimer? _timer;
 
         public MavlinkPacketTransponder(MavlinkIdentity identity, IMavlinkContext core)
@@ -141,6 +139,7 @@ namespace Asv.Mavlink
         {
             await CastAndDispose(_dataLock).ConfigureAwait(false);
             await CastAndDispose(_state).ConfigureAwait(false);
+            // ReSharper disable once InconsistentlySynchronizedField
             if (_timer != null) await _timer.DisposeAsync().ConfigureAwait(false);
 
             await base.DisposeAsyncCore().ConfigureAwait(false);

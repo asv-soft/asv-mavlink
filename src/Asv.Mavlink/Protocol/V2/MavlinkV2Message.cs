@@ -1,13 +1,13 @@
 using System;
 using System.Buffers;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Asv.Common;
 using Asv.IO;
 
 namespace Asv.Mavlink;
 
-public abstract class MavlinkV2Message<TPayload> : MavlinkMessage
-    where TPayload : IPayload
+public abstract class MavlinkV2Message : MavlinkMessage
 {
     private readonly Signature _signature = new();
     
@@ -18,26 +18,19 @@ public abstract class MavlinkV2Message<TPayload> : MavlinkMessage
     public byte CompatFlags { get; set; }
     
     public abstract bool WrapToV2Extension { get; }
-
-    public override IPayload GetPayload()
-    {
-        return Payload;
-    }
-
-    public abstract TPayload Payload { get; }
     
     public ISignature Signature => _signature;
     
-    public int GetMaxByteSize() => Payload.GetMaxByteSize() + Signature.GetMaxByteSize() + 12 /*HEADER*/;
+    public int GetMaxByteSize() => GetPayload().GetMaxByteSize() + Signature.GetMaxByteSize() + 12 /*HEADER*/;
     
-    public override int GetByteSize() => Payload.GetByteSize() + (Signature.IsPresent ? MavlinkV2Protocol.SignatureByteSize : 0) + 12 /*HEADER*/;
+    public override int GetByteSize() => GetPayload().GetByteSize() + (Signature.IsPresent ? MavlinkV2Protocol.SignatureByteSize : 0) + 12 /*HEADER*/;
 
     public override void Serialize(ref Span<byte> buffer)
     {
         var fillBuffer = buffer[..];
         var payloadBuffer = buffer[10..];
         var originLength = payloadBuffer.Length;
-        Payload.Serialize(ref payloadBuffer);
+        GetPayload().Serialize(ref payloadBuffer);
         var payloadSize = originLength - payloadBuffer.Length;
         var originPayloadBuffer = buffer.Slice(10, payloadSize);
         
@@ -104,7 +97,7 @@ public abstract class MavlinkV2Message<TPayload> : MavlinkMessage
             var crcStartBuffer = buffer.Slice(payloadSize, 2);
             var crc = BinSerialize.ReadUShort(ref crcStartBuffer);
 
-            var originSize = Payload.GetMinByteSize();
+            var originSize = GetPayload().GetMinByteSize();
             if (payloadSize < originSize)
             {
                 // this is Empty-Byte Payload Truncation https://mavlink.io/en/guide/serialization.html#payload_truncation
@@ -120,7 +113,7 @@ public abstract class MavlinkV2Message<TPayload> : MavlinkMessage
                 try
                 {
                     var readOnly = new ReadOnlySpan<byte>(data, 0, originSize);
-                    Payload.Deserialize(ref readOnly);
+                    GetPayload().Deserialize(ref readOnly);
                     // Debug.Assert(readOnly.Length == 0);
                 }
                 finally
@@ -132,7 +125,7 @@ public abstract class MavlinkV2Message<TPayload> : MavlinkMessage
             else
             {
                 var payloadBuffer = buffer[..payloadSize];
-                Payload.Deserialize(ref payloadBuffer);
+                GetPayload().Deserialize(ref payloadBuffer);
                 //Debug.Assert(payloadBuffer.Length == 0);
             }
             buffer = buffer[payloadSize..]; // skip payload
@@ -152,4 +145,13 @@ public abstract class MavlinkV2Message<TPayload> : MavlinkMessage
                 Signature.Deserialize(ref buffer);
             }
     }
+}
+
+public abstract class MavlinkV2Message<TPayload> : MavlinkV2Message
+    where TPayload : IPayload
+{
+    public abstract TPayload Payload { get; }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public override IPayload GetPayload() => Payload;
 }
