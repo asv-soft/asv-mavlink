@@ -24,7 +24,7 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         _cancellationTokenSource = new CancellationTokenSource();
     }
 
-    protected override AdsbVehicleServer CreateClient(MavlinkIdentity identity, CoreServices core) =>
+    protected override AdsbVehicleServer CreateServer(MavlinkIdentity identity, CoreServices core) =>
         new(identity, core);
 
     [Fact]

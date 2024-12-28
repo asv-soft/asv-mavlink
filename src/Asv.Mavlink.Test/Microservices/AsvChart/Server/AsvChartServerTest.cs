@@ -29,7 +29,7 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>, IDisposable
     }
 
 
-    protected override AsvChartServer CreateClient(MavlinkIdentity identity, CoreServices core) =>
+    protected override AsvChartServer CreateServer(MavlinkIdentity identity, CoreServices core) =>
         new(identity, _config, core);
 
 

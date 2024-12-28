@@ -21,7 +21,7 @@ public class AsvSdrServerExTest(ITestOutputHelper log) : ServerTestBase<AsvSdrSe
     };
 
 
-    protected override AsvSdrServerEx CreateClient(MavlinkIdentity identity, CoreServices core)
+    protected override AsvSdrServerEx CreateServer(MavlinkIdentity identity, CoreServices core)
     {
         var sdr = new AsvSdrServer(identity, _configSdr, core);
         var statusText = new StatusTextServer(Identity,_configStatus,core);

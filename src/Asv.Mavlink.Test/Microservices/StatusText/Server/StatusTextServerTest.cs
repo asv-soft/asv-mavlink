@@ -16,7 +16,7 @@ public class StatusTextServerTest(ITestOutputHelper log)
         MaxSendRateHz = 10
     };
 
-    protected override StatusTextServer CreateClient(MavlinkIdentity identity, CoreServices core) =>
+    protected override StatusTextServer CreateServer(MavlinkIdentity identity, CoreServices core) =>
         new(identity, _config, core);
 
     [Fact]

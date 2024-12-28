@@ -29,7 +29,7 @@ public class MissionServerExTest : ServerTestBase<MissionServerEx>
         _server = Server;
     }
 
-    protected override MissionServerEx CreateClient(MavlinkIdentity identity, CoreServices core) 
+    protected override MissionServerEx CreateServer(MavlinkIdentity identity, CoreServices core) 
         => new(new MissionServer(identity, core), new StatusTextServer(identity, _config, core));
     
     [Fact]

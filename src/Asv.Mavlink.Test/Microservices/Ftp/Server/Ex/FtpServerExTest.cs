@@ -46,7 +46,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
     {
     };
 
-    protected override FtpServerEx CreateClient(MavlinkIdentity identity, CoreServices core)
+    protected override FtpServerEx CreateServer(MavlinkIdentity identity, CoreServices core)
     {
         return new FtpServerEx(new FtpServer(identity, _configBase, core), _config, _fileSystem);
     }

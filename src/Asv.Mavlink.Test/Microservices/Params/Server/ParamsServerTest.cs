@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
-
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
@@ -18,7 +17,7 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
 {
     private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
-    protected override ParamsServer CreateClient(MavlinkIdentity identity, CoreServices core) => new(identity, core);
+    protected override ParamsServer CreateServer(MavlinkIdentity identity, CoreServices core) => new(identity, core);
 
     public ParamsServerTest(ITestOutputHelper log) : base(log)
     {

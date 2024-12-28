@@ -5,16 +5,16 @@ using Asv.Mavlink.Minimal;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Time.Testing;
+using R3;
 using Xunit;
 using Xunit.Abstractions;
-using R3;
 
 namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(IServerDevice))]
 public class ServerDeviceTests(ITestOutputHelper log) : ServerTestBase<IServerDevice>(log)
 {
-    protected override IServerDevice CreateClient(MavlinkIdentity identity, CoreServices core)
+    protected override IServerDevice CreateServer(MavlinkIdentity identity, CoreServices core)
     {
         return ServerDevice.Create(identity,core, builder =>
         {

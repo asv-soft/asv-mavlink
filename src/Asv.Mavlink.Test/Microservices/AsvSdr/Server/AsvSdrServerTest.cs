@@ -11,5 +11,5 @@ public class AsvSdrServerTest(ITestOutputHelper log) : ServerTestBase<AsvSdrServ
         StatusRateMs = 1000
     };
 
-    protected override AsvSdrServer CreateClient(MavlinkIdentity identity, CoreServices core) => new(identity, _config, core);
+    protected override AsvSdrServer CreateServer(MavlinkIdentity identity, CoreServices core) => new(identity, _config, core);
 }

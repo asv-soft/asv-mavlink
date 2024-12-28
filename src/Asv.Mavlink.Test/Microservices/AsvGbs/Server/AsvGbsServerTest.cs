@@ -33,7 +33,7 @@ public class AsvGbsServerTest : ServerTestBase<AsvGbsServer>, IDisposable
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
-    protected override AsvGbsServer CreateClient(MavlinkIdentity identity, CoreServices core) =>
+    protected override AsvGbsServer CreateServer(MavlinkIdentity identity, CoreServices core) =>
         new(identity, _serverConfig, core);
 
     [Fact]

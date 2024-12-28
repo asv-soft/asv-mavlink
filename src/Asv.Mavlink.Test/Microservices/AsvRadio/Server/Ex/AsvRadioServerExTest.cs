@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRadio;
 using JetBrains.Annotations;
@@ -35,7 +34,7 @@ public class AsvRadioServerExTest(ITestOutputHelper log) : ServerTestBase<AsvRad
 
     
 
-    protected override AsvRadioServerEx CreateClient(MavlinkIdentity identity, CoreServices core)
+    protected override AsvRadioServerEx CreateServer(MavlinkIdentity identity, CoreServices core)
     {
         var builder = Disposable.CreateBuilder();
         var srv = new AsvRadioServer(identity, _radioConfig, core).AddTo(ref builder);

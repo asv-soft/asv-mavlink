@@ -20,7 +20,7 @@ public class ParamsExtServerExTest(ITestOutputHelper log)
         CfgPrefix = "MAV_",
     };
 
-    protected override ParamsExtServerEx CreateClient(MavlinkIdentity identity, CoreServices core) 
+    protected override ParamsExtServerEx CreateServer(MavlinkIdentity identity, CoreServices core) 
         => new(new ParamsExtServer(identity, core), new StatusTextServer(identity, _statusConfig, core) , ParamDesc,Configuration, _config);
     private IMavParamExtTypeMetadata[] ParamDesc { get; set; } = [];
     private InMemoryConfiguration Configuration { get; set; } = new();
