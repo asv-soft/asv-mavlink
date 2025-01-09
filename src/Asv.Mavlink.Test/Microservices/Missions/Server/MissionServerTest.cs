@@ -27,7 +27,7 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
     
-    protected override MissionServer CreateClient(MavlinkIdentity identity, CoreServices core) => new(identity, core);
+    protected override MissionServer CreateServer(MavlinkIdentity identity, CoreServices core) => new(identity, core);
     
     [Fact]
     public void Constructor_Null_Throws()

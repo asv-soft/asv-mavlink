@@ -19,7 +19,7 @@ public class ParamsServerExTest(ITestOutputHelper log) : ServerTestBase<ParamsSe
         CfgPrefix = "MAV_"
     };
 
-    protected override ParamsServerEx CreateClient(MavlinkIdentity identity, CoreServices core) 
+    protected override ParamsServerEx CreateServer(MavlinkIdentity identity, CoreServices core) 
         => new(new ParamsServer(identity, core), new StatusTextServer(identity, _statusConfig, core) , ParamDesc, Encoding,Configuration, _config);
     private IMavParamTypeMetadata[] ParamDesc { get; set; } = [];
     private IMavParamEncoding Encoding { get; set; } = MavParamHelper.ByteWiseEncoding;

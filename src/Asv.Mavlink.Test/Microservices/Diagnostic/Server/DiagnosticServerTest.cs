@@ -16,7 +16,7 @@ public class DiagnosticServerTest(ITestOutputHelper log) : ServerTestBase<Diagno
         IsEnabled = true
     };
 
-    protected override DiagnosticServer CreateClient(MavlinkIdentity identity, CoreServices core) =>
+    protected override DiagnosticServer CreateServer(MavlinkIdentity identity, CoreServices core) =>
         new(identity, _config, core);
 
     [Fact]

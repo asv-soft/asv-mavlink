@@ -30,7 +30,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
         _cts.Token.Register(() => _tcs.TrySetCanceled());
     }
 
-    protected override FtpServer CreateClient(MavlinkIdentity identity, CoreServices core)
+    protected override FtpServer CreateServer(MavlinkIdentity identity, CoreServices core)
     {
         return new FtpServer(identity, _config, core);
     }
