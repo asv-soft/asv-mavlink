@@ -31,7 +31,7 @@ class Program
         app.Add<CreateVirtualFtpServerCommand>();
         app.Add<GenerateDiagnostics>();
         app.Add<TestGenerateDiagnosticsCommand>();
-        await app.RunAsync(args);
+        app.Add<ParamsCommand>();
+        await app.RunAsync(["params"]);
     }
 }
-

@@ -1,95 +1,171 @@
-namespace Asv.Mavlink.Shell
+using System;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Asv.Cfg;
+using Asv.Common;
+using Asv.IO;
+using ConsoleAppFramework;
+using Microsoft.Extensions.Logging.Abstractions;
+using ObservableCollections;
+using R3;
+using Spectre.Console;
+
+namespace Asv.Mavlink.Shell;
+
+public class ParamsCommand
 {
-    /*public class ParamsCommand : VehicleCommandBase
+    private readonly CancellationTokenSource _cancel = new();
+    private readonly Subject<ConsoleKeyInfo> _userInput = new();
+
+    private int _pageSize = 30;
+    private string _search = string.Empty;
+    private int _skip;
+    private IClientDevice? _device;
+    private IProtocolRouter _router;
+    private IReadOnlyObservableDictionary<string, ParamItem> _list;
+    private IParamsClientEx _paramsClientEx;
+
+    /// <summary>
+    /// Command for reading and displaying device parameters
+    /// </summary>
+    /// <param name="connectionString">-cs, Connection address to the mavlink device etc: tcp://127.0.0.1:5762</param>
+    /// <param name="pageSize">-s, Maximum number of rows in the table</param>
+    [Command("params")]
+    public async Task RunParams(string connectionString = "tcp://127.0.0.1:5762", int pageSize = 30)
     {
-        private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
-        private readonly Subject<ConsoleKeyInfo> _userInput = new Subject<ConsoleKeyInfo>();
-        private int _pageSize = 30;
-        private string _search;
-        private int _skip;
-        //private ReadOnlyObservableCollection<IParamItem> _list;
-
-        public ParamsCommand()
+        _pageSize = pageSize;
+        SetupKeyHandlers();
+        _router = Protocol.Create(builder =>
         {
-            IsCommand("params", "Read all params from Vehicle");
-            HasOption("p|pageSize=", $"max size of rows in table. Default={_pageSize}", (int p) => _pageSize = p);
-            /*_userInput.Where(_=>_.Key == ConsoleKey.Backspace && !string.IsNullOrEmpty(_search)).Subscribe(_=>
+            builder.RegisterMavlinkV2Protocol();
+        }).CreateRouter("ROUTER");
+        _router.AddPort(connectionString);
+        var identity = new MavlinkClientIdentity(255, 255, 1, 1);
+        var seq = new PacketSequenceCalculator();
+        var core = new CoreServices(_router, seq, NullLoggerFactory.Instance, TimeProvider.System,
+            new DefaultMeterFactory());
+        var id = new MavlinkClientDeviceId("PARAMS", identity);
+        var config = new MavlinkClientDeviceConfig
+        {
+            Heartbeat = new HeartbeatClientConfig
             {
-                _skip = 0;
-                _search = _search.Substring(0, _search.Length - 1);
-                Redraw();
-            });
-            _userInput.Where(_ => char.IsLetterOrDigit(_.KeyChar) || _.KeyChar == '_').Subscribe(_ =>
-            {
-                _skip = 0;
-                _search += _.KeyChar;
-                Redraw();
-            });
-            _userInput.Where(_ => _.Key == ConsoleKey.RightArrow).Subscribe(_ =>
-            {
-                _skip += _pageSize;
-                Redraw();
-            });
-            _userInput.Where(_ => _.Key == ConsoleKey.LeftArrow).Subscribe(_ =>
-            {
-                _skip -= _pageSize;
-                if (_skip < 0) _skip = 0; 
-                Redraw();
-            });#1#
+                HeartbeatTimeoutMs = 2000,
+                LinkQualityWarningSkipCount = 3,
+                RateMovingAverageFilter = 10
+            }
+        };
+        var devices = DeviceExplorer.Create(_router, x =>
+        {
+            x.Factories.RegisterDefaultDevices(new MavlinkIdentity(255, 255), seq, new InMemoryConfiguration());
+        });
+
+        devices.Devices.CreateView(CreateDevice(connectionString, identity, core, id, config));
+        //_device = CreateDevice(connectionString, identity, core, id, config);
+        
+
+        await _device.WaitUntilConnect(10000, TimeProvider.System);
+        //TODO: Wait and init
+        // var parammClient = _device.Microservices.FirstOrDefault(x => x.Id == "Param");
+        // _device.Microservices.Params.Items.Filter(_=> _search.IsNullOrWhiteSpace() || _.Name.Contains(_search, StringComparison.InvariantCultureIgnoreCase))
+        //     .Bind(out _list).Subscribe();
+        // parammClient.
+        // await params.ReadAll(new Progress<double>(_ => Console.WriteLine("Read params progress:" + TextRender.Progress(_, 20))));
+        //TODO: Init params
+        
+        while (!_cancel.IsCancellationRequested)
+        {
+            Redraw();
+            await Task.Delay(1000, _cancel.Token);
+        }
+    }
+
+
+    private void SetupKeyHandlers()
+    {
+        _userInput.Where(_ => _.Key == ConsoleKey.Backspace && !string.IsNullOrEmpty(_search)).Subscribe(_ =>
+        {
+            _skip = 0;
+            _search = _search.Substring(0, _search.Length - 1);
+            Redraw();
+        });
+        _userInput.Where(_ => char.IsLetterOrDigit(_.KeyChar) || _.KeyChar == '_').Subscribe(_ =>
+        {
+            _skip = 0;
+            _search += _.KeyChar;
+            Redraw();
+        });
+        _userInput.Where(_ => _.Key == ConsoleKey.RightArrow).Subscribe(_ =>
+        {
+            _skip += _pageSize;
+            Redraw();
+        });
+        _userInput.Where(_ => _.Key == ConsoleKey.LeftArrow).Subscribe(_ =>
+        {
+            _skip -= _pageSize;
+            if (_skip < 0) _skip = 0;
+            Redraw();
+        });
+    }
+
+    private void KeyListen()
+    {
+        while (!_cancel.IsCancellationRequested)
+        {
+            var key = Console.ReadKey(true);
+            _userInput.OnNext(key);
+        }
+    }
+
+    private void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+    {
+        if (e.Cancel) _cancel.Cancel(false);
+    }
+
+    private void Redraw()
+    {
+        AnsiConsole.Clear();
+
+        if (_device != null)
+        {
+            var linkState = _device.Link.State.CurrentValue;
+            var stateColor = linkState == LinkState.Connected ? "green" : "red";
+            AnsiConsole.MarkupLine($"Connection state: [{stateColor}]{linkState}[/]");
+        }
+
+        AnsiConsole.MarkupLine(
+            "[yellow]Use Left/Right arrows for navigation (<-|->), ESC to exit, and type for search[/]");
+        AnsiConsole.Markup($"Search: [green]{_search}[/]");
+        
+        var items = _list.ToArray();
+        
+        var table = new Table()
+            .Border(TableBorder.Square)
+            .AddColumn("Name")
+            .AddColumn("Value")
+            .AddColumn("Type");
+        
+        foreach (var item in items.Skip(_skip).Take(_pageSize))
+        {
+            // table.AddRow(
+            //     item.Name,
+            //     item.Value.ToString() ?? string.Empty,
+            //     item.Type.ToString());
         }
         
-        protected override int RunWithDevice(IClientDevice device, string[] remainingArguments)
-        {
-            return 0;
-        }
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine(
+            $"Showing [{_skip} - {Math.Min(_skip + _pageSize, items.Length)}] of {items.Length} items");
+        AnsiConsole.Write(table);
+    }
 
-        private void KeyListen()
-        {
-            while (!_cancel.IsCancellationRequested)
-            {
-                var key = Console.ReadKey(true);
-                _userInput.OnNext(key);
-            }
-        }
-
-        /*
-        private void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
-        {
-            if (e.Cancel) _cancel.Cancel(false);
-        }
-
-
-        protected override async Task<int> RunAsync(IVehicleClient vehicle)
-        {
-            Vehicle.Params.Items.Filter(_=> _search.IsNullOrWhiteSpace() || _.Name.Contains(_search, StringComparison.InvariantCultureIgnoreCase))
-                .Bind(out _list).Subscribe();
-            await vehicle.Params.ReadAll(new Progress<double>(_ => Console.WriteLine("Read params progress:" + TextRender.Progress(_, 20))));
-            
-            while (!_cancel.IsCancellationRequested)
-            {
-                Redraw();
-                await Task.Delay(1000).ConfigureAwait(false);
-            }
-            return 0;
-        }
-
-        private void Redraw()
-        {
-            Console.Clear();
-            Console.WriteLine("Use Left/Right arrows for page navigation (<-|->) and type for search");
-            Console.Write("Search:"+_search);
-            var top = Console.CursorTop;
-            var left = Console.CursorLeft;
-            Console.WriteLine();
-
-            
-            
-            var items =_list.ToArray();
-            Console.WriteLine($"Show [{_skip} - {_skip + _pageSize}] of {items.Length}. All {Vehicle.Params.RemoteCount.Value} items: ");
-            TextTable.PrintTableFromObject(Console.WriteLine, new DoubleTextTableBorder(), 1, int.MaxValue, items.Skip(_skip).Take(_pageSize) );
-            Console.SetCursorPosition(left,top);
-        }#1#
-
-        
-    }*/
+    private MavlinkClientDevice CreateDevice(string cs, MavlinkClientIdentity identity, IMavlinkContext core, MavlinkClientDeviceId id,
+        MavlinkClientDeviceConfig config)
+    {
+        Task.Factory.StartNew(_ => KeyListen(), _cancel.Token);
+        Console.CancelKeyPress += Console_CancelKeyPress;
+        return new MavlinkClientDevice(id, config,
+            ImmutableArray<IClientDeviceExtender>.Empty, core);
+    }
 }
