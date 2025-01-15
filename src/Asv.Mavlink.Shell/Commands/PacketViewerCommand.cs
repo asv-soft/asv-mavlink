@@ -31,25 +31,21 @@ public class PacketViewerCommand
     /// </summary>
     /// <param name="connection">-connection, Connection string. Default "tcp://127.0.0.1:5762"</param>
     [Command("packetviewer")]
-    public void Run(string connection = "tcp://127.0.0.1:5762")
+    public void Run(string connection = "tcp://127.0.0.1:7341")
     {
-       
-        _headerTable = new Table().Expand().AddColumns("[red]F6[/]", "[red]F7[/]", "[red]F8[/]", "[red]F9[/]", "[red]ENTER[/]").Title("[aqua]Controls[/]");
-        _headerTable.AddRow("Search:", $"Size:{_consoleSize}", "Pause", "End", "Submit"); 
-        _table = new Table().Expand().AddColumn("[aqua]Packet Viewer[/]")//.BorderColor(Color.Aqua)
+        _headerTable = new Table().Expand()
+            .AddColumns("[red]F6[/]", "[red]F7[/]", "[red]F8[/]", "[red]F9[/]", "[red]ENTER[/]")
+            .Title("[aqua]Controls[/]");
+        _headerTable.AddRow("Search:", $"Size:{_consoleSize}", "Pause", "End", "Submit");
+        _table = new Table().Expand().AddColumn("[aqua]Packet Viewer[/]") //.BorderColor(Color.Aqua)
             .Border(TableBorder.None);
         _table.AddRow(_headerTable);
         _table.AddRow("");
-        
-        _packetTable = new Table().AddColumns("Time", "Type", "Source","Size", "Sequence", "Message").Expand().Title("[aqua]Packets[/]");
         AnsiConsole.Status().Start("Create router...", ctx =>
         {
             ctx.Spinner(Spinner.Known.Aesthetic);
             ctx.SpinnerStyle(Style.Parse("green"));
-            _protocol =Protocol.Create(builder =>
-            {
-                builder.RegisterMavlinkV2Protocol();
-            });
+            _protocol = Protocol.Create(builder => { builder.RegisterMavlinkV2Protocol(); });
             _router = _protocol.CreateRouter("ROTUER");
             _router.AddPort(connection);
         });
@@ -67,8 +63,7 @@ public class PacketViewerCommand
             }
         });
     }
-    
-   
+
 
     private void UpdateSearchCellInActive() => _headerTable.UpdateCell(0, 0, $"Search: {_consoleSearch}");
     private void UpdateSearchCellActive() => _headerTable.UpdateCell(0, 0, $"[aqua]Search:[/] {_consoleSearch}");
@@ -90,7 +85,7 @@ public class PacketViewerCommand
         await Task.Delay(TimeSpan.FromMilliseconds(500));
         _headerTable.UpdateCell(0, 3, $"End");
     }
-    
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
     private void InterceptConsoleActions()
     {
         while (true)
@@ -117,9 +112,9 @@ public class PacketViewerCommand
                             case ConsoleKey.Enter:
                                 _isSearching = false;
                                 UpdateSearchCellInActive();
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
                                 HighlightSubmitCell();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
                                 break;
                             default:
                                 _consoleSearch += keysearch.KeyChar;
@@ -148,9 +143,7 @@ public class PacketViewerCommand
                             case ConsoleKey.Enter:
                                 _isSearching = true;
                                 UpdateSizeCellInActive();
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                                 HighlightSubmitCell();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                                 break;
                             default:
                                 _consoleSize += keysearch.KeyChar;
@@ -167,9 +160,7 @@ public class PacketViewerCommand
                     var keyPause = Console.ReadKey(true);
                     if (keyPause.Key is ConsoleKey.Enter or ConsoleKey.F8)
                     {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                         HighlightSubmitCell();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                         UpdatePauseCellInActive();
                         _isPause = false;
                     }
@@ -177,9 +168,7 @@ public class PacketViewerCommand
                 }
                 case ConsoleKey.F9:
                 {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     HighlightEndCell();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     _isCancel = true;
                     _router.Dispose();
                     _actionsThread.Interrupt();
@@ -187,42 +176,41 @@ public class PacketViewerCommand
                 }
                 case ConsoleKey.Enter:
                 {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     HighlightSubmitCell();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     break;
                 }
             }
         }
     }
-    
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
     private void GetPacketAndUpdateTable(IList<MavlinkMessage> pkt)
     {
-        
-        if (_isPause) return;
-        var result = new List<MavlinkMessage>();
-        
-        if (_consoleSearch is null)
-        {
-            result.AddRange(pkt);
-        }
-        else
-        {
-           result.AddRange(pkt.Where(_=>_.Name.Contains(_consoleSearch)));
-        }
-
-        foreach (var packet in result)
-        {
-            var msg = _protocol.PrintMessage(packet);
-            _packetTable.InsertRow(0, $@"{DateTime.Now}", $"{packet.Name}", $"{packet.ComponentId},{packet.SystemId}", $"{packet.GetByteSize()}", Markup.Escape($"{packet.Sequence}"),  Markup.Escape($"{msg}"));
-            _table.UpdateCell(1, 0, _packetTable);      
-        }
         var parsed = int.TryParse(_consoleSize, out var size);
         if (parsed is false) return;
-        if (_packetTable.Rows.Count <= size) return;
-        for (var i = size; i < _packetTable.Rows.Count; i++)
+        if (_isPause) return;
+        var result = new List<MavlinkMessage>();
+        result.AddRange(_consoleSearch == null
+            ? pkt
+            : pkt.Where(message => message.Name.Contains(_consoleSearch, StringComparison.InvariantCultureIgnoreCase)));
+        var queue = new Queue<MavlinkMessage>();
+        foreach (var item in result)
         {
-            _packetTable.RemoveRow(i);
+            queue.Enqueue(item);
+            if (queue.Count >= size + 1)
+            {
+                queue.Dequeue();
+            }
+        }
+
+        _packetTable = new Table().AddColumns("Time", "Type", "Source", "Size", "Sequence", "Message").Expand()
+            .Title("[aqua]Packets[/]");
+        foreach (var packet in queue)
+        {
+            var msg = _protocol.PrintMessage(packet);
+            _packetTable.InsertRow(0, $@"{DateTime.Now}", $"{packet.Name}", $"{packet.ComponentId},{packet.SystemId}",
+                $"{packet.GetByteSize()}", Markup.Escape($"{packet.Sequence}"), Markup.Escape($"{msg}"));
+            _table.UpdateCell(1, 0, _packetTable);
         }
     }
 }

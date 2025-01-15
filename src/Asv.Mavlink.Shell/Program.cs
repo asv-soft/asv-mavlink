@@ -31,6 +31,7 @@ class Program
         app.Add<CreateVirtualFtpServerCommand>();
         app.Add<GenerateDiagnostics>();
         app.Add<TestGenerateDiagnosticsCommand>();
+        app.Add<PrintVehicleState>();
         await app.RunAsync(args);
     }
 }
