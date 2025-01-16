@@ -30,7 +30,7 @@ public class PacketViewerCommand
     /// Show packets in real time
     /// </summary>
     /// <param name="connection">-connection, Connection string. Default "tcp://127.0.0.1:5762"</param>
-    [Command("packetviewer")]
+    [Command("packet-viewer")]
     public void Run(string connection = "tcp://127.0.0.1:7341")
     {
         _headerTable = new Table().Expand()

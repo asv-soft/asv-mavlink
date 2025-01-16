@@ -25,13 +25,8 @@ namespace Asv.Mavlink.Shell
         private const int DeltaXy = 10;
         private const int DeltaZ = 5;
         private string _lastCommand = string.Empty;
-        private string _connection = string.Empty;
-        private ILoggerFactory _loggerFactory = new LoggerFactory();
-        private ILogger? _logger;
         private Thread? _actionsThread;
-        private IProtocolFactory? _protocol;
         private ArduCopterClientDevice? _device;
-        private readonly List<IClientDevice> _devicesList = [];
         private IDeviceExplorer? _deviceExplorer;
         private Table? _table;
         private Table? _headerTable;
@@ -61,36 +56,19 @@ namespace Asv.Mavlink.Shell
         [Command("print-vehicle-state")]
         public int Run(string connection = "tcp://127.0.0.1:7341")
         {
-            _connection = connection;
-            _loggerFactory = LoggerFactory.Create(loggingBuilder =>
+            ShellCommandsHelper.CreateDeviceExplorer(connection, out _deviceExplorer);
+            while (_device is null)
             {
-                loggingBuilder.ClearProviders();
-                loggingBuilder.SetMinimumLevel(LogLevel.Information);
-                loggingBuilder.AddZLoggerFile(Path.Combine(ApplicationEnvironment.ApplicationBasePath, "print-vehicle-state.txt"),
-                    options => { options.FileShared = true; });
-            });
-
-            _logger = _loggerFactory.CreateLogger<PrintVehicleState>();
-
-            AnsiConsole.Status().StartAsync("Create router...", async ctx =>
-            {
-                ctx.Spinner(Spinner.Known.Aesthetic);
-                ctx.SpinnerStyle(Style.Parse("green"));
-                await CreateRouter(connection);
-            });
-            var isChosenDevice = false;
-            while (isChosenDevice == false)
-            {
+                _device = ShellCommandsHelper.DeviceAwaiter(_deviceExplorer) as ArduCopterClientDevice;
+                if (_device is not null) continue;
                 AnsiConsole.Clear();
-                DevicesAwaiter(_devicesList.Count);
-                var number = AnsiConsole.Ask<int>("Select number of device or print 0 to continue wait");
-                if (number == 0) continue;
-                var chosenDevice = _devicesList[number - 1];
-                if (chosenDevice is not ArduCopterClientDevice device) continue;
-                _device = device;
-                isChosenDevice = true;
+                AnsiConsole.WriteLine("This command available only to MavType = 2 devices");
+                AnsiConsole.WriteLine("Press R to repeat or any key to exit");
+                var key =  Console.ReadKey();
+                if(key.Key == ConsoleKey.R) continue;
+                return 0;
             }
-
+            
             var status2 = @"Waiting for init device";
             AnsiConsole.Status().StartAsync(status2, statusContext =>
             {
@@ -103,9 +81,7 @@ namespace Asv.Mavlink.Shell
                 return Task.CompletedTask;
             });
             CreateTables();
-
             Task.Factory.StartNew(() => RunAsync(_device), TaskCreationOptions.LongRunning);
-
             Task.Factory.StartNew(KeyListen, TaskCreationOptions.LongRunning);
             _actionsThread = new Thread(KeyListen);
             _actionsThread.Start();
@@ -130,45 +106,14 @@ namespace Asv.Mavlink.Shell
                     "[red]RightArrow[/]", "[red]T[/]", "[red]Q[/]", "[red]PageUp[/]", "[red]PageDown[/]")
                 .Title("[aqua]Controls[/]");
             _headerTable.AddRow("Up", $"Down", "Move Left", "Move Right", "Take Off", "Quit", "Speed Up", "Slow Down");
-            _table = new Table().AddColumns("Status", "Log").Expand().Title($@"ArduCopter");
+            _table = new Table().AddColumns("Status", "Log").Expand().Title($"{Markup.Escape(_device.Name.CurrentValue)}");
             _statusTable = new Table().AddColumns("Param", "Value").BorderColor(Color.Green);
             foreach (var item in _telemetry)
             {
                 _statusTable.AddRow($"{item.Key}", $"[aqua]{item.Value}[/]");
             }
-            
             _table.AddRow(_statusTable);
             _table.AddRow(_headerTable);
-        }
-
-        private void DevicesAwaiter(int currentDevicesCount)
-        {
-            var status = $"Wait for connection on {_connection}";
-            AnsiConsole.Status().StartAsync(status, context =>
-            {
-                context.Spinner(Spinner.Known.Bounce);
-                var isConnected = false;
-                var step = 0;
-                while (isConnected == false)
-                {
-                    if (_deviceExplorer.Devices.Count == currentDevicesCount)
-                    {
-                        Task.Delay(1000);
-                    }
-
-                    _devicesList.Clear();
-                    foreach (var device in _deviceExplorer.Devices)
-                    {
-                        step++;
-                        AnsiConsole.WriteLine($@"{step}: ${device}");
-                        _devicesList.Add(device.Value);
-                    }
-
-                    isConnected = true;
-                }
-
-                return Task.CompletedTask;
-            });
         }
 
         protected async Task<int> RunAsync(ArduVehicleClientDevice? vehicle)
@@ -179,48 +124,6 @@ namespace Asv.Mavlink.Shell
                 await Task.Delay(1000, _cancel.Token).ConfigureAwait(false);
             }
             return 0;
-        }
-
-        protected Task CreateRouter(string connection)
-        {
-            try
-            {
-                _protocol = Protocol.Create(builder =>
-                {
-                    builder.SetLog(_loggerFactory);
-                    builder.RegisterMavlinkV2Protocol();
-                    builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
-                    builder.Formatters.RegisterSimpleFormatter();
-                });
-                var router = _protocol.CreateRouter("ROUTER");
-                router.AddPort(connection);
-                router.OnRxMessage.Subscribe(message => { _logger.ZLogInformation($"{message}"); });
-                var seq = new PacketSequenceCalculator();
-                var identity = new MavlinkIdentity(255, 255);
-                _deviceExplorer = DeviceExplorer.Create(router, builder =>
-                {
-                    builder.SetLog(_protocol.LoggerFactory);
-                    builder.SetMetrics(_protocol.MeterFactory);
-                    builder.SetTimeProvider(_protocol.TimeProvider);
-                    builder.SetConfig(new ClientDeviceBrowserConfig()
-                    {
-                        DeviceTimeoutMs = 1000,
-                        DeviceCheckIntervalMs = 1000,
-                    });
-                    builder.Factories.RegisterDefaultDevices(
-                        new MavlinkIdentity(identity.SystemId, identity.ComponentId),
-                        seq,
-                        new InMemoryConfiguration());
-                });
-                return Task.CompletedTask;
-            }
-            catch (Exception e)
-            {
-                AnsiConsole.Clear();
-                AnsiConsole.WriteLine($"Unable to create router: {e.Message}");
-                AnsiConsole.Ask<string>("Press any key to exit");
-                throw;
-            }
         }
 
         private void Print(ArduVehicleClientDevice? vehicle)
@@ -234,7 +137,6 @@ namespace Asv.Mavlink.Shell
             {
                 homePosString = $"{homePos?.Longitude} {homePos?.Longitude} {homePos?.Altitude}";
             }
-
             var currentPos = position?.GlobalPosition.CurrentValue;
             if (currentPos is not null)
             {
