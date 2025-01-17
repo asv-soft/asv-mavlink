@@ -38,8 +38,8 @@ namespace Asv.Mavlink.Shell
         [
             new("Link", ""),
             new("PacketRateHz", ""),
-            new("Type", ""),
             new("SystemStatus", ""),
+            new("Type", ""),
             new("Autopilot", ""),
             new("BaseMode", ""),
             new("CustomMode", ""),
