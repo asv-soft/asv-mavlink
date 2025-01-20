@@ -136,7 +136,7 @@ public class VehicleClientDevice: MavlinkClientDevice
         yield break;
     }
 
-    protected override async Task InitAfterMicroservices(CancellationToken cancel)
+    protected override async ValueTask InitAfterMicroservices(CancellationToken cancel)
     {
         if (Microservices.FirstOrDefault(x => x is ITelemetryClient) is ITelemetryClient rtt)
         {
