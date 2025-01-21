@@ -31,19 +31,22 @@ public class DownloadMissionElements
         table.AddColumn("Mission IsCompleted");
         table.AddColumn("Mission Status");
         table.AddColumn("Mission Params");
+        table.AddColumn("Mission x,y,z");
+        table.AddColumn("Mission Frame");
         
         for (int i = 0; i < count.Result; i++)
         {
             var missionItem = mission.MissionRequestItem((ushort)i, new CancellationToken());
             var missionParams = $"{missionItem.Result.Param1}, {missionItem.Result.Param2}, {missionItem.Result.Param3}, {missionItem.Result.Param4}";
-
+            var missionСoordinates = $"{missionItem.Result.X}, {missionItem.Result.Y}, {missionItem.Result.Z}";
             table.AddRow(
                 missionItem.Id.ToString(),       
-                missionItem.GetType().Name,
-                // or missionItem.Result.MissionType.ToString(),
+                missionItem.Result.Command.ToString(),
                 missionItem.IsCompleted ? "Completed" : "Not Completed",
                 missionItem.Status.ToString(),
-                missionParams
+                missionParams,
+                missionСoordinates ,
+                missionItem.Result.Frame.ToString()
             );
         }
         
