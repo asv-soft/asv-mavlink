@@ -2,7 +2,7 @@
   "profiles": {
     "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "print-vehicle-state"
+      "commandLineArgs": "show-mission -cs tcp://127.0.0.1:7341"
     }
   }
 }

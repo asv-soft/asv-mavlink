@@ -18,7 +18,7 @@ class Program
         /*app.Add<ExampleCommand>();
         //app.Add<FtpTreeDirectory>();
         //app.Add<FtpBrowserDirectory>();
-        app.Add<DevicesInfoCommand>();
+        
         app.Add<GenerateCommand>();
         app.Add<VirtualAdsbCommand>();
         app.Add<ExportSdrData>();
@@ -26,6 +26,7 @@ class Program
         app.Add<BenchmarkBinSerializationCommand>();
         app.Add<BenchmarkSerializationPacket>();*/
         //app.Add<ShowParams>();
+        app.Add<DevicesInfoCommand>();
         app.Add<MavlinkCommand>();
         app.Add<PacketViewerCommand>();
         app.Add<CreateVirtualFtpServerCommand>();
@@ -33,6 +34,7 @@ class Program
         app.Add<TestGenerateDiagnosticsCommand>();
         app.Add<PrintVehicleState>();
         app.Add<ParamsCommand>();
+        app.Add<DownloadMissionElements>();
         await app.RunAsync(args);
     }
 }
