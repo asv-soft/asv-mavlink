@@ -4,6 +4,7 @@ using ConsoleAppFramework;
 using System.Threading;
 using Spectre.Console;
 using System;
+using System.Threading.Tasks;
 
 namespace Asv.Mavlink.Shell
 {
@@ -17,7 +18,7 @@ namespace Asv.Mavlink.Shell
         /// <param name="devicesTimeout">-dt, (in seconds) States the lifetime of a mavlink device that shows no Heartbeat</param>
         /// <param name="refreshRate">-r, (in ms) States how fast should the console be refreshed</param>
         [Command("show-mission")]
-        public int RunShowMission(
+        public async Task<int> RunShowMission(
             string connectionString,  
             uint? iterations = null, 
             uint devicesTimeout = 10, 
@@ -25,13 +26,8 @@ namespace Asv.Mavlink.Shell
         {
             ShellCommandsHelper.CreateDeviceExplorer(connectionString, out IDeviceExplorer deviceExplorer);
             
-            var device = ShellCommandsHelper.DeviceAwaiter(deviceExplorer);
-            if (device == null)
-            {
-                AnsiConsole.MarkupLine("[red]Device not found or timeout reached![/]");
-                return 1;
-            }
-            
+            var device = await Task.Run(() => ShellCommandsHelper.DeviceAwaiter(deviceExplorer));
+
             if (device.Microservices.FirstOrDefault(x => x is IMissionClient) is not IMissionClient)
                 return 0;
 
@@ -39,10 +35,10 @@ namespace Asv.Mavlink.Shell
                 return 0;
 
             var table = new Table();
-            table.AddColumn("Mission ID");
+            table.AddColumn("Mission TargetComponent");
             table.AddColumn("Mission Name");
-            table.AddColumn("Mission IsCompleted");
-            table.AddColumn("Mission Status");
+            table.AddColumn("Mission TargetSystem");
+            table.AddColumn("Mission Payload Seq");
             table.AddColumn("Mission Params");
             table.AddColumn("Mission x,y,z");
             table.AddColumn("Mission Frame");
@@ -55,44 +51,42 @@ namespace Asv.Mavlink.Shell
                 AnsiConsole.MarkupLine("[bold yellow]Program interrupted. Exiting gracefully...[/]");
             };
 
-            
-            int iterationCount = 0;
+            var iterationCount = 0;
             while (!cancellationTokenSource.Token.IsCancellationRequested)
             {
-                if (iterations.HasValue && iterationCount >= iterations.Value) break;
+                if (iterationCount >= iterations) break;
 
                 AnsiConsole.Clear();  
 
                 table.Rows.Clear(); 
 
-                var count = mission.MissionRequestCount(CancellationToken.None);
-                for (var i = 0; i < count.Result; i++)
+                var count = await Task.Run(() => mission.MissionRequestCount(cancellationTokenSource.Token), cancellationTokenSource.Token);
+                for (var i = 0; i < count; i++)
                 {
-                    var missionItem = mission.MissionRequestItem((ushort)i, CancellationToken.None);
+                    var missionItem = await Task.Run(() => mission.MissionRequestItem((ushort)i, cancellationTokenSource.Token), cancellationTokenSource.Token);
                     
-                    double x = Convert.ToDouble(missionItem.Result.X) / 1000000.0;
-                    double y = Convert.ToDouble(missionItem.Result.Y) / 1000000.0;
-                    double z = Convert.ToDouble(missionItem.Result.Z) / 1000.0;
+                    double x = MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(missionItem.X);
+                    double y = MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(missionItem.Y);
+                    double z = missionItem.Z;
 
-                   
-                    var missionParams = $"{missionItem.Result.Param1}, {missionItem.Result.Param2}, {missionItem.Result.Param3}, {missionItem.Result.Param4}";
+                    var missionParams = $"{missionItem.Param1}, {missionItem.Param2}, {missionItem.Param3}, {missionItem.Param4}";
                     var missionCoordinates = $"{x:F6}, {y:F6}, {z:F3}";
                     
                     table.AddRow(
-                        missionItem.Id.ToString(), 
-                        missionItem.Result.Command.ToString(),
-                        missionItem.IsCompleted ? "Completed" : "Not Completed",
-                        missionItem.Status.ToString(),
+                        missionItem.TargetComponent.ToString(), 
+                        missionItem.Command.ToString(),
+                        missionItem.TargetSystem.ToString(),
+                        missionItem.Seq.ToString(),
                         missionParams,
                         missionCoordinates,
-                        missionItem.Result.Frame.ToString()
+                        missionItem.Frame.ToString()
                     );
                 }
 
                 AnsiConsole.Write(table);  
                 iterationCount++;
                 
-                Thread.Sleep((int)refreshRate);
+                await Task.Delay((int)refreshRate, cancellationTokenSource.Token);
             }
 
             return 0;
