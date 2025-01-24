@@ -23,6 +23,7 @@
         <toc-element topic="ftp-tree.md"/>
         <toc-element topic="generate-fake-diagnostic-data.md"/>
     </toc-element>
+    <toc-element topic="Download-mission-item.md"/>
     <toc-element toc-title="About">
         <toc-element topic="licensing-information.md"/>
         <toc-element topic="contact-information-for-feedback.md"/>
