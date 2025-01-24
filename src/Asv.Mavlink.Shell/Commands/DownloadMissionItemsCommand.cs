@@ -55,7 +55,7 @@ namespace Asv.Mavlink.Shell
              while (!cancellationTokenSource.Token.IsCancellationRequested)
              {
                if (iterations.HasValue && iterationCount >= iterations.Value) break;
-
+                   //test test test test test test test test test test test test
                AnsiConsole.Clear();
                table.Rows.Clear();
                
