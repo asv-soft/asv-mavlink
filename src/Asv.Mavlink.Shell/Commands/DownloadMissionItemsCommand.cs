@@ -1,10 +1,10 @@
+using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Asv.IO;
 using ConsoleAppFramework;
-using System.Threading;
 using Spectre.Console;
-using System;
-using System.Threading.Tasks;
 
 namespace Asv.Mavlink.Shell
 {
@@ -15,81 +15,89 @@ namespace Asv.Mavlink.Shell
         /// </summary>
         /// <param name="connectionString">-cs, The address of the connection to the mavlink device</param>
         /// <param name="iterations">-i, States how many iterations should the program work through</param>
-        /// <param name="devicesTimeout">-dt, (in seconds) States the lifetime of a mavlink device that shows no Heartbeat</param>
         /// <param name="refreshRate">-r, (in ms) States how fast should the console be refreshed</param>
         [Command("show-mission")]
         public async Task<int> RunShowMission(
-            string connectionString,  
-            uint? iterations = null, 
-            uint devicesTimeout = 10, 
+            string connectionString,
+            uint? iterations = null,
             uint refreshRate = 9000)
         {
-            ShellCommandsHelper.CreateDeviceExplorer(connectionString, out IDeviceExplorer deviceExplorer);
+           
+           IDeviceExplorer deviceExplorer = null!;
+           try
+           {
+             ShellCommandsHelper.CreateDeviceExplorer(connectionString, out deviceExplorer);
 
-            var device = await Task.Run(() => ShellCommandsHelper.DeviceAwaiter(deviceExplorer));
+             var device = await Task.Run(() => ShellCommandsHelper.DeviceAwaiter(deviceExplorer));
 
-            if (device.Microservices.FirstOrDefault(x => x is IMissionClient) is not IMissionClient)
-                return 0;
+             if (device.Microservices.FirstOrDefault(x => x is MissionClient) is not MissionClient mission)
+               return 0;
 
-            if (device.Microservices.FirstOrDefault(x => x is MissionClient) is not MissionClient mission)
-                return 0;
+             var table = new Table();
+             table.AddColumn("Mission Payload Seq");
+             table.AddColumn("Mission TargetComponent");
+             table.AddColumn("Mission Name");
+             table.AddColumn("Mission TargetSystem");
+             table.AddColumn("Mission Params");
+             table.AddColumn("Mission x,y,z");
+             table.AddColumn("Mission Frame");
+             table.BorderColor(Color.Green4);
+             
+             var cancellationTokenSource = new CancellationTokenSource();
+             Console.CancelKeyPress += (sender, args) =>
+             {
+               args.Cancel = true; 
+               cancellationTokenSource.Cancel();
+               AnsiConsole.MarkupLine("[bold yellow]Program interrupted. Exiting gracefully...[/]");
+             };
 
-            var table = new Table();
-            table.AddColumn("Mission TargetComponent");
-            table.AddColumn("Mission Name");
-            table.AddColumn("Mission TargetSystem");
-            table.AddColumn("Mission Payload Seq");
-            table.AddColumn("Mission Params");
-            table.AddColumn("Mission x,y,z");
-            table.AddColumn("Mission Frame");
+             var iterationCount = 0;
+             while (!cancellationTokenSource.Token.IsCancellationRequested)
+             {
+               if (iterations.HasValue && iterationCount >= iterations.Value) break;
 
-            var cancellationTokenSource = new CancellationTokenSource();
-            Console.CancelKeyPress += (sender, args) =>
-            {
-                args.Cancel = true; // Prevent immediate exit
-                cancellationTokenSource.Cancel();
-                AnsiConsole.MarkupLine("[bold yellow]Program interrupted. Exiting gracefully...[/]");
-            };
+               AnsiConsole.Clear();
+               table.Rows.Clear();
+               
+               var count = await Task.Run(() => mission.MissionRequestCount(cancellationTokenSource.Token), cancellationTokenSource.Token);
+               for (var i = 0; i < count; i++)
+               {
+                   var missionItem = await Task.Run(() => mission.MissionRequestItem((ushort)i, cancellationTokenSource.Token), cancellationTokenSource.Token);
 
-            var iterationCount = 0;
-            while (!cancellationTokenSource.Token.IsCancellationRequested)
-            {
-                if (iterationCount >= iterations) break;
+                   double x = MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(missionItem.X);
+                   double y = MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(missionItem.Y);
+                   double z = missionItem.Z;
 
-                AnsiConsole.Clear();  
+                   var missionParams = $"{missionItem.Param1}, {missionItem.Param2}, {missionItem.Param3}, {missionItem.Param4}";
+                   var missionCoordinates = $"{x:F6}, {y:F6}, {z:F3}";
 
-                table.Rows.Clear(); 
+                   table.AddRow(
+                       missionItem.Seq.ToString(),
+                       missionItem.TargetComponent.ToString(),
+                       missionItem.Command.ToString(),
+                       missionItem.TargetSystem.ToString(),
+                       missionParams,
+                       missionCoordinates,
+                       missionItem.Frame.ToString()
+                   );
+               }
 
-                var count = await Task.Run(() => mission.MissionRequestCount(cancellationTokenSource.Token), cancellationTokenSource.Token);
-                for (var i = 0; i < count; i++)
-                {
-                    var missionItem = await Task.Run(() => mission.MissionRequestItem((ushort)i, cancellationTokenSource.Token), cancellationTokenSource.Token);
+               AnsiConsole.Write(table);
+               iterationCount++;
 
-                    double x = MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(missionItem.X);
-                    double y = MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(missionItem.Y);
-                    double z = missionItem.Z;
-
-                    var missionParams = $"{missionItem.Param1}, {missionItem.Param2}, {missionItem.Param3}, {missionItem.Param4}";
-                    var missionCoordinates = $"{x:F6}, {y:F6}, {z:F3}";
-
-                    table.AddRow(
-                        missionItem.TargetComponent.ToString(), 
-                        missionItem.Command.ToString(),
-                        missionItem.TargetSystem.ToString(),
-                        missionItem.Seq.ToString(),
-                        missionParams,
-                        missionCoordinates,
-                        missionItem.Frame.ToString()
-                    );
-                }
-
-                AnsiConsole.Write(table);  
-                iterationCount++;
-
-                await Task.Delay((int)refreshRate, cancellationTokenSource.Token);
-            }
-
-            return 0;
+               await Task.Delay((int)refreshRate, cancellationTokenSource.Token);
+             }
+             return 0;
+           }
+           catch (OperationCanceledException)
+           {
+               AnsiConsole.MarkupLine("[bold yellow]Operation canceled...[/]");
+               return 0;
+           }
+           finally
+           {
+               if(deviceExplorer != null) await deviceExplorer.DisposeAsync();
+           }
         }
     }
 }
