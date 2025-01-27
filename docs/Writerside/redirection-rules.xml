@@ -38,4 +38,8 @@
         <description>Created after removal of "Benchmark-serialization" from Asv Mavlink</description>
         <accepts>benchmark-serialization.html</accepts>
     </rule>
+    <rule id="26e841e2">
+        <description>Created after removal of "download-mission-items" from Asv Mavlink</description>
+        <accepts>download-mission-items.html</accepts>
+    </rule>
 </rules>

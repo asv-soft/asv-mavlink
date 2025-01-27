@@ -33,6 +33,7 @@ class Program
         app.Add<TestGenerateDiagnosticsCommand>();
         app.Add<PrintVehicleState>();
         app.Add<ParamsCommand>();
+        app.Add<DownloadMissionItemsCommand>();
         await app.RunAsync(args);
     }
 }
