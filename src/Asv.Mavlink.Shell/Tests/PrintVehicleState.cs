@@ -52,14 +52,21 @@ namespace Asv.Mavlink.Shell
         /// <summary>
         /// Vehicle state real time monitoring
         /// </summary>
-        /// <param name="connection">-connection, Connection string. Default "tcp://127.0.0.1:7341"</param>
+        /// <param name="connection">-c, Connection string. Default "tcp://127.0.0.1:7341"</param>
         [Command("print-vehicle-state")]
-        public int Run(string connection = "tcp://127.0.0.1:7341")
+        public async Task<int> Run(string connection = "tcp://127.0.0.1:7341")
         {
             ShellCommandsHelper.CreateDeviceExplorer(connection, out _deviceExplorer);
             while (_device is null)
             {
-                _device = ShellCommandsHelper.DeviceAwaiter(_deviceExplorer) as ArduCopterClientDevice;
+                var device = await ShellCommandsHelper.DeviceAwaiter(_deviceExplorer, 3000);
+                if (device is null)
+                {
+                    AnsiConsole.MarkupLine("\n[bold yellow]Program interrupted. Exiting gracefully...[/]");
+                    return 0;
+                }
+
+                _device = device as ArduCopterClientDevice;
                 if (_device is not null) continue;
                 AnsiConsole.Clear();
                 AnsiConsole.WriteLine("This command available only to MavType = 2 devices");

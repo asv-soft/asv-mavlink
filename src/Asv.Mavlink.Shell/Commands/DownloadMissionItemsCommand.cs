@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.IO;
 using ConsoleAppFramework;
 using Spectre.Console;
 
@@ -27,6 +26,7 @@ public class DownloadMissionItemsCommand
        try
        {
            RunAsync(connectionString, iterations, refreshRate).Wait();
+           AnsiConsole.MarkupLine("\n[bold yellow]Program interrupted. Exiting gracefully...[/]");
            return 0;
        }
        catch (Exception e)
@@ -51,17 +51,19 @@ public class DownloadMissionItemsCommand
        };
       
        ShellCommandsHelper.CreateDeviceExplorer(connectionString, out var deviceExplorer);
+       
+       var device = await ShellCommandsHelper.DeviceAwaiter(deviceExplorer, refreshRate);
 
-
-       var device = ShellCommandsHelper.DeviceAwaiter(deviceExplorer);
-
-
+       if (device is null)
+       {
+           return;
+       }
+       
        if (device.Microservices.FirstOrDefault(x => x is MissionClient) is not MissionClient mission)
        {
            throw new Exception("Mission client is not available.");
        }
-
-
+       
        var table = new Table();
        table.AddColumn("Mission Payload Seq");
        table.AddColumn("Mission TargetComponent");
@@ -89,8 +91,6 @@ public class DownloadMissionItemsCommand
                    await Task.Delay(TimeSpan.FromMilliseconds(refreshRate));
                }
            });
-          
-       AnsiConsole.MarkupLine("\n[bold yellow]Program interrupted. Exiting gracefully...[/]");
    }
 
 
