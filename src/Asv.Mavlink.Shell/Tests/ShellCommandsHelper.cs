@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.IO;
 using Microsoft.Extensions.Logging;
@@ -53,28 +54,39 @@ public static class ShellCommandsHelper
         }
     }
 
-    public static IClientDevice DeviceAwaiter(IDeviceExplorer deviceExplorer)
+    public static async Task<IClientDevice> DeviceAwaiter(IDeviceExplorer deviceExplorer)
     {
         var input = 0;
         var list = new List<IClientDevice>();
         var isChosen = false;
-        while (isChosen == false)
+
+        while (!isChosen)
         {
             AnsiConsole.Clear();
             var count = 1;
+            if (deviceExplorer.Devices.Count == 0)
+            {
+                await Task.Delay(2000);  
+                continue;  
+            }
+
             foreach (var device in deviceExplorer.Devices)
             {
                 AnsiConsole.WriteLine($@"{count}: {device.Key}");
                 count++;
             }
+            
+            input = AnsiConsole.Ask<int>("Select device or press 0 reload the list");
 
-            input = AnsiConsole.Ask<int>("Select device or press 0 to wait");
-            if (input == 0) continue;
-            isChosen = true;
+            if (input == 0)
+            {
+                continue; 
+            }
+            isChosen = true; 
             list.AddRange(deviceExplorer.Devices.Values);
         }
         AnsiConsole.Clear();
         return list[input - 1];
     }
-    
+
 }

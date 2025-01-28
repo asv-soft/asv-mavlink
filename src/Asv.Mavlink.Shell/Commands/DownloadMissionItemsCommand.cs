@@ -53,7 +53,7 @@ public class DownloadMissionItemsCommand
        ShellCommandsHelper.CreateDeviceExplorer(connectionString, out var deviceExplorer);
 
 
-       var device = ShellCommandsHelper.DeviceAwaiter(deviceExplorer);
+       var device = await ShellCommandsHelper.DeviceAwaiter(deviceExplorer);
 
 
        if (device.Microservices.FirstOrDefault(x => x is MissionClient) is not MissionClient mission)
