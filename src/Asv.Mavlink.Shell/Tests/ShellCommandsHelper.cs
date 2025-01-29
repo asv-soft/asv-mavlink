@@ -56,17 +56,16 @@ public static class ShellCommandsHelper
 
     public static async Task<IClientDevice> DeviceAwaiter(IDeviceExplorer deviceExplorer)
     {
-        var input = 0;
+        var input = string.Empty;
         var list = new List<IClientDevice>();
         var isChosen = false;
-
+        var count = 1;
+        
         while (!isChosen)
         {
             AnsiConsole.Clear();
-            var count = 1;
             if (deviceExplorer.Devices.Count == 0)
             {
-                await Task.Delay(2000);  
                 continue;  
             }
 
@@ -76,17 +75,27 @@ public static class ShellCommandsHelper
                 count++;
             }
             
-            input = AnsiConsole.Ask<int>("Select device or press 0 reload the list");
+            AnsiConsole.MarkupLine("Select a device by ID or press [green]'S'[/] to reload the device list");
 
-            if (input == 0)
+            input = AnsiConsole.Ask<string>("Input: ");
+
+            if (input.ToLower() == "s")
             {
                 continue; 
             }
-            isChosen = true; 
-            list.AddRange(deviceExplorer.Devices.Values);
+            
+            if (int.TryParse(input, out var deviceId) && deviceId > 0 && deviceId <= deviceExplorer.Devices.Count)
+            {
+                isChosen = true; 
+                list.AddRange(deviceExplorer.Devices.Values);
+            }
+            else
+            {
+                AnsiConsole.WriteLine("Invalid input. Please enter a valid device ID or 'S' to reload.");
+            }
         }
-        AnsiConsole.Clear();
-        return list[input - 1];
-    }
 
+        AnsiConsole.Clear();
+        return list[int.Parse(input) - 1];
+    }
 }
