@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.IO;
@@ -54,44 +55,48 @@ public static class ShellCommandsHelper
         }
     }
 
-    public static async Task<IClientDevice> DeviceAwaiter(IDeviceExplorer deviceExplorer)
+    public static async Task<IClientDevice> DeviceAwaiter(IDeviceExplorer deviceExplorer, uint refreshRate = 3000)
     {
         var input = string.Empty;
         var list = new List<IClientDevice>();
         var isChosen = false;
         var count = 1;
-        
+
         while (!isChosen)
         {
             AnsiConsole.Clear();
-            if (deviceExplorer.Devices.Count == 0)
+            var devices = deviceExplorer.Devices.ToImmutableDictionary();
+            if (devices.Count == 0)
             {
-                continue;  
+                AnsiConsole.MarkupLine("Waiting for connections...");
+                await Task.Delay(TimeSpan.FromMilliseconds(refreshRate));
+                continue;
             }
 
-            foreach (var device in deviceExplorer.Devices)
+            foreach (var device in devices)
             {
                 AnsiConsole.WriteLine($@"{count}: {device.Key}");
                 count++;
             }
-            
-            AnsiConsole.MarkupLine("Select a device by ID or press [green]'S'[/] to reload the device list");
+
+            AnsiConsole.Markup("Select a device by ID or write [green]'S'[/] to continue search");
 
             input = AnsiConsole.Ask<string>("Input: ");
 
             if (input.ToLower() == "s")
             {
-                continue; 
+                continue;
             }
-            
-            if (int.TryParse(input, out var deviceId) && deviceId > 0 && deviceId <= deviceExplorer.Devices.Count)
+
+            if (int.TryParse(input, out var deviceId) && deviceId > 0 &&
+                deviceId <= deviceExplorer.Devices.Count)
             {
-                isChosen = true; 
-                list.AddRange(deviceExplorer.Devices.Values);
+                isChosen = true;
+                list.AddRange(devices.Values);
             }
             else
             {
-                AnsiConsole.WriteLine("Invalid input. Please enter a valid device ID or 'S' to reload.");
+                AnsiConsole.WriteLine("Invalid input. Please enter a valid device ID or 'S' to search again.");
             }
         }
 

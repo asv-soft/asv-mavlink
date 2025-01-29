@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.IO;
 using ConsoleAppFramework;
 using Spectre.Console;
 
@@ -51,17 +50,14 @@ public class DownloadMissionItemsCommand
        };
       
        ShellCommandsHelper.CreateDeviceExplorer(connectionString, out var deviceExplorer);
-
-
-       var device = await ShellCommandsHelper.DeviceAwaiter(deviceExplorer);
-
-
+       
+       var device = await ShellCommandsHelper.DeviceAwaiter(deviceExplorer, refreshRate);
+       
        if (device.Microservices.FirstOrDefault(x => x is MissionClient) is not MissionClient mission)
        {
            throw new Exception("Mission client is not available.");
        }
-
-
+       
        var table = new Table();
        table.AddColumn("Mission Payload Seq");
        table.AddColumn("Mission TargetComponent");

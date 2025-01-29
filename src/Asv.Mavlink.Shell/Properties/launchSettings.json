@@ -2,7 +2,7 @@
   "profiles": {
     "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "params"
+      "commandLineArgs": "show-mission -cs tcp://127.0.0.1:5760"
     }
   }
 }
