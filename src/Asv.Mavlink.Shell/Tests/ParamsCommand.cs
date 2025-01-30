@@ -69,16 +69,24 @@ namespace Asv.Mavlink.Shell
         /// <summary>
         /// Vehicle params real time monitoring
         /// </summary>
-        /// <param name="connection">-connection, Connection string. Default "tcp://127.0.0.1:7341"</param>
+        /// <param name="connection">-c, Connection string. Default "tcp://127.0.0.1:7341"</param>
         [Command("params")]
-        public int Run(string connection = "tcp://127.0.0.1:7341")
+        public async Task<int> Run(string connection = "tcp://127.0.0.1:7341")
         {
             AnsiConsole.Status().Start("CreateRouter", ctx =>
             {
                 ctx.SpinnerStyle(Style.Plain);
                 ShellCommandsHelper.CreateDeviceExplorer(connection, out _deviceExplorer);
             });
-            var selectedDevice = ShellCommandsHelper.DeviceAwaiter(_deviceExplorer);
+            var selectedDevice = await ShellCommandsHelper.DeviceAwaiter(_deviceExplorer, 3000);
+
+            if (selectedDevice is null)
+            {
+                AnsiConsole.Clear();
+                AnsiConsole.MarkupLine("\n[bold yellow]Program interrupted. Exiting gracefully...[/]");
+                return 0;
+            }
+            
             const string status = @"Waiting for init device";
             AnsiConsole.Status().StartAsync(status, statusContext =>
             {
