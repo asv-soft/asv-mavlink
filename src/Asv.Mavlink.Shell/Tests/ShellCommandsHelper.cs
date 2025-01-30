@@ -54,7 +54,7 @@ public static class ShellCommandsHelper
         }
     }
 
-    public static async Task<IClientDevice> DeviceAwaiter(IDeviceExplorer deviceExplorer)
+    public static Task<IClientDevice> DeviceAwaiter(IDeviceExplorer deviceExplorer)
     {
         var input = string.Empty;
         var list = new List<IClientDevice>();
@@ -103,6 +103,6 @@ public static class ShellCommandsHelper
         }
         
         AnsiConsole.Clear();
-        return list[int.Parse(input) - 1];
+        return Task.FromResult(list[int.Parse(input) - 1]);
     }
 }
