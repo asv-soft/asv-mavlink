@@ -59,42 +59,49 @@ public static class ShellCommandsHelper
         var input = string.Empty;
         var list = new List<IClientDevice>();
         var isChosen = false;
-        var count = 1;
-        
+    
         while (!isChosen)
         {
+            var count = 1;
             AnsiConsole.Clear();
+        
             if (deviceExplorer.Devices.Count == 0)
             {
-                continue;  
+                AnsiConsole.WriteLine("No devices found, waiting...");
+                continue;
             }
-
+       
+            list.Clear();
             foreach (var device in deviceExplorer.Devices)
             {
-                AnsiConsole.WriteLine($@"{count}: {device.Key}");
+                list.Add(device.Value); 
+            }
+
+            foreach (var device in list)
+            {
+                AnsiConsole.WriteLine($@"{count}: {device.Id} {device.Name}");
                 count++;
             }
-            
+
             AnsiConsole.MarkupLine("Select a device by ID or press [green]'S'[/] to reload the device list");
-
+        
             input = AnsiConsole.Ask<string>("Input: ");
-
+        
             if (input.ToLower() == "s")
             {
-                continue; 
+                continue;
             }
-            
-            if (int.TryParse(input, out var deviceId) && deviceId > 0 && deviceId <= deviceExplorer.Devices.Count)
+
+            if (int.TryParse(input, out var deviceId) && deviceId > 0 && deviceId <= list.Count)
             {
                 isChosen = true; 
-                list.AddRange(deviceExplorer.Devices.Values);
             }
             else
             {
                 AnsiConsole.WriteLine("Invalid input. Please enter a valid device ID or 'S' to reload.");
             }
         }
-
+        
         AnsiConsole.Clear();
         return list[int.Parse(input) - 1];
     }
