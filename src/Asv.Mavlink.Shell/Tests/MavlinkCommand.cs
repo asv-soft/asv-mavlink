@@ -36,6 +36,7 @@ namespace Asv.Mavlink.Shell
                 builder.RegisterMavlinkV2Protocol();
             }).CreateRouter("ROUTER");
 
+            conn.AddPort(_connectionString);
             conn.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(OnPacket);
             
             while (!_cancel.IsCancellationRequested)
