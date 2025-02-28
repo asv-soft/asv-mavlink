@@ -18,7 +18,6 @@ class Program
         /*app.Add<ExampleCommand>();
         //app.Add<FtpTreeDirectory>();
         //app.Add<FtpBrowserDirectory>();
-        app.Add<DevicesInfoCommand>();
         app.Add<GenerateCommand>();
         app.Add<VirtualAdsbCommand>();
         app.Add<ExportSdrData>();
@@ -34,6 +33,7 @@ class Program
         app.Add<PrintVehicleState>();
         app.Add<ParamsCommand>();
         app.Add<DownloadMissionItemsCommand>();
+        app.Add<DevicesInfoCommand>();
         await app.RunAsync(args);
     }
 }
