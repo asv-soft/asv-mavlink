@@ -20,12 +20,12 @@ namespace Asv.Mavlink.Shell
         private bool _isDisposed;
 
         /// <summary>
-        /// Command to display information about devices in the mavlink network
+        /// Command to display information about devices in the MAVLink network.
         /// </summary>
-        /// <param name="connectionString">-cs, Connection address to the mavlink device</param>
-        /// <param name="iterations">-i, Number of iterations for the program to run</param>
-        /// <param name="devicesTimeout">-dt, (in seconds) Lifetime of a mavlink device if it does not send a Heartbeat</param>
-        /// <param name="refreshRate">-r, (in ms) Console refresh rate</param>
+        /// <param name="connectionString">-cs, Connection address to the MAVLink device.</param>
+        /// <param name="iterations">-i, Number of iterations for the program to run.</param>
+        /// <param name="devicesTimeout">-dt, Lifetime of a MAVLink device if it does not send a Heartbeat.</param>
+        /// <param name="refreshRate">-r, Console refresh rate (in ms).</param>
         [Command("devices-info")]
         public int Run(string connectionString, uint? iterations = null, uint devicesTimeout = 10, uint refreshRate = 3000)
         {
@@ -39,11 +39,12 @@ namespace Asv.Mavlink.Shell
             _refreshRate = refreshRate;
             var runForever = iterations == null;
             Console.CancelKeyPress += (_, _) => { runForever = false; };
+            
             ShellCommandsHelper.CreateDeviceExplorer(connectionString, out var deviceExplorer);
             var cancellationTokenSource = new CancellationTokenSource();
             var token = cancellationTokenSource.Token;
             var devices = deviceExplorer.Devices.ToImmutableDictionary();
-
+            
             while (!deviceExplorer.Devices.Any())
             {
                 if (devices.Count == 0)
@@ -58,17 +59,9 @@ namespace Asv.Mavlink.Shell
                     break;
                 }
             }
+
             _list = deviceExplorer.Devices.CreateView(x => new MavlinkDeviceModel(x.Value, TimeProvider.System));
-            var table = new Table();
-            table.Title("[[ [yellow]Devices Info[/] ]]");
-            table.AddColumn("Id");
-            table.AddColumn("Type");
-            table.AddColumn("System Id");
-            table.AddColumn("Component Id");
-            table.AddColumn("Mavlink Version");
-            table.AddColumn("Modes");
-            table.AddColumn("System Status");
-            table.AddColumn("Heartbeat Rate");
+            var table = CreateDeviceInfoTable();
 
             try
             {
@@ -107,7 +100,6 @@ namespace Asv.Mavlink.Shell
                     _list?.Dispose();
                     await deviceExplorer.DisposeAsync();
                     await _router.DisposeAsync();
-
                     _isDisposed = true;
                 }
             }
@@ -120,9 +112,25 @@ namespace Asv.Mavlink.Shell
                 await Task.Delay(TimeSpan.FromMilliseconds(refreshRate), token);
             }
             catch (TaskCanceledException)
-            {
-                return;
+            {  
+                return; 
             }
+        }
+
+        private Table CreateDeviceInfoTable()
+        {
+            var table = new Table();
+            table.Title("[[ [yellow]Devices Info[/] ]]");
+            table.AddColumn("Id");
+            table.AddColumn("Type");
+            table.AddColumn("System Id");
+            table.AddColumn("Component Id");
+            table.AddColumn("Mavlink Version");
+            table.AddColumn("Modes");
+            table.AddColumn("System Status");
+            table.AddColumn("Heartbeat Rate");
+
+            return table;
         }
 
         private void RenderRows(Table table, ISynchronizedView<KeyValuePair<DeviceId, IClientDevice>, MavlinkDeviceModel> devices)
@@ -165,19 +173,17 @@ namespace Asv.Mavlink.Shell
                         return;
                     }
 
-                    if (info.Microservices.FirstOrDefault(x => x is IHeartbeatClient) is not IHeartbeatClient
-                        heartbeatClient)
+                    if (info.Microservices.FirstOrDefault(x => x is IHeartbeatClient) is not IHeartbeatClient heartbeatClient)
                     {
                         return;
                     }
                     
                     IsInitialized.OnNext(true);
-                    
+
                     DeviceFullId = heartbeatClient.Identity.Target;
                     Type = info.Id.DeviceClass;
                     SystemId = heartbeatClient?.Identity.Target.SystemId ?? 0;
                     ComponentId = heartbeatClient?.Identity.Target.ComponentId ?? 0;
-
                     MavlinkVersion = heartbeatClient?.RawHeartbeat?.CurrentValue?.MavlinkVersion ?? 0;
 
                     RateText = "0.0 Hz";
