@@ -34,6 +34,7 @@ class Program
         app.Add<PrintVehicleState>();
         app.Add<ParamsCommand>();
         app.Add<DownloadMissionItemsCommand>();
+        app.Add<DevicesInfoCommand>();
         await app.RunAsync(args);
     }
 }
