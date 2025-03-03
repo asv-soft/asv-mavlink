@@ -26,7 +26,7 @@ public sealed class ParamExtItem: IDisposable,IAsyncDisposable
         Index = payload.ParamIndex;
         _isSynced = new BindableReactiveProperty<bool>(true);
         _value = new BindableReactiveProperty<MavParamExtValue>(_remoteValue = MavParamExtHelper.CreateFromBuffer(payload.ParamValue, payload.ParamType));
-        _sub1 = _value.Subscribe(v => _isSynced.OnNext(_remoteValue == v));
+        _sub1 = _value.Subscribe(v => _isSynced.Value = _remoteValue == v);
     }
     
     public ParamExtDescription Info { get; }
@@ -55,7 +55,7 @@ public sealed class ParamExtItem: IDisposable,IAsyncDisposable
         try
         {
             _remoteValue = MavParamExtHelper.CreateFromBuffer(payload.ParamValue, payload.ParamType);
-            _value.OnNext(_remoteValue);
+            _value.Value = _remoteValue;
         }
         catch (Exception)
         {

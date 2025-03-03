@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.IO;
 using Microsoft.Extensions.Logging;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -47,6 +48,7 @@ public class SdrClientDevice : MavlinkClientDevice
     public const string DeviceClass = "SDR";
 
     private readonly SdrClientDeviceConfig _config;
+    private readonly ILogger<SdrClientDevice> _logger;
 
     public SdrClientDevice(
         MavlinkClientDeviceId identity, 
@@ -55,7 +57,7 @@ public class SdrClientDevice : MavlinkClientDevice
         IMavlinkContext core) 
         : base(identity,config,extenders,core)
     {
-        core.LoggerFactory.CreateLogger<SdrClientDevice>();
+        _logger = core.LoggerFactory.CreateLogger<SdrClientDevice>();
         _config = config;
         
     }
@@ -63,10 +65,18 @@ public class SdrClientDevice : MavlinkClientDevice
     protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices(
         [EnumeratorCancellation] CancellationToken cancel)
     {
+        IHeartbeatClient? hb = null;
         await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
         {
+            if (microservice is IHeartbeatClient heartbeat)
+            {
+                hb = heartbeat;
+            }
             yield return microservice;
+            
         }
+        
+        
         yield return new StatusTextClient(Identity, Core);
         var paramBase = new ParamsClient(Identity, _config.Params, Core);
         yield return paramBase;
@@ -75,10 +85,17 @@ public class SdrClientDevice : MavlinkClientDevice
         yield return command;
         var sdrBase = new AsvSdrClient(Identity, Core);
         yield return sdrBase;
-        yield return new AsvSdrClientEx(sdrBase,Heartbeat, command,_config.SdrEx);
         var missionBase = new MissionClient(Identity, _config.Missions, Core);
         yield return missionBase;
         yield return new MissionClientEx(missionBase, _config.MissionsEx);
+        
+        if (hb == null)
+        {
+            _logger.ZLogWarning($"{Id} {nameof(HeartbeatClient)} microservice not found");
+            yield break;
+        }
+        yield return new AsvSdrClientEx(sdrBase,hb, command,_config.SdrEx);
+        
         
     }
 

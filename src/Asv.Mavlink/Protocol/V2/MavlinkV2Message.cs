@@ -55,7 +55,7 @@ public abstract class MavlinkV2Message : MavlinkMessage
         BinSerialize.WriteByte(ref fillBuffer, Sequence);
         BinSerialize.WriteByte(ref fillBuffer, SystemId);
         BinSerialize.WriteByte(ref fillBuffer, ComponentId);
-        BinSerialize.WriteByte(ref fillBuffer, (byte)((Id) & 0xFF));
+        BinSerialize.WriteByte(ref fillBuffer, (byte)(Id & 0xFF));
         BinSerialize.WriteByte(ref fillBuffer, (byte)((Id >> 8) & 0xFF));
         BinSerialize.WriteByte(ref fillBuffer, (byte)((Id >> 16) & 0xFF));
         var crcBuff = buffer.Slice(1,9);

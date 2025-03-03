@@ -44,6 +44,7 @@ namespace Asv.Mavlink
         private readonly IDisposable _obs2;
         private readonly IDisposable? _obs3;
         private readonly ITimer? _obs4;
+        private readonly ITimer _obs5;
 
 
         public HeartbeatClient(MavlinkClientIdentity identity, HeartbeatClientConfig config, IMavlinkContext core)
@@ -80,7 +81,7 @@ namespace Asv.Mavlink
             
             
             _linkQuality = new ReactiveProperty<double>();
-            _timeProvider
+            _obs5 = _timeProvider
                 .CreateTimer(CheckConnection, null, CheckConnectionDelay, CheckConnectionDelay);
             
             // we need skip first packet because it's not a real packet
@@ -145,8 +146,8 @@ namespace Asv.Mavlink
                 seq = last + byte.MaxValue - first + 2;
             }
             Debug.Assert(seq != 0);
-            _valueBuffer.PushFront(Math.Min(1, Math.Round(((double)count) / seq,2)));
-            _linkQuality.OnNext(_valueBuffer.Average());
+            _valueBuffer.PushFront(Math.Min(1, Math.Round((double)count / seq,2)));
+            _linkQuality.Value = _valueBuffer.Average();
         }
 
         public ushort FullId { get; }
@@ -157,15 +158,16 @@ namespace Asv.Mavlink
 
         private void CheckConnection(object? state)
         {
+            if (IsDisposed) return;
             CalculateLinqQuality();
             var rate = _rxRate.Calculate(Interlocked.Read(ref _totalRateCounter));
-            _packetRate.OnNext(rate);
+            _packetRate.Value = rate;
             if (_timeProvider.GetElapsedTime(_lastHeartbeat) <= _heartBeatTimeoutMs) return;
             _link.Downgrade();
             if (_link.State.CurrentValue == LinkState.Disconnected)
             {
-                _packetRate.OnNext(0);
-                _linkQuality.OnNext(0);
+                _packetRate.Value = 0;
+                _linkQuality.Value = 0;
             }
         }
 
@@ -183,6 +185,7 @@ namespace Asv.Mavlink
                 _obs2.Dispose();
                 _obs3?.Dispose();
                 _obs4?.Dispose();
+                _obs5.Dispose();
             }
 
             base.Dispose(disposing);
@@ -198,6 +201,7 @@ namespace Asv.Mavlink
             await CastAndDispose(_obs2).ConfigureAwait(false);
             if (_obs3 != null) await CastAndDispose(_obs3).ConfigureAwait(false);
             if (_obs4 != null) await _obs4.DisposeAsync().ConfigureAwait(false);
+            await _obs5.DisposeAsync().ConfigureAwait(false);
 
             await base.DisposeAsyncCore().ConfigureAwait(false);
 

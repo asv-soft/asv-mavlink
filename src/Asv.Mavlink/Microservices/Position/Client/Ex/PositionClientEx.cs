@@ -125,10 +125,10 @@ public sealed class PositionClientEx : MavlinkMicroserviceClient, IPositionClien
         var lastBin = Interlocked.Read(ref _lastArmedTime);
         if (lastBin == 0)
         {
-            _armedTime.OnNext(TimeSpan.Zero);
+            _armedTime.Value = TimeSpan.Zero;
             return;
         }
-        _armedTime.OnNext(Base.Core.TimeProvider.GetElapsedTime(lastBin));
+        _armedTime.Value = Base.Core.TimeProvider.GetElapsedTime(lastBin);
     }
 
     public IPositionClient Base { get; }
@@ -194,7 +194,7 @@ public sealed class PositionClientEx : MavlinkMicroserviceClient, IPositionClien
             (float)location.Longitude,
             (float)location.Altitude,  
             cancel).ConfigureAwait(false);
-        _roi.OnNext(location);
+        _roi.Value = location;
     }
 
     public async Task ClearRoi(CancellationToken cancel)
@@ -209,7 +209,7 @@ public sealed class PositionClientEx : MavlinkMicroserviceClient, IPositionClien
             0, 
             0, 
             cancel).ConfigureAwait(false);
-        _roi.OnNext(null);
+        _roi.Value = null;
     }
 
     public ValueTask SetTarget(GeoPoint point, CancellationToken cancel)

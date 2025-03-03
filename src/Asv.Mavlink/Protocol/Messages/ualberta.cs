@@ -306,7 +306,7 @@ namespace Asv.Mavlink.Ualberta
             {
                 Gyro[i] = BinSerialize.ReadUShort(ref buffer);
             }
-            arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/42 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/5 - Math.Max(0,(/*PayloadByteSize*/42 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/);
             Pitch = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {

@@ -43,7 +43,7 @@ public class AsvRsgaClientTest : ClientTestBase<AsvRsgaClient>, IDisposable
 
         var t2 = Task.Factory.StartNew(() =>
         {
-            Time.Advance(TimeSpan.FromMilliseconds((timeout * attempts) + 1));
+            Time.Advance(TimeSpan.FromMilliseconds(timeout * attempts + 1));
         });
         
         //Assert

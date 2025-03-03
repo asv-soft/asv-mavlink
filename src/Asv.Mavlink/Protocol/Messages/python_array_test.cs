@@ -102,7 +102,7 @@ namespace Asv.Mavlink.PythonArrayTest
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/33 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/33 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             ArU32 = new uint[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -230,7 +230,7 @@ namespace Asv.Mavlink.PythonArrayTest
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/16 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/16 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             ArU32 = new uint[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -307,7 +307,7 @@ namespace Asv.Mavlink.PythonArrayTest
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/17 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/17 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             ArU32 = new uint[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -391,7 +391,7 @@ namespace Asv.Mavlink.PythonArrayTest
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/17 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/17 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             ArU32 = new uint[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -475,7 +475,7 @@ namespace Asv.Mavlink.PythonArrayTest
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/10 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/5 - Math.Max(0,(/*PayloadByteSize*/10 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             C1 = new char[arraySize];
             unsafe
             {
@@ -644,7 +644,7 @@ namespace Asv.Mavlink.PythonArrayTest
             {
                 ArI8[i] = (sbyte)BinSerialize.ReadByte(ref buffer);
             }
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/91 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/91 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             ArC = new char[arraySize];
             unsafe
             {
@@ -878,7 +878,7 @@ namespace Asv.Mavlink.PythonArrayTest
             {
                 ArI8[i] = (sbyte)BinSerialize.ReadByte(ref buffer);
             }
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/84 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/84 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             ArC = new char[arraySize];
             unsafe
             {
@@ -1048,7 +1048,7 @@ namespace Asv.Mavlink.PythonArrayTest
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/2 - Math.Max(0,((/*PayloadByteSize*/24 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/2 - Math.Max(0,(/*PayloadByteSize*/24 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/);
             ArD = new double[arraySize];
             for(var i=0;i<arraySize;i++)
             {

@@ -1171,7 +1171,7 @@ namespace Asv.Mavlink.Asluav
             MotorRpm = BinSerialize.ReadFloat(ref buffer);
             LedStatus = (byte)BinSerialize.ReadByte(ref buffer);
             SatcomStatus = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/8 - Math.Max(0,((/*PayloadByteSize*/14 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/8 - Math.Max(0,(/*PayloadByteSize*/14 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             ServoStatus = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {

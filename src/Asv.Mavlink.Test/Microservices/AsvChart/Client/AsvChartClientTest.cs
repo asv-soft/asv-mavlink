@@ -45,7 +45,7 @@ public class AsvChartClientTest : ClientTestBase<AsvChartClient>, IDisposable
 
         var t2 = Task.Factory.StartNew(() =>
         {
-            Time.Advance(TimeSpan.FromMilliseconds((_config.MaxTimeToWaitForResponseForListMs * attempts) + 1));
+            Time.Advance(TimeSpan.FromMilliseconds(_config.MaxTimeToWaitForResponseForListMs * attempts + 1));
         });
         
         //Assert

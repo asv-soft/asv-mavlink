@@ -40,7 +40,7 @@ public class PacketCounter(byte initialCounter = 0)
             else
             {
                 // Учитываем переполнение через 255
-                missedPackets = (256 - initialCounter) + (newCounter - 1);
+                missedPackets = 256 - initialCounter + (newCounter - 1);
             }
         }
 

@@ -13,7 +13,7 @@ class Program
         Console.InputEncoding = Encoding.UTF8;
         Console.OutputEncoding = Encoding.UTF8;
         Console.BackgroundColor = ConsoleColor.Black;
-
+        
         var app = ConsoleApp.Create();
         /*app.Add<ExampleCommand>();
         //app.Add<FtpTreeDirectory>();

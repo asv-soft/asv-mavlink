@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Cfg;
 using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.Minimal;
@@ -135,8 +134,11 @@ namespace Asv.Mavlink.Shell
 
         private void Print(ArduVehicleClientDevice? vehicle)
         {
-            var heartbeat = vehicle.Heartbeat.RawHeartbeat.CurrentValue;
-            var position = vehicle.Microservices.FirstOrDefault(m => m is IPositionClient) as PositionClient;
+            if (vehicle is null) return;
+            if (vehicle.GetMicroservice<IHeartbeatClient>() is null) return;
+            
+            var heartbeat = vehicle.GetMicroservice<IHeartbeatClient>()?.RawHeartbeat.CurrentValue;
+            var position = vehicle.GetMicroservice<IPositionClient>();
             var homePos = position?.Home.CurrentValue;
             var homePosString = "Not Accessible";
             var currentPosString = homePosString;

@@ -748,7 +748,7 @@ namespace Asv.Mavlink.Storm32
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/36 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/36 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             Q = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -1458,7 +1458,7 @@ namespace Asv.Mavlink.Storm32
             var payloadSize = buffer.Length;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);
             Count = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/240 - Math.Max(0,((/*PayloadByteSize*/245 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/240 - Math.Max(0,(/*PayloadByteSize*/245 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             PacketBuf = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -1554,7 +1554,7 @@ namespace Asv.Mavlink.Storm32
             ParamIndexFirst = BinSerialize.ReadUShort(ref buffer);
             Flags = BinSerialize.ReadUShort(ref buffer);
             ParamArrayLen = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/248 - Math.Max(0,((/*PayloadByteSize*/255 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/248 - Math.Max(0,(/*PayloadByteSize*/255 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             PacketBuf = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {

@@ -8920,7 +8920,7 @@ namespace Asv.Mavlink.Common
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             ControlRequest = (byte)BinSerialize.ReadByte(ref buffer);
             Version = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/25 - Math.Max(0,((/*PayloadByteSize*/28 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/25 - Math.Max(0,(/*PayloadByteSize*/28 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Passkey = new char[arraySize];
             unsafe
             {
@@ -9105,7 +9105,7 @@ namespace Asv.Mavlink.Common
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/32 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/32 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Key = new char[arraySize];
             unsafe
             {
@@ -9421,7 +9421,7 @@ namespace Asv.Mavlink.Common
             ParamIndex = BinSerialize.ReadShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/20 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/20 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             ParamId = new char[arraySize];
             unsafe
             {
@@ -9605,7 +9605,7 @@ namespace Asv.Mavlink.Common
             ParamValue = BinSerialize.ReadFloat(ref buffer);
             ParamCount = BinSerialize.ReadUShort(ref buffer);
             ParamIndex = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/25 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/25 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             ParamId = new char[arraySize];
             unsafe
             {
@@ -9727,7 +9727,7 @@ namespace Asv.Mavlink.Common
             ParamValue = BinSerialize.ReadFloat(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/23 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/23 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             ParamId = new char[arraySize];
             unsafe
             {
@@ -10042,7 +10042,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             SatellitesVisible = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/101 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/20 - Math.Max(0,(/*PayloadByteSize*/101 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             SatellitePrn = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -12915,7 +12915,7 @@ namespace Asv.Mavlink.Common
             ParamIndex = BinSerialize.ReadShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/37 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/37 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             ParamId = new char[arraySize];
             unsafe
             {
@@ -13393,7 +13393,7 @@ namespace Asv.Mavlink.Common
             Rollspeed = BinSerialize.ReadFloat(ref buffer);
             Pitchspeed = BinSerialize.ReadFloat(ref buffer);
             Yawspeed = BinSerialize.ReadFloat(ref buffer);
-            arraySize = /*ArrayLength*/9 - Math.Max(0,((/*PayloadByteSize*/72 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/9 - Math.Max(0,(/*PayloadByteSize*/72 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             Covariance = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -13639,7 +13639,7 @@ namespace Asv.Mavlink.Common
             Vx = BinSerialize.ReadFloat(ref buffer);
             Vy = BinSerialize.ReadFloat(ref buffer);
             Vz = BinSerialize.ReadFloat(ref buffer);
-            arraySize = /*ArrayLength*/36 - Math.Max(0,((/*PayloadByteSize*/181 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/36 - Math.Max(0,(/*PayloadByteSize*/181 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             Covariance = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -13791,7 +13791,7 @@ namespace Asv.Mavlink.Common
             Ax = BinSerialize.ReadFloat(ref buffer);
             Ay = BinSerialize.ReadFloat(ref buffer);
             Az = BinSerialize.ReadFloat(ref buffer);
-            arraySize = /*ArrayLength*/45 - Math.Max(0,((/*PayloadByteSize*/225 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/45 - Math.Max(0,(/*PayloadByteSize*/225 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             Covariance = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -15670,7 +15670,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/51 - payloadSize - /*ExtendedFieldsLength*/12)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/51 - payloadSize - /*ExtendedFieldsLength*/12)/4 /*FieldTypeByteSize*/);
             Q = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -15825,7 +15825,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/37 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/37 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             Q = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -17251,7 +17251,7 @@ namespace Asv.Mavlink.Common
             var payloadSize = buffer.Length;
             TimeUsec = BinSerialize.ReadULong(ref buffer);
             Flags = BinSerialize.ReadULong(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/81 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/81 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             Controls = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -18896,7 +18896,7 @@ namespace Asv.Mavlink.Common
             TargetNetwork = (byte)BinSerialize.ReadByte(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/251 - Math.Max(0,((/*PayloadByteSize*/254 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/251 - Math.Max(0,(/*PayloadByteSize*/254 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Payload = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -19508,7 +19508,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeUsec = BinSerialize.ReadULong(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/64 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/64 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             AttitudeQuaternion = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -20116,7 +20116,7 @@ namespace Asv.Mavlink.Common
             Ofs = BinSerialize.ReadUInt(ref buffer);
             Id = BinSerialize.ReadUShort(ref buffer);
             Count = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/90 - Math.Max(0,((/*PayloadByteSize*/97 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/90 - Math.Max(0,(/*PayloadByteSize*/97 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -20358,7 +20358,7 @@ namespace Asv.Mavlink.Common
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/110 - Math.Max(0,((/*PayloadByteSize*/113 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/110 - Math.Max(0,(/*PayloadByteSize*/113 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -20754,7 +20754,7 @@ namespace Asv.Mavlink.Common
             Device = (SerialControlDev)BinSerialize.ReadByte(ref buffer);
             Flags = (SerialControlFlag)BinSerialize.ReadByte(ref buffer);
             Count = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/70 - Math.Max(0,((/*PayloadByteSize*/81 - payloadSize - /*ExtendedFieldsLength*/2)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/70 - Math.Max(0,(/*PayloadByteSize*/81 - payloadSize - /*ExtendedFieldsLength*/2)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -21454,7 +21454,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             Seqnr = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/253 - Math.Max(0,((/*PayloadByteSize*/255 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/253 - Math.Max(0,(/*PayloadByteSize*/255 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -21799,7 +21799,7 @@ namespace Asv.Mavlink.Common
             Lat = BinSerialize.ReadInt(ref buffer);
             Lon = BinSerialize.ReadInt(ref buffer);
             GridSpacing = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/43 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/43 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/);
             Data = new short[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -22185,7 +22185,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeUsec = BinSerialize.ReadULong(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/120 - payloadSize - /*ExtendedFieldsLength*/84)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/120 - payloadSize - /*ExtendedFieldsLength*/84)/4 /*FieldTypeByteSize*/);
             Q = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -22310,7 +22310,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeUsec = BinSerialize.ReadULong(ref buffer);
-            arraySize = /*ArrayLength*/8 - Math.Max(0,((/*PayloadByteSize*/43 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/8 - Math.Max(0,(/*PayloadByteSize*/43 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             Controls = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -22416,7 +22416,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeUsec = BinSerialize.ReadULong(ref buffer);
-            arraySize = /*ArrayLength*/8 - Math.Max(0,((/*PayloadByteSize*/41 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/8 - Math.Max(0,(/*PayloadByteSize*/41 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             Controls = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -22622,7 +22622,7 @@ namespace Asv.Mavlink.Common
             var payloadSize = buffer.Length;
             RequestId = (byte)BinSerialize.ReadByte(ref buffer);
             UriType = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/120 - Math.Max(0,((/*PayloadByteSize*/243 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/120 - Math.Max(0,(/*PayloadByteSize*/243 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Uri = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -22854,7 +22854,7 @@ namespace Asv.Mavlink.Common
             {
                 Acc[i] = BinSerialize.ReadFloat(ref buffer);
             }
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/93 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/93 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             AttitudeQ = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -23054,7 +23054,7 @@ namespace Asv.Mavlink.Common
             {
                 PosVariance[i] = BinSerialize.ReadFloat(ref buffer);
             }
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/100 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/100 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             Q = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -23253,7 +23253,7 @@ namespace Asv.Mavlink.Common
             CurrentConsumed = BinSerialize.ReadInt(ref buffer);
             EnergyConsumed = BinSerialize.ReadInt(ref buffer);
             Temperature = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/10 - Math.Max(0,((/*PayloadByteSize*/54 - payloadSize - /*ExtendedFieldsLength*/18)/2 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/10 - Math.Max(0,(/*PayloadByteSize*/54 - payloadSize - /*ExtendedFieldsLength*/18)/2 /*FieldTypeByteSize*/);
             Voltages = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -23454,7 +23454,7 @@ namespace Asv.Mavlink.Common
             BoardVersion = BinSerialize.ReadUInt(ref buffer);
             VendorId = BinSerialize.ReadUShort(ref buffer);
             ProductId = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/8 - Math.Max(0,((/*PayloadByteSize*/78 - payloadSize - /*ExtendedFieldsLength*/18)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/8 - Math.Max(0,(/*PayloadByteSize*/78 - payloadSize - /*ExtendedFieldsLength*/18)/1 /*FieldTypeByteSize*/);
             FlightCustomVersion = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -24804,7 +24804,7 @@ namespace Asv.Mavlink.Common
             var payloadSize = buffer.Length;
             Flags = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/180 - Math.Max(0,((/*PayloadByteSize*/182 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/180 - Math.Max(0,(/*PayloadByteSize*/182 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -25545,7 +25545,7 @@ namespace Asv.Mavlink.Common
             X = BinSerialize.ReadFloat(ref buffer);
             Y = BinSerialize.ReadFloat(ref buffer);
             Z = BinSerialize.ReadFloat(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/60 - payloadSize - /*ExtendedFieldsLength*/8)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/60 - payloadSize - /*ExtendedFieldsLength*/8)/4 /*FieldTypeByteSize*/);
             Q = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -25716,7 +25716,7 @@ namespace Asv.Mavlink.Common
             X = BinSerialize.ReadFloat(ref buffer);
             Y = BinSerialize.ReadFloat(ref buffer);
             Z = BinSerialize.ReadFloat(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/61 - payloadSize - /*ExtendedFieldsLength*/8)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/61 - payloadSize - /*ExtendedFieldsLength*/8)/4 /*FieldTypeByteSize*/);
             Q = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -26033,7 +26033,7 @@ namespace Asv.Mavlink.Common
             Flags = (AdsbFlags)BinSerialize.ReadUShort(ref buffer);
             Squawk = BinSerialize.ReadUShort(ref buffer);
             AltitudeType = (AdsbAltitudeType)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/9 - Math.Max(0,((/*PayloadByteSize*/38 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/9 - Math.Max(0,(/*PayloadByteSize*/38 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Callsign = new char[arraySize];
             unsafe
             {
@@ -26314,7 +26314,7 @@ namespace Asv.Mavlink.Common
             TargetNetwork = (byte)BinSerialize.ReadByte(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/249 - Math.Max(0,((/*PayloadByteSize*/254 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/249 - Math.Max(0,(/*PayloadByteSize*/254 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Payload = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -26420,7 +26420,7 @@ namespace Asv.Mavlink.Common
             Address = BinSerialize.ReadUShort(ref buffer);
             Ver = (byte)BinSerialize.ReadByte(ref buffer);
             Type = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/36 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/36 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Value = new sbyte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -26522,7 +26522,7 @@ namespace Asv.Mavlink.Common
             X = BinSerialize.ReadFloat(ref buffer);
             Y = BinSerialize.ReadFloat(ref buffer);
             Z = BinSerialize.ReadFloat(ref buffer);
-            arraySize = /*ArrayLength*/10 - Math.Max(0,((/*PayloadByteSize*/30 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/10 - Math.Max(0,(/*PayloadByteSize*/30 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Name = new char[arraySize];
             unsafe
             {
@@ -26638,7 +26638,7 @@ namespace Asv.Mavlink.Common
             var payloadSize = buffer.Length;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);
             Value = BinSerialize.ReadFloat(ref buffer);
-            arraySize = /*ArrayLength*/10 - Math.Max(0,((/*PayloadByteSize*/18 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/10 - Math.Max(0,(/*PayloadByteSize*/18 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Name = new char[arraySize];
             unsafe
             {
@@ -26742,7 +26742,7 @@ namespace Asv.Mavlink.Common
             var payloadSize = buffer.Length;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);
             Value = BinSerialize.ReadInt(ref buffer);
-            arraySize = /*ArrayLength*/10 - Math.Max(0,((/*PayloadByteSize*/18 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/10 - Math.Max(0,(/*PayloadByteSize*/18 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Name = new char[arraySize];
             unsafe
             {
@@ -26846,7 +26846,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             Severity = (MavSeverity)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/50 - Math.Max(0,((/*PayloadByteSize*/54 - payloadSize - /*ExtendedFieldsLength*/3)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/50 - Math.Max(0,(/*PayloadByteSize*/54 - payloadSize - /*ExtendedFieldsLength*/3)/1 /*FieldTypeByteSize*/);
             Text = new char[arraySize];
             unsafe
             {
@@ -27043,7 +27043,7 @@ namespace Asv.Mavlink.Common
             InitialTimestamp = BinSerialize.ReadULong(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/42 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/42 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             SecretKey = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -27221,7 +27221,7 @@ namespace Asv.Mavlink.Common
             var payloadSize = buffer.Length;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/30 - Math.Max(0,((/*PayloadByteSize*/232 - payloadSize - /*ExtendedFieldsLength*/200)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/30 - Math.Max(0,(/*PayloadByteSize*/232 - payloadSize - /*ExtendedFieldsLength*/200)/1 /*FieldTypeByteSize*/);
             Tune = new char[arraySize];
             unsafe
             {
@@ -27383,7 +27383,7 @@ namespace Asv.Mavlink.Common
                 ModelName[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
             LensId = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/140 - Math.Max(0,((/*PayloadByteSize*/236 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/140 - Math.Max(0,(/*PayloadByteSize*/236 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/);
             CamDefinitionUri = new char[arraySize];
             unsafe
             {
@@ -27976,7 +27976,7 @@ namespace Asv.Mavlink.Common
             ImageIndex = BinSerialize.ReadInt(ref buffer);
             CameraId = (byte)BinSerialize.ReadByte(ref buffer);
             CaptureResult = (sbyte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/205 - Math.Max(0,((/*PayloadByteSize*/255 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/205 - Math.Max(0,(/*PayloadByteSize*/255 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             FileUrl = new char[arraySize];
             unsafe
             {
@@ -28324,7 +28324,7 @@ namespace Asv.Mavlink.Common
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
             Length = (byte)BinSerialize.ReadByte(ref buffer);
             FirstMessageOffset = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/249 - Math.Max(0,((/*PayloadByteSize*/255 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/249 - Math.Max(0,(/*PayloadByteSize*/255 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -28440,7 +28440,7 @@ namespace Asv.Mavlink.Common
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
             Length = (byte)BinSerialize.ReadByte(ref buffer);
             FirstMessageOffset = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/249 - Math.Max(0,((/*PayloadByteSize*/255 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/249 - Math.Max(0,(/*PayloadByteSize*/255 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -28657,7 +28657,7 @@ namespace Asv.Mavlink.Common
             }
             buffer = buffer.Slice(arraySize);
            
-            arraySize = /*ArrayLength*/160 - Math.Max(0,((/*PayloadByteSize*/213 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/160 - Math.Max(0,(/*PayloadByteSize*/213 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Uri = new char[arraySize];
             unsafe
             {
@@ -28956,7 +28956,7 @@ namespace Asv.Mavlink.Common
             LatImage = BinSerialize.ReadInt(ref buffer);
             LonImage = BinSerialize.ReadInt(ref buffer);
             AltImage = BinSerialize.ReadInt(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/52 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/52 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             Q = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -29628,7 +29628,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             Flags = (GimbalManagerFlags)BinSerialize.ReadUInt(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/35 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/35 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             Q = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -29779,7 +29779,7 @@ namespace Asv.Mavlink.Common
             YawMax = BinSerialize.ReadFloat(ref buffer);
             CapFlags = (GimbalDeviceCapFlags)BinSerialize.ReadUShort(ref buffer);
             CustomCapFlags = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/145 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/145 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/);
             VendorName = new char[arraySize];
             unsafe
             {
@@ -30019,7 +30019,7 @@ namespace Asv.Mavlink.Common
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/32 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/32 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             Q = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -30163,7 +30163,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/49 - payloadSize - /*ExtendedFieldsLength*/9)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/49 - payloadSize - /*ExtendedFieldsLength*/9)/4 /*FieldTypeByteSize*/);
             Q = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -30334,7 +30334,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeBootUs = BinSerialize.ReadULong(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/57 - payloadSize - /*ExtendedFieldsLength*/4)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/57 - payloadSize - /*ExtendedFieldsLength*/4)/4 /*FieldTypeByteSize*/);
             Q = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -30743,7 +30743,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeUsec = BinSerialize.ReadULong(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/46 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/46 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             ErrorCount = new uint[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -30896,7 +30896,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeUsec = BinSerialize.ReadULong(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/57 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/57 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             Rpm = new int[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -31029,7 +31029,7 @@ namespace Asv.Mavlink.Common
             }
             buffer = buffer.Slice(arraySize);
            
-            arraySize = /*ArrayLength*/64 - Math.Max(0,((/*PayloadByteSize*/98 - payloadSize - /*ExtendedFieldsLength*/2)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/64 - Math.Max(0,(/*PayloadByteSize*/98 - payloadSize - /*ExtendedFieldsLength*/2)/1 /*FieldTypeByteSize*/);
             Password = new char[arraySize];
             unsafe
             {
@@ -31193,7 +31193,7 @@ namespace Asv.Mavlink.Common
             }
             buffer = buffer.Slice(arraySize);
            
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/58 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/20 - Math.Max(0,(/*PayloadByteSize*/58 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Name = new char[arraySize];
             unsafe
             {
@@ -31501,7 +31501,7 @@ namespace Asv.Mavlink.Common
             TimeUsec = BinSerialize.ReadULong(ref buffer);
             UptimeSec = BinSerialize.ReadUInt(ref buffer);
             SwVcsCommit = BinSerialize.ReadUInt(ref buffer);
-            arraySize = /*ArrayLength*/80 - Math.Max(0,((/*PayloadByteSize*/116 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/80 - Math.Max(0,(/*PayloadByteSize*/116 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Name = new char[arraySize];
             unsafe
             {
@@ -31656,7 +31656,7 @@ namespace Asv.Mavlink.Common
             ParamIndex = BinSerialize.ReadShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/20 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/20 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             ParamId = new char[arraySize];
             unsafe
             {
@@ -31850,7 +31850,7 @@ namespace Asv.Mavlink.Common
             }
             buffer = buffer.Slice(arraySize);
            
-            arraySize = /*ArrayLength*/128 - Math.Max(0,((/*PayloadByteSize*/149 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/128 - Math.Max(0,(/*PayloadByteSize*/149 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             ParamValue = new char[arraySize];
             unsafe
             {
@@ -31990,7 +31990,7 @@ namespace Asv.Mavlink.Common
             }
             buffer = buffer.Slice(arraySize);
            
-            arraySize = /*ArrayLength*/128 - Math.Max(0,((/*PayloadByteSize*/147 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/128 - Math.Max(0,(/*PayloadByteSize*/147 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             ParamValue = new char[arraySize];
             unsafe
             {
@@ -32127,7 +32127,7 @@ namespace Asv.Mavlink.Common
             }
             buffer = buffer.Slice(arraySize);
            
-            arraySize = /*ArrayLength*/128 - Math.Max(0,((/*PayloadByteSize*/146 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/128 - Math.Max(0,(/*PayloadByteSize*/146 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             ParamValue = new char[arraySize];
             unsafe
             {
@@ -32254,7 +32254,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeUsec = BinSerialize.ReadULong(ref buffer);
-            arraySize = /*ArrayLength*/72 - Math.Max(0,((/*PayloadByteSize*/167 - payloadSize - /*ExtendedFieldsLength*/9)/2 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/72 - Math.Max(0,(/*PayloadByteSize*/167 - payloadSize - /*ExtendedFieldsLength*/9)/2 /*FieldTypeByteSize*/);
             Distances = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -32423,7 +32423,7 @@ namespace Asv.Mavlink.Common
             Rollspeed = BinSerialize.ReadFloat(ref buffer);
             Pitchspeed = BinSerialize.ReadFloat(ref buffer);
             Yawspeed = BinSerialize.ReadFloat(ref buffer);
-            arraySize = /*ArrayLength*/21 - Math.Max(0,((/*PayloadByteSize*/233 - payloadSize - /*ExtendedFieldsLength*/3)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/21 - Math.Max(0,(/*PayloadByteSize*/233 - payloadSize - /*ExtendedFieldsLength*/3)/4 /*FieldTypeByteSize*/);
             PoseCovariance = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -32640,7 +32640,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeUsec = BinSerialize.ReadULong(ref buffer);
-            arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/239 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/5 - Math.Max(0,(/*PayloadByteSize*/239 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             PosX = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -32902,7 +32902,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeUsec = BinSerialize.ReadULong(ref buffer);
-            arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/109 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/5 - Math.Max(0,(/*PayloadByteSize*/109 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             PosX = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -33314,7 +33314,7 @@ namespace Asv.Mavlink.Common
             }
             buffer = buffer.Slice(arraySize);
            
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/84 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/84 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Apn = new char[arraySize];
             unsafe
             {
@@ -33590,7 +33590,7 @@ namespace Asv.Mavlink.Common
             VAcc = BinSerialize.ReadUShort(ref buffer);
             VelAcc = BinSerialize.ReadUShort(ref buffer);
             UpdateRate = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/18 - Math.Max(0,((/*PayloadByteSize*/70 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/18 - Math.Max(0,(/*PayloadByteSize*/70 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             UasId = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -33775,7 +33775,7 @@ namespace Asv.Mavlink.Common
             var payloadSize = buffer.Length;
             TimeUsec = BinSerialize.ReadULong(ref buffer);
             ArrayId = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/10 - Math.Max(0,((/*PayloadByteSize*/252 - payloadSize - /*ExtendedFieldsLength*/232)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/10 - Math.Max(0,(/*PayloadByteSize*/252 - payloadSize - /*ExtendedFieldsLength*/232)/1 /*FieldTypeByteSize*/);
             Name = new char[arraySize];
             unsafe
             {
@@ -34032,7 +34032,7 @@ namespace Asv.Mavlink.Common
             }
             buffer = buffer.Slice(arraySize);
            
-            arraySize = /*ArrayLength*/50 - Math.Max(0,((/*PayloadByteSize*/109 - payloadSize - /*ExtendedFieldsLength*/22)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/50 - Math.Max(0,(/*PayloadByteSize*/109 - payloadSize - /*ExtendedFieldsLength*/22)/1 /*FieldTypeByteSize*/);
             DeviceName = new char[arraySize];
             unsafe
             {
@@ -34408,7 +34408,7 @@ namespace Asv.Mavlink.Common
             var payloadSize = buffer.Length;
             TimeUsec = BinSerialize.ReadULong(ref buffer);
             Active = BinSerialize.ReadUInt(ref buffer);
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/140 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/140 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             Actuator = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -34599,7 +34599,7 @@ namespace Asv.Mavlink.Common
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
             PayloadLength = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/128 - Math.Max(0,((/*PayloadByteSize*/133 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/128 - Math.Max(0,(/*PayloadByteSize*/133 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Payload = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -34709,7 +34709,7 @@ namespace Asv.Mavlink.Common
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
             Bus = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/8 - Math.Max(0,((/*PayloadByteSize*/16 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/8 - Math.Max(0,(/*PayloadByteSize*/16 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -34853,7 +34853,7 @@ namespace Asv.Mavlink.Common
             {
                 StorageTotal[i] = BinSerialize.ReadUInt(ref buffer);
             }
-            arraySize = /*ArrayLength*/6 - Math.Max(0,((/*PayloadByteSize*/238 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/6 - Math.Max(0,(/*PayloadByteSize*/238 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             LinkType = new uint[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -35156,7 +35156,7 @@ namespace Asv.Mavlink.Common
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);
             GeneralMetadataFileCrc = BinSerialize.ReadUInt(ref buffer);
             PeripheralsMetadataFileCrc = BinSerialize.ReadUInt(ref buffer);
-            arraySize = /*ArrayLength*/100 - Math.Max(0,((/*PayloadByteSize*/212 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/100 - Math.Max(0,(/*PayloadByteSize*/212 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             GeneralMetadataUri = new char[arraySize];
             unsafe
             {
@@ -35304,7 +35304,7 @@ namespace Asv.Mavlink.Common
             var payloadSize = buffer.Length;
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);
             FileCrc = BinSerialize.ReadUInt(ref buffer);
-            arraySize = /*ArrayLength*/100 - Math.Max(0,((/*PayloadByteSize*/108 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/100 - Math.Max(0,(/*PayloadByteSize*/108 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Uri = new char[arraySize];
             unsafe
             {
@@ -35410,7 +35410,7 @@ namespace Asv.Mavlink.Common
             Format = (TuneFormat)BinSerialize.ReadUInt(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/248 - Math.Max(0,((/*PayloadByteSize*/254 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/248 - Math.Max(0,(/*PayloadByteSize*/254 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Tune = new char[arraySize];
             unsafe
             {
@@ -35607,7 +35607,7 @@ namespace Asv.Mavlink.Common
             DestinationComponent = (byte)BinSerialize.ReadByte(ref buffer);
             DestinationSystem = (byte)BinSerialize.ReadByte(ref buffer);
             LogLevels = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/40 - Math.Max(0,((/*PayloadByteSize*/53 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/40 - Math.Max(0,(/*PayloadByteSize*/53 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Arguments = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -35982,7 +35982,7 @@ namespace Asv.Mavlink.Common
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
             Bus = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/64 - Math.Max(0,((/*PayloadByteSize*/72 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/64 - Math.Max(0,(/*PayloadByteSize*/72 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -36093,7 +36093,7 @@ namespace Asv.Mavlink.Common
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/37 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/37 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/);
             Ids = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -36207,7 +36207,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             TimeUsec = BinSerialize.ReadULong(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/137 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/137 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/);
             Distance = new double[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -36422,7 +36422,7 @@ namespace Asv.Mavlink.Common
             var payloadSize = buffer.Length;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/20 - Math.Max(0,(/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             IdOrMac = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -36568,7 +36568,7 @@ namespace Asv.Mavlink.Common
             SpeedVertical = BinSerialize.ReadShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/59 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/20 - Math.Max(0,(/*PayloadByteSize*/59 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             IdOrMac = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -36779,7 +36779,7 @@ namespace Asv.Mavlink.Common
             DataPage = (byte)BinSerialize.ReadByte(ref buffer);
             LastPageIndex = (byte)BinSerialize.ReadByte(ref buffer);
             Length = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/23 - Math.Max(0,((/*PayloadByteSize*/53 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/23 - Math.Max(0,(/*PayloadByteSize*/53 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             AuthenticationData = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -36919,7 +36919,7 @@ namespace Asv.Mavlink.Common
                 IdOrMac[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
             DescriptionType = (MavOdidDescType)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/23 - Math.Max(0,((/*PayloadByteSize*/46 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/23 - Math.Max(0,(/*PayloadByteSize*/46 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Description = new char[arraySize];
             unsafe
             {
@@ -37059,7 +37059,7 @@ namespace Asv.Mavlink.Common
             AreaRadius = BinSerialize.ReadUShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/54 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/20 - Math.Max(0,(/*PayloadByteSize*/54 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             IdOrMac = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -37229,7 +37229,7 @@ namespace Asv.Mavlink.Common
             var payloadSize = buffer.Length;
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/20 - Math.Max(0,((/*PayloadByteSize*/43 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/20 - Math.Max(0,(/*PayloadByteSize*/43 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             IdOrMac = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -37365,7 +37365,7 @@ namespace Asv.Mavlink.Common
             }
             SingleMessageSize = (byte)BinSerialize.ReadByte(ref buffer);
             MsgPackSize = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/225 - Math.Max(0,((/*PayloadByteSize*/249 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/225 - Math.Max(0,(/*PayloadByteSize*/249 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Messages = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -37477,7 +37477,7 @@ namespace Asv.Mavlink.Common
             var arraySize = 0;
             var payloadSize = buffer.Length;
             Status = (MavOdidArmStatus)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/50 - Math.Max(0,((/*PayloadByteSize*/51 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/50 - Math.Max(0,(/*PayloadByteSize*/51 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Error = new char[arraySize];
             unsafe
             {

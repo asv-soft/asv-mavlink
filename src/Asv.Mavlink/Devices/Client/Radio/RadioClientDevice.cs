@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.IO;
 using Microsoft.Extensions.Logging;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -53,9 +54,19 @@ public class RadioClientDevice : MavlinkClientDevice
     protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices(
         [EnumeratorCancellation] CancellationToken cancel)
     {
+        IHeartbeatClient? hb = null;
         await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
         {
+            if (microservice is HeartbeatClient heartbeat)
+            {
+                hb = heartbeat;
+            }
             yield return microservice;
+        }
+        if (hb == null)
+        {
+            _logger.ZLogWarning($"{Id} {nameof(HeartbeatClient)} microservice not found");
+            yield break;
         }
         
         yield return new StatusTextClient(Identity, Core);
@@ -65,7 +76,8 @@ public class RadioClientDevice : MavlinkClientDevice
         yield return paramBase;
         yield return new ParamsClientEx(paramBase, _config.Params, MavParamHelper.ByteWiseEncoding, ArraySegment<ParamDescription>.Empty);
         var client = new AsvRadioClient(Identity, Core);
-        yield return new AsvRadioClientEx(client, Heartbeat, command);
+        
+        yield return new AsvRadioClientEx(client, hb, command);
     }
 
     

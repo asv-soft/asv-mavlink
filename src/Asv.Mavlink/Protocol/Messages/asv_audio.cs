@@ -188,7 +188,7 @@ namespace Asv.Mavlink.AsvAudio
             var payloadSize = buffer.Length;
             Codec = (AsvAudioCodec)BinSerialize.ReadUShort(ref buffer);
             Mode = (AsvAudioModeFlag)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/19 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/19 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Name = new char[arraySize];
             unsafe
             {
@@ -300,7 +300,7 @@ namespace Asv.Mavlink.AsvAudio
             PktInFrame = (byte)BinSerialize.ReadByte(ref buffer);
             PktSeq = (byte)BinSerialize.ReadByte(ref buffer);
             DataSize = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/230 - Math.Max(0,((/*PayloadByteSize*/236 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/230 - Math.Max(0,(/*PayloadByteSize*/236 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {

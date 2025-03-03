@@ -382,7 +382,7 @@ namespace Asv.Mavlink.AsvRadio
             MinTxPower = BinSerialize.ReadFloat(ref buffer);
             MaxRxPower = BinSerialize.ReadFloat(ref buffer);
             MinRxPower = BinSerialize.ReadFloat(ref buffer);
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/56 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/56 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             SupportedModulation = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -587,7 +587,7 @@ namespace Asv.Mavlink.AsvRadio
             var payloadSize = buffer.Length;
             All = BinSerialize.ReadUShort(ref buffer);
             Skip = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/100 - Math.Max(0,((/*PayloadByteSize*/205 - payloadSize - /*ExtendedFieldsLength*/0)/*FieldTypeByteSize*/ /2));
+            arraySize = /*ArrayLength*/100 - Math.Max(0,(/*PayloadByteSize*/205 - payloadSize - /*ExtendedFieldsLength*/0)/*FieldTypeByteSize*/ /2);
             Codecs = new AsvAudioCodec[arraySize];
             for(var i=0;i<arraySize;i++)
             {

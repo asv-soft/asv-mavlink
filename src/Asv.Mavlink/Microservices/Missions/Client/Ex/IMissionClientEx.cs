@@ -135,16 +135,16 @@ public static class MissionClientExHelper
     public static MissionItem AddSplineMissionItem(this IMissionClientEx vehicle, GeoPoint point)
     {
         var item = vehicle.Create();
-        item.Location.OnNext(point);
-        item.AutoContinue.OnNext(true);
-        item.Command.OnNext(MavCmd.MavCmdNavSplineWaypoint);
-        item.Current.OnNext(false);
-        item.Frame.OnNext(MavFrame.MavFrameGlobalInt);
-        item.MissionType.OnNext(MavMissionType.MavMissionTypeMission);
-        item.Param1.OnNext(0);
-        item.Param2.OnNext(0);
-        item.Param3.OnNext(0);
-        item.Param4.OnNext(0);
+        item.Location.Value =point;
+        item.AutoContinue.Value =true;
+        item.Command.Value =MavCmd.MavCmdNavSplineWaypoint;
+        item.Current.Value =false;
+        item.Frame.Value =MavFrame.MavFrameGlobalInt;
+        item.MissionType.Value =MavMissionType.MavMissionTypeMission;
+        item.Param1.Value =0;
+        item.Param2.Value =0;
+        item.Param3.Value =0;
+        item.Param4.Value =0;
         return item;
     }
 
@@ -164,14 +164,14 @@ public static class MissionClientExHelper
     )
     {
         var item = vehicle.Create();
-        item.AutoContinue.OnNext(true);
-        item.Command.OnNext(MavCmd.MavCmdDoChangeSpeed);
-        item.Current.OnNext(false);
-        item.Frame.OnNext(MavFrame.MavFrameGlobalInt);
-        item.MissionType.OnNext(MavMissionType.MavMissionTypeMission);
-        item.Param1.OnNext(speedType);
-        item.Param2.OnNext(speed);
-        item.Param3.OnNext(throttle);
+        item.AutoContinue.Value =true;
+        item.Command.Value =MavCmd.MavCmdDoChangeSpeed;
+        item.Current.Value =false;
+        item.Frame.Value =MavFrame.MavFrameGlobalInt;
+        item.MissionType.Value =MavMissionType.MavMissionTypeMission;
+        item.Param1.Value =speedType;
+        item.Param2.Value =speed;
+        item.Param3.Value =throttle;
         return item;
     }
 
@@ -200,16 +200,16 @@ public static class MissionClientExHelper
     )
     {
         var missionItem = vehicle.Create();
-        missionItem.Location.OnNext(point);
-        missionItem.AutoContinue.OnNext(true);
-        missionItem.Command.OnNext(MavCmd.MavCmdNavWaypoint);
-        missionItem.Current.OnNext(false);
-        missionItem.Frame.OnNext(MavFrame.MavFrameGlobalInt);
-        missionItem.MissionType.OnNext(MavMissionType.MavMissionTypeMission);
-        missionItem.Param1.OnNext(holdTime);
-        missionItem.Param2.OnNext(acceptRadius);
-        missionItem.Param3.OnNext(passRadius);
-        missionItem.Param4.OnNext(yawAngle);
+        missionItem.Location.Value =point;
+        missionItem.AutoContinue.Value =true;
+        missionItem.Command.Value =MavCmd.MavCmdNavWaypoint;
+        missionItem.Current.Value =false;
+        missionItem.Frame.Value =MavFrame.MavFrameGlobalInt;
+        missionItem.MissionType.Value =MavMissionType.MavMissionTypeMission;
+        missionItem.Param1.Value =holdTime;
+        missionItem.Param2.Value =acceptRadius;
+        missionItem.Param3.Value =passRadius;
+        missionItem.Param4.Value =yawAngle;
         return missionItem;
     }
 
@@ -224,16 +224,16 @@ public static class MissionClientExHelper
     )
     {
         var missionItem = vehicle.Create();
-        missionItem.Location.OnNext(point);
-        missionItem.AutoContinue.OnNext(true);
-        missionItem.Command.OnNext(MavCmd.MavCmdNavTakeoff);
-        missionItem.Current.OnNext(false);
-        missionItem.Frame.OnNext(MavFrame.MavFrameGlobalInt);
-        missionItem.MissionType.OnNext(MavMissionType.MavMissionTypeMission);
-        missionItem.Param1.OnNext(pitch);
-        missionItem.Param2.OnNext(0.0f);
-        missionItem.Param3.OnNext(0.0f);
-        missionItem.Param4.OnNext(yawAngle);
+        missionItem.Location.Value =point;
+        missionItem.AutoContinue.Value =true;
+        missionItem.Command.Value =MavCmd.MavCmdNavTakeoff;
+        missionItem.Current.Value =false;
+        missionItem.Frame.Value =MavFrame.MavFrameGlobalInt;
+        missionItem.MissionType.Value =MavMissionType.MavMissionTypeMission;
+        missionItem.Param1.Value =pitch;
+        missionItem.Param2.Value =0.0f;
+        missionItem.Param3.Value =0.0f;
+        missionItem.Param4.Value =yawAngle;
         return missionItem;
     }
 
@@ -255,16 +255,16 @@ public static class MissionClientExHelper
     )
     {
         var missionItem = vehicle.Create();
-        missionItem.Location.OnNext(point);
-        missionItem.AutoContinue.OnNext(true);
-        missionItem.Command.OnNext(MavCmd.MavCmdNavLand);
-        missionItem.Current.OnNext(false);
-        missionItem.Frame.OnNext(MavFrame.MavFrameGlobalInt);
-        missionItem.MissionType.OnNext(MavMissionType.MavMissionTypeMission);
-        missionItem.Param1.OnNext(abortAltitude);
-        missionItem.Param2.OnNext((float)landMode);
-        missionItem.Param3.OnNext(0.0f);
-        missionItem.Param4.OnNext(yawAngle);
+        missionItem.Location.Value =point;
+        missionItem.AutoContinue.Value =true;
+        missionItem.Command.Value =MavCmd.MavCmdNavLand;
+        missionItem.Current.Value =false;
+        missionItem.Frame.Value =MavFrame.MavFrameGlobalInt;
+        missionItem.MissionType.Value =MavMissionType.MavMissionTypeMission;
+        missionItem.Param1.Value =abortAltitude;
+        missionItem.Param2.Value =(float)landMode;
+        missionItem.Param3.Value =0.0f;
+        missionItem.Param4.Value =yawAngle;
         return missionItem;
     }
 
@@ -286,16 +286,16 @@ public static class MissionClientExHelper
     )
     {
         var missionItem = vehicle.Create();
-        missionItem.Location.OnNext(point);
-        missionItem.AutoContinue.OnNext(true);
-        missionItem.Command.OnNext(MavCmd.MavCmdDoSetRoi);
-        missionItem.Current.OnNext(false);
-        missionItem.Frame.OnNext(MavFrame.MavFrameGlobalInt);
-        missionItem.MissionType.OnNext(MavMissionType.MavMissionTypeMission);
-        missionItem.Param1.OnNext((float)roiMode);
-        missionItem.Param2.OnNext(wpIndex);
-        missionItem.Param3.OnNext(roiIndex);
-        missionItem.Param4.OnNext(0.0f);
+        missionItem.Location.Value =point;
+        missionItem.AutoContinue.Value =true;
+        missionItem.Command.Value =MavCmd.MavCmdDoSetRoi;
+        missionItem.Current.Value =false;
+        missionItem.Frame.Value =MavFrame.MavFrameGlobalInt;
+        missionItem.MissionType.Value =MavMissionType.MavMissionTypeMission;
+        missionItem.Param1.Value =(float)roiMode;
+        missionItem.Param2.Value =wpIndex;
+        missionItem.Param3.Value =roiIndex;
+        missionItem.Param4.Value =0.0f;
         return missionItem;
     }
 }

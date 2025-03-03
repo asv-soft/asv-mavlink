@@ -45,7 +45,7 @@ internal class ClientNamedProbe<T> : INamedProbe<T>
 
     public void Update(T payloadValue, uint payloadTimeBootMs, long updateLocalTimestamp)
     {
-        _value.OnNext(new (TimeSpan.FromMilliseconds(payloadTimeBootMs), payloadValue));
+        _value.Value = new (TimeSpan.FromMilliseconds(payloadTimeBootMs), payloadValue);
         _lastUpdate = updateLocalTimestamp;
     }
 }

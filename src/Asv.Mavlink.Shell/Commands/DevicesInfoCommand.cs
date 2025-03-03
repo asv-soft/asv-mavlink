@@ -145,7 +145,7 @@ public class DevicesInfoCommand
             {
                 var time = Interlocked.Exchange(ref _lastUpdate, timeProvider.GetTimestamp());
                 var cnt = Interlocked.Exchange(ref _lastRate,0);
-                var rate = (cnt / timeProvider.GetElapsedTime(time).TotalSeconds);
+                var rate = cnt / timeProvider.GetElapsedTime(time).TotalSeconds;
                 RateText = $"{rate:F1} Hz";
             });
 

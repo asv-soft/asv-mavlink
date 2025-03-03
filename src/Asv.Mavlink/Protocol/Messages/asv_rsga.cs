@@ -321,7 +321,7 @@ namespace Asv.Mavlink.AsvRsga
             var payloadSize = buffer.Length;
             RequestId = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvRsgaRequestAck)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/35 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/35 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             SupportedModes = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {

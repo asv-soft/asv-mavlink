@@ -494,7 +494,7 @@ namespace Asv.Mavlink.AsvChart
             AxesXCount = BinSerialize.ReadUShort(ref buffer);
             AxesYUnit = (AsvChartUnitType)BinSerialize.ReadUShort(ref buffer);
             AxesYCount = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/78 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/78 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             ChartName = new char[arraySize];
             unsafe
             {
@@ -920,7 +920,7 @@ namespace Asv.Mavlink.AsvChart
             PktInFrame = BinSerialize.ReadUShort(ref buffer);
             PktSeq = BinSerialize.ReadUShort(ref buffer);
             DataSize = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/220 - Math.Max(0,((/*PayloadByteSize*/237 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/220 - Math.Max(0,(/*PayloadByteSize*/237 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {

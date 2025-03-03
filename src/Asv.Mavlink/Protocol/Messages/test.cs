@@ -115,7 +115,7 @@ namespace Asv.Mavlink.Test
             U64 = BinSerialize.ReadULong(ref buffer);
             S64 = BinSerialize.ReadLong(ref buffer);
             D = BinSerialize.ReadDouble(ref buffer);
-            arraySize = /*ArrayLength*/3 - Math.Max(0,((/*PayloadByteSize*/179 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/3 - Math.Max(0,(/*PayloadByteSize*/179 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/);
             U64Array = new ulong[arraySize];
             for(var i=0;i<arraySize;i++)
             {

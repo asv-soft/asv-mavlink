@@ -47,8 +47,8 @@ public class AsvSdrClientCalibrationTable: IDisposable,IAsyncDisposable
         var name = MavlinkTypesHelper.GetString(payload.TableName);
         if (payload.TableIndex!= Index) throw new ArgumentException($"Invalid table index. Expected: {Index}, actual: {payload.TableIndex}");
         if (name != Name) throw new ArgumentException($"Invalid table name. Expected: {Name}, actual: {name}");
-        _metadata.OnNext(new CalibrationTableMetadata(payload));
-        _remoteSize.OnNext(payload.RowCount);
+        _metadata.Value = new CalibrationTableMetadata(payload);
+        _remoteSize.Value = payload.RowCount;
     }
     
     public async Task<CalibrationTableRow[]> Download(IProgress<double>? progress = null,CancellationToken cancel = default)
@@ -57,7 +57,7 @@ public class AsvSdrClientCalibrationTable: IDisposable,IAsyncDisposable
         progress.Report(0);
         var info = await _ifc.ReadCalibrationTable(Index, cancel).ConfigureAwait(false);
         var count = info.RowCount;
-        _remoteSize.OnNext(count);
+        _remoteSize.Value = count;
         var array = new CalibrationTableRow[count];
         for (ushort i = 0; i < count; i++)
         {
@@ -102,7 +102,7 @@ public class AsvSdrClientCalibrationTable: IDisposable,IAsyncDisposable
                 return;
             }
             var value = data[req.RowIndex];
-            progress?.Report((double)(req.RowIndex) / data.Length);
+            progress?.Report((double)req.RowIndex / data.Length);
             _ifc.SendCalibrationTableRowUploadItem(arg =>
             {
                 arg.RowIndex = req.RowIndex;

@@ -375,7 +375,7 @@ namespace Asv.Mavlink.Uavionix
             var payloadSize = buffer.Length;
             Icao = BinSerialize.ReadUInt(ref buffer);
             Stallspeed = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/9 - Math.Max(0,((/*PayloadByteSize*/20 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/9 - Math.Max(0,(/*PayloadByteSize*/20 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Callsign = new char[arraySize];
             unsafe
             {

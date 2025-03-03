@@ -32,7 +32,7 @@ public static class MavlinkV2Protocol
     
     public static void SetMessageId(byte[] buffer, int frameStartIndex, int messageId)
     {
-        buffer[frameStartIndex + 7] = (byte)((messageId) & 0xFF);
+        buffer[frameStartIndex + 7] = (byte)(messageId & 0xFF);
         buffer[frameStartIndex + 8] = (byte)((messageId >> 8) & 0xFF);
         buffer[frameStartIndex + 9] = (byte)((messageId >> 16) & 0xFF);
     }

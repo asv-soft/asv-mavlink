@@ -644,7 +644,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
         await _client.QTakeOff(altInMeters, _cancellationTokenSource.Token);
         
         // Assert
-        var packetFromServer = (await _taskCompletionSource.Task) as CommandLongPacket;
+        var packetFromServer = await _taskCompletionSource.Task as CommandLongPacket;
         await tcs2.Task;
         Assert.Equal(1, called);
         Assert.Equal(called, (int)Link.Client.Statistic.TxMessages);

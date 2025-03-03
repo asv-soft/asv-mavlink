@@ -67,11 +67,11 @@ public class AsvSdrClientRecord:IAsvSdrClientRecord, IDisposable,IAsyncDisposabl
     public IReadOnlyObservableDictionary<TagId, AsvSdrClientRecordTag> Tags => _tags;
     private void InternalUpdateRecord((Guid,AsvSdrRecordPayload) value)
     {
-        _created.OnNext(MavlinkTypesHelper.FromUnixTimeUs(value.Item2.CreatedUnixUs));
-        _duration.OnNext(TimeSpan.FromSeconds(value.Item2.DurationSec));
-        _tagsCount.OnNext(value.Item2.TagCount);
-        _dataCount.OnNext(value.Item2.DataCount);
-        _byteSize.OnNext(value.Item2.Size);
+        _created.Value = MavlinkTypesHelper.FromUnixTimeUs(value.Item2.CreatedUnixUs);
+        _duration.Value = TimeSpan.FromSeconds(value.Item2.DurationSec);
+        _tagsCount.Value = value.Item2.TagCount;
+        _dataCount.Value = value.Item2.DataCount;
+        _byteSize.Value = value.Item2.Size;
     }
     public async Task<bool> DownloadTagList(IProgress<double>? progress, CancellationToken cancel)
     {

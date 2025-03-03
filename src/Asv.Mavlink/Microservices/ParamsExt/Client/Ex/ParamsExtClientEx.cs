@@ -93,11 +93,11 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
 
     private void OnSyncedChanged(bool value)
     {
-        if (value == false) _isSynced.OnNext(false);
+        if (value == false) _isSynced.Value = false;
         else
         {
             var allSynced = _paramsSource.All(i => i.Value.IsSynced.Value);
-            if (allSynced) _isSynced.OnNext(true);
+            if (allSynced) _isSynced.Value = true;
         }
     }
 
@@ -208,7 +208,7 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
         
         
         
-        _isSynced.OnNext(true);
+        _isSynced.Value = true;
         return readAllParams;
     }
 

@@ -88,7 +88,7 @@ public class ModeServer : MavlinkMicroserviceServer, IModeServer
             _logger.ZLogWarning($"Set mode {mode} is busy. Ignore...");
             return;
         }
-        _isBusy.OnNext(true);
+        _isBusy.Value = true;
         var current = CurrentMode.CurrentValue;
         if (mode == current.Mode)
         {
@@ -122,12 +122,12 @@ public class ModeServer : MavlinkMicroserviceServer, IModeServer
         {
             _status.Error($"Fail set {mode.Name}:{e.Message}");
             _logger.ZLogError(e,$"Error to set mode {mode}:{e.Message}");
-            _currentMode.OnNext(_handlerFactory(_idleMode));
+            _currentMode.Value = _handlerFactory(_idleMode);
             workMode?.Dispose();
         }
         finally
         {
-            _isBusy.OnNext(false);
+            _isBusy.Value = false;
             Interlocked.Exchange(ref _setModeBusy, 0);
         }
     }

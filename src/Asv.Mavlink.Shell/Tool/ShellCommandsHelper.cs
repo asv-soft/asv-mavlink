@@ -17,11 +17,16 @@ public static class ShellCommandsHelper
     public static void CreateDeviceExplorer(string connection, out IDeviceExplorer deviceExplorer, ILogger? logger = null)
     {
         logger ??= NullLogger.Instance;
+        var factory = LoggerFactory.Create(builder =>
+        {
+            builder.ClearProviders();
+            builder.AddDebug();
+        });
         try
         {
             var protocol = Protocol.Create(builder =>
             {
-                builder.SetDefaultLog();
+                builder.SetLog(factory);
                 builder.RegisterMavlinkV2Protocol();
                 builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
                 builder.Formatters.RegisterSimpleFormatter();
@@ -38,7 +43,7 @@ public static class ShellCommandsHelper
                 builder.SetConfig(new ClientDeviceBrowserConfig()
                 {
                     DeviceTimeoutMs = 1000,
-                    DeviceCheckIntervalMs = 1000,
+                    DeviceCheckIntervalMs = 30_000,
                 });
                 builder.Factories.RegisterDefaultDevices(
                     new MavlinkIdentity(identity.SystemId, identity.ComponentId),

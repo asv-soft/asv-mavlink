@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.IO;
 using Microsoft.Extensions.Logging;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
@@ -49,8 +50,14 @@ public class GbsClientDevice : MavlinkClientDevice
 
     protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices([EnumeratorCancellation] CancellationToken cancel)
     {
+        IHeartbeatClient? hb = null;
+        
         await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
         {
+            if (microservice is IHeartbeatClient heartbeat)
+            {
+                hb = heartbeat;
+            }
             yield return microservice;
         }
         yield return new StatusTextClient(Identity, Core);
@@ -60,7 +67,12 @@ public class GbsClientDevice : MavlinkClientDevice
         yield return paramBase;
         yield return new ParamsClientEx(paramBase, _config.Params, MavParamHelper.ByteWiseEncoding, ArraySegment<ParamDescription>.Empty);
         var client = new AsvGbsClient(Identity, Core);
-        yield return new AsvGbsExClient(client, Heartbeat, command);
+        if (hb == null)
+        {
+            _logger.ZLogWarning($"{Id} {nameof(HeartbeatClient)} microservice not found");
+            yield break;
+        }
+        yield return new AsvGbsExClient(client, hb, command);
         
     }
 }

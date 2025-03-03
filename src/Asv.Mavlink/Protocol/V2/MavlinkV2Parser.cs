@@ -78,7 +78,7 @@ public class MavlinkV2Parser:ProtocolParser<MavlinkMessage,ushort>
                         _decodeStep = DecodeStep.Sync;
                         return false;
                     }
-                    if (_bufferIndex <= (_bufferStopIndex + MavlinkV2Protocol.SignatureByteSize))
+                    if (_bufferIndex <= _bufferStopIndex + MavlinkV2Protocol.SignatureByteSize)
                     {
                         TryDecodePacket(_bufferIndex);
                         _decodeStep = DecodeStep.Sync;

@@ -95,7 +95,7 @@ namespace Asv.Mavlink.Cubepilot
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/32 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/32 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             RcRaw = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -185,7 +185,7 @@ namespace Asv.Mavlink.Cubepilot
             Rotation = BinSerialize.ReadUShort(ref buffer);
             CameraId = (byte)BinSerialize.ReadByte(ref buffer);
             Status = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/230 - Math.Max(0,((/*PayloadByteSize*/246 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/230 - Math.Max(0,(/*PayloadByteSize*/246 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Uri = new char[arraySize];
             unsafe
             {

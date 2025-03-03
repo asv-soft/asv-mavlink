@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Cfg;
 using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.Common;
@@ -178,7 +177,7 @@ public class VirtualAdsbCommand
             // Simulate delay for realistic movement
             vehicleTask.Description =
                 $"[green]{cfg.CallSign}[/] {index:0}=>{index + 1:0} V:[blue]{vVertical,-5:F1} m/s[/] H:[blue]{vHorizontal,-5:F1}[/] m/s D:[blue]{currentDistance,-5:F0} m[/] from [blue]{spatialDistance,-5:F0} m[/]";
-            vehicleTask.Value = ((dist + currentDistance) / total) * 100.0;
+            vehicleTask.Value = (dist + currentDistance) / total * 100.0;
             await Task.Delay((int)(timeStep * 1000));
         }
 

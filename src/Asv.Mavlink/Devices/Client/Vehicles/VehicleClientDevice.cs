@@ -78,10 +78,16 @@ public class VehicleClientDevice: MavlinkClientDevice
     protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices(
         [EnumeratorCancellation] CancellationToken cancel)
     {
+        IHeartbeatClient? hb = null;
         await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
         {
+            if (microservice is IHeartbeatClient heartbeat)
+            {
+                hb = heartbeat;
+            }
             yield return microservice;
         }
+        
         yield return new StatusTextClient(Identity, Core);
         var cmd = new CommandClient(Identity,_deviceConfig.Command,Core);
         yield return cmd;
@@ -123,12 +129,19 @@ public class VehicleClientDevice: MavlinkClientDevice
         yield return new V2ExtensionClient(Identity,Core);
         var pos = new PositionClient(Identity,Core);
         yield return pos;
-        yield return new PositionClientEx(pos,Heartbeat,cmd);
+       
         var rtt = new TelemetryClient(Identity,Core);
         yield return rtt;
         yield return new TelemetryClientEx(rtt);
         yield return new DgpsClient(Identity,Core);
         yield return new DiagnosticClient(Identity, _deviceConfig.Diagnostic, Core);
+        
+        if (hb == null)
+        {
+            _logger.ZLogWarning($"{Id} {nameof(HeartbeatClient)} microservice not found");
+            yield break;
+        }
+        yield return new PositionClientEx(pos,hb,cmd);
     }
 
     protected virtual IEnumerable<ParamDescription> GetParamDescriptions()

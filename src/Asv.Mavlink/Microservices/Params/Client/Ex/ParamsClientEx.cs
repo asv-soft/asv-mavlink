@@ -92,11 +92,11 @@ public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
 
     private void OnSyncedChanged(bool value)
     {
-        if (value == false) _isSynced.OnNext(false);
+        if (value == false) _isSynced.Value = false;
         else
         {
             var allSynced = _paramsSource.All(i => i.Value.IsSynced.Value);
-            if (allSynced) _isSynced.OnNext(true);
+            if (allSynced) _isSynced.Value = true;
         }
     }
 
@@ -208,7 +208,7 @@ public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
         await Base.SendRequestList(linkedCancel.Token).ConfigureAwait(false);
         var readAllParams = await tcs.Task.ConfigureAwait(false);
         
-        _isSynced.OnNext(true);
+        _isSynced.Value = true;
         if (readAllParams == true) return;
         
         if (RemoteCount.CurrentValue != LocalCount.CurrentValue)

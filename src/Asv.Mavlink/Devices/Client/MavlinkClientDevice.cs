@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Asv.Cfg;
 using Asv.Common;
 using Asv.IO;
@@ -51,28 +52,53 @@ public class MavlinkClientDeviceConfig : ICustomConfigurable
 public class MavlinkClientDevice:ClientDevice<MavlinkClientDeviceId>
 {
     private readonly MavlinkClientDeviceId _id;
+    private readonly MavlinkClientDeviceConfig _config;
+    private readonly ProxyLinkIndicator _link;
 
     public MavlinkClientDevice(MavlinkClientDeviceId id, MavlinkClientDeviceConfig config, ImmutableArray<IClientDeviceExtender> extenders, IMavlinkContext context) 
         : base(id, config.BaseConfig, extenders, context)
     {
         _id = id;
+        _config = config;
         ArgumentNullException.ThrowIfNull(id);
         ArgumentNullException.ThrowIfNull(config);
         ArgumentNullException.ThrowIfNull(context);
         Core = context;
-        Heartbeat = new HeartbeatClient(id.Id,config.Heartbeat, context);
+        _link = new ProxyLinkIndicator(LinkState.Connected);
+
     }
 
     protected MavlinkClientIdentity Identity => _id.Id;
     protected IMavlinkContext Core { get; }
-    public HeartbeatClient Heartbeat { get; }
 
-    public override ILinkIndicator Link => Heartbeat.Link;
+    public override ILinkIndicator Link => _link;
+
     protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices([EnumeratorCancellation] CancellationToken cancel)
     {
-        cancel.ThrowIfCancellationRequested();
-        await Heartbeat.Init(cancel).ConfigureAwait(false);
-        yield return Heartbeat; 
+        yield return await Task.Run(() =>
+        {
+            cancel.ThrowIfCancellationRequested();
+            var heartBeat = new HeartbeatClient(_id.Id, _config.Heartbeat, Core);
+            _link.UpdateSource(heartBeat.Link);
+            return heartBeat;
+        }, cancel).ConfigureAwait(false);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _link.Dispose();
+        }
+
+        base.Dispose(disposing);
+    }
+
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        await _link.DisposeAsync().ConfigureAwait(false);
+
+        await base.DisposeAsyncCore().ConfigureAwait(false);
     }
 }
 

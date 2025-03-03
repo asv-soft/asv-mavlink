@@ -48,7 +48,7 @@ public sealed class ParamItem: IDisposable,IAsyncDisposable
         try
         {
             _remoteValue = _converter.ConvertFromMavlinkUnion(payload.ParamValue, payload.ParamType);
-            _value.OnNext(_remoteValue);
+            _value.Value = _remoteValue;
         }
         catch (Exception)
         {

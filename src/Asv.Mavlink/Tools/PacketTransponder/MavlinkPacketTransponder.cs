@@ -73,21 +73,21 @@ namespace Asv.Mavlink
         private void LogError(Exception e)
         {
             if (_state.Value == PacketTransponderState.ErrorToSend) return;
-            _state.OnNext(PacketTransponderState.ErrorToSend);
+            _state.Value = PacketTransponderState.ErrorToSend;
             _logger.ZLogError($"{new TPacket().Name} sending error:{e.Message}");
         }
 
         private void LogSuccess()
         {
             if (_state.Value == PacketTransponderState.Ok) return;
-            _state.OnNext(PacketTransponderState.Ok);
+            _state.Value = PacketTransponderState.Ok;
             _logger.ZLogDebug($"{new TPacket().Name} start stream");
         }
 
         private void LogSkipped()
         {
             if (_state.Value == PacketTransponderState.Skipped) return;
-            _state.OnNext(PacketTransponderState.Skipped);
+            _state.Value = PacketTransponderState.Skipped;
             _logger.ZLogWarning($"{new TPacket().Name} skipped sending: previous command has not yet been executed");
         }
         public bool IsStarted { get; private set; }
@@ -106,6 +106,7 @@ namespace Asv.Mavlink
 
         public void Set(Action<TPacket> changeCallback)
         {
+            if (IsDisposed) return;
             try
             {
                 _dataLock.EnterWriteLock();
@@ -129,7 +130,10 @@ namespace Asv.Mavlink
             {
                 _dataLock.Dispose();
                 _state.Dispose();
-                _timer?.Dispose();
+                lock (_sync)
+                {
+                    _timer?.Dispose();
+                }
             }
 
             base.Dispose(disposing);

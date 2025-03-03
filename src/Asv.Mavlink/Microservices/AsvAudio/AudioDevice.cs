@@ -142,7 +142,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
     internal void Update(AsvAudioOnlinePayload pktPayload)
     {
         Touch();
-        _name.OnNext(MavlinkTypesHelper.GetString(pktPayload.Name));
+        _name.Value = MavlinkTypesHelper.GetString(pktPayload.Name);
     }
 
     public void OnInputAudioStream(AsvAudioStreamPayload stream)

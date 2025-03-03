@@ -84,7 +84,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
         }
         var result = _charts.Count == requestAck.ItemsCount;
         _lastCollectionHash = requestAck.ChatListHash;
-        _isSynced.OnNext(result);
+        _isSynced.Value = result;
         return result;
     }
 

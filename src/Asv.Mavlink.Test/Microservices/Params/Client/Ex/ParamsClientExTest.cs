@@ -95,7 +95,7 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
 
         var t2 = Task.Factory.StartNew(() =>
         {
-            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadTimeouMs * _config.ReadAttemptCount) + 1));
+            Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeouMs * _config.ReadAttemptCount + 1));
         });
         
         //Assert
@@ -117,7 +117,7 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
 
         var t2 = Task.Factory.StartNew(() =>
         {
-            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadTimeouMs * _config.ReadAttemptCount) + 1));
+            Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeouMs * _config.ReadAttemptCount + 1));
         });
 
         //Assert
@@ -139,7 +139,7 @@ public class ParamsClientExTest : ClientTestBase<ParamsClientEx>, IDisposable
         
         var taskTime = Task.Factory.StartNew(() =>
         {
-            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadTimeouMs * _config.ReadAttemptCount) + 1));
+            Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeouMs * _config.ReadAttemptCount + 1));
         });
         
         //Assert

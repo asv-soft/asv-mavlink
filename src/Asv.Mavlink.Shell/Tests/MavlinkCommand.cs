@@ -72,7 +72,7 @@ namespace Asv.Mavlink.Shell
             AnsiConsole.Clear();
             AnsiConsole.MarkupLine("[bold]Press [red]Q[/] to exit[/]");
             AnsiConsole.MarkupLine(
-                $"[bold]MAVLink inspector [blue]{((_packetCount - _lastPacketCount) / time.TotalSeconds):0.0} Hz[/]:[/]");
+                $"[bold]MAVLink inspector [blue]{(_packetCount - _lastPacketCount) / time.TotalSeconds:0.0} Hz[/]:[/]");
 
             var table = new Table();
             table.AddColumns("[blue]Msg[/]", "[blue]Message[/]", "[yellow]Frequency[/]");

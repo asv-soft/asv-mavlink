@@ -4102,7 +4102,7 @@ namespace Asv.Mavlink.Ardupilotmega
             var payloadSize = buffer.Length;
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/18 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/18 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -4194,7 +4194,7 @@ namespace Asv.Mavlink.Ardupilotmega
             var payloadSize = buffer.Length;
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/34 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/34 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -4286,7 +4286,7 @@ namespace Asv.Mavlink.Ardupilotmega
             var payloadSize = buffer.Length;
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/64 - Math.Max(0,((/*PayloadByteSize*/66 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/64 - Math.Max(0,(/*PayloadByteSize*/66 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -4378,7 +4378,7 @@ namespace Asv.Mavlink.Ardupilotmega
             var payloadSize = buffer.Length;
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/96 - Math.Max(0,((/*PayloadByteSize*/98 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/96 - Math.Max(0,(/*PayloadByteSize*/98 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -5687,7 +5687,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Seqno = (MavRemoteLogDataBlockCommands)BinSerialize.ReadUInt(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/200 - Math.Max(0,((/*PayloadByteSize*/206 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/200 - Math.Max(0,(/*PayloadByteSize*/206 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -5878,7 +5878,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Instance = (byte)BinSerialize.ReadByte(ref buffer);
             Pattern = (byte)BinSerialize.ReadByte(ref buffer);
             CustomLen = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/24 - Math.Max(0,((/*PayloadByteSize*/29 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/24 - Math.Max(0,(/*PayloadByteSize*/29 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             CustomBytes = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -6000,7 +6000,7 @@ namespace Asv.Mavlink.Ardupilotmega
             CalStatus = (MagCalStatus)BinSerialize.ReadByte(ref buffer);
             Attempt = (byte)BinSerialize.ReadByte(ref buffer);
             CompletionPct = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/10 - Math.Max(0,((/*PayloadByteSize*/27 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/10 - Math.Max(0,(/*PayloadByteSize*/27 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             CompletionMask = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -7006,7 +7006,7 @@ namespace Asv.Mavlink.Ardupilotmega
             var payloadSize = buffer.Length;
             CmdId = (GoproCommand)BinSerialize.ReadByte(ref buffer);
             Status = (GoproRequestStatus)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/6 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/6 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Value = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -7100,7 +7100,7 @@ namespace Asv.Mavlink.Ardupilotmega
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
             CmdId = (GoproCommand)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/7 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/7 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             Value = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -7351,7 +7351,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Bustype = (DeviceOpBustype)BinSerialize.ReadByte(ref buffer);
             Bus = (byte)BinSerialize.ReadByte(ref buffer);
             Address = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/40 - Math.Max(0,((/*PayloadByteSize*/52 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/40 - Math.Max(0,(/*PayloadByteSize*/52 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/);
             Busname = new char[arraySize];
             unsafe
             {
@@ -7507,7 +7507,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Result = (byte)BinSerialize.ReadByte(ref buffer);
             Regstart = (byte)BinSerialize.ReadByte(ref buffer);
             Count = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/128 - Math.Max(0,((/*PayloadByteSize*/136 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/128 - Math.Max(0,(/*PayloadByteSize*/136 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -7645,7 +7645,7 @@ namespace Asv.Mavlink.Ardupilotmega
            
             Regstart = (byte)BinSerialize.ReadByte(ref buffer);
             Count = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/128 - Math.Max(0,((/*PayloadByteSize*/180 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/128 - Math.Max(0,(/*PayloadByteSize*/180 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/);
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -8030,7 +8030,7 @@ namespace Asv.Mavlink.Ardupilotmega
             var payloadSize = buffer.Length;
             TimeUsec = BinSerialize.ReadULong(ref buffer);
             TimeDeltaUsec = BinSerialize.ReadULong(ref buffer);
-            arraySize = /*ArrayLength*/3 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/3 - Math.Max(0,(/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
             AngleDelta = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -8224,7 +8224,7 @@ namespace Asv.Mavlink.Ardupilotmega
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/);
             Voltage = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -8380,7 +8380,7 @@ namespace Asv.Mavlink.Ardupilotmega
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/);
             Voltage = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -8536,7 +8536,7 @@ namespace Asv.Mavlink.Ardupilotmega
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/);
             Voltage = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -8704,7 +8704,7 @@ namespace Asv.Mavlink.Ardupilotmega
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
             OsdScreen = (byte)BinSerialize.ReadByte(ref buffer);
             OsdIndex = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/37 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/37 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             ParamId = new char[arraySize];
             unsafe
             {
@@ -9024,7 +9024,7 @@ namespace Asv.Mavlink.Ardupilotmega
             MaxValue = BinSerialize.ReadFloat(ref buffer);
             Increment = BinSerialize.ReadFloat(ref buffer);
             Result = (OsdParamConfigError)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/34 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/34 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             ParamId = new char[arraySize];
             unsafe
             {

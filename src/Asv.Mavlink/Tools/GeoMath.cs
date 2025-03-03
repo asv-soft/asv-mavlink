@@ -344,11 +344,11 @@ namespace Asv.Mavlink
                 }
 
                 var upAltDiff = isApproach
-                    ? (start.Altitude + maxAltDev - (stop.Altitude + minAltDev))
-                    : (stop.Altitude + maxAltDev - (start.Altitude + minAltDev));
+                    ? start.Altitude + maxAltDev - (stop.Altitude + minAltDev)
+                    : stop.Altitude + maxAltDev - (start.Altitude + minAltDev);
                 var downAltDiff = isApproach
-                    ? (start.Altitude - maxAltDev - (stop.Altitude - minAltDev))
-                    : (stop.Altitude - maxAltDev - (start.Altitude - minAltDev));
+                    ? start.Altitude - maxAltDev - (stop.Altitude - minAltDev)
+                    : stop.Altitude - maxAltDev - (start.Altitude - minAltDev);
 
                 var azimuth = start.Azimuth(stop);
                 var incDistance = pointDistance / (waggingCountsValue + 1);
@@ -422,7 +422,7 @@ namespace Asv.Mavlink
         {
             double dx = a.Latitude - b.Latitude;
             double dy = a.Longitude - b.Longitude;
-            return (double)Math.Sqrt((dx * dx) + (dy * dy));
+            return (double)Math.Sqrt(dx * dx + dy * dy);
         }
 
         public static double PlanarDistanceSquared(this GeoPoint a, GeoPoint b)
@@ -430,12 +430,12 @@ namespace Asv.Mavlink
             double dx = a.Latitude - b.Latitude;
             double dy = a.Longitude - b.Longitude;
 
-            return (dx * dx) + (dy * dy);
+            return dx * dx + dy * dy;
         }
 
         public static GeoPoint AddAltitude(this GeoPoint point, double alt)
         {
-            return new GeoPoint(point.Latitude, point.Longitude, (point.Altitude) + alt);
+            return new GeoPoint(point.Latitude, point.Longitude, point.Altitude + alt);
         }
 
         public static GeoPoint SetAltitude(this GeoPoint point, double alt)

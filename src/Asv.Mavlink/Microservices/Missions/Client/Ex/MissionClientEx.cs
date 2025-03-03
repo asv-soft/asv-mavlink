@@ -91,7 +91,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
         await Base
             .SendMissionAck(MavMissionResult.MavMissionAccepted, cancel: cancel)
             .ConfigureAwait(false);
-        _isMissionSynced.OnNext(true);
+        _isMissionSynced.Value = true;
         return result;
     }
 
@@ -100,7 +100,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
         _logger.ZLogInformation($"Begin clear mission");
         _missionSource.Clear();
         await _client.ClearAll(MavMissionType.MavMissionTypeMission, cancel).ConfigureAwait(false);
-        _isMissionSynced.OnNext(true);
+        _isMissionSynced.Value = true;
     }
 
     public async Task Upload(CancellationToken cancel, Action<double>? progress = null)
@@ -130,7 +130,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
             _logger.ZLogDebug($"UAV request {req.Seq} item");
             lastUpdateTime = DateTime.Now;
             current++;
-            progress?.Invoke((double)(current) / _missionSource.Count);
+            progress?.Invoke((double)current / _missionSource.Count);
             var item = _missionSource.FirstOrDefault(i => i.Index == req.Seq);
             if (item == null)
             {
@@ -157,7 +157,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
         await _client.MissionSetCount((ushort) _missionSource.Count, cancel).ConfigureAwait(false);
         await tcs.Task.ConfigureAwait(false);
         progress?.Invoke(1);
-        _isMissionSynced.OnNext(true);
+        _isMissionSynced.Value = true;
     }
 
     public MissionItem Create()
@@ -177,7 +177,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
 
     public void Remove(ushort index)
     {
-        _isMissionSynced.OnNext(false);
+        _isMissionSynced.Value = false;
         _missionSource.RemoveAt(index);
         EnsureIndex();
     }
@@ -193,7 +193,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
 
     public void ClearLocal()
     {
-        _isMissionSynced.OnNext(false);
+        _isMissionSynced.Value = false;
         _missionSource.Clear();
         EnsureIndex();
     }
@@ -221,7 +221,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
         {
             dist += missions[i].Location.Value.DistanceTo(missions[i + 1].Location.Value);
         }
-        _allMissionDistance.OnNext(dist / 1000.0);
+        _allMissionDistance.Value = dist / 1000.0;
     }
     
     #region Dispose

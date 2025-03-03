@@ -59,16 +59,16 @@ public class AdsbVehicle : IAdsbVehicle, IDisposable, IAsyncDisposable
     public void InternalUpdate(AdsbVehiclePayload payload, long dateTime)
     {
         if (IcaoAddress != payload.IcaoAddress) throw new InvalidOperationException("IcaoAddress not equal");
-        _callSign.OnNext(MavlinkTypesHelper.GetString(payload.Callsign));
-        _location.OnNext(new GeoPoint(payload.Lat * 1e-7, payload.Lon * 1e-7, payload.Altitude * 1e-3 ));
-        _heading.OnNext(payload.Heading * 1e-2);
-        _emitterType.OnNext(payload.EmitterType);
-        _altitudeType.OnNext(payload.AltitudeType);
-        _tslc.OnNext(TimeSpan.FromSeconds(payload.Tslc));
-        _horVelocity.OnNext(payload.HorVelocity * 1e-2);
-        _verVelocity.OnNext(payload.VerVelocity * 1e-2);
-        _flags.OnNext(payload.Flags);
-        _squawk.OnNext(payload.Squawk);
+        _callSign.Value = MavlinkTypesHelper.GetString(payload.Callsign);
+        _location.Value = new GeoPoint(payload.Lat * 1e-7, payload.Lon * 1e-7, payload.Altitude * 1e-3 );
+        _heading.Value = payload.Heading * 1e-2;
+        _emitterType.Value = payload.EmitterType;
+        _altitudeType.Value = payload.AltitudeType;
+        _tslc.Value = TimeSpan.FromSeconds(payload.Tslc);
+        _horVelocity.Value = payload.HorVelocity * 1e-2;
+        _verVelocity.Value = payload.VerVelocity * 1e-2;
+        _flags.Value = payload.Flags;
+        _squawk.Value = payload.Squawk;
         Interlocked.Exchange(ref _lastHit, dateTime);
     }
 

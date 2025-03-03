@@ -60,7 +60,7 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
             await Client.RefreshInfo(_cancellationTokenSource.Token);
         });
 
-        var t2 = Task.Factory.StartNew(() => { Time.Advance(TimeSpan.FromMilliseconds((timeout * attempts) + 1)); });
+        var t2 = Task.Factory.StartNew(() => { Time.Advance(TimeSpan.FromMilliseconds(timeout * attempts + 1)); });
 
         //Assert
         await Task.WhenAll(t1, t2);
@@ -80,7 +80,7 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
             await Client.SetMode(AsvRsgaCustomMode.AsvRsgaCustomModeIdle, _cancellationTokenSource.Token);
         });
 
-        var t2 = Task.Factory.StartNew(() => { Time.Advance(TimeSpan.FromMilliseconds((timeout * attempts) + 1)); });
+        var t2 = Task.Factory.StartNew(() => { Time.Advance(TimeSpan.FromMilliseconds(timeout * attempts + 1)); });
 
         //Assert
         await Task.WhenAll(t1, t2);

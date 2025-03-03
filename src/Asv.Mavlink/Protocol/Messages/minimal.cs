@@ -1375,7 +1375,7 @@ namespace Asv.Mavlink.Minimal
             Version = BinSerialize.ReadUShort(ref buffer);
             MinVersion = BinSerialize.ReadUShort(ref buffer);
             MaxVersion = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/8 - Math.Max(0,((/*PayloadByteSize*/22 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/8 - Math.Max(0,(/*PayloadByteSize*/22 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
             SpecVersionHash = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {

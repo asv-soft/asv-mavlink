@@ -543,7 +543,7 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         var tcs = new TaskCompletionSource();
         _client.Reached.Subscribe(x =>
         {
-            if (x == (originMission.Count - 1))
+            if (x == originMission.Count - 1)
             {
                 tcs.TrySetResult();
             }

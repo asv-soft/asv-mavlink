@@ -27,18 +27,18 @@ namespace Asv.Mavlink
             IsPresent = true;
             LinkId = buffer[offset];
             Timestamp = buffer[offset + 1];
-            Timestamp |= ((ulong)buffer[offset + 2]) << 8;
-            Timestamp |= ((ulong)buffer[offset + 3]) << 16;
-            Timestamp |= ((ulong)buffer[offset + 4]) << 24;
-            Timestamp |= ((ulong)buffer[offset + 5]) << 32;
-            Timestamp |= ((ulong)buffer[offset + 6]) << 40;
+            Timestamp |= (ulong)buffer[offset + 2] << 8;
+            Timestamp |= (ulong)buffer[offset + 3] << 16;
+            Timestamp |= (ulong)buffer[offset + 4] << 24;
+            Timestamp |= (ulong)buffer[offset + 5] << 32;
+            Timestamp |= (ulong)buffer[offset + 6] << 40;
 
             Sign = buffer[offset + 7];
-            Sign |= ((ulong)buffer[offset + 8]) << 8;
-            Sign |= ((ulong)buffer[offset + 9]) << 16;
-            Sign |= ((ulong)buffer[offset + 10]) << 24;
-            Sign |= ((ulong)buffer[offset + 11]) << 32;
-            Sign |= ((ulong)buffer[offset + 12]) << 40;
+            Sign |= (ulong)buffer[offset + 8] << 8;
+            Sign |= (ulong)buffer[offset + 9] << 16;
+            Sign |= (ulong)buffer[offset + 10] << 24;
+            Sign |= (ulong)buffer[offset + 11] << 32;
+            Sign |= (ulong)buffer[offset + 12] << 40;
             return ByteSize;
         }
 
@@ -50,17 +50,17 @@ namespace Asv.Mavlink
             LinkId = BinSerialize.ReadByte(ref buffer);
             Timestamp = BinSerialize.ReadByte(ref buffer);
             Timestamp |= (ulong)BinSerialize.ReadByte(ref buffer) << 8;
-            Timestamp |= ((ulong)BinSerialize.ReadByte(ref buffer)) << 16;
-            Timestamp |= ((ulong)BinSerialize.ReadByte(ref buffer)) << 24;
-            Timestamp |= ((ulong)BinSerialize.ReadByte(ref buffer)) << 32;
-            Timestamp |= ((ulong)BinSerialize.ReadByte(ref buffer)) << 40;
+            Timestamp |= (ulong)BinSerialize.ReadByte(ref buffer) << 16;
+            Timestamp |= (ulong)BinSerialize.ReadByte(ref buffer) << 24;
+            Timestamp |= (ulong)BinSerialize.ReadByte(ref buffer) << 32;
+            Timestamp |= (ulong)BinSerialize.ReadByte(ref buffer) << 40;
 
             Sign = BinSerialize.ReadByte(ref buffer);
             Sign |= (ulong)BinSerialize.ReadByte(ref buffer) << 8;
-            Sign |= ((ulong)BinSerialize.ReadByte(ref buffer)) << 16;
-            Sign |= ((ulong)BinSerialize.ReadByte(ref buffer)) << 24;
-            Sign |= ((ulong)BinSerialize.ReadByte(ref buffer)) << 32;
-            Sign |= ((ulong)BinSerialize.ReadByte(ref buffer)) << 40;
+            Sign |= (ulong)BinSerialize.ReadByte(ref buffer) << 16;
+            Sign |= (ulong)BinSerialize.ReadByte(ref buffer) << 24;
+            Sign |= (ulong)BinSerialize.ReadByte(ref buffer) << 32;
+            Sign |= (ulong)BinSerialize.ReadByte(ref buffer) << 40;
         }
 
         public void Serialize(ref Span<byte> buffer)

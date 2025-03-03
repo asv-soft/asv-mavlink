@@ -5,55 +5,73 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
+using Microsoft.Extensions.Logging;
+using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class ArduPlaneClientDevice(
-    MavlinkClientDeviceId identity,
-    VehicleClientDeviceConfig config,
-    ImmutableArray<IClientDeviceExtender> extenders,
-    IMavlinkContext core)
-    : ArduVehicleClientDevice(identity, config, extenders, core)
+public class ArduPlaneClientDevice : ArduVehicleClientDevice
 {
+    private readonly ILogger<ArduPlaneClientDevice> _logger1;
+
+    public ArduPlaneClientDevice(MavlinkClientDeviceId identity,
+        VehicleClientDeviceConfig config,
+        ImmutableArray<IClientDeviceExtender> extenders,
+        IMavlinkContext core) : base(identity, config, extenders, core)
+    {
+        _logger1 = core.LoggerFactory.CreateLogger<ArduPlaneClientDevice>();
+    }
+
     protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices(
         [EnumeratorCancellation] CancellationToken cancel)
     {
         ICommandClient? cmd = null;
         IPositionClientEx? pos = null;
         IParamsClient? param = null;
+        IHeartbeatClient? hb = null;
         await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
         {
-            if (microservice is IParamsClient parameters)
+            switch (microservice)
             {
-                param = parameters;
+                case IHeartbeatClient heartbeat:
+                    hb = heartbeat;
+                    break;
+                case IParamsClient parameters:
+                    param = parameters;
+                    break;
+                case ICommandClient command:
+                    cmd = command;
+                    break;
+                case IPositionClientEx position:
+                    pos = position;
+                    break;
             }
-            if (microservice is ICommandClient command)
-            {
-                cmd = command;
-            }
-            if (microservice is IPositionClientEx position)
-            {
-                pos = position;
-            }
+
             yield return microservice;
         }
         if (param == null) yield break;
         if (cmd == null) yield break;
         if (pos == null) yield break;
         
+        if (hb == null)
+        {
+            _logger1.ZLogWarning($"{Id} {nameof(HeartbeatClient)} microservice not found");
+            yield break;
+        }
+        
         var value = await param.Read("Q_ENABLE",cancel).ConfigureAwait(false);
         var quadPlaneEnabled = value.ParamValue != 0;
         if (quadPlaneEnabled)
         {
-            var mode = new ArduQuadPlaneModeClient(Heartbeat, cmd);
+            var mode = new ArduQuadPlaneModeClient(hb, cmd);
             yield return mode;
-            yield return new ArduQuadPlaneControlClient(Heartbeat, mode,pos);    
+            yield return new ArduQuadPlaneControlClient(hb, mode,pos);    
         }
         else
         {
-            var mode = new ArduPlaneModeClient(Heartbeat, cmd);
+            var mode = new ArduPlaneModeClient(hb, cmd);
             yield return mode;
-            yield return new ArduPlaneControlClient(Heartbeat, mode,pos);
+            yield return new ArduPlaneControlClient(hb, mode,pos);
         }
         
     }

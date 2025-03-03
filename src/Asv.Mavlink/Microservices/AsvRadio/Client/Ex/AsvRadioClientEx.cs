@@ -53,7 +53,7 @@ public class AsvRadioClientEx:MavlinkMicroserviceClient, IAsvRadioClientEx, IDis
         builder.SetTxPowerDbm(result.MinTxPower,result.MaxTxPower);
         builder.SetSupportedModulations(AsvRadioHelper.GetModulation(result));
         var cap = builder.Build();
-        _capabilities.OnNext(cap);
+        _capabilities.Value = cap;
         return cap;
     }
 

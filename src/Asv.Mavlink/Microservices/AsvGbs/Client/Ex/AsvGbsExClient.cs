@@ -27,7 +27,7 @@ public class AsvGbsExClient: MavlinkMicroserviceClient, IAsvGbsExClient
         CustomMode = heartbeat.RawHeartbeat
             .Select(p =>
             {
-                if (p != null) return (AsvGbsCustomMode)(p.CustomMode);
+                if (p != null) return (AsvGbsCustomMode)p.CustomMode;
                 return AsvGbsCustomMode.AsvGbsCustomModeLoading;
             }).ToReadOnlyReactiveProperty();
         Position = Base.RawStatus.Select(ConvertLocation).ToReadOnlyReactiveProperty();

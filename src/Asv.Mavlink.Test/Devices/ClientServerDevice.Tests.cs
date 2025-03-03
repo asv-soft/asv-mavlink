@@ -54,27 +54,27 @@ public class ComplexDeviceTests(ITestOutputHelper log)
     {
         var client = Client; // to ensure that client is created
         Server.Start();
-        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.State.CurrentValue);
+        Assert.Equal(LinkState.Disconnected,Client.GetMicroservice<IHeartbeatClient>()!.Link.State.CurrentValue);
         ServerTime.Advance(TimeSpan.FromSeconds(1));
         ClientTime.Advance(TimeSpan.FromSeconds(1));
         Server.Dispose();
-        Assert.Equal(LinkState.Connected,Client.Heartbeat.Link.State.CurrentValue);
+        Assert.Equal(LinkState.Connected,Client.GetMicroservice<IHeartbeatClient>()!.Link.State.CurrentValue);
         
         ServerTime.Advance(TimeSpan.FromSeconds(1));
         ClientTime.Advance(TimeSpan.FromSeconds(1));
-        Assert.Equal(LinkState.Downgrade,Client.Heartbeat.Link.State.CurrentValue);
+        Assert.Equal(LinkState.Downgrade,Client.GetMicroservice<IHeartbeatClient>()!.Link.State.CurrentValue);
         
         ServerTime.Advance(TimeSpan.FromSeconds(1));
         ClientTime.Advance(TimeSpan.FromSeconds(1));
         
-        Assert.Equal(LinkState.Downgrade,Client.Heartbeat.Link.State.CurrentValue);
+        Assert.Equal(LinkState.Downgrade,Client.GetMicroservice<IHeartbeatClient>()!.Link.State.CurrentValue);
         ServerTime.Advance(TimeSpan.FromSeconds(1));
         ClientTime.Advance(TimeSpan.FromSeconds(1));
-        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.State.CurrentValue);
+        Assert.Equal(LinkState.Disconnected,Client.GetMicroservice<IHeartbeatClient>()!.Link.State.CurrentValue);
         ServerTime.Advance(TimeSpan.FromSeconds(1));
         ClientTime.Advance(TimeSpan.FromSeconds(1));
         
-        Assert.Equal(LinkState.Disconnected,Client.Heartbeat.Link.State.CurrentValue);
+        Assert.Equal(LinkState.Disconnected,Client.GetMicroservice<IHeartbeatClient>()!.Link.State.CurrentValue);
     }
 
     

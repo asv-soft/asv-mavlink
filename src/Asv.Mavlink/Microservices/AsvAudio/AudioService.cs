@@ -163,15 +163,15 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
             }
             p.Payload.Mode = mode;
         });
-        _isOnline.OnNext(true);
-        _codec.OnNext(codec);
-        _speakerEnabled.OnNext(speakerEnabled);
-        _micEnabled.OnNext(micEnabled);
+        _isOnline.Value = true;
+        _codec.Value = codec;
+        _speakerEnabled.Value = speakerEnabled;
+        _micEnabled.Value = micEnabled;
         _transponder.Start(_onlineRate, _onlineRate);
     }
     public void GoOffline()
     {
-        _isOnline.OnNext(false);
+        _isOnline.Value = false;
         _transponder.Stop();
     }
 

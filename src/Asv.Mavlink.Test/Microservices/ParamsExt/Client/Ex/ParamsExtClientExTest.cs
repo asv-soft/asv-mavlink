@@ -76,7 +76,7 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
 
         var t2 = Task.Factory.StartNew(() =>
         {
-            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadTimeoutMs * _config.ReadAttemptCount) + 1));
+            Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeoutMs * _config.ReadAttemptCount + 1));
         });
         
         //Assert
@@ -92,7 +92,7 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
 
         var t2 = Task.Factory.StartNew(() =>
         {
-            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadTimeoutMs * _config.ReadAttemptCount) + 100));
+            Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeoutMs * _config.ReadAttemptCount + 100));
         });
         
         //Assert
@@ -115,7 +115,7 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
 
         var t2 = Task.Factory.StartNew(() =>
         {
-            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadTimeoutMs * _config.ReadAttemptCount) + 1));
+            Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeoutMs * _config.ReadAttemptCount + 1));
         });
         
         //Assert
@@ -137,7 +137,7 @@ public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposa
         
         var taskTime = Task.Factory.StartNew(() =>
         {
-            Time.Advance(TimeSpan.FromMilliseconds((_config.ReadTimeoutMs * _config.ReadAttemptCount) + 1));
+            Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeoutMs * _config.ReadAttemptCount + 1));
         });
         
         //Assert
