@@ -181,17 +181,19 @@ public interface IParamsServerEx: IMavlinkMicroserviceServer
         CheckType(param, MavParamType.MavParamTypeUint8);
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext).RegisterTo(disposeCancel);
+            .SubscribeAwait(OnNext, AwaitOperation.Drop).RegisterTo(disposeCancel);
         this[param] = (byte)0;
         return;
 
-        async void OnNext(ParamChangedEvent x)
+        async ValueTask OnNext(ParamChangedEvent x, CancellationToken cancel)
         {
             try
             {
-                if ((byte)x.OldValue != 0 || (byte)x.NewValue == 0) return;
-                this[param] = (byte)0;
-                await onEvent(disposeCancel).ConfigureAwait(false);
+                if ((byte)x.OldValue == 0 && (byte)x.NewValue != 0)
+                {
+                    this[param] = (byte)0;
+                    await onEvent(cancel).ConfigureAwait(false);    
+                }
             }
             catch (Exception e)
             {

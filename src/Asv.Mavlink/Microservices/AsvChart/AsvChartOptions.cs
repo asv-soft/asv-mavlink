@@ -9,7 +9,7 @@ public class AsvChartOptions(ushort chartId, AsvChartDataTrigger trigger, float 
     {
     }
 
-    internal AsvChartOptions(AsvChartDataResponsePacket packet):this(packet.Payload.ChartId,packet.Payload.DataTrigger,packet.Payload.DataRate)
+    internal AsvChartOptions(AsvChartDataResponsePacket packet):this(packet.Payload.ChatId,packet.Payload.DataTrigger,packet.Payload.DataRate)
     {
     
     }

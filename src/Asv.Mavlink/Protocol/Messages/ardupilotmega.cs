@@ -24,9 +24,11 @@
 
 using System;
 using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.Ardupilotmega
@@ -34,7 +36,7 @@ namespace Asv.Mavlink.Ardupilotmega
 
     public static class ArdupilotmegaHelper
     {
-        public static void RegisterArdupilotmegaDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterArdupilotmegaDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(SensorOffsetsPacket.MessageId, ()=>new SensorOffsetsPacket());
             src.Add(SetMagOffsetsPacket.MessageId, ()=>new SetMagOffsetsPacket());
@@ -2214,13 +2216,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Offsets and calibrations values for hardware sensors. This makes it easier to debug the calibration process.
     ///  SENSOR_OFFSETS
     /// </summary>
-    public class SensorOffsetsPacket: MavlinkV2Message<SensorOffsetsPayload>
+    public class SensorOffsetsPacket : MavlinkV2Message<SensorOffsetsPayload>
     {
         public const int MessageId = 150;
         
         public const byte CrcExtra = 134;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2365,13 +2367,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Set the magnetometer offsets
     ///  SET_MAG_OFFSETS
     /// </summary>
-    public class SetMagOffsetsPacket: MavlinkV2Message<SetMagOffsetsPayload>
+    public class SetMagOffsetsPacket : MavlinkV2Message<SetMagOffsetsPayload>
     {
         public const int MessageId = 151;
         
         public const byte CrcExtra = 219;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2460,13 +2462,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// State of autopilot RAM.
     ///  MEMINFO
     /// </summary>
-    public class MeminfoPacket: MavlinkV2Message<MeminfoPayload>
+    public class MeminfoPacket : MavlinkV2Message<MeminfoPayload>
     {
         public const int MessageId = 152;
         
         public const byte CrcExtra = 208;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2541,13 +2543,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Raw ADC output.
     ///  AP_ADC
     /// </summary>
-    public class ApAdcPacket: MavlinkV2Message<ApAdcPayload>
+    public class ApAdcPacket : MavlinkV2Message<ApAdcPayload>
     {
         public const int MessageId = 153;
         
         public const byte CrcExtra = 188;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2644,13 +2646,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Configure on-board Camera Control System.
     ///  DIGICAM_CONFIGURE
     /// </summary>
-    public class DigicamConfigurePacket: MavlinkV2Message<DigicamConfigurePayload>
+    public class DigicamConfigurePacket : MavlinkV2Message<DigicamConfigurePayload>
     {
         public const int MessageId = 154;
         
         public const byte CrcExtra = 84;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2787,13 +2789,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Control on-board Camera Control System to take shots.
     ///  DIGICAM_CONTROL
     /// </summary>
-    public class DigicamControlPacket: MavlinkV2Message<DigicamControlPayload>
+    public class DigicamControlPacket : MavlinkV2Message<DigicamControlPayload>
     {
         public const int MessageId = 155;
         
         public const byte CrcExtra = 22;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2922,13 +2924,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Message to configure a camera mount, directional antenna, etc.
     ///  MOUNT_CONFIGURE
     /// </summary>
-    public class MountConfigurePacket: MavlinkV2Message<MountConfigurePayload>
+    public class MountConfigurePacket : MavlinkV2Message<MountConfigurePayload>
     {
         public const int MessageId = 156;
         
         public const byte CrcExtra = 19;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3025,13 +3027,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Message to control a camera mount, directional antenna, etc.
     ///  MOUNT_CONTROL
     /// </summary>
-    public class MountControlPacket: MavlinkV2Message<MountControlPayload>
+    public class MountControlPacket : MavlinkV2Message<MountControlPayload>
     {
         public const int MessageId = 157;
         
         public const byte CrcExtra = 21;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3128,13 +3130,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Message with some status from autopilot to GCS about camera or antenna mount.
     ///  MOUNT_STATUS
     /// </summary>
-    public class MountStatusPacket: MavlinkV2Message<MountStatusPayload>
+    public class MountStatusPacket : MavlinkV2Message<MountStatusPayload>
     {
         public const int MessageId = 158;
         
         public const byte CrcExtra = 134;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3233,13 +3235,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// A fence point. Used to set a point when from GCS -> MAV. Also used to return a point from MAV -> GCS.
     ///  FENCE_POINT
     /// </summary>
-    public class FencePointPacket: MavlinkV2Message<FencePointPayload>
+    public class FencePointPacket : MavlinkV2Message<FencePointPayload>
     {
         public const int MessageId = 160;
         
         public const byte CrcExtra = 78;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3336,13 +3338,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Request a current fence point from MAV.
     ///  FENCE_FETCH_POINT
     /// </summary>
-    public class FenceFetchPointPacket: MavlinkV2Message<FenceFetchPointPayload>
+    public class FenceFetchPointPacket : MavlinkV2Message<FenceFetchPointPayload>
     {
         public const int MessageId = 161;
         
         public const byte CrcExtra = 68;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3415,13 +3417,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Status of DCM attitude estimator.
     ///  AHRS
     /// </summary>
-    public class AhrsPacket: MavlinkV2Message<AhrsPayload>
+    public class AhrsPacket : MavlinkV2Message<AhrsPayload>
     {
         public const int MessageId = 163;
         
         public const byte CrcExtra = 127;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3526,13 +3528,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Status of simulation environment, if used.
     ///  SIMSTATE
     /// </summary>
-    public class SimstatePacket: MavlinkV2Message<SimstatePayload>
+    public class SimstatePacket : MavlinkV2Message<SimstatePayload>
     {
         public const int MessageId = 164;
         
         public const byte CrcExtra = 154;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3669,13 +3671,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Status of key hardware.
     ///  HWSTATUS
     /// </summary>
-    public class HwstatusPacket: MavlinkV2Message<HwstatusPayload>
+    public class HwstatusPacket : MavlinkV2Message<HwstatusPayload>
     {
         public const int MessageId = 165;
         
         public const byte CrcExtra = 21;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3740,13 +3742,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Status generated by radio.
     ///  RADIO
     /// </summary>
-    public class RadioPacket: MavlinkV2Message<RadioPayload>
+    public class RadioPacket : MavlinkV2Message<RadioPayload>
     {
         public const int MessageId = 166;
         
         public const byte CrcExtra = 21;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3851,13 +3853,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Status of AP_Limits. Sent in extended status stream when AP_Limits is enabled.
     ///  LIMITS_STATUS
     /// </summary>
-    public class LimitsStatusPacket: MavlinkV2Message<LimitsStatusPayload>
+    public class LimitsStatusPacket : MavlinkV2Message<LimitsStatusPayload>
     {
         public const int MessageId = 167;
         
         public const byte CrcExtra = 144;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3978,13 +3980,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Wind estimation.
     ///  WIND
     /// </summary>
-    public class WindPacket: MavlinkV2Message<WindPayload>
+    public class WindPacket : MavlinkV2Message<WindPayload>
     {
         public const int MessageId = 168;
         
         public const byte CrcExtra = 1;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -4057,13 +4059,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Data packet, size 16.
     ///  DATA16
     /// </summary>
-    public class Data16Packet: MavlinkV2Message<Data16Payload>
+    public class Data16Packet : MavlinkV2Message<Data16Payload>
     {
         public const int MessageId = 169;
         
         public const byte CrcExtra = 234;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -4102,7 +4104,7 @@ namespace Asv.Mavlink.Ardupilotmega
             var payloadSize = buffer.Length;
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/18 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/18 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -4149,13 +4151,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Data packet, size 32.
     ///  DATA32
     /// </summary>
-    public class Data32Packet: MavlinkV2Message<Data32Payload>
+    public class Data32Packet : MavlinkV2Message<Data32Payload>
     {
         public const int MessageId = 170;
         
         public const byte CrcExtra = 73;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -4194,7 +4196,7 @@ namespace Asv.Mavlink.Ardupilotmega
             var payloadSize = buffer.Length;
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/34 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/34 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -4241,13 +4243,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Data packet, size 64.
     ///  DATA64
     /// </summary>
-    public class Data64Packet: MavlinkV2Message<Data64Payload>
+    public class Data64Packet : MavlinkV2Message<Data64Payload>
     {
         public const int MessageId = 171;
         
         public const byte CrcExtra = 181;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -4286,7 +4288,7 @@ namespace Asv.Mavlink.Ardupilotmega
             var payloadSize = buffer.Length;
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/64 - Math.Max(0,(/*PayloadByteSize*/66 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/64 - Math.Max(0,((/*PayloadByteSize*/66 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -4333,13 +4335,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Data packet, size 96.
     ///  DATA96
     /// </summary>
-    public class Data96Packet: MavlinkV2Message<Data96Payload>
+    public class Data96Packet : MavlinkV2Message<Data96Payload>
     {
         public const int MessageId = 172;
         
         public const byte CrcExtra = 22;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -4378,7 +4380,7 @@ namespace Asv.Mavlink.Ardupilotmega
             var payloadSize = buffer.Length;
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/96 - Math.Max(0,(/*PayloadByteSize*/98 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/96 - Math.Max(0,((/*PayloadByteSize*/98 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -4425,13 +4427,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Rangefinder reporting.
     ///  RANGEFINDER
     /// </summary>
-    public class RangefinderPacket: MavlinkV2Message<RangefinderPayload>
+    public class RangefinderPacket : MavlinkV2Message<RangefinderPayload>
     {
         public const int MessageId = 173;
         
         public const byte CrcExtra = 83;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -4496,13 +4498,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Airspeed auto-calibration.
     ///  AIRSPEED_AUTOCAL
     /// </summary>
-    public class AirspeedAutocalPacket: MavlinkV2Message<AirspeedAutocalPayload>
+    public class AirspeedAutocalPacket : MavlinkV2Message<AirspeedAutocalPayload>
     {
         public const int MessageId = 174;
         
         public const byte CrcExtra = 167;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -4647,13 +4649,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// A rally point. Used to set a point when from GCS -> MAV. Also used to return a point from MAV -> GCS.
     ///  RALLY_POINT
     /// </summary>
-    public class RallyPointPacket: MavlinkV2Message<RallyPointPayload>
+    public class RallyPointPacket : MavlinkV2Message<RallyPointPayload>
     {
         public const int MessageId = 175;
         
         public const byte CrcExtra = 138;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -4782,13 +4784,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Request a current rally point from MAV. MAV should respond with a RALLY_POINT message. MAV should not respond if the request is invalid.
     ///  RALLY_FETCH_POINT
     /// </summary>
-    public class RallyFetchPointPacket: MavlinkV2Message<RallyFetchPointPayload>
+    public class RallyFetchPointPacket : MavlinkV2Message<RallyFetchPointPayload>
     {
         public const int MessageId = 176;
         
         public const byte CrcExtra = 234;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -4861,13 +4863,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Status of compassmot calibration.
     ///  COMPASSMOT_STATUS
     /// </summary>
-    public class CompassmotStatusPacket: MavlinkV2Message<CompassmotStatusPayload>
+    public class CompassmotStatusPacket : MavlinkV2Message<CompassmotStatusPayload>
     {
         public const int MessageId = 177;
         
         public const byte CrcExtra = 240;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -4964,13 +4966,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Status of secondary AHRS filter if available.
     ///  AHRS2
     /// </summary>
-    public class Ahrs2Packet: MavlinkV2Message<Ahrs2Payload>
+    public class Ahrs2Packet : MavlinkV2Message<Ahrs2Payload>
     {
         public const int MessageId = 178;
         
         public const byte CrcExtra = 47;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -5067,13 +5069,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Camera Event.
     ///  CAMERA_STATUS
     /// </summary>
-    public class CameraStatusPacket: MavlinkV2Message<CameraStatusPayload>
+    public class CameraStatusPacket : MavlinkV2Message<CameraStatusPayload>
     {
         public const int MessageId = 179;
         
         public const byte CrcExtra = 189;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -5194,13 +5196,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Camera Capture Feedback.
     ///  CAMERA_FEEDBACK
     /// </summary>
-    public class CameraFeedbackPacket: MavlinkV2Message<CameraFeedbackPayload>
+    public class CameraFeedbackPacket : MavlinkV2Message<CameraFeedbackPayload>
     {
         public const int MessageId = 180;
         
         public const byte CrcExtra = 52;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -5363,13 +5365,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// 2nd Battery status
     ///  BATTERY2
     /// </summary>
-    public class Battery2Packet: MavlinkV2Message<Battery2Payload>
+    public class Battery2Packet : MavlinkV2Message<Battery2Payload>
     {
         public const int MessageId = 181;
         
         public const byte CrcExtra = 174;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -5434,13 +5436,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Status of third AHRS filter if available. This is for ANU research group (Ali and Sean).
     ///  AHRS3
     /// </summary>
-    public class Ahrs3Packet: MavlinkV2Message<Ahrs3Payload>
+    public class Ahrs3Packet : MavlinkV2Message<Ahrs3Payload>
     {
         public const int MessageId = 182;
         
         public const byte CrcExtra = 229;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -5569,13 +5571,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Request the autopilot version from the system/component.
     ///  AUTOPILOT_VERSION_REQUEST
     /// </summary>
-    public class AutopilotVersionRequestPacket: MavlinkV2Message<AutopilotVersionRequestPayload>
+    public class AutopilotVersionRequestPacket : MavlinkV2Message<AutopilotVersionRequestPayload>
     {
         public const int MessageId = 183;
         
         public const byte CrcExtra = 85;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -5640,13 +5642,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Send a block of log data to remote location.
     ///  REMOTE_LOG_DATA_BLOCK
     /// </summary>
-    public class RemoteLogDataBlockPacket: MavlinkV2Message<RemoteLogDataBlockPayload>
+    public class RemoteLogDataBlockPacket : MavlinkV2Message<RemoteLogDataBlockPayload>
     {
         public const int MessageId = 184;
         
         public const byte CrcExtra = 159;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -5687,7 +5689,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Seqno = (MavRemoteLogDataBlockCommands)BinSerialize.ReadUInt(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/200 - Math.Max(0,(/*PayloadByteSize*/206 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/200 - Math.Max(0,((/*PayloadByteSize*/206 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -5740,13 +5742,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Send Status of each log block that autopilot board might have sent.
     ///  REMOTE_LOG_BLOCK_STATUS
     /// </summary>
-    public class RemoteLogBlockStatusPacket: MavlinkV2Message<RemoteLogBlockStatusPayload>
+    public class RemoteLogBlockStatusPacket : MavlinkV2Message<RemoteLogBlockStatusPayload>
     {
         public const int MessageId = 185;
         
         public const byte CrcExtra = 186;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -5827,13 +5829,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Control vehicle LEDs.
     ///  LED_CONTROL
     /// </summary>
-    public class LedControlPacket: MavlinkV2Message<LedControlPayload>
+    public class LedControlPacket : MavlinkV2Message<LedControlPayload>
     {
         public const int MessageId = 186;
         
         public const byte CrcExtra = 72;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -5878,7 +5880,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Instance = (byte)BinSerialize.ReadByte(ref buffer);
             Pattern = (byte)BinSerialize.ReadByte(ref buffer);
             CustomLen = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/24 - Math.Max(0,(/*PayloadByteSize*/29 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/24 - Math.Max(0,((/*PayloadByteSize*/29 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             CustomBytes = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -5943,13 +5945,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Reports progress of compass calibration.
     ///  MAG_CAL_PROGRESS
     /// </summary>
-    public class MagCalProgressPacket: MavlinkV2Message<MagCalProgressPayload>
+    public class MagCalProgressPacket : MavlinkV2Message<MagCalProgressPayload>
     {
         public const int MessageId = 191;
         
         public const byte CrcExtra = 92;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -6000,7 +6002,7 @@ namespace Asv.Mavlink.Ardupilotmega
             CalStatus = (MagCalStatus)BinSerialize.ReadByte(ref buffer);
             Attempt = (byte)BinSerialize.ReadByte(ref buffer);
             CompletionPct = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/10 - Math.Max(0,(/*PayloadByteSize*/27 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/10 - Math.Max(0,((/*PayloadByteSize*/27 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             CompletionMask = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -6083,13 +6085,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// EKF Status message including flags and variances.
     ///  EKF_STATUS_REPORT
     /// </summary>
-    public class EkfStatusReportPacket: MavlinkV2Message<EkfStatusReportPayload>
+    public class EkfStatusReportPacket : MavlinkV2Message<EkfStatusReportPayload>
     {
         public const int MessageId = 193;
         
         public const byte CrcExtra = 71;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -6196,13 +6198,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// PID tuning information.
     ///  PID_TUNING
     /// </summary>
-    public class PidTuningPacket: MavlinkV2Message<PidTuningPayload>
+    public class PidTuningPacket : MavlinkV2Message<PidTuningPayload>
     {
         public const int MessageId = 194;
         
         public const byte CrcExtra = 98;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -6327,13 +6329,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Deepstall path planning.
     ///  DEEPSTALL
     /// </summary>
-    public class DeepstallPacket: MavlinkV2Message<DeepstallPayload>
+    public class DeepstallPacket : MavlinkV2Message<DeepstallPayload>
     {
         public const int MessageId = 195;
         
         public const byte CrcExtra = 120;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -6462,13 +6464,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// 3 axis gimbal measurements.
     ///  GIMBAL_REPORT
     /// </summary>
-    public class GimbalReportPacket: MavlinkV2Message<GimbalReportPayload>
+    public class GimbalReportPacket : MavlinkV2Message<GimbalReportPayload>
     {
         public const int MessageId = 200;
         
         public const byte CrcExtra = 134;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -6613,13 +6615,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Control message for rate gimbal.
     ///  GIMBAL_CONTROL
     /// </summary>
-    public class GimbalControlPacket: MavlinkV2Message<GimbalControlPayload>
+    public class GimbalControlPacket : MavlinkV2Message<GimbalControlPayload>
     {
         public const int MessageId = 201;
         
         public const byte CrcExtra = 205;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -6708,13 +6710,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// 100 Hz gimbal torque command telemetry.
     ///  GIMBAL_TORQUE_CMD_REPORT
     /// </summary>
-    public class GimbalTorqueCmdReportPacket: MavlinkV2Message<GimbalTorqueCmdReportPayload>
+    public class GimbalTorqueCmdReportPacket : MavlinkV2Message<GimbalTorqueCmdReportPayload>
     {
         public const int MessageId = 214;
         
         public const byte CrcExtra = 69;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -6803,13 +6805,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Heartbeat from a HeroBus attached GoPro.
     ///  GOPRO_HEARTBEAT
     /// </summary>
-    public class GoproHeartbeatPacket: MavlinkV2Message<GoproHeartbeatPayload>
+    public class GoproHeartbeatPacket : MavlinkV2Message<GoproHeartbeatPayload>
     {
         public const int MessageId = 215;
         
         public const byte CrcExtra = 101;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -6882,13 +6884,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Request a GOPRO_COMMAND response from the GoPro.
     ///  GOPRO_GET_REQUEST
     /// </summary>
-    public class GoproGetRequestPacket: MavlinkV2Message<GoproGetRequestPayload>
+    public class GoproGetRequestPacket : MavlinkV2Message<GoproGetRequestPayload>
     {
         public const int MessageId = 216;
         
         public const byte CrcExtra = 50;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -6961,13 +6963,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Response from a GOPRO_COMMAND get request.
     ///  GOPRO_GET_RESPONSE
     /// </summary>
-    public class GoproGetResponsePacket: MavlinkV2Message<GoproGetResponsePayload>
+    public class GoproGetResponsePacket : MavlinkV2Message<GoproGetResponsePayload>
     {
         public const int MessageId = 217;
         
         public const byte CrcExtra = 202;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -7006,7 +7008,7 @@ namespace Asv.Mavlink.Ardupilotmega
             var payloadSize = buffer.Length;
             CmdId = (GoproCommand)BinSerialize.ReadByte(ref buffer);
             Status = (GoproRequestStatus)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/6 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/6 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Value = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -7053,13 +7055,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Request to set a GOPRO_COMMAND with a desired.
     ///  GOPRO_SET_REQUEST
     /// </summary>
-    public class GoproSetRequestPacket: MavlinkV2Message<GoproSetRequestPayload>
+    public class GoproSetRequestPacket : MavlinkV2Message<GoproSetRequestPayload>
     {
         public const int MessageId = 218;
         
         public const byte CrcExtra = 17;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -7100,7 +7102,7 @@ namespace Asv.Mavlink.Ardupilotmega
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
             CmdId = (GoproCommand)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/7 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/7 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Value = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -7153,13 +7155,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Response from a GOPRO_COMMAND set request.
     ///  GOPRO_SET_RESPONSE
     /// </summary>
-    public class GoproSetResponsePacket: MavlinkV2Message<GoproSetResponsePayload>
+    public class GoproSetResponsePacket : MavlinkV2Message<GoproSetResponsePayload>
     {
         public const int MessageId = 219;
         
         public const byte CrcExtra = 162;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -7224,13 +7226,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// RPM sensor output.
     ///  RPM
     /// </summary>
-    public class RpmPacket: MavlinkV2Message<RpmPayload>
+    public class RpmPacket : MavlinkV2Message<RpmPayload>
     {
         public const int MessageId = 226;
         
         public const byte CrcExtra = 207;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -7295,13 +7297,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Read registers for a device.
     ///  DEVICE_OP_READ
     /// </summary>
-    public class DeviceOpReadPacket: MavlinkV2Message<DeviceOpReadPayload>
+    public class DeviceOpReadPacket : MavlinkV2Message<DeviceOpReadPayload>
     {
         public const int MessageId = 11000;
         
         public const byte CrcExtra = 134;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -7351,7 +7353,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Bustype = (DeviceOpBustype)BinSerialize.ReadByte(ref buffer);
             Bus = (byte)BinSerialize.ReadByte(ref buffer);
             Address = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/40 - Math.Max(0,(/*PayloadByteSize*/52 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/40 - Math.Max(0,((/*PayloadByteSize*/52 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/));
             Busname = new char[arraySize];
             unsafe
             {
@@ -7457,13 +7459,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Read registers reply.
     ///  DEVICE_OP_READ_REPLY
     /// </summary>
-    public class DeviceOpReadReplyPacket: MavlinkV2Message<DeviceOpReadReplyPayload>
+    public class DeviceOpReadReplyPacket : MavlinkV2Message<DeviceOpReadReplyPayload>
     {
         public const int MessageId = 11001;
         
         public const byte CrcExtra = 15;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -7507,7 +7509,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Result = (byte)BinSerialize.ReadByte(ref buffer);
             Regstart = (byte)BinSerialize.ReadByte(ref buffer);
             Count = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/128 - Math.Max(0,(/*PayloadByteSize*/136 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/128 - Math.Max(0,((/*PayloadByteSize*/136 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/));
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -7575,13 +7577,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Write registers for a device.
     ///  DEVICE_OP_WRITE
     /// </summary>
-    public class DeviceOpWritePacket: MavlinkV2Message<DeviceOpWritePayload>
+    public class DeviceOpWritePacket : MavlinkV2Message<DeviceOpWritePayload>
     {
         public const int MessageId = 11002;
         
         public const byte CrcExtra = 234;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -7645,7 +7647,7 @@ namespace Asv.Mavlink.Ardupilotmega
            
             Regstart = (byte)BinSerialize.ReadByte(ref buffer);
             Count = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/128 - Math.Max(0,(/*PayloadByteSize*/180 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/128 - Math.Max(0,((/*PayloadByteSize*/180 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/));
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -7753,13 +7755,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Write registers reply.
     ///  DEVICE_OP_WRITE_REPLY
     /// </summary>
-    public class DeviceOpWriteReplyPacket: MavlinkV2Message<DeviceOpWriteReplyPayload>
+    public class DeviceOpWriteReplyPacket : MavlinkV2Message<DeviceOpWriteReplyPayload>
     {
         public const int MessageId = 11003;
         
         public const byte CrcExtra = 64;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -7824,13 +7826,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Adaptive Controller tuning information.
     ///  ADAP_TUNING
     /// </summary>
-    public class AdapTuningPacket: MavlinkV2Message<AdapTuningPayload>
+    public class AdapTuningPacket : MavlinkV2Message<AdapTuningPayload>
     {
         public const int MessageId = 11010;
         
         public const byte CrcExtra = 46;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -7983,13 +7985,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Camera vision based attitude and position deltas.
     ///  VISION_POSITION_DELTA
     /// </summary>
-    public class VisionPositionDeltaPacket: MavlinkV2Message<VisionPositionDeltaPayload>
+    public class VisionPositionDeltaPacket : MavlinkV2Message<VisionPositionDeltaPayload>
     {
         public const int MessageId = 11011;
         
         public const byte CrcExtra = 106;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -8030,7 +8032,7 @@ namespace Asv.Mavlink.Ardupilotmega
             var payloadSize = buffer.Length;
             TimeUsec = BinSerialize.ReadULong(ref buffer);
             TimeDeltaUsec = BinSerialize.ReadULong(ref buffer);
-            arraySize = /*ArrayLength*/3 - Math.Max(0,(/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/3 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
             AngleDelta = new float[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -8099,13 +8101,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Angle of Attack and Side Slip Angle.
     ///  AOA_SSA
     /// </summary>
-    public class AoaSsaPacket: MavlinkV2Message<AoaSsaPayload>
+    public class AoaSsaPacket : MavlinkV2Message<AoaSsaPayload>
     {
         public const int MessageId = 11020;
         
         public const byte CrcExtra = 205;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -8178,13 +8180,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// ESC Telemetry Data for ESCs 1 to 4, matching data sent by BLHeli ESCs.
     ///  ESC_TELEMETRY_1_TO_4
     /// </summary>
-    public class EscTelemetry1To4Packet: MavlinkV2Message<EscTelemetry1To4Payload>
+    public class EscTelemetry1To4Packet : MavlinkV2Message<EscTelemetry1To4Payload>
     {
         public const int MessageId = 11030;
         
         public const byte CrcExtra = 144;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -8224,7 +8226,7 @@ namespace Asv.Mavlink.Ardupilotmega
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
             Voltage = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -8334,13 +8336,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// ESC Telemetry Data for ESCs 5 to 8, matching data sent by BLHeli ESCs.
     ///  ESC_TELEMETRY_5_TO_8
     /// </summary>
-    public class EscTelemetry5To8Packet: MavlinkV2Message<EscTelemetry5To8Payload>
+    public class EscTelemetry5To8Packet : MavlinkV2Message<EscTelemetry5To8Payload>
     {
         public const int MessageId = 11031;
         
         public const byte CrcExtra = 133;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -8380,7 +8382,7 @@ namespace Asv.Mavlink.Ardupilotmega
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
             Voltage = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -8490,13 +8492,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// ESC Telemetry Data for ESCs 9 to 12, matching data sent by BLHeli ESCs.
     ///  ESC_TELEMETRY_9_TO_12
     /// </summary>
-    public class EscTelemetry9To12Packet: MavlinkV2Message<EscTelemetry9To12Payload>
+    public class EscTelemetry9To12Packet : MavlinkV2Message<EscTelemetry9To12Payload>
     {
         public const int MessageId = 11032;
         
         public const byte CrcExtra = 85;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -8536,7 +8538,7 @@ namespace Asv.Mavlink.Ardupilotmega
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
             Voltage = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -8646,13 +8648,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Configure an OSD parameter slot.
     ///  OSD_PARAM_CONFIG
     /// </summary>
-    public class OsdParamConfigPacket: MavlinkV2Message<OsdParamConfigPayload>
+    public class OsdParamConfigPacket : MavlinkV2Message<OsdParamConfigPayload>
     {
         public const int MessageId = 11033;
         
         public const byte CrcExtra = 195;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -8704,7 +8706,7 @@ namespace Asv.Mavlink.Ardupilotmega
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
             OsdScreen = (byte)BinSerialize.ReadByte(ref buffer);
             OsdIndex = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/37 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/37 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             ParamId = new char[arraySize];
             unsafe
             {
@@ -8806,13 +8808,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Configure OSD parameter reply.
     ///  OSD_PARAM_CONFIG_REPLY
     /// </summary>
-    public class OsdParamConfigReplyPacket: MavlinkV2Message<OsdParamConfigReplyPayload>
+    public class OsdParamConfigReplyPacket : MavlinkV2Message<OsdParamConfigReplyPayload>
     {
         public const int MessageId = 11034;
         
         public const byte CrcExtra = 79;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -8877,13 +8879,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Read a configured an OSD parameter slot.
     ///  OSD_PARAM_SHOW_CONFIG
     /// </summary>
-    public class OsdParamShowConfigPacket: MavlinkV2Message<OsdParamShowConfigPayload>
+    public class OsdParamShowConfigPacket : MavlinkV2Message<OsdParamShowConfigPayload>
     {
         public const int MessageId = 11035;
         
         public const byte CrcExtra = 128;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -8972,13 +8974,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Read configured OSD parameter reply.
     ///  OSD_PARAM_SHOW_CONFIG_REPLY
     /// </summary>
-    public class OsdParamShowConfigReplyPacket: MavlinkV2Message<OsdParamShowConfigReplyPayload>
+    public class OsdParamShowConfigReplyPacket : MavlinkV2Message<OsdParamShowConfigReplyPayload>
     {
         public const int MessageId = 11036;
         
         public const byte CrcExtra = 177;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -9024,7 +9026,7 @@ namespace Asv.Mavlink.Ardupilotmega
             MaxValue = BinSerialize.ReadFloat(ref buffer);
             Increment = BinSerialize.ReadFloat(ref buffer);
             Result = (OsdParamConfigError)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/34 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/34 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             ParamId = new char[arraySize];
             unsafe
             {
@@ -9108,13 +9110,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Obstacle located as a 3D vector.
     ///  OBSTACLE_DISTANCE_3D
     /// </summary>
-    public class ObstacleDistance3dPacket: MavlinkV2Message<ObstacleDistance3dPayload>
+    public class ObstacleDistance3dPacket : MavlinkV2Message<ObstacleDistance3dPayload>
     {
         public const int MessageId = 11037;
         
         public const byte CrcExtra = 130;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -9235,13 +9237,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// Water depth
     ///  WATER_DEPTH
     /// </summary>
-    public class WaterDepthPacket: MavlinkV2Message<WaterDepthPayload>
+    public class WaterDepthPacket : MavlinkV2Message<WaterDepthPayload>
     {
         public const int MessageId = 11038;
         
         public const byte CrcExtra = 47;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -9378,13 +9380,13 @@ namespace Asv.Mavlink.Ardupilotmega
     /// The MCU status, giving MCU temperature and voltage. The min and max voltages are to allow for detecting power supply instability.
     ///  MCU_STATUS
     /// </summary>
-    public class McuStatusPacket: MavlinkV2Message<McuStatusPayload>
+    public class McuStatusPacket : MavlinkV2Message<McuStatusPayload>
     {
         public const int MessageId = 11039;
         
         public const byte CrcExtra = 142;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;

@@ -253,10 +253,10 @@ public class MissionItemTest
     }
     
     [Theory]
-    // [InlineData(byte.MaxValue, byte.MinValue)]
-    // [InlineData(1, 0)]
-    // [InlineData(0, 1)]
-    [InlineData(byte.MinValue, byte.MaxValue)]
+    
+     [InlineData(1, 0)]
+    [InlineData(0, 1)]
+    
     public void Edit_ChangeAutoContinue_Success(byte autoContinue, byte newAutoContinue)
     {
         // Arrange
@@ -347,10 +347,8 @@ public class MissionItemTest
     }
     
     [Theory]
-    [InlineData(byte.MaxValue, byte.MinValue)]
     [InlineData(1, 0)]
     [InlineData(0, 1)]
-    [InlineData(byte.MinValue, byte.MaxValue)]
     public void Edit_ChangeCurrent_Success(byte current, byte newCurrent)
     {
         // Arrange

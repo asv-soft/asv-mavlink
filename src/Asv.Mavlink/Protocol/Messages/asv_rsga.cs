@@ -20,11 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.4+c60d154a544f2b4740e11edc578d956f8b9fd5c3
 
 using System;
+using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.AsvRsga
@@ -32,7 +36,7 @@ namespace Asv.Mavlink.AsvRsga
 
     public static class AsvRsgaHelper
     {
-        public static void RegisterAsvRsgaDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterAsvRsgaDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(AsvRsgaCompatibilityRequestPacket.MessageId, ()=>new AsvRsgaCompatibilityRequestPacket());
             src.Add(AsvRsgaCompatibilityResponsePacket.MessageId, ()=>new AsvRsgaCompatibilityResponsePacket());
@@ -90,7 +94,7 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaCustomModeTxMarker = 53,
         /// <summary>
-        /// DME beacon mode.
+        /// DME beacon (replier) mode.
         /// ASV_RSGA_CUSTOM_MODE_DME_REP
         /// </summary>
         AsvRsgaCustomModeDmeRep = 54,
@@ -100,7 +104,17 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaCustomModeTxGbas = 55,
         /// <summary>
-        /// DME plane mode.
+        /// ADSB beacon(interrogator) mode.
+        /// ASV_RSGA_CUSTOM_MODE_ADSB_REQ
+        /// </summary>
+        AsvRsgaCustomModeAdsbReq = 56,
+        /// <summary>
+        /// GNSS generator(satellite) mode.
+        /// ASV_RSGA_CUSTOM_MODE_TX_GNSS
+        /// </summary>
+        AsvRsgaCustomModeTxGnss = 57,
+        /// <summary>
+        /// DME air(interrogator) mode.
         /// ASV_RSGA_CUSTOM_MODE_DME_REQ
         /// </summary>
         AsvRsgaCustomModeDmeReq = 74,
@@ -129,6 +143,16 @@ namespace Asv.Mavlink.AsvRsga
         /// ASV_RSGA_CUSTOM_MODE_RX_GBAS
         /// </summary>
         AsvRsgaCustomModeRxGbas = 79,
+        /// <summary>
+        /// ADSB air(replier) mode.
+        /// ASV_RSGA_CUSTOM_MODE_ADSB_REP
+        /// </summary>
+        AsvRsgaCustomModeAdsbRep = 80,
+        /// <summary>
+        /// GNSS analyzer mode.
+        /// ASV_RSGA_CUSTOM_MODE_RX_GNSS
+        /// </summary>
+        AsvRsgaCustomModeRxGnss = 81,
         /// <summary>
         /// Audio radio station mode.
         /// ASV_RSGA_CUSTOM_MODE_RADIO
@@ -197,13 +221,13 @@ namespace Asv.Mavlink.AsvRsga
     /// Requests device COMPATIBILITY. Returns ASV_RSGA_COMPATIBILITY_RESPONSE. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RSGA_COMPATIBILITY_REQUEST
     /// </summary>
-    public class AsvRsgaCompatibilityRequestPacket: MavlinkV2Message<AsvRsgaCompatibilityRequestPayload>
+    public class AsvRsgaCompatibilityRequestPacket : MavlinkV2Message<AsvRsgaCompatibilityRequestPayload>
     {
         public const int MessageId = 13400;
         
         public const byte CrcExtra = 16;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -276,13 +300,13 @@ namespace Asv.Mavlink.AsvRsga
     /// Responds to the ASV_RSGA_COMPATIBILITY_REQUEST. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RSGA_COMPATIBILITY_RESPONSE
     /// </summary>
-    public class AsvRsgaCompatibilityResponsePacket: MavlinkV2Message<AsvRsgaCompatibilityResponsePayload>
+    public class AsvRsgaCompatibilityResponsePacket : MavlinkV2Message<AsvRsgaCompatibilityResponsePayload>
     {
         public const int MessageId = 13401;
         
         public const byte CrcExtra = 196;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -321,7 +345,7 @@ namespace Asv.Mavlink.AsvRsga
             var payloadSize = buffer.Length;
             RequestId = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvRsgaRequestAck)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/35 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/35 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             SupportedModes = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {

@@ -36,7 +36,7 @@ namespace Asv.Mavlink.{{ Namespace }}
 
     public static class {{ Namespace }}Helper
     {
-        public static void Register{{ Namespace }}Dialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void Register{{ Namespace }}Dialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             {%- for msg in Messages -%}
             src.Add({{ msg.CamelCaseName }}Packet.MessageId, ()=>new {{ msg.CamelCaseName }}Packet());

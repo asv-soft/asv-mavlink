@@ -117,7 +117,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         var res = await tcs.Task as AsvChartDataResponsePacket;
         Assert.NotNull(res);
         Assert.NotNull(stream);
-        Assert.Equal(res?.Payload.ChartId, stream.ChartId);
+        Assert.Equal(res?.Payload.ChatId, stream.ChartId);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
@@ -178,11 +178,11 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         {
             if (packet is AsvChartDataResponsePacket response)
             {
-                if (response.Payload.ChartId == 1)
+                if (response.Payload.ChatId == 1)
                 {
                     tcsFirst.TrySetResult(response);
                 }
-                else if (response.Payload.ChartId == 2)
+                else if (response.Payload.ChatId == 2)
                 {
                     tcsSecond.TrySetResult(response);
                 }
@@ -208,8 +208,8 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         Assert.NotNull(secondStream);
         Assert.NotNull(resFirst);
         Assert.NotNull(resSecond);
-        Assert.Equal(resFirst.Payload.ChartId, firstStream.ChartId);
-        Assert.Equal(resSecond.Payload.ChartId, secondStream.ChartId);
+        Assert.Equal(resFirst.Payload.ChatId, firstStream.ChartId);
+        Assert.Equal(resSecond.Payload.ChatId, secondStream.ChartId);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 

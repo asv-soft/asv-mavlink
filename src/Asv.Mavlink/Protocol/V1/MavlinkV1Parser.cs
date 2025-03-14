@@ -5,7 +5,7 @@ using Asv.IO;
 
 namespace Asv.Mavlink;
 
-public class MavlinkV1Parser:ProtocolParser<MavlinkMessage,ushort>
+public class MavlinkV1Parser:ProtocolParser<MavlinkMessage,int>
 {
     private State _state;
     private readonly byte[] _buffer = ArrayPool<byte>.Shared.Rent(MavlinkV2Protocol.PacketV2MaxSize + MavlinkV2Protocol.SignatureByteSize);
@@ -13,7 +13,7 @@ public class MavlinkV1Parser:ProtocolParser<MavlinkMessage,ushort>
     private int _bufferStopIndex;
 
     public MavlinkV1Parser(
-        IProtocolMessageFactory<MavlinkMessage, ushort> messageFactory, IProtocolContext context, IStatisticHandler? statisticHandler) 
+        IProtocolMessageFactory<MavlinkMessage, int> messageFactory, IProtocolContext context, IStatisticHandler? statisticHandler) 
         : base(messageFactory, context, statisticHandler)
     {
         

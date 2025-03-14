@@ -20,12 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.4+c60d154a544f2b4740e11edc578d956f8b9fd5c3
 
 using System;
 using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.AsvChart
@@ -33,7 +36,7 @@ namespace Asv.Mavlink.AsvChart
 
     public static class AsvChartHelper
     {
-        public static void RegisterAsvChartDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterAsvChartDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(AsvChartInfoRequestPacket.MessageId, ()=>new AsvChartInfoRequestPacket());
             src.Add(AsvChartInfoResponsePacket.MessageId, ()=>new AsvChartInfoResponsePacket());
@@ -176,13 +179,13 @@ namespace Asv.Mavlink.AsvChart
     /// Requests available charts for visualization. Returns ASV_CHART_INFO_RESPONSE and then items with ASV_CHART_INFO. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_CHART_INFO_REQUEST
     /// </summary>
-    public class AsvChartInfoRequestPacket: MavlinkV2Message<AsvChartInfoRequestPayload>
+    public class AsvChartInfoRequestPacket : MavlinkV2Message<AsvChartInfoRequestPayload>
     {
         public const int MessageId = 13350;
         
         public const byte CrcExtra = 131;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -271,13 +274,13 @@ namespace Asv.Mavlink.AsvChart
     /// Responds to the request for available charts for visualization. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_CHART_INFO_RESPONSE
     /// </summary>
-    public class AsvChartInfoResponsePacket: MavlinkV2Message<AsvChartInfoResponsePayload>
+    public class AsvChartInfoResponsePacket : MavlinkV2Message<AsvChartInfoResponsePayload>
     {
         public const int MessageId = 13351;
         
         public const byte CrcExtra = 109;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -358,13 +361,13 @@ namespace Asv.Mavlink.AsvChart
     /// Event about chart collection or it's element changed. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_CHART_INFO_UPDATED_EVENT
     /// </summary>
-    public class AsvChartInfoUpdatedEventPacket: MavlinkV2Message<AsvChartInfoUpdatedEventPayload>
+    public class AsvChartInfoUpdatedEventPacket : MavlinkV2Message<AsvChartInfoUpdatedEventPayload>
     {
         public const int MessageId = 13352;
         
         public const byte CrcExtra = 37;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -429,13 +432,13 @@ namespace Asv.Mavlink.AsvChart
     /// Contains chart info. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_CHART_INFO
     /// </summary>
-    public class AsvChartInfoPacket: MavlinkV2Message<AsvChartInfoPayload>
+    public class AsvChartInfoPacket : MavlinkV2Message<AsvChartInfoPayload>
     {
         public const int MessageId = 13353;
         
         public const byte CrcExtra = 159;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -494,7 +497,7 @@ namespace Asv.Mavlink.AsvChart
             AxesXCount = BinSerialize.ReadUShort(ref buffer);
             AxesYUnit = (AsvChartUnitType)BinSerialize.ReadUShort(ref buffer);
             AxesYCount = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/78 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/78 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             ChartName = new char[arraySize];
             unsafe
             {
@@ -669,13 +672,13 @@ namespace Asv.Mavlink.AsvChart
     /// Request for chart data stream.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_CHART_DATA_REQUEST
     /// </summary>
-    public class AsvChartDataRequestPacket: MavlinkV2Message<AsvChartDataRequestPayload>
+    public class AsvChartDataRequestPacket : MavlinkV2Message<AsvChartDataRequestPayload>
     {
         public const int MessageId = 13354;
         
         public const byte CrcExtra = 4;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -772,13 +775,13 @@ namespace Asv.Mavlink.AsvChart
     /// Response for ASV_CHART_STREAM_REQUEST.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_CHART_DATA_RESPONSE
     /// </summary>
-    public class AsvChartDataResponsePacket: MavlinkV2Message<AsvChartDataResponsePayload>
+    public class AsvChartDataResponsePacket : MavlinkV2Message<AsvChartDataResponsePayload>
     {
         public const int MessageId = 13355;
         
         public const byte CrcExtra = 185;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -816,7 +819,7 @@ namespace Asv.Mavlink.AsvChart
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
             DataRate = BinSerialize.ReadFloat(ref buffer);
-            ChartId = BinSerialize.ReadUShort(ref buffer);
+            ChatId = BinSerialize.ReadUShort(ref buffer);
             ChatInfoHash = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvChartRequestAck)BinSerialize.ReadByte(ref buffer);
             DataTrigger = (AsvChartDataTrigger)BinSerialize.ReadByte(ref buffer);
@@ -826,7 +829,7 @@ namespace Asv.Mavlink.AsvChart
         public void Serialize(ref Span<byte> buffer)
         {
             BinSerialize.WriteFloat(ref buffer,DataRate);
-            BinSerialize.WriteUShort(ref buffer,ChartId);
+            BinSerialize.WriteUShort(ref buffer,ChatId);
             BinSerialize.WriteUShort(ref buffer,ChatInfoHash);
             BinSerialize.WriteByte(ref buffer,(byte)Result);
             BinSerialize.WriteByte(ref buffer,(byte)DataTrigger);
@@ -846,7 +849,7 @@ namespace Asv.Mavlink.AsvChart
         /// The ID of the requested chart
         /// OriginName: chat_id, Units: , IsExtended: false
         /// </summary>
-        public ushort ChartId { get; set; }
+        public ushort ChatId { get; set; }
         /// <summary>
         /// Hash of the chart ASV_CHART_INFO to ensure that all settings are synchronized.
         /// OriginName: chat_info_hash, Units: , IsExtended: false
@@ -867,13 +870,13 @@ namespace Asv.Mavlink.AsvChart
     /// Raw chart data for visualization.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_CHART_DATA
     /// </summary>
-    public class AsvChartDataPacket: MavlinkV2Message<AsvChartDataPayload>
+    public class AsvChartDataPacket : MavlinkV2Message<AsvChartDataPayload>
     {
         public const int MessageId = 13360;
         
         public const byte CrcExtra = 66;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -920,7 +923,7 @@ namespace Asv.Mavlink.AsvChart
             PktInFrame = BinSerialize.ReadUShort(ref buffer);
             PktSeq = BinSerialize.ReadUShort(ref buffer);
             DataSize = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/220 - Math.Max(0,(/*PayloadByteSize*/237 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/220 - Math.Max(0,((/*PayloadByteSize*/237 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {

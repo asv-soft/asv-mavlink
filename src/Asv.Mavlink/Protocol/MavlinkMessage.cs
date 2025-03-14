@@ -3,7 +3,7 @@ using Asv.IO;
 
 namespace Asv.Mavlink;
 
-public abstract class MavlinkMessage : IProtocolMessage<ushort>
+public abstract class MavlinkMessage : IProtocolMessage<int>
 {
     private ProtocolTags _tags = [];
 
@@ -22,7 +22,7 @@ public abstract class MavlinkMessage : IProtocolMessage<ushort>
     public abstract ProtocolInfo Protocol { get; }
     
     public abstract string Name { get; }
-    public abstract ushort Id { get; }
+    public abstract int Id { get; }
     
     public abstract byte GetCrcExtra();
     

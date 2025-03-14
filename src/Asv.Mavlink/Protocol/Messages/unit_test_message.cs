@@ -31,7 +31,7 @@ namespace Asv.Mavlink.UnitTestMessage
 
     public static class UnitTestMessageHelper
     {
-        public static void RegisterUnitTestMessageDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterUnitTestMessageDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(ChemicalDetectorDataPacket.MessageId,()=>new ChemicalDetectorDataPacket());
         }
@@ -51,7 +51,7 @@ namespace Asv.Mavlink.UnitTestMessage
     public class ChemicalDetectorDataPacket: MavlinkV2Message<ChemicalDetectorDataPayload>
     {
 	    public const int MessageId = 14202;
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         public override byte GetCrcExtra() => 157;
         public override bool WrapToV2Extension => false;
 

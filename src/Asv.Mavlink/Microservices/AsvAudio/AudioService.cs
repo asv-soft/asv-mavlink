@@ -49,8 +49,8 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
         _onlineRate = TimeSpan.FromMilliseconds(config1.OnlineRateMs);
         
         _devices = new ObservableDictionary<MavlinkIdentity,IAudioDevice>();
-        _sub1 = core.Connection.RxFilterByMsgId<AsvAudioOnlinePacket, ushort>().Where(_=>IsOnline.CurrentValue).Subscribe(OnRecvDeviceOnline);
-        _sub2 = core.Connection.RxFilterByMsgId<AsvAudioStreamPacket,ushort>().Where(_=>IsOnline.CurrentValue).Subscribe(OnRecvAudioStream);
+        _sub1 = core.Connection.RxFilterByMsgId<AsvAudioOnlinePacket, int>().Where(_=>IsOnline.CurrentValue).Subscribe(OnRecvDeviceOnline);
+        _sub2 = core.Connection.RxFilterByMsgId<AsvAudioStreamPacket,int>().Where(_=>IsOnline.CurrentValue).Subscribe(OnRecvAudioStream);
         
         _timer = core.TimeProvider.CreateTimer(RemoveOldDevice, null, TimeSpan.FromMilliseconds(config.RemoveDeviceCheckDelayMs), TimeSpan.FromMilliseconds(config.RemoveDeviceCheckDelayMs));
         _transponder = new MavlinkPacketTransponder<AsvAudioOnlinePacket>(identity,core);

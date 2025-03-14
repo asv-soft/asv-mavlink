@@ -23,8 +23,12 @@
 // This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
+using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.Ualberta
@@ -32,7 +36,7 @@ namespace Asv.Mavlink.Ualberta
 
     public static class UalbertaHelper
     {
-        public static void RegisterUalbertaDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterUalbertaDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(NavFilterBiasPacket.MessageId, ()=>new NavFilterBiasPacket());
             src.Add(RadioCalibrationPacket.MessageId, ()=>new RadioCalibrationPacket());
@@ -129,13 +133,13 @@ namespace Asv.Mavlink.Ualberta
     /// Accelerometer and Gyro biases from the navigation filter
     ///  NAV_FILTER_BIAS
     /// </summary>
-    public class NavFilterBiasPacket: MavlinkV2Message<NavFilterBiasPayload>
+    public class NavFilterBiasPacket : MavlinkV2Message<NavFilterBiasPayload>
     {
         public const int MessageId = 220;
         
         public const byte CrcExtra = 34;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -240,13 +244,13 @@ namespace Asv.Mavlink.Ualberta
     /// Complete set of calibration parameters for the radio
     ///  RADIO_CALIBRATION
     /// </summary>
-    public class RadioCalibrationPacket: MavlinkV2Message<RadioCalibrationPayload>
+    public class RadioCalibrationPacket : MavlinkV2Message<RadioCalibrationPayload>
     {
         public const int MessageId = 221;
         
         public const byte CrcExtra = 71;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -306,7 +310,7 @@ namespace Asv.Mavlink.Ualberta
             {
                 Gyro[i] = BinSerialize.ReadUShort(ref buffer);
             }
-            arraySize = /*ArrayLength*/5 - Math.Max(0,(/*PayloadByteSize*/42 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/42 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
             Pitch = new ushort[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -396,13 +400,13 @@ namespace Asv.Mavlink.Ualberta
     /// System status specific to ualberta uav
     ///  UALBERTA_SYS_STATUS
     /// </summary>
-    public class UalbertaSysStatusPacket: MavlinkV2Message<UalbertaSysStatusPayload>
+    public class UalbertaSysStatusPacket : MavlinkV2Message<UalbertaSysStatusPayload>
     {
         public const int MessageId = 222;
         
         public const byte CrcExtra = 15;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;

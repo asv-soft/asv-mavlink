@@ -24,8 +24,11 @@
 
 using System;
 using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.Csairlink
@@ -33,7 +36,7 @@ namespace Asv.Mavlink.Csairlink
 
     public static class CsairlinkHelper
     {
-        public static void RegisterCsairlinkDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterCsairlinkDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(AirlinkAuthPacket.MessageId, ()=>new AirlinkAuthPacket());
             src.Add(AirlinkAuthResponsePacket.MessageId, ()=>new AirlinkAuthResponsePacket());
@@ -68,13 +71,13 @@ namespace Asv.Mavlink.Csairlink
     /// Authorization package
     ///  AIRLINK_AUTH
     /// </summary>
-    public class AirlinkAuthPacket: MavlinkV2Message<AirlinkAuthPayload>
+    public class AirlinkAuthPacket : MavlinkV2Message<AirlinkAuthPayload>
     {
         public const int MessageId = 52000;
         
         public const byte CrcExtra = 13;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -110,7 +113,7 @@ namespace Asv.Mavlink.Csairlink
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/50 - Math.Max(0,(/*PayloadByteSize*/100 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/50 - Math.Max(0,((/*PayloadByteSize*/100 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Login = new char[arraySize];
             unsafe
             {
@@ -184,13 +187,13 @@ namespace Asv.Mavlink.Csairlink
     /// Response to the authorization request
     ///  AIRLINK_AUTH_RESPONSE
     /// </summary>
-    public class AirlinkAuthResponsePacket: MavlinkV2Message<AirlinkAuthResponsePayload>
+    public class AirlinkAuthResponsePacket : MavlinkV2Message<AirlinkAuthResponsePayload>
     {
         public const int MessageId = 52001;
         
         public const byte CrcExtra = 239;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;

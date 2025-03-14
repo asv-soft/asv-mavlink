@@ -23,8 +23,12 @@
 // This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
+using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.Avssuas
@@ -32,7 +36,7 @@ namespace Asv.Mavlink.Avssuas
 
     public static class AvssuasHelper
     {
-        public static void RegisterAvssuasDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterAvssuasDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(AvssPrsSysStatusPacket.MessageId, ()=>new AvssPrsSysStatusPacket());
             src.Add(AvssDronePositionPacket.MessageId, ()=>new AvssDronePositionPacket());
@@ -274,13 +278,13 @@ namespace Asv.Mavlink.Avssuas
     ///  AVSS PRS system status.
     ///  AVSS_PRS_SYS_STATUS
     /// </summary>
-    public class AvssPrsSysStatusPacket: MavlinkV2Message<AvssPrsSysStatusPayload>
+    public class AvssPrsSysStatusPacket : MavlinkV2Message<AvssPrsSysStatusPayload>
     {
         public const int MessageId = 60050;
         
         public const byte CrcExtra = 220;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -369,13 +373,13 @@ namespace Asv.Mavlink.Avssuas
     ///  Drone position.
     ///  AVSS_DRONE_POSITION
     /// </summary>
-    public class AvssDronePositionPacket: MavlinkV2Message<AvssDronePositionPayload>
+    public class AvssDronePositionPacket : MavlinkV2Message<AvssDronePositionPayload>
     {
         public const int MessageId = 60051;
         
         public const byte CrcExtra = 245;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -472,13 +476,13 @@ namespace Asv.Mavlink.Avssuas
     ///  Drone IMU data. Quaternion order is w, x, y, z and a zero rotation would be expressed as (1 0 0 0).
     ///  AVSS_DRONE_IMU
     /// </summary>
-    public class AvssDroneImuPacket: MavlinkV2Message<AvssDroneImuPayload>
+    public class AvssDroneImuPacket : MavlinkV2Message<AvssDroneImuPayload>
     {
         public const int MessageId = 60052;
         
         public const byte CrcExtra = 101;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -615,13 +619,13 @@ namespace Asv.Mavlink.Avssuas
     ///  Drone operation mode.
     ///  AVSS_DRONE_OPERATION_MODE
     /// </summary>
-    public class AvssDroneOperationModePacket: MavlinkV2Message<AvssDroneOperationModePayload>
+    public class AvssDroneOperationModePacket : MavlinkV2Message<AvssDroneOperationModePayload>
     {
         public const int MessageId = 60053;
         
         public const byte CrcExtra = 45;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;

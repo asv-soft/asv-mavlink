@@ -20,11 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.4+c60d154a544f2b4740e11edc578d956f8b9fd5c3
 
 using System;
+using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 using Asv.Mavlink.AsvAudio;
 
@@ -33,7 +37,7 @@ namespace Asv.Mavlink.AsvRadio
 
     public static class AsvRadioHelper
     {
-        public static void RegisterAsvRadioDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterAsvRadioDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(AsvRadioStatusPacket.MessageId, ()=>new AsvRadioStatusPacket());
             src.Add(AsvRadioCapabilitiesRequestPacket.MessageId, ()=>new AsvRadioCapabilitiesRequestPacket());
@@ -155,13 +159,13 @@ namespace Asv.Mavlink.AsvRadio
     /// Status of radio device. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RADIO_STATUS
     /// </summary>
-    public class AsvRadioStatusPacket: MavlinkV2Message<AsvRadioStatusPayload>
+    public class AsvRadioStatusPacket : MavlinkV2Message<AsvRadioStatusPayload>
     {
         public const int MessageId = 13250;
         
         public const byte CrcExtra = 154;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -258,13 +262,13 @@ namespace Asv.Mavlink.AsvRadio
     /// Request for device capabilities. Devices must reply ASV_RADIO_CAPABILITIES_RESPONSE message.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RADIO_CAPABILITIES_REQUEST
     /// </summary>
-    public class AsvRadioCapabilitiesRequestPacket: MavlinkV2Message<AsvRadioCapabilitiesRequestPayload>
+    public class AsvRadioCapabilitiesRequestPacket : MavlinkV2Message<AsvRadioCapabilitiesRequestPayload>
     {
         public const int MessageId = 13251;
         
         public const byte CrcExtra = 10;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -329,13 +333,13 @@ namespace Asv.Mavlink.AsvRadio
     /// Device capabilities. This is response for ASV_RADIO_CAPABILITIES_REQUEST message.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RADIO_CAPABILITIES_RESPONSE
     /// </summary>
-    public class AsvRadioCapabilitiesResponsePacket: MavlinkV2Message<AsvRadioCapabilitiesResponsePayload>
+    public class AsvRadioCapabilitiesResponsePacket : MavlinkV2Message<AsvRadioCapabilitiesResponsePayload>
     {
         public const int MessageId = 13252;
         
         public const byte CrcExtra = 62;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -382,7 +386,7 @@ namespace Asv.Mavlink.AsvRadio
             MinTxPower = BinSerialize.ReadFloat(ref buffer);
             MaxRxPower = BinSerialize.ReadFloat(ref buffer);
             MinRxPower = BinSerialize.ReadFloat(ref buffer);
-            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/56 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/56 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             SupportedModulation = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -453,13 +457,13 @@ namespace Asv.Mavlink.AsvRadio
     /// Request supported target codecs. Devices must reply ASV_RADIO_CODEC_CAPABILITIES_RESPONSE message.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RADIO_CODEC_CAPABILITIES_REQUEST
     /// </summary>
-    public class AsvRadioCodecCapabilitiesRequestPacket: MavlinkV2Message<AsvRadioCodecCapabilitiesRequestPayload>
+    public class AsvRadioCodecCapabilitiesRequestPacket : MavlinkV2Message<AsvRadioCodecCapabilitiesRequestPayload>
     {
         public const int MessageId = 13253;
         
         public const byte CrcExtra = 205;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -540,13 +544,13 @@ namespace Asv.Mavlink.AsvRadio
     /// Request supported additional params for target codec. Devices must reply ASV_RADIO_CODEC_CAPABILITIES_REQUEST message.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RADIO_CODEC_CAPABILITIES_RESPONSE
     /// </summary>
-    public class AsvRadioCodecCapabilitiesResponsePacket: MavlinkV2Message<AsvRadioCodecCapabilitiesResponsePayload>
+    public class AsvRadioCodecCapabilitiesResponsePacket : MavlinkV2Message<AsvRadioCodecCapabilitiesResponsePayload>
     {
         public const int MessageId = 13254;
         
         public const byte CrcExtra = 228;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -587,7 +591,7 @@ namespace Asv.Mavlink.AsvRadio
             var payloadSize = buffer.Length;
             All = BinSerialize.ReadUShort(ref buffer);
             Skip = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/100 - Math.Max(0,(/*PayloadByteSize*/205 - payloadSize - /*ExtendedFieldsLength*/0)/*FieldTypeByteSize*/ /2);
+            arraySize = /*ArrayLength*/100 - Math.Max(0,((/*PayloadByteSize*/205 - payloadSize - /*ExtendedFieldsLength*/0)/*FieldTypeByteSize*/ /2));
             Codecs = new AsvAudioCodec[arraySize];
             for(var i=0;i<arraySize;i++)
             {

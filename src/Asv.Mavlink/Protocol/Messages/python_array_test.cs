@@ -24,8 +24,11 @@
 
 using System;
 using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.PythonArrayTest
@@ -33,7 +36,7 @@ namespace Asv.Mavlink.PythonArrayTest
 
     public static class PythonArrayTestHelper
     {
-        public static void RegisterPythonArrayTestDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterPythonArrayTestDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(ArrayTest0Packet.MessageId, ()=>new ArrayTest0Packet());
             src.Add(ArrayTest1Packet.MessageId, ()=>new ArrayTest1Packet());
@@ -57,13 +60,13 @@ namespace Asv.Mavlink.PythonArrayTest
     /// Array test #0.
     ///  ARRAY_TEST_0
     /// </summary>
-    public class ArrayTest0Packet: MavlinkV2Message<ArrayTest0Payload>
+    public class ArrayTest0Packet : MavlinkV2Message<ArrayTest0Payload>
     {
         public const int MessageId = 17150;
         
         public const byte CrcExtra = 26;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -102,7 +105,7 @@ namespace Asv.Mavlink.PythonArrayTest
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/33 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/33 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
             ArU32 = new uint[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -189,13 +192,13 @@ namespace Asv.Mavlink.PythonArrayTest
     /// Array test #1.
     ///  ARRAY_TEST_1
     /// </summary>
-    public class ArrayTest1Packet: MavlinkV2Message<ArrayTest1Payload>
+    public class ArrayTest1Packet : MavlinkV2Message<ArrayTest1Payload>
     {
         public const int MessageId = 17151;
         
         public const byte CrcExtra = 72;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -230,7 +233,7 @@ namespace Asv.Mavlink.PythonArrayTest
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/16 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/16 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
             ArU32 = new uint[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -265,13 +268,13 @@ namespace Asv.Mavlink.PythonArrayTest
     /// Array test #3.
     ///  ARRAY_TEST_3
     /// </summary>
-    public class ArrayTest3Packet: MavlinkV2Message<ArrayTest3Payload>
+    public class ArrayTest3Packet : MavlinkV2Message<ArrayTest3Payload>
     {
         public const int MessageId = 17153;
         
         public const byte CrcExtra = 19;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -307,7 +310,7 @@ namespace Asv.Mavlink.PythonArrayTest
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/17 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/17 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
             ArU32 = new uint[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -349,13 +352,13 @@ namespace Asv.Mavlink.PythonArrayTest
     /// Array test #4.
     ///  ARRAY_TEST_4
     /// </summary>
-    public class ArrayTest4Packet: MavlinkV2Message<ArrayTest4Payload>
+    public class ArrayTest4Packet : MavlinkV2Message<ArrayTest4Payload>
     {
         public const int MessageId = 17154;
         
         public const byte CrcExtra = 89;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -391,7 +394,7 @@ namespace Asv.Mavlink.PythonArrayTest
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/4 - Math.Max(0,(/*PayloadByteSize*/17 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/17 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
             ArU32 = new uint[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -433,13 +436,13 @@ namespace Asv.Mavlink.PythonArrayTest
     /// Array test #5.
     ///  ARRAY_TEST_5
     /// </summary>
-    public class ArrayTest5Packet: MavlinkV2Message<ArrayTest5Payload>
+    public class ArrayTest5Packet : MavlinkV2Message<ArrayTest5Payload>
     {
         public const int MessageId = 17155;
         
         public const byte CrcExtra = 27;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -475,7 +478,7 @@ namespace Asv.Mavlink.PythonArrayTest
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/5 - Math.Max(0,(/*PayloadByteSize*/10 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/10 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             C1 = new char[arraySize];
             unsafe
             {
@@ -549,13 +552,13 @@ namespace Asv.Mavlink.PythonArrayTest
     /// Array test #6.
     ///  ARRAY_TEST_6
     /// </summary>
-    public class ArrayTest6Packet: MavlinkV2Message<ArrayTest6Payload>
+    public class ArrayTest6Packet : MavlinkV2Message<ArrayTest6Payload>
     {
         public const int MessageId = 17156;
         
         public const byte CrcExtra = 14;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -644,7 +647,7 @@ namespace Asv.Mavlink.PythonArrayTest
             {
                 ArI8[i] = (sbyte)BinSerialize.ReadByte(ref buffer);
             }
-            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/91 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/91 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             ArC = new char[arraySize];
             unsafe
             {
@@ -789,13 +792,13 @@ namespace Asv.Mavlink.PythonArrayTest
     /// Array test #7.
     ///  ARRAY_TEST_7
     /// </summary>
-    public class ArrayTest7Packet: MavlinkV2Message<ArrayTest7Payload>
+    public class ArrayTest7Packet : MavlinkV2Message<ArrayTest7Payload>
     {
         public const int MessageId = 17157;
         
         public const byte CrcExtra = 187;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -878,7 +881,7 @@ namespace Asv.Mavlink.PythonArrayTest
             {
                 ArI8[i] = (sbyte)BinSerialize.ReadByte(ref buffer);
             }
-            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/84 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/84 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             ArC = new char[arraySize];
             unsafe
             {
@@ -1005,13 +1008,13 @@ namespace Asv.Mavlink.PythonArrayTest
     /// Array test #8.
     ///  ARRAY_TEST_8
     /// </summary>
-    public class ArrayTest8Packet: MavlinkV2Message<ArrayTest8Payload>
+    public class ArrayTest8Packet : MavlinkV2Message<ArrayTest8Payload>
     {
         public const int MessageId = 17158;
         
         public const byte CrcExtra = 106;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1048,7 +1051,7 @@ namespace Asv.Mavlink.PythonArrayTest
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/2 - Math.Max(0,(/*PayloadByteSize*/24 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/2 - Math.Max(0,((/*PayloadByteSize*/24 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/));
             ArD = new double[arraySize];
             for(var i=0;i<arraySize;i++)
             {

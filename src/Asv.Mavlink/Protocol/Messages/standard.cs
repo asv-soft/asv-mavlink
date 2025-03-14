@@ -20,17 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.4+c60d154a544f2b4740e11edc578d956f8b9fd5c3
 
 using System;
+using System.Text;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
+using Asv.IO;
 
 namespace Asv.Mavlink.Standard
 {
 
     public static class StandardHelper
     {
-        public static void RegisterStandardDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterStandardDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
         }
     }

@@ -20,11 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.4+c60d154a544f2b4740e11edc578d956f8b9fd5c3
 
 using System;
+using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.Minimal
@@ -32,7 +36,7 @@ namespace Asv.Mavlink.Minimal
 
     public static class MinimalHelper
     {
-        public static void RegisterMinimalDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterMinimalDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(HeartbeatPacket.MessageId, ()=>new HeartbeatPacket());
             src.Add(ProtocolVersionPacket.MessageId, ()=>new ProtocolVersionPacket());
@@ -1224,13 +1228,13 @@ namespace Asv.Mavlink.Minimal
     /// The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). This microservice is documented at https://mavlink.io/en/services/heartbeat.html
     ///  HEARTBEAT
     /// </summary>
-    public class HeartbeatPacket: MavlinkV2Message<HeartbeatPayload>
+    public class HeartbeatPacket : MavlinkV2Message<HeartbeatPayload>
     {
         public const int MessageId = 0;
         
         public const byte CrcExtra = 50;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1327,13 +1331,13 @@ namespace Asv.Mavlink.Minimal
     /// Version and capability of protocol version. This message can be requested with MAV_CMD_REQUEST_MESSAGE and is used as part of the handshaking to establish which MAVLink version should be used on the network. Every node should respond to a request for PROTOCOL_VERSION to enable the handshaking. Library implementers should consider adding this into the default decoding state machine to allow the protocol core to respond directly.
     ///  PROTOCOL_VERSION
     /// </summary>
-    public class ProtocolVersionPacket: MavlinkV2Message<ProtocolVersionPayload>
+    public class ProtocolVersionPacket : MavlinkV2Message<ProtocolVersionPayload>
     {
         public const int MessageId = 300;
         
         public const byte CrcExtra = 217;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1375,7 +1379,7 @@ namespace Asv.Mavlink.Minimal
             Version = BinSerialize.ReadUShort(ref buffer);
             MinVersion = BinSerialize.ReadUShort(ref buffer);
             MaxVersion = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/8 - Math.Max(0,(/*PayloadByteSize*/22 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/8 - Math.Max(0,((/*PayloadByteSize*/22 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             SpecVersionHash = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {

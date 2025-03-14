@@ -24,8 +24,11 @@
 
 using System;
 using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.Test
@@ -33,7 +36,7 @@ namespace Asv.Mavlink.Test
 
     public static class TestHelper
     {
-        public static void RegisterTestDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterTestDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(TestTypesPacket.MessageId, ()=>new TestTypesPacket());
         }
@@ -50,13 +53,13 @@ namespace Asv.Mavlink.Test
     /// Test all field types
     ///  TEST_TYPES
     /// </summary>
-    public class TestTypesPacket: MavlinkV2Message<TestTypesPayload>
+    public class TestTypesPacket : MavlinkV2Message<TestTypesPayload>
     {
         public const int MessageId = 17000;
         
         public const byte CrcExtra = 103;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -115,7 +118,7 @@ namespace Asv.Mavlink.Test
             U64 = BinSerialize.ReadULong(ref buffer);
             S64 = BinSerialize.ReadLong(ref buffer);
             D = BinSerialize.ReadDouble(ref buffer);
-            arraySize = /*ArrayLength*/3 - Math.Max(0,(/*PayloadByteSize*/179 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/3 - Math.Max(0,((/*PayloadByteSize*/179 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/));
             U64Array = new ulong[arraySize];
             for(var i=0;i<arraySize;i++)
             {

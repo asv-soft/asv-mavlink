@@ -24,8 +24,11 @@
 
 using System;
 using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.Cubepilot
@@ -33,7 +36,7 @@ namespace Asv.Mavlink.Cubepilot
 
     public static class CubepilotHelper
     {
-        public static void RegisterCubepilotDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterCubepilotDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(CubepilotRawRcPacket.MessageId, ()=>new CubepilotRawRcPacket());
             src.Add(HerelinkVideoStreamInformationPacket.MessageId, ()=>new HerelinkVideoStreamInformationPacket());
@@ -54,13 +57,13 @@ namespace Asv.Mavlink.Cubepilot
     /// Raw RC Data
     ///  CUBEPILOT_RAW_RC
     /// </summary>
-    public class CubepilotRawRcPacket: MavlinkV2Message<CubepilotRawRcPayload>
+    public class CubepilotRawRcPacket : MavlinkV2Message<CubepilotRawRcPayload>
     {
         public const int MessageId = 50001;
         
         public const byte CrcExtra = 246;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -95,7 +98,7 @@ namespace Asv.Mavlink.Cubepilot
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/32 - Math.Max(0,(/*PayloadByteSize*/32 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/32 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RcRaw = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -130,13 +133,13 @@ namespace Asv.Mavlink.Cubepilot
     /// Information about video stream
     ///  HERELINK_VIDEO_STREAM_INFORMATION
     /// </summary>
-    public class HerelinkVideoStreamInformationPacket: MavlinkV2Message<HerelinkVideoStreamInformationPayload>
+    public class HerelinkVideoStreamInformationPacket : MavlinkV2Message<HerelinkVideoStreamInformationPayload>
     {
         public const int MessageId = 50002;
         
         public const byte CrcExtra = 181;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -185,7 +188,7 @@ namespace Asv.Mavlink.Cubepilot
             Rotation = BinSerialize.ReadUShort(ref buffer);
             CameraId = (byte)BinSerialize.ReadByte(ref buffer);
             Status = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/230 - Math.Max(0,(/*PayloadByteSize*/246 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/230 - Math.Max(0,((/*PayloadByteSize*/246 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Uri = new char[arraySize];
             unsafe
             {
@@ -274,13 +277,13 @@ namespace Asv.Mavlink.Cubepilot
     /// Herelink Telemetry
     ///  HERELINK_TELEM
     /// </summary>
-    public class HerelinkTelemPacket: MavlinkV2Message<HerelinkTelemPayload>
+    public class HerelinkTelemPacket : MavlinkV2Message<HerelinkTelemPayload>
     {
         public const int MessageId = 50003;
         
         public const byte CrcExtra = 62;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -385,13 +388,13 @@ namespace Asv.Mavlink.Cubepilot
     /// Start firmware update with encapsulated data.
     ///  CUBEPILOT_FIRMWARE_UPDATE_START
     /// </summary>
-    public class CubepilotFirmwareUpdateStartPacket: MavlinkV2Message<CubepilotFirmwareUpdateStartPayload>
+    public class CubepilotFirmwareUpdateStartPacket : MavlinkV2Message<CubepilotFirmwareUpdateStartPayload>
     {
         public const int MessageId = 50004;
         
         public const byte CrcExtra = 240;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -472,13 +475,13 @@ namespace Asv.Mavlink.Cubepilot
     /// offset response to encapsulated data.
     ///  CUBEPILOT_FIRMWARE_UPDATE_RESP
     /// </summary>
-    public class CubepilotFirmwareUpdateRespPacket: MavlinkV2Message<CubepilotFirmwareUpdateRespPayload>
+    public class CubepilotFirmwareUpdateRespPacket : MavlinkV2Message<CubepilotFirmwareUpdateRespPayload>
     {
         public const int MessageId = 50005;
         
         public const byte CrcExtra = 152;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;

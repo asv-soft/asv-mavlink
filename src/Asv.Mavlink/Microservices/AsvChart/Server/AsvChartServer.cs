@@ -160,7 +160,7 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
                 x.Payload.Result = AsvChartRequestAck.AsvChartRequestAckOk;
                 x.Payload.DataRate = result.Rate;
                 x.Payload.DataTrigger = result.Trigger;
-                x.Payload.ChartId = result.ChartId;
+                x.Payload.ChatId = result.ChartId;
                 x.Payload.ChatInfoHash = info.InfoHash;
                 
             }).ConfigureAwait(false);

@@ -24,9 +24,11 @@
 
 using System;
 using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.Uavionix
@@ -34,7 +36,7 @@ namespace Asv.Mavlink.Uavionix
 
     public static class UavionixHelper
     {
-        public static void RegisterUavionixDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterUavionixDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(UavionixAdsbOutCfgPacket.MessageId, ()=>new UavionixAdsbOutCfgPacket());
             src.Add(UavionixAdsbOutDynamicPacket.MessageId, ()=>new UavionixAdsbOutDynamicPacket());
@@ -325,13 +327,13 @@ namespace Asv.Mavlink.Uavionix
     /// Static data to configure the ADS-B transponder (send within 10 sec of a POR and every 10 sec thereafter)
     ///  UAVIONIX_ADSB_OUT_CFG
     /// </summary>
-    public class UavionixAdsbOutCfgPacket: MavlinkV2Message<UavionixAdsbOutCfgPayload>
+    public class UavionixAdsbOutCfgPacket : MavlinkV2Message<UavionixAdsbOutCfgPayload>
     {
         public const int MessageId = 10001;
         
         public const byte CrcExtra = 209;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -375,7 +377,7 @@ namespace Asv.Mavlink.Uavionix
             var payloadSize = buffer.Length;
             Icao = BinSerialize.ReadUInt(ref buffer);
             Stallspeed = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/9 - Math.Max(0,(/*PayloadByteSize*/20 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/9 - Math.Max(0,((/*PayloadByteSize*/20 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Callsign = new char[arraySize];
             unsafe
             {
@@ -469,13 +471,13 @@ namespace Asv.Mavlink.Uavionix
     /// Dynamic data used to generate ADS-B out transponder data (send at 5Hz)
     ///  UAVIONIX_ADSB_OUT_DYNAMIC
     /// </summary>
-    public class UavionixAdsbOutDynamicPacket: MavlinkV2Message<UavionixAdsbOutDynamicPayload>
+    public class UavionixAdsbOutDynamicPacket : MavlinkV2Message<UavionixAdsbOutDynamicPayload>
     {
         public const int MessageId = 10002;
         
         public const byte CrcExtra = 186;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -652,13 +654,13 @@ namespace Asv.Mavlink.Uavionix
     /// Transceiver heartbeat with health report (updated every 10s)
     ///  UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT
     /// </summary>
-    public class UavionixAdsbTransceiverHealthReportPacket: MavlinkV2Message<UavionixAdsbTransceiverHealthReportPayload>
+    public class UavionixAdsbTransceiverHealthReportPacket : MavlinkV2Message<UavionixAdsbTransceiverHealthReportPayload>
     {
         public const int MessageId = 10003;
         
         public const byte CrcExtra = 4;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;

@@ -26,6 +26,7 @@ class Program
         app.Add<BenchmarkBinSerializationCommand>();
         app.Add<BenchmarkSerializationPacket>();*/
         //app.Add<ShowParams>();
+        app.Add<GenerateCommand>();
         app.Add<MavlinkCommand>();
         app.Add<PacketViewerCommand>();
         app.Add<CreateVirtualFtpServerCommand>();

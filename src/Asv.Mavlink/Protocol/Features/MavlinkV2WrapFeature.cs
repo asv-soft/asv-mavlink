@@ -8,15 +8,15 @@ namespace Asv.Mavlink;
 
 public static class MavlinkV2WrapFeatureHelper
 {
-    public static void RegisterMavlinkV2WrapFeature(this IProtocolFeatureBuilder builder,IProtocolMessageFactory<MavlinkMessage, ushort>? factory = null)
+    public static void RegisterMavlinkV2WrapFeature(this IProtocolFeatureBuilder builder,IProtocolMessageFactory<MavlinkMessage, int>? factory = null)
     {
         builder.Register(new MavlinkV2WrapFeature(factory));
     }
 }
 
-public class MavlinkV2WrapFeature(IProtocolMessageFactory<MavlinkMessage, ushort>? factory = null) : IProtocolFeature
+public class MavlinkV2WrapFeature(IProtocolMessageFactory<MavlinkMessage, int>? factory = null) : IProtocolFeature
 {
-    private readonly IProtocolMessageFactory<MavlinkMessage,ushort> _factory = factory ?? MavlinkV2MessageFactory.Instance;
+    private readonly IProtocolMessageFactory<MavlinkMessage,int> _factory = factory ?? MavlinkV2MessageFactory.Instance;
     public const string IdKey = "MavlinkV2WrapFeature";
     public const ushort V2ExtensionMessageId = 32535;
 

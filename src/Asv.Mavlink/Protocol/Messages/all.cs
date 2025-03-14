@@ -23,14 +23,20 @@
 // This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
+using System.Text;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
+using Asv.IO;
 
 namespace Asv.Mavlink.All
 {
 
     public static class AllHelper
     {
-        public static void RegisterAllDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterAllDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
         }
     }

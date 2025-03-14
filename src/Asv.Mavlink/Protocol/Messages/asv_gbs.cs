@@ -20,11 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.4+c60d154a544f2b4740e11edc578d956f8b9fd5c3
 
 using System;
+using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.AsvGbs
@@ -32,7 +36,7 @@ namespace Asv.Mavlink.AsvGbs
 
     public static class AsvGbsHelper
     {
-        public static void RegisterAsvGbsDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterAsvGbsDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(AsvGbsOutStatusPacket.MessageId, ()=>new AsvGbsOutStatusPacket());
         }
@@ -140,17 +144,16 @@ namespace Asv.Mavlink.AsvGbs
     /// Ground base station status message. Send with 1 Hz frequency.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_GBS_OUT_STATUS
     /// </summary>
-    public class AsvGbsOutStatusPacket: MavlinkV2Message<AsvGbsOutStatusPayload>
+    public class AsvGbsOutStatusPacket : MavlinkV2Message<AsvGbsOutStatusPayload>
     {
         public const int MessageId = 13000;
         
         public const byte CrcExtra = 216;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
-
         
         public override bool WrapToV2Extension => true;
 
@@ -249,8 +252,8 @@ namespace Asv.Mavlink.AsvGbs
         /// </summary>
         public int Alt { get; set; }
         /// <summary>
-        /// Current position accuracy (mm).
-        /// OriginName: accuracy, Units: mm, IsExtended: false
+        /// Current position accuracy (cm).
+        /// OriginName: accuracy, Units: cm, IsExtended: false
         /// </summary>
         public ushort Accuracy { get; set; }
         /// <summary>

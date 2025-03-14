@@ -18,7 +18,6 @@ namespace Asv.Mavlink.Shell
 
         /// <summary>
         /// Generate file form MAVLink XML message definitions.
-        /// Example: gen -t=common.xml -i=in -o=out -e=cs csharp.tpl"
         /// </summary>
         /// <param name="ext">-e, Output files extensions</param>
         /// <param name="templateFile">-template, Liquid syntax template file, that used for generation</param>

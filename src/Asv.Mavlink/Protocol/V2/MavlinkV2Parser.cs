@@ -8,7 +8,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class MavlinkV2Parser:ProtocolParser<MavlinkMessage,ushort>
+public class MavlinkV2Parser:ProtocolParser<MavlinkMessage,int>
 {
     
 
@@ -19,7 +19,7 @@ public class MavlinkV2Parser:ProtocolParser<MavlinkMessage,ushort>
     private int _bufferIndex;
 
     public MavlinkV2Parser(
-        IProtocolMessageFactory<MavlinkMessage, ushort> messageFactory, IProtocolContext context, IStatisticHandler? statisticHandler) 
+        IProtocolMessageFactory<MavlinkMessage, int> messageFactory, IProtocolContext context, IStatisticHandler? statisticHandler) 
         : base(messageFactory, context, statisticHandler)
     {
         _logger = context.LoggerFactory.CreateLogger<MavlinkV2Parser>();

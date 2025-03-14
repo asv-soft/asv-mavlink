@@ -384,7 +384,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
                     try
                     {
                         await task(item, linked.Token).ConfigureAwait(false);
-                        
+
                     }
                     catch (Exception e)
                     {

@@ -20,13 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.4+c60d154a544f2b4740e11edc578d956f8b9fd5c3
 
 using System;
 using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.AsvSdr
@@ -34,7 +36,7 @@ namespace Asv.Mavlink.AsvSdr
 
     public static class AsvSdrHelper
     {
-        public static void RegisterAsvSdrDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterAsvSdrDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(AsvSdrOutStatusPacket.MessageId, ()=>new AsvSdrOutStatusPacket());
             src.Add(AsvSdrRecordRequestPacket.MessageId, ()=>new AsvSdrRecordRequestPacket());
@@ -422,13 +424,13 @@ namespace Asv.Mavlink.AsvSdr
     /// SDR payload status message. Send with 1 Hz frequency [!WRAP_TO_V2_EXTENSION_PACKET!].
     ///  ASV_SDR_OUT_STATUS
     /// </summary>
-    public class AsvSdrOutStatusPacket: MavlinkV2Message<AsvSdrOutStatusPayload>
+    public class AsvSdrOutStatusPacket : MavlinkV2Message<AsvSdrOutStatusPayload>
     {
         public const int MessageId = 13100;
         
         public const byte CrcExtra = 145;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -484,7 +486,7 @@ namespace Asv.Mavlink.AsvSdr
                 CurrentRecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
             CurrentRecordMode = (AsvSdrCustomMode)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,(/*PayloadByteSize*/77 - payloadSize - /*ExtendedFieldsLength*/11)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/77 - payloadSize - /*ExtendedFieldsLength*/11)/1 /*FieldTypeByteSize*/));
             CurrentRecordName = new char[arraySize];
             unsafe
             {
@@ -614,13 +616,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Request list of ASV_SDR_RECORD from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_REQUEST
     /// </summary>
-    public class AsvSdrRecordRequestPacket: MavlinkV2Message<AsvSdrRecordRequestPayload>
+    public class AsvSdrRecordRequestPacket : MavlinkV2Message<AsvSdrRecordRequestPayload>
     {
         public const int MessageId = 13101;
         
         public const byte CrcExtra = 91;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -709,13 +711,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Response for ASV_SDR_RECORD_REQUEST request. If success, device additional send ASV_SDR_RECORD items from start to stop index.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_RESPONSE
     /// </summary>
-    public class AsvSdrRecordResponsePacket: MavlinkV2Message<AsvSdrRecordResponsePayload>
+    public class AsvSdrRecordResponsePacket : MavlinkV2Message<AsvSdrRecordResponsePayload>
     {
         public const int MessageId = 13102;
         
         public const byte CrcExtra = 13;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -788,13 +790,13 @@ namespace Asv.Mavlink.AsvSdr
     /// SDR payload record info.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD
     /// </summary>
-    public class AsvSdrRecordPacket: MavlinkV2Message<AsvSdrRecordPayload>
+    public class AsvSdrRecordPacket : MavlinkV2Message<AsvSdrRecordPayload>
     {
         public const int MessageId = 13103;
         
         public const byte CrcExtra = 173;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -849,7 +851,7 @@ namespace Asv.Mavlink.AsvSdr
             {
                 RecordGuid[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            arraySize = /*ArrayLength*/28 - Math.Max(0,(/*PayloadByteSize*/78 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/78 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordName = new char[arraySize];
             unsafe
             {
@@ -948,13 +950,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Request to delete ASV_SDR_RECORD items from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_DELETE_REQUEST
     /// </summary>
-    public class AsvSdrRecordDeleteRequestPacket: MavlinkV2Message<AsvSdrRecordDeleteRequestPayload>
+    public class AsvSdrRecordDeleteRequestPacket : MavlinkV2Message<AsvSdrRecordDeleteRequestPayload>
     {
         public const int MessageId = 13104;
         
         public const byte CrcExtra = 181;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -995,7 +997,7 @@ namespace Asv.Mavlink.AsvSdr
             RequestId = BinSerialize.ReadUShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/20 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/20 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordGuid = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -1048,13 +1050,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Response for ASV_SDR_RECORD_DELETE_REQUEST.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_DELETE_RESPONSE
     /// </summary>
-    public class AsvSdrRecordDeleteResponsePacket: MavlinkV2Message<AsvSdrRecordDeleteResponsePayload>
+    public class AsvSdrRecordDeleteResponsePacket : MavlinkV2Message<AsvSdrRecordDeleteResponsePayload>
     {
         public const int MessageId = 13105;
         
         public const byte CrcExtra = 62;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1093,7 +1095,7 @@ namespace Asv.Mavlink.AsvSdr
             var payloadSize = buffer.Length;
             RequestId = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvSdrRequestAck)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/19 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/19 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordGuid = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -1140,13 +1142,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Request list of ASV_SDR_RECORD_TAG from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_TAG_REQUEST
     /// </summary>
-    public class AsvSdrRecordTagRequestPacket: MavlinkV2Message<AsvSdrRecordTagRequestPayload>
+    public class AsvSdrRecordTagRequestPacket : MavlinkV2Message<AsvSdrRecordTagRequestPayload>
     {
         public const int MessageId = 13110;
         
         public const byte CrcExtra = 53;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1191,7 +1193,7 @@ namespace Asv.Mavlink.AsvSdr
             Count = BinSerialize.ReadUShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/24 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/24 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordGuid = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -1256,13 +1258,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Response for ASV_SDR_RECORD_TAG_REQUEST. If success, device additional send ASV_SDR_RECORD_TAG items from start to stop index.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_TAG_RESPONSE
     /// </summary>
-    public class AsvSdrRecordTagResponsePacket: MavlinkV2Message<AsvSdrRecordTagResponsePayload>
+    public class AsvSdrRecordTagResponsePacket : MavlinkV2Message<AsvSdrRecordTagResponsePayload>
     {
         public const int MessageId = 13111;
         
         public const byte CrcExtra = 187;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1335,13 +1337,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Request to read info with either tag_index and record_index from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_TAG
     /// </summary>
-    public class AsvSdrRecordTagPacket: MavlinkV2Message<AsvSdrRecordTagPayload>
+    public class AsvSdrRecordTagPacket : MavlinkV2Message<AsvSdrRecordTagPayload>
     {
         public const int MessageId = 13112;
         
         public const byte CrcExtra = 220;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1380,7 +1382,7 @@ namespace Asv.Mavlink.AsvSdr
         {
             var arraySize = 0;
             var payloadSize = buffer.Length;
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/57 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/57 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordGuid = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -1479,13 +1481,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Request to delete ASV_SDR_RECORD_TAG from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_TAG_DELETE_REQUEST
     /// </summary>
-    public class AsvSdrRecordTagDeleteRequestPacket: MavlinkV2Message<AsvSdrRecordTagDeleteRequestPayload>
+    public class AsvSdrRecordTagDeleteRequestPacket : MavlinkV2Message<AsvSdrRecordTagDeleteRequestPayload>
     {
         public const int MessageId = 13113;
         
         public const byte CrcExtra = 233;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1527,7 +1529,7 @@ namespace Asv.Mavlink.AsvSdr
             RequestId = BinSerialize.ReadUShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/36 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/36 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordGuid = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -1595,13 +1597,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Response for ASV_SDR_RECORD_TAG_DELETE_REQUEST.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_TAG_DELETE_RESPONSE
     /// </summary>
-    public class AsvSdrRecordTagDeleteResponsePacket: MavlinkV2Message<AsvSdrRecordTagDeleteResponsePayload>
+    public class AsvSdrRecordTagDeleteResponsePacket : MavlinkV2Message<AsvSdrRecordTagDeleteResponsePayload>
     {
         public const int MessageId = 13114;
         
         public const byte CrcExtra = 100;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1641,7 +1643,7 @@ namespace Asv.Mavlink.AsvSdr
             var payloadSize = buffer.Length;
             RequestId = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvSdrRequestAck)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/35 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/35 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordGuid = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -1703,13 +1705,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Request list of ASV_SDR_RECORD_DATA_* items from the system/component.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_DATA_REQUEST
     /// </summary>
-    public class AsvSdrRecordDataRequestPacket: MavlinkV2Message<AsvSdrRecordDataRequestPayload>
+    public class AsvSdrRecordDataRequestPacket : MavlinkV2Message<AsvSdrRecordDataRequestPayload>
     {
         public const int MessageId = 13120;
         
         public const byte CrcExtra = 101;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1754,7 +1756,7 @@ namespace Asv.Mavlink.AsvSdr
             RequestId = BinSerialize.ReadUShort(ref buffer);
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/28 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/28 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordGuid = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -1819,13 +1821,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Response for ASV_SDR_RECORD_DATA_REQUEST. If success, device additional send ASV_SDR_RECORD_DATA_* items from start to stop index.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_DATA_RESPONSE
     /// </summary>
-    public class AsvSdrRecordDataResponsePacket: MavlinkV2Message<AsvSdrRecordDataResponsePayload>
+    public class AsvSdrRecordDataResponsePacket : MavlinkV2Message<AsvSdrRecordDataResponsePayload>
     {
         public const int MessageId = 13121;
         
         public const byte CrcExtra = 39;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1868,7 +1870,7 @@ namespace Asv.Mavlink.AsvSdr
             ItemsCount = BinSerialize.ReadUInt(ref buffer);
             RequestId = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvSdrRequestAck)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/27 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/27 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordGuid = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -1927,13 +1929,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Response for ASV_SDR_CALIB_* requests. Result from ASV_SDR_CALIB_TABLE_READ, ASV_SDR_CALIB_TABLE_ROW_READ, ASV_SDR_CALIB_TABLE_UPLOAD_START messages.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_CALIB_ACC
     /// </summary>
-    public class AsvSdrCalibAccPacket: MavlinkV2Message<AsvSdrCalibAccPayload>
+    public class AsvSdrCalibAccPacket : MavlinkV2Message<AsvSdrCalibAccPayload>
     {
         public const int MessageId = 13124;
         
         public const byte CrcExtra = 136;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1998,13 +2000,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Request to read ASV_SDR_CALIB_TABLE from the system/component. If success, device send ASV_SDR_CALIB_TABLE or ASV_SDR_CALIB_ACC, when error occured.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_CALIB_TABLE_READ
     /// </summary>
-    public class AsvSdrCalibTableReadPacket: MavlinkV2Message<AsvSdrCalibTableReadPayload>
+    public class AsvSdrCalibTableReadPacket : MavlinkV2Message<AsvSdrCalibTableReadPayload>
     {
         public const int MessageId = 13125;
         
         public const byte CrcExtra = 8;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2085,13 +2087,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Calibration table info.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_CALIB_TABLE
     /// </summary>
-    public class AsvSdrCalibTablePacket: MavlinkV2Message<AsvSdrCalibTablePayload>
+    public class AsvSdrCalibTablePacket : MavlinkV2Message<AsvSdrCalibTablePayload>
     {
         public const int MessageId = 13126;
         
         public const byte CrcExtra = 194;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2132,7 +2134,7 @@ namespace Asv.Mavlink.AsvSdr
             CreatedUnixUs = BinSerialize.ReadULong(ref buffer);
             TableIndex = BinSerialize.ReadUShort(ref buffer);
             RowCount = BinSerialize.ReadUShort(ref buffer);
-            arraySize = /*ArrayLength*/28 - Math.Max(0,(/*PayloadByteSize*/40 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/28 - Math.Max(0,((/*PayloadByteSize*/40 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             TableName = new char[arraySize];
             unsafe
             {
@@ -2197,13 +2199,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Request to read ASV_SDR_CALIB_TABLE_ROW from the system/component. If success, device send ASV_SDR_CALIB_TABLE_ROW or ASV_SDR_CALIB_ACC, when error occured.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_CALIB_TABLE_ROW_READ
     /// </summary>
-    public class AsvSdrCalibTableRowReadPacket: MavlinkV2Message<AsvSdrCalibTableRowReadPayload>
+    public class AsvSdrCalibTableRowReadPacket : MavlinkV2Message<AsvSdrCalibTableRowReadPayload>
     {
         public const int MessageId = 13127;
         
         public const byte CrcExtra = 2;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2292,13 +2294,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Calibration ROW content.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_CALIB_TABLE_ROW
     /// </summary>
-    public class AsvSdrCalibTableRowPacket: MavlinkV2Message<AsvSdrCalibTableRowPayload>
+    public class AsvSdrCalibTableRowPacket : MavlinkV2Message<AsvSdrCalibTableRowPayload>
     {
         public const int MessageId = 13128;
         
         public const byte CrcExtra = 179;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2411,13 +2413,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Start uploading process. After that payload must send ASV_SDR_CALIB_TABLE_UPLOAD_READ_CALLBACK to client for reading table rows row_count times. Process end by payload with ASV_SDR_CALIB_ACC. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_CALIB_TABLE_UPLOAD_START
     /// </summary>
-    public class AsvSdrCalibTableUploadStartPacket: MavlinkV2Message<AsvSdrCalibTableUploadStartPayload>
+    public class AsvSdrCalibTableUploadStartPacket : MavlinkV2Message<AsvSdrCalibTableUploadStartPayload>
     {
         public const int MessageId = 13129;
         
         public const byte CrcExtra = 40;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2514,13 +2516,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Read ASV_SDR_CALIB_TABLE_ROW callback from payload server to client. [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_CALIB_TABLE_UPLOAD_READ_CALLBACK
     /// </summary>
-    public class AsvSdrCalibTableUploadReadCallbackPacket: MavlinkV2Message<AsvSdrCalibTableUploadReadCallbackPayload>
+    public class AsvSdrCalibTableUploadReadCallbackPacket : MavlinkV2Message<AsvSdrCalibTableUploadReadCallbackPayload>
     {
         public const int MessageId = 13130;
         
         public const byte CrcExtra = 156;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2609,13 +2611,13 @@ namespace Asv.Mavlink.AsvSdr
     /// Raw signal data for visualization.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_SIGNAL_RAW
     /// </summary>
-    public class AsvSdrSignalRawPacket: MavlinkV2Message<AsvSdrSignalRawPayload>
+    public class AsvSdrSignalRawPacket : MavlinkV2Message<AsvSdrSignalRawPayload>
     {
         public const int MessageId = 13134;
         
         public const byte CrcExtra = 27;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2676,7 +2678,7 @@ namespace Asv.Mavlink.AsvSdr
            
             Format = (AsvSdrSignalFormat)BinSerialize.ReadByte(ref buffer);
             Count = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/200 - Math.Max(0,(/*PayloadByteSize*/230 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/200 - Math.Max(0,((/*PayloadByteSize*/230 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -2769,13 +2771,13 @@ namespace Asv.Mavlink.AsvSdr
     /// LLZ reciever record data.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_DATA_LLZ
     /// </summary>
-    public class AsvSdrRecordDataLlzPacket: MavlinkV2Message<AsvSdrRecordDataLlzPayload>
+    public class AsvSdrRecordDataLlzPacket : MavlinkV2Message<AsvSdrRecordDataLlzPayload>
     {
         public const int MessageId = 13135;
         
         public const byte CrcExtra = 2;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2909,7 +2911,7 @@ namespace Asv.Mavlink.AsvSdr
             TotalFreq150 = BinSerialize.ReadShort(ref buffer);
             CodeIdFreq1020 = BinSerialize.ReadShort(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/186 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/186 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordGuid = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -3273,13 +3275,13 @@ namespace Asv.Mavlink.AsvSdr
     /// GP reciever record data.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_DATA_GP
     /// </summary>
-    public class AsvSdrRecordDataGpPacket: MavlinkV2Message<AsvSdrRecordDataGpPayload>
+    public class AsvSdrRecordDataGpPacket : MavlinkV2Message<AsvSdrRecordDataGpPayload>
     {
         public const int MessageId = 13136;
         
         public const byte CrcExtra = 233;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3408,7 +3410,7 @@ namespace Asv.Mavlink.AsvSdr
             TotalFreq90 = BinSerialize.ReadShort(ref buffer);
             TotalFreq150 = BinSerialize.ReadShort(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/176 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/176 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordGuid = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {
@@ -3733,13 +3735,13 @@ namespace Asv.Mavlink.AsvSdr
     /// VOR reciever record data.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_RECORD_DATA_VOR
     /// </summary>
-    public class AsvSdrRecordDataVorPacket: MavlinkV2Message<AsvSdrRecordDataVorPayload>
+    public class AsvSdrRecordDataVorPacket : MavlinkV2Message<AsvSdrRecordDataVorPayload>
     {
         public const int MessageId = 13137;
         
         public const byte CrcExtra = 250;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3849,7 +3851,7 @@ namespace Asv.Mavlink.AsvSdr
             Freq9960 = BinSerialize.ReadShort(ref buffer);
             CodeIdFreq1020 = BinSerialize.ReadShort(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/150 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/150 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             RecordGuid = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {

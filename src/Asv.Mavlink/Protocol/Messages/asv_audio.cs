@@ -20,13 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.4+c60d154a544f2b4740e11edc578d956f8b9fd5c3
 
 using System;
 using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.AsvAudio
@@ -34,7 +36,7 @@ namespace Asv.Mavlink.AsvAudio
 
     public static class AsvAudioHelper
     {
-        public static void RegisterAsvAudioDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterAsvAudioDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(AsvAudioOnlinePacket.MessageId, ()=>new AsvAudioOnlinePacket());
             src.Add(AsvAudioStreamPacket.MessageId, ()=>new AsvAudioStreamPacket());
@@ -143,13 +145,13 @@ namespace Asv.Mavlink.AsvAudio
     /// Every device that wants to be visible at voice chat and can talk to the others sends this packet at 1 Hz.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_AUDIO_ONLINE
     /// </summary>
-    public class AsvAudioOnlinePacket: MavlinkV2Message<AsvAudioOnlinePayload>
+    public class AsvAudioOnlinePacket : MavlinkV2Message<AsvAudioOnlinePayload>
     {
         public const int MessageId = 13200;
         
         public const byte CrcExtra = 142;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -188,7 +190,7 @@ namespace Asv.Mavlink.AsvAudio
             var payloadSize = buffer.Length;
             Codec = (AsvAudioCodec)BinSerialize.ReadUShort(ref buffer);
             Mode = (AsvAudioModeFlag)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/16 - Math.Max(0,(/*PayloadByteSize*/19 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/19 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Name = new char[arraySize];
             unsafe
             {
@@ -247,13 +249,13 @@ namespace Asv.Mavlink.AsvAudio
     /// Message containing encoded audio data. If, after audio-encoding, one frame exceeds one packet size, multiple packets are used for frame transmitting.[!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_AUDIO_STREAM
     /// </summary>
-    public class AsvAudioStreamPacket: MavlinkV2Message<AsvAudioStreamPayload>
+    public class AsvAudioStreamPacket : MavlinkV2Message<AsvAudioStreamPayload>
     {
         public const int MessageId = 13201;
         
         public const byte CrcExtra = 152;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -300,7 +302,7 @@ namespace Asv.Mavlink.AsvAudio
             PktInFrame = (byte)BinSerialize.ReadByte(ref buffer);
             PktSeq = (byte)BinSerialize.ReadByte(ref buffer);
             DataSize = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/230 - Math.Max(0,(/*PayloadByteSize*/236 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/);
+            arraySize = /*ArrayLength*/230 - Math.Max(0,((/*PayloadByteSize*/236 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             Data = new byte[arraySize];
             for(var i=0;i<arraySize;i++)
             {

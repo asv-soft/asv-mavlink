@@ -23,8 +23,12 @@
 // This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
 
 using System;
+using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.Icarous
@@ -32,7 +36,7 @@ namespace Asv.Mavlink.Icarous
 
     public static class IcarousHelper
     {
-        public static void RegisterIcarousDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterIcarousDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
             src.Add(IcarousHeartbeatPacket.MessageId, ()=>new IcarousHeartbeatPacket());
             src.Add(IcarousKinematicBandsPacket.MessageId, ()=>new IcarousKinematicBandsPacket());
@@ -100,13 +104,13 @@ namespace Asv.Mavlink.Icarous
     /// ICAROUS heartbeat
     ///  ICAROUS_HEARTBEAT
     /// </summary>
-    public class IcarousHeartbeatPacket: MavlinkV2Message<IcarousHeartbeatPayload>
+    public class IcarousHeartbeatPacket : MavlinkV2Message<IcarousHeartbeatPayload>
     {
         public const int MessageId = 42000;
         
         public const byte CrcExtra = 227;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -163,13 +167,13 @@ namespace Asv.Mavlink.Icarous
     /// Kinematic multi bands (track) output from Daidalus
     ///  ICAROUS_KINEMATIC_BANDS
     /// </summary>
-    public class IcarousKinematicBandsPacket: MavlinkV2Message<IcarousKinematicBandsPayload>
+    public class IcarousKinematicBandsPacket : MavlinkV2Message<IcarousKinematicBandsPayload>
     {
         public const int MessageId = 42001;
         
         public const byte CrcExtra = 239;
         
-        public override ushort Id => MessageId;
+        public override int Id => MessageId;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;

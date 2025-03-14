@@ -30,7 +30,7 @@ namespace Asv.Mavlink.AsvRfsa
 
     public static class AsvRfsaHelper
     {
-        public static void RegisterAsvRfsaDialect(this ImmutableDictionary<ushort,Func<MavlinkMessage>>.Builder src)
+        public static void RegisterAsvRfsaDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
         }
     }

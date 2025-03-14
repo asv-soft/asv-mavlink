@@ -52,16 +52,22 @@
                 <description>Marker generator mode.</description>
             </entry>
             <entry value="54" name="ASV_RSGA_CUSTOM_MODE_DME_REP">
-                <description>DME beacon mode.</description>
+                <description>DME beacon (replier) mode.</description>
             </entry>
             <entry value="55" name="ASV_RSGA_CUSTOM_MODE_TX_GBAS">
                 <description>GBAS generator mode.</description>
+            </entry>
+            <entry value="56" name="ASV_RSGA_CUSTOM_MODE_ADSB_REQ">
+                <description>ADSB beacon(interrogator) mode.</description>
+            </entry>
+            <entry value="57" name="ASV_RSGA_CUSTOM_MODE_TX_GNSS">
+                <description>GNSS generator(satellite) mode.</description>
             </entry>
             <!--==================================================-->
             <!--          NavAIDs PLANE MODES (74-99)             -->
             <!--==================================================-->
             <entry value="74" name="ASV_RSGA_CUSTOM_MODE_DME_REQ">
-                <description>DME plane mode.</description>
+                <description>DME air(interrogator) mode.</description>
             </entry>
             <entry value="75" name="ASV_RSGA_CUSTOM_MODE_RX_LLZ">
                 <description>Localizer analyzer mode.</description>
@@ -77,6 +83,12 @@
             </entry>
             <entry value="79" name="ASV_RSGA_CUSTOM_MODE_RX_GBAS">
                 <description>GBAS analyzer mode.</description>
+            </entry>
+            <entry value="80" name="ASV_RSGA_CUSTOM_MODE_ADSB_REP">
+                <description>ADSB air(replier) mode.</description>
+            </entry>
+            <entry value="81" name="ASV_RSGA_CUSTOM_MODE_RX_GNSS">
+                <description>GNSS analyzer mode.</description>
             </entry>
             <!--==================================================-->
             <!--          SPECIAL MODES (100-124)                 -->

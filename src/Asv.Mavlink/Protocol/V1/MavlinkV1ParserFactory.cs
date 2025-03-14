@@ -3,7 +3,7 @@ using Asv.IO;
 
 namespace Asv.Mavlink;
 
-public class MavlinkV1MessageFactory : IProtocolMessageFactory<MavlinkMessage, ushort>
+public class MavlinkV1MessageFactory : IProtocolMessageFactory<MavlinkMessage, int>
 {
     public static MavlinkV1MessageFactory Instance { get; } = new();
 
@@ -12,12 +12,12 @@ public class MavlinkV1MessageFactory : IProtocolMessageFactory<MavlinkMessage, u
         
     }
     
-    public MavlinkMessage? Create(ushort id)
+    public MavlinkMessage? Create(int id)
     {
         return null;
     }
 
-    public IEnumerable<ushort> GetSupportedIds()
+    public IEnumerable<int> GetSupportedIds()
     {
         yield break;
     }

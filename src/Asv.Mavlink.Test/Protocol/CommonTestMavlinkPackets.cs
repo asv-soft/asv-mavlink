@@ -276,7 +276,7 @@ namespace Asv.Mavlink.Test
             };
             // create waiter, to wait for incoming packet
             var waiter = new TaskCompletionSource<ChemicalDetectorDataPacket>();
-            using var serverSubscribe = link.Server.RxFilterByMsgId<ChemicalDetectorDataPacket, ushort>().Subscribe(inPkt =>
+            using var serverSubscribe = link.Server.RxFilterByMsgId<ChemicalDetectorDataPacket, int>().Subscribe(inPkt =>
             {
                 waiter.TrySetResult(inPkt);
             });
