@@ -3,9 +3,7 @@
   <PropertyGroup>
 	  <TargetFramework>net8.0</TargetFramework>
       <IsPackable>false</IsPackable>
-      
       <FileVersion>$(ProductVersion)</FileVersion>
-      <Version>$(ProductVersion)</Version>
       <Nullable>enable</Nullable>
   </PropertyGroup>
 

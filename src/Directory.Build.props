@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <ProductVersion>4.0.0-dev.4</ProductVersion>
-    <AsvCommonVersion>3.1.1-dev.3</AsvCommonVersion>
+    <ProductVersion>4.0.0-dev.5</ProductVersion>
+    <AsvCommonVersion>3.1.1-dev.4</AsvCommonVersion>
     <ZLoggerVersion>2.5.5</ZLoggerVersion>
     <ConsoleAppFrameworkVersion>5.2.4</ConsoleAppFrameworkVersion>
   </PropertyGroup>
