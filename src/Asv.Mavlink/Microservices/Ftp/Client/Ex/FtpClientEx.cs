@@ -12,7 +12,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx, IMavlinkMicroserviceClient, IDisposable, IAsyncDisposable
+public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
 {
     private readonly ILogger _logger;
     private readonly ObservableDictionary<string, IFtpEntry> _entryCache;
@@ -335,7 +335,37 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx, IMavlinkMicr
             await Base.TerminateSession(file.Session, cancel).ConfigureAwait(false);
         }
     }
+    
+    public async Task UploadFile(string filePath, Stream streamToUpload, IProgress<double>? progress = null, CancellationToken cancel = default)
+    {
+        progress ??= new Progress<double>();
+        var file = await Base.CreateFile(filePath, cancel).ConfigureAwait(false);
+        var session = file.ReadSession();
+        var totalWritten = 0u;
+        var buffer = ArrayPool<byte>.Shared.Rent(MavlinkFtpHelper.MaxDataSize);
 
+        try
+        {
+            while (true)
+            {
+                var bytesRead = (uint) await streamToUpload.ReadAsync(buffer.AsMemory(0, MavlinkFtpHelper.MaxDataSize), cancel).ConfigureAwait(false);
+                if (bytesRead <= 0) break;
+
+                var request = new WriteRequest(session, totalWritten, (byte)bytesRead);
+                var memory = new Memory<byte>(buffer, 0, (int)bytesRead);
+
+                await Base.WriteFile(request, memory, cancel).ConfigureAwait(false);
+
+                totalWritten += bytesRead;
+                progress.Report((double)totalWritten / streamToUpload.Length);
+            }
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+            await Base.TerminateSession(session, cancel).ConfigureAwait(false);
+        }
+    }
 
     #region Dispose
 
