@@ -14,7 +14,7 @@ public interface IFtpClient:IMavlinkMicroserviceClient
     Task<WriteHandle> OpenFileWrite(string path, CancellationToken cancel = default);
 
     public Task<FileTransferProtocolPacket> CreateDirectory(string path, CancellationToken cancellationToken = default);
-    public Task<FileTransferProtocolPacket> CreateFile(string path, CancellationToken cancellationToken = default);
+    public Task<CreateHandle> CreateFile(string path, CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> ResetSessions(CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> RemoveDirectory(string path, CancellationToken cancellationToken = default);
     public Task<FileTransferProtocolPacket> RemoveFile(string path, CancellationToken cancellationToken = default);

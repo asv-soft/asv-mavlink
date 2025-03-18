@@ -72,9 +72,10 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _logger.ZLogInformation($"{Id} {FtpOpcode.WriteFile:G} {request.ToString()}");
         var result = await InternalFtpCall(FtpOpcode.WriteFile, p =>
         {
-            p.WriteData(buffer.Span[..request.Take]);
+            p.WriteSession(request.Session);
             p.WriteSize(request.Take);
             p.WriteOffset(request.Skip);
+            p.WriteData(buffer.Span[..request.Take]);
         }, cancellationToken).ConfigureAwait(false);
         _logger
             .ZLogInformation($"{Id} {FtpOpcode.WriteFile:G} size: {request.Take}, offset: {request.Skip}, session: {request.Session}");
@@ -179,7 +180,7 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         return result;
     }
     
-    public async Task<FileTransferProtocolPacket> CreateFile(string path, CancellationToken cancellationToken = default)
+    public async Task<CreateHandle> CreateFile(string path, CancellationToken cancellationToken = default)
     {
         MavlinkFtpHelper.CheckFilePath(path);
         _logger.ZLogInformation($"{Id} {FtpOpcode.CreateFile:G}({path})");
@@ -188,7 +189,9 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
                 p => p.WriteDataAsString(path), 
                 cancellationToken)
             .ConfigureAwait(false);
-        return result;
+        var sessionId = result.ReadSession();
+        _logger.ZLogInformation($"{Id} {FtpOpcode.CreateFile:G}({path}): session={sessionId}");
+        return new CreateHandle(sessionId, path);
     }
 
     public Task TerminateSession(byte session, CancellationToken cancel = default)
