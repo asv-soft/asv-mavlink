@@ -1,21 +1,14 @@
 using System;
 using System.Buffers;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using Asv.IO;
 using Asv.Mavlink.Common;
-using DotNext.Buffers;
 using FluentAssertions;
 using JetBrains.Annotations;
-using R3;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -23,7 +16,7 @@ namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(FtpServerEx))]
 [TestSubject(typeof(FtpClientEx))]
-public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisposable
+public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
 {
     private MockFileSystem? _fileSystem;
     public FtpExComplexTest(ITestOutputHelper log) : base(log)
@@ -210,23 +203,34 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
     public async Task Refresh_Success(string refreshPath)
     {
         // Arrange
-        var server = Server; // to ensure that server is created and file system is created
+        _ = Server; // to ensure that server is created and file system is created
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
         var localRoot = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder");
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
         _fileSystem.AddDirectory(localRoot);
+        _fileSystem.AddDirectory(_fileSystem.Path.Combine(localRoot, "innerFolder"));
+        _fileSystem.AddDirectory(_fileSystem.Path.Combine(localRoot, "innerFolder", "veryInnerFolder"));
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "innerFolder", "veryInnerFolder", "veryInnerFile1.log"));
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "innerFolder", "veryInnerFolder", "veryInnerFile2.log"));
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "innerFolder", "innerFile1.bmp"));
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file1.txt"));
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file2.txt"));
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file3.txt"));
 
-
+        
+        const char d = MavlinkFtpHelper.DirectorySeparator;
         var expectedFiles = new[]
         {
-            $"{MavlinkFtpHelper.DirectorySeparator}",
-            $"{MavlinkFtpHelper.DirectorySeparator}folder{MavlinkFtpHelper.DirectorySeparator}",
-            $"{MavlinkFtpHelper.DirectorySeparator}folder{MavlinkFtpHelper.DirectorySeparator}file1.txt",
-            $"{MavlinkFtpHelper.DirectorySeparator}folder{MavlinkFtpHelper.DirectorySeparator}file2.txt",
-            $"{MavlinkFtpHelper.DirectorySeparator}folder{MavlinkFtpHelper.DirectorySeparator}file3.txt",
+            $"{d}",
+            $"{d}folder{d}",
+            $"{d}folder{d}innerFolder{d}",
+            $"{d}folder{d}file1.txt",
+            $"{d}folder{d}file2.txt",
+            $"{d}folder{d}file3.txt",
+            $"{d}folder{d}innerFolder{d}veryInnerFolder{d}",
+            $"{d}folder{d}innerFolder{d}innerFile1.bmp",
+            $"{d}folder{d}innerFolder{d}veryInnerFolder{d}veryInnerFile1.log",
+            $"{d}folder{d}innerFolder{d}veryInnerFolder{d}veryInnerFile2.log",
         };
 
 
@@ -234,7 +238,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>, IDisp
         await Client.Refresh(refreshPath, true, _cts.Token);
 
         // Assert
-        expectedFiles.Should().Equal(Client.Entries.Keys);
+        Client.Entries.Keys.Should().Equal(expectedFiles);
     }
 
     private static MockFileSystem SetUpFileSystem(string root)
