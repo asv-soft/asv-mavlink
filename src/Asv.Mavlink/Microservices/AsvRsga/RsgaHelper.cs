@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Asv.Common;
+using Asv.IO;
 using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRsga;
 using Asv.Mavlink.Common;
@@ -62,6 +64,21 @@ public static class RsgaHelper
                 yield return (AsvRsgaCustomMode)i;
         }
     }
+
+    #region Custom mode
+
+    public static void SetCustomMode(ref uint customModeValue, AsvRsgaCustomMode mode)
+    {
+        var value = (byte)mode;
+        customModeValue = (customModeValue & 0xFFFFFF00) | value;
+    }
+    public static void SetCustomSubMode(ref uint customModeValue, AsvRsgaCustomSubMode mode)
+    {
+        var value = (uint)mode;
+        customModeValue = (customModeValue & 0xFFFF00FF) | (value << 8);
+    }
+
+    #endregion
     
     #region ServerFactory
 

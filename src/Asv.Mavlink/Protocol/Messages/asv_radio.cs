@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.4+c60d154a544f2b4740e11edc578d956f8b9fd5c3
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.5+0ba9fefc7b77ee147b4abfc48526494086a929d5
 
 using System;
 using System.Text;
@@ -30,7 +30,6 @@ using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.IO;
-using Asv.Mavlink.AsvAudio;
 
 namespace Asv.Mavlink.AsvRadio
 {
