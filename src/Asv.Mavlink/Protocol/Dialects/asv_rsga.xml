@@ -96,6 +96,23 @@
             <entry value="100" name="ASV_RSGA_CUSTOM_MODE_RADIO">
                 <description>Audio radio station mode.</description>
             </entry>
+            <entry value="255" name="ASV_RSGA_CUSTOM_MODE_RESERVED">
+                <description>Max available mode value (Reserved).</description>
+            </entry>
+            
+        </enum>
+        <!-- CUSTOM_MODE -->
+        <enum name="ASV_RSGA_CUSTOM_SUB_MODE">
+            <description>A mapping of RSGA special sub modes for custom_mode[8-15] bits field of heartbeat.[!THIS_IS_ENUM_FLAG!]</description>
+            
+            <entry value="1" name="ASV_RSGA_CUSTOM_SUB_MODE_RECORD">
+                <description>Recording is enabled.</description>
+            </entry>
+            <entry value="2" name="ASV_RSGA_CUSTOM_SUB_MODE_MISSION">
+                <description>Mission is started.</description>
+            </entry>
+            
+
         </enum>
 
         <enum name="ASV_RSGA_REQUEST_ACK">

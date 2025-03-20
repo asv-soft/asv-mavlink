@@ -15,7 +15,7 @@ public interface IMavlinkMicroserviceServer : IMicroserviceServer
 
     MavlinkIdentity Identity { get; }
 
-    public void Start();
+    void Start();
 }
 
 public abstract class MavlinkMicroserviceServer : MicroserviceServer<MavlinkMessage>, IMavlinkMicroserviceServer

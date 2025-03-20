@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.4+c60d154a544f2b4740e11edc578d956f8b9fd5c3
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.5+0ba9fefc7b77ee147b4abfc48526494086a929d5
 
 using System;
 using System.Text;
@@ -158,6 +158,30 @@ namespace Asv.Mavlink.AsvRsga
         /// ASV_RSGA_CUSTOM_MODE_RADIO
         /// </summary>
         AsvRsgaCustomModeRadio = 100,
+        /// <summary>
+        /// Max available mode value (Reserved).
+        /// ASV_RSGA_CUSTOM_MODE_RESERVED
+        /// </summary>
+        AsvRsgaCustomModeReserved = 255,
+    }
+
+    /// <summary>
+    /// A mapping of RSGA special sub modes for custom_mode[8-15] bits field of heartbeat.[!THIS_IS_ENUM_FLAG!]
+    ///  ASV_RSGA_CUSTOM_SUB_MODE
+    /// </summary>
+    [Flags]
+    public enum AsvRsgaCustomSubMode:uint
+    {
+        /// <summary>
+        /// Recording is enabled.
+        /// ASV_RSGA_CUSTOM_SUB_MODE_RECORD
+        /// </summary>
+        AsvRsgaCustomSubModeRecord = 1,
+        /// <summary>
+        /// Mission is started.
+        /// ASV_RSGA_CUSTOM_SUB_MODE_MISSION
+        /// </summary>
+        AsvRsgaCustomSubModeMission = 2,
     }
 
     /// <summary>
