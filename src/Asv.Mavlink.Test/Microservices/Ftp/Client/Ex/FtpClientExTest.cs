@@ -168,16 +168,17 @@ public class FtpClientExTest : ClientTestBase<FtpClientEx>
         Assert.Equal(data, stream.ToArray());
     }
     
-    /*[Fact]
+    [Fact]
     public async Task BurstDownloadFile_Success()
     {
         // Arrange
+        uint fileSize = 500;
         var path = "/path/to/file.txt";
-        var stream = new MemoryStream(500);
-        var data = new byte[500];
+        var stream = new MemoryStream((int)fileSize);
+        var data = new byte[fileSize];
         new Random().NextBytes(data);
-        var skip = 0;
-        var take = 239;
+        uint skip = 0;
+        byte take = 239;
         
         // Act
         Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
@@ -189,7 +190,7 @@ public class FtpClientExTest : ClientTestBase<FtpClientEx>
                 Assert.Equal(path, requestedPath);
 
                 var response = CreateAckResponse(packet, FtpOpcode.OpenFileRO);
-                response.WriteDataAsUint(500);
+                response.WriteDataAsUint(fileSize);
                 response.WriteSize(4);
 
                 _ = Link.Server.Send(response);
@@ -201,15 +202,23 @@ public class FtpClientExTest : ClientTestBase<FtpClientEx>
         {
             if (packet.ReadOpcode() == FtpOpcode.BurstReadFile)
             {
-                var response = CreateAckResponse(packet, FtpOpcode.BurstReadFile);
-                var mem = new ReadOnlySpan<byte>(data, skip, take);
-                response.WriteData(mem);
-                skip += 239;
-                take = Math.Min(239, data.Length - skip);
+                while (skip < fileSize)
+                {
+                    var nextSkip = Math.Min(take, fileSize - skip);
+                    var response = CreateAckResponse(packet, FtpOpcode.BurstReadFile);
+                    response.WriteSize(take);
+                    response.WriteOffset(skip);
+                    response.WriteData(data.AsSpan().Slice((int)skip, (int)nextSkip));
+                    skip += nextSkip;
+                    if (skip < fileSize)
+                    {
+                        response.WriteBurstComplete(1);
+                    }
                 
-                _ = Link.Server.Send(response);
+                    _ = Link.Server.Send(response);
 
-                Time.Advance(TimeSpan.FromMilliseconds(10));
+                    Time.Advance(TimeSpan.FromMilliseconds(10));
+                }
             }
         });
         Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
@@ -217,6 +226,7 @@ public class FtpClientExTest : ClientTestBase<FtpClientEx>
             if (packet.ReadOpcode() == FtpOpcode.ReadFile)
             {
                 var response = CreateAckResponse(packet, FtpOpcode.ReadFile);
+                response.WriteSize(4);
                 
                 _ = Link.Server.Send(response);
 
@@ -228,8 +238,10 @@ public class FtpClientExTest : ClientTestBase<FtpClientEx>
             if (packet.ReadOpcode() == FtpOpcode.TerminateSession)
             {
                 var response = CreateAckResponse(packet, FtpOpcode.TerminateSession);
+                response.WriteSize(4);
+                
                 _ = Link.Server.Send(response);
-
+                
                 Time.Advance(TimeSpan.FromMilliseconds(10));
                 
                 _tcs.TrySetResult();
@@ -242,7 +254,7 @@ public class FtpClientExTest : ClientTestBase<FtpClientEx>
         
         // Assert
         Assert.Equal(data, stream.ToArray());
-    }*/
+    }
     
     private FileTransferProtocolPacket CreateAckResponse(FileTransferProtocolPacket requestPacket,
         FtpOpcode originOpCode)
