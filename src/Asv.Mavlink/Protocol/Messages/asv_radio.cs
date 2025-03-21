@@ -30,7 +30,6 @@ using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.IO;
-using Asv.Mavlink.AsvAudio;
 
 namespace Asv.Mavlink.AsvRadio
 {
