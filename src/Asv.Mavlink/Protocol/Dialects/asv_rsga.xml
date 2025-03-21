@@ -101,6 +101,7 @@
             </entry>
             
         </enum>
+        
         <!-- CUSTOM_MODE -->
         <enum name="ASV_RSGA_CUSTOM_SUB_MODE">
             <description>A mapping of RSGA special sub modes for custom_mode[8-15] bits field of heartbeat.[!THIS_IS_ENUM_FLAG!]</description>
@@ -111,8 +112,24 @@
             <entry value="2" name="ASV_RSGA_CUSTOM_SUB_MODE_MISSION">
                 <description>Mission is started.</description>
             </entry>
-            
-
+            <entry value="4" name="ASV_RSGA_CUSTOM_SUB_MODE_RESERVED2">
+                <description>Reserved 2.</description>
+            </entry>
+            <entry value="8" name="ASV_RSGA_CUSTOM_SUB_MODE_RESERVED3">
+                <description>Reserved 3.</description>
+            </entry>
+            <entry value="16" name="ASV_RSGA_CUSTOM_SUB_MODE_RESERVED4">
+                <description>Reserved 4.</description>
+            </entry>
+            <entry value="32" name="ASV_RSGA_CUSTOM_SUB_MODE_RESERVED5">
+                <description>Reserved 5.</description>
+            </entry>
+            <entry value="64" name="ASV_RSGA_CUSTOM_SUB_MODE_RESERVED6">
+                <description>Reserved 6.</description>
+            </entry>
+            <entry value="128" name="ASV_RSGA_CUSTOM_SUB_MODE_RESERVED7">
+                <description>Reserved 7.</description>
+            </entry>
         </enum>
 
         <enum name="ASV_RSGA_REQUEST_ACK">
@@ -162,6 +179,7 @@
             <field type="uint8_t[32]" name="supported_modes">Supported modes. Each bit index represents an ASV_RSGA_CUSTOM_MODE value (256 bits). First (IDLE) bit always true.</field>
         </message>
 
+        
 
     </messages>
 </mavlink>
