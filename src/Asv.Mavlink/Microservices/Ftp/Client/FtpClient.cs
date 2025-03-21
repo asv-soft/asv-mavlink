@@ -180,18 +180,24 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         return result;
     }
     
-    public async Task<CreateHandle> CreateFile(string path, CancellationToken cancellationToken = default)
+    public async Task<FileTransferProtocolPacket> CreateFile(string path, CancellationToken cancellationToken = default)
     {
         MavlinkFtpHelper.CheckFilePath(path);
         _logger.ZLogInformation($"{Id} {FtpOpcode.CreateFile:G}({path})");
         var result = await InternalFtpCall(
                 FtpOpcode.CreateFile,
-                p => p.WriteDataAsString(path), 
+                p =>
+                {
+                    p.WriteDataAsString(path);
+                    if (path.Length > byte.MaxValue)
+                    {
+                        _logger.ZLogError($"Path length is too long");
+                    }
+                    p.WriteSize((byte)path.Length);
+                }, 
                 cancellationToken)
             .ConfigureAwait(false);
-        var sessionId = result.ReadSession();
-        _logger.ZLogInformation($"{Id} {FtpOpcode.CreateFile:G}({path}): session={sessionId}");
-        return new CreateHandle(sessionId, path);
+        return result;
     }
 
     public Task TerminateSession(byte session, CancellationToken cancel = default)

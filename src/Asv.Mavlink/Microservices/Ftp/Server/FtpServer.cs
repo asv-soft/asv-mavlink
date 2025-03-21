@@ -285,7 +285,6 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         await InternalFtpReply(input, FtpOpcode.Ack, p =>
         {
             p.WriteSession(result);
-            p.WriteSize(0);
         }).ConfigureAwait(false);
     }
 
@@ -420,7 +419,6 @@ public sealed class FtpServer : MavlinkMicroserviceServer, IFtpServer
         await InternalFtpReply(input, FtpOpcode.Ack, p =>
         {
             p.WriteSession(_lastWriteHandle.Session);
-            p.WriteSize(4);
             p.WriteDataAsUint(_lastWriteHandle.Size);
         }).ConfigureAwait(false);
     }

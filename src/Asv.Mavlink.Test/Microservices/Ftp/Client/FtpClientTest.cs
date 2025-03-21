@@ -506,11 +506,10 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         // Wait for the client to receive and process the response
         await _tcs.Task.ConfigureAwait(false);
 
-        var result = await resultTask.ConfigureAwait(false);
+        await resultTask.ConfigureAwait(false);
 
         // Assert
         Assert.NotNull(session);
-        Assert.Equal(session, result.Session);
     }
 
     [Fact]

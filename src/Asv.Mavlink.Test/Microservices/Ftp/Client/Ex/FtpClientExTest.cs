@@ -52,14 +52,14 @@ public class FtpClientExTest : ClientTestBase<FtpClientEx>
         // Act
         Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
-            if (packet.ReadOpcode() == FtpOpcode.OpenFileWO)
+            if (packet.ReadOpcode() == FtpOpcode.CreateFile)
             {
                 var requestedPath = packet.ReadDataAsString();
 
                 Assert.Equal(filePath, requestedPath);
 
-                var response = CreateAckResponse(packet, FtpOpcode.OpenFileWO);
-                response.WriteSize(4);
+                var response = CreateAckResponse(packet, FtpOpcode.CreateFile);
+                response.WriteSession(2);
                 _ = Link.Server.Send(response);
 
                 Time.Advance(TimeSpan.FromMilliseconds(10));
@@ -75,6 +75,17 @@ public class FtpClientExTest : ClientTestBase<FtpClientEx>
 
                 var response = CreateAckResponse(packet, FtpOpcode.WriteFile);
                 response.WriteSize(4);
+
+                _ = Link.Server.Send(response);
+
+                Time.Advance(TimeSpan.FromMilliseconds(10));
+            }
+        });
+        Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
+        {
+            if (packet.ReadOpcode() == FtpOpcode.TruncateFile)
+            {
+                var response = CreateAckResponse(packet, FtpOpcode.TruncateFile);
 
                 _ = Link.Server.Send(response);
 
