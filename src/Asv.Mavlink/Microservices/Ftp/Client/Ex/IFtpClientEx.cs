@@ -32,10 +32,10 @@ public interface IFtpClientEx
         CancellationToken cancel = default);
     Task DownloadFile(string filePath, IBufferWriter<byte> bufferToSave, IProgress<double>? progress = null,byte partSize = MavlinkFtpHelper.MaxDataSize,
         CancellationToken cancel = default);
-
+    Task UploadFile(string filePath, Stream streamToUpload, IProgress<double>? progress = null,
+        CancellationToken cancel = default);
     Task<int> BurstDownloadFile(string filePath, Stream streamToSave, IProgress<double>? progress = null,
         byte partSize = MavlinkFtpHelper.MaxDataSize, CancellationToken cancel = default);
-
     Task<int> BurstDownloadFile(string filePath, IBufferWriter<byte> bufferToSave, IProgress<double>? progress = null,
         byte partSize = MavlinkFtpHelper.MaxDataSize, CancellationToken cancel = default);
 }
