@@ -30,16 +30,19 @@ public class MissionServerExTest : ServerTestBase<MissionServerEx>
     }
 
     protected override MissionServerEx CreateServer(MavlinkIdentity identity, CoreServices core) 
-        => new(new MissionServer(identity, core), new StatusTextServer(identity, _config, core));
+        => new(new MissionServer(identity, core), new StatusTextServer(identity, _config, core), new CommandLongServerEx(new CommandServer(identity,core)));
     
     [Fact]
     public void Constructor_Null_Throws()
     {
         Assert.Throws<NullReferenceException>(
-            () => new MissionServerEx(null!, new StatusTextServer(Identity, _config, Core))
+            () => new MissionServerEx(null!, new StatusTextServer(Identity, _config, Core), new CommandLongServerEx(new CommandServer(Identity,Core)))
         );
         Assert.Throws<ArgumentNullException>(
-            () => new MissionServerEx(new MissionServer(Identity, Core), null!)
+            () => new MissionServerEx(new MissionServer(Identity, Core), null!, new CommandLongServerEx(new CommandServer(Identity,Core)))
+        );
+        Assert.Throws<ArgumentNullException>(
+            () => new MissionServerEx(new MissionServer(Identity, Core), new StatusTextServer(Identity, _config, Core), null!)
         );
     }
 

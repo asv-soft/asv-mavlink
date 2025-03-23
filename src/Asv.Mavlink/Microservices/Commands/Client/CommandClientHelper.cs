@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
@@ -7,6 +8,23 @@ namespace Asv.Mavlink;
 
 public static class CommandClientHelper
 {
+    public static async Task CommandLongAndCheckResult(
+        this ICommandClient client, 
+        Action<CommandLongPayload> edit,
+        CancellationToken cancel = default
+    )
+    {
+        var result = await client.CommandLong(edit, cancel).ConfigureAwait(false);
+        switch (result.Result)
+        {
+            case MavResult.MavResultTemporarilyRejected:
+            case MavResult.MavResultDenied:
+            case MavResult.MavResultUnsupported:
+            case MavResult.MavResultFailed:
+                throw new CommandException(result);
+        }
+    }
+    
     public static async Task CommandLongAndCheckResult(
         this ICommandClient client, 
         MavCmd command, 

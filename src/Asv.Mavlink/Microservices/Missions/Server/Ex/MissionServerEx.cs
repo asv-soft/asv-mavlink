@@ -41,9 +41,10 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
     private CancellationTokenSource? _currentMissionItemCancel;
 
 
-    public MissionServerEx(IMissionServer baseIfc, IStatusTextServer status) :
+    public MissionServerEx(IMissionServer baseIfc, IStatusTextServer status, ICommandServerEx<CommandLongPacket> commands) :
         base("MISSION", baseIfc.Identity, baseIfc.Core)
     {
+        ArgumentNullException.ThrowIfNull(commands);
         Base = baseIfc ?? throw new ArgumentNullException(nameof(baseIfc));
         _statusLogger = status ?? throw new ArgumentNullException(nameof(status));
         _logger = baseIfc.Core.LoggerFactory.CreateLogger<MissionServerEx>();
@@ -60,6 +61,22 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         _sub5 = baseIfc.OnMissionRequestInt.SubscribeAwait(OnReadMissionItem, AwaitOperation.Drop);
         _sub6 = baseIfc.OnMissionClearAll.SubscribeAwait(OnMissionClearAll, AwaitOperation.Drop);
         _sub7 = baseIfc.OnMissionSetCurrent.Subscribe(x=>ChangeCurrentMissionItem(x.Payload.Seq));
+
+        // TODO: add test for this
+        commands[MavCmd.MavCmdMissionStart] = (from, args, cancel) =>
+        {
+            MissionHelper.GetStartMissionCommandArgs(args.Payload, out var startIndex,out var stopIndex);
+            StartMission(startIndex);
+            return CommandResult.AcceptedTask;
+        };
+        
+        // TODO: add test for this
+        commands[MavCmd.MavCmdDoSetMissionCurrent] = async (from, args, cancel) =>
+        {
+            MissionHelper.GetChangeMissionCurrentCommandArgs(args, out var index);
+            await ChangeCurrentMissionItem(index).ConfigureAwait(false);
+            return CommandResult.Accepted;
+        };
     }
 
     #region ClearItems

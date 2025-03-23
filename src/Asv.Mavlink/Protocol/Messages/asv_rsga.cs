@@ -23,6 +23,7 @@
 // This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.5+0ba9fefc7b77ee147b4abfc48526494086a929d5
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -30,6 +31,7 @@ using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.IO;
+using Asv.Mavlink.Types;
 
 namespace Asv.Mavlink.AsvRsga
 {
@@ -263,6 +265,8 @@ namespace Asv.Mavlink.AsvRsga
         public override string Name => "ASV_RSGA_COMPATIBILITY_REQUEST";
     }
 
+    
+    
     /// <summary>
     ///  ASV_RSGA_COMPATIBILITY_REQUEST
     /// </summary>

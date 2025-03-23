@@ -30,6 +30,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
 {
     private readonly ILogger _logger;
     private readonly IMissionClient _client;
+    private readonly ICommandClient _commandClient;
     private readonly ObservableList<MissionItem> _missionSource;
     private readonly ReactiveProperty<bool> _isMissionSynced;
     private readonly ReactiveProperty<double> _allMissionDistance;
@@ -38,10 +39,13 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
 
     public MissionClientEx(
         IMissionClient client, 
+        ICommandClient commandClient,
         MissionClientExConfig config)
         :base(MissionHelper.MicroserviceExName, client.Identity, client.Core)
     {
+        ArgumentNullException.ThrowIfNull(commandClient);
         _client = client ?? throw new ArgumentNullException(nameof(client));
+        _commandClient = commandClient;
         _logger = client.Core.LoggerFactory.CreateLogger<MissionClientEx>();
         var config1 = config ?? throw new ArgumentNullException(nameof(config));
         _disposeCancel = new CancellationTokenSource();
@@ -62,6 +66,12 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
     public Task SetCurrent(ushort index, CancellationToken cancel = default)
     {
         return _client.MissionSetCurrent(index, cancel);
+    }
+
+    public Task StartMission(ushort startIndex, ushort stopIndex, CancellationToken cancel = default)
+    {
+        return _commandClient.CommandLongAndCheckResult(
+            packet => MissionHelper.SetStartMissionCommandArgs(packet, startIndex, stopIndex), cancel: cancel);
     }
 
     public async Task<MissionItem[]> Download(CancellationToken cancel, Action<double>? progress = null)
