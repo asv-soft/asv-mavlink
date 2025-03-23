@@ -6,6 +6,7 @@ using Asv.IO;
 using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRsga;
 using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 
 
 namespace Asv.Mavlink;
@@ -67,15 +68,9 @@ public static class RsgaHelper
 
     #region Custom mode
 
-    public static void SetCustomMode(ref uint customModeValue, AsvRsgaCustomMode mode)
+    public static void SetCustomMode(HeartbeatPayload payload, AsvRsgaCustomMode mode)
     {
-        var value = (byte)mode;
-        customModeValue = (customModeValue & 0xFFFFFF00) | value;
-    }
-    public static void SetCustomSubMode(ref uint customModeValue, AsvRsgaCustomSubMode mode)
-    {
-        var value = (uint)mode;
-        customModeValue = (customModeValue & 0xFFFF00FF) | (value << 8);
+       payload.SetCustomMode(0,8,(byte)mode);
     }
 
     #endregion

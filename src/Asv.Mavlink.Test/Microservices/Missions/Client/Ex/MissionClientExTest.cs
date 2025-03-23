@@ -25,8 +25,11 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
         AttemptToCallCount = MaxAttemptsToCallCount,
         DeviceUploadTimeoutMs = MaxDeviceUploadTimeoutMs
     };
+    private readonly CommandProtocolConfig _commandConfig = new();
     
     private readonly MissionClientEx _client;
+    private CommandClient _command;
+    
 
     public MissionClientExTest(ITestOutputHelper log) : base(log)
     {
@@ -35,15 +38,17 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
 
     protected override MissionClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core)
     {
-        return new MissionClientEx(new MissionClient(identity, _config, core), _config);
+        _command = new CommandClient(Identity, _commandConfig, core);
+        return new MissionClientEx(new MissionClient(identity, _config, core), _command, _config);
     }
     
     [Fact]
     public void Constructor_Null_Throws()
     {
-        Assert.Throws<NullReferenceException>(() => new MissionClientEx(null!, _config));
+        Assert.Throws<NullReferenceException>(() => new MissionClientEx(null!, _command, _config));
         Assert.Throws<ArgumentNullException>(() => new MissionClientEx(
             new MissionClient(Identity, _config, Context), 
+            _command,
             null!
             )
         );

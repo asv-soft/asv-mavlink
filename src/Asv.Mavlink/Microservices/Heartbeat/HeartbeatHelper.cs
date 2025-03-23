@@ -1,5 +1,8 @@
+using System;
 using System.IO.Abstractions;
 using Asv.Cfg;
+using Asv.Common;
+using Asv.Mavlink.Minimal;
 
 namespace Asv.Mavlink;
 
@@ -26,4 +29,26 @@ public static class HeartbeatHelper
         => factory.Get<IHeartbeatServer>();
 
     #endregion
+
+
+    public static void EditCustomMode(this HeartbeatPayload payload, Action<UintBitArray> edit)
+    {
+        var mode = new UintBitArray(payload.CustomMode, 32);
+        edit.Invoke(mode);
+        payload.CustomMode = mode.Value;
+    }
+    
+    public static void SetCustomMode(this HeartbeatPayload payload, int bitIndex, int bitLength, uint value)
+    {
+        var mode = new UintBitArray(payload.CustomMode, 32);
+        mode.SetBitU(bitIndex, bitLength, value);
+        payload.CustomMode = mode.Value;
+    }
+    
+    public static uint GetCustomMode(this HeartbeatPayload payload, int bitIndex, int bitLength)
+    {
+        var mode = new UintBitArray(payload.CustomMode, 32);
+        return mode.GetBitU(bitIndex, bitLength);
+    }
+   
 }

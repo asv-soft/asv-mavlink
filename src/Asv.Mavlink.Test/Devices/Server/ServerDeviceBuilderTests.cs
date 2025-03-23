@@ -203,6 +203,8 @@ public class ServerDeviceBuilderTests : ServerTestBase<ServerDeviceBuilder>
         Server.RegisterStatus();
         Server.RegisterMission();
         Server.RegisterMissionEx();
+        Server.RegisterCommand();
+        Server.RegisterCommandLongEx();
         var device = Server.Build();
         var res = device.Get<IMissionServerEx>();
         Assert.True(res is not null);

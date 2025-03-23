@@ -87,7 +87,7 @@ public class SdrClientDevice : MavlinkClientDevice
         yield return sdrBase;
         var missionBase = new MissionClient(Identity, _config.Missions, Core);
         yield return missionBase;
-        yield return new MissionClientEx(missionBase, _config.MissionsEx);
+        yield return new MissionClientEx(missionBase,command, _config.MissionsEx);
         
         if (hb == null)
         {

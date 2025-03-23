@@ -121,7 +121,7 @@ public class VehicleClientDevice: MavlinkClientDevice
         yield return new LoggingClient(Identity, Core);
         var missions = new MissionClient(Identity, _deviceConfig.Missions,Core);
         yield return missions;
-        yield return new MissionClientEx(missions, _deviceConfig.Missions);
+        yield return new MissionClientEx(missions,cmd, _deviceConfig.Missions);
         yield return new FtpClient(Identity,_deviceConfig.Ftp,Core);
         var gnssBase = new GnssClient(Identity,Core);
         yield return gnssBase;

@@ -37,10 +37,14 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         MaxQueueSize = MaxQueueSizeValue,
         MaxSendRateHz = MaxSendRateHzValue,
     };
+
+    private readonly CommandProtocolConfig _clientCommandConfig = new();
+    
     
     private readonly MissionClientEx _client;
     private readonly MissionServerEx _server;
     
+
     public MissionExComplexTest(ITestOutputHelper log) : base(log)
     {
         _server = Server;
@@ -51,13 +55,16 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     {
         var statusTextServer = new StatusTextServer(identity, _statusTextServerConfig, core);
         var server = new MissionServer(identity, core);
-        return new MissionServerEx(server, statusTextServer);
+        var cmd = new CommandServer(identity, core);
+        var cmdEx = new CommandLongServerEx(cmd);
+        return new MissionServerEx(server, statusTextServer, cmdEx);
     }
 
     protected override MissionClientEx CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
         var client = new MissionClient(identity, _clientConfig, core);
-        return new MissionClientEx(client, _clientExConfig);
+        var cmd = new CommandClient(identity, _clientCommandConfig, core);
+        return new MissionClientEx(client, cmd, _clientExConfig);
     }
     
     [Theory]

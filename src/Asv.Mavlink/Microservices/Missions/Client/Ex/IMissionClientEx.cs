@@ -23,6 +23,14 @@ public interface IMissionClientEx:IMavlinkMicroserviceClient
     IMissionClient Base { get; }
 
     /// <summary>
+    /// Starts the mission (send MAV_CMD_MISSION_START)
+    /// </summary>
+    /// <param name="startIndex"></param>
+    /// <param name="stopIndex"></param>
+    /// <param name="cancel"></param>
+    /// <returns></returns>
+    Task StartMission(ushort startIndex, ushort stopIndex, CancellationToken cancel = default);
+    /// <summary>
     /// Downloads mission items asynchronously.
     /// </summary>
     /// <param name="cancel">The cancellation token to cancel the download.</param>
