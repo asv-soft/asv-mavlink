@@ -37,7 +37,7 @@ public static class MissionHelper
     {
         if (args.Command != MavCmd.MavCmdMissionStart)
         {
-            throw new ArgumentException($"Invalid command. Expected {nameof(MavCmd.MavCmdMissionStart)}, got {args.Command : G}");
+            throw new ArgumentException($"Invalid command. Expected {nameof(MavCmd.MavCmdMissionStart)}, got {args.Command:G}");
         }
         firstItem = (ushort)args.Param1;
         lastItem = (ushort)args.Param2;
