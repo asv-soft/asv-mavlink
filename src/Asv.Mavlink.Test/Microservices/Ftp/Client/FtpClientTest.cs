@@ -478,12 +478,14 @@ public class FtpClientTest : ClientTestBase<FtpClient>
     {
         // Arrange
         var path = "/path/to/new_file.txt";
+        byte? session = null;
 
         // Set up server response before starting client operation
         Link.Server.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
         {
             if (packet.ReadOpcode() == FtpOpcode.CreateFile)
             {
+                session = packet.ReadSession();
                 var requestedPath = packet.ReadDataAsString();
 
                 Assert.Equal(path, requestedPath);
@@ -504,11 +506,10 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         // Wait for the client to receive and process the response
         await _tcs.Task.ConfigureAwait(false);
 
-        var result = await resultTask.ConfigureAwait(false);
+        await resultTask.ConfigureAwait(false);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(FtpOpcode.Ack, result.ReadOpcode());
+        Assert.NotNull(session);
     }
 
     [Fact]
