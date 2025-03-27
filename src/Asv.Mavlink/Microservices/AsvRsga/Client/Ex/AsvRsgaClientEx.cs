@@ -24,6 +24,7 @@ public class AsvRsgaClientEx : MavlinkMicroserviceClient, IAsvRsgaClientEx
     public AsvRsgaClientEx(IAsvRsgaClient client, ICommandClient commandClient, IHeartbeatClient heartbeatClient)
         :base(RsgaHelper.MicroserviceExName, client.Identity, client.Core)
     {
+        ArgumentNullException.ThrowIfNull(heartbeatClient);
         _logger = client.Core.LoggerFactory.CreateLogger<AsvRsgaClientEx>();
         _currentMode = new ReactiveProperty<AsvRsgaCustomMode>(AsvRsgaCustomMode.AsvRsgaCustomModeIdle);
         _currentSubMode = new ReactiveProperty<AsvRsgaCustomSubMode>(0);

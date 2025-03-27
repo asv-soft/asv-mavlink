@@ -27,6 +27,8 @@ public class AsvRsgaComplexTest : ComplexTestBase<AsvRsgaClientEx, AsvRsgaServer
         CommandAttempt = 5
     };
 
+    private HeartbeatClientConfig _heartbeatConfig = new();
+
     public AsvRsgaComplexTest(ITestOutputHelper log) : base(log)
     {
         _client = Client;
@@ -44,7 +46,7 @@ public class AsvRsgaComplexTest : ComplexTestBase<AsvRsgaClientEx, AsvRsgaServer
 
     protected override AsvRsgaClientEx CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
-        return new AsvRsgaClientEx(new AsvRsgaClient(identity, core), new CommandClient(identity, _commandConfig, core));
+        return new AsvRsgaClientEx(new AsvRsgaClient(identity, core), new CommandClient(identity, _commandConfig, core), new HeartbeatClient(identity, _heartbeatConfig, core));
     }
 
     [Fact]

@@ -26,9 +26,14 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
         MaxSendRateHz = 30,
     };
 
+    private readonly HeartbeatClientConfig _heartbeatClientConfig = new();
+    private HeartbeatClient _heartbeatClient;
+
     protected override AsvRsgaClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core)
     {
-        return new AsvRsgaClientEx(new AsvRsgaClient(identity, core), new CommandClient(identity, _commandCore, core));
+        _heartbeatClient = new HeartbeatClient(identity, _heartbeatClientConfig, core);
+        return new AsvRsgaClientEx(new AsvRsgaClient(identity, core), new CommandClient(identity, _commandCore, core),
+            _heartbeatClient);
     }
 
     public AsvRsgaClientExTest(ITestOutputHelper log) : base(log)
@@ -42,9 +47,11 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
     {
         // Act
         Assert.Throws<NullReferenceException>(() =>
-            new AsvRsgaClientEx(null!, new CommandClient(Client.Base.Identity, _commandCore, Client.Base.Core)));
+            new AsvRsgaClientEx(null!, new CommandClient(Client.Base.Identity, _commandCore, Client.Base.Core),_heartbeatClient));
         Assert.Throws<ArgumentNullException>(() =>
-            new AsvRsgaClientEx(new AsvRsgaClient(Client.Base.Identity, Client.Base.Core), null!));
+            new AsvRsgaClientEx(new AsvRsgaClient(Client.Base.Identity, Client.Base.Core), null!,_heartbeatClient));
+        Assert.Throws<ArgumentNullException>(() =>
+            new AsvRsgaClientEx(new AsvRsgaClient(Client.Base.Identity, Client.Base.Core), new CommandClient(Client.Base.Identity, _commandCore, Client.Base.Core), null!));
     }
 
     [Fact]
