@@ -28,14 +28,11 @@
     <PackageReference Include="Asv.Cfg" Version="$(AsvCommonVersion)" />
     <PackageReference Include="Asv.Common" Version="$(AsvCommonVersion)" />
     <PackageReference Include="Asv.IO" Version="$(AsvCommonVersion)" />
-    <PackageReference Include="ObservableCollections.R3" Version="3.3.1" />
-    <PackageReference Include="R3" Version="1.2.9" />
-    <PackageReference Include="TestableIO.System.IO.Abstractions" Version="21.0.29" />
     <PackageReference Include="ZLogger" Version="$(ZLoggerVersion)" />
-    <PackageReference Include="Geodesy" Version="4.1.0" />
-    <PackageReference Include="System.IO.Abstractions" Version="21.0.29" />
-    
-      </ItemGroup>
+    <PackageReference Include="TestableIO.System.IO.Abstractions" Version="$(SystemIOAbstractionsVersion)" />
+    <PackageReference Include="System.IO.Abstractions" Version="$(SystemIOAbstractionsVersion)" />
+    <PackageReference Include="Geodesy" Version="4.1.0" />    
+  </ItemGroup>
   <ItemGroup>
     <Compile Update="RS.Designer.cs">
       <DesignTime>True</DesignTime>
