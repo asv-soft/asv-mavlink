@@ -72,6 +72,26 @@ public static class RsgaHelper
     {
        payload.SetCustomMode(0,8,(byte)mode);
     }
+    
+    public static AsvRsgaCustomMode GetCustomMode(HeartbeatPayload? payload)
+    {
+        if (payload == null)
+        {
+            return AsvRsgaCustomMode.AsvRsgaCustomModeIdle;
+        }
+
+        return (AsvRsgaCustomMode)payload.GetCustomMode(0,8);
+    }
+    
+    public static AsvRsgaCustomSubMode GetCustomSubMode(HeartbeatPayload? payload)
+    {
+        if (payload == null)
+        {
+            return 0;
+        }
+
+        return (AsvRsgaCustomSubMode)payload.GetCustomMode(8,8);
+    }
 
     #endregion
     
@@ -92,11 +112,7 @@ public static class RsgaHelper
     }
    
 
-    public static IAsvChartServer GetRadio(this IServerDevice factory) 
-        => factory.Get<IAsvChartServer>();
-
-    public static IAsvRadioServerEx GetRadioEx(this IServerDevice factory) 
-        => factory.Get<IAsvRadioServerEx>();
-
     #endregion
+
+    
 }

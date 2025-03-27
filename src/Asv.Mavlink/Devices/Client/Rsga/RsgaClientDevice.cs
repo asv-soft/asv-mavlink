@@ -60,8 +60,13 @@ public class RsgaClientDevice : MavlinkClientDevice
     protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices(
         [EnumeratorCancellation] CancellationToken cancel)
     {
+        IHeartbeatClient? heartBeat = null;
         await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
         {
+            if (microservice is IHeartbeatClient heartbeat)
+            {
+                heartBeat = heartbeat;
+            }
             yield return microservice;
         }
         yield return new StatusTextClient(Identity, Core);
@@ -74,7 +79,8 @@ public class RsgaClientDevice : MavlinkClientDevice
         yield return command;
         var rsgaBase = new AsvRsgaClient(Identity, Core);
         yield return rsgaBase;
-        yield return new AsvRsgaClientEx(rsgaBase,command);
+        if (heartBeat == null) throw new Exception("Heartbeat microservice not found");
+        yield return new AsvRsgaClientEx(rsgaBase, command, heartBeat);
     }
 
 
