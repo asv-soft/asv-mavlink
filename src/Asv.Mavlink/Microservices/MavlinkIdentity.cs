@@ -63,7 +63,7 @@ public class MavlinkClientIdentity :IEquatable<MavlinkClientIdentity>
     
     public override string ToString()
     {
-        return $"{Self}=>{Target}";
+        return $"{Target}";
     }
 
     public bool Equals(MavlinkClientIdentity? other)
