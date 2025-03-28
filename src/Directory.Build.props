@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ProductVersion>4.0.0-dev.8</ProductVersion>
     <DotNetVersion>9.0.3</DotNetVersion>
-    <AsvCommonVersion>3.1.1-dev.5</AsvCommonVersion>
+    <AsvCommonVersion>3.1.1-dev.7</AsvCommonVersion>
     <ZLoggerVersion>2.5.5</ZLoggerVersion>
     <ConsoleAppFrameworkVersion>5.2.4</ConsoleAppFrameworkVersion>
     <SystemIOAbstractionsVersion>21.0.29</SystemIOAbstractionsVersion>

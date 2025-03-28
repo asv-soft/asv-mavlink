@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using Asv.Common.InvariantParser;
 using Asv.Mavlink.Common;
 
 
@@ -283,39 +284,182 @@ public readonly struct MavParamValue: IComparable<MavParamValue>, IComparable,IE
     {
         return type switch
         {
-            MavParamType.MavParamTypeUint8 => "U8",
-            MavParamType.MavParamTypeInt8 => "I8",
-            MavParamType.MavParamTypeUint16 => "U16",
-            MavParamType.MavParamTypeInt16 => "I16",
-            MavParamType.MavParamTypeUint32 => "U32",
-            MavParamType.MavParamTypeInt32 => "I32",
-            MavParamType.MavParamTypeReal32 => "R32",
-            MavParamType.MavParamTypeUint64 or MavParamType.MavParamTypeInt64 
-                or MavParamType.MavParamTypeReal64 => "Not supported",
+            MavParamType.MavParamTypeUint8 => nameof(Byte),
+            MavParamType.MavParamTypeInt8 => nameof(SByte),
+            MavParamType.MavParamTypeUint16 => nameof(UInt16),
+            MavParamType.MavParamTypeInt16 => nameof(Int16),
+            MavParamType.MavParamTypeUint32 => nameof(UInt32),
+            MavParamType.MavParamTypeInt32 => nameof(Int32),
+            MavParamType.MavParamTypeReal32 => nameof(Single),
+            MavParamType.MavParamTypeUint64 => nameof(UInt64),
+            MavParamType.MavParamTypeInt64 => nameof(Int64),
+            MavParamType.MavParamTypeReal64 => nameof(Double),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
-    
-    public override string ToString()
+
+    public static ValidationResult TryParseValue(string? input, MavParamType type, out MavParamValue? value, MavParamValue min, MavParamValue max)
     {
-        switch (Type)
+        value = null;
+        switch (type)
         {
             case MavParamType.MavParamTypeUint8:
+                var minimum = Math.Max(byte.MinValue,min);
+                var maximum = Math.Min(byte.MaxValue,max);
+                var rc1 = InvariantNumberParser.TryParse(input, out int res1, minimum, maximum );
+                if (rc1.IsSuccess)
+                {
+                    value = new MavParamValue((byte)res1);
+                }
+
+                return rc1;
             case MavParamType.MavParamTypeInt8:
+                var minimum2 = Math.Max(sbyte.MinValue,min);
+                var maximum2 = Math.Min(sbyte.MaxValue,max);
+                var rc2 = InvariantNumberParser.TryParse(input, out int res2, minimum2, maximum2);
+                if (rc2.IsSuccess)
+                {
+                    value = new MavParamValue((sbyte)res2);
+                }
+
+                return rc2;
             case MavParamType.MavParamTypeUint16:
+                var minimum3 = Math.Max(ushort.MinValue,min);
+                var maximum3 = Math.Min(ushort.MaxValue,max);
+                var rc3 = InvariantNumberParser.TryParse(input, out int res3, minimum3, maximum3);
+                if (rc3.IsSuccess)
+                {
+                    value = new MavParamValue((ushort)res3);
+                }
+                return rc3;
             case MavParamType.MavParamTypeInt16:
+                var minimum4 = Math.Max(short.MinValue,min);
+                var maximum4 = Math.Min(short.MaxValue,max);
+                var rc4 = InvariantNumberParser.TryParse(input, out int res4, minimum4, maximum4);
+                if (rc4.IsSuccess)
+                {
+                    value = new MavParamValue((short)res4);
+                }
+                return rc4;
             case MavParamType.MavParamTypeUint32:
+                var minimum5 = Math.Max(uint.MinValue,min);
+                var maximum5 = Math.Min(uint.MaxValue,max);
+                var rc5 = InvariantNumberParser.TryParse(input, out uint res5, minimum5, maximum5);
+                if (rc5.IsSuccess)
+                {
+                    value = new MavParamValue((uint)res5);
+                }
+                return rc5;
             case MavParamType.MavParamTypeInt32:
-                return $"{_intValue}[{PrintType(Type)}]";
+                var minimum6 = Math.Max(int.MinValue,min);
+                var maximum6 = Math.Min(int.MaxValue,max);
+                var rc6 = InvariantNumberParser.TryParse(input, out int res6, minimum6, maximum6);
+                if (rc6.IsSuccess)
+                {
+                    value = new MavParamValue(res6);
+                }
+
+                return rc6;
             case MavParamType.MavParamTypeReal32:
-                return $"{_realValue}[{PrintType(Type)}]";
+                var rc7 = InvariantNumberParser.TryParse(input, out double res7, min, max);
+                if (rc7.IsSuccess)
+                {
+                    value = new MavParamValue((float)res7);
+                }
+                return rc7;
+            case MavParamType.MavParamTypeReal64:
+                var rc8 = InvariantNumberParser.TryParse(input, out double res8, min, max);
+                if (rc8.IsSuccess)
+                {
+                    value = new MavParamValue((float)res8);
+                }
+                return rc8;
             case MavParamType.MavParamTypeUint64:
             case MavParamType.MavParamTypeInt64:
-            case MavParamType.MavParamTypeReal64:
-                return "Not supported";
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }
+    }
+    
+    public static ValidationResult TryParseValue(string? input, MavParamType type, out MavParamValue? value)
+    {
+        switch (type)
+        {
+            case MavParamType.MavParamTypeUint8:
+                return TryParseValue(input,type, out value, byte.MinValue,byte.MaxValue);
+            case MavParamType.MavParamTypeInt8:
+                return TryParseValue(input,type, out value, sbyte.MinValue,sbyte.MaxValue);
+            case MavParamType.MavParamTypeUint16:
+                return TryParseValue(input,type, out value, ushort.MinValue,ushort.MaxValue);
+            case MavParamType.MavParamTypeInt16:
+                return TryParseValue(input,type, out value, short.MinValue,short.MaxValue);
+            case MavParamType.MavParamTypeUint32:
+                return TryParseValue(input,type, out value, uint.MinValue,uint.MaxValue);
+            case MavParamType.MavParamTypeInt32:
+                return TryParseValue(input,type, out value, int.MinValue, int.MaxValue);
+            case MavParamType.MavParamTypeReal32:
+                return TryParseValue(input,type, out value, float.MinValue, float.MaxValue);
+            case MavParamType.MavParamTypeInt64:
+            case MavParamType.MavParamTypeReal64:
+            case MavParamType.MavParamTypeUint64:
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+        
+    }
+    
+    public static MavParamValue Parse(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+            throw new ArgumentException("Input string is null or whitespace.", nameof(input));
+
+        var parts = input.Split(':');
+        if (parts.Length != 2)
+            throw new FormatException($"Invalid input format. Expected '<Type>:<Value>', got '{input}'.");
+
+        var typeString = parts[0].Trim();
+        var valueString = parts[1].Trim();
+
+        var parsedType = typeString switch
+        {
+            nameof(Byte) => MavParamType.MavParamTypeUint8,
+            nameof(SByte) => MavParamType.MavParamTypeInt8,
+            nameof(UInt16) => MavParamType.MavParamTypeUint16,
+            nameof(Int16) => MavParamType.MavParamTypeInt16,
+            nameof(UInt32) => MavParamType.MavParamTypeUint32,
+            nameof(Int32) => MavParamType.MavParamTypeInt32,
+            nameof(Single) => MavParamType.MavParamTypeReal32,
+            nameof(UInt64) => MavParamType.MavParamTypeUint64,
+            nameof(Int64) => MavParamType.MavParamTypeInt64,
+            nameof(Double) => MavParamType.MavParamTypeReal64,
+            _ => throw new ArgumentOutOfRangeException(nameof(typeString),
+                $"Unknown or unsupported type '{typeString}' in MavParamValue.Parse.")
+        };
+
+        var rx = TryParseValue(valueString, parsedType, out var result);
+        if (!rx.IsSuccess)
+        {
+            throw new FormatException($"Failed to parse value '{valueString}' as {parsedType}.");
+        }
+
+        Debug.Assert(result != null, nameof(result) + " != null");
+        return result.Value;
+
+    }
+
+
+
+    public override string ToString()
+    {
+        return Type switch
+        {
+            MavParamType.MavParamTypeUint8 or MavParamType.MavParamTypeInt8 or MavParamType.MavParamTypeUint16
+                or MavParamType.MavParamTypeInt16 or MavParamType.MavParamTypeUint32
+                or MavParamType.MavParamTypeInt32 => $"{PrintType(Type)}:{_intValue}",
+            MavParamType.MavParamTypeReal32 or MavParamType.MavParamTypeUint64 or MavParamType.MavParamTypeInt64
+                or MavParamType.MavParamTypeReal64 => $"{PrintType(Type)}:{_realValue}",
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
     
 }
