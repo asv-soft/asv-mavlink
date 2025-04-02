@@ -59,13 +59,13 @@ public static class MavlinkFtpHelper
 
         span = span.TrimEnd(DirectorySeparator);
         var index = span.LastIndexOf(DirectorySeparator);
-        if (index == -1)
+         if (index == -1)
         {
             return new FtpDirectory(span.ToString());
         }
 
         var directoryName = span[(index + 1)..].ToString();
-        var parentPath = span[..index].ToString();
+        var parentPath = $"{span[..index].ToString()}{DirectorySeparator}";
         if (parentPath == string.Empty && path.StartsWith(DirectorySeparator))
         {
             parentPath = DirectorySeparator.ToString();
