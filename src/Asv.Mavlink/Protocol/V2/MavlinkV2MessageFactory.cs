@@ -26,7 +26,7 @@ namespace Asv.Mavlink;
 
 public class MavlinkV2MessageFactory : IProtocolMessageFactory<MavlinkMessage, int>
 {
-    private readonly ImmutableDictionary<int,Func<MavlinkMessage>> _decoder;
+    private readonly ImmutableDictionary<int,Func<MavlinkMessage>> _factory;
     public static MavlinkV2MessageFactory Instance { get; } = new();
 
     private MavlinkV2MessageFactory()
@@ -50,16 +50,13 @@ public class MavlinkV2MessageFactory : IProtocolMessageFactory<MavlinkMessage, i
         builder.RegisterAsvChartDialect();
         builder.RegisterAsvRsgaDialect();
         builder.RegisterUnitTestMessageDialect();
-        _decoder = builder.ToImmutable();
+        _factory = builder.ToImmutable();
     }
 
     
-    public MavlinkMessage? Create(int id) => _decoder.TryGetValue(id, out var factory) ? factory() : null;
+    public MavlinkMessage? Create(int id) => _factory.TryGetValue(id, out var factory) ? factory() : null;
 
     public ProtocolInfo Info => MavlinkV2Protocol.Info;
     
-    public IEnumerable<int> GetSupportedIds()
-    {
-        return _decoder.Keys.Select(x=>(int)x);
-    }
+    public IEnumerable<int> GetSupportedIds() => _factory.Keys.Select(x=>x);
 }

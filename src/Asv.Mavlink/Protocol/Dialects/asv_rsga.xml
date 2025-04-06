@@ -179,7 +179,14 @@
             <field type="uint8_t[32]" name="supported_modes">Supported modes. Each bit index represents an ASV_RSGA_CUSTOM_MODE value (256 bits). First (IDLE) bit always true.</field>
         </message>
 
+
         
+        
+        <message id="13499" name="ASV_RSGA_RTT_DME_REQ_V1">
+            <description>Responds real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_DME_REQ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+            <field type="uint32_t" name="data_index">Data index in record</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
+        </message>
 
     </messages>
 </mavlink>
