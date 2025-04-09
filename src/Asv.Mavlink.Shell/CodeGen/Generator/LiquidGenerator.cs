@@ -74,6 +74,9 @@ namespace Asv.Mavlink.Shell
                                                                                                 ArrayLength = field.ArrayLength,
                                                                                                 Desc =  field.Desc,
                                                                                                 EscDesc = EscapeCSharpString(string.Join(" ",field.Desc)),
+                                                                                                Display = EscapeCSharpString(field.Display),
+                                                                                                PrintFormat = EscapeCSharpString(field.PrintFormat),
+                                                                                                InvalidValue = field.Inavlid,
                                                                                                 IsArray = field.IsArray,
                                                                                                 IsTheLargestArrayInMessage = field.IsTheLargestArrayInMessage,
                                                                                                 IsEnum = field.Enum != null,
@@ -88,7 +91,7 @@ namespace Asv.Mavlink.Shell
             return result.Render(args);
         }
 
-        public static string EscapeCSharpString(string input)
+        public static string? EscapeCSharpString(string? input)
         {
             if (string.IsNullOrEmpty(input))
                 return input; // Возвращаем пустую строку или null без изменений

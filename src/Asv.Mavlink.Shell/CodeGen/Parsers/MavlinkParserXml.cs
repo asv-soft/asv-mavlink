@@ -116,6 +116,9 @@ namespace Asv.Mavlink.Shell
                            Name = rdr.GetAttribute("name"),
                            Units = rdr.GetAttribute("units"),
                            Enum = rdr.GetAttribute("enum"),
+                           Display = rdr.GetAttribute("display"),
+                           PrintFormat = rdr.GetAttribute("print_format"),
+                           Inavlid = rdr.GetAttribute("invalid"),
                            Desc = ConvertDesc(rdr.ReadElementContentAsString()),
                        });
 

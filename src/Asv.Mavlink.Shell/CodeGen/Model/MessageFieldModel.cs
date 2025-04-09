@@ -13,5 +13,8 @@ namespace Asv.Mavlink.Shell
         public string? TypeName { get; set; }
         public string? Enum { get; set; }
         public bool IsTheLargestArrayInMessage { get; set; }
+        public string? Display { get; set; }
+        public string? PrintFormat { get; set; }
+        public string? Inavlid { get; set; }
     }
 }

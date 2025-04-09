@@ -110,13 +110,12 @@ namespace Asv.Mavlink.{{ Namespace }}
         public static readonly MavlinkFieldInfo[] StaticFields =
         [
 {%- for field in msg.Fields -%}
-            new(
-            "{{ field.Name }}", 
-            string.Empty, 
+            new("{{ field.Name }}",
+            "{{ field.EscDesc }}",
+            "{{ field.PrintFormat }}", 
             @"{{ field.Units }}", 
-            "{{ field.EscDesc }}", 
-            string.Empty, 
-            string.Empty, 
+            "{{ field.Display }}", 
+            @"{{ field.InvalidValue }}", 
             MessageFieldType.{{ field.TypeEnumName }}, 
             {{ field.ArrayLength }}, 
             {%- if field.IsExtended -%}true{%- else -%}false{%- endif -%}),
