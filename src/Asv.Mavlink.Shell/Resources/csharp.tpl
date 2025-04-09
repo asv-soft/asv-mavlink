@@ -123,7 +123,7 @@ namespace Asv.Mavlink.{{ Namespace }}
         ];
         public const string FormatMessage = "{{ msg.Name }}:"
 {%- for field in msg.Fields -%}
-        + "{{ field.ULogTypeName }}"
+        + "{{ field.ULogTypeName }} {{ field.Name }};"
 {%- endfor -%}
         ;
     }
