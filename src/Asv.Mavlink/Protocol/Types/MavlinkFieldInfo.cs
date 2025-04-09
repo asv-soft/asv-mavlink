@@ -1,23 +1,12 @@
-namespace Asv.Mavlink.Types;
+using System;
 
-public enum MavlinkBaseTypeEnum
-{
-    Int8 = 0,
-    Int16,
-    Int32,
-    Int64,
-    Uint8,
-    Uint16,
-    Uint32,
-    Float32,
-    Uint64,
-    Char,
-    Double,
-}
+namespace Asv.Mavlink;
+
+
 
 public readonly struct MavlinkFieldInfo
 {
-    public MavlinkFieldInfo(string name, string printFormat, string units, string display, string muliplier, string invalidValue, MavlinkBaseTypeEnum baseType, int arraySize, bool isExtended)
+    public MavlinkFieldInfo(string name, string printFormat, string units, string display, string muliplier, string invalidValue, MessageFieldType baseType, int arraySize, bool isExtended)
     {
         Name = name;
         PrintFormat = printFormat;
@@ -35,7 +24,7 @@ public readonly struct MavlinkFieldInfo
     public string Display { get; }
     public string Muliplier { get; }
     public string InvalidValue { get;  }
-    public MavlinkBaseTypeEnum BaseType { get;  }
+    public MessageFieldType BaseType { get;  }
     public int ArraySize { get; }
     public bool IsExtended { get; }
 }

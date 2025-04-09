@@ -107,7 +107,7 @@ namespace Asv.Mavlink.Shell
 
             fields.Add(new MessageFieldModel
                        {
-                            IsExtended = extendedFields,
+                           IsExtended = extendedFields,
                            Type = type,
                            TypeName = FieldTypeToString(type),
                            FieldTypeByteSize = type.GetFieldTypeByteSize(),

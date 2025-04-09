@@ -77,6 +77,7 @@ namespace Asv.Mavlink.Shell
                                                                                                 IsTheLargestArrayInMessage = field.IsTheLargestArrayInMessage,
                                                                                                 IsEnum = field.Enum != null,
                                                                                                 Type = ConvertTypeName(field.Type),
+                                                                                                TypeEnumName = field.Type.ToString("G"),
                                                                                                 EnumCamelCaseName = NameConverter(field.Enum ?? String.Empty),
                                                                                             })
                                                          })

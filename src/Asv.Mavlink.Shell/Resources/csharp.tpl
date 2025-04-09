@@ -104,6 +104,24 @@ namespace Asv.Mavlink.{{ Namespace }}
         public override {{ msg.CamelCaseName }}Payload Payload { get; } = new();
 
         public override string Name => "{{ msg.Name }}";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static MavlinkFieldInfo[] StaticFields = new[]
+        {
+{%- for field in msg.Fields -%}
+            new MavlinkFieldInfo(
+            "{{ field.Name }}", 
+            string.Empty, 
+            "{{ field.Units }}", 
+            "{{ field.Desc }}", 
+            string.Empty, 
+            string.Empty, 
+            MessageFieldType.{{ field.TypeEnumName }}, 
+            {{ field.ArrayLength }}, 
+            {%- if field.IsExtended -%}true{%- else -%}false{%- endif -%}),
+{%- endfor -%}
+        };
     }
 
     /// <summary>

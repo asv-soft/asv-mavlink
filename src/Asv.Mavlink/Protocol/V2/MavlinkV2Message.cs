@@ -154,4 +154,6 @@ public abstract class MavlinkV2Message<TPayload> : MavlinkV2Message
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override IPayload GetPayload() => Payload;
+    
+    public virtual MavlinkFieldInfo[] Fields { get; }
 }
