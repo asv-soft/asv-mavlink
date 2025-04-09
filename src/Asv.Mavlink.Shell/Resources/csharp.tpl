@@ -114,7 +114,7 @@ namespace Asv.Mavlink.{{ Namespace }}
             "{{ field.Name }}", 
             string.Empty, 
             @"{{ field.Units }}", 
-            @"{{ field.Desc }}", 
+            "{{ field.EscDesc }}", 
             string.Empty, 
             string.Empty, 
             MessageFieldType.{{ field.TypeEnumName }}, 
