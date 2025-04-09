@@ -81,6 +81,7 @@ namespace Asv.Mavlink.Shell
                                                                                                 IsTheLargestArrayInMessage = field.IsTheLargestArrayInMessage,
                                                                                                 IsEnum = field.Enum != null,
                                                                                                 Type = ConvertTypeName(field.Type),
+                                                                                                ULogTypeName = ConvertUlogTypeName(field),
                                                                                                 TypeEnumName = field.Type.ToString("G"),
                                                                                                 EnumCamelCaseName = NameConverter(field.Enum ?? String.Empty),
                                                                                             })
@@ -89,6 +90,31 @@ namespace Asv.Mavlink.Shell
 
             var result = Template.Parse(template);
             return result.Render(args);
+        }
+
+        private static string ConvertUlogTypeName(MessageFieldModel fieldType)
+        {
+            var type = fieldType.Type switch
+            {
+                MessageFieldType.Int8 => "int8_t",
+                MessageFieldType.Int16 => "int16_t",
+                MessageFieldType.Int32 => "int32_t",
+                MessageFieldType.Int64 => "int64_t",
+                MessageFieldType.Uint8 => "uint8_t",
+                MessageFieldType.Uint16 => "uint16_t",
+                MessageFieldType.Uint32 => "uint32_t",
+                MessageFieldType.Float32 => "float",
+                MessageFieldType.Uint64 => "uint64_t",
+                MessageFieldType.Char => "char",
+                MessageFieldType.Double => "double",
+                _ => throw new ArgumentOutOfRangeException(nameof(fieldType), fieldType, null)
+            };
+            if (fieldType.IsArray == false)
+            {
+                return type;
+            }
+            
+            return $"{type}[{fieldType.ArrayLength}]";
         }
 
         public static string? EscapeCSharpString(string? input)

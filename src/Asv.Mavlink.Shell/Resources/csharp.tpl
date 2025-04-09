@@ -121,6 +121,11 @@ namespace Asv.Mavlink.{{ Namespace }}
             {%- if field.IsExtended -%}true{%- else -%}false{%- endif -%}),
 {%- endfor -%}
         ];
+        public const string FormatMessage = "{{ msg.Name }}:"
+{%- for field in msg.Fields -%}
+        + "{{ field.ULogTypeName }}"
+{%- endfor -%}
+        ;
     }
 
     /// <summary>
