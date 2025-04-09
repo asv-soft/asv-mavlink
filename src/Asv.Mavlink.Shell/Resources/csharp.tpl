@@ -111,11 +111,11 @@ namespace Asv.Mavlink.{{ Namespace }}
         [
 {%- for field in msg.Fields -%}
             new("{{ field.Name }}",
-            "{{ field.EscDesc }}",
-            "{{ field.PrintFormat }}", 
-            @"{{ field.Units }}", 
-            "{{ field.Display }}", 
-            @"{{ field.InvalidValue }}", 
+            {%- if field.EscDesc -%}"{{ field.EscDesc }}"{%- else -%}string.Empty{%- endif -%},
+            {%- if field.PrintFormat -%}"{{ field.PrintFormat }}"{%- else -%}string.Empty{%- endif -%}, 
+            {%- if field.Units -%}@"{{ field.Units }}"{%- else -%}string.Empty{%- endif -%}, 
+            {%- if field.Display -%}"{{ field.Display }}"{%- else -%}string.Empty{%- endif -%}, 
+            {%- if field.InvalidValue -%}@"{{ field.InvalidValue }}"{%- else -%}string.Empty{%- endif -%}, 
             MessageFieldType.{{ field.TypeEnumName }}, 
             {{ field.ArrayLength }}, 
             {%- if field.IsExtended -%}true{%- else -%}false{%- endif -%}),
