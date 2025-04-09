@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -2232,6 +2232,134 @@ namespace Asv.Mavlink.Ardupilotmega
         public override SensorOffsetsPayload Payload { get; } = new();
 
         public override string Name => "SENSOR_OFFSETS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("mag_declination",
+"Magnetic declination.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("raw_press",
+"Raw pressure from barometer.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("raw_temp",
+"Raw temperature from barometer.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("gyro_cal_x",
+"Gyro X calibration.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("gyro_cal_y",
+"Gyro Y calibration.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("gyro_cal_z",
+"Gyro Z calibration.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("accel_cal_x",
+"Accel X calibration.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("accel_cal_y",
+"Accel Y calibration.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("accel_cal_z",
+"Accel Z calibration.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("mag_ofs_x",
+"Magnetometer X offset.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("mag_ofs_y",
+"Magnetometer Y offset.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("mag_ofs_z",
+"Magnetometer Z offset.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SENSOR_OFFSETS:"
+        + "float mag_declination;"
+        + "int32_t raw_press;"
+        + "int32_t raw_temp;"
+        + "float gyro_cal_x;"
+        + "float gyro_cal_y;"
+        + "float gyro_cal_z;"
+        + "float accel_cal_x;"
+        + "float accel_cal_y;"
+        + "float accel_cal_z;"
+        + "int16_t mag_ofs_x;"
+        + "int16_t mag_ofs_y;"
+        + "int16_t mag_ofs_z;"
+        ;
     }
 
     /// <summary>
@@ -2383,6 +2511,64 @@ namespace Asv.Mavlink.Ardupilotmega
         public override SetMagOffsetsPayload Payload { get; } = new();
 
         public override string Name => "SET_MAG_OFFSETS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("mag_ofs_x",
+"Magnetometer X offset.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("mag_ofs_y",
+"Magnetometer Y offset.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("mag_ofs_z",
+"Magnetometer Z offset.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SET_MAG_OFFSETS:"
+        + "int16_t mag_ofs_x;"
+        + "int16_t mag_ofs_y;"
+        + "int16_t mag_ofs_z;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -2478,6 +2664,44 @@ namespace Asv.Mavlink.Ardupilotmega
         public override MeminfoPayload Payload { get; } = new();
 
         public override string Name => "MEMINFO";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("brkval",
+"Heap top.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("freemem",
+"Free memory.",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("freemem32",
+"Free memory (32 bit).",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MEMINFO:"
+        + "uint16_t brkval;"
+        + "uint16_t freemem;"
+        + "uint32_t freemem32;"
+        ;
     }
 
     /// <summary>
@@ -2559,6 +2783,74 @@ namespace Asv.Mavlink.Ardupilotmega
         public override ApAdcPayload Payload { get; } = new();
 
         public override string Name => "AP_ADC";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("adc1",
+"ADC output 1.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("adc2",
+"ADC output 2.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("adc3",
+"ADC output 3.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("adc4",
+"ADC output 4.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("adc5",
+"ADC output 5.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("adc6",
+"ADC output 6.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "AP_ADC:"
+        + "uint16_t adc1;"
+        + "uint16_t adc2;"
+        + "uint16_t adc3;"
+        + "uint16_t adc4;"
+        + "uint16_t adc5;"
+        + "uint16_t adc6;"
+        ;
     }
 
     /// <summary>
@@ -2662,6 +2954,124 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DigicamConfigurePayload Payload { get; } = new();
 
         public override string Name => "DIGICAM_CONFIGURE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("extra_value",
+"Correspondent value to given extra_param.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("shutter_speed",
+"Divisor number //e.g. 1000 means 1/1000 (0 means ignore).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mode",
+"Mode enumeration from 1 to N //P, TV, AV, M, etc. (0 means ignore).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("aperture",
+"F stop number x 10 //e.g. 28 means 2.8 (0 means ignore).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("iso",
+"ISO enumeration from 1 to N //e.g. 80, 100, 200, Etc (0 means ignore).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("exposure_type",
+"Exposure type enumeration from 1 to N (0 means ignore).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("command_id",
+"Command Identity (incremental loop: 0 to 255). //A command sent multiple times will be executed or pooled just once.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("engine_cut_off",
+"Main engine cut-off time before camera trigger (0 means no cut-off).",
+string.Empty, 
+@"ds", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("extra_param",
+"Extra parameters enumeration (0 means ignore).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "DIGICAM_CONFIGURE:"
+        + "float extra_value;"
+        + "uint16_t shutter_speed;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t mode;"
+        + "uint8_t aperture;"
+        + "uint8_t iso;"
+        + "uint8_t exposure_type;"
+        + "uint8_t command_id;"
+        + "uint8_t engine_cut_off;"
+        + "uint8_t extra_param;"
+        ;
     }
 
     /// <summary>
@@ -2805,6 +3215,114 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DigicamControlPayload Payload { get; } = new();
 
         public override string Name => "DIGICAM_CONTROL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("extra_value",
+"Correspondent value to given extra_param.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("session",
+"0: stop, 1: start or keep it up //Session control e.g. show/hide lens.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("zoom_pos",
+"1 to N //Zoom's absolute position (0 means ignore).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("zoom_step",
+"-100 to 100 //Zooming step value to offset zoom from the current position.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("focus_lock",
+"0: unlock focus or keep unlocked, 1: lock focus or keep locked, 3: re-lock focus.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("shot",
+"0: ignore, 1: shot or start filming.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("command_id",
+"Command Identity (incremental loop: 0 to 255)//A command sent multiple times will be executed or pooled just once.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("extra_param",
+"Extra parameters enumeration (0 means ignore).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "DIGICAM_CONTROL:"
+        + "float extra_value;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t session;"
+        + "uint8_t zoom_pos;"
+        + "int8_t zoom_step;"
+        + "uint8_t focus_lock;"
+        + "uint8_t shot;"
+        + "uint8_t command_id;"
+        + "uint8_t extra_param;"
+        ;
     }
 
     /// <summary>
@@ -2940,6 +3458,74 @@ namespace Asv.Mavlink.Ardupilotmega
         public override MountConfigurePayload Payload { get; } = new();
 
         public override string Name => "MOUNT_CONFIGURE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mount_mode",
+"Mount operating mode.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("stab_roll",
+"(1 = yes, 0 = no).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("stab_pitch",
+"(1 = yes, 0 = no).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("stab_yaw",
+"(1 = yes, 0 = no).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "MOUNT_CONFIGURE:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t mount_mode;"
+        + "uint8_t stab_roll;"
+        + "uint8_t stab_pitch;"
+        + "uint8_t stab_yaw;"
+        ;
     }
 
     /// <summary>
@@ -3043,6 +3629,74 @@ namespace Asv.Mavlink.Ardupilotmega
         public override MountControlPayload Payload { get; } = new();
 
         public override string Name => "MOUNT_CONTROL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("input_a",
+"Pitch (centi-degrees) or lat (degE7), depending on mount mode.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("input_b",
+"Roll (centi-degrees) or lon (degE7) depending on mount mode.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("input_c",
+"Yaw (centi-degrees) or alt (cm) depending on mount mode.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("save_position",
+"If \"1\" it will save current trimmed position on EEPROM (just valid for NEUTRAL and LANDING).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "MOUNT_CONTROL:"
+        + "int32_t input_a;"
+        + "int32_t input_b;"
+        + "int32_t input_c;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t save_position;"
+        ;
     }
 
     /// <summary>
@@ -3146,6 +3800,74 @@ namespace Asv.Mavlink.Ardupilotmega
         public override MountStatusPayload Payload { get; } = new();
 
         public override string Name => "MOUNT_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("pointing_a",
+"Pitch.",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("pointing_b",
+"Roll.",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("pointing_c",
+"Yaw.",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mount_mode",
+"Mount operating mode.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MOUNT_STATUS:"
+        + "int32_t pointing_a;"
+        + "int32_t pointing_b;"
+        + "int32_t pointing_c;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t mount_mode;"
+        ;
     }
 
     /// <summary>
@@ -3251,6 +3973,74 @@ namespace Asv.Mavlink.Ardupilotmega
         public override FencePointPayload Payload { get; } = new();
 
         public override string Name => "FENCE_POINT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("lat",
+"Latitude of point.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("lng",
+"Longitude of point.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("idx",
+"Point index (first point is 1, 0 is for return point).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("count",
+"Total number of points (for sanity checking).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "FENCE_POINT:"
+        + "float lat;"
+        + "float lng;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t idx;"
+        + "uint8_t count;"
+        ;
     }
 
     /// <summary>
@@ -3354,6 +4144,44 @@ namespace Asv.Mavlink.Ardupilotmega
         public override FenceFetchPointPayload Payload { get; } = new();
 
         public override string Name => "FENCE_FETCH_POINT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("idx",
+"Point index (first point is 1, 0 is for return point).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "FENCE_FETCH_POINT:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t idx;"
+        ;
     }
 
     /// <summary>
@@ -3433,6 +4261,84 @@ namespace Asv.Mavlink.Ardupilotmega
         public override AhrsPayload Payload { get; } = new();
 
         public override string Name => "AHRS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("omegaIx",
+"X gyro drift estimate.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("omegaIy",
+"Y gyro drift estimate.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("omegaIz",
+"Z gyro drift estimate.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("accel_weight",
+"Average accel_weight.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("renorm_val",
+"Average renormalisation value.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("error_rp",
+"Average error_roll_pitch value.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("error_yaw",
+"Average error_yaw value.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "AHRS:"
+        + "float omegaIx;"
+        + "float omegaIy;"
+        + "float omegaIz;"
+        + "float accel_weight;"
+        + "float renorm_val;"
+        + "float error_rp;"
+        + "float error_yaw;"
+        ;
     }
 
     /// <summary>
@@ -3544,6 +4450,124 @@ namespace Asv.Mavlink.Ardupilotmega
         public override SimstatePayload Payload { get; } = new();
 
         public override string Name => "SIMSTATE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("roll",
+"Roll angle.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Pitch angle.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw angle.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("xacc",
+"X acceleration.",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yacc",
+"Y acceleration.",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("zacc",
+"Z acceleration.",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("xgyro",
+"Angular speed around X axis.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ygyro",
+"Angular speed around Y axis.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("zgyro",
+"Angular speed around Z axis.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("lat",
+"Latitude.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lng",
+"Longitude.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SIMSTATE:"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float xacc;"
+        + "float yacc;"
+        + "float zacc;"
+        + "float xgyro;"
+        + "float ygyro;"
+        + "float zgyro;"
+        + "int32_t lat;"
+        + "int32_t lng;"
+        ;
     }
 
     /// <summary>
@@ -3687,6 +4711,34 @@ namespace Asv.Mavlink.Ardupilotmega
         public override HwstatusPayload Payload { get; } = new();
 
         public override string Name => "HWSTATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("Vcc",
+"Board voltage.",
+string.Empty, 
+@"mV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("I2Cerr",
+"I2C error count.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "HWSTATUS:"
+        + "uint16_t Vcc;"
+        + "uint8_t I2Cerr;"
+        ;
     }
 
     /// <summary>
@@ -3758,6 +4810,84 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RadioPayload Payload { get; } = new();
 
         public override string Name => "RADIO";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("rxerrors",
+"Receive errors.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("fixed",
+"Count of error corrected packets.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("rssi",
+"Local signal strength.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("remrssi",
+"Remote signal strength.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("txbuf",
+"How full the tx buffer is.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("noise",
+"Background noise level.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("remnoise",
+"Remote background noise level.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "RADIO:"
+        + "uint16_t rxerrors;"
+        + "uint16_t fixed;"
+        + "uint8_t rssi;"
+        + "uint8_t remrssi;"
+        + "uint8_t txbuf;"
+        + "uint8_t noise;"
+        + "uint8_t remnoise;"
+        ;
     }
 
     /// <summary>
@@ -3869,6 +4999,104 @@ namespace Asv.Mavlink.Ardupilotmega
         public override LimitsStatusPayload Payload { get; } = new();
 
         public override string Name => "LIMITS_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("last_trigger",
+"Time (since boot) of last breach.",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("last_action",
+"Time (since boot) of last recovery action.",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("last_recovery",
+"Time (since boot) of last successful recovery.",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("last_clear",
+"Time (since boot) of last all-clear.",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("breach_count",
+"Number of fence breaches.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("limits_state",
+"State of AP_Limits.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mods_enabled",
+"AP_Limit_Module bitfield of enabled modules.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mods_required",
+"AP_Limit_Module bitfield of required modules.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mods_triggered",
+"AP_Limit_Module bitfield of triggered modules.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "LIMITS_STATUS:"
+        + "uint32_t last_trigger;"
+        + "uint32_t last_action;"
+        + "uint32_t last_recovery;"
+        + "uint32_t last_clear;"
+        + "uint16_t breach_count;"
+        + "uint8_t limits_state;"
+        + "uint8_t mods_enabled;"
+        + "uint8_t mods_required;"
+        + "uint8_t mods_triggered;"
+        ;
     }
 
     /// <summary>
@@ -3996,6 +5224,44 @@ namespace Asv.Mavlink.Ardupilotmega
         public override WindPayload Payload { get; } = new();
 
         public override string Name => "WIND";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("direction",
+"Wind direction (that wind is coming from).",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("speed",
+"Wind speed in ground plane.",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("speed_z",
+"Vertical wind speed.",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "WIND:"
+        + "float direction;"
+        + "float speed;"
+        + "float speed_z;"
+        ;
     }
 
     /// <summary>
@@ -4075,6 +5341,44 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Data16Payload Payload { get; } = new();
 
         public override string Name => "DATA16";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("type",
+"Data type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("len",
+"Data length.",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"Raw data.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+        ];
+        public const string FormatMessage = "DATA16:"
+        + "uint8_t type;"
+        + "uint8_t len;"
+        + "uint8_t[16] data;"
+        ;
     }
 
     /// <summary>
@@ -4167,6 +5471,44 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Data32Payload Payload { get; } = new();
 
         public override string Name => "DATA32";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("type",
+"Data type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("len",
+"Data length.",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"Raw data.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            32, 
+false),
+        ];
+        public const string FormatMessage = "DATA32:"
+        + "uint8_t type;"
+        + "uint8_t len;"
+        + "uint8_t[32] data;"
+        ;
     }
 
     /// <summary>
@@ -4259,6 +5601,44 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Data64Payload Payload { get; } = new();
 
         public override string Name => "DATA64";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("type",
+"Data type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("len",
+"Data length.",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"Raw data.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            64, 
+false),
+        ];
+        public const string FormatMessage = "DATA64:"
+        + "uint8_t type;"
+        + "uint8_t len;"
+        + "uint8_t[64] data;"
+        ;
     }
 
     /// <summary>
@@ -4351,6 +5731,44 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Data96Payload Payload { get; } = new();
 
         public override string Name => "DATA96";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("type",
+"Data type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("len",
+"Data length.",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"Raw data.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            96, 
+false),
+        ];
+        public const string FormatMessage = "DATA96:"
+        + "uint8_t type;"
+        + "uint8_t len;"
+        + "uint8_t[96] data;"
+        ;
     }
 
     /// <summary>
@@ -4443,6 +5861,34 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RangefinderPayload Payload { get; } = new();
 
         public override string Name => "RANGEFINDER";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("distance",
+"Distance.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("voltage",
+"Raw voltage if available, zero otherwise.",
+string.Empty, 
+@"V", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "RANGEFINDER:"
+        + "float distance;"
+        + "float voltage;"
+        ;
     }
 
     /// <summary>
@@ -4514,6 +5960,134 @@ namespace Asv.Mavlink.Ardupilotmega
         public override AirspeedAutocalPayload Payload { get; } = new();
 
         public override string Name => "AIRSPEED_AUTOCAL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("vx",
+"GPS velocity north.",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vy",
+"GPS velocity east.",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vz",
+"GPS velocity down.",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("diff_pressure",
+"Differential pressure.",
+string.Empty, 
+@"Pa", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("EAS2TAS",
+"Estimated to true airspeed ratio.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ratio",
+"Airspeed ratio.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("state_x",
+"EKF state x.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("state_y",
+"EKF state y.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("state_z",
+"EKF state z.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("Pax",
+"EKF Pax.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("Pby",
+"EKF Pby.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("Pcz",
+"EKF Pcz.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "AIRSPEED_AUTOCAL:"
+        + "float vx;"
+        + "float vy;"
+        + "float vz;"
+        + "float diff_pressure;"
+        + "float EAS2TAS;"
+        + "float ratio;"
+        + "float state_x;"
+        + "float state_y;"
+        + "float state_z;"
+        + "float Pax;"
+        + "float Pby;"
+        + "float Pcz;"
+        ;
     }
 
     /// <summary>
@@ -4665,6 +6239,114 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RallyPointPayload Payload { get; } = new();
 
         public override string Name => "RALLY_POINT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("lat",
+"Latitude of point.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lng",
+"Longitude of point.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Transit / loiter altitude relative to home.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("break_alt",
+"Break altitude relative to home.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("land_dir",
+"Heading to aim for when landing.",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("idx",
+"Point index (first point is 0).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("count",
+"Total number of points (for sanity checking).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("flags",
+"Configuration flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "RALLY_POINT:"
+        + "int32_t lat;"
+        + "int32_t lng;"
+        + "int16_t alt;"
+        + "int16_t break_alt;"
+        + "uint16_t land_dir;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t idx;"
+        + "uint8_t count;"
+        + "uint8_t flags;"
+        ;
     }
 
     /// <summary>
@@ -4800,6 +6482,44 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RallyFetchPointPayload Payload { get; } = new();
 
         public override string Name => "RALLY_FETCH_POINT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("idx",
+"Point index (first point is 0).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "RALLY_FETCH_POINT:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t idx;"
+        ;
     }
 
     /// <summary>
@@ -4879,6 +6599,74 @@ namespace Asv.Mavlink.Ardupilotmega
         public override CompassmotStatusPayload Payload { get; } = new();
 
         public override string Name => "COMPASSMOT_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("current",
+"Current.",
+string.Empty, 
+@"A", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("CompensationX",
+"Motor Compensation X.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("CompensationY",
+"Motor Compensation Y.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("CompensationZ",
+"Motor Compensation Z.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("throttle",
+"Throttle.",
+string.Empty, 
+@"d%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("interference",
+"Interference.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "COMPASSMOT_STATUS:"
+        + "float current;"
+        + "float CompensationX;"
+        + "float CompensationY;"
+        + "float CompensationZ;"
+        + "uint16_t throttle;"
+        + "uint16_t interference;"
+        ;
     }
 
     /// <summary>
@@ -4982,6 +6770,74 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Ahrs2Payload Payload { get; } = new();
 
         public override string Name => "AHRS2";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("roll",
+"Roll angle.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Pitch angle.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw angle.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("altitude",
+"Altitude (MSL).",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("lat",
+"Latitude.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lng",
+"Longitude.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "AHRS2:"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float altitude;"
+        + "int32_t lat;"
+        + "int32_t lng;"
+        ;
     }
 
     /// <summary>
@@ -5085,6 +6941,104 @@ namespace Asv.Mavlink.Ardupilotmega
         public override CameraStatusPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Image timestamp (since UNIX epoch, according to camera clock).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("p1",
+"Parameter 1 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("p2",
+"Parameter 2 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("p3",
+"Parameter 3 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("p4",
+"Parameter 4 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("img_idx",
+"Image index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("cam_idx",
+"Camera ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("event_id",
+"Event type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "CAMERA_STATUS:"
+        + "uint64_t time_usec;"
+        + "float p1;"
+        + "float p2;"
+        + "float p3;"
+        + "float p4;"
+        + "uint16_t img_idx;"
+        + "uint8_t target_system;"
+        + "uint8_t cam_idx;"
+        + "uint8_t event_id;"
+        ;
     }
 
     /// <summary>
@@ -5212,6 +7166,154 @@ namespace Asv.Mavlink.Ardupilotmega
         public override CameraFeedbackPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_FEEDBACK";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Image timestamp (since UNIX epoch), as passed in by CAMERA_STATUS message (or autopilot if no CCB).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("lat",
+"Latitude.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lng",
+"Longitude.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt_msl",
+"Altitude (MSL).",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("alt_rel",
+"Altitude (Relative to HOME location).",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("roll",
+"Camera Roll angle (earth frame, +-180).",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Camera Pitch angle (earth frame, +-180).",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Camera Yaw (earth frame, 0-360, true).",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("foc_len",
+"Focal Length.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("img_idx",
+"Image index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("cam_idx",
+"Camera ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("flags",
+"Feedback flags.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("completed_captures",
+"Completed image captures.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "CAMERA_FEEDBACK:"
+        + "uint64_t time_usec;"
+        + "int32_t lat;"
+        + "int32_t lng;"
+        + "float alt_msl;"
+        + "float alt_rel;"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float foc_len;"
+        + "uint16_t img_idx;"
+        + "uint8_t target_system;"
+        + "uint8_t cam_idx;"
+        + "uint8_t flags;"
+        + "uint16_t completed_captures;"
+        ;
     }
 
     /// <summary>
@@ -5381,6 +7483,34 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Battery2Payload Payload { get; } = new();
 
         public override string Name => "BATTERY2";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("voltage",
+"Voltage.",
+string.Empty, 
+@"mV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("current_battery",
+"Battery current, -1: autopilot does not measure the current.",
+string.Empty, 
+@"cA", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "BATTERY2:"
+        + "uint16_t voltage;"
+        + "int16_t current_battery;"
+        ;
     }
 
     /// <summary>
@@ -5452,6 +7582,114 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Ahrs3Payload Payload { get; } = new();
 
         public override string Name => "AHRS3";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("roll",
+"Roll angle.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Pitch angle.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw angle.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("altitude",
+"Altitude (MSL).",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("lat",
+"Latitude.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lng",
+"Longitude.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("v1",
+"Test variable1.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("v2",
+"Test variable2.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("v3",
+"Test variable3.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("v4",
+"Test variable4.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "AHRS3:"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float altitude;"
+        + "int32_t lat;"
+        + "int32_t lng;"
+        + "float v1;"
+        + "float v2;"
+        + "float v3;"
+        + "float v4;"
+        ;
     }
 
     /// <summary>
@@ -5587,6 +7825,34 @@ namespace Asv.Mavlink.Ardupilotmega
         public override AutopilotVersionRequestPayload Payload { get; } = new();
 
         public override string Name => "AUTOPILOT_VERSION_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "AUTOPILOT_VERSION_REQUEST:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -5658,6 +7924,54 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RemoteLogDataBlockPayload Payload { get; } = new();
 
         public override string Name => "REMOTE_LOG_DATA_BLOCK";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("seqno",
+"LoggerFactory data block sequence number.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"LoggerFactory data block.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            200, 
+false),
+        ];
+        public const string FormatMessage = "REMOTE_LOG_DATA_BLOCK:"
+        + "uint32_t seqno;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t[200] data;"
+        ;
     }
 
     /// <summary>
@@ -5758,6 +8072,54 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RemoteLogBlockStatusPayload Payload { get; } = new();
 
         public override string Name => "REMOTE_LOG_BLOCK_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("seqno",
+"LoggerFactory data block sequence number.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("status",
+"LoggerFactory data block status.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "REMOTE_LOG_BLOCK_STATUS:"
+        + "uint32_t seqno;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t status;"
+        ;
     }
 
     /// <summary>
@@ -5845,6 +8207,74 @@ namespace Asv.Mavlink.Ardupilotmega
         public override LedControlPayload Payload { get; } = new();
 
         public override string Name => "LED_CONTROL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("instance",
+"Instance (LED instance to control or 255 for all LEDs).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("pattern",
+"Pattern (see LED_PATTERN_ENUM).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("custom_len",
+"Custom Byte Length.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("custom_bytes",
+"Custom Bytes.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            24, 
+false),
+        ];
+        public const string FormatMessage = "LED_CONTROL:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t instance;"
+        + "uint8_t pattern;"
+        + "uint8_t custom_len;"
+        + "uint8_t[24] custom_bytes;"
+        ;
     }
 
     /// <summary>
@@ -5961,6 +8391,104 @@ namespace Asv.Mavlink.Ardupilotmega
         public override MagCalProgressPayload Payload { get; } = new();
 
         public override string Name => "MAG_CAL_PROGRESS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("direction_x",
+"Body frame direction vector for display.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("direction_y",
+"Body frame direction vector for display.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("direction_z",
+"Body frame direction vector for display.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("compass_id",
+"Compass being calibrated.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("cal_mask",
+"Bitmask of compasses being calibrated.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("cal_status",
+"Calibration Status.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("attempt",
+"Attempt number.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("completion_pct",
+"Completion percentage.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("completion_mask",
+"Bitmask of sphere sections (see http://en.wikipedia.org/wiki/Geodesic_grid).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            10, 
+false),
+        ];
+        public const string FormatMessage = "MAG_CAL_PROGRESS:"
+        + "float direction_x;"
+        + "float direction_y;"
+        + "float direction_z;"
+        + "uint8_t compass_id;"
+        + "uint8_t cal_mask;"
+        + "uint8_t cal_status;"
+        + "uint8_t attempt;"
+        + "uint8_t completion_pct;"
+        + "uint8_t[10] completion_mask;"
+        ;
     }
 
     /// <summary>
@@ -6101,6 +8629,84 @@ namespace Asv.Mavlink.Ardupilotmega
         public override EkfStatusReportPayload Payload { get; } = new();
 
         public override string Name => "EKF_STATUS_REPORT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("velocity_variance",
+"Velocity variance.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pos_horiz_variance",
+"Horizontal Position variance.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pos_vert_variance",
+"Vertical Position variance.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("compass_variance",
+"Compass variance.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("terrain_alt_variance",
+"Terrain Altitude variance.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("flags",
+"Flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("airspeed_variance",
+"Airspeed variance.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "EKF_STATUS_REPORT:"
+        + "float velocity_variance;"
+        + "float pos_horiz_variance;"
+        + "float pos_vert_variance;"
+        + "float compass_variance;"
+        + "float terrain_alt_variance;"
+        + "uint16_t flags;"
+        + "float airspeed_variance;"
+        ;
     }
 
     /// <summary>
@@ -6214,6 +8820,104 @@ namespace Asv.Mavlink.Ardupilotmega
         public override PidTuningPayload Payload { get; } = new();
 
         public override string Name => "PID_TUNING";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("desired",
+"Desired rate.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("achieved",
+"Achieved rate.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("FF",
+"FF component.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("P",
+"P component.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("I",
+"I component.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("D",
+"D component.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("axis",
+"Axis.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("SRate",
+"Slew rate.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+            new("PDmod",
+"P/D oscillation modifier.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "PID_TUNING:"
+        + "float desired;"
+        + "float achieved;"
+        + "float FF;"
+        + "float P;"
+        + "float I;"
+        + "float D;"
+        + "uint8_t axis;"
+        + "float SRate;"
+        + "float PDmod;"
+        ;
     }
 
     /// <summary>
@@ -6345,6 +9049,114 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DeepstallPayload Payload { get; } = new();
 
         public override string Name => "DEEPSTALL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("landing_lat",
+"Landing latitude.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("landing_lon",
+"Landing longitude.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("path_lat",
+"Final heading start point, latitude.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("path_lon",
+"Final heading start point, longitude.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("arc_entry_lat",
+"Arc entry point, latitude.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("arc_entry_lon",
+"Arc entry point, longitude.",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("altitude",
+"Altitude.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("expected_travel_distance",
+"Distance the aircraft expects to travel during the deepstall.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("cross_track_error",
+"Deepstall cross track error (only valid when in DEEPSTALL_STAGE_LAND).",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("stage",
+"Deepstall stage.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "DEEPSTALL:"
+        + "int32_t landing_lat;"
+        + "int32_t landing_lon;"
+        + "int32_t path_lat;"
+        + "int32_t path_lon;"
+        + "int32_t arc_entry_lat;"
+        + "int32_t arc_entry_lon;"
+        + "float altitude;"
+        + "float expected_travel_distance;"
+        + "float cross_track_error;"
+        + "uint8_t stage;"
+        ;
     }
 
     /// <summary>
@@ -6480,6 +9292,134 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GimbalReportPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_REPORT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("delta_time",
+"Time since last update.",
+string.Empty, 
+@"s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("delta_angle_x",
+"Delta angle X.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("delta_angle_y",
+"Delta angle Y.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("delta_angle_z",
+"Delta angle X.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("delta_velocity_x",
+"Delta velocity X.",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("delta_velocity_y",
+"Delta velocity Y.",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("delta_velocity_z",
+"Delta velocity Z.",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("joint_roll",
+"Joint ROLL.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("joint_el",
+"Joint EL.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("joint_az",
+"Joint AZ.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GIMBAL_REPORT:"
+        + "float delta_time;"
+        + "float delta_angle_x;"
+        + "float delta_angle_y;"
+        + "float delta_angle_z;"
+        + "float delta_velocity_x;"
+        + "float delta_velocity_y;"
+        + "float delta_velocity_z;"
+        + "float joint_roll;"
+        + "float joint_el;"
+        + "float joint_az;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -6631,6 +9571,64 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GimbalControlPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_CONTROL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("demanded_rate_x",
+"Demanded angular rate X.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("demanded_rate_y",
+"Demanded angular rate Y.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("demanded_rate_z",
+"Demanded angular rate Z.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GIMBAL_CONTROL:"
+        + "float demanded_rate_x;"
+        + "float demanded_rate_y;"
+        + "float demanded_rate_z;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -6726,6 +9724,64 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GimbalTorqueCmdReportPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_TORQUE_CMD_REPORT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("rl_torque_cmd",
+"Roll Torque Command.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("el_torque_cmd",
+"Elevation Torque Command.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("az_torque_cmd",
+"Azimuth Torque Command.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GIMBAL_TORQUE_CMD_REPORT:"
+        + "int16_t rl_torque_cmd;"
+        + "int16_t el_torque_cmd;"
+        + "int16_t az_torque_cmd;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -6821,6 +9877,44 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GoproHeartbeatPayload Payload { get; } = new();
 
         public override string Name => "GOPRO_HEARTBEAT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("status",
+"Status.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("capture_mode",
+"Current capture mode.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("flags",
+"Additional status bits.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GOPRO_HEARTBEAT:"
+        + "uint8_t status;"
+        + "uint8_t capture_mode;"
+        + "uint8_t flags;"
+        ;
     }
 
     /// <summary>
@@ -6900,6 +9994,44 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GoproGetRequestPayload Payload { get; } = new();
 
         public override string Name => "GOPRO_GET_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("cmd_id",
+"Command ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GOPRO_GET_REQUEST:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t cmd_id;"
+        ;
     }
 
     /// <summary>
@@ -6979,6 +10111,44 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GoproGetResponsePayload Payload { get; } = new();
 
         public override string Name => "GOPRO_GET_RESPONSE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("cmd_id",
+"Command ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("status",
+"Status.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("value",
+"Value.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            4, 
+false),
+        ];
+        public const string FormatMessage = "GOPRO_GET_RESPONSE:"
+        + "uint8_t cmd_id;"
+        + "uint8_t status;"
+        + "uint8_t[4] value;"
+        ;
     }
 
     /// <summary>
@@ -7071,6 +10241,54 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GoproSetRequestPayload Payload { get; } = new();
 
         public override string Name => "GOPRO_SET_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("cmd_id",
+"Command ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("value",
+"Value.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            4, 
+false),
+        ];
+        public const string FormatMessage = "GOPRO_SET_REQUEST:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t cmd_id;"
+        + "uint8_t[4] value;"
+        ;
     }
 
     /// <summary>
@@ -7171,6 +10389,34 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GoproSetResponsePayload Payload { get; } = new();
 
         public override string Name => "GOPRO_SET_RESPONSE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("cmd_id",
+"Command ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("status",
+"Status.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GOPRO_SET_RESPONSE:"
+        + "uint8_t cmd_id;"
+        + "uint8_t status;"
+        ;
     }
 
     /// <summary>
@@ -7242,6 +10488,34 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RpmPayload Payload { get; } = new();
 
         public override string Name => "RPM";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("rpm1",
+"RPM Sensor1.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rpm2",
+"RPM Sensor2.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "RPM:"
+        + "float rpm1;"
+        + "float rpm2;"
+        ;
     }
 
     /// <summary>
@@ -7313,6 +10587,114 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DeviceOpReadPayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_READ";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Request ID - copied to reply.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("bustype",
+"The bus type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("bus",
+"Bus number.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("address",
+"Bus address.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("busname",
+"Name of device on bus (for SPI).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            40, 
+false),
+            new("regstart",
+"First register to read.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("count",
+"Count of registers to read.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("bank",
+"Bank number.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "DEVICE_OP_READ:"
+        + "uint32_t request_id;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t bustype;"
+        + "uint8_t bus;"
+        + "uint8_t address;"
+        + "char[40] busname;"
+        + "uint8_t regstart;"
+        + "uint8_t count;"
+        + "uint8_t bank;"
+        ;
     }
 
     /// <summary>
@@ -7475,6 +10857,74 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DeviceOpReadReplyPayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_READ_REPLY";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Request ID - copied from request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("result",
+"0 for success, anything else is failure code.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("regstart",
+"Starting register.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("count",
+"Count of bytes read.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"Reply data.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            128, 
+false),
+            new("bank",
+"Bank number.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "DEVICE_OP_READ_REPLY:"
+        + "uint32_t request_id;"
+        + "uint8_t result;"
+        + "uint8_t regstart;"
+        + "uint8_t count;"
+        + "uint8_t[128] data;"
+        + "uint8_t bank;"
+        ;
     }
 
     /// <summary>
@@ -7593,6 +11043,124 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DeviceOpWritePayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_WRITE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Request ID - copied to reply.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("bustype",
+"The bus type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("bus",
+"Bus number.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("address",
+"Bus address.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("busname",
+"Name of device on bus (for SPI).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            40, 
+false),
+            new("regstart",
+"First register to write.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("count",
+"Count of registers to write.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"Write data.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            128, 
+false),
+            new("bank",
+"Bank number.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "DEVICE_OP_WRITE:"
+        + "uint32_t request_id;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t bustype;"
+        + "uint8_t bus;"
+        + "uint8_t address;"
+        + "char[40] busname;"
+        + "uint8_t regstart;"
+        + "uint8_t count;"
+        + "uint8_t[128] data;"
+        + "uint8_t bank;"
+        ;
     }
 
     /// <summary>
@@ -7771,6 +11339,34 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DeviceOpWriteReplyPayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_WRITE_REPLY";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Request ID - copied from request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("result",
+"0 for success, anything else is failure code.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "DEVICE_OP_WRITE_REPLY:"
+        + "uint32_t request_id;"
+        + "uint8_t result;"
+        ;
     }
 
     /// <summary>
@@ -7842,6 +11438,144 @@ namespace Asv.Mavlink.Ardupilotmega
         public override AdapTuningPayload Payload { get; } = new();
 
         public override string Name => "ADAP_TUNING";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("desired",
+"Desired rate.",
+string.Empty, 
+@"deg/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("achieved",
+"Achieved rate.",
+string.Empty, 
+@"deg/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("error",
+"Error between model and vehicle.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("theta",
+"Theta estimated state predictor.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("omega",
+"Omega estimated state predictor.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("sigma",
+"Sigma estimated state predictor.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("theta_dot",
+"Theta derivative.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("omega_dot",
+"Omega derivative.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("sigma_dot",
+"Sigma derivative.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("f",
+"Projection operator value.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("f_dot",
+"Projection operator derivative.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("u",
+"u adaptive controlled output command.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("axis",
+"Axis.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ADAP_TUNING:"
+        + "float desired;"
+        + "float achieved;"
+        + "float error;"
+        + "float theta;"
+        + "float omega;"
+        + "float sigma;"
+        + "float theta_dot;"
+        + "float omega_dot;"
+        + "float sigma_dot;"
+        + "float f;"
+        + "float f_dot;"
+        + "float u;"
+        + "uint8_t axis;"
+        ;
     }
 
     /// <summary>
@@ -8001,6 +11735,64 @@ namespace Asv.Mavlink.Ardupilotmega
         public override VisionPositionDeltaPayload Payload { get; } = new();
 
         public override string Name => "VISION_POSITION_DELTA";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (synced to UNIX time or since system boot).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("time_delta_usec",
+"Time since the last reported camera frame.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("angle_delta",
+"Defines a rotation vector [roll, pitch, yaw] to the current MAV_FRAME_BODY_FRD from the previous MAV_FRAME_BODY_FRD.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            3, 
+false),
+            new("position_delta",
+"Change in position to the current MAV_FRAME_BODY_FRD from the previous FRAME_BODY_FRD rotated to the current MAV_FRAME_BODY_FRD.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            3, 
+false),
+            new("confidence",
+"Normalised confidence value from 0 to 100.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "VISION_POSITION_DELTA:"
+        + "uint64_t time_usec;"
+        + "uint64_t time_delta_usec;"
+        + "float[3] angle_delta;"
+        + "float[3] position_delta;"
+        + "float confidence;"
+        ;
     }
 
     /// <summary>
@@ -8117,6 +11909,44 @@ namespace Asv.Mavlink.Ardupilotmega
         public override AoaSsaPayload Payload { get; } = new();
 
         public override string Name => "AOA_SSA";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (since boot or Unix epoch).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("AOA",
+"Angle of Attack.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("SSA",
+"Side Slip Angle.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "AOA_SSA:"
+        + "uint64_t time_usec;"
+        + "float AOA;"
+        + "float SSA;"
+        ;
     }
 
     /// <summary>
@@ -8196,6 +12026,74 @@ namespace Asv.Mavlink.Ardupilotmega
         public override EscTelemetry1To4Payload Payload { get; } = new();
 
         public override string Name => "ESC_TELEMETRY_1_TO_4";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("voltage",
+"Voltage.",
+string.Empty, 
+@"cV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("current",
+"Current.",
+string.Empty, 
+@"cA", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("totalcurrent",
+"Total current.",
+string.Empty, 
+@"mAh", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("rpm",
+"RPM (eRPM).",
+string.Empty, 
+@"rpm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("count",
+"count of telemetry packets received (wraps at 65535).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("temperature",
+"Temperature.",
+string.Empty, 
+@"degC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            4, 
+false),
+        ];
+        public const string FormatMessage = "ESC_TELEMETRY_1_TO_4:"
+        + "uint16_t[4] voltage;"
+        + "uint16_t[4] current;"
+        + "uint16_t[4] totalcurrent;"
+        + "uint16_t[4] rpm;"
+        + "uint16_t[4] count;"
+        + "uint8_t[4] temperature;"
+        ;
     }
 
     /// <summary>
@@ -8352,6 +12250,74 @@ namespace Asv.Mavlink.Ardupilotmega
         public override EscTelemetry5To8Payload Payload { get; } = new();
 
         public override string Name => "ESC_TELEMETRY_5_TO_8";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("voltage",
+"Voltage.",
+string.Empty, 
+@"cV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("current",
+"Current.",
+string.Empty, 
+@"cA", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("totalcurrent",
+"Total current.",
+string.Empty, 
+@"mAh", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("rpm",
+"RPM (eRPM).",
+string.Empty, 
+@"rpm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("count",
+"count of telemetry packets received (wraps at 65535).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("temperature",
+"Temperature.",
+string.Empty, 
+@"degC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            4, 
+false),
+        ];
+        public const string FormatMessage = "ESC_TELEMETRY_5_TO_8:"
+        + "uint16_t[4] voltage;"
+        + "uint16_t[4] current;"
+        + "uint16_t[4] totalcurrent;"
+        + "uint16_t[4] rpm;"
+        + "uint16_t[4] count;"
+        + "uint8_t[4] temperature;"
+        ;
     }
 
     /// <summary>
@@ -8508,6 +12474,74 @@ namespace Asv.Mavlink.Ardupilotmega
         public override EscTelemetry9To12Payload Payload { get; } = new();
 
         public override string Name => "ESC_TELEMETRY_9_TO_12";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("voltage",
+"Voltage.",
+string.Empty, 
+@"cV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("current",
+"Current.",
+string.Empty, 
+@"cA", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("totalcurrent",
+"Total current.",
+string.Empty, 
+@"mAh", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("rpm",
+"RPM (eRPM).",
+string.Empty, 
+@"rpm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("count",
+"count of telemetry packets received (wraps at 65535).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("temperature",
+"Temperature.",
+string.Empty, 
+@"degC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            4, 
+false),
+        ];
+        public const string FormatMessage = "ESC_TELEMETRY_9_TO_12:"
+        + "uint16_t[4] voltage;"
+        + "uint16_t[4] current;"
+        + "uint16_t[4] totalcurrent;"
+        + "uint16_t[4] rpm;"
+        + "uint16_t[4] count;"
+        + "uint8_t[4] temperature;"
+        ;
     }
 
     /// <summary>
@@ -8664,6 +12698,114 @@ namespace Asv.Mavlink.Ardupilotmega
         public override OsdParamConfigPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_CONFIG";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Request ID - copied to reply.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("min_value",
+"OSD parameter minimum value.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("max_value",
+"OSD parameter maximum value.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("increment",
+"OSD parameter increment.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("osd_screen",
+"OSD parameter screen index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("osd_index",
+"OSD parameter display index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("param_id",
+"Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("config_type",
+"Config type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "OSD_PARAM_CONFIG:"
+        + "uint32_t request_id;"
+        + "float min_value;"
+        + "float max_value;"
+        + "float increment;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t osd_screen;"
+        + "uint8_t osd_index;"
+        + "char[16] param_id;"
+        + "uint8_t config_type;"
+        ;
     }
 
     /// <summary>
@@ -8824,6 +12966,34 @@ namespace Asv.Mavlink.Ardupilotmega
         public override OsdParamConfigReplyPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_CONFIG_REPLY";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Request ID - copied from request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("result",
+"Config error type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "OSD_PARAM_CONFIG_REPLY:"
+        + "uint32_t request_id;"
+        + "uint8_t result;"
+        ;
     }
 
     /// <summary>
@@ -8895,6 +13065,64 @@ namespace Asv.Mavlink.Ardupilotmega
         public override OsdParamShowConfigPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_SHOW_CONFIG";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Request ID - copied to reply.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("osd_screen",
+"OSD parameter screen index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("osd_index",
+"OSD parameter display index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "OSD_PARAM_SHOW_CONFIG:"
+        + "uint32_t request_id;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t osd_screen;"
+        + "uint8_t osd_index;"
+        ;
     }
 
     /// <summary>
@@ -8990,6 +13218,84 @@ namespace Asv.Mavlink.Ardupilotmega
         public override OsdParamShowConfigReplyPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_SHOW_CONFIG_REPLY";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Request ID - copied from request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("min_value",
+"OSD parameter minimum value.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("max_value",
+"OSD parameter maximum value.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("increment",
+"OSD parameter increment.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("result",
+"Config error type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("param_id",
+"Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("config_type",
+"Config type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "OSD_PARAM_SHOW_CONFIG_REPLY:"
+        + "uint32_t request_id;"
+        + "float min_value;"
+        + "float max_value;"
+        + "float increment;"
+        + "uint8_t result;"
+        + "char[16] param_id;"
+        + "uint8_t config_type;"
+        ;
     }
 
     /// <summary>
@@ -9126,6 +13432,104 @@ namespace Asv.Mavlink.Ardupilotmega
         public override ObstacleDistance3dPayload Payload { get; } = new();
 
         public override string Name => "OBSTACLE_DISTANCE_3D";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("x",
+" X position of the obstacle.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+" Y position of the obstacle.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+" Z position of the obstacle.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("min_distance",
+"Minimum distance the sensor can measure.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("max_distance",
+"Maximum distance the sensor can measure.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("obstacle_id",
+" Unique ID given to each obstacle so that its movement can be tracked. Use UINT16_MAX if object ID is unknown or cannot be determined.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("sensor_type",
+"Class id of the distance sensor type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("frame",
+"Coordinate frame of reference.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "OBSTACLE_DISTANCE_3D:"
+        + "uint32_t time_boot_ms;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "float min_distance;"
+        + "float max_distance;"
+        + "uint16_t obstacle_id;"
+        + "uint8_t sensor_type;"
+        + "uint8_t frame;"
+        ;
     }
 
     /// <summary>
@@ -9253,6 +13657,124 @@ namespace Asv.Mavlink.Ardupilotmega
         public override WaterDepthPayload Payload { get; } = new();
 
         public override string Name => "WATER_DEPTH";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot)",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("lat",
+"Latitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lng",
+"Longitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude (MSL) of vehicle",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("roll",
+"Roll angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Pitch angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("distance",
+"Distance (uncorrected)",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("temperature",
+"Water temperature",
+string.Empty, 
+@"degC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("id",
+"Onboard ID of the sensor",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("healthy",
+"Sensor data healthy (0=unhealthy, 1=healthy)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "WATER_DEPTH:"
+        + "uint32_t time_boot_ms;"
+        + "int32_t lat;"
+        + "int32_t lng;"
+        + "float alt;"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float distance;"
+        + "float temperature;"
+        + "uint8_t id;"
+        + "uint8_t healthy;"
+        ;
     }
 
     /// <summary>
@@ -9396,6 +13918,64 @@ namespace Asv.Mavlink.Ardupilotmega
         public override McuStatusPayload Payload { get; } = new();
 
         public override string Name => "MCU_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("MCU_temperature",
+"MCU Internal temperature",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("MCU_voltage",
+"MCU voltage",
+string.Empty, 
+@"mV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("MCU_voltage_min",
+"MCU voltage minimum",
+string.Empty, 
+@"mV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("MCU_voltage_max",
+"MCU voltage maximum",
+string.Empty, 
+@"mV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("id",
+"MCU instance",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "MCU_STATUS:"
+        + "int16_t MCU_temperature;"
+        + "uint16_t MCU_voltage;"
+        + "uint16_t MCU_voltage_min;"
+        + "uint16_t MCU_voltage_max;"
+        + "uint8_t id;"
+        ;
     }
 
     /// <summary>

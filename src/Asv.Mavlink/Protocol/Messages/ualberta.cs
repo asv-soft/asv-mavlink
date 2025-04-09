@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -149,6 +149,84 @@ namespace Asv.Mavlink.Ualberta
         public override NavFilterBiasPayload Payload { get; } = new();
 
         public override string Name => "NAV_FILTER_BIAS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("usec",
+"Timestamp (microseconds)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("accel_0",
+"b_f[0]",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("accel_1",
+"b_f[1]",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("accel_2",
+"b_f[2]",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("gyro_0",
+"b_f[0]",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("gyro_1",
+"b_f[1]",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("gyro_2",
+"b_f[2]",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "NAV_FILTER_BIAS:"
+        + "uint64_t usec;"
+        + "float accel_0;"
+        + "float accel_1;"
+        + "float accel_2;"
+        + "float gyro_0;"
+        + "float gyro_1;"
+        + "float gyro_2;"
+        ;
     }
 
     /// <summary>
@@ -260,6 +338,74 @@ namespace Asv.Mavlink.Ualberta
         public override RadioCalibrationPayload Payload { get; } = new();
 
         public override string Name => "RADIO_CALIBRATION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("aileron",
+"Aileron setpoints: left, center, right",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            3, 
+false),
+            new("elevator",
+"Elevator setpoints: nose down, center, nose up",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            3, 
+false),
+            new("rudder",
+"Rudder setpoints: nose left, center, nose right",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            3, 
+false),
+            new("gyro",
+"Tail gyro mode/gain setpoints: heading hold, rate mode",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            2, 
+false),
+            new("pitch",
+"Pitch curve setpoints (every 25%)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            5, 
+false),
+            new("throttle",
+"Throttle curve setpoints (every 25%)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            5, 
+false),
+        ];
+        public const string FormatMessage = "RADIO_CALIBRATION:"
+        + "uint16_t[3] aileron;"
+        + "uint16_t[3] elevator;"
+        + "uint16_t[3] rudder;"
+        + "uint16_t[2] gyro;"
+        + "uint16_t[5] pitch;"
+        + "uint16_t[5] throttle;"
+        ;
     }
 
     /// <summary>
@@ -416,6 +562,44 @@ namespace Asv.Mavlink.Ualberta
         public override UalbertaSysStatusPayload Payload { get; } = new();
 
         public override string Name => "UALBERTA_SYS_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("mode",
+"System mode, see UALBERTA_AUTOPILOT_MODE ENUM",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("nav_mode",
+"Navigation mode, see UALBERTA_NAV_MODE ENUM",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("pilot",
+"Pilot mode, see UALBERTA_PILOT_MODE",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "UALBERTA_SYS_STATUS:"
+        + "uint8_t mode;"
+        + "uint8_t nav_mode;"
+        + "uint8_t pilot;"
+        ;
     }
 
     /// <summary>

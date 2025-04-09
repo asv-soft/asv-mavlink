@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.5+0ba9fefc7b77ee147b4abfc48526494086a929d5
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -1244,6 +1244,74 @@ namespace Asv.Mavlink.Minimal
         public override HeartbeatPayload Payload { get; } = new();
 
         public override string Name => "HEARTBEAT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("custom_mode",
+"A bitfield for use for autopilot-specific flags",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("type",
+"Vehicle or component type. For a flight controller component the vehicle type (quadrotor, helicopter, etc.). For other components the component type (e.g. camera, gimbal, etc.). This should be used in preference to component id for identifying the component type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("autopilot",
+"Autopilot type / class. Use MAV_AUTOPILOT_INVALID for components that are not flight controllers.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("base_mode",
+"System mode bitmap.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("system_status",
+"System status flag.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mavlink_version",
+"MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "HEARTBEAT:"
+        + "uint32_t custom_mode;"
+        + "uint8_t type;"
+        + "uint8_t autopilot;"
+        + "uint8_t base_mode;"
+        + "uint8_t system_status;"
+        + "uint8_t mavlink_version;"
+        ;
     }
 
     /// <summary>
@@ -1347,6 +1415,64 @@ namespace Asv.Mavlink.Minimal
         public override ProtocolVersionPayload Payload { get; } = new();
 
         public override string Name => "PROTOCOL_VERSION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("version",
+"Currently active MAVLink version number * 100: v1.0 is 100, v2.0 is 200, etc.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("min_version",
+"Minimum MAVLink version supported",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("max_version",
+"Maximum MAVLink version supported (set to the same value as version by default)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("spec_version_hash",
+"The first 8 bytes (not characters printed in hex!) of the git hash.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            8, 
+false),
+            new("library_version_hash",
+"The first 8 bytes (not characters printed in hex!) of the git hash.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            8, 
+false),
+        ];
+        public const string FormatMessage = "PROTOCOL_VERSION:"
+        + "uint16_t version;"
+        + "uint16_t min_version;"
+        + "uint16_t max_version;"
+        + "uint8_t[8] spec_version_hash;"
+        + "uint8_t[8] library_version_hash;"
+        ;
     }
 
     /// <summary>

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.5+0ba9fefc7b77ee147b4abfc48526494086a929d5
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -440,6 +440,134 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrOutStatusPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_OUT_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("supported_modes",
+"Supported ASV_SDR_CUSTOM_MODE.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("size",
+"Total storage size in bytes.",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("record_count",
+"Number of records in storage.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("current_mission_index",
+"Current mission index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("current_record_guid",
+"Record GUID. Also by this field we can understand if the data is currently being recorded (GUID!=0x00) or not (GUID==0x00).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+            new("current_record_mode",
+"Current record mode (record data type).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("current_record_name",
+"Record name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string. If the data is currently not being recorded, than return null; ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            28, 
+false),
+            new("mission_state",
+"Mission state.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("calib_state",
+"Calibration status.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("calib_table_count",
+"Number of calibration tables.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("ref_power",
+"Estimated reference power in dBm. Entered in MAV_CMD_ASV_SDR_SET_MODE command.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+            new("signal_overflow",
+"Input path signal overflow indicator. Relative value from 0.0 to 1.0.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "ASV_SDR_OUT_STATUS:"
+        + "uint64_t supported_modes;"
+        + "uint64_t size;"
+        + "uint16_t record_count;"
+        + "uint16_t current_mission_index;"
+        + "uint8_t[16] current_record_guid;"
+        + "uint8_t current_record_mode;"
+        + "char[28] current_record_name;"
+        + "uint8_t mission_state;"
+        + "uint8_t calib_state;"
+        + "uint16_t calib_table_count;"
+        + "float ref_power;"
+        + "float signal_overflow;"
+        ;
     }
 
     /// <summary>
@@ -632,6 +760,64 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Specifies a unique number for this request. This allows the response packet to be identified.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("skip",
+"Specifies the start index of the records to be sent in the response.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("count",
+"Specifies the number of records to be sent in the response after the skip index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_RECORD_REQUEST:"
+        + "uint16_t request_id;"
+        + "uint16_t skip;"
+        + "uint16_t count;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -727,6 +913,44 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_RESPONSE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("items_count",
+"Number of items ASV_SDR_RECORD for transmition after this request with success result code (depended from request).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("result",
+"Result code.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_RECORD_RESPONSE:"
+        + "uint16_t request_id;"
+        + "uint16_t items_count;"
+        + "uint8_t result;"
+        ;
     }
 
     /// <summary>
@@ -806,6 +1030,104 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("frequency",
+"Reference frequency in Hz, specified by MAV_CMD_ASV_SDR_SET_MODE command.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("created_unix_us",
+"Created timestamp (UNIX epoch time).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("data_type",
+"Record data type(it is also possible to know the type of data inside the record by cast enum to int).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("duration_sec",
+"Record duration in sec.",
+string.Empty, 
+@"sec", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("data_count",
+"Data items count.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("size",
+"Total data size of record with all data items and tags.",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("tag_count",
+"Tag items count.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("record_guid",
+"Record GUID. Generated by payload after the start of recording.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+            new("record_name",
+"Record name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            28, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_RECORD:"
+        + "uint64_t frequency;"
+        + "uint64_t created_unix_us;"
+        + "uint32_t data_type;"
+        + "uint32_t duration_sec;"
+        + "uint32_t data_count;"
+        + "uint32_t size;"
+        + "uint16_t tag_count;"
+        + "uint8_t[16] record_guid;"
+        + "char[28] record_name;"
+        ;
     }
 
     /// <summary>
@@ -966,6 +1288,54 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordDeleteRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_DELETE_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Specifies a unique number for this request. This allows the response packet to be identified.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("record_guid",
+"Specifies GUID of the record to be deleted.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_RECORD_DELETE_REQUEST:"
+        + "uint16_t request_id;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t[16] record_guid;"
+        ;
     }
 
     /// <summary>
@@ -1066,6 +1436,44 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordDeleteResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_DELETE_RESPONSE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("result",
+"Result code.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("record_guid",
+"Specifies the GUID of the record that was deleted.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_RECORD_DELETE_RESPONSE:"
+        + "uint16_t request_id;"
+        + "uint8_t result;"
+        + "uint8_t[16] record_guid;"
+        ;
     }
 
     /// <summary>
@@ -1158,6 +1566,74 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordTagRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_TAG_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Request unique number. This is to allow the response packet to be detected.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("skip",
+"Specifies the start index of the tag to be sent in the response.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("count",
+"Specifies the number of tag to be sent in the response after the skip index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("record_guid",
+"Specifies the GUID of the record.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_RECORD_TAG_REQUEST:"
+        + "uint16_t request_id;"
+        + "uint16_t skip;"
+        + "uint16_t count;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t[16] record_guid;"
+        ;
     }
 
     /// <summary>
@@ -1274,6 +1750,44 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordTagResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_TAG_RESPONSE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("items_count",
+"Number of items ASV_SDR_RECORD_TAG for transmition after this request with success result code (depended from request).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("result",
+"Result code.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_RECORD_TAG_RESPONSE:"
+        + "uint16_t request_id;"
+        + "uint16_t items_count;"
+        + "uint8_t result;"
+        ;
     }
 
     /// <summary>
@@ -1353,6 +1867,64 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordTagPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_TAG";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("record_guid",
+"Record GUID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+            new("tag_guid",
+"Tag GUID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+            new("tag_name",
+"Tag name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("tag_type",
+"Tag type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("tag_value",
+"Tag value, depends on the type of tag.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            8, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_RECORD_TAG:"
+        + "uint8_t[16] record_guid;"
+        + "uint8_t[16] tag_guid;"
+        + "char[16] tag_name;"
+        + "uint8_t tag_type;"
+        + "uint8_t[8] tag_value;"
+        ;
     }
 
     /// <summary>
@@ -1497,6 +2069,64 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordTagDeleteRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_TAG_DELETE_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("record_guid",
+"Record GUID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+            new("tag_guid",
+"Tag GUID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_RECORD_TAG_DELETE_REQUEST:"
+        + "uint16_t request_id;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t[16] record_guid;"
+        + "uint8_t[16] tag_guid;"
+        ;
     }
 
     /// <summary>
@@ -1613,6 +2243,54 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordTagDeleteResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_TAG_DELETE_RESPONSE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("result",
+"Result code.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("record_guid",
+"Record GUID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+            new("tag_guid",
+"Tag GUID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_RECORD_TAG_DELETE_RESPONSE:"
+        + "uint16_t request_id;"
+        + "uint8_t result;"
+        + "uint8_t[16] record_guid;"
+        + "uint8_t[16] tag_guid;"
+        ;
     }
 
     /// <summary>
@@ -1721,6 +2399,74 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordDataRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_DATA_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("skip",
+"Specifies the start index of the tag to be sent in the response.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("count",
+"Specifies the number of tag to be sent in the response after the skip index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("request_id",
+"Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("record_guid",
+"Record GUID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_RECORD_DATA_REQUEST:"
+        + "uint32_t skip;"
+        + "uint32_t count;"
+        + "uint16_t request_id;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t[16] record_guid;"
+        ;
     }
 
     /// <summary>
@@ -1837,6 +2583,64 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordDataResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_DATA_RESPONSE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("data_type",
+"Record data type(it is also possible to know the type of data inside the record by cast enum to int).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("items_count",
+"Number of items ASV_SDR_RECORD_DATA_* for transmition after this request with success result code (depended from request).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("request_id",
+"Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("result",
+"Result code.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("record_guid",
+"Record GUID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_RECORD_DATA_RESPONSE:"
+        + "uint32_t data_type;"
+        + "uint32_t items_count;"
+        + "uint16_t request_id;"
+        + "uint8_t result;"
+        + "uint8_t[16] record_guid;"
+        ;
     }
 
     /// <summary>
@@ -1945,6 +2749,34 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrCalibAccPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_CALIB_ACC";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("result",
+"Result code.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_CALIB_ACC:"
+        + "uint16_t request_id;"
+        + "uint8_t result;"
+        ;
     }
 
     /// <summary>
@@ -2016,6 +2848,54 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrCalibTableReadPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_CALIB_TABLE_READ";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("table_index",
+"Table index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("request_id",
+"Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_CALIB_TABLE_READ:"
+        + "uint16_t table_index;"
+        + "uint16_t request_id;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -2103,6 +2983,54 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrCalibTablePayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_CALIB_TABLE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("created_unix_us",
+"Updated timestamp (UNIX epoch time).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("table_index",
+"Table index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("row_count",
+"Specifies the number of ROWs in the table.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("table_name",
+"Table name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            28, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_CALIB_TABLE:"
+        + "uint64_t created_unix_us;"
+        + "uint16_t table_index;"
+        + "uint16_t row_count;"
+        + "char[28] table_name;"
+        ;
     }
 
     /// <summary>
@@ -2215,6 +3143,64 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrCalibTableRowReadPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_CALIB_TABLE_ROW_READ";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("table_index",
+"Table index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("row_index",
+"ROW index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_CALIB_TABLE_ROW_READ:"
+        + "uint16_t request_id;"
+        + "uint16_t table_index;"
+        + "uint16_t row_index;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -2310,6 +3296,94 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrCalibTableRowPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_CALIB_TABLE_ROW";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("ref_freq",
+"Reference frequency in Hz.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("ref_power",
+"Reference power in dBm.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ref_value",
+"Reference value.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("adjustment",
+"Adjustment for measured value (ref_value = measured_value + adjustment)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("table_index",
+"Table index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("row_index",
+"ROW index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_CALIB_TABLE_ROW:"
+        + "uint64_t ref_freq;"
+        + "float ref_power;"
+        + "float ref_value;"
+        + "float adjustment;"
+        + "uint16_t table_index;"
+        + "uint16_t row_index;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -2429,6 +3503,74 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrCalibTableUploadStartPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_CALIB_TABLE_UPLOAD_START";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("created_unix_us",
+"Current timestamp (UNIX epoch time).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("table_index",
+"Table index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("request_id",
+"Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("row_count",
+"Specifies the number of ROWs in the table.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_CALIB_TABLE_UPLOAD_START:"
+        + "uint64_t created_unix_us;"
+        + "uint16_t table_index;"
+        + "uint16_t request_id;"
+        + "uint16_t row_count;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -2532,6 +3674,64 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrCalibTableUploadReadCallbackPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_CALIB_TABLE_UPLOAD_READ_CALLBACK";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Specifies the unique number of the original request from ASV_SDR_CALIB_TABLE_UPLOAD_START. This allows the response to be matched to the correct request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("table_index",
+"Table index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("row_index",
+"ROW index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_CALIB_TABLE_UPLOAD_READ_CALLBACK:"
+        + "uint16_t request_id;"
+        + "uint16_t table_index;"
+        + "uint16_t row_index;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -2627,6 +3827,104 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrSignalRawPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_SIGNAL_RAW";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_unix_usec",
+"Timestamp (UNIX epoch time) for current set of measures.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("min",
+"Min value of set.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("max",
+"Max value of set.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("start",
+"Start index of measure set.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("total",
+"Total points in set.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("signal_name",
+"Signal name, terminated by NULL if the length is less than 8 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 8+1 bytes storage if the ID is stored as string",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            8, 
+false),
+            new("format",
+"Format of one measure.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("count",
+"Measures count in this packet.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"Data set of points.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            200, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_SIGNAL_RAW:"
+        + "uint64_t time_unix_usec;"
+        + "float min;"
+        + "float max;"
+        + "uint16_t start;"
+        + "uint16_t total;"
+        + "char[8] signal_name;"
+        + "uint8_t format;"
+        + "uint8_t count;"
+        + "uint8_t[200] data;"
+        ;
     }
 
     /// <summary>
@@ -2787,6 +4085,534 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordDataLlzPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_DATA_LLZ";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_unix_usec",
+"Timestamp (UNIX epoch time).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("total_freq",
+"Measured frequency.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("data_index",
+"Data index in record",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("gnss_lat",
+"Latitude (WGS84, EGM96 ellipsoid)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("gnss_lon",
+"Longitude (WGS84, EGM96 ellipsoid)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("gnss_alt",
+"Altitude (MSL). Positive for up. Note that virtually all GPS modules provide the MSL altitude in addition to the WGS84 altitude.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("gnss_alt_ellipsoid",
+"Altitude (above WGS84, EGM96 ellipsoid). Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("gnss_h_acc",
+"Position uncertainty. Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("gnss_v_acc",
+"Altitude uncertainty. Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("gnss_vel_acc",
+"Speed uncertainty. Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("lat",
+"Filtered global position latitude, expressed",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Filtered global position longitude, expressed",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Filtered global position altitude (MSL).",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("relative_alt",
+"Altitude above ground",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("roll",
+"Roll angle (-pi..+pi)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Pitch angle (-pi..+pi)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw angle (-pi..+pi)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("crs_power",
+"Input power of course.",
+string.Empty, 
+@"dBm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("crs_am_90",
+"Aplitude modulation of 90Hz of course.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("crs_am_150",
+"Aplitude modulation of 150Hz of course.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("clr_power",
+"Input power of clearance.",
+string.Empty, 
+@"dBm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("clr_am_90",
+"Aplitude modulation of 90Hz of clearance.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("clr_am_150",
+"Aplitude modulation of 150Hz of clearance.",
+string.Empty, 
+@"% E2", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("total_power",
+"Total input power.",
+string.Empty, 
+@"dBm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("total_field_strength",
+"Total field strength.",
+string.Empty, 
+@"uV/m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("total_am_90",
+"Total aplitude modulation of 90Hz.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("total_am_150",
+"Total aplitude modulation of 150Hz.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("phi_90_crs_vs_clr",
+" Phase difference 90 Hz clearance and cource",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("phi_150_crs_vs_clr",
+"Phase difference 150 Hz clearance and cource.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("code_id_am_1020",
+"Total aplitude modulation of 90Hz.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("gnss_eph",
+"GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("gnss_epv",
+"GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("gnss_vel",
+"GPS ground speed. If unknown, set to: UINT16_MAX",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("vx",
+"Ground X Speed (Latitude, positive north)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("vy",
+"Ground Y Speed (Longitude, positive east)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("vz",
+"Ground Z Speed (Altitude, positive down)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("hdg",
+"Vehicle heading (yaw angle), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("crs_carrier_offset",
+"Carrier frequency offset of course.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("crs_freq_90",
+"Frequency offset of signal 90 Hz of course.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("crs_freq_150",
+"Frequency offset of signal 150 Hz of course.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("clr_carrier_offset",
+"Carrier frequency offset of clearance.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("clr_freq_90",
+"Frequency offset of signal 90 Hz of clearance.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("clr_freq_150",
+"Frequency offset of signal 150 Hz of clearance.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("total_carrier_offset",
+"Total carrier frequency offset.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("total_freq_90",
+"Total frequency offset of signal 90 Hz.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("total_freq_150",
+"Total frequency offset of signal 150 Hz.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("code_id_freq_1020",
+"Total frequency offset of signal 90 Hz.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("measure_time",
+"Measure time.",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("record_guid",
+"Record GUID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+            new("gnss_fix_type",
+"GPS fix type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("gnss_satellites_visible",
+"Number of satellites visible. If unknown, set to 255",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("code_id",
+"Code identification",
+string.Empty, 
+@"Letters", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            4, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_RECORD_DATA_LLZ:"
+        + "uint64_t time_unix_usec;"
+        + "uint64_t total_freq;"
+        + "uint32_t data_index;"
+        + "int32_t gnss_lat;"
+        + "int32_t gnss_lon;"
+        + "int32_t gnss_alt;"
+        + "int32_t gnss_alt_ellipsoid;"
+        + "uint32_t gnss_h_acc;"
+        + "uint32_t gnss_v_acc;"
+        + "uint32_t gnss_vel_acc;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "int32_t alt;"
+        + "int32_t relative_alt;"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float crs_power;"
+        + "float crs_am_90;"
+        + "float crs_am_150;"
+        + "float clr_power;"
+        + "float clr_am_90;"
+        + "float clr_am_150;"
+        + "float total_power;"
+        + "float total_field_strength;"
+        + "float total_am_90;"
+        + "float total_am_150;"
+        + "float phi_90_crs_vs_clr;"
+        + "float phi_150_crs_vs_clr;"
+        + "float code_id_am_1020;"
+        + "uint16_t gnss_eph;"
+        + "uint16_t gnss_epv;"
+        + "uint16_t gnss_vel;"
+        + "int16_t vx;"
+        + "int16_t vy;"
+        + "int16_t vz;"
+        + "uint16_t hdg;"
+        + "int16_t crs_carrier_offset;"
+        + "int16_t crs_freq_90;"
+        + "int16_t crs_freq_150;"
+        + "int16_t clr_carrier_offset;"
+        + "int16_t clr_freq_90;"
+        + "int16_t clr_freq_150;"
+        + "int16_t total_carrier_offset;"
+        + "int16_t total_freq_90;"
+        + "int16_t total_freq_150;"
+        + "int16_t code_id_freq_1020;"
+        + "int16_t measure_time;"
+        + "uint8_t[16] record_guid;"
+        + "uint8_t gnss_fix_type;"
+        + "uint8_t gnss_satellites_visible;"
+        + "char[4] code_id;"
+        ;
     }
 
     /// <summary>
@@ -3291,6 +5117,504 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordDataGpPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_DATA_GP";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_unix_usec",
+"Timestamp (UNIX epoch time).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("total_freq",
+"Measured frequency.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("data_index",
+"Data index in record",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("gnss_lat",
+"Latitude (WGS84, EGM96 ellipsoid)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("gnss_lon",
+"Longitude (WGS84, EGM96 ellipsoid)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("gnss_alt",
+"Altitude (MSL). Positive for up. Note that virtually all GPS modules provide the MSL altitude in addition to the WGS84 altitude.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("gnss_alt_ellipsoid",
+"Altitude (above WGS84, EGM96 ellipsoid). Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("gnss_h_acc",
+"Position uncertainty. Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("gnss_v_acc",
+"Altitude uncertainty. Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("gnss_vel_acc",
+"Speed uncertainty. Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("lat",
+"Filtered global position latitude, expressed",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Filtered global position longitude, expressed",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Filtered global position altitude (MSL).",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("relative_alt",
+"Altitude above ground",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("roll",
+"Roll angle (-pi..+pi)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Pitch angle (-pi..+pi)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw angle (-pi..+pi)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("crs_power",
+"Input power of course.",
+string.Empty, 
+@"dBm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("crs_am_90",
+"Aplitude modulation of 90Hz of course.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("crs_am_150",
+"Aplitude modulation of 150Hz of course.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("clr_power",
+"Input power of clearance.",
+string.Empty, 
+@"dBm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("clr_am_90",
+"Aplitude modulation of 90Hz of clearance.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("clr_am_150",
+"Aplitude modulation of 150Hz of clearance.",
+string.Empty, 
+@"% E2", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("total_power",
+"Total input power.",
+string.Empty, 
+@"dBm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("total_field_strength",
+"Total field strength.",
+string.Empty, 
+@"uV/m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("total_am_90",
+"Total aplitude modulation of 90Hz.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("total_am_150",
+"Total aplitude modulation of 150Hz.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("phi_90_crs_vs_clr",
+" Phase difference 90 Hz clearance and cource",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("phi_150_crs_vs_clr",
+"Phase difference 150 Hz clearance and cource.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("gnss_eph",
+"GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("gnss_epv",
+"GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("gnss_vel",
+"GPS ground speed. If unknown, set to: UINT16_MAX",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("vx",
+"Ground X Speed (Latitude, positive north)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("vy",
+"Ground Y Speed (Longitude, positive east)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("vz",
+"Ground Z Speed (Altitude, positive down)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("hdg",
+"Vehicle heading (yaw angle), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("crs_carrier_offset",
+"Carrier frequency offset of course.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("crs_freq_90",
+"Frequency offset of signal 90 Hz of course.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("crs_freq_150",
+"Frequency offset of signal 150 Hz of course.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("clr_carrier_offset",
+"Carrier frequency offset of clearance.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("clr_freq_90",
+"Frequency offset of signal 90 Hz of clearance.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("clr_freq_150",
+"Frequency offset of signal 150 Hz of clearance.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("total_carrier_offset",
+"Total carrier frequency offset.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("total_freq_90",
+"Total frequency offset of signal 90 Hz.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("total_freq_150",
+"Total frequency offset of signal 150 Hz.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("measure_time",
+"Measure time.",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("record_guid",
+"Record GUID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+            new("gnss_fix_type",
+"GPS fix type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("gnss_satellites_visible",
+"Number of satellites visible. If unknown, set to 255",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_RECORD_DATA_GP:"
+        + "uint64_t time_unix_usec;"
+        + "uint64_t total_freq;"
+        + "uint32_t data_index;"
+        + "int32_t gnss_lat;"
+        + "int32_t gnss_lon;"
+        + "int32_t gnss_alt;"
+        + "int32_t gnss_alt_ellipsoid;"
+        + "uint32_t gnss_h_acc;"
+        + "uint32_t gnss_v_acc;"
+        + "uint32_t gnss_vel_acc;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "int32_t alt;"
+        + "int32_t relative_alt;"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float crs_power;"
+        + "float crs_am_90;"
+        + "float crs_am_150;"
+        + "float clr_power;"
+        + "float clr_am_90;"
+        + "float clr_am_150;"
+        + "float total_power;"
+        + "float total_field_strength;"
+        + "float total_am_90;"
+        + "float total_am_150;"
+        + "float phi_90_crs_vs_clr;"
+        + "float phi_150_crs_vs_clr;"
+        + "uint16_t gnss_eph;"
+        + "uint16_t gnss_epv;"
+        + "uint16_t gnss_vel;"
+        + "int16_t vx;"
+        + "int16_t vy;"
+        + "int16_t vz;"
+        + "uint16_t hdg;"
+        + "int16_t crs_carrier_offset;"
+        + "int16_t crs_freq_90;"
+        + "int16_t crs_freq_150;"
+        + "int16_t clr_carrier_offset;"
+        + "int16_t clr_freq_90;"
+        + "int16_t clr_freq_150;"
+        + "int16_t total_carrier_offset;"
+        + "int16_t total_freq_90;"
+        + "int16_t total_freq_150;"
+        + "int16_t measure_time;"
+        + "uint8_t[16] record_guid;"
+        + "uint8_t gnss_fix_type;"
+        + "uint8_t gnss_satellites_visible;"
+        ;
     }
 
     /// <summary>
@@ -3751,6 +6075,414 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordDataVorPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_DATA_VOR";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_unix_usec",
+"Timestamp (UNIX epoch time).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("total_freq",
+"Measured frequency.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("data_index",
+"Data index in record",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("gnss_lat",
+"Latitude (WGS84, EGM96 ellipsoid)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("gnss_lon",
+"Longitude (WGS84, EGM96 ellipsoid)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("gnss_alt",
+"Altitude (MSL). Positive for up. Note that virtually all GPS modules provide the MSL altitude in addition to the WGS84 altitude.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("gnss_alt_ellipsoid",
+"Altitude (above WGS84, EGM96 ellipsoid). Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("gnss_h_acc",
+"Position uncertainty. Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("gnss_v_acc",
+"Altitude uncertainty. Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("gnss_vel_acc",
+"Speed uncertainty. Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("lat",
+"Filtered global position latitude, expressed",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Filtered global position longitude, expressed",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Filtered global position altitude (MSL).",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("relative_alt",
+"Altitude above ground",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("roll",
+"Roll angle (-pi..+pi)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Pitch angle (-pi..+pi)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw angle (-pi..+pi)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("azimuth",
+"Measured azimuth.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("power",
+"Total input power.",
+string.Empty, 
+@"dBm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("field_strength",
+"Total field strength.",
+string.Empty, 
+@"uV/m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("am_30",
+"Total aplitude modulation of 30 Hz.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("am_9960",
+"Total aplitude modulation of 9960 Hz.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("deviation",
+"Deviation.",
+string.Empty, 
+@"", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("code_id_am_1020",
+"Total aplitude modulation of 90Hz.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("gnss_eph",
+"GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("gnss_epv",
+"GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("gnss_vel",
+"GPS ground speed. If unknown, set to: UINT16_MAX",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("vx",
+"Ground X Speed (Latitude, positive north)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("vy",
+"Ground Y Speed (Longitude, positive east)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("vz",
+"Ground Z Speed (Altitude, positive down)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("hdg",
+"Vehicle heading (yaw angle), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("carrier_offset",
+"Total carrier frequency offset.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("freq_30",
+"Total frequency offset of signal 30 Hz.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("freq_9960",
+"Total frequency offset of signal 9960 Hz.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("code_id_freq_1020",
+"Total frequency offset of signal 90 Hz.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("measure_time",
+"Measure time.",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("record_guid",
+"Record GUID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+            new("gnss_fix_type",
+"GPS fix type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("gnss_satellites_visible",
+"Number of satellites visible. If unknown, set to 255",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("code_id",
+"Code identification",
+string.Empty, 
+@"Letters", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            4, 
+false),
+        ];
+        public const string FormatMessage = "ASV_SDR_RECORD_DATA_VOR:"
+        + "uint64_t time_unix_usec;"
+        + "uint64_t total_freq;"
+        + "uint32_t data_index;"
+        + "int32_t gnss_lat;"
+        + "int32_t gnss_lon;"
+        + "int32_t gnss_alt;"
+        + "int32_t gnss_alt_ellipsoid;"
+        + "uint32_t gnss_h_acc;"
+        + "uint32_t gnss_v_acc;"
+        + "uint32_t gnss_vel_acc;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "int32_t alt;"
+        + "int32_t relative_alt;"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float azimuth;"
+        + "float power;"
+        + "float field_strength;"
+        + "float am_30;"
+        + "float am_9960;"
+        + "float deviation;"
+        + "float code_id_am_1020;"
+        + "uint16_t gnss_eph;"
+        + "uint16_t gnss_epv;"
+        + "uint16_t gnss_vel;"
+        + "int16_t vx;"
+        + "int16_t vy;"
+        + "int16_t vz;"
+        + "uint16_t hdg;"
+        + "int16_t carrier_offset;"
+        + "int16_t freq_30;"
+        + "int16_t freq_9960;"
+        + "int16_t code_id_freq_1020;"
+        + "int16_t measure_time;"
+        + "uint8_t[16] record_guid;"
+        + "uint8_t gnss_fix_type;"
+        + "uint8_t gnss_satellites_visible;"
+        + "char[4] code_id;"
+        ;
     }
 
     /// <summary>

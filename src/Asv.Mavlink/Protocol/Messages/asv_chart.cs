@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.5+0ba9fefc7b77ee147b4abfc48526494086a929d5
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -195,6 +195,64 @@ namespace Asv.Mavlink.AsvChart
         public override AsvChartInfoRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_CHART_INFO_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Specifies a unique number for this request. This allows the response packet to be identified.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("skip",
+"Specifies the start index of the records to be sent in the response.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("count",
+"Specifies the number of records to be sent in the response after the skip index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_CHART_INFO_REQUEST:"
+        + "uint16_t request_id;"
+        + "uint16_t skip;"
+        + "uint16_t count;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -290,6 +348,54 @@ namespace Asv.Mavlink.AsvChart
         public override AsvChartInfoResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_CHART_INFO_RESPONSE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("items_count",
+"Number of ASV_CHART_INFO items to be transmitted after this response with a success result code (dependent on the request).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chat_list_hash",
+"Hash of the all ASV_CHART_INFO.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("result",
+"Result code.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_CHART_INFO_RESPONSE:"
+        + "uint16_t request_id;"
+        + "uint16_t items_count;"
+        + "uint16_t chat_list_hash;"
+        + "uint8_t result;"
+        ;
     }
 
     /// <summary>
@@ -377,6 +483,34 @@ namespace Asv.Mavlink.AsvChart
         public override AsvChartInfoUpdatedEventPayload Payload { get; } = new();
 
         public override string Name => "ASV_CHART_INFO_UPDATED_EVENT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("chart_count",
+"Number of ASV_CHART_INFO items to be transmitted after this response with a success result code (dependent on the request).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chat_list_hash",
+"Hash of the all ASV_CHART_INFO.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_CHART_INFO_UPDATED_EVENT:"
+        + "uint16_t chart_count;"
+        + "uint16_t chat_list_hash;"
+        ;
     }
 
     /// <summary>
@@ -448,6 +582,164 @@ namespace Asv.Mavlink.AsvChart
         public override AsvChartInfoPayload Payload { get; } = new();
 
         public override string Name => "ASV_CHART_INFO";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("axes_x_min",
+"Minimum value of Axis X.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("axes_x_max",
+"Maximum value of Axis X.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("axes_y_min",
+"Minimum value of Axis Y.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("axes_y_max",
+"Maximum value of Axis Y.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("chart_id",
+"Chart ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chart_info_hash",
+"Hash of the chart info.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("axes_x_unit",
+"Axis X unit.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("axes_x_count",
+"Total measure points for Axis X. Dependent on chart type (1 measure for simple plot signal, more for heatmap signal).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("axes_y_unit",
+"Axis Y unit.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("axes_y_count",
+"Total measure points for Axis Y.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chart_name",
+"Chart name, terminated by NULL if the length is less than 16 human-readable chars, and WITHOUT null termination (NULL) byte if the length is exactly 16 chars. Applications have to provide 8+1 bytes storage if the ID is stored as a string.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("chart_type",
+"Type of chart.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("axes_x_name",
+"Axis X name, terminated by NULL if the length is less than 16 human-readable chars, and WITHOUT null termination (NULL) byte if the length is exactly 16 chars. Applications have to provide 8+1 bytes storage if the ID is stored as a string.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("axes_y_name",
+"Axis Y name, terminated by NULL if the length is less than 16 human-readable chars, and WITHOUT null termination (NULL) byte if the length is exactly 16 chars. Applications have to provide 8+1 bytes storage if the ID is stored as a string.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("format",
+"Format of one measure.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_CHART_INFO:"
+        + "float axes_x_min;"
+        + "float axes_x_max;"
+        + "float axes_y_min;"
+        + "float axes_y_max;"
+        + "uint16_t chart_id;"
+        + "uint16_t chart_info_hash;"
+        + "uint16_t axes_x_unit;"
+        + "uint16_t axes_x_count;"
+        + "uint16_t axes_y_unit;"
+        + "uint16_t axes_y_count;"
+        + "char[16] chart_name;"
+        + "uint8_t chart_type;"
+        + "char[16] axes_x_name;"
+        + "char[16] axes_y_name;"
+        + "uint8_t format;"
+        ;
     }
 
     /// <summary>
@@ -688,6 +980,74 @@ namespace Asv.Mavlink.AsvChart
         public override AsvChartDataRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_CHART_DATA_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("data_rate",
+"The requested message rate (delay in ms)",
+string.Empty, 
+@"Ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("chat_id",
+"The ID of the requested chart",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chat_info_hash",
+"Hash of the chart ASV_CHART_INFO to ensure that all settings are synchronized.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data_trigger",
+"Additional argument for stream request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_CHART_DATA_REQUEST:"
+        + "float data_rate;"
+        + "uint16_t chat_id;"
+        + "uint16_t chat_info_hash;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t data_trigger;"
+        ;
     }
 
     /// <summary>
@@ -791,6 +1151,64 @@ namespace Asv.Mavlink.AsvChart
         public override AsvChartDataResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_CHART_DATA_RESPONSE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("data_rate",
+"The requested message rate (delay in ms).",
+string.Empty, 
+@"Ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("chat_id",
+"The ID of the requested chart",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chat_info_hash",
+"Hash of the chart ASV_CHART_INFO to ensure that all settings are synchronized.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("result",
+"Result code.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data_trigger",
+"Additional argument for stream request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_CHART_DATA_RESPONSE:"
+        + "float data_rate;"
+        + "uint16_t chat_id;"
+        + "uint16_t chat_info_hash;"
+        + "uint8_t result;"
+        + "uint8_t data_trigger;"
+        ;
     }
 
     /// <summary>
@@ -886,6 +1304,84 @@ namespace Asv.Mavlink.AsvChart
         public override AsvChartDataPayload Payload { get; } = new();
 
         public override string Name => "ASV_CHART_DATA";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_unix_usec",
+"Timestamp (UNIX epoch time) for current set of measures.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("chat_id",
+"Chart id.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chat_info_hash",
+"Hash of the chart ASV_CHART_INFO to ensure that all settings are synchronized.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("pkt_in_frame",
+"Number of packets for one frame.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("pkt_seq",
+"Packet sequence number (starting with 0 on every encoded frame).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("data_size",
+"Size of data array.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"Chart data.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            220, 
+false),
+        ];
+        public const string FormatMessage = "ASV_CHART_DATA:"
+        + "uint64_t time_unix_usec;"
+        + "uint16_t chat_id;"
+        + "uint16_t chat_info_hash;"
+        + "uint16_t pkt_in_frame;"
+        + "uint16_t pkt_seq;"
+        + "uint8_t data_size;"
+        + "uint8_t[220] data;"
+        ;
     }
 
     /// <summary>

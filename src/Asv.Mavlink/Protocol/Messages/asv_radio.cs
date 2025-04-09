@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.5+0ba9fefc7b77ee147b4abfc48526494086a929d5
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -175,6 +175,74 @@ namespace Asv.Mavlink.AsvRadio
         public override AsvRadioStatusPayload Payload { get; } = new();
 
         public override string Name => "ASV_RADIO_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("freq",
+"RF frequency.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("tx_level",
+"Current TX power in dBm.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rx_level",
+"Measured RX power in dBm.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rx_estimated_level",
+"Estimated RX reference power in dBm.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rf_mode",
+"RF mode.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("modulation",
+"Current RF modulation.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_RADIO_STATUS:"
+        + "float freq;"
+        + "float tx_level;"
+        + "float rx_level;"
+        + "float rx_estimated_level;"
+        + "uint32_t rf_mode;"
+        + "uint8_t modulation;"
+        ;
     }
 
     /// <summary>
@@ -278,6 +346,34 @@ namespace Asv.Mavlink.AsvRadio
         public override AsvRadioCapabilitiesRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_RADIO_CAPABILITIES_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_RADIO_CAPABILITIES_REQUEST:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -349,6 +445,84 @@ namespace Asv.Mavlink.AsvRadio
         public override AsvRadioCapabilitiesResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_RADIO_CAPABILITIES_RESPONSE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("max_rf_freq",
+"Max RF frequency in Hz.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("min_rf_freq",
+"Min RF frequency in Hz.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("max_tx_power",
+"Max TX power in dBm.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("min_tx_power",
+"Min TX power in dBm.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("max_rx_power",
+"Max estimated RX power in dBm.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("min_rx_power",
+"Min estimated RX power in dBm.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("supported_modulation",
+"Supported RF modulations. Each bit of array is flag from ASV_RADIO_MODULATION(max 255 items) enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            32, 
+false),
+        ];
+        public const string FormatMessage = "ASV_RADIO_CAPABILITIES_RESPONSE:"
+        + "uint32_t max_rf_freq;"
+        + "uint32_t min_rf_freq;"
+        + "float max_tx_power;"
+        + "float min_tx_power;"
+        + "float max_rx_power;"
+        + "float min_rx_power;"
+        + "uint8_t[32] supported_modulation;"
+        ;
     }
 
     /// <summary>
@@ -473,6 +647,54 @@ namespace Asv.Mavlink.AsvRadio
         public override AsvRadioCodecCapabilitiesRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_RADIO_CODEC_CAPABILITIES_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("skip",
+"Skip index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("count",
+"Codec count at ASV_RADIO_CODEC_CAPABILITIES_RESPONSE.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_RADIO_CODEC_CAPABILITIES_REQUEST:"
+        + "uint16_t skip;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t count;"
+        ;
     }
 
     /// <summary>
@@ -560,6 +782,54 @@ namespace Asv.Mavlink.AsvRadio
         public override AsvRadioCodecCapabilitiesResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_RADIO_CODEC_CAPABILITIES_RESPONSE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("all",
+"All codec codecs.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("skip",
+"Skip index codec.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("codecs",
+"Supported codec array.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            100, 
+false),
+            new("count",
+"Array size.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_RADIO_CODEC_CAPABILITIES_RESPONSE:"
+        + "uint16_t all;"
+        + "uint16_t skip;"
+        + "uint16_t[100] codecs;"
+        + "uint8_t count;"
+        ;
     }
 
     /// <summary>

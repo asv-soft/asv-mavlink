@@ -20,11 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.5+0ba9fefc7b77ee147b4abfc48526494086a929d5
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
+using System.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Minimal;
 using Asv.IO;
 
 namespace Asv.Mavlink.AsvRsga
@@ -36,6 +40,7 @@ namespace Asv.Mavlink.AsvRsga
         {
             src.Add(AsvRsgaCompatibilityRequestPacket.MessageId, ()=>new AsvRsgaCompatibilityRequestPacket());
             src.Add(AsvRsgaCompatibilityResponsePacket.MessageId, ()=>new AsvRsgaCompatibilityResponsePacket());
+            src.Add(AsvRsgaRttDmeReqV1Packet.MessageId, ()=>new AsvRsgaRttDmeReqV1Packet());
         }
     }
 
@@ -178,6 +183,36 @@ namespace Asv.Mavlink.AsvRsga
         /// ASV_RSGA_CUSTOM_SUB_MODE_MISSION
         /// </summary>
         AsvRsgaCustomSubModeMission = 2,
+        /// <summary>
+        /// Reserved 2.
+        /// ASV_RSGA_CUSTOM_SUB_MODE_RESERVED2
+        /// </summary>
+        AsvRsgaCustomSubModeReserved2 = 4,
+        /// <summary>
+        /// Reserved 3.
+        /// ASV_RSGA_CUSTOM_SUB_MODE_RESERVED3
+        /// </summary>
+        AsvRsgaCustomSubModeReserved3 = 8,
+        /// <summary>
+        /// Reserved 4.
+        /// ASV_RSGA_CUSTOM_SUB_MODE_RESERVED4
+        /// </summary>
+        AsvRsgaCustomSubModeReserved4 = 16,
+        /// <summary>
+        /// Reserved 5.
+        /// ASV_RSGA_CUSTOM_SUB_MODE_RESERVED5
+        /// </summary>
+        AsvRsgaCustomSubModeReserved5 = 32,
+        /// <summary>
+        /// Reserved 6.
+        /// ASV_RSGA_CUSTOM_SUB_MODE_RESERVED6
+        /// </summary>
+        AsvRsgaCustomSubModeReserved6 = 64,
+        /// <summary>
+        /// Reserved 7.
+        /// ASV_RSGA_CUSTOM_SUB_MODE_RESERVED7
+        /// </summary>
+        AsvRsgaCustomSubModeReserved7 = 128,
     }
 
     /// <summary>
@@ -257,10 +292,46 @@ namespace Asv.Mavlink.AsvRsga
         public override AsvRsgaCompatibilityRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_COMPATIBILITY_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Specifies a unique number for this request. This allows the response packet to be identified.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_RSGA_COMPATIBILITY_REQUEST:"
+        + "uint16_t request_id;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
-    
-    
     /// <summary>
     ///  ASV_RSGA_COMPATIBILITY_REQUEST
     /// </summary>
@@ -338,6 +409,44 @@ namespace Asv.Mavlink.AsvRsga
         public override AsvRsgaCompatibilityResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_COMPATIBILITY_RESPONSE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("result",
+"Result code.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("supported_modes",
+"Supported modes. Each bit index represents an ASV_RSGA_CUSTOM_MODE value (256 bits). First (IDLE) bit always true.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            32, 
+false),
+        ];
+        public const string FormatMessage = "ASV_RSGA_COMPATIBILITY_RESPONSE:"
+        + "uint16_t request_id;"
+        + "uint8_t result;"
+        + "uint8_t[32] supported_modes;"
+        ;
     }
 
     /// <summary>
@@ -409,6 +518,105 @@ namespace Asv.Mavlink.AsvRsga
         public byte[] SupportedModes { get; set; } = new byte[32];
         [Obsolete("This method is deprecated. Use GetSupportedModesMaxItemsCount instead.")]
         public byte GetSupportedModesMaxItemsCount() => 32;
+    }
+    /// <summary>
+    /// Responds real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_DME_REQ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_RSGA_RTT_DME_REQ_V1
+    /// </summary>
+    public class AsvRsgaRttDmeReqV1Packet : MavlinkV2Message<AsvRsgaRttDmeReqV1Payload>
+    {
+        public const int MessageId = 13499;
+        
+        public const byte CrcExtra = 27;
+        
+        public override int Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
+        public override bool WrapToV2Extension => true;
+
+        public override AsvRsgaRttDmeReqV1Payload Payload { get; } = new();
+
+        public override string Name => "ASV_RSGA_RTT_DME_REQ_V1";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_unix_usec",
+"Timestamp (UNIX epoch time).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("data_index",
+"Data index in record",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_RSGA_RTT_DME_REQ_V1:"
+        + "uint64_t time_unix_usec;"
+        + "uint32_t data_index;"
+        ;
+    }
+
+    /// <summary>
+    ///  ASV_RSGA_RTT_DME_REQ_V1
+    /// </summary>
+    public class AsvRsgaRttDmeReqV1Payload : IPayload
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
+        
+        public int GetByteSize()
+        {
+            var sum = 0;
+            sum+=8; //TimeUnixUsec
+            sum+=4; //DataIndex
+            return (byte)sum;
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
+            DataIndex = BinSerialize.ReadUInt(ref buffer);
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
+            BinSerialize.WriteUInt(ref buffer,DataIndex);
+            /* PayloadByteSize = 12 */;
+        }
+        
+        
+
+
+
+        /// <summary>
+        /// Timestamp (UNIX epoch time).
+        /// OriginName: time_unix_usec, Units: us, IsExtended: false
+        /// </summary>
+        public ulong TimeUnixUsec { get; set; }
+        /// <summary>
+        /// Data index in record
+        /// OriginName: data_index, Units: , IsExtended: false
+        /// </summary>
+        public uint DataIndex { get; set; }
     }
 
 

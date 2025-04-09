@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.5+0ba9fefc7b77ee147b4abfc48526494086a929d5
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -8544,6 +8544,174 @@ namespace Asv.Mavlink.Common
         public override SysStatusPayload Payload { get; } = new();
 
         public override string Name => "SYS_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("onboard_control_sensors_present",
+"Bitmap showing which onboard controllers and sensors are present. Value of 0: not present. Value of 1: present.",
+"0x%04x", 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("onboard_control_sensors_enabled",
+"Bitmap showing which onboard controllers and sensors are enabled:  Value of 0: not enabled. Value of 1: enabled.",
+"0x%04x", 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("onboard_control_sensors_health",
+"Bitmap showing which onboard controllers and sensors have an error (or are operational). Value of 0: error. Value of 1: healthy.",
+"0x%04x", 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("load",
+"Maximum usage in percent of the mainloop time. Values: [0-1000] - should always be below 1000",
+string.Empty, 
+@"d%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("voltage_battery",
+"Battery voltage, UINT16_MAX: Voltage not sent by autopilot",
+string.Empty, 
+@"mV", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("current_battery",
+"Battery current, -1: Current not sent by autopilot",
+string.Empty, 
+@"cA", 
+string.Empty, 
+@"-1", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("drop_rate_comm",
+"Communication drop rate, (UART, I2C, SPI, CAN), dropped packets on all links (packets that were corrupted on reception on the MAV)",
+string.Empty, 
+@"c%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("errors_comm",
+"Communication errors (UART, I2C, SPI, CAN), dropped packets on all links (packets that were corrupted on reception on the MAV)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("errors_count1",
+"Autopilot-specific errors",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("errors_count2",
+"Autopilot-specific errors",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("errors_count3",
+"Autopilot-specific errors",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("errors_count4",
+"Autopilot-specific errors",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("battery_remaining",
+"Battery energy remaining, -1: Battery remaining energy not sent by autopilot",
+string.Empty, 
+@"%", 
+string.Empty, 
+@"-1", 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("onboard_control_sensors_present_extended",
+"Bitmap showing which onboard controllers and sensors are present. Value of 0: not present. Value of 1: present.",
+"0x%04x", 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+true),
+            new("onboard_control_sensors_enabled_extended",
+"Bitmap showing which onboard controllers and sensors are enabled:  Value of 0: not enabled. Value of 1: enabled.",
+"0x%04x", 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+true),
+            new("onboard_control_sensors_health_extended",
+"Bitmap showing which onboard controllers and sensors have an error (or are operational). Value of 0: error. Value of 1: healthy.",
+"0x%04x", 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "SYS_STATUS:"
+        + "uint32_t onboard_control_sensors_present;"
+        + "uint32_t onboard_control_sensors_enabled;"
+        + "uint32_t onboard_control_sensors_health;"
+        + "uint16_t load;"
+        + "uint16_t voltage_battery;"
+        + "int16_t current_battery;"
+        + "uint16_t drop_rate_comm;"
+        + "uint16_t errors_comm;"
+        + "uint16_t errors_count1;"
+        + "uint16_t errors_count2;"
+        + "uint16_t errors_count3;"
+        + "uint16_t errors_count4;"
+        + "int8_t battery_remaining;"
+        + "uint32_t onboard_control_sensors_present_extended;"
+        + "uint32_t onboard_control_sensors_enabled_extended;"
+        + "uint32_t onboard_control_sensors_health_extended;"
+        ;
     }
 
     /// <summary>
@@ -8733,6 +8901,34 @@ namespace Asv.Mavlink.Common
         public override SystemTimePayload Payload { get; } = new();
 
         public override string Name => "SYSTEM_TIME";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_unix_usec",
+"Timestamp (UNIX epoch time).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SYSTEM_TIME:"
+        + "uint64_t time_unix_usec;"
+        + "uint32_t time_boot_ms;"
+        ;
     }
 
     /// <summary>
@@ -8804,6 +9000,54 @@ namespace Asv.Mavlink.Common
         public override PingPayload Payload { get; } = new();
 
         public override string Name => "PING";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("seq",
+"PING sequence",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("target_system",
+"0: request ping from all receiving systems. If greater than 0: message is a ping response and number is the system id of the requesting system",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"0: request ping from all receiving components. If greater than 0: message is a ping response and number is the component id of the requesting component.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "PING:"
+        + "uint64_t time_usec;"
+        + "uint32_t seq;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -8891,6 +9135,54 @@ namespace Asv.Mavlink.Common
         public override ChangeOperatorControlPayload Payload { get; } = new();
 
         public override string Name => "CHANGE_OPERATOR_CONTROL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System the GCS requests control for",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("control_request",
+"0: request control of this MAV, 1: Release control of this MAV",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("version",
+"0: key as plaintext, 1-255: future, different hashing/encryption variants. The GCS should in general use the safest mode possible initially and then gradually move down the encryption level if it gets a NACK message indicating an encryption mismatch.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("passkey",
+"Password / Key, depending on version plaintext or encrypted. 25 or less characters, NULL terminated. The characters may involve A-Z, a-z, 0-9, and \"!?,.-\"",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            25, 
+false),
+        ];
+        public const string FormatMessage = "CHANGE_OPERATOR_CONTROL:"
+        + "uint8_t target_system;"
+        + "uint8_t control_request;"
+        + "uint8_t version;"
+        + "char[25] passkey;"
+        ;
     }
 
     /// <summary>
@@ -9003,6 +9295,44 @@ namespace Asv.Mavlink.Common
         public override ChangeOperatorControlAckPayload Payload { get; } = new();
 
         public override string Name => "CHANGE_OPERATOR_CONTROL_ACK";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("gcs_system_id",
+"ID of the GCS this message ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("control_request",
+"0: request control of this MAV, 1: Release control of this MAV",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("ack",
+"0: ACK, 1: NACK: Wrong passkey, 2: NACK: Unsupported passkey encryption method, 3: NACK: Already under control",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "CHANGE_OPERATOR_CONTROL_ACK:"
+        + "uint8_t gcs_system_id;"
+        + "uint8_t control_request;"
+        + "uint8_t ack;"
+        ;
     }
 
     /// <summary>
@@ -9082,6 +9412,24 @@ namespace Asv.Mavlink.Common
         public override AuthKeyPayload Payload { get; } = new();
 
         public override string Name => "AUTH_KEY";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("key",
+"key",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            32, 
+false),
+        ];
+        public const string FormatMessage = "AUTH_KEY:"
+        + "char[32] key;"
+        ;
     }
 
     /// <summary>
@@ -9170,6 +9518,124 @@ namespace Asv.Mavlink.Common
         public override LinkNodeStatusPayload Payload { get; } = new();
 
         public override string Name => "LINK_NODE_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("timestamp",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("tx_rate",
+"Transmit rate",
+string.Empty, 
+@"bytes/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("rx_rate",
+"Receive rate",
+string.Empty, 
+@"bytes/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("messages_sent",
+"Messages sent",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("messages_received",
+"Messages received (estimated from counting seq)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("messages_lost",
+"Messages lost (estimated from counting seq)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("rx_parse_err",
+"Number of bytes that could not be parsed correctly.",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("tx_overflows",
+"Transmit buffer overflows. This number wraps around as it reaches UINT16_MAX",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("rx_overflows",
+"Receive buffer overflows. This number wraps around as it reaches UINT16_MAX",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("tx_buf",
+"Remaining free transmit buffer space",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rx_buf",
+"Remaining free receive buffer space",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "LINK_NODE_STATUS:"
+        + "uint64_t timestamp;"
+        + "uint32_t tx_rate;"
+        + "uint32_t rx_rate;"
+        + "uint32_t messages_sent;"
+        + "uint32_t messages_received;"
+        + "uint32_t messages_lost;"
+        + "uint16_t rx_parse_err;"
+        + "uint16_t tx_overflows;"
+        + "uint16_t rx_overflows;"
+        + "uint8_t tx_buf;"
+        + "uint8_t rx_buf;"
+        ;
     }
 
     /// <summary>
@@ -9313,6 +9779,44 @@ namespace Asv.Mavlink.Common
         public override SetModePayload Payload { get; } = new();
 
         public override string Name => "SET_MODE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("custom_mode",
+"The new autopilot-specific mode. This field can be ignored by an autopilot.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("target_system",
+"The system setting the mode",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("base_mode",
+"The new base mode.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SET_MODE:"
+        + "uint32_t custom_mode;"
+        + "uint8_t target_system;"
+        + "uint8_t base_mode;"
+        ;
     }
 
     /// <summary>
@@ -9392,6 +9896,54 @@ namespace Asv.Mavlink.Common
         public override ParamRequestReadPayload Payload { get; } = new();
 
         public override string Name => "PARAM_REQUEST_READ";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("param_index",
+"Parameter index. Send -1 to use the param ID field as identifier (else the param id will be ignored)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"-1", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("param_id",
+"Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+        ];
+        public const string FormatMessage = "PARAM_REQUEST_READ:"
+        + "int16_t param_index;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "char[16] param_id;"
+        ;
     }
 
     /// <summary>
@@ -9504,6 +10056,34 @@ namespace Asv.Mavlink.Common
         public override ParamRequestListPayload Payload { get; } = new();
 
         public override string Name => "PARAM_REQUEST_LIST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "PARAM_REQUEST_LIST:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -9575,6 +10155,64 @@ namespace Asv.Mavlink.Common
         public override ParamValuePayload Payload { get; } = new();
 
         public override string Name => "PARAM_VALUE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("param_value",
+"Onboard parameter value",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param_count",
+"Total number of onboard parameters",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("param_index",
+"Index of this onboard parameter",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("param_id",
+"Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("param_type",
+"Onboard parameter type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "PARAM_VALUE:"
+        + "float param_value;"
+        + "uint16_t param_count;"
+        + "uint16_t param_index;"
+        + "char[16] param_id;"
+        + "uint8_t param_type;"
+        ;
     }
 
     /// <summary>
@@ -9697,6 +10335,64 @@ namespace Asv.Mavlink.Common
         public override ParamSetPayload Payload { get; } = new();
 
         public override string Name => "PARAM_SET";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("param_value",
+"Onboard parameter value",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("param_id",
+"Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("param_type",
+"Onboard parameter type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "PARAM_SET:"
+        + "float param_value;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "char[16] param_id;"
+        + "uint8_t param_type;"
+        ;
     }
 
     /// <summary>
@@ -9818,6 +10514,174 @@ namespace Asv.Mavlink.Common
         public override GpsRawIntPayload Payload { get; } = new();
 
         public override string Name => "GPS_RAW_INT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("lat",
+"Latitude (WGS84, EGM96 ellipsoid)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude (WGS84, EGM96 ellipsoid)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude (MSL). Positive for up. Note that virtually all GPS modules provide the MSL altitude in addition to the WGS84 altitude.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("eph",
+"GPS HDOP horizontal dilution of position (unitless * 100). If unknown, set to: UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("epv",
+"GPS VDOP vertical dilution of position (unitless * 100). If unknown, set to: UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("vel",
+"GPS ground speed. If unknown, set to: UINT16_MAX",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("cog",
+"Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: UINT16_MAX",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("fix_type",
+"GPS fix type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("satellites_visible",
+"Number of satellites visible. If unknown, set to UINT8_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("alt_ellipsoid",
+"Altitude (above WGS84, EGM96 ellipsoid). Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+true),
+            new("h_acc",
+"Position uncertainty.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+true),
+            new("v_acc",
+"Altitude uncertainty.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+true),
+            new("vel_acc",
+"Speed uncertainty.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+true),
+            new("hdg_acc",
+"Heading / track uncertainty",
+string.Empty, 
+@"degE5", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+true),
+            new("yaw",
+"Yaw in earth frame from north. Use 0 if this GPS does not provide yaw. Use UINT16_MAX if this GPS is configured to provide yaw and is currently unable to provide it. Use 36000 for north.",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "GPS_RAW_INT:"
+        + "uint64_t time_usec;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "int32_t alt;"
+        + "uint16_t eph;"
+        + "uint16_t epv;"
+        + "uint16_t vel;"
+        + "uint16_t cog;"
+        + "uint8_t fix_type;"
+        + "uint8_t satellites_visible;"
+        + "int32_t alt_ellipsoid;"
+        + "uint32_t h_acc;"
+        + "uint32_t v_acc;"
+        + "uint32_t vel_acc;"
+        + "uint32_t hdg_acc;"
+        + "uint16_t yaw;"
+        ;
     }
 
     /// <summary>
@@ -10013,6 +10877,74 @@ namespace Asv.Mavlink.Common
         public override GpsStatusPayload Payload { get; } = new();
 
         public override string Name => "GPS_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("satellites_visible",
+"Number of satellites visible",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("satellite_prn",
+"Global satellite ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            20, 
+false),
+            new("satellite_used",
+"0: Satellite not used, 1: used for localization",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            20, 
+false),
+            new("satellite_elevation",
+"Elevation (0: right on top of receiver, 90: on the horizon) of satellite",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            20, 
+false),
+            new("satellite_azimuth",
+"Direction of satellite, 0: 0 deg, 255: 360 deg.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            20, 
+false),
+            new("satellite_snr",
+"Signal to noise ratio of satellite",
+string.Empty, 
+@"dB", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            20, 
+false),
+        ];
+        public const string FormatMessage = "GPS_STATUS:"
+        + "uint8_t satellites_visible;"
+        + "uint8_t[20] satellite_prn;"
+        + "uint8_t[20] satellite_used;"
+        + "uint8_t[20] satellite_elevation;"
+        + "uint8_t[20] satellite_azimuth;"
+        + "uint8_t[20] satellite_snr;"
+        ;
     }
 
     /// <summary>
@@ -10161,6 +11093,124 @@ namespace Asv.Mavlink.Common
         public override ScaledImuPayload Payload { get; } = new();
 
         public override string Name => "SCALED_IMU";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("xacc",
+"X acceleration",
+string.Empty, 
+@"mG", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("yacc",
+"Y acceleration",
+string.Empty, 
+@"mG", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("zacc",
+"Z acceleration",
+string.Empty, 
+@"mG", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("xgyro",
+"Angular speed around X axis",
+string.Empty, 
+@"mrad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("ygyro",
+"Angular speed around Y axis",
+string.Empty, 
+@"mrad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("zgyro",
+"Angular speed around Z axis",
+string.Empty, 
+@"mrad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("xmag",
+"X Magnetic field",
+string.Empty, 
+@"mgauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("ymag",
+"Y Magnetic field",
+string.Empty, 
+@"mgauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("zmag",
+"Z Magnetic field",
+string.Empty, 
+@"mgauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("temperature",
+"Temperature, 0: IMU does not provide temperature values. If the IMU is at 0C it must send 1 (0.01C).",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "SCALED_IMU:"
+        + "uint32_t time_boot_ms;"
+        + "int16_t xacc;"
+        + "int16_t yacc;"
+        + "int16_t zacc;"
+        + "int16_t xgyro;"
+        + "int16_t ygyro;"
+        + "int16_t zgyro;"
+        + "int16_t xmag;"
+        + "int16_t ymag;"
+        + "int16_t zmag;"
+        + "int16_t temperature;"
+        ;
     }
 
     /// <summary>
@@ -10306,6 +11356,134 @@ namespace Asv.Mavlink.Common
         public override RawImuPayload Payload { get; } = new();
 
         public override string Name => "RAW_IMU";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("xacc",
+"X acceleration (raw)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("yacc",
+"Y acceleration (raw)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("zacc",
+"Z acceleration (raw)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("xgyro",
+"Angular speed around X axis (raw)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("ygyro",
+"Angular speed around Y axis (raw)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("zgyro",
+"Angular speed around Z axis (raw)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("xmag",
+"X Magnetic field (raw)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("ymag",
+"Y Magnetic field (raw)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("zmag",
+"Z Magnetic field (raw)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("id",
+"Id. Ids are numbered from 0 and map to IMUs numbered from 1 (e.g. IMU1 will have a message with id=0)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("temperature",
+"Temperature, 0: IMU does not provide temperature values. If the IMU is at 0C it must send 1 (0.01C).",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "RAW_IMU:"
+        + "uint64_t time_usec;"
+        + "int16_t xacc;"
+        + "int16_t yacc;"
+        + "int16_t zacc;"
+        + "int16_t xgyro;"
+        + "int16_t ygyro;"
+        + "int16_t zgyro;"
+        + "int16_t xmag;"
+        + "int16_t ymag;"
+        + "int16_t zmag;"
+        + "uint8_t id;"
+        + "int16_t temperature;"
+        ;
     }
 
     /// <summary>
@@ -10461,6 +11639,64 @@ namespace Asv.Mavlink.Common
         public override RawPressurePayload Payload { get; } = new();
 
         public override string Name => "RAW_PRESSURE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("press_abs",
+"Absolute pressure (raw)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("press_diff1",
+"Differential pressure 1 (raw, 0 if nonexistent)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("press_diff2",
+"Differential pressure 2 (raw, 0 if nonexistent)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("temperature",
+"Raw Temperature measurement (raw)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "RAW_PRESSURE:"
+        + "uint64_t time_usec;"
+        + "int16_t press_abs;"
+        + "int16_t press_diff1;"
+        + "int16_t press_diff2;"
+        + "int16_t temperature;"
+        ;
     }
 
     /// <summary>
@@ -10556,6 +11792,64 @@ namespace Asv.Mavlink.Common
         public override ScaledPressurePayload Payload { get; } = new();
 
         public override string Name => "SCALED_PRESSURE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("press_abs",
+"Absolute pressure",
+string.Empty, 
+@"hPa", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("press_diff",
+"Differential pressure 1",
+string.Empty, 
+@"hPa", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("temperature",
+"Absolute pressure temperature",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("temperature_press_diff",
+"Differential pressure temperature (0, if not available). Report values of 0 (or 1) as 1 cdegC.",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int16, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "SCALED_PRESSURE:"
+        + "uint32_t time_boot_ms;"
+        + "float press_abs;"
+        + "float press_diff;"
+        + "int16_t temperature;"
+        + "int16_t temperature_press_diff;"
+        ;
     }
 
     /// <summary>
@@ -10653,6 +11947,84 @@ namespace Asv.Mavlink.Common
         public override AttitudePayload Payload { get; } = new();
 
         public override string Name => "ATTITUDE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("roll",
+"Roll angle (-pi..+pi)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Pitch angle (-pi..+pi)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw angle (-pi..+pi)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rollspeed",
+"Roll angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitchspeed",
+"Pitch angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yawspeed",
+"Yaw angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ATTITUDE:"
+        + "uint32_t time_boot_ms;"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float rollspeed;"
+        + "float pitchspeed;"
+        + "float yawspeed;"
+        ;
     }
 
     /// <summary>
@@ -10764,6 +12136,104 @@ namespace Asv.Mavlink.Common
         public override AttitudeQuaternionPayload Payload { get; } = new();
 
         public override string Name => "ATTITUDE_QUATERNION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("q1",
+"Quaternion component 1, w (1 in null-rotation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("q2",
+"Quaternion component 2, x (0 in null-rotation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("q3",
+"Quaternion component 3, y (0 in null-rotation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("q4",
+"Quaternion component 4, z (0 in null-rotation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rollspeed",
+"Roll angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitchspeed",
+"Pitch angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yawspeed",
+"Yaw angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("repr_offset_q",
+"Rotation offset by which the attitude quaternion and angular speed vector should be rotated for user display (quaternion with [w, x, y, z] order, zero-rotation is [1, 0, 0, 0], send [0, 0, 0, 0] if field not supported). This field is intended for systems in which the reference attitude may change during flight. For example, tailsitters VTOLs rotate their reference attitude by 90 degrees between hover mode and fixed wing mode, thus repr_offset_q is equal to [1, 0, 0, 0] in hover mode and equal to [0.7071, 0, 0.7071, 0] in fixed wing mode.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[0]", 
+            MessageFieldType.Float32, 
+            4, 
+true),
+        ];
+        public const string FormatMessage = "ATTITUDE_QUATERNION:"
+        + "uint32_t time_boot_ms;"
+        + "float q1;"
+        + "float q2;"
+        + "float q3;"
+        + "float q4;"
+        + "float rollspeed;"
+        + "float pitchspeed;"
+        + "float yawspeed;"
+        + "float[4] repr_offset_q;"
+        ;
     }
 
     /// <summary>
@@ -10903,6 +12373,84 @@ namespace Asv.Mavlink.Common
         public override LocalPositionNedPayload Payload { get; } = new();
 
         public override string Name => "LOCAL_POSITION_NED";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("x",
+"X Position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+"Y Position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+"Z Position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vx",
+"X Speed",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vy",
+"Y Speed",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vz",
+"Z Speed",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "LOCAL_POSITION_NED:"
+        + "uint32_t time_boot_ms;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "float vx;"
+        + "float vy;"
+        + "float vz;"
+        ;
     }
 
     /// <summary>
@@ -11015,6 +12563,104 @@ namespace Asv.Mavlink.Common
         public override GlobalPositionIntPayload Payload { get; } = new();
 
         public override string Name => "GLOBAL_POSITION_INT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("lat",
+"Latitude, expressed",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude, expressed",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude (MSL). Note that virtually all GPS modules provide both WGS84 and MSL.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("relative_alt",
+"Altitude above ground",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("vx",
+"Ground X Speed (Latitude, positive north)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("vy",
+"Ground Y Speed (Longitude, positive east)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("vz",
+"Ground Z Speed (Altitude, positive down)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("hdg",
+"Vehicle heading (yaw angle), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GLOBAL_POSITION_INT:"
+        + "uint32_t time_boot_ms;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "int32_t alt;"
+        + "int32_t relative_alt;"
+        + "int16_t vx;"
+        + "int16_t vy;"
+        + "int16_t vz;"
+        + "uint16_t hdg;"
+        ;
     }
 
     /// <summary>
@@ -11142,6 +12788,124 @@ namespace Asv.Mavlink.Common
         public override RcChannelsScaledPayload Payload { get; } = new();
 
         public override string Name => "RC_CHANNELS_SCALED";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("chan1_scaled",
+"RC channel 1 value scaled.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("chan2_scaled",
+"RC channel 2 value scaled.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("chan3_scaled",
+"RC channel 3 value scaled.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("chan4_scaled",
+"RC channel 4 value scaled.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("chan5_scaled",
+"RC channel 5 value scaled.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("chan6_scaled",
+"RC channel 6 value scaled.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("chan7_scaled",
+"RC channel 7 value scaled.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("chan8_scaled",
+"RC channel 8 value scaled.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("port",
+"Servo output port (set of 8 outputs = 1 port). Flight stacks running on Pixhawk should use: 0 = MAIN, 1 = AUX.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rssi",
+"Receive signal strength indicator in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "RC_CHANNELS_SCALED:"
+        + "uint32_t time_boot_ms;"
+        + "int16_t chan1_scaled;"
+        + "int16_t chan2_scaled;"
+        + "int16_t chan3_scaled;"
+        + "int16_t chan4_scaled;"
+        + "int16_t chan5_scaled;"
+        + "int16_t chan6_scaled;"
+        + "int16_t chan7_scaled;"
+        + "int16_t chan8_scaled;"
+        + "uint8_t port;"
+        + "uint8_t rssi;"
+        ;
     }
 
     /// <summary>
@@ -11285,6 +13049,124 @@ namespace Asv.Mavlink.Common
         public override RcChannelsRawPayload Payload { get; } = new();
 
         public override string Name => "RC_CHANNELS_RAW";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("chan1_raw",
+"RC channel 1 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan2_raw",
+"RC channel 2 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan3_raw",
+"RC channel 3 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan4_raw",
+"RC channel 4 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan5_raw",
+"RC channel 5 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan6_raw",
+"RC channel 6 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan7_raw",
+"RC channel 7 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan8_raw",
+"RC channel 8 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("port",
+"Servo output port (set of 8 outputs = 1 port). Flight stacks running on Pixhawk should use: 0 = MAIN, 1 = AUX.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rssi",
+"Receive signal strength indicator in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "RC_CHANNELS_RAW:"
+        + "uint32_t time_boot_ms;"
+        + "uint16_t chan1_raw;"
+        + "uint16_t chan2_raw;"
+        + "uint16_t chan3_raw;"
+        + "uint16_t chan4_raw;"
+        + "uint16_t chan5_raw;"
+        + "uint16_t chan6_raw;"
+        + "uint16_t chan7_raw;"
+        + "uint16_t chan8_raw;"
+        + "uint8_t port;"
+        + "uint8_t rssi;"
+        ;
     }
 
     /// <summary>
@@ -11428,6 +13310,194 @@ namespace Asv.Mavlink.Common
         public override ServoOutputRawPayload Payload { get; } = new();
 
         public override string Name => "SERVO_OUTPUT_RAW";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("servo1_raw",
+"Servo output 1 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("servo2_raw",
+"Servo output 2 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("servo3_raw",
+"Servo output 3 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("servo4_raw",
+"Servo output 4 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("servo5_raw",
+"Servo output 5 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("servo6_raw",
+"Servo output 6 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("servo7_raw",
+"Servo output 7 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("servo8_raw",
+"Servo output 8 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("port",
+"Servo output port (set of 8 outputs = 1 port). Flight stacks running on Pixhawk should use: 0 = MAIN, 1 = AUX.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("servo9_raw",
+"Servo output 9 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("servo10_raw",
+"Servo output 10 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("servo11_raw",
+"Servo output 11 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("servo12_raw",
+"Servo output 12 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("servo13_raw",
+"Servo output 13 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("servo14_raw",
+"Servo output 14 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("servo15_raw",
+"Servo output 15 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("servo16_raw",
+"Servo output 16 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "SERVO_OUTPUT_RAW:"
+        + "uint32_t time_usec;"
+        + "uint16_t servo1_raw;"
+        + "uint16_t servo2_raw;"
+        + "uint16_t servo3_raw;"
+        + "uint16_t servo4_raw;"
+        + "uint16_t servo5_raw;"
+        + "uint16_t servo6_raw;"
+        + "uint16_t servo7_raw;"
+        + "uint16_t servo8_raw;"
+        + "uint8_t port;"
+        + "uint16_t servo9_raw;"
+        + "uint16_t servo10_raw;"
+        + "uint16_t servo11_raw;"
+        + "uint16_t servo12_raw;"
+        + "uint16_t servo13_raw;"
+        + "uint16_t servo14_raw;"
+        + "uint16_t servo15_raw;"
+        + "uint16_t servo16_raw;"
+        ;
     }
 
     /// <summary>
@@ -11643,6 +13713,64 @@ namespace Asv.Mavlink.Common
         public override MissionRequestPartialListPayload Payload { get; } = new();
 
         public override string Name => "MISSION_REQUEST_PARTIAL_LIST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("start_index",
+"Start index",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("end_index",
+"End index, -1 by default (-1: send list to end). Else a valid index of the list",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mission_type",
+"Mission type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MISSION_REQUEST_PARTIAL_LIST:"
+        + "int16_t start_index;"
+        + "int16_t end_index;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t mission_type;"
+        ;
     }
 
     /// <summary>
@@ -11740,6 +13868,64 @@ namespace Asv.Mavlink.Common
         public override MissionWritePartialListPayload Payload { get; } = new();
 
         public override string Name => "MISSION_WRITE_PARTIAL_LIST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("start_index",
+"Start index. Must be smaller / equal to the largest index of the current onboard list.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("end_index",
+"End index, equal or greater than start index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mission_type",
+"Mission type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MISSION_WRITE_PARTIAL_LIST:"
+        + "int16_t start_index;"
+        + "int16_t end_index;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t mission_type;"
+        ;
     }
 
     /// <summary>
@@ -11838,6 +14024,164 @@ namespace Asv.Mavlink.Common
         public override MissionItemPayload Payload { get; } = new();
 
         public override string Name => "MISSION_ITEM";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("param1",
+"PARAM1, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param2",
+"PARAM2, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param3",
+"PARAM3, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param4",
+"PARAM4, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("x",
+"PARAM5 / local: X coordinate, global: latitude",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+"PARAM6 / local: Y coordinate, global: longitude",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+"PARAM7 / local: Z coordinate, global: altitude (relative or absolute, depending on frame).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("seq",
+"Sequence",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("command",
+"The scheduled action for the waypoint.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("frame",
+"The coordinate system of the waypoint.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("current",
+"false:0, true:1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("autocontinue",
+"Autocontinue to next waypoint. 0: false, 1: true. Set false to pause mission after the item completes.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mission_type",
+"Mission type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MISSION_ITEM:"
+        + "float param1;"
+        + "float param2;"
+        + "float param3;"
+        + "float param4;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "uint16_t seq;"
+        + "uint16_t command;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t frame;"
+        + "uint8_t current;"
+        + "uint8_t autocontinue;"
+        + "uint8_t mission_type;"
+        ;
     }
 
     /// <summary>
@@ -12015,6 +14359,54 @@ namespace Asv.Mavlink.Common
         public override MissionRequestPayload Payload { get; } = new();
 
         public override string Name => "MISSION_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("seq",
+"Sequence",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mission_type",
+"Mission type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MISSION_REQUEST:"
+        + "uint16_t seq;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t mission_type;"
+        ;
     }
 
     /// <summary>
@@ -12112,6 +14504,44 @@ namespace Asv.Mavlink.Common
         public override MissionSetCurrentPayload Payload { get; } = new();
 
         public override string Name => "MISSION_SET_CURRENT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("seq",
+"Sequence",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "MISSION_SET_CURRENT:"
+        + "uint16_t seq;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -12195,6 +14625,54 @@ namespace Asv.Mavlink.Common
         public override MissionCurrentPayload Payload { get; } = new();
 
         public override string Name => "MISSION_CURRENT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("seq",
+"Sequence",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("total",
+"Total number of mission items on vehicle (on last item, sequence == total). If the autopilot stores its home location as part of the mission this will be excluded from the total. 0: Not supported, UINT16_MAX if no mission is present on the vehicle.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("mission_state",
+"Mission state machine state. MISSION_STATE_UNKNOWN if state reporting not supported.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("mission_mode",
+"Vehicle is in a mode that can execute mission items or suspended. 0: Unknown, 1: In mission mode, 2: Suspended (not in mission mode).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MISSION_CURRENT:"
+        + "uint16_t seq;"
+        + "uint16_t total;"
+        + "uint8_t mission_state;"
+        + "uint8_t mission_mode;"
+        ;
     }
 
     /// <summary>
@@ -12288,6 +14766,44 @@ namespace Asv.Mavlink.Common
         public override MissionRequestListPayload Payload { get; } = new();
 
         public override string Name => "MISSION_REQUEST_LIST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mission_type",
+"Mission type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MISSION_REQUEST_LIST:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t mission_type;"
+        ;
     }
 
     /// <summary>
@@ -12369,6 +14885,54 @@ namespace Asv.Mavlink.Common
         public override MissionCountPayload Payload { get; } = new();
 
         public override string Name => "MISSION_COUNT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("count",
+"Number of mission items in the sequence",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mission_type",
+"Mission type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MISSION_COUNT:"
+        + "uint16_t count;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t mission_type;"
+        ;
     }
 
     /// <summary>
@@ -12458,6 +15022,44 @@ namespace Asv.Mavlink.Common
         public override MissionClearAllPayload Payload { get; } = new();
 
         public override string Name => "MISSION_CLEAR_ALL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mission_type",
+"Mission type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MISSION_CLEAR_ALL:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t mission_type;"
+        ;
     }
 
     /// <summary>
@@ -12539,6 +15141,24 @@ namespace Asv.Mavlink.Common
         public override MissionItemReachedPayload Payload { get; } = new();
 
         public override string Name => "MISSION_ITEM_REACHED";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("seq",
+"Sequence",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "MISSION_ITEM_REACHED:"
+        + "uint16_t seq;"
+        ;
     }
 
     /// <summary>
@@ -12602,6 +15222,54 @@ namespace Asv.Mavlink.Common
         public override MissionAckPayload Payload { get; } = new();
 
         public override string Name => "MISSION_ACK";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("type",
+"Mission result.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mission_type",
+"Mission type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MISSION_ACK:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t type;"
+        + "uint8_t mission_type;"
+        ;
     }
 
     /// <summary>
@@ -12691,6 +15359,64 @@ namespace Asv.Mavlink.Common
         public override SetGpsGlobalOriginPayload Payload { get; } = new();
 
         public override string Name => "SET_GPS_GLOBAL_ORIGIN";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("latitude",
+"Latitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("longitude",
+"Longitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("altitude",
+"Altitude (MSL). Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "SET_GPS_GLOBAL_ORIGIN:"
+        + "int32_t latitude;"
+        + "int32_t longitude;"
+        + "int32_t altitude;"
+        + "uint8_t target_system;"
+        + "uint64_t time_usec;"
+        ;
     }
 
     /// <summary>
@@ -12788,6 +15514,54 @@ namespace Asv.Mavlink.Common
         public override GpsGlobalOriginPayload Payload { get; } = new();
 
         public override string Name => "GPS_GLOBAL_ORIGIN";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("latitude",
+"Latitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("longitude",
+"Longitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("altitude",
+"Altitude (MSL). Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "GPS_GLOBAL_ORIGIN:"
+        + "int32_t latitude;"
+        + "int32_t longitude;"
+        + "int32_t altitude;"
+        + "uint64_t time_usec;"
+        ;
     }
 
     /// <summary>
@@ -12877,6 +15651,104 @@ namespace Asv.Mavlink.Common
         public override ParamMapRcPayload Payload { get; } = new();
 
         public override string Name => "PARAM_MAP_RC";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("param_value0",
+"Initial parameter value",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("scale",
+"Scale, maps the RC range [-1, 1] to a parameter value",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param_value_min",
+"Minimum param value. The protocol does not define if this overwrites an onboard minimum value. (Depends on implementation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param_value_max",
+"Maximum param value. The protocol does not define if this overwrites an onboard maximum value. (Depends on implementation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param_index",
+"Parameter index. Send -1 to use the param ID field as identifier (else the param id will be ignored), send -2 to disable any existing map for this rc_channel_index.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("param_id",
+"Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("parameter_rc_channel_index",
+"Index of parameter RC channel. Not equal to the RC channel id. Typically corresponds to a potentiometer-knob on the RC.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "PARAM_MAP_RC:"
+        + "float param_value0;"
+        + "float scale;"
+        + "float param_value_min;"
+        + "float param_value_max;"
+        + "int16_t param_index;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "char[16] param_id;"
+        + "uint8_t parameter_rc_channel_index;"
+        ;
     }
 
     /// <summary>
@@ -13029,6 +15901,54 @@ namespace Asv.Mavlink.Common
         public override MissionRequestIntPayload Payload { get; } = new();
 
         public override string Name => "MISSION_REQUEST_INT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("seq",
+"Sequence",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mission_type",
+"Mission type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MISSION_REQUEST_INT:"
+        + "uint16_t seq;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t mission_type;"
+        ;
     }
 
     /// <summary>
@@ -13118,6 +16038,104 @@ namespace Asv.Mavlink.Common
         public override SafetySetAllowedAreaPayload Payload { get; } = new();
 
         public override string Name => "SAFETY_SET_ALLOWED_AREA";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("p1x",
+"x position 1 / Latitude 1",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("p1y",
+"y position 1 / Longitude 1",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("p1z",
+"z position 1 / Altitude 1",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("p2x",
+"x position 2 / Latitude 2",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("p2y",
+"y position 2 / Longitude 2",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("p2z",
+"z position 2 / Altitude 2",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("frame",
+"Coordinate frame. Can be either global, GPS, right-handed with Z axis up or local, right handed, Z axis down.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SAFETY_SET_ALLOWED_AREA:"
+        + "float p1x;"
+        + "float p1y;"
+        + "float p1z;"
+        + "float p2x;"
+        + "float p2y;"
+        + "float p2z;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t frame;"
+        ;
     }
 
     /// <summary>
@@ -13245,6 +16263,84 @@ namespace Asv.Mavlink.Common
         public override SafetyAllowedAreaPayload Payload { get; } = new();
 
         public override string Name => "SAFETY_ALLOWED_AREA";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("p1x",
+"x position 1 / Latitude 1",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("p1y",
+"y position 1 / Longitude 1",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("p1z",
+"z position 1 / Altitude 1",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("p2x",
+"x position 2 / Latitude 2",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("p2y",
+"y position 2 / Longitude 2",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("p2z",
+"z position 2 / Altitude 2",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("frame",
+"Coordinate frame. Can be either global, GPS, right-handed with Z axis up or local, right handed, Z axis down.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SAFETY_ALLOWED_AREA:"
+        + "float p1x;"
+        + "float p1y;"
+        + "float p1z;"
+        + "float p2x;"
+        + "float p2y;"
+        + "float p2z;"
+        + "uint8_t frame;"
+        ;
     }
 
     /// <summary>
@@ -13356,6 +16452,74 @@ namespace Asv.Mavlink.Common
         public override AttitudeQuaternionCovPayload Payload { get; } = new();
 
         public override string Name => "ATTITUDE_QUATERNION_COV";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("q",
+"Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("rollspeed",
+"Roll angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitchspeed",
+"Pitch angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yawspeed",
+"Yaw angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("covariance",
+"Row-major representation of a 3x3 attitude covariance matrix (states: roll, pitch, yaw; first three entries are the first ROW, next three entries are the second row, etc.). If unknown, assign NaN value to first element in the array.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[NaN:]", 
+            MessageFieldType.Float32, 
+            9, 
+false),
+        ];
+        public const string FormatMessage = "ATTITUDE_QUATERNION_COV:"
+        + "uint64_t time_usec;"
+        + "float[4] q;"
+        + "float rollspeed;"
+        + "float pitchspeed;"
+        + "float yawspeed;"
+        + "float[9] covariance;"
+        ;
     }
 
     /// <summary>
@@ -13480,6 +16644,94 @@ namespace Asv.Mavlink.Common
         public override NavControllerOutputPayload Payload { get; } = new();
 
         public override string Name => "NAV_CONTROLLER_OUTPUT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("nav_roll",
+"Current desired roll",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("nav_pitch",
+"Current desired pitch",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("alt_error",
+"Current altitude error",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("aspd_error",
+"Current airspeed error",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("xtrack_error",
+"Current crosstrack error on x-y plane",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("nav_bearing",
+"Current desired heading",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("target_bearing",
+"Bearing to current waypoint/target",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("wp_dist",
+"Distance to active waypoint",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "NAV_CONTROLLER_OUTPUT:"
+        + "float nav_roll;"
+        + "float nav_pitch;"
+        + "float alt_error;"
+        + "float aspd_error;"
+        + "float xtrack_error;"
+        + "int16_t nav_bearing;"
+        + "int16_t target_bearing;"
+        + "uint16_t wp_dist;"
+        ;
     }
 
     /// <summary>
@@ -13599,6 +16851,114 @@ namespace Asv.Mavlink.Common
         public override GlobalPositionIntCovPayload Payload { get; } = new();
 
         public override string Name => "GLOBAL_POSITION_INT_COV";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("lat",
+"Latitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude in meters above MSL",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("relative_alt",
+"Altitude above ground",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("vx",
+"Ground X Speed (Latitude)",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vy",
+"Ground Y Speed (Longitude)",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vz",
+"Ground Z Speed (Altitude)",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("covariance",
+"Row-major representation of a 6x6 position and velocity 6x6 cross-covariance matrix (states: lat, lon, alt, vx, vy, vz; first six entries are the first ROW, next six entries are the second row, etc.). If unknown, assign NaN value to first element in the array.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[NaN:]", 
+            MessageFieldType.Float32, 
+            36, 
+false),
+            new("estimator_type",
+"Class id of the estimator this estimate originated from.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GLOBAL_POSITION_INT_COV:"
+        + "uint64_t time_usec;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "int32_t alt;"
+        + "int32_t relative_alt;"
+        + "float vx;"
+        + "float vy;"
+        + "float vz;"
+        + "float[36] covariance;"
+        + "uint8_t estimator_type;"
+        ;
     }
 
     /// <summary>
@@ -13747,6 +17107,134 @@ namespace Asv.Mavlink.Common
         public override LocalPositionNedCovPayload Payload { get; } = new();
 
         public override string Name => "LOCAL_POSITION_NED_COV";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("x",
+"X Position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+"Y Position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+"Z Position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vx",
+"X Speed",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vy",
+"Y Speed",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vz",
+"Z Speed",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ax",
+"X Acceleration",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ay",
+"Y Acceleration",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("az",
+"Z Acceleration",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("covariance",
+"Row-major representation of position, velocity and acceleration 9x9 cross-covariance matrix upper right triangle (states: x, y, z, vx, vy, vz, ax, ay, az; first nine entries are the first ROW, next eight entries are the second row, etc.). If unknown, assign NaN value to first element in the array.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[NaN:]", 
+            MessageFieldType.Float32, 
+            45, 
+false),
+            new("estimator_type",
+"Class id of the estimator this estimate originated from.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "LOCAL_POSITION_NED_COV:"
+        + "uint64_t time_usec;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "float vx;"
+        + "float vy;"
+        + "float vz;"
+        + "float ax;"
+        + "float ay;"
+        + "float az;"
+        + "float[45] covariance;"
+        + "uint8_t estimator_type;"
+        ;
     }
 
     /// <summary>
@@ -13911,6 +17399,224 @@ namespace Asv.Mavlink.Common
         public override RcChannelsPayload Payload { get; } = new();
 
         public override string Name => "RC_CHANNELS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("chan1_raw",
+"RC channel 1 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan2_raw",
+"RC channel 2 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan3_raw",
+"RC channel 3 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan4_raw",
+"RC channel 4 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan5_raw",
+"RC channel 5 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan6_raw",
+"RC channel 6 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan7_raw",
+"RC channel 7 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan8_raw",
+"RC channel 8 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan9_raw",
+"RC channel 9 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan10_raw",
+"RC channel 10 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan11_raw",
+"RC channel 11 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan12_raw",
+"RC channel 12 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan13_raw",
+"RC channel 13 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan14_raw",
+"RC channel 14 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan15_raw",
+"RC channel 15 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan16_raw",
+"RC channel 16 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan17_raw",
+"RC channel 17 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan18_raw",
+"RC channel 18 value.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chancount",
+"Total number of RC channels being received. This can be larger than 18, indicating that more channels are available but not given in this message. This value should be 0 when no RC channels are available.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rssi",
+"Receive signal strength indicator in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "RC_CHANNELS:"
+        + "uint32_t time_boot_ms;"
+        + "uint16_t chan1_raw;"
+        + "uint16_t chan2_raw;"
+        + "uint16_t chan3_raw;"
+        + "uint16_t chan4_raw;"
+        + "uint16_t chan5_raw;"
+        + "uint16_t chan6_raw;"
+        + "uint16_t chan7_raw;"
+        + "uint16_t chan8_raw;"
+        + "uint16_t chan9_raw;"
+        + "uint16_t chan10_raw;"
+        + "uint16_t chan11_raw;"
+        + "uint16_t chan12_raw;"
+        + "uint16_t chan13_raw;"
+        + "uint16_t chan14_raw;"
+        + "uint16_t chan15_raw;"
+        + "uint16_t chan16_raw;"
+        + "uint16_t chan17_raw;"
+        + "uint16_t chan18_raw;"
+        + "uint8_t chancount;"
+        + "uint8_t rssi;"
+        ;
     }
 
     /// <summary>
@@ -14134,6 +17840,64 @@ namespace Asv.Mavlink.Common
         public override RequestDataStreamPayload Payload { get; } = new();
 
         public override string Name => "REQUEST_DATA_STREAM";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("req_message_rate",
+"The requested message rate",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"The target requested to send the message stream.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"The target requested to send the message stream.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("req_stream_id",
+"The ID of the requested data stream",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("start_stop",
+"1 to start sending, 0 to stop sending.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "REQUEST_DATA_STREAM:"
+        + "uint16_t req_message_rate;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t req_stream_id;"
+        + "uint8_t start_stop;"
+        ;
     }
 
     /// <summary>
@@ -14229,6 +17993,44 @@ namespace Asv.Mavlink.Common
         public override DataStreamPayload Payload { get; } = new();
 
         public override string Name => "DATA_STREAM";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("message_rate",
+"The message rate",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("stream_id",
+"The ID of the requested data stream",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("on_off",
+"1 stream is enabled, 0 stream is stopped.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "DATA_STREAM:"
+        + "uint16_t message_rate;"
+        + "uint8_t stream_id;"
+        + "uint8_t on_off;"
+        ;
     }
 
     /// <summary>
@@ -14308,6 +18110,174 @@ namespace Asv.Mavlink.Common
         public override ManualControlPayload Payload { get; } = new();
 
         public override string Name => "MANUAL_CONTROL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("x",
+"X-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to forward(1000)-backward(-1000) movement on a joystick and the pitch of a vehicle.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("y",
+"Y-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to left(-1000)-right(1000) movement on a joystick and the roll of a vehicle.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("z",
+"Z-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to a separate slider movement with maximum being 1000 and minimum being -1000 on a joystick and the thrust of a vehicle. Positive values are positive thrust, negative values are negative thrust.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("r",
+"R-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to a twisting of the joystick, with counter-clockwise being 1000 and clockwise being -1000, and the yaw of a vehicle.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("buttons",
+"A bitfield corresponding to the joystick buttons' 0-15 current state, 1 for pressed, 0 for released. The lowest bit corresponds to Button 1.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target",
+"The system to be controlled.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("buttons2",
+"A bitfield corresponding to the joystick buttons' 16-31 current state, 1 for pressed, 0 for released. The lowest bit corresponds to Button 16.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("enabled_extensions",
+"Set bits to 1 to indicate which of the following extension fields contain valid data: bit 0: pitch, bit 1: roll, bit 2: aux1, bit 3: aux2, bit 4: aux3, bit 5: aux4, bit 6: aux5, bit 7: aux6",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("s",
+"Pitch-only-axis, normalized to the range [-1000,1000]. Generally corresponds to pitch on vehicles with additional degrees of freedom. Valid if bit 0 of enabled_extensions field is set. Set to 0 if invalid.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+true),
+            new("t",
+"Roll-only-axis, normalized to the range [-1000,1000]. Generally corresponds to roll on vehicles with additional degrees of freedom. Valid if bit 1 of enabled_extensions field is set. Set to 0 if invalid.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+true),
+            new("aux1",
+"Aux continuous input field 1. Normalized in the range [-1000,1000]. Purpose defined by recipient. Valid data if bit 2 of enabled_extensions field is set. 0 if bit 2 is unset.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+true),
+            new("aux2",
+"Aux continuous input field 2. Normalized in the range [-1000,1000]. Purpose defined by recipient. Valid data if bit 3 of enabled_extensions field is set. 0 if bit 3 is unset.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+true),
+            new("aux3",
+"Aux continuous input field 3. Normalized in the range [-1000,1000]. Purpose defined by recipient. Valid data if bit 4 of enabled_extensions field is set. 0 if bit 4 is unset.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+true),
+            new("aux4",
+"Aux continuous input field 4. Normalized in the range [-1000,1000]. Purpose defined by recipient. Valid data if bit 5 of enabled_extensions field is set. 0 if bit 5 is unset.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+true),
+            new("aux5",
+"Aux continuous input field 5. Normalized in the range [-1000,1000]. Purpose defined by recipient. Valid data if bit 6 of enabled_extensions field is set. 0 if bit 6 is unset.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+true),
+            new("aux6",
+"Aux continuous input field 6. Normalized in the range [-1000,1000]. Purpose defined by recipient. Valid data if bit 7 of enabled_extensions field is set. 0 if bit 7 is unset.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MANUAL_CONTROL:"
+        + "int16_t x;"
+        + "int16_t y;"
+        + "int16_t z;"
+        + "int16_t r;"
+        + "uint16_t buttons;"
+        + "uint8_t target;"
+        + "uint16_t buttons2;"
+        + "uint8_t enabled_extensions;"
+        + "int16_t s;"
+        + "int16_t t;"
+        + "int16_t aux1;"
+        + "int16_t aux2;"
+        + "int16_t aux3;"
+        + "int16_t aux4;"
+        + "int16_t aux5;"
+        + "int16_t aux6;"
+        ;
     }
 
     /// <summary>
@@ -14511,6 +18481,214 @@ namespace Asv.Mavlink.Common
         public override RcChannelsOverridePayload Payload { get; } = new();
 
         public override string Name => "RC_CHANNELS_OVERRIDE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("chan1_raw",
+"RC channel 1 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan2_raw",
+"RC channel 2 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan3_raw",
+"RC channel 3 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan4_raw",
+"RC channel 4 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan5_raw",
+"RC channel 5 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan6_raw",
+"RC channel 6 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan7_raw",
+"RC channel 7 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan8_raw",
+"RC channel 8 value. A value of UINT16_MAX means to ignore this field. A value of 0 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("chan9_raw",
+"RC channel 9 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("chan10_raw",
+"RC channel 10 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("chan11_raw",
+"RC channel 11 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("chan12_raw",
+"RC channel 12 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("chan13_raw",
+"RC channel 13 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("chan14_raw",
+"RC channel 14 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("chan15_raw",
+"RC channel 15 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("chan16_raw",
+"RC channel 16 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("chan17_raw",
+"RC channel 17 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("chan18_raw",
+"RC channel 18 value. A value of 0 or UINT16_MAX means to ignore this field. A value of UINT16_MAX-1 means to release this channel back to the RC radio.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "RC_CHANNELS_OVERRIDE:"
+        + "uint16_t chan1_raw;"
+        + "uint16_t chan2_raw;"
+        + "uint16_t chan3_raw;"
+        + "uint16_t chan4_raw;"
+        + "uint16_t chan5_raw;"
+        + "uint16_t chan6_raw;"
+        + "uint16_t chan7_raw;"
+        + "uint16_t chan8_raw;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint16_t chan9_raw;"
+        + "uint16_t chan10_raw;"
+        + "uint16_t chan11_raw;"
+        + "uint16_t chan12_raw;"
+        + "uint16_t chan13_raw;"
+        + "uint16_t chan14_raw;"
+        + "uint16_t chan15_raw;"
+        + "uint16_t chan16_raw;"
+        + "uint16_t chan17_raw;"
+        + "uint16_t chan18_raw;"
+        ;
     }
 
     /// <summary>
@@ -14747,6 +18925,164 @@ namespace Asv.Mavlink.Common
         public override MissionItemIntPayload Payload { get; } = new();
 
         public override string Name => "MISSION_ITEM_INT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("param1",
+"PARAM1, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param2",
+"PARAM2, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param3",
+"PARAM3, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param4",
+"PARAM4, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("x",
+"PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("y",
+"PARAM6 / y position: local: x position in meters * 1e4, global: longitude in degrees *10^7",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("z",
+"PARAM7 / z position: global: altitude in meters (relative or absolute, depending on frame.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("seq",
+"Waypoint ID (sequence number). Starts at zero. Increases monotonically for each waypoint, no gaps in the sequence (0,1,2,3,4).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("command",
+"The scheduled action for the waypoint.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("frame",
+"The coordinate system of the waypoint.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("current",
+"false:0, true:1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("autocontinue",
+"Autocontinue to next waypoint. 0: false, 1: true. Set false to pause mission after the item completes.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mission_type",
+"Mission type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MISSION_ITEM_INT:"
+        + "float param1;"
+        + "float param2;"
+        + "float param3;"
+        + "float param4;"
+        + "int32_t x;"
+        + "int32_t y;"
+        + "float z;"
+        + "uint16_t seq;"
+        + "uint16_t command;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t frame;"
+        + "uint8_t current;"
+        + "uint8_t autocontinue;"
+        + "uint8_t mission_type;"
+        ;
     }
 
     /// <summary>
@@ -14924,6 +19260,74 @@ namespace Asv.Mavlink.Common
         public override VfrHudPayload Payload { get; } = new();
 
         public override string Name => "VFR_HUD";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("airspeed",
+"Vehicle speed in form appropriate for vehicle type. For standard aircraft this is typically calibrated airspeed (CAS) or indicated airspeed (IAS) - either of which can be used by a pilot to estimate stall speed.",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("groundspeed",
+"Current ground speed.",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("alt",
+"Current altitude (MSL).",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("climb",
+"Current climb rate.",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("heading",
+"Current heading in compass units (0-360, 0=north).",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("throttle",
+"Current throttle setting (0 to 100).",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "VFR_HUD:"
+        + "float airspeed;"
+        + "float groundspeed;"
+        + "float alt;"
+        + "float climb;"
+        + "int16_t heading;"
+        + "uint16_t throttle;"
+        ;
     }
 
     /// <summary>
@@ -15027,6 +19431,144 @@ namespace Asv.Mavlink.Common
         public override CommandIntPayload Payload { get; } = new();
 
         public override string Name => "COMMAND_INT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("param1",
+"PARAM1, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param2",
+"PARAM2, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param3",
+"PARAM3, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param4",
+"PARAM4, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("x",
+"PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT32_MAX", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("y",
+"PARAM6 / local: y position in meters * 1e4, global: longitude in degrees * 10^7",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT32_MAX", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("z",
+"PARAM7 / z position: global: altitude in meters (relative or absolute, depending on frame).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("command",
+"The scheduled action for the mission item.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("frame",
+"The coordinate system of the COMMAND.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("current",
+"Not used.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("autocontinue",
+"Not used (set 0).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "COMMAND_INT:"
+        + "float param1;"
+        + "float param2;"
+        + "float param3;"
+        + "float param4;"
+        + "int32_t x;"
+        + "int32_t y;"
+        + "float z;"
+        + "uint16_t command;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t frame;"
+        + "uint8_t current;"
+        + "uint8_t autocontinue;"
+        ;
     }
 
     /// <summary>
@@ -15186,6 +19728,124 @@ namespace Asv.Mavlink.Common
         public override CommandLongPayload Payload { get; } = new();
 
         public override string Name => "COMMAND_LONG";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("param1",
+"Parameter 1 (for the specific command).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param2",
+"Parameter 2 (for the specific command).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param3",
+"Parameter 3 (for the specific command).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param4",
+"Parameter 4 (for the specific command).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param5",
+"Parameter 5 (for the specific command).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param6",
+"Parameter 6 (for the specific command).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param7",
+"Parameter 7 (for the specific command).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("command",
+"Command ID (of command to send).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System which should execute the command",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component which should execute the command, 0 for all components",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("confirmation",
+"0: First transmission of this command. 1-255: Confirmation transmissions (e.g. for kill command)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "COMMAND_LONG:"
+        + "float param1;"
+        + "float param2;"
+        + "float param3;"
+        + "float param4;"
+        + "float param5;"
+        + "float param6;"
+        + "float param7;"
+        + "uint16_t command;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t confirmation;"
+        ;
     }
 
     /// <summary>
@@ -15329,6 +19989,74 @@ namespace Asv.Mavlink.Common
         public override CommandAckPayload Payload { get; } = new();
 
         public override string Name => "COMMAND_ACK";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("command",
+"Command ID (of acknowledged command).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("result",
+"Result of command.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("progress",
+"The progress percentage when result is MAV_RESULT_IN_PROGRESS. Values: [0-100], or UINT8_MAX if the progress is unknown.",
+string.Empty, 
+@"%", 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("result_param2",
+"Additional result information. Can be set with a command-specific enum containing command-specific error reasons for why the command might be denied. If used, the associated enum must be documented in the corresponding MAV_CMD (this enum should have a 0 value to indicate \"unused\" or \"unknown\").",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+true),
+            new("target_system",
+"System ID of the target recipient. This is the ID of the system that sent the command for which this COMMAND_ACK is an acknowledgement.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("target_component",
+"Component ID of the target recipient. This is the ID of the system that sent the command for which this COMMAND_ACK is an acknowledgement.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "COMMAND_ACK:"
+        + "uint16_t command;"
+        + "uint8_t result;"
+        + "uint8_t progress;"
+        + "int32_t result_param2;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -15440,6 +20168,44 @@ namespace Asv.Mavlink.Common
         public override CommandCancelPayload Payload { get; } = new();
 
         public override string Name => "COMMAND_CANCEL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("command",
+"Command ID (of command to cancel).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System executing long running command. Should not be broadcast (0).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component executing long running command.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "COMMAND_CANCEL:"
+        + "uint16_t command;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -15519,6 +20285,84 @@ namespace Asv.Mavlink.Common
         public override ManualSetpointPayload Payload { get; } = new();
 
         public override string Name => "MANUAL_SETPOINT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("roll",
+"Desired roll rate",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Desired pitch rate",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Desired yaw rate",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("thrust",
+"Collective thrust, normalized to 0 .. 1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("mode_switch",
+"Flight mode switch position, 0.. 255",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("manual_override_switch",
+"Override mode switch position, 0.. 255",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "MANUAL_SETPOINT:"
+        + "uint32_t time_boot_ms;"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float thrust;"
+        + "uint8_t mode_switch;"
+        + "uint8_t manual_override_switch;"
+        ;
     }
 
     /// <summary>
@@ -15630,6 +20474,114 @@ namespace Asv.Mavlink.Common
         public override SetAttitudeTargetPayload Payload { get; } = new();
 
         public override string Name => "SET_ATTITUDE_TARGET";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("q",
+"Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0) from MAV_FRAME_LOCAL_NED to MAV_FRAME_BODY_FRD",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("body_roll_rate",
+"Body roll rate",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("body_pitch_rate",
+"Body pitch rate",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("body_yaw_rate",
+"Body yaw rate",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("thrust",
+"Collective thrust, normalized to 0 .. 1 (-1 .. 1 for vehicles capable of reverse trust)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("type_mask",
+"Bitmap to indicate which dimensions should be ignored by the vehicle.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("thrust_body",
+"3D thrust setpoint in the body NED frame, normalized to -1 .. 1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            3, 
+true),
+        ];
+        public const string FormatMessage = "SET_ATTITUDE_TARGET:"
+        + "uint32_t time_boot_ms;"
+        + "float[4] q;"
+        + "float body_roll_rate;"
+        + "float body_pitch_rate;"
+        + "float body_yaw_rate;"
+        + "float thrust;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t type_mask;"
+        + "float[3] thrust_body;"
+        ;
     }
 
     /// <summary>
@@ -15788,6 +20740,84 @@ namespace Asv.Mavlink.Common
         public override AttitudeTargetPayload Payload { get; } = new();
 
         public override string Name => "ATTITUDE_TARGET";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("q",
+"Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("body_roll_rate",
+"Body roll rate",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("body_pitch_rate",
+"Body pitch rate",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("body_yaw_rate",
+"Body yaw rate",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("thrust",
+"Collective thrust, normalized to 0 .. 1 (-1 .. 1 for vehicles capable of reverse trust)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("type_mask",
+"Bitmap to indicate which dimensions should be ignored by the vehicle.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ATTITUDE_TARGET:"
+        + "uint32_t time_boot_ms;"
+        + "float[4] q;"
+        + "float body_roll_rate;"
+        + "float body_pitch_rate;"
+        + "float body_yaw_rate;"
+        + "float thrust;"
+        + "uint8_t type_mask;"
+        ;
     }
 
     /// <summary>
@@ -15912,6 +20942,174 @@ namespace Asv.Mavlink.Common
         public override SetPositionTargetLocalNedPayload Payload { get; } = new();
 
         public override string Name => "SET_POSITION_TARGET_LOCAL_NED";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("x",
+"X Position in NED frame",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+"Y Position in NED frame",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+"Z Position in NED frame (note, altitude is negative in NED)",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vx",
+"X velocity in NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vy",
+"Y velocity in NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vz",
+"Z velocity in NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("afx",
+"X acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("afy",
+"Y acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("afz",
+"Z acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"yaw setpoint",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_rate",
+"yaw rate setpoint",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("type_mask",
+"Bitmap to indicate which dimensions should be ignored by the vehicle.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("coordinate_frame",
+"Valid options are: MAV_FRAME_LOCAL_NED = 1, MAV_FRAME_LOCAL_OFFSET_NED = 7, MAV_FRAME_BODY_NED = 8, MAV_FRAME_BODY_OFFSET_NED = 9",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SET_POSITION_TARGET_LOCAL_NED:"
+        + "uint32_t time_boot_ms;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "float vx;"
+        + "float vy;"
+        + "float vz;"
+        + "float afx;"
+        + "float afy;"
+        + "float afz;"
+        + "float yaw;"
+        + "float yaw_rate;"
+        + "uint16_t type_mask;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t coordinate_frame;"
+        ;
     }
 
     /// <summary>
@@ -16095,6 +21293,154 @@ namespace Asv.Mavlink.Common
         public override PositionTargetLocalNedPayload Payload { get; } = new();
 
         public override string Name => "POSITION_TARGET_LOCAL_NED";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("x",
+"X Position in NED frame",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+"Y Position in NED frame",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+"Z Position in NED frame (note, altitude is negative in NED)",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vx",
+"X velocity in NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vy",
+"Y velocity in NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vz",
+"Z velocity in NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("afx",
+"X acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("afy",
+"Y acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("afz",
+"Z acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"yaw setpoint",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_rate",
+"yaw rate setpoint",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("type_mask",
+"Bitmap to indicate which dimensions should be ignored by the vehicle.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("coordinate_frame",
+"Valid options are: MAV_FRAME_LOCAL_NED = 1, MAV_FRAME_LOCAL_OFFSET_NED = 7, MAV_FRAME_BODY_NED = 8, MAV_FRAME_BODY_OFFSET_NED = 9",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "POSITION_TARGET_LOCAL_NED:"
+        + "uint32_t time_boot_ms;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "float vx;"
+        + "float vy;"
+        + "float vz;"
+        + "float afx;"
+        + "float afy;"
+        + "float afz;"
+        + "float yaw;"
+        + "float yaw_rate;"
+        + "uint16_t type_mask;"
+        + "uint8_t coordinate_frame;"
+        ;
     }
 
     /// <summary>
@@ -16262,6 +21608,174 @@ namespace Asv.Mavlink.Common
         public override SetPositionTargetGlobalIntPayload Payload { get; } = new();
 
         public override string Name => "SET_POSITION_TARGET_GLOBAL_INT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot). The rationale for the timestamp in the setpoint is to allow the system to compensate for the transport delay of the setpoint. This allows the system to compensate processing latency.",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("lat_int",
+"X Position in WGS84 frame",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon_int",
+"Y Position in WGS84 frame",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude (MSL, Relative to home, or AGL - depending on frame)",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vx",
+"X velocity in NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vy",
+"Y velocity in NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vz",
+"Z velocity in NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("afx",
+"X acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("afy",
+"Y acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("afz",
+"Z acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"yaw setpoint",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_rate",
+"yaw rate setpoint",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("type_mask",
+"Bitmap to indicate which dimensions should be ignored by the vehicle.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("coordinate_frame",
+"Valid options are: MAV_FRAME_GLOBAL_INT = 5, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT = 6, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT = 11",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SET_POSITION_TARGET_GLOBAL_INT:"
+        + "uint32_t time_boot_ms;"
+        + "int32_t lat_int;"
+        + "int32_t lon_int;"
+        + "float alt;"
+        + "float vx;"
+        + "float vy;"
+        + "float vz;"
+        + "float afx;"
+        + "float afy;"
+        + "float afz;"
+        + "float yaw;"
+        + "float yaw_rate;"
+        + "uint16_t type_mask;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t coordinate_frame;"
+        ;
     }
 
     /// <summary>
@@ -16445,6 +21959,154 @@ namespace Asv.Mavlink.Common
         public override PositionTargetGlobalIntPayload Payload { get; } = new();
 
         public override string Name => "POSITION_TARGET_GLOBAL_INT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot). The rationale for the timestamp in the setpoint is to allow the system to compensate for the transport delay of the setpoint. This allows the system to compensate processing latency.",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("lat_int",
+"X Position in WGS84 frame",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon_int",
+"Y Position in WGS84 frame",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude (MSL, AGL or relative to home altitude, depending on frame)",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vx",
+"X velocity in NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vy",
+"Y velocity in NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vz",
+"Z velocity in NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("afx",
+"X acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("afy",
+"Y acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("afz",
+"Z acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"yaw setpoint",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_rate",
+"yaw rate setpoint",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("type_mask",
+"Bitmap to indicate which dimensions should be ignored by the vehicle.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("coordinate_frame",
+"Valid options are: MAV_FRAME_GLOBAL_INT = 5, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT = 6, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT = 11",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "POSITION_TARGET_GLOBAL_INT:"
+        + "uint32_t time_boot_ms;"
+        + "int32_t lat_int;"
+        + "int32_t lon_int;"
+        + "float alt;"
+        + "float vx;"
+        + "float vy;"
+        + "float vz;"
+        + "float afx;"
+        + "float afy;"
+        + "float afz;"
+        + "float yaw;"
+        + "float yaw_rate;"
+        + "uint16_t type_mask;"
+        + "uint8_t coordinate_frame;"
+        ;
     }
 
     /// <summary>
@@ -16612,6 +22274,84 @@ namespace Asv.Mavlink.Common
         public override LocalPositionNedSystemGlobalOffsetPayload Payload { get; } = new();
 
         public override string Name => "LOCAL_POSITION_NED_SYSTEM_GLOBAL_OFFSET";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("x",
+"X Position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+"Y Position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+"Z Position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("roll",
+"Roll",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Pitch",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "LOCAL_POSITION_NED_SYSTEM_GLOBAL_OFFSET:"
+        + "uint32_t time_boot_ms;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        ;
     }
 
     /// <summary>
@@ -16723,6 +22463,174 @@ namespace Asv.Mavlink.Common
         public override HilStatePayload Payload { get; } = new();
 
         public override string Name => "HIL_STATE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("roll",
+"Roll angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Pitch angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rollspeed",
+"Body frame roll / phi angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitchspeed",
+"Body frame pitch / theta angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yawspeed",
+"Body frame yaw / psi angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("lat",
+"Latitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("vx",
+"Ground X Speed (Latitude)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("vy",
+"Ground Y Speed (Longitude)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("vz",
+"Ground Z Speed (Altitude)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("xacc",
+"X acceleration",
+string.Empty, 
+@"mG", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("yacc",
+"Y acceleration",
+string.Empty, 
+@"mG", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("zacc",
+"Z acceleration",
+string.Empty, 
+@"mG", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "HIL_STATE:"
+        + "uint64_t time_usec;"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float rollspeed;"
+        + "float pitchspeed;"
+        + "float yawspeed;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "int32_t alt;"
+        + "int16_t vx;"
+        + "int16_t vy;"
+        + "int16_t vz;"
+        + "int16_t xacc;"
+        + "int16_t yacc;"
+        + "int16_t zacc;"
+        ;
     }
 
     /// <summary>
@@ -16906,6 +22814,124 @@ namespace Asv.Mavlink.Common
         public override HilControlsPayload Payload { get; } = new();
 
         public override string Name => "HIL_CONTROLS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("roll_ailerons",
+"Control output -1 .. 1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch_elevator",
+"Control output -1 .. 1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_rudder",
+"Control output -1 .. 1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("throttle",
+"Throttle 0 .. 1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("aux1",
+"Aux 1, -1 .. 1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("aux2",
+"Aux 2, -1 .. 1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("aux3",
+"Aux 3, -1 .. 1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("aux4",
+"Aux 4, -1 .. 1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("mode",
+"System mode.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("nav_mode",
+"Navigation mode (MAV_NAV_MODE)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "HIL_CONTROLS:"
+        + "uint64_t time_usec;"
+        + "float roll_ailerons;"
+        + "float pitch_elevator;"
+        + "float yaw_rudder;"
+        + "float throttle;"
+        + "float aux1;"
+        + "float aux2;"
+        + "float aux3;"
+        + "float aux4;"
+        + "uint8_t mode;"
+        + "uint8_t nav_mode;"
+        ;
     }
 
     /// <summary>
@@ -17049,6 +23075,154 @@ namespace Asv.Mavlink.Common
         public override HilRcInputsRawPayload Payload { get; } = new();
 
         public override string Name => "HIL_RC_INPUTS_RAW";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("chan1_raw",
+"RC channel 1 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan2_raw",
+"RC channel 2 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan3_raw",
+"RC channel 3 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan4_raw",
+"RC channel 4 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan5_raw",
+"RC channel 5 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan6_raw",
+"RC channel 6 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan7_raw",
+"RC channel 7 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan8_raw",
+"RC channel 8 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan9_raw",
+"RC channel 9 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan10_raw",
+"RC channel 10 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan11_raw",
+"RC channel 11 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("chan12_raw",
+"RC channel 12 value",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("rssi",
+"Receive signal strength indicator in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "HIL_RC_INPUTS_RAW:"
+        + "uint64_t time_usec;"
+        + "uint16_t chan1_raw;"
+        + "uint16_t chan2_raw;"
+        + "uint16_t chan3_raw;"
+        + "uint16_t chan4_raw;"
+        + "uint16_t chan5_raw;"
+        + "uint16_t chan6_raw;"
+        + "uint16_t chan7_raw;"
+        + "uint16_t chan8_raw;"
+        + "uint16_t chan9_raw;"
+        + "uint16_t chan10_raw;"
+        + "uint16_t chan11_raw;"
+        + "uint16_t chan12_raw;"
+        + "uint8_t rssi;"
+        ;
     }
 
     /// <summary>
@@ -17216,6 +23390,54 @@ namespace Asv.Mavlink.Common
         public override HilActuatorControlsPayload Payload { get; } = new();
 
         public override string Name => "HIL_ACTUATOR_CONTROLS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("flags",
+"Flags as bitfield, 1: indicate simulation using lockstep.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("controls",
+"Control outputs -1 .. 1. Channel assignment depends on the simulated hardware.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            16, 
+false),
+            new("mode",
+"System mode. Includes arming state.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "HIL_ACTUATOR_CONTROLS:"
+        + "uint64_t time_usec;"
+        + "uint64_t flags;"
+        + "float[16] controls;"
+        + "uint8_t mode;"
+        ;
     }
 
     /// <summary>
@@ -17316,6 +23538,114 @@ namespace Asv.Mavlink.Common
         public override OpticalFlowPayload Payload { get; } = new();
 
         public override string Name => "OPTICAL_FLOW";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("flow_comp_m_x",
+"Flow in x-sensor direction, angular-speed compensated",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("flow_comp_m_y",
+"Flow in y-sensor direction, angular-speed compensated",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ground_distance",
+"Ground distance. Positive value: distance known. Negative value: Unknown distance",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("flow_x",
+"Flow in x-sensor direction",
+string.Empty, 
+@"dpix", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("flow_y",
+"Flow in y-sensor direction",
+string.Empty, 
+@"dpix", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("sensor_id",
+"Sensor ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("quality",
+"Optical flow quality / confidence. 0: bad, 255: maximum quality",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("flow_rate_x",
+"Flow rate about X axis",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+            new("flow_rate_y",
+"Flow rate about Y axis",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "OPTICAL_FLOW:"
+        + "uint64_t time_usec;"
+        + "float flow_comp_m_x;"
+        + "float flow_comp_m_y;"
+        + "float ground_distance;"
+        + "int16_t flow_x;"
+        + "int16_t flow_y;"
+        + "uint8_t sensor_id;"
+        + "uint8_t quality;"
+        + "float flow_rate_x;"
+        + "float flow_rate_y;"
+        ;
     }
 
     /// <summary>
@@ -17455,6 +23785,104 @@ namespace Asv.Mavlink.Common
         public override GlobalVisionPositionEstimatePayload Payload { get; } = new();
 
         public override string Name => "GLOBAL_VISION_POSITION_ESTIMATE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("usec",
+"Timestamp (UNIX time or since system boot)",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("x",
+"Global X position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+"Global Y position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+"Global Z position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("roll",
+"Roll angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Pitch angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("covariance",
+"Row-major representation of pose 6x6 cross-covariance matrix upper right triangle (states: x_global, y_global, z_global, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[NaN:]", 
+            MessageFieldType.Float32, 
+            21, 
+true),
+            new("reset_counter",
+"Estimate reset counter. This should be incremented when the estimate resets in any of the dimensions (position, velocity, attitude, angular speed). This is designed to be used when e.g an external SLAM system detects a loop-closure and the estimate jumps.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "GLOBAL_VISION_POSITION_ESTIMATE:"
+        + "uint64_t usec;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float[21] covariance;"
+        + "uint8_t reset_counter;"
+        ;
     }
 
     /// <summary>
@@ -17596,6 +24024,104 @@ namespace Asv.Mavlink.Common
         public override VisionPositionEstimatePayload Payload { get; } = new();
 
         public override string Name => "VISION_POSITION_ESTIMATE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("usec",
+"Timestamp (UNIX time or time since system boot)",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("x",
+"Local X position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+"Local Y position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+"Local Z position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("roll",
+"Roll angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Pitch angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("covariance",
+"Row-major representation of pose 6x6 cross-covariance matrix upper right triangle (states: x, y, z, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[NaN:]", 
+            MessageFieldType.Float32, 
+            21, 
+true),
+            new("reset_counter",
+"Estimate reset counter. This should be incremented when the estimate resets in any of the dimensions (position, velocity, attitude, angular speed). This is designed to be used when e.g an external SLAM system detects a loop-closure and the estimate jumps.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "VISION_POSITION_ESTIMATE:"
+        + "uint64_t usec;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float[21] covariance;"
+        + "uint8_t reset_counter;"
+        ;
     }
 
     /// <summary>
@@ -17737,6 +24263,74 @@ namespace Asv.Mavlink.Common
         public override VisionSpeedEstimatePayload Payload { get; } = new();
 
         public override string Name => "VISION_SPEED_ESTIMATE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("usec",
+"Timestamp (UNIX time or time since system boot)",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("x",
+"Global X speed",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+"Global Y speed",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+"Global Z speed",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("covariance",
+"Row-major representation of 3x3 linear velocity covariance matrix (states: vx, vy, vz; 1st three entries - 1st row, etc.). If unknown, assign NaN value to first element in the array.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[NaN:]", 
+            MessageFieldType.Float32, 
+            9, 
+true),
+            new("reset_counter",
+"Estimate reset counter. This should be incremented when the estimate resets in any of the dimensions (position, velocity, attitude, angular speed). This is designed to be used when e.g an external SLAM system detects a loop-closure and the estimate jumps.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "VISION_SPEED_ESTIMATE:"
+        + "uint64_t usec;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "float[9] covariance;"
+        + "uint8_t reset_counter;"
+        ;
     }
 
     /// <summary>
@@ -17854,6 +24448,94 @@ namespace Asv.Mavlink.Common
         public override ViconPositionEstimatePayload Payload { get; } = new();
 
         public override string Name => "VICON_POSITION_ESTIMATE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("usec",
+"Timestamp (UNIX time or time since system boot)",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("x",
+"Global X position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+"Global Y position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+"Global Z position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("roll",
+"Roll angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Pitch angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("covariance",
+"Row-major representation of 6x6 pose cross-covariance matrix upper right triangle (states: x, y, z, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[NaN:]", 
+            MessageFieldType.Float32, 
+            21, 
+true),
+        ];
+        public const string FormatMessage = "VICON_POSITION_ESTIMATE:"
+        + "uint64_t usec;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float[21] covariance;"
+        ;
     }
 
     /// <summary>
@@ -17985,6 +24667,174 @@ namespace Asv.Mavlink.Common
         public override HighresImuPayload Payload { get; } = new();
 
         public override string Name => "HIGHRES_IMU";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("xacc",
+"X acceleration",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yacc",
+"Y acceleration",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("zacc",
+"Z acceleration",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("xgyro",
+"Angular speed around X axis",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ygyro",
+"Angular speed around Y axis",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("zgyro",
+"Angular speed around Z axis",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("xmag",
+"X Magnetic field",
+string.Empty, 
+@"gauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ymag",
+"Y Magnetic field",
+string.Empty, 
+@"gauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("zmag",
+"Z Magnetic field",
+string.Empty, 
+@"gauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("abs_pressure",
+"Absolute pressure",
+string.Empty, 
+@"hPa", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("diff_pressure",
+"Differential pressure",
+string.Empty, 
+@"hPa", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pressure_alt",
+"Altitude calculated from pressure",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("temperature",
+"Temperature",
+string.Empty, 
+@"degC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("fields_updated",
+"Bitmap for fields that have updated since last message",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("id",
+"Id. Ids are numbered from 0 and map to IMUs numbered from 1 (e.g. IMU1 will have a message with id=0)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "HIGHRES_IMU:"
+        + "uint64_t time_usec;"
+        + "float xacc;"
+        + "float yacc;"
+        + "float zacc;"
+        + "float xgyro;"
+        + "float ygyro;"
+        + "float zgyro;"
+        + "float xmag;"
+        + "float ymag;"
+        + "float zmag;"
+        + "float abs_pressure;"
+        + "float diff_pressure;"
+        + "float pressure_alt;"
+        + "float temperature;"
+        + "uint16_t fields_updated;"
+        + "uint8_t id;"
+        ;
     }
 
     /// <summary>
@@ -18170,6 +25020,134 @@ namespace Asv.Mavlink.Common
         public override OpticalFlowRadPayload Payload { get; } = new();
 
         public override string Name => "OPTICAL_FLOW_RAD";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("integration_time_us",
+"Integration time. Divide integrated_x and integrated_y by the integration time to obtain average flow. The integration time also indicates the.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("integrated_x",
+"Flow around X axis (Sensor RH rotation about the X axis induces a positive flow. Sensor linear motion along the positive Y axis induces a negative flow.)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("integrated_y",
+"Flow around Y axis (Sensor RH rotation about the Y axis induces a positive flow. Sensor linear motion along the positive X axis induces a positive flow.)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("integrated_xgyro",
+"RH rotation around X axis",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("integrated_ygyro",
+"RH rotation around Y axis",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("integrated_zgyro",
+"RH rotation around Z axis",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("time_delta_distance_us",
+"Time since the distance was sampled.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("distance",
+"Distance to the center of the flow field. Positive value (including zero): distance known. Negative value: Unknown distance.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("temperature",
+"Temperature",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("sensor_id",
+"Sensor ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("quality",
+"Optical flow quality / confidence. 0: no valid flow, 255: maximum quality",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "OPTICAL_FLOW_RAD:"
+        + "uint64_t time_usec;"
+        + "uint32_t integration_time_us;"
+        + "float integrated_x;"
+        + "float integrated_y;"
+        + "float integrated_xgyro;"
+        + "float integrated_ygyro;"
+        + "float integrated_zgyro;"
+        + "uint32_t time_delta_distance_us;"
+        + "float distance;"
+        + "int16_t temperature;"
+        + "uint8_t sensor_id;"
+        + "uint8_t quality;"
+        ;
     }
 
     /// <summary>
@@ -18321,6 +25299,174 @@ namespace Asv.Mavlink.Common
         public override HilSensorPayload Payload { get; } = new();
 
         public override string Name => "HIL_SENSOR";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("xacc",
+"X acceleration",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yacc",
+"Y acceleration",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("zacc",
+"Z acceleration",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("xgyro",
+"Angular speed around X axis in body frame",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ygyro",
+"Angular speed around Y axis in body frame",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("zgyro",
+"Angular speed around Z axis in body frame",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("xmag",
+"X Magnetic field",
+string.Empty, 
+@"gauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ymag",
+"Y Magnetic field",
+string.Empty, 
+@"gauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("zmag",
+"Z Magnetic field",
+string.Empty, 
+@"gauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("abs_pressure",
+"Absolute pressure",
+string.Empty, 
+@"hPa", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("diff_pressure",
+"Differential pressure (airspeed)",
+string.Empty, 
+@"hPa", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pressure_alt",
+"Altitude calculated from pressure",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("temperature",
+"Temperature",
+string.Empty, 
+@"degC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("fields_updated",
+"Bitmap for fields that have updated since last message",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("id",
+"Sensor ID (zero indexed). Used for multiple sensor inputs",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "HIL_SENSOR:"
+        + "uint64_t time_usec;"
+        + "float xacc;"
+        + "float yacc;"
+        + "float zacc;"
+        + "float xgyro;"
+        + "float ygyro;"
+        + "float zgyro;"
+        + "float xmag;"
+        + "float ymag;"
+        + "float zmag;"
+        + "float abs_pressure;"
+        + "float diff_pressure;"
+        + "float pressure_alt;"
+        + "float temperature;"
+        + "uint32_t fields_updated;"
+        + "uint8_t id;"
+        ;
     }
 
     /// <summary>
@@ -18506,6 +25652,244 @@ namespace Asv.Mavlink.Common
         public override SimStatePayload Payload { get; } = new();
 
         public override string Name => "SIM_STATE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("q1",
+"True attitude quaternion component 1, w (1 in null-rotation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("q2",
+"True attitude quaternion component 2, x (0 in null-rotation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("q3",
+"True attitude quaternion component 3, y (0 in null-rotation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("q4",
+"True attitude quaternion component 4, z (0 in null-rotation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("roll",
+"Attitude roll expressed as Euler angles, not recommended except for human-readable outputs",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Attitude pitch expressed as Euler angles, not recommended except for human-readable outputs",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Attitude yaw expressed as Euler angles, not recommended except for human-readable outputs",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("xacc",
+"X acceleration",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yacc",
+"Y acceleration",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("zacc",
+"Z acceleration",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("xgyro",
+"Angular speed around X axis",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ygyro",
+"Angular speed around Y axis",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("zgyro",
+"Angular speed around Z axis",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("lat",
+"Latitude (lower precision). Both this and the lat_int field should be set.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("lon",
+"Longitude (lower precision). Both this and the lon_int field should be set.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("alt",
+"Altitude",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("std_dev_horz",
+"Horizontal position standard deviation",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("std_dev_vert",
+"Vertical position standard deviation",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vn",
+"True velocity in north direction in earth-fixed NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ve",
+"True velocity in east direction in earth-fixed NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vd",
+"True velocity in down direction in earth-fixed NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("lat_int",
+"Latitude (higher precision). If 0, recipients should use the lat field value (otherwise this field is preferred).",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int32, 
+            0, 
+true),
+            new("lon_int",
+"Longitude (higher precision). If 0, recipients should use the lon field value (otherwise this field is preferred).",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int32, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "SIM_STATE:"
+        + "float q1;"
+        + "float q2;"
+        + "float q3;"
+        + "float q4;"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float xacc;"
+        + "float yacc;"
+        + "float zacc;"
+        + "float xgyro;"
+        + "float ygyro;"
+        + "float zgyro;"
+        + "float lat;"
+        + "float lon;"
+        + "float alt;"
+        + "float std_dev_horz;"
+        + "float std_dev_vert;"
+        + "float vn;"
+        + "float ve;"
+        + "float vd;"
+        + "int32_t lat_int;"
+        + "int32_t lon_int;"
+        ;
     }
 
     /// <summary>
@@ -18749,6 +26133,84 @@ namespace Asv.Mavlink.Common
         public override RadioStatusPayload Payload { get; } = new();
 
         public override string Name => "RADIO_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("rxerrors",
+"Count of radio packet receive errors (since boot).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("fixed",
+"Count of error corrected radio packets (since boot).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("rssi",
+"Local (message sender) received signal strength indication in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("remrssi",
+"Remote (message receiver) signal strength indication in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("txbuf",
+"Remaining free transmitter buffer space.",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("noise",
+"Local background noise level. These are device dependent RSSI values (scale as approx 2x dB on SiK radios). Values: [0-254], UINT8_MAX: invalid/unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("remnoise",
+"Remote background noise level. These are device dependent RSSI values (scale as approx 2x dB on SiK radios). Values: [0-254], UINT8_MAX: invalid/unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "RADIO_STATUS:"
+        + "uint16_t rxerrors;"
+        + "uint16_t fixed;"
+        + "uint8_t rssi;"
+        + "uint8_t remrssi;"
+        + "uint8_t txbuf;"
+        + "uint8_t noise;"
+        + "uint8_t remnoise;"
+        ;
     }
 
     /// <summary>
@@ -18860,6 +26322,54 @@ namespace Asv.Mavlink.Common
         public override FileTransferProtocolPayload Payload { get; } = new();
 
         public override string Name => "FILE_TRANSFER_PROTOCOL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_network",
+"Network ID (0 for broadcast)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_system",
+"System ID (0 for broadcast)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID (0 for broadcast)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("payload",
+"Variable length payload. The length is defined by the remaining message length when subtracting the header and other fields. The content/format of this block is defined in https://mavlink.io/en/services/ftp.html.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            251, 
+false),
+        ];
+        public const string FormatMessage = "FILE_TRANSFER_PROTOCOL:"
+        + "uint8_t target_network;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t[251] payload;"
+        ;
     }
 
     /// <summary>
@@ -18969,6 +26479,54 @@ namespace Asv.Mavlink.Common
         public override TimesyncPayload Payload { get; } = new();
 
         public override string Name => "TIMESYNC";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("tc1",
+"Time sync timestamp 1. Syncing: 0. Responding: Timestamp of responding component.",
+string.Empty, 
+@"ns", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int64, 
+            0, 
+false),
+            new("ts1",
+"Time sync timestamp 2. Timestamp of syncing component (mirrored in response).",
+string.Empty, 
+@"ns", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int64, 
+            0, 
+false),
+            new("target_system",
+"Target system id. Request: 0 (broadcast) or id of specific system. Response must contain system id of the requesting component.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("target_component",
+"Target component id. Request: 0 (broadcast) or id of specific component. Response must contain component id of the requesting component.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "TIMESYNC:"
+        + "int64_t tc1;"
+        + "int64_t ts1;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -19060,6 +26618,34 @@ namespace Asv.Mavlink.Common
         public override CameraTriggerPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_TRIGGER";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp for image frame (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("seq",
+"Image frame sequence",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "CAMERA_TRIGGER:"
+        + "uint64_t time_usec;"
+        + "uint32_t seq;"
+        ;
     }
 
     /// <summary>
@@ -19132,6 +26718,164 @@ namespace Asv.Mavlink.Common
         public override HilGpsPayload Payload { get; } = new();
 
         public override string Name => "HIL_GPS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("lat",
+"Latitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude (MSL). Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("eph",
+"GPS HDOP horizontal dilution of position (unitless * 100). If unknown, set to: UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("epv",
+"GPS VDOP vertical dilution of position (unitless * 100). If unknown, set to: UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("vel",
+"GPS ground speed. If unknown, set to: UINT16_MAX",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("vn",
+"GPS velocity in north direction in earth-fixed NED frame",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("ve",
+"GPS velocity in east direction in earth-fixed NED frame",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("vd",
+"GPS velocity in down direction in earth-fixed NED frame",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("cog",
+"Course over ground (NOT heading, but direction of movement), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("fix_type",
+"0-1: no fix, 2: 2D fix, 3: 3D fix. Some applications will not use the value of this field unless it is at least two, so always correctly fill in the fix.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("satellites_visible",
+"Number of satellites visible. If unknown, set to UINT8_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("id",
+"GPS ID (zero indexed). Used for multiple GPS inputs",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("yaw",
+"Yaw of vehicle relative to Earth's North, zero means not available, use 36000 for north",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "HIL_GPS:"
+        + "uint64_t time_usec;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "int32_t alt;"
+        + "uint16_t eph;"
+        + "uint16_t epv;"
+        + "uint16_t vel;"
+        + "int16_t vn;"
+        + "int16_t ve;"
+        + "int16_t vd;"
+        + "uint16_t cog;"
+        + "uint8_t fix_type;"
+        + "uint8_t satellites_visible;"
+        + "uint8_t id;"
+        + "uint16_t yaw;"
+        ;
     }
 
     /// <summary>
@@ -19311,6 +27055,134 @@ namespace Asv.Mavlink.Common
         public override HilOpticalFlowPayload Payload { get; } = new();
 
         public override string Name => "HIL_OPTICAL_FLOW";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("integration_time_us",
+"Integration time. Divide integrated_x and integrated_y by the integration time to obtain average flow. The integration time also indicates the.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("integrated_x",
+"Flow in radians around X axis (Sensor RH rotation about the X axis induces a positive flow. Sensor linear motion along the positive Y axis induces a negative flow.)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("integrated_y",
+"Flow in radians around Y axis (Sensor RH rotation about the Y axis induces a positive flow. Sensor linear motion along the positive X axis induces a positive flow.)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("integrated_xgyro",
+"RH rotation around X axis",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("integrated_ygyro",
+"RH rotation around Y axis",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("integrated_zgyro",
+"RH rotation around Z axis",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("time_delta_distance_us",
+"Time since the distance was sampled.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("distance",
+"Distance to the center of the flow field. Positive value (including zero): distance known. Negative value: Unknown distance.",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"-1.0", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("temperature",
+"Temperature",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("sensor_id",
+"Sensor ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("quality",
+"Optical flow quality / confidence. 0: no valid flow, 255: maximum quality",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "HIL_OPTICAL_FLOW:"
+        + "uint64_t time_usec;"
+        + "uint32_t integration_time_us;"
+        + "float integrated_x;"
+        + "float integrated_y;"
+        + "float integrated_xgyro;"
+        + "float integrated_ygyro;"
+        + "float integrated_zgyro;"
+        + "uint32_t time_delta_distance_us;"
+        + "float distance;"
+        + "int16_t temperature;"
+        + "uint8_t sensor_id;"
+        + "uint8_t quality;"
+        ;
     }
 
     /// <summary>
@@ -19462,6 +27334,174 @@ namespace Asv.Mavlink.Common
         public override HilStateQuaternionPayload Payload { get; } = new();
 
         public override string Name => "HIL_STATE_QUATERNION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("attitude_quaternion",
+"Vehicle attitude expressed as normalized quaternion in w, x, y, z order (with 1 0 0 0 being the null-rotation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("rollspeed",
+"Body frame roll / phi angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitchspeed",
+"Body frame pitch / theta angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yawspeed",
+"Body frame yaw / psi angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("lat",
+"Latitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("vx",
+"Ground X Speed (Latitude)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("vy",
+"Ground Y Speed (Longitude)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("vz",
+"Ground Z Speed (Altitude)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("ind_airspeed",
+"Indicated airspeed",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("true_airspeed",
+"True airspeed",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("xacc",
+"X acceleration",
+string.Empty, 
+@"mG", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("yacc",
+"Y acceleration",
+string.Empty, 
+@"mG", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("zacc",
+"Z acceleration",
+string.Empty, 
+@"mG", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "HIL_STATE_QUATERNION:"
+        + "uint64_t time_usec;"
+        + "float[4] attitude_quaternion;"
+        + "float rollspeed;"
+        + "float pitchspeed;"
+        + "float yawspeed;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "int32_t alt;"
+        + "int16_t vx;"
+        + "int16_t vy;"
+        + "int16_t vz;"
+        + "uint16_t ind_airspeed;"
+        + "uint16_t true_airspeed;"
+        + "int16_t xacc;"
+        + "int16_t yacc;"
+        + "int16_t zacc;"
+        ;
     }
 
     /// <summary>
@@ -19658,6 +27698,124 @@ namespace Asv.Mavlink.Common
         public override ScaledImu2Payload Payload { get; } = new();
 
         public override string Name => "SCALED_IMU2";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("xacc",
+"X acceleration",
+string.Empty, 
+@"mG", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("yacc",
+"Y acceleration",
+string.Empty, 
+@"mG", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("zacc",
+"Z acceleration",
+string.Empty, 
+@"mG", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("xgyro",
+"Angular speed around X axis",
+string.Empty, 
+@"mrad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("ygyro",
+"Angular speed around Y axis",
+string.Empty, 
+@"mrad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("zgyro",
+"Angular speed around Z axis",
+string.Empty, 
+@"mrad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("xmag",
+"X Magnetic field",
+string.Empty, 
+@"mgauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("ymag",
+"Y Magnetic field",
+string.Empty, 
+@"mgauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("zmag",
+"Z Magnetic field",
+string.Empty, 
+@"mgauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("temperature",
+"Temperature, 0: IMU does not provide temperature values. If the IMU is at 0C it must send 1 (0.01C).",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int16, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "SCALED_IMU2:"
+        + "uint32_t time_boot_ms;"
+        + "int16_t xacc;"
+        + "int16_t yacc;"
+        + "int16_t zacc;"
+        + "int16_t xgyro;"
+        + "int16_t ygyro;"
+        + "int16_t zgyro;"
+        + "int16_t xmag;"
+        + "int16_t ymag;"
+        + "int16_t zmag;"
+        + "int16_t temperature;"
+        ;
     }
 
     /// <summary>
@@ -19803,6 +27961,54 @@ namespace Asv.Mavlink.Common
         public override LogRequestListPayload Payload { get; } = new();
 
         public override string Name => "LOG_REQUEST_LIST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("start",
+"First log id (0 for first available)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("end",
+"Last log id (0xffff for last available)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "LOG_REQUEST_LIST:"
+        + "uint16_t start;"
+        + "uint16_t end;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -19890,6 +28096,64 @@ namespace Asv.Mavlink.Common
         public override LogEntryPayload Payload { get; } = new();
 
         public override string Name => "LOG_ENTRY";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_utc",
+"UTC timestamp of log since 1970, or 0 if not available",
+string.Empty, 
+@"s", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("size",
+"Size of the log (may be approximate)",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("id",
+"LoggerFactory id",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("num_logs",
+"Total number of logs",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("last_log_num",
+"High log number",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "LOG_ENTRY:"
+        + "uint32_t time_utc;"
+        + "uint32_t size;"
+        + "uint16_t id;"
+        + "uint16_t num_logs;"
+        + "uint16_t last_log_num;"
+        ;
     }
 
     /// <summary>
@@ -19985,6 +28249,64 @@ namespace Asv.Mavlink.Common
         public override LogRequestDataPayload Payload { get; } = new();
 
         public override string Name => "LOG_REQUEST_DATA";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("ofs",
+"Offset into the log",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("count",
+"Number of bytes",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("id",
+"LoggerFactory id (from LOG_ENTRY reply)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "LOG_REQUEST_DATA:"
+        + "uint32_t ofs;"
+        + "uint32_t count;"
+        + "uint16_t id;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -20080,6 +28402,54 @@ namespace Asv.Mavlink.Common
         public override LogDataPayload Payload { get; } = new();
 
         public override string Name => "LOG_DATA";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("ofs",
+"Offset into the log",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("id",
+"LoggerFactory id (from LOG_ENTRY reply)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("count",
+"Number of bytes (zero for end of log)",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"log data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            90, 
+false),
+        ];
+        public const string FormatMessage = "LOG_DATA:"
+        + "uint32_t ofs;"
+        + "uint16_t id;"
+        + "uint8_t count;"
+        + "uint8_t[90] data;"
+        ;
     }
 
     /// <summary>
@@ -20180,6 +28550,34 @@ namespace Asv.Mavlink.Common
         public override LogErasePayload Payload { get; } = new();
 
         public override string Name => "LOG_ERASE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "LOG_ERASE:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -20251,6 +28649,34 @@ namespace Asv.Mavlink.Common
         public override LogRequestEndPayload Payload { get; } = new();
 
         public override string Name => "LOG_REQUEST_END";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "LOG_REQUEST_END:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -20322,6 +28748,54 @@ namespace Asv.Mavlink.Common
         public override GpsInjectDataPayload Payload { get; } = new();
 
         public override string Name => "GPS_INJECT_DATA";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("len",
+"Data length",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"Raw data (110 is enough for 12 satellites of RTCMv2)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            110, 
+false),
+        ];
+        public const string FormatMessage = "GPS_INJECT_DATA:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t len;"
+        + "uint8_t[110] data;"
+        ;
     }
 
     /// <summary>
@@ -20422,6 +28896,194 @@ namespace Asv.Mavlink.Common
         public override Gps2RawPayload Payload { get; } = new();
 
         public override string Name => "GPS2_RAW";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("lat",
+"Latitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude (MSL). Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("dgps_age",
+"Age of DGPS info",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("eph",
+"GPS HDOP horizontal dilution of position (unitless * 100). If unknown, set to: UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("epv",
+"GPS VDOP vertical dilution of position (unitless * 100). If unknown, set to: UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("vel",
+"GPS ground speed. If unknown, set to: UINT16_MAX",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("cog",
+"Course over ground (NOT heading, but direction of movement): 0.0..359.99 degrees. If unknown, set to: UINT16_MAX",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("fix_type",
+"GPS fix type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("satellites_visible",
+"Number of satellites visible. If unknown, set to UINT8_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("dgps_numch",
+"Number of DGPS satellites",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("yaw",
+"Yaw in earth frame from north. Use 0 if this GPS does not provide yaw. Use UINT16_MAX if this GPS is configured to provide yaw and is currently unable to provide it. Use 36000 for north.",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("alt_ellipsoid",
+"Altitude (above WGS84, EGM96 ellipsoid). Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+true),
+            new("h_acc",
+"Position uncertainty.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+true),
+            new("v_acc",
+"Altitude uncertainty.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+true),
+            new("vel_acc",
+"Speed uncertainty.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+true),
+            new("hdg_acc",
+"Heading / track uncertainty",
+string.Empty, 
+@"degE5", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "GPS2_RAW:"
+        + "uint64_t time_usec;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "int32_t alt;"
+        + "uint32_t dgps_age;"
+        + "uint16_t eph;"
+        + "uint16_t epv;"
+        + "uint16_t vel;"
+        + "uint16_t cog;"
+        + "uint8_t fix_type;"
+        + "uint8_t satellites_visible;"
+        + "uint8_t dgps_numch;"
+        + "uint16_t yaw;"
+        + "int32_t alt_ellipsoid;"
+        + "uint32_t h_acc;"
+        + "uint32_t v_acc;"
+        + "uint32_t vel_acc;"
+        + "uint32_t hdg_acc;"
+        ;
     }
 
     /// <summary>
@@ -20633,6 +29295,44 @@ namespace Asv.Mavlink.Common
         public override PowerStatusPayload Payload { get; } = new();
 
         public override string Name => "POWER_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("Vcc",
+"5V rail voltage.",
+string.Empty, 
+@"mV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("Vservo",
+"Servo rail voltage.",
+string.Empty, 
+@"mV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("flags",
+"Bitmap of power supply status flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "POWER_STATUS:"
+        + "uint16_t Vcc;"
+        + "uint16_t Vservo;"
+        + "uint16_t flags;"
+        ;
     }
 
     /// <summary>
@@ -20712,6 +29412,94 @@ namespace Asv.Mavlink.Common
         public override SerialControlPayload Payload { get; } = new();
 
         public override string Name => "SERIAL_CONTROL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("baudrate",
+"Baudrate of transfer. Zero means no change.",
+string.Empty, 
+@"bits/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("timeout",
+"Timeout for reply data",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("device",
+"Serial control device type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("flags",
+"Bitmap of serial control flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("count",
+"how many bytes in this transfer",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"serial data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            70, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "SERIAL_CONTROL:"
+        + "uint32_t baudrate;"
+        + "uint16_t timeout;"
+        + "uint8_t device;"
+        + "uint8_t flags;"
+        + "uint8_t count;"
+        + "uint8_t[70] data;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -20848,6 +29636,144 @@ namespace Asv.Mavlink.Common
         public override GpsRtkPayload Payload { get; } = new();
 
         public override string Name => "GPS_RTK";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_last_baseline_ms",
+"Time since boot of last baseline message received.",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("tow",
+"GPS Time of Week of last baseline",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("baseline_a_mm",
+"Current baseline in ECEF x or NED north component.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("baseline_b_mm",
+"Current baseline in ECEF y or NED east component.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("baseline_c_mm",
+"Current baseline in ECEF z or NED down component.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("accuracy",
+"Current estimate of baseline accuracy.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("iar_num_hypotheses",
+"Current number of integer ambiguity hypotheses.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("wn",
+"GPS Week Number of last baseline",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("rtk_receiver_id",
+"Identification of connected RTK receiver.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rtk_health",
+"GPS-specific health report for RTK data.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rtk_rate",
+"Rate of baseline messages being received by GPS",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("nsats",
+"Current number of sats used for RTK calculation.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("baseline_coords_type",
+"Coordinate system of baseline",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GPS_RTK:"
+        + "uint32_t time_last_baseline_ms;"
+        + "uint32_t tow;"
+        + "int32_t baseline_a_mm;"
+        + "int32_t baseline_b_mm;"
+        + "int32_t baseline_c_mm;"
+        + "uint32_t accuracy;"
+        + "int32_t iar_num_hypotheses;"
+        + "uint16_t wn;"
+        + "uint8_t rtk_receiver_id;"
+        + "uint8_t rtk_health;"
+        + "uint8_t rtk_rate;"
+        + "uint8_t nsats;"
+        + "uint8_t baseline_coords_type;"
+        ;
     }
 
     /// <summary>
@@ -21007,6 +29933,144 @@ namespace Asv.Mavlink.Common
         public override Gps2RtkPayload Payload { get; } = new();
 
         public override string Name => "GPS2_RTK";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_last_baseline_ms",
+"Time since boot of last baseline message received.",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("tow",
+"GPS Time of Week of last baseline",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("baseline_a_mm",
+"Current baseline in ECEF x or NED north component.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("baseline_b_mm",
+"Current baseline in ECEF y or NED east component.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("baseline_c_mm",
+"Current baseline in ECEF z or NED down component.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("accuracy",
+"Current estimate of baseline accuracy.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("iar_num_hypotheses",
+"Current number of integer ambiguity hypotheses.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("wn",
+"GPS Week Number of last baseline",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("rtk_receiver_id",
+"Identification of connected RTK receiver.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rtk_health",
+"GPS-specific health report for RTK data.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rtk_rate",
+"Rate of baseline messages being received by GPS",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("nsats",
+"Current number of sats used for RTK calculation.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("baseline_coords_type",
+"Coordinate system of baseline",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GPS2_RTK:"
+        + "uint32_t time_last_baseline_ms;"
+        + "uint32_t tow;"
+        + "int32_t baseline_a_mm;"
+        + "int32_t baseline_b_mm;"
+        + "int32_t baseline_c_mm;"
+        + "uint32_t accuracy;"
+        + "int32_t iar_num_hypotheses;"
+        + "uint16_t wn;"
+        + "uint8_t rtk_receiver_id;"
+        + "uint8_t rtk_health;"
+        + "uint8_t rtk_rate;"
+        + "uint8_t nsats;"
+        + "uint8_t baseline_coords_type;"
+        ;
     }
 
     /// <summary>
@@ -21166,6 +30230,124 @@ namespace Asv.Mavlink.Common
         public override ScaledImu3Payload Payload { get; } = new();
 
         public override string Name => "SCALED_IMU3";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("xacc",
+"X acceleration",
+string.Empty, 
+@"mG", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("yacc",
+"Y acceleration",
+string.Empty, 
+@"mG", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("zacc",
+"Z acceleration",
+string.Empty, 
+@"mG", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("xgyro",
+"Angular speed around X axis",
+string.Empty, 
+@"mrad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("ygyro",
+"Angular speed around Y axis",
+string.Empty, 
+@"mrad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("zgyro",
+"Angular speed around Z axis",
+string.Empty, 
+@"mrad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("xmag",
+"X Magnetic field",
+string.Empty, 
+@"mgauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("ymag",
+"Y Magnetic field",
+string.Empty, 
+@"mgauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("zmag",
+"Z Magnetic field",
+string.Empty, 
+@"mgauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("temperature",
+"Temperature, 0: IMU does not provide temperature values. If the IMU is at 0C it must send 1 (0.01C).",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int16, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "SCALED_IMU3:"
+        + "uint32_t time_boot_ms;"
+        + "int16_t xacc;"
+        + "int16_t yacc;"
+        + "int16_t zacc;"
+        + "int16_t xgyro;"
+        + "int16_t ygyro;"
+        + "int16_t zgyro;"
+        + "int16_t xmag;"
+        + "int16_t ymag;"
+        + "int16_t zmag;"
+        + "int16_t temperature;"
+        ;
     }
 
     /// <summary>
@@ -21311,6 +30493,84 @@ namespace Asv.Mavlink.Common
         public override DataTransmissionHandshakePayload Payload { get; } = new();
 
         public override string Name => "DATA_TRANSMISSION_HANDSHAKE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("size",
+"total data size (set on ACK only).",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("width",
+"Width of a matrix or image.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("height",
+"Height of a matrix or image.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("packets",
+"Number of packets being sent (set on ACK only).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("type",
+"Type of requested/acknowledged data.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("payload",
+"Payload size per packet (normally 253 byte, see DATA field size in message ENCAPSULATED_DATA) (set on ACK only).",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("jpg_quality",
+"JPEG quality. Values: [1-100].",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "DATA_TRANSMISSION_HANDSHAKE:"
+        + "uint32_t size;"
+        + "uint16_t width;"
+        + "uint16_t height;"
+        + "uint16_t packets;"
+        + "uint8_t type;"
+        + "uint8_t payload;"
+        + "uint8_t jpg_quality;"
+        ;
     }
 
     /// <summary>
@@ -21422,6 +30682,34 @@ namespace Asv.Mavlink.Common
         public override EncapsulatedDataPayload Payload { get; } = new();
 
         public override string Name => "ENCAPSULATED_DATA";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("seqnr",
+"sequence number (starting with 0 on every transmission)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("data",
+"image data bytes",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            253, 
+false),
+        ];
+        public const string FormatMessage = "ENCAPSULATED_DATA:"
+        + "uint16_t seqnr;"
+        + "uint8_t[253] data;"
+        ;
     }
 
     /// <summary>
@@ -21506,6 +30794,134 @@ namespace Asv.Mavlink.Common
         public override DistanceSensorPayload Payload { get; } = new();
 
         public override string Name => "DISTANCE_SENSOR";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("min_distance",
+"Minimum distance the sensor can measure",
+string.Empty, 
+@"cm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("max_distance",
+"Maximum distance the sensor can measure",
+string.Empty, 
+@"cm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("current_distance",
+"Current distance reading",
+string.Empty, 
+@"cm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("type",
+"Type of distance sensor.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("id",
+"Onboard ID of the sensor",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("orientation",
+"Direction the sensor faces. downward-facing: ROTATION_PITCH_270, upward-facing: ROTATION_PITCH_90, backward-facing: ROTATION_PITCH_180, forward-facing: ROTATION_NONE, left-facing: ROTATION_YAW_90, right-facing: ROTATION_YAW_270",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("covariance",
+"Measurement variance. Max standard deviation is 6cm. UINT8_MAX if unknown.",
+string.Empty, 
+@"cm^2", 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("horizontal_fov",
+"Horizontal Field of View (angle) where the distance measurement is valid and the field of view is known. Otherwise this is set to 0.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Float32, 
+            0, 
+true),
+            new("vertical_fov",
+"Vertical Field of View (angle) where the distance measurement is valid and the field of view is known. Otherwise this is set to 0.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Float32, 
+            0, 
+true),
+            new("quaternion",
+"Quaternion of the sensor orientation in vehicle body frame (w, x, y, z order, zero-rotation is 1, 0, 0, 0). Zero-rotation is along the vehicle body x-axis. This field is required if the orientation is set to MAV_SENSOR_ROTATION_CUSTOM. Set it to 0 if invalid.\"",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[0]", 
+            MessageFieldType.Float32, 
+            4, 
+true),
+            new("signal_quality",
+"Signal quality of the sensor. Specific to each sensor type, representing the relation of the signal strength with the target reflectivity, distance, size or aspect, but normalised as a percentage. 0 = unknown/unset signal quality, 1 = invalid signal, 100 = perfect signal.",
+string.Empty, 
+@"%", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "DISTANCE_SENSOR:"
+        + "uint32_t time_boot_ms;"
+        + "uint16_t min_distance;"
+        + "uint16_t max_distance;"
+        + "uint16_t current_distance;"
+        + "uint8_t type;"
+        + "uint8_t id;"
+        + "uint8_t orientation;"
+        + "uint8_t covariance;"
+        + "float horizontal_fov;"
+        + "float vertical_fov;"
+        + "float[4] quaternion;"
+        + "uint8_t signal_quality;"
+        ;
     }
 
     /// <summary>
@@ -21675,6 +31091,54 @@ namespace Asv.Mavlink.Common
         public override TerrainRequestPayload Payload { get; } = new();
 
         public override string Name => "TERRAIN_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("mask",
+"Bitmask of requested 4x4 grids (row major 8x7 array of grids, 56 bits)",
+"0x%07x", 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("lat",
+"Latitude of SW corner of first grid",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude of SW corner of first grid",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("grid_spacing",
+"Grid spacing",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "TERRAIN_REQUEST:"
+        + "uint64_t mask;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "uint16_t grid_spacing;"
+        ;
     }
 
     /// <summary>
@@ -21762,6 +31226,64 @@ namespace Asv.Mavlink.Common
         public override TerrainDataPayload Payload { get; } = new();
 
         public override string Name => "TERRAIN_DATA";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("lat",
+"Latitude of SW corner of first grid",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude of SW corner of first grid",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("grid_spacing",
+"Grid spacing",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("data",
+"Terrain data MSL",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            16, 
+false),
+            new("gridbit",
+"bit within the terrain request mask",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "TERRAIN_DATA:"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "uint16_t grid_spacing;"
+        + "int16_t[16] data;"
+        + "uint8_t gridbit;"
+        ;
     }
 
     /// <summary>
@@ -21870,6 +31392,34 @@ namespace Asv.Mavlink.Common
         public override TerrainCheckPayload Payload { get; } = new();
 
         public override string Name => "TERRAIN_CHECK";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("lat",
+"Latitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "TERRAIN_CHECK:"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        ;
     }
 
     /// <summary>
@@ -21941,6 +31491,84 @@ namespace Asv.Mavlink.Common
         public override TerrainReportPayload Payload { get; } = new();
 
         public override string Name => "TERRAIN_REPORT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("lat",
+"Latitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("terrain_height",
+"Terrain height MSL",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("current_height",
+"Current vehicle height above lat/lon terrain height",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("spacing",
+"grid spacing (zero if terrain at this location unavailable)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("pending",
+"Number of 4x4 terrain blocks waiting to be received or read from disk",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("loaded",
+"Number of 4x4 terrain blocks in memory",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "TERRAIN_REPORT:"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "float terrain_height;"
+        + "float current_height;"
+        + "uint16_t spacing;"
+        + "uint16_t pending;"
+        + "uint16_t loaded;"
+        ;
     }
 
     /// <summary>
@@ -22052,6 +31680,64 @@ namespace Asv.Mavlink.Common
         public override ScaledPressure2Payload Payload { get; } = new();
 
         public override string Name => "SCALED_PRESSURE2";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("press_abs",
+"Absolute pressure",
+string.Empty, 
+@"hPa", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("press_diff",
+"Differential pressure",
+string.Empty, 
+@"hPa", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("temperature",
+"Absolute pressure temperature",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("temperature_press_diff",
+"Differential pressure temperature (0, if not available). Report values of 0 (or 1) as 1 cdegC.",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int16, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "SCALED_PRESSURE2:"
+        + "uint32_t time_boot_ms;"
+        + "float press_abs;"
+        + "float press_diff;"
+        + "int16_t temperature;"
+        + "int16_t temperature_press_diff;"
+        ;
     }
 
     /// <summary>
@@ -22149,6 +31835,74 @@ namespace Asv.Mavlink.Common
         public override AttPosMocapPayload Payload { get; } = new();
 
         public override string Name => "ATT_POS_MOCAP";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("q",
+"Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("x",
+"X position (NED)",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+"Y position (NED)",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+"Z position (NED)",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("covariance",
+"Row-major representation of a pose 6x6 cross-covariance matrix upper right triangle (states: x, y, z, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[NaN:]", 
+            MessageFieldType.Float32, 
+            21, 
+true),
+        ];
+        public const string FormatMessage = "ATT_POS_MOCAP:"
+        + "uint64_t time_usec;"
+        + "float[4] q;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "float[21] covariance;"
+        ;
     }
 
     /// <summary>
@@ -22275,6 +32029,64 @@ namespace Asv.Mavlink.Common
         public override SetActuatorControlTargetPayload Payload { get; } = new();
 
         public override string Name => "SET_ACTUATOR_CONTROL_TARGET";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("controls",
+"Actuator controls. Normed to -1..+1 where 0 is neutral position. Throttle for single rotation direction motors is 0..1, negative range for reverse direction. Standard mapping for attitude controls (group 0): (index 0-7): roll, pitch, yaw, throttle, flaps, spoilers, airbrakes, landing gear. Load a pass-through mixer to repurpose them as generic outputs.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            8, 
+false),
+            new("group_mlx",
+"Actuator group. The \"_mlx\" indicates this is a multi-instance message and a MAVLink parser should use this field to difference between instances.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SET_ACTUATOR_CONTROL_TARGET:"
+        + "uint64_t time_usec;"
+        + "float[8] controls;"
+        + "uint8_t group_mlx;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -22383,6 +32195,44 @@ namespace Asv.Mavlink.Common
         public override ActuatorControlTargetPayload Payload { get; } = new();
 
         public override string Name => "ACTUATOR_CONTROL_TARGET";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("controls",
+"Actuator controls. Normed to -1..+1 where 0 is neutral position. Throttle for single rotation direction motors is 0..1, negative range for reverse direction. Standard mapping for attitude controls (group 0): (index 0-7): roll, pitch, yaw, throttle, flaps, spoilers, airbrakes, landing gear. Load a pass-through mixer to repurpose them as generic outputs.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            8, 
+false),
+            new("group_mlx",
+"Actuator group. The \"_mlx\" indicates this is a multi-instance message and a MAVLink parser should use this field to difference between instances.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ACTUATOR_CONTROL_TARGET:"
+        + "uint64_t time_usec;"
+        + "float[8] controls;"
+        + "uint8_t group_mlx;"
+        ;
     }
 
     /// <summary>
@@ -22475,6 +32325,84 @@ namespace Asv.Mavlink.Common
         public override AltitudePayload Payload { get; } = new();
 
         public override string Name => "ALTITUDE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("altitude_monotonic",
+"This altitude measure is initialized on system boot and monotonic (it is never reset, but represents the local altitude change). The only guarantee on this field is that it will never be reset and is consistent within a flight. The recommended value for this field is the uncorrected barometric altitude at boot time. This altitude will also drift and vary between flights.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("altitude_amsl",
+"This altitude measure is strictly above mean sea level and might be non-monotonic (it might reset on events like GPS lock or when a new QNH value is set). It should be the altitude to which global altitude waypoints are compared to. Note that it is *not* the GPS altitude, however, most GPS modules already output MSL by default and not the WGS84 altitude.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("altitude_local",
+"This is the local altitude in the local coordinate frame. It is not the altitude above home, but in reference to the coordinate origin (0, 0, 0). It is up-positive.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("altitude_relative",
+"This is the altitude above the home position. It resets on each change of the current home position.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("altitude_terrain",
+"This is the altitude above terrain. It might be fed by a terrain database or an altimeter. Values smaller than -1000 should be interpreted as unknown.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("bottom_clearance",
+"This is not the altitude, but the clear space below the system according to the fused clearance estimate. It generally should max out at the maximum range of e.g. the laser altimeter. It is generally a moving target. A negative value indicates no measurement available.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ALTITUDE:"
+        + "uint64_t time_usec;"
+        + "float altitude_monotonic;"
+        + "float altitude_amsl;"
+        + "float altitude_local;"
+        + "float altitude_relative;"
+        + "float altitude_terrain;"
+        + "float bottom_clearance;"
+        ;
     }
 
     /// <summary>
@@ -22586,6 +32514,64 @@ namespace Asv.Mavlink.Common
         public override ResourceRequestPayload Payload { get; } = new();
 
         public override string Name => "RESOURCE_REQUEST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("request_id",
+"Request ID. This ID should be re-used when sending back URI contents",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("uri_type",
+"The type of requested URI. 0 = a file via URL. 1 = a UAVCAN binary",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("uri",
+"The requested unique resource identifier (URI). It is not necessarily a straight domain name (depends on the URI type enum)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            120, 
+false),
+            new("transfer_type",
+"The way the autopilot wants to receive the URI. 0 = MAVLink FTP. 1 = binary stream.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("storage",
+"The storage path the autopilot wants the URI to be stored in. Will only be valid if the transfer_type has a storage associated (e.g. MAVLink FTP).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            120, 
+false),
+        ];
+        public const string FormatMessage = "RESOURCE_REQUEST:"
+        + "uint8_t request_id;"
+        + "uint8_t uri_type;"
+        + "uint8_t[120] uri;"
+        + "uint8_t transfer_type;"
+        + "uint8_t[120] storage;"
+        ;
     }
 
     /// <summary>
@@ -22702,6 +32688,64 @@ namespace Asv.Mavlink.Common
         public override ScaledPressure3Payload Payload { get; } = new();
 
         public override string Name => "SCALED_PRESSURE3";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("press_abs",
+"Absolute pressure",
+string.Empty, 
+@"hPa", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("press_diff",
+"Differential pressure",
+string.Empty, 
+@"hPa", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("temperature",
+"Absolute pressure temperature",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("temperature_press_diff",
+"Differential pressure temperature (0, if not available). Report values of 0 (or 1) as 1 cdegC.",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int16, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "SCALED_PRESSURE3:"
+        + "uint32_t time_boot_ms;"
+        + "float press_abs;"
+        + "float press_diff;"
+        + "int16_t temperature;"
+        + "int16_t temperature_press_diff;"
+        ;
     }
 
     /// <summary>
@@ -22799,6 +32843,124 @@ namespace Asv.Mavlink.Common
         public override FollowTargetPayload Payload { get; } = new();
 
         public override string Name => "FOLLOW_TARGET";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("timestamp",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("custom_state",
+"button states or switches of a tracker device",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("lat",
+"Latitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude (MSL)",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vel",
+"target velocity (0,0,0) for unknown",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"[0]", 
+            MessageFieldType.Float32, 
+            3, 
+false),
+            new("acc",
+"linear target acceleration (0,0,0) for unknown",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+@"[0]", 
+            MessageFieldType.Float32, 
+            3, 
+false),
+            new("attitude_q",
+"(0 0 0 0 for unknown)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[0]", 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("rates",
+"(0 0 0 for unknown)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[0]", 
+            MessageFieldType.Float32, 
+            3, 
+false),
+            new("position_cov",
+"eph epv",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            3, 
+false),
+            new("est_capabilities",
+"bit positions for tracker reporting capabilities (POS = 0, VEL = 1, ACCEL = 2, ATT + RATES = 3)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "FOLLOW_TARGET:"
+        + "uint64_t timestamp;"
+        + "uint64_t custom_state;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "float alt;"
+        + "float[3] vel;"
+        + "float[3] acc;"
+        + "float[4] attitude_q;"
+        + "float[3] rates;"
+        + "float[3] position_cov;"
+        + "uint8_t est_capabilities;"
+        ;
     }
 
     /// <summary>
@@ -22987,6 +33149,184 @@ namespace Asv.Mavlink.Common
         public override ControlSystemStatePayload Payload { get; } = new();
 
         public override string Name => "CONTROL_SYSTEM_STATE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("x_acc",
+"X acceleration in body frame",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y_acc",
+"Y acceleration in body frame",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z_acc",
+"Z acceleration in body frame",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("x_vel",
+"X velocity in body frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y_vel",
+"Y velocity in body frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z_vel",
+"Z velocity in body frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("x_pos",
+"X position in local frame",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y_pos",
+"Y position in local frame",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z_pos",
+"Z position in local frame",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("airspeed",
+"Airspeed, set to -1 if unknown",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"-1", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vel_variance",
+"Variance of body velocity estimate",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            3, 
+false),
+            new("pos_variance",
+"Variance in local position",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            3, 
+false),
+            new("q",
+"The attitude, represented as Quaternion",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("roll_rate",
+"Angular rate in roll axis",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch_rate",
+"Angular rate in pitch axis",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_rate",
+"Angular rate in yaw axis",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "CONTROL_SYSTEM_STATE:"
+        + "uint64_t time_usec;"
+        + "float x_acc;"
+        + "float y_acc;"
+        + "float z_acc;"
+        + "float x_vel;"
+        + "float y_vel;"
+        + "float z_vel;"
+        + "float x_pos;"
+        + "float y_pos;"
+        + "float z_pos;"
+        + "float airspeed;"
+        + "float[3] vel_variance;"
+        + "float[3] pos_variance;"
+        + "float[4] q;"
+        + "float roll_rate;"
+        + "float pitch_rate;"
+        + "float yaw_rate;"
+        ;
     }
 
     /// <summary>
@@ -23207,6 +33547,154 @@ namespace Asv.Mavlink.Common
         public override BatteryStatusPayload Payload { get; } = new();
 
         public override string Name => "BATTERY_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("current_consumed",
+"Consumed charge, -1: autopilot does not provide consumption estimate",
+string.Empty, 
+@"mAh", 
+string.Empty, 
+@"-1", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("energy_consumed",
+"Consumed energy, -1: autopilot does not provide energy consumption estimate",
+string.Empty, 
+@"hJ", 
+string.Empty, 
+@"-1", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("temperature",
+"Temperature of the battery. INT16_MAX for unknown temperature.",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("voltages",
+"Battery voltage of cells 1 to 10 (see voltages_ext for cells 11-14). Cells in this field above the valid cell count for this battery should have the UINT16_MAX value. If individual cell voltages are unknown or not measured for this battery, then the overall battery voltage should be filled in cell 0, with all others set to UINT16_MAX. If the voltage of the battery is greater than (UINT16_MAX - 1), then cell 0 should be set to (UINT16_MAX - 1), and cell 1 to the remaining voltage. This can be extended to multiple cells if the total voltage is greater than 2 * (UINT16_MAX - 1).",
+string.Empty, 
+@"mV", 
+string.Empty, 
+@"[UINT16_MAX]", 
+            MessageFieldType.Uint16, 
+            10, 
+false),
+            new("current_battery",
+"Battery current, -1: autopilot does not measure the current",
+string.Empty, 
+@"cA", 
+string.Empty, 
+@"-1", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("id",
+"Battery ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("battery_function",
+"Function of the battery",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("type",
+"Type (chemistry) of the battery",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("battery_remaining",
+"Remaining battery energy. Values: [0-100], -1: autopilot does not estimate the remaining battery.",
+string.Empty, 
+@"%", 
+string.Empty, 
+@"-1", 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("time_remaining",
+"Remaining battery time, 0: autopilot does not provide remaining battery time estimate",
+string.Empty, 
+@"s", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int32, 
+            0, 
+true),
+            new("charge_state",
+"State for extent of discharge, provided by autopilot for warning or external reactions",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("voltages_ext",
+"Battery voltages for cells 11 to 14. Cells above the valid cell count for this battery should have a value of 0, where zero indicates not supported (note, this is different than for the voltages field and allows empty byte truncation). If the measured value is 0 then 1 should be sent instead.",
+string.Empty, 
+@"mV", 
+string.Empty, 
+@"[0]", 
+            MessageFieldType.Uint16, 
+            4, 
+true),
+            new("mode",
+"Battery mode. Default (0) is that battery mode reporting is not supported or battery is in normal-use mode.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("fault_bitmask",
+"Fault/health indications. These should be set when charge_state is MAV_BATTERY_CHARGE_STATE_FAILED or MAV_BATTERY_CHARGE_STATE_UNHEALTHY (if not, fault reporting is not supported).",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "BATTERY_STATUS:"
+        + "int32_t current_consumed;"
+        + "int32_t energy_consumed;"
+        + "int16_t temperature;"
+        + "uint16_t[10] voltages;"
+        + "int16_t current_battery;"
+        + "uint8_t id;"
+        + "uint8_t battery_function;"
+        + "uint8_t type;"
+        + "int8_t battery_remaining;"
+        + "int32_t time_remaining;"
+        + "uint8_t charge_state;"
+        + "uint16_t[4] voltages_ext;"
+        + "uint8_t mode;"
+        + "uint32_t fault_bitmask;"
+        ;
     }
 
     /// <summary>
@@ -23405,6 +33893,134 @@ namespace Asv.Mavlink.Common
         public override AutopilotVersionPayload Payload { get; } = new();
 
         public override string Name => "AUTOPILOT_VERSION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("capabilities",
+"Bitmap of capabilities",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("uid",
+"UID if provided by hardware (see uid2)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("flight_sw_version",
+"Firmware version number",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("middleware_sw_version",
+"Middleware version number",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("os_sw_version",
+"Operating system version number",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("board_version",
+"HW / board version (last 8 bits should be silicon ID, if any). The first 16 bits of this field specify https://github.com/PX4/PX4-Bootloader/blob/master/board_types.txt",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("vendor_id",
+"ID of the board vendor",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("product_id",
+"ID of the product",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("flight_custom_version",
+"Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            8, 
+false),
+            new("middleware_custom_version",
+"Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            8, 
+false),
+            new("os_custom_version",
+"Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            8, 
+false),
+            new("uid2",
+"UID if provided by hardware (supersedes the uid field. If this is non-zero, use this field, otherwise use uid)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            18, 
+true),
+        ];
+        public const string FormatMessage = "AUTOPILOT_VERSION:"
+        + "uint64_t capabilities;"
+        + "uint64_t uid;"
+        + "uint32_t flight_sw_version;"
+        + "uint32_t middleware_sw_version;"
+        + "uint32_t os_sw_version;"
+        + "uint32_t board_version;"
+        + "uint16_t vendor_id;"
+        + "uint16_t product_id;"
+        + "uint8_t[8] flight_custom_version;"
+        + "uint8_t[8] middleware_custom_version;"
+        + "uint8_t[8] os_custom_version;"
+        + "uint8_t[18] uid2;"
+        ;
     }
 
     /// <summary>
@@ -23595,6 +34211,154 @@ namespace Asv.Mavlink.Common
         public override LandingTargetPayload Payload { get; } = new();
 
         public override string Name => "LANDING_TARGET";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("angle_x",
+"X-axis angular offset of the target from the center of the image",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("angle_y",
+"Y-axis angular offset of the target from the center of the image",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("distance",
+"Distance to the target from the vehicle",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("size_x",
+"Size of target along x-axis",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("size_y",
+"Size of target along y-axis",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("target_num",
+"The ID of the target if multiple targets are present",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("frame",
+"Coordinate frame used for following fields.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("x",
+"X Position of the landing target in MAV_FRAME",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+            new("y",
+"Y Position of the landing target in MAV_FRAME",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+            new("z",
+"Z Position of the landing target in MAV_FRAME",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+            new("q",
+"Quaternion of landing target orientation (w, x, y, z order, zero-rotation is 1, 0, 0, 0)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+true),
+            new("type",
+"Type of landing target",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("position_valid",
+"Boolean indicating whether the position fields (x, y, z, q, type) contain valid target position information (valid: 1, invalid: 0). Default is 0 (invalid).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "LANDING_TARGET:"
+        + "uint64_t time_usec;"
+        + "float angle_x;"
+        + "float angle_y;"
+        + "float distance;"
+        + "float size_x;"
+        + "float size_y;"
+        + "uint8_t target_num;"
+        + "uint8_t frame;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "float[4] q;"
+        + "uint8_t type;"
+        + "uint8_t position_valid;"
+        ;
     }
 
     /// <summary>
@@ -23784,6 +34548,64 @@ namespace Asv.Mavlink.Common
         public override FenceStatusPayload Payload { get; } = new();
 
         public override string Name => "FENCE_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("breach_time",
+"Time (since boot) of last breach.",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("breach_count",
+"Number of fence breaches.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("breach_status",
+"Breach status (0 if currently inside fence, 1 if outside).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("breach_type",
+"Last breach type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("breach_mitigation",
+"Active action to prevent fence breach",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "FENCE_STATUS:"
+        + "uint32_t breach_time;"
+        + "uint16_t breach_count;"
+        + "uint8_t breach_status;"
+        + "uint8_t breach_type;"
+        + "uint8_t breach_mitigation;"
+        ;
     }
 
     /// <summary>
@@ -23881,6 +34703,194 @@ namespace Asv.Mavlink.Common
         public override MagCalReportPayload Payload { get; } = new();
 
         public override string Name => "MAG_CAL_REPORT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("fitness",
+"RMS milligauss residuals.",
+string.Empty, 
+@"mgauss", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ofs_x",
+"X offset.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ofs_y",
+"Y offset.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ofs_z",
+"Z offset.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("diag_x",
+"X diagonal (matrix 11).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("diag_y",
+"Y diagonal (matrix 22).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("diag_z",
+"Z diagonal (matrix 33).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("offdiag_x",
+"X off-diagonal (matrix 12 and 21).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("offdiag_y",
+"Y off-diagonal (matrix 13 and 31).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("offdiag_z",
+"Z off-diagonal (matrix 32 and 23).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("compass_id",
+"Compass being calibrated.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("cal_mask",
+"Bitmask of compasses being calibrated.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("cal_status",
+"Calibration Status.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("autosaved",
+"0=requires a MAV_CMD_DO_ACCEPT_MAG_CAL, 1=saved to parameters.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("orientation_confidence",
+"Confidence in orientation (higher is better).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+            new("old_orientation",
+"orientation before calibration.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("new_orientation",
+"orientation after calibration.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("scale_factor",
+"field radius correction factor",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MAG_CAL_REPORT:"
+        + "float fitness;"
+        + "float ofs_x;"
+        + "float ofs_y;"
+        + "float ofs_z;"
+        + "float diag_x;"
+        + "float diag_y;"
+        + "float diag_z;"
+        + "float offdiag_x;"
+        + "float offdiag_y;"
+        + "float offdiag_z;"
+        + "uint8_t compass_id;"
+        + "uint8_t cal_mask;"
+        + "uint8_t cal_status;"
+        + "uint8_t autosaved;"
+        + "float orientation_confidence;"
+        + "uint8_t old_orientation;"
+        + "uint8_t new_orientation;"
+        + "float scale_factor;"
+        ;
     }
 
     /// <summary>
@@ -24088,6 +35098,204 @@ namespace Asv.Mavlink.Common
         public override EfiStatusPayload Payload { get; } = new();
 
         public override string Name => "EFI_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("ecu_index",
+"ECU index",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rpm",
+"RPM",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("fuel_consumed",
+"Fuel consumed",
+string.Empty, 
+@"cm^3", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("fuel_flow",
+"Fuel flow rate",
+string.Empty, 
+@"cm^3/min", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("engine_load",
+"Engine load",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("throttle_position",
+"Throttle position",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("spark_dwell_time",
+"Spark dwell time",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("barometric_pressure",
+"Barometric pressure",
+string.Empty, 
+@"kPa", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("intake_manifold_pressure",
+"Intake manifold pressure(",
+string.Empty, 
+@"kPa", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("intake_manifold_temperature",
+"Intake manifold temperature",
+string.Empty, 
+@"degC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("cylinder_head_temperature",
+"Cylinder head temperature",
+string.Empty, 
+@"degC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ignition_timing",
+"Ignition timing (Crank angle degrees)",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("injection_time",
+"Injection time",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("exhaust_gas_temperature",
+"Exhaust gas temperature",
+string.Empty, 
+@"degC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("throttle_out",
+"Output throttle",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pt_compensation",
+"Pressure/temperature compensation",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("health",
+"EFI health status",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("ignition_voltage",
+"Supply voltage to EFI sparking system.  Zero in this value means \"unknown\", so if the supply voltage really is zero volts use 0.0001 instead.",
+string.Empty, 
+@"V", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+            new("fuel_pressure",
+"Fuel pressure. Zero in this value means \"unknown\", so if the fuel pressure really is zero kPa use 0.0001 instead.",
+string.Empty, 
+@"kPa", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "EFI_STATUS:"
+        + "float ecu_index;"
+        + "float rpm;"
+        + "float fuel_consumed;"
+        + "float fuel_flow;"
+        + "float engine_load;"
+        + "float throttle_position;"
+        + "float spark_dwell_time;"
+        + "float barometric_pressure;"
+        + "float intake_manifold_pressure;"
+        + "float intake_manifold_temperature;"
+        + "float cylinder_head_temperature;"
+        + "float ignition_timing;"
+        + "float injection_time;"
+        + "float exhaust_gas_temperature;"
+        + "float throttle_out;"
+        + "float pt_compensation;"
+        + "uint8_t health;"
+        + "float ignition_voltage;"
+        + "float fuel_pressure;"
+        ;
     }
 
     /// <summary>
@@ -24299,6 +35507,114 @@ namespace Asv.Mavlink.Common
         public override EstimatorStatusPayload Payload { get; } = new();
 
         public override string Name => "ESTIMATOR_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("vel_ratio",
+"Velocity innovation test ratio",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pos_horiz_ratio",
+"Horizontal position innovation test ratio",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pos_vert_ratio",
+"Vertical position innovation test ratio",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("mag_ratio",
+"Magnetometer innovation test ratio",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("hagl_ratio",
+"Height above terrain innovation test ratio",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("tas_ratio",
+"True airspeed innovation test ratio",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pos_horiz_accuracy",
+"Horizontal position 1-STD accuracy relative to the EKF local origin",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pos_vert_accuracy",
+"Vertical position 1-STD accuracy relative to the EKF local origin",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("flags",
+"Bitmap indicating which EKF outputs are valid.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ESTIMATOR_STATUS:"
+        + "uint64_t time_usec;"
+        + "float vel_ratio;"
+        + "float pos_horiz_ratio;"
+        + "float pos_vert_ratio;"
+        + "float mag_ratio;"
+        + "float hagl_ratio;"
+        + "float tas_ratio;"
+        + "float pos_horiz_accuracy;"
+        + "float pos_vert_accuracy;"
+        + "uint16_t flags;"
+        ;
     }
 
     /// <summary>
@@ -24434,6 +35750,104 @@ namespace Asv.Mavlink.Common
         public override WindCovPayload Payload { get; } = new();
 
         public override string Name => "WIND_COV";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("wind_x",
+"Wind in North (NED) direction (NAN if unknown)",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("wind_y",
+"Wind in East (NED) direction (NAN if unknown)",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("wind_z",
+"Wind in down (NED) direction (NAN if unknown)",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("var_horiz",
+"Variability of wind in XY, 1-STD estimated from a 1 Hz lowpassed wind estimate (NAN if unknown)",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("var_vert",
+"Variability of wind in Z, 1-STD estimated from a 1 Hz lowpassed wind estimate (NAN if unknown)",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("wind_alt",
+"Altitude (MSL) that this measurement was taken at (NAN if unknown)",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("horiz_accuracy",
+"Horizontal speed 1-STD accuracy (0 if unknown)",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vert_accuracy",
+"Vertical speed 1-STD accuracy (0 if unknown)",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "WIND_COV:"
+        + "uint64_t time_usec;"
+        + "float wind_x;"
+        + "float wind_y;"
+        + "float wind_z;"
+        + "float var_horiz;"
+        + "float var_vert;"
+        + "float wind_alt;"
+        + "float horiz_accuracy;"
+        + "float vert_accuracy;"
+        ;
     }
 
     /// <summary>
@@ -24561,6 +35975,204 @@ namespace Asv.Mavlink.Common
         public override GpsInputPayload Payload { get; } = new();
 
         public override string Name => "GPS_INPUT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("time_week_ms",
+"GPS time (from start of GPS week)",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("lat",
+"Latitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude (MSL). Positive for up.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("hdop",
+"GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vdop",
+"GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vn",
+"GPS velocity in north direction in earth-fixed NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ve",
+"GPS velocity in east direction in earth-fixed NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vd",
+"GPS velocity in down direction in earth-fixed NED frame",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("speed_accuracy",
+"GPS speed accuracy",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("horiz_accuracy",
+"GPS horizontal accuracy",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vert_accuracy",
+"GPS vertical accuracy",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ignore_flags",
+"Bitmap indicating which GPS input flags fields to ignore.  All other fields must be provided.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("time_week",
+"GPS week number",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("gps_id",
+"ID of the GPS for multiple GPS inputs",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("fix_type",
+"0-1: no fix, 2: 2D fix, 3: 3D fix. 4: 3D with DGPS. 5: 3D with RTK",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("satellites_visible",
+"Number of satellites visible.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("yaw",
+"Yaw of vehicle relative to Earth's North, zero means not available, use 36000 for north",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "GPS_INPUT:"
+        + "uint64_t time_usec;"
+        + "uint32_t time_week_ms;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "float alt;"
+        + "float hdop;"
+        + "float vdop;"
+        + "float vn;"
+        + "float ve;"
+        + "float vd;"
+        + "float speed_accuracy;"
+        + "float horiz_accuracy;"
+        + "float vert_accuracy;"
+        + "uint16_t ignore_flags;"
+        + "uint16_t time_week;"
+        + "uint8_t gps_id;"
+        + "uint8_t fix_type;"
+        + "uint8_t satellites_visible;"
+        + "uint16_t yaw;"
+        ;
     }
 
     /// <summary>
@@ -24770,6 +36382,44 @@ namespace Asv.Mavlink.Common
         public override GpsRtcmDataPayload Payload { get; } = new();
 
         public override string Name => "GPS_RTCM_DATA";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("flags",
+"LSB: 1 means message is fragmented, next 2 bits are the fragment ID, the remaining 5 bits are used for the sequence ID. Messages are only to be flushed to the GPS when the entire message has been reconstructed on the autopilot. The fragment ID specifies which order the fragments should be assembled into a buffer, while the sequence ID is used to detect a mismatch between different buffers. The buffer is considered fully reconstructed when either all 4 fragments are present, or all the fragments before the first fragment with a non full payload is received. This management is used to ensure that normal GPS operation doesn't corrupt RTCM data, and to recover from a unreliable transport delivery order.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("len",
+"data length",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"RTCM message (may be fragmented)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            180, 
+false),
+        ];
+        public const string FormatMessage = "GPS_RTCM_DATA:"
+        + "uint8_t flags;"
+        + "uint8_t len;"
+        + "uint8_t[180] data;"
+        ;
     }
 
     /// <summary>
@@ -24862,6 +36512,254 @@ namespace Asv.Mavlink.Common
         public override HighLatencyPayload Payload { get; } = new();
 
         public override string Name => "HIGH_LATENCY";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("custom_mode",
+"A bitfield for use for autopilot-specific flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("latitude",
+"Latitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("longitude",
+"Longitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("roll",
+"roll",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("pitch",
+"pitch",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("heading",
+"heading",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("heading_sp",
+"heading setpoint",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("altitude_amsl",
+"Altitude above mean sea level",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("altitude_sp",
+"Altitude setpoint relative to the home position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("wp_distance",
+"distance to target",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("base_mode",
+"Bitmap of enabled system modes.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("landed_state",
+"The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("throttle",
+"throttle (percentage)",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("airspeed",
+"airspeed",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("airspeed_sp",
+"airspeed setpoint",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("groundspeed",
+"groundspeed",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("climb_rate",
+"climb rate",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("gps_nsat",
+"Number of satellites visible. If unknown, set to UINT8_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("gps_fix_type",
+"GPS Fix type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("battery_remaining",
+"Remaining battery (percentage)",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("temperature",
+"Autopilot temperature (degrees C)",
+string.Empty, 
+@"degC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("temperature_air",
+"Air temperature (degrees C) from airspeed sensor",
+string.Empty, 
+@"degC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("failsafe",
+"failsafe (each bit represents a failsafe where 0=ok, 1=failsafe active (bit0:RC, bit1:batt, bit2:GPS, bit3:GCS, bit4:fence)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("wp_num",
+"current waypoint number",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "HIGH_LATENCY:"
+        + "uint32_t custom_mode;"
+        + "int32_t latitude;"
+        + "int32_t longitude;"
+        + "int16_t roll;"
+        + "int16_t pitch;"
+        + "uint16_t heading;"
+        + "int16_t heading_sp;"
+        + "int16_t altitude_amsl;"
+        + "int16_t altitude_sp;"
+        + "uint16_t wp_distance;"
+        + "uint8_t base_mode;"
+        + "uint8_t landed_state;"
+        + "int8_t throttle;"
+        + "uint8_t airspeed;"
+        + "uint8_t airspeed_sp;"
+        + "uint8_t groundspeed;"
+        + "int8_t climb_rate;"
+        + "uint8_t gps_nsat;"
+        + "uint8_t gps_fix_type;"
+        + "uint8_t battery_remaining;"
+        + "int8_t temperature;"
+        + "int8_t temperature_air;"
+        + "uint8_t failsafe;"
+        + "uint8_t wp_num;"
+        ;
     }
 
     /// <summary>
@@ -25109,6 +37007,284 @@ namespace Asv.Mavlink.Common
         public override HighLatency2Payload Payload { get; } = new();
 
         public override string Name => "HIGH_LATENCY2";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("timestamp",
+"Timestamp (milliseconds since boot or Unix epoch)",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("latitude",
+"Latitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("longitude",
+"Longitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("custom_mode",
+"A bitfield for use for autopilot-specific flags (2 byte version).",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("altitude",
+"Altitude above mean sea level",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("target_altitude",
+"Altitude setpoint",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("target_distance",
+"Distance to target waypoint or position",
+string.Empty, 
+@"dam", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("wp_num",
+"Current waypoint number",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("failure_flags",
+"Bitmap of failure flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("type",
+"Type of the MAV (quadrotor, helicopter, etc.)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("autopilot",
+"Autopilot type / class. Use MAV_AUTOPILOT_INVALID for components that are not flight controllers.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("heading",
+"Heading",
+string.Empty, 
+@"deg/2", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_heading",
+"Heading setpoint",
+string.Empty, 
+@"deg/2", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("throttle",
+"Throttle",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("airspeed",
+"Airspeed",
+string.Empty, 
+@"m/s*5", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("airspeed_sp",
+"Airspeed setpoint",
+string.Empty, 
+@"m/s*5", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("groundspeed",
+"Groundspeed",
+string.Empty, 
+@"m/s*5", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("windspeed",
+"Windspeed",
+string.Empty, 
+@"m/s*5", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("wind_heading",
+"Wind heading",
+string.Empty, 
+@"deg/2", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("eph",
+"Maximum error horizontal position since last message",
+string.Empty, 
+@"dm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("epv",
+"Maximum error vertical position since last message",
+string.Empty, 
+@"dm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("temperature_air",
+"Air temperature from airspeed sensor",
+string.Empty, 
+@"degC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("climb_rate",
+"Maximum climb rate magnitude since last message",
+string.Empty, 
+@"dm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("battery",
+"Battery level (-1 if field not provided).",
+string.Empty, 
+@"%", 
+string.Empty, 
+@"-1", 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("custom0",
+"Field for custom payload.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("custom1",
+"Field for custom payload.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("custom2",
+"Field for custom payload.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "HIGH_LATENCY2:"
+        + "uint32_t timestamp;"
+        + "int32_t latitude;"
+        + "int32_t longitude;"
+        + "uint16_t custom_mode;"
+        + "int16_t altitude;"
+        + "int16_t target_altitude;"
+        + "uint16_t target_distance;"
+        + "uint16_t wp_num;"
+        + "uint16_t failure_flags;"
+        + "uint8_t type;"
+        + "uint8_t autopilot;"
+        + "uint8_t heading;"
+        + "uint8_t target_heading;"
+        + "uint8_t throttle;"
+        + "uint8_t airspeed;"
+        + "uint8_t airspeed_sp;"
+        + "uint8_t groundspeed;"
+        + "uint8_t windspeed;"
+        + "uint8_t wind_heading;"
+        + "uint8_t eph;"
+        + "uint8_t epv;"
+        + "int8_t temperature_air;"
+        + "int8_t climb_rate;"
+        + "int8_t battery;"
+        + "int8_t custom0;"
+        + "int8_t custom1;"
+        + "int8_t custom2;"
+        ;
     }
 
     /// <summary>
@@ -25380,6 +37556,84 @@ namespace Asv.Mavlink.Common
         public override VibrationPayload Payload { get; } = new();
 
         public override string Name => "VIBRATION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("vibration_x",
+"Vibration levels on X-axis",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vibration_y",
+"Vibration levels on Y-axis",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vibration_z",
+"Vibration levels on Z-axis",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("clipping_0",
+"first accelerometer clipping count",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("clipping_1",
+"second accelerometer clipping count",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("clipping_2",
+"third accelerometer clipping count",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "VIBRATION:"
+        + "uint64_t time_usec;"
+        + "float vibration_x;"
+        + "float vibration_y;"
+        + "float vibration_z;"
+        + "uint32_t clipping_0;"
+        + "uint32_t clipping_1;"
+        + "uint32_t clipping_2;"
+        ;
     }
 
     /// <summary>
@@ -25499,6 +37753,124 @@ namespace Asv.Mavlink.Common
         public override HomePositionPayload Payload { get; } = new();
 
         public override string Name => "HOME_POSITION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("latitude",
+"Latitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("longitude",
+"Longitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("altitude",
+"Altitude (MSL). Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("x",
+"Local X position of this position in the local coordinate frame (NED)",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+"Local Y position of this position in the local coordinate frame (NED)",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+"Local Z position of this position in the local coordinate frame (NED: positive \"down\")",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("q",
+"         Quaternion indicating world-to-surface-normal and heading transformation of the takeoff position.         Used to indicate the heading and slope of the ground.         All fields should be set to NaN if an accurate quaternion for both heading and surface slope cannot be supplied.       ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("approach_x",
+"Local X position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("approach_y",
+"Local Y position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("approach_z",
+"Local Z position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "HOME_POSITION:"
+        + "int32_t latitude;"
+        + "int32_t longitude;"
+        + "int32_t altitude;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "float[4] q;"
+        + "float approach_x;"
+        + "float approach_y;"
+        + "float approach_z;"
+        + "uint64_t time_usec;"
+        ;
     }
 
     /// <summary>
@@ -25669,6 +38041,134 @@ namespace Asv.Mavlink.Common
         public override SetHomePositionPayload Payload { get; } = new();
 
         public override string Name => "SET_HOME_POSITION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("latitude",
+"Latitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("longitude",
+"Longitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("altitude",
+"Altitude (MSL). Positive for up.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("x",
+"Local X position of this position in the local coordinate frame (NED)",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+"Local Y position of this position in the local coordinate frame (NED)",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+"Local Z position of this position in the local coordinate frame (NED: positive \"down\")",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("q",
+"World to surface normal and heading transformation of the takeoff position. Used to indicate the heading and slope of the ground",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("approach_x",
+"Local X position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("approach_y",
+"Local Y position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("approach_z",
+"Local Z position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "SET_HOME_POSITION:"
+        + "int32_t latitude;"
+        + "int32_t longitude;"
+        + "int32_t altitude;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "float[4] q;"
+        + "float approach_x;"
+        + "float approach_y;"
+        + "float approach_z;"
+        + "uint8_t target_system;"
+        + "uint64_t time_usec;"
+        ;
     }
 
     /// <summary>
@@ -25839,6 +38339,34 @@ namespace Asv.Mavlink.Common
         public override MessageIntervalPayload Payload { get; } = new();
 
         public override string Name => "MESSAGE_INTERVAL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("interval_us",
+"The interval between two messages. A value of -1 indicates this stream is disabled, 0 indicates it is not available, > 0 indicates the interval at which it is sent.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("message_id",
+"The ID of the requested MAVLink message. v1.0 is limited to 254 messages.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "MESSAGE_INTERVAL:"
+        + "int32_t interval_us;"
+        + "uint16_t message_id;"
+        ;
     }
 
     /// <summary>
@@ -25910,6 +38438,34 @@ namespace Asv.Mavlink.Common
         public override ExtendedSysStatePayload Payload { get; } = new();
 
         public override string Name => "EXTENDED_SYS_STATE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("vtol_state",
+"The VTOL state if applicable. Is set to MAV_VTOL_STATE_UNDEFINED if UAV is not in VTOL configuration.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("landed_state",
+"The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "EXTENDED_SYS_STATE:"
+        + "uint8_t vtol_state;"
+        + "uint8_t landed_state;"
+        ;
     }
 
     /// <summary>
@@ -25981,6 +38537,144 @@ namespace Asv.Mavlink.Common
         public override AdsbVehiclePayload Payload { get; } = new();
 
         public override string Name => "ADSB_VEHICLE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("ICAO_address",
+"ICAO address",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("lat",
+"Latitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("altitude",
+"Altitude(ASL)",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("heading",
+"Course over ground",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("hor_velocity",
+"The horizontal velocity",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("ver_velocity",
+"The vertical velocity. Positive is up",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("flags",
+"Bitmap to indicate various statuses including valid data fields",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("squawk",
+"Squawk code",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("altitude_type",
+"ADSB altitude type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("callsign",
+"The callsign, 8+null",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            9, 
+false),
+            new("emitter_type",
+"ADSB emitter type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("tslc",
+"Time since last communication in seconds",
+string.Empty, 
+@"s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ADSB_VEHICLE:"
+        + "uint32_t ICAO_address;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "int32_t altitude;"
+        + "uint16_t heading;"
+        + "uint16_t hor_velocity;"
+        + "int16_t ver_velocity;"
+        + "uint16_t flags;"
+        + "uint16_t squawk;"
+        + "uint8_t altitude_type;"
+        + "char[9] callsign;"
+        + "uint8_t emitter_type;"
+        + "uint8_t tslc;"
+        ;
     }
 
     /// <summary>
@@ -26165,6 +38859,84 @@ namespace Asv.Mavlink.Common
         public override CollisionPayload Payload { get; } = new();
 
         public override string Name => "COLLISION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("id",
+"Unique identifier, domain based on src field",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("time_to_minimum_delta",
+"Estimated time until collision occurs",
+string.Empty, 
+@"s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("altitude_minimum_delta",
+"Closest vertical distance between vehicle and object",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("horizontal_minimum_delta",
+"Closest horizontal distance between vehicle and object",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("src",
+"Collision data source",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("action",
+"Action that is being taken to avoid this collision",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("threat_level",
+"How concerned the aircraft is about this collision",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "COLLISION:"
+        + "uint32_t id;"
+        + "float time_to_minimum_delta;"
+        + "float altitude_minimum_delta;"
+        + "float horizontal_minimum_delta;"
+        + "uint8_t src;"
+        + "uint8_t action;"
+        + "uint8_t threat_level;"
+        ;
     }
 
     /// <summary>
@@ -26276,6 +39048,64 @@ namespace Asv.Mavlink.Common
         public override V2ExtensionPayload Payload { get; } = new();
 
         public override string Name => "V2_EXTENSION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("message_type",
+"A code that identifies the software component that understands this message (analogous to USB device classes or mime type strings). If this code is less than 32768, it is considered a 'registered' protocol extension and the corresponding entry should be added to https://github.com/mavlink/mavlink/definition_files/extension_message_ids.xml. Software creators can register blocks of message IDs as needed (useful for GCS specific metadata, etc...). Message_types greater than 32767 are considered local experiments and should not be checked in to any widely distributed codebase.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_network",
+"Network ID (0 for broadcast)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_system",
+"System ID (0 for broadcast)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID (0 for broadcast)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("payload",
+"Variable length payload. The length must be encoded in the payload as part of the message_type protocol, e.g. by including the length as payload data, or by terminating the payload data with a non-zero marker. This is required in order to reconstruct zero-terminated payloads that are (or otherwise would be) trimmed by MAVLink 2 empty-byte truncation. The entire content of the payload block is opaque unless you understand the encoding message_type. The particular encoding used can be extension specific and might not always be documented as part of the MAVLink specification.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            249, 
+false),
+        ];
+        public const string FormatMessage = "V2_EXTENSION:"
+        + "uint16_t message_type;"
+        + "uint8_t target_network;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t[249] payload;"
+        ;
     }
 
     /// <summary>
@@ -26384,6 +39214,54 @@ namespace Asv.Mavlink.Common
         public override MemoryVectPayload Payload { get; } = new();
 
         public override string Name => "MEMORY_VECT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("address",
+"Starting address of the debug variables",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("ver",
+"Version code of the type variable. 0=unknown, type ignored and assumed int16_t. 1=as below",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("type",
+"Type code of the memory variables. for ver = 1: 0=16 x int16_t, 1=16 x uint16_t, 2=16 x Q15, 3=16 x 1Q14",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("value",
+"Memory contents at specified address",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            32, 
+false),
+        ];
+        public const string FormatMessage = "MEMORY_VECT:"
+        + "uint16_t address;"
+        + "uint8_t ver;"
+        + "uint8_t type;"
+        + "int8_t[32] value;"
+        ;
     }
 
     /// <summary>
@@ -26484,6 +39362,64 @@ namespace Asv.Mavlink.Common
         public override DebugVectPayload Payload { get; } = new();
 
         public override string Name => "DEBUG_VECT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("x",
+"x",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+"y",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+"z",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("name",
+"Name",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            10, 
+false),
+        ];
+        public const string FormatMessage = "DEBUG_VECT:"
+        + "uint64_t time_usec;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "char[10] name;"
+        ;
     }
 
     /// <summary>
@@ -26604,6 +39540,44 @@ namespace Asv.Mavlink.Common
         public override NamedValueFloatPayload Payload { get; } = new();
 
         public override string Name => "NAMED_VALUE_FLOAT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("value",
+"Floating point value",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("name",
+"Name of the debug variable",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            10, 
+false),
+        ];
+        public const string FormatMessage = "NAMED_VALUE_FLOAT:"
+        + "uint32_t time_boot_ms;"
+        + "float value;"
+        + "char[10] name;"
+        ;
     }
 
     /// <summary>
@@ -26708,6 +39682,44 @@ namespace Asv.Mavlink.Common
         public override NamedValueIntPayload Payload { get; } = new();
 
         public override string Name => "NAMED_VALUE_INT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("value",
+"Signed integer value",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("name",
+"Name of the debug variable",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            10, 
+false),
+        ];
+        public const string FormatMessage = "NAMED_VALUE_INT:"
+        + "uint32_t time_boot_ms;"
+        + "int32_t value;"
+        + "char[10] name;"
+        ;
     }
 
     /// <summary>
@@ -26812,6 +39824,54 @@ namespace Asv.Mavlink.Common
         public override StatustextPayload Payload { get; } = new();
 
         public override string Name => "STATUSTEXT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("severity",
+"Severity of status. Relies on the definitions within RFC-5424.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("text",
+"Status text message, without null termination character",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            50, 
+false),
+            new("id",
+"Unique (opaque) identifier for this statustext message.  May be used to reassemble a logical long-statustext message from a sequence of chunks.  A value of zero indicates this is the only chunk in the sequence and the message can be emitted immediately.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("chunk_seq",
+"This chunk's sequence number; indexing is from zero.  Any null character in the text field is taken to mean this was the last chunk.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "STATUSTEXT:"
+        + "uint8_t severity;"
+        + "char[50] text;"
+        + "uint16_t id;"
+        + "uint8_t chunk_seq;"
+        ;
     }
 
     /// <summary>
@@ -26928,6 +39988,44 @@ namespace Asv.Mavlink.Common
         public override DebugPayload Payload { get; } = new();
 
         public override string Name => "DEBUG";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("value",
+"DEBUG value",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ind",
+"index of debug variable",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "DEBUG:"
+        + "uint32_t time_boot_ms;"
+        + "float value;"
+        + "uint8_t ind;"
+        ;
     }
 
     /// <summary>
@@ -27007,6 +40105,54 @@ namespace Asv.Mavlink.Common
         public override SetupSigningPayload Payload { get; } = new();
 
         public override string Name => "SETUP_SIGNING";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("initial_timestamp",
+"initial timestamp",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("target_system",
+"system id of the target",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"component ID of the target",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("secret_key",
+"signing key",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            32, 
+false),
+        ];
+        public const string FormatMessage = "SETUP_SIGNING:"
+        + "uint64_t initial_timestamp;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t[32] secret_key;"
+        ;
     }
 
     /// <summary>
@@ -27107,6 +40253,44 @@ namespace Asv.Mavlink.Common
         public override ButtonChangePayload Payload { get; } = new();
 
         public override string Name => "BUTTON_CHANGE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("last_change_ms",
+"Time of last change of button state.",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("state",
+"Bitmap for state of buttons.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "BUTTON_CHANGE:"
+        + "uint32_t time_boot_ms;"
+        + "uint32_t last_change_ms;"
+        + "uint8_t state;"
+        ;
     }
 
     /// <summary>
@@ -27186,6 +40370,54 @@ namespace Asv.Mavlink.Common
         public override PlayTunePayload Payload { get; } = new();
 
         public override string Name => "PLAY_TUNE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("tune",
+"tune in board specific format",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            30, 
+false),
+            new("tune2",
+"tune extension (appended to tune)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            200, 
+true),
+        ];
+        public const string FormatMessage = "PLAY_TUNE:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "char[30] tune;"
+        + "char[200] tune2;"
+        ;
     }
 
     /// <summary>
@@ -27320,6 +40552,154 @@ namespace Asv.Mavlink.Common
         public override CameraInformationPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_INFORMATION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("firmware_version",
+"Version of the camera firmware, encoded as: (Dev & 0xff) << 24 | (Patch & 0xff) << 16 | (Minor & 0xff) << 8 | (Major & 0xff). Use 0 if not known.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("focal_length",
+"Focal length. Use NaN if not known.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("sensor_size_h",
+"Image sensor size horizontal. Use NaN if not known.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("sensor_size_v",
+"Image sensor size vertical. Use NaN if not known.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("flags",
+"Bitmap of camera capability flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("resolution_h",
+"Horizontal image resolution. Use 0 if not known.",
+string.Empty, 
+@"pix", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("resolution_v",
+"Vertical image resolution. Use 0 if not known.",
+string.Empty, 
+@"pix", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("cam_definition_version",
+"Camera definition version (iteration).  Use 0 if not known.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("vendor_name",
+"Name of the camera vendor",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            32, 
+false),
+            new("model_name",
+"Name of the camera model",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            32, 
+false),
+            new("lens_id",
+"Reserved for a lens ID.  Use 0 if not known.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("cam_definition_uri",
+"Camera definition URI (if any, otherwise only basic functions will be available). HTTP- (http://) and MAVLink FTP- (mavlinkftp://) formatted URIs are allowed (and both must be supported by any GCS that implements the Camera Protocol). The definition file may be xz compressed, which will be indicated by the file extension .xml.xz (a GCS that implements the protocol must support decompressing the file). The string needs to be zero terminated.  Use a zero-length string if not known.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            140, 
+false),
+            new("gimbal_device_id",
+"Gimbal id of a gimbal associated with this camera. This is the component id of the gimbal device, or 1-6 for non mavlink gimbals. Use 0 if no gimbal is associated with the camera.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "CAMERA_INFORMATION:"
+        + "uint32_t time_boot_ms;"
+        + "uint32_t firmware_version;"
+        + "float focal_length;"
+        + "float sensor_size_h;"
+        + "float sensor_size_v;"
+        + "uint32_t flags;"
+        + "uint16_t resolution_h;"
+        + "uint16_t resolution_v;"
+        + "uint16_t cam_definition_version;"
+        + "uint8_t[32] vendor_name;"
+        + "uint8_t[32] model_name;"
+        + "uint8_t lens_id;"
+        + "char[140] cam_definition_uri;"
+        + "uint8_t gimbal_device_id;"
+        ;
     }
 
     /// <summary>
@@ -27530,6 +40910,54 @@ namespace Asv.Mavlink.Common
         public override CameraSettingsPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_SETTINGS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("mode_id",
+"Camera mode",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("zoomLevel",
+"Current zoom level as a percentage of the full range (0.0 to 100.0, NaN if not known)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+true),
+            new("focusLevel",
+"Current focus level as a percentage of the full range (0.0 to 100.0, NaN if not known)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "CAMERA_SETTINGS:"
+        + "uint32_t time_boot_ms;"
+        + "uint8_t mode_id;"
+        + "float zoomLevel;"
+        + "float focusLevel;"
+        ;
     }
 
     /// <summary>
@@ -27621,6 +41049,134 @@ namespace Asv.Mavlink.Common
         public override StorageInformationPayload Payload { get; } = new();
 
         public override string Name => "STORAGE_INFORMATION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("total_capacity",
+"Total capacity. If storage is not ready (STORAGE_STATUS_READY) value will be ignored.",
+string.Empty, 
+@"MiB", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("used_capacity",
+"Used capacity. If storage is not ready (STORAGE_STATUS_READY) value will be ignored.",
+string.Empty, 
+@"MiB", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("available_capacity",
+"Available storage capacity. If storage is not ready (STORAGE_STATUS_READY) value will be ignored.",
+string.Empty, 
+@"MiB", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("read_speed",
+"Read speed.",
+string.Empty, 
+@"MiB/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("write_speed",
+"Write speed.",
+string.Empty, 
+@"MiB/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("storage_id",
+"Storage ID (1 for first, 2 for second, etc.)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("storage_count",
+"Number of storage devices",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("status",
+"Status of storage",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("type",
+"Type of storage",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("name",
+"Textual storage name to be used in UI (microSD 1, Internal Memory, etc.) This is a NULL terminated string. If it is exactly 32 characters long, add a terminating NULL. If this string is empty, the generic type is shown to the user.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            32, 
+true),
+            new("storage_usage",
+"Flags indicating whether this instance is preferred storage for photos, videos, etc.         Note: Implementations should initially set the flags on the system-default storage id used for saving media (if possible/supported).         This setting can then be overridden using MAV_CMD_SET_STORAGE_USAGE.         If the media usage flags are not set, a GCS may assume storage ID 1 is the default storage for all media types.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "STORAGE_INFORMATION:"
+        + "uint32_t time_boot_ms;"
+        + "float total_capacity;"
+        + "float used_capacity;"
+        + "float available_capacity;"
+        + "float read_speed;"
+        + "float write_speed;"
+        + "uint8_t storage_id;"
+        + "uint8_t storage_count;"
+        + "uint8_t status;"
+        + "uint8_t type;"
+        + "char[32] name;"
+        + "uint8_t storage_usage;"
+        ;
     }
 
     /// <summary>
@@ -27803,6 +41359,84 @@ namespace Asv.Mavlink.Common
         public override CameraCaptureStatusPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_CAPTURE_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("image_interval",
+"Image capture interval",
+string.Empty, 
+@"s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("recording_time_ms",
+"Elapsed time since recording started (0: Not supported/available). A GCS should compute recording time and use non-zero values of this field to correct any discrepancy.",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("available_capacity",
+"Available storage capacity.",
+string.Empty, 
+@"MiB", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("image_status",
+"Current status of image capturing (0: idle, 1: capture in progress, 2: interval set but idle, 3: interval set and capture in progress)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("video_status",
+"Current status of video capturing (0: idle, 1: capture in progress)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("image_count",
+"Total number of images captured ('forever', or until reset using MAV_CMD_STORAGE_FORMAT).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "CAMERA_CAPTURE_STATUS:"
+        + "uint32_t time_boot_ms;"
+        + "float image_interval;"
+        + "uint32_t recording_time_ms;"
+        + "float available_capacity;"
+        + "uint8_t image_status;"
+        + "uint8_t video_status;"
+        + "int32_t image_count;"
+        ;
     }
 
     /// <summary>
@@ -27922,6 +41556,124 @@ namespace Asv.Mavlink.Common
         public override CameraImageCapturedPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_IMAGE_CAPTURED";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_utc",
+"Timestamp (time since UNIX epoch) in UTC. 0 for unknown.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("lat",
+"Latitude where image was taken",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude where capture was taken",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude (MSL) where image was taken",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("relative_alt",
+"Altitude above ground",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("q",
+"Quaternion of camera orientation (w, x, y, z order, zero-rotation is 1, 0, 0, 0)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("image_index",
+"Zero based index of this image (i.e. a new image will have index CAMERA_CAPTURE_STATUS.image count -1)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("camera_id",
+"Deprecated/unused. Component IDs are used to differentiate multiple cameras.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("capture_result",
+"Boolean indicating success (1) or failure (0) while capturing this image.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("file_url",
+"URL of image taken. Either local storage or http://foo.jpg if camera provides an HTTP interface.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            205, 
+false),
+        ];
+        public const string FormatMessage = "CAMERA_IMAGE_CAPTURED:"
+        + "uint64_t time_utc;"
+        + "uint32_t time_boot_ms;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "int32_t alt;"
+        + "int32_t relative_alt;"
+        + "float[4] q;"
+        + "int32_t image_index;"
+        + "uint8_t camera_id;"
+        + "int8_t capture_result;"
+        + "char[205] file_url;"
+        ;
     }
 
     /// <summary>
@@ -28100,6 +41852,54 @@ namespace Asv.Mavlink.Common
         public override FlightInformationPayload Payload { get; } = new();
 
         public override string Name => "FLIGHT_INFORMATION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("arming_time_utc",
+"Timestamp at arming (time since UNIX epoch) in UTC, 0 for unknown",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("takeoff_time_utc",
+"Timestamp at takeoff (time since UNIX epoch) in UTC, 0 for unknown",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("flight_uuid",
+"Universally unique identifier (UUID) of flight, should correspond to name of log files",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "FLIGHT_INFORMATION:"
+        + "uint64_t arming_time_utc;"
+        + "uint64_t takeoff_time_utc;"
+        + "uint64_t flight_uuid;"
+        + "uint32_t time_boot_ms;"
+        ;
     }
 
     /// <summary>
@@ -28187,6 +41987,64 @@ namespace Asv.Mavlink.Common
         public override MountOrientationPayload Payload { get; } = new();
 
         public override string Name => "MOUNT_ORIENTATION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("roll",
+"Roll in global frame (set to NaN for invalid).",
+string.Empty, 
+@"deg", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch",
+"Pitch in global frame (set to NaN for invalid).",
+string.Empty, 
+@"deg", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw relative to vehicle (set to NaN for invalid).",
+string.Empty, 
+@"deg", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_absolute",
+"Yaw in absolute frame relative to Earth's North, north is 0 (set to NaN for invalid).",
+string.Empty, 
+@"deg", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "MOUNT_ORIENTATION:"
+        + "uint32_t time_boot_ms;"
+        + "float roll;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float yaw_absolute;"
+        ;
     }
 
     /// <summary>
@@ -28284,6 +42142,74 @@ namespace Asv.Mavlink.Common
         public override LoggingDataPayload Payload { get; } = new();
 
         public override string Name => "LOGGING_DATA";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("sequence",
+"sequence number (can wrap)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"system ID of the target",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"component ID of the target",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("length",
+"data length",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("first_message_offset",
+"offset into data where first message starts. This can be used for recovery, when a previous message got lost (set to UINT8_MAX if no start exists).",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"logged data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            249, 
+false),
+        ];
+        public const string FormatMessage = "LOGGING_DATA:"
+        + "uint16_t sequence;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t length;"
+        + "uint8_t first_message_offset;"
+        + "uint8_t[249] data;"
+        ;
     }
 
     /// <summary>
@@ -28400,6 +42326,74 @@ namespace Asv.Mavlink.Common
         public override LoggingDataAckedPayload Payload { get; } = new();
 
         public override string Name => "LOGGING_DATA_ACKED";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("sequence",
+"sequence number (can wrap)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"system ID of the target",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"component ID of the target",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("length",
+"data length",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("first_message_offset",
+"offset into data where first message starts. This can be used for recovery, when a previous message got lost (set to UINT8_MAX if no start exists).",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"logged data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            249, 
+false),
+        ];
+        public const string FormatMessage = "LOGGING_DATA_ACKED:"
+        + "uint16_t sequence;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t length;"
+        + "uint8_t first_message_offset;"
+        + "uint8_t[249] data;"
+        ;
     }
 
     /// <summary>
@@ -28516,6 +42510,44 @@ namespace Asv.Mavlink.Common
         public override LoggingAckPayload Payload { get; } = new();
 
         public override string Name => "LOGGING_ACK";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("sequence",
+"sequence number (must match the one in LOGGING_DATA_ACKED)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"system ID of the target",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"component ID of the target",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "LOGGING_ACK:"
+        + "uint16_t sequence;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -28595,6 +42627,134 @@ namespace Asv.Mavlink.Common
         public override VideoStreamInformationPayload Payload { get; } = new();
 
         public override string Name => "VIDEO_STREAM_INFORMATION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("framerate",
+"Frame rate.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("bitrate",
+"Bit rate.",
+string.Empty, 
+@"bits/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("flags",
+"Bitmap of stream status flags.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("resolution_h",
+"Horizontal resolution.",
+string.Empty, 
+@"pix", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("resolution_v",
+"Vertical resolution.",
+string.Empty, 
+@"pix", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("rotation",
+"Video image rotation clockwise.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("hfov",
+"Horizontal Field of view.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("stream_id",
+"Video Stream ID (1 for first, 2 for second, etc.)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("count",
+"Number of streams available.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("type",
+"Type of stream.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("name",
+"Stream name.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            32, 
+false),
+            new("uri",
+"Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            160, 
+false),
+        ];
+        public const string FormatMessage = "VIDEO_STREAM_INFORMATION:"
+        + "float framerate;"
+        + "uint32_t bitrate;"
+        + "uint16_t flags;"
+        + "uint16_t resolution_h;"
+        + "uint16_t resolution_v;"
+        + "uint16_t rotation;"
+        + "uint16_t hfov;"
+        + "uint8_t stream_id;"
+        + "uint8_t count;"
+        + "uint8_t type;"
+        + "char[32] name;"
+        + "char[160] uri;"
+        ;
     }
 
     /// <summary>
@@ -28791,6 +42951,94 @@ namespace Asv.Mavlink.Common
         public override VideoStreamStatusPayload Payload { get; } = new();
 
         public override string Name => "VIDEO_STREAM_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("framerate",
+"Frame rate",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("bitrate",
+"Bit rate",
+string.Empty, 
+@"bits/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("flags",
+"Bitmap of stream status flags",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("resolution_h",
+"Horizontal resolution",
+string.Empty, 
+@"pix", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("resolution_v",
+"Vertical resolution",
+string.Empty, 
+@"pix", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("rotation",
+"Video image rotation clockwise",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("hfov",
+"Horizontal Field of view",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("stream_id",
+"Video Stream ID (1 for first, 2 for second, etc.)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "VIDEO_STREAM_STATUS:"
+        + "float framerate;"
+        + "uint32_t bitrate;"
+        + "uint16_t flags;"
+        + "uint16_t resolution_h;"
+        + "uint16_t resolution_v;"
+        + "uint16_t rotation;"
+        + "uint16_t hfov;"
+        + "uint8_t stream_id;"
+        ;
     }
 
     /// <summary>
@@ -28910,6 +43158,114 @@ namespace Asv.Mavlink.Common
         public override CameraFovStatusPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_FOV_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("lat_camera",
+"Latitude of camera (INT32_MAX if unknown).",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+@"INT32_MAX", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon_camera",
+"Longitude of camera (INT32_MAX if unknown).",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+@"INT32_MAX", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt_camera",
+"Altitude (MSL) of camera (INT32_MAX if unknown).",
+string.Empty, 
+@"mm", 
+string.Empty, 
+@"INT32_MAX", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lat_image",
+"Latitude of center of image (INT32_MAX if unknown, INT32_MIN if at infinity, not intersecting with horizon).",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+@"INT32_MAX", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon_image",
+"Longitude of center of image (INT32_MAX if unknown, INT32_MIN if at infinity, not intersecting with horizon).",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+@"INT32_MAX", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt_image",
+"Altitude (MSL) of center of image (INT32_MAX if unknown, INT32_MIN if at infinity, not intersecting with horizon).",
+string.Empty, 
+@"mm", 
+string.Empty, 
+@"INT32_MAX", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("q",
+"Quaternion of camera orientation (w, x, y, z order, zero-rotation is 1, 0, 0, 0)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("hfov",
+"Horizontal field of view (NaN if unknown).",
+string.Empty, 
+@"deg", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vfov",
+"Vertical field of view (NaN if unknown).",
+string.Empty, 
+@"deg", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "CAMERA_FOV_STATUS:"
+        + "uint32_t time_boot_ms;"
+        + "int32_t lat_camera;"
+        + "int32_t lon_camera;"
+        + "int32_t alt_camera;"
+        + "int32_t lat_image;"
+        + "int32_t lon_image;"
+        + "int32_t alt_image;"
+        + "float[4] q;"
+        + "float hfov;"
+        + "float vfov;"
+        ;
     }
 
     /// <summary>
@@ -29058,6 +43414,114 @@ namespace Asv.Mavlink.Common
         public override CameraTrackingImageStatusPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_TRACKING_IMAGE_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("point_x",
+"Current tracked point x value if CAMERA_TRACKING_MODE_POINT (normalized 0..1, 0 is left, 1 is right), NAN if unknown",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("point_y",
+"Current tracked point y value if CAMERA_TRACKING_MODE_POINT (normalized 0..1, 0 is top, 1 is bottom), NAN if unknown",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("radius",
+"Current tracked radius if CAMERA_TRACKING_MODE_POINT (normalized 0..1, 0 is image left, 1 is image right), NAN if unknown",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rec_top_x",
+"Current tracked rectangle top x value if CAMERA_TRACKING_MODE_RECTANGLE (normalized 0..1, 0 is left, 1 is right), NAN if unknown",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rec_top_y",
+"Current tracked rectangle top y value if CAMERA_TRACKING_MODE_RECTANGLE (normalized 0..1, 0 is top, 1 is bottom), NAN if unknown",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rec_bottom_x",
+"Current tracked rectangle bottom x value if CAMERA_TRACKING_MODE_RECTANGLE (normalized 0..1, 0 is left, 1 is right), NAN if unknown",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rec_bottom_y",
+"Current tracked rectangle bottom y value if CAMERA_TRACKING_MODE_RECTANGLE (normalized 0..1, 0 is top, 1 is bottom), NAN if unknown",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("tracking_status",
+"Current tracking status",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("tracking_mode",
+"Current tracking mode",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_data",
+"Defines location of target data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "CAMERA_TRACKING_IMAGE_STATUS:"
+        + "float point_x;"
+        + "float point_y;"
+        + "float radius;"
+        + "float rec_top_x;"
+        + "float rec_top_y;"
+        + "float rec_bottom_x;"
+        + "float rec_bottom_y;"
+        + "uint8_t tracking_status;"
+        + "uint8_t tracking_mode;"
+        + "uint8_t target_data;"
+        ;
     }
 
     /// <summary>
@@ -29193,6 +43657,144 @@ namespace Asv.Mavlink.Common
         public override CameraTrackingGeoStatusPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_TRACKING_GEO_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("lat",
+"Latitude of tracked object",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude of tracked object",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude of tracked object(AMSL, WGS84)",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("h_acc",
+"Horizontal accuracy. NAN if unknown",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("v_acc",
+"Vertical accuracy. NAN if unknown",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vel_n",
+"North velocity of tracked object. NAN if unknown",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vel_e",
+"East velocity of tracked object. NAN if unknown",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vel_d",
+"Down velocity of tracked object. NAN if unknown",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vel_acc",
+"Velocity accuracy. NAN if unknown",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("dist",
+"Distance between camera and tracked object. NAN if unknown",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("hdg",
+"Heading in radians, in NED. NAN if unknown",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("hdg_acc",
+"Accuracy of heading, in NED. NAN if unknown",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("tracking_status",
+"Current tracking status",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "CAMERA_TRACKING_GEO_STATUS:"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "float alt;"
+        + "float h_acc;"
+        + "float v_acc;"
+        + "float vel_n;"
+        + "float vel_e;"
+        + "float vel_d;"
+        + "float vel_acc;"
+        + "float dist;"
+        + "float hdg;"
+        + "float hdg_acc;"
+        + "uint8_t tracking_status;"
+        ;
     }
 
     /// <summary>
@@ -29352,6 +43954,104 @@ namespace Asv.Mavlink.Common
         public override GimbalManagerInformationPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_MANAGER_INFORMATION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("cap_flags",
+"Bitmap of gimbal capability flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("roll_min",
+"Minimum hardware roll angle (positive: rolling to the right, negative: rolling to the left)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("roll_max",
+"Maximum hardware roll angle (positive: rolling to the right, negative: rolling to the left)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch_min",
+"Minimum pitch angle (positive: up, negative: down)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch_max",
+"Maximum pitch angle (positive: up, negative: down)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_min",
+"Minimum yaw angle (positive: to the right, negative: to the left)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_max",
+"Maximum yaw angle (positive: to the right, negative: to the left)",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("gimbal_device_id",
+"Gimbal device ID that this gimbal manager is responsible for. Component ID of gimbal device (or 1-6 for non-MAVLink gimbal).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GIMBAL_MANAGER_INFORMATION:"
+        + "uint32_t time_boot_ms;"
+        + "uint32_t cap_flags;"
+        + "float roll_min;"
+        + "float roll_max;"
+        + "float pitch_min;"
+        + "float pitch_max;"
+        + "float yaw_min;"
+        + "float yaw_max;"
+        + "uint8_t gimbal_device_id;"
+        ;
     }
 
     /// <summary>
@@ -29479,6 +44179,84 @@ namespace Asv.Mavlink.Common
         public override GimbalManagerStatusPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_MANAGER_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("flags",
+"High level gimbal manager flags currently applied.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("gimbal_device_id",
+"Gimbal device ID that this gimbal manager is responsible for. Component ID of gimbal device (or 1-6 for non-MAVLink gimbal).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("primary_control_sysid",
+"System ID of MAVLink component with primary control, 0 for none.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("primary_control_compid",
+"Component ID of MAVLink component with primary control, 0 for none.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("secondary_control_sysid",
+"System ID of MAVLink component with secondary control, 0 for none.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("secondary_control_compid",
+"Component ID of MAVLink component with secondary control, 0 for none.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GIMBAL_MANAGER_STATUS:"
+        + "uint32_t time_boot_ms;"
+        + "uint32_t flags;"
+        + "uint8_t gimbal_device_id;"
+        + "uint8_t primary_control_sysid;"
+        + "uint8_t primary_control_compid;"
+        + "uint8_t secondary_control_sysid;"
+        + "uint8_t secondary_control_compid;"
+        ;
     }
 
     /// <summary>
@@ -29590,6 +44368,94 @@ namespace Asv.Mavlink.Common
         public override GimbalManagerSetAttitudePayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_MANAGER_SET_ATTITUDE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("flags",
+"High level gimbal manager flags to use.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("q",
+"Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation, the frame is depends on whether the flag GIMBAL_MANAGER_FLAGS_YAW_LOCK is set)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("angular_velocity_x",
+"X component of angular velocity, positive is rolling to the right, NaN to be ignored.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("angular_velocity_y",
+"Y component of angular velocity, positive is pitching up, NaN to be ignored.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("angular_velocity_z",
+"Z component of angular velocity, positive is yawing to the right, NaN to be ignored.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("gimbal_device_id",
+"Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GIMBAL_MANAGER_SET_ATTITUDE:"
+        + "uint32_t flags;"
+        + "float[4] q;"
+        + "float angular_velocity_x;"
+        + "float angular_velocity_y;"
+        + "float angular_velocity_z;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t gimbal_device_id;"
+        ;
     }
 
     /// <summary>
@@ -29722,6 +44588,174 @@ namespace Asv.Mavlink.Common
         public override GimbalDeviceInformationPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_DEVICE_INFORMATION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("uid",
+"UID of gimbal hardware (0 if unknown).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("firmware_version",
+"Version of the gimbal firmware, encoded as: (Dev & 0xff) << 24 | (Patch & 0xff) << 16 | (Minor & 0xff) << 8 | (Major & 0xff).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("hardware_version",
+"Version of the gimbal hardware, encoded as: (Dev & 0xff) << 24 | (Patch & 0xff) << 16 | (Minor & 0xff) << 8 | (Major & 0xff).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("roll_min",
+"Minimum hardware roll angle (positive: rolling to the right, negative: rolling to the left). NAN if unknown.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("roll_max",
+"Maximum hardware roll angle (positive: rolling to the right, negative: rolling to the left). NAN if unknown.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch_min",
+"Minimum hardware pitch angle (positive: up, negative: down). NAN if unknown.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch_max",
+"Maximum hardware pitch angle (positive: up, negative: down). NAN if unknown.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_min",
+"Minimum hardware yaw angle (positive: to the right, negative: to the left). NAN if unknown.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_max",
+"Maximum hardware yaw angle (positive: to the right, negative: to the left). NAN if unknown.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("cap_flags",
+"Bitmap of gimbal capability flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("custom_cap_flags",
+"Bitmap for use for gimbal-specific capability flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("vendor_name",
+"Name of the gimbal vendor.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            32, 
+false),
+            new("model_name",
+"Name of the gimbal model.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            32, 
+false),
+            new("custom_name",
+"Custom name of the gimbal given to it by the user.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            32, 
+false),
+            new("gimbal_device_id",
+"This field is to be used if the gimbal manager and the gimbal device are the same component and hence have the same component ID. This field is then set to a number between 1-6. If the component ID is separate, this field is not required and must be set to 0.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "GIMBAL_DEVICE_INFORMATION:"
+        + "uint64_t uid;"
+        + "uint32_t time_boot_ms;"
+        + "uint32_t firmware_version;"
+        + "uint32_t hardware_version;"
+        + "float roll_min;"
+        + "float roll_max;"
+        + "float pitch_min;"
+        + "float pitch_max;"
+        + "float yaw_min;"
+        + "float yaw_max;"
+        + "uint16_t cap_flags;"
+        + "uint16_t custom_cap_flags;"
+        + "char[32] vendor_name;"
+        + "char[32] model_name;"
+        + "char[32] custom_name;"
+        + "uint8_t gimbal_device_id;"
+        ;
     }
 
     /// <summary>
@@ -29983,6 +45017,84 @@ namespace Asv.Mavlink.Common
         public override GimbalDeviceSetAttitudePayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_DEVICE_SET_ATTITUDE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("q",
+"Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). The frame is described in the message description. Set fields to NaN to be ignored.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("angular_velocity_x",
+"X component of angular velocity (positive: rolling to the right). The frame is described in the message description. NaN to be ignored.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("angular_velocity_y",
+"Y component of angular velocity (positive: pitching up). The frame is described in the message description. NaN to be ignored.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("angular_velocity_z",
+"Z component of angular velocity (positive: yawing to the right). The frame is described in the message description. NaN to be ignored.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("flags",
+"Low level gimbal flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GIMBAL_DEVICE_SET_ATTITUDE:"
+        + "float[4] q;"
+        + "float angular_velocity_x;"
+        + "float angular_velocity_y;"
+        + "float angular_velocity_z;"
+        + "uint16_t flags;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -30121,6 +45233,134 @@ namespace Asv.Mavlink.Common
         public override GimbalDeviceAttitudeStatusPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_DEVICE_ATTITUDE_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("q",
+"Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). The frame is described in the message description.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("angular_velocity_x",
+"X component of angular velocity (positive: rolling to the right). The frame is described in the message description. NaN if unknown.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("angular_velocity_y",
+"Y component of angular velocity (positive: pitching up). The frame is described in the message description. NaN if unknown.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("angular_velocity_z",
+"Z component of angular velocity (positive: yawing to the right). The frame is described in the message description. NaN if unknown.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("failure_flags",
+"Failure flags (0 for no failure)",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("flags",
+"Current gimbal flags set.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("delta_yaw",
+"Yaw angle relating the quaternions in earth and body frames (see message description). NaN if unknown.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NAN", 
+            MessageFieldType.Float32, 
+            0, 
+true),
+            new("delta_yaw_velocity",
+"Yaw angular velocity relating the angular velocities in earth and body frames (see message description). NaN if unknown.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NAN", 
+            MessageFieldType.Float32, 
+            0, 
+true),
+            new("gimbal_device_id",
+"This field is to be used if the gimbal manager and the gimbal device are the same component and hence have the same component ID. This field is then set a number between 1-6. If the component ID is separate, this field is not required and must be set to 0.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "GIMBAL_DEVICE_ATTITUDE_STATUS:"
+        + "uint32_t time_boot_ms;"
+        + "float[4] q;"
+        + "float angular_velocity_x;"
+        + "float angular_velocity_y;"
+        + "float angular_velocity_z;"
+        + "uint32_t failure_flags;"
+        + "uint16_t flags;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "float delta_yaw;"
+        + "float delta_yaw_velocity;"
+        + "uint8_t gimbal_device_id;"
+        ;
     }
 
     /// <summary>
@@ -30291,6 +45531,144 @@ namespace Asv.Mavlink.Common
         public override AutopilotStateForGimbalDevicePayload Payload { get; } = new();
 
         public override string Name => "AUTOPILOT_STATE_FOR_GIMBAL_DEVICE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_us",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("q",
+"Quaternion components of autopilot attitude: w, x, y, z (1 0 0 0 is the null-rotation, Hamilton convention).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("q_estimated_delay_us",
+"Estimated delay of the attitude data. 0 if unknown.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("vx",
+"X Speed in NED (North, East, Down). NAN if unknown.",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vy",
+"Y Speed in NED (North, East, Down). NAN if unknown.",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vz",
+"Z Speed in NED (North, East, Down). NAN if unknown.",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("v_estimated_delay_us",
+"Estimated delay of the speed data. 0 if unknown.",
+string.Empty, 
+@"us", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("feed_forward_angular_velocity_z",
+"Feed forward Z component of angular velocity (positive: yawing to the right). NaN to be ignored. This is to indicate if the autopilot is actively yawing.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("estimator_status",
+"Bitmap indicating which estimator outputs are valid.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("landed_state",
+"The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"MAV_LANDED_STATE_UNDEFINED", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("angular_velocity_z",
+"Z component of angular velocity in NED (North, East, Down). NaN if unknown.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "AUTOPILOT_STATE_FOR_GIMBAL_DEVICE:"
+        + "uint64_t time_boot_us;"
+        + "float[4] q;"
+        + "uint32_t q_estimated_delay_us;"
+        + "float vx;"
+        + "float vy;"
+        + "float vz;"
+        + "uint32_t v_estimated_delay_us;"
+        + "float feed_forward_angular_velocity_z;"
+        + "uint16_t estimator_status;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t landed_state;"
+        + "float angular_velocity_z;"
+        ;
     }
 
     /// <summary>
@@ -30465,6 +45843,94 @@ namespace Asv.Mavlink.Common
         public override GimbalManagerSetPitchyawPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_MANAGER_SET_PITCHYAW";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("flags",
+"High level gimbal manager flags to use.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("pitch",
+"Pitch angle (positive: up, negative: down, NaN to be ignored).",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw angle (positive: to the right, negative: to the left, NaN to be ignored).",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch_rate",
+"Pitch angular rate (positive: up, negative: down, NaN to be ignored).",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_rate",
+"Yaw angular rate (positive: to the right, negative: to the left, NaN to be ignored).",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("gimbal_device_id",
+"Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GIMBAL_MANAGER_SET_PITCHYAW:"
+        + "uint32_t flags;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float pitch_rate;"
+        + "float yaw_rate;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t gimbal_device_id;"
+        ;
     }
 
     /// <summary>
@@ -30584,6 +46050,94 @@ namespace Asv.Mavlink.Common
         public override GimbalManagerSetManualControlPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_MANAGER_SET_MANUAL_CONTROL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("flags",
+"High level gimbal manager flags.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("pitch",
+"Pitch angle unitless (-1..1, positive: up, negative: down, NaN to be ignored).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw angle unitless (-1..1, positive: to the right, negative: to the left, NaN to be ignored).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch_rate",
+"Pitch angular rate unitless (-1..1, positive: up, negative: down, NaN to be ignored).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_rate",
+"Yaw angular rate unitless (-1..1, positive: to the right, negative: to the left, NaN to be ignored).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("gimbal_device_id",
+"Component ID of gimbal device to address (or 1-6 for non-MAVLink gimbal), 0 for all gimbal device components. Send command multiple times for more than one gimbal (but not all gimbals).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GIMBAL_MANAGER_SET_MANUAL_CONTROL:"
+        + "uint32_t flags;"
+        + "float pitch;"
+        + "float yaw;"
+        + "float pitch_rate;"
+        + "float yaw_rate;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t gimbal_device_id;"
+        ;
     }
 
     /// <summary>
@@ -30703,6 +46257,104 @@ namespace Asv.Mavlink.Common
         public override EscInfoPayload Payload { get; } = new();
 
         public override string Name => "ESC_INFO";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("error_count",
+"Number of reported errors by each ESC since boot.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            4, 
+false),
+            new("counter",
+"Counter of data packets received.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("failure_flags",
+"Bitmap of ESC failure flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("temperature",
+"Temperature of each ESC. INT16_MAX: if data not supplied by ESC.",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+@"[INT16_MAX]", 
+            MessageFieldType.Int16, 
+            4, 
+false),
+            new("index",
+"Index of the first ESC in this message. minValue = 0, maxValue = 60, increment = 4.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("count",
+"Total number of ESCs in all messages of this type. Message fields with an index higher than this should be ignored because they contain invalid data.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("connection_type",
+"Connection type protocol for all ESC.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("info",
+"Information regarding online/offline status of each ESC.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ESC_INFO:"
+        + "uint64_t time_usec;"
+        + "uint32_t[4] error_count;"
+        + "uint16_t counter;"
+        + "uint16_t[4] failure_flags;"
+        + "int16_t[4] temperature;"
+        + "uint8_t index;"
+        + "uint8_t count;"
+        + "uint8_t connection_type;"
+        + "uint8_t info;"
+        ;
     }
 
     /// <summary>
@@ -30861,6 +46513,64 @@ namespace Asv.Mavlink.Common
         public override EscStatusPayload Payload { get; } = new();
 
         public override string Name => "ESC_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("rpm",
+"Reported motor RPM from each ESC (negative for reverse rotation).",
+string.Empty, 
+@"rpm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            4, 
+false),
+            new("voltage",
+"Voltage measured from each ESC.",
+string.Empty, 
+@"V", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("current",
+"Current measured from each ESC.",
+string.Empty, 
+@"A", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("index",
+"Index of the first ESC in this message. minValue = 0, maxValue = 60, increment = 4.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ESC_STATUS:"
+        + "uint64_t time_usec;"
+        + "int32_t[4] rpm;"
+        + "float[4] voltage;"
+        + "float[4] current;"
+        + "uint8_t index;"
+        ;
     }
 
     /// <summary>
@@ -30985,6 +46695,54 @@ namespace Asv.Mavlink.Common
         public override WifiConfigApPayload Payload { get; } = new();
 
         public override string Name => "WIFI_CONFIG_AP";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("ssid",
+"Name of Wi-Fi network (SSID). Blank to leave it unchanged when setting. Current SSID when sent back as a response.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            32, 
+false),
+            new("password",
+"Password. Blank for an open AP. MD5 hash when message is sent back as a response.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            64, 
+false),
+            new("mode",
+"WiFi Mode.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            0, 
+true),
+            new("response",
+"Message acceptance response (sent back to GS).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "WIFI_CONFIG_AP:"
+        + "char[32] ssid;"
+        + "char[64] password;"
+        + "int8_t mode;"
+        + "int8_t response;"
+        ;
     }
 
     /// <summary>
@@ -31121,6 +46879,184 @@ namespace Asv.Mavlink.Common
         public override AisVesselPayload Payload { get; } = new();
 
         public override string Name => "AIS_VESSEL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("MMSI",
+"Mobile Marine Service Identifier, 9 decimal digits",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("lat",
+"Latitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("COG",
+"Course over ground",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("heading",
+"True heading",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("velocity",
+"Speed over ground",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("dimension_bow",
+"Distance from lat/lon location to bow",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("dimension_stern",
+"Distance from lat/lon location to stern",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("tslc",
+"Time since last communication in seconds",
+string.Empty, 
+@"s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("flags",
+"Bitmask to indicate various statuses including valid data fields",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("turn_rate",
+"Turn rate",
+string.Empty, 
+@"cdeg/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("navigational_status",
+"Navigational status",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("type",
+"Type of vessels",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("dimension_port",
+"Distance from lat/lon location to port side",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("dimension_starboard",
+"Distance from lat/lon location to starboard side",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("callsign",
+"The vessel callsign",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            7, 
+false),
+            new("name",
+"The vessel name",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            20, 
+false),
+        ];
+        public const string FormatMessage = "AIS_VESSEL:"
+        + "uint32_t MMSI;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "uint16_t COG;"
+        + "uint16_t heading;"
+        + "uint16_t velocity;"
+        + "uint16_t dimension_bow;"
+        + "uint16_t dimension_stern;"
+        + "uint16_t tslc;"
+        + "uint16_t flags;"
+        + "int8_t turn_rate;"
+        + "uint8_t navigational_status;"
+        + "uint8_t type;"
+        + "uint8_t dimension_port;"
+        + "uint8_t dimension_starboard;"
+        + "char[7] callsign;"
+        + "char[20] name;"
+        ;
     }
 
     /// <summary>
@@ -31357,6 +47293,74 @@ namespace Asv.Mavlink.Common
         public override UavcanNodeStatusPayload Payload { get; } = new();
 
         public override string Name => "UAVCAN_NODE_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("uptime_sec",
+"Time since the start-up of the node.",
+string.Empty, 
+@"s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("vendor_specific_status_code",
+"Vendor-specific status information.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("health",
+"Generalized node health status.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mode",
+"Generalized operating mode.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("sub_mode",
+"Not used currently.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "UAVCAN_NODE_STATUS:"
+        + "uint64_t time_usec;"
+        + "uint32_t uptime_sec;"
+        + "uint16_t vendor_specific_status_code;"
+        + "uint8_t health;"
+        + "uint8_t mode;"
+        + "uint8_t sub_mode;"
+        ;
     }
 
     /// <summary>
@@ -31460,6 +47464,104 @@ namespace Asv.Mavlink.Common
         public override UavcanNodeInfoPayload Payload { get; } = new();
 
         public override string Name => "UAVCAN_NODE_INFO";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("uptime_sec",
+"Time since the start-up of the node.",
+string.Empty, 
+@"s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("sw_vcs_commit",
+"Version control system (VCS) revision identifier (e.g. git short commit hash). 0 if unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("name",
+"Node name string. For example, \"sapog.px4.io\".",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            80, 
+false),
+            new("hw_version_major",
+"Hardware major version number.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("hw_version_minor",
+"Hardware minor version number.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("hw_unique_id",
+"Hardware unique 128-bit ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            16, 
+false),
+            new("sw_version_major",
+"Software major version number.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("sw_version_minor",
+"Software minor version number.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "UAVCAN_NODE_INFO:"
+        + "uint64_t time_usec;"
+        + "uint32_t uptime_sec;"
+        + "uint32_t sw_vcs_commit;"
+        + "char[80] name;"
+        + "uint8_t hw_version_major;"
+        + "uint8_t hw_version_minor;"
+        + "uint8_t[16] hw_unique_id;"
+        + "uint8_t sw_version_major;"
+        + "uint8_t sw_version_minor;"
+        ;
     }
 
     /// <summary>
@@ -31620,6 +47722,54 @@ namespace Asv.Mavlink.Common
         public override ParamExtRequestReadPayload Payload { get; } = new();
 
         public override string Name => "PARAM_EXT_REQUEST_READ";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("param_index",
+"Parameter index. Set to -1 to use the Parameter ID field as identifier (else param_id will be ignored)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"-1", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("param_id",
+"Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+        ];
+        public const string FormatMessage = "PARAM_EXT_REQUEST_READ:"
+        + "int16_t param_index;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "char[16] param_id;"
+        ;
     }
 
     /// <summary>
@@ -31732,6 +47882,34 @@ namespace Asv.Mavlink.Common
         public override ParamExtRequestListPayload Payload { get; } = new();
 
         public override string Name => "PARAM_EXT_REQUEST_LIST";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "PARAM_EXT_REQUEST_LIST:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -31803,6 +47981,64 @@ namespace Asv.Mavlink.Common
         public override ParamExtValuePayload Payload { get; } = new();
 
         public override string Name => "PARAM_EXT_VALUE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("param_count",
+"Total number of parameters",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("param_index",
+"Index of this parameter",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("param_id",
+"Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("param_value",
+"Parameter value",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            128, 
+false),
+            new("param_type",
+"Parameter type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "PARAM_EXT_VALUE:"
+        + "uint16_t param_count;"
+        + "uint16_t param_index;"
+        + "char[16] param_id;"
+        + "char[128] param_value;"
+        + "uint8_t param_type;"
+        ;
     }
 
     /// <summary>
@@ -31943,6 +48179,64 @@ namespace Asv.Mavlink.Common
         public override ParamExtSetPayload Payload { get; } = new();
 
         public override string Name => "PARAM_EXT_SET";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("param_id",
+"Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("param_value",
+"Parameter value",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            128, 
+false),
+            new("param_type",
+"Parameter type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "PARAM_EXT_SET:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "char[16] param_id;"
+        + "char[128] param_value;"
+        + "uint8_t param_type;"
+        ;
     }
 
     /// <summary>
@@ -32083,6 +48377,54 @@ namespace Asv.Mavlink.Common
         public override ParamExtAckPayload Payload { get; } = new();
 
         public override string Name => "PARAM_EXT_ACK";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("param_id",
+"Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("param_value",
+"Parameter value (new value if PARAM_ACK_ACCEPTED, current value otherwise)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            128, 
+false),
+            new("param_type",
+"Parameter type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("param_result",
+"Result code.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "PARAM_EXT_ACK:"
+        + "char[16] param_id;"
+        + "char[128] param_value;"
+        + "uint8_t param_type;"
+        + "uint8_t param_result;"
+        ;
     }
 
     /// <summary>
@@ -32215,6 +48557,104 @@ namespace Asv.Mavlink.Common
         public override ObstacleDistancePayload Payload { get; } = new();
 
         public override string Name => "OBSTACLE_DISTANCE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("distances",
+"Distance of obstacles around the vehicle with index 0 corresponding to north + angle_offset, unless otherwise specified in the frame. A value of 0 is valid and means that the obstacle is practically touching the sensor. A value of max_distance +1 means no obstacle is present. A value of UINT16_MAX for unknown/not used. In a array element, one unit corresponds to 1cm.",
+string.Empty, 
+@"cm", 
+string.Empty, 
+@"[UINT16_MAX]", 
+            MessageFieldType.Uint16, 
+            72, 
+false),
+            new("min_distance",
+"Minimum distance the sensor can measure.",
+string.Empty, 
+@"cm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("max_distance",
+"Maximum distance the sensor can measure.",
+string.Empty, 
+@"cm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("sensor_type",
+"Class id of the distance sensor type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("increment",
+"Angular width in degrees of each array element. Increment direction is clockwise. This field is ignored if increment_f is non-zero.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("increment_f",
+"Angular width in degrees of each array element as a float. If non-zero then this value is used instead of the uint8_t increment field. Positive is clockwise direction, negative is counter-clockwise.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+            new("angle_offset",
+"Relative angle offset of the 0-index element in the distances array. Value of 0 corresponds to forward. Positive is clockwise direction, negative is counter-clockwise.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+true),
+            new("frame",
+"Coordinate frame of reference for the yaw rotation and offset of the sensor data. Defaults to MAV_FRAME_GLOBAL, which is north aligned. For body-mounted sensors use MAV_FRAME_BODY_FRD, which is vehicle front aligned.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "OBSTACLE_DISTANCE:"
+        + "uint64_t time_usec;"
+        + "uint16_t[72] distances;"
+        + "uint16_t min_distance;"
+        + "uint16_t max_distance;"
+        + "uint8_t sensor_type;"
+        + "uint8_t increment;"
+        + "float increment_f;"
+        + "float angle_offset;"
+        + "uint8_t frame;"
+        ;
     }
 
     /// <summary>
@@ -32361,6 +48801,194 @@ namespace Asv.Mavlink.Common
         public override OdometryPayload Payload { get; } = new();
 
         public override string Name => "ODOMETRY";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("x",
+"X Position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("y",
+"Y Position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z",
+"Z Position",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("q",
+"Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("vx",
+"X linear speed",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vy",
+"Y linear speed",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vz",
+"Z linear speed",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rollspeed",
+"Roll angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitchspeed",
+"Pitch angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yawspeed",
+"Yaw angular speed",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pose_covariance",
+"Row-major representation of a 6x6 pose cross-covariance matrix upper right triangle (states: x, y, z, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[NaN:]", 
+            MessageFieldType.Float32, 
+            21, 
+false),
+            new("velocity_covariance",
+"Row-major representation of a 6x6 velocity cross-covariance matrix upper right triangle (states: vx, vy, vz, rollspeed, pitchspeed, yawspeed; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[NaN:]", 
+            MessageFieldType.Float32, 
+            21, 
+false),
+            new("frame_id",
+"Coordinate frame of reference for the pose data.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("child_frame_id",
+"Coordinate frame of reference for the velocity in free space (twist) data.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("reset_counter",
+"Estimate reset counter. This should be incremented when the estimate resets in any of the dimensions (position, velocity, attitude, angular speed). This is designed to be used when e.g an external SLAM system detects a loop-closure and the estimate jumps.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("estimator_type",
+"Type of estimator that is providing the odometry.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("quality",
+"Optional odometry quality metric as a percentage. -1 = odometry has failed, 0 = unknown/unset quality, 1 = worst quality, 100 = best quality",
+string.Empty, 
+@"%", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int8, 
+            0, 
+true),
+        ];
+        public const string FormatMessage = "ODOMETRY:"
+        + "uint64_t time_usec;"
+        + "float x;"
+        + "float y;"
+        + "float z;"
+        + "float[4] q;"
+        + "float vx;"
+        + "float vy;"
+        + "float vz;"
+        + "float rollspeed;"
+        + "float pitchspeed;"
+        + "float yawspeed;"
+        + "float[21] pose_covariance;"
+        + "float[21] velocity_covariance;"
+        + "uint8_t frame_id;"
+        + "uint8_t child_frame_id;"
+        + "uint8_t reset_counter;"
+        + "uint8_t estimator_type;"
+        + "int8_t quality;"
+        ;
     }
 
     /// <summary>
@@ -32595,6 +49223,154 @@ namespace Asv.Mavlink.Common
         public override TrajectoryRepresentationWaypointsPayload Payload { get; } = new();
 
         public override string Name => "TRAJECTORY_REPRESENTATION_WAYPOINTS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("pos_x",
+"X-coordinate of waypoint, set to NaN if not being used",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("pos_y",
+"Y-coordinate of waypoint, set to NaN if not being used",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("pos_z",
+"Z-coordinate of waypoint, set to NaN if not being used",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("vel_x",
+"X-velocity of waypoint, set to NaN if not being used",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("vel_y",
+"Y-velocity of waypoint, set to NaN if not being used",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("vel_z",
+"Z-velocity of waypoint, set to NaN if not being used",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("acc_x",
+"X-acceleration of waypoint, set to NaN if not being used",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("acc_y",
+"Y-acceleration of waypoint, set to NaN if not being used",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("acc_z",
+"Z-acceleration of waypoint, set to NaN if not being used",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("pos_yaw",
+"Yaw angle, set to NaN if not being used",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("vel_yaw",
+"Yaw rate, set to NaN if not being used",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("command",
+"MAV_CMD command id of waypoint, set to UINT16_MAX if not being used.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[UINT16_MAX]", 
+            MessageFieldType.Uint16, 
+            5, 
+false),
+            new("valid_points",
+"Number of valid points (up-to 5 waypoints are possible)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "TRAJECTORY_REPRESENTATION_WAYPOINTS:"
+        + "uint64_t time_usec;"
+        + "float[5] pos_x;"
+        + "float[5] pos_y;"
+        + "float[5] pos_z;"
+        + "float[5] vel_x;"
+        + "float[5] vel_y;"
+        + "float[5] vel_z;"
+        + "float[5] acc_x;"
+        + "float[5] acc_y;"
+        + "float[5] acc_z;"
+        + "float[5] pos_yaw;"
+        + "float[5] vel_yaw;"
+        + "uint16_t[5] command;"
+        + "uint8_t valid_points;"
+        ;
     }
 
     /// <summary>
@@ -32865,6 +49641,84 @@ namespace Asv.Mavlink.Common
         public override TrajectoryRepresentationBezierPayload Payload { get; } = new();
 
         public override string Name => "TRAJECTORY_REPRESENTATION_BEZIER";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("pos_x",
+"X-coordinate of bezier control points. Set to NaN if not being used",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("pos_y",
+"Y-coordinate of bezier control points. Set to NaN if not being used",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("pos_z",
+"Z-coordinate of bezier control points. Set to NaN if not being used",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("delta",
+"Bezier time horizon. Set to NaN if velocity/acceleration should not be incorporated",
+string.Empty, 
+@"s", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("pos_yaw",
+"Yaw. Set to NaN for unchanged",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"[NaN]", 
+            MessageFieldType.Float32, 
+            5, 
+false),
+            new("valid_points",
+"Number of valid control points (up-to 5 points are possible)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "TRAJECTORY_REPRESENTATION_BEZIER:"
+        + "uint64_t time_usec;"
+        + "float[5] pos_x;"
+        + "float[5] pos_y;"
+        + "float[5] pos_z;"
+        + "float[5] delta;"
+        + "float[5] pos_yaw;"
+        + "uint8_t valid_points;"
+        ;
     }
 
     /// <summary>
@@ -33021,6 +49875,84 @@ namespace Asv.Mavlink.Common
         public override CellularStatusPayload Payload { get; } = new();
 
         public override string Name => "CELLULAR_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("mcc",
+"Mobile country code. If unknown, set to UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("mnc",
+"Mobile network code. If unknown, set to UINT16_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("lac",
+"Location area code. If unknown, set to 0",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("status",
+"Cellular modem status",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("failure_reason",
+"Failure reason when status in in CELLULAR_STATUS_FLAG_FAILED",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("type",
+"Cellular network radio type: gsm, cdma, lte...",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("quality",
+"Signal quality in percent. If unknown, set to UINT8_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "CELLULAR_STATUS:"
+        + "uint16_t mcc;"
+        + "uint16_t mnc;"
+        + "uint16_t lac;"
+        + "uint8_t status;"
+        + "uint8_t failure_reason;"
+        + "uint8_t type;"
+        + "uint8_t quality;"
+        ;
     }
 
     /// <summary>
@@ -33132,6 +50064,94 @@ namespace Asv.Mavlink.Common
         public override IsbdLinkStatusPayload Payload { get; } = new();
 
         public override string Name => "ISBD_LINK_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("timestamp",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("last_heartbeat",
+"Timestamp of the last successful sbd session. The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("failed_sessions",
+"Number of failed SBD sessions.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("successful_sessions",
+"Number of successful SBD sessions.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("signal_quality",
+"Signal quality equal to the number of bars displayed on the ISU signal strength indicator. Range is 0 to 5, where 0 indicates no signal and 5 indicates maximum signal strength.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("ring_pending",
+"1: Ring call pending, 0: No call pending.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("tx_session_pending",
+"1: Transmission session pending, 0: No transmission session pending.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rx_session_pending",
+"1: Receiving session pending, 0: No receiving session pending.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ISBD_LINK_STATUS:"
+        + "uint64_t timestamp;"
+        + "uint64_t last_heartbeat;"
+        + "uint16_t failed_sessions;"
+        + "uint16_t successful_sessions;"
+        + "uint8_t signal_quality;"
+        + "uint8_t ring_pending;"
+        + "uint8_t tx_session_pending;"
+        + "uint8_t rx_session_pending;"
+        ;
     }
 
     /// <summary>
@@ -33253,6 +50273,94 @@ namespace Asv.Mavlink.Common
         public override CellularConfigPayload Payload { get; } = new();
 
         public override string Name => "CELLULAR_CONFIG";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("enable_lte",
+"Enable/disable LTE. 0: setting unchanged, 1: disabled, 2: enabled. Current setting when sent back as a response.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("enable_pin",
+"Enable/disable PIN on the SIM card. 0: setting unchanged, 1: disabled, 2: enabled. Current setting when sent back as a response.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("pin",
+"PIN sent to the SIM card. Blank when PIN is disabled. Empty when message is sent back as a response.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("new_pin",
+"New PIN when changing the PIN. Blank to leave it unchanged. Empty when message is sent back as a response.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("apn",
+"Name of the cellular APN. Blank to leave it unchanged. Current APN when sent back as a response.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            32, 
+false),
+            new("puk",
+"Required PUK code in case the user failed to authenticate 3 times with the PIN. Empty when message is sent back as a response.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("roaming",
+"Enable/disable roaming. 0: setting unchanged, 1: disabled, 2: enabled. Current setting when sent back as a response.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("response",
+"Message acceptance response (sent back to GS).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "CELLULAR_CONFIG:"
+        + "uint8_t enable_lte;"
+        + "uint8_t enable_pin;"
+        + "char[16] pin;"
+        + "char[16] new_pin;"
+        + "char[32] apn;"
+        + "char[16] puk;"
+        + "uint8_t roaming;"
+        + "uint8_t response;"
+        ;
     }
 
     /// <summary>
@@ -33457,6 +50565,34 @@ namespace Asv.Mavlink.Common
         public override RawRpmPayload Payload { get; } = new();
 
         public override string Name => "RAW_RPM";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("frequency",
+"Indicated rate",
+string.Empty, 
+@"rpm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("index",
+"Index of this RPM sensor (0-indexed)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "RAW_RPM:"
+        + "float frequency;"
+        + "uint8_t index;"
+        ;
     }
 
     /// <summary>
@@ -33528,6 +50664,194 @@ namespace Asv.Mavlink.Common
         public override UtmGlobalPositionPayload Payload { get; } = new();
 
         public override string Name => "UTM_GLOBAL_POSITION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time",
+"Time of applicability of position (microseconds since UNIX epoch).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("lat",
+"Latitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude (WGS84)",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("relative_alt",
+"Altitude above ground",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("next_lat",
+"Next waypoint, latitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("next_lon",
+"Next waypoint, longitude (WGS84)",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("next_alt",
+"Next waypoint, altitude (WGS84)",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("vx",
+"Ground X speed (latitude, positive north)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("vy",
+"Ground Y speed (longitude, positive east)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("vz",
+"Ground Z speed (altitude, positive down)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("h_acc",
+"Horizontal position uncertainty (standard deviation)",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("v_acc",
+"Altitude uncertainty (standard deviation)",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("vel_acc",
+"Speed uncertainty (standard deviation)",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("update_rate",
+"Time until next update. Set to 0 if unknown or in data driven mode.",
+string.Empty, 
+@"cs", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("uas_id",
+"Unique UAS ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            18, 
+false),
+            new("flight_state",
+"Flight state",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("flags",
+"Bitwise OR combination of the data available flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "UTM_GLOBAL_POSITION:"
+        + "uint64_t time;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "int32_t alt;"
+        + "int32_t relative_alt;"
+        + "int32_t next_lat;"
+        + "int32_t next_lon;"
+        + "int32_t next_alt;"
+        + "int16_t vx;"
+        + "int16_t vy;"
+        + "int16_t vz;"
+        + "uint16_t h_acc;"
+        + "uint16_t v_acc;"
+        + "uint16_t vel_acc;"
+        + "uint16_t update_rate;"
+        + "uint8_t[18] uas_id;"
+        + "uint8_t flight_state;"
+        + "uint8_t flags;"
+        ;
     }
 
     /// <summary>
@@ -33740,6 +51064,54 @@ namespace Asv.Mavlink.Common
         public override DebugFloatArrayPayload Payload { get; } = new();
 
         public override string Name => "DEBUG_FLOAT_ARRAY";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("array_id",
+"Unique ID used to discriminate between arrays",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("name",
+"Name, for human-friendly display in a Ground Control Station",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            10, 
+false),
+            new("data",
+"data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            58, 
+true),
+        ];
+        public const string FormatMessage = "DEBUG_FLOAT_ARRAY:"
+        + "uint64_t time_usec;"
+        + "uint16_t array_id;"
+        + "char[10] name;"
+        + "float[58] data;"
+        ;
     }
 
     /// <summary>
@@ -33862,6 +51234,74 @@ namespace Asv.Mavlink.Common
         public override OrbitExecutionStatusPayload Payload { get; } = new();
 
         public override string Name => "ORBIT_EXECUTION_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("radius",
+"Radius of the orbit circle. Positive values orbit clockwise, negative values orbit counter-clockwise.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("x",
+"X coordinate of center point. Coordinate system depends on frame field: local = x position in meters * 1e4, global = latitude in degrees * 1e7.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("y",
+"Y coordinate of center point.  Coordinate system depends on frame field: local = x position in meters * 1e4, global = latitude in degrees * 1e7.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("z",
+"Altitude of center point. Coordinate system depends on frame field.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("frame",
+"The coordinate system of the fields: x, y, z.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ORBIT_EXECUTION_STATUS:"
+        + "uint64_t time_usec;"
+        + "float radius;"
+        + "int32_t x;"
+        + "int32_t y;"
+        + "float z;"
+        + "uint8_t frame;"
+        ;
     }
 
     /// <summary>
@@ -33965,6 +51405,184 @@ namespace Asv.Mavlink.Common
         public override SmartBatteryInfoPayload Payload { get; } = new();
 
         public override string Name => "SMART_BATTERY_INFO";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("capacity_full_specification",
+"Capacity when full according to manufacturer, -1: field not provided.",
+string.Empty, 
+@"mAh", 
+string.Empty, 
+@"-1", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("capacity_full",
+"Capacity when full (accounting for battery degradation), -1: field not provided.",
+string.Empty, 
+@"mAh", 
+string.Empty, 
+@"-1", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("cycle_count",
+"Charge/discharge cycle count. UINT16_MAX: field not provided.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("weight",
+"Battery weight. 0: field not provided.",
+string.Empty, 
+@"g", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("discharge_minimum_voltage",
+"Minimum per-cell voltage when discharging. If not supplied set to UINT16_MAX value.",
+string.Empty, 
+@"mV", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("charging_minimum_voltage",
+"Minimum per-cell voltage when charging. If not supplied set to UINT16_MAX value.",
+string.Empty, 
+@"mV", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("resting_minimum_voltage",
+"Minimum per-cell voltage when resting. If not supplied set to UINT16_MAX value.",
+string.Empty, 
+@"mV", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("id",
+"Battery ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("battery_function",
+"Function of the battery",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("type",
+"Type (chemistry) of the battery",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("serial_number",
+"Serial number in ASCII characters, 0 terminated. All 0: field not provided.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[0]", 
+            MessageFieldType.Char, 
+            16, 
+false),
+            new("device_name",
+"Static device name in ASCII characters, 0 terminated. All 0: field not provided. Encode as manufacturer name then product name separated using an underscore.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[0]", 
+            MessageFieldType.Char, 
+            50, 
+false),
+            new("charging_maximum_voltage",
+"Maximum per-cell voltage when charged. 0: field not provided.",
+string.Empty, 
+@"mV", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+true),
+            new("cells_in_series",
+"Number of battery cells in series. 0: field not provided.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint8, 
+            0, 
+true),
+            new("discharge_maximum_current",
+"Maximum pack discharge current. 0: field not provided.",
+string.Empty, 
+@"mA", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint32, 
+            0, 
+true),
+            new("discharge_maximum_burst_current",
+"Maximum pack discharge burst current. 0: field not provided.",
+string.Empty, 
+@"mA", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint32, 
+            0, 
+true),
+            new("manufacture_date",
+"Manufacture date (DD/MM/YYYY) in ASCII characters, 0 terminated. All 0: field not provided.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[0]", 
+            MessageFieldType.Char, 
+            11, 
+true),
+        ];
+        public const string FormatMessage = "SMART_BATTERY_INFO:"
+        + "int32_t capacity_full_specification;"
+        + "int32_t capacity_full;"
+        + "uint16_t cycle_count;"
+        + "uint16_t weight;"
+        + "uint16_t discharge_minimum_voltage;"
+        + "uint16_t charging_minimum_voltage;"
+        + "uint16_t resting_minimum_voltage;"
+        + "uint8_t id;"
+        + "uint8_t battery_function;"
+        + "uint8_t type;"
+        + "char[16] serial_number;"
+        + "char[50] device_name;"
+        + "uint16_t charging_maximum_voltage;"
+        + "uint8_t cells_in_series;"
+        + "uint32_t discharge_maximum_current;"
+        + "uint32_t discharge_maximum_burst_current;"
+        + "char[11] manufacture_date;"
+        ;
     }
 
     /// <summary>
@@ -34231,6 +51849,124 @@ namespace Asv.Mavlink.Common
         public override GeneratorStatusPayload Payload { get; } = new();
 
         public override string Name => "GENERATOR_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("status",
+"Status flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("battery_current",
+"Current into/out of battery. Positive for out. Negative for in. NaN: field not provided.",
+string.Empty, 
+@"A", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("load_current",
+"Current going to the UAV. If battery current not available this is the DC current from the generator. Positive for out. Negative for in. NaN: field not provided",
+string.Empty, 
+@"A", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("power_generated",
+"The power being generated. NaN: field not provided",
+string.Empty, 
+@"W", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("bus_voltage",
+"Voltage of the bus seen at the generator, or battery bus if battery bus is controlled by generator and at a different voltage to main bus.",
+string.Empty, 
+@"V", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("bat_current_setpoint",
+"The target battery current. Positive for out. Negative for in. NaN: field not provided",
+string.Empty, 
+@"A", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("runtime",
+"Seconds this generator has run since it was rebooted. UINT32_MAX: field not provided.",
+string.Empty, 
+@"s", 
+string.Empty, 
+@"UINT32_MAX", 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("time_until_maintenance",
+"Seconds until this generator requires maintenance.  A negative value indicates maintenance is past-due. INT32_MAX: field not provided.",
+string.Empty, 
+@"s", 
+string.Empty, 
+@"INT32_MAX", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("generator_speed",
+"Speed of electrical generator or alternator. UINT16_MAX: field not provided.",
+string.Empty, 
+@"rpm", 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("rectifier_temperature",
+"The temperature of the rectifier or power converter. INT16_MAX: field not provided.",
+string.Empty, 
+@"degC", 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("generator_temperature",
+"The temperature of the mechanical motor, fuel cell core or generator. INT16_MAX: field not provided.",
+string.Empty, 
+@"degC", 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GENERATOR_STATUS:"
+        + "uint64_t status;"
+        + "float battery_current;"
+        + "float load_current;"
+        + "float power_generated;"
+        + "float bus_voltage;"
+        + "float bat_current_setpoint;"
+        + "uint32_t runtime;"
+        + "int32_t time_until_maintenance;"
+        + "uint16_t generator_speed;"
+        + "int16_t rectifier_temperature;"
+        + "int16_t generator_temperature;"
+        ;
     }
 
     /// <summary>
@@ -34374,6 +52110,44 @@ namespace Asv.Mavlink.Common
         public override ActuatorOutputStatusPayload Payload { get; } = new();
 
         public override string Name => "ACTUATOR_OUTPUT_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (since system boot).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("active",
+"Active outputs",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("actuator",
+"Servo / motor output array values. Zero values indicate unused channels.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            32, 
+false),
+        ];
+        public const string FormatMessage = "ACTUATOR_OUTPUT_STATUS:"
+        + "uint64_t time_usec;"
+        + "uint32_t active;"
+        + "float[32] actuator;"
+        ;
     }
 
     /// <summary>
@@ -34466,6 +52240,64 @@ namespace Asv.Mavlink.Common
         public override TimeEstimateToTargetPayload Payload { get; } = new();
 
         public override string Name => "TIME_ESTIMATE_TO_TARGET";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("safe_return",
+"Estimated time to complete the vehicle's configured \"safe return\" action from its current position (e.g. RTL, Smart RTL, etc.). -1 indicates that the vehicle is landed, or that no time estimate available.",
+string.Empty, 
+@"s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("land",
+"Estimated time for vehicle to complete the LAND action from its current position. -1 indicates that the vehicle is landed, or that no time estimate available.",
+string.Empty, 
+@"s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("mission_next_item",
+"Estimated time for reaching/completing the currently active mission item. -1 means no time estimate available.",
+string.Empty, 
+@"s", 
+string.Empty, 
+@"-1", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("mission_end",
+"Estimated time for completing the current mission. -1 means no mission active and/or no estimate available.",
+string.Empty, 
+@"s", 
+string.Empty, 
+@"-1", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("commanded_action",
+"Estimated time for completing the current commanded action (i.e. Go To, Takeoff, Land, etc.). -1 means no action active and/or no estimate available.",
+string.Empty, 
+@"s", 
+string.Empty, 
+@"-1", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "TIME_ESTIMATE_TO_TARGET:"
+        + "int32_t safe_return;"
+        + "int32_t land;"
+        + "int32_t mission_next_item;"
+        + "int32_t mission_end;"
+        + "int32_t commanded_action;"
+        ;
     }
 
     /// <summary>
@@ -34561,6 +52393,64 @@ namespace Asv.Mavlink.Common
         public override TunnelPayload Payload { get; } = new();
 
         public override string Name => "TUNNEL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("payload_type",
+"A code that identifies the content of the payload (0 for unknown, which is the default). If this code is less than 32768, it is a 'registered' payload type and the corresponding code should be added to the MAV_TUNNEL_PAYLOAD_TYPE enum. Software creators can register blocks of types as needed. Codes greater than 32767 are considered local experiments and should not be checked in to any widely distributed codebase.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID (can be 0 for broadcast, but this is discouraged)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID (can be 0 for broadcast, but this is discouraged)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("payload_length",
+"Length of the data transported in payload",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("payload",
+"Variable length payload. The payload length is defined by payload_length. The entire content of this block is opaque unless you understand the encoding specified by payload_type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            128, 
+false),
+        ];
+        public const string FormatMessage = "TUNNEL:"
+        + "uint16_t payload_type;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t payload_length;"
+        + "uint8_t[128] payload;"
+        ;
     }
 
     /// <summary>
@@ -34669,6 +52559,74 @@ namespace Asv.Mavlink.Common
         public override CanFramePayload Payload { get; } = new();
 
         public override string Name => "CAN_FRAME";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("id",
+"Frame ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("bus",
+"Bus number",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("len",
+"Frame length",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"Frame data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            8, 
+false),
+        ];
+        public const string FormatMessage = "CAN_FRAME:"
+        + "uint32_t id;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t bus;"
+        + "uint8_t len;"
+        + "uint8_t[8] data;"
+        ;
     }
 
     /// <summary>
@@ -34785,6 +52743,214 @@ namespace Asv.Mavlink.Common
         public override OnboardComputerStatusPayload Payload { get; } = new();
 
         public override string Name => "ONBOARD_COMPUTER_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("uptime",
+"Time since system boot.",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("ram_usage",
+"Amount of used RAM on the component system. A value of UINT32_MAX implies the field is unused.",
+string.Empty, 
+@"MiB", 
+string.Empty, 
+@"UINT32_MAX", 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("ram_total",
+"Total amount of RAM on the component system. A value of UINT32_MAX implies the field is unused.",
+string.Empty, 
+@"MiB", 
+string.Empty, 
+@"UINT32_MAX", 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("storage_type",
+"Storage type: 0: HDD, 1: SSD, 2: EMMC, 3: SD card (non-removable), 4: SD card (removable). A value of UINT32_MAX implies the field is unused.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[UINT32_MAX]", 
+            MessageFieldType.Uint32, 
+            4, 
+false),
+            new("storage_usage",
+"Amount of used storage space on the component system. A value of UINT32_MAX implies the field is unused.",
+string.Empty, 
+@"MiB", 
+string.Empty, 
+@"[UINT32_MAX]", 
+            MessageFieldType.Uint32, 
+            4, 
+false),
+            new("storage_total",
+"Total amount of storage space on the component system. A value of UINT32_MAX implies the field is unused.",
+string.Empty, 
+@"MiB", 
+string.Empty, 
+@"[UINT32_MAX]", 
+            MessageFieldType.Uint32, 
+            4, 
+false),
+            new("link_type",
+"Link type: 0-9: UART, 10-19: Wired network, 20-29: Wifi, 30-39: Point-to-point proprietary, 40-49: Mesh proprietary",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            6, 
+false),
+            new("link_tx_rate",
+"Network traffic from the component system. A value of UINT32_MAX implies the field is unused.",
+string.Empty, 
+@"KiB/s", 
+string.Empty, 
+@"[UINT32_MAX]", 
+            MessageFieldType.Uint32, 
+            6, 
+false),
+            new("link_rx_rate",
+"Network traffic to the component system. A value of UINT32_MAX implies the field is unused.",
+string.Empty, 
+@"KiB/s", 
+string.Empty, 
+@"[UINT32_MAX]", 
+            MessageFieldType.Uint32, 
+            6, 
+false),
+            new("link_tx_max",
+"Network capacity from the component system. A value of UINT32_MAX implies the field is unused.",
+string.Empty, 
+@"KiB/s", 
+string.Empty, 
+@"[UINT32_MAX]", 
+            MessageFieldType.Uint32, 
+            6, 
+false),
+            new("link_rx_max",
+"Network capacity to the component system. A value of UINT32_MAX implies the field is unused.",
+string.Empty, 
+@"KiB/s", 
+string.Empty, 
+@"[UINT32_MAX]", 
+            MessageFieldType.Uint32, 
+            6, 
+false),
+            new("fan_speed",
+"Fan speeds. A value of INT16_MAX implies the field is unused.",
+string.Empty, 
+@"rpm", 
+string.Empty, 
+@"[INT16_MAX]", 
+            MessageFieldType.Int16, 
+            4, 
+false),
+            new("type",
+"Type of the onboard computer: 0: Mission computer primary, 1: Mission computer backup 1, 2: Mission computer backup 2, 3: Compute node, 4-5: Compute spares, 6-9: Payload computers.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("cpu_cores",
+"CPU usage on the component in percent (100 - idle). A value of UINT8_MAX implies the field is unused.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[UINT8_MAX]", 
+            MessageFieldType.Uint8, 
+            8, 
+false),
+            new("cpu_combined",
+"Combined CPU usage as the last 10 slices of 100 MS (a histogram). This allows to identify spikes in load that max out the system, but only for a short amount of time. A value of UINT8_MAX implies the field is unused.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[UINT8_MAX]", 
+            MessageFieldType.Uint8, 
+            10, 
+false),
+            new("gpu_cores",
+"GPU usage on the component in percent (100 - idle). A value of UINT8_MAX implies the field is unused.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[UINT8_MAX]", 
+            MessageFieldType.Uint8, 
+            4, 
+false),
+            new("gpu_combined",
+"Combined GPU usage as the last 10 slices of 100 MS (a histogram). This allows to identify spikes in load that max out the system, but only for a short amount of time. A value of UINT8_MAX implies the field is unused.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[UINT8_MAX]", 
+            MessageFieldType.Uint8, 
+            10, 
+false),
+            new("temperature_board",
+"Temperature of the board. A value of INT8_MAX implies the field is unused.",
+string.Empty, 
+@"degC", 
+string.Empty, 
+@"INT8_MAX", 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("temperature_core",
+"Temperature of the CPU core. A value of INT8_MAX implies the field is unused.",
+string.Empty, 
+@"degC", 
+string.Empty, 
+@"[INT8_MAX]", 
+            MessageFieldType.Int8, 
+            8, 
+false),
+        ];
+        public const string FormatMessage = "ONBOARD_COMPUTER_STATUS:"
+        + "uint64_t time_usec;"
+        + "uint32_t uptime;"
+        + "uint32_t ram_usage;"
+        + "uint32_t ram_total;"
+        + "uint32_t[4] storage_type;"
+        + "uint32_t[4] storage_usage;"
+        + "uint32_t[4] storage_total;"
+        + "uint32_t[6] link_type;"
+        + "uint32_t[6] link_tx_rate;"
+        + "uint32_t[6] link_rx_rate;"
+        + "uint32_t[6] link_tx_max;"
+        + "uint32_t[6] link_rx_max;"
+        + "int16_t[4] fan_speed;"
+        + "uint8_t type;"
+        + "uint8_t[8] cpu_cores;"
+        + "uint8_t[10] cpu_combined;"
+        + "uint8_t[4] gpu_cores;"
+        + "uint8_t[10] gpu_combined;"
+        + "int8_t temperature_board;"
+        + "int8_t[8] temperature_core;"
+        ;
     }
 
     /// <summary>
@@ -35119,6 +53285,64 @@ namespace Asv.Mavlink.Common
         public override ComponentInformationPayload Payload { get; } = new();
 
         public override string Name => "COMPONENT_INFORMATION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("general_metadata_file_crc",
+"CRC32 of the general metadata file (general_metadata_uri).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("peripherals_metadata_file_crc",
+"CRC32 of peripherals metadata file (peripherals_metadata_uri).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("general_metadata_uri",
+"MAVLink FTP URI for the general metadata file (COMP_METADATA_TYPE_GENERAL), which may be compressed with xz. The file contains general component metadata, and may contain URI links for additional metadata (see COMP_METADATA_TYPE). The information is static from boot, and may be generated at compile time. The string needs to be zero terminated.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            100, 
+false),
+            new("peripherals_metadata_uri",
+"(Optional) MAVLink FTP URI for the peripherals metadata file (COMP_METADATA_TYPE_PERIPHERALS), which may be compressed with xz. This contains data about \"attached components\" such as UAVCAN nodes. The peripherals are in a separate file because the information must be generated dynamically at runtime. The string needs to be zero terminated.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            100, 
+false),
+        ];
+        public const string FormatMessage = "COMPONENT_INFORMATION:"
+        + "uint32_t time_boot_ms;"
+        + "uint32_t general_metadata_file_crc;"
+        + "uint32_t peripherals_metadata_file_crc;"
+        + "char[100] general_metadata_uri;"
+        + "char[100] peripherals_metadata_uri;"
+        ;
     }
 
     /// <summary>
@@ -35270,6 +53494,44 @@ namespace Asv.Mavlink.Common
         public override ComponentMetadataPayload Payload { get; } = new();
 
         public override string Name => "COMPONENT_METADATA";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("file_crc",
+"CRC32 of the general metadata file.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("uri",
+"MAVLink FTP URI for the general metadata file (COMP_METADATA_TYPE_GENERAL), which may be compressed with xz. The file contains general component metadata, and may contain URI links for additional metadata (see COMP_METADATA_TYPE). The information is static from boot, and may be generated at compile time. The string needs to be zero terminated.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            100, 
+false),
+        ];
+        public const string FormatMessage = "COMPONENT_METADATA:"
+        + "uint32_t time_boot_ms;"
+        + "uint32_t file_crc;"
+        + "char[100] uri;"
+        ;
     }
 
     /// <summary>
@@ -35374,6 +53636,54 @@ namespace Asv.Mavlink.Common
         public override PlayTuneV2Payload Payload { get; } = new();
 
         public override string Name => "PLAY_TUNE_V2";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("format",
+"Tune format",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("tune",
+"Tune definition as a NULL-terminated string.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            248, 
+false),
+        ];
+        public const string FormatMessage = "PLAY_TUNE_V2:"
+        + "uint32_t format;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "char[248] tune;"
+        ;
     }
 
     /// <summary>
@@ -35486,6 +53796,44 @@ namespace Asv.Mavlink.Common
         public override SupportedTunesPayload Payload { get; } = new();
 
         public override string Name => "SUPPORTED_TUNES";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("format",
+"Bitfield of supported tune formats.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SUPPORTED_TUNES:"
+        + "uint32_t format;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -35565,6 +53913,84 @@ namespace Asv.Mavlink.Common
         public override EventPayload Payload { get; } = new();
 
         public override string Name => "EVENT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("id",
+"Event ID (as defined in the component metadata)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("event_time_boot_ms",
+"Timestamp (time since system boot when the event happened).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("sequence",
+"Sequence number.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("destination_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("destination_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("log_levels",
+"LoggerFactory levels: 4 bits MSB: internal (for logging purposes), 4 bits LSB: external. Levels: Emergency = 0, Alert = 1, Critical = 2, Error = 3, Warning = 4, Notice = 5, Info = 6, Debug = 7, Protocol = 8, Disabled = 9",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("arguments",
+"Arguments (depend on event ID).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            40, 
+false),
+        ];
+        public const string FormatMessage = "EVENT:"
+        + "uint32_t id;"
+        + "uint32_t event_time_boot_ms;"
+        + "uint16_t sequence;"
+        + "uint8_t destination_component;"
+        + "uint8_t destination_system;"
+        + "uint8_t log_levels;"
+        + "uint8_t[40] arguments;"
+        ;
     }
 
     /// <summary>
@@ -35689,6 +54115,34 @@ namespace Asv.Mavlink.Common
         public override CurrentEventSequencePayload Payload { get; } = new();
 
         public override string Name => "CURRENT_EVENT_SEQUENCE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("sequence",
+"Sequence number.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("flags",
+"Flag bitset.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "CURRENT_EVENT_SEQUENCE:"
+        + "uint16_t sequence;"
+        + "uint8_t flags;"
+        ;
     }
 
     /// <summary>
@@ -35760,6 +54214,54 @@ namespace Asv.Mavlink.Common
         public override RequestEventPayload Payload { get; } = new();
 
         public override string Name => "REQUEST_EVENT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("first_sequence",
+"First sequence number of the requested event.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("last_sequence",
+"Last sequence number of the requested event.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "REQUEST_EVENT:"
+        + "uint16_t first_sequence;"
+        + "uint16_t last_sequence;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -35847,6 +54349,64 @@ namespace Asv.Mavlink.Common
         public override ResponseEventErrorPayload Payload { get; } = new();
 
         public override string Name => "RESPONSE_EVENT_ERROR";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("sequence",
+"Sequence number.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("sequence_oldest_available",
+"Oldest Sequence number that is still available after the sequence set in REQUEST_EVENT.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("reason",
+"Error reason.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "RESPONSE_EVENT_ERROR:"
+        + "uint16_t sequence;"
+        + "uint16_t sequence_oldest_available;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t reason;"
+        ;
     }
 
     /// <summary>
@@ -35942,6 +54502,74 @@ namespace Asv.Mavlink.Common
         public override CanfdFramePayload Payload { get; } = new();
 
         public override string Name => "CANFD_FRAME";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("id",
+"Frame ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("bus",
+"bus number",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("len",
+"Frame length",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data",
+"Frame data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            64, 
+false),
+        ];
+        public const string FormatMessage = "CANFD_FRAME:"
+        + "uint32_t id;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t bus;"
+        + "uint8_t len;"
+        + "uint8_t[64] data;"
+        ;
     }
 
     /// <summary>
@@ -36058,6 +54686,74 @@ namespace Asv.Mavlink.Common
         public override CanFilterModifyPayload Payload { get; } = new();
 
         public override string Name => "CAN_FILTER_MODIFY";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("ids",
+"filter IDs, length num_ids",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            16, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("bus",
+"bus number",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("operation",
+"what operation to perform on the filter list. See CAN_FILTER_OP enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("num_ids",
+"number of IDs in filter list",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "CAN_FILTER_MODIFY:"
+        + "uint16_t[16] ids;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t bus;"
+        + "uint8_t operation;"
+        + "uint8_t num_ids;"
+        ;
     }
 
     /// <summary>
@@ -36174,6 +54870,44 @@ namespace Asv.Mavlink.Common
         public override WheelDistancePayload Payload { get; } = new();
 
         public override string Name => "WHEEL_DISTANCE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (synced to UNIX time or since system boot).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("distance",
+"Distance reported by individual wheel encoders. Forward rotations increase values, reverse rotations decrease them. Not all wheels will necessarily have wheel encoders; the mapping of encoders to wheel positions must be agreed/understood by the endpoints.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Double, 
+            16, 
+false),
+            new("count",
+"Number of wheels reported.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "WHEEL_DISTANCE:"
+        + "uint64_t time_usec;"
+        + "double[16] distance;"
+        + "uint8_t count;"
+        ;
     }
 
     /// <summary>
@@ -36266,6 +55000,94 @@ namespace Asv.Mavlink.Common
         public override WinchStatusPayload Payload { get; } = new();
 
         public override string Name => "WINCH_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_usec",
+"Timestamp (synced to UNIX time or since system boot).",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("line_length",
+"Length of line released. NaN if unknown",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("speed",
+"Speed line is being released or retracted. Positive values if being released, negative values if being retracted, NaN if unknown",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("tension",
+"Tension on the line. NaN if unknown",
+string.Empty, 
+@"kg", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("voltage",
+"Voltage of the battery supplying the winch. NaN if unknown",
+string.Empty, 
+@"V", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("current",
+"Current draw from the winch. NaN if unknown",
+string.Empty, 
+@"A", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("status",
+"Status flags",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("temperature",
+"Temperature of the motor. INT16_MAX if unknown",
+string.Empty, 
+@"degC", 
+string.Empty, 
+@"INT16_MAX", 
+            MessageFieldType.Int16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "WINCH_STATUS:"
+        + "uint64_t time_usec;"
+        + "float line_length;"
+        + "float speed;"
+        + "float tension;"
+        + "float voltage;"
+        + "float current;"
+        + "uint32_t status;"
+        + "int16_t temperature;"
+        ;
     }
 
     /// <summary>
@@ -36385,6 +55207,74 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdBasicIdPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_BASIC_ID";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("id_or_mac",
+"Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            20, 
+false),
+            new("id_type",
+"Indicates the format for the uas_id field of this message.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("ua_type",
+"Indicates the type of UA (Unmanned Aircraft).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("uas_id",
+"UAS (Unmanned Aircraft System) ID following the format specified by id_type. Shall be filled with nulls in the unused portion of the field.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            20, 
+false),
+        ];
+        public const string FormatMessage = "OPEN_DRONE_ID_BASIC_ID:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t[20] id_or_mac;"
+        + "uint8_t id_type;"
+        + "uint8_t ua_type;"
+        + "uint8_t[20] uas_id;"
+        ;
     }
 
     /// <summary>
@@ -36509,6 +55399,204 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdLocationPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_LOCATION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("latitude",
+"Current latitude of the unmanned aircraft. If unknown: 0 (both Lat/Lon).",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("longitude",
+"Current longitude of the unmanned aircraft. If unknown: 0 (both Lat/Lon).",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("altitude_barometric",
+"The altitude calculated from the barometric pressue. Reference is against 29.92inHg or 1013.2mb. If unknown: -1000 m.",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"-1000", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("altitude_geodetic",
+"The geodetic altitude as defined by WGS84. If unknown: -1000 m.",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"-1000", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("height",
+"The current height of the unmanned aircraft above the take-off location or the ground as indicated by height_reference. If unknown: -1000 m.",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"-1000", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("timestamp",
+"Seconds after the full hour with reference to UTC time. Typically the GPS outputs a time-of-week value in milliseconds. First convert that to UTC and then convert for this field using ((float) (time_week_ms % (60*60*1000))) / 1000. If unknown: 0xFFFF.",
+string.Empty, 
+@"s", 
+string.Empty, 
+@"0xFFFF", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("direction",
+"Direction over ground (not heading, but direction of movement) measured clockwise from true North: 0 - 35999 centi-degrees. If unknown: 36100 centi-degrees.",
+string.Empty, 
+@"cdeg", 
+string.Empty, 
+@"36100", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("speed_horizontal",
+"Ground speed. Positive only. If unknown: 25500 cm/s. If speed is larger than 25425 cm/s, use 25425 cm/s.",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("speed_vertical",
+"The vertical speed. Up is positive. If unknown: 6300 cm/s. If speed is larger than 6200 cm/s, use 6200 cm/s. If lower than -6200 cm/s, use -6200 cm/s.",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("target_system",
+"System ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("id_or_mac",
+"Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            20, 
+false),
+            new("status",
+"Indicates whether the unmanned aircraft is on the ground or in the air.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("height_reference",
+"Indicates the reference point for the height field.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("horizontal_accuracy",
+"The accuracy of the horizontal position.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("vertical_accuracy",
+"The accuracy of the vertical position.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("barometer_accuracy",
+"The accuracy of the barometric altitude.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("speed_accuracy",
+"The accuracy of the horizontal and vertical speed.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("timestamp_accuracy",
+"The accuracy of the timestamps.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "OPEN_DRONE_ID_LOCATION:"
+        + "int32_t latitude;"
+        + "int32_t longitude;"
+        + "float altitude_barometric;"
+        + "float altitude_geodetic;"
+        + "float height;"
+        + "float timestamp;"
+        + "uint16_t direction;"
+        + "uint16_t speed_horizontal;"
+        + "int16_t speed_vertical;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t[20] id_or_mac;"
+        + "uint8_t status;"
+        + "uint8_t height_reference;"
+        + "uint8_t horizontal_accuracy;"
+        + "uint8_t vertical_accuracy;"
+        + "uint8_t barometer_accuracy;"
+        + "uint8_t speed_accuracy;"
+        + "uint8_t timestamp_accuracy;"
+        ;
     }
 
     /// <summary>
@@ -36729,6 +55817,104 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdAuthenticationPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_AUTHENTICATION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("timestamp",
+"This field is only present for page 0. 32 bit Unix Timestamp in seconds since 00:00:00 01/01/2019.",
+string.Empty, 
+@"s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("target_system",
+"System ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("id_or_mac",
+"Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            20, 
+false),
+            new("authentication_type",
+"Indicates the type of authentication.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("data_page",
+"Allowed range is 0 - 15.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("last_page_index",
+"This field is only present for page 0. Allowed range is 0 - 15. See the description of struct ODID_Auth_data at https://github.com/opendroneid/opendroneid-core-c/blob/master/libopendroneid/opendroneid.h.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("length",
+"This field is only present for page 0. Total bytes of authentication_data from all data pages. See the description of struct ODID_Auth_data at https://github.com/opendroneid/opendroneid-core-c/blob/master/libopendroneid/opendroneid.h.",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("authentication_data",
+"Opaque authentication data. For page 0, the size is only 17 bytes. For other pages, the size is 23 bytes. Shall be filled with nulls in the unused portion of the field.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            23, 
+false),
+        ];
+        public const string FormatMessage = "OPEN_DRONE_ID_AUTHENTICATION:"
+        + "uint32_t timestamp;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t[20] id_or_mac;"
+        + "uint8_t authentication_type;"
+        + "uint8_t data_page;"
+        + "uint8_t last_page_index;"
+        + "uint8_t length;"
+        + "uint8_t[23] authentication_data;"
+        ;
     }
 
     /// <summary>
@@ -36877,6 +56063,64 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdSelfIdPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_SELF_ID";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("id_or_mac",
+"Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            20, 
+false),
+            new("description_type",
+"Indicates the type of the description field.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("description",
+"Text description or numeric value expressed as ASCII characters. Shall be filled with nulls in the unused portion of the field.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            23, 
+false),
+        ];
+        public const string FormatMessage = "OPEN_DRONE_ID_SELF_ID:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t[20] id_or_mac;"
+        + "uint8_t description_type;"
+        + "char[23] description;"
+        ;
     }
 
     /// <summary>
@@ -37005,6 +56249,164 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdSystemPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_SYSTEM";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("operator_latitude",
+"Latitude of the operator. If unknown: 0 (both Lat/Lon).",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("operator_longitude",
+"Longitude of the operator. If unknown: 0 (both Lat/Lon).",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("area_ceiling",
+"Area Operations Ceiling relative to WGS84. If unknown: -1000 m. Used only for swarms/multiple UA.",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"-1000", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("area_floor",
+"Area Operations Floor relative to WGS84. If unknown: -1000 m. Used only for swarms/multiple UA.",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"-1000", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("operator_altitude_geo",
+"Geodetic altitude of the operator relative to WGS84. If unknown: -1000 m.",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"-1000", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("timestamp",
+"32 bit Unix Timestamp in seconds since 00:00:00 01/01/2019.",
+string.Empty, 
+@"s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("area_count",
+"Number of aircraft in the area, group or formation (default 1). Used only for swarms/multiple UA.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("area_radius",
+"Radius of the cylindrical area of the group or formation (default 0). Used only for swarms/multiple UA.",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("id_or_mac",
+"Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            20, 
+false),
+            new("operator_location_type",
+"Specifies the operator location type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("classification_type",
+"Specifies the classification type of the UA.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("category_eu",
+"When classification_type is MAV_ODID_CLASSIFICATION_TYPE_EU, specifies the category of the UA.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("class_eu",
+"When classification_type is MAV_ODID_CLASSIFICATION_TYPE_EU, specifies the class of the UA.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "OPEN_DRONE_ID_SYSTEM:"
+        + "int32_t operator_latitude;"
+        + "int32_t operator_longitude;"
+        + "float area_ceiling;"
+        + "float area_floor;"
+        + "float operator_altitude_geo;"
+        + "uint32_t timestamp;"
+        + "uint16_t area_count;"
+        + "uint16_t area_radius;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t[20] id_or_mac;"
+        + "uint8_t operator_location_type;"
+        + "uint8_t classification_type;"
+        + "uint8_t category_eu;"
+        + "uint8_t class_eu;"
+        ;
     }
 
     /// <summary>
@@ -37193,6 +56595,64 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdOperatorIdPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_OPERATOR_ID";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("id_or_mac",
+"Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            20, 
+false),
+            new("operator_id_type",
+"Indicates the type of the operator_id field.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("operator_id",
+"Text description or numeric value expressed as ASCII characters. Shall be filled with nulls in the unused portion of the field.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            20, 
+false),
+        ];
+        public const string FormatMessage = "OPEN_DRONE_ID_OPERATOR_ID:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t[20] id_or_mac;"
+        + "uint8_t operator_id_type;"
+        + "char[20] operator_id;"
+        ;
     }
 
     /// <summary>
@@ -37321,6 +56781,74 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdMessagePackPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_MESSAGE_PACK";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("target_system",
+"System ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("id_or_mac",
+"Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            20, 
+false),
+            new("single_message_size",
+"This field must currently always be equal to 25 (bytes), since all encoded OpenDroneID messages are specified to have this length.",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("msg_pack_size",
+"Number of encoded messages in the pack (not the number of bytes). Allowed range is 1 - 9.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("messages",
+"Concatenation of encoded OpenDroneID messages. Shall be filled with nulls in the unused portion of the field.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            225, 
+false),
+        ];
+        public const string FormatMessage = "OPEN_DRONE_ID_MESSAGE_PACK:"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t[20] id_or_mac;"
+        + "uint8_t single_message_size;"
+        + "uint8_t msg_pack_size;"
+        + "uint8_t[225] messages;"
+        ;
     }
 
     /// <summary>
@@ -37445,6 +56973,34 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdArmStatusPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_ARM_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("status",
+"Status level indicating if arming is allowed.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("error",
+"Text error message, should be empty if status is good to arm. Fill with nulls in unused portion.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            50, 
+false),
+        ];
+        public const string FormatMessage = "OPEN_DRONE_ID_ARM_STATUS:"
+        + "uint8_t status;"
+        + "char[50] error;"
+        ;
     }
 
     /// <summary>
@@ -37541,6 +57097,74 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdSystemUpdatePayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_SYSTEM_UPDATE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("operator_latitude",
+"Latitude of the operator. If unknown: 0 (both Lat/Lon).",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("operator_longitude",
+"Longitude of the operator. If unknown: 0 (both Lat/Lon).",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+@"0", 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("operator_altitude_geo",
+"Geodetic altitude of the operator relative to WGS84. If unknown: -1000 m.",
+string.Empty, 
+@"m", 
+string.Empty, 
+@"-1000", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("timestamp",
+"32 bit Unix Timestamp in seconds since 00:00:00 01/01/2019.",
+string.Empty, 
+@"s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("target_system",
+"System ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID (0 for broadcast).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "OPEN_DRONE_ID_SYSTEM_UPDATE:"
+        + "int32_t operator_latitude;"
+        + "int32_t operator_longitude;"
+        + "float operator_altitude_geo;"
+        + "uint32_t timestamp;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -37644,6 +57268,44 @@ namespace Asv.Mavlink.Common
         public override HygrometerSensorPayload Payload { get; } = new();
 
         public override string Name => "HYGROMETER_SENSOR";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("temperature",
+"Temperature",
+string.Empty, 
+@"cdegC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("humidity",
+"Humidity",
+string.Empty, 
+@"c%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("id",
+"Hygrometer ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "HYGROMETER_SENSOR:"
+        + "int16_t temperature;"
+        + "uint16_t humidity;"
+        + "uint8_t id;"
+        ;
     }
 
     /// <summary>

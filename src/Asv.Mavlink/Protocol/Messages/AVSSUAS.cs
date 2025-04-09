@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -294,6 +294,64 @@ namespace Asv.Mavlink.Avssuas
         public override AvssPrsSysStatusPayload Payload { get; } = new();
 
         public override string Name => "AVSS_PRS_SYS_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since PRS boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("error_status",
+"PRS error statuses",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("battery_status",
+"Estimated battery run-time without a remote connection and PRS battery voltage",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("arm_status",
+"PRS arm statuses",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("charge_status",
+"PRS battery charge statuses",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "AVSS_PRS_SYS_STATUS:"
+        + "uint32_t time_boot_ms;"
+        + "uint32_t error_status;"
+        + "uint32_t battery_status;"
+        + "uint8_t arm_status;"
+        + "uint8_t charge_status;"
+        ;
     }
 
     /// <summary>
@@ -389,6 +447,74 @@ namespace Asv.Mavlink.Avssuas
         public override AvssDronePositionPayload Payload { get; } = new();
 
         public override string Name => "AVSS_DRONE_POSITION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since FC boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("lat",
+"Latitude, expressed",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lon",
+"Longitude, expressed",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude (MSL). Note that virtually all GPS modules provide both WGS84 and MSL.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("ground_alt",
+"Altitude above ground, This altitude is measured by a ultrasound, Laser rangefinder or millimeter-wave radar",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("barometer_alt",
+"This altitude is measured by a barometer",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "AVSS_DRONE_POSITION:"
+        + "uint32_t time_boot_ms;"
+        + "int32_t lat;"
+        + "int32_t lon;"
+        + "int32_t alt;"
+        + "float ground_alt;"
+        + "float barometer_alt;"
+        ;
     }
 
     /// <summary>
@@ -492,6 +618,124 @@ namespace Asv.Mavlink.Avssuas
         public override AvssDroneImuPayload Payload { get; } = new();
 
         public override string Name => "AVSS_DRONE_IMU";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since FC boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("q1",
+"Quaternion component 1, w (1 in null-rotation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("q2",
+"Quaternion component 2, x (0 in null-rotation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("q3",
+"Quaternion component 3, y (0 in null-rotation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("q4",
+"Quaternion component 4, z (0 in null-rotation)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("xacc",
+"X acceleration",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yacc",
+"Y acceleration",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("zacc",
+"Z acceleration",
+string.Empty, 
+@"m/s/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("xgyro",
+"Angular speed around X axis",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ygyro",
+"Angular speed around Y axis",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("zgyro",
+"Angular speed around Z axis",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "AVSS_DRONE_IMU:"
+        + "uint32_t time_boot_ms;"
+        + "float q1;"
+        + "float q2;"
+        + "float q3;"
+        + "float q4;"
+        + "float xacc;"
+        + "float yacc;"
+        + "float zacc;"
+        + "float xgyro;"
+        + "float ygyro;"
+        + "float zgyro;"
+        ;
     }
 
     /// <summary>
@@ -635,6 +879,44 @@ namespace Asv.Mavlink.Avssuas
         public override AvssDroneOperationModePayload Payload { get; } = new();
 
         public override string Name => "AVSS_DRONE_OPERATION_MODE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since FC boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("M300_operation_mode",
+"DJI M300 operation mode",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("horsefly_operation_mode",
+"horsefly operation mode",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "AVSS_DRONE_OPERATION_MODE:"
+        + "uint32_t time_boot_ms;"
+        + "uint8_t M300_operation_mode;"
+        + "uint8_t horsefly_operation_mode;"
+        ;
     }
 
     /// <summary>

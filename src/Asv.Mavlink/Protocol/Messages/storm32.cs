@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -495,6 +495,104 @@ namespace Asv.Mavlink.Storm32
         public override Storm32GimbalManagerInformationPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_INFORMATION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("device_cap_flags",
+"Gimbal device capability flags. Same flags as reported by GIMBAL_DEVICE_INFORMATION. The flag is only 16 bit wide, but stored in 32 bit, for backwards compatibility (high word is zero).",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("manager_cap_flags",
+"Gimbal manager capability flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("roll_min",
+"Hardware minimum roll angle (positive: roll to the right). NaN if unknown.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("roll_max",
+"Hardware maximum roll angle (positive: roll to the right). NaN if unknown.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch_min",
+"Hardware minimum pitch/tilt angle (positive: tilt up). NaN if unknown.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch_max",
+"Hardware maximum pitch/tilt angle (positive: tilt up). NaN if unknown.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_min",
+"Hardware minimum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_max",
+"Hardware maximum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("gimbal_id",
+"Gimbal ID (component ID or 1-6 for non-MAVLink gimbal) that this gimbal manager is responsible for.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "STORM32_GIMBAL_MANAGER_INFORMATION:"
+        + "uint32_t device_cap_flags;"
+        + "uint32_t manager_cap_flags;"
+        + "float roll_min;"
+        + "float roll_max;"
+        + "float pitch_min;"
+        + "float pitch_max;"
+        + "float yaw_min;"
+        + "float yaw_max;"
+        + "uint8_t gimbal_id;"
+        ;
     }
 
     /// <summary>
@@ -622,6 +720,64 @@ namespace Asv.Mavlink.Storm32
         public override Storm32GimbalManagerStatusPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("device_flags",
+"Gimbal device flags currently applied. Same flags as reported by GIMBAL_DEVICE_ATTITUDE_STATUS.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("manager_flags",
+"Gimbal manager flags currently applied.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("gimbal_id",
+"Gimbal ID (component ID or 1-6 for non-MAVLink gimbal) that this gimbal manager is responsible for.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("supervisor",
+"Client who is currently supervisor (0 = none).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("profile",
+"Profile currently applied (0 = default).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "STORM32_GIMBAL_MANAGER_STATUS:"
+        + "uint16_t device_flags;"
+        + "uint16_t manager_flags;"
+        + "uint8_t gimbal_id;"
+        + "uint8_t supervisor;"
+        + "uint8_t profile;"
+        ;
     }
 
     /// <summary>
@@ -717,6 +873,114 @@ namespace Asv.Mavlink.Storm32
         public override Storm32GimbalManagerControlPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_CONTROL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("q",
+"Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). Set first element to NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"[NaN:]", 
+            MessageFieldType.Float32, 
+            4, 
+false),
+            new("angular_velocity_x",
+"X component of angular velocity (positive: roll to the right). NaN to be ignored.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("angular_velocity_y",
+"Y component of angular velocity (positive: tilt up). NaN to be ignored.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("angular_velocity_z",
+"Z component of angular velocity (positive: pan to the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("device_flags",
+"Gimbal device flags to be applied (UINT16_MAX to be ignored). Same flags as used in GIMBAL_DEVICE_SET_ATTITUDE.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("manager_flags",
+"Gimbal manager flags to be applied (0 to be ignored).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("gimbal_id",
+"Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("client",
+"Client which is contacting the gimbal manager (must be set).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "STORM32_GIMBAL_MANAGER_CONTROL:"
+        + "float[4] q;"
+        + "float angular_velocity_x;"
+        + "float angular_velocity_y;"
+        + "float angular_velocity_z;"
+        + "uint16_t device_flags;"
+        + "uint16_t manager_flags;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t gimbal_id;"
+        + "uint8_t client;"
+        ;
     }
 
     /// <summary>
@@ -865,6 +1129,114 @@ namespace Asv.Mavlink.Storm32
         public override Storm32GimbalManagerControlPitchyawPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_CONTROL_PITCHYAW";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("pitch",
+"Pitch/tilt angle (positive: tilt up). NaN to be ignored.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw",
+"Yaw/pan angle (positive: pan the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.",
+string.Empty, 
+@"rad", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pitch_rate",
+"Pitch/tilt angular rate (positive: tilt up). NaN to be ignored.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("yaw_rate",
+"Yaw/pan angular rate (positive: pan to the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.",
+string.Empty, 
+@"rad/s", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("device_flags",
+"Gimbal device flags to be applied (UINT16_MAX to be ignored). Same flags as used in GIMBAL_DEVICE_SET_ATTITUDE.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT16_MAX", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("manager_flags",
+"Gimbal manager flags to be applied (0 to be ignored).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"0", 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("gimbal_id",
+"Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("client",
+"Client which is contacting the gimbal manager (must be set).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "STORM32_GIMBAL_MANAGER_CONTROL_PITCHYAW:"
+        + "float pitch;"
+        + "float yaw;"
+        + "float pitch_rate;"
+        + "float yaw_rate;"
+        + "uint16_t device_flags;"
+        + "uint16_t manager_flags;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t gimbal_id;"
+        + "uint8_t client;"
+        ;
     }
 
     /// <summary>
@@ -1000,6 +1372,64 @@ namespace Asv.Mavlink.Storm32
         public override Storm32GimbalManagerCorrectRollPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_CORRECT_ROLL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("roll",
+"Roll angle (positive to roll to the right).",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("gimbal_id",
+"Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("client",
+"Client which is contacting the gimbal manager (must be set).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "STORM32_GIMBAL_MANAGER_CORRECT_ROLL:"
+        + "float roll;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t gimbal_id;"
+        + "uint8_t client;"
+        ;
     }
 
     /// <summary>
@@ -1095,6 +1525,34 @@ namespace Asv.Mavlink.Storm32
         public override QshotStatusPayload Payload { get; } = new();
 
         public override string Name => "QSHOT_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("mode",
+"Current shot mode.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("shot_state",
+"Current state in the shot. States are specific to the selected shot mode.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "QSHOT_STATUS:"
+        + "uint16_t mode;"
+        + "uint16_t shot_state;"
+        ;
     }
 
     /// <summary>
@@ -1166,6 +1624,44 @@ namespace Asv.Mavlink.Storm32
         public override RadioRcChannelsPayload Payload { get; } = new();
 
         public override string Name => "RADIO_RC_CHANNELS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("count",
+"Total number of RC channels being received. This can be larger than 24, indicating that more channels are available but not given in this message.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("flags",
+"Radio channels status flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("channels",
+"RC channels. Channels above count should be set to 0, to benefit from MAVLink's zero padding.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            24, 
+true),
+        ];
+        public const string FormatMessage = "RADIO_RC_CHANNELS:"
+        + "uint8_t count;"
+        + "uint8_t flags;"
+        + "int16_t[24] channels;"
+        ;
     }
 
     /// <summary>
@@ -1257,6 +1753,164 @@ namespace Asv.Mavlink.Storm32
         public override RadioLinkStatsPayload Payload { get; } = new();
 
         public override string Name => "RADIO_LINK_STATS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("flags",
+"Radio link statistics flags.",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rx_LQ",
+"Values: 0..100. UINT8_MAX: invalid/unknown.",
+string.Empty, 
+@"c%", 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rx_rssi1",
+"Rssi of antenna1. UINT8_MAX: invalid/unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rx_snr1",
+"Noise on antenna1. Radio dependent. INT8_MAX: invalid/unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT8_MAX", 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("rx_rssi2",
+"Rssi of antenna2. UINT8_MAX: ignore/unknown, use rx_rssi1.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rx_snr2",
+"Noise on antenna2. Radio dependent. INT8_MAX: ignore/unknown, use rx_snr1.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT8_MAX", 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("rx_receive_antenna",
+"0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Rx receive diversity, use rx_rssi1, rx_snr1.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rx_transmit_antenna",
+"0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Rx transmit diversity.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("tx_LQ",
+"Values: 0..100. UINT8_MAX: invalid/unknown.",
+string.Empty, 
+@"c%", 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("tx_rssi1",
+"Rssi of antenna1. UINT8_MAX: invalid/unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("tx_snr1",
+"Noise on antenna1. Radio dependent. INT8_MAX: invalid/unknown.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT8_MAX", 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("tx_rssi2",
+"Rssi of antenna2. UINT8_MAX: ignore/unknown, use tx_rssi1.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("tx_snr2",
+"Noise on antenna2. Radio dependent. INT8_MAX: ignore/unknown, use tx_snr1.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"INT8_MAX", 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("tx_receive_antenna",
+"0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Tx receive diversity, use tx_rssi1, tx_snr1.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("tx_transmit_antenna",
+"0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Tx transmit diversity.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+@"UINT8_MAX", 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "RADIO_LINK_STATS:"
+        + "uint8_t flags;"
+        + "uint8_t rx_LQ;"
+        + "uint8_t rx_rssi1;"
+        + "int8_t rx_snr1;"
+        + "uint8_t rx_rssi2;"
+        + "int8_t rx_snr2;"
+        + "uint8_t rx_receive_antenna;"
+        + "uint8_t rx_transmit_antenna;"
+        + "uint8_t tx_LQ;"
+        + "uint8_t tx_rssi1;"
+        + "int8_t tx_snr1;"
+        + "uint8_t tx_rssi2;"
+        + "int8_t tx_snr2;"
+        + "uint8_t tx_receive_antenna;"
+        + "uint8_t tx_transmit_antenna;"
+        ;
     }
 
     /// <summary>
@@ -1432,6 +2086,44 @@ namespace Asv.Mavlink.Storm32
         public override FrskyPassthroughArrayPayload Payload { get; } = new();
 
         public override string Name => "FRSKY_PASSTHROUGH_ARRAY";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("time_boot_ms",
+"Timestamp (time since system boot).",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("count",
+"Number of passthrough packets in this message.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("packet_buf",
+"Passthrough packet buffer. A packet has 6 bytes: uint16_t id + uint32_t data. The array has space for 40 packets.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            240, 
+false),
+        ];
+        public const string FormatMessage = "FRSKY_PASSTHROUGH_ARRAY:"
+        + "uint32_t time_boot_ms;"
+        + "uint8_t count;"
+        + "uint8_t[240] packet_buf;"
+        ;
     }
 
     /// <summary>
@@ -1524,6 +2216,64 @@ namespace Asv.Mavlink.Storm32
         public override ParamValueArrayPayload Payload { get; } = new();
 
         public override string Name => "PARAM_VALUE_ARRAY";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("param_count",
+"Total number of onboard parameters.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("param_index_first",
+"Index of the first onboard parameter in this array.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("flags",
+"Flags.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("param_array_len",
+"Number of onboard parameters in this array.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("packet_buf",
+"Parameters buffer. Contains a series of variable length parameter blocks, one per parameter, with format as specifed elsewhere.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            248, 
+false),
+        ];
+        public const string FormatMessage = "PARAM_VALUE_ARRAY:"
+        + "uint16_t param_count;"
+        + "uint16_t param_index_first;"
+        + "uint16_t flags;"
+        + "uint8_t param_array_len;"
+        + "uint8_t[248] packet_buf;"
+        ;
     }
 
     /// <summary>

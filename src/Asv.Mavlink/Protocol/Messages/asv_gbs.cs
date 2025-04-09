@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.5+0ba9fefc7b77ee147b4abfc48526494086a929d5
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -160,6 +160,154 @@ namespace Asv.Mavlink.AsvGbs
         public override AsvGbsOutStatusPayload Payload { get; } = new();
 
         public override string Name => "ASV_GBS_OUT_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("lat",
+"Latitude of GBS (value / 10000000D).",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("lng",
+"Longitude of GBS (value / 10000000D).",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("alt",
+"Altitude of GBS.",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("accuracy",
+"Current position accuracy (cm).",
+string.Empty, 
+@"cm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("observation",
+"Observation time (seconds).",
+string.Empty, 
+@"s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("dgps_rate",
+"Rate of GPS_RTCM_DATA data.",
+string.Empty, 
+@"bytes\seconds", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("sat_all",
+"All GNSS satellite count.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("sat_gps",
+"GPS satellite count.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("sat_glo",
+"GLONASS satellite count.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("sat_bdu",
+"BeiDou satellite count.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("sat_gal",
+"Galileo satellite count.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("sat_qzs",
+"QZSS satellite count.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("sat_ime",
+"IMES satellite count.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("sat_sbs",
+"SBAS satellite count.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASV_GBS_OUT_STATUS:"
+        + "int32_t lat;"
+        + "int32_t lng;"
+        + "int32_t alt;"
+        + "uint16_t accuracy;"
+        + "uint16_t observation;"
+        + "uint16_t dgps_rate;"
+        + "uint8_t sat_all;"
+        + "uint8_t sat_gps;"
+        + "uint8_t sat_glo;"
+        + "uint8_t sat_bdu;"
+        + "uint8_t sat_gal;"
+        + "uint8_t sat_qzs;"
+        + "uint8_t sat_ime;"
+        + "uint8_t sat_sbs;"
+        ;
     }
 
     /// <summary>

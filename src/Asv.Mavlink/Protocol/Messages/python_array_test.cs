@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -76,6 +76,64 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest0Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_0";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("ar_u32",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            4, 
+false),
+            new("ar_u16",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            4, 
+false),
+            new("v1",
+"Stub field",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("ar_i8",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            4, 
+false),
+            new("ar_u8",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            4, 
+false),
+        ];
+        public const string FormatMessage = "ARRAY_TEST_0:"
+        + "uint32_t[4] ar_u32;"
+        + "uint16_t[4] ar_u16;"
+        + "uint8_t v1;"
+        + "int8_t[4] ar_i8;"
+        + "uint8_t[4] ar_u8;"
+        ;
     }
 
     /// <summary>
@@ -208,6 +266,24 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest1Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_1";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("ar_u32",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            4, 
+false),
+        ];
+        public const string FormatMessage = "ARRAY_TEST_1:"
+        + "uint32_t[4] ar_u32;"
+        ;
     }
 
     /// <summary>
@@ -284,6 +360,34 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest3Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_3";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("ar_u32",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            4, 
+false),
+            new("v",
+"Stub field",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ARRAY_TEST_3:"
+        + "uint32_t[4] ar_u32;"
+        + "uint8_t v;"
+        ;
     }
 
     /// <summary>
@@ -368,6 +472,34 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest4Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_4";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("ar_u32",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            4, 
+false),
+            new("v",
+"Stub field",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ARRAY_TEST_4:"
+        + "uint32_t[4] ar_u32;"
+        + "uint8_t v;"
+        ;
     }
 
     /// <summary>
@@ -452,6 +584,34 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest5Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_5";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("c1",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            5, 
+false),
+            new("c2",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            5, 
+false),
+        ];
+        public const string FormatMessage = "ARRAY_TEST_5:"
+        + "char[5] c1;"
+        + "char[5] c2;"
+        ;
     }
 
     /// <summary>
@@ -568,6 +728,134 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest6Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_6";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("ar_d",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Double, 
+            2, 
+false),
+            new("v3",
+"Stub field",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("ar_u32",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            2, 
+false),
+            new("ar_i32",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            2, 
+false),
+            new("ar_f",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            2, 
+false),
+            new("v2",
+"Stub field",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("ar_u16",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            2, 
+false),
+            new("ar_i16",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            2, 
+false),
+            new("v1",
+"Stub field",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("ar_u8",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            2, 
+false),
+            new("ar_i8",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            2, 
+false),
+            new("ar_c",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            32, 
+false),
+        ];
+        public const string FormatMessage = "ARRAY_TEST_6:"
+        + "double[2] ar_d;"
+        + "uint32_t v3;"
+        + "uint32_t[2] ar_u32;"
+        + "int32_t[2] ar_i32;"
+        + "float[2] ar_f;"
+        + "uint16_t v2;"
+        + "uint16_t[2] ar_u16;"
+        + "int16_t[2] ar_i16;"
+        + "uint8_t v1;"
+        + "uint8_t[2] ar_u8;"
+        + "int8_t[2] ar_i8;"
+        + "char[32] ar_c;"
+        ;
     }
 
     /// <summary>
@@ -808,6 +1096,104 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest7Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_7";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("ar_d",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Double, 
+            2, 
+false),
+            new("ar_f",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            2, 
+false),
+            new("ar_u32",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            2, 
+false),
+            new("ar_i32",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            2, 
+false),
+            new("ar_u16",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            2, 
+false),
+            new("ar_i16",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            2, 
+false),
+            new("ar_u8",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            2, 
+false),
+            new("ar_i8",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            2, 
+false),
+            new("ar_c",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            32, 
+false),
+        ];
+        public const string FormatMessage = "ARRAY_TEST_7:"
+        + "double[2] ar_d;"
+        + "float[2] ar_f;"
+        + "uint32_t[2] ar_u32;"
+        + "int32_t[2] ar_i32;"
+        + "uint16_t[2] ar_u16;"
+        + "int16_t[2] ar_i16;"
+        + "uint8_t[2] ar_u8;"
+        + "int8_t[2] ar_i8;"
+        + "char[32] ar_c;"
+        ;
     }
 
     /// <summary>
@@ -1024,6 +1410,44 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest8Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_8";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("ar_d",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Double, 
+            2, 
+false),
+            new("v3",
+"Stub field",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("ar_u16",
+"Value array",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            2, 
+false),
+        ];
+        public const string FormatMessage = "ARRAY_TEST_8:"
+        + "double[2] ar_d;"
+        + "uint32_t v3;"
+        + "uint16_t[2] ar_u16;"
+        ;
     }
 
     /// <summary>

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -120,6 +120,24 @@ namespace Asv.Mavlink.Icarous
         public override IcarousHeartbeatPayload Payload { get; } = new();
 
         public override string Name => "ICAROUS_HEARTBEAT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("status",
+"See the FMS_STATE enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ICAROUS_HEARTBEAT:"
+        + "uint8_t status;"
+        ;
     }
 
     /// <summary>
@@ -183,6 +201,174 @@ namespace Asv.Mavlink.Icarous
         public override IcarousKinematicBandsPayload Payload { get; } = new();
 
         public override string Name => "ICAROUS_KINEMATIC_BANDS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("min1",
+"min angle (degrees)",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("max1",
+"max angle (degrees)",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("min2",
+"min angle (degrees)",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("max2",
+"max angle (degrees)",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("min3",
+"min angle (degrees)",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("max3",
+"max angle (degrees)",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("min4",
+"min angle (degrees)",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("max4",
+"max angle (degrees)",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("min5",
+"min angle (degrees)",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("max5",
+"max angle (degrees)",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("numBands",
+"Number of track bands",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int8, 
+            0, 
+false),
+            new("type1",
+"See the TRACK_BAND_TYPES enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("type2",
+"See the TRACK_BAND_TYPES enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("type3",
+"See the TRACK_BAND_TYPES enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("type4",
+"See the TRACK_BAND_TYPES enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("type5",
+"See the TRACK_BAND_TYPES enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ICAROUS_KINEMATIC_BANDS:"
+        + "float min1;"
+        + "float max1;"
+        + "float min2;"
+        + "float max2;"
+        + "float min3;"
+        + "float max3;"
+        + "float min4;"
+        + "float max4;"
+        + "float min5;"
+        + "float max5;"
+        + "int8_t numBands;"
+        + "uint8_t type1;"
+        + "uint8_t type2;"
+        + "uint8_t type3;"
+        + "uint8_t type4;"
+        + "uint8_t type5;"
+        ;
     }
 
     /// <summary>

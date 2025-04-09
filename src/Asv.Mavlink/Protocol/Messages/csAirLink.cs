@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -87,6 +87,34 @@ namespace Asv.Mavlink.Csairlink
         public override AirlinkAuthPayload Payload { get; } = new();
 
         public override string Name => "AIRLINK_AUTH";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("login",
+"Login",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            50, 
+false),
+            new("password",
+"Password",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            50, 
+false),
+        ];
+        public const string FormatMessage = "AIRLINK_AUTH:"
+        + "char[50] login;"
+        + "char[50] password;"
+        ;
     }
 
     /// <summary>
@@ -203,6 +231,24 @@ namespace Asv.Mavlink.Csairlink
         public override AirlinkAuthResponsePayload Payload { get; } = new();
 
         public override string Name => "AIRLINK_AUTH_RESPONSE";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("resp_type",
+"Response type",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "AIRLINK_AUTH_RESPONSE:"
+        + "uint8_t resp_type;"
+        ;
     }
 
     /// <summary>

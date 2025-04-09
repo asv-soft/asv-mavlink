@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -343,6 +343,94 @@ namespace Asv.Mavlink.Uavionix
         public override UavionixAdsbOutCfgPayload Payload { get; } = new();
 
         public override string Name => "UAVIONIX_ADSB_OUT_CFG";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("ICAO",
+"Vehicle address (24 bit)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("stallSpeed",
+"Aircraft stall speed in cm/s",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("callsign",
+"Vehicle identifier (8 characters, null terminated, valid characters are A-Z, 0-9, \" \" only)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            9, 
+false),
+            new("emitterType",
+"Transmitting vehicle type. See ADSB_EMITTER_TYPE enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("aircraftSize",
+"Aircraft length and width encoding (table 2-35 of DO-282B)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("gpsOffsetLat",
+"GPS antenna lateral offset (table 2-36 of DO-282B)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("gpsOffsetLon",
+"GPS antenna longitudinal offset from nose [if non-zero, take position (in meters) divide by 2 and add one] (table 2-37 DO-282B)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rfSelect",
+"ADS-B transponder receiver and transmit enable flags",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "UAVIONIX_ADSB_OUT_CFG:"
+        + "uint32_t ICAO;"
+        + "uint16_t stallSpeed;"
+        + "char[9] callsign;"
+        + "uint8_t emitterType;"
+        + "uint8_t aircraftSize;"
+        + "uint8_t gpsOffsetLat;"
+        + "uint8_t gpsOffsetLon;"
+        + "uint8_t rfSelect;"
+        ;
     }
 
     /// <summary>
@@ -487,6 +575,174 @@ namespace Asv.Mavlink.Uavionix
         public override UavionixAdsbOutDynamicPayload Payload { get; } = new();
 
         public override string Name => "UAVIONIX_ADSB_OUT_DYNAMIC";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("utcTime",
+"UTC time in seconds since GPS epoch (Jan 6, 1980). If unknown set to UINT32_MAX",
+string.Empty, 
+@"s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("gpsLat",
+"Latitude WGS84 (deg * 1E7). If unknown set to INT32_MAX",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("gpsLon",
+"Longitude WGS84 (deg * 1E7). If unknown set to INT32_MAX",
+string.Empty, 
+@"degE7", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("gpsAlt",
+"Altitude (WGS84). UP +ve. If unknown set to INT32_MAX",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("baroAltMSL",
+"Barometric pressure altitude (MSL) relative to a standard atmosphere of 1013.2 mBar and NOT bar corrected altitude (m * 1E-3). (up +ve). If unknown set to INT32_MAX",
+string.Empty, 
+@"mbar", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("accuracyHor",
+"Horizontal accuracy in mm (m * 1E-3). If unknown set to UINT32_MAX",
+string.Empty, 
+@"mm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("accuracyVert",
+"Vertical accuracy in cm. If unknown set to UINT16_MAX",
+string.Empty, 
+@"cm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("accuracyVel",
+"Velocity accuracy in mm/s (m * 1E-3). If unknown set to UINT16_MAX",
+string.Empty, 
+@"mm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("velVert",
+"GPS vertical speed in cm/s. If unknown set to INT16_MAX",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("velNS",
+"North-South velocity over ground in cm/s North +ve. If unknown set to INT16_MAX",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("VelEW",
+"East-West velocity over ground in cm/s East +ve. If unknown set to INT16_MAX",
+string.Empty, 
+@"cm/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("state",
+"ADS-B transponder dynamic input state flags",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("squawk",
+"Mode A code (typically 1200 [0x04B0] for VFR)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("gpsFix",
+"0-1: no fix, 2: 2D fix, 3: 3D fix, 4: DGPS, 5: RTK",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("numSats",
+"Number of satellites visible. If unknown set to UINT8_MAX",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("emergencyStatus",
+"Emergency status",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "UAVIONIX_ADSB_OUT_DYNAMIC:"
+        + "uint32_t utcTime;"
+        + "int32_t gpsLat;"
+        + "int32_t gpsLon;"
+        + "int32_t gpsAlt;"
+        + "int32_t baroAltMSL;"
+        + "uint32_t accuracyHor;"
+        + "uint16_t accuracyVert;"
+        + "uint16_t accuracyVel;"
+        + "int16_t velVert;"
+        + "int16_t velNS;"
+        + "int16_t VelEW;"
+        + "uint16_t state;"
+        + "uint16_t squawk;"
+        + "uint8_t gpsFix;"
+        + "uint8_t numSats;"
+        + "uint8_t emergencyStatus;"
+        ;
     }
 
     /// <summary>
@@ -670,6 +926,24 @@ namespace Asv.Mavlink.Uavionix
         public override UavionixAdsbTransceiverHealthReportPayload Payload { get; } = new();
 
         public override string Name => "UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("rfHealth",
+"ADS-B transponder messages",
+string.Empty, 
+string.Empty, 
+"bitmask", 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT:"
+        + "uint8_t rfHealth;"
+        ;
     }
 
     /// <summary>

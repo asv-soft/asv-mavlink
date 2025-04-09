@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -73,6 +73,24 @@ namespace Asv.Mavlink.Cubepilot
         public override CubepilotRawRcPayload Payload { get; } = new();
 
         public override string Name => "CUBEPILOT_RAW_RC";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("rc_raw",
+"",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            32, 
+false),
+        ];
+        public const string FormatMessage = "CUBEPILOT_RAW_RC:"
+        + "uint8_t[32] rc_raw;"
+        ;
     }
 
     /// <summary>
@@ -149,6 +167,94 @@ namespace Asv.Mavlink.Cubepilot
         public override HerelinkVideoStreamInformationPayload Payload { get; } = new();
 
         public override string Name => "HERELINK_VIDEO_STREAM_INFORMATION";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("framerate",
+"Frame rate.",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("bitrate",
+"Bit rate.",
+string.Empty, 
+@"bits/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("resolution_h",
+"Horizontal resolution.",
+string.Empty, 
+@"pix", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("resolution_v",
+"Vertical resolution.",
+string.Empty, 
+@"pix", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("rotation",
+"Video image rotation clockwise.",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("camera_id",
+"Video Stream ID (1 for first, 2 for second, etc.)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("status",
+"Number of streams available.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("uri",
+"Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            230, 
+false),
+        ];
+        public const string FormatMessage = "HERELINK_VIDEO_STREAM_INFORMATION:"
+        + "float framerate;"
+        + "uint32_t bitrate;"
+        + "uint16_t resolution_h;"
+        + "uint16_t resolution_v;"
+        + "uint16_t rotation;"
+        + "uint8_t camera_id;"
+        + "uint8_t status;"
+        + "char[230] uri;"
+        ;
     }
 
     /// <summary>
@@ -293,6 +399,84 @@ namespace Asv.Mavlink.Cubepilot
         public override HerelinkTelemPayload Payload { get; } = new();
 
         public override string Name => "HERELINK_TELEM";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("rf_freq",
+"",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("link_bw",
+"",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("link_rate",
+"",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("snr",
+"",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("cpu_temp",
+"",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("board_temp",
+"",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("rssi",
+"",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "HERELINK_TELEM:"
+        + "uint32_t rf_freq;"
+        + "uint32_t link_bw;"
+        + "uint32_t link_rate;"
+        + "int16_t snr;"
+        + "int16_t cpu_temp;"
+        + "int16_t board_temp;"
+        + "uint8_t rssi;"
+        ;
     }
 
     /// <summary>
@@ -404,6 +588,54 @@ namespace Asv.Mavlink.Cubepilot
         public override CubepilotFirmwareUpdateStartPayload Payload { get; } = new();
 
         public override string Name => "CUBEPILOT_FIRMWARE_UPDATE_START";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("size",
+"FW Size.",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("crc",
+"FW CRC.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "CUBEPILOT_FIRMWARE_UPDATE_START:"
+        + "uint32_t size;"
+        + "uint32_t crc;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>
@@ -491,6 +723,44 @@ namespace Asv.Mavlink.Cubepilot
         public override CubepilotFirmwareUpdateRespPayload Payload { get; } = new();
 
         public override string Name => "CUBEPILOT_FIRMWARE_UPDATE_RESP";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("offset",
+"FW Offset.",
+string.Empty, 
+@"bytes", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("target_system",
+"System ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "CUBEPILOT_FIRMWARE_UPDATE_RESP:"
+        + "uint32_t offset;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        ;
     }
 
     /// <summary>

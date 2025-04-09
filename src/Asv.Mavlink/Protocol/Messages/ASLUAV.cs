@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 3.10.4+1a2d7cd3ae509bbfa5f932af5791dfe12de59ff1
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
 
 using System;
 using System.Text;
@@ -165,6 +165,164 @@ namespace Asv.Mavlink.Asluav
         public override CommandIntStampedPayload Payload { get; } = new();
 
         public override string Name => "COMMAND_INT_STAMPED";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("vehicle_timestamp",
+"Microseconds elapsed since vehicle boot",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("utc_time",
+"UTC time, seconds elapsed since 01.01.1970",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("param1",
+"PARAM1, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param2",
+"PARAM2, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param3",
+"PARAM3, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param4",
+"PARAM4, see MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("x",
+"PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("y",
+"PARAM6 / local: y position in meters * 1e4, global: longitude in degrees * 10^7",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int32, 
+            0, 
+false),
+            new("z",
+"PARAM7 / z position: global: altitude in meters (MSL, WGS84, AGL or relative to home - depending on frame).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("command",
+"The scheduled action for the mission item, as defined by MAV_CMD enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component ID",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("frame",
+"The coordinate system of the COMMAND, as defined by MAV_FRAME enum",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("current",
+"false:0, true:1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("autocontinue",
+"autocontinue to next wp",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "COMMAND_INT_STAMPED:"
+        + "uint64_t vehicle_timestamp;"
+        + "uint32_t utc_time;"
+        + "float param1;"
+        + "float param2;"
+        + "float param3;"
+        + "float param4;"
+        + "int32_t x;"
+        + "int32_t y;"
+        + "float z;"
+        + "uint16_t command;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t frame;"
+        + "uint8_t current;"
+        + "uint8_t autocontinue;"
+        ;
     }
 
     /// <summary>
@@ -340,6 +498,144 @@ namespace Asv.Mavlink.Asluav
         public override CommandLongStampedPayload Payload { get; } = new();
 
         public override string Name => "COMMAND_LONG_STAMPED";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("vehicle_timestamp",
+"Microseconds elapsed since vehicle boot",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("utc_time",
+"UTC time, seconds elapsed since 01.01.1970",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("param1",
+"Parameter 1, as defined by MAV_CMD enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param2",
+"Parameter 2, as defined by MAV_CMD enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param3",
+"Parameter 3, as defined by MAV_CMD enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param4",
+"Parameter 4, as defined by MAV_CMD enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param5",
+"Parameter 5, as defined by MAV_CMD enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param6",
+"Parameter 6, as defined by MAV_CMD enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("param7",
+"Parameter 7, as defined by MAV_CMD enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("command",
+"Command ID, as defined by MAV_CMD enum.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("target_system",
+"System which should execute the command",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("target_component",
+"Component which should execute the command, 0 for all components",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("confirmation",
+"0: First transmission of this command. 1-255: Confirmation transmissions (e.g. for kill command)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "COMMAND_LONG_STAMPED:"
+        + "uint64_t vehicle_timestamp;"
+        + "uint32_t utc_time;"
+        + "float param1;"
+        + "float param2;"
+        + "float param3;"
+        + "float param4;"
+        + "float param5;"
+        + "float param6;"
+        + "float param7;"
+        + "uint16_t command;"
+        + "uint8_t target_system;"
+        + "uint8_t target_component;"
+        + "uint8_t confirmation;"
+        ;
     }
 
     /// <summary>
@@ -499,6 +795,54 @@ namespace Asv.Mavlink.Asluav
         public override SensPowerPayload Payload { get; } = new();
 
         public override string Name => "SENS_POWER";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("adc121_vspb_volt",
+" Power board voltage sensor reading",
+string.Empty, 
+@"V", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("adc121_cspb_amp",
+" Power board current sensor reading",
+string.Empty, 
+@"A", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("adc121_cs1_amp",
+" Board current sensor 1 reading",
+string.Empty, 
+@"A", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("adc121_cs2_amp",
+" Board current sensor 2 reading",
+string.Empty, 
+@"A", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SENS_POWER:"
+        + "float adc121_vspb_volt;"
+        + "float adc121_cspb_amp;"
+        + "float adc121_cs1_amp;"
+        + "float adc121_cs2_amp;"
+        ;
     }
 
     /// <summary>
@@ -586,6 +930,144 @@ namespace Asv.Mavlink.Asluav
         public override SensMpptPayload Payload { get; } = new();
 
         public override string Name => "SENS_MPPT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("mppt_timestamp",
+" MPPT last timestamp ",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("mppt1_volt",
+" MPPT1 voltage ",
+string.Empty, 
+@"V", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("mppt1_amp",
+" MPPT1 current ",
+string.Empty, 
+@"A", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("mppt2_volt",
+" MPPT2 voltage ",
+string.Empty, 
+@"V", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("mppt2_amp",
+" MPPT2 current ",
+string.Empty, 
+@"A", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("mppt3_volt",
+"MPPT3 voltage ",
+string.Empty, 
+@"V", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("mppt3_amp",
+" MPPT3 current ",
+string.Empty, 
+@"A", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("mppt1_pwm",
+" MPPT1 pwm ",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("mppt2_pwm",
+" MPPT2 pwm ",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("mppt3_pwm",
+" MPPT3 pwm ",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("mppt1_status",
+" MPPT1 status ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mppt2_status",
+" MPPT2 status ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("mppt3_status",
+" MPPT3 status ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SENS_MPPT:"
+        + "uint64_t mppt_timestamp;"
+        + "float mppt1_volt;"
+        + "float mppt1_amp;"
+        + "float mppt2_volt;"
+        + "float mppt2_amp;"
+        + "float mppt3_volt;"
+        + "float mppt3_amp;"
+        + "uint16_t mppt1_pwm;"
+        + "uint16_t mppt2_pwm;"
+        + "uint16_t mppt3_pwm;"
+        + "uint8_t mppt1_status;"
+        + "uint8_t mppt2_status;"
+        + "uint8_t mppt3_status;"
+        ;
     }
 
     /// <summary>
@@ -745,6 +1227,264 @@ namespace Asv.Mavlink.Asluav
         public override AslctrlDataPayload Payload { get; } = new();
 
         public override string Name => "ASLCTRL_DATA";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("timestamp",
+" Timestamp",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("h",
+" See sourcecode for a description of these values... ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("hRef",
+" ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("hRef_t",
+" ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("PitchAngle",
+"Pitch angle",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("PitchAngleRef",
+"Pitch angle reference",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("q",
+" ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("qRef",
+" ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("uElev",
+" ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("uThrot",
+" ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("uThrot2",
+" ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("nZ",
+" ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("AirspeedRef",
+"Airspeed reference",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("YawAngle",
+"Yaw angle",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("YawAngleRef",
+"Yaw angle reference",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("RollAngle",
+"Roll angle",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("RollAngleRef",
+"Roll angle reference",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("p",
+" ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pRef",
+" ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("r",
+" ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rRef",
+" ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("uAil",
+" ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("uRud",
+" ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("aslctrl_mode",
+" ASLCTRL control-mode (manual, stabilized, auto, etc...)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("SpoilersEngaged",
+" ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASLCTRL_DATA:"
+        + "uint64_t timestamp;"
+        + "float h;"
+        + "float hRef;"
+        + "float hRef_t;"
+        + "float PitchAngle;"
+        + "float PitchAngleRef;"
+        + "float q;"
+        + "float qRef;"
+        + "float uElev;"
+        + "float uThrot;"
+        + "float uThrot2;"
+        + "float nZ;"
+        + "float AirspeedRef;"
+        + "float YawAngle;"
+        + "float YawAngleRef;"
+        + "float RollAngle;"
+        + "float RollAngleRef;"
+        + "float p;"
+        + "float pRef;"
+        + "float r;"
+        + "float rRef;"
+        + "float uAil;"
+        + "float uRud;"
+        + "uint8_t aslctrl_mode;"
+        + "uint8_t SpoilersEngaged;"
+        ;
     }
 
     /// <summary>
@@ -1000,6 +1740,124 @@ namespace Asv.Mavlink.Asluav
         public override AslctrlDebugPayload Payload { get; } = new();
 
         public override string Name => "ASLCTRL_DEBUG";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("i32_1",
+" Debug data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("f_1",
+" Debug data ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("f_2",
+" Debug data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("f_3",
+" Debug data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("f_4",
+" Debug data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("f_5",
+" Debug data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("f_6",
+" Debug data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("f_7",
+" Debug data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("f_8",
+" Debug data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("i8_1",
+" Debug data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("i8_2",
+" Debug data",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASLCTRL_DEBUG:"
+        + "uint32_t i32_1;"
+        + "float f_1;"
+        + "float f_2;"
+        + "float f_3;"
+        + "float f_4;"
+        + "float f_5;"
+        + "float f_6;"
+        + "float f_7;"
+        + "float f_8;"
+        + "uint8_t i8_1;"
+        + "uint8_t i8_2;"
+        ;
     }
 
     /// <summary>
@@ -1143,6 +2001,54 @@ namespace Asv.Mavlink.Asluav
         public override AsluavStatusPayload Payload { get; } = new();
 
         public override string Name => "ASLUAV_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("Motor_rpm",
+" Motor RPM ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("LED_status",
+" Status of the position-indicator LEDs",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("SATCOM_status",
+" Status of the IRIDIUM satellite communication system",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("Servo_status",
+" Status vector for up to 8 servos",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            8, 
+false),
+        ];
+        public const string FormatMessage = "ASLUAV_STATUS:"
+        + "float Motor_rpm;"
+        + "uint8_t LED_status;"
+        + "uint8_t SATCOM_status;"
+        + "uint8_t[8] Servo_status;"
+        ;
     }
 
     /// <summary>
@@ -1243,6 +2149,84 @@ namespace Asv.Mavlink.Asluav
         public override EkfExtPayload Payload { get; } = new();
 
         public override string Name => "EKF_EXT";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("timestamp",
+" Time since system start",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("Windspeed",
+" Magnitude of wind velocity (in lateral inertial plane)",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("WindDir",
+" Wind heading angle from North",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("WindZ",
+" Z (Down) component of inertial wind velocity",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("Airspeed",
+" Magnitude of air velocity",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("beta",
+" Sideslip angle",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("alpha",
+" Angle of attack",
+string.Empty, 
+@"rad", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "EKF_EXT:"
+        + "uint64_t timestamp;"
+        + "float Windspeed;"
+        + "float WindDir;"
+        + "float WindZ;"
+        + "float Airspeed;"
+        + "float beta;"
+        + "float alpha;"
+        ;
     }
 
     /// <summary>
@@ -1354,6 +2338,94 @@ namespace Asv.Mavlink.Asluav
         public override AslObctrlPayload Payload { get; } = new();
 
         public override string Name => "ASL_OBCTRL";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("timestamp",
+" Time since system start",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("uElev",
+" Elevator command [~]",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("uThrot",
+" Throttle command [~]",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("uThrot2",
+" Throttle 2 command [~]",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("uAilL",
+" Left aileron command [~]",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("uAilR",
+" Right aileron command [~]",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("uRud",
+" Rudder command [~]",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("obctrl_status",
+" Off-board computer status",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "ASL_OBCTRL:"
+        + "uint64_t timestamp;"
+        + "float uElev;"
+        + "float uThrot;"
+        + "float uThrot2;"
+        + "float uAilL;"
+        + "float uAilR;"
+        + "float uRud;"
+        + "uint8_t obctrl_status;"
+        ;
     }
 
     /// <summary>
@@ -1473,6 +2545,44 @@ namespace Asv.Mavlink.Asluav
         public override SensAtmosPayload Payload { get; } = new();
 
         public override string Name => "SENS_ATMOS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("timestamp",
+"Time since system boot",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("TempAmbient",
+" Ambient temperature",
+string.Empty, 
+@"degC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("Humidity",
+" Relative humidity",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SENS_ATMOS:"
+        + "uint64_t timestamp;"
+        + "float TempAmbient;"
+        + "float Humidity;"
+        ;
     }
 
     /// <summary>
@@ -1552,6 +2662,164 @@ namespace Asv.Mavlink.Asluav
         public override SensBatmonPayload Payload { get; } = new();
 
         public override string Name => "SENS_BATMON";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("batmon_timestamp",
+"Time since system start",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("temperature",
+"Battery pack temperature",
+string.Empty, 
+@"degC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("safetystatus",
+"Battery monitor safetystatus report bits in Hex",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("operationstatus",
+"Battery monitor operation status report bits in Hex",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("voltage",
+"Battery pack voltage",
+string.Empty, 
+@"mV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("current",
+"Battery pack current",
+string.Empty, 
+@"mA", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("batterystatus",
+"Battery monitor status report bits in Hex",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("serialnumber",
+"Battery monitor serial number in Hex",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("cellvoltage1",
+"Battery pack cell 1 voltage",
+string.Empty, 
+@"mV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("cellvoltage2",
+"Battery pack cell 2 voltage",
+string.Empty, 
+@"mV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("cellvoltage3",
+"Battery pack cell 3 voltage",
+string.Empty, 
+@"mV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("cellvoltage4",
+"Battery pack cell 4 voltage",
+string.Empty, 
+@"mV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("cellvoltage5",
+"Battery pack cell 5 voltage",
+string.Empty, 
+@"mV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("cellvoltage6",
+"Battery pack cell 6 voltage",
+string.Empty, 
+@"mV", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("SoC",
+"Battery pack state-of-charge",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SENS_BATMON:"
+        + "uint64_t batmon_timestamp;"
+        + "float temperature;"
+        + "uint32_t safetystatus;"
+        + "uint32_t operationstatus;"
+        + "uint16_t voltage;"
+        + "int16_t current;"
+        + "uint16_t batterystatus;"
+        + "uint16_t serialnumber;"
+        + "uint16_t cellvoltage1;"
+        + "uint16_t cellvoltage2;"
+        + "uint16_t cellvoltage3;"
+        + "uint16_t cellvoltage4;"
+        + "uint16_t cellvoltage5;"
+        + "uint16_t cellvoltage6;"
+        + "uint8_t SoC;"
+        ;
     }
 
     /// <summary>
@@ -1727,6 +2995,264 @@ namespace Asv.Mavlink.Asluav
         public override FwSoaringDataPayload Payload { get; } = new();
 
         public override string Name => "FW_SOARING_DATA";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("timestamp",
+"Timestamp",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("timestampModeChanged",
+"Timestamp since last mode change",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("xW",
+"Thermal core updraft strength",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("xR",
+"Thermal radius",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("xLat",
+"Thermal center latitude",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("xLon",
+"Thermal center longitude",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("VarW",
+"Variance W",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("VarR",
+"Variance R",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("VarLat",
+"Variance Lat",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("VarLon",
+"Variance Lon ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("LoiterRadius",
+"Suggested loiter radius",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("LoiterDirection",
+"Suggested loiter direction",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("DistToSoarPoint",
+"Distance to soar point",
+string.Empty, 
+@"m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("vSinkExp",
+"Expected sink rate at current airspeed, roll and throttle",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z1_LocalUpdraftSpeed",
+"Measurement / updraft speed at current/local airplane position",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z2_DeltaRoll",
+"Measurement / roll angle tracking error",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z1_exp",
+"Expected measurement 1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("z2_exp",
+"Expected measurement 2",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ThermalGSNorth",
+"Thermal drift (from estimator prediction step only)",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ThermalGSEast",
+"Thermal drift (from estimator prediction step only)",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("TSE_dot",
+" Total specific energy change (filtered)",
+string.Empty, 
+@"m/s", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("DebugVar1",
+" Debug variable 1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("DebugVar2",
+" Debug variable 2",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("ControlMode",
+"Control Mode [-]",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("valid",
+"Data valid [-]",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "FW_SOARING_DATA:"
+        + "uint64_t timestamp;"
+        + "uint64_t timestampModeChanged;"
+        + "float xW;"
+        + "float xR;"
+        + "float xLat;"
+        + "float xLon;"
+        + "float VarW;"
+        + "float VarR;"
+        + "float VarLat;"
+        + "float VarLon;"
+        + "float LoiterRadius;"
+        + "float LoiterDirection;"
+        + "float DistToSoarPoint;"
+        + "float vSinkExp;"
+        + "float z1_LocalUpdraftSpeed;"
+        + "float z2_DeltaRoll;"
+        + "float z1_exp;"
+        + "float z2_exp;"
+        + "float ThermalGSNorth;"
+        + "float ThermalGSEast;"
+        + "float TSE_dot;"
+        + "float DebugVar1;"
+        + "float DebugVar2;"
+        + "uint8_t ControlMode;"
+        + "uint8_t valid;"
+        ;
     }
 
     /// <summary>
@@ -1982,6 +3508,94 @@ namespace Asv.Mavlink.Asluav
         public override SensorpodStatusPayload Payload { get; } = new();
 
         public override string Name => "SENSORPOD_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("timestamp",
+"Timestamp in linuxtime (since 1.1.1970)",
+string.Empty, 
+@"ms", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("free_space",
+"Free space available in recordings directory in [Gb] * 1e2",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("visensor_rate_1",
+"Rate of ROS topic 1",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("visensor_rate_2",
+"Rate of ROS topic 2",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("visensor_rate_3",
+"Rate of ROS topic 3",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("visensor_rate_4",
+"Rate of ROS topic 4",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("recording_nodes_count",
+"Number of recording nodes",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("cpu_temp",
+"Temperature of sensorpod CPU in",
+string.Empty, 
+@"degC", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SENSORPOD_STATUS:"
+        + "uint64_t timestamp;"
+        + "uint16_t free_space;"
+        + "uint8_t visensor_rate_1;"
+        + "uint8_t visensor_rate_2;"
+        + "uint8_t visensor_rate_3;"
+        + "uint8_t visensor_rate_4;"
+        + "uint8_t recording_nodes_count;"
+        + "uint8_t cpu_temp;"
+        ;
     }
 
     /// <summary>
@@ -2101,6 +3715,134 @@ namespace Asv.Mavlink.Asluav
         public override SensPowerBoardPayload Payload { get; } = new();
 
         public override string Name => "SENS_POWER_BOARD";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("timestamp",
+"Timestamp",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("pwr_brd_system_volt",
+"Power board system voltage",
+string.Empty, 
+@"V", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pwr_brd_servo_volt",
+"Power board servo voltage",
+string.Empty, 
+@"V", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pwr_brd_digital_volt",
+"Power board digital voltage",
+string.Empty, 
+@"V", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pwr_brd_mot_l_amp",
+"Power board left motor current sensor",
+string.Empty, 
+@"A", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pwr_brd_mot_r_amp",
+"Power board right motor current sensor",
+string.Empty, 
+@"A", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pwr_brd_analog_amp",
+"Power board analog current sensor",
+string.Empty, 
+@"A", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pwr_brd_digital_amp",
+"Power board digital current sensor",
+string.Empty, 
+@"A", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pwr_brd_ext_amp",
+"Power board extension current sensor",
+string.Empty, 
+@"A", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pwr_brd_aux_amp",
+"Power board aux current sensor",
+string.Empty, 
+@"A", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("pwr_brd_status",
+"Power board status register",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("pwr_brd_led_status",
+"Power board leds status",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SENS_POWER_BOARD:"
+        + "uint64_t timestamp;"
+        + "float pwr_brd_system_volt;"
+        + "float pwr_brd_servo_volt;"
+        + "float pwr_brd_digital_volt;"
+        + "float pwr_brd_mot_l_amp;"
+        + "float pwr_brd_mot_r_amp;"
+        + "float pwr_brd_analog_amp;"
+        + "float pwr_brd_digital_amp;"
+        + "float pwr_brd_ext_amp;"
+        + "float pwr_brd_aux_amp;"
+        + "uint8_t pwr_brd_status;"
+        + "uint8_t pwr_brd_led_status;"
+        ;
     }
 
     /// <summary>
@@ -2252,6 +3994,84 @@ namespace Asv.Mavlink.Asluav
         public override GsmLinkStatusPayload Payload { get; } = new();
 
         public override string Name => "GSM_LINK_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("timestamp",
+"Timestamp (of OBC)",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("gsm_modem_type",
+"GSM modem used",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("gsm_link_type",
+"GSM link type",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rssi",
+"RSSI as reported by modem (unconverted)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rsrp_rscp",
+"RSRP (LTE) or RSCP (WCDMA) as reported by modem (unconverted)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("sinr_ecio",
+"SINR (LTE) or ECIO (WCDMA) as reported by modem (unconverted)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rsrq",
+"RSRQ (LTE only) as reported by modem (unconverted)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "GSM_LINK_STATUS:"
+        + "uint64_t timestamp;"
+        + "uint8_t gsm_modem_type;"
+        + "uint8_t gsm_link_type;"
+        + "uint8_t rssi;"
+        + "uint8_t rsrp_rscp;"
+        + "uint8_t sinr_ecio;"
+        + "uint8_t rsrq;"
+        ;
     }
 
     /// <summary>
@@ -2363,6 +4183,94 @@ namespace Asv.Mavlink.Asluav
         public override SatcomLinkStatusPayload Payload { get; } = new();
 
         public override string Name => "SATCOM_LINK_STATUS";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("timestamp",
+"Timestamp",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("last_heartbeat",
+"Timestamp of the last successful sbd session",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("failed_sessions",
+"Number of failed sessions",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("successful_sessions",
+"Number of successful sessions",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("signal_quality",
+"Signal quality",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("ring_pending",
+"Ring call pending",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("tx_session_pending",
+"Transmission session pending",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("rx_session_pending",
+"Receiving session pending",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SATCOM_LINK_STATUS:"
+        + "uint64_t timestamp;"
+        + "uint64_t last_heartbeat;"
+        + "uint16_t failed_sessions;"
+        + "uint16_t successful_sessions;"
+        + "uint8_t signal_quality;"
+        + "uint8_t ring_pending;"
+        + "uint8_t tx_session_pending;"
+        + "uint8_t rx_session_pending;"
+        ;
     }
 
     /// <summary>
@@ -2482,6 +4390,64 @@ namespace Asv.Mavlink.Asluav
         public override SensorAirflowAnglesPayload Payload { get; } = new();
 
         public override string Name => "SENSOR_AIRFLOW_ANGLES";
+        
+        public override MavlinkFieldInfo[] Fields => StaticFields;
+                
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
+            new("timestamp",
+"Timestamp",
+string.Empty, 
+@"us", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("angleofattack",
+"Angle of attack",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("sideslip",
+"Sideslip angle",
+string.Empty, 
+@"deg", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("angleofattack_valid",
+"Angle of attack measurement valid",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+            new("sideslip_valid",
+"Sideslip angle measurement valid",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
+        ];
+        public const string FormatMessage = "SENSOR_AIRFLOW_ANGLES:"
+        + "uint64_t timestamp;"
+        + "float angleofattack;"
+        + "float sideslip;"
+        + "uint8_t angleofattack_valid;"
+        + "uint8_t sideslip_valid;"
+        ;
     }
 
     /// <summary>
