@@ -107,21 +107,21 @@ namespace Asv.Mavlink.{{ Namespace }}
         
         public override MavlinkFieldInfo[] Fields => StaticFields;
                 
-        public static MavlinkFieldInfo[] StaticFields = new[]
-        {
+        public static readonly MavlinkFieldInfo[] StaticFields =
+        [
 {%- for field in msg.Fields -%}
-            new MavlinkFieldInfo(
+            new(
             "{{ field.Name }}", 
             string.Empty, 
-            "{{ field.Units }}", 
-            "{{ field.Desc }}", 
+            @"{{ field.Units }}", 
+            @"{{ field.Desc }}", 
             string.Empty, 
             string.Empty, 
             MessageFieldType.{{ field.TypeEnumName }}, 
             {{ field.ArrayLength }}, 
             {%- if field.IsExtended -%}true{%- else -%}false{%- endif -%}),
 {%- endfor -%}
-        };
+        ];
     }
 
     /// <summary>

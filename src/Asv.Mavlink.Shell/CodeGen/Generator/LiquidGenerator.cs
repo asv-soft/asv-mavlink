@@ -72,7 +72,8 @@ namespace Asv.Mavlink.Shell
                                                                                                 IsExtended = field.IsExtended,
                                                                                                 FieldTypeByteSize = field.FieldTypeByteSize,
                                                                                                 ArrayLength = field.ArrayLength,
-                                                                                                Desc = field.Desc,
+                                                                                                Desc =  field.Desc,
+                                                                                                EscDesc = EscapeCSharpString(string.Join(" ",field.Desc)),
                                                                                                 IsArray = field.IsArray,
                                                                                                 IsTheLargestArrayInMessage = field.IsTheLargestArrayInMessage,
                                                                                                 IsEnum = field.Enum != null,
@@ -87,6 +88,57 @@ namespace Asv.Mavlink.Shell
             return result.Render(args);
         }
 
+        public static string EscapeCSharpString(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input; // Возвращаем пустую строку или null без изменений
+
+            var result = new System.Text.StringBuilder(input.Length * 2); // Предполагаем, что длина может удвоиться
+
+            foreach (char c in input)
+            {
+                switch (c)
+                {
+                    case '\\':
+                        result.Append("\\\\"); // Экранируем обратный слеш
+                        break;
+                    case '"':
+                        result.Append("\\\""); // Экранируем кавычки
+                        break;
+                    case '\n':
+                        result.Append("\\n"); // Экранируем перевод строки
+                        break;
+                    case '\r':
+                        result.Append("\\r"); // Экранируем возврат каретки
+                        break;
+                    case '\t':
+                        result.Append("\\t"); // Экранируем табуляцию
+                        break;
+                    case '\b':
+                        result.Append("\\b"); // Экранируем backspace
+                        break;
+                    case '\f':
+                        result.Append("\\f"); // Экранируем form feed
+                        break;
+                    case '\0':
+                        result.Append("\\0"); // Экранируем нулевой символ
+                        break;
+                    default:
+                        if (char.IsControl(c) || c < 32 || c > 126) // Экранируем непечатаемые символы и не-ASCII
+                        {
+                            result.Append($"\\u{(int)c:X4}"); // Преобразуем в Unicode-последовательность
+                        }
+                        else
+                        {
+                            result.Append(c); // Оставляем символ как есть
+                        }
+                        break;
+                }
+            }
+
+            return result.ToString();
+        }
+        
         private string? NameConverter(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return null;
