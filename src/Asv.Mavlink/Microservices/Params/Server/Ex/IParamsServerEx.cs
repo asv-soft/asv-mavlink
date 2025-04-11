@@ -108,6 +108,7 @@ public interface IParamsServerEx: IMavlinkMicroserviceServer
             .Where(x => x.Metadata.Name.Equals(param.Name))
             .Subscribe(x => setCallback(x.NewValue));
     }
+
     public IDisposable SetOnChangeUint32(IMavParamTypeMetadata param, Action<uint> setCallback)
     {
         CheckType(param, MavParamType.MavParamTypeUint32);

@@ -15,4 +15,5 @@ public interface IAsvRsgaServerEx: IMavlinkMicroserviceServer
     IAsvRsgaServer Base { get; }
     RsgaSetMode? SetMode { get; set; }
     RsgaGetCompatibility? GetCompatibility { get; set; }
+    ValueTask SendMeasure(MavlinkV2Message message, CancellationToken cancel);
 }

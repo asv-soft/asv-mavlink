@@ -358,6 +358,7 @@ public interface IMavParamTypeMetadata
     /// Units for parameter value.
     /// </summary>
     string? Units { get; }
+    int DecimalPlaces { get; }
     /// <summary>
     /// true: Vehicle must be rebooted if this value is changed
     /// </summary>
@@ -501,64 +502,53 @@ public class MavParamTypeMetadata : IMavParamTypeMetadata
 
     /// <summary>
     /// Gets the type of the property.
+    /// "Uint8", "Int8", "Uint16", "Int16", "Uint32", "Int32", "Float"
     /// </summary>
     /// <returns>The type of the property.</returns>
     public MavParamType Type { get; }
 
     /// <summary>
-    /// Gets or sets the group of the object.
+    /// Gets or sets User readable name for a group of parameters which are commonly modified together.
+    /// For example a GCS can shows params in a hierarchical display based on group
     /// </summary>
-    /// <value>
-    /// The group of the object as a string.
-    /// </value>
     public string? Group { get; set; }
 
     /// <summary>
-    /// Gets or sets the category of the property.
+    /// Gets or sets user readable name for a 'type' of parameter.
+    /// For example 'Developer', 'System', or 'Advanced'.
     /// </summary>
-    /// <value>
-    /// The category of the property.
-    /// </value>
     public string? Category { get; set; }
 
     /// <summary>
-    /// Gets or sets the short description of a property.
+    /// Gets or sets short user facing description/name for parameter. Used in UI instead of internal parameter name
     /// </summary>
-    /// <value>
-    /// The short description.
-    /// </value>
     public string? ShortDesc { get; set; }
 
     /// <summary>
-    /// Gets or sets the long description of the property.
+    /// Gets or sets long user facing documentation of how the parameters works
     /// </summary>
-    /// <value>
-    /// The long description of the property.
-    /// </value>
     public string? LongDesc { get; set; }
 
     /// <summary>
-    /// Gets or sets the units of the property.
+    /// Gets or sets units for parameter value
     /// </summary>
-    /// <value>
-    /// The units of the property.
-    /// </value>
     public string? Units { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether a reboot is required.
+    /// Number of decimal places to show for user facing display
     /// </summary>
-    /// <value>
-    /// <c>true</c> if a reboot is required; otherwise, <c>false</c>.
-    /// </value>
+    public int DecimalPlaces { get; } = 0;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether a reboot is required.
+    /// true: Vehicle must be rebooted if this value is changed
+    /// </summary>
     public bool RebootRequired { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the property is volatile.
+    /// true: value is volatile. Should not be included in creation of a CRC over param values for example
     /// </summary>
-    /// <value>
-    /// <c>true</c> if the property is volatile; otherwise, <c>false</c>.
-    /// </value>
     public bool Volatile { get; set; }
 
     /// <summary>
@@ -592,18 +582,13 @@ public class MavParamTypeMetadata : IMavParamTypeMetadata
 
     /// <summary>
     /// Gets or sets the array of property values.
+    /// Array of values and textual descriptions for use by GCS ui.
     /// </summary>
-    /// <value>
-    /// The array of property values.
-    /// </value>
     public (MavParamValue, string)[]? Values { get; set; }
 
     /// <summary>
     /// Gets or sets the bitmask property.
     /// </summary>
-    /// <value>
-    /// An array of tuples containing a 32-bit unsigned integer and a MavParamValue.
-    /// </value>
     public (uint, MavParamValue)[]? Bitmask { get; set; }
 
     /// <summary>

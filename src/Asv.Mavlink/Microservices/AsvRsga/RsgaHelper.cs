@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.AsvAudio;
@@ -13,9 +14,131 @@ namespace Asv.Mavlink;
 
 public static class RsgaHelper
 {
-    
     public const string MicroserviceExName = $"{MicroserviceName}EX";
     public const string MicroserviceName = "RSGA";
+    
+    public const int RecordNameMaxLength = 28;
+    private const string RecordNameRegexString = "^[A-Za-z][A-Za-z0-9_\\- +]{2,28}$";
+    private static readonly Regex RecordNameRegex = new(RecordNameRegexString, RegexOptions.Compiled);
+    
+    
+    public static void CheckRecordName(string name)
+    {
+        if (name.IsNullOrWhiteSpace()) throw new MavlinkException("Record name is empty");
+        if (name.Length > RecordNameMaxLength)
+            throw new MavlinkException($"Record name is too long. Max length is {RecordNameMaxLength}");
+        if (RecordNameRegex.IsMatch(name) == false)
+            throw new ArgumentException(
+                $"Record name '{name}' not match regex '{RecordNameRegexString}')");
+    }
+    
+    #region StartRecord
+
+    public static void SetArgsForStartRecord(MissionItemIntPayload payload, string recordName)
+    {
+        CheckRecordName(recordName);
+        var nameArray = new byte[RecordNameMaxLength];
+        MavlinkTypesHelper.SetString(nameArray, recordName);
+        payload.Command = (Common.MavCmd)AsvRsga.MavCmd.MavCmdAsvRsgaStartRecord;
+        payload.Param1 = BitConverter.ToSingle(nameArray, 0);
+        payload.Param2 = BitConverter.ToSingle(nameArray, 4);
+        payload.Param3 = BitConverter.ToSingle(nameArray, 8);
+        payload.Param4 = BitConverter.ToSingle(nameArray, 12);
+        payload.X = BitConverter.ToInt32(nameArray, 16);
+        payload.Y = BitConverter.ToInt32(nameArray, 20);
+        payload.Z = BitConverter.ToSingle(nameArray, 24);
+    }
+    
+    public static void GetArgsForStartRecord(ServerMissionItem payload, out string recordName)
+    {
+        if (payload.Command != (Common.MavCmd)AsvRsga.MavCmd.MavCmdAsvRsgaStartRecord)
+            throw new ArgumentException($"Command {payload.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrStartRecord}");
+        var nameArray = new byte[AsvSdrHelper.RecordNameMaxLength];
+        BitConverter.GetBytes(payload.Param1).CopyTo(nameArray,0);
+        BitConverter.GetBytes(payload.Param2).CopyTo(nameArray,4);
+        BitConverter.GetBytes(payload.Param3).CopyTo(nameArray,8);
+        BitConverter.GetBytes(payload.Param4).CopyTo(nameArray,12);
+        BitConverter.GetBytes(payload.X).CopyTo(nameArray,16);
+        BitConverter.GetBytes(payload.Y).CopyTo(nameArray,20);
+        BitConverter.GetBytes(payload.Z).CopyTo(nameArray,24);
+        recordName = MavlinkTypesHelper.GetString(nameArray);
+        CheckRecordName(recordName);
+    }
+
+    public static void SetArgsForStartRecord(CommandLongPayload item, string recordName)
+    {
+        CheckRecordName(recordName);
+        var nameArray = new byte[RecordNameMaxLength];
+        MavlinkTypesHelper.SetString(nameArray, recordName);
+        item.Command = (Common.MavCmd)AsvRsga.MavCmd.MavCmdAsvRsgaStartRecord;
+        item.Param1 = BitConverter.ToSingle(nameArray, 0);
+        item.Param2 = BitConverter.ToSingle(nameArray, 4);
+        item.Param3 = BitConverter.ToSingle(nameArray, 8);
+        item.Param4 = BitConverter.ToSingle(nameArray, 12);
+        item.Param5 = BitConverter.ToSingle(nameArray, 16);
+        item.Param6 = BitConverter.ToSingle(nameArray, 20);
+        item.Param7 = BitConverter.ToSingle(nameArray, 24);
+    }
+
+    public static void GetArgsForStartRecord(CommandLongPayload payload, out string recordName)
+    {
+        if (payload.Command != (Common.MavCmd)AsvRsga.MavCmd.MavCmdAsvRsgaStartRecord)
+            throw new ArgumentException($"Command {payload.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrStartRecord}");
+        var nameArray = new byte[RecordNameMaxLength];
+        BitConverter.GetBytes(payload.Param1).CopyTo(nameArray,0);
+        BitConverter.GetBytes(payload.Param2).CopyTo(nameArray,4);
+        BitConverter.GetBytes(payload.Param3).CopyTo(nameArray,8);
+        BitConverter.GetBytes(payload.Param4).CopyTo(nameArray,12);
+        BitConverter.GetBytes(payload.Param5).CopyTo(nameArray,16);
+        BitConverter.GetBytes(payload.Param6).CopyTo(nameArray,20);
+        BitConverter.GetBytes(payload.Param7).CopyTo(nameArray,24);
+        recordName = MavlinkTypesHelper.GetString(nameArray);
+        CheckRecordName(recordName);
+    }
+
+    #endregion
+    
+    #region StopRecord
+
+    public static void SetArgsForStopRecord(MissionItemIntPayload payload)
+    {
+        payload.Command = (Common.MavCmd)AsvRsga.MavCmd.MavCmdAsvRsgaStopRecord;;
+        payload.Param1 = Single.NaN;
+        payload.Param2 = Single.NaN;
+        payload.Param3 = Single.NaN;
+        payload.Param4 = Single.NaN;
+        payload.X = 0;
+        payload.Y = 0;
+        payload.Z = Single.NaN;
+    }
+    
+    public static void SetArgsForStopRecord(CommandLongPayload item)
+    {
+        item.Command = (Common.MavCmd)AsvRsga.MavCmd.MavCmdAsvRsgaStopRecord;;
+        item.Param1 = Single.NaN;
+        item.Param2 = Single.NaN;
+        item.Param3 = Single.NaN;
+        item.Param4 = Single.NaN;
+        item.Param5 = Single.NaN;
+        item.Param6 = Single.NaN;
+        item.Param7 = Single.NaN;
+    }
+    
+    public static void GetArgsForStopRecord(ServerMissionItem payload)
+    {
+        if (payload.Command != (Common.MavCmd)AsvRsga.MavCmd.MavCmdAsvRsgaStopRecord)
+            throw new ArgumentException($"Command {payload.Command} is not {AsvRsga.MavCmd.MavCmdAsvRsgaStopRecord}");
+    }
+   
+    public static void GetArgsForStopRecord(CommandLongPayload payload)
+    {
+        if (payload.Command != (Common.MavCmd)AsvRsga.MavCmd.MavCmdAsvRsgaStopRecord)
+            throw new ArgumentException($"Command {payload.Command} is not {AsvRsga.MavCmd.MavCmdAsvRsgaStopRecord}");
+    }
+    
+    #endregion
+
+    #region SetMode
     
     public static void SetArgsForSetMode(CommandLongPayload item, AsvRsgaCustomMode mode, float param2 = float.NaN, float param3 = float.NaN, float param4 = float.NaN, float param5 = float.NaN, float param6 = float.NaN, float param7 = float.NaN)
     {
@@ -44,6 +167,10 @@ public static class RsgaHelper
         
     }
 
+    #endregion
+
+    #region SupportedModes
+
     public static void SetSupportedModes(AsvRsgaCompatibilityResponsePayload payload, IEnumerable<AsvRsgaCustomMode> modes)
     {
         var arr = new BitArray(payload.SupportedModes.Length * 8);
@@ -65,6 +192,8 @@ public static class RsgaHelper
                 yield return (AsvRsgaCustomMode)i;
         }
     }
+
+    #endregion
 
     #region Custom mode
 
@@ -92,6 +221,12 @@ public static class RsgaHelper
 
         return (AsvRsgaCustomSubMode)payload.GetCustomMode(8,8);
     }
+    
+    public static void SetCustomSubMode(HeartbeatPayload payload, AsvRsgaCustomSubMode subMode)
+    {
+        payload.SetCustomMode(8,8,(uint)subMode);
+    }
+    
 
     #endregion
     

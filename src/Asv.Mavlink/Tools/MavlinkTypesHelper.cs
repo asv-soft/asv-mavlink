@@ -15,7 +15,7 @@ public static class MavlinkTypesHelper
     
     public static ulong ToUnixTimeUs(DateTime unixTime)
     {
-        return (ulong)(unixTime - UnixEpoch).TotalMilliseconds;
+        return (ulong)(unixTime - UnixEpoch).TotalMicroseconds;
     }
     
     public static DateTime FromUnixTimeSec(uint unixTime)

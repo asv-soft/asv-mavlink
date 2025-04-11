@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.AsvRsga;
 using Asv.Mavlink.Common;
@@ -65,6 +66,7 @@ public class AsvRsgaServerEx : MavlinkMicroserviceServer, IAsvRsgaServerEx
 
     public RsgaSetMode? SetMode { get; set; }
     public RsgaGetCompatibility? GetCompatibility { get; set; }
+    public ValueTask SendMeasure(MavlinkV2Message message, CancellationToken cancel) => InternalSend(message, cancel);
 
     #region Dispose
 
