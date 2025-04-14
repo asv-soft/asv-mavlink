@@ -1,20 +1,92 @@
-using System.IO;
+using System;
+using System.IO.Abstractions;
+using System.IO.Abstractions.TestingHelpers;
 using ConsoleAppFramework;
+using Spectre.Console;
 
 namespace Asv.Mavlink.Shell
 {
     public class ExampleCommand
     {
-        [Command("example")]
-        public int Run()
+        private const string BaseDirectory = "in";
+        private const string CommonFileName = "common.xml";
+        private const string StandardFileName = "standard.xml";
+        private const string CsharpFileName = "csharp.tpl";
+        private const string GenerateFileName = "generate.bat";
+        private const string ReadmeFileName = "README.md";
+
+        /// <summary>
+        /// Example command for the code generator
+        /// </summary>
+        /// <param name="directory">-d, directory where the files should be generated in the root folder. By default, 'in' directory</param>
+        /// <param name="virtual">-v, use this parameter if you want to use a virtual file system</param>
+        /// <returns></returns> 
+        [Command("code-gen-example")]
+        public int Run(string directory = BaseDirectory, bool @virtual = false)
         {
-            Directory.CreateDirectory("in");
-            File.WriteAllText("in/common.xml",Templates.common);
-            File.WriteAllText("in/standard.xml", Templates.standard);
-            File.WriteAllBytes("csharp.tpl", Templates.csharp);
-            File.WriteAllText("generate.bat", Templates.generate);
-            File.WriteAllBytes("README.md", Templates.README);
-            return 0;
+            try
+            {
+                IFileSystem fileSystem = @virtual
+                    ? new MockFileSystem()
+                    : new FileSystem();
+
+                var commonFilePath = fileSystem.Path.Combine(directory, CommonFileName);
+                var standardFilePath = fileSystem.Path.Combine(directory, StandardFileName);
+
+                fileSystem.Directory.CreateDirectory(directory);
+                fileSystem.File.WriteAllText(commonFilePath, Templates.common);
+                fileSystem.File.WriteAllText(standardFilePath, Templates.standard);
+                fileSystem.File.WriteAllBytes(CsharpFileName, Templates.csharp);
+                fileSystem.File.WriteAllText(GenerateFileName, Templates.generate);
+                fileSystem.File.WriteAllBytes(ReadmeFileName, Templates.README);
+                
+                if (fileSystem.Directory.Exists(directory))
+                {
+                    LogToConsoleDirectoryCreationInfo(directory);
+                }
+
+                if (fileSystem.File.Exists(commonFilePath))
+                {
+                    LogToConsoleFileCreationInfo(CommonFileName);
+                }
+            
+                if (fileSystem.File.Exists(standardFilePath))
+                {
+                    LogToConsoleFileCreationInfo(StandardFileName);
+                }
+
+                if (fileSystem.File.Exists(CsharpFileName))
+                {
+                    LogToConsoleFileCreationInfo(CsharpFileName);
+                }
+            
+                if (fileSystem.File.Exists(GenerateFileName))
+                {
+                    LogToConsoleFileCreationInfo(GenerateFileName);
+                }
+            
+                if (fileSystem.File.Exists(ReadmeFileName))
+                {
+                    LogToConsoleFileCreationInfo(ReadmeFileName);
+                }
+                
+                return 0;
+            }
+            catch (Exception e)
+            {
+                AnsiConsole.WriteException(e, ExceptionFormats.ShortenEverything);
+                return 1;
+            }
+        }
+        
+        private static void LogToConsoleDirectoryCreationInfo(string name)
+        {
+            AnsiConsole.MarkupLineInterpolated($"Directory with name [bold yellow]|{name}|[/] has been created successfully!");
+        }
+        
+        private static void LogToConsoleFileCreationInfo(string name)
+        {
+            AnsiConsole.MarkupLineInterpolated($"File with name [bold blue]|{name}|[/] has been created successfully!");
         }
     }
 }

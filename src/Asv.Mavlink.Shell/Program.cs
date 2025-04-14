@@ -15,16 +15,15 @@ class Program
         Console.BackgroundColor = ConsoleColor.Black;
         
         var app = ConsoleApp.Create();
-        /*app.Add<ExampleCommand>();
-        //app.Add<FtpTreeDirectory>();
-        //app.Add<FtpBrowserDirectory>();
-        app.Add<DevicesInfoCommand>();
-        app.Add<GenerateCommand>();
-        app.Add<VirtualAdsbCommand>();
-        app.Add<ExportSdrData>();
-        app.Add<MavProxy>();
-        app.Add<BenchmarkBinSerializationCommand>();
-        app.Add<BenchmarkSerializationPacket>();*/
+        app.Add<ExampleCommand>();
+        // app.Add<FtpTreeDirectory>();
+        // app.Add<FtpBrowserDirectory>();
+        // app.Add<DevicesInfoCommand>();
+        // app.Add<VirtualAdsbCommand>();
+        // app.Add<ExportSdrData>();
+        // app.Add<MavProxy>();
+        // app.Add<BenchmarkBinSerializationCommand>();
+        // app.Add<BenchmarkSerializationPacket>();*/
         //app.Add<ShowParams>();
         app.Add<GenerateCommand>();
         app.Add<MavlinkCommand>();
