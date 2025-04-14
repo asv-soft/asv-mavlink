@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <mavlink>
-    <!-- Interface for communication with Radio Signal Generator and Analyser-->
+    <!-- Interface for communication with the Radio Signal Generator and Analyser-->
     <!-- Asv Soft contact info: https://github.com/asvol             -->
     <!-- company URL: https://github.com/asv-soft and asv.me         -->
     <!-- email contact: me@asv.me                                    -->
@@ -14,17 +14,17 @@
         <!-- Asv specific MAV_TYPE identity -->
         <enum name="MAV_TYPE">
             <entry value="254" name="MAV_TYPE_ASV_RSGA">
-                <description>Used to identify Radio Signal Generator and Analyser(RSGA) payload in HEARTBEAT packet.</description>
+                <description>Identifies the Radio Signal Generator and Analyzer (RSGA) payload in the HEARTBEAT message.</description>
             </entry>
         </enum>
         <!-- CUSTOM_MODE -->
         <enum name="ASV_RSGA_CUSTOM_MODE">
-            <description>A mapping of RSGA modes for custom_mode[0-7] bits field of heartbeat Max 255 items.</description>
+            <description>Defines RSGA modes mapped to the custom_mode[0–7] bit field of the HEARTBEAT message. Maximum 255 values.</description>
             <!--==================================================-->
             <!--          IDLE MODE (0)                           -->
             <!--==================================================-->
             <entry value="0" name="ASV_RSGA_CUSTOM_MODE_IDLE">
-                <description>Default mode. Do nothing.</description>
+                <description>Default mode. No operation performed.</description>
             </entry>
             <!--==================================================-->
             <!--          COMMON GENERATOR MODES (1-24)           -->
@@ -34,7 +34,7 @@
             <!--          COMMON ANALYZER MODES (25-49)           -->
             <!--==================================================-->
             <entry value="25" name="ASV_RSGA_CUSTOM_MODE_SPECTRUM">
-                <description>Spectrum analyzer.</description>
+                <description>Spectrum analysis mode.</description>
             </entry>
             <!--==================================================-->
             <!--          NavAIDs BEACON MODES (50-74)            -->
@@ -107,7 +107,7 @@
             <description>A mapping of RSGA special sub modes for custom_mode[8-15] bits field of heartbeat.[!THIS_IS_ENUM_FLAG!]</description>
             
             <entry value="1" name="ASV_RSGA_CUSTOM_SUB_MODE_RECORD">
-                <description>Recording is enabled.</description>
+                <description>Recording enabled.</description>
             </entry>
             <entry value="2" name="ASV_RSGA_CUSTOM_SUB_MODE_MISSION">
                 <description>Mission is started.</description>
@@ -158,10 +158,175 @@
             </entry>
         </enum>
 
+        <enum name="ASV_RSGA_RTT_GNSS_FLAGS">
+            <description>Common status flags for all ASV_RSGA_RTT_GNSS message.[!THIS_IS_ENUM_FLAG!]</description>
+            <entry value="1" name="ASV_RSGA_RTT_GNSS_FLAGS_ON_THE_GROUND">
+                <description>This flag is set when the vehicle is known to be on the ground.</description>
+            </entry>
+        </enum>
+
+        <enum name="ASV_RSGA_RTT_ADSB_MSG_UF">
+            <description>Mode S interrogation or uplink formats.[!THIS_IS_ENUM_FLAG!]</description>
+            <entry value="1" name="ASV_RSGA_RTT_ADSB_MSG_UF_00">
+                <description>[UF00] Short air-air surveillance (ACAS).</description>
+            </entry>
+            <entry value="2" name="ASV_RSGA_RTT_ADSB_MSG_UF_01">
+                <description>[UF01] Reserved.</description>
+            </entry>
+            <entry value="4" name="ASV_RSGA_RTT_ADSB_MSG_UF_02">
+                <description>[UF02] Reserved.</description>
+            </entry>
+            <entry value="8" name="ASV_RSGA_RTT_ADSB_MSG_UF_03">
+                <description>[UF03] Reserved.</description>
+            </entry>
+            <entry value="16" name="ASV_RSGA_RTT_ADSB_MSG_UF_04">
+                <description>[UF04] Surveillance, altitude request.</description>
+            </entry>
+            <entry value="32" name="ASV_RSGA_RTT_ADSB_MSG_UF_05">
+                <description>[UF05] Surveillance, identify request.</description>
+            </entry>
+            <entry value="64" name="ASV_RSGA_RTT_ADSB_MSG_UF_06">
+                <description>[UF06] Reserved.</description>
+            </entry>
+            <entry value="128" name="ASV_RSGA_RTT_ADSB_MSG_UF_07">
+                <description>[UF07] Reserved.</description>
+            </entry>
+            <entry value="256" name="ASV_RSGA_RTT_ADSB_MSG_UF_08">
+                <description>[UF08] Reserved.</description>
+            </entry>
+            <entry value="512" name="ASV_RSGA_RTT_ADSB_MSG_UF_09">
+                <description>[UF09] Reserved.</description>
+            </entry>
+            <entry value="1024" name="ASV_RSGA_RTT_ADSB_MSG_UF_10">
+                <description>[UF10] Reserved.</description>
+            </entry>
+            <entry value="2048" name="ASV_RSGA_RTT_ADSB_MSG_UF_11">
+                <description>[UF11] Mode S only all-call.</description>
+            </entry>
+            <entry value="4096" name="ASV_RSGA_RTT_ADSB_MSG_UF_12">
+                <description>[UF12] Reserved.</description>
+            </entry>
+            <entry value="8192" name="ASV_RSGA_RTT_ADSB_MSG_UF_13">
+                <description>[UF13] Reserved.</description>
+            </entry>
+            <entry value="16384" name="ASV_RSGA_RTT_ADSB_MSG_UF_14">
+                <description>[UF14] Reserved.</description>
+            </entry>
+            <entry value="32768" name="ASV_RSGA_RTT_ADSB_MSG_UF_15">
+                <description>[UF15] Reserved.</description>
+            </entry>
+            <entry value="65536" name="ASV_RSGA_RTT_ADSB_MSG_UF_16">
+                <description>[UF16] Long air-air surveillance (ACAS).</description>
+            </entry>
+            <entry value="131072" name="ASV_RSGA_RTT_ADSB_MSG_UF_17">
+                <description>[UF17] Reserved.</description>
+            </entry>
+            <entry value="262144" name="ASV_RSGA_RTT_ADSB_MSG_UF_18">
+                <description>[UF18] Reserved.</description>
+            </entry>
+            <entry value="524288" name="ASV_RSGA_RTT_ADSB_MSG_UF_19">
+                <description>[UF19] Reserved for military use.</description>
+            </entry>
+            <entry value="1048576" name="ASV_RSGA_RTT_ADSB_MSG_UF_20">
+                <description>[UF20] Comm-A, altitude request.</description>
+            </entry>
+            <entry value="2097152" name="ASV_RSGA_RTT_ADSB_MSG_UF_21">
+                <description>[UF21] Comm-A, identify request.</description>
+            </entry>
+            <entry value="4194304" name="ASV_RSGA_RTT_ADSB_MSG_UF_22">
+                <description>[UF22] Reserved for military use.</description>
+            </entry>
+            <entry value="8388608" name="ASV_RSGA_RTT_ADSB_MSG_UF_23">
+                <description>[UF23] Reserved.</description>
+            </entry>
+            <entry value="16777216" name="ASV_RSGA_RTT_ADSB_MSG_UF_24">
+                <description>[UF24] Comm-C (ELM).</description>
+            </entry>
+        </enum>
+
+        <enum name="ASV_RSGA_RTT_ADSB_MSG_DF">
+            <description>Mode S reply or downlink formats.[!THIS_IS_ENUM_FLAG!]</description>
+            <entry value="1" name="ASV_RSGA_RTT_ADSB_MSG_DF_00">
+                <description>[DF00] Short air-air surveillance (ACAS).</description>
+            </entry>
+            <entry value="2" name="ASV_RSGA_RTT_ADSB_MSG_DF_01">
+                <description>[DF01] Reserved.</description>
+            </entry>
+            <entry value="4" name="ASV_RSGA_RTT_ADSB_MSG_DF_02">
+                <description>[DF02] Reserved.</description>
+            </entry>
+            <entry value="8" name="ASV_RSGA_RTT_ADSB_MSG_DF_03">
+                <description>[DF03] Reserved.</description>
+            </entry>
+            <entry value="16" name="ASV_RSGA_RTT_ADSB_MSG_DF_04">
+                <description>[DF04] Surveillance, altitude reply.</description>
+            </entry>
+            <entry value="32" name="ASV_RSGA_RTT_ADSB_MSG_DF_05">
+                <description>[DF05] Surveillance, identify reply.</description>
+            </entry>
+            <entry value="64" name="ASV_RSGA_RTT_ADSB_MSG_DF_06">
+                <description>[DF06] Reserved.</description>
+            </entry>
+            <entry value="128" name="ASV_RSGA_RTT_ADSB_MSG_DF_07">
+                <description>[DF07] Reserved.</description>
+            </entry>
+            <entry value="256" name="ASV_RSGA_RTT_ADSB_MSG_DF_08">
+                <description>[DF08] Reserved.</description>
+            </entry>
+            <entry value="512" name="ASV_RSGA_RTT_ADSB_MSG_DF_09">
+                <description>[DF09] Reserved.</description>
+            </entry>
+            <entry value="1024" name="ASV_RSGA_RTT_ADSB_MSG_DF_10">
+                <description>[DF10] Reserved.</description>
+            </entry>
+            <entry value="2048" name="ASV_RSGA_RTT_ADSB_MSG_DF_11">
+                <description>[DF11] All-call reply.</description>
+            </entry>
+            <entry value="4096" name="ASV_RSGA_RTT_ADSB_MSG_DF_12">
+                <description>[DF12] Reserved.</description>
+            </entry>
+            <entry value="8192" name="ASV_RSGA_RTT_ADSB_MSG_DF_13">
+                <description>[DF13] Reserved.</description>
+            </entry>
+            <entry value="16384" name="ASV_RSGA_RTT_ADSB_MSG_DF_14">
+                <description>[DF14] Reserved.</description>
+            </entry>
+            <entry value="32768" name="ASV_RSGA_RTT_ADSB_MSG_DF_15">
+                <description>[DF15] Reserved.</description>
+            </entry>
+            <entry value="65536" name="ASV_RSGA_RTT_ADSB_MSG_DF_16">
+                <description>[DF16] Long air-air surveillance (ACAS).</description>
+            </entry>
+            <entry value="131072" name="ASV_RSGA_RTT_ADSB_MSG_DF_17">
+                <description>[DF17] Extended squitter.</description>
+            </entry>
+            <entry value="262144" name="ASV_RSGA_RTT_ADSB_MSG_DF_18">
+                <description>[DF18] Extended squitter/non transponder.</description>
+            </entry>
+            <entry value="524288" name="ASV_RSGA_RTT_ADSB_MSG_DF_19">
+                <description>[DF19] Military extended squitter.</description>
+            </entry>
+            <entry value="1048576" name="ASV_RSGA_RTT_ADSB_MSG_DF_20">
+                <description>[DF20] Comm-B, altitude reply.</description>
+            </entry>
+            <entry value="2097152" name="ASV_RSGA_RTT_ADSB_MSG_DF_21">
+                <description>[DF21] Comm-B, identify reply.</description>
+            </entry>
+            <entry value="4194304" name="ASV_RSGA_RTT_ADSB_MSG_DF_22">
+                <description>[DF22] Reserved for military use.</description>
+            </entry>
+            <entry value="8388608" name="ASV_RSGA_RTT_ADSB_MSG_DF_23">
+                <description>[DF23] Reserved.</description>
+            </entry>
+            <entry value="16777216" name="ASV_RSGA_RTT_ADSB_MSG_DF_24">
+                <description>[DF24] Comm-D (ELM).</description>
+            </entry>
+        </enum>
+
         <!-- Asv specific MAV_CMD_* commands -->
         <enum name="MAV_CMD">
             <entry value="13400" name="MAV_CMD_ASV_RSGA_SET_MODE">
-                <description>Do set mode</description>
+                <description>Set the operational mode.</description>
                 <param index="1">Mode (uint32_t, see ASV_RSGA_CUSTOM_MODE).</param>
                 <param index="2">Empty.</param>
                 <param index="3">Empty.</param>
@@ -171,7 +336,7 @@
                 <param index="7">Empty.</param>
             </entry>
             <entry value="13401" name="MAV_CMD_ASV_RSGA_START_RECORD">
-                <description>Start recording data with unique name (max 28 chars). Can be used in the mission protocol for RSGA payloads.</description>
+                <description>Start data recording with a unique name (maximum 28 characters). Can be used in mission protocol for RSGA payloads.</description>
                 <param index="1">Record unique name: 0-3 chars (char[4]).</param>
                 <param index="2">Record unique name: 4-7 chars (char[4]).</param>
                 <param index="3">Record unique name: 8-11 chars (char[4]).</param>
@@ -218,7 +383,8 @@
             <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
 
-            <field type="uint16_t" name="ref_id" >GNSS Reference station id (because we can receive GNSS from multiple sources)</field>
+            <field type="uint16_t" name="ref_id">GNSS reference station ID (used when GNSS is received from multiple sources).</field>
+            <field type="uint8_t" name="gnss_flags" enum="ASV_RSGA_RTT_GNSS_FLAGS">GNSS special flags.</field>
 
             <field type="int32_t" name="lat" units="degE7">Latitude (WGS84, EGM96 ellipsoid)</field>
             <field type="int32_t" name="lat_err" units="mm">Expected Error in Latitude (North) Direction</field>
@@ -227,6 +393,7 @@
             <field type="int32_t" name="alt_msl" units="mm">Antenna altitude above/below mean sea level (geoid)</field>
             <field type="int32_t" name="alt_wgs" units="mm">Antenna altitude WGS-84 earth ellipsoid</field>
             <field type="int32_t" name="alt_err" units="mm">Expected Error in Altitude</field>
+            
 
             <field type="uint8_t" name="sat_cnt">Number of satellites in view</field>
             <field type="uint8_t" name="fix_type" enum="GPS_FIX_TYPE">GNSS fix type</field>
@@ -336,7 +503,7 @@
             <field type="int16_t" name="rx_freq_offset" units="Hz">RX frequency offset</field>
             <field type="float" name="rx_power" units="dBm">Receive power (peak)</field>
             <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength.</field>
-            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (0.2≤ - signal too low, ≥0.8 - signal too high)</field>
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong).</field>
             <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
             <!--Distance-->
             <field type="float" name="distance" units="m">Measured distance</field>
@@ -405,6 +572,28 @@
             <field type="uint32_t" name="index">Data index in record</field>
             <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
+
+            <!--TX-->
+            <field type="uint64_t" name="tx_freq" units="Hz">TX frequency</field>
+            <field type="float" name="tx_power" units="dBm">Output power</field>
+            <field type="float" name="tx_gain" units="%">Percent of total TX gain level (0.0 - 1.0)</field>
+            <!--RX-->
+            <field type="uint64_t" name="rx_freq" units="Hz">RX frequency</field>
+            <field type="int16_t" name="rx_freq_offset" units="Hz">RX frequency offset</field>
+            <field type="float" name="rx_power" units="dBm">Receive power (peak)</field>
+            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength.</field>
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong).</field>
+            <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
+            <!--Messages-->
+            <field type="uint16_t" name="ref_id">GNSS reference station ID (used when GNSS is received from multiple sources).</field>
+            <field type="char[8]" name="call_sign">Vehicle identifier (8 characters, valid characters are A-Z, 0-9, " " only)</field>
+            <field type="uint32_t" name="icao_address" >Vehicle ICAO address (24 bit)</field>
+            <field type="uint16_t" name="squawk">Mode A code (typically 1200 [0x04B0] for VFR)</field>
+            <!--Mode S UF\DF message counters-->
+            <field type="uint32_t" name="uf_counter_flag" enum="ASV_RSGA_RTT_ADSB_MSG_UF">UF counters present flag </field>
+            <field type="uint8_t[25]" name="uf_counter">UF incremental counters for every 25 message </field>
+            <field type="uint32_t" name="df_counter_present" enum="ASV_RSGA_RTT_ADSB_MSG_DF">UF counters present </field>
+            <field type="uint8_t[25]" name="df_counter">DF incremental counters for every 25 message </field>
         </message>
         
         <message id="13467" name="ASV_RSGA_RTT_RX_GNSS">

@@ -69,25 +69,25 @@ namespace Asv.Mavlink.AsvRsga
     public enum MavType:uint
     {
         /// <summary>
-        /// Used to identify Radio Signal Generator and Analyser(RSGA) payload in HEARTBEAT packet.
+        /// Identifies the Radio Signal Generator and Analyzer (RSGA) payload in the HEARTBEAT message.
         /// MAV_TYPE_ASV_RSGA
         /// </summary>
         MavTypeAsvRsga = 254,
     }
 
     /// <summary>
-    /// A mapping of RSGA modes for custom_mode[0-7] bits field of heartbeat Max 255 items.
+    /// Defines RSGA modes mapped to the custom_mode[0–7] bit field of the HEARTBEAT message. Maximum 255 values.
     ///  ASV_RSGA_CUSTOM_MODE
     /// </summary>
     public enum AsvRsgaCustomMode:uint
     {
         /// <summary>
-        /// Default mode. Do nothing.
+        /// Default mode. No operation performed.
         /// ASV_RSGA_CUSTOM_MODE_IDLE
         /// </summary>
         AsvRsgaCustomModeIdle = 0,
         /// <summary>
-        /// Spectrum analyzer.
+        /// Spectrum analysis mode.
         /// ASV_RSGA_CUSTOM_MODE_SPECTRUM
         /// </summary>
         AsvRsgaCustomModeSpectrum = 25,
@@ -191,7 +191,7 @@ namespace Asv.Mavlink.AsvRsga
     public enum AsvRsgaCustomSubMode:uint
     {
         /// <summary>
-        /// Recording is enabled.
+        /// Recording enabled.
         /// ASV_RSGA_CUSTOM_SUB_MODE_RECORD
         /// </summary>
         AsvRsgaCustomSubModeRecord = 1,
@@ -280,12 +280,294 @@ namespace Asv.Mavlink.AsvRsga
     }
 
     /// <summary>
+    /// Common status flags for all ASV_RSGA_RTT_GNSS message.[!THIS_IS_ENUM_FLAG!]
+    ///  ASV_RSGA_RTT_GNSS_FLAGS
+    /// </summary>
+    [Flags]
+    public enum AsvRsgaRttGnssFlags:uint
+    {
+        /// <summary>
+        /// This flag is set when the vehicle is known to be on the ground.
+        /// ASV_RSGA_RTT_GNSS_FLAGS_ON_THE_GROUND
+        /// </summary>
+        AsvRsgaRttGnssFlagsOnTheGround = 1,
+    }
+
+    /// <summary>
+    /// Mode S interrogation or uplink formats.[!THIS_IS_ENUM_FLAG!]
+    ///  ASV_RSGA_RTT_ADSB_MSG_UF
+    /// </summary>
+    [Flags]
+    public enum AsvRsgaRttAdsbMsgUf:uint
+    {
+        /// <summary>
+        /// [UF00] Short air-air surveillance (ACAS).
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_00
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf00 = 1,
+        /// <summary>
+        /// [UF01] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_01
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf01 = 2,
+        /// <summary>
+        /// [UF02] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_02
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf02 = 4,
+        /// <summary>
+        /// [UF03] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_03
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf03 = 8,
+        /// <summary>
+        /// [UF04] Surveillance, altitude request.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_04
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf04 = 16,
+        /// <summary>
+        /// [UF05] Surveillance, identify request.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_05
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf05 = 32,
+        /// <summary>
+        /// [UF06] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_06
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf06 = 64,
+        /// <summary>
+        /// [UF07] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_07
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf07 = 128,
+        /// <summary>
+        /// [UF08] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_08
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf08 = 256,
+        /// <summary>
+        /// [UF09] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_09
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf09 = 512,
+        /// <summary>
+        /// [UF10] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_10
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf10 = 1024,
+        /// <summary>
+        /// [UF11] Mode S only all-call.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_11
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf11 = 2048,
+        /// <summary>
+        /// [UF12] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_12
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf12 = 4096,
+        /// <summary>
+        /// [UF13] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_13
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf13 = 8192,
+        /// <summary>
+        /// [UF14] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_14
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf14 = 16384,
+        /// <summary>
+        /// [UF15] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_15
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf15 = 32768,
+        /// <summary>
+        /// [UF16] Long air-air surveillance (ACAS).
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_16
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf16 = 65536,
+        /// <summary>
+        /// [UF17] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_17
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf17 = 131072,
+        /// <summary>
+        /// [UF18] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_18
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf18 = 262144,
+        /// <summary>
+        /// [UF19] Reserved for military use.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_19
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf19 = 524288,
+        /// <summary>
+        /// [UF20] Comm-A, altitude request.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_20
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf20 = 1048576,
+        /// <summary>
+        /// [UF21] Comm-A, identify request.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_21
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf21 = 2097152,
+        /// <summary>
+        /// [UF22] Reserved for military use.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_22
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf22 = 4194304,
+        /// <summary>
+        /// [UF23] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_23
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf23 = 8388608,
+        /// <summary>
+        /// [UF24] Comm-C (ELM).
+        /// ASV_RSGA_RTT_ADSB_MSG_UF_24
+        /// </summary>
+        AsvRsgaRttAdsbMsgUf24 = 16777216,
+    }
+
+    /// <summary>
+    /// Mode S reply or downlink formats.[!THIS_IS_ENUM_FLAG!]
+    ///  ASV_RSGA_RTT_ADSB_MSG_DF
+    /// </summary>
+    [Flags]
+    public enum AsvRsgaRttAdsbMsgDf:uint
+    {
+        /// <summary>
+        /// [DF00] Short air-air surveillance (ACAS).
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_00
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf00 = 1,
+        /// <summary>
+        /// [DF01] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_01
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf01 = 2,
+        /// <summary>
+        /// [DF02] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_02
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf02 = 4,
+        /// <summary>
+        /// [DF03] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_03
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf03 = 8,
+        /// <summary>
+        /// [DF04] Surveillance, altitude reply.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_04
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf04 = 16,
+        /// <summary>
+        /// [DF05] Surveillance, identify reply.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_05
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf05 = 32,
+        /// <summary>
+        /// [DF06] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_06
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf06 = 64,
+        /// <summary>
+        /// [DF07] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_07
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf07 = 128,
+        /// <summary>
+        /// [DF08] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_08
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf08 = 256,
+        /// <summary>
+        /// [DF09] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_09
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf09 = 512,
+        /// <summary>
+        /// [DF10] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_10
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf10 = 1024,
+        /// <summary>
+        /// [DF11] All-call reply.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_11
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf11 = 2048,
+        /// <summary>
+        /// [DF12] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_12
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf12 = 4096,
+        /// <summary>
+        /// [DF13] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_13
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf13 = 8192,
+        /// <summary>
+        /// [DF14] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_14
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf14 = 16384,
+        /// <summary>
+        /// [DF15] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_15
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf15 = 32768,
+        /// <summary>
+        /// [DF16] Long air-air surveillance (ACAS).
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_16
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf16 = 65536,
+        /// <summary>
+        /// [DF17] Extended squitter.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_17
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf17 = 131072,
+        /// <summary>
+        /// [DF18] Extended squitter/non transponder.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_18
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf18 = 262144,
+        /// <summary>
+        /// [DF19] Military extended squitter.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_19
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf19 = 524288,
+        /// <summary>
+        /// [DF20] Comm-B, altitude reply.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_20
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf20 = 1048576,
+        /// <summary>
+        /// [DF21] Comm-B, identify reply.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_21
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf21 = 2097152,
+        /// <summary>
+        /// [DF22] Reserved for military use.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_22
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf22 = 4194304,
+        /// <summary>
+        /// [DF23] Reserved.
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_23
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf23 = 8388608,
+        /// <summary>
+        /// [DF24] Comm-D (ELM).
+        /// ASV_RSGA_RTT_ADSB_MSG_DF_24
+        /// </summary>
+        AsvRsgaRttAdsbMsgDf24 = 16777216,
+    }
+
+    /// <summary>
     ///  MAV_CMD
     /// </summary>
     public enum MavCmd:uint
     {
         /// <summary>
-        /// Do set mode
+        /// Set the operational mode.
         /// Param 1 - Mode (uint32_t, see ASV_RSGA_CUSTOM_MODE).
         /// Param 2 - Empty.
         /// Param 3 - Empty.
@@ -297,7 +579,7 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         MavCmdAsvRsgaSetMode = 13400,
         /// <summary>
-        /// Start recording data with unique name (max 28 chars). Can be used in the mission protocol for RSGA payloads.
+        /// Start data recording with a unique name (maximum 28 characters). Can be used in mission protocol for RSGA payloads.
         /// Param 1 - Record unique name: 0-3 chars (char[4]).
         /// Param 2 - Record unique name: 4-7 chars (char[4]).
         /// Param 3 - Record unique name: 8-11 chars (char[4]).
@@ -582,7 +864,7 @@ false),
     {
         public const int MessageId = 13450;
         
-        public const byte CrcExtra = 113;
+        public const byte CrcExtra = 95;
         
         public override int Id => MessageId;
         
@@ -690,7 +972,7 @@ string.Empty,
             0, 
 false),
             new("ref_id",
-"GNSS Reference station id (because we can receive GNSS from multiple sources)",
+"GNSS reference station ID (used when GNSS is received from multiple sources).",
 string.Empty, 
 string.Empty, 
 string.Empty, 
@@ -743,6 +1025,15 @@ string.Empty,
             MessageFieldType.Uint16, 
             0, 
 false),
+            new("gnss_flags",
+"GNSS special flags.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
             new("sat_cnt",
 "Number of satellites in view",
 string.Empty, 
@@ -779,6 +1070,7 @@ false),
         + "uint16_t sog;"
         + "uint16_t cog_true;"
         + "uint16_t cog_mag;"
+        + "uint8_t gnss_flags;"
         + "uint8_t sat_cnt;"
         + "uint8_t fix_type;"
         ;
@@ -790,9 +1082,9 @@ false),
     public class AsvRsgaRttGnssPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 62; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 63; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 62; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 63; // of byte sized of fields (exclude extended)
         
         public int GetByteSize()
         {
@@ -813,6 +1105,7 @@ false),
             sum+=2; //Sog
             sum+=2; //CogTrue
             sum+=2; //CogMag
+            sum+= 1; // GnssFlags
             sum+=1; //SatCnt
             sum+= 1; // FixType
             return (byte)sum;
@@ -838,6 +1131,7 @@ false),
             Sog = BinSerialize.ReadUShort(ref buffer);
             CogTrue = BinSerialize.ReadUShort(ref buffer);
             CogMag = BinSerialize.ReadUShort(ref buffer);
+            GnssFlags = (AsvRsgaRttGnssFlags)BinSerialize.ReadByte(ref buffer);
             SatCnt = (byte)BinSerialize.ReadByte(ref buffer);
             FixType = (GpsFixType)BinSerialize.ReadByte(ref buffer);
 
@@ -861,9 +1155,10 @@ false),
             BinSerialize.WriteUShort(ref buffer,Sog);
             BinSerialize.WriteUShort(ref buffer,CogTrue);
             BinSerialize.WriteUShort(ref buffer,CogMag);
+            BinSerialize.WriteByte(ref buffer,(byte)GnssFlags);
             BinSerialize.WriteByte(ref buffer,(byte)SatCnt);
             BinSerialize.WriteByte(ref buffer,(byte)FixType);
-            /* PayloadByteSize = 62 */;
+            /* PayloadByteSize = 63 */;
         }
         
         
@@ -921,7 +1216,7 @@ false),
         /// </summary>
         public int AltErr { get; set; }
         /// <summary>
-        /// GNSS Reference station id (because we can receive GNSS from multiple sources)
+        /// GNSS reference station ID (used when GNSS is received from multiple sources).
         /// OriginName: ref_id, Units: , IsExtended: false
         /// </summary>
         public ushort RefId { get; set; }
@@ -950,6 +1245,11 @@ false),
         /// OriginName: cog_mag, Units: cdeg, IsExtended: false
         /// </summary>
         public ushort CogMag { get; set; }
+        /// <summary>
+        /// GNSS special flags.
+        /// OriginName: gnss_flags, Units: , IsExtended: false
+        /// </summary>
+        public AsvRsgaRttGnssFlags GnssFlags { get; set; }
         /// <summary>
         /// Number of satellites in view
         /// OriginName: sat_cnt, Units: , IsExtended: false
@@ -2121,7 +2421,7 @@ string.Empty,
             0, 
 false),
             new("rx_signal_overflow",
-"Signal overflow indicator (0.2\u2264 - signal too low, \u22650.8 - signal too high)",
+"Signal overflow indicator (\u22640.2 \u2014 too weak, \u22650.8 \u2014 too strong).",
 string.Empty, 
 @"%", 
 string.Empty, 
@@ -2443,7 +2743,7 @@ false),
         /// </summary>
         public float RxFieldStrength { get; set; }
         /// <summary>
-        /// Signal overflow indicator (0.2≤ - signal too low, ≥0.8 - signal too high)
+        /// Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong).
         /// OriginName: rx_signal_overflow, Units: %, IsExtended: false
         /// </summary>
         public float RxSignalOverflow { get; set; }
@@ -3109,7 +3409,7 @@ false),
     {
         public const int MessageId = 13466;
         
-        public const byte CrcExtra = 198;
+        public const byte CrcExtra = 151;
         
         public override int Id => MessageId;
         
@@ -3144,6 +3444,24 @@ string.Empty,
             MessageFieldType.Uint64, 
             0, 
 false),
+            new("tx_freq",
+"TX frequency",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
+            new("rx_freq",
+"RX frequency",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint64, 
+            0, 
+false),
             new("index",
 "Data index in record",
 string.Empty, 
@@ -3153,11 +3471,163 @@ string.Empty,
             MessageFieldType.Uint32, 
             0, 
 false),
+            new("tx_power",
+"Output power",
+string.Empty, 
+@"dBm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("tx_gain",
+"Percent of total TX gain level (0.0 - 1.0)",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rx_power",
+"Receive power (peak)",
+string.Empty, 
+@"dBm", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rx_field_strength",
+"Receive power field strength.",
+string.Empty, 
+@"uV/m", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rx_signal_overflow",
+"Signal overflow indicator (\u22640.2 \u2014 too weak, \u22650.8 \u2014 too strong).",
+string.Empty, 
+@"%", 
+string.Empty, 
+@"NaN", 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("rx_gain",
+"Percent of total RX gain level (0.0 - 1.0)",
+string.Empty, 
+@"%", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Float32, 
+            0, 
+false),
+            new("icao_address",
+"Vehicle ICAO address (24 bit)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("uf_counter_flag",
+"UF counters present flag ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("df_counter_present",
+"UF counters present ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint32, 
+            0, 
+false),
+            new("rx_freq_offset",
+"RX frequency offset",
+string.Empty, 
+@"Hz", 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Int16, 
+            0, 
+false),
+            new("ref_id",
+"GNSS reference station ID (used when GNSS is received from multiple sources).",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("squawk",
+"Mode A code (typically 1200 [0x04B0] for VFR)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint16, 
+            0, 
+false),
+            new("call_sign",
+"Vehicle identifier (8 characters, valid characters are A-Z, 0-9, \" \" only)",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Char, 
+            8, 
+false),
+            new("uf_counter",
+"UF incremental counters for every 25 message ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            25, 
+false),
+            new("df_counter",
+"DF incremental counters for every 25 message ",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            25, 
+false),
         ];
         public const string FormatMessage = "ASV_RSGA_RTT_ADSB_REP:"
         + "uint64_t time_unix_usec;"
         + "uint64_t flags;"
+        + "uint64_t tx_freq;"
+        + "uint64_t rx_freq;"
         + "uint32_t index;"
+        + "float tx_power;"
+        + "float tx_gain;"
+        + "float rx_power;"
+        + "float rx_field_strength;"
+        + "float rx_signal_overflow;"
+        + "float rx_gain;"
+        + "uint32_t icao_address;"
+        + "uint32_t uf_counter_flag;"
+        + "uint32_t df_counter_present;"
+        + "int16_t rx_freq_offset;"
+        + "uint16_t ref_id;"
+        + "uint16_t squawk;"
+        + "char[8] call_sign;"
+        + "uint8_t[25] uf_counter;"
+        + "uint8_t[25] df_counter;"
         ;
     }
 
@@ -3167,16 +3637,33 @@ false),
     public class AsvRsgaRttAdsbRepPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 136; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 136; // of byte sized of fields (exclude extended)
         
         public int GetByteSize()
         {
             var sum = 0;
             sum+=8; //TimeUnixUsec
             sum+= 8; // Flags
+            sum+=8; //TxFreq
+            sum+=8; //RxFreq
             sum+=4; //Index
+            sum+=4; //TxPower
+            sum+=4; //TxGain
+            sum+=4; //RxPower
+            sum+=4; //RxFieldStrength
+            sum+=4; //RxSignalOverflow
+            sum+=4; //RxGain
+            sum+=4; //IcaoAddress
+            sum+= 4; // UfCounterFlag
+            sum+= 4; // DfCounterPresent
+            sum+=2; //RxFreqOffset
+            sum+=2; //RefId
+            sum+=2; //Squawk
+            sum+=CallSign.Length; //CallSign
+            sum+=UfCounter.Length; //UfCounter
+            sum+=DfCounter.Length; //DfCounter
             return (byte)sum;
         }
 
@@ -3184,9 +3671,47 @@ false),
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
+            var arraySize = 0;
+            var payloadSize = buffer.Length;
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
             Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
+            TxFreq = BinSerialize.ReadULong(ref buffer);
+            RxFreq = BinSerialize.ReadULong(ref buffer);
             Index = BinSerialize.ReadUInt(ref buffer);
+            TxPower = BinSerialize.ReadFloat(ref buffer);
+            TxGain = BinSerialize.ReadFloat(ref buffer);
+            RxPower = BinSerialize.ReadFloat(ref buffer);
+            RxFieldStrength = BinSerialize.ReadFloat(ref buffer);
+            RxSignalOverflow = BinSerialize.ReadFloat(ref buffer);
+            RxGain = BinSerialize.ReadFloat(ref buffer);
+            IcaoAddress = BinSerialize.ReadUInt(ref buffer);
+            UfCounterFlag = (AsvRsgaRttAdsbMsgUf)BinSerialize.ReadUInt(ref buffer);
+            DfCounterPresent = (AsvRsgaRttAdsbMsgDf)BinSerialize.ReadUInt(ref buffer);
+            RxFreqOffset = BinSerialize.ReadShort(ref buffer);
+            RefId = BinSerialize.ReadUShort(ref buffer);
+            Squawk = BinSerialize.ReadUShort(ref buffer);
+            arraySize = 8;
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = CallSign)
+                {
+                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, CallSign.Length);
+                }
+            }
+            buffer = buffer.Slice(arraySize);
+           
+            arraySize = /*ArrayLength*/25 - Math.Max(0,((/*PayloadByteSize*/136 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            UfCounter = new byte[arraySize];
+            for(var i=0;i<arraySize;i++)
+            {
+                UfCounter[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 25;
+            for(var i=0;i<arraySize;i++)
+            {
+                DfCounter[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
 
         }
 
@@ -3194,8 +3719,40 @@ false),
         {
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
             BinSerialize.WriteULong(ref buffer,(ulong)Flags);
+            BinSerialize.WriteULong(ref buffer,TxFreq);
+            BinSerialize.WriteULong(ref buffer,RxFreq);
             BinSerialize.WriteUInt(ref buffer,Index);
-            /* PayloadByteSize = 20 */;
+            BinSerialize.WriteFloat(ref buffer,TxPower);
+            BinSerialize.WriteFloat(ref buffer,TxGain);
+            BinSerialize.WriteFloat(ref buffer,RxPower);
+            BinSerialize.WriteFloat(ref buffer,RxFieldStrength);
+            BinSerialize.WriteFloat(ref buffer,RxSignalOverflow);
+            BinSerialize.WriteFloat(ref buffer,RxGain);
+            BinSerialize.WriteUInt(ref buffer,IcaoAddress);
+            BinSerialize.WriteUInt(ref buffer,(uint)UfCounterFlag);
+            BinSerialize.WriteUInt(ref buffer,(uint)DfCounterPresent);
+            BinSerialize.WriteShort(ref buffer,RxFreqOffset);
+            BinSerialize.WriteUShort(ref buffer,RefId);
+            BinSerialize.WriteUShort(ref buffer,Squawk);
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = CallSign)
+                {
+                    Encoding.ASCII.GetBytes(charPointer, CallSign.Length, bytePointer, CallSign.Length);
+                }
+            }
+            buffer = buffer.Slice(CallSign.Length);
+            
+            for(var i=0;i<UfCounter.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)UfCounter[i]);
+            }
+            for(var i=0;i<DfCounter.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)DfCounter[i]);
+            }
+            /* PayloadByteSize = 136 */;
         }
         
         
@@ -3213,10 +3770,100 @@ false),
         /// </summary>
         public AsvRsgaDataFlags Flags { get; set; }
         /// <summary>
+        /// TX frequency
+        /// OriginName: tx_freq, Units: Hz, IsExtended: false
+        /// </summary>
+        public ulong TxFreq { get; set; }
+        /// <summary>
+        /// RX frequency
+        /// OriginName: rx_freq, Units: Hz, IsExtended: false
+        /// </summary>
+        public ulong RxFreq { get; set; }
+        /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
         public uint Index { get; set; }
+        /// <summary>
+        /// Output power
+        /// OriginName: tx_power, Units: dBm, IsExtended: false
+        /// </summary>
+        public float TxPower { get; set; }
+        /// <summary>
+        /// Percent of total TX gain level (0.0 - 1.0)
+        /// OriginName: tx_gain, Units: %, IsExtended: false
+        /// </summary>
+        public float TxGain { get; set; }
+        /// <summary>
+        /// Receive power (peak)
+        /// OriginName: rx_power, Units: dBm, IsExtended: false
+        /// </summary>
+        public float RxPower { get; set; }
+        /// <summary>
+        /// Receive power field strength.
+        /// OriginName: rx_field_strength, Units: uV/m, IsExtended: false
+        /// </summary>
+        public float RxFieldStrength { get; set; }
+        /// <summary>
+        /// Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong).
+        /// OriginName: rx_signal_overflow, Units: %, IsExtended: false
+        /// </summary>
+        public float RxSignalOverflow { get; set; }
+        /// <summary>
+        /// Percent of total RX gain level (0.0 - 1.0)
+        /// OriginName: rx_gain, Units: %, IsExtended: false
+        /// </summary>
+        public float RxGain { get; set; }
+        /// <summary>
+        /// Vehicle ICAO address (24 bit)
+        /// OriginName: icao_address, Units: , IsExtended: false
+        /// </summary>
+        public uint IcaoAddress { get; set; }
+        /// <summary>
+        /// UF counters present flag 
+        /// OriginName: uf_counter_flag, Units: , IsExtended: false
+        /// </summary>
+        public AsvRsgaRttAdsbMsgUf UfCounterFlag { get; set; }
+        /// <summary>
+        /// UF counters present 
+        /// OriginName: df_counter_present, Units: , IsExtended: false
+        /// </summary>
+        public AsvRsgaRttAdsbMsgDf DfCounterPresent { get; set; }
+        /// <summary>
+        /// RX frequency offset
+        /// OriginName: rx_freq_offset, Units: Hz, IsExtended: false
+        /// </summary>
+        public short RxFreqOffset { get; set; }
+        /// <summary>
+        /// GNSS reference station ID (used when GNSS is received from multiple sources).
+        /// OriginName: ref_id, Units: , IsExtended: false
+        /// </summary>
+        public ushort RefId { get; set; }
+        /// <summary>
+        /// Mode A code (typically 1200 [0x04B0] for VFR)
+        /// OriginName: squawk, Units: , IsExtended: false
+        /// </summary>
+        public ushort Squawk { get; set; }
+        /// <summary>
+        /// Vehicle identifier (8 characters, valid characters are A-Z, 0-9, " " only)
+        /// OriginName: call_sign, Units: , IsExtended: false
+        /// </summary>
+        public const int CallSignMaxItemsCount = 8;
+        public char[] CallSign { get; } = new char[8];
+        /// <summary>
+        /// UF incremental counters for every 25 message 
+        /// OriginName: uf_counter, Units: , IsExtended: false
+        /// </summary>
+        public const int UfCounterMaxItemsCount = 25;
+        public byte[] UfCounter { get; set; } = new byte[25];
+        [Obsolete("This method is deprecated. Use GetUfCounterMaxItemsCount instead.")]
+        public byte GetUfCounterMaxItemsCount() => 25;
+        /// <summary>
+        /// DF incremental counters for every 25 message 
+        /// OriginName: df_counter, Units: , IsExtended: false
+        /// </summary>
+        public const int DfCounterMaxItemsCount = 25;
+        public byte[] DfCounter { get; } = new byte[25];
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RX_GNSS mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
