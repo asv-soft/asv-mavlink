@@ -274,9 +274,9 @@ namespace Asv.Mavlink.AsvRsga
     {
         /// <summary>
         /// Is data valid.
-        /// ASV_RSGA_DATA_VALID
+        /// ASV_RSGA_DATA_FLAGS_VALID
         /// </summary>
-        AsvRsgaDataValid = 1,
+        AsvRsgaDataFlagsValid = 1,
     }
 
     /// <summary>
@@ -291,6 +291,64 @@ namespace Asv.Mavlink.AsvRsga
         /// ASV_RSGA_RTT_GNSS_FLAGS_ON_THE_GROUND
         /// </summary>
         AsvRsgaRttGnssFlagsOnTheGround = 1,
+        /// <summary>
+        /// Reserved .
+        /// ASV_RSGA_RTT_GNSS_FLAGS_RESERVED1
+        /// </summary>
+        AsvRsgaRttGnssFlagsReserved1 = 2,
+        /// <summary>
+        /// Reserved.
+        /// ASV_RSGA_RTT_GNSS_FLAGS_RESERVED2
+        /// </summary>
+        AsvRsgaRttGnssFlagsReserved2 = 4,
+        /// <summary>
+        /// Reserved.
+        /// ASV_RSGA_RTT_GNSS_FLAGS_RESERVED3
+        /// </summary>
+        AsvRsgaRttGnssFlagsReserved3 = 8,
+        /// <summary>
+        /// Reserved.
+        /// ASV_RSGA_RTT_GNSS_FLAGS_RESERVED4
+        /// </summary>
+        AsvRsgaRttGnssFlagsReserved4 = 16,
+        /// <summary>
+        /// Reserved.
+        /// ASV_RSGA_RTT_GNSS_FLAGS_RESERVED5
+        /// </summary>
+        AsvRsgaRttGnssFlagsReserved5 = 32,
+        /// <summary>
+        /// Reserved.
+        /// ASV_RSGA_RTT_GNSS_FLAGS_RESERVED6
+        /// </summary>
+        AsvRsgaRttGnssFlagsReserved6 = 64,
+        /// <summary>
+        /// Reserved.
+        /// ASV_RSGA_RTT_GNSS_FLAGS_RESERVED7
+        /// </summary>
+        AsvRsgaRttGnssFlagsReserved7 = 128,
+    }
+
+    /// <summary>
+    /// Type of GNSS receiver
+    ///  ASV_RSGA_RTT_GNSS_TYPE
+    /// </summary>
+    public enum AsvRsgaRttGnssType:uint
+    {
+        /// <summary>
+        /// Virtual GNSS data.
+        /// ASV_RSGA_RTT_GNSS_TYPE_VIRTUAL
+        /// </summary>
+        AsvRsgaRttGnssTypeVirtual = 0,
+        /// <summary>
+        /// GNSS data from receiver.
+        /// ASV_RSGA_RTT_GNSS_TYPE_NMEA
+        /// </summary>
+        AsvRsgaRttGnssTypeNmea = 1,
+        /// <summary>
+        /// GNSS data from UAV.
+        /// ASV_RSGA_RTT_GNSS_TYPE_UAV
+        /// </summary>
+        AsvRsgaRttGnssTypeUav = 2,
     }
 
     /// <summary>
@@ -864,7 +922,7 @@ false),
     {
         public const int MessageId = 13450;
         
-        public const byte CrcExtra = 95;
+        public const byte CrcExtra = 15;
         
         public override int Id => MessageId;
         
@@ -1025,6 +1083,15 @@ string.Empty,
             MessageFieldType.Uint16, 
             0, 
 false),
+            new("receiver_type",
+"GNSS receiver type.",
+string.Empty, 
+string.Empty, 
+string.Empty, 
+string.Empty, 
+            MessageFieldType.Uint8, 
+            0, 
+false),
             new("gnss_flags",
 "GNSS special flags.",
 string.Empty, 
@@ -1070,6 +1137,7 @@ false),
         + "uint16_t sog;"
         + "uint16_t cog_true;"
         + "uint16_t cog_mag;"
+        + "uint8_t receiver_type;"
         + "uint8_t gnss_flags;"
         + "uint8_t sat_cnt;"
         + "uint8_t fix_type;"
@@ -1082,9 +1150,9 @@ false),
     public class AsvRsgaRttGnssPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 63; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 64; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 63; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 64; // of byte sized of fields (exclude extended)
         
         public int GetByteSize()
         {
@@ -1105,6 +1173,7 @@ false),
             sum+=2; //Sog
             sum+=2; //CogTrue
             sum+=2; //CogMag
+            sum+= 1; // ReceiverType
             sum+= 1; // GnssFlags
             sum+=1; //SatCnt
             sum+= 1; // FixType
@@ -1131,6 +1200,7 @@ false),
             Sog = BinSerialize.ReadUShort(ref buffer);
             CogTrue = BinSerialize.ReadUShort(ref buffer);
             CogMag = BinSerialize.ReadUShort(ref buffer);
+            ReceiverType = (AsvRsgaRttGnssType)BinSerialize.ReadByte(ref buffer);
             GnssFlags = (AsvRsgaRttGnssFlags)BinSerialize.ReadByte(ref buffer);
             SatCnt = (byte)BinSerialize.ReadByte(ref buffer);
             FixType = (GpsFixType)BinSerialize.ReadByte(ref buffer);
@@ -1155,10 +1225,11 @@ false),
             BinSerialize.WriteUShort(ref buffer,Sog);
             BinSerialize.WriteUShort(ref buffer,CogTrue);
             BinSerialize.WriteUShort(ref buffer,CogMag);
+            BinSerialize.WriteByte(ref buffer,(byte)ReceiverType);
             BinSerialize.WriteByte(ref buffer,(byte)GnssFlags);
             BinSerialize.WriteByte(ref buffer,(byte)SatCnt);
             BinSerialize.WriteByte(ref buffer,(byte)FixType);
-            /* PayloadByteSize = 63 */;
+            /* PayloadByteSize = 64 */;
         }
         
         
@@ -1245,6 +1316,11 @@ false),
         /// OriginName: cog_mag, Units: cdeg, IsExtended: false
         /// </summary>
         public ushort CogMag { get; set; }
+        /// <summary>
+        /// GNSS receiver type.
+        /// OriginName: receiver_type, Units: , IsExtended: false
+        /// </summary>
+        public AsvRsgaRttGnssType ReceiverType { get; set; }
         /// <summary>
         /// GNSS special flags.
         /// OriginName: gnss_flags, Units: , IsExtended: false
