@@ -18,7 +18,7 @@ namespace Asv.Mavlink.Shell
         /// <summary>
         /// Example command for the code generator
         /// </summary>
-        /// <param name="directory">-d, directory where the files should be generated in the root folder. By default, 'in' directory</param>
+        /// <param name="directory">-d, directory where the files should be generated in the root folder</param>
         /// <param name="virtual">-v, use this parameter if you want to use a virtual file system</param>
         /// <returns></returns> 
         [Command("code-gen-example")]
