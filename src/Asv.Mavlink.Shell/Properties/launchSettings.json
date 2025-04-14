@@ -2,7 +2,7 @@
   "profiles": {
     "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "gen -e cs -template src/Asv.Mavlink.Shell/Resources/csharp.tpl -t asv_gbs.xml -i src/Asv.Mavlink/Protocol/Dialects -o src/Asv.Mavlink/Protocol/Messages"
+      "commandLineArgs": "code-gen-example -v"
     }
   }
 }
