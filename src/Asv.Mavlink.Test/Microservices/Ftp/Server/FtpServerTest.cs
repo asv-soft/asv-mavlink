@@ -1,34 +1,22 @@
 using System;
 using System.Buffers;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
-using JetBrains.Annotations;
 using R3;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-[TestSubject(typeof(FtpServer))]
-public class FtpServerTest : ServerTestBase<FtpServer>
+public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(log)
 {
-    private readonly TaskCompletionSource<FileTransferProtocolPacket> _tcs = new();
-    private readonly CancellationTokenSource _cts;
-
     private readonly MavlinkFtpServerConfig _config = new()
     {
         NetworkId = 0,
         BurstReadChunkDelayMs = 100
     };
-
-    public FtpServerTest(ITestOutputHelper log) : base(log)
-    {
-        _cts = new CancellationTokenSource();
-        _cts.Token.Register(() => _tcs.TrySetCanceled());
-    }
 
     protected override FtpServer CreateServer(MavlinkIdentity identity, CoreServices core)
     {
@@ -39,629 +27,564 @@ public class FtpServerTest : ServerTestBase<FtpServer>
     public async Task CalcFileCrc32_Success()
     {
         // Arrange
-        var path = "/path/to/file.txt";
-        var expectedCrc32 = 0xDEADBEEF;
+        const string expectedPath = "/path/to/file.txt";
+        const uint expectedCrc32 = 0xDEADBEEF;
+        var requestedPath = string.Empty;
 
-        Server.CalcFileCrc32 = async (requestedPath, _) =>
+        Server.CalcFileCrc32 = async (path, _) =>
         {
-            Assert.Equal(path, requestedPath);
+            requestedPath = path;
             return await Task.FromResult(expectedCrc32);
         };
 
-        // Simulate client request
-        var requestPacket = new FileTransferProtocolPacket
-        {
-            SystemId = Identity.SystemId,
-            ComponentId = Identity.ComponentId,
-            Sequence = 1,
-            Payload =
-            {
-                TargetSystem = Identity.SystemId,
-                TargetComponent = Identity.ComponentId,
-                TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
-            }
-        };
-        requestPacket.WriteOpcode(FtpOpcode.CalcFileCRC32);
-        requestPacket.WriteSession(0);
-        requestPacket.WriteSize((byte)path.Length);
-        requestPacket.WriteDataAsString(path);
+        var requestPacket = CreateRequestPacket(FtpOpcode.CalcFileCRC32);
+        requestPacket.WriteSize((byte)expectedPath.Length);
+        requestPacket.WriteDataAsString(expectedPath);
 
-        // Set up server response
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        FileTransferProtocolPacket? responsePacket = null;
+
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(packet =>
+            {
+                responsePacket = packet;
+            });
 
         // Act
-        await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-
-        // Wait for the server to process and client to receive the response
-        var response = await _tcs.Task.ConfigureAwait(false);
+        await Link.Client.Send(requestPacket);
+        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
-        var crc32 = response.ReadDataAsUint();
+        Assert.NotNull(responsePacket);
+        Assert.Equal(FtpOpcode.Ack, responsePacket!.ReadOpcode());
+        var crc32 = responsePacket!.ReadDataAsUint();
         Assert.Equal(expectedCrc32, crc32);
+        Assert.Equal(expectedPath, requestedPath);
     }
 
     [Fact]
     public async Task TruncateFile_Success()
     {
         // Arrange
-        var path = "/path/to/file.txt";
-        var offset = 1024U;
+        const string expectedPath = "/path/to/file.txt";
+        const uint expectedOffset = 1024U;
+        var requestedPath = string.Empty;
+        var requestedOffset = 0U;
 
         Server.TruncateFile = async (request, _) =>
         {
-            Assert.Equal(path, request.Path);
-            Assert.Equal(offset, request.Offset);
+            requestedPath = request.Path;
+            requestedOffset = request.Offset;
             await Task.CompletedTask;
         };
 
-        // Simulate client request
-        var requestPacket = new FileTransferProtocolPacket
-        {
-            SystemId = Identity.SystemId,
-            ComponentId = Identity.ComponentId,
-            Sequence = 1,
-            Payload =
-            {
-                TargetSystem = Identity.SystemId,
-                TargetComponent = Identity.ComponentId,
-                TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
-            }
-        };
-        requestPacket.WriteOpcode(FtpOpcode.TruncateFile);
-        requestPacket.WriteSession(0);
-        requestPacket.WriteOffset(offset);
-        requestPacket.WriteSize((byte)path.Length);
-        requestPacket.WriteDataAsString(path);
+        var requestPacket = CreateRequestPacket(FtpOpcode.TruncateFile);
+        requestPacket.WriteOffset(expectedOffset);
+        requestPacket.WriteSize((byte)expectedPath.Length);
+        requestPacket.WriteDataAsString(expectedPath);
 
-        // Set up server response
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        FileTransferProtocolPacket? responsePacket = null;
+
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(packet =>
+            {
+                responsePacket = packet;
+            });
 
         // Act
-        await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-
-        // Wait for the server to process and client to receive the response
-        var response = await _tcs.Task.ConfigureAwait(false);
+        await Link.Client.Send(requestPacket);
+        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
+        Assert.NotNull(responsePacket);
+        Assert.Equal(FtpOpcode.Ack, responsePacket!.ReadOpcode());
+        Assert.Equal(expectedPath, requestedPath);
+        Assert.Equal(expectedOffset, requestedOffset);
     }
 
     [Fact]
     public async Task RemoveDirectory_Success()
     {
         // Arrange
-        var path = "/path/to/directory";
+        const string expectedPath = "/path/to/directory";
+        var requestedPath = string.Empty;
 
-        Server.RemoveDirectory = async (requestedPath, _) =>
+        Server.RemoveDirectory = async (path, _) =>
         {
-            Assert.Equal(path, requestedPath);
+            requestedPath = path;
             await Task.CompletedTask;
         };
 
-        // Simulate client request
-        var requestPacket = new FileTransferProtocolPacket
-        {
-            SystemId = Identity.SystemId,
-            ComponentId = Identity.ComponentId,
-            Sequence = 1,
-            Payload =
-            {
-                TargetSystem = Identity.SystemId,
-                TargetComponent = Identity.ComponentId,
-                TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
-            }
-        };
-        requestPacket.WriteOpcode(FtpOpcode.RemoveDirectory);
-        requestPacket.WriteSession(0);
-        requestPacket.WriteSize((byte)path.Length);
-        requestPacket.WriteDataAsString(path);
+        var requestPacket = CreateRequestPacket(FtpOpcode.RemoveDirectory);
+        requestPacket.WriteSize((byte)expectedPath.Length);
+        requestPacket.WriteDataAsString(expectedPath);
 
-        // Set up server response
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        FileTransferProtocolPacket? responsePacket = null;
+
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(packet =>
+            {
+                responsePacket = packet;
+            });
 
         // Act
-        await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-
-        // Wait for the server to process and client to receive the response
-        var response = await _tcs.Task.ConfigureAwait(false);
+        await Link.Client.Send(requestPacket);
+        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
+        Assert.NotNull(responsePacket);
+        Assert.Equal(FtpOpcode.Ack, responsePacket!.ReadOpcode());
+        Assert.Equal(expectedPath, requestedPath);
     }
 
     [Fact]
     public async Task RemoveFile_Success()
     {
         // Arrange
-        var path = "/path/to/file.txt";
+        const string expectedPath = "/path/to/file.txt";
+        var requestedPath = string.Empty;
 
-        Server.RemoveFile = async (requestedPath, _) =>
+        Server.RemoveFile = async (path, _) =>
         {
-            Assert.Equal(path, requestedPath);
+            requestedPath = path;
             await Task.CompletedTask;
         };
 
-        // Simulate client request
-        var requestPacket = new FileTransferProtocolPacket
-        {
-            SystemId = Identity.SystemId,
-            ComponentId = Identity.ComponentId,
-            Sequence = 1,
-            Payload =
-            {
-                TargetSystem = Identity.SystemId,
-                TargetComponent = Identity.ComponentId,
-                TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
-            }
-        };
-        requestPacket.WriteOpcode(FtpOpcode.RemoveFile);
-        requestPacket.WriteSession(0);
-        requestPacket.WriteSize((byte)path.Length);
-        requestPacket.WriteDataAsString(path);
+        var requestPacket = CreateRequestPacket(FtpOpcode.RemoveFile);
+        requestPacket.WriteSize((byte)expectedPath.Length);
+        requestPacket.WriteDataAsString(expectedPath);
 
-        // Set up server response
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        FileTransferProtocolPacket? responsePacket = null;
+
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(packet =>
+            {
+                responsePacket = packet;
+            });
 
         // Act
-        await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-
-        // Wait for the server to process and client to receive the response
-        var response = await _tcs.Task.ConfigureAwait(false);
+        await Link.Client.Send(requestPacket);
+        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
+        Assert.NotNull(responsePacket);
+        Assert.Equal(FtpOpcode.Ack, responsePacket!.ReadOpcode());
+        Assert.Equal(expectedPath, requestedPath);
     }
 
     [Fact]
     public async Task ResetSessions_Success()
     {
         // Arrange
-        Server.ResetSessions = async _ => { await Task.CompletedTask; };
+        var resetCalled = false;
 
-        // Simulate client request
-        var requestPacket = new FileTransferProtocolPacket
+        Server.ResetSessions = async _ =>
         {
-            SystemId = Identity.SystemId,
-            ComponentId = Identity.ComponentId,
-            Sequence = 1,
-            Payload =
-            {
-                TargetSystem = Identity.SystemId,
-                TargetComponent = Identity.ComponentId,
-                TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
-            }
+            resetCalled = true;
+            await Task.CompletedTask;
         };
-        requestPacket.WriteOpcode(FtpOpcode.ResetSessions);
-        requestPacket.WriteSession(0);
-        requestPacket.WriteSize(0);
 
-        // Set up server response
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        var requestPacket = CreateRequestPacket(FtpOpcode.ResetSessions);
+
+        FileTransferProtocolPacket? responsePacket = null;
+
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(packet =>
+            {
+                responsePacket = packet;
+            });
 
         // Act
-        await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-
-        // Wait for the server to process and client to receive the response
-        var response = await _tcs.Task.ConfigureAwait(false);
+        await Link.Client.Send(requestPacket);
+        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
+        Assert.True(resetCalled);
+        Assert.NotNull(responsePacket);
+        Assert.Equal(FtpOpcode.Ack, responsePacket!.ReadOpcode());
     }
 
     [Fact]
     public async Task CreateDirectory_Success()
     {
         // Arrange
-        var path = "/path/to/new_directory";
+        const string expectedPath = "/path/to/new_directory";
+        var requestedPath = string.Empty;
 
-        Server.CreateDirectory = async (requestedPath, _) =>
+        Server.CreateDirectory = async (path, _) =>
         {
-            Assert.Equal(path, requestedPath);
+            requestedPath = path;
             await Task.CompletedTask;
         };
 
-        // Simulate client request
-        var requestPacket = new FileTransferProtocolPacket
-        {
-            SystemId = Identity.SystemId,
-            ComponentId = Identity.ComponentId,
-            Sequence = 1,
-            Payload =
-            {
-                TargetSystem = Identity.SystemId,
-                TargetComponent = Identity.ComponentId,
-                TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
-            }
-        };
-        requestPacket.WriteOpcode(FtpOpcode.CreateDirectory);
-        requestPacket.WriteSession(0);
-        requestPacket.WriteSize((byte)path.Length);
-        requestPacket.WriteDataAsString(path);
+        var requestPacket = CreateRequestPacket(FtpOpcode.CreateDirectory);
+        requestPacket.WriteSize((byte)expectedPath.Length);
+        requestPacket.WriteDataAsString(expectedPath);
 
-        // Set up server response
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        FileTransferProtocolPacket? responsePacket = null;
+
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(packet =>
+            {
+                responsePacket = packet;
+            });
 
         // Act
-        await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-
-        // Wait for the server to process and client to receive the response
-        var response = await _tcs.Task.ConfigureAwait(false);
+        await Link.Client.Send(requestPacket);
+        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
+        Assert.NotNull(responsePacket);
+        Assert.Equal(FtpOpcode.Ack, responsePacket!.ReadOpcode());
+        Assert.Equal(expectedPath, requestedPath);
     }
 
     [Fact]
     public async Task Rename_Success()
     {
         // Arrange
-        var oldPath = "/path/to/old_name.txt";
-        var newPath = "/path/to/new_name.txt";
-
-        var requestPacket = new FileTransferProtocolPacket
-        {
-            SystemId = Identity.SystemId,
-            ComponentId = Identity.ComponentId,
-            Sequence = 1,
-            Payload =
-            {
-                TargetSystem = Identity.SystemId,
-                TargetComponent = Identity.ComponentId,
-                TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
-            }
-        };
+        const string expectedOldPath = "/path/to/old_name.txt";
+        const string expectedNewPath = "/path/to/new_name.txt";
+        var requestedOldPath = string.Empty;
+        var requestedNewPath = string.Empty;
 
         Server.Rename = async (path1, path2, _) =>
         {
-            Assert.Equal(oldPath, path1);
-            Assert.Equal(newPath, path2);
+            requestedOldPath = path1;
+            requestedNewPath = path2;
             await Task.CompletedTask;
         };
 
-        requestPacket.WriteOpcode(FtpOpcode.Rename);
-        requestPacket.WriteSession(0);
-        requestPacket.WriteSize((byte)(oldPath.Length + newPath.Length));
-        requestPacket.WriteDataAsString(oldPath + '\0' + newPath);
+        var requestPacket = CreateRequestPacket(FtpOpcode.Rename);
+        requestPacket.WriteSize((byte)(expectedOldPath.Length + expectedNewPath.Length));
+        requestPacket.WriteDataAsString(expectedOldPath + '\0' + expectedNewPath);
 
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        FileTransferProtocolPacket? responsePacket = null;
+
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(packet =>
+            {
+                responsePacket = packet;
+            });
 
         // Act
-        await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-
-        var response = await _tcs.Task.ConfigureAwait(false);
+        await Link.Client.Send(requestPacket);
+        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
+        Assert.NotNull(responsePacket);
+        Assert.Equal(FtpOpcode.Ack, responsePacket!.ReadOpcode());
+        Assert.Equal(expectedOldPath, requestedOldPath);
+        Assert.Equal(expectedNewPath, requestedNewPath);
     }
 
     [Fact]
     public async Task ListDirectory_Success()
     {
         // Arrange
-        var path = "/path/to/directory";
-        uint offset = 0;
-        var directoryListing = "Ffile1.txt\t123\nFfile2.txt\t456\nDdir1/\n";
-        var listingChars = directoryListing.ToCharArray();
+        const string expectedPath = "/path/to/directory";
+        const uint expectedOffset = 0;
+        var requestedPath = string.Empty;
+        var requestedOffset = 0U;
+        const string expectedDirectoryListing = "Ffile1.txt\t123\nFfile2.txt\t456\nDdir1/\n";
+        var listingChars = expectedDirectoryListing.ToCharArray();
 
-        Server.ListDirectory = (requestedPath, requestedOffset, buffer, _) =>
+        Server.ListDirectory = (path, offset, buffer, _) =>
         {
-            Assert.Equal(path, requestedPath);
-            Assert.Equal(offset, requestedOffset);
+            requestedPath = path;
+            requestedOffset = offset;
             listingChars.CopyTo(buffer.Span);
             return Task.FromResult((byte)listingChars.Length);
         };
 
-        // Simulate client request
-        var requestPacket = new FileTransferProtocolPacket
-        {
-            SystemId = Identity.SystemId,
-            ComponentId = Identity.ComponentId,
-            Sequence = 1,
-            Payload =
-            {
-                TargetSystem = Identity.SystemId,
-                TargetComponent = Identity.ComponentId,
-                TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
-            }
-        };
-        requestPacket.WriteOpcode(FtpOpcode.ListDirectory);
-        requestPacket.WriteSession(0);
-        requestPacket.WriteOffset(offset);
-        requestPacket.WriteSize((byte)path.Length);
-        requestPacket.WriteDataAsString(path);
+        var requestPacket = CreateRequestPacket(FtpOpcode.ListDirectory);
+        requestPacket.WriteOffset(expectedOffset);
+        requestPacket.WriteSize((byte)expectedPath.Length);
+        requestPacket.WriteDataAsString(expectedPath);
 
-        // Set up server response
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        FileTransferProtocolPacket? responsePacket = null;
+
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(packet =>
+            {
+                responsePacket = packet;
+            });
 
         // Act
-        await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-
-        // Wait for the server to process and client to receive the response
-        var response = await _tcs.Task.ConfigureAwait(false);
+        await Link.Client.Send(requestPacket);
+        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
-        var listing = response.ReadDataAsString();
-        Assert.Equal(directoryListing, listing);
+        Assert.NotNull(responsePacket);
+        Assert.Equal(FtpOpcode.Ack, responsePacket!.ReadOpcode());
+        var listing = responsePacket!.ReadDataAsString();
+        Assert.Equal(expectedDirectoryListing, listing);
+
+        Assert.Equal(expectedPath, requestedPath);
+        Assert.Equal(expectedOffset, requestedOffset);
     }
 
     [Fact]
     public async Task FileRead_Success()
     {
         // Arrange
-        var sessionId = (byte)1;
-        var offset = 0U;
-        var size = (byte)100;
-        var data = new byte[size];
+        const byte expectedSessionId = 1;
+        const uint expectedSkip = 0U;
+        const byte expectedTake = 100;
+        var requestedSessionId = (byte)0;
+        var requestedSkip = 0U;
+        var requestedTake = (byte)0;
+
+        var data = new byte[expectedTake];
         new Random().NextBytes(data);
 
         Server.FileRead = async (request, buffer, _) =>
         {
-            Assert.Equal(sessionId, request.Session);
-            Assert.Equal(offset, request.Skip);
-            Assert.Equal(size, request.Take);
+            requestedSessionId = request.Session;
+            requestedSkip = request.Skip;
+            requestedTake = request.Take;
             data.CopyTo(buffer.Span);
-            return await Task.FromResult(new ReadResult(size, request));
+            return await Task.FromResult(new ReadResult(request.Take, request));
         };
 
-        // Simulate client request
-        var requestPacket = new FileTransferProtocolPacket
-        {
-            SystemId = Identity.SystemId,
-            ComponentId = Identity.ComponentId,
-            Sequence = 1,
-            Payload =
+        var requestPacket = CreateRequestPacket(FtpOpcode.ReadFile);
+        requestPacket.WriteSession(expectedSessionId);
+        requestPacket.WriteOffset(expectedSkip);
+        requestPacket.WriteSize(expectedTake);
+
+        FileTransferProtocolPacket? responsePacket = null;
+
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(packet =>
             {
-                TargetSystem = Identity.SystemId,
-                TargetComponent = Identity.ComponentId,
-                TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
-            }
-        };
-        requestPacket.WriteOpcode(FtpOpcode.ReadFile);
-        requestPacket.WriteSession(sessionId);
-        requestPacket.WriteOffset(offset);
-        requestPacket.WriteSize(size);
-
-        // Set up server response
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+                responsePacket = packet;
+            });
 
         // Act
-        await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-
-        // Wait for the server to process and client to receive the response
-        var response = await _tcs.Task.ConfigureAwait(false);
+        await Link.Client.Send(requestPacket);
+        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
-        var responseSessionId = response.ReadSession();
-        var responseSize = response.ReadSize();
-        var responseOffset = response.ReadOffset();
-        var receivedData = response.Payload.Payload.AsSpan(12, responseSize).ToArray();
-        Assert.Equal(sessionId, responseSessionId);
-        Assert.Equal(size, responseSize);
-        Assert.Equal(offset, responseOffset);
+        Assert.NotNull(responsePacket);
+        Assert.Equal(FtpOpcode.Ack, responsePacket!.ReadOpcode());
+
+        var actualSessionId = responsePacket!.ReadSession();
+        var actualSize = responsePacket!.ReadSize();
+        var actualOffset = responsePacket!.ReadOffset();
+        var receivedData = responsePacket!.Payload.Payload.AsSpan(12, actualSize).ToArray();
+
+        Assert.Equal(expectedSessionId, actualSessionId);
+        Assert.Equal(expectedTake, actualSize);
+        Assert.Equal(expectedSkip, actualOffset);
         Assert.Equal(data, receivedData);
+
+        Assert.Equal(expectedSessionId, requestedSessionId);
+        Assert.Equal(expectedSkip, requestedSkip);
+        Assert.Equal(expectedTake, requestedTake);
     }
 
     [Fact]
     public async Task OpenFileRead_Success()
     {
         // Arrange
-        var path = "/path/to/file.txt";
-        var sessionId = (byte)1;
-        var fileSize = 2048U;
+        const string expectedPath = "/path/to/file.txt";
+        const byte expectedSessionId = 1;
+        const uint expectedFileSize = 2048U;
+        var requestedPath = string.Empty;
 
-        Server.OpenFileRead = async (requestedPath, _) =>
+        Server.OpenFileRead = async (path, _) =>
         {
-            Assert.Equal(path, requestedPath);
-            return await Task.FromResult(new ReadHandle(sessionId, fileSize));
+            requestedPath = path;
+            return await Task.FromResult(new ReadHandle(expectedSessionId, expectedFileSize));
         };
 
-        // Simulate client request
-        var requestPacket = new FileTransferProtocolPacket
-        {
-            SystemId = Identity.SystemId,
-            ComponentId = Identity.ComponentId,
-            Sequence = 1,
-            Payload =
+        var requestPacket = CreateRequestPacket(FtpOpcode.OpenFileRO);
+        requestPacket.WriteSession(expectedSessionId);
+        requestPacket.WriteSize((byte)expectedPath.Length);
+        requestPacket.WriteDataAsString(expectedPath);
+
+        FileTransferProtocolPacket? responsePacket = null;
+
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(packet =>
             {
-                TargetSystem = Identity.SystemId,
-                TargetComponent = Identity.ComponentId,
-                TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
-            }
-        };
-        requestPacket.WriteOpcode(FtpOpcode.OpenFileRO);
-        requestPacket.WriteSession(0);
-        requestPacket.WriteSize((byte)path.Length);
-        requestPacket.WriteDataAsString(path);
-
-        // Set up server response
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+                responsePacket = packet;
+            });
 
         // Act
-        await Link.Client.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-
-        // Wait for the server to process and client to receive the response
-        var response = await _tcs.Task.ConfigureAwait(false);
+        await Link.Client.Send(requestPacket);
+        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
-        response.ReadSession();
-        var responseFileSize = response.ReadDataAsUint();
-        Assert.Equal(fileSize, responseFileSize);
+        Assert.NotNull(responsePacket);
+        Assert.Equal(FtpOpcode.Ack, responsePacket!.ReadOpcode());
+
+        var actualSessionId = responsePacket!.ReadSession();
+        var actualFileSize = responsePacket!.ReadDataAsUint();
+
+        Assert.Equal(expectedSessionId, actualSessionId);
+        Assert.Equal(expectedFileSize, actualFileSize);
+        Assert.Equal(expectedPath, requestedPath);
     }
 
     [Fact]
     public async Task OpenFileWrite_Success()
     {
         // Arrange
-        var path = "/path/to/file.txt";
-        var sessionId = (byte)2;
-        var fileSize = 17U;
+        const string expectedPath = "/path/to/file.txt";
+        const byte expectedSessionId = 2;
+        const uint expectedFileSize = 17U;
 
-        Server.OpenFileWrite = async (requestedPath, _) =>
-        {
-            Assert.Equal(path, requestedPath);
-            return await Task.FromResult(new WriteHandle(sessionId, fileSize));
-        };
 
-        // Simulate client request
-        var requestPacket = new FileTransferProtocolPacket
-        {
-            SystemId = Identity.SystemId,
-            ComponentId = Identity.ComponentId,
-            Sequence = 1,
-            Payload =
+        Server.OpenFileWrite = async (_, _) => await Task.FromResult(new WriteHandle(expectedSessionId, expectedFileSize));
+
+        var requestPacket = CreateRequestPacket(FtpOpcode.OpenFileWO);
+        requestPacket.WriteSession(expectedSessionId);
+        requestPacket.WriteSize((byte)expectedFileSize);
+        requestPacket.WriteDataAsString(expectedPath);
+
+        FileTransferProtocolPacket? responsePacket = null;
+
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(packet =>
             {
-                TargetSystem = Identity.SystemId,
-                TargetComponent = Identity.ComponentId,
-                TargetNetwork = _config.NetworkId,
-                Payload = new byte[200],
-            }
-        };
-        requestPacket.WriteOpcode(FtpOpcode.OpenFileWO);
-        requestPacket.WriteSession(1);
-        requestPacket.WriteSize((byte)fileSize);
-        requestPacket.WriteDataAsString(path);
-
-        // Set up client to receive the server's response
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+                responsePacket = packet;
+            });
 
         // Act
-        await Link.Server.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-
-        // Wait for the client to receive the response
-        var response = await _tcs.Task.ConfigureAwait(false);
+        await Link.Server.Send(requestPacket);
+        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(fileSize, response.ReadSize());
+        Assert.NotNull(responsePacket);
+
+        var actualSize = responsePacket!.ReadSize();
+        var actualPath = responsePacket!.ReadDataAsString();
+        Assert.Equal(expectedFileSize, actualSize);
+        Assert.Equal(expectedPath, actualPath);
     }
 
     [Fact]
     public async Task TerminateSession_Success()
     {
         // Arrange
-        const byte sessionId = (byte)1;
+        const byte expectedSessionId = 1;
+        var requestedSessionId = (byte)0;
 
-        Server.TerminateSession = async (requestedSessionId, _) =>
+        Server.TerminateSession = async (sessionId, _) =>
         {
-            Assert.Equal(sessionId, requestedSessionId);
+            requestedSessionId = sessionId;
             await Task.CompletedTask;
         };
 
-        // Simulate client request
-        var requestPacket = new FileTransferProtocolPacket
-        {
-            SystemId = Identity.SystemId,
-            ComponentId = Identity.ComponentId,
-            Sequence = 1,
-            Payload =
-            {
-                TargetSystem = Identity.SystemId,
-                TargetComponent = Identity.ComponentId,
-                TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
-            }
-        };
-        requestPacket.WriteOpcode(FtpOpcode.TerminateSession);
-        requestPacket.WriteSession(sessionId);
+        var requestPacket = CreateRequestPacket(FtpOpcode.TerminateSession);
+        requestPacket.WriteSession(expectedSessionId);
         requestPacket.WriteSize(0);
 
-        // Set up client to receive the server's response
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        FileTransferProtocolPacket? responsePacket = null;
+
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(packet =>
+            {
+                responsePacket = packet;
+            });
 
         // Act
-        await Link.Server.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-
-        // Wait for the client to receive the response
-        var response = await _tcs.Task.ConfigureAwait(false);
+        await Link.Server.Send(requestPacket);
+        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
-        Assert.NotNull(response);
+        Assert.NotNull(responsePacket);
+        requestedSessionId = responsePacket!.ReadSession();
+        Assert.Equal(expectedSessionId, requestedSessionId);
     }
 
     [Fact]
     public async Task WriteFile_Success()
     {
         // Arrange
-        var sessionId = (byte)1;
-        var offset = 0U;
-        var size = (byte)100;
-        var data = new byte[size];
+        const byte expectedSessionId = 1;
+        const uint expectedOffset = 0U;
+        const byte expectedSize = 100;
+
+        var requestedSessionId = (byte)0;
+        var requestedSkip = 0U;
+        var requestedTake = (byte)0;
+
+        var data = new byte[expectedSize];
         new Random().NextBytes(data);
 
         Server.WriteFile = async (request, buffer, _) =>
         {
-            Assert.Equal(sessionId, request.Session);
-            Assert.Equal(offset, request.Skip);
-            Assert.Equal(size, request.Take);
-            Assert.Equal(data, buffer.Span[..size].ToArray());
+            requestedSessionId = request.Session;
+            requestedSkip = request.Skip;
+            requestedTake = request.Take;
+            Assert.Equal(data, buffer.Span[..expectedSize].ToArray());
             await Task.CompletedTask;
         };
 
-        // Simulate client request
-        var requestPacket = new FileTransferProtocolPacket
-        {
-            SystemId = Identity.SystemId,
-            ComponentId = Identity.ComponentId,
-            Sequence = 1,
-            Payload =
-            {
-                TargetSystem = Identity.SystemId,
-                TargetComponent = Identity.ComponentId,
-                TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
-            }
-        };
-        requestPacket.WriteOpcode(FtpOpcode.WriteFile);
-        requestPacket.WriteSession(sessionId);
-        requestPacket.WriteOffset(offset);
-        requestPacket.WriteSize(size);
+        var requestPacket = CreateRequestPacket(FtpOpcode.WriteFile);
+        requestPacket.WriteSession(expectedSessionId);
+        requestPacket.WriteOffset(expectedOffset);
+        requestPacket.WriteSize(expectedSize);
         requestPacket.WriteData(data);
 
-        // Set up client to receive the server's response
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        FileTransferProtocolPacket? responsePacket = null;
+
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(packet =>
+            {
+                responsePacket = packet;
+            });
 
         // Act
-        await Link.Server.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-
-        // Wait for the client to receive the response
-        var response = await _tcs.Task.ConfigureAwait(false);
+        await Link.Server.Send(requestPacket);
+        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
-        Assert.NotNull(response);
+        Assert.NotNull(responsePacket);
+        requestedSessionId = responsePacket!.ReadSession();
+        requestedSkip = responsePacket!.ReadOffset();
+        requestedTake = responsePacket!.ReadSize();
+        Assert.Equal(expectedSessionId, requestedSessionId);
+        Assert.Equal(expectedOffset, requestedSkip);
+        Assert.Equal(expectedSize, requestedTake);
     }
 
     [Fact]
     public async Task BurstReadFile_Success()
     {
         // Arrange
-        const byte sessionId = 1;
-        const uint offset = 0U;
-        const byte size = 100;
-        var dataChunks = new byte[size];
+        const byte expectedSessionId = 1;
+        const uint expectedOffset = 0U;
+        const byte expectedSize = 100;
+
+        var dataChunks = new byte[expectedSize];
         new Random().NextBytes(dataChunks);
 
         var originStream = new MemoryStream(dataChunks);
@@ -674,104 +597,108 @@ public class FtpServerTest : ServerTestBase<FtpServer>
             }
 
             originStream.Position = request.Skip;
-
             var bytesToRead = (int)Math.Min(request.Take, originStream.Length - request.Skip);
             var readBytes = await originStream.ReadAsync(buffer[..bytesToRead], cancel).ConfigureAwait(false);
-
-            Log.WriteLine($"Server Buffer Content: {BitConverter.ToString(buffer[..readBytes].ToArray())}");
-
-            return new BurstReadResult((byte)readBytes, originStream.Position >= originStream.Length, request);
+            var eof = originStream.Position >= originStream.Length;
+            return new BurstReadResult((byte)readBytes, eof, request);
         };
 
-        var requestPacket = new FileTransferProtocolPacket
-        {
-            SystemId = Identity.SystemId,
-            ComponentId = Identity.ComponentId,
-            Sequence = 1,
-            Payload =
-            {
-                TargetSystem = Identity.SystemId,
-                TargetComponent = Identity.ComponentId,
-                TargetNetwork = 0,
-                Payload = new byte[200],
-            }
-        };
-        requestPacket.WriteOpcode(FtpOpcode.BurstReadFile);
-        requestPacket.WriteSession(sessionId);
-        requestPacket.WriteOffset(offset);
-        requestPacket.WriteSize(size);
+        var requestPacket = CreateRequestPacket(FtpOpcode.BurstReadFile);
+        requestPacket.WriteSession(expectedSessionId);
+        requestPacket.WriteOffset(expectedOffset);
+        requestPacket.WriteSize(expectedSize);
         requestPacket.WriteData(dataChunks);
 
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
-        {
-            Log.WriteLine($"Client received packet: {BitConverter.ToString(packet.Payload.Payload)}");
-            _tcs.TrySetResult(packet);
-        });
+        FileTransferProtocolPacket? responsePacket = null;
+
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(packet =>
+            {
+                responsePacket = packet;
+            });
 
         // Act
-        await Link.Server.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-        var response = await _tcs.Task.ConfigureAwait(false);
-        
+        await Link.Server.Send(requestPacket);
+        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
+
         // Assert
-        
+        Assert.NotNull(responsePacket);
+        Assert.Equal(FtpOpcode.BurstReadFile, responsePacket!.ReadOpcode());
+
         var mb = new ArrayBufferWriter<byte>();
-        response.ReadData(mb);
+        responsePacket!.ReadData(mb);
         var resultData = mb.WrittenMemory.ToArray();
-        
-        Assert.NotNull(response);
-        Assert.Equal(FtpOpcode.BurstReadFile, response.ReadOpcode());
         Assert.Equal(dataChunks, resultData);
+        
+        await originStream.DisposeAsync();
     }
 
     [Fact]
     public async Task CreateFile_Success()
     {
         // Arrange
-        const string path = "/path/to/new_file.txt";
-        const byte sessionId = 1;
+        const string expectedPath = "/path/to/new_file.txt";
+        const byte expectedSessionId = 1;
+        var requestedPath = string.Empty;
 
-        Server.CreateFile = async (requestedPath, _) =>
+        Server.CreateFile = async (path, _) =>
         {
-            Assert.Equal(path, requestedPath);
-            return await Task.FromResult(sessionId);
+            requestedPath = path;
+            return await Task.FromResult(expectedSessionId);
         };
 
-        var requestPacket = new FileTransferProtocolPacket
-        {
-            SystemId = Identity.SystemId,
-            ComponentId = Identity.ComponentId,
-            Sequence = 1,
-            Payload =
-            {
-                TargetSystem = Identity.SystemId,
-                TargetComponent = Identity.ComponentId,
-                TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
-            }
-        };
-        requestPacket.WriteOpcode(FtpOpcode.CreateFile);
-        requestPacket.WriteSession(0);
+        var requestPacket = CreateRequestPacket(FtpOpcode.CreateFile);
         requestPacket.WriteSize(0);
-        requestPacket.WriteDataAsString(path);
+        requestPacket.WriteDataAsString(expectedPath);
 
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet => { _tcs.TrySetResult(packet); });
+        FileTransferProtocolPacket? responsePacket = null;
+
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(packet =>
+            {
+                responsePacket = packet;
+            });
 
         // Act
-        await Link.Server.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-        var response = await _tcs.Task.ConfigureAwait(false);
+        await Link.Server.Send(requestPacket);
+        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
-        Assert.NotNull(response);
+        Assert.NotNull(responsePacket);
+        requestedPath = responsePacket!.ReadDataAsString();
+        Assert.Equal(expectedPath, requestedPath);
     }
 
     [Fact]
     public async Task FtpPacketSend_Cancel_Throws()
     {
         // Arrange
-        await _cts.CancelAsync();
+        using var cts = new System.Threading.CancellationTokenSource();
+        await cts.CancelAsync();
+
+        var requestPacket = CreateRequestPacket(FtpOpcode.CreateFile);
         var called = 0;
 
-        var requestPacket = new FileTransferProtocolPacket
+        using var subscription = Link.Client
+            .RxFilterByType<FileTransferProtocolPacket>()
+            .Take(1)
+            .Subscribe(_ => called++);
+
+        // Act + Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await Link.Server.Send(requestPacket, cts.Token);
+        });
+        Assert.Equal(0, called);
+    }
+
+    private FileTransferProtocolPacket CreateRequestPacket(FtpOpcode opcode)
+    {
+        var pkt = new FileTransferProtocolPacket
         {
             SystemId = Identity.SystemId,
             ComponentId = Identity.ComponentId,
@@ -784,17 +711,9 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 Payload = new byte[251],
             }
         };
-
-        Link.Client.RxFilterByType<FileTransferProtocolPacket>().Subscribe(packet =>
-        {
-            called++;
-        });
-
-        // Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
-        {
-            await Link.Server.Send(requestPacket, _cts.Token).ConfigureAwait(false);
-        });
-        Assert.Equal(0, called);
+        pkt.WriteOpcode(opcode);
+        pkt.WriteSession(0);
+        pkt.WriteSize(0);
+        return pkt;
     }
 }
