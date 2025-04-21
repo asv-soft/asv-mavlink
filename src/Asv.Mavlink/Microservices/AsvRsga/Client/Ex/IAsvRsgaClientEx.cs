@@ -15,4 +15,9 @@ public interface IAsvRsgaClientEx:IMavlinkMicroserviceClient
     IReadOnlyObservableList<AsvRsgaCustomMode> AvailableModes { get; }
     Task RefreshInfo(CancellationToken cancel = default);
     Task<MavResult> SetMode(AsvRsgaCustomMode mode, CancellationToken cancel = default);
+    
+    Task<MavResult> StartRecord(string name, CancellationToken cancel = default);
+    Task<MavResult> StopRecord(CancellationToken cancel = default);
+    
 }
+

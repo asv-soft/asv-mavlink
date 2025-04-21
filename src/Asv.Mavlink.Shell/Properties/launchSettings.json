@@ -2,7 +2,7 @@
   "profiles": {
     "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "code-gen-example -v"
+      "commandLineArgs": "litedb-test"
     }
   }
 }

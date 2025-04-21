@@ -8,6 +8,7 @@ using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRsga;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using R3;
 
 
 namespace Asv.Mavlink;
@@ -34,6 +35,16 @@ public static class RsgaHelper
     
     #region StartRecord
 
+    public static Observable<bool> IsRecording(this IAsvRsgaClientEx src)
+    {
+        return src.CurrentSubMode.Select(x => x.HasFlag(AsvRsgaCustomSubMode.AsvRsgaCustomSubModeRecord));
+    }
+    
+    public static Observable<bool> IsMissionExecuting(this IAsvRsgaClientEx src)
+    {
+        return src.CurrentSubMode.Select(x => x.HasFlag(AsvRsgaCustomSubMode.AsvRsgaCustomSubModeMission));
+    }
+    
     public static void SetArgsForStartRecord(MissionItemIntPayload payload, string recordName)
     {
         CheckRecordName(recordName);

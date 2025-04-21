@@ -83,6 +83,18 @@ public class AsvRsgaClientEx : MavlinkMicroserviceClient, IAsvRsgaClientEx
         return result.Result;
     }
 
+    public async Task<MavResult> StartRecord(string name, CancellationToken cancel = default)
+    {
+        using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
+        var result = await _commandClient.CommandLong(item => RsgaHelper.SetArgsForStartRecord(item, name),cs.Token).ConfigureAwait(false);
+        return result.Result;
+    }
+
+    public Task<MavResult> StopRecord(CancellationToken cancel = default)
+    {
+        throw new NotImplementedException();
+    }
+
     protected override void Dispose(bool disposing)
     {
         if (disposing)
