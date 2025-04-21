@@ -43,25 +43,24 @@ namespace Asv.Mavlink.Shell
             ShellCommandsHelper.CreateDeviceExplorer(connectionString, out var deviceExplorer);
             var cancellationTokenSource = new CancellationTokenSource();
             var token = cancellationTokenSource.Token;
-            var devices = deviceExplorer.Devices.ToImmutableDictionary();
             
-            while (!deviceExplorer.Devices.Any())
-            {
-                if (devices.Count == 0)
-                {
-                    AnsiConsole.Clear();
-                    AnsiConsole.MarkupLine("Waiting for connections...");
-                    await DelayWithCancellation(refreshRate, token);
-                }
-                else
-                {
-                    AnsiConsole.Clear();
-                    break;
-                }
-            }
-
             _list = deviceExplorer.Devices.CreateView(x => new MavlinkDeviceModel(x.Value, TimeProvider.System));
             var table = CreateDeviceInfoTable();
+            
+            // while (!deviceExplorer.Devices.Any())
+            // {
+            //     if (devices.Count == 0)
+            //     {
+            //         AnsiConsole.Clear();
+            //         AnsiConsole.MarkupLine("Waiting for connections...");
+            //         await DelayWithCancellation(refreshRate, token);
+            //     }
+            //     else
+            //     {
+            //         AnsiConsole.Clear();
+            //         break;
+            //     }
+            // }
 
             try
             {
@@ -71,10 +70,19 @@ namespace Asv.Mavlink.Shell
                     .Cropping(VerticalOverflowCropping.Top)
                     .StartAsync(async ctx =>
                     {
-                        uint localIterations = iterations ?? 0;
+                        var localIterations = (int?) iterations ?? 0;
 
                         while (localIterations > 0 || runForever)
                         {
+                            if (_list.Count == 0)
+                            {
+                                AnsiConsole.Clear();
+                                AnsiConsole.MarkupLine("Waiting for connections...");
+                                await Task.Delay(TimeSpan.FromMilliseconds(refreshRate), token);
+                                ctx.Refresh();
+                                return;
+                            }
+                            
                             if (iterations.HasValue) localIterations--;
                             AnsiConsole.Clear();
                             table.Rows.Clear();
@@ -97,23 +105,11 @@ namespace Asv.Mavlink.Shell
             {
                 if (!_isDisposed)
                 {
-                    _list?.Dispose();
+                    _list.Dispose();
                     await deviceExplorer.DisposeAsync();
                     await _router.DisposeAsync();
                     _isDisposed = true;
                 }
-            }
-        }
-
-        private async Task DelayWithCancellation(uint refreshRate, CancellationToken token)
-        {
-            try
-            {
-                await Task.Delay(TimeSpan.FromMilliseconds(refreshRate), token);
-            }
-            catch (TaskCanceledException)
-            {  
-                return; 
             }
         }
 
@@ -133,24 +129,27 @@ namespace Asv.Mavlink.Shell
             return table;
         }
 
-        private void RenderRows(Table table, ISynchronizedView<KeyValuePair<DeviceId, IClientDevice>, MavlinkDeviceModel> devices)
+        private void RenderRows(
+            Table table, 
+            ISynchronizedView<KeyValuePair<DeviceId, IClientDevice>, MavlinkDeviceModel> devices
+        )
         {
-            foreach (var device in devices.Unfiltered)
+            foreach (var device in devices)
             {
-                if (!device.View.IsInitialized.CurrentValue)
+                if (!device.IsInitialized.CurrentValue)
                 {
                     return;
                 }
                 
                 table.AddRow(
-                    Markup.Escape($"{device.View.DeviceFullId}"),
-                    Markup.Escape($"{device.View.Type}"),
-                    Markup.Escape($"{device.View.SystemId}"),
-                    Markup.Escape($"{device.View.ComponentId}"),
-                    Markup.Escape($"{device.View.MavlinkVersion}"),
-                    Markup.Escape($"{device.View.BaseModeText}"),
-                    Markup.Escape($"{device.View.SystemStatusText}"),
-                    Markup.Escape($"{device.View.RateText}")
+                    Markup.Escape($"{device.DeviceFullId}"),
+                    Markup.Escape($"{device.Type}"),
+                    Markup.Escape($"{device.SystemId}"),
+                    Markup.Escape($"{device.ComponentId}"),
+                    Markup.Escape($"{device.MavlinkVersion}"),
+                    Markup.Escape($"{device.BaseModeText}"),
+                    Markup.Escape($"{device.SystemStatusText}"),
+                    Markup.Escape($"{device.RateText}")
                 );
             }
         }
@@ -162,18 +161,20 @@ namespace Asv.Mavlink.Shell
             private long _lastUpdate;
             private uint _lastRate;
 
-            public MavlinkDeviceModel(IClientDevice info, TimeProvider timeProvider)
+            public MavlinkDeviceModel(IClientDevice device, TimeProvider timeProvider)
             {
                 IsInitialized = new ReactiveProperty<bool>(false);
 
-                info.State.Subscribe(x =>
-                {
-                    if (x != ClientDeviceState.Complete || IsInitialized.CurrentValue)
-                    {
-                        return;
-                    }
+                device.State.Where(x => x == ClientDeviceState.Complete)
+                    .Take(1)
+                    .Subscribe(x => AfterDeviceInitialized(device, timeProvider));
+            }
+            
+            protected virtual void AfterDeviceInitialized(IClientDevice device, TimeProvider timeProvider)
+            {
+                var heartbeatClient = device.GetMicroservice<IHeartbeatClient>();
 
-                    if (info.Microservices.FirstOrDefault(x => x is IHeartbeatClient) is not IHeartbeatClient heartbeatClient)
+                    if (heartbeatClient is null)
                     {
                         return;
                     }
@@ -181,10 +182,10 @@ namespace Asv.Mavlink.Shell
                     IsInitialized.OnNext(true);
 
                     DeviceFullId = heartbeatClient.Identity.Target;
-                    Type = info.Id.DeviceClass;
-                    SystemId = heartbeatClient?.Identity.Target.SystemId ?? 0;
-                    ComponentId = heartbeatClient?.Identity.Target.ComponentId ?? 0;
-                    MavlinkVersion = heartbeatClient?.RawHeartbeat?.CurrentValue?.MavlinkVersion ?? 0;
+                    Type = device.Id.DeviceClass;
+                    SystemId = heartbeatClient.Identity.Target.SystemId;
+                    ComponentId = heartbeatClient.Identity.Target.ComponentId;
+                    MavlinkVersion = heartbeatClient.RawHeartbeat.CurrentValue?.MavlinkVersion ?? 0;
 
                     RateText = "0.0 Hz";
 
@@ -209,7 +210,6 @@ namespace Asv.Mavlink.Shell
                         BaseModeText = $"{p.BaseMode.ToString("F").Replace("MavModeFlag", "")}");
                     heartbeatClient?.RawHeartbeat?.WhereNotNull().Subscribe(p =>
                         SystemStatusText = p.SystemStatus.ToString("G").Replace("MavState", ""));
-                });
             }
 
             public MavlinkIdentity DeviceFullId { get; private set; }
