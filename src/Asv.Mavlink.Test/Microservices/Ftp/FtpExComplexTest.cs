@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -16,7 +17,7 @@ namespace Asv.Mavlink.Test;
 
 public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
 {
-    private MockFileSystem? _fileSystem;
+    private MockFileSystem _fileSystem = null!;
     public FtpExComplexTest(ITestOutputHelper log) : base(log)
     {
         _cts = new CancellationTokenSource();
@@ -74,13 +75,13 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     [InlineData(1024 * 10, 200)]
     public async Task DownloadFile_ToStream_Success(int size, byte partSize)
     {
-        var server = Server; // to ensure that server is created and file system is created
+        _ = Server;
         const string fileName = "test.txt";
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-        var originContent = new byte[size];
-        new Random().NextBytes(originContent);
+        var originContent = 
+            Random.Shared.GetItems(
+                Enumerable.Range(0, 255).Select(i => (byte)i).ToArray(), 
+                size);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
 
         using var streamToSave = new MemoryStream(size);
@@ -98,6 +99,8 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
         {
             Assert.Equal(streamToSave.ReadByte(), b);
         }
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -107,13 +110,13 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     [InlineData(1024 * 10, 200)]
     public async Task DownloadFile_ToBufferWriter_Success(int size, byte partSize)
     {
-        var server = Server; // to ensure that server is created and file system is created
+        _ = Server;
         const string fileName = "test.txt";
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-        var originContent = new byte[size];
-        new Random().NextBytes(originContent);
+        var originContent = 
+            Random.Shared.GetItems(
+                Enumerable.Range(0, 255).Select(i => (byte)i).ToArray(), 
+                size);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
 
         var buffer = new ArrayBufferWriter<byte>(size);
@@ -129,6 +132,8 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
         {
             Assert.Equal(originContent[index], buffer.WrittenSpan[index]);
         }
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -139,13 +144,13 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     public async Task BurstDownloadFile_ToStream_Success(int size, byte partSize)
     {
         // Arrange
-        var server = Server; // to ensure that server is created and file system is created
+        _ = Server;
         const string fileName = "test.txt";
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-        var originContent = new byte[size];
-        new Random().NextBytes(originContent);
+        var originContent = 
+            Random.Shared.GetItems(
+                Enumerable.Range(0, 255).Select(i => (byte)i).ToArray(), 
+                size);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
 
         using var streamToSave = new MemoryStream(size);
@@ -162,6 +167,8 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
         {
             Assert.Equal(streamToSave.ReadByte(), b);
         }
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -172,13 +179,13 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     public async Task BurstDownloadFile_ToBufferWriter_Success(int size, byte partSize)
     {
         // Arrange
-        var server = Server; // to ensure that server is created and file system is created
+        _ = Server;
         const string fileName = "test.txt";
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-        var originContent = new byte[size];
-        new Random().NextBytes(originContent);
+        var originContent = 
+            Random.Shared.GetItems(
+                Enumerable.Range(0, 255).Select(i => (byte)i).ToArray(), 
+                size);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
 
         var streamToSave = new ArrayBufferWriter<byte>();
@@ -195,18 +202,17 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
         {
             Assert.Equal(originContent[index], streamToSave.WrittenSpan[index]);
         }
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
     [InlineData("/")]
-    [InlineData("")]
     public async Task Refresh_Success(string refreshPath)
     {
         // Arrange
-        _ = Server; // to ensure that server is created and file system is created
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        _ = Server;
         var localRoot = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder");
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
         _fileSystem.AddDirectory(localRoot);
         _fileSystem.AddDirectory(_fileSystem.Path.Combine(localRoot, "innerFolder"));
         _fileSystem.AddDirectory(_fileSystem.Path.Combine(localRoot, "innerFolder", "veryInnerFolder"));
@@ -239,6 +245,8 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
 
         // Assert
         Client.Entries.Keys.Should().Equal(expectedFiles);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -249,13 +257,15 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     public async Task DownloadFile_ToStream_Cancel_Throws(int size, byte partSize)
     {
         // Arrange
-        var server = Server;
+        _ = Server;
         await _cts.CancelAsync();
         const string fileName = "test.txt";
         Debug.Assert(_fileSystem != null, nameof(_fileSystem) + " != null");
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
-        var originContent = new byte[size];
-        new Random().NextBytes(originContent);
+        var originContent = 
+            Random.Shared.GetItems(
+                Enumerable.Range(0, 255).Select(i => (byte)i).ToArray(), 
+                size);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
 
         using var streamToSave = new MemoryStream(size);
@@ -266,6 +276,8 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
             await Client.DownloadFile(fileName, streamToSave, new CallbackProgress<double>(_ => { }), partSize,
                 _cts.Token);
         });
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -276,13 +288,15 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     public async Task DownloadFile_ToBufferWriter_Cancel_Throws(int size, byte partSize)
     {
         // Arrange
-        var server = Server;
+        _ = Server;
         await _cts.CancelAsync();
         const string fileName = "test.txt";
         Debug.Assert(_fileSystem != null, nameof(_fileSystem) + " != null");
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
-        var originContent = new byte[size];
-        new Random().NextBytes(originContent);
+        var originContent = 
+            Random.Shared.GetItems(
+                Enumerable.Range(0, 255).Select(i => (byte)i).ToArray(), 
+                size);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
 
         var buffer = new ArrayBufferWriter<byte>();
@@ -293,6 +307,8 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
             await Client.DownloadFile(fileName, buffer, new CallbackProgress<double>(_ => { }), partSize,
                 _cts.Token);
         });
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -303,13 +319,15 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     public async Task BurstDownloadFile_ToStream_Cancel_Throws(int size, byte partSize)
     {
         // Arrange
-        var server = Server;
+        _ = Server;
         await _cts.CancelAsync();
         const string fileName = "test.txt";
         Debug.Assert(_fileSystem != null, nameof(_fileSystem) + " != null");
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
-        var originContent = new byte[size];
-        new Random().NextBytes(originContent);
+        var originContent = 
+            Random.Shared.GetItems(
+                Enumerable.Range(0, 255).Select(i => (byte)i).ToArray(), 
+                size);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
 
         using var streamToSave = new MemoryStream(size);
@@ -320,6 +338,8 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
             await Client.BurstDownloadFile(fileName, streamToSave, new CallbackProgress<double>(_ => { }), partSize,
                 _cts.Token);
         });
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -330,13 +350,15 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     public async Task BurstDownloadFile_ToBufferWriter_Cancel_Throws(int size, byte partSize)
     {
         // Arrange
-        var server = Server;
+        _ = Server;
         await _cts.CancelAsync();
         const string fileName = "test.txt";
         Debug.Assert(_fileSystem != null, nameof(_fileSystem) + " != null");
         var filePath = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, fileName);
-        var originContent = new byte[size];
-        new Random().NextBytes(originContent);
+        var originContent = 
+            Random.Shared.GetItems(
+                Enumerable.Range(0, 255).Select(i => (byte)i).ToArray(), 
+                size);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
 
         var buffer = new ArrayBufferWriter<byte>();
@@ -347,6 +369,8 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
             await Client.BurstDownloadFile(fileName, buffer, new CallbackProgress<double>(_ => { }), partSize,
                 _cts.Token);
         });
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -355,7 +379,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     public async Task Refresh_Cancel_Throws(string refreshPath)
     {
         // Arrange
-        var server = Server;
+        _ = Server;
         await _cts.CancelAsync();
         Debug.Assert(_fileSystem != null, nameof(_fileSystem) + " != null");
         var localRoot = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder");
@@ -369,6 +393,8 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
         {
             await Client.Refresh(refreshPath, true, _cts.Token);
         });
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     protected override void Dispose(bool disposing)

@@ -79,6 +79,8 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         Assert.NotNull(response);
         Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
         Assert.Equal(FtpOpcode.ResetSessions, response.ReadOriginOpCode());
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -103,6 +105,8 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
         Assert.Equal(FtpOpcode.RemoveDirectory, response.ReadOriginOpCode());
         _fileSystem.AllDirectories.Should().NotContain(localDirPath);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -124,6 +128,8 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
         Assert.Equal(FtpOpcode.RemoveFile, response.ReadOriginOpCode());
         _fileSystem.AllFiles.Should().NotContain(localFilePath);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -149,6 +155,8 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         Assert.Equal(FtpOpcode.TruncateFile, response.ReadOriginOpCode());
         _fileSystem.AllFiles.Should().Contain(localFilePath);
         _fileSystem.FileInfo.New(localFilePath).Length.Should().Be(offset);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -168,6 +176,8 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         // Assert
         _fileSystem.AllFiles.Should().Contain(localFilePath);
         Assert.Equal(expectedCrc, crc32);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -190,6 +200,8 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
         Assert.Equal(FtpOpcode.CreateDirectory, response.ReadOriginOpCode());
         _fileSystem.AllDirectories.Should().Contain(localDirPath);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -216,6 +228,9 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         
         _fileSystem.AllFiles.Should().Contain(localFileNewPath);
         _fileSystem.AllFiles.Should().NotContain(localFileOldPath);
+        
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -244,7 +259,10 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         // Assert
         Assert.NotNull(response);
         Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
+        Assert.Equal(FtpOpcode.ListDirectory, response.ReadOriginOpCode());
         Assert.Equal(expectedListingResult, actualListing);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -265,6 +283,8 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         // Assert
         _fileSystem.AllFiles.Should().Contain(localFilePath);
         handle.Size.Should().Be(fileSize);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -285,6 +305,8 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         // Assert
         _fileSystem.AllFiles.Should().Contain(localFilePath);
         handle.Size.Should().Be(fileSize);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Fact]
@@ -303,6 +325,8 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         {
             await Client.TerminateSession(session, _cts.Token);
         });
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -323,6 +347,8 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
         Assert.Equal(FtpOpcode.CreateFile, response.ReadOriginOpCode());
         _fileSystem.AllFiles.Should().Contain(localFilePath);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -357,6 +383,9 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         var receivedData = response.Payload.Payload.AsSpan(12, response.ReadSize()).ToArray();
         var expectedData = data.Take(new Range(readSkip, readTake));
         receivedData.Should().BeEquivalentTo(expectedData);
+        
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -395,6 +424,9 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         
         lenght.Should().Be(writeTake);
         receivedData.Should().BeEquivalentTo(expectedData);
+        
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 
     [Theory]
@@ -446,5 +478,8 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         // Assert
         receivedChunks.Should().BeEquivalentTo(expectedChunks);
         receivedData.Should().BeEquivalentTo(receivedData);
+        
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
 }
