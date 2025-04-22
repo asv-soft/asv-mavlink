@@ -14,8 +14,6 @@ using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
-[TestSubject(typeof(FtpServerEx))]
-[TestSubject(typeof(FtpClientEx))]
 public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
 {
     private MockFileSystem? _fileSystem;
@@ -26,9 +24,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     }
     private readonly TaskCompletionSource<FileTransferProtocolPacket> _tcs = new();
     private readonly CancellationTokenSource _cts;
-
     
-
     private readonly MavlinkFtpServerConfig _serverConfig = new()
     {
         BurstReadChunkDelayMs = 0,
@@ -47,15 +43,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     {
         RootDirectory = AppDomain.CurrentDomain.BaseDirectory
     };
-
-    private readonly MavlinkFtpServerConfig _serverFtpConfig = new()
-    {
-        NetworkId = 0,
-        BurstReadChunkDelayMs = 100,
-    };
-
     
-
     protected override FtpServerEx CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
         _fileSystem = SetUpFileSystem(_serverExConfig.RootDirectory);
@@ -65,6 +53,18 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     protected override FtpClientEx CreateClient(MavlinkClientIdentity identity, IMavlinkContext core)
     {
         return new FtpClientEx(new FtpClient(identity, _clientConfig, core));
+    }
+    
+    private static MockFileSystem SetUpFileSystem(string root)
+    {
+        var mockFileCfg = new MockFileSystemOptions
+        {
+            CurrentDirectory = root
+        };
+        var fileSystem = new MockFileSystem(mockFileCfg);
+        fileSystem.AddDirectory(mockFileCfg.CurrentDirectory);
+
+        return fileSystem;
     }
 
     [Theory]
@@ -239,18 +239,6 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
 
         // Assert
         Client.Entries.Keys.Should().Equal(expectedFiles);
-    }
-
-    private static MockFileSystem SetUpFileSystem(string root)
-    {
-        var mockFileCfg = new MockFileSystemOptions
-        {
-            CurrentDirectory = root
-        };
-        var fileSystem = new MockFileSystem(mockFileCfg);
-        fileSystem.AddDirectory(mockFileCfg.CurrentDirectory);
-
-        return fileSystem;
     }
 
     [Theory]

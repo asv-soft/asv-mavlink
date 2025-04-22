@@ -97,6 +97,49 @@ public static class MavlinkFtpHelper
             }
         }
     }
+    
+    /// <summary>
+    /// Returns canonical absolute path guaranteed to stay inside <paramref name="root"/>.
+    /// Throws <see cref="ArgumentException"/> when the result points outside the root.
+    /// </summary>
+    /// <param name="fs">IFileSystem abstraction (allows easy mocking in unit tests).</param>
+    /// <param name="root">Root (jail) directory.</param>
+    /// <param name="relative">User‑supplied path. May start with '/'.</param>
+    /// <returns>Full, normalized path under <paramref name="root"/>.</returns>
+    public static string MakeFullPath(this IFileSystem fs, string relative, string root)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+        ArgumentException.ThrowIfNullOrWhiteSpace(relative);
+
+        // 1. Normalize root once
+        var rootFull = fs.Path.GetFullPath(root).TrimEnd(
+            fs.Path.DirectorySeparatorChar,
+            fs.Path.AltDirectorySeparatorChar);
+
+        // 2. Remove leading separators to make it relative
+        var rel = relative.TrimStart(
+            fs.Path.DirectorySeparatorChar,
+            fs.Path.AltDirectorySeparatorChar);
+
+        // 3. Combine + canonicalize
+        var combined = fs.Path.Combine(rootFull, rel);
+        var full     = fs.Path.GetFullPath(combined);
+
+        // 4. Jail check
+        if (!full.StartsWith(rootFull, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException(
+                new StringBuilder().Append("Path '")
+                    .Append(relative)
+                    .Append("' escapes root directory '")
+                    .Append(root)
+                    .Append("'.")
+                    .ToString(), nameof(relative));
+        }
+
+        return full;
+    }
 
     public static Encoding FtpEncoding { get; } = Encoding.ASCII;
 

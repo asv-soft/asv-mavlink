@@ -63,7 +63,7 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
             throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.None);
         }
 
-        var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
+        var fullPath = _fileSystem.MakeFullPath(path, _rootDirectory);
         if (!_fileSystem.File.Exists(fullPath))
         {
             throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.FileNotFound);
@@ -87,7 +87,7 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
             throw new FtpNackException(FtpOpcode.OpenFileWO, NackError.None);
         }
 
-        var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
+        var fullPath = _fileSystem.MakeFullPath(path, _rootDirectory);
         if (!fullPath.Contains(_rootDirectory))
         {
             fullPath = _rootDirectory;
@@ -148,7 +148,7 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
             throw new FtpNackException(FtpOpcode.Rename, NackError.None);
         }
 
-        var fullPath1 = _fileSystem.Path.Combine(_rootDirectory, path1);
+        var fullPath1 = _fileSystem.MakeFullPath(path1, _rootDirectory);
         if (!fullPath1.Contains(_rootDirectory))
         {
             fullPath1 = _rootDirectory;
@@ -160,7 +160,7 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
             throw new FtpNackException(FtpOpcode.Rename, NackError.FileNotFound);
         }
 
-        var fullPath2 = _fileSystem.Path.Combine(_rootDirectory, path2);
+        var fullPath2 = _fileSystem.MakeFullPath(path2, _rootDirectory);
         if (!fullPath2.Contains(_rootDirectory))
         {
             fullPath2 = _rootDirectory;
@@ -235,7 +235,7 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
             throw new FtpNackException(FtpOpcode.ListDirectory, NackError.None);
         }
 
-        var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
+        var fullPath = _fileSystem.MakeFullPath(path, _rootDirectory);
         if (!fullPath.Contains(_rootDirectory))
         {
             fullPath = _rootDirectory;
@@ -283,13 +283,8 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
         }
 
         var sb = new StringBuilder(0, MavlinkFtpHelper.MaxDataSize);
-        foreach (var str in result)
+        foreach (var str in result.TakeWhile(str => sb.Length + str.Length <= sb.MaxCapacity))
         {
-            if (sb.Length + str.Length > sb.MaxCapacity)
-            {
-                break;
-            }
-
             sb.Append(str);
         }
 
@@ -312,7 +307,7 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
             throw new FtpNackException(FtpOpcode.CreateDirectory, NackError.None);
         }
 
-        var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
+        var fullPath = _fileSystem.MakeFullPath(path, _rootDirectory);
         if (!fullPath.Contains(_rootDirectory))
         {
             fullPath = _rootDirectory;
@@ -337,7 +332,7 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
             throw new FtpNackException(FtpOpcode.CreateFile, NackError.None);
         }
 
-        var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
+        var fullPath = _fileSystem.MakeFullPath(path, _rootDirectory);
         if (!fullPath.Contains(_rootDirectory))
         {
             fullPath = _rootDirectory;
@@ -367,7 +362,7 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
             throw new FtpNackException(FtpOpcode.RemoveFile, NackError.None);
         }
 
-        var filePath = _fileSystem.Path.Combine(_rootDirectory, path);
+        var filePath = _fileSystem.MakeFullPath(path, _rootDirectory);
         if (!filePath.Contains(_rootDirectory))
         {
             filePath = _rootDirectory;
@@ -391,7 +386,7 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
             throw new FtpNackException(FtpOpcode.RemoveDirectory, NackError.None);
         }
 
-        var fullPath = _fileSystem.Path.Combine(_rootDirectory, path);
+        var fullPath = _fileSystem.MakeFullPath(path, _rootDirectory);
         if (!fullPath.Contains(_rootDirectory))
         {
             fullPath = _rootDirectory;
@@ -422,7 +417,7 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
             throw new FtpNackException(FtpOpcode.CalcFileCRC32, NackError.None);
         }
 
-        var filePath = _fileSystem.Path.Combine(_rootDirectory, path);
+        var filePath = _fileSystem.MakeFullPath(path, _rootDirectory);
         if (!filePath.Contains(_rootDirectory))
         {
             filePath = _rootDirectory;
@@ -455,7 +450,7 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
             throw new FtpNackException(FtpOpcode.TruncateFile, NackError.None);
         }
 
-        var filePath = _fileSystem.Path.Combine(_rootDirectory, request.Path);
+        var filePath = _fileSystem.MakeFullPath(request.Path, _rootDirectory);
         if (!_fileSystem.File.Exists(filePath))
         {
             _logger.ZLogError($"File {filePath} is not exist in file system");
