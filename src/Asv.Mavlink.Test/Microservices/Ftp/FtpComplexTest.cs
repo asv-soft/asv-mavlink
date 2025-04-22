@@ -336,8 +336,10 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         _ = Server;
         
         const string path = "/some_file.txt";
-        var data = new byte[size];
-        new Random().NextBytes(data);
+        var data = 
+            Random.Shared.GetItems(
+            Enumerable.Range(0, 255).Select(i => (byte)i).ToArray(), 
+                size);
         var fullPath = _fileSystem.MakeFullPath(path, _serverExConfig.RootDirectory);
         _fileSystem.AddFile(fullPath, new MockFileData(data));
         
@@ -368,8 +370,10 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         _ = Server;
         
         const string path = "/some_file.txt";
-        var data = new byte[writeTake];
-        new Random().NextBytes(data);
+        var data = 
+            Random.Shared.GetItems(
+                Enumerable.Range(0, 255).Select(i => (byte)i).ToArray(), 
+                writeTake);
         var fullPath = _fileSystem.MakeFullPath(path, _serverExConfig.RootDirectory);
         _fileSystem.AddFile(fullPath, new MockFileData(data));
         
@@ -403,8 +407,10 @@ public class FtpComplexTest : ComplexTestBase<FtpClient, FtpServerEx>
         _ = Server;
         
         const string path = "/some_file.txt";
-        var data = new byte[size];
-        new Random().NextBytes(data);
+        var data = 
+            Random.Shared.GetItems(
+                Enumerable.Range(0, 255).Select(i => (byte)i).ToArray(), 
+                size);
 
         var expectedChunks = new List<byte[]>();
         for (var i = readSkip; i < size; i += readTake)
