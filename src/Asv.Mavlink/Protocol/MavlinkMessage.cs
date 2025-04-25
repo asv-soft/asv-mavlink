@@ -6,6 +6,9 @@ namespace Asv.Mavlink;
 public abstract class MavlinkMessage : IProtocolMessage<int>
 {
     private ProtocolTags _tags = [];
+    
+    public abstract MavlinkFieldInfo[] Fields { get; }
+    //public abstract string GetFormatString();
 
     public abstract void Deserialize(ref ReadOnlySpan<byte> buffer);
 
