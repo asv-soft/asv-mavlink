@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2025 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+323463838958bbc455efbb799160b09e17080d75
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
 
 using System;
 using System.Text;
@@ -162,43 +162,45 @@ namespace Asv.Mavlink.AsvAudio
 
         public override string Name => "ASV_AUDIO_ONLINE";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("codec",
-"Audio codec used by this device.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Audio codec used by this device.",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint16, 
             0, 
-false),
+            false),
             new("mode",
-"Device current work mode.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Device current work mode.",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
             new("name",
-"Audio device name in voice chat.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Audio device name in voice chat.",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Char, 
             16, 
-false),
+            false),
         ];
         public const string FormatMessage = "ASV_AUDIO_ONLINE:"
         + "uint16_t codec;"
         + "uint8_t mode;"
         + "char[16] name;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
@@ -304,73 +306,73 @@ false),
 
         public override string Name => "ASV_AUDIO_STREAM";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "System ID.",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
             new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Component ID.",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
             new("frame_seq",
-"Frame sequence number.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Frame sequence number.",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
             new("pkt_in_frame",
-"Number of packets for one encoded audio frame.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Number of packets for one encoded audio frame.",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
             new("pkt_seq",
-"Packet sequence number (starting with 0 on every encoded frame).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Packet sequence number (starting with 0 on every encoded frame).",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
             new("data_size",
-"Size of data array.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Size of data array.",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
             new("data",
-"Audio data.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Audio data.",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             230, 
-false),
+            false),
         ];
         public const string FormatMessage = "ASV_AUDIO_STREAM:"
         + "uint8_t target_system;"
@@ -381,6 +383,8 @@ false),
         + "uint8_t data_size;"
         + "uint8_t[230] data;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>

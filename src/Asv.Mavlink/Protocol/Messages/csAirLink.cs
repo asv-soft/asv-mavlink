@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2025 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
 
 using System;
 using System.Text;
@@ -88,33 +88,35 @@ namespace Asv.Mavlink.Csairlink
 
         public override string Name => "AIRLINK_AUTH";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("login",
-"Login",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Login",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Char, 
             50, 
-false),
+            false),
             new("password",
-"Password",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Password",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Char, 
             50, 
-false),
+            false),
         ];
         public const string FormatMessage = "AIRLINK_AUTH:"
         + "char[50] login;"
         + "char[50] password;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
@@ -232,23 +234,25 @@ false),
 
         public override string Name => "AIRLINK_AUTH_RESPONSE";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("resp_type",
-"Response type",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Response type",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
         ];
         public const string FormatMessage = "AIRLINK_AUTH_RESPONSE:"
         + "uint8_t resp_type;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>

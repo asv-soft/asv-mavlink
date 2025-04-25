@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2025 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
 
 using System;
 using System.Text;
@@ -150,73 +150,73 @@ namespace Asv.Mavlink.Ualberta
 
         public override string Name => "NAV_FILTER_BIAS";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("usec",
-"Timestamp (microseconds)",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Timestamp (microseconds)",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint64, 
             0, 
-false),
+            false),
             new("accel_0",
-"b_f[0]",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "b_f[0]",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Float32, 
             0, 
-false),
+            false),
             new("accel_1",
-"b_f[1]",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "b_f[1]",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Float32, 
             0, 
-false),
+            false),
             new("accel_2",
-"b_f[2]",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "b_f[2]",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Float32, 
             0, 
-false),
+            false),
             new("gyro_0",
-"b_f[0]",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "b_f[0]",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Float32, 
             0, 
-false),
+            false),
             new("gyro_1",
-"b_f[1]",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "b_f[1]",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Float32, 
             0, 
-false),
+            false),
             new("gyro_2",
-"b_f[2]",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "b_f[2]",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Float32, 
             0, 
-false),
+            false),
         ];
         public const string FormatMessage = "NAV_FILTER_BIAS:"
         + "uint64_t usec;"
@@ -227,6 +227,8 @@ false),
         + "float gyro_1;"
         + "float gyro_2;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
@@ -339,64 +341,64 @@ false),
 
         public override string Name => "RADIO_CALIBRATION";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("aileron",
-"Aileron setpoints: left, center, right",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Aileron setpoints: left, center, right",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint16, 
             3, 
-false),
+            false),
             new("elevator",
-"Elevator setpoints: nose down, center, nose up",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Elevator setpoints: nose down, center, nose up",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint16, 
             3, 
-false),
+            false),
             new("rudder",
-"Rudder setpoints: nose left, center, nose right",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Rudder setpoints: nose left, center, nose right",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint16, 
             3, 
-false),
+            false),
             new("gyro",
-"Tail gyro mode/gain setpoints: heading hold, rate mode",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Tail gyro mode/gain setpoints: heading hold, rate mode",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint16, 
             2, 
-false),
+            false),
             new("pitch",
-"Pitch curve setpoints (every 25%)",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Pitch curve setpoints (every 25%)",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint16, 
             5, 
-false),
+            false),
             new("throttle",
-"Throttle curve setpoints (every 25%)",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Throttle curve setpoints (every 25%)",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint16, 
             5, 
-false),
+            false),
         ];
         public const string FormatMessage = "RADIO_CALIBRATION:"
         + "uint16_t[3] aileron;"
@@ -406,6 +408,8 @@ false),
         + "uint16_t[5] pitch;"
         + "uint16_t[5] throttle;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
@@ -563,43 +567,45 @@ false),
 
         public override string Name => "UALBERTA_SYS_STATUS";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("mode",
-"System mode, see UALBERTA_AUTOPILOT_MODE ENUM",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "System mode, see UALBERTA_AUTOPILOT_MODE ENUM",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
             new("nav_mode",
-"Navigation mode, see UALBERTA_NAV_MODE ENUM",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Navigation mode, see UALBERTA_NAV_MODE ENUM",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
             new("pilot",
-"Pilot mode, see UALBERTA_PILOT_MODE",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Pilot mode, see UALBERTA_PILOT_MODE",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
         ];
         public const string FormatMessage = "UALBERTA_SYS_STATUS:"
         + "uint8_t mode;"
         + "uint8_t nav_mode;"
         + "uint8_t pilot;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>

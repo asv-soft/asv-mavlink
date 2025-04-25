@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2025 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
 
 using System;
 using System.Text;
@@ -74,23 +74,25 @@ namespace Asv.Mavlink.Cubepilot
 
         public override string Name => "CUBEPILOT_RAW_RC";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("rc_raw",
-"",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             32, 
-false),
+            false),
         ];
         public const string FormatMessage = "CUBEPILOT_RAW_RC:"
         + "uint8_t[32] rc_raw;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
@@ -168,82 +170,82 @@ false),
 
         public override string Name => "HERELINK_VIDEO_STREAM_INFORMATION";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("framerate",
-"Frame rate.",
-string.Empty, 
-@"Hz", 
-string.Empty, 
-string.Empty, 
+            "Frame rate.",
+            string.Empty, 
+            @"Hz", 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Float32, 
             0, 
-false),
+            false),
             new("bitrate",
-"Bit rate.",
-string.Empty, 
-@"bits/s", 
-string.Empty, 
-string.Empty, 
+            "Bit rate.",
+            string.Empty, 
+            @"bits/s", 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint32, 
             0, 
-false),
+            false),
             new("resolution_h",
-"Horizontal resolution.",
-string.Empty, 
-@"pix", 
-string.Empty, 
-string.Empty, 
+            "Horizontal resolution.",
+            string.Empty, 
+            @"pix", 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint16, 
             0, 
-false),
+            false),
             new("resolution_v",
-"Vertical resolution.",
-string.Empty, 
-@"pix", 
-string.Empty, 
-string.Empty, 
+            "Vertical resolution.",
+            string.Empty, 
+            @"pix", 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint16, 
             0, 
-false),
+            false),
             new("rotation",
-"Video image rotation clockwise.",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
+            "Video image rotation clockwise.",
+            string.Empty, 
+            @"deg", 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint16, 
             0, 
-false),
+            false),
             new("camera_id",
-"Video Stream ID (1 for first, 2 for second, etc.)",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Video Stream ID (1 for first, 2 for second, etc.)",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
             new("status",
-"Number of streams available.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Number of streams available.",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
             new("uri",
-"Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Char, 
             230, 
-false),
+            false),
         ];
         public const string FormatMessage = "HERELINK_VIDEO_STREAM_INFORMATION:"
         + "float framerate;"
@@ -255,6 +257,8 @@ false),
         + "uint8_t status;"
         + "char[230] uri;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
@@ -400,73 +404,73 @@ false),
 
         public override string Name => "HERELINK_TELEM";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("rf_freq",
-"",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint32, 
             0, 
-false),
+            false),
             new("link_bw",
-"",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint32, 
             0, 
-false),
+            false),
             new("link_rate",
-"",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint32, 
             0, 
-false),
+            false),
             new("snr",
-"",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Int16, 
             0, 
-false),
+            false),
             new("cpu_temp",
-"",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Int16, 
             0, 
-false),
+            false),
             new("board_temp",
-"",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Int16, 
             0, 
-false),
+            false),
             new("rssi",
-"",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
         ];
         public const string FormatMessage = "HERELINK_TELEM:"
         + "uint32_t rf_freq;"
@@ -477,6 +481,8 @@ false),
         + "int16_t board_temp;"
         + "uint8_t rssi;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
@@ -589,46 +595,46 @@ false),
 
         public override string Name => "CUBEPILOT_FIRMWARE_UPDATE_START";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("size",
-"FW Size.",
-string.Empty, 
-@"bytes", 
-string.Empty, 
-string.Empty, 
+            "FW Size.",
+            string.Empty, 
+            @"bytes", 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint32, 
             0, 
-false),
+            false),
             new("crc",
-"FW CRC.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "FW CRC.",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint32, 
             0, 
-false),
+            false),
             new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "System ID.",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
             new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Component ID.",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
         ];
         public const string FormatMessage = "CUBEPILOT_FIRMWARE_UPDATE_START:"
         + "uint32_t size;"
@@ -636,6 +642,8 @@ false),
         + "uint8_t target_system;"
         + "uint8_t target_component;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
@@ -724,43 +732,45 @@ false),
 
         public override string Name => "CUBEPILOT_FIRMWARE_UPDATE_RESP";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("offset",
-"FW Offset.",
-string.Empty, 
-@"bytes", 
-string.Empty, 
-string.Empty, 
+            "FW Offset.",
+            string.Empty, 
+            @"bytes", 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint32, 
             0, 
-false),
+            false),
             new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "System ID.",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
             new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Component ID.",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
         ];
         public const string FormatMessage = "CUBEPILOT_FIRMWARE_UPDATE_RESP:"
         + "uint32_t offset;"
         + "uint8_t target_system;"
         + "uint8_t target_component;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>

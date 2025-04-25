@@ -22,6 +22,7 @@ namespace Asv.Mavlink.Shell
             var args = Hash.FromAnonymousObject(
                 new
                 {
+                    GenerateTime = DateTime.Now.ToString("yy-MM-dd"),
                     Tool = typeof(Program).Assembly.GetTitle(),
                     ToolVersion = typeof(Program).Assembly.GetInformationalVersion(),
                     Dialect = model.Dialect,

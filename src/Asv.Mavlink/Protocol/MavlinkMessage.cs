@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Immutable;
 using Asv.IO;
 
 namespace Asv.Mavlink;
@@ -7,8 +8,8 @@ public abstract class MavlinkMessage : IProtocolMessage<int>
 {
     private ProtocolTags _tags = [];
     
-    public abstract MavlinkFieldInfo[] Fields { get; }
-    //public abstract string GetFormatString();
+    public abstract ImmutableArray<MavlinkFieldInfo> Fields { get; }
+    public abstract string GetFormatMessage();
 
     public abstract void Deserialize(ref ReadOnlySpan<byte> buffer);
 

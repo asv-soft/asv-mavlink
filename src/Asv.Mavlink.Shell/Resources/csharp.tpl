@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2025 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool {{Tool}} version {{ToolVersion}}
+// This code was generate by tool {{Tool}} version {{ToolVersion}} {{GenerateTime}}.
 
 using System;
 using System.Text;
@@ -105,20 +105,20 @@ namespace Asv.Mavlink.{{ Namespace }}
 
         public override string Name => "{{ msg.Name }}";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
 {%- for field in msg.Fields -%}
             new("{{ field.Name }}",
-            {%- if field.EscDesc -%}"{{ field.EscDesc }}"{%- else -%}string.Empty{%- endif -%},
-            {%- if field.PrintFormat -%}"{{ field.PrintFormat }}"{%- else -%}string.Empty{%- endif -%}, 
-            {%- if field.Units -%}@"{{ field.Units }}"{%- else -%}string.Empty{%- endif -%}, 
-            {%- if field.Display -%}"{{ field.Display }}"{%- else -%}string.Empty{%- endif -%}, 
-            {%- if field.InvalidValue -%}@"{{ field.InvalidValue }}"{%- else -%}string.Empty{%- endif -%}, 
+            {% if field.EscDesc %}"{{ field.EscDesc }}"{% else %}string.Empty{% endif %},
+            {% if field.PrintFormat %}"{{ field.PrintFormat }}"{% else %}string.Empty{% endif %}, 
+            {% if field.Units %}@"{{ field.Units }}"{% else %}string.Empty{% endif %}, 
+            {% if field.Display %}"{{ field.Display }}"{% else %}string.Empty{%- endif %}, 
+            {% if field.InvalidValue %}@"{{ field.InvalidValue }}"{% else %}string.Empty{% endif %}, 
             MessageFieldType.{{ field.TypeEnumName }}, 
             {{ field.ArrayLength }}, 
-            {%- if field.IsExtended -%}true{%- else -%}false{%- endif -%}),
+            {% if field.IsExtended %}true{%- else -%}false{% endif %}),
 {%- endfor -%}
         ];
         public const string FormatMessage = "{{ msg.Name }}:"
@@ -126,6 +126,8 @@ namespace Asv.Mavlink.{{ Namespace }}
         + "{{ field.ULogTypeName }} {{ field.Name }};"
 {%- endfor -%}
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>

@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2025 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
 
 using System;
 using System.Text;
@@ -77,55 +77,55 @@ namespace Asv.Mavlink.PythonArrayTest
 
         public override string Name => "ARRAY_TEST_0";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("ar_u32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint32, 
             4, 
-false),
+            false),
             new("ar_u16",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint16, 
             4, 
-false),
+            false),
             new("v1",
-"Stub field",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Stub field",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
             new("ar_i8",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Int8, 
             4, 
-false),
+            false),
             new("ar_u8",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             4, 
-false),
+            false),
         ];
         public const string FormatMessage = "ARRAY_TEST_0:"
         + "uint32_t[4] ar_u32;"
@@ -134,6 +134,8 @@ false),
         + "int8_t[4] ar_i8;"
         + "uint8_t[4] ar_u8;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
@@ -267,23 +269,25 @@ false),
 
         public override string Name => "ARRAY_TEST_1";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("ar_u32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint32, 
             4, 
-false),
+            false),
         ];
         public const string FormatMessage = "ARRAY_TEST_1:"
         + "uint32_t[4] ar_u32;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
@@ -361,33 +365,35 @@ false),
 
         public override string Name => "ARRAY_TEST_3";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("ar_u32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint32, 
             4, 
-false),
+            false),
             new("v",
-"Stub field",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Stub field",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
         ];
         public const string FormatMessage = "ARRAY_TEST_3:"
         + "uint32_t[4] ar_u32;"
         + "uint8_t v;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
@@ -473,33 +479,35 @@ false),
 
         public override string Name => "ARRAY_TEST_4";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("ar_u32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint32, 
             4, 
-false),
+            false),
             new("v",
-"Stub field",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Stub field",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
         ];
         public const string FormatMessage = "ARRAY_TEST_4:"
         + "uint32_t[4] ar_u32;"
         + "uint8_t v;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
@@ -585,33 +593,35 @@ false),
 
         public override string Name => "ARRAY_TEST_5";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("c1",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Char, 
             5, 
-false),
+            false),
             new("c2",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Char, 
             5, 
-false),
+            false),
         ];
         public const string FormatMessage = "ARRAY_TEST_5:"
         + "char[5] c1;"
         + "char[5] c2;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
@@ -729,118 +739,118 @@ false),
 
         public override string Name => "ARRAY_TEST_6";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("ar_d",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Double, 
             2, 
-false),
+            false),
             new("v3",
-"Stub field",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Stub field",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint32, 
             0, 
-false),
+            false),
             new("ar_u32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint32, 
             2, 
-false),
+            false),
             new("ar_i32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Int32, 
             2, 
-false),
+            false),
             new("ar_f",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Float32, 
             2, 
-false),
+            false),
             new("v2",
-"Stub field",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Stub field",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint16, 
             0, 
-false),
+            false),
             new("ar_u16",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint16, 
             2, 
-false),
+            false),
             new("ar_i16",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Int16, 
             2, 
-false),
+            false),
             new("v1",
-"Stub field",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Stub field",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             0, 
-false),
+            false),
             new("ar_u8",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             2, 
-false),
+            false),
             new("ar_i8",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Int8, 
             2, 
-false),
+            false),
             new("ar_c",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Char, 
             32, 
-false),
+            false),
         ];
         public const string FormatMessage = "ARRAY_TEST_6:"
         + "double[2] ar_d;"
@@ -856,6 +866,8 @@ false),
         + "int8_t[2] ar_i8;"
         + "char[32] ar_c;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
@@ -1097,91 +1109,91 @@ false),
 
         public override string Name => "ARRAY_TEST_7";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("ar_d",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Double, 
             2, 
-false),
+            false),
             new("ar_f",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Float32, 
             2, 
-false),
+            false),
             new("ar_u32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint32, 
             2, 
-false),
+            false),
             new("ar_i32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Int32, 
             2, 
-false),
+            false),
             new("ar_u16",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint16, 
             2, 
-false),
+            false),
             new("ar_i16",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Int16, 
             2, 
-false),
+            false),
             new("ar_u8",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint8, 
             2, 
-false),
+            false),
             new("ar_i8",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Int8, 
             2, 
-false),
+            false),
             new("ar_c",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Char, 
             32, 
-false),
+            false),
         ];
         public const string FormatMessage = "ARRAY_TEST_7:"
         + "double[2] ar_d;"
@@ -1194,6 +1206,8 @@ false),
         + "int8_t[2] ar_i8;"
         + "char[32] ar_c;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
@@ -1411,43 +1425,45 @@ false),
 
         public override string Name => "ARRAY_TEST_8";
         
-        public override MavlinkFieldInfo[] Fields => StaticFields;
+        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
                 
-        public static readonly MavlinkFieldInfo[] StaticFields =
+        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
             new("ar_d",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Double, 
             2, 
-false),
+            false),
             new("v3",
-"Stub field",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Stub field",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint32, 
             0, 
-false),
+            false),
             new("ar_u16",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
+            "Value array",
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
+            string.Empty, 
             MessageFieldType.Uint16, 
             2, 
-false),
+            false),
         ];
         public const string FormatMessage = "ARRAY_TEST_8:"
         + "double[2] ar_d;"
         + "uint32_t v3;"
         + "uint16_t[2] ar_u16;"
         ;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string GetFormatMessage() => FormatMessage;
     }
 
     /// <summary>
