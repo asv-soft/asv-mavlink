@@ -57,6 +57,7 @@ namespace Asv.Mavlink.UnitTestMessage
 
         public override ChemicalDetectorDataPayload Payload { get; } = new();
 
+        public override MavlinkFieldInfo[] Fields { get; }
         public override string Name => "CHEMICAL_DETECTOR_DATA";
     }
 
