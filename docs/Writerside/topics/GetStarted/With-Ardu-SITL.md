@@ -136,71 +136,120 @@ Process finished with exit code 0.
 
 ### Full code
 ```c#
-using System.Collections.Immutable;
-using Asv.Common;
+using Asv.Cfg;
 using Asv.IO;
 using Asv.Mavlink;
-using Asv.Mavlink.Minimal;
+using ObservableCollections;
 using R3;
 
-var tcs = new TaskCompletionSource<HeartbeatPayload>();
-var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
-cancel.Token.Register(() => tcs.TrySetCanceled());
+// Setup
+var tcs = new TaskCompletionSource();
+using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(200), TimeProvider.System);
+await using var s = cts.Token.Register(() => tcs.TrySetCanceled());
+//
 
+// Router creation
 var protocol = Protocol.Create(builder =>
 {
     builder.RegisterMavlinkV2Protocol();
     builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
     builder.Formatters.RegisterSimpleFormatter();
 });
-        
-var router = protocol.CreateRouter("router");
 
+await using var router = protocol.CreateRouter("ROUTER");
 router.AddTcpClientPort(p =>
 {
     p.Host = "127.0.0.1";
     p.Port = 5760;
 });
-        
-var identity = new MavlinkClientIdentity(2,3,1,1);
+//
 
-var clientSeq = new PacketSequenceCalculator();
-var clientCore = new CoreServices(
-    router, 
-    clientSeq, 
-    null, 
-    null, 
-    new DefaultMeterFactory()
-);
-
-var deviceId = new MavlinkClientDeviceId("copter", identity);
-var config = new VehicleClientDeviceConfig();
-
-var arduCopter = new ArduCopterClientDevice(
-    deviceId, 
-    config, 
-    ImmutableArray<IClientDeviceExtender>.Empty, 
-    clientCore
-);
-
-var called = 0;
-arduCopter.Heartbeat.RawHeartbeat.Subscribe(p =>
+// Device explorer creation
+var seq = new PacketSequenceCalculator();
+var identity = new MavlinkIdentity(255, 255);
+await using var deviceExplorer = DeviceExplorer.Create(router, builder =>
 {
-    if (p is null)
+    builder.SetConfig(new ClientDeviceBrowserConfig()
     {
-        return;
-    }
-    
-    Console.WriteLine($"Heartbeat type: {p.Type}, Heartbeat baseMode: {p.BaseMode}");
-    
-    if (called != 20)
-    {
-        called++;
-        return;
-    }
-    
-    tcs.TrySetResult(p);
+        DeviceTimeoutMs = 1000,
+        DeviceCheckIntervalMs = 30_000,
+    });
+    builder.Factories.RegisterDefaultDevices(
+        new MavlinkIdentity(identity.SystemId, identity.ComponentId),
+        seq,
+        new InMemoryConfiguration());
 });
+//
+
+// Device search
+IClientDevice? drone = null;
+using var sub = deviceExplorer.Devices
+    .ObserveAdd()
+    .Take(1)
+    .Subscribe(kvp => 
+    { 
+        drone = kvp.Value.Value; 
+        tcs.TrySetResult(); 
+    });
+
+await tcs.Task;
+
+if (drone is null)
+{
+    throw new Exception("Drone not found");
+}
+//
+
+// Drone init
+tcs = new TaskCompletionSource();
+
+using var sub2 = drone.State
+    .Subscribe(x => 
+    { 
+        if (x != ClientDeviceState.Complete) 
+        { 
+            return; 
+        }
+        
+        tcs.TrySetResult(); 
+    });
+
+await tcs.Task;
+//
+
+// Heartbeat client search
+await using var heartbeat = drone?.GetMicroservice<IHeartbeatClient>(); 
+
+if (heartbeat is null)
+{
+    throw new Exception("No control client found");
+}
+//
+
+// Test
+tcs = new TaskCompletionSource();
+
+var count = 0;
+using var sub3 = heartbeat.RawHeartbeat
+    .ThrottleLast(TimeSpan.FromMilliseconds(100))
+    .Subscribe(p => 
+    { 
+        if (p is null) 
+        { 
+            return; 
+        }
+        
+        Console.WriteLine($"Heartbeat type: {p.Type}, Heartbeat baseMode: {p.BaseMode}");
+        
+        if (count >= 20) 
+        { 
+            tcs.TrySetResult(); 
+            return;
+        }
+        
+        count++; 
+    });
+//
 
 await tcs.Task;
 ```
