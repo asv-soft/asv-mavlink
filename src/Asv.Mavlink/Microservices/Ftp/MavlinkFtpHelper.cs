@@ -57,7 +57,7 @@ public static class MavlinkFtpHelper
 
         span = span.TrimEnd(DirectorySeparator);
         var index = span.LastIndexOf(DirectorySeparator);
-         if (index == -1)
+        if (index == -1)
         {
             return new FtpDirectory(span.ToString());
         }
@@ -124,7 +124,7 @@ public static class MavlinkFtpHelper
 
         // 3. Combine + canonicalize
         var combined = fs.Path.Combine(rootFull, rel);
-        var full     = fs.Path.GetFullPath(combined);
+        var full = fs.Path.GetFullPath(combined);
 
         // 4. Jail check
         if (!full.StartsWith(rootFull, StringComparison.OrdinalIgnoreCase))

@@ -18,11 +18,6 @@ namespace Asv.Mavlink.Test;
 public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
 {
     private MockFileSystem _fileSystem = null!;
-    public FtpExComplexTest(ITestOutputHelper log) : base(log)
-    {
-        _cts = new CancellationTokenSource();
-        _cts.Token.Register(() => _tcs.TrySetCanceled());
-    }
     private readonly TaskCompletionSource<FileTransferProtocolPacket> _tcs = new();
     private readonly CancellationTokenSource _cts;
     
@@ -44,6 +39,12 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     {
         RootDirectory = AppDomain.CurrentDomain.BaseDirectory
     };
+    
+    public FtpExComplexTest(ITestOutputHelper log) : base(log)
+    {
+        _cts = new CancellationTokenSource();
+        _cts.Token.Register(() => _tcs.TrySetCanceled());
+    }
     
     protected override FtpServerEx CreateServer(MavlinkIdentity identity, IMavlinkContext core)
     {
@@ -121,11 +122,12 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
 
         var buffer = new ArrayBufferWriter<byte>(size);
         var progress = 0.0;
+        
         // Act
         await Client.DownloadFile(fileName, buffer, new CallbackProgress<double>(x => { progress = x; }), partSize,
             _cts.Token);
+        
         // Assert
-
         Assert.Equal(originContent.Length, buffer.WrittenCount);
         Assert.Equal(1, progress);
         for (var index = 0; index < originContent.Length; index++)
@@ -155,11 +157,12 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
 
         using var streamToSave = new MemoryStream(size);
         var progress = 0.0;
+        
         // Act
         await Client.BurstDownloadFile(fileName, streamToSave, new CallbackProgress<double>(x => progress = x),
             partSize, _cts.Token);
+        
         // Assert
-
         streamToSave.Seek(0, SeekOrigin.Begin);
         Assert.Equal(1, progress);
         Assert.Equal(originContent.Length, streamToSave.Length);
@@ -188,19 +191,19 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
                 size);
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
 
-        var streamToSave = new ArrayBufferWriter<byte>();
-
-
+        var bufferWriter = new ArrayBufferWriter<byte>();
+        
         // Act
         var progress = 0.0;
-        await Client.BurstDownloadFile(fileName, streamToSave, new CallbackProgress<double>(x => progress = x),
+        await Client.BurstDownloadFile(fileName, bufferWriter, new CallbackProgress<double>(x => progress = x),
             partSize, _cts.Token);
+        
         // Assert
         Assert.Equal(1, progress);
-        Assert.Equal(originContent.Length, streamToSave.WrittenCount);
+        Assert.Equal(originContent.Length, bufferWriter.WrittenCount);
         for (var index = 0; index < originContent.Length; index++)
         {
-            Assert.Equal(originContent[index], streamToSave.WrittenSpan[index]);
+            Assert.Equal(originContent[index], bufferWriter.WrittenSpan[index]);
         }
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
@@ -208,7 +211,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
 
     [Theory]
     [InlineData("/")]
-    public async Task Refresh_Success(string refreshPath)
+    public async Task Refresh_NormalData_Success(string refreshPath)
     {
         // Arrange
         _ = Server;
@@ -254,7 +257,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     [InlineData(239, 239)]
     [InlineData(239, 10)]
     [InlineData(1024 * 10, 200)]
-    public async Task DownloadFile_ToStream_Cancel_Throws(int size, byte partSize)
+    public async Task DownloadFile_ToStream_ThrowsByCancellation(int size, byte partSize)
     {
         // Arrange
         _ = Server;
@@ -269,12 +272,15 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
 
         using var streamToSave = new MemoryStream(size);
+        
+        // Act
+        var task = Client.DownloadFile(fileName, streamToSave, new CallbackProgress<double>(_ => { }), partSize,
+            _cts.Token);
 
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
         {
-            await Client.DownloadFile(fileName, streamToSave, new CallbackProgress<double>(_ => { }), partSize,
-                _cts.Token);
+            await task;
         });
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
@@ -285,7 +291,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     [InlineData(239, 239)]
     [InlineData(239, 10)]
     [InlineData(1024 * 10, 200)]
-    public async Task DownloadFile_ToBufferWriter_Cancel_Throws(int size, byte partSize)
+    public async Task DownloadFile_ToBufferWriter_ThrowsByCancellation(int size, byte partSize)
     {
         // Arrange
         _ = Server;
@@ -300,12 +306,15 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
 
         var buffer = new ArrayBufferWriter<byte>();
+        
+        // Act
+        var task = Client.DownloadFile(fileName, buffer, new CallbackProgress<double>(_ => { }), partSize,
+            _cts.Token);
 
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
         {
-            await Client.DownloadFile(fileName, buffer, new CallbackProgress<double>(_ => { }), partSize,
-                _cts.Token);
+            await task;
         });
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
@@ -316,7 +325,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     [InlineData(239, 239)]
     [InlineData(239, 10)]
     [InlineData(1024 * 10, 200)]
-    public async Task BurstDownloadFile_ToStream_Cancel_Throws(int size, byte partSize)
+    public async Task BurstDownloadFile_ToStream_ThrowsByCancellation(int size, byte partSize)
     {
         // Arrange
         _ = Server;
@@ -331,12 +340,15 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
 
         using var streamToSave = new MemoryStream(size);
+        
+        // Act
+        var task = Client.BurstDownloadFile(fileName, streamToSave, new CallbackProgress<double>(_ => { }), partSize,
+            _cts.Token);
 
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
         {
-            await Client.BurstDownloadFile(fileName, streamToSave, new CallbackProgress<double>(_ => { }), partSize,
-                _cts.Token);
+            await task;
         });
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
@@ -347,7 +359,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     [InlineData(239, 239)]
     [InlineData(239, 10)]
     [InlineData(1024 * 10, 200)]
-    public async Task BurstDownloadFile_ToBufferWriter_Cancel_Throws(int size, byte partSize)
+    public async Task BurstDownloadFile_ToBufferWriter_ThrowsByCancellation(int size, byte partSize)
     {
         // Arrange
         _ = Server;
@@ -362,12 +374,15 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
         _fileSystem.AddFile(filePath, new MockFileData(originContent));
 
         var buffer = new ArrayBufferWriter<byte>();
+        
+        // Act 
+        var task = Client.BurstDownloadFile(fileName, buffer, new CallbackProgress<double>(_ => { }), partSize,
+            _cts.Token);
 
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
         {
-            await Client.BurstDownloadFile(fileName, buffer, new CallbackProgress<double>(_ => { }), partSize,
-                _cts.Token);
+            await task;
         });
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
@@ -376,7 +391,7 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
     [Theory]
     [InlineData("/")]
     [InlineData("")]
-    public async Task Refresh_Cancel_Throws(string refreshPath)
+    public async Task Refresh_NormalData_ThrowsByCancellation(string refreshPath)
     {
         // Arrange
         _ = Server;
@@ -387,15 +402,20 @@ public class FtpExComplexTest : ComplexTestBase<FtpClientEx, FtpServerEx>
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file1.txt"));
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file2.txt"));
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file3.txt"));
+        
+        // Act
+        var task = Client.Refresh(refreshPath, true, _cts.Token);
 
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
         {
-            await Client.Refresh(refreshPath, true, _cts.Token);
+            await task;
         });
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.Equal((int)Link.Client.Statistic.TxMessages, (int)Link.Server.Statistic.RxMessages);
     }
+    
+    
 
     protected override void Dispose(bool disposing)
     {

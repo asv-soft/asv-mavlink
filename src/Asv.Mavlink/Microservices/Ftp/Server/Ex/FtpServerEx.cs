@@ -64,6 +64,10 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
         }
 
         var fullPath = _fileSystem.MakeFullPath(path, _rootDirectory);
+        if (!fullPath.Contains(_rootDirectory))
+        {
+            fullPath = _rootDirectory;
+        }
         if (!_fileSystem.File.Exists(fullPath))
         {
             throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.FileNotFound);
@@ -91,6 +95,10 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
         if (!fullPath.Contains(_rootDirectory))
         {
             fullPath = _rootDirectory;
+        }
+        if (!_fileSystem.File.Exists(fullPath))
+        {
+            throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.FileNotFound);
         }
 
         var session = OpenSession(FtpSession.SessionMode.OpenWrite);

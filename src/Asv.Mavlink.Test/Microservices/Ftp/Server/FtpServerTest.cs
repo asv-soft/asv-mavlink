@@ -4,12 +4,14 @@ using System.IO;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
+using JetBrains.Annotations;
 using R3;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
+[TestSubject(typeof(FtpServer))]
 public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(log)
 {
     private readonly MavlinkFtpServerConfig _config = new()
@@ -24,7 +26,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task CalcFileCrc32_Success()
+    public async Task CalcFileCrc32_NormalData_Success()
     {
         // Arrange
         const string expectedPath = "/path/to/file.txt";
@@ -53,7 +55,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         // Act
         await Link.Client.Send(requestPacket);
-        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -64,7 +65,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task TruncateFile_Success()
+    public async Task TruncateFile_NormalData_Success()
     {
         // Arrange
         const string expectedPath = "/path/to/file.txt";
@@ -96,7 +97,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         // Act
         await Link.Client.Send(requestPacket);
-        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -106,7 +106,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task RemoveDirectory_Success()
+    public async Task RemoveDirectory_NormalData_Success()
     {
         // Arrange
         const string expectedPath = "/path/to/directory";
@@ -134,7 +134,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         // Act
         await Link.Client.Send(requestPacket);
-        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -143,7 +142,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task RemoveFile_Success()
+    public async Task RemoveFile_NormalData_Success()
     {
         // Arrange
         const string expectedPath = "/path/to/file.txt";
@@ -171,7 +170,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         // Act
         await Link.Client.Send(requestPacket);
-        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -180,7 +178,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task ResetSessions_Success()
+    public async Task ResetSessions_NormalData_Success()
     {
         // Arrange
         var resetCalled = false;
@@ -205,7 +203,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         // Act
         await Link.Client.Send(requestPacket);
-        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
         Assert.True(resetCalled);
@@ -214,7 +211,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task CreateDirectory_Success()
+    public async Task CreateDirectory_NormalData_Success()
     {
         // Arrange
         const string expectedPath = "/path/to/new_directory";
@@ -242,7 +239,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         // Act
         await Link.Client.Send(requestPacket);
-        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -251,7 +247,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task Rename_Success()
+    public async Task Rename_NormalData_Success()
     {
         // Arrange
         const string expectedOldPath = "/path/to/old_name.txt";
@@ -282,7 +278,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         // Act
         await Link.Client.Send(requestPacket);
-        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -292,7 +287,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task ListDirectory_Success()
+    public async Task ListDirectory_NormalData_Success()
     {
         // Arrange
         const string expectedPath = "/path/to/directory";
@@ -327,7 +322,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         // Act
         await Link.Client.Send(requestPacket);
-        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -340,7 +334,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task FileRead_Success()
+    public async Task FileRead_NormalData_Success()
     {
         // Arrange
         const byte expectedSessionId = 1;
@@ -379,7 +373,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         // Act
         await Link.Client.Send(requestPacket);
-        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -401,7 +394,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task OpenFileRead_Success()
+    public async Task OpenFileRead_NormalData_Success()
     {
         // Arrange
         const string expectedPath = "/path/to/file.txt";
@@ -432,7 +425,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         // Act
         await Link.Client.Send(requestPacket);
-        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -447,7 +439,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task OpenFileWrite_Success()
+    public async Task OpenFileWrite_NormalData_Success()
     {
         // Arrange
         const string expectedPath = "/path/to/file.txt";
@@ -474,7 +466,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         // Act
         await Link.Server.Send(requestPacket);
-        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -486,7 +477,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task TerminateSession_Success()
+    public async Task TerminateSession_NormalData_Success()
     {
         // Arrange
         const byte expectedSessionId = 1;
@@ -514,7 +505,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         // Act
         await Link.Server.Send(requestPacket);
-        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -523,7 +513,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task WriteFile_Success()
+    public async Task WriteFile_NormalData_Success()
     {
         // Arrange
         const byte expectedSessionId = 1;
@@ -564,7 +554,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         // Act
         await Link.Server.Send(requestPacket);
-        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -577,7 +566,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task BurstReadFile_Success()
+    public async Task BurstReadFile_NormalData_Success()
     {
         // Arrange
         const byte expectedSessionId = 1;
@@ -621,7 +610,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         // Act
         await Link.Server.Send(requestPacket);
-        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -636,7 +624,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task CreateFile_Success()
+    public async Task CreateFile_NormalData_Success()
     {
         // Arrange
         const string expectedPath = "/path/to/new_file.txt";
@@ -665,7 +653,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         // Act
         await Link.Server.Send(requestPacket);
-        ServerTime.Advance(TimeSpan.FromMilliseconds(10));
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -674,7 +661,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
     }
 
     [Fact]
-    public async Task FtpPacketSend_Cancel_Throws()
+    public async Task FtpPacketSend_Cancel_ThrowsByCancellation()
     {
         // Arrange
         using var cts = new System.Threading.CancellationTokenSource();
@@ -687,11 +674,14 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             .RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(_ => called++);
+        
+        // Act
+        var task = Link.Server.Send(requestPacket, cts.Token);
 
-        // Act + Assert
+        // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
         {
-            await Link.Server.Send(requestPacket, cts.Token);
+            await task;
         });
         Assert.Equal(0, called);
     }
