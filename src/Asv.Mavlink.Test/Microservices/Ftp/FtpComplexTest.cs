@@ -720,384 +720,396 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
     }
 
     #region Timeout
-    
+
     [Fact]
     public async Task BurstReadFile_TimeSkip_ThrowsByTimeout()
     {
         // Arrange
         var emptyRequest = new ReadRequest(0, 0, 0);
-        
+
         // Act
         using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.BurstReadFile(
-                emptyRequest,
-                _ => {},
-                _cts.Token
-            );
+            await Client.BurstReadFile(emptyRequest, _ => { }, _cts.Token);
         });
-        
+
         using var t2 = Task.Factory.StartNew(() =>
         {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1));
+            ClientTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
+                )
+            );
         });
-        
+
         // Assert
         await Task.WhenAll(t1, t2);
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
-    
+
     [Fact]
     public async Task ReadFile_TimeSkip_ThrowsByTimeout()
     {
         // Arrange
         var emptyRequest = new ReadRequest(0, 0, 0);
-        
+
         // Act
         using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.ReadFile(
-                emptyRequest,
-                _cts.Token
-            );
+            await Client.ReadFile(emptyRequest, _cts.Token);
         });
-        
+
         using var t2 = Task.Factory.StartNew(() =>
         {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1));
+            ClientTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
+                )
+            );
         });
-        
+
         // Assert
         await Task.WhenAll(t1, t2);
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
-    
+
     [Fact]
     public async Task CalcFileCrc32_TimeSkip_ThrowsByTimeout()
     {
         // Arrange
         const string path = "/some_file.txt";
-        
+
         // Act
         using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.CalcFileCrc32(
-                path,
-                _cts.Token
-            );
+            await Client.CalcFileCrc32(path, _cts.Token);
         });
-        
+
         using var t2 = Task.Factory.StartNew(() =>
         {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1));
+            ClientTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
+                )
+            );
         });
-        
+
         // Assert
         await Task.WhenAll(t1, t2);
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
-    
+
     [Fact]
     public async Task CreateDirectory_TimeSkip_ThrowsByTimeout()
     {
         // Arrange
         const string path = "/some_directory";
-        
+
         // Act
         using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.CreateDirectory(
-                path,
-                _cts.Token
-            );
+            await Client.CreateDirectory(path, _cts.Token);
         });
-        
+
         using var t2 = Task.Factory.StartNew(() =>
         {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1));
+            ClientTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
+                )
+            );
         });
-        
+
         // Assert
         await Task.WhenAll(t1, t2);
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
-    
+
     [Fact]
     public async Task CreateFile_TimeSkip_ThrowsByTimeout()
     {
         // Arrange
         const string path = "/some_file.txt";
-        
+
         // Act
         using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.CreateFile(
-                path,
-                _cts.Token
-            );
+            await Client.CreateFile(path, _cts.Token);
         });
-        
+
         using var t2 = Task.Factory.StartNew(() =>
         {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1));
+            ClientTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
+                )
+            );
         });
-        
+
         // Assert
         await Task.WhenAll(t1, t2);
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
-    
+
     [Fact]
     public async Task ListDirectory_TimeSkip_ThrowsByTimeout()
     {
         // Arrange
         const string path = "/";
-        
+
         // Act
         using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.ListDirectory(
-                path,
-                0,
-                _cts.Token
-            );
+            await Client.ListDirectory(path, 0, _cts.Token);
         });
-        
+
         using var t2 = Task.Factory.StartNew(() =>
         {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1));
+            ClientTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
+                )
+            );
         });
-        
+
         // Assert
         await Task.WhenAll(t1, t2);
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
-    
+
     [Fact]
     public async Task Rename_TimeSkip_ThrowsByTimeout()
     {
         // Arrange
         const string path1 = "/some_file1.txt";
         const string path2 = "/some_file2.txt";
-        
+
         // Act
         using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.Rename(
-                path1,
-                path2,
-                _cts.Token
-            );
+            await Client.Rename(path1, path2, _cts.Token);
         });
-        
+
         using var t2 = Task.Factory.StartNew(() =>
         {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1));
+            ClientTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
+                )
+            );
         });
-        
+
         // Assert
         await Task.WhenAll(t1, t2);
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
-    
+
     [Fact]
     public async Task WriteFile_TimeSkip_ThrowsByTimeout()
     {
         // Arrange
         var emptyRequest = new WriteRequest(0, 0, 0);
-        
+
         // Act
         using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.WriteFile(
-                emptyRequest,
-                Memory<byte>.Empty,
-                _cts.Token
-            );
+            await Client.WriteFile(emptyRequest, Memory<byte>.Empty, _cts.Token);
         });
-        
+
         using var t2 = Task.Factory.StartNew(() =>
         {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1));
+            ClientTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
+                )
+            );
         });
-        
+
         // Assert
         await Task.WhenAll(t1, t2);
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
-    
+
     [Fact]
     public async Task OpenFileRead_TimeSkip_ThrowsByTimeout()
     {
         // Arrange
         const string path = "/some_file.txt";
-        
+
         // Act
         using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.OpenFileRead(
-                path,
-                _cts.Token
-            );
+            await Client.OpenFileRead(path, _cts.Token);
         });
-        
+
         using var t2 = Task.Factory.StartNew(() =>
         {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1));
+            ClientTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
+                )
+            );
         });
-        
+
         // Assert
         await Task.WhenAll(t1, t2);
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
-    
+
     [Fact]
     public async Task OpenFileWrite_TimeSkip_ThrowsByTimeout()
     {
         // Arrange
         const string path = "/some_file.txt";
-        
+
         // Act
         using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.OpenFileWrite(
-                path,
-                _cts.Token
-            );
+            await Client.OpenFileWrite(path, _cts.Token);
         });
-        
+
         using var t2 = Task.Factory.StartNew(() =>
         {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1));
+            ClientTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
+                )
+            );
         });
-        
+
         // Assert
         await Task.WhenAll(t1, t2);
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
-    
+
     [Fact]
     public async Task RemoveDirectory_TimeSkip_ThrowsByTimeout()
     {
         // Arrange
         const string path = "/some_directory";
-        
+
         // Act
         using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.RemoveDirectory(
-                path,
-                _cts.Token
-            );
+            await Client.RemoveDirectory(path, _cts.Token);
         });
-        
+
         using var t2 = Task.Factory.StartNew(() =>
         {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1));
+            ClientTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
+                )
+            );
         });
-        
+
         // Assert
         await Task.WhenAll(t1, t2);
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
-    
+
     [Fact]
     public async Task RemoveFile_TimeSkip_ThrowsByTimeout()
     {
         // Arrange
         const string path = "/some_file.txt";
-        
+
         // Act
         using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.RemoveFile(
-                path,
-                _cts.Token
-            );
+            await Client.RemoveFile(path, _cts.Token);
         });
-        
+
         using var t2 = Task.Factory.StartNew(() =>
         {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1));
+            ClientTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
+                )
+            );
         });
-        
+
         // Assert
         await Task.WhenAll(t1, t2);
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
-    
+
     [Fact]
     public async Task ResetSessions_TimeSkip_ThrowsByTimeout()
     {
         // Arrange
-        
+
         // Act
         using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.ResetSessions(
-                _cts.Token
-            );
+            await Client.ResetSessions(_cts.Token);
         });
-        
+
         using var t2 = Task.Factory.StartNew(() =>
         {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1));
+            ClientTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
+                )
+            );
         });
-        
+
         // Assert
         await Task.WhenAll(t1, t2);
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
-    
+
     [Fact]
     public async Task TerminateSession_TimeSkip_ThrowsByTimeout()
     {
         // Arrange
         const byte session = 0;
-        
+
         // Act
         using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.TerminateSession(
-                session,
-                _cts.Token
-            );
+            await Client.TerminateSession(session, _cts.Token);
         });
-        
+
         using var t2 = Task.Factory.StartNew(() =>
         {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1));
+            ClientTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
+                )
+            );
         });
-        
+
         // Assert
         await Task.WhenAll(t1, t2);
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
-    
+
     [Fact]
     public async Task TruncateFile_TimeSkip_ThrowsByTimeout()
     {
         // Arrange
         var emptyRequest = new TruncateRequest();
-        
+
         // Act
         using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
         {
-            await Client.TruncateFile(
-                emptyRequest,
-                _cts.Token
-            );
+            await Client.TruncateFile(emptyRequest, _cts.Token);
         });
-        
+
         using var t2 = Task.Factory.StartNew(() =>
         {
-            ClientTime.Advance(TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1));
+            ClientTime.Advance(
+                TimeSpan.FromMilliseconds(
+                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
+                )
+            );
         });
-        
+
         // Assert
         await Task.WhenAll(t1, t2);
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
-    
+
     #endregion
 }

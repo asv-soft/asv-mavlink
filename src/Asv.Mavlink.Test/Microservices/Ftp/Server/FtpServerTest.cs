@@ -14,11 +14,8 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(FtpServer))]
 public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(log)
 {
-    private readonly MavlinkFtpServerConfig _config = new()
-    {
-        NetworkId = 0,
-        BurstReadChunkDelayMs = 100
-    };
+    private readonly MavlinkFtpServerConfig _config =
+        new() { NetworkId = 0, BurstReadChunkDelayMs = 100 };
 
     protected override FtpServer CreateServer(MavlinkIdentity identity, CoreServices core)
     {
@@ -45,8 +42,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         FileTransferProtocolPacket? responsePacket = null;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(packet =>
             {
@@ -87,8 +84,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         FileTransferProtocolPacket? responsePacket = null;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(packet =>
             {
@@ -124,8 +121,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         FileTransferProtocolPacket? responsePacket = null;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(packet =>
             {
@@ -160,8 +157,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         FileTransferProtocolPacket? responsePacket = null;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(packet =>
             {
@@ -193,8 +190,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         FileTransferProtocolPacket? responsePacket = null;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(packet =>
             {
@@ -229,8 +226,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         FileTransferProtocolPacket? responsePacket = null;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(packet =>
             {
@@ -268,8 +265,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         FileTransferProtocolPacket? responsePacket = null;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(packet =>
             {
@@ -312,8 +309,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         FileTransferProtocolPacket? responsePacket = null;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(packet =>
             {
@@ -363,8 +360,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         FileTransferProtocolPacket? responsePacket = null;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(packet =>
             {
@@ -415,8 +412,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         FileTransferProtocolPacket? responsePacket = null;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(packet =>
             {
@@ -446,8 +443,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
         const byte expectedSessionId = 2;
         const uint expectedFileSize = 17U;
 
-
-        Server.OpenFileWrite = async (_, _) => await Task.FromResult(new WriteHandle(expectedSessionId, expectedFileSize));
+        Server.OpenFileWrite = async (_, _) =>
+            await Task.FromResult(new WriteHandle(expectedSessionId, expectedFileSize));
 
         var requestPacket = CreateRequestPacket(FtpOpcode.OpenFileWO);
         requestPacket.WriteSession(expectedSessionId);
@@ -456,8 +453,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         FileTransferProtocolPacket? responsePacket = null;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(packet =>
             {
@@ -495,8 +492,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         FileTransferProtocolPacket? responsePacket = null;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(packet =>
             {
@@ -544,8 +541,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         FileTransferProtocolPacket? responsePacket = null;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(packet =>
             {
@@ -587,7 +584,9 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
             originStream.Position = request.Skip;
             var bytesToRead = (int)Math.Min(request.Take, originStream.Length - request.Skip);
-            var readBytes = await originStream.ReadAsync(buffer[..bytesToRead], cancel).ConfigureAwait(false);
+            var readBytes = await originStream
+                .ReadAsync(buffer[..bytesToRead], cancel)
+                .ConfigureAwait(false);
             var eof = originStream.Position >= originStream.Length;
             return new BurstReadResult((byte)readBytes, eof, request);
         };
@@ -600,8 +599,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         FileTransferProtocolPacket? responsePacket = null;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(packet =>
             {
@@ -619,7 +618,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
         responsePacket!.ReadData(mb);
         var resultData = mb.WrittenMemory.ToArray();
         Assert.Equal(dataChunks, resultData);
-        
+
         await originStream.DisposeAsync();
     }
 
@@ -643,8 +642,8 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
 
         FileTransferProtocolPacket? responsePacket = null;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(packet =>
             {
@@ -670,11 +669,11 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
         var requestPacket = CreateRequestPacket(FtpOpcode.CreateFile);
         var called = 0;
 
-        using var subscription = Link.Client
-            .RxFilterByType<FileTransferProtocolPacket>()
+        using var subscription = Link
+            .Client.RxFilterByType<FileTransferProtocolPacket>()
             .Take(1)
             .Subscribe(_ => called++);
-        
+
         // Act
         var task = Link.Server.Send(requestPacket, cts.Token);
 
@@ -699,7 +698,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
                 Payload = new byte[251],
-            }
+            },
         };
         pkt.WriteOpcode(opcode);
         pkt.WriteSession(0);
