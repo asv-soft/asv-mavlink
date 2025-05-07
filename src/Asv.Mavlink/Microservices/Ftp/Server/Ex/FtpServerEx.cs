@@ -56,7 +56,35 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
         Base.CreateFile = CreateFile;
     }
 
-    public async Task<ReadHandle> OpenFileRead(string path, CancellationToken cancel = default)
+    public Task<ReadHandle> OpenFileRead(string path, CancellationToken cancel = default)
+    {
+        if (cancel.IsCancellationRequested)
+        {
+            throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.None);
+        }
+
+        var fullPath = _fileSystem.MakeFullPath(path, _rootDirectory);
+        if (!fullPath.Contains(_rootDirectory))
+        {
+            fullPath = _rootDirectory;
+        }
+        if (!_fileSystem.File.Exists(fullPath))
+        {
+            throw new FtpNackException(FtpOpcode.OpenFileRO, NackError.FileNotFound);
+        }
+
+        var session = OpenSession(FtpSession.SessionMode.OpenRead);
+        _logger.ZLogInformation($"Open read session #{session.Id}");
+        var stream = _fileSystem.File.OpenRead(fullPath);
+        _logger.ZLogInformation($"Open Read file {fullPath}");
+        session.Stream = stream;
+
+        var fileSize = (uint)stream.Length;
+        _logger.ZLogDebug($"Success open file read {path}");
+        return Task.FromResult(new ReadHandle(session.Id, fileSize));
+    }
+    
+    public async Task<ReadHandle> OpenFileReadAsync(string path, CancellationToken cancel = default)
     {
         await EnsureNotCanceled(FtpOpcode.OpenFileRO, _logger, cancel).ConfigureAwait(false);
 
@@ -235,7 +263,84 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
         _logger.ZLogInformation($"All sessions was reset");
     }
 
-    public async Task<byte> ListDirectory(
+    public Task<byte> ListDirectory(
+        string path,
+        uint offset,
+        Memory<char> buffer,
+        CancellationToken cancel = default
+    )
+    {
+        if (cancel.IsCancellationRequested)
+        {
+            _logger.ZLogError($"Request canceled by cancellation token");
+            throw new FtpNackException(FtpOpcode.ListDirectory, NackError.None);
+        }
+        
+        var fullPath = _fileSystem.MakeFullPath(path, _rootDirectory);
+        if (!fullPath.Contains(_rootDirectory))
+        {
+            fullPath = _rootDirectory;
+        }
+
+        if (!_fileSystem.Path.Exists(fullPath))
+        {
+            _logger.ZLogError($"File {fullPath} is not exist in file system");
+            throw new FtpNackException(FtpOpcode.ListDirectory, NackError.FileNotFound);
+        }
+
+        uint currentIndex = 0;
+        var infos = new List<IFileSystemInfo>();
+        var dirInfo = new DirectoryInfo(fullPath);
+        var directory = _fileSystem.DirectoryInfo.Wrap(dirInfo);
+        var dirInfos = directory.GetFileSystemInfos();
+
+        if (offset >= dirInfos.Length)
+        {
+            _logger.ZLogError($"Unable to list directory. End of File");
+            throw new FtpNackEndOfFileException(FtpOpcode.ListDirectory);
+        }
+
+        foreach (var info in dirInfos)
+        {
+            if (currentIndex >= offset)
+            {
+                infos.Add(info);
+            }
+
+            currentIndex++;
+        }
+
+        var result = new List<string>();
+        foreach (var entry in infos)
+        {
+            if (entry.Extension.Length > 0)
+            {
+                var file = (IFileInfo)entry;
+                result.Add($"F{file.Name}\t{file.Length}\0");
+                continue;
+            }
+
+            result.Add($"D{entry.Name}\0");
+        }
+
+        var sb = new StringBuilder(0, MavlinkFtpHelper.MaxDataSize);
+        foreach (var str in result.TakeWhile(str => sb.Length + str.Length <= sb.MaxCapacity))
+        {
+            sb.Append(str);
+        }
+
+        if (sb.Length == 0)
+        {
+            _logger.ZLogError($"Unable to list directory. End of File");
+            throw new FtpNackException(FtpOpcode.ListDirectory, NackError.Fail);
+        }
+
+        sb.ToString().CopyTo(buffer.Span);
+        _logger.ZLogInformation($"List directory success. Length: {sb.Length}");
+        return Task.FromResult((byte)sb.Length);
+    }
+    
+    public async Task<byte> ListDirectoryAsync(
         string path,
         uint offset,
         Memory<char> buffer,
@@ -359,7 +464,32 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
         return session.Id;
     }
 
-    public async Task RemoveFile(string path, CancellationToken cancel = default)
+    public Task RemoveFile(string path, CancellationToken cancel = default)
+    {
+        if (cancel.IsCancellationRequested)
+        {
+            _logger.ZLogError($"Request canceled by cancellation token");
+            throw new FtpNackException(FtpOpcode.RemoveFile, NackError.None);
+        }
+        
+        var filePath = _fileSystem.MakeFullPath(path, _rootDirectory);
+        if (!filePath.Contains(_rootDirectory))
+        {
+            filePath = _rootDirectory;
+        }
+
+        if (!_fileSystem.File.Exists(filePath))
+        {
+            throw new FtpNackException(FtpOpcode.RemoveFile, NackError.FileNotFound);
+        }
+
+        _fileSystem.File.Delete(filePath);
+        _logger.ZLogInformation($"Successfully deleted file: {filePath}");
+        
+        return Task.CompletedTask;
+    }
+    
+    public async Task RemoveFileAsync(string path, CancellationToken cancel = default)
     {
         await EnsureNotCanceled(FtpOpcode.RemoveFile, _logger, cancel).ConfigureAwait(false);
 
@@ -404,7 +534,35 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
         _logger.ZLogInformation($"Successfully deleted directory: {fullPath}");
     }
 
-    public async Task<uint> CalcFileCrc32(string path, CancellationToken cancel = default)
+    public Task<uint> CalcFileCrc32(string path, CancellationToken cancel = default)
+    {
+        if (cancel.IsCancellationRequested)
+        {
+            _logger.ZLogError($"Request canceled by cancellation token");
+            throw new FtpNackException(FtpOpcode.CalcFileCRC32, NackError.None);
+        }
+        
+        var filePath = _fileSystem.MakeFullPath(path, _rootDirectory);
+        if (!filePath.Contains(_rootDirectory))
+        {
+            filePath = _rootDirectory;
+        }
+
+        if (!_fileSystem.File.Exists(filePath))
+        {
+            _logger.ZLogError($"File {filePath} is not exist in file system");
+            throw new FtpNackException(FtpOpcode.CalcFileCRC32, NackError.FileNotFound);
+        }
+
+        var fileBytes = _fileSystem
+            .File.ReadAllBytes(filePath);
+
+        var crc32 = Crc32Mavlink.Accumulate(fileBytes);
+        _logger.ZLogInformation($"Successfully calculated CRC32 for {path}");
+        return Task.FromResult(crc32);
+    }
+    
+    public async Task<uint> CalcFileCrc32Async(string path, CancellationToken cancel = default)
     {
         await EnsureNotCanceled(FtpOpcode.CalcFileCRC32, _logger, cancel).ConfigureAwait(false);
 
@@ -429,7 +587,41 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
         return crc32;
     }
 
-    public async Task TruncateFile(TruncateRequest request, CancellationToken cancel = default)
+    public Task TruncateFile(TruncateRequest request, CancellationToken cancel = default)
+    {
+        if (request.Offset == 0)
+        {
+            _logger.ZLogError($"Unable to truncate file. Request offset = {request.Offset}");
+            throw new FtpNackException(FtpOpcode.TruncateFile, NackError.InvalidDataSize);
+        }
+
+        if (cancel.IsCancellationRequested)
+        {
+            _logger.ZLogError($"Request canceled by cancellation token");
+            throw new FtpNackException(FtpOpcode.TruncateFile, NackError.None);
+        }
+        
+        var filePath = _fileSystem.MakeFullPath(request.Path, _rootDirectory);
+        if (!_fileSystem.File.Exists(filePath))
+        {
+            _logger.ZLogError($"File {filePath} is not exist in file system");
+            throw new FtpNackException(FtpOpcode.TruncateFile, NackError.FileNotFound);
+        }
+
+        var stream = _fileSystem.File.Open(
+            filePath,
+            FileMode.Truncate,
+            FileAccess.Write,
+            FileShare.Read
+        );
+
+        stream.SetLength(request.Offset);
+        stream.Close();
+        
+        return Task.CompletedTask;
+    }
+    
+    public async Task TruncateFileAsync(TruncateRequest request, CancellationToken cancel = default)
     {
         if (request.Offset == 0)
         {

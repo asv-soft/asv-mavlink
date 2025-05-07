@@ -55,6 +55,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
 
         // Assert
         Assert.Equal((uint)"Test content".Length, handle.Size);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
